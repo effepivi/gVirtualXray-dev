@@ -1,0 +1,527 @@
+/**
+********************************************************************************
+*
+*	@file		OpenGLUtilities.inl
+*
+*	@brief		Some utility functions about OpenGL.
+*
+*	@version	1.0
+*
+*	@date		07/11/2013
+*
+*	@author		Dr Franck P. Vidal
+*
+*	@section	License
+*				BSD 3-Clause License.
+*
+*				For details on use and redistribution please refer 
+*				to http://opensource.org/licenses/BSD-3-Clause
+*
+*	@section	Copyright
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0, 
+*				BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+#include<GL/glew.h>
+#ifdef __APPLE__
+#include<OpenGL/gl.h>
+#else
+#include<GL/gl.h>
+#endif
+
+#include <cmath>
+
+#ifndef OPENGL_EXCEPTION_H
+#include "OpenGLException.h"
+#endif
+
+#ifndef OUT_OF_BOUNDS_EXCEPTION_H
+#include "OutOfBoundsException.h"
+#endif
+
+#ifndef FBO_EXCEPTION_H
+#include "FBOException.h"
+#endif
+
+
+//******************************************************************************
+//	namespace
+//******************************************************************************
+namespace Utilities {
+
+
+//-----------------------------------------------------------
+inline void checkOpenGLErrorStatus(const char* aFileName,
+								   const char* aFunctionName,
+								   int aLineNumber)
+//-----------------------------------------------------------
+{
+	// Get the OpenGL error code
+	GLenum error_code(glGetError());
+
+	// There was an error
+	if (error_code != GL_NO_ERROR)
+	{
+		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+	}
+}
+
+
+//--------------------------------------------------------
+inline void checkFBOErrorStatus(const char* aFileName,
+								const char* aFunctionName,
+								int aLineNumber)
+//--------------------------------------------------------
+{
+	// Get the OpenGL error code
+	GLenum error_code(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT));
+
+	// There was an error
+	if (error_code != GL_FRAMEBUFFER_COMPLETE_EXT)
+	{
+		throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
+	}
+}
+
+
+//--------------------------------
+inline void pushProjectionMatrix()
+//--------------------------------
+{
+	g_p_projection_matrix_stack.push_back(g_current_projection_matrix);
+}
+
+
+//-------------------------------
+inline void pushModelViewMatrix()
+//-------------------------------
+{
+	g_p_modelview_matrix_stack.push_back(g_current_modelview_matrix);
+}
+
+
+//-------------------
+inline void pushFBO()
+//-------------------
+{
+	// Save the current FBO
+	GLint fbo_id(0);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo_id);
+
+	g_frame_buffer_object_stack.push_back(fbo_id);
+}
+
+
+//-------------------------
+inline void pushTexture1D()
+//-------------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
+
+	// Get the current 1D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_1D, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//-------------------------
+inline void pushTexture2D()
+//-------------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
+
+	// Get the current 2D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_2D, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//--------------------------------
+inline void pushTextureRectangle()
+//--------------------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+
+	// Get the current 2D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//-------------------------
+inline void pushTexture3D()
+//-------------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
+
+	// Get the current 3D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_3D, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//---------------------------------------------------
+inline void pushEnableDisableState(GLenum aParameter)
+//---------------------------------------------------
+{
+	GLboolean state;
+	glGetBooleanv(aParameter, &state);
+
+	g_enable_disable_state_stack.push_back(std::pair<GLenum, GLboolean>(aParameter, state));
+}
+
+
+//-------------------------------
+inline void popProjectionMatrix()
+//-------------------------------
+{
+	// Make sure the stack is not empty
+	if (g_p_projection_matrix_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+	
+	// Restore the matrix
+	g_current_projection_matrix = g_p_projection_matrix_stack.back();
+
+	// Remove the last matrix
+	g_p_projection_matrix_stack.pop_back();
+}
+
+
+//------------------------------
+inline void popModelViewMatrix()
+//------------------------------
+{
+	// Make sure the stack is not empty
+	if (g_p_modelview_matrix_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+	
+	// Restore the matrix
+	g_current_modelview_matrix = g_p_modelview_matrix_stack.back();
+	applyModelViewMatrix();
+
+	// Remove the last matrix
+	g_p_modelview_matrix_stack.pop_back();
+}
+
+
+//------------------
+inline void popFBO()
+//------------------
+{
+	// Make sure the stack is not empty
+	if (g_frame_buffer_object_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+	
+	// Save the current FBO
+	GLint current_fbo_id(0);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &current_fbo_id);
+
+	// Get the previous FBO from the stack
+	GLint previous_fbo_id(g_frame_buffer_object_stack.back());
+
+	// The two FBOs are different
+	if (previous_fbo_id != current_fbo_id)
+	{
+		// Restore the FBO
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previous_fbo_id);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	
+	// Remove the last FBO
+	g_frame_buffer_object_stack.pop_back();
+}
+
+
+//----------------------------------------
+inline void loadIdentityProjectionMatrix()
+//----------------------------------------
+{
+	g_current_projection_matrix.loadIdentity();
+}
+
+
+//---------------------------------------
+inline void loadIdentityModelViewMatrix()
+//---------------------------------------
+{
+	g_current_modelview_matrix.loadIdentity();
+}
+
+
+//----------------------------------------------------
+inline void loadOrthoProjectionMatrix(GLdouble left,
+									  GLdouble right,
+									  GLdouble bottom,
+									  GLdouble top,
+									  GLdouble near,
+									  GLdouble far)
+//----------------------------------------------------
+{
+	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_projection_matrix.get()));
+	
+	GLdouble t_x(-(right + left)   / (right - left));
+	GLdouble t_y(-(top   + bottom) / (top   - bottom));
+	GLdouble t_z(-(far   + near)   / (far   - near));
+
+	p_matrix[ 0] = 2.0 / (right - left);
+	p_matrix[ 1] = 0.0;
+	p_matrix[ 2] = 0.0;
+	p_matrix[ 3] = 0.0;
+	
+	p_matrix[ 4] = 0.0;
+	p_matrix[ 5] = 2.0 / (top   - bottom);
+	p_matrix[ 6] = 0.0;
+	p_matrix[ 7] = 0.0;
+
+	p_matrix[ 8] =  0.0;
+	p_matrix[ 9] =  0.0;
+	p_matrix[10] = -2.0 / (far   - near);
+	p_matrix[11] =  0.0;
+
+	p_matrix[12] = t_x;
+	p_matrix[13] = t_y;
+	p_matrix[14] = t_z;
+	p_matrix[15] = 1.0;
+}
+
+
+//--------------------------------------------------------
+inline void multiplyOrthoProjectionMatrix(GLdouble left,
+										  GLdouble right,
+										  GLdouble bottom,
+										  GLdouble top,
+										  GLdouble near,
+										  GLdouble far)
+//--------------------------------------------------------
+{
+	MATRIX4 temp_matrix;
+	
+	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(temp_matrix.get()));
+	
+	GLdouble t_x(-(right + left)   / (right - left));
+	GLdouble t_y(-(top   + bottom) / (top   - bottom));
+	GLdouble t_z(-(far   + near)   / (far   - near));
+
+	p_matrix[ 0] = 2.0 / (right - left);
+	p_matrix[ 1] = 0.0;
+	p_matrix[ 2] = 0.0;
+	p_matrix[ 3] = 0.0;
+	
+	p_matrix[ 4] = 0.0;
+	p_matrix[ 5] = 2.0 / (top   - bottom);
+	p_matrix[ 6] = 0.0;
+	p_matrix[ 7] = 0.0;
+
+	p_matrix[ 8] =  0.0;
+	p_matrix[ 9] =  0.0;
+	p_matrix[10] = -2.0 / (far   - near);
+	p_matrix[11] =  0.0;
+
+	p_matrix[12] = t_x;
+	p_matrix[13] = t_y;
+	p_matrix[14] = t_z;
+	p_matrix[15] = 1.0;
+	
+	g_current_projection_matrix *= temp_matrix;
+}
+
+
+//----------------------------------------------------------
+inline void loadPerspectiveProjectionMatrix(GLdouble fovy,
+											GLdouble aspect,
+											GLdouble zNear,
+											GLdouble zFar)
+//----------------------------------------------------------
+{
+	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_projection_matrix.get()));
+	
+	// Cotangent of fovy / 2
+	GLdouble f(tan(M_PI_2 - (((fovy * M_PI) / 180.0) / 2.0)));
+	
+	p_matrix[ 0] = f / aspect;
+	p_matrix[ 1] = 0.0;
+	p_matrix[ 2] = 0.0;
+	p_matrix[ 3] = 0.0;
+	
+	p_matrix[ 4] = 0.0;
+	p_matrix[ 5] = f;
+	p_matrix[ 6] = 0.0;
+	p_matrix[ 7] = 0.0;
+
+	p_matrix[ 8] = 0.0;
+	p_matrix[ 9] = 0.0;
+	p_matrix[10] = (zFar + zNear) / (zNear - zFar);
+	p_matrix[11] = -1.0;
+
+	p_matrix[12] = 0.0;
+	p_matrix[13] = 0.0;
+	p_matrix[14] = (2.0 * zFar * zNear) / (zNear - zFar);
+	p_matrix[15] = 0.0;
+}
+
+
+//--------------------------------------------------------------
+inline void multiplyPerspectiveProjectionMatrix(GLdouble fovy,
+												GLdouble aspect,
+												GLdouble zNear,
+												GLdouble zFar)
+//--------------------------------------------------------------
+{
+	MATRIX4 temp_matrix;
+	
+	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(temp_matrix.get()));
+	
+	// Cotangent of fovy / 2
+	GLdouble f(tan(M_PI_2 - (((fovy * M_PI) / 180.0) / 2.0)));
+	
+	p_matrix[ 0] = f / aspect;
+	p_matrix[ 1] = 0.0;
+	p_matrix[ 2] = 0.0;
+	p_matrix[ 3] = 0.0;
+	
+	p_matrix[ 4] = 0.0;
+	p_matrix[ 5] = f;
+	p_matrix[ 6] = 0.0;
+	p_matrix[ 7] = 0.0;
+
+	p_matrix[ 8] = 0.0;
+	p_matrix[ 9] = 0.0;
+	p_matrix[10] = (zFar + zNear) / (zNear - zFar);
+	p_matrix[11] = -1.0;
+
+	p_matrix[12] = 0.0;
+	p_matrix[13] = 0.0;
+	p_matrix[14] = (2.0 * zFar * zNear) / (zNear - zFar);
+	p_matrix[15] = 0.0;
+	
+	g_current_projection_matrix *= temp_matrix;
+}
+
+
+//-------------------------------------------------------
+inline void loadLookAtModelViewMatrix(const VEC3& eye,
+									  const VEC3& center,
+									  const VEC3& up)
+//-------------------------------------------------------
+{	
+	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_modelview_matrix.get()));
+	
+	// Forward vector: centre - eye
+	VEC3 forward(center - eye);
+	forward.normalize();
+
+	// Up vector
+	VEC3 up1(up.normal());
+
+	// Side vector: forward x up
+	VEC3 side(forward ^ up);
+	
+	// New up vector: side x forward
+	VEC3 u(side.normal() ^ forward);
+		
+	p_matrix[ 0] =  side.getX();
+	p_matrix[ 1] =  u.getX();
+	p_matrix[ 2] = -forward.getX();
+	p_matrix[ 3] = 0.0;
+
+	p_matrix[ 4] =  side.getY();
+	p_matrix[ 5] =  u.getY();
+	p_matrix[ 6] = -forward.getY();
+	p_matrix[ 7] = 0.0;
+
+	p_matrix[ 8] =  side.getZ();
+	p_matrix[ 9] =  u.getZ();
+	p_matrix[10] = -forward.getZ();
+	p_matrix[11] = 0.0;
+
+	p_matrix[12] = 0.0;
+	p_matrix[13] = 0.0;
+	p_matrix[14] = 0.0;
+	p_matrix[15] = 1.0;
+	
+	g_current_modelview_matrix.translate(-eye.getX(), -eye.getY(), -eye.getZ());
+}
+
+
+//-----------------------------------------------------
+inline void loadLookAtModelViewMatrix(GLdouble eyeX,
+									  GLdouble eyeY,
+									  GLdouble eyeZ,
+									  GLdouble centerX,
+									  GLdouble centerY,
+									  GLdouble centerZ,
+									  GLdouble upX,
+									  GLdouble upY,
+									  GLdouble upZ)
+//-----------------------------------------------------
+{	
+	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_modelview_matrix.get()));
+	
+	// Forward vector: centre - eye
+	VEC3 forward(centerX - eyeX, centerY - eyeY, centerZ - eyeZ);
+	forward.normalize();
+
+	// Up vector
+	VEC3 up(upX, upY, upZ);
+	up.normalize();
+
+	// Side vector: forward x up
+	VEC3 side(forward ^ up);
+	
+	// New up vector: side x forward
+	VEC3 u(side.normal() ^ forward);
+		
+	p_matrix[ 0] =  side.getX();
+	p_matrix[ 1] =  u.getX();
+	p_matrix[ 2] = -forward.getX();
+	p_matrix[ 3] = 0.0;
+
+	p_matrix[ 4] =  side.getY();
+	p_matrix[ 5] =  u.getY();
+	p_matrix[ 6] = -forward.getY();
+	p_matrix[ 7] = 0.0;
+
+	p_matrix[ 8] =  side.getZ();
+	p_matrix[ 9] =  u.getZ();
+	p_matrix[10] = -forward.getZ();
+	p_matrix[11] = 0.0;
+
+	p_matrix[12] = 0.0;
+	p_matrix[13] = 0.0;
+	p_matrix[14] = 0.0;
+	p_matrix[15] = 1.0;
+	
+	g_current_modelview_matrix.translate(-eyeX, -eyeY, -eyeZ);
+}
+
+
+} // namespace Utilities

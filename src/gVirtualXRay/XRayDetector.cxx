@@ -1,0 +1,672 @@
+/**
+********************************************************************************
+*
+*	@file		XRayDetector.cxx
+*
+*	@brief		Class to handle virtual X-Ray detectors.
+*
+*	@version	1.0
+*
+*	@date		30/11/2013
+*
+*	@author		Dr Franck P. Vidal
+*
+*	@section	License
+*				BSD 3-Clause License.
+*
+*				For details on use and redistribution please refer
+*				to http://opensource.org/licenses/BSD-3-Clause
+*
+*	@section	Copyright
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+*				BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+#ifndef XRAY_DETECTOR_H
+#include "XRayDetector.h"
+#endif
+
+#ifndef OPENGL_UTILITIES_H
+#include "OpenGLUtilities.h"
+#endif
+
+
+//******************************************************************************
+//	Name space
+//******************************************************************************
+using namespace gVirtualXRay;
+
+
+//----------------------------------
+void XRayDetector::displayDetector()
+//----------------------------------
+{
+	// Update the VBOs if needed
+	updateVBOs();
+
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+
+	// Apply the transformation
+	g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(m_detector_position);
+	g_current_modelview_matrix *= m_rotation_matrix;
+	g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(-m_detector_position);
+	applyModelViewMatrix();
+
+	// Display the detector using OpenGL's direct mode rendering
+	m_detector_geometry.display();
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+}
+
+
+//------------------------------
+void XRayDetector::displayBeam()
+//------------------------------
+{
+	// Update the VBOs if needed
+	updateVBOs();
+
+	// Store the enable/disable state
+	pushEnableDisableState(GL_LIGHTING);
+	pushEnableDisableState(GL_DEPTH_TEST);
+	pushEnableDisableState(GL_BLEND);
+
+	glPushAttrib(GL_DEPTH_BUFFER_BIT);
+	glPushAttrib(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(1.0, 0.0, 0.0, 0.35);
+
+	if (m_source_type == PARALLEL)
+	{
+		m_parallel_beam.display();
+	}
+	else
+	{
+		m_cone_beam.display();
+	}
+
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+
+	glColor4f(0.0, 0.0, 0.0, 1.0);
+
+	if (m_source_type == PARALLEL)
+	{
+		m_parallel_beam_highlight.display();
+	}
+	else
+	{
+		m_cone_beam_highlight.display();
+	}
+
+	// Restore the enable/disable state
+	popEnableDisableState();
+	popEnableDisableState();
+	popEnableDisableState();
+
+	glPopAttrib();
+	glPopAttrib();
+}
+
+
+//-----------------------------------------------------------------------
+void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
+								  UINT aNumberOfSamplesAlongOneDirection,
+								  RATIONAL_NUMBER aLength)
+//-----------------------------------------------------------------------
+{
+	// Store the centre position
+	m_xray_source_centre = aXraySourcePosition;
+
+	// Clear the sample set
+	m_p_xray_source_position_set.clear();
+
+	// Use a cubic source
+	if (aNumberOfSamplesAlongOneDirection > 1)
+	{
+		// Save the source type
+		m_source_type = CUBE;
+
+		// Sample the source along the 3 main axis
+		VEC3 source_lower_corner(m_xray_source_centre.getX() - aLength / 2.0,
+				m_xray_source_centre.getY() - aLength / 2.0,
+				m_xray_source_centre.getZ() - aLength / 2.0);
+
+		RATIONAL_NUMBER offset(aLength / RATIONAL_NUMBER(aNumberOfSamplesAlongOneDirection - 1));
+
+		// Compute the sample position along the 3 axis
+		for (UINT k(0); k < aNumberOfSamplesAlongOneDirection; ++k)
+		{
+			for (UINT j(0); j < aNumberOfSamplesAlongOneDirection; ++j)
+			{
+				for (UINT i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
+				{
+					// Compute the sample position
+					VEC3 sample_position(source_lower_corner.getX () + offset * i,
+							source_lower_corner.getY () + offset * j,
+							source_lower_corner.getZ () + offset * k);
+
+					// Add the sample position
+					m_p_xray_source_position_set.push_back(sample_position);
+				}
+			}
+		}
+	}
+	// This is a point source
+	else
+	{
+		// Save the source type
+		m_source_type = POINT;
+
+		// Add the centre
+		m_p_xray_source_position_set.push_back(m_xray_source_centre);
+	}
+
+	// Update the distance between the source and the detector
+	updateDistanceSourceDetector();
+
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
+//------------------------------------------------------------------------
+void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
+								   UINT aNumberOfSamplesAlongOneDirection,
+								   RATIONAL_NUMBER aLength)
+//------------------------------------------------------------------------
+{
+	// Store the centre position
+	m_xray_source_centre = aXraySourcePosition;
+
+	// Clear the sample set
+	m_p_xray_source_position_set.clear();
+
+	// Use a cubic source
+	if (aNumberOfSamplesAlongOneDirection > 1)
+	{
+		// Save the source type
+		m_source_type = SQUARE;
+
+		// Compute the normal vector
+		VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
+		look_at_vector.normalize();
+
+		// Compute the position of each vertex
+		VEC3 right_vector(look_at_vector ^ m_up_vector);
+
+		// Sample the source along the 3 main axis
+		VEC3 source_lower_corner(m_xray_source_centre);
+		source_lower_corner -= right_vector * (aLength / 2.0);
+		source_lower_corner -= m_up_vector * (aLength / 2.0);
+
+		RATIONAL_NUMBER offset(aLength / RATIONAL_NUMBER(aNumberOfSamplesAlongOneDirection - 1));
+
+		// Compute the sample position along the 2 axis
+		for (UINT j(0); j < aNumberOfSamplesAlongOneDirection; ++j)
+		{
+			for (UINT i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
+			{
+				// Compute the sample position
+				VEC3 sample_position(source_lower_corner + m_up_vector * (offset * j) + right_vector * (offset * i));
+
+				// Add the sample position
+				m_p_xray_source_position_set.push_back(sample_position);
+			}
+		}
+	}
+	// This is a point source
+	else
+	{
+		// Save the source type
+		m_source_type = POINT;
+
+		// Add the centre
+		m_p_xray_source_position_set.push_back(m_xray_source_centre);
+	}
+
+	// Update the distance between the source and the detector
+	updateDistanceSourceDetector();
+
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
+//----------------------------------------------------------------------
+void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
+								 const VEC3& aDirection,
+								 UINT aNumberOfSamplesAlongOneDirection,
+								 RATIONAL_NUMBER aLength)
+//----------------------------------------------------------------------
+{
+	// Normalise the direction
+	VEC3 unit_direction_vector(aDirection.normal());
+
+	// Store the centre position
+	m_xray_source_centre = aXraySourcePosition;
+
+	// Clear the sample set
+	m_p_xray_source_position_set.clear();
+
+	// Use a cubic source
+	if (aNumberOfSamplesAlongOneDirection > 1)
+	{
+		// Save the source type
+		m_source_type = LINE;
+
+		// Sample the source along the 3 main axis
+		VEC3 source_lower_end(m_xray_source_centre - unit_direction_vector * (aLength / 2.0));
+
+		RATIONAL_NUMBER offset(aLength / RATIONAL_NUMBER(aNumberOfSamplesAlongOneDirection - 1));
+
+		// Compute the sample position along the direction vector
+		for (UINT i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
+		{
+			// Compute the sample position
+			VEC3 sample_position(source_lower_end + (offset * i) * unit_direction_vector);
+
+			// Add the sample position
+			m_p_xray_source_position_set.push_back(sample_position);
+		}
+	}
+	// This is a point source
+	else
+	{
+		// Save the source type
+		m_source_type = POINT;
+
+		// Add the centre
+		m_p_xray_source_position_set.push_back(m_xray_source_centre);
+	}
+
+	// Update the distance between the source and the detector
+	updateDistanceSourceDetector();
+
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
+//-----------------------------
+void XRayDetector::updateVBOs()
+//-----------------------------
+{
+	// The VBOs need to be updated
+	if (m_VBOs_need_update)
+	{
+		// Update the VBOs
+		updateDetectorVBO();
+		updateParallelBeamVBO();
+		updateConeBeamVBO();
+
+		// The VBOs are up-to-date
+		m_VBOs_need_update = false;
+	}
+}
+
+
+//------------------------------------
+void XRayDetector::updateDetectorVBO()
+//------------------------------------
+{
+	// Compute the normal vector
+	VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
+	look_at_vector.normalize();
+
+	// Compute the position of each vertex
+	VEC3 right_vector(look_at_vector ^ m_up_vector);
+	VEC3 v0(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+
+
+	// Vertices
+	std::vector<GLfloat> p_vertices;
+
+	p_vertices.push_back(v0.getX());
+	p_vertices.push_back(v0.getY());
+	p_vertices.push_back(v0.getZ());
+
+	p_vertices.push_back(v1.getX());
+	p_vertices.push_back(v1.getY());
+	p_vertices.push_back(v1.getZ());
+
+	p_vertices.push_back(v2.getX());
+	p_vertices.push_back(v2.getY());
+	p_vertices.push_back(v2.getZ());
+
+	p_vertices.push_back(v3.getX());
+	p_vertices.push_back(v3.getY());
+	p_vertices.push_back(v3.getZ());
+
+
+	// Normal
+	std::vector<GLfloat> p_normal;
+	p_normal.push_back(-look_at_vector.getX());
+	p_normal.push_back(-look_at_vector.getY());
+	p_normal.push_back(-look_at_vector.getZ());
+
+
+	// Texture coordinates
+	std::vector<GLfloat> p_texture_coordinates;
+
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+
+	m_detector_geometry.setVertexData(GL_QUADS,
+			p_vertices.size() / 3, 3, &p_vertices[0],
+			p_normal.size() / 3, 3, &p_normal[0],
+			p_texture_coordinates.size() / 3, 3, &p_texture_coordinates[0]);
+}
+
+
+//----------------------------------------
+void XRayDetector::updateParallelBeamVBO()
+//----------------------------------------
+{
+	VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
+	look_at_vector.normalize();
+
+	VEC3 right_vector(look_at_vector ^ m_up_vector);
+	VEC3 v0(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+
+	VEC3 v4(m_xray_source_centre);
+	VEC3 v5(m_xray_source_centre);
+	VEC3 v6(m_xray_source_centre);
+	VEC3 v7(m_xray_source_centre);
+
+	v4 +=  right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v5 += -right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v6 += -right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v7 +=  right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+
+	// Manual rotation  (see above in displayDetector() for rotation using OpenGL)
+	v0 -= m_detector_position;
+	v1 -= m_detector_position;
+	v2 -= m_detector_position;
+	v3 -= m_detector_position;
+
+	v0 = m_rotation_matrix * v0;
+	v1 = m_rotation_matrix * v1;
+	v2 = m_rotation_matrix * v2;
+	v3 = m_rotation_matrix * v3;
+
+	v0 += m_detector_position;
+	v1 += m_detector_position;
+	v2 += m_detector_position;
+	v3 += m_detector_position;
+
+	// Vertices
+	std::vector<GLfloat> p_vertices;
+
+	p_vertices.push_back(v0.getX());
+	p_vertices.push_back(v0.getY());
+	p_vertices.push_back(v0.getZ());
+
+	p_vertices.push_back(v1.getX());
+	p_vertices.push_back(v1.getY());
+	p_vertices.push_back(v1.getZ());
+
+	p_vertices.push_back(v2.getX());
+	p_vertices.push_back(v2.getY());
+	p_vertices.push_back(v2.getZ());
+
+	p_vertices.push_back(v3.getX());
+	p_vertices.push_back(v3.getY());
+	p_vertices.push_back(v3.getZ());
+
+	p_vertices.push_back(v4.getX());
+	p_vertices.push_back(v4.getY());
+	p_vertices.push_back(v4.getZ());
+
+	p_vertices.push_back(v5.getX());
+	p_vertices.push_back(v5.getY());
+	p_vertices.push_back(v5.getZ());
+
+	p_vertices.push_back(v6.getX());
+	p_vertices.push_back(v6.getY());
+	p_vertices.push_back(v6.getZ());
+
+	p_vertices.push_back(v7.getX());
+	p_vertices.push_back(v7.getY());
+	p_vertices.push_back(v7.getZ());
+
+
+	// The quads' indices
+	std::vector<GLuint> p_indices;
+
+	p_indices.push_back(0);
+	p_indices.push_back(4);
+	p_indices.push_back(5);
+	p_indices.push_back(1);
+
+	p_indices.push_back(1);
+	p_indices.push_back(5);
+	p_indices.push_back(6);
+	p_indices.push_back(2);
+
+	p_indices.push_back(2);
+	p_indices.push_back(6);
+	p_indices.push_back(7);
+	p_indices.push_back(3);
+
+	p_indices.push_back(3);
+	p_indices.push_back(7);
+	p_indices.push_back(4);
+	p_indices.push_back(0);
+
+	p_indices.push_back(4);
+	p_indices.push_back(5);
+	p_indices.push_back(6);
+	p_indices.push_back(7);
+
+	m_parallel_beam.setVertexData(GL_QUADS,
+			p_vertices.size() / 3, 3, &p_vertices[0],
+			0, 0, 0,
+			0, 0, 0);
+
+	m_parallel_beam.setIndexData(p_indices.size(), &p_indices[0]);
+
+	// The lines' indices
+	p_indices.clear();
+	p_indices.push_back(0);
+	p_indices.push_back(4);
+
+	p_indices.push_back(1);
+	p_indices.push_back(5);
+
+	p_indices.push_back(2);
+	p_indices.push_back(6);
+
+	p_indices.push_back(3);
+	p_indices.push_back(7);
+
+	p_indices.push_back(4);
+	p_indices.push_back(5);
+
+	p_indices.push_back(5);
+	p_indices.push_back(6);
+
+	p_indices.push_back(6);
+	p_indices.push_back(7);
+
+	p_indices.push_back(7);
+	p_indices.push_back(4);
+
+	m_parallel_beam_highlight.setVertexData(GL_LINES,
+			p_vertices.size() / 3, 3, &p_vertices[0],
+			0, 0, 0,
+			0, 0, 0);
+
+	m_parallel_beam_highlight.setIndexData(p_indices.size(), &p_indices[0]);
+}
+
+
+//------------------------------------
+void XRayDetector::updateConeBeamVBO()
+//------------------------------------
+{
+	VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
+	look_at_vector.normalize();
+
+	VEC3 right_vector(look_at_vector ^ m_up_vector);
+	VEC3 v0(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+
+	VEC3 v4(m_xray_source_centre);
+	VEC3 v5(m_xray_source_centre);
+	VEC3 v6(m_xray_source_centre);
+	VEC3 v7(m_xray_source_centre);
+
+	// Manual rotation  (see above in displayDetector() for rotation using OpenGL)
+	v0 -= m_detector_position;
+	v1 -= m_detector_position;
+	v2 -= m_detector_position;
+	v3 -= m_detector_position;
+
+	v0 = m_rotation_matrix * v0;
+	v1 = m_rotation_matrix * v1;
+	v2 = m_rotation_matrix * v2;
+	v3 = m_rotation_matrix * v3;
+
+	v0 += m_detector_position;
+	v1 += m_detector_position;
+	v2 += m_detector_position;
+	v3 += m_detector_position;
+
+	// Vertices
+	std::vector<GLfloat> p_vertices;
+
+	p_vertices.push_back(v0.getX());
+	p_vertices.push_back(v0.getY());
+	p_vertices.push_back(v0.getZ());
+
+	p_vertices.push_back(v1.getX());
+	p_vertices.push_back(v1.getY());
+	p_vertices.push_back(v1.getZ());
+
+	p_vertices.push_back(v2.getX());
+	p_vertices.push_back(v2.getY());
+	p_vertices.push_back(v2.getZ());
+
+	p_vertices.push_back(v3.getX());
+	p_vertices.push_back(v3.getY());
+	p_vertices.push_back(v3.getZ());
+
+	p_vertices.push_back(v4.getX());
+	p_vertices.push_back(v4.getY());
+	p_vertices.push_back(v4.getZ());
+
+	p_vertices.push_back(v5.getX());
+	p_vertices.push_back(v5.getY());
+	p_vertices.push_back(v5.getZ());
+
+	p_vertices.push_back(v6.getX());
+	p_vertices.push_back(v6.getY());
+	p_vertices.push_back(v6.getZ());
+
+	p_vertices.push_back(v7.getX());
+	p_vertices.push_back(v7.getY());
+	p_vertices.push_back(v7.getZ());
+
+
+	// The triangles' indices
+	std::vector<GLuint> p_indices;
+
+	p_indices.push_back(0);
+	p_indices.push_back(4);
+	p_indices.push_back(1);
+
+	p_indices.push_back(1);
+	p_indices.push_back(5);
+	p_indices.push_back(2);
+
+	p_indices.push_back(2);
+	p_indices.push_back(6);
+	p_indices.push_back(3);
+
+	p_indices.push_back(3);
+	p_indices.push_back(7);
+	p_indices.push_back(0);
+
+	m_cone_beam.setVertexData(GL_TRIANGLES,
+			p_vertices.size() / 3, 3, &p_vertices[0],
+			0, 0, 0,
+			0, 0, 0);
+
+	m_cone_beam.setIndexData(p_indices.size(), &p_indices[0]);
+
+
+	// The lines, there is no need for an index as no vertex is used twice
+	p_vertices.clear();
+
+	p_vertices.push_back(v0.getX());
+	p_vertices.push_back(v0.getY());
+	p_vertices.push_back(v0.getZ());
+
+	p_vertices.push_back(v4.getX());
+	p_vertices.push_back(v4.getY());
+	p_vertices.push_back(v4.getZ());
+
+	p_vertices.push_back(v1.getX());
+	p_vertices.push_back(v1.getY());
+	p_vertices.push_back(v1.getZ());
+
+	p_vertices.push_back(v5.getX());
+	p_vertices.push_back(v5.getY());
+	p_vertices.push_back(v5.getZ());
+
+	p_vertices.push_back(v2.getX());
+	p_vertices.push_back(v2.getY());
+	p_vertices.push_back(v2.getZ());
+
+	p_vertices.push_back(v6.getX());
+	p_vertices.push_back(v6.getY());
+	p_vertices.push_back(v6.getZ());
+
+	p_vertices.push_back(v3.getX());
+	p_vertices.push_back(v3.getY());
+	p_vertices.push_back(v3.getZ());
+
+	p_vertices.push_back(v7.getX());
+	p_vertices.push_back(v7.getY());
+	p_vertices.push_back(v7.getZ());
+
+	m_cone_beam_highlight.setVertexData(GL_LINES,
+			p_vertices.size() / 3, 3, &p_vertices[0],
+			0, 0, 0,
+			0, 0, 0);
+}
