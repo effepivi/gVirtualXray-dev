@@ -1,0 +1,182 @@
+/**
+********************************************************************************
+*
+*	@file		OpenGLUtilities.cxx
+*
+*	@brief		Some utility functions about OpenGL.
+*
+*	@version	1.0
+*
+*	@date		14/12/2013
+*
+*	@author		Dr Franck P. Vidal
+*
+*	@section	License
+*				BSD 3-Clause License.
+*
+*				For details on use and redistribution please refer 
+*				to http://opensource.org/licenses/BSD-3-Clause
+*
+*	@section	Copyright
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0, 
+*				BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+#ifndef OPENGL_UTILITIES_H
+#include "OpenGLUtilities.h"
+#endif
+
+
+//******************************************************************************
+//	namespace
+//******************************************************************************
+namespace Utilities {
+
+
+std::vector<MATRIX4> g_p_modelview_matrix_stack;
+std::vector<MATRIX4> g_p_projection_matrix_stack;
+MATRIX4 g_current_modelview_matrix;
+MATRIX4 g_current_projection_matrix;
+std::vector<GLint> g_frame_buffer_object_stack;
+std::vector<std::pair<GLenum, GLint> > g_texture_stack;
+std::vector<std::pair<GLenum, GLboolean> > g_enable_disable_state_stack;
+
+
+//---------------
+void popTexture()
+//---------------
+{
+	// Make sure the stack is not empty
+	if (g_texture_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Get the previous texture from the stack
+	std::pair<GLenum, GLint> previous_texture(g_texture_stack.back());
+
+	// Remove the last texture
+	g_texture_stack.pop_back();
+
+	// Save the current texture
+	GLint current_texture_id(0);
+
+	// Get the texture binding according to the texture type
+	switch (previous_texture.first)
+	{
+	case GL_TEXTURE_1D:
+		glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
+		break;
+
+	case GL_TEXTURE_2D:
+		glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
+		break;
+
+	case GL_TEXTURE_3D:
+		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
+		break;
+
+	case GL_TEXTURE_RECTANGLE:
+		glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
+	}
+
+	// The two textures are different
+	if (previous_texture.second != current_texture_id)
+	{
+		//Restore the texture binding
+		switch (previous_texture.first)
+		{
+		case GL_TEXTURE_1D:
+			glBindTexture(GL_TEXTURE_1D, previous_texture.second);
+			break;
+
+		case GL_TEXTURE_2D:
+			glBindTexture(GL_TEXTURE_2D, previous_texture.second);
+			break;
+
+		case GL_TEXTURE_3D:
+			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
+			break;
+
+		case GL_TEXTURE_RECTANGLE:
+			glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
+			break;
+
+		default:
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
+		}
+	}
+}
+
+
+//--------------------------
+void popEnableDisableState()
+//--------------------------
+{
+	// Make sure the stack is not empty
+	if (g_enable_disable_state_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Get the previous state from the stack
+	std::pair<GLenum, GLboolean> previous_state(g_enable_disable_state_stack.back());
+
+	// Remove the last state
+	g_enable_disable_state_stack.pop_back();
+
+	// Save the current state
+	GLboolean current_state(0);
+
+	// Get the state according to the state type
+	glGetBooleanv(previous_state.first, &current_state);
+
+	// The two states are different
+	if (previous_state.second != current_state)
+	{
+		if (previous_state.second)
+		{
+			glEnable(previous_state.first);
+		}
+		else
+		{
+			glDisable(previous_state.first);
+		}
+	}
+}
+
+
+//-------------------------
+void applyModelViewMatrix()
+//-------------------------
+{
+	// Store the current buffer
+	GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+
+	// Load the matrices
+	if (program_handle)
+	{
+		GLuint modelview_matrix_handle(glGetUniformLocation(program_handle, "g_modelview_matrix"));
+		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		MATRIX4 normal_matrix(g_current_modelview_matrix.inverse().transpose());
+		GLuint normal_matrix_handle(glGetUniformLocation(program_handle, "g_normal_matrix"));
+		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+}
+
+
+} // namespace Utilities
