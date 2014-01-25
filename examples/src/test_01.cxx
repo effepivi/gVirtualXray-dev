@@ -230,12 +230,12 @@ int main(int argc, char** argv)
 		glutIdleFunc(idle);
 
 		// Load the data
-		loadSTLFile();
 		loadDetector();
 		loadSource();
 		loadXRaySimulator();
 
 		// Add the geometry to the X-ray renderer
+		loadSTLFile();
 		g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
 		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
 
@@ -583,6 +583,36 @@ void specialKeyboard(int key, int x, int y)
 {
 	switch (key)
 	{
+	case GLUT_KEY_RIGHT:
+		{
+			VEC3 translation(g_detector_position - g_source_position);
+			translation.normalise();
+			g_source_position += translation * 0.5 * mm;
+
+			// Set the source position
+			g_xray_detector.setXrayPointSource(g_source_position);
+			g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+		}
+		break;
+
+	case GLUT_KEY_LEFT:
+		{
+			VEC3 translation(g_detector_position - g_source_position);
+			translation.normalise();
+			g_source_position -= translation * 0.5 * mm;
+
+			// Set the source position
+			g_xray_detector.setXrayPointSource(g_source_position);
+			g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+		}
+		break;
+
 	default:
 		std::cout << "Special key: " << key << std::endl;
 		break;
@@ -622,22 +652,37 @@ void mouse(int button, int button_state, int x, int y)
 	g_button_state = button_state;
 
 	// Use the arc ball
-	if (((g_button == GLUT_LEFT_BUTTON) ||
-			(g_button == GLUT_RIGHT_BUTTON) ||
-			(g_button == GLUT_MIDDLE_BUTTON)) && (g_button_state == GLUT_DOWN))
+	if (g_button_state == GLUT_DOWN)
 	{
-		g_last_x_position = x;
-		g_last_y_position = y;
-
-		g_current_x_position = x;
-		g_current_y_position = y;
-
 		g_use_arc_ball = true;
 	}
+	// Stop using the arc ball
 	else
 	{
 		g_use_arc_ball = false;
 	}
+
+	// Select the right transformation
+	switch (g_button)
+	{
+	case GLUT_LEFT_BUTTON:
+		g_rotation_mode = SCENE;
+		break;
+
+	case GLUT_RIGHT_BUTTON:
+		g_rotation_mode = OBJECT;
+		break;
+
+	case GLUT_MIDDLE_BUTTON:
+		g_rotation_mode = DETECTOR;
+		break;
+	}
+
+	g_last_x_position = x;
+	g_last_y_position = y;
+
+	g_current_x_position = x;
+	g_current_y_position = y;
 
 	// No need to redisplay the screen as yet
 	//glutPostRedisplay();
@@ -757,8 +802,6 @@ void loadDetector()
 	g_xray_detector.setProjectionZNear(0.1 * mm);
 	g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
 
-	g_xray_detector.setConeBeam();
-
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
 }
@@ -774,6 +817,9 @@ void loadSource()
 
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);
+
+	// Use a parallel source
+	g_xray_detector.setParallelBeam();
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
