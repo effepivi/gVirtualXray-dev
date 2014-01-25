@@ -277,6 +277,42 @@ inline void loadIdentityModelViewMatrix()
 }
 
 
+//--------------------------------------------------------
+inline MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
+										  GLdouble right,
+										  GLdouble bottom,
+										  GLdouble top,
+										  GLdouble near,
+										  GLdouble far)
+//--------------------------------------------------------
+{
+	GLdouble t_x(-(right + left)   / (right - left));
+	GLdouble t_y(-(top   + bottom) / (top   - bottom));
+	GLdouble t_z(-(far   + near)   / (far   - near));
+
+	return (MATRIX4(			
+		2.0 / (right - left),
+		0.0,
+		0.0,
+		0.0,
+		
+		0.0,
+		2.0 / (top   - bottom),
+		0.0,
+		0.0,
+
+		0.0,
+		0.0,
+		-2.0 / (far   - near),
+		0.0,
+
+		t_x,
+		t_y,
+		t_z,
+		1.0)
+	);
+}
+
 //----------------------------------------------------
 inline void loadOrthoProjectionMatrix(GLdouble left,
 									  GLdouble right,
@@ -288,29 +324,7 @@ inline void loadOrthoProjectionMatrix(GLdouble left,
 {
 	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_projection_matrix.get()));
 	
-	GLdouble t_x(-(right + left)   / (right - left));
-	GLdouble t_y(-(top   + bottom) / (top   - bottom));
-	GLdouble t_z(-(far   + near)   / (far   - near));
-
-	p_matrix[ 0] = 2.0 / (right - left);
-	p_matrix[ 1] = 0.0;
-	p_matrix[ 2] = 0.0;
-	p_matrix[ 3] = 0.0;
-	
-	p_matrix[ 4] = 0.0;
-	p_matrix[ 5] = 2.0 / (top   - bottom);
-	p_matrix[ 6] = 0.0;
-	p_matrix[ 7] = 0.0;
-
-	p_matrix[ 8] =  0.0;
-	p_matrix[ 9] =  0.0;
-	p_matrix[10] = -2.0 / (far   - near);
-	p_matrix[11] =  0.0;
-
-	p_matrix[12] = t_x;
-	p_matrix[13] = t_y;
-	p_matrix[14] = t_z;
-	p_matrix[15] = 1.0;
+	g_current_projection_matrix = buildOrthoProjectionMatrix(left, right, bottom, top, near, far);
 }
 
 
@@ -323,35 +337,40 @@ inline void multiplyOrthoProjectionMatrix(GLdouble left,
 										  GLdouble far)
 //--------------------------------------------------------
 {
-	MATRIX4 temp_matrix;
-	
-	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(temp_matrix.get()));
-	
-	GLdouble t_x(-(right + left)   / (right - left));
-	GLdouble t_y(-(top   + bottom) / (top   - bottom));
-	GLdouble t_z(-(far   + near)   / (far   - near));
+	g_current_projection_matrix *= buildOrthoProjectionMatrix(left, right, bottom, top, near, far);
+}
 
-	p_matrix[ 0] = 2.0 / (right - left);
-	p_matrix[ 1] = 0.0;
-	p_matrix[ 2] = 0.0;
-	p_matrix[ 3] = 0.0;
-	
-	p_matrix[ 4] = 0.0;
-	p_matrix[ 5] = 2.0 / (top   - bottom);
-	p_matrix[ 6] = 0.0;
-	p_matrix[ 7] = 0.0;
 
-	p_matrix[ 8] =  0.0;
-	p_matrix[ 9] =  0.0;
-	p_matrix[10] = -2.0 / (far   - near);
-	p_matrix[11] =  0.0;
+//--------------------------------------------------------------
+inline MATRIX4 buildPerspectiveProjectionMatrix(GLdouble fovy,
+												GLdouble aspect,
+												GLdouble zNear,
+												GLdouble zFar)
+//--------------------------------------------------------------
+{
+	GLdouble f(tan(M_PI_2 - (((fovy * M_PI) / 180.0) / 2.0)));
 
-	p_matrix[12] = t_x;
-	p_matrix[13] = t_y;
-	p_matrix[14] = t_z;
-	p_matrix[15] = 1.0;
-	
-	g_current_projection_matrix *= temp_matrix;
+	return (MATRIX4(			
+		f / aspect,
+		0.0,
+		0.0,
+		0.0,
+			
+		0.0,
+		f,
+		0.0,
+		0.0,
+
+		0.0,
+		0.0,
+		(zFar + zNear) / (zNear - zFar),
+		-1.0,
+
+		0.0,
+		0.0,
+		(2.0 * zFar * zNear) / (zNear - zFar),
+		0.0)
+	);
 }
 
 
@@ -362,30 +381,7 @@ inline void loadPerspectiveProjectionMatrix(GLdouble fovy,
 											GLdouble zFar)
 //----------------------------------------------------------
 {
-	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_projection_matrix.get()));
-	
-	// Cotangent of fovy / 2
-	GLdouble f(tan(M_PI_2 - (((fovy * M_PI) / 180.0) / 2.0)));
-	
-	p_matrix[ 0] = f / aspect;
-	p_matrix[ 1] = 0.0;
-	p_matrix[ 2] = 0.0;
-	p_matrix[ 3] = 0.0;
-	
-	p_matrix[ 4] = 0.0;
-	p_matrix[ 5] = f;
-	p_matrix[ 6] = 0.0;
-	p_matrix[ 7] = 0.0;
-
-	p_matrix[ 8] = 0.0;
-	p_matrix[ 9] = 0.0;
-	p_matrix[10] = (zFar + zNear) / (zNear - zFar);
-	p_matrix[11] = -1.0;
-
-	p_matrix[12] = 0.0;
-	p_matrix[13] = 0.0;
-	p_matrix[14] = (2.0 * zFar * zNear) / (zNear - zFar);
-	p_matrix[15] = 0.0;
+	g_current_projection_matrix = buildPerspectiveProjectionMatrix(fovy, aspect, zNear, zFar);
 }
 
 
@@ -395,46 +391,15 @@ inline void multiplyPerspectiveProjectionMatrix(GLdouble fovy,
 												GLdouble zNear,
 												GLdouble zFar)
 //--------------------------------------------------------------
-{
-	MATRIX4 temp_matrix;
-	
-	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(temp_matrix.get()));
-	
-	// Cotangent of fovy / 2
-	GLdouble f(tan(M_PI_2 - (((fovy * M_PI) / 180.0) / 2.0)));
-	
-	p_matrix[ 0] = f / aspect;
-	p_matrix[ 1] = 0.0;
-	p_matrix[ 2] = 0.0;
-	p_matrix[ 3] = 0.0;
-	
-	p_matrix[ 4] = 0.0;
-	p_matrix[ 5] = f;
-	p_matrix[ 6] = 0.0;
-	p_matrix[ 7] = 0.0;
-
-	p_matrix[ 8] = 0.0;
-	p_matrix[ 9] = 0.0;
-	p_matrix[10] = (zFar + zNear) / (zNear - zFar);
-	p_matrix[11] = -1.0;
-
-	p_matrix[12] = 0.0;
-	p_matrix[13] = 0.0;
-	p_matrix[14] = (2.0 * zFar * zNear) / (zNear - zFar);
-	p_matrix[15] = 0.0;
-	
-	g_current_projection_matrix *= temp_matrix;
+{	
+	g_current_projection_matrix *= buildPerspectiveProjectionMatrix(fovy, aspect, zNear, zFar);
 }
 
 
-//-------------------------------------------------------
-inline void loadLookAtModelViewMatrix(const VEC3& eye,
-									  const VEC3& center,
-									  const VEC3& up)
-//-------------------------------------------------------
-{	
-	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_modelview_matrix.get()));
-	
+inline MATRIX4 buildLookAtModelViewMatrix(const VEC3& eye,
+										  const VEC3& center,
+										  const VEC3& up)
+{
 	// Forward vector: centre - eye
 	VEC3 forward(center - eye);
 	forward.normalize();
@@ -448,27 +413,54 @@ inline void loadLookAtModelViewMatrix(const VEC3& eye,
 	// New up vector: side x forward
 	VEC3 u(side.normal() ^ forward);
 		
-	p_matrix[ 0] =  side.getX();
-	p_matrix[ 1] =  u.getX();
-	p_matrix[ 2] = -forward.getX();
-	p_matrix[ 3] = 0.0;
 
-	p_matrix[ 4] =  side.getY();
-	p_matrix[ 5] =  u.getY();
-	p_matrix[ 6] = -forward.getY();
-	p_matrix[ 7] = 0.0;
-
-	p_matrix[ 8] =  side.getZ();
-	p_matrix[ 9] =  u.getZ();
-	p_matrix[10] = -forward.getZ();
-	p_matrix[11] = 0.0;
-
-	p_matrix[12] = 0.0;
-	p_matrix[13] = 0.0;
-	p_matrix[14] = 0.0;
-	p_matrix[15] = 1.0;
+	MATRIX4 matrix( 	
+		side.getX(),
+		u.getX(),
+		-forward.getX(),
+		0.0,
 	
-	g_current_modelview_matrix.translate(-eye.getX(), -eye.getY(), -eye.getZ());
+		side.getY(),
+		u.getY(),
+		-forward.getY(),
+		0.0,
+	
+		side.getZ(),
+		u.getZ(),
+		-forward.getZ(),
+		0.0,
+	
+		0.0,
+		0.0,
+		0.0,
+		1.0);
+	
+	matrix.translate(-eye.getX(), -eye.getY(), -eye.getZ());
+	
+	return (matrix);
+}
+
+inline MATRIX4 buildLookAtModelViewMatrix(GLdouble eyeX,
+										  GLdouble eyeY,
+										  GLdouble eyeZ,
+										  GLdouble centerX,
+										  GLdouble centerY,
+										  GLdouble centerZ,
+										  GLdouble upX,
+										  GLdouble upY,
+										  GLdouble upZ)
+{
+	return (buildLookAtModelViewMatrix(VEC3(eyeX, eyeY, eyeZ), VEC3(centerX, centerY, centerZ), VEC3(upX, upY, upZ)));
+}
+
+
+//-------------------------------------------------------
+inline void loadLookAtModelViewMatrix(const VEC3& eye,
+									  const VEC3& center,
+									  const VEC3& up)
+//-------------------------------------------------------
+{	
+	g_current_modelview_matrix = buildLookAtModelViewMatrix(eye, center, up);
 }
 
 
@@ -484,43 +476,10 @@ inline void loadLookAtModelViewMatrix(GLdouble eyeX,
 									  GLdouble upZ)
 //-----------------------------------------------------
 {	
-	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_modelview_matrix.get()));
-	
-	// Forward vector: centre - eye
-	VEC3 forward(centerX - eyeX, centerY - eyeY, centerZ - eyeZ);
-	forward.normalize();
-
-	// Up vector
-	VEC3 up(upX, upY, upZ);
-	up.normalize();
-
-	// Side vector: forward x up
-	VEC3 side(forward ^ up);
-	
-	// New up vector: side x forward
-	VEC3 u(side.normal() ^ forward);
-		
-	p_matrix[ 0] =  side.getX();
-	p_matrix[ 1] =  u.getX();
-	p_matrix[ 2] = -forward.getX();
-	p_matrix[ 3] = 0.0;
-
-	p_matrix[ 4] =  side.getY();
-	p_matrix[ 5] =  u.getY();
-	p_matrix[ 6] = -forward.getY();
-	p_matrix[ 7] = 0.0;
-
-	p_matrix[ 8] =  side.getZ();
-	p_matrix[ 9] =  u.getZ();
-	p_matrix[10] = -forward.getZ();
-	p_matrix[11] = 0.0;
-
-	p_matrix[12] = 0.0;
-	p_matrix[13] = 0.0;
-	p_matrix[14] = 0.0;
-	p_matrix[15] = 1.0;
-	
-	g_current_modelview_matrix.translate(-eyeX, -eyeY, -eyeZ);
+	g_current_modelview_matrix = buildLookAtModelViewMatrix(
+			eyeX, eyeY, eyeZ,
+			centerX, centerY, centerZ,
+			upX, upY, upZ);
 }
 
 

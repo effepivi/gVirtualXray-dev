@@ -69,7 +69,7 @@ void checkOpenGLErrorStatus(const char* aFileName, const char* aFunctionName, in
 *	@param 	aLineNumber:	name at which FBO is checked
 */
 //------------------------------------------------------------------------------
-void checkFBO(const char* aFileName, const char* aFunctionName, int aLineNumber);
+void checkFBOErrorStatus(const char* aFileName, const char* aFunctionName, int aLineNumber);
 
 
 //------------------------------------------------------------------------------
@@ -161,8 +161,11 @@ void loadIdentityModelViewMatrix();
 
 
 //------------------------------------------------------------------------------
-///	Replace the projection matrix by an orthogonal projection matrix.
+///	Replace the projection matrix by a perspective projection matrix.
 //------------------------------------------------------------------------------
+void loadPerspectiveProjectionMatrix(GLdouble  fovy,  GLdouble  aspect,  GLdouble  zNear,  GLdouble  zFar);
+
+
 void loadOrthoProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
@@ -171,10 +174,7 @@ void loadOrthoProjectionMatrix(GLdouble left,
         GLdouble far);
 
 
-//------------------------------------------------------------------------------
-///	Multiply the projection matrix by an orthogonal projection matrix.
-//------------------------------------------------------------------------------
-void multiplyOrthoProjectionMatrix(GLdouble left,
+MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
         GLdouble top,
@@ -182,32 +182,43 @@ void multiplyOrthoProjectionMatrix(GLdouble left,
         GLdouble far);
 
 
-//------------------------------------------------------------------------------
-///	Replace the projection matrix by a perspective projection matrix.
-//------------------------------------------------------------------------------
-void loadPerspectiveProjectionMatrix(GLdouble  fovy,  GLdouble  aspect,  GLdouble  zNear,  GLdouble  zFar);
-
-
-//------------------------------------------------------------------------------
-///	Multiply the projection matrix by a perspective projection matrix.
-//------------------------------------------------------------------------------
-void multiplyPerspectiveProjectionMatrix(GLdouble  fovy,  GLdouble  aspect,  GLdouble  zNear,  GLdouble  zFar);
+MATRIX4 buildPerspectiveProjectionMatrix(GLdouble  fovy,
+		GLdouble aspect,
+		GLdouble zNear,
+		GLdouble
+		zFar);
 
 
 void loadLookAtModelViewMatrix(const VEC3& eye,
-									  const VEC3& center,
-									  const VEC3& up);
+		const VEC3& center,
+		const VEC3& up);
 
 
 void loadLookAtModelViewMatrix(GLdouble eyeX,
-									  GLdouble eyeY,
-									  GLdouble eyeZ,
-									  GLdouble centerX,
-									  GLdouble centerY,
-									  GLdouble centerZ,
-									  GLdouble upX,
-									  GLdouble upY,
-									  GLdouble upZ);
+		GLdouble eyeY,
+		GLdouble eyeZ,
+		GLdouble centerX,
+		GLdouble centerY,
+		GLdouble centerZ,
+		GLdouble upX,
+		GLdouble upY,
+		GLdouble upZ);
+
+
+MATRIX4 buildLookAtModelViewMatrix(const VEC3& eye,
+		  const VEC3& center,
+		  const VEC3& up);
+
+
+MATRIX4 buildLookAtModelViewMatrix(GLdouble eyeX,
+		GLdouble eyeY,
+		GLdouble eyeZ,
+		GLdouble centerX,
+		GLdouble centerY,
+		GLdouble centerZ,
+		GLdouble upX,
+		GLdouble upY,
+		GLdouble upZ);
 
 
 void applyModelViewMatrix();
