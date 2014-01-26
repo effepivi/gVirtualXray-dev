@@ -40,31 +40,37 @@
 //******************************************************************************
 //	Varying variables
 //******************************************************************************
-varying vec3 g_untransformed_vertex;
+varying float g_distance_intersection_detector;
 varying vec3 g_viewing_vector;
-varying vec3 g_t_norm;
+varying vec4 g_normal;
 
 
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
 uniform float g_to_cm_scale;
-uniform vec3  g_third_column;
+uniform mat4 g_modelling_matrix;
 
 
 //--------------
 void main (void)
 //--------------
 {
-	// Distance source intersection
-	float dist = distance(g_untransformed_vertex, g_third_column);
+	// Transformed normal
+	vec4 normal = g_modelling_matrix * g_normal;
+	normal.xyz /= normal.w;
+	normal.w = 1.0;		
+	normalize(normal.xyz);
 
-	// Sign of the dot product
-	float dot_product_sign = sign(dot(g_t_norm, g_viewing_vector));
+	// Save the dot product
+	float dot_product_sign = sign(dot(normal.xyz, g_viewing_vector));
 
+	float value = -dot_product_sign * g_distance_intersection_detector * g_to_cm_scale;
+	//if (g_distance_intersection_detector < 0.0) value = 0.0;
+	
 	// In the red channel: the L-buffer value
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
-	gl_FragColor = vec4(-dot_product_sign * dist * g_to_cm_scale, 100.0 * dot_product_sign, 0.0, 1.0);
+	gl_FragColor = vec4(value, dot_product_sign, g_distance_intersection_detector, 1.0);
 }
