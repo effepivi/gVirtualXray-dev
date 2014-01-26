@@ -43,6 +43,8 @@
 //******************************************************************************
 uniform sampler3D g_sum_mu_x_dx_texture;
 uniform float     g_n_input_energy;
+varying float u1;
+varying float v1;
 
 
 //-------------
@@ -56,5 +58,5 @@ void main(void)
 	intensity = g_n_input_energy * exp(-intensity);
 
     // Save the fragment value
-	gl_FragColor.rgb = vec3(intensity);
+	gl_FragColor.rgb = vec3(intensity, u1, v1);
 }

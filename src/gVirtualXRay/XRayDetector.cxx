@@ -176,7 +176,7 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 	}
 
 	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	updateInternalValues();
 
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -239,7 +239,7 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 	}
 
 	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	updateInternalValues();
 
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -294,7 +294,7 @@ void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 	}
 
 	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	updateInternalValues();
 
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -323,17 +323,14 @@ void XRayDetector::updateVBOs()
 void XRayDetector::updateDetectorVBO()
 //------------------------------------
 {
-	// Compute the normal vector
-	VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
-	look_at_vector.normalize();
-
 	// Compute the position of each vertex
-	VEC3 right_vector(look_at_vector ^ m_up_vector);
-	VEC3 v0(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v1(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v2(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v3(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v0(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
 
+	m_lower_corner = v2;
+	m_upper_corner = v0;
 
 	// Vertices
 	std::vector<GLfloat> p_vertices;
@@ -357,9 +354,9 @@ void XRayDetector::updateDetectorVBO()
 
 	// Normal
 	std::vector<GLfloat> p_normal;
-	p_normal.push_back(-look_at_vector.getX());
-	p_normal.push_back(-look_at_vector.getY());
-	p_normal.push_back(-look_at_vector.getZ());
+	p_normal.push_back(-m_normal.getX());
+	p_normal.push_back(-m_normal.getY());
+	p_normal.push_back(-m_normal.getZ());
 
 
 	// Texture coordinates
@@ -392,24 +389,20 @@ void XRayDetector::updateDetectorVBO()
 void XRayDetector::updateParallelBeamVBO()
 //----------------------------------------
 {
-	VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
-	look_at_vector.normalize();
-
-	VEC3 right_vector(look_at_vector ^ m_up_vector);
-	VEC3 v0(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v1(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v2(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v3(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v0(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
 
 	VEC3 v4(m_xray_source_centre);
 	VEC3 v5(m_xray_source_centre);
 	VEC3 v6(m_xray_source_centre);
 	VEC3 v7(m_xray_source_centre);
 
-	v4 +=  right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
-	v5 += -right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
-	v6 += -right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
-	v7 +=  right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v4 +=  m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v5 += -m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v6 += -m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
+	v7 +=  m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0;
 
 	// Manual rotation  (see above in displayDetector() for rotation using OpenGL)
 	v0 -= m_detector_position;
@@ -537,14 +530,10 @@ void XRayDetector::updateParallelBeamVBO()
 void XRayDetector::updateConeBeamVBO()
 //------------------------------------
 {
-	VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
-	look_at_vector.normalize();
-
-	VEC3 right_vector(look_at_vector ^ m_up_vector);
-	VEC3 v0(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v1(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v2(m_detector_position - right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
-	VEC3 v3(m_detector_position + right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v0(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v1(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v2(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
+	VEC3 v3(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 - m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
 
 	VEC3 v4(m_xray_source_centre);
 	VEC3 v5(m_xray_source_centre);

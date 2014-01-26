@@ -139,8 +139,8 @@ inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 	// Save the source type
 	m_source_type = POINT;	
 	
-	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
 	
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -154,8 +154,8 @@ inline void XRayDetector::setDetectorPosition(const VEC3& aDetectorPosition)
 	// The position of the source has changed
 	m_detector_position = aDetectorPosition;
 
-	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
 	
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -309,11 +309,20 @@ inline const VEC3& XRayDetector::getSourceSamplePosition(UINT aSampleID) const
 	return (m_p_xray_source_position_set[aSampleID]);
 }
 
+
 //--------------------------------------------------
 inline const VEC3& XRayDetector::getUpVector() const
 //--------------------------------------------------
 {
 	return (m_up_vector);
+}
+
+
+//-----------------------------------------------------
+inline const VEC3& XRayDetector::getRightVector() const
+//-----------------------------------------------------
+{
+	return (m_right_vector);
 }
 
 
@@ -358,15 +367,48 @@ inline void XRayDetector::updateSizeInUnitOfLength()
 }
 
 
-//------------------------------------------------------
-inline void XRayDetector::updateDistanceSourceDetector()
-//------------------------------------------------------
+//----------------------------------------------
+inline void XRayDetector::updateInternalValues()
+//----------------------------------------------
 {
 	// The distance between the source and the detector has changed
 	m_distance_source_detector = (m_detector_position - m_xray_source_centre).length();
 
 	// Update the size of the field of view
 	updateFovy();
+	
+	// Compute the normal vector
+	m_look_at_vector = m_detector_position - m_xray_source_centre;
+	m_look_at_vector.normalize();
+	m_right_vector = m_look_at_vector ^ m_up_vector;
+	m_normal = m_up_vector ^ m_right_vector;
+}
+
+
+//------------------------------------------------------------------
+inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
+												 RATIONAL_NUMBER& B,
+												 RATIONAL_NUMBER& C,
+												 RATIONAL_NUMBER& D)
+//------------------------------------------------------------------
+{
+	VEC3 normal(m_rotation_matrix * m_normal);
+	A = normal.getX();
+	B = normal.getY();
+	C = normal.getZ();
+	D = A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ();
+}
+
+
+inline const VEC3& XRayDetector::getLowerCorner() const
+{
+	return (m_lower_corner);
+}
+
+
+inline const VEC3& XRayDetector::getUpperCorner() const
+{
+	return (m_upper_corner);
 }
 
 

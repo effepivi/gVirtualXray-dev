@@ -38,6 +38,8 @@
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
 uniform mat4 g_text_coord_matrix;
+varying float u1;
+varying float v1;
 
 
 //-------------
@@ -49,4 +51,6 @@ void main(void)
     
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
+    u1 =gl_Position.x;
+    v1 =gl_Position.y;
 }

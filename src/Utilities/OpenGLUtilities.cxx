@@ -33,6 +33,10 @@
 #include "OpenGLUtilities.h"
 #endif
 
+#ifndef OUT_OF_BOUNDS_EXCEPTION_H
+#include "OutOfBoundsException.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
