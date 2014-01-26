@@ -65,7 +65,7 @@ bool isValid(float lBufferValue)
 {
     // Return true if lBufferValue is zero, false if it is smaller or greater than zero
     // Care is given to handle floating point numbers' inacuracy
-    return (-EPSILON <= lBufferValue && lBufferValue <= EPSILON);
+    return (abs(lBufferValue) < EPSILON);
 }
 
 
@@ -145,8 +145,8 @@ float filter5x5(float anInitialValue)
     // No valid valid value has been found in the neighbourhood
     if (count <= EPSILON)
     {
-        // Return the original value
-    	value = anInitialValue;
+    	// Filter more
+    	value = filter7x7(anInitialValue);
     }
     else
     {
@@ -190,8 +190,8 @@ float filter3x3(float anInitialValue)
     // No valid valid value has been found in the neighbourhood
     if (count <= EPSILON)
     {
-    	// Return the original value
-    	value = anInitialValue;
+    	// Filter more
+    	value = filter5x5(anInitialValue);
     }
     else
     {
