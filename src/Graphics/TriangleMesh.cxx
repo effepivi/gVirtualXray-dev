@@ -150,10 +150,15 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 		p_normals[2] = normal.getZ();
 	}
 
+	// Update the first vertex
+	m_p_vertex_set[0] *= aScale;
+	m_p_vertex_set[1] *= aScale;
+	m_p_vertex_set[2] *= aScale;
+
 	// Change scale and compute bounding box
-	m_min_corner = VEC3(m_p_vertex_set[0] * aScale, m_p_vertex_set[1] * aScale, m_p_vertex_set[2] * aScale);
+	m_min_corner = VEC3(m_p_vertex_set[0], m_p_vertex_set[1], m_p_vertex_set[2]);
 	m_max_corner = m_min_corner;
-	for (int i(0); i < getVertexNumber(); i++)
+	for (int i(1); i < getVertexNumber(); i++)
 	{
 		m_p_vertex_set[i * 3 + 0] *= aScale;
 		m_p_vertex_set[i * 3 + 1] *= aScale;
@@ -175,9 +180,9 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 
 		for (int i(0); i < getVertexNumber(); i++)
 		{
-			m_p_vertex_set[i * 3 + 0] += GLfloat(translation_vector.getX());
-			m_p_vertex_set[i * 3 + 1] += GLfloat(translation_vector.getY());
-			m_p_vertex_set[i * 3 + 2] += GLfloat(translation_vector.getZ());
+			m_p_vertex_set[i * 3 + 0] += translation_vector.getX();
+			m_p_vertex_set[i * 3 + 1] += translation_vector.getY();
+			m_p_vertex_set[i * 3 + 2] += translation_vector.getZ();
 		}
 
 		m_min_corner += translation_vector;
