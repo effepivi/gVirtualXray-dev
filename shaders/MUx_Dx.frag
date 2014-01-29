@@ -101,7 +101,7 @@ float filter7x7(float anInitialValue)
     if (count <= EPSILON)
     {
     	// Return the original value
-    	value = anInitialValue;
+    	value = 0.0;
     }
     else
     {

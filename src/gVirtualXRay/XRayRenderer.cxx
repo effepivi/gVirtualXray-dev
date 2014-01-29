@@ -1694,6 +1694,18 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 	glUniform1i(handle, saved_texture - GL_TEXTURE0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	handle = glGetUniformLocation(program_handle, "g_use_artefact_filtering");
+	glUniform1i(handle, m_use_L_buffer_artefact_filtering);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(program_handle, "g_x_offset");
+	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getX());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(program_handle, "g_y_offset");
+	glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getY());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
 	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
