@@ -30,7 +30,6 @@
 //	Include
 //******************************************************************************
 #include <math.h>
-//#include <iostream>
 
 
 //******************************************************************************
@@ -295,6 +294,30 @@ template<typename T> const Vec3<T> Vec3<T>::operator-() const
 //-----------------------------------------------------------
 {
 	return (Vec3(-m_x, -m_y, -m_z));
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> bool Vec3<T>::operator==(const Vec3<T>& aVector) const
+//-------------------------------------------------------------------------
+{
+	bool return_value(fabs(m_x - aVector.m_x) < 0.0000001 &&
+			fabs(m_y - aVector.m_y) < 0.0000001 &&
+			fabs(m_z - aVector.m_z) < 0.0000001);
+	
+	return (return_value);
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> bool Vec3<T>::operator!=(const Vec3<T>& aVector) const
+//-------------------------------------------------------------------------
+{
+	bool return_value(fabs(m_x - aVector.m_x) >= 0.0000001 ||
+			fabs(m_y - aVector.m_y) >= 0.0000001 ||
+			fabs(m_z - aVector.m_z) >= 0.0000001);
+	
+	return (return_value);
 }
 
 

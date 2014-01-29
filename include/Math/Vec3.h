@@ -6,6 +6,7 @@
 *	@brief		Template class to handle 3D vectors.
 *
 *	@todo		Add an exception in Length().
+*				Add a header for constants, use EPSILON instead of 0.0000001
 *
 *	@version	1.0
 *
@@ -335,6 +336,10 @@ public:
 	*/
 	//---------------------------------------------------------------------------
 	const Vec3 operator-() const;
+
+
+	bool operator==(const Vec3& aVector) const;
+	bool operator!=(const Vec3& aVector) const;
 
 
 //******************************************************************************
