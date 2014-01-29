@@ -164,6 +164,8 @@ Shader g_display_shader;
 
 bool g_is_xray_image_up_to_date(false);
 int g_rotation_mode(SCENE);
+bool g_display_wireframe(false);
+bool g_display_outside_polygon(true);
 
 
 //******************************************************************************
@@ -370,8 +372,35 @@ void display()
 		g_current_modelview_matrix *= g_sample_rotation_matrix;
 		applyModelViewMatrix();
 
-		g_inside_polygon_data.display(true);
-		g_outside_polygon_data.display(true);
+/*		g_outside_polygon_data.display(true);
+
+		if (g_outside_polygon_data.getVertexNormalNumber())
+			g_outside_polygon_data.displayVertexNormal();
+*/
+		TriangleMesh* p_mesh;
+
+		if (g_display_outside_polygon)
+		{
+			p_mesh = &g_outside_polygon_data;
+		}
+		else
+		{
+			p_mesh = &g_inside_polygon_data;
+		}
+
+		if (g_display_wireframe)
+		{
+			p_mesh->displayWireframe();
+		}
+		else
+		{
+			p_mesh->display(true);
+		}
+
+		if (p_mesh->getVertexNormalNumber())
+		{
+			p_mesh->displayVertexNormal();
+		}
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
@@ -568,6 +597,14 @@ void keyboard(unsigned char key, int x, int y)
 		}
 		break;
 
+	case 'w':
+		g_display_wireframe = !g_display_wireframe;
+		break;
+
+	case 'v':
+		g_display_outside_polygon = !g_display_outside_polygon;
+		break;
+
 	default:
 		std::cout << "Key: " << key << std::endl;
 		break;
@@ -587,7 +624,7 @@ void specialKeyboard(int key, int x, int y)
 		{
 			VEC3 translation(g_detector_position - g_source_position);
 			translation.normalise();
-			g_source_position += translation * 0.5 * mm;
+			g_source_position += translation * 1.5 * mm;
 
 			// Set the source position
 			g_xray_detector.setXrayPointSource(g_source_position);
@@ -602,7 +639,7 @@ void specialKeyboard(int key, int x, int y)
 		{
 			VEC3 translation(g_detector_position - g_source_position);
 			translation.normalise();
-			g_source_position -= translation * 0.5 * mm;
+			g_source_position -= translation * 1.5 * mm;
 
 			// Set the source position
 			g_xray_detector.setXrayPointSource(g_source_position);
@@ -779,10 +816,12 @@ void loadSTLFile()
 	// Set geometry
 	g_inside_polygon_data.setFilename(stl_filename_0);
 	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm);
+	//g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
 	g_outside_polygon_data.setFilename(stl_filename_1);
 	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm);
+	//g_outside_polygon_data.mergeVertices();
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date

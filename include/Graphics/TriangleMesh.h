@@ -53,6 +53,10 @@
 #include "Types.h"
 #endif
 
+#ifndef UNITS_H
+#include "Units.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -99,6 +103,15 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	void display(bool aVBOFlag = true) const;
+
+
+	void displayWireframe() const;
+
+
+	void displayFaceNormal(GLfloat aNormalSize = 0.5 * cm) const;
+
+
+	void displayVertexNormal(GLfloat aNormalSize = 0.5 * cm) const;
 
 
 	//--------------------------------------------------------------------------
@@ -250,12 +263,13 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Accessor on the number of normal vertors.
+	///	Accessor on the number of normal vectors.
 	/**
-	*	@return the number of normal vertors
+	*	@return the number of normal vectors
 	*/
 	//--------------------------------------------------------------------------
-	unsigned int getNormalNumber() const;
+	unsigned int getFaceNormalNumber() const;
+	unsigned int getVertexNormalNumber() const;
 
 
 	//--------------------------------------------------------------------------
@@ -267,8 +281,23 @@ public:
 	unsigned int getVertexNumber() const;
 
 
+	void mergeVertices();
+
+
+	VEC3 getVertex(int anIndex) const;
+
+
+	VEC3 getFaceNormal(int anIndex) const;
+
+
+	VEC3 getVertexNormal(int anIndex) const;
+
+
 //******************************************************************************
 protected:
+	void updateVBO();
+
+
 	/// Name of the file that contains the polygon mesh
 	std::string m_filename;
 
@@ -301,12 +330,20 @@ protected:
 	VEC3 m_max_corner;
 
 
-	/// Array containing the normal vectors
-	std::vector<GLfloat> m_p_normal_set;
+	/// Array containing the normal vectors (one per triangle)
+	std::vector<GLfloat> m_p_face_normal_set;
+
+
+	/// Array containing the normal vectors (one per vertex)
+	std::vector<GLfloat> m_p_vertex_normal_set;
 
 
 	/// Array containing the vertices
 	std::vector<GLfloat> m_p_vertex_set;
+
+
+	/// Array containing the index
+	std::vector<GLuint> m_p_index_set;
 };
 
 
