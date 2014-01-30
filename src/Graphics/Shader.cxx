@@ -108,9 +108,10 @@ void Shader::reset()
 }
 
 
-//-----------------------------------------------------------------------------------------------------
-void Shader::load(const std::string& aVertexShaderFilename, const std::string& aFragmentShaderFilename)
-//-----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------
+void Shader::loadFiles(const std::string& aVertexShaderFilename,
+					   const std::string& aFragmentShaderFilename)
+//----------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
 	reset();
@@ -126,6 +127,33 @@ void Shader::load(const std::string& aVertexShaderFilename, const std::string& a
 
 	loadVertexShaderFile(aVertexShaderFilename);
 	loadFragmentShaderFile(aFragmentShaderFilename);
+	linkProgram();
+
+	m_valid = true;
+
+	m_shader_capable = true;
+}
+
+
+//-------------------------------------------------------------------
+void Shader::loadSource(const std::string& aVertexShaderSourceCode,
+						const std::string& aFragmentShaderSourceCode)
+//-------------------------------------------------------------------
+{
+	// Reset the shader and restore the default values
+	reset();
+
+	// Create the shader program
+	m_shader_program_id = glCreateProgram();
+
+	// Create the shader program has not been created
+	if (!m_shader_program_id)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+	}
+
+	loadVertexShaderSource(aVertexShaderSourceCode);
+	loadFragmentShaderSource(aFragmentShaderSourceCode);
 	linkProgram();
 	
 	m_valid = true;
@@ -170,6 +198,58 @@ void Shader::loadFragmentShaderFile(const std::string& aFragmentShaderFilename)
 
 	// Load the file
 	m_fragment_source_number_of_lines = loadFile(m_fragment_shader_filename, m_fragment_source);
+
+	// Compile the shader
+	m_fragment_shader_id = compileShader(GL_FRAGMENT_SHADER, m_fragment_source_number_of_lines, m_fragment_source);
+}
+
+
+//-----------------------------------------------------------------------------
+void Shader::loadVertexShaderSource(const std::string& aVertexShaderSourceCode)
+//-----------------------------------------------------------------------------
+{
+	// Store the name of the file
+	m_vertex_shader_filename = "Built in.";
+
+	// The name has changed, therefore the shader is not loaded
+	m_valid = false;
+
+	// Release the memory if needed
+	releaseVertexSourceMemory();
+
+	// Load the file
+	m_vertex_source = new GLchar*[1];
+	m_vertex_source[0] = new GLchar[aVertexShaderSourceCode.size() + 1];
+	strcpy(m_vertex_source[0], aVertexShaderSourceCode.c_str());
+
+	// Count the number of new line characters ('\n')
+	m_vertex_source_number_of_lines = 1;
+
+	// Compile the shader
+	m_vertex_shader_id = compileShader(GL_VERTEX_SHADER, m_vertex_source_number_of_lines, m_vertex_source);
+}
+
+
+//---------------------------------------------------------------------------------
+void Shader::loadFragmentShaderSource(const std::string& aFragmentShaderSourceCode)
+//---------------------------------------------------------------------------------
+{
+	// Store the name of the file
+	m_fragment_shader_filename = "Built in.";
+
+	// The name has changed, therefore the shader is not loaded
+	m_valid = false;
+
+	// Release the memory if needed
+	releaseFragmentSourceMemory();
+
+	// Load the file
+	m_fragment_source = new GLchar*[1];
+	m_fragment_source[0] = new GLchar[aFragmentShaderSourceCode.size() + 1];
+	strcpy(m_fragment_source[0], aFragmentShaderSourceCode.c_str());
+
+	// Count the number of new line characters ('\n')
+	m_fragment_source_number_of_lines = 1;
 
 	// Compile the shader
 	m_fragment_shader_id = compileShader(GL_FRAGMENT_SHADER, m_fragment_source_number_of_lines, m_fragment_source);

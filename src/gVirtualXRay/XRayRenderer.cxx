@@ -62,6 +62,48 @@
 
 
 //******************************************************************************
+//	Extern variables
+//******************************************************************************
+extern "C" {
+	extern uint8_t cumulated_l_buffer_frag_data[] asm("_binary____shaders_cumulated_l_buffer_frag_start");
+	extern uint8_t cumulated_l_buffer_frag_size[] asm("_binary____shaders_cumulated_l_buffer_frag_size");
+
+	extern uint8_t cumulated_l_buffer_vert_data[] asm("_binary____shaders_cumulated_l_buffer_vert_start");
+	extern uint8_t cumulated_l_buffer_vert_size[] asm("_binary____shaders_cumulated_l_buffer_vert_size");
+
+	extern uint8_t l_buffer_frag_data[] asm("_binary____shaders_l_buffer_frag_start");
+	extern uint8_t l_buffer_frag_size[] asm("_binary____shaders_l_buffer_frag_size");
+
+	extern uint8_t l_buffer_vert_data[] asm("_binary____shaders_l_buffer_vert_start");
+	extern uint8_t l_buffer_vert_size[] asm("_binary____shaders_l_buffer_vert_size");
+
+	extern uint8_t MUx_Dx_frag_data[] asm("_binary____shaders_MUx_Dx_frag_start");
+	extern uint8_t MUx_Dx_frag_size[] asm("_binary____shaders_MUx_Dx_frag_size");
+
+	extern uint8_t MUx_Dx_vert_data[] asm("_binary____shaders_MUx_Dx_vert_start");
+	extern uint8_t MUx_Dx_vert_size[] asm("_binary____shaders_MUx_Dx_vert_size");
+
+	extern uint8_t outer_surface_l_buffer_frag_data[] asm("_binary____shaders_outer_surface_l_buffer_frag_start");
+	extern uint8_t outer_surface_l_buffer_frag_size[] asm("_binary____shaders_outer_surface_l_buffer_frag_size");
+
+	extern uint8_t outer_surface_l_buffer_vert_data[] asm("_binary____shaders_outer_surface_l_buffer_vert_start");
+	extern uint8_t outer_surface_l_buffer_vert_size[] asm("_binary____shaders_outer_surface_l_buffer_vert_size");
+
+	extern uint8_t xray_attenuation_frag_data[] asm("_binary____shaders_xray_attenuation_frag_start");
+	extern uint8_t xray_attenuation_frag_size[] asm("_binary____shaders_xray_attenuation_frag_size");
+
+	extern uint8_t xray_attenuation_vert_data[] asm("_binary____shaders_xray_attenuation_vert_start");
+	extern uint8_t xray_attenuation_vert_size[] asm("_binary____shaders_xray_attenuation_vert_size");
+
+	extern uint8_t xray_display_frag_data[] asm("_binary____shaders_xray_display_frag_start");
+	extern uint8_t xray_display_frag_size[] asm("_binary____shaders_xray_display_frag_size");
+
+	extern uint8_t xray_display_vert_data[] asm("_binary____shaders_xray_display_vert_start");
+	extern uint8_t xray_display_vert_size[] asm("_binary____shaders_xray_display_vert_size");
+}
+
+
+//******************************************************************************
 //	define
 //******************************************************************************
 // Counters
@@ -136,19 +178,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 							  int anInternalTextureFormat,
 							  const XRayDetector* apDetector,
 							  const char* aMuWaterTableFilename,
-							  const XRayBeam* apBeamSpectrum,
-							  const char* aLBufferVertexShaderFileName,
-							  const char* aLBufferFragmentShaderFileName,
-							  const char* aCumulatedLBufferVertexShaderFileName,
-							  const char* aCumulatedLBufferFragmentShaderFileName,
-							  const char* anOuterSurfaceLBufferVertexShaderFileName,
-							  const char* anOuterSurfaceLBufferFragmentShaderFileName,
-							  const char* aMuX_DxVertexShaderFileName,
-							  const char* aMuX_DxFragmentShaderFileName,
-							  const char* anAttenuationVertexShaderFileName,
-							  const char* anAttenuationFragmentShaderFileName,
-							  const char* aDisplayVertexShaderFileName,
-							  const char* aDisplayFragmentShaderFileName)
+							  const XRayBeam* apBeamSpectrum)
 //----------------------------------------------------------------------------
 {
 	// Check the texture format
@@ -193,13 +223,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	checkGPUCapabilities();
 
 	// Initialise shaders
-	initShaders(aLBufferVertexShaderFileName, aLBufferFragmentShaderFileName,
-			aCumulatedLBufferVertexShaderFileName, aCumulatedLBufferFragmentShaderFileName,
-			anOuterSurfaceLBufferVertexShaderFileName,
-			anOuterSurfaceLBufferFragmentShaderFileName,
-			aMuX_DxVertexShaderFileName, aMuX_DxFragmentShaderFileName,
-			anAttenuationVertexShaderFileName, anAttenuationFragmentShaderFileName,
-			aDisplayVertexShaderFileName, aDisplayFragmentShaderFileName);
+	initShaders();
 
 	// Create FBOs
 	createFBOs();
@@ -621,32 +645,119 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 }
 
 
-//-----------------------------------------------------------------------------
-void XRayRenderer::initShaders(const char* aLBufferVertexShaderFileName,
-							   const char* aLBufferFragmentShaderFileName,
-							   const char* aCumulatedLBufferVertexShaderFileName,
-							   const char* aCumulatedLBufferFragmentShaderFileName,
-							   const char* anOuterSurfaceLBufferVertexShaderFileName,
-							   const char* anOuterSurfaceLBufferFragmentShaderFileName,
-							   const char* aMuX_DxVertexShaderFileName,
-							   const char* aMuX_DxFragmentShaderFileName,
-							   const char* anAttenuationVertexShaderFileName,
-							   const char* anAttenuationFragmentShaderFileName,
-							   const char* aDisplayVertexShaderFileName,
-							   const char* aDisplayFragmentShaderFileName)
-//-----------------------------------------------------------------------------
+//------------------------------
+void XRayRenderer::initShaders()
+//------------------------------
 {
 	// Store the current shader
 	GLint current_program(0);
 	glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
 
+
 	// Initialise the shaders
-	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].load(aLBufferVertexShaderFileName, aLBufferFragmentShaderFileName);
-	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].load(aCumulatedLBufferVertexShaderFileName, aCumulatedLBufferFragmentShaderFileName);
-	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].load(anOuterSurfaceLBufferVertexShaderFileName, anOuterSurfaceLBufferFragmentShaderFileName);
-	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].load(aMuX_DxVertexShaderFileName, aMuX_DxFragmentShaderFileName);
-	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].load(anAttenuationVertexShaderFileName, anAttenuationFragmentShaderFileName);
-	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].load(aDisplayVertexShaderFileName, aDisplayFragmentShaderFileName);
+
+	// L-buffer
+	size_t fragment_shader_size = (size_t)((void *)l_buffer_frag_size);
+	size_t vertex_shader_size   = (size_t)((void *)l_buffer_vert_size);
+
+	char* p_fragment_shader = new char[fragment_shader_size + 1];
+	char* p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, l_buffer_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   l_buffer_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
+	delete [] p_fragment_shader;
+	delete [] p_vertex_shader;
+
+	// Cumulated L-buffer
+	fragment_shader_size = (size_t)((void *)cumulated_l_buffer_frag_size);
+	vertex_shader_size   = (size_t)((void *)cumulated_l_buffer_vert_size);
+
+	p_fragment_shader = new char[fragment_shader_size + 1];
+	p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, cumulated_l_buffer_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   cumulated_l_buffer_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
+	delete [] p_fragment_shader;
+	delete [] p_vertex_shader;
+
+	// Outer L-buffer
+	fragment_shader_size = (size_t)((void *)outer_surface_l_buffer_frag_size);
+	vertex_shader_size   = (size_t)((void *)outer_surface_l_buffer_vert_size);
+
+	p_fragment_shader = new char[fragment_shader_size + 1];
+	p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, outer_surface_l_buffer_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   outer_surface_l_buffer_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
+	delete [] p_fragment_shader;
+	delete [] p_vertex_shader;
+
+	// Mu X Dx
+	fragment_shader_size = (size_t)((void *)MUx_Dx_frag_size);
+	vertex_shader_size   = (size_t)((void *)MUx_Dx_vert_size);
+
+	p_fragment_shader = new char[fragment_shader_size + 1];
+	p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, MUx_Dx_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   MUx_Dx_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
+	delete [] p_fragment_shader;
+	delete [] p_vertex_shader;
+
+	// Energy fluence
+	fragment_shader_size = (size_t)((void *)xray_attenuation_frag_size);
+	vertex_shader_size   = (size_t)((void *)xray_attenuation_vert_size);
+
+	p_fragment_shader = new char[fragment_shader_size + 1];
+	p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, xray_attenuation_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   xray_attenuation_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
+	delete [] p_fragment_shader;
+	delete [] p_vertex_shader;
+
+	// Display
+	fragment_shader_size = (size_t)((void *)xray_display_frag_size);
+	vertex_shader_size   = (size_t)((void *)xray_display_vert_size);
+
+	p_fragment_shader = new char[fragment_shader_size + 1];
+	p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, xray_display_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   xray_display_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
+	delete [] p_fragment_shader;
+	delete [] p_vertex_shader;
+
 
 	// Restore the current shader
 	glUseProgram(current_program);

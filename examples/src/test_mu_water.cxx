@@ -51,24 +51,6 @@ using namespace gVirtualXRay;
 //******************************************************************************
 const std::string g_mu_water_table_filename(PREFIX"/examples/data/mu_water.csv");
 
-const char* g_LBuffer_vertex_shader_filename(PREFIX"/shaders/l_buffer.vert");
-const char* g_LBuffer_fragment_shader_filename(PREFIX"/shaders/l_buffer.frag");
-
-const char* g_cumulated_LBuffer_vertex_shader_filename(PREFIX"/shaders/cumulated_l_buffer.vert");
-const char* g_cumulated_LBuffer_fragment_shader_filename(PREFIX"/shaders/cumulated_l_buffer.frag");
-
-const char* g_outer_surface_LBuffer_vertex_shader_filename(PREFIX"/shaders/outer_surface_l_buffer.vert");
-const char* g_outer_surface_LBuffer_fragment_shader_filename(PREFIX"/shaders/outer_surface_l_buffer.frag");
-
-const char* g_MuX_Dx_vertex_shader_filename(PREFIX"/shaders/MUx_Dx.vert");
-const char* g_MuX_Dx_fragment_shader_filename(PREFIX"/shaders/MUx_Dx.frag");
-
-const char* g_attenuation_vertex_shader_filename(PREFIX"/shaders/xray_attenuation.vert");
-const char* g_attenuation_fragment_shader_filename(PREFIX"/shaders/xray_attenuation.frag");
-
-const char* g_display_vertex_shader_filename(PREFIX"/shaders/xray_display.vert");
-const char* g_display_fragment_shader_filename(PREFIX"/shaders/xray_display.frag");
-
 
 //******************************************************************************
 //	Global variables
@@ -209,11 +191,5 @@ void loadXRaySimulator()
 		GL_RGB16F_ARB,
 		&g_xray_detector,
 		g_mu_water_table_filename.data(),
-		&g_xray_beam,
-		g_LBuffer_vertex_shader_filename, g_LBuffer_fragment_shader_filename,
-		g_cumulated_LBuffer_vertex_shader_filename, g_cumulated_LBuffer_fragment_shader_filename,
-		g_outer_surface_LBuffer_vertex_shader_filename, g_outer_surface_LBuffer_fragment_shader_filename,
-		g_MuX_Dx_vertex_shader_filename, g_MuX_Dx_fragment_shader_filename,
-		g_attenuation_vertex_shader_filename, g_attenuation_fragment_shader_filename,
-		g_display_vertex_shader_filename, g_display_fragment_shader_filename);
+		&g_xray_beam);
 }

@@ -87,6 +87,18 @@ using namespace gVirtualXRay;
 
 
 //******************************************************************************
+//	Extern variables
+//******************************************************************************
+/*extern "C" {
+	extern uint8_t display_frag_data[] asm("_binary____shaders_display_frag_start");
+	extern uint8_t display_frag_size[] asm("_binary____shaders_display_frag_size");
+
+	extern uint8_t display_vert_data[] asm("_binary____shaders_display_vert_start");
+	extern uint8_t display_vert_size[] asm("_binary____shaders_display_vert_size");
+}*/
+
+
+//******************************************************************************
 //	Defines
 //******************************************************************************
 #define PREFIX ".."
@@ -98,24 +110,6 @@ using namespace gVirtualXRay;
 const GLfloat g_rotation_speed(2.0);
 
 const std::string g_mu_water_table_filename(PREFIX"/examples/data/mu_water.csv");
-
-const char* g_LBuffer_vertex_shader_filename(PREFIX"/shaders/l_buffer.vert");
-const char* g_LBuffer_fragment_shader_filename(PREFIX"/shaders/l_buffer.frag");
-
-const char* g_cumulated_LBuffer_vertex_shader_filename(PREFIX"/shaders/cumulated_l_buffer.vert");
-const char* g_cumulated_LBuffer_fragment_shader_filename(PREFIX"/shaders/cumulated_l_buffer.frag");
-
-const char* g_outer_surface_LBuffer_vertex_shader_filename(PREFIX"/shaders/outer_surface_l_buffer.vert");
-const char* g_outer_surface_LBuffer_fragment_shader_filename(PREFIX"/shaders/outer_surface_l_buffer.frag");
-
-const char* g_MuX_Dx_vertex_shader_filename(PREFIX"/shaders/MUx_Dx.vert");
-const char* g_MuX_Dx_fragment_shader_filename(PREFIX"/shaders/MUx_Dx.frag");
-
-const char* g_attenuation_vertex_shader_filename(PREFIX"/shaders/xray_attenuation.vert");
-const char* g_attenuation_fragment_shader_filename(PREFIX"/shaders/xray_attenuation.frag");
-
-const char* g_display_vertex_shader_filename(PREFIX"/shaders/xray_display.vert");
-const char* g_display_fragment_shader_filename(PREFIX"/shaders/xray_display.frag");
 
 const char* g_display_scene_vertex_shader_filename(PREFIX"/examples/shaders/display.vert");
 const char* g_display_scene_fragment_shader_filename(PREFIX"/examples/shaders/display.frag");
@@ -293,7 +287,21 @@ void initGL()
 	// Use antialiasing
 	glEnable(GL_POLYGON_SMOOTH);
 
-	g_display_shader.load(g_display_scene_vertex_shader_filename, g_display_scene_fragment_shader_filename);
+	/*size_t fragment_shader_size = (size_t)((void *)display_frag_size);
+	size_t vertex_shader_size   = (size_t)((void *)display_vert_size);
+
+	char* p_fragment_shader = new char[fragment_shader_size + 1];
+	char* p_vertex_shader   = new char[vertex_shader_size   + 1];
+
+	memcpy(p_fragment_shader, display_frag_data, fragment_shader_size);
+	memcpy(p_vertex_shader,   display_vert_data, vertex_shader_size);
+
+	p_fragment_shader[fragment_shader_size] = '\0';
+	p_vertex_shader[vertex_shader_size] = '\0';
+
+	g_display_shader.loadSource(p_vertex_shader, p_fragment_shader);*/
+
+	g_display_shader.loadFiles(g_display_scene_vertex_shader_filename, g_display_scene_fragment_shader_filename);
 }
 
 
@@ -874,13 +882,7 @@ void loadXRaySimulator()
 		GL_RGB16F_ARB,
 		&g_xray_detector,
 		g_mu_water_table_filename.data(),
-		&g_xray_beam,
-		g_LBuffer_vertex_shader_filename, g_LBuffer_fragment_shader_filename,
-		g_cumulated_LBuffer_vertex_shader_filename, g_cumulated_LBuffer_fragment_shader_filename,
-		g_outer_surface_LBuffer_vertex_shader_filename, g_outer_surface_LBuffer_fragment_shader_filename,
-		g_MuX_Dx_vertex_shader_filename, g_MuX_Dx_fragment_shader_filename,
-		g_attenuation_vertex_shader_filename, g_attenuation_fragment_shader_filename,
-		g_display_vertex_shader_filename, g_display_fragment_shader_filename);
+		&g_xray_beam);
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;

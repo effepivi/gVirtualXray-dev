@@ -96,7 +96,7 @@ public:
 	*	@param aFragmentShaderFilename: file name of the fragment shader
 	*/
 	//--------------------------------------------------------------------------
-	void load(const std::string& aVertexShaderFilename,
+	void loadFiles(const std::string& aVertexShaderFilename,
 			const std::string& aFragmentShaderFilename);
 
 
@@ -116,6 +116,28 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	void loadFragmentShaderFile(const std::string& aFragmentShaderFilename);
+
+
+	void loadSource(const std::string& aVertexShaderSourceCode,
+			const std::string& aFragmentShaderSourceCode);
+
+
+	//--------------------------------------------------------------------------
+	///	Load the vertex shader from a file
+	/**
+	*	@param aVertexShaderFilename: file name of the vertex shader
+	*/
+	//--------------------------------------------------------------------------
+	void loadVertexShaderSource(const std::string& aVertexShaderSourceCode);
+
+
+	//--------------------------------------------------------------------------
+	///	Load the fragment shader from a file
+	/**
+	*	@param aFragmentShaderFilename: file name of the fragment shader
+	*/
+	//--------------------------------------------------------------------------
+	void loadFragmentShaderSource(const std::string& aFragmentShaderSourceCode);
 
 
 	//--------------------------------------------------------------------------

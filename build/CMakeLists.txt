@@ -115,6 +115,54 @@ SET (HXX_SOURCES
 )
 
 
+# Create the shaders ###########################################################
+SET (SHADER_SOURCES ../shaders/cumulated_l_buffer.frag
+	../shaders/cumulated_l_buffer.vert
+	../shaders/l_buffer.frag
+	../shaders/l_buffer.vert
+	../shaders/MUx_Dx.frag
+	../shaders/MUx_Dx.vert
+	../shaders/outer_surface_l_buffer.frag
+	../shaders/outer_surface_l_buffer.vert
+	../shaders/xray_attenuation.frag
+	../shaders/xray_attenuation.vert
+	../shaders/xray_display.frag
+	../shaders/xray_display.vert
+)
+
+
+SET (SHADER_OBJECTS cumulated_l_buffer.frag.o 
+	cumulated_l_buffer.vert.o
+	l_buffer.frag.o
+	l_buffer.vert.o
+	MUx_Dx.frag.o
+	MUx_Dx.vert.o
+	outer_surface_l_buffer.frag.o
+	outer_surface_l_buffer.vert.o
+	xray_attenuation.frag.o
+	xray_attenuation.vert.o
+	xray_display.frag.o
+	xray_display.vert.o
+)
+
+
+foreach(F ${SHADER_SOURCES})
+	# Get the file name
+	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
+
+	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+                   COMMAND objcopy -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
+                   COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
+						 COMMAND ar -r libgVirtualXRay.a ${FILE_NAME}.o
+						 COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
+                   DEPENDS ${F} gVirtualXRay 
+	)
+
+	add_custom_target(${FILE_NAME}.o ALL DEPENDS ${FILE_NAME}.tmp)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.o)
+endforeach()
+
+
 # Add source to the project ####################################################
 IF(WIN32)
 	IF(NOT CYGWIN)
@@ -225,3 +273,4 @@ IF (BUILD_EXAMPLES)
 ELSE (BUILD_EXAMPLES)
     	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
+

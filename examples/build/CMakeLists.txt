@@ -39,6 +39,34 @@ project (examples)
 # Headers of the project #######################################################
 
 
+# Create the shaders ###########################################################
+SET (SHADER_SOURCES ../shaders/display.frag
+	../shaders/display.vert
+)
+
+
+SET (SHADER_OBJECTS xray_display.frag.o
+	xray_display.vert.o
+)
+
+
+#foreach(F ${SHADER_SOURCES})
+	# Get the file name
+#	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
+
+#	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+#                   COMMAND objcopy -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
+#                   COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
+#						 COMMAND ar -r libShaders.a ${FILE_NAME}.o
+#						 COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
+#                   DEPENDS ${F} gVirtualXRay 
+#	)
+
+#	add_custom_target(${FILE_NAME}.o ALL DEPENDS ${FILE_NAME}.tmp)
+#	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.o)
+#endforeach()
+
+
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)

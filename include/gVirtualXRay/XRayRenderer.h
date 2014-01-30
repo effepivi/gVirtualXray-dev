@@ -147,19 +147,7 @@ public:
 			int anInternalTextureFormat,
 			const XRayDetector* apDetector,
 			const char* aMuWaterTableFilename,
-			const XRayBeam* apBeamSpectrum,
-			const char* aLBufferVertexShaderFileName,
-			const char* aLBufferFragmentShaderFileName,
-			const char* aCumulatedLBufferVertexShaderFileName,
-			const char* aCumulatedLBufferFragmentShaderFileName,
-			const char* OuterSurfaceLBufferVertexShaderFileName,
-			const char* OuterSurfaceLBufferFragmentShaderFileName,
-			const char* aMuX_DxVertexShaderFileName,
-			const char* aMuX_DxFragmentShaderFileName,
-			const char* anEnergyFluenceVertexShaderFileName,
-			const char* anEnergyFluenceFragmentShaderFileName,
-			const char* aDisplayVertexShaderFileName,
-			const char* aDisplayFragmentShaderFileName);
+			const XRayBeam* apBeamSpectrum);
 
 
 	//--------------------------------------------------------------------------
@@ -347,18 +335,7 @@ protected:
 	*	@param aDisplayVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to the display
 	*	@param aDisplayFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to the display
 	*/
-	void initShaders(const char* aLBufferVertexShaderFileName,
-			const char* aLBufferFragmentShaderFileName,
-			const char* aCumulatedLBufferVertexShaderFileName,
-			const char* aCumulatedLBufferFragmentShaderFileName,
-			const char* anOuterSurfaceLBufferVertexShaderFileName,
-			const char* anOuterSurfaceLBufferFragmentShaderFileName,
-			const char* aMuX_DxVertexShaderFileName,
-			const char* aMuX_DxFragmentShaderFileName,
-			const char* anEnergyFluenceVertexShaderFileName,
-			const char* anEnergyFluenceFragmentShaderFileName,
-			const char* aDisplayVertexShaderFileName,
-			const char* aDisplayFragmentShaderFileName);
+	void initShaders();
 
 
 	//--------------------------------------------------------------------------
