@@ -36,15 +36,15 @@
 #include <cstring>
 
 #ifndef SHADER_H
-#include "Shader.h"
+#include "gVirtualXRay/Graphics/Shader.h"
 #endif
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "FileDoesNotExistException.h"
+#include "gVirtualXRay/Utilities/FileDoesNotExistException.h"
 #endif
 
 #ifndef OUT_OF_MEMORY_EXCEPTION_H
-#include "OutOfMemoryException.h"
+#include "gVirtualXRay/Utilities/OutOfMemoryException.h"
 #endif
 
 

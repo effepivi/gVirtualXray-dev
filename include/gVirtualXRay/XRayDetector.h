@@ -36,15 +36,15 @@
 #include <GL/glew.h>
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "Utilities/Types.h"
 #endif
 
 #ifndef MATRIX4X4_H
-#include "Matrix4x4.h"
+#include "Math/Matrix4x4.h"
 #endif
 
 #ifndef VBO_H
-#include "VBO.h"
+#include "Graphics/VBO.h"
 #endif
 
 

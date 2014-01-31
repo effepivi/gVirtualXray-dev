@@ -35,11 +35,11 @@
 #include <cfloat>
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "FileDoesNotExistException.h"
+#include "Utilities/FileDoesNotExistException.h"
 #endif
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "OutOfBoundsException.h"
+#include "Utilities/OutOfBoundsException.h"
 #endif
 
 

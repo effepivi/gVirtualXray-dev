@@ -43,39 +43,39 @@
 #endif // __APPLE__
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Utilities/Types.h"
 #endif
 
 #ifndef UNITS_H
-#include "Units.h"
+#include "gVirtualXRay/Utilities/Units.h"
 #endif
 
 #ifndef TRIANGLE_MESH_H
-#include "TriangleMesh.h"
+#include "gVirtualXRay/Graphics/TriangleMesh.h"
 #endif
 
 #ifndef XRAY_BEAM_H
-#include "XRayBeam.h"
+#include "gVirtualXRay/XRayBeam.h"
 #endif
 
 #ifndef XRAY_DETECTOR_H
-#include "XRayDetector.h"
+#include "gVirtualXRay/XRayDetector.h"
 #endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
 #endif
 
 #ifndef MATRIX4X4_H
-#include "Matrix4x4.h"
+#include "gVirtualXRay/Math/Matrix4x4.h"
 #endif
 
 #ifndef XRAY_RENDERER_H
-#include "XRayRenderer.h"
+#include "gVirtualXRay/XRayRenderer.h"
 #endif
 
 #ifndef SHADER_H
-#include "Shader.h"
+#include "gVirtualXRay/Graphics/Shader.h"
 #endif
 
 
@@ -398,7 +398,7 @@ void display()
 
 		if (g_display_wireframe)
 		{
-			p_mesh->displayWireframe();
+			//p_mesh->displayWireFrame();
 		}
 		else
 		{
@@ -824,12 +824,12 @@ void loadSTLFile()
 	// Set geometry
 	g_inside_polygon_data.setFilename(stl_filename_0);
 	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm);
-	//g_inside_polygon_data.mergeVertices();
+	g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
 	g_outside_polygon_data.setFilename(stl_filename_1);
 	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm);
-	//g_outside_polygon_data.mergeVertices();
+	g_outside_polygon_data.mergeVertices();
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date

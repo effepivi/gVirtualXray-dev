@@ -37,27 +37,27 @@
 #endif
 
 #ifndef XRAY_RENDERER_H
-#include "XRayRenderer.h"
+#include "gVirtualXRay/XRayRenderer.h"
 #endif
 
 #ifndef EXCEPTION_H
-#include "Exception.h"
+#include "gVirtualXRay/Utilities/Exception.h"
 #endif
 
 #ifndef OUT_OF_MEMORY_EXCEPTION_H
-#include "OutOfMemoryException.h"
+#include "gVirtualXRay/Utilities/OutOfMemoryException.h"
 #endif
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "OutOfBoundsException.h"
+#include "gVirtualXRay/Utilities/OutOfBoundsException.h"
 #endif
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "FileDoesNotExistException.h"
+#include "gVirtualXRay/Utilities/FileDoesNotExistException.h"
 #endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
 #endif
 
 
@@ -426,22 +426,37 @@ bool XRayRenderer::isReady() const
 	// There is no error so far
 	bool error(false);
 
-	// Check the clipping planes
-	if (m_p_detector->getProjectionZNear() < 0)
+	if (m_p_detector)
 	{
-		std::cerr << "WARNING: the distance from the source to the near clipping plane is negative." << std::endl;
-		error = true;
-	}
+		// Check the clipping planes
+		if (m_p_detector->getProjectionZNear() < 0)
+		{
+			std::cerr << "WARNING: the distance from the source to the near clipping plane is negative." << std::endl;
+			error = true;
+		}
 
-	if (m_p_detector->getProjectionZFar() < 0)
-	{
-		std::cerr << "WARNING: the distance from the source to the far clipping plane is negative." << std::endl;
-		error = true;
-	}
+		if (m_p_detector->getProjectionZFar() < 0)
+		{
+			std::cerr << "WARNING: the distance from the source to the far clipping plane is negative." << std::endl;
+			error = true;
+		}
 
-	if (m_p_detector->getProjectionZFar() < std::numeric_limits<RATIONAL_NUMBER>::epsilon())
+		if (m_p_detector->getProjectionZFar() < std::numeric_limits<RATIONAL_NUMBER>::epsilon())
+		{
+			std::cerr << "WARNING: the distance from the source to the far clipping plane is null." << std::endl;
+			error = true;
+		}
+
+	    // Check the detector size
+	    if (!m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY())
+		{
+			std::cerr << "WARNING: the detector size is invalid." << std::endl;
+			error = true;
+		}
+	}
+	else
 	{
-		std::cerr << "WARNING: the distance from the source to the far clipping plane is null." << std::endl;
+		std::cerr << "WARNING: the X-ray detector has not been registered." << std::endl;
 		error = true;
 	}
 
@@ -478,15 +493,6 @@ bool XRayRenderer::isReady() const
 		std::cerr << "WARNING: there is no 3D object to render." << std::endl;
 		error = true;
 	}
-
-
-    // Check the detector size
-    if (!m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY())
-	{
-		std::cerr << "WARNING: the detector size is invalid." << std::endl;
-		error = true;
-	}
-
 
 	return (!error);
 }

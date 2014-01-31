@@ -101,6 +101,19 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Set the index.
+	/**
+	*	@param aNumberOfVertices:	number of vertices
+	*	@param apVertices:			address of the first vertex
+	*	@param aNumberOfNormals:	number of normal vectors
+	*	@param apNormals:			address of the first normal
+	*	@return the ID of the new VBO
+	*/
+	//--------------------------------------------------------------------------
+	void setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet);
+
+
+	//--------------------------------------------------------------------------
 	///	Display the triangular mesh using OpenGL.
 	//--------------------------------------------------------------------------
 	void display() const;

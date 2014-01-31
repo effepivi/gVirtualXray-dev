@@ -30,7 +30,7 @@
 //	Include
 //******************************************************************************
 #ifndef XRAY_RENDERER_H
-#include "XRayRenderer.h"
+#include "gVirtualXRay/XRayRenderer.h"
 #endif
 
 

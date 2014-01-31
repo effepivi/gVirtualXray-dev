@@ -34,7 +34,7 @@
 #include <string.h>
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
 #endif
 
 

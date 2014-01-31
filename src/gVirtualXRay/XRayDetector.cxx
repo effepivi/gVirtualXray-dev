@@ -30,11 +30,11 @@
 //	Include
 //******************************************************************************
 #ifndef XRAY_DETECTOR_H
-#include "XRayDetector.h"
+#include "gVirtualXRay/XRayDetector.h"
 #endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "Utilities/OpenGLUtilities.h"
 #endif
 
 

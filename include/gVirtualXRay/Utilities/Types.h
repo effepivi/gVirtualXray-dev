@@ -37,15 +37,15 @@
 #include <limits>
 
 #ifndef VEC3_H
-#include "Vec3.h"
+#include "gVirtualXRay/Math/Vec3.h"
 #endif
 
 #ifndef VEC2_H
-#include "Vec2.h"
+#include "gVirtualXRay/Math/Vec2.h"
 #endif
 
 #ifndef MATRIX4X4_H
-#include "Matrix4x4.h"
+#include "gVirtualXRay/Math/Matrix4x4.h"
 #endif
 
 

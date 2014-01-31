@@ -46,15 +46,15 @@
 #endif
 
 #ifndef VBO_H
-#include "VBO.h"
+#include "gVirtualXRay/Graphics/VBO.h"
 #endif
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Utilities/Types.h"
 #endif
 
 #ifndef UNITS_H
-#include "Units.h"
+#include "gVirtualXRay/Utilities/Units.h"
 #endif
 
 
@@ -105,7 +105,7 @@ public:
 	void display(bool aVBOFlag = true) const;
 
 
-	void displayWireframe() const;
+	void displayWireFrame() const;
 
 
 	void displayFaceNormal(GLfloat aNormalSize = 0.5 * cm) const;
@@ -279,12 +279,17 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	unsigned int getVertexNumber() const;
+	unsigned int getIndexNumber() const;
 
 
 	void mergeVertices();
 
 
 	VEC3 getVertex(int anIndex) const;
+	void setVertex(int anIndex, const VEC3& aVertex);
+
+
+	int getIndex(int anIndex) const;
 
 
 	VEC3 getFaceNormal(int anIndex) const;
@@ -292,10 +297,23 @@ public:
 
 	VEC3 getVertexNormal(int anIndex) const;
 
+	void setExternalData(const std::vector<GLfloat>* aVertexArray,
+			const std::vector<int>* anIndexArray);
+
+
+	void applyScale(RATIONAL_NUMBER aScale);
+
+
+	void displayUsingImmediateModeWithIndex() const;
+	void displayUsingImmediateModeWithoutIndex() const;
+	void displayWireFrameWithIndex() const;
+	void displayWireFrameWithoutIndex() const;
 
 //******************************************************************************
 protected:
 	void updateVBO();
+	void computeBoundingBox();
+	void normaliseNormals();
 
 
 	/// Name of the file that contains the polygon mesh
@@ -339,11 +357,15 @@ protected:
 
 
 	/// Array containing the vertices
-	std::vector<GLfloat> m_p_vertex_set;
+	std::vector<GLfloat> m_p_internal_vertex_set;
 
 
 	/// Array containing the index
-	std::vector<GLuint> m_p_index_set;
+	std::vector<GLuint> m_p_internal_index_set;
+
+
+	std::vector<int>* m_p_external_index_set;
+	std::vector<GLfloat>* m_p_external_vertex_set;
 };
 
 

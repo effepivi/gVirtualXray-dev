@@ -110,10 +110,3 @@ ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
  # Linkage of the target #######################################################
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-
-# Create the the main program ##################################################
-#ADD_EXECUTABLE (test_02 ../src/test_02.cxx)
-
-
-# Linkage of the target ########################################################
-#TARGET_LINK_LIBRARIES (test_02 gVirtualXRay ${requiredLibs} ${optionalLibs})

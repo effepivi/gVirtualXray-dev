@@ -186,10 +186,6 @@ SET(requiredLibs)
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(../include)
-INCLUDE_DIRECTORIES(../include/gVirtualXRay)
-INCLUDE_DIRECTORIES(../include/Graphics)
-INCLUDE_DIRECTORIES(../include/Math)
-INCLUDE_DIRECTORIES(../include/Utilities)
 INCLUDE_DIRECTORIES(/usr/local/include)
 
 
