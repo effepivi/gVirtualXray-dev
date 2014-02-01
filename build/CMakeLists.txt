@@ -89,39 +89,39 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/XRayRenderer.inl
 
 	# Graphics
-	../include/gVirtualXRay/Graphics/framebufferObject.h
-	../include/gVirtualXRay/Graphics/Shader.h
-	../include/gVirtualXRay/Graphics/Shader.inl
-	../include/gVirtualXRay/Graphics/TriangleMesh.h
-	../include/gVirtualXRay/Graphics/TriangleMesh.inl
-	../include/gVirtualXRay/Graphics/VBO.h
-	../include/gVirtualXRay/Graphics/VBO.inl
+	../include/gVirtualXRay/framebufferObject.h
+	../include/gVirtualXRay/Shader.h
+	../include/gVirtualXRay/Shader.inl
+	../include/gVirtualXRay/TriangleMesh.h
+	../include/gVirtualXRay/TriangleMesh.inl
+	../include/gVirtualXRay/VBO.h
+	../include/gVirtualXRay/VBO.inl
 
 	# Math
-	../include/gVirtualXRay/Math/Matrix4x4.h
-	../include/gVirtualXRay/Math/Matrix4x4.inl
-	../include/gVirtualXRay/Math/Vec2.h
-	../include/gVirtualXRay/Math/Vec2.inl
-	../include/gVirtualXRay/Math/Vec3.h
-	../include/gVirtualXRay/Math/Vec3.inl
+	../include/gVirtualXRay/Matrix4x4.h
+	../include/gVirtualXRay/Matrix4x4.inl
+	../include/gVirtualXRay/Vec2.h
+	../include/gVirtualXRay/Vec2.inl
+	../include/gVirtualXRay/Vec3.h
+	../include/gVirtualXRay/Vec3.inl
 
 	# Utilities
-	../include/gVirtualXRay/Utilities/Exception.h
-	../include/gVirtualXRay/Utilities/Exception.inl
-	../include/gVirtualXRay/Utilities/FBOException.h
-	../include/gVirtualXRay/Utilities/FBOException.inl
-	../include/gVirtualXRay/Utilities/FileDoesNotExistException.h
-	../include/gVirtualXRay/Utilities/FileDoesNotExistException.inl
-	../include/gVirtualXRay/Utilities/OpenGLException.h
-	../include/gVirtualXRay/Utilities/OpenGLException.inl
-	../include/gVirtualXRay/Utilities/OpenGLUtilities.h
-	../include/gVirtualXRay/Utilities/OpenGLUtilities.inl
-	../include/gVirtualXRay/Utilities/OutOfBoundsException.h
-	../include/gVirtualXRay/Utilities/OutOfBoundsException.inl
-	../include/gVirtualXRay/Utilities/OutOfMemoryException.h
-	../include/gVirtualXRay/Utilities/OutOfMemoryException.inl
-	../include/gVirtualXRay/Utilities/Types.h
-	../include/gVirtualXRay/Utilities/Units.h
+	../include/gVirtualXRay/Exception.h
+	../include/gVirtualXRay/Exception.inl
+	../include/gVirtualXRay/FBOException.h
+	../include/gVirtualXRay/FBOException.inl
+	../include/gVirtualXRay/FileDoesNotExistException.h
+	../include/gVirtualXRay/FileDoesNotExistException.inl
+	../include/gVirtualXRay/OpenGLException.h
+	../include/gVirtualXRay/OpenGLException.inl
+	../include/gVirtualXRay/OpenGLUtilities.h
+	../include/gVirtualXRay/OpenGLUtilities.inl
+	../include/gVirtualXRay/OutOfBoundsException.h
+	../include/gVirtualXRay/OutOfBoundsException.inl
+	../include/gVirtualXRay/OutOfMemoryException.h
+	../include/gVirtualXRay/OutOfMemoryException.inl
+	../include/gVirtualXRay/Types.h
+	../include/gVirtualXRay/Units.h
 )
 
 
