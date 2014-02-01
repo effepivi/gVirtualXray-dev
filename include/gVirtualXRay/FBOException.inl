@@ -34,7 +34,7 @@
 #include<GL/glew.h>
 
 #ifndef EXCEPTION_H
-#include "Exception.h"
+#include "gVirtualXRay/Exception.h"
 #endif
 
 

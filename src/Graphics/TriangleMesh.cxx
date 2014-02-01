@@ -32,15 +32,15 @@
 #include <map>
 
 #ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/Graphics/TriangleMesh.h"
+#include "gVirtualXRay/TriangleMesh.h"
 #endif
 
 #ifndef UNITS_H
-#include "gVirtualXRay/Utilities/Units.h"
+#include "gVirtualXRay/Units.h"
 #endif
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "gVirtualXRay/Utilities/FileDoesNotExistException.h"
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 

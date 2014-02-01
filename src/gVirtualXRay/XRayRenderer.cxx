@@ -42,23 +42,23 @@
 #endif
 
 #ifndef EXCEPTION_H
-#include "gVirtualXRay/Utilities/Exception.h"
+#include "gVirtualXRay/Exception.h"
 #endif
 
 #ifndef OUT_OF_MEMORY_EXCEPTION_H
-#include "gVirtualXRay/Utilities/OutOfMemoryException.h"
+#include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "gVirtualXRay/Utilities/OutOfBoundsException.h"
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "gVirtualXRay/Utilities/FileDoesNotExistException.h"
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #include <zlib.h>

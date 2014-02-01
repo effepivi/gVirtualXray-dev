@@ -34,7 +34,7 @@
 //	Include
 //******************************************************************************
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 

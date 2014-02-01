@@ -1,10 +1,10 @@
 /**
 ********************************************************************************
 *
-*	@file		FileDoesNotExistException.inl
+*	@file		OutOfBoundsException.h
 *
-*	@brief		Class to handle exceptions when trying to open a read-only file
-*				that is not accessible.
+*	@brief		Class to handle exceptions when accessing an array cell that is
+*				not accessible, i.e. out of bounds memory access.
 *
 *	@version	1.0
 *
@@ -27,17 +27,15 @@
 */
 
 
-#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#define FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef OUT_OF_BOUNDS_EXCEPTION_H
+#define OUT_OF_BOUNDS_EXCEPTION_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <string>
-
 #ifndef EXCEPTION_H
-#include "Exception.h"
+#include "gVirtualXRay/Exception.h"
 #endif
 
 
@@ -49,44 +47,28 @@ namespace Utilities {
 
 //==============================================================================
 /**
-*	@class	FileDoesNotExistException
-*	@brief	FileDoesNotExistException is a class to handle exceptions
-*			when trying to open a read-only file that is not accessible.
+*	@class	OutOfMemoryException
+*	@brief	OutOfMemoryException is a class to handle exceptions when accessing
+*			an array cell that is not accessible, i.e. out of bounds
+*			memory access.
 */
 //==============================================================================
-class FileDoesNotExistException: public Exception
+class OutOfBoundsException: public Exception
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
 public:
 	//--------------------------------------------------------------------------
-	///	Constructor.
+	///	Default constructor.
 	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown
-	*	@param 	aFunctionName:	name of the function where the exception was thrown
-	*	@param 	anErrorLine:	name at which the exception was thrown
-	*	@param 	aNameOfFileToOpen:	the name of the file to open
+	*	@param 	aFileName:	name of the source file where the exception was thrown (default value: 0)
+	*	@param 	aFunctionName:	name of the function where the exception was thrown  (default value: 0)
+	*	@param 	anErrorLine:	name at which the exception was thrown (default value: 0)
 	*/
 	//--------------------------------------------------------------------------
-	FileDoesNotExistException(const char* aFileName,
-			const char* aFunctionName,
-			int anErrorLine,
-			const char* aNameOfFileToOpen);
-
-
-	//--------------------------------------------------------------------------
-	///	Constructor.
-	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown
-	*	@param 	aFunctionName:	name of the function where the exception was thrown
-	*	@param 	anErrorLine:	name at which the exception was thrown
-	*	@param 	aNameOfFileToOpen:	the name of the file to open
-	*/
-	//--------------------------------------------------------------------------
-	FileDoesNotExistException(const char* aFileName,
-			const char* aFunctionName,
-			int anErrorLine,
-			const std::string& aNameOfFileToOpen);
+	OutOfBoundsException(const char* aFileName = 0,
+			const char* aFunctionName = 0,
+			int anErrorLine = 0);
 };
 
 
@@ -94,7 +76,7 @@ public:
 
 
 //******************************************************************************
-#include "FileDoesNotExistException.inl"
+#include "OutOfBoundsException.inl"
 
 
-#endif // FILE_DOES_NOT_EXIST_EXCEPTION_H
+#endif // OUT_OF_BOUNDS_EXCEPTION_H

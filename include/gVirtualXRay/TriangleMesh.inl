@@ -33,7 +33,7 @@
 #include <sstream>
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "OutOfBoundsException.h"
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 

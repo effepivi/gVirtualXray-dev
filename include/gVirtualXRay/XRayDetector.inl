@@ -40,7 +40,7 @@
 #endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 

@@ -39,7 +39,7 @@
   OF SUCH DAMAGE.
 */
 
-#include "gVirtualXRay/Graphics/framebufferObject.h"
+#include "gVirtualXRay/framebufferObject.h"
 #include <iostream>
 using namespace std;
 

@@ -36,15 +36,15 @@
 #include <GL/glew.h>
 
 #ifndef TYPES_H
-#include "Utilities/Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 #ifndef MATRIX4X4_H
-#include "Math/Matrix4x4.h"
+#include "gVirtualXRay/Matrix4x4.h"
 #endif
 
 #ifndef VBO_H
-#include "Graphics/VBO.h"
+#include "gVirtualXRay/VBO.h"
 #endif
 
 

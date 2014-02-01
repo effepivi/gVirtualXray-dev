@@ -35,11 +35,11 @@
 #include <cfloat>
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "Utilities/FileDoesNotExistException.h"
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "Utilities/OutOfBoundsException.h"
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 

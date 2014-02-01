@@ -40,11 +40,11 @@
 #include <iostream>
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 #ifndef SPECTRUM_RECORD_H
-#include "SpectrumRecord.h"
+#include "gVirtualXRay/SpectrumRecord.h"
 #endif
 
 

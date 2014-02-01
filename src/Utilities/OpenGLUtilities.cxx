@@ -30,11 +30,11 @@
 //	Include
 //******************************************************************************
 #ifndef OPENGL_UTILITIES_H
-#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "gVirtualXRay/Utilities/OutOfBoundsException.h"
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 

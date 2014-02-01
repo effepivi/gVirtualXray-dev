@@ -43,15 +43,15 @@
 #endif // __APPLE__
 
 #ifndef TYPES_H
-#include "gVirtualXRay/Utilities/Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 #ifndef UNITS_H
-#include "gVirtualXRay/Utilities/Units.h"
+#include "gVirtualXRay/Units.h"
 #endif
 
 #ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/Graphics/TriangleMesh.h"
+#include "gVirtualXRay/TriangleMesh.h"
 #endif
 
 #ifndef XRAY_BEAM_H
@@ -63,11 +63,11 @@
 #endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #ifndef MATRIX4X4_H
-#include "gVirtualXRay/Math/Matrix4x4.h"
+#include "gVirtualXRay/Matrix4x4.h"
 #endif
 
 #ifndef XRAY_RENDERER_H

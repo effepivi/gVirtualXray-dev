@@ -34,7 +34,7 @@
 //	Include
 //******************************************************************************
 #ifndef VEC3_H
-#include "Vec3.h"
+#include "gVirtualXRay/Vec3.h"
 #endif
 
 

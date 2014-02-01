@@ -30,7 +30,7 @@
 //	Include
 //******************************************************************************
 #ifndef EXCEPTION_H
-#include "gVirtualXRay/Utilities/Exception.h"
+#include "gVirtualXRay/Exception.h"
 #endif
 
 

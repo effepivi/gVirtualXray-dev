@@ -1,14 +1,13 @@
 /**
 ********************************************************************************
 *
-*	@file		OutOfBoundsException.h
+*	@file		OpenGLException.h
 *
-*	@brief		Class to handle exceptions when accessing an array cell that is
-*				not accessible, i.e. out of bounds memory access.
+*	@brief		Class to handle exceptions related to frame buffer objects (FBOs).
 *
 *	@version	1.0
 *
-*	@date		30/11/2013
+*	@date		07/11/2013
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -27,15 +26,15 @@
 */
 
 
-#ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#define OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef FBO_EXCEPTION_H
+#define FBO_EXCEPTION_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
 #ifndef EXCEPTION_H
-#include "Exception.h"
+#include "gVirtualXRay/Exception.h"
 #endif
 
 
@@ -47,13 +46,11 @@ namespace Utilities {
 
 //==============================================================================
 /**
-*	@class	OutOfMemoryException
-*	@brief	OutOfMemoryException is a class to handle exceptions when accessing
-*			an array cell that is not accessible, i.e. out of bounds
-*			memory access.
+*	@class	FBOException
+*	@brief	FBOException is a class to handle exceptions related to FBOs.
 */
 //==============================================================================
-class OutOfBoundsException: public Exception
+class FBOException: public Exception
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -61,14 +58,13 @@ public:
 	//--------------------------------------------------------------------------
 	///	Default constructor.
 	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown (default value: 0)
-	*	@param 	aFunctionName:	name of the function where the exception was thrown  (default value: 0)
-	*	@param 	anErrorLine:	name at which the exception was thrown (default value: 0)
+	*	@param 	aFileName:	name of the source file where the exception was thrown
+	*	@param 	aFunctionName:	name of the function where the exception was thrown
+	*	@param 	anErrorLine:	name at which the exception was thrown
+	*	@param 	anErrorCode:	FBO error code
 	*/
 	//--------------------------------------------------------------------------
-	OutOfBoundsException(const char* aFileName = 0,
-			const char* aFunctionName = 0,
-			int anErrorLine = 0);
+	FBOException(const char* aFileName, const char* aFunctionName, int anErrorLine, int anErrorCode);
 };
 
 
@@ -76,7 +72,7 @@ public:
 
 
 //******************************************************************************
-#include "OutOfBoundsException.inl"
+#include "FBOException.inl"
 
 
-#endif // OUT_OF_BOUNDS_EXCEPTION_H
+#endif // FBO_EXCEPTION_H

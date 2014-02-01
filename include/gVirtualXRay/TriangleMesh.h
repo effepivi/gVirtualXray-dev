@@ -46,15 +46,15 @@
 #endif
 
 #ifndef VBO_H
-#include "gVirtualXRay/Graphics/VBO.h"
+#include "gVirtualXRay/VBO.h"
 #endif
 
 #ifndef TYPES_H
-#include "gVirtualXRay/Utilities/Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 #ifndef UNITS_H
-#include "gVirtualXRay/Utilities/Units.h"
+#include "gVirtualXRay/Units.h"
 #endif
 
 

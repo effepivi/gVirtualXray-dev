@@ -39,15 +39,15 @@
 #include <cmath>
 
 #ifndef OPENGL_EXCEPTION_H
-#include "OpenGLException.h"
+#include "gVirtualXRay/OpenGLException.h"
 #endif
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "OutOfBoundsException.h"
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 #ifndef FBO_EXCEPTION_H
-#include "FBOException.h"
+#include "gVirtualXRay/FBOException.h"
 #endif
 
 

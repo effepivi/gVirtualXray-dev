@@ -36,11 +36,11 @@
 #include <vector>
 
 #ifndef MATRIX4X4_H
-#include "gVirtualXRay/Math/Matrix4x4.h"
+#include "gVirtualXRay/Matrix4x4.h"
 #endif
 
 #ifndef TYPES_H
-#include "gVirtualXRay/Utilities/Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 

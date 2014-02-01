@@ -36,7 +36,7 @@
 #include <iostream>
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 

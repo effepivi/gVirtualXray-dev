@@ -41,7 +41,7 @@
 #endif
 
 #ifndef TRIANGLE_MESH_H
-#include "Graphics/TriangleMesh.h"
+#include "gVirtualXRay/TriangleMesh.h"
 #endif
 
 #ifndef XRAY_DETECTOR_H
@@ -53,7 +53,7 @@
 #endif
 
 #ifndef SHADER_H
-#include "Graphics/Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef ATTENUATION_COEFFICIENT_H
@@ -61,10 +61,10 @@
 #endif
 
 #ifndef VBO_H
-#include "Graphics/VBO.h"
+#include "gVirtualXRay/VBO.h"
 #endif
 
-#include "Graphics/framebufferObject.h"
+#include "gVirtualXRay/framebufferObject.h"
 
 
 //******************************************************************************

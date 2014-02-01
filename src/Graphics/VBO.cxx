@@ -32,11 +32,11 @@
 #include <iostream>
 
 #ifndef OPENGL_UTILITIES_H
-#include "gVirtualXRay/Utilities/OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #ifndef VBO_H
-#include "gVirtualXRay/Graphics/VBO.h"
+#include "gVirtualXRay/VBO.h"
 #endif
 
 

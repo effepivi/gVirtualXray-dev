@@ -1,13 +1,14 @@
 /**
 ********************************************************************************
 *
-*	@file		OpenGLException.h
+*	@file		FileDoesNotExistException.inl
 *
-*	@brief		Class to handle exceptions related to frame buffer objects (FBOs).
+*	@brief		Class to handle exceptions when trying to open a read-only file
+*				that is not accessible.
 *
 *	@version	1.0
 *
-*	@date		07/11/2013
+*	@date		30/11/2013
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -26,15 +27,17 @@
 */
 
 
-#ifndef FBO_EXCEPTION_H
-#define FBO_EXCEPTION_H
+#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
+#define FILE_DOES_NOT_EXIST_EXCEPTION_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include <string>
+
 #ifndef EXCEPTION_H
-#include "Exception.h"
+#include "gVirtualXRay/Exception.h"
 #endif
 
 
@@ -46,25 +49,44 @@ namespace Utilities {
 
 //==============================================================================
 /**
-*	@class	FBOException
-*	@brief	FBOException is a class to handle exceptions related to FBOs.
+*	@class	FileDoesNotExistException
+*	@brief	FileDoesNotExistException is a class to handle exceptions
+*			when trying to open a read-only file that is not accessible.
 */
 //==============================================================================
-class FBOException: public Exception
+class FileDoesNotExistException: public Exception
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
 public:
 	//--------------------------------------------------------------------------
-	///	Default constructor.
+	///	Constructor.
 	/**
 	*	@param 	aFileName:	name of the source file where the exception was thrown
 	*	@param 	aFunctionName:	name of the function where the exception was thrown
 	*	@param 	anErrorLine:	name at which the exception was thrown
-	*	@param 	anErrorCode:	FBO error code
+	*	@param 	aNameOfFileToOpen:	the name of the file to open
 	*/
 	//--------------------------------------------------------------------------
-	FBOException(const char* aFileName, const char* aFunctionName, int anErrorLine, int anErrorCode);
+	FileDoesNotExistException(const char* aFileName,
+			const char* aFunctionName,
+			int anErrorLine,
+			const char* aNameOfFileToOpen);
+
+
+	//--------------------------------------------------------------------------
+	///	Constructor.
+	/**
+	*	@param 	aFileName:	name of the source file where the exception was thrown
+	*	@param 	aFunctionName:	name of the function where the exception was thrown
+	*	@param 	anErrorLine:	name at which the exception was thrown
+	*	@param 	aNameOfFileToOpen:	the name of the file to open
+	*/
+	//--------------------------------------------------------------------------
+	FileDoesNotExistException(const char* aFileName,
+			const char* aFunctionName,
+			int anErrorLine,
+			const std::string& aNameOfFileToOpen);
 };
 
 
@@ -72,7 +94,7 @@ public:
 
 
 //******************************************************************************
-#include "FBOException.inl"
+#include "FileDoesNotExistException.inl"
 
 
-#endif // FBO_EXCEPTION_H
+#endif // FILE_DOES_NOT_EXIST_EXCEPTION_H
