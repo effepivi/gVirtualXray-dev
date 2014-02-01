@@ -369,9 +369,6 @@ void XRayRenderer::loadMuWater()
 	char* p_dest(0);
 	int z_lib_return_code = inflate(g_mu_water_csv, sizeof(g_mu_water_csv), &p_dest);
 
-	std::cout << p_dest << std::endl;
-
-
 	// It does not exist
 	if (!z_lib_return_code)
 	{
@@ -759,9 +756,6 @@ void XRayRenderer::initShaders()
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
 
-	std::cout << vertex_shader << std::endl;
-	std::cout << fragment_shader << std::endl;
-
 	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
@@ -776,9 +770,6 @@ void XRayRenderer::initShaders()
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
-	std::cout << vertex_shader << std::endl;
-	std::cout << fragment_shader << std::endl;
-
 
 	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
 	{
@@ -794,9 +785,6 @@ void XRayRenderer::initShaders()
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
-	std::cout << vertex_shader << std::endl;
-	std::cout << fragment_shader << std::endl;
-
 
 	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
 	{
@@ -812,9 +800,6 @@ void XRayRenderer::initShaders()
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
-	std::cout << vertex_shader << std::endl;
-	std::cout << fragment_shader << std::endl;
-
 
 	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
 	{
@@ -830,9 +815,6 @@ void XRayRenderer::initShaders()
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
-	std::cout << vertex_shader << std::endl;
-	std::cout << fragment_shader << std::endl;
-
 
 	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
 	{
@@ -848,9 +830,6 @@ void XRayRenderer::initShaders()
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
-	std::cout << vertex_shader << std::endl;
-	std::cout << fragment_shader << std::endl;
-
 
 	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
 	{

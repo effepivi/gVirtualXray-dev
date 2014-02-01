@@ -47,6 +47,16 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 
 # Project name #################################################################
 PROJECT(gVirtualXRay)
+set (gVirtualXRay_VERSION_MAJOR 1)
+set (gVirtualXRay_VERSION_MINOR 0)
+
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
+  "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
+  )
 
 
 # Library source code ##########################################################
@@ -137,9 +147,9 @@ SET(requiredLibs)
 
 
 # Headers of the project #######################################################
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(../include)
-INCLUDE_DIRECTORIES(/usr/local/include)
+INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
+INCLUDE_DIRECTORIES("../include")
+INCLUDE_DIRECTORIES("/usr/local/include")
 
 
 # OpenGL ######################################################################
@@ -301,3 +311,7 @@ ELSE (BUILD_EXAMPLES)
     	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
 
+
+install (TARGETS gVirtualXRay DESTINATION lib)
+install (FILES ${HXX_SOURCES} DESTINATION include/gVirtualXRay)
+install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h" DESTINATION include/gVirtualXRay)

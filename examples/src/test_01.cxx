@@ -78,6 +78,8 @@
 #include "gVirtualXRay/Graphics/Shader.h"
 #endif
 
+#include "gVirtualXRayConfig.h"
+
 
 //******************************************************************************
 //	Name space
@@ -175,7 +177,9 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		// Register the exit callback
+	    std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
+
+	    // Register the exit callback
 		atexit(quit);
 
 		// Initialize GLUT
