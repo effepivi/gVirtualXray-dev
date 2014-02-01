@@ -79,6 +79,8 @@ SET (CXX_SOURCES
 # Add header files to the project
 SET (HXX_SOURCES
 	# gVirtualXRay
+	../include/gVirtualXRay/AttenuationCoefficient.h
+	../include/gVirtualXRay/AttenuationCoefficient.inl
 	../include/gVirtualXRay/SpectrumRecord.h
 	../include/gVirtualXRay/SpectrumRecord.inl
 	../include/gVirtualXRay/XRayBeam.h
