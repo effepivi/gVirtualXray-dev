@@ -47,12 +47,6 @@ using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Constant variables
-//******************************************************************************
-const std::string g_mu_water_table_filename(PREFIX"/examples/data/mu_water.csv");
-
-
-//******************************************************************************
 //	Global variables
 //******************************************************************************
 GLsizei g_main_window_width(1280 / 2.0);
@@ -190,6 +184,5 @@ void loadXRaySimulator()
 	g_xray_renderer.initialise(XRayRenderer::OPENGL,
 		GL_RGB16F_ARB,
 		&g_xray_detector,
-		g_mu_water_table_filename.data(),
 		&g_xray_beam);
 }

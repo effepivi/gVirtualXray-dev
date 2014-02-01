@@ -87,18 +87,6 @@ using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Extern variables
-//******************************************************************************
-/*extern "C" {
-	extern uint8_t display_frag_data[] asm("_binary____shaders_display_frag_start");
-	extern uint8_t display_frag_size[] asm("_binary____shaders_display_frag_size");
-
-	extern uint8_t display_vert_data[] asm("_binary____shaders_display_vert_start");
-	extern uint8_t display_vert_size[] asm("_binary____shaders_display_vert_size");
-}*/
-
-
-//******************************************************************************
 //	Defines
 //******************************************************************************
 #define PREFIX ".."
@@ -108,8 +96,6 @@ using namespace gVirtualXRay;
 //	Constant variables
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
-
-const std::string g_mu_water_table_filename(PREFIX"/examples/data/mu_water.csv");
 
 const char* g_display_scene_vertex_shader_filename(PREFIX"/examples/shaders/display.vert");
 const char* g_display_scene_fragment_shader_filename(PREFIX"/examples/shaders/display.frag");
@@ -881,7 +867,6 @@ void loadXRaySimulator()
 	g_xray_renderer.initialise(XRayRenderer::OPENGL,
 		GL_RGB16F_ARB,
 		&g_xray_detector,
-		g_mu_water_table_filename.data(),
 		&g_xray_beam);
 
 	// The X-ray image is not up-to-date

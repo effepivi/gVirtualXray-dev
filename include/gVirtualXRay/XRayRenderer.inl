@@ -29,7 +29,8 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <fstream>
+//#include <fstream>
+#include <sstream>
 
 #ifndef OPENGL_UTILITIES_H
 #include "OpenGLUtilities.h"
@@ -71,43 +72,6 @@ inline void XRayRenderer::addOuterSurface(const TriangleMesh* apSurface)
 //----------------------------------------------------------------------
 {
 	m_p_outer_surface = const_cast<TriangleMesh*>(apSurface);
-}
-
-
-//----------------------------------------------------------
-inline void XRayRenderer::loadMuWater(const char* aFileName)
-//----------------------------------------------------------
-{
-	// Clear the data
-	m_mu_water_set.clear();
-	
-	// Open the file
-	std::ifstream mu_stream(aFileName);
-	
-	// It does not exist
-	if (!mu_stream.is_open())
-	{
-		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
-	}
-	
-	// Ignore the first line
-	char first_line[1024];
-	mu_stream.getline(first_line, 1024);
-
-	// Process every record
-	AttenuationCoefficient temp;
-	while (!mu_stream.eof())
-	{
-		// Load the record
-		mu_stream >> temp;
-		
-		// The record is valid
-		if (!mu_stream.eof())
-		{
-			// Store the record
-			m_mu_water_set.push_back(temp);
-		}
-	}
 }
 
 

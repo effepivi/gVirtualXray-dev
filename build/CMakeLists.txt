@@ -79,88 +79,40 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/XRayRenderer.inl
 
 	# Graphics
-	../include/Graphics/framebufferObject.h
-	../include/Graphics/Shader.h
-	../include/Graphics/Shader.inl
-	../include/Graphics/TriangleMesh.h
-	../include/Graphics/TriangleMesh.inl
-	../include/Graphics/VBO.h
-	../include/Graphics/VBO.inl
+	../include/gVirtualXRay/Graphics/framebufferObject.h
+	../include/gVirtualXRay/Graphics/Shader.h
+	../include/gVirtualXRay/Graphics/Shader.inl
+	../include/gVirtualXRay/Graphics/TriangleMesh.h
+	../include/gVirtualXRay/Graphics/TriangleMesh.inl
+	../include/gVirtualXRay/Graphics/VBO.h
+	../include/gVirtualXRay/Graphics/VBO.inl
 
 	# Math
-	../include/Math/Matrix4x4.h
-	../include/Math/Matrix4x4.inl
-	../include/Math/Vec2.h
-	../include/Math/Vec2.inl
-	../include/Math/Vec3.h
-	../include/Math/Vec3.inl
+	../include/gVirtualXRay/Math/Matrix4x4.h
+	../include/gVirtualXRay/Math/Matrix4x4.inl
+	../include/gVirtualXRay/Math/Vec2.h
+	../include/gVirtualXRay/Math/Vec2.inl
+	../include/gVirtualXRay/Math/Vec3.h
+	../include/gVirtualXRay/Math/Vec3.inl
 
 	# Utilities
-	../include/Utilities/Exception.h
-	../include/Utilities/Exception.inl
-	../include/Utilities/FBOException.h
-	../include/Utilities/FBOException.inl
-	../include/Utilities/FileDoesNotExistException.h
-	../include/Utilities/FileDoesNotExistException.inl
-	../include/Utilities/OpenGLException.h
-	../include/Utilities/OpenGLException.inl
-	../include/Utilities/OpenGLUtilities.h
-	../include/Utilities/OpenGLUtilities.inl
-	../include/Utilities/OutOfBoundsException.h
-	../include/Utilities/OutOfBoundsException.inl
-	../include/Utilities/OutOfMemoryException.h
-	../include/Utilities/OutOfMemoryException.inl
-	../include/Utilities/Types.h
-	../include/Utilities/Units.h
+	../include/gVirtualXRay/Utilities/Exception.h
+	../include/gVirtualXRay/Utilities/Exception.inl
+	../include/gVirtualXRay/Utilities/FBOException.h
+	../include/gVirtualXRay/Utilities/FBOException.inl
+	../include/gVirtualXRay/Utilities/FileDoesNotExistException.h
+	../include/gVirtualXRay/Utilities/FileDoesNotExistException.inl
+	../include/gVirtualXRay/Utilities/OpenGLException.h
+	../include/gVirtualXRay/Utilities/OpenGLException.inl
+	../include/gVirtualXRay/Utilities/OpenGLUtilities.h
+	../include/gVirtualXRay/Utilities/OpenGLUtilities.inl
+	../include/gVirtualXRay/Utilities/OutOfBoundsException.h
+	../include/gVirtualXRay/Utilities/OutOfBoundsException.inl
+	../include/gVirtualXRay/Utilities/OutOfMemoryException.h
+	../include/gVirtualXRay/Utilities/OutOfMemoryException.inl
+	../include/gVirtualXRay/Utilities/Types.h
+	../include/gVirtualXRay/Utilities/Units.h
 )
-
-
-# Create the shaders ###########################################################
-SET (SHADER_SOURCES ../shaders/cumulated_l_buffer.frag
-	../shaders/cumulated_l_buffer.vert
-	../shaders/l_buffer.frag
-	../shaders/l_buffer.vert
-	../shaders/MUx_Dx.frag
-	../shaders/MUx_Dx.vert
-	../shaders/outer_surface_l_buffer.frag
-	../shaders/outer_surface_l_buffer.vert
-	../shaders/xray_attenuation.frag
-	../shaders/xray_attenuation.vert
-	../shaders/xray_display.frag
-	../shaders/xray_display.vert
-)
-
-
-SET (SHADER_OBJECTS cumulated_l_buffer.frag.o 
-	cumulated_l_buffer.vert.o
-	l_buffer.frag.o
-	l_buffer.vert.o
-	MUx_Dx.frag.o
-	MUx_Dx.vert.o
-	outer_surface_l_buffer.frag.o
-	outer_surface_l_buffer.vert.o
-	xray_attenuation.frag.o
-	xray_attenuation.vert.o
-	xray_display.frag.o
-	xray_display.vert.o
-)
-
-
-foreach(F ${SHADER_SOURCES})
-	# Get the file name
-	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
-
-	add_custom_command(OUTPUT ${FILE_NAME}.tmp
-                   COMMAND objcopy -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
-                   COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
-						 COMMAND ar -r libgVirtualXRay.a ${FILE_NAME}.o
-						 COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
-                   DEPENDS ${F} gVirtualXRay 
-	)
-
-	add_custom_target(${FILE_NAME}.o ALL DEPENDS ${FILE_NAME}.tmp)
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.o)
-endforeach()
 
 
 # Add source to the project ####################################################
@@ -185,6 +137,7 @@ SET(requiredLibs)
 
 
 # Headers of the project #######################################################
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(../include)
 INCLUDE_DIRECTORIES(/usr/local/include)
 
@@ -239,8 +192,86 @@ ELSE(ITK_FOUND)
 ENDIF(ITK_FOUND)
 
 
+# ZLIB #########################################################################
+FIND_PACKAGE(ZLIB REQUIRED)
+IF(ZLIB_FOUND)
+	INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+	SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
+ELSE(ZLIB_FOUND)
+	MESSAGE("ZLIB not found.")
+ENDIF(ZLIB_FOUND)
+
+
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
+
+
+# Create the RESOURCES ###########################################################
+SET (RESOURCES_SOURCES ../resources/cumulated_l_buffer.frag
+	../resources/cumulated_l_buffer.vert
+	../resources/l_buffer.frag
+	../resources/l_buffer.vert
+	../resources/MUx_Dx.frag
+	../resources/MUx_Dx.vert
+	../resources/outer_surface_l_buffer.frag
+	../resources/outer_surface_l_buffer.vert
+	../resources/xray_attenuation.frag
+	../resources/xray_attenuation.vert
+	../resources/xray_display.frag
+	../resources/xray_display.vert
+	../resources/mu_water.csv
+)
+
+
+SET (RESOURCES cumulated_l_buffer.frag.h
+	cumulated_l_buffer.vert.h
+	l_buffer.frag.h
+	l_buffer.vert.h
+	MUx_Dx.frag.h
+	MUx_Dx.vert.h
+	outer_surface_l_buffer.frag.h
+	outer_surface_l_buffer.vert.h
+	xray_attenuation.frag.h
+	xray_attenuation.vert.h
+	xray_display.frag.h
+	xray_display.vert.h
+	mu_water.csv.h
+)
+
+
+foreach(F ${RESOURCES_SOURCES})
+	# Get the file name
+	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
+
+	IF(UNIX)
+		IF(APPLE)
+		       STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
+			add_custom_command(OUTPUT ${FILE_NAME}.tmp
+				#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
+				COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
+				COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
+				DEPENDS ${F}.h
+			)
+
+			add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
+			add_dependencies(gVirtualXRay ${FILE_NAME}.h)
+
+			MESSAGE("add_dependencies(gVirtualXRay ${FILE_NAME}.h)")
+
+		ELSE(APPLE)
+			add_custom_command(OUTPUT ${FILE_NAME}.tmp
+				COMMAND ${CMAKE_OBJCOPY} -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
+				COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
+				COMMAND ar -r libgVirtualXRay.a ${FILE_NAME}.o
+				COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
+				DEPENDS ${F} gVirtualXRay 
+			)
+		ENDIF(APPLE)
+	ENDIF(UNIX)
+
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
+endforeach()
 
 
 # Linkage of the target ########################################################

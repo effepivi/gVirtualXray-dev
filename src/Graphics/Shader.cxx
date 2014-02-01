@@ -374,12 +374,18 @@ GLuint Shader::compileShader(GLenum aShaderType, int aLineNumber, GLchar** aShad
 		glGetProgramiv(m_shader_program_id, GL_INFO_LOG_LENGTH, &log_size);
 
 		// Allocate memory to store the log message
-		p_log_message = new char[log_size + 1];
+		if (log_size)
+		{
+			p_log_message = new char[log_size + 1];
+		}
 
 		// The memory was not allocated
 		if (!p_log_message)
 		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Shader program linkage error.");
+			std::stringstream error_message;
+			error_message << "Shader program linkage error in:" << std::endl;
+			error_message << *aShaderSource;
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 		}
 
 		// Get the log message

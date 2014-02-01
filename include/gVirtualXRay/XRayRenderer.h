@@ -146,7 +146,6 @@ public:
 	void initialise(ComputingMode aComputingMode,
 			int anInternalTextureFormat,
 			const XRayDetector* apDetector,
-			const char* aMuWaterTableFilename,
 			const XRayBeam* apBeamSpectrum);
 
 
@@ -309,11 +308,8 @@ public:
 protected:
 	//--------------------------------------------------------------------------
 	///	Load the table of water attenuation coefficients.
-	/**
-	*	@param aFileName:	the name of the file that contains the data
-	*/
 	//--------------------------------------------------------------------------
-	void loadMuWater(const char* aFileName);
+	void loadMuWater();
 
 
 	//--------------------------------------------------------------------------

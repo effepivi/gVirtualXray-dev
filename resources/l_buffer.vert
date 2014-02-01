@@ -42,7 +42,8 @@
 //******************************************************************************
 varying float g_distance_intersection_detector;
 varying vec3 g_viewing_vector;
-varying vec4 g_normal;
+varying vec4 g_normal_0;
+varying vec4 g_normal_1;
 
 
 //******************************************************************************
@@ -104,6 +105,7 @@ void main(void)
 	gl_Position.z = 0.0;
 	gl_Position.w = 1.0;
 	
-	// Transformed normal
-	g_normal = vec4(-gl_Normal, 1.0);
+	// Normals
+	g_normal_0 = vec4(-gl_Normal, 1.0);
+	g_normal_1 = vec4(-gl_MultiTexCoord0.xyz, 1.0);
 }

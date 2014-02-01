@@ -31,6 +31,7 @@
 //******************************************************************************
 #include <cfloat>
 #include <math.h>
+#include <cstring>
 
 #ifdef HAS_ITK
 #include <itkImageFileWriter.h>
@@ -60,47 +61,27 @@
 #include "gVirtualXRay/Utilities/OpenGLUtilities.h"
 #endif
 
+#include <zlib.h>
 
-//******************************************************************************
-//	Extern variables
-//******************************************************************************
-extern "C" {
-	extern uint8_t cumulated_l_buffer_frag_data[] asm("_binary____shaders_cumulated_l_buffer_frag_start");
-	extern uint8_t cumulated_l_buffer_frag_size[] asm("_binary____shaders_cumulated_l_buffer_frag_size");
+#include "MUx_Dx.frag.h"
+#include "MUx_Dx.vert.h"
 
-	extern uint8_t cumulated_l_buffer_vert_data[] asm("_binary____shaders_cumulated_l_buffer_vert_start");
-	extern uint8_t cumulated_l_buffer_vert_size[] asm("_binary____shaders_cumulated_l_buffer_vert_size");
+#include "cumulated_l_buffer.frag.h"
+#include "cumulated_l_buffer.vert.h"
 
-	extern uint8_t l_buffer_frag_data[] asm("_binary____shaders_l_buffer_frag_start");
-	extern uint8_t l_buffer_frag_size[] asm("_binary____shaders_l_buffer_frag_size");
+#include "l_buffer.frag.h"
+#include "l_buffer.vert.h"
 
-	extern uint8_t l_buffer_vert_data[] asm("_binary____shaders_l_buffer_vert_start");
-	extern uint8_t l_buffer_vert_size[] asm("_binary____shaders_l_buffer_vert_size");
+#include "outer_surface_l_buffer.frag.h"
+#include "outer_surface_l_buffer.vert.h"
 
-	extern uint8_t MUx_Dx_frag_data[] asm("_binary____shaders_MUx_Dx_frag_start");
-	extern uint8_t MUx_Dx_frag_size[] asm("_binary____shaders_MUx_Dx_frag_size");
+#include "xray_attenuation.frag.h"
+#include "xray_attenuation.vert.h"
 
-	extern uint8_t MUx_Dx_vert_data[] asm("_binary____shaders_MUx_Dx_vert_start");
-	extern uint8_t MUx_Dx_vert_size[] asm("_binary____shaders_MUx_Dx_vert_size");
+#include "xray_display.frag.h"
+#include "xray_display.vert.h"
 
-	extern uint8_t outer_surface_l_buffer_frag_data[] asm("_binary____shaders_outer_surface_l_buffer_frag_start");
-	extern uint8_t outer_surface_l_buffer_frag_size[] asm("_binary____shaders_outer_surface_l_buffer_frag_size");
-
-	extern uint8_t outer_surface_l_buffer_vert_data[] asm("_binary____shaders_outer_surface_l_buffer_vert_start");
-	extern uint8_t outer_surface_l_buffer_vert_size[] asm("_binary____shaders_outer_surface_l_buffer_vert_size");
-
-	extern uint8_t xray_attenuation_frag_data[] asm("_binary____shaders_xray_attenuation_frag_start");
-	extern uint8_t xray_attenuation_frag_size[] asm("_binary____shaders_xray_attenuation_frag_size");
-
-	extern uint8_t xray_attenuation_vert_data[] asm("_binary____shaders_xray_attenuation_vert_start");
-	extern uint8_t xray_attenuation_vert_size[] asm("_binary____shaders_xray_attenuation_vert_size");
-
-	extern uint8_t xray_display_frag_data[] asm("_binary____shaders_xray_display_frag_start");
-	extern uint8_t xray_display_frag_size[] asm("_binary____shaders_xray_display_frag_size");
-
-	extern uint8_t xray_display_vert_data[] asm("_binary____shaders_xray_display_vert_start");
-	extern uint8_t xray_display_vert_size[] asm("_binary____shaders_xray_display_vert_size");
-}
+#include "mu_water.csv.h"
 
 
 //******************************************************************************
@@ -137,6 +118,54 @@ extern "C" {
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
+
+
+//----------------------------------------------------
+int inflate(const void *src, int srcLen, char** apDst)
+//----------------------------------------------------
+{
+	// See http://stackoverflow.com/questions/4901842/in-memory-decompression-with-zlib
+	int dstLen(50 * srcLen);
+	if (*apDst) delete [] *apDst;
+	*apDst = new char[dstLen];
+	memset(*apDst, '\0', dstLen * sizeof(char));
+
+    z_stream strm  = {0};
+    strm.total_in  = strm.avail_in  = srcLen;
+    strm.total_out = strm.avail_out = dstLen;
+    strm.next_in   = (Bytef *) src;
+    strm.next_out  = (Bytef *) (*apDst);
+
+    strm.zalloc = Z_NULL;
+    strm.zfree  = Z_NULL;
+    strm.opaque = Z_NULL;
+
+    int err = -1;
+    int ret = -1;
+
+    err = inflateInit2(&strm, (15 + 32)); //15 window bits, and the +32 tells zlib to to detect if using gzip or zlib
+    if (err == Z_OK) {
+        err = inflate(&strm, Z_FINISH);
+        if (err == Z_STREAM_END) {
+            ret = strm.total_out;
+        }
+        else {
+             inflateEnd(&strm);
+             delete [] *apDst;
+             *apDst = 0;
+             return (err);
+        }
+    }
+    else {
+        inflateEnd(&strm);
+        delete [] *apDst;
+        *apDst = 0;
+        return (err);
+    }
+
+    inflateEnd(&strm);
+    return (ret);
+}
 
 
 //-------------------------------
@@ -177,7 +206,6 @@ XRayRenderer::~XRayRenderer()
 void XRayRenderer::initialise(ComputingMode aComputingMode,
 							  int anInternalTextureFormat,
 							  const XRayDetector* apDetector,
-							  const char* aMuWaterTableFilename,
 							  const XRayBeam* apBeamSpectrum)
 //----------------------------------------------------------------------------
 {
@@ -195,7 +223,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	m_p_detector = const_cast<XRayDetector*>(apDetector);
 
 	// Load mu water table
-	loadMuWater(aMuWaterTableFilename);
+	loadMuWater();
 
 	// Set the beam spectrum
 	m_p_xray_beam = const_cast<XRayBeam*>(apBeamSpectrum);
@@ -327,6 +355,58 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	if (!m_p_temp_raw_data)
 	{
 		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+	}
+}
+
+
+//------------------------------
+void XRayRenderer::loadMuWater()
+//------------------------------
+{
+	// Clear the data
+	m_mu_water_set.clear();
+
+	char* p_dest(0);
+	int z_lib_return_code = inflate(g_mu_water_csv, sizeof(g_mu_water_csv), &p_dest);
+
+	std::cout << p_dest << std::endl;
+
+
+	// It does not exist
+	if (!z_lib_return_code)
+	{
+		delete [] p_dest;
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "No mu water was decoded.");
+	}
+
+	// Open the file
+	std::stringstream mu_stream;
+	mu_stream << (char*)p_dest;
+	delete [] p_dest;
+
+	// It does not exist
+	if (!mu_stream.str().size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "No mu water was provided.");
+	}
+
+	// Ignore the first line
+	char first_line[1024];
+	mu_stream.getline(first_line, 1024);
+
+	// Process every record
+	AttenuationCoefficient temp;
+	while (!mu_stream.eof())
+	{
+		// Load the record
+		mu_stream >> temp;
+
+		// The record is valid
+		if (!mu_stream.eof())
+		{
+			// Store the record
+			m_mu_water_set.push_back(temp);
+		}
 	}
 }
 
@@ -661,109 +741,122 @@ void XRayRenderer::initShaders()
 
 
 	// Initialise the shaders
+	char* p_vertex_shader(0);
+	char* p_fragment_shader(0);
+
+	int z_lib_return_code_vertex(0);
+	int z_lib_return_code_fragment(0);
+
+	std::string vertex_shader;
+	std::string fragment_shader;
 
 	// L-buffer
-	size_t fragment_shader_size = (size_t)((void *)l_buffer_frag_size);
-	size_t vertex_shader_size   = (size_t)((void *)l_buffer_vert_size);
+	z_lib_return_code_vertex   = inflate(g_l_buffer_vert, sizeof(g_l_buffer_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_l_buffer_frag, sizeof(g_l_buffer_frag), &p_fragment_shader);
 
-	char* p_fragment_shader = new char[fragment_shader_size + 1];
-	char* p_vertex_shader   = new char[vertex_shader_size   + 1];
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
 
-	memcpy(p_fragment_shader, l_buffer_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   l_buffer_vert_data, vertex_shader_size);
+	std::cout << vertex_shader << std::endl;
+	std::cout << fragment_shader << std::endl;
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
-
-	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
-	delete [] p_fragment_shader;
-	delete [] p_vertex_shader;
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
-	fragment_shader_size = (size_t)((void *)cumulated_l_buffer_frag_size);
-	vertex_shader_size   = (size_t)((void *)cumulated_l_buffer_vert_size);
+	z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_vert, sizeof(g_cumulated_l_buffer_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_frag, sizeof(g_cumulated_l_buffer_frag), &p_fragment_shader);
 
-	p_fragment_shader = new char[fragment_shader_size + 1];
-	p_vertex_shader   = new char[vertex_shader_size   + 1];
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
+	std::cout << vertex_shader << std::endl;
+	std::cout << fragment_shader << std::endl;
 
-	memcpy(p_fragment_shader, cumulated_l_buffer_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   cumulated_l_buffer_vert_data, vertex_shader_size);
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
-
-	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
-	delete [] p_fragment_shader;
-	delete [] p_vertex_shader;
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
-	fragment_shader_size = (size_t)((void *)outer_surface_l_buffer_frag_size);
-	vertex_shader_size   = (size_t)((void *)outer_surface_l_buffer_vert_size);
+	z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_vert, sizeof(g_outer_surface_l_buffer_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_frag, sizeof(g_outer_surface_l_buffer_frag), &p_fragment_shader);
 
-	p_fragment_shader = new char[fragment_shader_size + 1];
-	p_vertex_shader   = new char[vertex_shader_size   + 1];
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
+	std::cout << vertex_shader << std::endl;
+	std::cout << fragment_shader << std::endl;
 
-	memcpy(p_fragment_shader, outer_surface_l_buffer_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   outer_surface_l_buffer_vert_data, vertex_shader_size);
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
-
-	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
-	delete [] p_fragment_shader;
-	delete [] p_vertex_shader;
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
-	fragment_shader_size = (size_t)((void *)MUx_Dx_frag_size);
-	vertex_shader_size   = (size_t)((void *)MUx_Dx_vert_size);
+	z_lib_return_code_vertex   = inflate(g_MUx_Dx_vert, sizeof(g_MUx_Dx_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_MUx_Dx_frag, sizeof(g_MUx_Dx_frag), &p_fragment_shader);
 
-	p_fragment_shader = new char[fragment_shader_size + 1];
-	p_vertex_shader   = new char[vertex_shader_size   + 1];
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
+	std::cout << vertex_shader << std::endl;
+	std::cout << fragment_shader << std::endl;
 
-	memcpy(p_fragment_shader, MUx_Dx_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   MUx_Dx_vert_data, vertex_shader_size);
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
-
-	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
-	delete [] p_fragment_shader;
-	delete [] p_vertex_shader;
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
-	fragment_shader_size = (size_t)((void *)xray_attenuation_frag_size);
-	vertex_shader_size   = (size_t)((void *)xray_attenuation_vert_size);
+	z_lib_return_code_vertex   = inflate(g_xray_attenuation_vert, sizeof(g_xray_attenuation_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_xray_attenuation_frag, sizeof(g_xray_attenuation_frag), &p_fragment_shader);
 
-	p_fragment_shader = new char[fragment_shader_size + 1];
-	p_vertex_shader   = new char[vertex_shader_size   + 1];
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
+	std::cout << vertex_shader << std::endl;
+	std::cout << fragment_shader << std::endl;
 
-	memcpy(p_fragment_shader, xray_attenuation_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   xray_attenuation_vert_data, vertex_shader_size);
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
-
-	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
-	delete [] p_fragment_shader;
-	delete [] p_vertex_shader;
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
-	fragment_shader_size = (size_t)((void *)xray_display_frag_size);
-	vertex_shader_size   = (size_t)((void *)xray_display_vert_size);
+	z_lib_return_code_vertex   = inflate(g_xray_display_vert, sizeof(g_xray_display_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_xray_display_frag, sizeof(g_xray_display_frag), &p_fragment_shader);
 
-	p_fragment_shader = new char[fragment_shader_size + 1];
-	p_vertex_shader   = new char[vertex_shader_size   + 1];
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
+	std::cout << vertex_shader << std::endl;
+	std::cout << fragment_shader << std::endl;
 
-	memcpy(p_fragment_shader, xray_display_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   xray_display_vert_data, vertex_shader_size);
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
-
-	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].loadSource(p_vertex_shader, p_fragment_shader);
-	delete [] p_fragment_shader;
-	delete [] p_vertex_shader;
-
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Restore the current shader
 	glUseProgram(current_program);
