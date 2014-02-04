@@ -78,7 +78,10 @@
 #include "gVirtualXRay/Graphics/Shader.h"
 #endif
 
-#include "gVirtualXRayConfig.h"
+
+#include "gVirtualXRay/stereo_helper.h"
+
+//#include "gVirtualXRayConfig.h"
 
 
 //******************************************************************************
@@ -114,6 +117,7 @@ GLsizei g_main_window_width(1280 / 2.0);
 GLsizei g_main_window_height(800 / 2.0);
 int g_main_window_id(0);
 GLfloat g_zoom(40.0 * cm);
+GLfloat g_eye_offset(2.0 * cm);
 
 int g_button(-1);
 int g_button_state(-1);
@@ -177,7 +181,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-	    std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
+	   // std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
 
 	    // Register the exit callback
 		atexit(quit);
@@ -185,9 +189,22 @@ int main(int argc, char** argv)
 		// Initialize GLUT
 		glutInit(&argc, argv);
 
-		// Create a GLUT window
-		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+		// Is stereo enable
+		GLboolean can_use_stereo(false);
+	    glGetBooleanv(GL_STEREO, &can_use_stereo);
 
+		// Stereo is enable on the system
+	    if (can_use_stereo)
+	    {
+	    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STEREO);
+	    }
+		// Stereo is not enable on the system
+	    else
+	    {
+	    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+	    }
+
+		// Create a GLUT window
 		glutInitWindowSize(g_main_window_width, g_main_window_height);
 		g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
@@ -260,22 +277,26 @@ void initGL()
 	//glEnable(GL_RESCALE_NORMAL);
 
 	// Two-sided lighting
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 	// Set the background colour
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	
 	// Choose smooth shading
-	glShadeModel(GL_SMOOTH);
+	//glShadeModel(GL_SMOOTH);
 	
 	// Use colour and texture coordinate interpolation
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	// Use antialiased polygons
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	// Use antialiasing
-	glEnable(GL_POLYGON_SMOOTH);
+	//glEnable(GL_POLYGON_SMOOTH);
+
+
+    glEnable(GL_MULTISAMPLE);
+    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 
 	/*size_t fragment_shader_size = (size_t)((void *)display_frag_size);
 	size_t vertex_shader_size   = (size_t)((void *)display_vert_size);
@@ -295,9 +316,9 @@ void initGL()
 }
 
 
-//------------
-void display()
-//------------
+//-----------
+void render()
+//-----------
 {
 	try
 	{
@@ -419,9 +440,6 @@ void display()
 		// Enable lighting
 		//glEnable(GL_LIGHTING);
 
-		// Update the X-ray image
-		updateXRayImage();
-
 		// Display the X-Ray image
 		g_xray_renderer.display();
 
@@ -447,9 +465,6 @@ void display()
 		popEnableDisableState();
 		popEnableDisableState();
 
-		// Display the image
-		glutSwapBuffers();
-
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -459,6 +474,54 @@ void display()
 	{
 		std::cerr << error.what() << std::endl;
 	}
+}
+
+
+//------------
+void display()
+//------------
+{
+	// Update the X-ray image
+	updateXRayImage();
+
+	GLboolean can_use_stereo(false);
+    glGetBooleanv(GL_STEREO, &can_use_stereo);
+
+    // Use stereo
+	if (can_use_stereo)
+	{
+		// Store the current transformation matrix
+		pushModelViewMatrix();
+
+		// Set left eye
+		loadLookAtModelViewMatrix(g_eye_offset, 0.0, g_zoom,
+				0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0);
+		glLoadMatrixf(g_current_modelview_matrix.get());
+
+		glDrawBuffer(GL_BACK_LEFT);
+		render();
+
+		// Set right eye
+		loadLookAtModelViewMatrix(-g_eye_offset, 0.0, g_zoom,
+				0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0);
+		glLoadMatrixf(g_current_modelview_matrix.get());
+
+		glDrawBuffer(GL_BACK_RIGHT);
+		render();
+
+		// Restore the current transformation matrix
+		popModelViewMatrix();
+	}
+    // Cannot use stereo
+	else
+	{
+		render();
+	}
+
+	// Display the image
+	glutSwapBuffers();
 }
 
 
@@ -676,6 +739,7 @@ void reshape(int width, int height)
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
+	glLoadMatrixf(g_current_modelview_matrix.get());
 }
 
 
@@ -814,12 +878,12 @@ void loadSTLFile()
 	// Set geometry
 	g_inside_polygon_data.setFilename(stl_filename_0);
 	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm);
-	g_inside_polygon_data.mergeVertices();
+	//g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
 	g_outside_polygon_data.setFilename(stl_filename_1);
 	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm);
-	g_outside_polygon_data.mergeVertices();
+	//g_outside_polygon_data.mergeVertices();
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date

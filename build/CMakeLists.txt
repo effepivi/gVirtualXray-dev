@@ -53,10 +53,10 @@ set (gVirtualXRay_VERSION_MINOR 0)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
-configure_file (
-  "${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
-  "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
-  )
+#configure_file (
+#  "${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
+#  "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
+#  )
 
 
 # Library source code ##########################################################
@@ -256,9 +256,9 @@ foreach(F ${RESOURCES_SOURCES})
 	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
 
 	IF(UNIX)
-		IF(APPLE)
-		       STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
-			add_custom_command(OUTPUT ${FILE_NAME}.tmp
+		#IF(APPLE)
+				STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
+				add_custom_command(OUTPUT ${FILE_NAME}.tmp
 				#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
 				COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
 				COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
@@ -270,15 +270,15 @@ foreach(F ${RESOURCES_SOURCES})
 
 			MESSAGE("add_dependencies(gVirtualXRay ${FILE_NAME}.h)")
 
-		ELSE(APPLE)
-			add_custom_command(OUTPUT ${FILE_NAME}.tmp
-				COMMAND ${CMAKE_OBJCOPY} -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
-				COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
-				COMMAND ar -r libgVirtualXRay.a ${FILE_NAME}.o
-				COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
-				DEPENDS ${F} gVirtualXRay 
-			)
-		ENDIF(APPLE)
+		#ELSE(APPLE)
+		#	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+		#		COMMAND ${CMAKE_OBJCOPY} -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
+		#		COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
+		#		COMMAND ar -r libgVirtualXRay.a ${FILE_NAME}.o
+		#		COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
+		#		DEPENDS ${F} gVirtualXRay 
+		#	)
+		#ENDIF(APPLE)
 	ENDIF(UNIX)
 
 	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
