@@ -226,9 +226,9 @@ template<typename T> void Matrix4x4<T>::scale(T x, T y, T z)
 }
 
 
-//---------------------------------------------------------------
-template<typename T> Matrix4x4<T> Matrix4x4<T>::transpose() const
-//---------------------------------------------------------------
+//------------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::getTranspose() const
+//------------------------------------------------------------------
 {
 	return Matrix4x4<T>(
 		m_p_4x4_data[0], m_p_4x4_data[4],  m_p_4x4_data[8], m_p_4x4_data[12],
@@ -252,9 +252,9 @@ template<typename T> T Matrix4x4<T>::determinant() const
 }
 
 
-//-------------------------------------------------------------
-template<typename T> Matrix4x4<T> Matrix4x4<T>::inverse() const
-//-------------------------------------------------------------
+//----------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::getInverse() const
+//----------------------------------------------------------------
 {
 	T m0(0), m1(0), m2(0), m3(0), m4(0), m5(0), m6(0), m7(0), m8(0), m9(0), m10(0), m11(0), m12(0), m13(0), m14(0), m15(0);
 	T matrix_determinant(determinant());
