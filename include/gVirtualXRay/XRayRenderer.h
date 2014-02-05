@@ -303,6 +303,13 @@ public:
 	bool getNegativeFilteringFlag() const;
 	void printMuWaterTable(std::ostream& anOutputStream);
 
+	int getNumberOfInnerSurfaces() const;
+
+	int getNumberOfOuterSurfaces() const;
+
+	void displayInnerSurface(int anIndex) const;
+	void displayOuterSurface() const;
+
 
 //******************************************************************************
 protected:

@@ -165,4 +165,49 @@ inline RATIONAL_NUMBER XRayRenderer::convertHounsfieldValue2Mu(const RATIONAL_NU
 }
 
 
+inline int XRayRenderer::getNumberOfInnerSurfaces() const
+{
+	return (m_p_inner_surface_set.size());
+}
+
+
+inline int XRayRenderer::getNumberOfOuterSurfaces() const
+{
+	if (m_p_outer_surface)
+	{
+		return (1);
+	}
+	else
+	{
+		return (0);
+	}
+}
+
+
+//--------------------------------------------------------------
+inline void XRayRenderer::displayInnerSurface(int anIndex) const
+//--------------------------------------------------------------
+{
+	if (anIndex >= m_p_inner_surface_set.size())
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+	
+	m_p_inner_surface_set[anIndex]->display();
+}
+
+
+//---------------------------------------------------
+inline void XRayRenderer::displayOuterSurface() const
+//---------------------------------------------------
+{
+	if (!m_p_outer_surface)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+	
+	m_p_outer_surface->display();
+}
+
+
 } // namespace gVirtualXRay
