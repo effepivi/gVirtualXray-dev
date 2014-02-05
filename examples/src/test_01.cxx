@@ -192,7 +192,10 @@ int main(int argc, char** argv)
 
 		// Is stereo enable
 		GLboolean can_use_stereo(false);
+
+#ifdef HAS_LINUX
 	    glGetBooleanv(GL_STEREO, &can_use_stereo);
+#endif
 
 		// Stereo is enable on the system
 	    if (can_use_stereo)
@@ -369,7 +372,7 @@ void render()
 		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		MATRIX4 normal_matrix(g_current_modelview_matrix.getInverse().getTranspose());
+		MATRIX4 normal_matrix(g_current_modelview_matrix);
 		GLuint normal_matrix_handle(glGetUniformLocation(g_display_shader.getProgramHandle(), "g_normal_matrix"));
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
