@@ -175,7 +175,7 @@ void applyModelViewMatrix()
 		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		MATRIX4 normal_matrix(g_current_modelview_matrix.inverse().transpose());
+		MATRIX4 normal_matrix(g_current_modelview_matrix.getInverse().getTranspose());
 		GLuint normal_matrix_handle(glGetUniformLocation(program_handle, "g_normal_matrix"));
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
