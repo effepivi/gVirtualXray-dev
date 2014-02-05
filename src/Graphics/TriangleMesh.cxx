@@ -347,7 +347,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	// Compute the normal vectors using the cross product
 	if (anAutoComputeNormalFlag)
 	{
-		autoComputeNormal();
+		computeNormalVectors();
 		normaliseNormals();
 	}
 
@@ -380,9 +380,9 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 }
 
 
-//------------------------------------
-void TriangleMesh::autoComputeNormal()
-//------------------------------------
+//---------------------------------------
+void TriangleMesh::computeNormalVectors()
+//---------------------------------------
 {
 	m_p_face_normal_set.clear();
 	m_p_vertex_normal_set.clear();
@@ -421,7 +421,17 @@ void TriangleMesh::autoComputeNormal()
 			m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
 			m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
 			m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
+
+			m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
+			m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
+			m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
+
+			m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
+			m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
+			m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
 		}
+
+		normaliseNormals();
 	}
 	// There is not any index
 	else
@@ -487,12 +497,7 @@ void TriangleMesh::autoComputeNormal()
 void TriangleMesh::normaliseNormals()
 //-----------------------------------
 {
-	if (getFaceNormalNumber() % 3 != 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	if (getVertexNormalNumber() % 3 != 0)
+	if (!getFaceNormalNumber() && !getVertexNormalNumber())
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
