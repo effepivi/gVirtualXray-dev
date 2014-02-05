@@ -78,8 +78,9 @@
 #include "gVirtualXRay/Graphics/Shader.h"
 #endif
 
-
+#ifdef HAS_LINUX
 #include "gVirtualXRay/stereo_helper.h"
+#endif
 
 //#include "gVirtualXRayConfig.h"
 
@@ -368,7 +369,7 @@ void render()
 		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		MATRIX4 normal_matrix(g_current_modelview_matrix.inverse().transpose());
+		MATRIX4 normal_matrix(g_current_modelview_matrix.getInverse().getTranspose());
 		GLuint normal_matrix_handle(glGetUniformLocation(g_display_shader.getProgramHandle(), "g_normal_matrix"));
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -990,7 +991,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
 			//axis_in_camera_coord.normalize();
 
-			Matrix4x4<GLfloat> camera2object(aRotationMatrix.inverse());
+			Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
 			Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
 			//axis_in_object_coord.normalize();
 
