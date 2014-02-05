@@ -494,6 +494,9 @@ inline void TriangleMesh::setExternalData(const std::vector<GLfloat>* aVertexArr
 	// Compute the bounding box
 	computeBoundingBox();
 
+	// Compute the normal vectors
+	computeNormalVectors();
+	
 	// Update the VBO
 	if (m_vbo.isReady())
 	{
