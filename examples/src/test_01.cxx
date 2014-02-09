@@ -974,7 +974,7 @@ Vec3<GLfloat> getArcballVector(int x, int y)
 float radian2degree(float anAngle)
 //--------------------------------
 {
-	return (180.0 * anAngle / M_PI);
+	return (180.0 * anAngle / Utilities::PI);
 }
 
 
