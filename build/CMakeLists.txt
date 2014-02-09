@@ -53,10 +53,10 @@ set (gVirtualXRay_VERSION_MINOR 0)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
-#configure_file (
-#  "${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
-#  "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
-#  )
+configure_file (
+	"${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
+	"${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
+)
 
 
 # Library source code ##########################################################
@@ -166,6 +166,11 @@ ENDIF(OPENGL_FOUND)
 
 FIND_PACKAGE(GLUT REQUIRED)
 IF(GLUT_FOUND)
+	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+	ADD_DEFINITIONS(-ansi -pedantic)
+	IF(WINDOWS)
+	ADD_DEFINITIONS(-DHAS_WINDOWS)
+	ENDIF(WINDOWS)
 	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
 	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
 ELSE(GLUT_FOUND)
@@ -173,8 +178,16 @@ ELSE(GLUT_FOUND)
 ENDIF(GLUT_FOUND)
 
 
+# FLTK ########################################################################
+#FIND_PACKAGE(FLTK REQUIRED)
+#if(FLTK_FOUND)
+#    SET (requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+#endif(FLTK_FOUND)
+
+
 FIND_PACKAGE(GLEW REQUIRED)
 IF(GLEW_FOUND)
+	ADD_DEFINITIONS(-DGLEW_STATIC)
 	INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
 	SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ELSE(GLEW_FOUND)
@@ -194,14 +207,14 @@ ENDIF(FREEIMAGE_FOUND)
 
 
 # ITK ##########################################################################
-FIND_PACKAGE(ITK)
-IF(ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE(${USE_ITK_FILE})
-	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-	MESSAGE("ITK not found.")
-ENDIF(ITK_FOUND)
+#FIND_PACKAGE(ITK)
+#IF(ITK_FOUND)
+#	ADD_DEFINITIONS(-DHAS_ITK)
+#	INCLUDE(${USE_ITK_FILE})
+#	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+#ELSE(ITK_FOUND)
+#	MESSAGE("ITK not found.")
+#ENDIF(ITK_FOUND)
 
 
 # ZLIB #########################################################################
@@ -255,7 +268,7 @@ foreach(F ${RESOURCES_SOURCES})
 	# Get the file name
 	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
 
-	IF(UNIX)
+	#IF(UNIX)
 		#IF(APPLE)
 				STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
 				add_custom_command(OUTPUT ${FILE_NAME}.tmp
@@ -279,7 +292,7 @@ foreach(F ${RESOURCES_SOURCES})
 		#		DEPENDS ${F} gVirtualXRay 
 		#	)
 		#ENDIF(APPLE)
-	ENDIF(UNIX)
+	#ENDIF(UNIX)
 
 	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
 	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
