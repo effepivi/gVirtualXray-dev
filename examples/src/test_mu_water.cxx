@@ -29,6 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+//#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+//#endif
+
 #ifndef XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif

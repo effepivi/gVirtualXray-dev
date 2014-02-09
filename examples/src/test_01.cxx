@@ -29,7 +29,12 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+//#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+//#endif
+
 #include<GL/glew.h>
+#include <gl/glaux.h>
 #include <stdlib.h>
 
 #ifdef __APPLE__
