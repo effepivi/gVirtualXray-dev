@@ -33,9 +33,6 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
 
 
 //******************************************************************************
@@ -47,67 +44,70 @@ namespace Utilities {
 //******************************************************************************
 //	Constant declarations
 //******************************************************************************
-const RATIONAL_NUMBER kilometer  = 1000.0    / 0.001; ///< kilometre
-const RATIONAL_NUMBER hectometer =  100.0    / 0.001; ///< hectometre
-const RATIONAL_NUMBER decameter  =   10.0    / 0.001; ///< decametre
-const RATIONAL_NUMBER meter      =    1.0    / 0.001; ///< metre
-const RATIONAL_NUMBER decimeter  =    0.1    / 0.001; ///< decimetre
-const RATIONAL_NUMBER centimeter =    0.01   / 0.001; ///< centimetre
-const RATIONAL_NUMBER millimeter =    0.001  / 0.001; ///< millimetre
-const RATIONAL_NUMBER micrometer =    0.0001 / 0.001; ///< micrometre
+const double PI = 3.14159265358979323846;
+const double PI_2 = PI / 2.0;
 
-const RATIONAL_NUMBER kilometre  = kilometer;  ///< kilometre
-const RATIONAL_NUMBER hectometre = hectometer; ///< hectometre
-const RATIONAL_NUMBER decametre  = decameter;  ///< decametre
-const RATIONAL_NUMBER metre      = meter;      ///< metre
-const RATIONAL_NUMBER decimetre  = decimeter;  ///< decimetre
-const RATIONAL_NUMBER centimetre = centimeter; ///< centimetre
-const RATIONAL_NUMBER millimetre = millimeter; ///< millimetre
-const RATIONAL_NUMBER micrometre = micrometer; ///< micrometre
+const double kilometer  = 1000.0    / 0.001; ///< kilometre
+const double hectometer =  100.0    / 0.001; ///< hectometre
+const double decameter  =   10.0    / 0.001; ///< decametre
+const double meter      =    1.0    / 0.001; ///< metre
+const double decimeter  =    0.1    / 0.001; ///< decimetre
+const double centimeter =    0.01   / 0.001; ///< centimetre
+const double millimeter =    0.001  / 0.001; ///< millimetre
+const double micrometer =    0.0001 / 0.001; ///< micrometre
 
-const RATIONAL_NUMBER km  = kilometer;  ///< kilometre
-const RATIONAL_NUMBER hm  = hectometer; ///< hectometre
-const RATIONAL_NUMBER dam = decameter;  ///< decametre
-const RATIONAL_NUMBER m   = meter;      ///< meter
-const RATIONAL_NUMBER dm  = decimeter;  ///< decimeter
-const RATIONAL_NUMBER cm  = centimeter; ///< centimeter
-const RATIONAL_NUMBER mm  = millimeter; ///< millimeter
-const RATIONAL_NUMBER um  = micrometer; ///< micrometre
+const double kilometre  = kilometer;  ///< kilometre
+const double hectometre = hectometer; ///< hectometre
+const double decametre  = decameter;  ///< decametre
+const double metre      = meter;      ///< metre
+const double decimetre  = decimeter;  ///< decimetre
+const double centimetre = centimeter; ///< centimetre
+const double millimetre = millimeter; ///< millimetre
+const double micrometre = micrometer; ///< micrometre
 
-const RATIONAL_NUMBER km2  = km * km;   ///< square kilometre
-const RATIONAL_NUMBER hm2  = hm * hm;   ///< square hectometre
-const RATIONAL_NUMBER dam2 = dam * dam; ///< square decametre
-const RATIONAL_NUMBER m2   = m * m;     ///< square meter
-const RATIONAL_NUMBER dm2  = dm * dm;   ///< square decimeter
-const RATIONAL_NUMBER cm2  = cm * cm;   ///< square centimeter
-const RATIONAL_NUMBER mm2  = mm * mm;   ///< square millimeter
-const RATIONAL_NUMBER um2  = um * um;   ///< square micrometre
+const double km  = kilometer;  ///< kilometre
+const double hm  = hectometer; ///< hectometre
+const double dam = decameter;  ///< decametre
+const double m   = meter;      ///< meter
+const double dm  = decimeter;  ///< decimeter
+const double cm  = centimeter; ///< centimeter
+const double mm  = millimeter; ///< millimeter
+const double um  = micrometer; ///< micrometre
 
-const RATIONAL_NUMBER megaelectronvolt  = 1.0; ///< megaelectron volt
-const RATIONAL_NUMBER kiloelectronvolt  = megaelectronvolt * 1.0e-3;    ///< kiloelectron volt
-const RATIONAL_NUMBER electronvolt      = megaelectronvolt * 1.0e-6;       ///< electronvolt
+const double km2  = km * km;   ///< square kilometre
+const double hm2  = hm * hm;   ///< square hectometre
+const double dam2 = dam * dam; ///< square decametre
+const double m2   = m * m;     ///< square meter
+const double dm2  = dm * dm;   ///< square decimeter
+const double cm2  = cm * cm;   ///< square centimeter
+const double mm2  = mm * mm;   ///< square millimeter
+const double um2  = um * um;   ///< square micrometre
 
-const RATIONAL_NUMBER MeV              = megaelectronvolt;  ///< megaelectron volt
-const RATIONAL_NUMBER keV              = kiloelectronvolt;  ///< kiloelectron volt
-const RATIONAL_NUMBER eV               = electronvolt;      ///< electronvolt
+const double megaelectronvolt  = 1.0; ///< megaelectron volt
+const double kiloelectronvolt  = megaelectronvolt * 1.0e-3;    ///< kiloelectron volt
+const double electronvolt      = megaelectronvolt * 1.0e-6;       ///< electronvolt
 
-const RATIONAL_NUMBER kilogram  = 1000.0;    ///< kilogram
-const RATIONAL_NUMBER hectogram =  100.0;    ///< hectogram
-const RATIONAL_NUMBER decagram  =   10.0;    ///< decagram
-const RATIONAL_NUMBER gram      =    1.0;    ///< gram
-const RATIONAL_NUMBER decigram  =    0.1;    ///< decigram
-const RATIONAL_NUMBER centigram =    0.01;   ///< centigram
-const RATIONAL_NUMBER milligram =    0.001;  ///< milligram
-const RATIONAL_NUMBER microgram =    0.0001; ///< microgram
+const double MeV              = megaelectronvolt;  ///< megaelectron volt
+const double keV              = kiloelectronvolt;  ///< kiloelectron volt
+const double eV               = electronvolt;      ///< electronvolt
 
-const RATIONAL_NUMBER kg  = kilogram;  ///< kilogram
-const RATIONAL_NUMBER hg  = hectogram; ///< hectogram
-const RATIONAL_NUMBER dag = decagram;  ///< decagram
-const RATIONAL_NUMBER g   = gram;      ///< gram
-const RATIONAL_NUMBER dg  = decigram;  ///< decigram
-const RATIONAL_NUMBER cg  = centigram; ///< centigram
-const RATIONAL_NUMBER mg  = milligram; ///< milligram
-const RATIONAL_NUMBER ug  = microgram; ///< microgram
+const double kilogram  = 1000.0;    ///< kilogram
+const double hectogram =  100.0;    ///< hectogram
+const double decagram  =   10.0;    ///< decagram
+const double gram      =    1.0;    ///< gram
+const double decigram  =    0.1;    ///< decigram
+const double centigram =    0.01;   ///< centigram
+const double milligram =    0.001;  ///< milligram
+const double microgram =    0.0001; ///< microgram
+
+const double kg  = kilogram;  ///< kilogram
+const double hg  = hectogram; ///< hectogram
+const double dag = decagram;  ///< decagram
+const double g   = gram;      ///< gram
+const double dg  = decigram;  ///< decigram
+const double cg  = centigram; ///< centigram
+const double mg  = milligram; ///< milligram
+const double ug  = microgram; ///< microgram
 
 } // namespace Utilities
 

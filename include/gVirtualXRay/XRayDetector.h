@@ -75,7 +75,7 @@ public:
 		CUBE,
 		LINE,
 		PARALLEL,
-		UNKNOWN,
+		UNKNOWN
 	} SourceType;
 
 

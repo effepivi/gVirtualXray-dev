@@ -354,7 +354,7 @@ inline bool XRayDetector::useParallelBeam() const
 inline void XRayDetector::updateFovy()
 //------------------------------------
 {
-	m_field_of_view_y = 2.0 * (180.0  / M_PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), RATIONAL_NUMBER(m_distance_source_detector));
+	m_field_of_view_y = 2.0 * (180.0  / Utilities::PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), RATIONAL_NUMBER(m_distance_source_detector));
 }
 
 

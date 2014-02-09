@@ -29,6 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef UNITS_H
+#include "gVirtualXRay/Units.h"
+#endif
+
 #include <math.h>
 #include <string.h>
 
@@ -39,13 +43,6 @@
 #include<GL/gl.h>
 #endif
 
-
-//******************************************************************************
-//	define
-//******************************************************************************
-#ifdef WIN32
-#define M_PI       3.14159265358979323846 ///< Define Pi
-#endif // WIN32
 
 
 //******************************************************************************
@@ -135,7 +132,7 @@ template<typename T> void Matrix4x4<T>::rotate(const double anAngle, const Vec3<
 //------------------------------------------------------------------------------------------
 {
 	Vec3<T> rotation_axis(aVector.normal());
-	double angle(M_PI * anAngle / 180.0);
+	double angle(Utilities::PI * anAngle / 180.0);
 	double c(cos(angle));
 	double s(sin(angle));
 	double one_minus_cos(1.0 - c);

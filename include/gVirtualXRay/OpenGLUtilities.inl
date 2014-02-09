@@ -50,6 +50,10 @@
 #include "gVirtualXRay/FBOException.h"
 #endif
 
+#ifndef TYPES_H
+#include "gVirtualXRay/Types.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -282,13 +286,13 @@ inline MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
 										  GLdouble right,
 										  GLdouble bottom,
 										  GLdouble top,
-										  GLdouble near,
-										  GLdouble far)
+										  GLdouble nearPlane,
+										  GLdouble farPlane)
 //--------------------------------------------------------
 {
 	GLdouble t_x(-(right + left)   / (right - left));
 	GLdouble t_y(-(top   + bottom) / (top   - bottom));
-	GLdouble t_z(-(far   + near)   / (far   - near));
+	GLdouble t_z(-(farPlane   + nearPlane)   / (farPlane   - nearPlane));
 
 	return (MATRIX4(			
 		2.0 / (right - left),
@@ -303,7 +307,7 @@ inline MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
 
 		0.0,
 		0.0,
-		-2.0 / (far   - near),
+		-2.0 / (farPlane   - nearPlane),
 		0.0,
 
 		t_x,
@@ -318,13 +322,13 @@ inline void loadOrthoProjectionMatrix(GLdouble left,
 									  GLdouble right,
 									  GLdouble bottom,
 									  GLdouble top,
-									  GLdouble near,
-									  GLdouble far)
+									  GLdouble nearPlane,
+									  GLdouble farPlane)
 //----------------------------------------------------
 {
 	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_projection_matrix.get()));
 	
-	g_current_projection_matrix = buildOrthoProjectionMatrix(left, right, bottom, top, near, far);
+	g_current_projection_matrix = buildOrthoProjectionMatrix(left, right, bottom, top, nearPlane, farPlane);
 }
 
 
@@ -333,11 +337,11 @@ inline void multiplyOrthoProjectionMatrix(GLdouble left,
 										  GLdouble right,
 										  GLdouble bottom,
 										  GLdouble top,
-										  GLdouble near,
-										  GLdouble far)
+										  GLdouble nearPlane,
+										  GLdouble farPlane)
 //--------------------------------------------------------
 {
-	g_current_projection_matrix *= buildOrthoProjectionMatrix(left, right, bottom, top, near, far);
+	g_current_projection_matrix *= buildOrthoProjectionMatrix(left, right, bottom, top, nearPlane, farPlane);
 }
 
 
@@ -348,7 +352,7 @@ inline MATRIX4 buildPerspectiveProjectionMatrix(GLdouble fovy,
 												GLdouble zFar)
 //--------------------------------------------------------------
 {
-	GLdouble f(tan(M_PI_2 - (((fovy * M_PI) / 180.0) / 2.0)));
+	GLdouble f(tan(Utilities::PI_2 - (((fovy * Utilities::PI) / 180.0) / 2.0)));
 
 	return (MATRIX4(			
 		f / aspect,
