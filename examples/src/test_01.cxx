@@ -35,12 +35,17 @@
 
 #include<GL/glew.h>
 
-#ifdef USE_FLTK
-#include "FL/glut.H"
-#include <GL/glu.h>
-#else
+#ifdef HAS_FLTK
+#include <FL/glut.H>
+#else // HAS_FLTK
+#ifdef HAS_GLUT
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else // __APPLE__
 #include <GL/glut.h>
-#endif
+#endif // __APPLE__
+#endif // HAS_GLUT
+#endif // HAS_FLTK
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

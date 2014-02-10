@@ -33,6 +33,20 @@
 #include <windows.h>
 #endif
 
+#include <GL/glew.h>
+
+#ifdef HAS_FLTK
+#include <FL/glut.H>
+#else // HAS_FLTK
+#ifdef HAS_GLUT
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else // __APPLE__
+#include <GL/glut.h>
+#endif // __APPLE__
+#endif // HAS_GLUT
+#endif // HAS_FLTK
+
 #ifndef XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif

@@ -36,7 +36,8 @@ ENDIF(WIN32)
 project (examples)
 
 
-# Headers of the project #######################################################
+OPTION(USE_FLTK "Use FLTK." OFF)
+OPTION(USE_GLUT "Use GLUT." ON)
 
 
 # Create the shaders ###########################################################
@@ -72,13 +73,15 @@ ENDIF(NOT APPLE)
 
 
 # FLTK ########################################################################
+IF (USE_FLTK)
 FIND_PACKAGE(FLTK REQUIRED)
 if(FLTK_FOUND)
-	ADD_DEFINITIONS(-DUSE_FLTK)
-	SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+        ADD_DEFINITIONS(-DHAS_FLTK)
+        SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
 ELSE(FLTK_FOUND)
-	MESSAGE(FATAL_ERROR "FLTK not found.")
+        MESSAGE(FATAL_ERROR "FLTK not found.")
 endif(FLTK_FOUND)
+ENDIF (USE_FLTK)
 
 
 # OpenGL ######################################################################
@@ -91,13 +94,17 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-#FIND_PACKAGE(GLUT REQUIRED)
-#IF(GLUT_FOUND)
-#	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-#	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
-#ELSE(GLUT_FOUND)
-#	MESSAGE(FATAL_ERROR "GLUT not found.")
-#ENDIF(GLUT_FOUND)
+# GLUT ########################################################################
+IF (USE_GLUT)
+FIND_PACKAGE(GLUT REQUIRED)
+IF(GLUT_FOUND)
+        ADD_DEFINITIONS(-DHAS_GLUT)
+        INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+        SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
+ELSE(GLUT_FOUND)
+        MESSAGE(FATAL_ERROR "GLUT not found.")
+ENDIF(GLUT_FOUND)
+ENDIF (USE_GLUT)
 
 
 FIND_PACKAGE(GLEW REQUIRED)
