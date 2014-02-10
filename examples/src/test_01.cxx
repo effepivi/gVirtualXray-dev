@@ -169,6 +169,94 @@ int g_rotation_mode(SCENE);
 bool g_display_wireframe(false);
 bool g_display_outside_polygon(true);
 
+GLboolean g_can_use_stereo(false);
+bool g_use_stereo(false);
+
+// http://www.orthostereo.com/geometryopengl.html
+const float g_DTR(0.0174532925);
+
+
+struct camera
+{
+	GLdouble m_left_frustum;
+	GLdouble m_right_frustum;
+	GLdouble m_bottom_frustum;
+	GLdouble m_top_frustum;
+	GLfloat m_model_translation;
+} g_left_camera, g_right_camera;
+
+float g_depthZ = -10.0;                                      //depth of the object drawing
+
+double g_fovy = 45;                                          //field of view in y-axis
+double g_aspect = double(g_main_window_width)/double(g_main_window_height);  //screen aspect ratio
+double g_nearZ = 3.0;                                        //near clipping plane
+double g_farZ = 30.0;                                        //far clipping plane
+double g_screenZ = 10.0;                                     //screen projection plane
+double g_IOD = 0.5;                                          //intraocular distance
+
+MATRIX4 g_left_eye_projection_matrix;
+MATRIX4 g_right_eye_projection_matrix;
+
+MATRIX4 g_left_eye_view_matrix;
+MATRIX4 g_right_eye_view_matrix;
+
+void setFrustum(void)
+{
+   double top = g_nearZ * tan(g_DTR * g_fovy / 2.0);                    //sets top of frustum based on fovy and near clipping plane
+   double right = g_aspect * top;                             //sets right of frustum based on aspect ratio
+   double frustum_shift = (g_IOD / 2.0) * g_nearZ / g_screenZ;
+
+   g_left_camera.m_top_frustum        = top;
+   g_left_camera.m_bottom_frustum     = -top;
+   g_left_camera.m_left_frustum       = -right + frustum_shift;
+   g_left_camera.m_right_frustum      = right + frustum_shift;
+   g_left_camera.m_model_translation  = g_IOD / 2.0;
+
+   g_left_eye_projection_matrix = buildFrustumProjectionMatrix(g_left_camera.m_left_frustum,
+		   g_left_camera.m_right_frustum,
+		   g_left_camera.m_bottom_frustum,
+		   g_left_camera.m_top_frustum,
+		   g_nearZ,
+		   g_farZ);
+
+   g_left_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(g_left_camera.m_model_translation, 0, 0);
+
+   g_left_eye_view_matrix = buildLookAtModelViewMatrix(-g_IOD/2,                                        //set camera position  x=-IOD/2
+            0.0,                                           //                     y=0.0
+            0.0,                                           //                     z=0.0
+            0.0,                                           //set camera "look at" x=0.0
+            0.0,                                           //                     y=0.0
+            g_screenZ,                                       //                     z=screenplane
+            0.0,                                           //set camera up vector x=0.0
+            1.0,                                           //                     y=1.0
+            0.0);                                          //                     z=0.0
+
+   g_right_camera.m_top_frustum       = top;
+   g_right_camera.m_bottom_frustum    = -top;
+   g_right_camera.m_left_frustum      = -right - frustum_shift;
+   g_right_camera.m_right_frustum     = right - frustum_shift;
+   g_right_camera.m_model_translation = -g_IOD / 2.0;
+
+   g_right_eye_projection_matrix = buildFrustumProjectionMatrix(g_right_camera.m_left_frustum,
+		   g_right_camera.m_right_frustum,
+		   g_right_camera.m_bottom_frustum,
+		   g_right_camera.m_top_frustum,
+		   g_nearZ,
+		   g_farZ);
+
+   g_right_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(g_right_camera.m_model_translation, 0, 0);
+
+   g_right_eye_view_matrix = buildLookAtModelViewMatrix(g_IOD/2,                                        //set camera position  x=-IOD/2
+               0.0,                                           //                     y=0.0
+               0.0,                                           //                     z=0.0
+               0.0,                                           //set camera "look at" x=0.0
+               0.0,                                           //                     y=0.0
+               g_screenZ,                                       //                     z=screenplane
+               0.0,                                           //set camera up vector x=0.0
+               1.0,                                           //                     y=1.0
+               0.0);                                          //                     z}
+}
+
 
 //******************************************************************************
 //	Function declaration
@@ -206,23 +294,25 @@ int main(int argc, char** argv)
 		glutInit(&argc, argv);
 
 		// Is stereo enable
-		GLboolean can_use_stereo(false);
-
 #ifdef USE_STEREO
-	    glGetBooleanv(GL_STEREO, &can_use_stereo);
+	    glGetBooleanv(GL_STEREO, &g_can_use_stereo);
 
-	    if (can_use_stereo)
+	    if (g_can_use_stereo)
 	    {
+	    	g_use_stereo = true;
 	    	std::cout << "Stereo is enable." << std::endl;
 	    }
 	    else
 	    {
+	    	g_use_stereo = false;
 	    	std::cout << "Stereo is not enable." << std::endl;
 	    }
 #endif
 
 		// Stereo is enable on the system
-	    if (can_use_stereo)
+	    g_can_use_stereo = true;
+    	g_use_stereo = true;
+	    if (g_can_use_stereo)
 	    {
 	    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STEREO);
 	    }
@@ -365,10 +455,6 @@ void render()
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Clear the buffers
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
 		// Store the current attributes
 		pushEnableDisableState(GL_LIGHT0);
 		pushEnableDisableState(GL_LIGHTING);
@@ -509,38 +595,38 @@ void render()
 void display()
 //------------
 {
+	// Clear the buffers
+	glDrawBuffer(GL_BACK);  // Enable both back buffers for clearing
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	// Update the X-ray image
 	updateXRayImage();
 
-	GLboolean can_use_stereo(false);
-    glGetBooleanv(GL_STEREO, &can_use_stereo);
-
     // Use stereo
-	if (can_use_stereo)
+	if (g_use_stereo)
 	{
 		// Store the current transformation matrix
 		pushModelViewMatrix();
+		pushProjectionMatrix();
 
 		// Set left eye
-		loadLookAtModelViewMatrix(g_eye_offset, 0.0, g_zoom,
-				0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0);
-		glLoadMatrixf(g_current_modelview_matrix.get());
+		g_current_projection_matrix = g_left_eye_projection_matrix;
+		g_current_modelview_matrix = g_left_eye_view_matrix;
 
 		glDrawBuffer(GL_BACK_LEFT);
 		render();
 
 		// Set right eye
-		loadLookAtModelViewMatrix(-g_eye_offset, 0.0, g_zoom,
-				0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0);
-		glLoadMatrixf(g_current_modelview_matrix.get());
+		g_current_projection_matrix = g_right_eye_projection_matrix;
+		g_current_modelview_matrix = g_right_eye_view_matrix;
 
 		glDrawBuffer(GL_BACK_RIGHT);
 		render();
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
+		popProjectionMatrix();
 	}
     // Cannot use stereo
 	else
@@ -562,6 +648,13 @@ void keyboard(unsigned char key, int x, int y)
 	case 'q':
 	case 27:
 		exit(EXIT_SUCCESS);
+		break;
+
+	case 's':
+		if (g_can_use_stereo)
+		{
+	    	g_use_stereo = !g_use_stereo;
+		}
 		break;
 
 	case 'b':
@@ -762,6 +855,9 @@ void reshape(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	loadPerspectiveProjectionMatrix(45, float(w) / float(h), 0.01 * cm, 5000.0 * cm);
 	glLoadMatrixf(g_current_projection_matrix.get());
+
+    g_aspect = double(w) / double(h);
+    setFrustum();
 
 	glMatrixMode(GL_MODELVIEW);
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
