@@ -34,6 +34,11 @@
 //	Include
 //******************************************************************************
 #include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else // APPLE
+#include <GL/glu.h>
+#endif // APPLE
 
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -86,6 +91,12 @@ public:
 	
 
 	//--------------------------------------------------------------------------
+	///	Destructor.
+	//--------------------------------------------------------------------------
+	~XRayDetector();
+
+
+	//--------------------------------------------------------------------------
 	///	Display the detector using OpenGL.
 	//--------------------------------------------------------------------------
 	void displayDetector();
@@ -94,7 +105,7 @@ public:
 	//--------------------------------------------------------------------------
 	///	Display the source using OpenGL.
 	//--------------------------------------------------------------------------
-	void displaySource() const;
+	void displaySource();
 
 
 	//--------------------------------------------------------------------------
@@ -463,6 +474,8 @@ protected:
 	VEC3 m_look_at_vector;
 	VEC3 m_right_vector;
 
+	// OpenGL model of the source
+	GLUquadric* m_p_source_model;
 };
 
 

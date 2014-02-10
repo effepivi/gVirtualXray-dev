@@ -29,21 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#endif
-
 #include <fstream>
 #include <iostream>
 
 #include<GL/glew.h>
-
-#ifdef USE_FLTK
-#include "FL/glut.H"
-#include <GL/glu.h>
-#else
-#include <GL/glut.h>
-#endif
 
 #ifndef OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
@@ -65,16 +54,35 @@ inline XRayDetector::XRayDetector():
 	m_distance_source_detector(0),
 	m_field_of_view_y(0),
 	m_VBOs_need_update(true),
-	m_source_type(UNKNOWN)
+	m_source_type(UNKNOWN),
+	m_p_source_model(0)
 //----------------------------------------------
 {
 }
 
 
-//---------------------------------------------
-inline void XRayDetector::displaySource() const
-//---------------------------------------------
+//-----------------------------------
+inline 	XRayDetector::~XRayDetector()
+//-----------------------------------
 {
+	if (m_p_source_model)
+	{
+		gluDeleteQuadric(m_p_source_model);
+	}
+}
+
+
+//---------------------------------------
+inline void XRayDetector::displaySource()
+//---------------------------------------
+{
+	// Create the sphere
+	if (!m_p_source_model)
+	{
+		m_p_source_model = gluNewQuadric();
+	}
+
+	// Display all the sub-sources
 	for (std::vector<VEC3>::const_iterator ite(m_p_xray_source_position_set.begin());
 			ite != m_p_xray_source_position_set.end();
 			++ite)
@@ -85,7 +93,7 @@ inline void XRayDetector::displaySource() const
 		g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
 		applyModelViewMatrix();
 		
-		glutSolidSphere(1.0, 5, 5);
+		gluSphere(m_p_source_model, 1.0, 5, 5);
 		
 		// Restore the model/view matrix
 		popModelViewMatrix();
