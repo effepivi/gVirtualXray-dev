@@ -35,18 +35,19 @@
 
 #include<GL/glew.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glaux.h>
+#ifdef USE_FLTK
+#include "FL/glut.H"
+#include <GL/glu.h>
+#else
+#include <GL/glut.h>
 #endif
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
-#include <GLUT/glut.h>
 #else // __APPLE__
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
 #endif // __APPLE__
 
 #include <stdlib.h>

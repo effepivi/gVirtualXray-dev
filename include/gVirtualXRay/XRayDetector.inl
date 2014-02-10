@@ -37,10 +37,12 @@
 #include <iostream>
 
 #include<GL/glew.h>
-#ifdef __APPLE__
-#include<GLUT/glut.h>
+
+#ifdef USE_FLTK
+#include "FL/glut.H"
+#include <GL/glu.h>
 #else
-#include<GL/glut.h>
+#include <GL/glut.h>
 #endif
 
 #ifndef OPENGL_UTILITIES_H

@@ -67,6 +67,16 @@ SET (SHADER_OBJECTS xray_display.frag.o
 #endforeach()
 
 
+# FLTK ########################################################################
+FIND_PACKAGE(FLTK REQUIRED)
+if(FLTK_FOUND)
+	ADD_DEFINITIONS(-DUSE_FLTK)
+	SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+ELSE(FLTK_FOUND)
+	MESSAGE(FATAL_ERROR "FLTK not found.")
+endif(FLTK_FOUND)
+
+
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)
@@ -77,13 +87,13 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-FIND_PACKAGE(GLUT REQUIRED)
-IF(GLUT_FOUND)
-	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
-ELSE(GLUT_FOUND)
-	MESSAGE(FATAL_ERROR "GLUT not found.")
-ENDIF(GLUT_FOUND)
+#FIND_PACKAGE(GLUT REQUIRED)
+#IF(GLUT_FOUND)
+#	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+#	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
+#ELSE(GLUT_FOUND)
+#	MESSAGE(FATAL_ERROR "GLUT not found.")
+#ENDIF(GLUT_FOUND)
 
 
 FIND_PACKAGE(GLEW REQUIRED)

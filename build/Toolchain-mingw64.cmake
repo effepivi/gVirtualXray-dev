@@ -7,7 +7,7 @@ SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
 SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
 
 # here is the target environment located
-SET(CMAKE_FIND_ROOT_PATH /usr/local/src/mxe)
+SET(CMAKE_FIND_ROOT_PATH /usr/local/mxe /usr/local/share/mxe /usr/local/src/mxe)
 
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search 
@@ -16,16 +16,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-set(GLUT_INCLUDE_DIR ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/include)
-set(GLUT_glut_LIBRARY ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/lib/libglut32.a)
-
-set(GLEW_INCLUDE_DIR ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/include)
-set(GLEW_LIBRARY ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/lib/libGLEW.a)
-
-set(FREEIMAGE_INCLUDE_DIR ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/include)
-set(FREEIMAGE_LIBRARY ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/lib/libfreeimage.a)
-
-set(ZLIB_INCLUDE_DIR ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/include)
-set(ZLIB_LIBRARY ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/lib/libz.a)
-
-set(ITK_DIR ${CMAKE_FIND_ROOT_PATH}/usr/x86_64-w64-mingw32/include)

@@ -151,7 +151,17 @@ SET(requiredLibs)
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
-INCLUDE_DIRECTORIES("/usr/local/include")
+#INCLUDE_DIRECTORIES("/usr/local/include")
+
+
+# FLTK ########################################################################
+FIND_PACKAGE(FLTK REQUIRED)
+if(FLTK_FOUND)
+	ADD_DEFINITIONS(-DUSE_FLTK)
+	SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+ELSE(FLTK_FOUND)
+	MESSAGE(FATAL_ERROR "FLTK not found.")
+endif(FLTK_FOUND)
 
 
 # OpenGL ######################################################################
@@ -164,26 +174,19 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-FIND_PACKAGE(GLUT REQUIRED)
-IF(GLUT_FOUND)
-	ADD_DEFINITIONS(-ansi)
-	ADD_DEFINITIONS(-pedantic)
-	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
-	ADD_DEFINITIONS(-D_STDCALL_SUPPORTED)
-	ADD_DEFINITIONS(-D_M_IX86)
-	ADD_DEFINITIONS(-DGLUT_DISABLE_ATEXIT_HACK)
-	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
-ELSE(GLUT_FOUND)
-	MESSAGE(FATAL_ERROR "GLUT not found.")
-ENDIF(GLUT_FOUND)
-
-
-# FLTK ########################################################################
-#FIND_PACKAGE(FLTK REQUIRED)
-#if(FLTK_FOUND)
-#    SET (requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
-#endif(FLTK_FOUND)
+#FIND_PACKAGE(GLUT REQUIRED)
+#IF(GLUT_FOUND)
+#	ADD_DEFINITIONS(-ansi)
+#	ADD_DEFINITIONS(-pedantic)
+#	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+#	ADD_DEFINITIONS(-D_STDCALL_SUPPORTED)
+#	ADD_DEFINITIONS(-D_M_IX86)
+#	ADD_DEFINITIONS(-DGLUT_DISABLE_ATEXIT_HACK)
+#	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+#	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
+#ELSE(GLUT_FOUND)
+#	MESSAGE(FATAL_ERROR "GLUT not found.")
+#ENDIF(GLUT_FOUND)
 
 
 FIND_PACKAGE(GLEW REQUIRED)
