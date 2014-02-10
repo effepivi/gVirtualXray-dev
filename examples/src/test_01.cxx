@@ -29,13 +29,15 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-//#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
-//#endif
+#endif
 
 #include<GL/glew.h>
-#include <gl/glaux.h>
-#include <stdlib.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glaux.h>
+#endif
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -46,6 +48,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #endif // __APPLE__
+
+#include <stdlib.h>
 
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
