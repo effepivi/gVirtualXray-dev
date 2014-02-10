@@ -160,6 +160,14 @@ void loadIdentityProjectionMatrix();
 void loadIdentityModelViewMatrix();
 
 
+void loadFrustumProjectionMatrix(GLdouble left,
+        GLdouble right,
+        GLdouble bottom,
+        GLdouble top,
+        GLdouble near,
+        GLdouble far);
+
+
 //------------------------------------------------------------------------------
 ///	Replace the projection matrix by a perspective projection matrix.
 //------------------------------------------------------------------------------
@@ -175,6 +183,14 @@ void loadOrthoProjectionMatrix(GLdouble left,
 
 
 MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
+        GLdouble right,
+        GLdouble bottom,
+        GLdouble top,
+        GLdouble near,
+        GLdouble far);
+
+
+MATRIX4 buildFrustumProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
         GLdouble top,

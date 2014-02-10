@@ -326,9 +326,58 @@ inline void loadOrthoProjectionMatrix(GLdouble left,
 									  GLdouble farPlane)
 //----------------------------------------------------
 {
-	RATIONAL_NUMBER* p_matrix(const_cast<RATIONAL_NUMBER*>(g_current_projection_matrix.get()));
-	
 	g_current_projection_matrix = buildOrthoProjectionMatrix(left, right, bottom, top, nearPlane, farPlane);
+}
+
+
+//---------------------------------------------------------
+inline void loadFrustumProjectionMatrix(GLdouble left,
+										GLdouble right,
+										GLdouble bottom,
+										GLdouble top,
+										GLdouble nearPlane,
+										GLdouble farPlane)
+//---------------------------------------------------------
+{
+	g_current_projection_matrix = buildFrustumProjectionMatrix(left, right, bottom, top, nearPlane, farPlane);
+}
+
+
+//-------------------------------------------------------------
+inline MATRIX4 buildFrustumProjectionMatrix(GLdouble left,
+										    GLdouble right,
+										    GLdouble bottom,
+										    GLdouble top,
+										    GLdouble nearPlane,
+										    GLdouble farPlane)
+//-------------------------------------------------------------
+{
+	GLdouble a( (right    + left)        / (right    - left));
+	GLdouble b( (top      + bottom)      / (top      - bottom));
+	GLdouble c(-(farPlane + nearPlane)   / (farPlane - nearPlane));
+	GLdouble d(-(2.0 * farPlane * nearPlane)   / (farPlane - nearPlane));
+
+	return (MATRIX4(			
+		2.0 * nearPlane / (right - left),
+		0.0,
+		0.0,
+		0.0,
+		
+		0.0,
+		2.0 * nearPlane / (top   - bottom),
+		0.0,
+		0.0,
+
+		a,
+		b,
+		c,
+		-1.0,
+
+		0.0,
+		0.0,
+		d,
+		0.0)
+	);
 }
 
 
