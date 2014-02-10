@@ -203,8 +203,17 @@ int main(int argc, char** argv)
 		// Is stereo enable
 		GLboolean can_use_stereo(false);
 
-#ifdef HAS_LINUX
+#ifdef USE_STEREO
 	    glGetBooleanv(GL_STEREO, &can_use_stereo);
+
+	    if (can_use_stereo)
+	    {
+	    	std::cout << "Stereo is enable." << std::endl;
+	    }
+	    else
+	    {
+	    	std::cout << "Stereo is not enable." << std::endl;
+	    }
 #endif
 
 		// Stereo is enable on the system
