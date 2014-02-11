@@ -185,14 +185,12 @@ struct camera
 	GLfloat m_model_translation;
 } g_left_camera, g_right_camera;
 
-float g_depthZ = -10.0;                                      //depth of the object drawing
-
 double g_fovy = 45;                                          //field of view in y-axis
 double g_aspect = double(g_main_window_width)/double(g_main_window_height);  //screen aspect ratio
-double g_nearZ = 3.0;                                        //near clipping plane
-double g_farZ = 30.0;                                        //far clipping plane
-double g_screenZ = 10.0;                                     //screen projection plane
-double g_IOD = 0.5;                                          //intraocular distance
+double g_nearZ = 0.01 * cm;                                        //near clipping plane
+double g_farZ = 5000.0 * cm;                                        //far clipping plane
+double g_screenZ = 10.0 * cm;                                     //screen projection plane
+double g_IOD = 0.5 * cm;                                          //intraocular distance
 
 MATRIX4 g_left_eye_projection_matrix;
 MATRIX4 g_right_eye_projection_matrix;
@@ -223,7 +221,7 @@ void setFrustum(void)
 
    g_left_eye_view_matrix = buildLookAtModelViewMatrix(-g_IOD/2,                                        //set camera position  x=-IOD/2
             0.0,                                           //                     y=0.0
-            0.0,                                           //                     z=0.0
+            g_zoom,                                           //                     z=0.0
             0.0,                                           //set camera "look at" x=0.0
             0.0,                                           //                     y=0.0
             g_screenZ,                                       //                     z=screenplane
@@ -248,7 +246,7 @@ void setFrustum(void)
 
    g_right_eye_view_matrix = buildLookAtModelViewMatrix(g_IOD/2,                                        //set camera position  x=-IOD/2
                0.0,                                           //                     y=0.0
-               0.0,                                           //                     z=0.0
+               g_zoom,                                           //                     z=0.0
                0.0,                                           //set camera "look at" x=0.0
                0.0,                                           //                     y=0.0
                g_screenZ,                                       //                     z=screenplane
@@ -875,6 +873,7 @@ void reshape(int width, int height)
 //---------------------------------
 {
 	int x(0), y(0), w(width), h(height);
+    g_aspect = double(w) / double(h);
 
 	g_main_window_width = width;
 	g_main_window_height = height;
@@ -882,10 +881,9 @@ void reshape(int width, int height)
 	glViewport(x, y, w, h);
 
 	glMatrixMode(GL_PROJECTION);
-	loadPerspectiveProjectionMatrix(45, float(w) / float(h), 0.01 * cm, 5000.0 * cm);
+	loadPerspectiveProjectionMatrix(g_fovy, g_aspect, g_nearZ, g_farZ);
 	glLoadMatrixf(g_current_projection_matrix.get());
 
-    g_aspect = double(w) / double(h);
     setFrustum();
 
 	glMatrixMode(GL_MODELVIEW);
