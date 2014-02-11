@@ -132,7 +132,7 @@ const int DETECTOR(2);
 GLsizei g_main_window_width(1280 / 2.0);
 GLsizei g_main_window_height(800 / 2.0);
 int g_main_window_id(0);
-GLfloat g_zoom(40.0 * cm);
+GLfloat g_zoom(60.0 * cm);
 GLfloat g_eye_offset(2.0 * cm);
 
 int g_button(-1);
@@ -173,7 +173,7 @@ GLboolean g_can_use_stereo(false);
 bool g_use_stereo(false);
 
 // http://www.orthostereo.com/geometryopengl.html
-const float g_DTR(0.0174532925);
+const float g_DTR(Utilities::PI / 180.0);  // one degree = 0.0174532925 Radians
 
 
 struct camera
@@ -187,16 +187,13 @@ struct camera
 
 double g_fovy = 45;                                          //field of view in y-axis
 double g_aspect = double(g_main_window_width)/double(g_main_window_height);  //screen aspect ratio
-double g_nearZ = 0.01 * cm;                                        //near clipping plane
-double g_farZ = 5000.0 * cm;                                        //far clipping plane
-double g_screenZ = 10.0 * cm;                                     //screen projection plane
+double g_nearZ = 5.0 * cm;                                        //near clipping plane
+double g_farZ = 500.0 * cm;                                        //far clipping plane
+double g_screenZ = 500.0 * cm;                                     //screen projection plane
 double g_IOD = 0.5 * cm;                                          //intraocular distance
 
 MATRIX4 g_left_eye_projection_matrix;
 MATRIX4 g_right_eye_projection_matrix;
-
-MATRIX4 g_left_eye_view_matrix;
-MATRIX4 g_right_eye_view_matrix;
 
 void setFrustum(void)
 {
@@ -219,16 +216,6 @@ void setFrustum(void)
 
    g_left_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(g_left_camera.m_model_translation, 0, 0);
 
-   g_left_eye_view_matrix = buildLookAtModelViewMatrix(-g_IOD/2,                                        //set camera position  x=-IOD/2
-            0.0,                                           //                     y=0.0
-            g_zoom,                                           //                     z=0.0
-            0.0,                                           //set camera "look at" x=0.0
-            0.0,                                           //                     y=0.0
-            g_screenZ,                                       //                     z=screenplane
-            0.0,                                           //set camera up vector x=0.0
-            1.0,                                           //                     y=1.0
-            0.0);                                          //                     z=0.0
-
    g_right_camera.m_top_frustum       = top;
    g_right_camera.m_bottom_frustum    = -top;
    g_right_camera.m_left_frustum      = -right - frustum_shift;
@@ -243,16 +230,6 @@ void setFrustum(void)
 		   g_farZ);
 
    g_right_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(g_right_camera.m_model_translation, 0, 0);
-
-   g_right_eye_view_matrix = buildLookAtModelViewMatrix(g_IOD/2,                                        //set camera position  x=-IOD/2
-               0.0,                                           //                     y=0.0
-               g_zoom,                                           //                     z=0.0
-               0.0,                                           //set camera "look at" x=0.0
-               0.0,                                           //                     y=0.0
-               g_screenZ,                                       //                     z=screenplane
-               0.0,                                           //set camera up vector x=0.0
-               1.0,                                           //                     y=1.0
-               0.0);                                          //                     z}
 }
 
 
@@ -639,15 +616,11 @@ void display()
 
 		// Set left eye
 		g_current_projection_matrix = g_left_eye_projection_matrix;
-		g_current_modelview_matrix = g_left_eye_view_matrix;
-
 		glDrawBuffer(GL_BACK_LEFT);
 		render();
 
 		// Set right eye
 		g_current_projection_matrix = g_right_eye_projection_matrix;
-		g_current_modelview_matrix = g_right_eye_view_matrix;
-
 		glDrawBuffer(GL_BACK_RIGHT);
 		render();
 
@@ -872,6 +845,12 @@ void specialKeyboard(int key, int x, int y)
 void reshape(int width, int height)
 //---------------------------------
 {
+	if (height == 0)
+	{
+		// Prevent divide by 0
+		height = 1;
+	}
+
 	int x(0), y(0), w(width), h(height);
     g_aspect = double(w) / double(h);
 
