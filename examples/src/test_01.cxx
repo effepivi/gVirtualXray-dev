@@ -312,27 +312,52 @@ int main(int argc, char** argv)
 		// Stereo is enable on the system
 	    g_can_use_stereo = true;
     	g_use_stereo = true;
-	    if (g_can_use_stereo)
-	    {
-	    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STEREO);
-	    }
+
+    	if (g_can_use_stereo)
+		{
+			glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STEREO);
+		}
 		// Stereo is not enable on the system
-	    else
-	    {
-	    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
-	    }
+		else
+		{
+			glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+		}
 
 		// Create a GLUT window
 		glutInitWindowSize(g_main_window_width, g_main_window_height);
 		g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
 		// Initialize GLEW
-		GLenum glew_error(glewInit());
-		if (glew_error != GLEW_OK)
+		GLenum glew_error_0(glewInit());
+		if (glew_error_0 != GLEW_OK)
 		{
-			std::stringstream error_message;
-			error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error);
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+			if (g_can_use_stereo || g_use_stereo)
+			{
+			    g_can_use_stereo = false;
+		    	g_use_stereo = false;
+
+		    	// Stereo is not enable on the system
+				glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+
+				// Create a GLUT window
+				if (g_main_window_id) glutDestroyWindow(g_main_window_id);
+				glutInitWindowSize(g_main_window_width, g_main_window_height);
+				g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
+
+				GLenum glew_error_1(glewInit());
+				if (glew_error_1 != GLEW_OK)
+				{
+					std::stringstream error_message;
+					error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error_1);
+					throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+				}
+			}
+			else
+			{
+				std::stringstream error_message;
+				error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error_0);
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+			}
 		}
 
 		// Initialise OpenGL
@@ -380,7 +405,11 @@ int main(int argc, char** argv)
 void quit()
 //---------
 {
-	exit(EXIT_SUCCESS);
+	if (g_main_window_id)
+	{
+		glutDestroyWindow(g_main_window_id);
+		g_main_window_id = 0;
+	}
 }
 
 
