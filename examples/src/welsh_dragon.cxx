@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		test.cxx
+*	@file		welsh_dragon.cxx
 *
 *	@brief		Main test program.
 *

@@ -131,16 +131,7 @@ public:
 	*	@param aComputingMode:	the computing mode (OPENGL, CUDA, or OPENCL)
 	*	@param anInternalTextureFormat:	the internal format in which OpenGL textures will be stored (GL_RGB16F_ARB, or GL_RGB32F_ARB)
 	*	@param apDetector:	the X-ray detector that will be used
-	*	@param aMuWaterTableFilename:	the name of the file where the water attenuation table is stored.
 	*	@param apBeamSpectrum:	the X-ray beam spectrum
-	*	@param aLBufferVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to L-buffer
-	*	@param aLBufferFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to L-buffer
-	*	@param aMuX_DxVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to (Mu * X)
-	*	@param aMuX_DxFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to (Mu * X)
-	*	@param anEnergyFluenceVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to the energy fluence computation
-	*	@param anEnergyFluenceFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to the energy fluence computation
-	*	@param aDisplayVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to the display
-	*	@param aDisplayFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to the display
 	*/
 	//--------------------------------------------------------------------------
 	void initialise(ComputingMode aComputingMode,
@@ -186,10 +177,9 @@ public:
 	//--------------------------------------------------------------------------
 	///	Compute the L-buffer of a 3D object
 	/**
-	*	@param anObject:	the 3D object
-	*	@param aModellingTransformationMatrix:	a modelling transformation
-	*											matrix that will be used on
-	*											the 3D object
+	*	@param anObject:	the 3D object to process
+	*	@param aXRaySourceDetectorTranslation:	the translation vector to use when the source is not aligned with the detector
+	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
 	void computeLBuffer(const TriangleMesh& anObject,
@@ -328,16 +318,7 @@ protected:
 
 	//--------------------------------------------------------------------------
 	///	Initialise the shaders.
-	/**
-	*	@param aLBufferVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to L-buffer
-	*	@param aLBufferFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to L-buffer
-	*	@param aMuX_DxVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to (Mu * X)
-	*	@param aMuX_DxFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to (Mu * X)
-	*	@param anEnergyFluenceVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to the energy fluence computation
-	*	@param anEnergyFluenceFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to the energy fluence computation
-	*	@param aDisplayVertexShaderFileName:	the name of the file that stores the vertex shader corresponding to the display
-	*	@param aDisplayFragmentShaderFileName:	the name of the file that stores the fragment shader corresponding to the display
-	*/
+	//--------------------------------------------------------------------------
 	void initShaders();
 
 
@@ -356,7 +337,7 @@ protected:
 	//--------------------------------------------------------------------------
 	///	Create a PBO.
 	/**
-	*	@param apPBO:	ID of the PBO to create
+	*	@param aPBO:	ID of the PBO to create
 	*/
 	//--------------------------------------------------------------------------
 	void createPBO(GLuint& aPBO);
@@ -365,7 +346,7 @@ protected:
 	//--------------------------------------------------------------------------
 	///	Delete a PBO.
 	/**
-	*	@param apPBO:	ID of the PBO to delete
+	*	@param aPBO:	ID of the PBO to delete
 	*/
 	//--------------------------------------------------------------------------
 	void deletePBO(GLuint& aPBO);
@@ -415,7 +396,7 @@ protected:
 	///	Create a 2D texture.
 	/**
 	*	@param apTextureID:	the address on the ID of the texture
-	*	@param aTextureIndex:	the internal format in which the texture will be stored in the device
+	*	@param anInternalTextureFormat:	the internal format in which the texture will be stored in the device
 	*/
 	//--------------------------------------------------------------------------
 	void create2DTexture(GLuint* apTextureID,
@@ -452,7 +433,8 @@ protected:
 	//--------------------------------------------------------------------------
 	///	Compute the L-buffer of an internal object.
 	/**
-	*	@param anObject:	the 3D object to process
+	*	@param anObject:						the 3D object to process
+	*	@param aXRaySourceSampleOffset:			the translation vector to use when the source is not aligned with the detector
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
@@ -464,7 +446,8 @@ protected:
 	//--------------------------------------------------------------------------
 	///	Compute the L-buffer of an external object.
 	/**
-	*	@param anObject:	the 3D object to process
+	*	@param anObject:						the 3D object to process
+	*	@param aXRaySourceSampleOffset:			the translation vector to use when the source is not aligned with the detector
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------

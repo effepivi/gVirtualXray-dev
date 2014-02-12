@@ -123,18 +123,18 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Load the vertex shader from a file
+	///	Load the vertex shader from a string
 	/**
-	*	@param aVertexShaderFilename: file name of the vertex shader
+	*	@param aVertexShaderSourceCode: the vertex shader source code
 	*/
 	//--------------------------------------------------------------------------
 	void loadVertexShaderSource(const std::string& aVertexShaderSourceCode);
 
 
 	//--------------------------------------------------------------------------
-	///	Load the fragment shader from a file
+	///	Load the fragment shader from a string
 	/**
-	*	@param aFragmentShaderFilename: file name of the fragment shader
+	*	@param aFragmentShaderSourceCode: the fragment shader source code
 	*/
 	//--------------------------------------------------------------------------
 	void loadFragmentShaderSource(const std::string& aFragmentShaderSourceCode);

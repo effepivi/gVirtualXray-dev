@@ -186,34 +186,19 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Set the projection mode.
-	/**
-	*	@aFlag: it is true if a parallel beam is used (e.g. orthographic projection).
-	*			it is false if perspective projection is used.
-	*			(default value: true)
-	*/
+	///	Set the projection mode to parallel beam.
 	//--------------------------------------------------------------------------
     void setParallelBeam();
 
 
 	//--------------------------------------------------------------------------
-	///	Set the projection mode.
-	/**
-	*	@aFlag: it is true if perspective projection is used.
-	*			it is false if a parallel beam is used (e.g. orthographic projection).
-	*			(default value: true)
-	*/
+	///	Set the projection mode to cone beam (same as point source).
 	//--------------------------------------------------------------------------
     void setConeBeam();
 
 
 	//--------------------------------------------------------------------------
-	///	Set the projection mode.
-	/**
-	*	@aFlag: it is true if perspective projection is used.
-	*			it is false if a parallel beam is used (e.g. orthographic projection).
-	*			(default value: true)
-	*/
+	///	Set the projection mode to point source (same as cone beam).
 	//--------------------------------------------------------------------------
     void setPointSource();
 

@@ -355,6 +355,7 @@ protected:
 ///	Operator * to multiply each component of the vector by a given value.
 /**
 *	@param aValue:	the multiplicative value
+*	@param aVector:	the vector to multiply
 *	@return the modified vector
 */
 //---------------------------------------------------------------------------

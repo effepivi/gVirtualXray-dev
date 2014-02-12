@@ -72,17 +72,22 @@ public:
 	
 	
 	//--------------------------------------------------------------------------
-	///	Set the data.
+	///	Set the vertex data.
 	/**
-	*	@param aNumberOfVertices:	number of vertices
-	*	@param apVertices:			address of the first vertex
-	*	@param aNumberOfNormals:	number of normal vectors
-	*	@param apNormals:			address of the first normal
-	*	@return the ID of the new VBO
+	*	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
+	*	@param aNumberOfVertices:				number of vertices
+	*	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
+	*	@param apVertices:						address of the first component of the first vertex
+	*	@param aNumberOfNormals:				number of normal vectors
+	*	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
+	*	@param apNormals:						address of the first component of the firth normal vector
+	*	@param aNumberOfTextureCoordinates:		number of texture coordinates
+	*	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
+	*	@param apTextureCoordinates:			address of the first component of the first texture coordinate
 	*/
 	//--------------------------------------------------------------------------
 	void setVertexData(GLenum aPrimitiveType,
-			const GLuint aNumberOfVertices, GLuint aNumberOfCompontentsPerVertex, const GLfloat* vertices,
+			const GLuint aNumberOfVertices, GLuint aNumberOfCompontentsPerVertex, const GLfloat* apVertices,
 			const GLuint aNumberOfNormals, GLuint aNumberOfCompontentsPerNormal,  const GLfloat* apNormals,
 			const GLuint aNumberOfTextureCoordinates, GLuint aNumberOfCompontentsPerCoord, const GLfloat* apTextureCoordinates);
 
@@ -90,11 +95,8 @@ public:
 	//--------------------------------------------------------------------------
 	///	Set the index.
 	/**
-	*	@param aNumberOfVertices:	number of vertices
-	*	@param apVertices:			address of the first vertex
-	*	@param aNumberOfNormals:	number of normal vectors
-	*	@param apNormals:			address of the first normal
-	*	@return the ID of the new VBO
+	*	@param aNumberOfIndexes:	number of indices
+	*	@param apIndexSet:			the index set
 	*/
 	//--------------------------------------------------------------------------
 	void setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet);
@@ -103,11 +105,8 @@ public:
 	//--------------------------------------------------------------------------
 	///	Set the index.
 	/**
-	*	@param aNumberOfVertices:	number of vertices
-	*	@param apVertices:			address of the first vertex
-	*	@param aNumberOfNormals:	number of normal vectors
-	*	@param apNormals:			address of the first normal
-	*	@return the ID of the new VBO
+	*	@param aNumberOfIndexes:	number of indices
+	*	@param apIndexSet:			the index set
 	*/
 	//--------------------------------------------------------------------------
 	void setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet);
