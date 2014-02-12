@@ -61,7 +61,9 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#include <zlib.h>
+#ifndef UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
 
 #include "MUx_Dx.frag.h"
 #include "MUx_Dx.vert.h"
@@ -118,54 +120,6 @@
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-
-
-//----------------------------------------------------
-int inflate(const void *src, int srcLen, char** apDst)
-//----------------------------------------------------
-{
-	// See http://stackoverflow.com/questions/4901842/in-memory-decompression-with-zlib
-	int dstLen(50 * srcLen);
-	if (*apDst) delete [] *apDst;
-	*apDst = new char[dstLen];
-	memset(*apDst, '\0', dstLen * sizeof(char));
-
-    z_stream strm  = {0};
-    strm.total_in  = strm.avail_in  = srcLen;
-    strm.total_out = strm.avail_out = dstLen;
-    strm.next_in   = (Bytef *) src;
-    strm.next_out  = (Bytef *) (*apDst);
-
-    strm.zalloc = Z_NULL;
-    strm.zfree  = Z_NULL;
-    strm.opaque = Z_NULL;
-
-    int err = -1;
-    int ret = -1;
-
-    err = inflateInit2(&strm, (15 + 32)); //15 window bits, and the +32 tells zlib to to detect if using gzip or zlib
-    if (err == Z_OK) {
-        err = inflate(&strm, Z_FINISH);
-        if (err == Z_STREAM_END) {
-            ret = strm.total_out;
-        }
-        else {
-             inflateEnd(&strm);
-             delete [] *apDst;
-             *apDst = 0;
-             return (err);
-        }
-    }
-    else {
-        inflateEnd(&strm);
-        delete [] *apDst;
-        *apDst = 0;
-        return (err);
-    }
-
-    inflateEnd(&strm);
-    return (ret);
-}
 
 
 //-------------------------------

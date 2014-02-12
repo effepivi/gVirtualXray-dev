@@ -73,6 +73,8 @@ SET (CXX_SOURCES
 
     # Utilities
     ../src/Utilities/OpenGLUtilities.cxx
+	../src/Utilities/Utilities.cxx
+
 )
 
 
@@ -124,6 +126,7 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/OutOfMemoryException.inl
 	../include/gVirtualXRay/Types.h
 	../include/gVirtualXRay/Units.h
+	../include/gVirtualXRay/Utilities.h
 )
 
 
@@ -227,51 +230,20 @@ SET (RESOURCES_SOURCES ../resources/cumulated_l_buffer.frag
 )
 
 
-SET (RESOURCES cumulated_l_buffer.frag.h
-	cumulated_l_buffer.vert.h
-	l_buffer.frag.h
-	l_buffer.vert.h
-	MUx_Dx.frag.h
-	MUx_Dx.vert.h
-	outer_surface_l_buffer.frag.h
-	outer_surface_l_buffer.vert.h
-	xray_attenuation.frag.h
-	xray_attenuation.vert.h
-	xray_display.frag.h
-	xray_display.vert.h
-	mu_water.csv.h
-)
-
-
 foreach(F ${RESOURCES_SOURCES})
 	# Get the file name
 	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
 
-	#IF(UNIX)
-		#IF(APPLE)
-				STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
-				add_custom_command(OUTPUT ${FILE_NAME}.tmp
-				#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
-				COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
-				COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
-				DEPENDS ${F}.h
-			)
+	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
+	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+			#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
+			COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
+			COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
+			DEPENDS ${F}.h
+	)
 
-			add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
-			add_dependencies(gVirtualXRay ${FILE_NAME}.h)
-
-			MESSAGE("add_dependencies(gVirtualXRay ${FILE_NAME}.h)")
-
-		#ELSE(APPLE)
-		#	add_custom_command(OUTPUT ${FILE_NAME}.tmp
-		#		COMMAND ${CMAKE_OBJCOPY} -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
-		#		COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
-		#		COMMAND ar -r libgVirtualXRay.a ${FILE_NAME}.o
-		#		COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
-		#		DEPENDS ${F} gVirtualXRay 
-		#	)
-		#ENDIF(APPLE)
-	#ENDIF(UNIX)
+	add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
+	add_dependencies(gVirtualXRay ${FILE_NAME}.h)
 
 	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
 	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
