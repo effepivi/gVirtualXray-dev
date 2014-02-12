@@ -84,7 +84,7 @@ void main(void)
 	}
 
 	// Find the intersection between the ray and the detector
-	g_distance_intersection_detector = -(dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(g_ray_direction, g_detector_plane.xyz);
+	g_distance_intersection_detector = -(dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-g_viewing_vector, g_detector_plane.xyz);
 	vec3 intersection_in_world_coordinates = transformed_vertex.xyz + g_distance_intersection_detector * g_viewing_vector;
 	
 	// Distance (u, v) from the detector centre to the intersection in world coordinates
