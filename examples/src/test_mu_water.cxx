@@ -34,6 +34,7 @@
 #endif
 
 #include <GL/glew.h>
+#include <stdlib.h>
 
 #ifdef HAS_FLTK
 #include <FL/glut.H>
