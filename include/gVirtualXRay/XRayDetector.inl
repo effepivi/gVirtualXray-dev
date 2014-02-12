@@ -33,14 +33,9 @@
 #include <iostream>
 
 #include<GL/glew.h>
-#ifdef __APPLE__
-#include<GLUT/glut.h>
-#else
-#include<GL/glut.h>
-#endif
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 
@@ -59,16 +54,35 @@ inline XRayDetector::XRayDetector():
 	m_distance_source_detector(0),
 	m_field_of_view_y(0),
 	m_VBOs_need_update(true),
-	m_source_type(UNKNOWN)
+	m_source_type(UNKNOWN),
+	m_p_source_model(0)
 //----------------------------------------------
 {
 }
 
 
-//---------------------------------------------
-inline void XRayDetector::displaySource() const
-//---------------------------------------------
+//-----------------------------------
+inline 	XRayDetector::~XRayDetector()
+//-----------------------------------
 {
+	if (m_p_source_model)
+	{
+		gluDeleteQuadric(m_p_source_model);
+	}
+}
+
+
+//---------------------------------------
+inline void XRayDetector::displaySource()
+//---------------------------------------
+{
+	// Create the sphere
+	if (!m_p_source_model)
+	{
+		m_p_source_model = gluNewQuadric();
+	}
+
+	// Display all the sub-sources
 	for (std::vector<VEC3>::const_iterator ite(m_p_xray_source_position_set.begin());
 			ite != m_p_xray_source_position_set.end();
 			++ite)
@@ -79,7 +93,7 @@ inline void XRayDetector::displaySource() const
 		g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
 		applyModelViewMatrix();
 		
-		glutSolidSphere(1.0, 5, 5);
+		gluSphere(m_p_source_model, 1.0, 5, 5);
 		
 		// Restore the model/view matrix
 		popModelViewMatrix();
@@ -139,8 +153,8 @@ inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 	// Save the source type
 	m_source_type = POINT;	
 	
-	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
 	
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -154,8 +168,8 @@ inline void XRayDetector::setDetectorPosition(const VEC3& aDetectorPosition)
 	// The position of the source has changed
 	m_detector_position = aDetectorPosition;
 
-	// Update the distance between the source and the detector
-	updateDistanceSourceDetector();
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
 	
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -309,11 +323,20 @@ inline const VEC3& XRayDetector::getSourceSamplePosition(UINT aSampleID) const
 	return (m_p_xray_source_position_set[aSampleID]);
 }
 
+
 //--------------------------------------------------
 inline const VEC3& XRayDetector::getUpVector() const
 //--------------------------------------------------
 {
 	return (m_up_vector);
+}
+
+
+//-----------------------------------------------------
+inline const VEC3& XRayDetector::getRightVector() const
+//-----------------------------------------------------
+{
+	return (m_right_vector);
 }
 
 
@@ -345,7 +368,7 @@ inline bool XRayDetector::useParallelBeam() const
 inline void XRayDetector::updateFovy()
 //------------------------------------
 {
-	m_field_of_view_y = 2.0 * (180.0  / M_PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), RATIONAL_NUMBER(m_distance_source_detector));
+	m_field_of_view_y = 2.0 * (180.0  / Utilities::PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), RATIONAL_NUMBER(m_distance_source_detector));
 }
 
 
@@ -358,15 +381,48 @@ inline void XRayDetector::updateSizeInUnitOfLength()
 }
 
 
-//------------------------------------------------------
-inline void XRayDetector::updateDistanceSourceDetector()
-//------------------------------------------------------
+//----------------------------------------------
+inline void XRayDetector::updateInternalValues()
+//----------------------------------------------
 {
 	// The distance between the source and the detector has changed
 	m_distance_source_detector = (m_detector_position - m_xray_source_centre).length();
 
 	// Update the size of the field of view
 	updateFovy();
+	
+	// Compute the normal vector
+	m_look_at_vector = m_detector_position - m_xray_source_centre;
+	m_look_at_vector.normalize();
+	m_right_vector = m_look_at_vector ^ m_up_vector;
+	m_normal = m_up_vector ^ m_right_vector;
+}
+
+
+//------------------------------------------------------------------
+inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
+												 RATIONAL_NUMBER& B,
+												 RATIONAL_NUMBER& C,
+												 RATIONAL_NUMBER& D)
+//------------------------------------------------------------------
+{
+	VEC3 normal(m_rotation_matrix * m_normal);
+	A = normal.getX();
+	B = normal.getY();
+	C = normal.getZ();
+	D = A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ();
+}
+
+
+inline const VEC3& XRayDetector::getLowerCorner() const
+{
+	return (m_lower_corner);
+}
+
+
+inline const VEC3& XRayDetector::getUpperCorner() const
+{
+	return (m_upper_corner);
 }
 
 

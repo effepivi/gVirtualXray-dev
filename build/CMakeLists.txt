@@ -47,6 +47,16 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 
 # Project name #################################################################
 PROJECT(gVirtualXRay)
+set (gVirtualXRay_VERSION_MAJOR 1)
+set (gVirtualXRay_VERSION_MINOR 0)
+
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+	"${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
+	"${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
+)
 
 
 # Library source code ##########################################################
@@ -63,12 +73,16 @@ SET (CXX_SOURCES
 
     # Utilities
     ../src/Utilities/OpenGLUtilities.cxx
+	../src/Utilities/Utilities.cxx
+
 )
 
 
 # Add header files to the project
 SET (HXX_SOURCES
 	# gVirtualXRay
+	../include/gVirtualXRay/AttenuationCoefficient.h
+	../include/gVirtualXRay/AttenuationCoefficient.inl
 	../include/gVirtualXRay/SpectrumRecord.h
 	../include/gVirtualXRay/SpectrumRecord.inl
 	../include/gVirtualXRay/XRayBeam.h
@@ -79,39 +93,40 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/XRayRenderer.inl
 
 	# Graphics
-	../include/Graphics/framebufferObject.h
-	../include/Graphics/Shader.h
-	../include/Graphics/Shader.inl
-	../include/Graphics/TriangleMesh.h
-	../include/Graphics/TriangleMesh.inl
-	../include/Graphics/VBO.h
-	../include/Graphics/VBO.inl
+	../include/gVirtualXRay/framebufferObject.h
+	../include/gVirtualXRay/Shader.h
+	../include/gVirtualXRay/Shader.inl
+	../include/gVirtualXRay/TriangleMesh.h
+	../include/gVirtualXRay/TriangleMesh.inl
+	../include/gVirtualXRay/VBO.h
+	../include/gVirtualXRay/VBO.inl
 
 	# Math
-	../include/Math/Matrix4x4.h
-	../include/Math/Matrix4x4.inl
-	../include/Math/Vec2.h
-	../include/Math/Vec2.inl
-	../include/Math/Vec3.h
-	../include/Math/Vec3.inl
+	../include/gVirtualXRay/Matrix4x4.h
+	../include/gVirtualXRay/Matrix4x4.inl
+	../include/gVirtualXRay/Vec2.h
+	../include/gVirtualXRay/Vec2.inl
+	../include/gVirtualXRay/Vec3.h
+	../include/gVirtualXRay/Vec3.inl
 
 	# Utilities
-	../include/Utilities/Exception.h
-	../include/Utilities/Exception.inl
-	../include/Utilities/FBOException.h
-	../include/Utilities/FBOException.inl
-	../include/Utilities/FileDoesNotExistException.h
-	../include/Utilities/FileDoesNotExistException.inl
-	../include/Utilities/OpenGLException.h
-	../include/Utilities/OpenGLException.inl
-	../include/Utilities/OpenGLUtilities.h
-	../include/Utilities/OpenGLUtilities.inl
-	../include/Utilities/OutOfBoundsException.h
-	../include/Utilities/OutOfBoundsException.inl
-	../include/Utilities/OutOfMemoryException.h
-	../include/Utilities/OutOfMemoryException.inl
-	../include/Utilities/Types.h
-	../include/Utilities/Units.h
+	../include/gVirtualXRay/Exception.h
+	../include/gVirtualXRay/Exception.inl
+	../include/gVirtualXRay/FBOException.h
+	../include/gVirtualXRay/FBOException.inl
+	../include/gVirtualXRay/FileDoesNotExistException.h
+	../include/gVirtualXRay/FileDoesNotExistException.inl
+	../include/gVirtualXRay/OpenGLException.h
+	../include/gVirtualXRay/OpenGLException.inl
+	../include/gVirtualXRay/OpenGLUtilities.h
+	../include/gVirtualXRay/OpenGLUtilities.inl
+	../include/gVirtualXRay/OutOfBoundsException.h
+	../include/gVirtualXRay/OutOfBoundsException.inl
+	../include/gVirtualXRay/OutOfMemoryException.h
+	../include/gVirtualXRay/OutOfMemoryException.inl
+	../include/gVirtualXRay/Types.h
+	../include/gVirtualXRay/Units.h
+	../include/gVirtualXRay/Utilities.h
 )
 
 
@@ -137,12 +152,9 @@ SET(requiredLibs)
 
 
 # Headers of the project #######################################################
-INCLUDE_DIRECTORIES(../include)
-INCLUDE_DIRECTORIES(../include/gVirtualXRay)
-INCLUDE_DIRECTORIES(../include/Graphics)
-INCLUDE_DIRECTORIES(../include/Math)
-INCLUDE_DIRECTORIES(../include/Utilities)
-INCLUDE_DIRECTORIES(/usr/local/include)
+INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
+INCLUDE_DIRECTORIES("../include")
+#INCLUDE_DIRECTORIES("/usr/local/include")
 
 
 # OpenGL ######################################################################
@@ -155,17 +167,9 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-FIND_PACKAGE(GLUT REQUIRED)
-IF(GLUT_FOUND)
-	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
-ELSE(GLUT_FOUND)
-	MESSAGE(FATAL_ERROR "GLUT not found.")
-ENDIF(GLUT_FOUND)
-
-
 FIND_PACKAGE(GLEW REQUIRED)
 IF(GLEW_FOUND)
+	ADD_DEFINITIONS(-DGLEW_STATIC)
 	INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
 	SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ELSE(GLEW_FOUND)
@@ -195,8 +199,55 @@ ELSE(ITK_FOUND)
 ENDIF(ITK_FOUND)
 
 
+# ZLIB #########################################################################
+FIND_PACKAGE(ZLIB REQUIRED)
+IF(ZLIB_FOUND)
+	INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+	SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
+ELSE(ZLIB_FOUND)
+	MESSAGE("ZLIB not found.")
+ENDIF(ZLIB_FOUND)
+
+
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
+
+
+# Create the RESOURCES ###########################################################
+SET (RESOURCES_SOURCES ../resources/cumulated_l_buffer.frag
+	../resources/cumulated_l_buffer.vert
+	../resources/l_buffer.frag
+	../resources/l_buffer.vert
+	../resources/MUx_Dx.frag
+	../resources/MUx_Dx.vert
+	../resources/outer_surface_l_buffer.frag
+	../resources/outer_surface_l_buffer.vert
+	../resources/xray_attenuation.frag
+	../resources/xray_attenuation.vert
+	../resources/xray_display.frag
+	../resources/xray_display.vert
+	../resources/mu_water.csv
+)
+
+
+foreach(F ${RESOURCES_SOURCES})
+	# Get the file name
+	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
+
+	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
+	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+			#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
+			COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
+			COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
+			DEPENDS ${F}.h
+	)
+
+	add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
+	add_dependencies(gVirtualXRay ${FILE_NAME}.h)
+
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
+endforeach()
 
 
 # Linkage of the target ########################################################
@@ -225,3 +276,8 @@ IF (BUILD_EXAMPLES)
 ELSE (BUILD_EXAMPLES)
     	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
+
+
+install (TARGETS gVirtualXRay DESTINATION lib)
+install (FILES ${HXX_SOURCES} DESTINATION include/gVirtualXRay)
+install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h" DESTINATION include/gVirtualXRay)

@@ -29,8 +29,27 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#endif
+
+#include <GL/glew.h>
+#include <stdlib.h>
+
+#ifdef HAS_FLTK
+#include <FL/glut.H>
+#else // HAS_FLTK
+#ifdef HAS_GLUT
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else // __APPLE__
+#include <GL/glut.h>
+#endif // __APPLE__
+#endif // HAS_GLUT
+#endif // HAS_FLTK
+
 #ifndef XRAY_RENDERER_H
-#include "XRayRenderer.h"
+#include "gVirtualXRay/XRayRenderer.h"
 #endif
 
 
@@ -44,30 +63,6 @@ using namespace gVirtualXRay;
 //	Defines
 //******************************************************************************
 #define PREFIX ".."
-
-
-//******************************************************************************
-//	Constant variables
-//******************************************************************************
-const std::string g_mu_water_table_filename(PREFIX"/examples/data/mu_water.csv");
-
-const char* g_LBuffer_vertex_shader_filename(PREFIX"/shaders/l_buffer.vert");
-const char* g_LBuffer_fragment_shader_filename(PREFIX"/shaders/l_buffer.frag");
-
-const char* g_cumulated_LBuffer_vertex_shader_filename(PREFIX"/shaders/cumulated_l_buffer.vert");
-const char* g_cumulated_LBuffer_fragment_shader_filename(PREFIX"/shaders/cumulated_l_buffer.frag");
-
-const char* g_outer_surface_LBuffer_vertex_shader_filename(PREFIX"/shaders/outer_surface_l_buffer.vert");
-const char* g_outer_surface_LBuffer_fragment_shader_filename(PREFIX"/shaders/outer_surface_l_buffer.frag");
-
-const char* g_MuX_Dx_vertex_shader_filename(PREFIX"/shaders/MUx_Dx.vert");
-const char* g_MuX_Dx_fragment_shader_filename(PREFIX"/shaders/MUx_Dx.frag");
-
-const char* g_attenuation_vertex_shader_filename(PREFIX"/shaders/xray_attenuation.vert");
-const char* g_attenuation_fragment_shader_filename(PREFIX"/shaders/xray_attenuation.frag");
-
-const char* g_display_vertex_shader_filename(PREFIX"/shaders/xray_display.vert");
-const char* g_display_fragment_shader_filename(PREFIX"/shaders/xray_display.frag");
 
 
 //******************************************************************************
@@ -208,12 +203,5 @@ void loadXRaySimulator()
 	g_xray_renderer.initialise(XRayRenderer::OPENGL,
 		GL_RGB16F_ARB,
 		&g_xray_detector,
-		g_mu_water_table_filename.data(),
-		&g_xray_beam,
-		g_LBuffer_vertex_shader_filename, g_LBuffer_fragment_shader_filename,
-		g_cumulated_LBuffer_vertex_shader_filename, g_cumulated_LBuffer_fragment_shader_filename,
-		g_outer_surface_LBuffer_vertex_shader_filename, g_outer_surface_LBuffer_fragment_shader_filename,
-		g_MuX_Dx_vertex_shader_filename, g_MuX_Dx_fragment_shader_filename,
-		g_attenuation_vertex_shader_filename, g_attenuation_fragment_shader_filename,
-		g_display_vertex_shader_filename, g_display_fragment_shader_filename);
+		&g_xray_beam);
 }

@@ -32,11 +32,11 @@
 #include <iostream>
 
 #ifndef OPENGL_UTILITIES_H
-#include "OpenGLUtilities.h"
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #ifndef VBO_H
-#include "VBO.h"
+#include "gVirtualXRay/VBO.h"
 #endif
 
 
@@ -147,3 +147,26 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
+
+//----------------------------------------------------------------------------
+void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet)
+//----------------------------------------------------------------------------
+{
+	m_number_of_indices = aNumberOfIndexes;
+
+	// Create the VBO
+	glGenBuffers(1, &m_id_set[INDEX_SET_ID]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Bind the new VBO
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Load the data in the VBO
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLint), apIndexSet, GL_DYNAMIC_DRAW);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Unbind the VBO
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}

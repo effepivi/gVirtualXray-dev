@@ -1,0 +1,3 @@
+// the configured options and settings for gVirtualXRay
+#define gVirtualXRay_VERSION_MAJOR @gVirtualXRay_VERSION_MAJOR@
+#define gVirtualXRay_VERSION_MINOR @gVirtualXRay_VERSION_MINOR@

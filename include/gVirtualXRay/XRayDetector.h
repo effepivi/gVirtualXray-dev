@@ -34,17 +34,22 @@
 //	Include
 //******************************************************************************
 #include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else // APPLE
+#include <GL/glu.h>
+#endif // APPLE
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 #ifndef MATRIX4X4_H
-#include "Matrix4x4.h"
+#include "gVirtualXRay/Matrix4x4.h"
 #endif
 
 #ifndef VBO_H
-#include "VBO.h"
+#include "gVirtualXRay/VBO.h"
 #endif
 
 
@@ -75,7 +80,7 @@ public:
 		CUBE,
 		LINE,
 		PARALLEL,
-		UNKNOWN,
+		UNKNOWN
 	} SourceType;
 
 
@@ -86,6 +91,12 @@ public:
 	
 
 	//--------------------------------------------------------------------------
+	///	Destructor.
+	//--------------------------------------------------------------------------
+	~XRayDetector();
+
+
+	//--------------------------------------------------------------------------
 	///	Display the detector using OpenGL.
 	//--------------------------------------------------------------------------
 	void displayDetector();
@@ -94,7 +105,7 @@ public:
 	//--------------------------------------------------------------------------
 	///	Display the source using OpenGL.
 	//--------------------------------------------------------------------------
-	void displaySource() const;
+	void displaySource();
 
 
 	//--------------------------------------------------------------------------
@@ -175,34 +186,19 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Set the projection mode.
-	/**
-	*	@aFlag: it is true if a parallel beam is used (e.g. orthographic projection).
-	*			it is false if perspective projection is used.
-	*			(default value: true)
-	*/
+	///	Set the projection mode to parallel beam.
 	//--------------------------------------------------------------------------
     void setParallelBeam();
 
 
 	//--------------------------------------------------------------------------
-	///	Set the projection mode.
-	/**
-	*	@aFlag: it is true if perspective projection is used.
-	*			it is false if a parallel beam is used (e.g. orthographic projection).
-	*			(default value: true)
-	*/
+	///	Set the projection mode to cone beam (same as point source).
 	//--------------------------------------------------------------------------
     void setConeBeam();
 
 
 	//--------------------------------------------------------------------------
-	///	Set the projection mode.
-	/**
-	*	@aFlag: it is true if perspective projection is used.
-	*			it is false if a parallel beam is used (e.g. orthographic projection).
-	*			(default value: true)
-	*/
+	///	Set the projection mode to point source (same as cone beam).
 	//--------------------------------------------------------------------------
     void setPointSource();
 
@@ -314,6 +310,16 @@ public:
 	const MATRIX4& getRotationMatrix() const;
 
 
+	const VEC3& getNormal() const;
+	const VEC3& getRightVector() const;
+	const VEC3& getLowerCorner() const;
+	const VEC3& getUpperCorner() const;
+
+	const void getPlaneEquation(RATIONAL_NUMBER& A,
+			RATIONAL_NUMBER& B,
+			RATIONAL_NUMBER& C,
+			RATIONAL_NUMBER& D);
+
 	SourceType getSourceType() const;
 
 
@@ -342,9 +348,9 @@ protected:
 
 
 	//--------------------------------------------------------------------------
-	///	Compute the distance between the source and the detector.
+	///	Compute the distance between the source and the detector, etc.
 	//--------------------------------------------------------------------------
-	void updateDistanceSourceDetector();
+	void updateInternalValues();
 
 
 	//--------------------------------------------------------------------------
@@ -445,6 +451,16 @@ protected:
 
 	/// Source type
 	SourceType m_source_type;
+
+
+	VEC3 m_lower_corner;
+	VEC3 m_upper_corner;
+	VEC3 m_normal;
+	VEC3 m_look_at_vector;
+	VEC3 m_right_vector;
+
+	// OpenGL model of the source
+	GLUquadric* m_p_source_model;
 };
 
 

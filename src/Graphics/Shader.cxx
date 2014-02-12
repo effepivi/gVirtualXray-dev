@@ -36,15 +36,15 @@
 #include <cstring>
 
 #ifndef SHADER_H
-#include "Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "FileDoesNotExistException.h"
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 #ifndef OUT_OF_MEMORY_EXCEPTION_H
-#include "OutOfMemoryException.h"
+#include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
 
@@ -108,9 +108,10 @@ void Shader::reset()
 }
 
 
-//-----------------------------------------------------------------------------------------------------
-void Shader::load(const std::string& aVertexShaderFilename, const std::string& aFragmentShaderFilename)
-//-----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------
+void Shader::loadFiles(const std::string& aVertexShaderFilename,
+					   const std::string& aFragmentShaderFilename)
+//----------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
 	reset();
@@ -126,6 +127,33 @@ void Shader::load(const std::string& aVertexShaderFilename, const std::string& a
 
 	loadVertexShaderFile(aVertexShaderFilename);
 	loadFragmentShaderFile(aFragmentShaderFilename);
+	linkProgram();
+
+	m_valid = true;
+
+	m_shader_capable = true;
+}
+
+
+//-------------------------------------------------------------------
+void Shader::loadSource(const std::string& aVertexShaderSourceCode,
+						const std::string& aFragmentShaderSourceCode)
+//-------------------------------------------------------------------
+{
+	// Reset the shader and restore the default values
+	reset();
+
+	// Create the shader program
+	m_shader_program_id = glCreateProgram();
+
+	// Create the shader program has not been created
+	if (!m_shader_program_id)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
+	}
+
+	loadVertexShaderSource(aVertexShaderSourceCode);
+	loadFragmentShaderSource(aFragmentShaderSourceCode);
 	linkProgram();
 	
 	m_valid = true;
@@ -170,6 +198,58 @@ void Shader::loadFragmentShaderFile(const std::string& aFragmentShaderFilename)
 
 	// Load the file
 	m_fragment_source_number_of_lines = loadFile(m_fragment_shader_filename, m_fragment_source);
+
+	// Compile the shader
+	m_fragment_shader_id = compileShader(GL_FRAGMENT_SHADER, m_fragment_source_number_of_lines, m_fragment_source);
+}
+
+
+//-----------------------------------------------------------------------------
+void Shader::loadVertexShaderSource(const std::string& aVertexShaderSourceCode)
+//-----------------------------------------------------------------------------
+{
+	// Store the name of the file
+	m_vertex_shader_filename = "Built in.";
+
+	// The name has changed, therefore the shader is not loaded
+	m_valid = false;
+
+	// Release the memory if needed
+	releaseVertexSourceMemory();
+
+	// Load the file
+	m_vertex_source = new GLchar*[1];
+	m_vertex_source[0] = new GLchar[aVertexShaderSourceCode.size() + 1];
+	strcpy(m_vertex_source[0], aVertexShaderSourceCode.c_str());
+
+	// Count the number of new line characters ('\n')
+	m_vertex_source_number_of_lines = 1;
+
+	// Compile the shader
+	m_vertex_shader_id = compileShader(GL_VERTEX_SHADER, m_vertex_source_number_of_lines, m_vertex_source);
+}
+
+
+//---------------------------------------------------------------------------------
+void Shader::loadFragmentShaderSource(const std::string& aFragmentShaderSourceCode)
+//---------------------------------------------------------------------------------
+{
+	// Store the name of the file
+	m_fragment_shader_filename = "Built in.";
+
+	// The name has changed, therefore the shader is not loaded
+	m_valid = false;
+
+	// Release the memory if needed
+	releaseFragmentSourceMemory();
+
+	// Load the file
+	m_fragment_source = new GLchar*[1];
+	m_fragment_source[0] = new GLchar[aFragmentShaderSourceCode.size() + 1];
+	strcpy(m_fragment_source[0], aFragmentShaderSourceCode.c_str());
+
+	// Count the number of new line characters ('\n')
+	m_fragment_source_number_of_lines = 1;
 
 	// Compile the shader
 	m_fragment_shader_id = compileShader(GL_FRAGMENT_SHADER, m_fragment_source_number_of_lines, m_fragment_source);
@@ -294,12 +374,18 @@ GLuint Shader::compileShader(GLenum aShaderType, int aLineNumber, GLchar** aShad
 		glGetProgramiv(m_shader_program_id, GL_INFO_LOG_LENGTH, &log_size);
 
 		// Allocate memory to store the log message
-		p_log_message = new char[log_size + 1];
+		if (log_size)
+		{
+			p_log_message = new char[log_size + 1];
+		}
 
 		// The memory was not allocated
 		if (!p_log_message)
 		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Shader program linkage error.");
+			std::stringstream error_message;
+			error_message << "Shader program linkage error in:" << std::endl;
+			error_message << *aShaderSource;
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 		}
 
 		// Get the log message

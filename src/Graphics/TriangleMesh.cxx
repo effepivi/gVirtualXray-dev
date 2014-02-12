@@ -29,16 +29,18 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include <map>
+
 #ifndef TRIANGLE_MESH_H
-#include "TriangleMesh.h"
+#include "gVirtualXRay/TriangleMesh.h"
 #endif
 
 #ifndef UNITS_H
-#include "Units.h"
+#include "gVirtualXRay/Units.h"
 #endif
 
 #ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "FileDoesNotExistException.h"
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 
@@ -61,6 +63,223 @@ using namespace Graphics;
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
+
+
+//-----------------------------------------------------------
+void TriangleMesh::displayUsingImmediateModeWithIndex() const
+//-----------------------------------------------------------
+{
+	int number_of_indices(getIndexNumber());
+
+	if (number_of_indices == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	if (number_of_indices % 3 != 0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of indices.");
+	}
+
+	glBegin(GL_TRIANGLES);
+	for (int i(0); i < number_of_indices; ++i)
+	{
+		int id(getIndex(i));
+		VEC3 vertex(getVertex(id));
+		VEC3 normal(getVertexNormal(id));
+
+		glNormal3f(normal.getX(), normal.getY(), normal.getZ());
+		glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+	}
+	glEnd();
+
+	// Check the OpenGL error status
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//--------------------------------------------------------------
+void TriangleMesh::displayUsingImmediateModeWithoutIndex() const
+//--------------------------------------------------------------
+{
+	int number_of_vertices(getVertexNumber());
+
+	if (number_of_vertices == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	if (number_of_vertices % 3 != 0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of vertices.");
+	}
+
+	glBegin(GL_TRIANGLES);
+	for (int i(0); i < number_of_vertices; ++i)
+	{
+		VEC3 vertex(getVertex(i));
+		VEC3 normal(getVertexNormal(i));
+
+		glNormal3f(normal.getX(), normal.getY(), normal.getZ());
+		glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+	}
+	glEnd();
+
+	// Check the OpenGL error status
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//--------------------------------------------------
+void TriangleMesh::displayWireFrameWithIndex() const
+//--------------------------------------------------
+{
+	int number_of_indices(getIndexNumber());
+
+	if (number_of_indices == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	if (number_of_indices % 3 != 0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of indices.");
+	}
+
+	for (int i(0); i < number_of_indices; i += 3)
+	{
+		glBegin(GL_LINE_LOOP);
+		for (int j(0); j < 3; ++j)
+		{
+			int id(getIndex(i + j));
+			VEC3 vertex(getVertex(id));
+			VEC3 normal(getVertexNormal(id));
+
+			glNormal3f(normal.getX(), normal.getY(), normal.getZ());
+			glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+		}
+		glEnd();
+	}
+
+	// Check the OpenGL error status
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//-----------------------------------------------------
+void TriangleMesh::displayWireFrameWithoutIndex() const
+//-----------------------------------------------------
+{
+	int number_of_vertices(getVertexNumber());
+
+	if (number_of_vertices == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	if (number_of_vertices % 3 != 0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of vertices.");
+	}
+
+	for (int i(0); i < number_of_vertices; i += 3)
+	{
+		glBegin(GL_LINE_LOOP);
+		for (int j(0); j < 3; ++j)
+		{
+			VEC3 vertex(getVertex(i + j));
+			VEC3 normal(getVertexNormal(i + j));
+
+			glNormal3f(normal.getX(), normal.getY(), normal.getZ());
+			glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+		}
+		glEnd();
+	}
+
+	// Check the OpenGL error status
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//-------------------------------------------------------------
+void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
+//-------------------------------------------------------------
+{
+	// By default try the external data
+	if (m_p_external_vertex_set)
+	{
+	}
+	// Use the internal data
+	else
+	{
+		// There is an index
+		if (m_p_internal_index_set.size())
+		{
+			glBegin(GL_LINES);
+			for (int i(0); i < m_p_internal_index_set.size(); i += 3)
+			{
+				UINT id_0(m_p_internal_index_set[i + 0]);
+				UINT id_1(m_p_internal_index_set[i + 1]);
+				UINT id_2(m_p_internal_index_set[i + 2]);
+
+				// Normal per face does not exist, but it can be computed
+				VEC3 vertex_0(getVertex(id_0));
+				VEC3 vertex_1(getVertex(id_1));
+				VEC3 vertex_2(getVertex(id_2));
+
+				VEC3 centre((vertex_0 + vertex_1 + vertex_2) / 3.0);
+
+				VEC3 normal( (vertex_2 - vertex_0)^(vertex_2 - vertex_1) );
+				normal.normalize();
+
+				normal = centre + normal * 0.5 * cm;
+
+				glVertex3f(centre.getX(), centre.getY(), centre.getZ());
+				glVertex3f(normal.getX(), normal.getY(), normal.getZ());
+			}
+			glEnd();
+		}
+		// There is no index
+		else
+		{
+			// There are as many normals as there are vertices
+			if (getFaceNormalNumber() == getVertexNumber())
+			{
+				glBegin(GL_LINES);
+				for (int i(0); i < getVertexNumber(); i += 3)
+				{
+					UINT id_0(i + 0);
+					UINT id_1(i + 1);
+					UINT id_2(i + 2);
+
+					VEC3 vertex_0(getVertex(id_0));
+					VEC3 vertex_1(getVertex(id_1));
+					VEC3 vertex_2(getVertex(id_2));
+
+					VEC3 centre((vertex_0 + vertex_1 + vertex_2) / 3.0);
+
+					VEC3 normal_0(getFaceNormal(id_0));
+					VEC3 normal_1(getFaceNormal(id_1));
+					VEC3 normal_2(getFaceNormal(id_2));
+
+					VEC3 normal((normal_0 + normal_1 + normal_2) / 3.0);
+					normal.normalize();
+
+					normal = centre + normal * aNormalSize;
+
+					glVertex3f(centre.getX(), centre.getY(), centre.getZ());
+					glVertex3f(normal.getX(), normal.getY(), normal.getZ());
+				}
+				glEnd();
+			}
+			// There are not as many normals as there are vertices
+			else
+			{
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "There are not as many normals as there are vertices.");
+			}
+		}
+	}
+}
 
 
 //----------------------------------------------------------
@@ -91,101 +310,56 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	fread(&(triangle_number), sizeof(float),1,p_stream);
 
 	// Set the size of arrays to store the vertices and normal vectors
-	m_p_vertex_set.resize(triangle_number * 3 * 3);
-	m_p_normal_set.resize(triangle_number * 3 * 3);
+	m_p_internal_vertex_set.resize(triangle_number * 3 * 3);
+	m_p_face_normal_set.resize(triangle_number * 3 * 3);
+	m_p_vertex_normal_set.resize(triangle_number * 3 * 3);
 	
 	// Read the data
 	for (int i(0); i < getTriangleNumber(); i++)
 	{
 		// Read normals
-		fread(&m_p_normal_set[9 * i], sizeof(float), 3, p_stream);
+		fread(&m_p_face_normal_set[9 * i], sizeof(float), 3, p_stream);
 
 		// Copy one normal per vertex 
 		if (!anAutoComputeNormalFlag)
 		{
 			for (int k=1; k<3; k++)
 			{
-				m_p_normal_set[9 * i + 3 * k]     = m_p_normal_set[9 * i];
-				m_p_normal_set[9 * i + 3 * k + 1] = m_p_normal_set[9 * i + 1];
-				m_p_normal_set[9 * i + 3 * k + 2] = m_p_normal_set[9 * i + 2];
+				m_p_face_normal_set[9 * i + 3 * k]     = m_p_face_normal_set[9 * i];
+				m_p_face_normal_set[9 * i + 3 * k + 1] = m_p_face_normal_set[9 * i + 1];
+				m_p_face_normal_set[9 * i + 3 * k + 2] = m_p_face_normal_set[9 * i + 2];
+
+				m_p_vertex_normal_set[9 * i + 3 * k]     = m_p_face_normal_set[9 * i];
+				m_p_vertex_normal_set[9 * i + 3 * k + 1] = m_p_face_normal_set[9 * i + 1];
+				m_p_vertex_normal_set[9 * i + 3 * k + 2] = m_p_face_normal_set[9 * i + 2];
 			}
 		}
 
 		// Read vertices
-		fread(&m_p_vertex_set[9 * i],     sizeof(float), 3, p_stream);
-		fread(&m_p_vertex_set[9 * i + 3], sizeof(float), 3, p_stream);
-		fread(&m_p_vertex_set[9 * i + 6], sizeof(float), 3, p_stream);
-
-		// Compute the normal vectors using the cross product
-		if (anAutoComputeNormalFlag)
-		{
-			VEC3 vec_A(m_p_vertex_set[9 * i     + 0], m_p_vertex_set[9 *i     + 1], m_p_vertex_set[9 * i     + 2]);
-			VEC3 vec_B(m_p_vertex_set[9 * i + 3 + 0], m_p_vertex_set[9 *i + 3 + 1], m_p_vertex_set[9 * i + 3 + 2]);
-			VEC3 vec_C(m_p_vertex_set[9 * i + 6 + 0], m_p_vertex_set[9 *i + 6 + 1], m_p_vertex_set[9 * i + 6 + 2]);
-
-			VEC3 normal( (vec_C - vec_A)^(vec_C - vec_B) );
-			normal.normalize();
-
-			for (int k=0; k<3; k++)
-			{
-				m_p_normal_set[9 * i + 3 * k]     = normal.getX();
-				m_p_normal_set[9 * i + 3 * k + 1] = normal.getY();
-				m_p_normal_set[9 * i + 3 * k + 2] = normal.getZ();
-			}
-		}
+		fread(&m_p_internal_vertex_set[9 * i],     sizeof(float), 3, p_stream);
+		fread(&m_p_internal_vertex_set[9 * i + 3], sizeof(float), 3, p_stream);
+		fread(&m_p_internal_vertex_set[9 * i + 6], sizeof(float), 3, p_stream);
 
 		// Skip data
 		fseek(p_stream, 2, SEEK_CUR);
 	}
 
-	// Normalise all the normal vectors
-	float* p_normals(&m_p_normal_set[0]);
-	for (int i(0); i < getNormalNumber(); i++, p_normals += 3)
+	// Compute the normal vectors using the cross product
+	if (anAutoComputeNormalFlag)
 	{
-		VEC3 normal(p_normals[0], p_normals[1], p_normals[2]);
-		normal.normalize();
-
-		p_normals[0] = normal.getX();
-		p_normals[1] = normal.getY();
-		p_normals[2] = normal.getZ();
+		computeNormalVectors();
+		normaliseNormals();
 	}
 
 	// Change scale and compute bounding box
-	m_min_corner = VEC3(m_p_vertex_set[0] * aScale, m_p_vertex_set[1] * aScale, m_p_vertex_set[2] * aScale);
-	m_max_corner = m_min_corner;
-	for (int i(0); i < getVertexNumber(); i++)
-	{
-		m_p_vertex_set[i * 3 + 0] *= aScale;
-		m_p_vertex_set[i * 3 + 1] *= aScale;
-		m_p_vertex_set[i * 3 + 2] *= aScale;
-
-		if (m_min_corner.getX() > m_p_vertex_set[i * 3 + 0]) m_min_corner.setX(m_p_vertex_set[i * 3 + 0]);
-		if (m_max_corner.getX() < m_p_vertex_set[i * 3 + 0]) m_max_corner.setX(m_p_vertex_set[i * 3 + 0]);
-		if (m_min_corner.getY() > m_p_vertex_set[i * 3 + 1]) m_min_corner.setY(m_p_vertex_set[i * 3 + 1]);
-		if (m_max_corner.getY() < m_p_vertex_set[i * 3 + 1]) m_max_corner.setY(m_p_vertex_set[i * 3 + 1]);
-		if (m_min_corner.getZ() > m_p_vertex_set[i * 3 + 2]) m_min_corner.setZ(m_p_vertex_set[i * 3 + 2]);
-		if (m_max_corner.getZ() < m_p_vertex_set[i * 3 + 2]) m_max_corner.setZ(m_p_vertex_set[i * 3 + 2]);
-	}
+	applyScale(aScale);
+	computeBoundingBox();
 
 	// Move the object to the center
 	if (aMoveToCentreFlag)
 	{
-		VEC3 translation_vector(m_min_corner + (m_max_corner - m_min_corner) / 2.0);
-		translation_vector *= -1.0;
-
-		for (int i(0); i < getVertexNumber(); i++)
-		{
-			m_p_vertex_set[i * 3 + 0] += GLfloat(translation_vector.getX());
-			m_p_vertex_set[i * 3 + 1] += GLfloat(translation_vector.getY());
-			m_p_vertex_set[i * 3 + 2] += GLfloat(translation_vector.getZ());
-		}
-
-		m_min_corner += translation_vector;
-		m_max_corner += translation_vector;
+		moveToCentre();
 	}
-
-	// Compute diagonal size
-	m_bounding_box_diagonal = (m_min_corner - m_max_corner).length();
 
 	// Display extra debug info
 	if (aPrintDebugInfoFlag)
@@ -201,82 +375,399 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	// Create the VBO
 	if (aCreateVBOFlag)
 	{
-		m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_vertex_set[0],
-				getNormalNumber(), 3, &m_p_normal_set[0],
-				0, 0, 0);
+		updateVBO();
 	}
 }
 
 
-//-------------------------------
-void TriangleMesh::moveToCentre()
-//-------------------------------
+//---------------------------------------
+void TriangleMesh::computeNormalVectors()
+//---------------------------------------
 {
-	VEC3 translation_vector(m_min_corner + (m_max_corner - m_min_corner) / 2.0);
-	translation_vector *= -1.0;
+	m_p_face_normal_set.clear();
+	m_p_vertex_normal_set.clear();
 
-	for (int i = 0; i < getVertexNumber(); i++)
+	// There is an index
+	if (getIndexNumber())
 	{
-		m_p_vertex_set[i * 3 + 0] += GLfloat(translation_vector.getX());
-		m_p_vertex_set[i * 3 + 1] += GLfloat(translation_vector.getY());
-		m_p_vertex_set[i * 3 + 2] += GLfloat(translation_vector.getZ());
-	}
-
-	m_min_corner += translation_vector;
-	m_max_corner += translation_vector;
-
-	// Update the VBO
-	if (m_vbo.isReady())
-	{
-		m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_vertex_set[0],
-				getNormalNumber(), 3, &m_p_normal_set[0],
-				0, 0, 0);
-	}
-}
-
-
-//------------------------------------
-void TriangleMesh::autoComputeNormal()
-//------------------------------------
-{
-	for (int i(0); i < getTriangleNumber(); i++)
-	{
-		VEC3 vec_A(m_p_vertex_set[9 * i     + 0], m_p_vertex_set[9 * i     + 1], m_p_vertex_set[9 * i     + 2]);
-		VEC3 vec_B(m_p_vertex_set[9 * i + 3 + 0], m_p_vertex_set[9 * i + 3 + 1], m_p_vertex_set[9 * i + 3 + 2]);
-		VEC3 vec_C(m_p_vertex_set[9 * i + 6 + 0], m_p_vertex_set[9 * i + 6 + 1], m_p_vertex_set[9 * i + 6 + 2]);
-
-		VEC3 normal( (vec_C - vec_A)^(vec_C - vec_B) );
-		normal.normalize();
-
-		for (int k(0); k<3; k++)
+		if (getIndexNumber() % 3 != 0)
 		{
-			m_p_normal_set[9 * i + 3 * k    ] = GLfloat(normal.getX());
-			m_p_normal_set[9 * i + 3 * k + 1] = GLfloat(normal.getY());
-			m_p_normal_set[9 * i + 3 * k + 2] = GLfloat(normal.getZ());
+			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		// Allocate the memory
+		m_p_vertex_normal_set.resize(getVertexNumber() * 3, 0.0);
+
+		// Process every triangle
+		for (int i(0); i < getIndexNumber(); i += 3)
+		{
+			// Get the vertex IDs
+			int id_0(getIndex(i + 0));
+			int id_1(getIndex(i + 1));
+			int id_2(getIndex(i + 2));
+
+			// Get the vertices
+			VEC3 vec_A(getVertex(id_0));
+			VEC3 vec_B(getVertex(id_1));
+			VEC3 vec_C(getVertex(id_2));
+
+			// Compute the normal for the triangle
+			VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+
+			// Normalise the vector
+			normal.normalize();
+
+			// Add the new normal
+			m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
+			m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
+			m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
+
+			m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
+			m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
+			m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
+
+			m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
+			m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
+			m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
+		}
+
+		normaliseNormals();
+	}
+	// There is not any index
+	else
+	{
+		if (getVertexNumber() % 3 != 0)
+		{
+			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		// Allocate the memory
+		m_p_face_normal_set.resize(getVertexNumber() * 3, 0.0);
+		m_p_vertex_normal_set.resize(getVertexNumber() * 3, 0.0);
+
+		// Process every triangle
+		for (int i(0); i < getVertexNumber(); i += 3)
+		{
+			// Get the vertex IDs
+			int id_0(i + 0);
+			int id_1(i + 1);
+			int id_2(i + 2);
+
+			// Get the vertices
+			VEC3 vec_A(getVertex(id_0));
+			VEC3 vec_B(getVertex(id_1));
+			VEC3 vec_C(getVertex(id_2));
+
+			// Compute the normal for the triangle
+			VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+
+			// Normalise the vector
+			normal.normalize();
+
+			// Add the new normal
+			m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
+			m_p_face_normal_set[id_0 * 3 + 1] = normal.getY();
+			m_p_face_normal_set[id_0 * 3 + 2] = normal.getZ();
+
+			m_p_face_normal_set[id_1 * 3 + 0] = normal.getX();
+			m_p_face_normal_set[id_1 * 3 + 1] = normal.getY();
+			m_p_face_normal_set[id_1 * 3 + 2] = normal.getZ();
+
+			m_p_face_normal_set[id_2 * 3 + 0] = normal.getX();
+			m_p_face_normal_set[id_2 * 3 + 1] = normal.getY();
+			m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();
+
+			m_p_vertex_normal_set[id_0 * 3 + 0] = normal.getX();
+			m_p_vertex_normal_set[id_0 * 3 + 1] = normal.getY();
+			m_p_vertex_normal_set[id_0 * 3 + 2] = normal.getZ();
+
+			m_p_vertex_normal_set[id_1 * 3 + 0] = normal.getX();
+			m_p_vertex_normal_set[id_1 * 3 + 1] = normal.getY();
+			m_p_vertex_normal_set[id_1 * 3 + 2] = normal.getZ();
+
+			m_p_vertex_normal_set[id_2 * 3 + 0] = normal.getX();
+			m_p_vertex_normal_set[id_2 * 3 + 1] = normal.getY();
+			m_p_vertex_normal_set[id_2 * 3 + 2] = normal.getZ();
 		}
 	}
 }
 
 
-//----------------------------------------------------------
-void TriangleMesh::translate(const VEC3& aTranslationVector)
-//----------------------------------------------------------
+//-----------------------------------
+void TriangleMesh::normaliseNormals()
+//-----------------------------------
 {
-    for (int i = 0; i < getVertexNumber(); i++)
-    {
-        m_p_vertex_set[i * 3 + 0] += GLfloat(aTranslationVector.getX());
-        m_p_vertex_set[i * 3 + 1] += GLfloat(aTranslationVector.getY());
-        m_p_vertex_set[i * 3 + 2] += GLfloat(aTranslationVector.getZ());
-    }
-
-	m_min_corner += aTranslationVector;
-	m_max_corner += aTranslationVector;
-
-	// Update the VBO
-	if (m_vbo.isReady())
+	if (!getFaceNormalNumber() && !getVertexNormalNumber())
 	{
-		m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_vertex_set[0],
-				getNormalNumber(), 3, &m_p_normal_set[0],
-				0, 0, 0);
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	for (int i(0); i < getFaceNormalNumber(); ++i)
+	{
+		VEC3 normal(m_p_face_normal_set[i * 3 + 0],
+				m_p_face_normal_set[i * 3 + 1],
+				m_p_face_normal_set[i * 3 + 2]);
+
+		normal.normalise();
+
+		m_p_face_normal_set[i * 3 + 0] = normal.getX();
+		m_p_face_normal_set[i * 3 + 1] = normal.getY();
+		m_p_face_normal_set[i * 3 + 2] = normal.getZ();
+	}
+
+	for (int i(0); i < getVertexNormalNumber(); ++i)
+	{
+		VEC3 normal(m_p_vertex_normal_set[i * 3 + 0],
+				m_p_vertex_normal_set[i * 3 + 1],
+				m_p_vertex_normal_set[i * 3 + 2]);
+
+		normal.normalise();
+
+		m_p_vertex_normal_set[i * 3 + 0] = normal.getX();
+		m_p_vertex_normal_set[i * 3 + 1] = normal.getY();
+		m_p_vertex_normal_set[i * 3 + 2] = normal.getZ();
+	}
+}
+
+
+struct VectorComparer
+{
+	// Return true if aLeftNode is less than aRightNode
+    bool operator()(const VEC3 & aLeftNode, const VEC3 & aRightNode) const
+    {
+    	double epsilon(0.001);
+
+    	if (fabs(aLeftNode.getX() - aRightNode.getX()) > epsilon)
+    	{
+    		if (aLeftNode.getX() < aRightNode.getX())
+    		{
+    			return (true);
+    		}
+    		else
+    		{
+    			return (false);
+    		}
+    	}
+
+    	if (fabs(aLeftNode.getY() - aRightNode.getY()) > epsilon)
+    	{
+    		if (aLeftNode.getY() < aRightNode.getY())
+    		{
+    			return (true);
+    		}
+    		else
+    		{
+    			return (false);
+    		}
+    	}
+
+    	if (fabs(aLeftNode.getZ() - aRightNode.getZ()) > epsilon)
+    	{
+    		if (aLeftNode.getZ() < aRightNode.getZ())
+    		{
+    			return (true);
+    		}
+    		else
+    		{
+    			return (false);
+    		}
+    	}
+
+    	return (false);
+    }
+};
+
+
+class TempRecord
+{
+public:
+	inline const TempRecord& operator +=(const VEC3& aNormal)
+	{
+		m_normal += aNormal;
+
+		return (*this);
+	}
+
+
+	inline const TempRecord& operator =(UINT anID)
+	{
+		m_id = anID;
+
+		return (*this);
+	}
+
+	VEC3 m_normal;
+	UINT m_id;
+};
+
+
+//--------------------------------
+void TriangleMesh::mergeVertices()
+//--------------------------------
+{
+	// Merge vertices only if external data is not used
+	if (!m_p_external_vertex_set)
+	{
+		// It only works if no index has been set
+		if (!m_p_internal_index_set.size())
+		{
+			// Allocate the memory of the index
+			m_p_internal_index_set.resize(getTriangleNumber() * 3);
+
+			std::map<VEC3, TempRecord, VectorComparer> hash_table;
+
+			// Add the vertices to the hash table
+			UINT number_of_vertices(getVertexNumber());
+			for (int i(0); i < number_of_vertices; ++i)
+			{
+				VEC3 current_vertex(getVertex(i));
+				VEC3 normal(getFaceNormal(i));
+
+				hash_table[current_vertex].m_normal += normal;
+			}
+
+			m_p_vertex_normal_set.clear();
+			m_p_vertex_normal_set.resize(hash_table.size() * 3);
+
+			int id(0);
+			for (std::map<VEC3, TempRecord>::iterator ite(hash_table.begin());
+					ite != hash_table.end();
+					++ite, ++id)
+			{
+				VEC3 normal(ite->second.m_normal.normal());
+
+				m_p_vertex_normal_set[id * 3 + 0] = normal.getX();
+				m_p_vertex_normal_set[id * 3 + 1] = normal.getY();
+				m_p_vertex_normal_set[id * 3 + 2] = normal.getZ();
+			}
+
+			// Set the index in the hash table and create the list of vertices
+			std::vector<GLfloat> new_vertex_set(hash_table.size() * 3);
+			id = 0;
+			for (std::map<VEC3, TempRecord>::iterator ite(hash_table.begin());
+					ite != hash_table.end();
+					++ite, ++id)
+			{
+				ite->second.m_id = id;
+
+				new_vertex_set[id * 3 + 0] = ite->first.getX();
+				new_vertex_set[id * 3 + 1] = ite->first.getY();
+				new_vertex_set[id * 3 + 2] = ite->first.getZ();
+			}
+
+			// Fill the index
+			UINT number_of_triangles(getTriangleNumber());
+			for (int i(0); i < number_of_triangles; ++i)
+			{
+				VEC3 vertex_0(getVertex(i * 3 + 0));
+				VEC3 vertex_1(getVertex(i * 3 + 1));
+				VEC3 vertex_2(getVertex(i * 3 + 2));
+
+				UINT id_0(hash_table.find(vertex_0)->second.m_id);
+				UINT id_1(hash_table.find(vertex_1)->second.m_id);
+				UINT id_2(hash_table.find(vertex_2)->second.m_id);
+
+				if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size())
+				{
+					throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid vertex index");
+				}
+
+				m_p_internal_index_set[i * 3 + 0] = id_0;
+				m_p_internal_index_set[i * 3 + 1] = id_1;
+				m_p_internal_index_set[i * 3 + 2] = id_2;
+			}
+
+			// Normalise the normals in the normal set
+			UINT number_of_normals(getVertexNormalNumber());
+			for (int i(0); i < number_of_normals; ++i)
+			{
+				VEC3 normal(getVertexNormal(i));
+				normal.normalise();
+				m_p_vertex_normal_set[i * 3 + 0] += normal.getX();
+				m_p_vertex_normal_set[i * 3 + 1] += normal.getY();
+				m_p_vertex_normal_set[i * 3 + 2] += normal.getZ();
+			}
+
+			// Replace the list of vertices
+			m_p_internal_vertex_set = new_vertex_set;
+
+			// Reset the normal per face set
+			m_p_face_normal_set.clear();
+
+			// Update the VBO
+			if (m_vbo.isReady())
+			{
+				updateVBO();
+			}
+		}
+	}
+	// Generate an error
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed.");
+	}
+}
+
+
+//-----------------------------------
+inline void TriangleMesh::updateVBO()
+//-----------------------------------
+{
+	// By default try the external data
+	if (m_p_external_vertex_set)
+	{
+		if (getVertexNormalNumber())
+		{
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &(*m_p_external_vertex_set)[0],
+					getVertexNormalNumber(), 3, &m_p_vertex_normal_set[0],
+					0, 0, 0);
+		}
+		else if (getFaceNormalNumber())
+		{
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &(*m_p_external_vertex_set)[0],
+					getFaceNormalNumber(), 3, &m_p_face_normal_set[0],
+					0, 0, 0);
+		}
+		else
+		{
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &(*m_p_external_vertex_set)[0],
+					0, 0, 0,
+					0, 0, 0);
+		}
+
+		if (m_p_external_index_set)
+		{
+			if (m_p_external_index_set->size())
+			{
+				m_vbo.setIndexData(m_p_external_index_set->size(), &(*m_p_external_index_set)[0]);
+			}
+		}
+	}
+	// Use the internal data
+	else
+	{
+		if (getVertexNormalNumber())
+		{
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_internal_vertex_set[0],
+					getVertexNormalNumber(), 3, &m_p_vertex_normal_set[0],
+					0, 0, 0);
+		}
+		else if (getFaceNormalNumber())
+		{
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_internal_vertex_set[0],
+					getFaceNormalNumber(), 3, &m_p_face_normal_set[0],
+					0, 0, 0);
+		}
+		else
+		{
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_internal_vertex_set[0],
+					0, 0, 0,
+					0, 0, 0);
+		}
+
+		if (m_p_internal_index_set.size())
+		{
+			m_vbo.setIndexData(m_p_internal_index_set.size(), &m_p_internal_index_set[0]);
+		}
 	}
 }

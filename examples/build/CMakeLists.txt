@@ -36,7 +36,26 @@ ENDIF(WIN32)
 project (examples)
 
 
+OPTION(USE_FLTK "Use FLTK." OFF)
+OPTION(USE_GLUT "Use GLUT." ON)
+
+
 # Headers of the project #######################################################
+INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
+INCLUDE_DIRECTORIES("../include")
+
+
+# FLTK ########################################################################
+IF (USE_FLTK)
+FIND_PACKAGE(FLTK REQUIRED)
+if(FLTK_FOUND)
+        ADD_DEFINITIONS(-DHAS_FLTK)
+        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
+        SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+ELSE(FLTK_FOUND)
+        MESSAGE(FATAL_ERROR "FLTK not found.")
+endif(FLTK_FOUND)
+ENDIF (USE_FLTK)
 
 
 # OpenGL ######################################################################
@@ -49,13 +68,17 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
+# GLUT ########################################################################
+IF (USE_GLUT)
 FIND_PACKAGE(GLUT REQUIRED)
 IF(GLUT_FOUND)
-	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-	SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
+        ADD_DEFINITIONS(-DHAS_GLUT)
+        INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+        SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
 ELSE(GLUT_FOUND)
-	MESSAGE(FATAL_ERROR "GLUT not found.")
+        MESSAGE(FATAL_ERROR "GLUT not found.")
 ENDIF(GLUT_FOUND)
+ENDIF (USE_GLUT)
 
 
 FIND_PACKAGE(GLEW REQUIRED)
@@ -67,25 +90,39 @@ ELSE(GLEW_FOUND)
 ENDIF(GLEW_FOUND)
 
 
-# Create the the main program ##################################################
+# Create the RESOURCES ###########################################################
+SET (RESOURCES_SOURCES ../../examples/shaders/display.frag
+	../../examples/shaders/display.vert
+)
+
+
+foreach(F ${RESOURCES_SOURCES})
+	# Get the file name
+	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
+
+	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
+	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+			#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
+			COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
+			COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
+			DEPENDS ${F}.h
+	)
+
+	add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
+	add_dependencies(gVirtualXRay ${FILE_NAME}.h)
+
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
+endforeach()
+
+
+# Create the the main programs #################################################
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-
-
- # Linkage of the target #######################################################
-TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-
-# Create the the main program ##################################################
+ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 
 
- # Linkage of the target #######################################################
+ # Linkage of the targets ######################################################
+TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-
-# Create the the main program ##################################################
-#ADD_EXECUTABLE (test_02 ../src/test_02.cxx)
-
-
-# Linkage of the target ########################################################
-#TARGET_LINK_LIBRARIES (test_02 gVirtualXRay ${requiredLibs} ${optionalLibs})
