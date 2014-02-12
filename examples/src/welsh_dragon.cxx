@@ -459,9 +459,9 @@ void render()
 		g_display_shader.enable();
 
 		// Define colours
-		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.19225,  1.0};
-		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.50754,  1.0};
-		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.508273, 1.0};
+		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.0, 1.0};
+		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.0, 1.0};
+		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.0, 1.0};
 
 		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.19225,  0.19225,  1.0};
 		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.50754,  0.50754,  1.0};
