@@ -282,11 +282,11 @@ int main(int argc, char** argv)
 	    	g_use_stereo = false;
 	    	std::cout << "Stereo is not enable." << std::endl;
 	    }
-#endif
 
 		// Stereo is enable on the system
 	    g_can_use_stereo = true;
     	g_use_stereo = true;
+#endif
 
     	if (g_can_use_stereo)
 		{
