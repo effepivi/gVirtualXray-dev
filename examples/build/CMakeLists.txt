@@ -117,18 +117,13 @@ ELSE(GLEW_FOUND)
 ENDIF(GLEW_FOUND)
 
 
-# Create the the main program ##################################################
+# Create the the main programs #################################################
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-
-
- # Linkage of the target #######################################################
-TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-
-# Create the the main program ##################################################
+ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 
 
- # Linkage of the target #######################################################
+ # Linkage of the targets ######################################################
+TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
-
