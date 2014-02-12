@@ -189,8 +189,8 @@ double g_fovy = 45;                                          //field of view in 
 double g_aspect = double(g_main_window_width)/double(g_main_window_height);  //screen aspect ratio
 double g_nearZ = 5.0 * cm;                                        //near clipping plane
 double g_farZ = 500.0 * cm;                                        //far clipping plane
-double g_screenZ = 500.0 * cm;                                     //screen projection plane
-double g_IOD = 0.5 * cm;                                          //intraocular distance
+double g_screenZ = 10000.0 * cm;                                     //screen projection plane
+double g_IOD = 1.5 * cm;                                          //intraocular distance
 
 MATRIX4 g_left_eye_projection_matrix;
 MATRIX4 g_right_eye_projection_matrix;
@@ -599,11 +599,6 @@ void render()
 void display()
 //------------
 {
-	// Clear the buffers
-	glDrawBuffer(GL_BACK);  // Enable both back buffers for clearing
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
 	// Update the X-ray image
 	updateXRayImage();
 
@@ -615,13 +610,15 @@ void display()
 		pushProjectionMatrix();
 
 		// Set left eye
-		g_current_projection_matrix = g_left_eye_projection_matrix;
 		glDrawBuffer(GL_BACK_LEFT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		g_current_projection_matrix = g_left_eye_projection_matrix;
 		render();
 
 		// Set right eye
-		g_current_projection_matrix = g_right_eye_projection_matrix;
 		glDrawBuffer(GL_BACK_RIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		g_current_projection_matrix = g_right_eye_projection_matrix;
 		render();
 
 		// Restore the current transformation matrix
@@ -631,6 +628,8 @@ void display()
     // Cannot use stereo
 	else
 	{
+		// Clear the buffers
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render();
 	}
 
@@ -787,6 +786,30 @@ void keyboard(unsigned char key, int x, int y)
 		g_display_outside_polygon = !g_display_outside_polygon;
 		break;
 
+	case '+':
+		g_zoom += 1.0 * cm;
+		reshape(g_main_window_width, g_main_window_height);
+		std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
+		break;
+
+	case '-':
+		g_zoom -= 1.0 * cm;
+		reshape(g_main_window_width, g_main_window_height);
+		std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
+		break;
+
+	case 'o':
+		g_IOD += 5.0 * mm;
+		reshape(g_main_window_width, g_main_window_height);
+		std::cout << "IOD in cm" << g_IOD / cm << std::endl;
+		break;
+
+	case 'p':
+		g_IOD -= 5.0 * mm;
+		reshape(g_main_window_width, g_main_window_height);
+		std::cout << "IOD in cm" << g_IOD / cm << std::endl;
+		break;
+
 	default:
 		std::cout << "Key: " << key << std::endl;
 		break;
@@ -880,8 +903,24 @@ void mouse(int button, int button_state, int x, int y)
 	g_button = button;
 	g_button_state = button_state;
 
+	std::cout << g_button << "\t" << g_button_state << std::endl;
+
+	if (g_button == 3)
+	{
+		g_use_arc_ball = false;
+		g_zoom += 1.0 * cm;
+		reshape(g_main_window_width, g_main_window_height);
+		glutPostRedisplay();
+	}
+	else if (g_button == 4)
+	{
+		g_use_arc_ball = false;
+		g_zoom -= 1.0 * cm;
+		reshape(g_main_window_width, g_main_window_height);
+		glutPostRedisplay();
+	}
 	// Use the arc ball
-	if (g_button_state == GLUT_DOWN)
+	else if (g_button_state == GLUT_DOWN)
 	{
 		g_use_arc_ball = true;
 	}
