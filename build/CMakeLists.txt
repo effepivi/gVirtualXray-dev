@@ -186,14 +186,14 @@ ENDIF(FREEIMAGE_FOUND)
 
 
 # ITK ##########################################################################
-#FIND_PACKAGE(ITK)
-#IF(ITK_FOUND)
-#	ADD_DEFINITIONS(-DHAS_ITK)
-#	INCLUDE(${USE_ITK_FILE})
-#	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-#ELSE(ITK_FOUND)
-#	MESSAGE("ITK not found.")
-#ENDIF(ITK_FOUND)
+FIND_PACKAGE(ITK)
+IF(ITK_FOUND)
+	ADD_DEFINITIONS(-DHAS_ITK)
+	INCLUDE(${USE_ITK_FILE})
+	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+ELSE(ITK_FOUND)
+	MESSAGE("ITK not found.")
+ENDIF(ITK_FOUND)
 
 
 # ZLIB #########################################################################
