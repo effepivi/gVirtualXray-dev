@@ -150,8 +150,8 @@ Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0 * keV);
-GLfloat g_resolution(0.25 * mm); // 1mm per pixel
-Vec2ui g_number_of_pixels(1200, 1000);
+GLfloat g_resolution(0.5 * mm); // 1mm per pixel
+Vec2ui g_number_of_pixels(640, 640);
 VEC3 g_source_position(   0.0, 0.0, -50.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
@@ -356,7 +356,7 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
-		g_xray_renderer.addOuterSurface(&g_polygon_data);
+		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
 		// Update the X-ray image
 		updateXRayImage();
@@ -624,6 +624,27 @@ void keyboard(unsigned char key, int x, int y)
 		exit(EXIT_SUCCESS);
 		break;
 
+	case 'l':
+		g_xray_renderer.computeLBuffer(g_polygon_data, VEC3(), g_sample_rotation_matrix);
+		g_xray_renderer.printLBuffer(PREFIX"/examples/data/inside_lbuffer.mhd");
+		break;
+
+	case 'c':
+		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+		g_xray_renderer.printCumulatedLBuffer(PREFIX"/examples/data/cumulated_lbuffer.mhd");
+		break;
+
+	case 'a':
+	case 'f':
+		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+		g_xray_renderer.printEnergyFluence(PREFIX"/examples/data/energy_fluence.mhd");
+		break;
+
+	case 'm':
+		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+		g_xray_renderer.printSumMuxDx(PREFIX"/examples/data/Mux_Dx.mhd");
+		break;
+
 	case 's':
 		if (g_can_use_stereo)
 		{
@@ -773,7 +794,7 @@ void specialKeyboard(int key, int x, int y)
 		{
 			VEC3 translation(g_detector_position - g_source_position);
 			translation.normalise();
-			g_source_position += translation * 1.5 * mm;
+			g_source_position += translation * 1.0 * cm;
 
 			// Set the source position
 			g_xray_detector.setXrayPointSource(g_source_position);
@@ -788,7 +809,7 @@ void specialKeyboard(int key, int x, int y)
 		{
 			VEC3 translation(g_detector_position - g_source_position);
 			translation.normalise();
-			g_source_position -= translation * 1.5 * mm;
+			g_source_position -= translation * 1.0 * cm;
 
 			// Set the source position
 			g_xray_detector.setXrayPointSource(g_source_position);
@@ -984,7 +1005,7 @@ void idle()
 void loadSTLFile()
 //----------------
 {
-	const char* stl_filename(PREFIX"/examples/data/welsh-dragon.stl");
+	const char* stl_filename(PREFIX"/examples/data/welsh-dragon-small.stl");
 
 	// Set geometry
 	g_polygon_data.setFilename(stl_filename);
@@ -1026,6 +1047,8 @@ void loadSource()
 
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);
+	//g_xray_detector.setParallelBeam();
+	g_xray_detector.setPointSource();
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
