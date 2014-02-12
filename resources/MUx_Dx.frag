@@ -59,13 +59,13 @@ vec2 g_offset_5x5[KERNEL_SIZE_5x5];
 vec2 g_offset_7x7[KERNEL_SIZE_7x7];
 
 
-//------------------------------
-bool isValid(float lBufferValue)
-//------------------------------
+//-----------------------------
+bool isValid(vec2 lBufferValue)
+//-----------------------------
 {
     // Return true if lBufferValue is zero, false if it is smaller or greater than zero
     // Care is given to handle floating point numbers' inacuracy
-    return (abs(lBufferValue) < EPSILON);
+    return (abs(lBufferValue.g) < EPSILON && lBufferValue.r >= 0.0);
 }
 
 
@@ -87,7 +87,7 @@ float filter7x7(float anInitialValue)
 		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
 
     	// The L-buffer value is valid
-        if (isValid(l_buffer_value.g))
+        if (isValid(l_buffer_value))
         {
         	// Update the cumulated value
         	value += l_buffer_value.r;
@@ -97,13 +97,8 @@ float filter7x7(float anInitialValue)
         }
     }
 
-    // No valid valid value has been found in the neighbourhood
-    if (count <= EPSILON)
-    {
-    	// Return the original value
-    	value = 0.0;
-    }
-    else
+    // At least one valid value has been found in the neighbourhood
+    if (count > EPSILON)
     {
     	// Return the average value
 	    value /= count;
@@ -132,7 +127,7 @@ float filter5x5(float anInitialValue)
 		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
-		if (isValid(l_buffer_value.g))
+		if (isValid(l_buffer_value))
 		{
         	// Update the cumulated value
 			value += l_buffer_value.r;
@@ -177,7 +172,7 @@ float filter3x3(float anInitialValue)
 		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
-		if (isValid(l_buffer_value.g))
+		if (isValid(l_buffer_value))
 		{
         	// Update the cumulated value
         	value += l_buffer_value.r;
@@ -272,7 +267,7 @@ void main(void)
 	if (g_use_artefact_filtering)
 	{
     	// The texel value is not valid
-		if (!isValid(texel_value.g))
+		if (!isValid(texel_value))
 		{
             // Filter the artefact
 			intensity = filter3x3(intensity);

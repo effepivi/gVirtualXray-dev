@@ -55,7 +55,10 @@ void main(void)
 	float intensity = texture3D(g_sum_mu_x_dx_texture, gl_TexCoord[0].xyz).r;
 	
     // Compute received energy
-	intensity = g_n_input_energy * exp(-intensity);
+	if (intensity >= 0.0)
+    {
+    	intensity = g_n_input_energy * exp(-intensity);
+	}
 
     // Save the fragment value
 	gl_FragColor.rgb = vec3(intensity, u1, v1);
