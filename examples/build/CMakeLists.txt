@@ -40,36 +40,9 @@ OPTION(USE_FLTK "Use FLTK." OFF)
 OPTION(USE_GLUT "Use GLUT." ON)
 
 
-# Create the shaders ###########################################################
-SET (SHADER_SOURCES ../shaders/display.frag
-	../shaders/display.vert
-)
-
-
-SET (SHADER_OBJECTS xray_display.frag.o
-	xray_display.vert.o
-)
-
-
-IF(NOT APPLE)
-	ADD_DEFINITIONS(-DUSE_STEREO)
-ENDIF(NOT APPLE)
-
-#foreach(F ${SHADER_SOURCES})
-	# Get the file name
-#	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
-
-#	add_custom_command(OUTPUT ${FILE_NAME}.tmp
-#                   COMMAND objcopy -I binary -O elf64-x86-64 -B i386 ${F} ${FILE_NAME}.tmp
-#                   COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME}.tmp ${FILE_NAME}.o
-#						 COMMAND ar -r libShaders.a ${FILE_NAME}.o
-#						 COMMAND ${CMAKE_RANLIB} libgVirtualXRay.a
-#                   DEPENDS ${F} gVirtualXRay 
-#	)
-
-#	add_custom_target(${FILE_NAME}.o ALL DEPENDS ${FILE_NAME}.tmp)
-#	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.o)
-#endforeach()
+# Headers of the project #######################################################
+INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
+INCLUDE_DIRECTORIES("../include")
 
 
 # FLTK ########################################################################
@@ -115,6 +88,32 @@ IF(GLEW_FOUND)
 ELSE(GLEW_FOUND)
 	MESSAGE(FATAL_ERROR "GLEW not found.")
 ENDIF(GLEW_FOUND)
+
+
+# Create the RESOURCES ###########################################################
+SET (RESOURCES_SOURCES ../examples/shaders/display.frag
+	../examples/shaders/display.vert
+)
+
+
+foreach(F ${RESOURCES_SOURCES})
+	# Get the file name
+	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
+
+	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
+	add_custom_command(OUTPUT ${FILE_NAME}.tmp
+			#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
+			COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
+			COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
+			DEPENDS ${F}.h
+	)
+
+	add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
+	add_dependencies(gVirtualXRay ${FILE_NAME}.h)
+
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
+endforeach()
 
 
 # Create the the main programs #################################################

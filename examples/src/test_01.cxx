@@ -93,11 +93,14 @@
 #include "gVirtualXRay/Graphics/Shader.h"
 #endif
 
-#ifdef HAS_LINUX
-#include "gVirtualXRay/stereo_helper.h"
+#ifndef UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
 #endif
 
-//#include "gVirtualXRayConfig.h"
+#include "gVirtualXRayConfig.h"
+
+#include "display.frag.h"
+#include "display.vert.h"
 
 
 //******************************************************************************
@@ -117,9 +120,6 @@ using namespace gVirtualXRay;
 //	Constant variables
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
-
-const char* g_display_scene_vertex_shader_filename(PREFIX"/examples/shaders/display.vert");
-const char* g_display_scene_fragment_shader_filename(PREFIX"/examples/shaders/display.frag");
 
 const int SCENE(0);
 const int OBJECT(1);
@@ -260,7 +260,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-	   // std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
+	   std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
 
 	    // Register the exit callback
 		atexit(quit);
@@ -420,21 +420,30 @@ void initGL()
     glEnable(GL_MULTISAMPLE);
     glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 
-	/*size_t fragment_shader_size = (size_t)((void *)display_frag_size);
-	size_t vertex_shader_size   = (size_t)((void *)display_vert_size);
+	// Initialise the shaders
+	char* p_vertex_shader(0);
+	char* p_fragment_shader(0);
 
-	char* p_fragment_shader = new char[fragment_shader_size + 1];
-	char* p_vertex_shader   = new char[vertex_shader_size   + 1];
+	int z_lib_return_code_vertex(0);
+	int z_lib_return_code_fragment(0);
 
-	memcpy(p_fragment_shader, display_frag_data, fragment_shader_size);
-	memcpy(p_vertex_shader,   display_vert_data, vertex_shader_size);
+	std::string vertex_shader;
+	std::string fragment_shader;
 
-	p_fragment_shader[fragment_shader_size] = '\0';
-	p_vertex_shader[vertex_shader_size] = '\0';
+	// L-buffer
+	z_lib_return_code_vertex   = inflate(g_display_vert, sizeof(g_display_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_display_frag, sizeof(g_display_frag), &p_fragment_shader);
 
-	g_display_shader.loadSource(p_vertex_shader, p_fragment_shader);*/
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
 
-	g_display_shader.loadFiles(g_display_scene_vertex_shader_filename, g_display_scene_fragment_shader_filename);
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	g_display_shader.loadSource(vertex_shader, fragment_shader);
 }
 
 
