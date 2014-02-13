@@ -59,6 +59,9 @@ configure_file (
 )
 
 
+OPTION(USE_ITK "Use ITK if possible." OFF)
+
+
 # Library source code ##########################################################
 SET (CXX_SOURCES
 	# gVirtualXRay
@@ -190,13 +193,26 @@ ENDIF(FREEIMAGE_FOUND)
 
 # ITK ##########################################################################
 FIND_PACKAGE(ITK)
-IF(ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE(${USE_ITK_FILE})
-	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-	MESSAGE("ITK not found.")
-ENDIF(ITK_FOUND)
+IF(USE_ITK)
+	IF(ITK_FOUND)
+		ADD_DEFINITIONS(-DHAS_ITK)
+		INCLUDE(${USE_ITK_FILE})
+		SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+
+		IF(ITKVtkGlue_LOADED)
+			FIND_PACKAGE(VTK REQUIRED)
+			IF(VTK_FOUND)
+				INCLUDE(${VTK_USE_FILE})
+				LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+				SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+			ELSE(VTK_FOUND)
+				MESSAGE("VTK not found.")
+			ENDIF(VTK_FOUND)
+		ENDIF(ITKVtkGlue_LOADED)
+	ELSE(ITK_FOUND)
+		MESSAGE("ITK not found.")
+	ENDIF(ITK_FOUND)
+ENDIF(USE_ITK)
 
 
 # ZLIB #########################################################################
@@ -281,3 +297,4 @@ ENDIF (BUILD_EXAMPLES)
 install (TARGETS gVirtualXRay DESTINATION lib)
 install (FILES ${HXX_SOURCES} DESTINATION include/gVirtualXRay)
 install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h" DESTINATION include/gVirtualXRay)
+
