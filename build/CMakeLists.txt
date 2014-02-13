@@ -59,7 +59,14 @@ configure_file (
 )
 
 
-OPTION(USE_ITK "Use ITK if possible." OFF)
+# Options ######################################################################
+OPTION(USE_ITK   "Use ITK if possible." OFF)
+
+
+# Enable Stereo using OpenGL's quad buffering ##################################
+IF (NOT APPLE)
+	ADD_DEFINITIONS(-DUSE_STEREO)
+ENDIF (NOT APPLE)
 
 
 # Library source code ##########################################################
