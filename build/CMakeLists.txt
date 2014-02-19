@@ -59,6 +59,10 @@ configure_file (
 )
 
 
+# Enable all compiler warnings #################################################
+add_definitions( -Wall )
+
+
 # Libraries ####################################################################
 SET(optionalLibs)
 SET(requiredLibs)
