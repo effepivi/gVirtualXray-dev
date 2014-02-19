@@ -104,12 +104,12 @@ inline void TriangleMesh::display(bool aVBOFlag) const
 //----------------------------------------------------
 {
 	// Display the polygon mesh using a VBO
-/*	if (m_vbo.isReady() && aVBOFlag)
+	if (m_vbo.isReady() && aVBOFlag)
 	{
 		m_vbo.display();
 	}
 	// Do not use the VBO
-	else*/
+	else
 	{
 		// There is an index
 		if (getIndexNumber())
