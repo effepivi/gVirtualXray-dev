@@ -243,6 +243,12 @@ MATRIX4 buildLookAtModelViewMatrix(GLdouble eyeX,
 		GLdouble upZ);
 
 
+void loadProjectionMatrixFromOpenGL();
+
+
+void loadModelViewMatrixFromOpenGL();
+
+
 void applyModelViewMatrix();
 
 

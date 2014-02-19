@@ -577,4 +577,24 @@ inline void loadLookAtModelViewMatrix(GLdouble eyeX,
 }
 
 
+//------------------------------------------
+inline void loadProjectionMatrixFromOpenGL()
+//------------------------------------------
+{
+	float opengl_matrix_data[16];
+	glGetFloatv(GL_PROJECTION_MATRIX, opengl_matrix_data);
+	g_current_projection_matrix = opengl_matrix_data;
+}
+
+
+//-----------------------------------------
+inline void loadModelViewMatrixFromOpenGL()
+//-----------------------------------------
+{
+	float opengl_matrix_data[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, opengl_matrix_data);
+	g_current_modelview_matrix = opengl_matrix_data;
+}
+
+
 } // namespace Utilities
