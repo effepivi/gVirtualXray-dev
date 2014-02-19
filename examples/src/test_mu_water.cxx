@@ -176,9 +176,6 @@ void loadDetector()
 	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
 	g_xray_detector.setDetectorPosition(g_detector_position);
 	g_xray_detector.setUpVector(g_detector_up_vector);
-
-	g_xray_detector.setProjectionZNear(0.1 * mm);
-	g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
 }
 
 
