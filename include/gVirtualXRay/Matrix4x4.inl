@@ -89,13 +89,13 @@ template<typename T> Matrix4x4<T>::Matrix4x4(const Matrix4x4& aMatrix):
 }
 
 
-//----------------------------------------------------------------------
-template<typename T> Matrix4x4<T>::Matrix4x4(const Matrix4x4* apMatrix):
-//----------------------------------------------------------------------
+//--------------------------------------------------------------
+template<typename T> Matrix4x4<T>::Matrix4x4(const T* apMatrix):
+//--------------------------------------------------------------
 		m_small_matrix_up_to_date(false)
-//----------------------------------------------------------------------
+//--------------------------------------------------------------
 {
-	memcpy(m_p_4x4_data, apMatrix->m_p_4x4_data, sizeof(m_p_4x4_data));
+	memcpy(m_p_4x4_data, apMatrix, sizeof(m_p_4x4_data));
 }
 
 
