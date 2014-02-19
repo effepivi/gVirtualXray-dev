@@ -485,7 +485,12 @@ void render()
 		//glLoadIdentity();
 		//glMultMatrixf(g_current_modelview_matrix.get());
 
+		// Store the shader program
+		pushShaderProgram();
+
+		// Enable the shader program
 		g_display_shader.enable();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		GLuint projection_matrix_handle(glGetUniformLocation(g_display_shader.getProgramHandle(), "g_projection_matrix"));
 		glUniformMatrix4fv(projection_matrix_handle, 1, GL_FALSE, g_current_projection_matrix.get());
@@ -573,8 +578,6 @@ void render()
 		// Display the beam
 		if (g_display_beam)
 		{
-			g_display_shader.enable();
-
 			lighting = 0;
 			glUniform1iv(lighting_handle, 1, &lighting);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -582,8 +585,9 @@ void render()
 			g_xray_detector.displayBeam();
 		}
 
-		// Disable the shader
-		g_display_shader.disable();
+		// Restore the shader program
+		popShaderProgram();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
@@ -842,7 +846,6 @@ void specialKeyboard(int key, int x, int y)
 
 			// Set the source position
 			g_xray_detector.setXrayPointSource(g_source_position);
-			g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
 
 			// The X-ray image is not up-to-date
 			g_is_xray_image_up_to_date = false;
@@ -857,7 +860,6 @@ void specialKeyboard(int key, int x, int y)
 
 			// Set the source position
 			g_xray_detector.setXrayPointSource(g_source_position);
-			g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
 
 			// The X-ray image is not up-to-date
 			g_is_xray_image_up_to_date = false;
@@ -1077,9 +1079,6 @@ void loadDetector()
 	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
 	g_xray_detector.setDetectorPosition(g_detector_position);
 	g_xray_detector.setUpVector(g_detector_up_vector);
-
-	g_xray_detector.setProjectionZNear(0.1 * mm);
-	g_xray_detector.setProjectionZFar((g_detector_position - g_source_position).length());
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
