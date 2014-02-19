@@ -203,26 +203,6 @@ public:
     void setPointSource();
 
 
-    //--------------------------------------------------------------------------
-	///	Set the distance from the source to the near clipping plane
-	///	(always positive)
-	/**
-	*	@param aProjectionZNear:	the distance from the source to the near clipping plane
-	*/
-	//--------------------------------------------------------------------------
-	void setProjectionZNear(const RATIONAL_NUMBER& aProjectionZNear);
-
-
-	//--------------------------------------------------------------------------
-	///	Set the distance from the source to the far clipping plane
-	///	(always positive)
-	/**
-	*	@param aProjectionZFar:	the distance from the source to the far clipping plane
-	*/
-	//--------------------------------------------------------------------------
-	void setProjectionZFar(const RATIONAL_NUMBER& aProjectionZFar);
-	
-
 	//--------------------------------------------------------------------------
 	///	Accessor on the number of pixels.
 	/**
@@ -233,41 +213,12 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Accessor on the field of view angle, in degrees, in the y direction.
-	/**
-	*	@return the field of view angle in the y direction
-	*/
-	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER getFovy() const;
-
-
-	//--------------------------------------------------------------------------
 	///	Accessor on the size of the detector (in unit of length).
 	/**
 	*	@return the size of the detector
 	*/
 	//--------------------------------------------------------------------------
 	const VEC2& getSizeInUnitOfLength() const;
-
-
-	//--------------------------------------------------------------------------
-	///	Accessor on the distance from the source to the near clipping plane
-	///	(always positive)
-	/**
-	*	@return the distance from the source to the near clipping plane
-	*/
-	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER getProjectionZNear() const;
-
-
-	//--------------------------------------------------------------------------
-	///	Accessor on the distance from the source to the far clipping plane
-	///	(always positive)
-	/**
-	*	@return the distance from the source to the far clipping plane
-	*/
-	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER getProjectionZFar() const;
 
 
 	//--------------------------------------------------------------------------
@@ -312,8 +263,6 @@ public:
 
 	const VEC3& getNormal() const;
 	const VEC3& getRightVector() const;
-	const VEC3& getLowerCorner() const;
-	const VEC3& getUpperCorner() const;
 
 	const void getPlaneEquation(RATIONAL_NUMBER& A,
 			RATIONAL_NUMBER& B,
@@ -335,12 +284,6 @@ public:
 
 //******************************************************************************
 protected:
-	//--------------------------------------------------------------------------
-	///	Compute the current value of the field of view.
-	//--------------------------------------------------------------------------
-	void updateFovy();
-
-
 	//--------------------------------------------------------------------------
 	///	Compute the size of the detector.
 	//--------------------------------------------------------------------------
@@ -397,14 +340,6 @@ protected:
 	MATRIX4 		m_rotation_matrix;
 
 
-	/// The distance from the source to the near clipping plane (always positive)
-	RATIONAL_NUMBER m_projection_z_near;
-	
-
-	/// The distance from the source to the far clipping plane (always positive)
-	RATIONAL_NUMBER m_projection_z_far;
-	
-
 	/// The size of the detector
 	VEC2            m_size_in_unit_of_length;
 	
@@ -415,10 +350,6 @@ protected:
 
 	/// Distance between the source and the detector
 	RATIONAL_NUMBER m_distance_source_detector;
-	
-
-	/// Specifies the field of view angle, in degrees, in the y direction
-	RATIONAL_NUMBER m_field_of_view_y;
 	
 
 	/// Size of the detector (in number of pixels)
@@ -453,8 +384,6 @@ protected:
 	SourceType m_source_type;
 
 
-	VEC3 m_lower_corner;
-	VEC3 m_upper_corner;
 	VEC3 m_normal;
 	VEC3 m_look_at_vector;
 	VEC3 m_right_vector;

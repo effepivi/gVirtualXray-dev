@@ -459,20 +459,8 @@ bool XRayRenderer::isReady() const
 
 	if (m_p_detector)
 	{
-		// Check the clipping planes
-		if (m_p_detector->getProjectionZNear() < 0)
-		{
-			std::cerr << "WARNING: the distance from the source to the near clipping plane is negative." << std::endl;
-			error = true;
-		}
-
-		if (m_p_detector->getProjectionZFar() < 0)
-		{
-			std::cerr << "WARNING: the distance from the source to the far clipping plane is negative." << std::endl;
-			error = true;
-		}
-
-		if (m_p_detector->getProjectionZFar() < std::numeric_limits<RATIONAL_NUMBER>::epsilon())
+		// Check the distance source/detector
+		if ((m_p_detector->getXraySourceCentre() - m_p_detector->getDetectorPosition()).length() < std::numeric_limits<RATIONAL_NUMBER>::epsilon())
 		{
 			std::cerr << "WARNING: the distance from the source to the far clipping plane is null." << std::endl;
 			error = true;

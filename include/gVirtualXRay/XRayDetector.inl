@@ -48,11 +48,8 @@ namespace gVirtualXRay {
 //----------------------------------------------
 inline XRayDetector::XRayDetector():
 //----------------------------------------------
-	m_projection_z_near(0),
-	m_projection_z_far(0),
 	m_resolution_in_unit_of_length_per_pixel(0),
 	m_distance_source_detector(0),
-	m_field_of_view_y(0),
 	m_VBOs_need_update(true),
 	m_source_type(UNKNOWN),
 	m_p_source_model(0)
@@ -111,9 +108,6 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NU
 	// Update the size of the detector
 	updateSizeInUnitOfLength();
 	
-	// Update the size of the field of view
-	updateFovy();
-	
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
 }
@@ -128,9 +122,6 @@ inline void XRayDetector::setNumberOfPixels(const Vec2ui& aSizeInPixels)
 
 	// Update the size of the detector
 	updateSizeInUnitOfLength();
-	
-	// Update the size of the field of view
-	updateFovy();
 	
 	// The VBOs need to be updated
 	m_VBOs_need_update = true;
@@ -236,22 +227,6 @@ inline void XRayDetector::setPointSource()
 }
 
 
-//-----------------------------------------------------------------------------------
-inline void XRayDetector::setProjectionZNear(const RATIONAL_NUMBER& aProjectionZNear)
-//-----------------------------------------------------------------------------------
-{
-	m_projection_z_near = aProjectionZNear;
-}
-
-
-//---------------------------------------------------------------------------------
-inline void XRayDetector::setProjectionZFar(const RATIONAL_NUMBER& aProjectionZFar)
-//---------------------------------------------------------------------------------
-{
-	m_projection_z_far = aProjectionZFar;
-}
-
-
 //----------------------------------------------------------
 inline const Vec2ui& XRayDetector::getNumberOfPixels() const
 //----------------------------------------------------------
@@ -260,35 +235,11 @@ inline const Vec2ui& XRayDetector::getNumberOfPixels() const
 }
 
 
-//--------------------------------------------------
-inline RATIONAL_NUMBER XRayDetector::getFovy() const
-//--------------------------------------------------
-{
-	return (m_field_of_view_y);
-}
-
-
 //------------------------------------------------------------
 inline const VEC2& XRayDetector::getSizeInUnitOfLength() const
 //------------------------------------------------------------
 {
 	return (m_size_in_unit_of_length);
-}
-
-
-//-------------------------------------------------------------
-inline RATIONAL_NUMBER XRayDetector::getProjectionZNear() const
-//-------------------------------------------------------------
-{
-	return (m_projection_z_near);
-}
-
-
-//------------------------------------------------------------
-inline RATIONAL_NUMBER XRayDetector::getProjectionZFar() const
-//------------------------------------------------------------
-{
-	return (m_projection_z_far);
 }
 
 
@@ -364,14 +315,6 @@ inline bool XRayDetector::useParallelBeam() const
 }
 
 
-//------------------------------------
-inline void XRayDetector::updateFovy()
-//------------------------------------
-{
-	m_field_of_view_y = 2.0 * (180.0  / Utilities::PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), RATIONAL_NUMBER(m_distance_source_detector));
-}
-
-
 //--------------------------------------------------
 inline void XRayDetector::updateSizeInUnitOfLength()
 //--------------------------------------------------
@@ -388,9 +331,6 @@ inline void XRayDetector::updateInternalValues()
 	// The distance between the source and the detector has changed
 	m_distance_source_detector = (m_detector_position - m_xray_source_centre).length();
 
-	// Update the size of the field of view
-	updateFovy();
-	
 	// Compute the normal vector
 	m_look_at_vector = m_detector_position - m_xray_source_centre;
 	m_look_at_vector.normalize();
@@ -411,18 +351,6 @@ inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 	B = normal.getY();
 	C = normal.getZ();
 	D = A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ();
-}
-
-
-inline const VEC3& XRayDetector::getLowerCorner() const
-{
-	return (m_lower_corner);
-}
-
-
-inline const VEC3& XRayDetector::getUpperCorner() const
-{
-	return (m_upper_corner);
 }
 
 

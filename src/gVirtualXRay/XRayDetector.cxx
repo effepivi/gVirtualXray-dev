@@ -329,9 +329,6 @@ void XRayDetector::updateDetectorVBO()
 	VEC3 v2(m_detector_position + m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
 	VEC3 v3(m_detector_position - m_right_vector * m_size_in_unit_of_length.getX() / 2.0 + m_up_vector * m_size_in_unit_of_length.getY() / 2.0);
 
-	m_lower_corner = v2;
-	m_upper_corner = v0;
-
 	// Vertices
 	std::vector<GLfloat> p_vertices;
 
