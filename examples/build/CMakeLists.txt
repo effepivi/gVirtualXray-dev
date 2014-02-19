@@ -36,8 +36,8 @@ ENDIF(WIN32)
 project (examples)
 
 
-OPTION(USE_FLTK "Use FLTK." OFF)
-OPTION(USE_GLUT "Use GLUT." ON)
+OPTION(USE_FLTK "Use FLTK." ON)
+OPTION(USE_GLUT "Use GLUT." OFF)
 
 
 # Headers of the project #######################################################
@@ -118,7 +118,7 @@ endforeach()
 
 # Create the the main programs #################################################
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
+ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx ../src/scene.cpp ../src/screenshot.cpp)
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 
 
@@ -126,3 +126,4 @@ ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+

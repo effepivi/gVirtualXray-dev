@@ -59,6 +59,11 @@ configure_file (
 )
 
 
+# Libraries ####################################################################
+SET(optionalLibs)
+SET(requiredLibs)
+
+
 # Options ######################################################################
 OPTION(USE_ITK   "Use ITK if possible." OFF)
 
@@ -78,6 +83,7 @@ SET (CXX_SOURCES
 	# Graphics
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/Shader.cxx
+	../src/Graphics/StereoHelper.cxx
 	../src/Graphics/TriangleMesh.cxx
 	../src/Graphics/VBO.cxx
 
@@ -106,6 +112,7 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
+	../include/gVirtualXRay/StereoHelper.h
 	../include/gVirtualXRay/TriangleMesh.h
 	../include/gVirtualXRay/TriangleMesh.inl
 	../include/gVirtualXRay/VBO.h
@@ -154,11 +161,6 @@ ELSE(WIN32)
 		SET(SOURCES ${CXX_SOURCES})
 	ENDIF(APPLE)
 ENDIF(WIN32)
-
-
-# Libraries ####################################################################
-SET(optionalLibs)
-SET(requiredLibs)
 
 
 # Headers of the project #######################################################
