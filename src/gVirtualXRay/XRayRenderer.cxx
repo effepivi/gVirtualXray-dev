@@ -127,8 +127,8 @@ XRayRenderer::XRayRenderer():
 //-------------------------------
 		m_p_detector(0),
 		m_p_xray_beam(0),
-		m_computing_mode(OPENGL),
 		m_p_outer_surface(0),
+		m_computing_mode(OPENGL),
 		m_p_pbo_set(XRAY_DETECTOR_PBO_NUMBER, 0),
 		m_p_texture_name_set(XRAY_DETECTOR_2D_TEXTURE_NUMBER + XRAY_DETECTOR_3D_TEXTURE_NUMBER, 0),
 		m_shader_set(XRAY_DETECTOR_SHADER_NUMBER),
