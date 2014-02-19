@@ -502,7 +502,7 @@ inline MATRIX4 buildLookAtModelViewMatrix(const VEC3& eye,
 	VEC3 up1(up.normal());
 
 	// Side vector: forward x up
-	VEC3 side(forward ^ up);
+	VEC3 side(forward ^ up1);
 	
 	// New up vector: side x forward
 	VEC3 u(side.normal() ^ forward);
