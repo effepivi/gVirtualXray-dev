@@ -35,7 +35,9 @@ ENDIF(WIN32)
 # Project name #################################################################
 project (examples)
 
-
+IF(APPLE)
+	OPTION(USE_BUNDLE "Use Apple Bundle." ON)
+ENDIF(APPLE)
 OPTION(USE_FLTK "Use FLTK." ON)
 OPTION(USE_GLUT "Use GLUT." OFF)
 
@@ -90,6 +92,17 @@ ELSE(GLEW_FOUND)
 ENDIF(GLEW_FOUND)
 
 
+# BOOST #######################################################################
+FIND_PACKAGE(Boost REQUIRED COMPONENTS system filesystem program_options)
+if(Boost_FOUND)
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+ELSE(Boost_FOUND)
+	MESSAGE(FATAL_ERROR "Boost not found.")
+ENDIF(Boost_FOUND)
+
+
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES ../../examples/shaders/display.frag
 	../../examples/shaders/display.vert
@@ -117,13 +130,36 @@ endforeach()
 
 
 # Create the the main programs #################################################
+REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx ../src/scene.cpp ../src/screenshot.cpp)
-ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
-
-
- # Linkage of the targets ######################################################
 TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
 TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+IF(USE_BUNDLE)
+
+	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl)
+        ADD_DEFINITIONS(-DHAS_BUNDLE)
+	SET_SOURCE_FILES_PROPERTIES (
+		../data/welsh-dragon-small.stl
+		PROPERTIES
+		MACOSX_PACKAGE_LOCATION examples/data
+	)
+
+#MACOSX_BUNDLE_INFO_STRING
+#MACOSX_BUNDLE_ICON_FILE
+#MACOSX_BUNDLE_GUI_IDENTIFIER
+#MACOSX_BUNDLE_LONG_VERSION_STRING
+#MACOSX_BUNDLE_BUNDLE_NAME
+#MACOSX_BUNDLE_SHORT_VERSION_STRING
+#MACOSX_BUNDLE_BUNDLE_VERSION
+#MACOSX_BUNDLE_COPYRIGHT
+
+	TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
+ENDIF(USE_BUNDLE)
+
 

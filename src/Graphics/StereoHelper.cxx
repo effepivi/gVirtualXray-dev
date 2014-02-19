@@ -173,9 +173,9 @@ void StereoHelper::swapEye()
 bool StereoHelper::enable()
 //-------------------------
 {
+#ifdef USE_STEREO
 	// Stereo is disable
 	if (!m_stereo_currently_in_use)
-#ifdef USE_STEREO
 	{
 		// Check the stereo
 		GLboolean can_use_stereo;

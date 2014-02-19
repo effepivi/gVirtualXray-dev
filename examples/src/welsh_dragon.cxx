@@ -60,6 +60,8 @@
 #include <GL/glu.h>
 #endif // __APPLE__
 
+#include <boost/filesystem.hpp>
+
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -212,7 +214,7 @@ void computeRotation(MATRIX4& aRotationMatrix);
 void loadDetector();
 void loadSource();
 void loadXRaySimulator();
-void loadSTLFile();
+void loadSTLFile(const std::string& aPrefix);
 void updateXRayImage();
 void render();
 void draw();
@@ -226,6 +228,8 @@ Vec3<GLfloat> getArcballVector(int x, int y);
 int main(int argc, char** argv)
 //-----------------------------
 {
+    try
+    {
 		std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
 
 		// Register the exit callback
@@ -306,16 +310,38 @@ int main(int argc, char** argv)
 		loadXRaySimulator();
 
 		// Add the geometry to the X-ray renderer
-		loadSTLFile();
+        std::string prefix;
+#ifdef HAS_BUNDLE
+        namespace fs = boost::filesystem;
+        fs::path p(argv[0]);
+        fs::path full_p = fs::complete(p);
+        if (full_p.has_parent_path())
+        {
+        	prefix = full_p.parent_path().string();
+
+        	if (prefix.length())
+        	{
+        		prefix += "/";
+        	}
+        }
+#endif
+        prefix += PREFIX;
+		loadSTLFile(prefix);
 		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
 		// Update the X-ray image
 		updateXRayImage();
 
-		// Launch the event loop
+        // Launch the event loop
 		glutMainLoop();
 
 		return (EXIT_SUCCESS);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return (EXIT_FAILURE);
+    }
 }
 
 
@@ -858,6 +884,10 @@ void reshape(int width, int height)
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
+
+	// Rotate the scene
+	g_scene_rotation_matrix.rotate(-110, VEC3(0, 1, 0));
+
 	glLoadMatrixf(g_current_modelview_matrix.get());
 }
 
@@ -984,14 +1014,15 @@ void idle()
 }
 
 
-//----------------
-void loadSTLFile()
-//----------------
+//------------------------------------------
+void loadSTLFile(const std::string& aPrefix)
+//------------------------------------------
 {
-	const char* stl_filename(PREFIX"/examples/data/welsh-dragon-small.stl");
+    std::string stl_filename(aPrefix);
+    stl_filename += "/examples/data/welsh-dragon-small.stl";
 
 	// Set geometry
-	g_polygon_data.setFilename(stl_filename);
+	g_polygon_data.setFilename(stl_filename.data());
 	g_polygon_data.loadSTLFile(true, true, true, true, mm);
 	//g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);
