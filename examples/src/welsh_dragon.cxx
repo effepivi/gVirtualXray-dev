@@ -37,6 +37,7 @@
 #endif
 
 #include <ctime>
+#include <sstream>
 
 #include<GL/glew.h>
 
@@ -243,10 +244,13 @@ int main(int argc, char** argv)
 #else
 		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 #endif
+		// Create the window title
+		std::stringstream window_title;
+		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
 
     	// Create a GLUT window
 		glutInitWindowSize(g_main_window_width, g_main_window_height);
-		g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
+		g_main_window_id = glutCreateWindow(window_title.str().data());
 
 		// Initialize GLEW
 		GLenum glew_error_0(glewInit());
@@ -886,6 +890,7 @@ void reshape(int width, int height)
 			0.0, 1.0, 0.0);
 
 	// Rotate the scene
+	g_scene_rotation_matrix.loadIdentity();
 	g_scene_rotation_matrix.rotate(-110, VEC3(0, 1, 0));
 
 	glLoadMatrixf(g_current_modelview_matrix.get());

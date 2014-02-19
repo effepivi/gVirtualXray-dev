@@ -34,12 +34,19 @@ ENDIF(WIN32)
 
 # Project name #################################################################
 project (examples)
+set (examples_VERSION_MAJOR 1)
+set (examples_VERSION_MINOR 0)
+set (examples_VERSION_PATCH 0)
 
 IF(APPLE)
 	OPTION(USE_BUNDLE "Use Apple Bundle." ON)
 ENDIF(APPLE)
 OPTION(USE_FLTK "Use FLTK." ON)
 OPTION(USE_GLUT "Use GLUT." OFF)
+
+
+# Enable all compiler warnings #################################################
+add_definitions( -Wall )
 
 
 # Headers of the project #######################################################
@@ -142,7 +149,7 @@ TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs
 
 IF(USE_BUNDLE)
 
-	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl)
+	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns)
         ADD_DEFINITIONS(-DHAS_BUNDLE)
 	SET_SOURCE_FILES_PROPERTIES (
 		../data/welsh-dragon-small.stl
@@ -150,16 +157,18 @@ IF(USE_BUNDLE)
 		MACOSX_PACKAGE_LOCATION examples/data
 	)
 
-#MACOSX_BUNDLE_INFO_STRING
-#MACOSX_BUNDLE_ICON_FILE
-#MACOSX_BUNDLE_GUI_IDENTIFIER
-#MACOSX_BUNDLE_LONG_VERSION_STRING
-#MACOSX_BUNDLE_BUNDLE_NAME
-#MACOSX_BUNDLE_SHORT_VERSION_STRING
-#MACOSX_BUNDLE_BUNDLE_VERSION
-#MACOSX_BUNDLE_COPYRIGHT
-
 	TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+	# Define some settings for the Bundle
+	set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
+	set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
+	SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+	set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
+	set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
+	set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
+	set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+	set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+	set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
 ENDIF(USE_BUNDLE)
 
 
