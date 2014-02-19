@@ -1583,6 +1583,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(const TriangleMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Activate the first shader
+	pushShaderProgram();
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1663,7 +1664,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(const TriangleMesh& anObject,
 
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	Shader::disable();
+	// Restore the shader program
+	popShaderProgram();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Restore the viewport
@@ -1728,6 +1730,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(const TriangleMesh& anObject,
 	loadIdentityModelViewMatrix();
 
 	// Enable the shader
+	pushShaderProgram();
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].enable();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1787,7 +1790,8 @@ void XRayRenderer::computeOuterSurfaceLBuffer(const TriangleMesh& anObject,
 	// Restore OpenGL states
 	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
 
-	Shader::disable();
+	// Restore the shader program
+	popShaderProgram();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Wait for all OpenGL execution to be completed
@@ -1824,6 +1828,7 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 	loadIdentityModelViewMatrix();
 
 	// Enable the shader
+	pushShaderProgram();
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].enable();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1892,7 +1897,8 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 	// Restore the texturing flags
 	popTexture();
 
-	Shader::disable();
+	// Restore the shader program
+	popShaderProgram();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Wait for all OpenGL execution to be completed
@@ -1932,6 +1938,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, int anObjectID)
 			loadIdentityModelViewMatrix();
 
 			// Enable the shader
+			pushShaderProgram();
 			m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].enable();
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2023,7 +2030,8 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, int anObjectID)
 			popProjectionMatrix();
 			popModelViewMatrix();
 
-			Shader::disable();
+			// Restore the shader program
+			popShaderProgram();
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Wait for all OpenGL execution to be completed
@@ -2084,7 +2092,9 @@ void XRayRenderer::computeIntegratedEnergy()
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Activate shaders
+			pushShaderProgram();
 			m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].enable();
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Values to pass to the shader
 			GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
@@ -2154,9 +2164,8 @@ void XRayRenderer::computeIntegratedEnergy()
 			popProjectionMatrix();
 			popModelViewMatrix();
 
-			// Disable the shader
-			Shader::disable();
-
+			// Restore the shader program
+			popShaderProgram();
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Wait for all OpenGL execution to be completed
@@ -2235,6 +2244,7 @@ void XRayRenderer::display()
 //--------------------------
 {
 	// Activate shaders
+	pushShaderProgram();
 	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].enable();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2274,8 +2284,9 @@ void XRayRenderer::display()
 	// Display the texture
 	displayEnergyFluence();
 
-	// Disable the shader
-	Shader::disable();
+	// Restore the shader program
+	popShaderProgram();
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Wait for all OpenGL execution to be completed
 	glFinish();

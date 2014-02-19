@@ -117,6 +117,9 @@ void pushTexture3D();
 void pushEnableDisableState(GLenum aParameter);
 
 
+void pushShaderProgram();
+
+
 //------------------------------------------------------------------------------
 ///	Restore the matrix from the projection matrix stack,
 ///	and remove the last matrix of the stack.
@@ -146,6 +149,9 @@ void popTexture();
 
 
 void popEnableDisableState();
+
+
+void popShaderProgram();
 
 
 //------------------------------------------------------------------------------
@@ -266,6 +272,10 @@ extern std::vector<std::pair<GLenum, GLint> > g_texture_stack;
 
 /// The stack of enable/disable states
 extern std::vector<std::pair<GLenum, GLboolean> > g_enable_disable_state_stack;
+
+
+/// The stack of shader programs
+extern std::vector<GLint> g_shader_program_stack;
 
 
 } // namespace Utilities

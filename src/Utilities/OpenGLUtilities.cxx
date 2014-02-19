@@ -51,6 +51,7 @@ MATRIX4 g_current_projection_matrix;
 std::vector<GLint> g_frame_buffer_object_stack;
 std::vector<std::pair<GLenum, GLint> > g_texture_stack;
 std::vector<std::pair<GLenum, GLboolean> > g_enable_disable_state_stack;
+std::vector<GLint> g_shader_program_stack;
 
 
 //---------------
@@ -179,6 +180,27 @@ void applyModelViewMatrix()
 		GLuint normal_matrix_handle(glGetUniformLocation(program_handle, "g_normal_matrix"));
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		// Save the current matrix mode
+		GLint matrix_mode(0);
+		glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
+
+		// Change the matrix mode if needed
+		if (matrix_mode != GL_MODELVIEW)
+		{
+			glMatrixMode(GL_MODELVIEW);
+		}
+
+		// Load the matrix
+		glLoadMatrixf(g_current_modelview_matrix.get());
+
+		// Restore the matrix mode if needed
+		if (matrix_mode != GL_MODELVIEW)
+		{
+			glMatrixMode(matrix_mode);
+		}
 	}
 }
 

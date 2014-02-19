@@ -198,6 +198,17 @@ inline void pushEnableDisableState(GLenum aParameter)
 }
 
 
+//-----------------------------
+inline void pushShaderProgram()
+//-----------------------------
+{
+	GLint current_shader(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+
+	g_shader_program_stack.push_back(current_shader);
+}
+
+
 //-------------------------------
 inline void popProjectionMatrix()
 //-------------------------------
@@ -262,6 +273,36 @@ inline void popFBO()
 	
 	// Remove the last FBO
 	g_frame_buffer_object_stack.pop_back();
+}
+
+
+//----------------------------
+inline void popShaderProgram()
+//----------------------------
+{
+	// Make sure the stack is not empty
+	if (g_shader_program_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Save the current program
+	GLint current_shader(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+
+	// Get the previous program from the stack
+	GLint previous_program(g_shader_program_stack.back());
+
+	// The two programs are different
+	if (previous_program != current_shader)
+	{
+		// Restore the FBO
+		glUseProgram(previous_program);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Remove the last program
+	g_shader_program_stack.pop_back();
 }
 
 
