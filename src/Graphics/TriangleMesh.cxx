@@ -535,7 +535,7 @@ struct VectorComparer
 	// Return true if aLeftNode is less than aRightNode
     bool operator()(const VEC3 & aLeftNode, const VEC3 & aRightNode) const
     {
-    	double epsilon(0.001);
+    	double epsilon(EPSILON);
 
     	if (fabs(aLeftNode.getX() - aRightNode.getX()) > epsilon)
     	{
