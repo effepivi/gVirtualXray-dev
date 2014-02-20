@@ -350,13 +350,15 @@ int main(int argc, char** argv)
 		updateXRayImage();
 
 		// Make fullscreen
-		glutFullScreen();
-
-		// Launch the event loop
+#if defined(__APPLE__) && !defined(HAS_FLTK) || !defined(__APPLE__)
 		if (g_use_fullscreen)
 		{
-			glutMainLoop();
+			glutFullScreen();
 		}
+#endif
+
+		// Launch the event loop
+		glutMainLoop();
 
 		return (EXIT_SUCCESS);
     }
@@ -690,6 +692,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		g_use_fullscreen = !g_use_fullscreen;
 
+#if defined(__APPLE__) && !defined(HAS_FLTK) || !defined(__APPLE__)
 		if (g_use_fullscreen)
 		{
 			glutFullScreen();
@@ -699,6 +702,7 @@ void keyboard(unsigned char key, int x, int y)
 			glutPositionWindow(50, 50);
 			glutReshapeWindow(g_original_main_window_width, g_original_main_window_height);
 		}
+#endif
 		break;
 
 	case 's':
@@ -921,16 +925,6 @@ void reshape(int width, int height)
 	}
 
 	int x(0), y(0), w(width), h(height);
-
-	if (!g_use_fullscreen)
-	{
-		if (width != g_original_main_window_width || height != g_original_main_window_height)
-		{
-			glutPositionWindow(50, 50);
-			glutReshapeWindow(g_original_main_window_width, g_original_main_window_height);
-			return;
-		}
-	}
 
 	g_current_main_window_width = width;
 	g_current_main_window_height = height;
