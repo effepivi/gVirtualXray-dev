@@ -865,7 +865,7 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
 	// Check the value
 	if (current_buffer < 0)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid index valid.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid index.");
 	}
 
 	// Unbind the buffer if necessary

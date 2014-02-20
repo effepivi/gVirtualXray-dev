@@ -81,8 +81,14 @@ inline void Shader::enable() const
 			GLint current_shader(0);
 			glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
 	
+			// Check the value
+			if (current_shader < 0)
+			{
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid program handle.");
+			}
+
 			// The current program is not he same as the one that being deleted.
-			if (current_shader != m_shader_program_id)
+			if (GLuint(current_shader) != m_shader_program_id)
 			{
 				glUseProgram(m_shader_program_id);
 			}
