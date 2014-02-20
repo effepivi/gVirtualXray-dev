@@ -156,7 +156,7 @@ inline void TriangleMesh::displayVertexNormal(GLfloat aNormalSize) const
 	if (getVertexNormalNumber() == getVertexNumber())
 	{
 		glBegin(GL_LINES);
-		for (int i(0); i < getVertexNumber(); ++i)
+		for (unsigned int i(0); i < getVertexNumber(); ++i)
 		{
 			VEC3 vertex(getVertex(i));
 			VEC3 normal(getVertexNormal(i));
@@ -354,9 +354,9 @@ inline unsigned int TriangleMesh::getVertexNumber() const
 }
 
 
-//----------------------------------------------------
-inline VEC3 TriangleMesh::getVertex(int anIndex) const
-//----------------------------------------------------
+//-------------------------------------------------------------
+inline VEC3 TriangleMesh::getVertex(unsigned int anIndex) const
+//-------------------------------------------------------------
 {
 	if (getVertexNumber() <= anIndex)
 	{
@@ -383,10 +383,10 @@ inline VEC3 TriangleMesh::getVertex(int anIndex) const
 }
 
 
-//------------------------------------------------------
-inline void TriangleMesh::setVertex(int anIndex,
+//-------------------------------------------------------
+inline void TriangleMesh::setVertex(unsigned int anIndex,
 									const VEC3& aVertex)
-//------------------------------------------------------
+//-------------------------------------------------------
 {
 	if (getVertexNumber() <= anIndex)
 	{
@@ -429,9 +429,9 @@ inline unsigned int TriangleMesh::getIndexNumber() const
 }
 
 
-//--------------------------------------------------
-inline int TriangleMesh::getIndex(int anIndex) const
-//--------------------------------------------------
+//-----------------------------------------------------------
+inline int TriangleMesh::getIndex(unsigned int anIndex) const
+//-----------------------------------------------------------
 {
 	if (getIndexNumber() <= anIndex)
 	{
@@ -451,9 +451,9 @@ inline int TriangleMesh::getIndex(int anIndex) const
 }
 
 
-//--------------------------------------------------------
-inline VEC3 TriangleMesh::getFaceNormal(int anIndex) const
-//--------------------------------------------------------
+//-----------------------------------------------------------------
+inline VEC3 TriangleMesh::getFaceNormal(unsigned int anIndex) const
+//-----------------------------------------------------------------
 {
 	if (getFaceNormalNumber() <= anIndex)
 	{
@@ -466,9 +466,9 @@ inline VEC3 TriangleMesh::getFaceNormal(int anIndex) const
 }
 
 
-//----------------------------------------------------------
-inline VEC3 TriangleMesh::getVertexNormal(int anIndex) const
-//----------------------------------------------------------
+//-------------------------------------------------------------------
+inline VEC3 TriangleMesh::getVertexNormal(unsigned int anIndex) const
+//-------------------------------------------------------------------
 {
 	if (getVertexNormalNumber() <= anIndex)
 	{
@@ -516,7 +516,7 @@ inline void TriangleMesh::computeBoundingBox()
 		m_min_corner = getVertex(0);
 		m_max_corner = getVertex(0);
 
-		for (int i(1); i < number_of_vertices; ++i)
+		for (unsigned int i(1); i < number_of_vertices; ++i)
 		{
 			VEC3 vertex(getVertex(i));
 
@@ -542,7 +542,7 @@ inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
 	unsigned int number_of_vertices(getVertexNumber());
 	if (number_of_vertices)
 	{
-		for (int i(0); i < number_of_vertices; ++i)
+		for (unsigned int i(0); i < number_of_vertices; ++i)
 		{
 			VEC3 vertex(getVertex(i) * aScale);
 			setVertex(i, vertex);
@@ -566,7 +566,7 @@ inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
 inline void TriangleMesh::translate(const VEC3& aTranslationVector)
 //-----------------------------------------------------------------
 {
-	for (int i(0); i < getVertexNumber(); i++)
+	for (unsigned int i(0); i < getVertexNumber(); i++)
 	{
 		VEC3 vertex(getVertex(i) + aTranslationVector);
 		setVertex(i, vertex);

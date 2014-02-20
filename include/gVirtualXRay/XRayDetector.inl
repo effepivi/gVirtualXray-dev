@@ -90,7 +90,7 @@ inline void XRayDetector::displaySource()
 		g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
 		applyModelViewMatrix();
 		
-		gluSphere(m_p_source_model, 1.0, 5, 5);
+		gluSphere(m_p_source_model, 0.25 * cm, 5, 5);
 		
 		// Restore the model/view matrix
 		popModelViewMatrix();

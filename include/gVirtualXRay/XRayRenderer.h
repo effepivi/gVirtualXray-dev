@@ -205,7 +205,7 @@ public:
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
-	void printFBO(GLint aFBOID, const char* aFileName);
+	void printFBO(GLuint aFBOID, const char* aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -215,7 +215,7 @@ public:
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
-	void print2DTexture(GLint aTextureID, const char* aFileName);
+	void print2DTexture(GLuint aTextureID, const char* aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -297,7 +297,7 @@ public:
 
 	int getNumberOfOuterSurfaces() const;
 
-	void displayInnerSurface(int anIndex) const;
+	void displayInnerSurface(unsigned int anIndex) const;
 	void displayOuterSurface() const;
 
 

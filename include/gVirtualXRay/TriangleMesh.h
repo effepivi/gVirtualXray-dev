@@ -285,17 +285,17 @@ public:
 	void mergeVertices();
 
 
-	VEC3 getVertex(int anIndex) const;
-	void setVertex(int anIndex, const VEC3& aVertex);
+	VEC3 getVertex(unsigned int anIndex) const;
+	void setVertex(unsigned int anIndex, const VEC3& aVertex);
 
 
-	int getIndex(int anIndex) const;
+	int getIndex(unsigned int anIndex) const;
 
 
-	VEC3 getFaceNormal(int anIndex) const;
+	VEC3 getFaceNormal(unsigned int anIndex) const;
 
 
-	VEC3 getVertexNormal(int anIndex) const;
+	VEC3 getVertexNormal(unsigned int anIndex) const;
 
 	void setExternalData(const std::vector<GLfloat>* aVertexArray,
 			const std::vector<int>* anIndexArray);

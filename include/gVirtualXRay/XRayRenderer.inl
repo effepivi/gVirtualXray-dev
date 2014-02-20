@@ -184,9 +184,9 @@ inline int XRayRenderer::getNumberOfOuterSurfaces() const
 }
 
 
-//--------------------------------------------------------------
-inline void XRayRenderer::displayInnerSurface(int anIndex) const
-//--------------------------------------------------------------
+//-----------------------------------------------------------------------
+inline void XRayRenderer::displayInnerSurface(unsigned int anIndex) const
+//-----------------------------------------------------------------------
 {
 	if (anIndex >= m_p_inner_surface_set.size())
 	{

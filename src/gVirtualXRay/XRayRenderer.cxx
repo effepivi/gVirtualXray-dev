@@ -297,7 +297,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	updateVBO();
 
 	// Allocate memory
-	int depth(3);
+	unsigned int depth(3);
 	if (depth < m_p_xray_beam->getEnergyChannelNumber())
 	{
 		depth = m_p_xray_beam->getEnergyChannelNumber();
@@ -862,8 +862,14 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
 	GLint current_buffer(0);
 	glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_buffer);
 
+	// Check the value
+	if (current_buffer < 0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid index valid.");
+	}
+
 	// Unbind the buffer if necessary
-	if (current_buffer == aPBO)
+	if (GLuint(current_buffer) == aPBO)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -884,7 +890,7 @@ void XRayRenderer::deletePBO(GLuint& aPBO)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Unbind the buffer if necessary
-	if (current_buffer == aPBO)
+	if (GLuint(current_buffer) == aPBO)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -1241,7 +1247,7 @@ void XRayRenderer::computeLBuffer(const TriangleMesh& anObject,
 
 
 //------------------------------------------------
-void XRayRenderer::printFBO(GLint aFBOID,
+void XRayRenderer::printFBO(GLuint aFBOID,
 							const char* aFileName)
 //------------------------------------------------
 {
@@ -1268,7 +1274,9 @@ void XRayRenderer::printFBO(GLint aFBOID,
 
 	case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
 		// Read data from the FBO
-		for (int slice_number(0); slice_number < m_p_xray_beam->getEnergyChannelNumber(); ++slice_number)
+		for (unsigned int slice_number(0);
+				slice_number < m_p_xray_beam->getEnergyChannelNumber();
+				++slice_number)
 		{
 			// Bind default frame buffer
 			FramebufferObject::Disable();
@@ -1364,7 +1372,7 @@ void XRayRenderer::printFBO(GLint aFBOID,
 
 
 //------------------------------------------------------
-void XRayRenderer::print2DTexture(GLint aTextureID,
+void XRayRenderer::print2DTexture(GLuint aTextureID,
 								  const char* aFileName)
 //------------------------------------------------------
 {
@@ -1853,7 +1861,7 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 	glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID]);
 
 	// Enable blending
-	bool current_blending_status;
+	bool current_blending_status(false);
 	if (anObjectID != 0)
 	{
 		glEnable(GL_BLEND);
@@ -1980,7 +1988,9 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, int anObjectID)
 			}
 
 			// Proceed each energy channel
-			for (int current_slice(0); current_slice < m_p_xray_beam->getEnergyChannelNumber(); ++current_slice)
+			for (unsigned int current_slice(0);
+					current_slice < m_p_xray_beam->getEnergyChannelNumber();
+					++current_slice)
 			{
 				// Get the energy and the corresponding attenuation coefficient
 				RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
@@ -2118,7 +2128,9 @@ void XRayRenderer::computeIntegratedEnergy()
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Proceed each energy channel
-			for (int current_slice(0); current_slice < m_p_xray_beam->getEnergyChannelNumber(); ++current_slice)
+			for (unsigned int current_slice(0);
+					current_slice < m_p_xray_beam->getEnergyChannelNumber();
+					++current_slice)
 			{
 				if (!m_energy_fluence_empty)
 				{
@@ -2196,7 +2208,7 @@ void XRayRenderer::normalise()
 	// Get image statistics
 	PixelType min_value(FLT_MAX);
 	PixelType max_value(-FLT_MAX);
-	for (int i(0);
+	for (unsigned int i(0);
 			i < m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
 			++i)
 	{

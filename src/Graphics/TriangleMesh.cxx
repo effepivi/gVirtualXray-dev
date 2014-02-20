@@ -69,7 +69,7 @@ using namespace Graphics;
 void TriangleMesh::displayUsingImmediateModeWithIndex() const
 //-----------------------------------------------------------
 {
-	int number_of_indices(getIndexNumber());
+	unsigned int number_of_indices(getIndexNumber());
 
 	if (number_of_indices == 0)
 	{
@@ -82,7 +82,7 @@ void TriangleMesh::displayUsingImmediateModeWithIndex() const
 	}
 
 	glBegin(GL_TRIANGLES);
-	for (int i(0); i < number_of_indices; ++i)
+	for (unsigned int i(0); i < number_of_indices; ++i)
 	{
 		int id(getIndex(i));
 		VEC3 vertex(getVertex(id));
@@ -102,7 +102,7 @@ void TriangleMesh::displayUsingImmediateModeWithIndex() const
 void TriangleMesh::displayUsingImmediateModeWithoutIndex() const
 //--------------------------------------------------------------
 {
-	int number_of_vertices(getVertexNumber());
+	unsigned int number_of_vertices(getVertexNumber());
 
 	if (number_of_vertices == 0)
 	{
@@ -115,7 +115,7 @@ void TriangleMesh::displayUsingImmediateModeWithoutIndex() const
 	}
 
 	glBegin(GL_TRIANGLES);
-	for (int i(0); i < number_of_vertices; ++i)
+	for (unsigned int i(0); i < number_of_vertices; ++i)
 	{
 		VEC3 vertex(getVertex(i));
 		VEC3 normal(getVertexNormal(i));
@@ -134,7 +134,7 @@ void TriangleMesh::displayUsingImmediateModeWithoutIndex() const
 void TriangleMesh::displayWireFrameWithIndex() const
 //--------------------------------------------------
 {
-	int number_of_indices(getIndexNumber());
+	unsigned int number_of_indices(getIndexNumber());
 
 	if (number_of_indices == 0)
 	{
@@ -146,10 +146,10 @@ void TriangleMesh::displayWireFrameWithIndex() const
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of indices.");
 	}
 
-	for (int i(0); i < number_of_indices; i += 3)
+	for (unsigned int i(0); i < number_of_indices; i += 3)
 	{
 		glBegin(GL_LINE_LOOP);
-		for (int j(0); j < 3; ++j)
+		for (unsigned int j(0); j < 3; ++j)
 		{
 			int id(getIndex(i + j));
 			VEC3 vertex(getVertex(id));
@@ -170,7 +170,7 @@ void TriangleMesh::displayWireFrameWithIndex() const
 void TriangleMesh::displayWireFrameWithoutIndex() const
 //-----------------------------------------------------
 {
-	int number_of_vertices(getVertexNumber());
+	unsigned int number_of_vertices(getVertexNumber());
 
 	if (number_of_vertices == 0)
 	{
@@ -182,10 +182,10 @@ void TriangleMesh::displayWireFrameWithoutIndex() const
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of vertices.");
 	}
 
-	for (int i(0); i < number_of_vertices; i += 3)
+	for (unsigned int i(0); i < number_of_vertices; i += 3)
 	{
 		glBegin(GL_LINE_LOOP);
-		for (int j(0); j < 3; ++j)
+		for (unsigned int j(0); j < 3; ++j)
 		{
 			VEC3 vertex(getVertex(i + j));
 			VEC3 normal(getVertexNormal(i + j));
@@ -216,7 +216,7 @@ void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
 		if (m_p_internal_index_set.size())
 		{
 			glBegin(GL_LINES);
-			for (int i(0); i < m_p_internal_index_set.size(); i += 3)
+			for (unsigned int i(0); i < m_p_internal_index_set.size(); i += 3)
 			{
 				UINT id_0(m_p_internal_index_set[i + 0]);
 				UINT id_1(m_p_internal_index_set[i + 1]);
@@ -246,7 +246,7 @@ void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
 			if (getFaceNormalNumber() == getVertexNumber())
 			{
 				glBegin(GL_LINES);
-				for (int i(0); i < getVertexNumber(); i += 3)
+				for (unsigned int i(0); i < getVertexNumber(); i += 3)
 				{
 					UINT id_0(i + 0);
 					UINT id_1(i + 1);
@@ -315,7 +315,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	m_p_vertex_normal_set.resize(triangle_number * 3 * 3);
 	
 	// Read the data
-	for (int i(0); i < getTriangleNumber(); i++)
+	for (unsigned int i(0); i < getTriangleNumber(); i++)
 	{
 		// Read normals
 		fread(&m_p_face_normal_set[9 * i], sizeof(float), 3, p_stream);
@@ -323,7 +323,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 		// Copy one normal per vertex 
 		if (!anAutoComputeNormalFlag)
 		{
-			for (int k=1; k<3; k++)
+			for (unsigned int k=1; k<3; k++)
 			{
 				m_p_face_normal_set[9 * i + 3 * k]     = m_p_face_normal_set[9 * i];
 				m_p_face_normal_set[9 * i + 3 * k + 1] = m_p_face_normal_set[9 * i + 1];
@@ -399,7 +399,7 @@ void TriangleMesh::computeNormalVectors()
 		m_p_vertex_normal_set.resize(getVertexNumber() * 3, 0.0);
 
 		// Process every triangle
-		for (int i(0); i < getIndexNumber(); i += 3)
+		for (unsigned int i(0); i < getIndexNumber(); i += 3)
 		{
 			// Get the vertex IDs
 			int id_0(getIndex(i + 0));
@@ -446,7 +446,7 @@ void TriangleMesh::computeNormalVectors()
 		m_p_vertex_normal_set.resize(getVertexNumber() * 3, 0.0);
 
 		// Process every triangle
-		for (int i(0); i < getVertexNumber(); i += 3)
+		for (unsigned int i(0); i < getVertexNumber(); i += 3)
 		{
 			// Get the vertex IDs
 			int id_0(i + 0);
@@ -502,7 +502,7 @@ void TriangleMesh::normaliseNormals()
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
-	for (int i(0); i < getFaceNormalNumber(); ++i)
+	for (unsigned int i(0); i < getFaceNormalNumber(); ++i)
 	{
 		VEC3 normal(m_p_face_normal_set[i * 3 + 0],
 				m_p_face_normal_set[i * 3 + 1],
@@ -515,7 +515,7 @@ void TriangleMesh::normaliseNormals()
 		m_p_face_normal_set[i * 3 + 2] = normal.getZ();
 	}
 
-	for (int i(0); i < getVertexNormalNumber(); ++i)
+	for (unsigned int i(0); i < getVertexNormalNumber(); ++i)
 	{
 		VEC3 normal(m_p_vertex_normal_set[i * 3 + 0],
 				m_p_vertex_normal_set[i * 3 + 1],
@@ -618,7 +618,7 @@ void TriangleMesh::mergeVertices()
 
 			// Add the vertices to the hash table
 			UINT number_of_vertices(getVertexNumber());
-			for (int i(0); i < number_of_vertices; ++i)
+			for (unsigned int i(0); i < number_of_vertices; ++i)
 			{
 				VEC3 current_vertex(getVertex(i));
 				VEC3 normal(getFaceNormal(i));
@@ -657,7 +657,7 @@ void TriangleMesh::mergeVertices()
 
 			// Fill the index
 			UINT number_of_triangles(getTriangleNumber());
-			for (int i(0); i < number_of_triangles; ++i)
+			for (unsigned int i(0); i < number_of_triangles; ++i)
 			{
 				VEC3 vertex_0(getVertex(i * 3 + 0));
 				VEC3 vertex_1(getVertex(i * 3 + 1));
@@ -679,7 +679,7 @@ void TriangleMesh::mergeVertices()
 
 			// Normalise the normals in the normal set
 			UINT number_of_normals(getVertexNormalNumber());
-			for (int i(0); i < number_of_normals; ++i)
+			for (unsigned int i(0); i < number_of_normals; ++i)
 			{
 				VEC3 normal(getVertexNormal(i));
 				normal.normalise();

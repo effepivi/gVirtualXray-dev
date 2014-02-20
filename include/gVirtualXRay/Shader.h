@@ -246,15 +246,15 @@ protected:
 	
 
 	/// ID of the shader program
-	GLuint m_shader_program_id;
+	GLint m_shader_program_id;
 
 
 	/// ID of the vertex shader
-	GLuint m_vertex_shader_id;
+	GLint m_vertex_shader_id;
 
 
 	/// ID of the fragment shader
-	GLuint m_fragment_shader_id;
+	GLint m_fragment_shader_id;
 };
 
 
