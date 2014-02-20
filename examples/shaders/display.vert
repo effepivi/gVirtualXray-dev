@@ -50,5 +50,6 @@ void main(void)
 	
     gl_TexCoord[0] = gl_MultiTexCoord0;
 
+    gl_FrontColor = gl_Color;
 	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
 }

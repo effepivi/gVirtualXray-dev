@@ -60,7 +60,7 @@ void main(void)
     }
     else
     {
-		colour = vec4(1.0, 0.0, 0.0, 0.35);
+		colour = gl_Color;
     }
 
     // Save the final colour
