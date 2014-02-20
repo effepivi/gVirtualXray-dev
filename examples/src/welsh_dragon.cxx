@@ -148,8 +148,10 @@ const double g_initial_screen_projection_plane(10000.0 * cm); // Screen projecti
 //******************************************************************************
 //	Global variables
 //******************************************************************************
-GLsizei g_main_window_width(1280 / 2.0);
-GLsizei g_main_window_height(800 / 2.0);
+GLsizei g_current_main_window_width(1280 / 2.0);
+GLsizei g_current_main_window_height(800 / 2.0);
+GLsizei g_original_main_window_width(g_current_main_window_width);
+GLsizei g_original_main_window_height(g_current_main_window_height);
 int g_main_window_id(0);
 GLfloat g_zoom(100.0 * cm);
 
@@ -198,6 +200,7 @@ clock_t g_start(0);
 int g_image_computed(0);
 double g_number_of_seconds(0);
 double g_fps(0);
+bool g_use_fullscreen(true);
 
 
 //******************************************************************************
@@ -251,7 +254,7 @@ int main(int argc, char** argv)
 		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
 
     	// Create a GLUT window
-		glutInitWindowSize(g_main_window_width, g_main_window_height);
+		glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
 		g_main_window_id = glutCreateWindow(window_title.str().data());
 
 		// Initialize GLEW
@@ -266,7 +269,7 @@ int main(int argc, char** argv)
 
 			// Create a GLUT window
 			if (g_main_window_id) glutDestroyWindow(g_main_window_id);
-			glutInitWindowSize(g_main_window_width, g_main_window_height);
+			glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
 			g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
 			GLenum glew_error_1(glewInit());
@@ -346,8 +349,14 @@ int main(int argc, char** argv)
 		// Update the X-ray image
 		updateXRayImage();
 
-        // Launch the event loop
-		glutMainLoop();
+		// Make fullscreen
+		glutFullScreen();
+
+		// Launch the event loop
+		if (g_use_fullscreen)
+		{
+			glutMainLoop();
+		}
 
 		return (EXIT_SUCCESS);
     }
@@ -673,6 +682,25 @@ void keyboard(unsigned char key, int x, int y)
 		exit(EXIT_SUCCESS);
 		break;
 
+	case 'f':
+		if (glutGetWindow() != g_main_window_id)
+		{
+			glutSetWindow(g_main_window_id);
+		}
+
+		g_use_fullscreen = !g_use_fullscreen;
+
+		if (g_use_fullscreen)
+		{
+			glutFullScreen();
+		}
+		else
+		{
+			glutPositionWindow(50, 50);
+			glutReshapeWindow(g_original_main_window_width, g_original_main_window_height);
+		}
+		break;
+
 	case 's':
 		if (g_stereo_helper.isActive())
 		{
@@ -785,12 +813,12 @@ void keyboard(unsigned char key, int x, int y)
 
 	case 'i':
 		g_zoom -= 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
+		reshape(g_current_main_window_width, g_current_main_window_height);
 		break;
 
 	case 'o':
 		g_zoom += 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
+		reshape(g_current_main_window_width, g_current_main_window_height);
 		break;
 
 	case 'd':
@@ -811,7 +839,7 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	}
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 
@@ -878,7 +906,7 @@ void specialKeyboard(int key, int x, int y)
 		break;
 	}
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 
@@ -894,10 +922,20 @@ void reshape(int width, int height)
 
 	int x(0), y(0), w(width), h(height);
 
-	g_main_window_width = width;
-	g_main_window_height = height;
+	if (!g_use_fullscreen)
+	{
+		if (width != g_original_main_window_width || height != g_original_main_window_height)
+		{
+			glutPositionWindow(50, 50);
+			glutReshapeWindow(g_original_main_window_width, g_original_main_window_height);
+			return;
+		}
+	}
 
-	double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
+	g_current_main_window_width = width;
+	g_current_main_window_height = height;
+
+	double screen_aspect_ratio(double(g_current_main_window_width) / double(g_current_main_window_height));
 	//g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
 	glViewport(x, y, w, h);
@@ -927,14 +965,14 @@ void mouse(int button, int button_state, int x, int y)
 	{
 		g_use_arc_ball = false;
 		g_zoom += 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
+		reshape(g_current_main_window_width, g_current_main_window_height);
 	}
 	// This is a wheel event
 	else if (g_button == 4)
 	{
 		g_use_arc_ball = false;
 		g_zoom -= 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
+		reshape(g_current_main_window_width, g_current_main_window_height);
 	}
 	// Use the arc ball
 	else if (g_button_state == GLUT_DOWN)
@@ -974,7 +1012,7 @@ void mouse(int button, int button_state, int x, int y)
 	g_current_y_position = y;
 
 	// No need to redisplay the screen as yet
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 
@@ -1014,7 +1052,7 @@ void motion(int x, int y)
 		break;
 	}
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 
@@ -1047,7 +1085,7 @@ void loadSTLFile(const std::string& aPrefix)
 	// Set geometry
 	g_polygon_data.setFilename(stl_filename.data());
 	g_polygon_data.loadSTLFile(true, true, true, true, mm);
-	//g_polygon_data.mergeVertices();
+	g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date
@@ -1126,8 +1164,8 @@ void updateXRayImage()
 Vec3<GLfloat> getArcballVector(int x, int y)
 //------------------------------------------
 {
-	Vec3<GLfloat> P(2.0 * float(x) / float(g_main_window_width) - 1.0,
-			2.0 * float(y) / float(g_main_window_height) - 1.0,
+	Vec3<GLfloat> P(2.0 * float(x) / float(g_current_main_window_width) - 1.0,
+			2.0 * float(y) / float(g_current_main_window_height) - 1.0,
 			0);
 
 	P.setY(-P.getY());
