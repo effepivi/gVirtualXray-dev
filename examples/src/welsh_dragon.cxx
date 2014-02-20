@@ -335,6 +335,14 @@ int main(int argc, char** argv)
 		loadSTLFile(prefix);
 		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
+		// Rotate the sample
+		g_sample_rotation_matrix.rotate( 180, VEC3(0, 1, 0));
+		g_sample_rotation_matrix.rotate( 90, VEC3(0, 0, 1));
+		g_sample_rotation_matrix.rotate( 90, VEC3(0, 1, 0));
+
+		// Rotate the scene
+		g_scene_rotation_matrix.rotate(-110, VEC3(0, 1, 0));
+
 		// Update the X-ray image
 		updateXRayImage();
 
@@ -376,6 +384,16 @@ void initGL()
 	// Choose smooth shading
 	glShadeModel(GL_SMOOTH);
 	
+	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
 	// Use colour and texture coordinate interpolation
 	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -434,11 +452,11 @@ void render()
 		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.0, 1.0};
 		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.0, 1.0};
 
-		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.19225,  0.19225,  1.0};
-		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.50754,  0.50754,  1.0};
-		const GLfloat p_specular_silver_material_1[] = {0.0, 0.508273, 0.508273, 1.0};
+		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.39225,  0.39225,  1.0};
+		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.70754,  0.70754,  1.0};
+		const GLfloat p_specular_silver_material_1[] = {0.0, 0.708273, 0.708273, 1.0};
 
-		const GLfloat shininess_silver_material = 51.2;
+		const GLfloat shininess_silver_material = 50.2;
 
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -506,14 +524,11 @@ void render()
 		// Restore the current transformation matrix
 		popModelViewMatrix();
 
-		// Display the detector
-		// Set the colour of the sample
+		// Display the source
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_1);
 		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-
-		// Display the detector and the source
 		g_xray_detector.displaySource();
 
 		// Display the X-Ray image
@@ -525,6 +540,8 @@ void render()
 		// Display the beam
 		if (g_display_beam)
 		{
+			glColor4f(0.75, 0, 0.5, 0.3);
+
 			lighting = 0;
 			handle = glGetUniformLocation(shader_id,"g_use_lighting");
 			glUniform1iv(handle, 1, &lighting);
@@ -570,6 +587,9 @@ void draw()
 
 	// Display the 3D scene
 	render();
+
+	// Make sure all the OpenGL code is done
+	glFinish();
 
 	// Restore the draw buffer if needed
 	glDrawBuffer(back_buffer);
@@ -891,10 +911,6 @@ void reshape(int width, int height)
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
 
-	// Rotate the scene
-	g_scene_rotation_matrix.loadIdentity();
-	g_scene_rotation_matrix.rotate(-110, VEC3(0, 1, 0));
-
 	glLoadMatrixf(g_current_modelview_matrix.get());
 }
 
@@ -1034,9 +1050,6 @@ void loadSTLFile(const std::string& aPrefix)
 	//g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);
 
-	g_sample_rotation_matrix.rotate(90, VEC3(0, 0, 1));
-	g_sample_rotation_matrix.rotate(90, VEC3(0, 1, 0));
-
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
 }
@@ -1082,6 +1095,8 @@ void loadXRaySimulator()
 		GL_RGB16F_ARB,
 		&g_xray_detector,
 		&g_xray_beam);
+
+	g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
