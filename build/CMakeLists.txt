@@ -26,6 +26,11 @@
 ################################################################################
 
 
+# Initialise some states by default ############################################
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
+
+
 # Minimum CMake version ########################################################
 IF(WIN32)
 	cmake_minimum_required(VERSION 2.6.0)
@@ -48,7 +53,8 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 # Project name #################################################################
 PROJECT(gVirtualXRay)
 set (gVirtualXRay_VERSION_MAJOR 1)
-set (gVirtualXRay_VERSION_MINOR 0)
+set (gVirtualXRay_VERSION_MINOR 2)
+set (gVirtualXRay_VERSION_PATCH 0)
 
 
 # configure a header file to pass some of the CMake settings
@@ -310,4 +316,3 @@ ENDIF (BUILD_EXAMPLES)
 install (TARGETS gVirtualXRay DESTINATION lib)
 install (FILES ${HXX_SOURCES} DESTINATION include/gVirtualXRay)
 install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h" DESTINATION include/gVirtualXRay)
-

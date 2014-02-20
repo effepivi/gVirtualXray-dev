@@ -26,27 +26,34 @@
 ################################################################################
 
 
+# Initialise some states by default ############################################
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
+
+
 # Minimum CMake version ########################################################
 IF(WIN32)
 	cmake_minimum_required(VERSION 2.6.0)
 ENDIF(WIN32)
 
 
+# Enable all compiler warnings #################################################
+add_definitions( -Wall )
+
+
 # Project name #################################################################
 project (examples)
 set (examples_VERSION_MAJOR 1)
-set (examples_VERSION_MINOR 0)
+set (examples_VERSION_MINOR 2)
 set (examples_VERSION_PATCH 0)
 
 IF(APPLE)
 	OPTION(USE_BUNDLE "Use Apple Bundle." ON)
+	SET(USE_GLUT 1)
+ELSE(APPLE)
+	OPTION(USE_FLTK "Use FLTK." ON)
+	OPTION(USE_GLUT "Use GLUT." OFF)
 ENDIF(APPLE)
-OPTION(USE_FLTK "Use FLTK." ON)
-OPTION(USE_GLUT "Use GLUT." OFF)
-
-
-# Enable all compiler warnings #################################################
-add_definitions( -Wall )
 
 
 # Headers of the project #######################################################
@@ -172,5 +179,3 @@ IF(USE_BUNDLE)
 	set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
 	set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
 ENDIF(USE_BUNDLE)
-
-
