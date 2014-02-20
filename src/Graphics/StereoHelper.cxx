@@ -112,6 +112,8 @@ void StereoHelper::update()
 			m_far);
 
 	m_right_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(right_camera_translation, 0, 0);
+
+	m_matrices_are_up_to_date = true;
 }
 
 
@@ -146,7 +148,7 @@ void StereoHelper::swapEye()
 	switch (m_current_eye)
 	{
 	case LEFT_EYE:
-		g_current_projection_matrix = m_left_eye_projection_matrix;
+		g_current_projection_matrix = getLeftEyeProjectionMatrix();
 		if (m_stereo_currently_in_use)
 		{
 			glDrawBuffer(GL_BACK_LEFT);
@@ -154,7 +156,7 @@ void StereoHelper::swapEye()
 		break;
 
 	case RIGHT_EYE:
-		g_current_projection_matrix = m_right_eye_projection_matrix;
+		g_current_projection_matrix = getRightEyeProjectionMatrix();
 		if (m_stereo_currently_in_use)
 		{
 			glDrawBuffer(GL_BACK_RIGHT);
