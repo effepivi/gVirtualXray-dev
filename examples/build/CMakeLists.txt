@@ -100,14 +100,16 @@ ENDIF(GLEW_FOUND)
 
 
 # BOOST #######################################################################
-FIND_PACKAGE(Boost REQUIRED COMPONENTS system filesystem program_options)
-if(Boost_FOUND)
-	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
-ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
-ENDIF(Boost_FOUND)
+IF(APPLE)
+	FIND_PACKAGE(Boost REQUIRED COMPONENTS system filesystem program_options)
+	if(Boost_FOUND)
+		INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+		LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+		SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+	ELSE(Boost_FOUND)
+		MESSAGE(FATAL_ERROR "Boost not found.")
+	ENDIF(Boost_FOUND)
+ENDIF(APPLE)
 
 
 # Create the RESOURCES ###########################################################
