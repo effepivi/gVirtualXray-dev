@@ -39,6 +39,14 @@
 #include <ctime>
 #include <sstream>
 
+// Start: Resolve conflict when using MS VC++, thanks to Alastair Barrow.
+#ifdef min
+#undef min
+#endif
+#include <algorithm>
+// End: Resolve conflict when using MS VC++, thanks to Alastair Barrow.
+
+
 #include<GL/glew.h>
 
 #ifdef HAS_FLTK
