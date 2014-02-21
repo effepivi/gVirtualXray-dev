@@ -218,9 +218,9 @@ void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
 			glBegin(GL_LINES);
 			for (unsigned int i(0); i < m_p_internal_index_set.size(); i += 3)
 			{
-				UINT id_0(m_p_internal_index_set[i + 0]);
-				UINT id_1(m_p_internal_index_set[i + 1]);
-				UINT id_2(m_p_internal_index_set[i + 2]);
+				unsigned int id_0(m_p_internal_index_set[i + 0]);
+				unsigned int id_1(m_p_internal_index_set[i + 1]);
+				unsigned int id_2(m_p_internal_index_set[i + 2]);
 
 				// Normal per face does not exist, but it can be computed
 				VEC3 vertex_0(getVertex(id_0));
@@ -248,9 +248,9 @@ void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
 				glBegin(GL_LINES);
 				for (unsigned int i(0); i < getVertexNumber(); i += 3)
 				{
-					UINT id_0(i + 0);
-					UINT id_1(i + 1);
-					UINT id_2(i + 2);
+					unsigned int id_0(i + 0);
+					unsigned int id_1(i + 1);
+					unsigned int id_2(i + 2);
 
 					VEC3 vertex_0(getVertex(id_0));
 					VEC3 vertex_1(getVertex(id_1));
@@ -589,7 +589,7 @@ public:
 	}
 
 
-	inline const TempRecord& operator =(UINT anID)
+	inline const TempRecord& operator =(unsigned int anID)
 	{
 		m_id = anID;
 
@@ -597,7 +597,7 @@ public:
 	}
 
 	VEC3 m_normal;
-	UINT m_id;
+	unsigned int m_id;
 };
 
 
@@ -617,7 +617,7 @@ void TriangleMesh::mergeVertices()
 			std::map<VEC3, TempRecord, VectorComparer> hash_table;
 
 			// Add the vertices to the hash table
-			UINT number_of_vertices(getVertexNumber());
+			unsigned int number_of_vertices(getVertexNumber());
 			for (unsigned int i(0); i < number_of_vertices; ++i)
 			{
 				VEC3 current_vertex(getVertex(i));
@@ -656,16 +656,16 @@ void TriangleMesh::mergeVertices()
 			}
 
 			// Fill the index
-			UINT number_of_triangles(getTriangleNumber());
+			unsigned int number_of_triangles(getTriangleNumber());
 			for (unsigned int i(0); i < number_of_triangles; ++i)
 			{
 				VEC3 vertex_0(getVertex(i * 3 + 0));
 				VEC3 vertex_1(getVertex(i * 3 + 1));
 				VEC3 vertex_2(getVertex(i * 3 + 2));
 
-				UINT id_0(hash_table.find(vertex_0)->second.m_id);
-				UINT id_1(hash_table.find(vertex_1)->second.m_id);
-				UINT id_2(hash_table.find(vertex_2)->second.m_id);
+				unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
+				unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
+				unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
 
 				if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size())
 				{
@@ -678,7 +678,7 @@ void TriangleMesh::mergeVertices()
 			}
 
 			// Normalise the normals in the normal set
-			UINT number_of_normals(getVertexNormalNumber());
+			unsigned int number_of_normals(getVertexNormalNumber());
 			for (unsigned int i(0); i < number_of_normals; ++i)
 			{
 				VEC3 normal(getVertexNormal(i));

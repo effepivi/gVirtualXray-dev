@@ -152,18 +152,18 @@ public:
 
 
 	void setCubicSource(const VEC3& aXraySourcePosition,
-			UINT aNumberOfSamplesAlongOneDirection,
+			unsigned int aNumberOfSamplesAlongOneDirection,
 			RATIONAL_NUMBER aLength);
 
 
 	void setSquareSource(const VEC3& aXraySourcePosition,
-			UINT aNumberOfSamplesAlongOneDirection,
+			unsigned int aNumberOfSamplesAlongOneDirection,
 			RATIONAL_NUMBER aLength);
 
 
 	void setLineSource(const VEC3& aXraySourcePosition,
 			const VEC3& aDirection,
-			UINT aNumberOfSamplesAlongOneDirection,
+			unsigned int aNumberOfSamplesAlongOneDirection,
 			RATIONAL_NUMBER aLength);
 
 
@@ -239,8 +239,8 @@ public:
 	const VEC3& getXraySourceCentre() const;
 
 
-	UINT getNumberOfSourceSamples()const;
-	const VEC3& getSourceSamplePosition(UINT aSampleID) const;
+	unsigned int getNumberOfSourceSamples()const;
+	const VEC3& getSourceSamplePosition(unsigned int aSampleID) const;
 
 
 	//--------------------------------------------------------------------------

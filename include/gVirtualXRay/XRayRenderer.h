@@ -383,7 +383,7 @@ protected:
 	*	@param aTextureIndex:	the texture to attach
 	*/
 	//--------------------------------------------------------------------------
-	void init2DFBO(UINT aFBOIndex, UINT aTextureIndex);
+	void init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex);
 
 
 	//--------------------------------------------------------------------------

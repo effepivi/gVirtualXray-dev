@@ -115,7 +115,7 @@ public:
 	*	@return the number of energy bins in the spectrum
 	*/
 	//--------------------------------------------------------------------------
-	UINT getEnergyChannelNumber() const;
+	unsigned int getEnergyChannelNumber() const;
 
 	
 	//--------------------------------------------------------------------------

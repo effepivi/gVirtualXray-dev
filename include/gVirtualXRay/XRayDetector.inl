@@ -259,17 +259,17 @@ inline const VEC3& XRayDetector::getXraySourceCentre() const
 }
 
 
-//--------------------------------------------------------
-inline UINT XRayDetector::getNumberOfSourceSamples() const
-//--------------------------------------------------------
+//----------------------------------------------------------------
+inline unsigned int XRayDetector::getNumberOfSourceSamples() const
+//----------------------------------------------------------------
 {
 	return (m_p_xray_source_position_set.size());
 }
 
 
-//----------------------------------------------------------------------------
-inline const VEC3& XRayDetector::getSourceSamplePosition(UINT aSampleID) const
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+inline const VEC3& XRayDetector::getSourceSamplePosition(unsigned int aSampleID) const
+//------------------------------------------------------------------------------------
 {
 	return (m_p_xray_source_position_set[aSampleID]);
 }

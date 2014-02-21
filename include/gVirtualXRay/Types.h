@@ -95,14 +95,6 @@ typedef Vec3<RATIONAL_NUMBER>      VEC3;
 typedef Matrix4x4<RATIONAL_NUMBER> MATRIX4;
 
 
-/// Type of data used to store unsigned integers (32 bits)
-typedef GLuint                     UINT;
-
-
-/// Type of data used to store unsigned integers (8 bits)
-typedef GLubyte                    UBYTE;
-
-
 //******************************************************************************
 //	class declaration
 //******************************************************************************

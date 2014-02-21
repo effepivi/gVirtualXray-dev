@@ -600,7 +600,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 		resetSumMuxDx();
 
 		// Process every sample of the X-ray source
-		for (UINT sample_id(0);
+		for (unsigned int sample_id(0);
 				sample_id < m_p_detector->getNumberOfSourceSamples();
 				++sample_id)
 		{
@@ -937,7 +937,7 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 			GLint width(0);
 			glTexImage3D(GL_PROXY_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_LUMINANCE, GL_FLOAT, 0);
 			glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &width);
-			if (UINT(width) == m_p_detector->getNumberOfPixels().getX())
+			if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
 			{
 				glTexImage3D(GL_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_LUMINANCE, GL_FLOAT, 0);
 			}
@@ -972,9 +972,9 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 }
 
 
-//--------------------------------------------------------------
-void XRayRenderer::init2DFBO(UINT aFBOIndex, UINT aTextureIndex)
-//--------------------------------------------------------------
+//------------------------------------------------------------------------------
+void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex)
+//------------------------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -1077,7 +1077,7 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 	GLint width(0);
 	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), 0, GL_RGBA, GL_FLOAT, 0);
 	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-	if (UINT(width) == m_p_detector->getNumberOfPixels().getX())
+	if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), 0, GL_RGBA, GL_FLOAT, 0);
 	}

@@ -219,9 +219,9 @@ inline void XRayBeam::setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aT
 }
 
 
-//--------------------------------------------------
-inline UINT XRayBeam::getEnergyChannelNumber() const
-//--------------------------------------------------
+//----------------------------------------------------------
+inline unsigned int XRayBeam::getEnergyChannelNumber() const
+//----------------------------------------------------------
 {
 	return (m_beam_spectrum.size());
 }

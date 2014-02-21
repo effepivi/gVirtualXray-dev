@@ -119,11 +119,11 @@ void XRayDetector::displayBeam()
 }
 
 
-//-----------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
-								  UINT aNumberOfSamplesAlongOneDirection,
+								  unsigned int aNumberOfSamplesAlongOneDirection,
 								  RATIONAL_NUMBER aLength)
-//-----------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 {
 	// Store the centre position
 	m_xray_source_centre = aXraySourcePosition;
@@ -145,11 +145,11 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 		RATIONAL_NUMBER offset(aLength / RATIONAL_NUMBER(aNumberOfSamplesAlongOneDirection - 1));
 
 		// Compute the sample position along the 3 axis
-		for (UINT k(0); k < aNumberOfSamplesAlongOneDirection; ++k)
+		for (unsigned int k(0); k < aNumberOfSamplesAlongOneDirection; ++k)
 		{
-			for (UINT j(0); j < aNumberOfSamplesAlongOneDirection; ++j)
+			for (unsigned int j(0); j < aNumberOfSamplesAlongOneDirection; ++j)
 			{
-				for (UINT i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
+				for (unsigned int i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
 				{
 					// Compute the sample position
 					VEC3 sample_position(source_lower_corner.getX () + offset * i,
@@ -180,11 +180,11 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 }
 
 
-//------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
-								   UINT aNumberOfSamplesAlongOneDirection,
+								   unsigned int aNumberOfSamplesAlongOneDirection,
 								   RATIONAL_NUMBER aLength)
-//------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 {
 	// Store the centre position
 	m_xray_source_centre = aXraySourcePosition;
@@ -213,9 +213,9 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 		RATIONAL_NUMBER offset(aLength / RATIONAL_NUMBER(aNumberOfSamplesAlongOneDirection - 1));
 
 		// Compute the sample position along the 2 axis
-		for (UINT j(0); j < aNumberOfSamplesAlongOneDirection; ++j)
+		for (unsigned int j(0); j < aNumberOfSamplesAlongOneDirection; ++j)
 		{
-			for (UINT i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
+			for (unsigned int i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
 			{
 				// Compute the sample position
 				VEC3 sample_position(source_lower_corner + m_up_vector * (offset * j) + right_vector * (offset * i));
@@ -243,12 +243,12 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 }
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 								 const VEC3& aDirection,
-								 UINT aNumberOfSamplesAlongOneDirection,
+								 unsigned int aNumberOfSamplesAlongOneDirection,
 								 RATIONAL_NUMBER aLength)
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 {
 	// Normalise the direction
 	VEC3 unit_direction_vector(aDirection.normal());
@@ -271,7 +271,7 @@ void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 		RATIONAL_NUMBER offset(aLength / RATIONAL_NUMBER(aNumberOfSamplesAlongOneDirection - 1));
 
 		// Compute the sample position along the direction vector
-		for (UINT i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
+		for (unsigned int i(0); i < aNumberOfSamplesAlongOneDirection; ++i)
 		{
 			// Compute the sample position
 			VEC3 sample_position(source_lower_end + (offset * i) * unit_direction_vector);
