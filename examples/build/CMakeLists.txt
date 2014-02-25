@@ -125,23 +125,58 @@ SET (RESOURCES_SOURCES ../../examples/shaders/display.frag
 )
 
 
+FIND_PACKAGE(GZIP REQUIRED)
+IF(NOT GZIP_FOUND)
+	MESSAGE(FATAL_ERROR "GZIP not found.")
+ENDIF(NOT GZIP_FOUND)
+
+
+# portably convert binary file to header
+FUNCTION(FILE2C INFILE VARNAME OUTFILE)
+	FILE(READ ${INFILE} HEXFILE HEX)
+	STRING(LENGTH ${HEXFILE} XRSLEN)
+	SET(HEXPOS 0)
+	FILE(WRITE ${OUTFILE} "/* generated from ${INFILE}.tmp; do not edit */\n" "const unsigned char ${VARNAME}[] = {")
+	
+	WHILE(${HEXPOS} LESS ${XRSLEN})
+		MATH(EXPR LPOS "${HEXPOS} % 32")
+	
+		IF(NOT ${LPOS})
+			FILE(APPEND ${OUTFILE} "\n")
+		ENDIF(NOT ${LPOS})
+	
+		STRING(SUBSTRING ${HEXFILE} ${HEXPOS} 2 HEXBYTE)
+		FILE(APPEND ${OUTFILE} "0x${HEXBYTE}")
+		MATH(EXPR HEXPOS "${HEXPOS} + 2")
+	
+		IF(${HEXPOS} LESS ${XRSLEN})
+			FILE(APPEND ${OUTFILE} ",")
+		ENDIF(${HEXPOS} LESS ${XRSLEN})
+	ENDWHILE(${HEXPOS} LESS ${XRSLEN})
+	FILE(APPEND ${OUTFILE} "};\n")
+ENDFUNCTION(FILE2C)
+
+
 foreach(F ${RESOURCES_SOURCES})
 	# Get the file name
 	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
 
+	execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${F} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp
+		INPUT_FILE  ${CMAKE_CURRENT_SOURCE_DIR}/${F}
+		OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
+
+	execute_process(COMMAND ${GZIP_TOOL} --best --force --keep ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp
+		INPUT_FILE  ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp
+		OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz)
+
 	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
-	add_custom_command(OUTPUT ${FILE_NAME}.tmp
-			#COMMAND ${CMAKE_COMMAND} -E copy ${F} ${FILE_NAME}.tmp
-			COMMAND gzip -c -9 ${F} > ${FILE_NAME}.tmp
-			COMMAND bin2c --type char -st --name g_${VARIABLE_NAME} ${FILE_NAME}.tmp > ${FILE_NAME}.h
-			DEPENDS ${F}.h
-	)
+	FILE2C(${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz g_${VARIABLE_NAME} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
 
-	add_custom_target(${FILE_NAME}.h ALL DEPENDS ${FILE_NAME}.tmp)
-	add_dependencies(gVirtualXRay ${FILE_NAME}.h)
+	add_dependencies(gVirtualXRay ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
 
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.tmp)
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${FILE_NAME}.h)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz)
+	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
 endforeach()
 
 
@@ -155,6 +190,7 @@ TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs}
 
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 
 IF(USE_BUNDLE)
 
