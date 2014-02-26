@@ -1,0 +1,323 @@
+\documentclass[11pt,oneside,a4paper,final]{article}
+
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+
+\renewcommand{\headrulewidth}{0.0pt}
+
+\lhead{}
+\chead{}
+\rhead{}
+\lfoot{}
+\cfoot{Page {\thepage} of \pageref{LastPage}}
+\rfoot{}
+
+\usepackage{longtable}
+
+\usepackage[style=numeric,backend=biber]{biblatex}
+% \usepackage[style=numeric]{biblatex}
+\bibliography{install}
+\usepackage{hyperref}
+\usepackage[paper=a4paper,margin=1.6cm]{geometry}	% 1 inch margins all around
+\usepackage[british=nohyphenation]{hyphsubst}
+\usepackage[british]{babel}
+\usepackage{graphicx}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage[acronym,toc]{glossaries}
+\makeglossaries
+\input{acronyms}
+
+\title{gVirtualXRay -- Installation Guide}
+\author{Dr Franck P. Vidal}
+\date{26\textsuperscript{th} February 2014}
+
+\begin{document}
+ \sloppy
+
+\maketitle
+
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{Table of contents}
+\tableofcontents
+
+% \newpage
+% \phantomsection
+% \addcontentsline{toc}{section}{List of figures}
+% \listoffigures
+% 
+% \newpage
+% \phantomsection
+% \addcontentsline{toc}{section}{List of tables}
+% \listoftables
+
+\newpage
+\section{Requirements}
+
+The list of tools and libraries required to build gVirtualXRay is summarised in Table~\ref{tab:requiredToolsAndLibraries}.
+
+\subsection{Main Library}
+
+To build the library, you will need:
+\begin{itemize}
+ \item \href{http://www.cmake.org/}{\includegraphics[width=2cm]{500px-Cmake.png}}~\cite{cmake}\\
+ CMake is a cross-platform tool that we use to create the Unix Makefiles, XCode project files, MS VC++ project files, etc.~for the development platform that you may wish to use.
+
+ \item \href{http://www.gzip.org/}{The \Gls{Gzip}}~\cite{gzip}\\
+ \Gls{Gzip} is used to compress the data required by the program at run-time (e.g. \Gls{GLSL} source code).
+
+ \item \href{http://www.opengl.org/}{OpenGL}~\cite{opengl}\\
+ OpenGL is used to perform the simulation computations on the \Gls{GPU}.
+
+ \item \href{http://glew.sourceforge.net/}{The \Gls{GLEW}}~\cite{glew}\\
+ \Gls{GLEW} is used to activate some of the OpenGL's extension that are needed by gVirtualXRay.
+
+ \item \href{http://www.zlib.net/}{\includegraphics[width=2cm]{Zlib_3D_green}}~\cite{zlib}\\
+ The Zlib is used to decompress the data at run-time (the data compressed using \Gls{Gzip}).
+\end{itemize}
+
+
+\subsection{Examples and Demos}
+
+To build the examples and demos, you will need:
+\begin{itemize}
+ \item \href{http://www.boost.org/}{\includegraphics[width=2cm]{Boost}}~\cite{boost}\\
+ It is only needed on the Mac OS X platform. 
+ It is mainly used to identify the path of the program when Bundles are used.
+
+ \item An implementation of \href{http://www.opengl.org/resources/libraries/glut/}{The \Gls{GLUT}}~\cite{glut} (only \href{http://www.fltk.org/}{\includegraphics[width=2cm]{Fltk_shadow}}~\cite{fltk} or \href{http://freeglut.sourceforge.net/}{\includegraphics[width=2cm]{Freeglut_logo}}~\cite{freeglut} have been tested)\\
+ It is used to create the OpenGL's window of the demos.
+\end{itemize}
+
+\begin{table}[tbhp]
+	\begin{center}
+		\caption{\label{tab:requiredToolsAndLibraries} Tools and libraries required to build gVirtualXRay.} 
+		\begin{small}
+			\begin{tabular}{|c|c|c|c|p{0.3\linewidth}|}
+				\hline
+				\textbf{Name} & \textbf{Component} & \textbf{Platform} & \textbf{Status} & \textbf{URL}\\
+				\hline
+				\hline
+				CMake & Development tool & Linux, Mac OS X \& Windows & Required & \url{http://www.cmake.org/}\\
+				\hline
+				\Acrshort{Gzip} & System tool & Linux, Mac OS X \& Windows & Required & \url{http://www.gzip.org/}\\
+				\hline
+				OpenGL & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.opengl.org/}\\
+				\hline
+				\Acrshort{GLEW} & Library & Linux, Mac OS X \& Windows & Required & \url{http://glew.sourceforge.net/}\\
+				\hline
+				Zlib & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.zlib.net/}\\
+				\hline
+				Boost & Library & Mac OS X & Required & \url{http://www.boost.org/}\\
+				\hline
+				\Acrshort{GLUT} & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.opengl.org/resources/libraries/glut/}\\
+				\hline
+				\Acrshort{FLTK} & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.fltk.org/}\\
+				\hline
+				freeglut & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeglut.sourceforge.net/}\\
+				\hline
+			\end{tabular}
+		\end{small}
+	\end{center}
+\end{table}
+
+
+\section{Options}
+
+The list of optional tools and libraries to build gVirtualXRay is summarised in Table~\ref{tab:optionalToolsAndLibraries}.
+
+\subsection{Main Library}
+
+\begin{itemize}
+ \item \href{http://www.itk.org/}{\includegraphics[width=2cm]{InsightToolkitLogo}}~\cite{itk}\\
+ It is used to store \acrshort{2D} images or \acrshort{3D} volumes.
+
+ \item\href{http://www.doxygen.org/}{\includegraphics[width=2cm]{Doxygen}}~\cite{doxygen}\\
+It is used to create the automatic documentation of the main library from the header files.
+\end{itemize}
+
+\subsection{Examples and Demos}
+
+
+\begin{itemize}
+ \item \href{http://freeimage.sourceforge.net/}{FreeImage}~\cite{freeimage}\\
+ It is used to stored screenshots.
+\end{itemize}
+
+
+\begin{table}[tbhp]
+	\begin{center}
+		\caption{\label{tab:optionalToolsAndLibraries} Optional tools and libraries to build gVirtualXRay.} 
+		\begin{small}
+			\begin{tabular}{|c|c|c|c|p{0.3\linewidth}|}
+				\hline
+				\textbf{Name} & \textbf{Component} & \textbf{Platform} & \textbf{Status} & \textbf{URL}\\
+				\hline
+				\hline
+				\Acrshort{ITK} & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.itk.org/}\\
+				\hline
+				Doxygen & Development tool & Linux, Mac OS X \& Windows & Optional & \url{http://www.doxygen.org/}\\
+				\hline
+				FreeImage & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeimage.sourceforge.net/}\\
+				\hline
+			\end{tabular}
+		\end{small}
+	\end{center}
+\end{table}
+
+
+\newpage
+\section{Compilation From the Source}
+
+\subsection{Using \Acrshort{SVN}}
+Get the latest release from the \Gls{SVN} server:
+\begin{verbatim}
+   $ svn checkout svn://svn.code.sf.net/p/gvirtualxray/code/trunk gvirtualxray-code
+\end{verbatim}
+On Windows platforms, you may want to use \href{http://tortoisesvn.tigris.org/}{TortoiseSVN}~\cite{tortoisesvn}.
+
+Set up the development environment using CMake.
+\begin{verbatim}
+   $ cd gvirtualxray-code
+   $ mkdir bin-release
+   $ cd bin-release
+\end{verbatim}
+
+\subsection{Build the Project With Unix Makefiles}
+On Unix-like platforms (inc.~Linux and Mac OS X), to generate Makefiles, build the project, and install the library, type:
+\begin{verbatim}
+   $ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE ../build
+   $ make
+   $ make install  # You might need super-user RW rights
+\end{verbatim}
+
+\subsection{Build the Project With XCode}
+On Mac OS X platforms, to generate XCode project, type:
+\begin{verbatim}
+   $ cmake -G "Xcode" -DCMAKE_BUILD_TYPE=RELEASE ../build
+\end{verbatim}
+
+\subsection{Setting up the Project Using the \Acrshort{GUI}}
+On all the platforms (inc.~Windows), use the \gls{GUI} to have more options (e.g.~select different generators such as Visual C++, set variables). Then follow the instructions provided by the \Gls{GUI}:
+\begin{center}
+	\begin{longtable}{|p{0.9\linewidth}|}
+		\hline
+		Select where the source (i.e.~CMakeLists.txt) is.
+		Select where to build the binaries. This is where the Makefiles, XCode files or Visual C++ files will be created (depending on the generator that you will select).\\
+		\includegraphics[width=0.5\linewidth]{cmake-01}\\
+		\hline
+		
+		Click on \emph{Configure}:\\
+		\includegraphics[width=0.5\linewidth]{cmake-02}\\
+		\hline
+
+		Select the generator that you wish to use:\\
+		\includegraphics[width=0.35\linewidth]{cmake-03}\\
+		\hline
+
+		CMake will try to set up your development environment:\\
+		\includegraphics[width=0.5\linewidth]{cmake-04}\\
+		\hline
+
+		By default, the build type is Release, you can change it (with \emph{Debug}, \emph{MinSizeRel} or \emph{RelWithDebInfo}):\\
+		\includegraphics[width=0.5\linewidth]{cmake-05}\\
+		\hline
+
+		You can also manually modify or set the path to your libraries:\\
+		\includegraphics[width=0.5\linewidth]{cmake-09}\\
+		\hline
+
+		You can select different options, e.g. using \Gls{FLTK} or FreeGLUT (one or the other, not both), activate \Gls{ITK}:\\
+		\includegraphics[width=0.5\linewidth]{cmake-06}\\
+		\hline
+
+		After any change, you have to press \emph{Configure} again so that the changes are effective:\\
+		\includegraphics[width=0.5\linewidth]{cmake-07}\\
+		\hline
+
+		Once you have configured the project, click on \emph{Generate}.
+		You are now ready to build the project with your selected development environment.\\
+		\includegraphics[width=0.5\linewidth]{cmake-08}\\
+		\hline
+	\end{longtable}
+\end{center}
+
+To make it a little easier on Windows platforms, it might be worth setting up environment variables to specify where you have installed some of the development tools/libraries. 
+Here is a list of the variables that may be useful to set:
+
+\begin{itemize}
+	\item \Gls{Gzip}:
+	\begin{itemize}
+		\item \verb|GZIP_TOOL|
+	\end{itemize}
+
+	\item \Gls{GLEW}:
+	\begin{itemize}
+		\item \verb|GLEW_INCLUDE_DIR|
+		\item \verb|GLEW_LIBRARY|
+	\end{itemize}
+	
+	\item Zlib:
+	\begin{itemize}
+		\item \verb|ZLIB_INCLUDE_DIR|
+		\item \verb|ZLIB_LIBRARY|
+	\end{itemize}
+	
+	\item If you use FreeGLUT:
+	\begin{itemize}
+		\item \verb|GLUT_INCLUDE_DIR|
+		\item \verb|GLUT_LIBRARY|
+	\end{itemize}
+
+	\item Or if you use \Gls{FLTK}:
+	\begin{itemize}
+		\item \verb|FLTK_INCLUDE_DIR|
+		\item \verb|FLTK_BASE_LIBRARY|
+		\item \verb|FLTK_FLUID_EXECUTABLE|
+		\item \verb|FLTK_FORMS_LIBRARY|
+		\item \verb|FLTK_GL_LIBRARY|
+		\item \verb|FLTK_IMAGES_LIBRARY|
+		\item \verb|FLTK_MATH_LIBRARY|
+	\end{itemize}
+
+	\item If you use \Gls{ITK}:
+	\begin{itemize}
+		\item \verb|ITK_DIR|
+		\item And maybe \verb|VTK_DIR| if \Gls{ITK} was compiled with \Gls{VTK} support
+	\end{itemize}
+
+	\item If you use FreeImage:
+	\begin{itemize}
+		\item \verb|FREEIMAGE_INCLUDE_DIR|
+		\item \verb|FREEIMAGE_LIBRARY|
+	\end{itemize}
+
+\end{itemize}
+
+
+\section{Tested platforms}
+
+Successful compilation and installation have been tested on:
+
+\begin{itemize}
+ \item Linux openSUSE 12.3 (x86\_64) using the native compiler (g++ 4.7.2).
+ \item Linux openSUSE 12.3 (x86\_64) using the Windows cross compiler (mingw32-g++ 4.8.1) provided by \Gls{MXE}.
+ \item Windows 8.1 (x86\_64) using Visual C++ 2010 in 32 bits.
+ \item Mac OS X 10.8 (x86\_64) using the native compiler (LLVM 4.2) in 64 bits.
+ \item Mac OS X 10.8 (x86\_64) using the GNU compiler (g++ 4.7) in 64 bits.
+ \item Mac OS X 10.8 (x86\_64) using the Windows cross compiler (mingw32-g++ 4.8.1) provided by \Gls{MXE}.
+\end{itemize}
+
+
+\newpage
+\printglossary[type=\acronymtype] 
+
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{Bibliography}
+\printbibliography
+
+
+\end{document}
