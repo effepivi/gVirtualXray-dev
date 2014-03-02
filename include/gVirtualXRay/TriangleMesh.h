@@ -308,6 +308,8 @@ public:
 	void displayUsingImmediateModeWithoutIndex() const;
 	void displayWireFrameWithIndex() const;
 	void displayWireFrameWithoutIndex() const;
+	void inverNormalVectors();
+
 
 //******************************************************************************
 protected:

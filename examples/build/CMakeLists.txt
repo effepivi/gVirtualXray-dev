@@ -184,9 +184,14 @@ TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
 TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
 
+ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
+TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
+#ADD_EXECUTABLE (marchingsource ../src/marchingsource.cpp)
+#TARGET_LINK_LIBRARIES (marchingsource gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_BUNDLE)
 

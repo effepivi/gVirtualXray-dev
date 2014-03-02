@@ -594,4 +594,17 @@ inline void TriangleMesh::moveToCentre()
 }
 
 
+//--------------------------------------------
+inline void TriangleMesh::inverNormalVectors()
+//--------------------------------------------
+{
+	for (std::vector<GLfloat>::iterator ite(m_p_vertex_normal_set.begin());
+			ite != m_p_vertex_normal_set.end();
+			++ite)
+	{
+		*ite = -(*ite);
+	}
+}
+
+
 } // namespace Graphics
