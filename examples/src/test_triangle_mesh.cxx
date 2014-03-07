@@ -201,6 +201,7 @@ bool g_display_wireframe(false);
 
 bool g_use_lighing(true);
 bool g_display_detector(true);
+bool g_make_cube_bigger(true);
 
 clock_t g_start(0);
 int g_image_computed(0);
@@ -966,6 +967,29 @@ void idle()
 		std::cout << "FPS:\t" << g_fps << std::endl;
 		g_image_computed = 0;
 	}
+
+	if ((g_image_computed % 50) == 0)
+	{
+		g_make_cube_bigger = !g_make_cube_bigger;
+	}
+
+	// Change the size of the cube
+	for (std::vector<GLfloat>::iterator ite(g_p_vertex_set.begin());
+			ite != g_p_vertex_set.end();
+			++ite)
+	{
+		if (g_make_cube_bigger)
+		{
+			*ite *= 1.005;
+		}
+		else
+		{
+			*ite /= 1.005;
+		}
+	}
+
+	// The X-ray image is not up-to-date
+	g_is_xray_image_up_to_date = false;
 
 	glutPostRedisplay();
 }
