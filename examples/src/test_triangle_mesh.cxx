@@ -507,7 +507,7 @@ void render()
 		}
 		else
 		{
-			g_polygon_data.display(false);
+			g_polygon_data.display(true);
 		}
 
 		// Restore the current transformation matrix
@@ -988,6 +988,9 @@ void idle()
 		}
 	}
 
+	// Updat ethe VBO
+	g_polygon_data.updateVBO(GL_STREAM_DRAW);
+
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
 
@@ -1003,7 +1006,7 @@ void loadCube()
 	buildCube(10.0 * cm, VEC3(), g_p_vertex_set);
 
     // Set geometry
-	g_polygon_data.setExternalData(&g_p_vertex_set, 0);
+	g_polygon_data.setExternalData(&g_p_vertex_set, 0, true, GL_STREAM_DRAW);
 	//g_polygon_data.inverNormalVectors();
 	//g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);

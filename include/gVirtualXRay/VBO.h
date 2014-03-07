@@ -65,6 +65,9 @@ public:
 	~VBO();
 	
 	
+	void destroy();
+
+
 	//--------------------------------------------------------------------------
 	///	Reset the data.
 	//--------------------------------------------------------------------------
@@ -127,6 +130,12 @@ public:
 	bool isReady() const;
 	
 	
+	void setVBOType(GLenum aTypeOfVBO);
+
+
+	GLenum getVBOType() const;
+
+
 	//--------------------------------------------------------------------------
 	///	Copy operator.
 	/**
@@ -161,6 +170,8 @@ protected:
 	GLuint m_vertex_size;
 
 	GLenum m_primitive_type;
+
+	GLenum m_storage_type; ///< GL_DYNAMIC_DRAW, GL_STATIC_DRAW, GL_STREAM_DRAW
 };
 
 

@@ -155,7 +155,8 @@ public:
 		bool anAutoComputeNormalFlag,
 		bool aPrintDebugInfoFlag,
 		bool aCreateVBOFlag,
-		RATIONAL_NUMBER aScale);
+		RATIONAL_NUMBER aScale,
+		GLenum aTypeOfVBO);
 
 
 	//--------------------------------------------------------------------------
@@ -176,7 +177,7 @@ public:
 	*	@return true if the VBO can be used, false otherwise
 	*/
 	//--------------------------------------------------------------------------
-	bool useVBO();
+	bool useVBO(GLenum aTypeOfVBO);
 
 
 	//--------------------------------------------------------------------------
@@ -298,7 +299,9 @@ public:
 	VEC3 getVertexNormal(unsigned int anIndex) const;
 
 	void setExternalData(const std::vector<GLfloat>* aVertexArray,
-			const std::vector<int>* anIndexArray);
+			const std::vector<int>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
 
 
 	void applyScale(RATIONAL_NUMBER aScale);
@@ -311,9 +314,11 @@ public:
 	void inverNormalVectors();
 
 
+	void updateVBO(GLenum aTypeOfVBO);
+
+
 //******************************************************************************
 protected:
-	void updateVBO();
 	void computeBoundingBox();
 	void normaliseNormals();
 

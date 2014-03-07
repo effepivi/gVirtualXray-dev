@@ -76,9 +76,7 @@ inline void TriangleMesh::reset()
 //-------------------------------
 {
 	// Reset class members to their default values 
-#ifdef USE_VBO
 	m_vbo.reset();
-#endif
 	
 	m_use_hounsfield_value = true;
 	m_hounsfield_value = 0;
@@ -206,21 +204,17 @@ inline const std::string& TriangleMesh::getFilename() const
 }
 
 
-//--------------------------------
-inline bool TriangleMesh::useVBO()
-//--------------------------------
+//-------------------------------------------------
+inline bool TriangleMesh::useVBO(GLenum aTypeOfVBO)
+//-------------------------------------------------
 {
-#ifdef USE_VBO
 	// There is no data to store in a VBO
-	if (m_p_vertex_set.size() && m_p_normal_set.size())
+	if (getVertexNumber() && (getVertexNormalNumber() || getFaceNormalNumber()))
 	{
 		// Create a VBO if possible
-		m_vbo.set(getVertexNumber(), &m_p_vertex_set[0], getNormalNumber(), &m_p_normal_set[0]);
+		updateVBO(aTypeOfVBO);
 	}
 	return (m_vbo.isReady());
-#endif // USE_VBO
-	
-	return (false);
 }
 
 
@@ -483,7 +477,9 @@ inline VEC3 TriangleMesh::getVertexNormal(unsigned int anIndex) const
 
 //---------------------------------------------------------------------------------
 inline void TriangleMesh::setExternalData(const std::vector<GLfloat>* aVertexArray,
-								   	   	  const std::vector<int>* anIndexArray)
+								   	   	  const std::vector<int>* anIndexArray,
+								   	   	  bool aCreateVBOFlag,
+								   	   	  GLenum aTypeOfVBO)
 //---------------------------------------------------------------------------------
 {
 	reset();
@@ -498,9 +494,9 @@ inline void TriangleMesh::setExternalData(const std::vector<GLfloat>* aVertexArr
 	computeNormalVectors();
 	
 	// Update the VBO
-	if (m_vbo.isReady())
+	if (aCreateVBOFlag)
 	{
-		updateVBO();
+		updateVBO(aTypeOfVBO);
 	}
 }
 
@@ -556,7 +552,7 @@ inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
 		// Update the VBO
 		if (m_vbo.isReady())
 		{
-			updateVBO();
+			updateVBO(m_vbo.getVBOType());
 		}
 	}
 }
@@ -578,7 +574,7 @@ inline void TriangleMesh::translate(const VEC3& aTranslationVector)
 	// Update the VBO
 	if (m_vbo.isReady())
 	{
-		updateVBO();
+		updateVBO(m_vbo.getVBOType());
 	}
 }
 

@@ -65,7 +65,8 @@ inline VBO::VBO():
 	m_normal_size(0),
 	m_texture_coordinate_size(0),
 	m_vertex_size(0),
-	m_primitive_type(GL_TRIANGLES)
+	m_primitive_type(GL_TRIANGLES),
+	m_storage_type(GL_DYNAMIC_DRAW)
 //-------------------------------------
 {
 	m_id_set[VERTEX_SET_ID]     = 0;
@@ -79,13 +80,11 @@ inline VBO::VBO():
 inline VBO::~VBO()
 //----------------
 {
-	reset();
+	destroy();
 }
 
 
-//----------------------
-inline void VBO::reset()
-//----------------------
+inline void VBO::destroy()
 {
 	if (m_id_set[VERTEX_SET_ID])     glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
 	if (m_id_set[TEXT_COORD_SET_ID]) glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
@@ -97,6 +96,14 @@ inline void VBO::reset()
 	m_id_set[NORMAL_SET_ID]     = 0;
 	m_id_set[INDEX_SET_ID]      = 0;
 
+	reset();
+}
+
+
+//----------------------
+inline void VBO::reset()
+//----------------------
+{
 	m_number_of_normals             = 0;
 	m_number_of_texture_coordinates = 0;
 	m_number_of_vertices            = 0;
@@ -187,6 +194,22 @@ inline bool VBO::isReady() const
 //-----------------------------
 {
 	return (m_id_set[0] ? true : false);
+}
+
+
+//--------------------------------------------
+inline void VBO::setVBOType(GLenum aTypeOfVBO)
+//--------------------------------------------
+{
+	m_storage_type = aTypeOfVBO;
+}
+
+
+//-----------------------------------
+inline GLenum VBO::getVBOType() const
+//-----------------------------------
+{
+	return (m_storage_type);
 }
 
 

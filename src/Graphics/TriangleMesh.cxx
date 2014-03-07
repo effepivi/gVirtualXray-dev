@@ -287,7 +287,8 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 							   bool anAutoComputeNormalFlag,
 							   bool aPrintDebugInfoFlag,
 							   bool aCreateVBOFlag,
-							   RATIONAL_NUMBER aScale)
+							   RATIONAL_NUMBER aScale,
+							   GLenum aTypeOfVBO)
 //----------------------------------------------------------
 {
 	// Reset the data
@@ -375,7 +376,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	// Create the VBO
 	if (aCreateVBOFlag)
 	{
-		updateVBO();
+		updateVBO(aTypeOfVBO);
 	}
 }
 
@@ -697,7 +698,7 @@ void TriangleMesh::mergeVertices()
 			// Update the VBO
 			if (m_vbo.isReady())
 			{
-				updateVBO();
+				updateVBO(m_vbo.getVBOType());
 			}
 		}
 	}
@@ -709,10 +710,13 @@ void TriangleMesh::mergeVertices()
 }
 
 
-//-----------------------------------
-inline void TriangleMesh::updateVBO()
-//-----------------------------------
+//----------------------------------------------------
+inline void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
+//----------------------------------------------------
 {
+	// Set the type of VBO
+	m_vbo.setVBOType(aTypeOfVBO);
+
 	// By default try the external data
 	if (m_p_external_vertex_set)
 	{

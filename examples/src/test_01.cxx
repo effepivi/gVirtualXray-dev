@@ -1057,12 +1057,12 @@ void loadSTLFile()
 
 	// Set geometry
 	g_inside_polygon_data.setFilename(stl_filename_0);
-	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm);
+	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
 	g_outside_polygon_data.setFilename(stl_filename_1);
-	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm);
+	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_outside_polygon_data.mergeVertices();
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 

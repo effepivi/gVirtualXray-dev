@@ -66,10 +66,6 @@ void VBO::setVertexData(GLenum aPrimitiveType,
 	m_texture_coordinate_size = m_number_of_texture_coordinates * aNumberOfCompontentsPerCoord  * sizeof(GLfloat);
 	m_vertex_size             = m_number_of_vertices            * aNumberOfCompontentsPerVertex * sizeof(GLfloat);
 
-	m_id_set[VERTEX_SET_ID]     = 0;
-	m_id_set[TEXT_COORD_SET_ID] = 0;
-	m_id_set[INDEX_SET_ID]      = 0;
-
 	// Load the data in the VBO
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -77,14 +73,17 @@ void VBO::setVertexData(GLenum aPrimitiveType,
 	if (apNormals)
 	{
 		// Create the VBO
-		glGenBuffers(1, &m_id_set[NORMAL_SET_ID]);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		if (!m_id_set[NORMAL_SET_ID])
+		{
+			glGenBuffers(1, &m_id_set[NORMAL_SET_ID]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 
 		// Bind the new VBO
 		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[NORMAL_SET_ID]);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glBufferData(GL_ARRAY_BUFFER, m_normal_size, apNormals, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, m_normal_size, apNormals, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -92,14 +91,17 @@ void VBO::setVertexData(GLenum aPrimitiveType,
 	if (apTextureCoordinates)
 	{
 		// Create the VBO
-		glGenBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		if (!m_id_set[TEXT_COORD_SET_ID])
+		{
+			glGenBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 
 		// Bind the new VBO
 		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glBufferData(GL_ARRAY_BUFFER, m_texture_coordinate_size, apTextureCoordinates, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, m_texture_coordinate_size, apTextureCoordinates, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -107,15 +109,42 @@ void VBO::setVertexData(GLenum aPrimitiveType,
 	if (vertices)
 	{
 		// Create the VBO
-		glGenBuffers(1, &m_id_set[VERTEX_SET_ID]);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		if (!m_id_set[VERTEX_SET_ID])
+		{
+			glGenBuffers(1, &m_id_set[VERTEX_SET_ID]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 
 		// Bind the new VBO
 		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[VERTEX_SET_ID]);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glBufferData(GL_ARRAY_BUFFER, m_vertex_size, vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, m_vertex_size, vertices, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	if (m_id_set[VERTEX_SET_ID] != 0 && m_number_of_vertices == 0)
+	{
+		glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
+		m_id_set[VERTEX_SET_ID] = 0;
+	}
+
+	if (m_id_set[TEXT_COORD_SET_ID] != 0 && m_texture_coordinate_size == 0)
+	{
+		glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
+		m_id_set[TEXT_COORD_SET_ID] = 0;
+	}
+
+	if (m_id_set[NORMAL_SET_ID] != 0 && m_normal_size == 0)
+	{
+		glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
+		m_id_set[NORMAL_SET_ID] = 0;
+	}
+
+	if (m_id_set[INDEX_SET_ID] != 0 && m_number_of_indices == 0)
+	{
+		glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+		m_id_set[INDEX_SET_ID] = 0;
 	}
 
 	// Unbind the VBO
@@ -131,20 +160,34 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
 	m_number_of_indices = aNumberOfIndexes;
 
 	// Create the VBO
-	glGenBuffers(1, &m_id_set[INDEX_SET_ID]);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	if (!m_id_set[INDEX_SET_ID] && m_number_of_indices && apIndexSet)
+	{
+		glGenBuffers(1, &m_id_set[INDEX_SET_ID]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-	// Bind the new VBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	if (m_number_of_indices && apIndexSet)
+	{
+		// Bind the new VBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Load the data in the VBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLuint), apIndexSet, GL_DYNAMIC_DRAW);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		// Load the data in the VBO
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLuint), apIndexSet, m_storage_type);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Unbind the VBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		// Unbind the VBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		if (m_id_set[INDEX_SET_ID])
+		{
+			glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+			m_id_set[INDEX_SET_ID] = 0;
+		}
+	}
 }
 
 
@@ -163,7 +206,7 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Load the data in the VBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLint), apIndexSet, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLint), apIndexSet, m_storage_type);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Unbind the VBO

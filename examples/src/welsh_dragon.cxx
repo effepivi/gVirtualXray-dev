@@ -1086,7 +1086,7 @@ void loadSTLFile(const std::string& aPrefix)
 
 	// Set geometry
 	g_polygon_data.setFilename(stl_filename.data());
-	g_polygon_data.loadSTLFile(true, true, true, true, mm);
+	g_polygon_data.loadSTLFile(true, true, true, true, mm, GL_STATIC_DRAW);
 	g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);
 
