@@ -698,7 +698,7 @@ void TriangleMesh::mergeVertices()
 			// Update the VBO
 			if (m_vbo.isReady())
 			{
-				updateVBO(m_vbo.getVBOType());
+				updateVBO(m_vbo.getBufferUsageHint());
 			}
 		}
 	}
@@ -715,7 +715,7 @@ inline void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
 //----------------------------------------------------
 {
 	// Set the type of VBO
-	m_vbo.setVBOType(aTypeOfVBO);
+	m_vbo.setBufferUsageHint(aTypeOfVBO);
 
 	// By default try the external data
 	if (m_p_external_vertex_set)

@@ -130,10 +130,27 @@ public:
 	bool isReady() const;
 	
 	
-	void setVBOType(GLenum aTypeOfVBO);
+	//--------------------------------------------------------------------------
+	///	Set the buffer usage hint. Accepted values are:
+	///	    GL_STATIC_DRAW is for vertex buffers that are rendered many times,
+	///				and whose contents are specified once and never change.
+	///		GL_DYNAMIC_DRAW is for vertex buffers that are rendered many times,
+	///				and whose contents change during the rendering loop.
+	///		GL_STREAM_DRAW is for vertex buffers that are rendered a small number of times and then discarded.
+	/**
+	*	@param aFlag: the buffer usage hint to set
+	*/
+	//--------------------------------------------------------------------------
+	void setBufferUsageHint(GLenum aFlag);
 
 
-	GLenum getVBOType() const;
+	//--------------------------------------------------------------------------
+	///	Accessor on the buffer usage hint.
+	/**
+	*	@return the buffer usage hint
+	*/
+	//--------------------------------------------------------------------------
+	GLenum getBufferUsageHint() const;
 
 
 	//--------------------------------------------------------------------------

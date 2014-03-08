@@ -552,7 +552,7 @@ inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
 		// Update the VBO
 		if (m_vbo.isReady())
 		{
-			updateVBO(m_vbo.getVBOType());
+			updateVBO(m_vbo.getBufferUsageHint());
 		}
 	}
 }
@@ -574,7 +574,7 @@ inline void TriangleMesh::translate(const VEC3& aTranslationVector)
 	// Update the VBO
 	if (m_vbo.isReady())
 	{
-		updateVBO(m_vbo.getVBOType());
+		updateVBO(m_vbo.getBufferUsageHint());
 	}
 }
 

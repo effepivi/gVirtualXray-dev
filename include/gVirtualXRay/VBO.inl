@@ -197,17 +197,17 @@ inline bool VBO::isReady() const
 }
 
 
-//--------------------------------------------
-inline void VBO::setVBOType(GLenum aTypeOfVBO)
-//--------------------------------------------
+//-----------------------------------------------
+inline void VBO::setBufferUsageHint(GLenum aFlag)
+//-----------------------------------------------
 {
-	m_storage_type = aTypeOfVBO;
+	m_storage_type = aFlag;
 }
 
 
-//-----------------------------------
-inline GLenum VBO::getVBOType() const
-//-----------------------------------
+//-------------------------------------------
+inline GLenum VBO::getBufferUsageHint() const
+//-------------------------------------------
 {
 	return (m_storage_type);
 }
