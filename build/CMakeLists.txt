@@ -92,6 +92,7 @@ SET (CXX_SOURCES
 
 	# Graphics
 	../src/Graphics/framebufferObject.cpp
+	../src/Graphics/ImplicitSurface.cxx
 	../src/Graphics/Shader.cxx
 	../src/Graphics/StereoHelper.cxx
 	../src/Graphics/TriangleMesh.cxx
@@ -120,6 +121,8 @@ SET (HXX_SOURCES
 
 	# Graphics
 	../include/gVirtualXRay/framebufferObject.h
+	../include/gVirtualXRay/ImplicitSurface.h
+        ../include/gVirtualXRay/ImplicitSurface.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
