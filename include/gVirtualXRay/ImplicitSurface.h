@@ -40,7 +40,7 @@
 #include <vector>
 
 #ifndef TYPES_H
-#include "Types.h"
+#include "gVirtualXRay/Types.h"
 #endif
 
 
@@ -67,6 +67,7 @@ public:
 	//--------------------------------------------------------------------------
 	typedef enum DensityFunctionTypeTag
 	{
+		SPHERE,
 		BLOBBY_MOLECULE,	///< Blobby molecule, first created by Jim Blinn and modelled after electron density fields
 		META_BALL,			///< Meta balls
 		SOFT_OBJECT			///< Soft Objects, first created by the Wyvill brothers
@@ -87,6 +88,9 @@ public:
 	
 
 	RATIONAL_NUMBER evaluate(RATIONAL_NUMBER r) const;
+
+
+	void setSphere();
 
 
 	//--------------------------------------------------------------------------
@@ -144,6 +148,7 @@ public:
 
 //******************************************************************************
 protected:
+	RATIONAL_NUMBER evaluateSphere(RATIONAL_NUMBER r) const;
 	RATIONAL_NUMBER evaluateBlobbyMolecule(RATIONAL_NUMBER r) const;
 	RATIONAL_NUMBER evaluateMetaBall(RATIONAL_NUMBER r) const;
 	RATIONAL_NUMBER evaluateSoftObject(RATIONAL_NUMBER r) const;

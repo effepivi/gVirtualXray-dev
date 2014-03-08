@@ -36,7 +36,7 @@
 #include <cmath>
 
 #ifndef OUT_OF_BOUNDS_EXCEPTION_H
-#include "OutOfBoundsException.h"
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 
@@ -57,6 +57,9 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluate(RATIONAL_NUMBER r) const
 {
 	switch (m_density_function)
 	{
+	case SPHERE:
+		return evaluateSphere(r);
+		
 	case BLOBBY_MOLECULE:
 		return evaluateBlobbyMolecule(r);
 		
@@ -66,6 +69,14 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluate(RATIONAL_NUMBER r) const
 	case SOFT_OBJECT:
 		return evaluateSoftObject(r);
 	}
+}
+
+
+//--------------------------------------
+inline void ImplicitSurface::setSphere()
+//--------------------------------------
+{
+	m_density_function = SPHERE;
 }
 
 
@@ -184,6 +195,21 @@ inline std::pair<VEC3, VEC3>& ImplicitSurface::getControlLine(unsigned int anInd
 	}
 	
 	return (m_control_line_set[anIndex]);
+}
+
+
+//-----------------------------------------------------------------------------
+inline RATIONAL_NUMBER ImplicitSurface::evaluateSphere(RATIONAL_NUMBER r) const
+//-----------------------------------------------------------------------------
+{
+	if (0 <= r)
+	{
+		return (1.0 / (r * r));		
+	}
+	else
+	{
+		return (0);
+	}
 }
 
 
