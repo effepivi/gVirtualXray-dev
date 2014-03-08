@@ -92,4 +92,12 @@ int main(int argc, char** argv)
 		std::cout << soft_object.evaluate(i);
 		std::cout << std::endl;
 	}
+
+	meta_ball.addControlPoint(VEC3(-2.0, 0, 0));
+	meta_ball.addControlPoint(VEC3( 2.0, 0, 0));
+
+	meta_ball.voxelise(Vec3ui(128, 128, 128),
+			VEC3(0, 0, 0),
+			VEC3(0.1, 0.1, 0.1));
+	meta_ball.writeVoxelData("meta_ball.raw");
 }

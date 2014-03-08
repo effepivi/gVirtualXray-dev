@@ -198,6 +198,24 @@ inline std::pair<VEC3, VEC3>& ImplicitSurface::getControlLine(unsigned int anInd
 }
 
 
+//------------------------------------------------------------------
+inline void ImplicitSurface::voxelize(const Vec3ui& aNumberOfVoxels,
+									  const VEC3& aCenter,
+									  const VEC3& aVoxelSize)
+//------------------------------------------------------------------
+{
+	voxelise(aNumberOfVoxels, aCenter, aVoxelSize);
+}
+
+
+//-----------------------------------------------------------------------------
+inline void ImplicitSurface::writeVoxelData(const std::string& aFileName) const
+//-----------------------------------------------------------------------------
+{
+	writeVoxelData(aFileName.data());
+}
+
+
 //-----------------------------------------------------------------------------
 inline RATIONAL_NUMBER ImplicitSurface::evaluateSphere(RATIONAL_NUMBER r) const
 //-----------------------------------------------------------------------------

@@ -146,6 +146,19 @@ public:
 	std::pair<VEC3, VEC3>& getControlLine(unsigned int anIndex);
 
 
+	void voxelise(const Vec3ui& aNumberOfVoxels,
+			const VEC3& aCenter,
+			const VEC3& aVoxelSize);
+
+	void voxelize(const Vec3ui& aNumberOfVoxels,
+			const VEC3& aCenter,
+			const VEC3& aVoxelSize);
+
+
+	void writeVoxelData(const char* aFileName) const;
+	void writeVoxelData(const std::string& aFileName) const;
+
+
 //******************************************************************************
 protected:
 	RATIONAL_NUMBER evaluateSphere(RATIONAL_NUMBER r) const;
@@ -159,6 +172,11 @@ protected:
 
 	std::vector<VEC3> m_control_point_set;
 	std::vector<std::pair<VEC3, VEC3> > m_control_line_set;
+
+	std::vector<RATIONAL_NUMBER> m_p_voxel_data;
+	Vec3ui m_volume_size;
+	VEC3 m_center;
+	VEC3 m_voxel_size;
 };
 
 
