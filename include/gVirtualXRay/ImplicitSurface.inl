@@ -216,6 +216,22 @@ inline void ImplicitSurface::writeVoxelData(const std::string& aFileName) const
 }
 
 
+//-----------------------------------------------------------------------
+inline const std::vector<GLfloat>& ImplicitSurface::getVertexData() const
+//-----------------------------------------------------------------------
+{
+	return (m_p_vertex_data);
+}
+
+
+//--------------------------------------------------------------------
+inline const std::vector<GLint>& ImplicitSurface::getIndexData() const
+//--------------------------------------------------------------------
+{
+	return (m_p_index_data);
+}
+
+
 //-----------------------------------------------------------------------------
 inline RATIONAL_NUMBER ImplicitSurface::evaluateSphere(RATIONAL_NUMBER r) const
 //-----------------------------------------------------------------------------
@@ -258,7 +274,7 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluateMetaBall(RATIONAL_NUMBER r) cons
 	{
 		return (((3.0 * m_a) / 2.0) * pow((1.0 - (r / m_b)), 2.0));
 	}
-	else if (m_b <= r)
+	else //if (m_b <= r)
 	{
 		return (0);
 	}

@@ -39,6 +39,16 @@
 //******************************************************************************
 #include <vector>
 
+#include <GL/glew.h>
+
+#ifdef HAS_ITK
+#include <itkImage.h>
+#include <itkBinaryMask3DMeshSource.h>
+#include <itkBinaryThresholdImageFilter.h>
+#include <itkMesh.h>
+#include <itkQuadEdgeMesh.h>
+#endif
+
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -145,7 +155,7 @@ public:
 	const std::pair<VEC3, VEC3>& getControlLine(unsigned int anIndex) const;
 	std::pair<VEC3, VEC3>& getControlLine(unsigned int anIndex);
 
-
+#ifdef HAS_ITK
 	void voxelise(const Vec3ui& aNumberOfVoxels,
 			const VEC3& aCenter,
 			const VEC3& aVoxelSize);
@@ -157,6 +167,12 @@ public:
 
 	void writeVoxelData(const char* aFileName) const;
 	void writeVoxelData(const std::string& aFileName) const;
+
+	void extractIsoSurface(RATIONAL_NUMBER aThreshold = 0);
+
+	const std::vector<GLfloat>& getVertexData() const;
+	const std::vector<GLint>& getIndexData() const;
+#endif // HAS_ITK
 
 
 //******************************************************************************
@@ -173,10 +189,19 @@ protected:
 	std::vector<VEC3> m_control_point_set;
 	std::vector<std::pair<VEC3, VEC3> > m_control_line_set;
 
-	std::vector<RATIONAL_NUMBER> m_p_voxel_data;
-	Vec3ui m_volume_size;
-	VEC3 m_center;
-	VEC3 m_voxel_size;
+#ifdef HAS_ITK
+	typedef RATIONAL_NUMBER InputVoxelDataType;
+	typedef unsigned char OutputVoxelDataType;
+	typedef itk::Image<InputVoxelDataType, 3> InputVolumeType;
+	typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
+	typedef itk::QuadEdgeMesh<GLfloat, 3> MeshType;
+	typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
+
+	InputVolumeType::Pointer m_p_volume;
+	IsoSurfaceExtracterType::Pointer m_p_iso_surface_extracter;
+	std::vector<GLfloat> m_p_vertex_data;
+	std::vector<GLint> m_p_index_data;
+#endif // HAS_ITK
 };
 
 

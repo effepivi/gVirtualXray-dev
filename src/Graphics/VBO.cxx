@@ -166,6 +166,7 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
+	// Load data
 	if (m_number_of_indices && apIndexSet)
 	{
 		// Bind the new VBO
@@ -180,8 +181,10 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
+	// There is no data to load
 	else
 	{
+		// There is no need for a buffer
 		if (m_id_set[INDEX_SET_ID])
 		{
 			glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
@@ -195,21 +198,38 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
 void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet)
 //----------------------------------------------------------------------------
 {
-	m_number_of_indices = aNumberOfIndexes;
+ 	m_number_of_indices = aNumberOfIndexes;
 
 	// Create the VBO
-	glGenBuffers(1, &m_id_set[INDEX_SET_ID]);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	if (!m_id_set[INDEX_SET_ID] && m_number_of_indices && apIndexSet)
+	{
+		glGenBuffers(1, &m_id_set[INDEX_SET_ID]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 
-	// Bind the new VBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	// Load data
+	if (m_number_of_indices && apIndexSet)
+	{
+		// Bind the new VBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Load the data in the VBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLint), apIndexSet, m_storage_type);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		// Load the data in the VBO
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLint), apIndexSet, m_storage_type);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Unbind the VBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		// Unbind the VBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	// There is no data to load
+	else
+	{
+		// There is no need for a buffer
+		if (m_id_set[INDEX_SET_ID])
+		{
+			glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+			m_id_set[INDEX_SET_ID] = 0;
+		}
+	}
 }
