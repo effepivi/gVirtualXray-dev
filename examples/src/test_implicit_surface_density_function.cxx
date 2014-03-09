@@ -209,7 +209,17 @@ double g_number_of_seconds(0);
 double g_fps(0);
 float g_threshold(0.5);
 
-ImplicitSurface g_meta_ball;
+int g_selected_iso_surface(0);
+
+ImplicitSurface g_sphere_1;
+ImplicitSurface g_blobby_molecule_1;
+ImplicitSurface g_meta_ball_1;
+ImplicitSurface g_soft_object_1;
+
+ImplicitSurface g_sphere_2;
+ImplicitSurface g_blobby_molecule_2;
+ImplicitSurface g_meta_ball_2;
+ImplicitSurface g_soft_object_2;
 
 
 //******************************************************************************
@@ -643,7 +653,7 @@ void keyboard(unsigned char key, int x, int y)
 	case 'n':
 		g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 		break;
-
+/*
 	case '1':
 		// This is a point source
 		if (g_xray_detector.getSourceType() != XRayDetector::PARALLEL)
@@ -707,6 +717,38 @@ void keyboard(unsigned char key, int x, int y)
 
 		// The X-ray image is not up-to-date
 		g_is_xray_image_up_to_date = false;
+		break;
+*/
+	case '0':
+		g_selected_iso_surface = 0;
+		break;
+
+	case '1':
+		g_selected_iso_surface = 1;
+		break;
+
+	case '2':
+		g_selected_iso_surface = 2;
+		break;
+
+	case '3':
+		g_selected_iso_surface = 3;
+		break;
+
+	case '4':
+		g_selected_iso_surface = 4;
+		break;
+
+	case '5':
+		g_selected_iso_surface = 5;
+		break;
+
+	case '6':
+		g_selected_iso_surface = 6;
+		break;
+
+	case '7':
+		g_selected_iso_surface = 7;
 		break;
 
 	case 't':
@@ -956,6 +998,95 @@ void motion(int x, int y)
 }
 
 
+//----------------------
+void extractIsoSurface()
+//----------------------
+{
+	//g_meta_ball.writeVoxelData("meta_ball.mhd");
+	//g_meta_ball.extractIsoSurface(g_threshold);
+
+	switch (g_selected_iso_surface)
+	{
+	// Sphere
+	case 0:
+		g_sphere_1.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_sphere_1.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_sphere_1.getVertexData(), &g_sphere_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	case 1:
+		g_sphere_2.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_sphere_2.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_sphere_2.getVertexData(), &g_sphere_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	// Blobby molecule
+	case 2:
+		g_blobby_molecule_1.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_blobby_molecule_1.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_blobby_molecule_1.getVertexData(), &g_blobby_molecule_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	case 3:
+		g_blobby_molecule_2.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_blobby_molecule_2.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_blobby_molecule_2.getVertexData(), &g_blobby_molecule_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	// Meta ball
+	case 4:
+		g_meta_ball_1.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_meta_ball_1.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_meta_ball_1.getVertexData(), &g_meta_ball_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	case 5:
+		g_meta_ball_2.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_meta_ball_2.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_meta_ball_2.getVertexData(), &g_meta_ball_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	// Soft object
+	case 6:
+		g_soft_object_1.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_soft_object_1.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_soft_object_1.getVertexData(), &g_soft_object_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+
+	case 7:
+		g_soft_object_2.voxelise(Vec3ui(64, 64, 64),
+				VEC3(0, 0, 0),
+				VEC3(0.2, 0.2, 0.2));
+		g_soft_object_2.extractIsoSurface(g_threshold);
+		g_polygon_data.setExternalData(&g_soft_object_2.getVertexData(), &g_soft_object_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		break;
+	}
+
+    // Set geometry
+	g_polygon_data.applyScale(15);
+
+	// Updat ethe VBO
+	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW);
+
+	// The X-ray image is not up-to-date
+	g_is_xray_image_up_to_date = false;
+}
+
+
 //---------
 void idle()
 //---------
@@ -991,17 +1122,7 @@ void idle()
 		g_threshold = 0 + 0.01;
 	}
 
-	g_meta_ball.extractIsoSurface(g_threshold);
-
-    // Set geometry
-	g_polygon_data.setExternalData(&g_meta_ball.getVertexData(), &g_meta_ball.getIndexData(), true, GL_DYNAMIC_DRAW);
-	g_polygon_data.applyScale(15);
-
-	// Updat ethe VBO
-	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW);
-
-	// The X-ray image is not up-to-date
-	g_is_xray_image_up_to_date = false;
+	extractIsoSurface();
 
 	glutPostRedisplay();
 }
@@ -1011,43 +1132,52 @@ void idle()
 void loadImplicitSurface()
 //------------------------
 {
-	ImplicitSurface sphere;
-	ImplicitSurface blobby_molecule;
-	ImplicitSurface soft_object;
+	g_sphere_1.setSphere();
+	g_sphere_2.setSphere();
 
-	sphere.setSphere();
-	blobby_molecule.setBlobbyMolecule(2, 1);
-	g_meta_ball.setMetaBall(1, 3);
-	soft_object.setSoftObject(1, 3);
+	g_blobby_molecule_1.setBlobbyMolecule(2, 1);
+	g_blobby_molecule_2.setBlobbyMolecule(2, 1);
+
+	g_meta_ball_1.setMetaBall(1, 3);
+	g_meta_ball_2.setMetaBall(1, 3);
+
+	g_soft_object_1.setSoftObject(1, 3);
+	g_soft_object_2.setSoftObject(1, 3);
 
 	for (float i(0); i <= 4.0; i += 0.05)
 	{
 		std::cout << i;
 		std::cout << "\t";
-		std::cout << sphere.evaluate(i);
+		std::cout << g_sphere_1.evaluate(i);
 		std::cout << "\t";
-		std::cout << blobby_molecule.evaluate(i);
+		std::cout << g_blobby_molecule_1.evaluate(i);
 		std::cout << "\t";
-		std::cout << g_meta_ball.evaluate(i);
+		std::cout << g_meta_ball_1.evaluate(i);
 		std::cout << "\t";
-		std::cout << soft_object.evaluate(i);
+		std::cout << g_soft_object_1.evaluate(i);
 		std::cout << std::endl;
 	}
 
-	g_meta_ball.addControlPoint(VEC3(-2.0, 0, 0));
-	g_meta_ball.addControlPoint(VEC3( 2.0, 0, 0));
+	g_sphere_1.addControlPoint(VEC3(-2.0, 0, 0));
+	g_sphere_1.addControlPoint(VEC3( 2.0, 0, 0));
 
-	g_meta_ball.voxelise(Vec3ui(64, 64, 64),
-			VEC3(0, 0, 0),
-			VEC3(0.2, 0.2, 0.2));
-	g_meta_ball.writeVoxelData("meta_ball.mhd");
-	g_meta_ball.extractIsoSurface(g_threshold);
+	g_blobby_molecule_1.addControlPoint(VEC3(-2.0, 0, 0));
+	g_blobby_molecule_1.addControlPoint(VEC3( 2.0, 0, 0));
+
+	g_meta_ball_1.addControlPoint(VEC3(-2.0, 0, 0));
+	g_meta_ball_1.addControlPoint(VEC3( 2.0, 0, 0));
+
+	g_soft_object_1.addControlPoint(VEC3(-2.0, 0, 0));
+	g_soft_object_1.addControlPoint(VEC3( 2.0, 0, 0));
+
+	g_sphere_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+	g_blobby_molecule_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+	g_meta_ball_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+	g_blobby_molecule_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
 
     // Set geometry
-	g_polygon_data.setExternalData(&g_meta_ball.getVertexData(), &g_meta_ball.getIndexData(), true, GL_DYNAMIC_DRAW);
-	g_polygon_data.applyScale(15);
-	//g_polygon_data.inverNormalVectors();
-	//g_polygon_data.mergeVertices();
+	extractIsoSurface();
+
 	g_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date
