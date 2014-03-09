@@ -76,9 +76,19 @@ ImplicitSurface::ImplicitSurface():
 			m_a(1),
 			m_b(1),
 			m_p_volume(InputVolumeType::New()),
+			m_p_threshold_filter(BinaryThresholdType::New()),
 			m_p_iso_surface_extracter(IsoSurfaceExtracterType::New())
 //----------------------------------------------
 {
+	// Initialise the threshold filter
+	m_p_threshold_filter->SetInput(m_p_volume);
+	m_p_threshold_filter->SetOutsideValue(0);
+	m_p_threshold_filter->SetInsideValue(1);
+
+	// Initialise the isosurface extracter
+	const OutputVoxelDataType object_value(static_cast<OutputVoxelDataType>(1));
+	m_p_iso_surface_extracter->SetObjectValue(object_value);
+	m_p_iso_surface_extracter->SetInput(m_p_threshold_filter->GetOutput());
 }
 
 
@@ -105,15 +115,38 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
 	VEC3 offset(aCenter - half_volume_size + half_voxel_size);
 
-	InputVolumeType::IndexType start_index;
-	start_index[0] = 0;
-	start_index[1] = 0;
-	start_index[2] = 0;
+	// Get the current size of the volume
+	unsigned int previous_width(0);
+	unsigned int previous_height(0);
+	unsigned int previous_depth(0);
 
-	InputVolumeType::SizeType volume_size;
-	volume_size[0] = aNumberOfVoxels.getX();
-	volume_size[1] = aNumberOfVoxels.getY();
-	volume_size[2] = aNumberOfVoxels.getZ();
+	if (m_p_volume.IsNotNull())
+	{
+		previous_width  = m_p_volume->GetBufferedRegion().GetSize()[0];
+		previous_height = m_p_volume->GetBufferedRegion().GetSize()[1];
+		previous_depth  = m_p_volume->GetBufferedRegion().GetSize()[2];
+	}
+
+	// The size has changed
+	if (previous_width != aNumberOfVoxels.getX() ||
+			previous_height != aNumberOfVoxels.getY() ||
+			previous_depth != aNumberOfVoxels.getZ())
+	{
+		// Change the size of volume
+		InputVolumeType::IndexType start_index;
+		start_index[0] = 0;
+		start_index[1] = 0;
+		start_index[2] = 0;
+
+		InputVolumeType::SizeType volume_size;
+		volume_size[0] = aNumberOfVoxels.getX();
+		volume_size[1] = aNumberOfVoxels.getY();
+		volume_size[2] = aNumberOfVoxels.getZ();
+
+		itk::ImageRegion<3> region(start_index, volume_size);
+		m_p_volume->SetRegions(region);
+		m_p_volume->Allocate();
+	}
 
 	double spacing[3];
 	spacing[0] = aVoxelSize.getX();
@@ -127,27 +160,17 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 	origin[2] = offset.getZ();
 	m_p_volume->SetOrigin(origin);
 
-	itk::ImageRegion<3> region(start_index, volume_size);
-	m_p_volume->SetRegions(region);
-	m_p_volume->Allocate();
-
-	// Get the number of voxels
-	/*int number_of_voxels(aNumberOfVoxels.getX() * aNumberOfVoxels.getY() * aNumberOfVoxels.getZ());
-
-	// Resize the vector if needed
-	if (m_p_voxel_data.capacity() < number_of_voxels)
-	{
-		m_p_voxel_data.resize(number_of_voxels);
-	}
-*/
-	// Clear the voxel data
-	m_p_volume->FillBuffer(0);
-
-
-
 	VEC3 voxel_center;
 
 	InputVolumeType::IndexType voxel_index;
+
+	RATIONAL_NUMBER r(0);
+
+	VEC3 point_1;
+	VEC3 point_2;
+
+	VEC3 v1;
+	VEC3 v2;
 
 	itk::ImageRegionIterator<InputVolumeType> voxel_ite(m_p_volume, m_p_volume->GetLargestPossibleRegion());
 	voxel_ite.GoToBegin();
@@ -170,7 +193,8 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 						point_ite != m_control_point_set.end();
 						++point_ite)
 				{
-					voxel_value += evaluate((voxel_center - *point_ite).length());
+					r = (voxel_center - *point_ite).length();
+					voxel_value += evaluate(r);
 				}
 
 				// Process all the lines
@@ -178,7 +202,33 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 						line_ite != m_control_line_set.end();
 						++line_ite)
 				{
+					point_1 = line_ite->first;
+					point_2 = line_ite->second;
 
+					const RATIONAL_NUMBER length_squared(pow((point_1 - point_2).length(), 2.0));
+					if (fabs(length_squared) < EPSILON)
+					{
+						r = (voxel_center - point_2).length();
+					}
+					else
+					{
+						const RATIONAL_NUMBER normalised_dot_product(((voxel_center - point_1).dotProduct(point_2 - point_1)) / length_squared);
+						if (normalised_dot_product < 0.0)
+						{
+							r = (voxel_center - point_1).length();
+						}
+						else if (normalised_dot_product > 1.0)
+						{
+							r = (voxel_center - point_2).length();
+						}
+						else
+						{
+							const VEC3 projection(point_1 + normalised_dot_product * (point_2 - point_1));
+							r = (voxel_center - projection).length();
+						}
+					}
+
+					voxel_value += evaluate(r);
 				}
 
 				itk::Point<double, 3> voxel_position;
@@ -215,19 +265,10 @@ void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
 	m_p_index_data.clear();
 
 	// Filter the data
-	typedef itk::BinaryThresholdImageFilter<InputVolumeType, OutputVolumeType> BinaryThresholdType;
-	BinaryThresholdType::Pointer p_threshold_filter(BinaryThresholdType::New());
-	p_threshold_filter->SetInput(m_p_volume);
-	p_threshold_filter->SetOutsideValue(0);
-	p_threshold_filter->SetInsideValue(1);
-	p_threshold_filter->SetLowerThreshold(aThreshold);
-	p_threshold_filter->Update();
+	m_p_threshold_filter->SetLowerThreshold(aThreshold);
+	m_p_threshold_filter->Update();
 
 	// Extract the isosurface
-	m_p_iso_surface_extracter->SetInput(p_threshold_filter->GetOutput());
-	const OutputVoxelDataType object_value(static_cast<OutputVoxelDataType>(1));
-	m_p_iso_surface_extracter->SetObjectValue(object_value);
-	m_p_iso_surface_extracter->SetInput(p_threshold_filter->GetOutput());
 	m_p_iso_surface_extracter->Update();
 
 	// Get the polygon mesh
@@ -305,54 +346,8 @@ void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
 			}
 		}
 	}
-/*
-	typedef MeshType::PointsContainer::Iterator PointIterator;
-	typedef MeshType::CellType CellType;
-	typedef MeshType::PointType PointType;
-	typedef MeshType::CellType::PointIdIterator PointIdIterator;
 
-
-	m_p_vertex_data.clear();
-	m_p_index_data.clear();
-
-	m_p_iso_surface_extracter->SetObjectValue(aThreshold);
-	m_p_iso_surface_extracter->Update();
-
-	MeshType::Pointer p_mesh(m_p_iso_surface_extracter->GetOutput());
-
-	std::cout << "Points:\t" << p_mesh->GetNumberOfPoints() << std::endl;
-	std::cout << "Cells:\t" << p_mesh->GetNumberOfCells() << std::endl;
-
-	CellType::CellAutoPointer triangle;
-	for (unsigned int i(0); i < p_mesh->GetNumberOfCells(); ++i)
-	{
-		p_mesh->GetCell(i, triangle);
-
-		for (PointIdIterator point_ite(triangle->PointIdsBegin());
-				point_ite != triangle->PointIdsEnd();
-				++point_ite)
-		{
-			PointType point(p_mesh->GetPoint(*point_ite));
-			m_p_vertex_data.push_back(point[0]);
-			m_p_vertex_data.push_back(point[1]);
-			m_p_vertex_data.push_back(point[2]);
-		}
-	}
-*/
-/*
-	for (PointIterator point_iterator(p_mesh->GetPoints()->Begin());
-			point_iterator != p_mesh->GetPoints()->End();
-			++point_iterator)
-	{
-		MeshType::PointType point(point_iterator.Value());
-
-		int index(point_iterator->Index());
-		m_p_vertex_data[index * 3 + 0] = point[0];
-		m_p_vertex_data[index * 3 + 1] = point[1];
-		m_p_vertex_data[index * 3 + 2] = point[2];
-	}
-*/
-	typedef itk::MeshFileWriter< MeshType > WriterType;
+	/*typedef itk::MeshFileWriter< MeshType > WriterType;
 	WriterType::Pointer writer = WriterType::New();
 	writer->SetFileTypeAsBINARY ();
 	writer->SetFileName("mesh.obj");
@@ -365,6 +360,6 @@ void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
 	{
 		std::cerr << "Error: " << error << std::endl;
 		exit(EXIT_FAILURE);
-	}
+	}*/
 }
 

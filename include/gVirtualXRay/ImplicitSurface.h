@@ -195,9 +195,12 @@ protected:
 	typedef itk::Image<InputVoxelDataType, 3> InputVolumeType;
 	typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
 	typedef itk::QuadEdgeMesh<GLfloat, 3> MeshType;
+
+	typedef itk::BinaryThresholdImageFilter<InputVolumeType, OutputVolumeType> BinaryThresholdType;
 	typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
 
 	InputVolumeType::Pointer m_p_volume;
+	BinaryThresholdType::Pointer m_p_threshold_filter;
 	IsoSurfaceExtracterType::Pointer m_p_iso_surface_extracter;
 	std::vector<GLfloat> m_p_vertex_data;
 	std::vector<GLint> m_p_index_data;
