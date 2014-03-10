@@ -1051,17 +1051,50 @@ void idle()
 void loadSTLFile()
 //----------------
 {
-	const char* stl_filename_0(PREFIX"/examples/data/cylinder_bin.stl");
-	const char* stl_filename_1(PREFIX"/examples/data/cube_bin.stl");
-	//const char* g_STL_filename(PREFIX"/examples/data/dragon_vrip_res2.ply_binary.stl");
+	std::string stl_filename_0("cylinder_bin.stl");
+	std::string stl_filename_1("cube_bin.stl");
+
+	// Open the file
+	FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
+	FILE* p_file_descriptor_1(fopen(stl_filename_1.data(), "rb"));
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor_0)
+	{
+		// Use the prefix
+#if defined(_WIN32) || defined(_WIN64)
+		stl_filename_0 = "../../examples/data/" + stl_filename_0;
+#else
+		stl_filename_0 = "../examples/data/" + stl_filename_0;
+#endif
+	}
+	else
+	{
+		fclose(p_file_descriptor_0);
+	}
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor_1)
+	{
+		// Use the prefix
+#if defined(_WIN32) || defined(_WIN64)
+		stl_filename_1 = "../../examples/data/" + stl_filename_1;
+#else
+		stl_filename_1 = "../examples/data/" + stl_filename_1;
+#endif
+	}
+	else
+	{
+		fclose(p_file_descriptor_1);
+	}
 
 	// Set geometry
-	g_inside_polygon_data.setFilename(stl_filename_0);
+	g_inside_polygon_data.setFilename(stl_filename_0.data());
 	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
-	g_outside_polygon_data.setFilename(stl_filename_1);
+	g_outside_polygon_data.setFilename(stl_filename_1.data());
 	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_outside_polygon_data.mergeVertices();
 	g_outside_polygon_data.setHounsfieldValue(500.0);
@@ -1163,7 +1196,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
 #if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #else
 			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif

@@ -342,7 +342,16 @@ int main(int argc, char** argv)
         	}
         }
 #endif
+
+#if defined(_WIN32) || defined(_WIN64)
         prefix += PREFIX;
+        prefix += "/";
+#endif
+
+        prefix += PREFIX;
+
+		prefix += "/examples/data/";
+
 		loadSTLFile(prefix);
 		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
@@ -1081,10 +1090,23 @@ void idle()
 void loadSTLFile(const std::string& aPrefix)
 //------------------------------------------
 {
-    std::string stl_filename(aPrefix);
-    stl_filename += "/examples/data/welsh-dragon-small.stl";
+	std::string stl_filename("welsh-dragon-small.stl");
 
-	// Set geometry
+	// Open the file
+	FILE* p_file_descriptor(fopen(stl_filename.data(), "rb"));
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor)
+	{
+		// Use the prefix
+		stl_filename = aPrefix + stl_filename;
+	}
+	else
+	{
+		fclose(p_file_descriptor);
+	}
+
+   	// Set geometry
 	g_polygon_data.setFilename(stl_filename.data());
 	g_polygon_data.loadSTLFile(true, true, true, true, mm, GL_STATIC_DRAW);
 	g_polygon_data.mergeVertices();
@@ -1206,7 +1228,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
 #if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #else
 			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif
