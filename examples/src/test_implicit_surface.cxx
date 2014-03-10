@@ -204,6 +204,9 @@ float g_threshold(0.5);
 
 int g_selected_iso_surface(0);
 
+RATIONAL_NUMBER g_scaling_factor(0.5);
+Vec3ui g_number_of_voxel(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
+
 ImplicitSurface g_sphere_1;
 ImplicitSurface g_blobby_molecule_1;
 ImplicitSurface g_meta_ball_1;
@@ -227,6 +230,7 @@ void keyboard(unsigned char key, int x, int y);
 void specialKeyboard(int key, int x, int y);
 void idle();
 void quit();
+void extractIsoSurface();
 
 void computeRotation(MATRIX4& aRotationMatrix);
 void loadDetector();
@@ -640,6 +644,24 @@ void keyboard(unsigned char key, int x, int y)
 		g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 		break;
 
+	case '+':
+		g_scaling_factor += 0.05;
+		g_number_of_voxel = Vec3ui(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
+		std::cout << "Volume size: " << g_number_of_voxel << std::endl;
+		extractIsoSurface();
+		break;
+
+	case '-':
+		g_scaling_factor -= 0.05;
+		if (g_scaling_factor < 0.2)
+		{
+			g_scaling_factor = 0.2;
+		}
+		g_number_of_voxel = Vec3ui(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
+		std::cout << "Volume size: " << g_number_of_voxel << std::endl;
+		extractIsoSurface();
+		break;
+
 	case '0':
 		g_selected_iso_surface = 0;
 		break;
@@ -908,16 +930,15 @@ void extractIsoSurface()
 	//g_meta_ball.writeVoxelData("meta_ball.mhd");
 	//g_meta_ball.extractIsoSurface(g_threshold);
 
-	RATIONAL_NUMBER scaling_factor(0.75);
-	Vec3ui number_of_voxel(scaling_factor * 128, scaling_factor * 128, scaling_factor * 128);
-	VEC3 voxel_size(0.1 / scaling_factor, 0.1 / scaling_factor, 0.1 / scaling_factor);
+	g_number_of_voxel = Vec3ui(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
+	VEC3 voxel_size(0.1 / g_scaling_factor, 0.1 / g_scaling_factor, 0.1 / g_scaling_factor);
 	VEC3 centre(0.0, 0.0, 0.0);
 
 	switch (g_selected_iso_surface)
 	{
 	// Sphere
 	case 0:
-		g_sphere_1.voxelise(number_of_voxel,
+		g_sphere_1.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_sphere_1.extractIsoSurface(g_threshold);
@@ -925,7 +946,7 @@ void extractIsoSurface()
 		break;
 
 	case 1:
-		g_sphere_2.voxelise(number_of_voxel,
+		g_sphere_2.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_sphere_2.extractIsoSurface(g_threshold);
@@ -934,7 +955,7 @@ void extractIsoSurface()
 
 	// Blobby molecule
 	case 2:
-		g_blobby_molecule_1.voxelise(number_of_voxel,
+		g_blobby_molecule_1.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_blobby_molecule_1.extractIsoSurface(g_threshold);
@@ -942,7 +963,7 @@ void extractIsoSurface()
 		break;
 
 	case 3:
-		g_blobby_molecule_2.voxelise(number_of_voxel,
+		g_blobby_molecule_2.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_blobby_molecule_2.extractIsoSurface(g_threshold);
@@ -951,7 +972,7 @@ void extractIsoSurface()
 
 	// Meta ball
 	case 4:
-		g_meta_ball_1.voxelise(number_of_voxel,
+		g_meta_ball_1.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_meta_ball_1.extractIsoSurface(g_threshold);
@@ -959,7 +980,7 @@ void extractIsoSurface()
 		break;
 
 	case 5:
-		g_meta_ball_2.voxelise(number_of_voxel,
+		g_meta_ball_2.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_meta_ball_2.extractIsoSurface(g_threshold);
@@ -968,7 +989,7 @@ void extractIsoSurface()
 
 	// Soft object
 	case 6:
-		g_soft_object_1.voxelise(number_of_voxel,
+		g_soft_object_1.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_soft_object_1.extractIsoSurface(g_threshold);
@@ -976,7 +997,7 @@ void extractIsoSurface()
 		break;
 
 	case 7:
-		g_soft_object_2.voxelise(number_of_voxel,
+		g_soft_object_2.voxelise(g_number_of_voxel,
 				centre,
 				voxel_size);
 		g_soft_object_2.extractIsoSurface(g_threshold);
@@ -1004,7 +1025,7 @@ void idle()
 		glutSetWindow(g_main_window_id);
 	}
 
-	if ((g_image_computed % 50) == 0)
+	if ((g_image_computed % 25) == 0)
 	{
 		std::cout << "FPS:\t" << g_fps << std::endl;
 		g_image_computed = 0;
@@ -1190,7 +1211,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
 #if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #else
 			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif
