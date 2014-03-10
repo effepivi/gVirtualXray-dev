@@ -630,8 +630,8 @@ void TriangleMesh::mergeVertices()
 			m_p_vertex_normal_set.clear();
 			m_p_vertex_normal_set.resize(hash_table.size() * 3);
 
-			int id(0);
-			for (std::map<VEC3, TempRecord>::iterator ite(hash_table.begin());
+			unsigned int id(0);
+			for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
 					ite != hash_table.end();
 					++ite, ++id)
 			{
@@ -645,7 +645,7 @@ void TriangleMesh::mergeVertices()
 			// Set the index in the hash table and create the list of vertices
 			std::vector<GLfloat> new_vertex_set(hash_table.size() * 3);
 			id = 0;
-			for (std::map<VEC3, TempRecord>::iterator ite(hash_table.begin());
+			for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
 					ite != hash_table.end();
 					++ite, ++id)
 			{
