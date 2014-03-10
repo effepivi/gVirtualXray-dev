@@ -190,6 +190,9 @@ TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optiona
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
 
+ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
+TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
