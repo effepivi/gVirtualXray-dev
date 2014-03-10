@@ -139,6 +139,20 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 			previous_height != aNumberOfVoxels.getY() ||
 			previous_depth != aNumberOfVoxels.getZ())
 	{
+		m_p_volume = InputVolumeType::New();
+		m_p_threshold_filter = BinaryThresholdType::New();
+		m_p_iso_surface_extracter = IsoSurfaceExtracterType::New();
+
+		// Initialise the threshold filter
+		m_p_threshold_filter->SetInput(m_p_volume);
+		m_p_threshold_filter->SetOutsideValue(0);
+		m_p_threshold_filter->SetInsideValue(1);
+
+		// Initialise the isosurface extracter
+		const OutputVoxelDataType object_value(static_cast<OutputVoxelDataType>(1));
+		m_p_iso_surface_extracter->SetObjectValue(object_value);
+		m_p_iso_surface_extracter->SetInput(m_p_threshold_filter->GetOutput());
+
 		// Change the size of volume
 		InputVolumeType::IndexType start_index;
 		start_index[0] = 0;
