@@ -58,16 +58,19 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluate(RATIONAL_NUMBER r) const
 	switch (m_density_function)
 	{
 	case SPHERE:
-		return evaluateSphere(r);
+		return (evaluateSphere(r));
 		
 	case BLOBBY_MOLECULE:
-		return evaluateBlobbyMolecule(r);
+		return (evaluateBlobbyMolecule(r));
 		
 	case META_BALL:
-		return evaluateMetaBall(r);
+		return (evaluateMetaBall(r));
 		
 	case SOFT_OBJECT:
-		return evaluateSoftObject(r);
+		return (evaluateSoftObject(r));
+
+	default:
+		return (0);
 	}
 }
 

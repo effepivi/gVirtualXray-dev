@@ -34,10 +34,12 @@
 //******************************************************************************
 #include <sstream>
 
+#ifdef HAS_ITK
 #include <itkImageRegionIterator.h>
 #include <itkImageRegionConstIterator.h>
 #include <itkImageFileWriter.h>
 #include <itkMeshFileWriter.h>
+#endif
 
 #ifndef IMPLICIT_SURFACE_H
 #include "gVirtualXRay/ImplicitSurface.h"
@@ -69,17 +71,20 @@ using namespace Graphics;
 //******************************************************************************
 
 
-//----------------------------------------------
+//-----------------------------------------------------------------
 ImplicitSurface::ImplicitSurface():
-//----------------------------------------------
-			m_density_function(BLOBBY_MOLECULE),
-			m_a(1),
-			m_b(1),
+//-----------------------------------------------------------------
+#ifdef HAS_ITK
 			m_p_volume(InputVolumeType::New()),
 			m_p_threshold_filter(BinaryThresholdType::New()),
-			m_p_iso_surface_extracter(IsoSurfaceExtracterType::New())
-//----------------------------------------------
+			m_p_iso_surface_extracter(IsoSurfaceExtracterType::New()),
+#endif
+			m_density_function(BLOBBY_MOLECULE),
+			m_a(1),
+			m_b(1)
+//-----------------------------------------------------------------
 {
+#ifdef HAS_ITK
 	// Initialise the threshold filter
 	m_p_threshold_filter->SetInput(m_p_volume);
 	m_p_threshold_filter->SetOutsideValue(0);
@@ -89,6 +94,7 @@ ImplicitSurface::ImplicitSurface():
 	const OutputVoxelDataType object_value(static_cast<OutputVoxelDataType>(1));
 	m_p_iso_surface_extracter->SetObjectValue(object_value);
 	m_p_iso_surface_extracter->SetInput(m_p_threshold_filter->GetOutput());
+#endif
 }
 
 
@@ -105,6 +111,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 							   const VEC3& aVoxelSize)
 //-----------------------------------------------------------
 {
+#ifdef HAS_ITK
 	VEC3 half_voxel_size(aVoxelSize.getX() / 2.0,
 			aVoxelSize.getY() / 2.0,
 			aVoxelSize.getZ() / 2.0);
@@ -240,6 +247,9 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 			}
 		}
 	}
+#else // HAS_ITK
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, you have to enable ITK using CMake.");
+#endif // HAS_ITK
 }
 
 
@@ -247,12 +257,16 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 void ImplicitSurface::writeVoxelData(const char* aFileName) const
 //---------------------------------------------------------------
 {
+#ifdef HAS_ITK
 	typedef itk::ImageFileWriter<InputVolumeType> FileWriterType;
 
 	FileWriterType::Pointer p_file_writer(FileWriterType::New());
 	p_file_writer->SetInput(m_p_volume);
 	p_file_writer->SetFileName(aFileName);
 	p_file_writer->Update();
+#else // HAS_ITK
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, you have to enable ITK using CMake.");
+#endif // HAS_ITK
 }
 
 
@@ -260,6 +274,7 @@ void ImplicitSurface::writeVoxelData(const char* aFileName) const
 void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
 //-----------------------------------------------------------------
 {
+#ifdef HAS_ITK
 	// Clear the data
 	m_p_vertex_data.clear();
 	m_p_index_data.clear();
@@ -361,5 +376,8 @@ void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
 		std::cerr << "Error: " << error << std::endl;
 		exit(EXIT_FAILURE);
 	}*/
+#else // HAS_ITK
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, you have to enable ITK using CMake.");
+#endif // HAS_ITK
 }
 

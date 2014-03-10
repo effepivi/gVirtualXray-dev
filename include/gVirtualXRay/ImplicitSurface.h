@@ -155,7 +155,6 @@ public:
 	const std::pair<VEC3, VEC3>& getControlLine(unsigned int anIndex) const;
 	std::pair<VEC3, VEC3>& getControlLine(unsigned int anIndex);
 
-#ifdef HAS_ITK
 	void voxelise(const Vec3ui& aNumberOfVoxels,
 			const VEC3& aCenter,
 			const VEC3& aVoxelSize);
@@ -172,7 +171,6 @@ public:
 
 	const std::vector<GLfloat>& getVertexData() const;
 	const std::vector<GLint>& getIndexData() const;
-#endif // HAS_ITK
 
 
 //******************************************************************************
@@ -181,13 +179,6 @@ protected:
 	RATIONAL_NUMBER evaluateBlobbyMolecule(RATIONAL_NUMBER r) const;
 	RATIONAL_NUMBER evaluateMetaBall(RATIONAL_NUMBER r) const;
 	RATIONAL_NUMBER evaluateSoftObject(RATIONAL_NUMBER r) const;
-
-	DensityFunctionType m_density_function;
-	RATIONAL_NUMBER m_a;
-	RATIONAL_NUMBER m_b;
-
-	std::vector<VEC3> m_control_point_set;
-	std::vector<std::pair<VEC3, VEC3> > m_control_line_set;
 
 #ifdef HAS_ITK
 	typedef RATIONAL_NUMBER InputVoxelDataType;
@@ -202,9 +193,17 @@ protected:
 	InputVolumeType::Pointer m_p_volume;
 	BinaryThresholdType::Pointer m_p_threshold_filter;
 	IsoSurfaceExtracterType::Pointer m_p_iso_surface_extracter;
+#endif // HAS_ITK
+
+	DensityFunctionType m_density_function;
+	RATIONAL_NUMBER m_a;
+	RATIONAL_NUMBER m_b;
+
+	std::vector<VEC3> m_control_point_set;
+	std::vector<std::pair<VEC3, VEC3> > m_control_line_set;
+
 	std::vector<GLfloat> m_p_vertex_data;
 	std::vector<GLint> m_p_index_data;
-#endif // HAS_ITK
 };
 
 
