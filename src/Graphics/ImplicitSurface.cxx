@@ -181,15 +181,15 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
 	itk::ImageRegionIterator<InputVolumeType> voxel_ite(m_p_volume, m_p_volume->GetLargestPossibleRegion());
 	voxel_ite.GoToBegin();
-	for (int z(0); z < aNumberOfVoxels.getZ(); ++z)
+	for (unsigned int z(0); z < aNumberOfVoxels.getZ(); ++z)
 	{
 		voxel_center.setZ(offset.getZ() + z * aVoxelSize.getZ());
 
-		for (int y(0); y < aNumberOfVoxels.getY(); ++y)
+		for (unsigned int y(0); y < aNumberOfVoxels.getY(); ++y)
 		{
 			voxel_center.setY(offset.getY() + y * aVoxelSize.getY());
 
-			for (int x(0); x < aNumberOfVoxels.getX(); ++x, ++voxel_ite)
+			for (unsigned int x(0); x < aNumberOfVoxels.getX(); ++x, ++voxel_ite)
 			{
 				RATIONAL_NUMBER voxel_value(0);
 
