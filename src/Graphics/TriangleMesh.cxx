@@ -710,9 +710,9 @@ void TriangleMesh::mergeVertices()
 }
 
 
-//----------------------------------------------------
-inline void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
-//----------------------------------------------------
+//---------------------------------------------
+void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
+//---------------------------------------------
 {
 	// Set the type of VBO
 	m_vbo.setBufferUsageHint(aTypeOfVBO);
