@@ -292,9 +292,9 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluateSoftObject(RATIONAL_NUMBER r) co
 	{
 		return (m_a * 
 				(1.0 - 
-						(( 4.0 * pow(r, 6.0)) / (9.0 * pow(m_b, 6.0))) + 
-						((17.0 * pow(r, 4.0)) / (9.0 * pow(m_b, 4.0))) - 
-						((22.0 * pow(r, 2.0)) / (9.0 * pow(m_b, 2.0)))));
+						(( 4.0 * std::pow(r, 6)) / (9.0 * std::pow(m_b, 6))) + 
+						((17.0 * std::pow(r, 4)) / (9.0 * std::pow(m_b, 4))) - 
+						((22.0 * std::pow(r, 2)) / (9.0 * std::pow(m_b, 2)))));
 	}
 	else
 	{
