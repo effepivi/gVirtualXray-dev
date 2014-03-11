@@ -102,7 +102,7 @@
 #endif
 
 #ifndef SHADER_H
-#include "gVirtualXRay/Graphics/Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef UTILITIES_H
@@ -251,32 +251,42 @@ int main(int argc, char** argv)
     {
 		std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
 
+std::cout << "01" << std::endl;
 		// Register the exit callback
 		atexit(quit);
 
 		// Initialize GLUT
 		glutInit(&argc, argv);
+std::cout << "02" << std::endl;
 
-		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH /*| GLUT_MULTISAMPLE*/);
+std::cout << "03" << std::endl;
 		
 		// Create the window title
 		std::stringstream window_title;
 		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
+std::cout << "04" << std::endl;
 
     	// Create a GLUT window
 		glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
 		g_main_window_id = glutCreateWindow(window_title.str().data());
+std::cout << "05" << std::endl;
 
 		// Initialize GLEW
 		GLenum glew_error_0(glewInit());
 		if (glew_error_0 != GLEW_OK)
 		{
+std::cout << "06" << std::endl;
 			glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+std::cout << "07" << std::endl;
 
 			// Create a GLUT window
 			if (g_main_window_id) glutDestroyWindow(g_main_window_id);
+std::cout << "08" << std::endl;
 			glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
+std::cout << "09" << std::endl;
 			g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
+std::cout << "10" << std::endl;
 
 			GLenum glew_error_1(glewInit());
 			if (glew_error_1 != GLEW_OK)
@@ -309,20 +319,6 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
         std::string prefix;
-#ifdef HAS_BUNDLE
-        namespace fs = boost::filesystem;
-        fs::path p(argv[0]);
-        fs::path full_p = fs::complete(p);
-        if (full_p.has_parent_path())
-        {
-        	prefix = full_p.parent_path().string();
-
-        	if (prefix.length())
-        	{
-        		prefix += "/";
-        	}
-        }
-#endif
 		loadImplicitSurface();
 		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
