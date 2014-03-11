@@ -196,8 +196,8 @@ TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${opti
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-#ADD_EXECUTABLE (marchingsource ../src/marchingsource.cpp)
-#TARGET_LINK_LIBRARIES (marchingsource gVirtualXRay ${requiredLibs} ${optionalLibs})
+ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
+TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_BUNDLE)
 
