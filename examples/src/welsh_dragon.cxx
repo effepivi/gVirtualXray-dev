@@ -106,7 +106,7 @@
 #endif
 
 #ifndef SHADER_H
-#include "gVirtualXRay/Graphics/Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef UTILITIES_H
