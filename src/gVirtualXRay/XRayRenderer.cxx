@@ -543,7 +543,7 @@ void XRayRenderer::checkGPUCapabilities()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support rectangular textures (ARB_texture_rectangle).");
 	}
 
-	if (!GLEW_EXT_framebuffer_object)
+	if (!GLEW_ARB_framebuffer_object)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support framebuffer objects (EXT_framebuffer_object).");
 	}
