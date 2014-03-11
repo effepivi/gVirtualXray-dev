@@ -214,8 +214,8 @@ ENDIF(FREEIMAGE_FOUND)
 
 
 # ITK ##########################################################################
-FIND_PACKAGE(ITK)
 IF(USE_ITK)
+	FIND_PACKAGE(ITK)
 	IF(ITK_FOUND)
 		ADD_DEFINITIONS(-DHAS_ITK)
 		INCLUDE(${USE_ITK_FILE})
