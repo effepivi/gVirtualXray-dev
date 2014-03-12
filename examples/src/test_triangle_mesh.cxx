@@ -69,10 +69,6 @@
 #include <GL/glu.h>
 #endif // __APPLE__
 
-#ifdef __APPLE__
-#include <boost/filesystem.hpp>
-#endif
-
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
