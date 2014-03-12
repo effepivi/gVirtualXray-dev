@@ -388,8 +388,14 @@ void initGL()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-    glEnable(GL_MULTISAMPLE);
-    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	if (GLEW_ARB_framebuffer_object || GLEW_EXT_framebuffer_object)
+	{
+		glEnable(GL_MULTISAMPLE);
+		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 
 	// Initialise the shaders
 	char* p_vertex_shader(0);
@@ -415,6 +421,8 @@ void initGL()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
+
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
