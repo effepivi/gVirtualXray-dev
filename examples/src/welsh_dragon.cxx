@@ -445,7 +445,7 @@ void initGL()
 
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	
-	if (GLEW_ARB_framebuffer_object || GLEW_EXT_framebuffer_object)
+	if (GLEW_ARB_multisample || GLEW_EXT_multisample)
 	{
 		glEnable(GL_MULTISAMPLE);
 		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
