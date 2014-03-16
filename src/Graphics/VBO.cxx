@@ -46,12 +46,12 @@
 using namespace Graphics;
 
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 void VBO::setVertexData(GLenum aPrimitiveType,
-						const GLuint aNumberOfVertices, GLuint aNumberOfCompontentsPerVertex, const GLfloat* vertices,
-						const GLuint aNumberOfNormals, GLuint aNumberOfCompontentsPerNormal,  const GLfloat* apNormals,
-						const GLuint aNumberOfTextureCoordinates, GLuint aNumberOfCompontentsPerCoord, const GLfloat* apTextureCoordinates)
-//-----------------------------------------------------------------------------------------------------------------------------------------
+						const GLuint aNumberOfVertices,           GLuint aNumberOfCompontentsPerVertex, GLenum aVertexDataType, const GLvoid* vertices,
+						const GLuint aNumberOfNormals,            GLuint aNumberOfCompontentsPerNormal, GLenum aNormalDataType, const GLvoid* apNormals,
+						const GLuint aNumberOfTextureCoordinates, GLuint aNumberOfCompontentsPerCoord,  GLenum aCoordDataType,  const GLvoid* apTextureCoordinates)
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	// Reset the internal data
 	reset();
@@ -62,9 +62,63 @@ void VBO::setVertexData(GLenum aPrimitiveType,
 	m_number_of_vertices = aNumberOfVertices;
 	m_number_of_texture_coordinates = aNumberOfTextureCoordinates;
 
-	m_normal_size             = m_number_of_normals             * aNumberOfCompontentsPerNormal * sizeof(GLfloat);
-	m_texture_coordinate_size = m_number_of_texture_coordinates * aNumberOfCompontentsPerCoord  * sizeof(GLfloat);
-	m_vertex_size             = m_number_of_vertices            * aNumberOfCompontentsPerVertex * sizeof(GLfloat);
+	m_normal_size             = m_number_of_normals             * aNumberOfCompontentsPerNormal;
+	m_texture_coordinate_size = m_number_of_texture_coordinates * aNumberOfCompontentsPerCoord;
+	m_vertex_size             = m_number_of_vertices            * aNumberOfCompontentsPerVertex;
+
+	m_normal_data_type = aNormalDataType;
+	m_texture_coordinate_data_type = aCoordDataType;
+	m_vertex_data_type = aVertexDataType;
+
+	switch (m_normal_data_type)
+	{
+	case GL_FLOAT:
+		m_normal_size *= sizeof(GLfloat);
+		break;
+
+	case GL_DOUBLE:
+		m_normal_size *= sizeof(GLdouble);
+		break;
+
+	case GL_NONE:
+		m_normal_size = 0;
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+
+	switch (m_texture_coordinate_data_type)
+	{
+	case GL_FLOAT:
+		m_texture_coordinate_size *= sizeof(GLfloat);
+		break;
+
+	case GL_DOUBLE:
+		m_texture_coordinate_size *= sizeof(GLdouble);
+		break;
+
+	case GL_NONE:
+		m_texture_coordinate_size = 0;
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+
+	switch (m_vertex_data_type)
+	{
+	case GL_FLOAT:
+		m_vertex_size *= sizeof(GLfloat);
+		break;
+
+	case GL_DOUBLE:
+		m_vertex_size *= sizeof(GLdouble);
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
 
 	// Load the data in the VBO
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -153,9 +207,11 @@ void VBO::setVertexData(GLenum aPrimitiveType,
 }
 
 
-//-----------------------------------------------------------------------------
-void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
-//-----------------------------------------------------------------------------
+//---------------------------------------------------
+void VBO::setIndexData(const GLuint aNumberOfIndexes,
+					   GLenum anIndexDataType,
+					   const GLvoid* apIndexSet)
+//---------------------------------------------------
 {
 	m_number_of_indices = aNumberOfIndexes;
 
@@ -166,56 +222,47 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet)
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
+	m_index_size = aNumberOfIndexes;
+	m_index_data_type = anIndexDataType;
+	switch (m_index_data_type)
+	{
+	case GL_INT:
+		m_index_size *= sizeof(GLint);
+		break;
+
+	case GL_UNSIGNED_INT:
+		m_index_size *= sizeof(GLuint);
+		break;
+
+	case GL_SHORT:
+		m_index_size *= sizeof(GLshort);
+		break;
+
+	case GL_UNSIGNED_SHORT:
+		m_index_size *= sizeof(GLushort);
+		break;
+
+	case GL_BYTE:
+		m_index_size *= sizeof(GLbyte);
+		break;
+
+	case GL_UNSIGNED_BYTE:
+		m_index_size *= sizeof(GLubyte);
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+
 	// Load data
-	if (m_number_of_indices && apIndexSet)
+	if (m_number_of_indices && apIndexSet && m_index_size)
 	{
 		// Bind the new VBO
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Load the data in the VBO
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLuint), apIndexSet, m_storage_type);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		// Unbind the VBO
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-	// There is no data to load
-	else
-	{
-		// There is no need for a buffer
-		if (m_id_set[INDEX_SET_ID])
-		{
-			glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
-			m_id_set[INDEX_SET_ID] = 0;
-		}
-	}
-}
-
-
-//----------------------------------------------------------------------------
-void VBO::setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet)
-//----------------------------------------------------------------------------
-{
- 	m_number_of_indices = aNumberOfIndexes;
-
-	// Create the VBO
-	if (!m_id_set[INDEX_SET_ID] && m_number_of_indices && apIndexSet)
-	{
-		glGenBuffers(1, &m_id_set[INDEX_SET_ID]);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// Load data
-	if (m_number_of_indices && apIndexSet)
-	{
-		// Bind the new VBO
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		// Load the data in the VBO
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_number_of_indices * sizeof(GLint), apIndexSet, m_storage_type);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_index_size, apIndexSet, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Unbind the VBO

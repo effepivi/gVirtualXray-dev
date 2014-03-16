@@ -206,7 +206,7 @@ void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
 //-------------------------------------------------------------
 {
 	// By default try the external data
-	if (m_p_external_vertex_set)
+	if (m_external_vertex_set)
 	{
 	}
 	// Use the internal data
@@ -311,9 +311,11 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	fread(&(triangle_number), sizeof(float),1,p_stream);
 
 	// Set the size of arrays to store the vertices and normal vectors
-	m_p_internal_vertex_set.resize(triangle_number * 3 * 3);
-	m_p_face_normal_set.resize(triangle_number * 3 * 3);
-	m_p_vertex_normal_set.resize(triangle_number * 3 * 3);
+	m_number_of_vertices = triangle_number * 3;
+	m_p_internal_vertex_set.resize(m_number_of_vertices * 3);
+	m_p_face_normal_set.resize(m_number_of_vertices * 3);
+	m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
+
 	
 	// Read the data
 	for (unsigned int i(0); i < getTriangleNumber(); i++)
@@ -607,13 +609,14 @@ void TriangleMesh::mergeVertices()
 //--------------------------------
 {
 	// Merge vertices only if external data is not used
-	if (!m_p_external_vertex_set)
+	if (!m_external_vertex_set)
 	{
 		// It only works if no index has been set
 		if (!m_p_internal_index_set.size())
 		{
 			// Allocate the memory of the index
-			m_p_internal_index_set.resize(getTriangleNumber() * 3);
+			m_number_of_indices = getTriangleNumber() * 3;
+			m_p_internal_index_set.resize(m_number_of_indices);
 
 			std::map<VEC3, TempRecord, VectorComparer> hash_table;
 
@@ -691,6 +694,7 @@ void TriangleMesh::mergeVertices()
 
 			// Replace the list of vertices
 			m_p_internal_vertex_set = new_vertex_set;
+			m_number_of_vertices = m_p_internal_vertex_set.size() / 3;
 
 			// Reset the normal per face set
 			m_p_face_normal_set.clear();
@@ -718,32 +722,32 @@ void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
 	m_vbo.setBufferUsageHint(aTypeOfVBO);
 
 	// By default try the external data
-	if (m_p_external_vertex_set)
+	if (m_external_vertex_set)
 	{
 		if (getVertexNormalNumber())
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &(*m_p_external_vertex_set)[0],
-					getVertexNormalNumber(), 3, &m_p_vertex_normal_set[0],
-					0, 0, 0);
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, m_external_vertex_data_type, m_external_vertex_set,
+					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
+					0, 0, GL_NONE, 0);
 		}
 		else if (getFaceNormalNumber())
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &(*m_p_external_vertex_set)[0],
-					getFaceNormalNumber(), 3, &m_p_face_normal_set[0],
-					0, 0, 0);
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, m_external_vertex_data_type, m_external_vertex_set,
+					getFaceNormalNumber(), 3, GL_FLOAT, &m_p_face_normal_set[0],
+					0, 0, GL_NONE, 0);
 		}
 		else
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &(*m_p_external_vertex_set)[0],
-					0, 0, 0,
-					0, 0, 0);
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, m_external_vertex_data_type, m_external_vertex_set,
+					0, 0, GL_NONE, 0,
+					0, 0, GL_NONE, 0);
 		}
 
-		if (m_p_external_index_set)
+		if (m_external_index_set)
 		{
-			if (m_p_external_index_set->size())
+			if (getIndexNumber())
 			{
-				m_vbo.setIndexData(m_p_external_index_set->size(), &(*m_p_external_index_set)[0]);
+				m_vbo.setIndexData(getIndexNumber(), m_external_index_data_type, m_external_index_set);
 			}
 		}
 	}
@@ -752,26 +756,26 @@ void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
 	{
 		if (getVertexNormalNumber())
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_internal_vertex_set[0],
-					getVertexNormalNumber(), 3, &m_p_vertex_normal_set[0],
-					0, 0, 0);
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, GL_FLOAT, &m_p_internal_vertex_set[0],
+					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
+					0, 0, GL_NONE, 0);
 		}
 		else if (getFaceNormalNumber())
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_internal_vertex_set[0],
-					getFaceNormalNumber(), 3, &m_p_face_normal_set[0],
-					0, 0, 0);
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, GL_FLOAT, &m_p_internal_vertex_set[0],
+					getFaceNormalNumber(), 3, GL_FLOAT, &m_p_face_normal_set[0],
+					0, 0, GL_NONE, 0);
 		}
 		else
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, &m_p_internal_vertex_set[0],
-					0, 0, 0,
-					0, 0, 0);
+			m_vbo.setVertexData(GL_TRIANGLES, getVertexNumber(), 3, GL_FLOAT, &m_p_internal_vertex_set[0],
+					0, 0, GL_NONE, 0,
+					0, 0, GL_NONE, 0);
 		}
 
-		if (m_p_internal_index_set.size())
+		if (getIndexNumber())
 		{
-			m_vbo.setIndexData(m_p_internal_index_set.size(), &m_p_internal_index_set[0]);
+			m_vbo.setIndexData(getIndexNumber(), GL_UNSIGNED_INT, &m_p_internal_index_set[0]);
 		}
 	}
 }

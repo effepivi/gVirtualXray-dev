@@ -55,7 +55,7 @@
 //------------------------------------------------------------------------------
 void buildCube(Utilities::RATIONAL_NUMBER aLenght,
 		Utilities::VEC3 aCentre,
-		std::vector<Utilities::RATIONAL_NUMBER>& apVertexSet);
+		std::vector<double>& apVertexSet);
 
 
 #endif // BUILD_CUBE_H

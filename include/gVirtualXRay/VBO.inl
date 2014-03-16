@@ -65,7 +65,12 @@ inline VBO::VBO():
 	m_normal_size(0),
 	m_texture_coordinate_size(0),
 	m_vertex_size(0),
-	m_primitive_type(GL_TRIANGLES),
+	m_index_size(0),
+	m_normal_data_type(GL_NONE),
+	m_texture_coordinate_data_type(GL_NONE),
+	m_vertex_data_type(GL_NONE),
+	m_index_data_type(GL_NONE),	
+	m_primitive_type(GL_NONE),
 	m_storage_type(GL_DYNAMIC_DRAW)
 //-------------------------------------
 {
@@ -84,7 +89,9 @@ inline VBO::~VBO()
 }
 
 
+//------------------------
 inline void VBO::destroy()
+//------------------------
 {
 	if (m_id_set[VERTEX_SET_ID])     glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
 	if (m_id_set[TEXT_COORD_SET_ID]) glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
@@ -112,8 +119,16 @@ inline void VBO::reset()
 	m_normal_size             = 0;
 	m_texture_coordinate_size = 0;
 	m_vertex_size             = 0;
-		
-	m_primitive_type = GL_TRIANGLES;
+	m_index_size              = 0;
+	
+	m_normal_data_type             = GL_NONE;
+	m_texture_coordinate_data_type = GL_NONE;
+	m_vertex_data_type             = GL_NONE;
+	m_index_data_type              = GL_NONE;
+
+	m_primitive_type = GL_NONE;
+
+	m_storage_type = GL_DYNAMIC_DRAW;
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -124,68 +139,75 @@ inline void VBO::reset()
 inline void VBO::display() const
 //------------------------------
 {
-	// There is vertices
-	if (m_number_of_vertices)
+	if (m_primitive_type != GL_NONE)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[VERTEX_SET_ID]);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, 0);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
+		// There is vertices
+		if (m_number_of_vertices && m_vertex_data_type != GL_NONE)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[VERTEX_SET_ID]);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glVertexPointer(3, m_vertex_data_type, 0, 0);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+		
+		// There is texture coordinates
+		if (m_number_of_texture_coordinates && m_texture_coordinate_data_type != GL_NONE)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(3, m_texture_coordinate_data_type, 0, 0);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 	
-	// There is texture coordinates
-	if (m_number_of_texture_coordinates)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(3, GL_FLOAT, 0, 0);
+		// There is normal data
+		if (m_number_of_normals && m_normal_data_type != GL_NONE)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[NORMAL_SET_ID]);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glNormalPointer(m_normal_data_type, 0, 0);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}		
+		
+		// Draw the polygon mesh
+		if (!m_number_of_indices)
+		{
+			glDrawArrays(m_primitive_type, 0, m_number_of_vertices);
+		}
+		else
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
+			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, 0); 
+		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// There is normal data
-	if (m_number_of_normals)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[NORMAL_SET_ID]);
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glNormalPointer(GL_FLOAT, 0, 0);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}		
+		
+		// There are vertices
+		if (m_number_of_vertices)
+		{
+			glDisableClientState(GL_VERTEX_ARRAY);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 	
-	// Draw the polygon mesh
-	if (!m_number_of_indices)
-	{
-		glDrawArrays(m_primitive_type, 0, m_number_of_vertices);
+		// There are texture coordinates
+		if (m_number_of_texture_coordinates)
+		{
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+	
+		// There are normal data
+		if(m_number_of_normals)
+		{
+			glDisableClientState(GL_NORMAL_ARRAY);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+	
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	else
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
-		glDrawElements(m_primitive_type, m_number_of_indices, GL_UNSIGNED_INT, 0); 
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid primitive type.");
 	}
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	
-	// There are vertices
-	if (m_number_of_vertices)
-	{
-		glDisableClientState(GL_VERTEX_ARRAY);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// There are texture coordinates
-	if (m_number_of_texture_coordinates)
-	{
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// There are normal data
-	if(m_number_of_normals)
-	{
-		glDisableClientState(GL_NORMAL_ARRAY);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 
@@ -214,23 +236,31 @@ inline GLenum VBO::getBufferUsageHint() const
 
 
 //-----------------------------------------
-inline VBO& VBO::operator=(const VBO& aFbo)
+inline VBO& VBO::operator=(const VBO& aVBO)
 //-----------------------------------------
 {
-	memcpy(m_id_set, aFbo.m_id_set, sizeof(m_id_set));
+	memcpy(m_id_set, aVBO.m_id_set, sizeof(m_id_set));
 
-	m_number_of_normals  = aFbo.m_number_of_normals;
-	m_number_of_texture_coordinates = aFbo.m_number_of_texture_coordinates;
-	m_number_of_vertices = aFbo.m_number_of_vertices;
-	m_number_of_indices = aFbo.m_number_of_indices;
+	m_number_of_normals             = aVBO.m_number_of_normals;
+	m_number_of_texture_coordinates = aVBO.m_number_of_texture_coordinates;
+	m_number_of_vertices            = aVBO.m_number_of_vertices;
+	m_number_of_indices             = aVBO.m_number_of_indices;
 
-	m_normal_size = aFbo.m_normal_size;
-	m_texture_coordinate_size = aFbo.m_texture_coordinate_size;
-	m_vertex_size = aFbo.m_vertex_size;
+	m_normal_size             = aVBO.m_normal_size;
+	m_texture_coordinate_size = aVBO.m_texture_coordinate_size;
+	m_vertex_size             = aVBO.m_vertex_size;
+	m_index_size              = aVBO.m_index_size;
 
-	m_primitive_type = aFbo.m_primitive_type;
+	m_normal_data_type             = aVBO.m_normal_data_type;
+	m_texture_coordinate_data_type = aVBO.m_texture_coordinate_data_type;
+	m_vertex_data_type             = aVBO.m_vertex_data_type;
+	m_index_data_type              = aVBO.m_index_data_type;
+
+	m_primitive_type = aVBO.m_primitive_type;
 	
-	return *this;
+	m_storage_type = aVBO.m_storage_type;
+
+	return (*this);
 }
 
 

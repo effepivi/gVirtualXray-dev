@@ -2429,7 +2429,7 @@ void XRayRenderer::updateVBO()
 	p_texture_coordinates.push_back(0);
 
 	m_detector_temporary_geometry.setVertexData(GL_QUADS,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			0, 0, 0,
-			p_texture_coordinates.size() / 3, 3, &p_texture_coordinates[0]);
+			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+			0, 0, GL_NONE, 0,
+			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 }

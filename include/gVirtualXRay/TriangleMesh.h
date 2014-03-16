@@ -298,11 +298,47 @@ public:
 
 	VEC3 getVertexNormal(unsigned int anIndex) const;
 
+
 	void setExternalData(const std::vector<GLfloat>* aVertexArray,
-			const std::vector<int>* anIndexArray,
 			bool aCreateVBOFlag,
 			GLenum aTypeOfVBO);
 
+
+	void setExternalData(const std::vector<GLdouble>* aVertexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+
+	void setExternalData(const std::vector<GLfloat>* aVertexArray,
+			const std::vector<GLint>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+
+	void setExternalData(const std::vector<GLdouble>* aVertexArray,
+			const std::vector<GLint>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+	void setExternalData(const std::vector<GLfloat>* aVertexArray,
+			const std::vector<GLuint>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+
+	void setExternalData(const std::vector<GLdouble>* aVertexArray,
+			const std::vector<GLuint>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+	void setExternalData(const GLvoid* aVertexArray,
+			GLuint aNumberOfVertices,
+			GLenum aVertexDataType,
+			const GLvoid* anIndexArray,
+			GLuint aNumberOfIndices,
+			GLenum anIndexDataType,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
 
 	void applyScale(RATIONAL_NUMBER aScale);
 
@@ -371,8 +407,12 @@ protected:
 	std::vector<GLuint> m_p_internal_index_set;
 
 
-	std::vector<int>* m_p_external_index_set;
-	std::vector<GLfloat>* m_p_external_vertex_set;
+	unsigned int m_number_of_indices;
+	unsigned int m_number_of_vertices;
+	GLvoid* m_external_index_set;
+	GLvoid* m_external_vertex_set;
+	GLenum m_external_index_data_type;
+	GLenum m_external_vertex_data_type;
 };
 
 

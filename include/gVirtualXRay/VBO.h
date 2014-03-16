@@ -90,9 +90,9 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	void setVertexData(GLenum aPrimitiveType,
-			const GLuint aNumberOfVertices, GLuint aNumberOfCompontentsPerVertex, const GLfloat* apVertices,
-			const GLuint aNumberOfNormals, GLuint aNumberOfCompontentsPerNormal,  const GLfloat* apNormals,
-			const GLuint aNumberOfTextureCoordinates, GLuint aNumberOfCompontentsPerCoord, const GLfloat* apTextureCoordinates);
+			const GLuint aNumberOfVertices,           GLuint aNumberOfCompontentsPerVertex, GLenum aVertexDataType, const GLvoid* apVertices,
+			const GLuint aNumberOfNormals,            GLuint aNumberOfCompontentsPerNormal, GLenum aNormalDataType, const GLvoid* apNormals,
+			const GLuint aNumberOfTextureCoordinates, GLuint aNumberOfCompontentsPerCoord,  GLenum aCoordDataType,  const GLvoid* apTextureCoordinates);
 
 
 	//--------------------------------------------------------------------------
@@ -102,17 +102,7 @@ public:
 	*	@param apIndexSet:			the index set
 	*/
 	//--------------------------------------------------------------------------
-	void setIndexData(const GLuint aNumberOfIndexes, const GLuint* apIndexSet);
-
-
-	//--------------------------------------------------------------------------
-	///	Set the index.
-	/**
-	*	@param aNumberOfIndexes:	number of indices
-	*	@param apIndexSet:			the index set
-	*/
-	//--------------------------------------------------------------------------
-	void setIndexData(const GLuint aNumberOfIndexes, const GLint* apIndexSet);
+	void setIndexData(const GLuint aNumberOfIndexes, GLenum anIndexDataType, const GLvoid* apIndexSet);
 
 
 	//--------------------------------------------------------------------------
@@ -185,6 +175,12 @@ protected:
 	GLuint m_normal_size;
 	GLuint m_texture_coordinate_size;
 	GLuint m_vertex_size;
+	GLuint m_index_size;
+
+	GLenum m_normal_data_type;
+	GLenum m_texture_coordinate_data_type;
+	GLenum m_vertex_data_type;
+	GLenum m_index_data_type;
 
 	GLenum m_primitive_type;
 

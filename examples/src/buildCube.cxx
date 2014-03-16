@@ -60,11 +60,11 @@ using namespace Utilities;
 //******************************************************************************
 
 
-//-------------------------------------------------------
+//----------------------------------------------
 void buildCube(RATIONAL_NUMBER aLength,
 			   VEC3 aCentre,
-			   std::vector<RATIONAL_NUMBER>& apVertexSet)
-//-------------------------------------------------------
+			   std::vector<double>& apVertexSet)
+//----------------------------------------------
 {
 	// Clear the vertex set
 	apVertexSet.clear();

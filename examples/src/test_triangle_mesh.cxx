@@ -177,7 +177,7 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
 TriangleMesh g_polygon_data;
-std::vector<GLfloat> g_p_vertex_set;
+std::vector<GLdouble> g_p_vertex_set;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -957,7 +957,7 @@ void idle()
 	}
 
 	// Change the size of the cube
-	for (std::vector<GLfloat>::iterator ite(g_p_vertex_set.begin());
+	for (std::vector<GLdouble>::iterator ite(g_p_vertex_set.begin());
 			ite != g_p_vertex_set.end();
 			++ite)
 	{
@@ -989,7 +989,7 @@ void loadCube()
 	buildCube(10.0 * cm, VEC3(), g_p_vertex_set);
 
     // Set geometry
-	g_polygon_data.setExternalData(&g_p_vertex_set, 0, true, GL_DYNAMIC_DRAW);
+	g_polygon_data.setExternalData(&g_p_vertex_set, true, GL_DYNAMIC_DRAW);
 	//g_polygon_data.inverNormalVectors();
 	//g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);
