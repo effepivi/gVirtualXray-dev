@@ -626,7 +626,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '1':
 		// This is a point source
-		if (g_xray_detector.getSourceType() != XRayDetector::PARALLEL)
+		if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
 		{
 			// Use a parallel source
 			g_xray_detector.setParallelBeam();
@@ -643,7 +643,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '2':
 		// This is not a line source
-		if (g_xray_detector.getSourceType() != XRayDetector::LINE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
 		{
 			g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 10.0*mm);
 		}
@@ -659,7 +659,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '3':
 		// This is not a square source
-		if (g_xray_detector.getSourceType() != XRayDetector::SQUARE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
 		{
 			g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 10, 10.0*mm);
 		}
@@ -675,7 +675,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '4':
 		// This is not a cubic source
-		if (g_xray_detector.getSourceType() != XRayDetector::CUBE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
 		{
 			g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 5, 10.0*mm);
 		}

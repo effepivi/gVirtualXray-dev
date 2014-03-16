@@ -763,7 +763,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '1':
 		// This is a point source
-		if (g_xray_detector.getSourceType() != XRayDetector::PARALLEL)
+		if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
 		{
 			// Use a parallel source
 			g_xray_detector.setParallelBeam();
@@ -780,7 +780,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '2':
 		// This is not a line source
-		if (g_xray_detector.getSourceType() != XRayDetector::LINE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
 		{
 			g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 10.0*mm);
 		}
@@ -796,7 +796,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '3':
 		// This is not a square source
-		if (g_xray_detector.getSourceType() != XRayDetector::SQUARE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
 		{
 			g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 10, 10.0*mm);
 		}
@@ -812,7 +812,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '4':
 		// This is not a cubic source
-		if (g_xray_detector.getSourceType() != XRayDetector::CUBE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
 		{
 			g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 5, 10.0*mm);
 		}
@@ -1125,7 +1125,7 @@ void loadSTLFile(const std::string& aPrefix)
    	// Set geometry
 	g_polygon_data.setFilename(stl_filename.data());
 	g_polygon_data.loadSTLFile(true, true, true, true, mm, GL_STATIC_DRAW);
-	g_polygon_data.mergeVertices();
+	g_polygon_data.mergeVertices(true);
 	g_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date

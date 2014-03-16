@@ -72,16 +72,16 @@ class XRayDetector
 {
 //******************************************************************************
 public:
-	typedef enum SourceTypeTag
+	///	SourceShape is a type that defines the shape of X-ray sources.
+	typedef enum SourceShapeTag
 	{
-		POINT,
-		CONE,
-		SQUARE,
-		CUBE,
-		LINE,
-		PARALLEL,
-		UNKNOWN
-	} SourceType;
+		POINT,        ///< Infinitively small point source
+		SQUARE,       ///< Source whose shape corresponds to a square
+		CUBE,         ///< Source whose shape corresponds to a cube
+		LINE,         ///< Source whose shape corresponds to a line segment
+		PARALLEL,     ///< Parallel source, i.e. a point source infinitely far away
+		UNKNOWN_SHAPE ///< Unknown type
+	} SourceShape;
 
 
 	//--------------------------------------------------------------------------
@@ -151,16 +151,41 @@ public:
 	void setDetectorPosition(const VEC3& aDetectorPosition);
 
 
+	//--------------------------------------------------------------------------
+	///	Set the shape of the source as a cube.
+	/**
+	*	@param aXraySourcePosition:	the position of the centre of the source
+	*	@param aNumberOfSamplesAlongOneDirection:	the number of point sources along one axis (in total there will be aNumberOfSamplesAlongOneDirection^3 point sources in the cube)
+	*	@param aLength:	the length of the cube
+	*/
+	//--------------------------------------------------------------------------
 	void setCubicSource(const VEC3& aXraySourcePosition,
 			unsigned int aNumberOfSamplesAlongOneDirection,
 			RATIONAL_NUMBER aLength);
 
 
+	//--------------------------------------------------------------------------
+	///	Set the shape of the source as a square.
+	/**
+	*	@param aXraySourcePosition:	the position of the centre of the source
+	*	@param aNumberOfSamplesAlongOneDirection:	the number of point sources along one axis (in total there will be aNumberOfSamplesAlongOneDirection^2 point sources in the square)
+	*	@param aLength:	the length of the square
+	*/
+	//--------------------------------------------------------------------------
 	void setSquareSource(const VEC3& aXraySourcePosition,
 			unsigned int aNumberOfSamplesAlongOneDirection,
 			RATIONAL_NUMBER aLength);
 
 
+	//--------------------------------------------------------------------------
+	///	Set the shape of the source as a line segment.
+	/**
+	*	@param aXraySourcePosition:	the position of the centre of the source
+	*	@param aDirection:	the direction vector of the line
+	*	@param aNumberOfSamplesAlongOneDirection:	the number of point sources
+	*	@param aLength:	the length of the line
+	*/
+	//--------------------------------------------------------------------------
 	void setLineSource(const VEC3& aXraySourcePosition,
 			const VEC3& aDirection,
 			unsigned int aNumberOfSamplesAlongOneDirection,
@@ -261,15 +286,44 @@ public:
 	const MATRIX4& getRotationMatrix() const;
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on the vector normal to the detector.
+	//--------------------------------------------------------------------------
 	const VEC3& getNormal() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the cross product between m_look_at_vector and m_up_vector.
+	/**
+	*	@return the cross product
+	*/
+	//--------------------------------------------------------------------------
 	const VEC3& getRightVector() const;
 
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the plane equation (Ax + By + Cz + D = 0).
+	/**
+	*	@param A: the 1st component of the plane equation
+	*	@param B: the 2nd component of the plane equation
+	*	@param C: the 3rd component of the plane equation
+	*	@param D: the 4th component of the plane equation
+	*/
+	//--------------------------------------------------------------------------
 	const void getPlaneEquation(RATIONAL_NUMBER& A,
 			RATIONAL_NUMBER& B,
 			RATIONAL_NUMBER& C,
 			RATIONAL_NUMBER& D);
 
-	SourceType getSourceType() const;
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the shape of the source.
+	/**
+	*	@return true if a parallel beam is used (e.g. orthographic projection),
+	*			false if perspective projection is used
+	*/
+	//--------------------------------------------------------------------------
+	SourceShape getSourceShape() const;
 
 
 	//--------------------------------------------------------------------------
@@ -381,12 +435,20 @@ protected:
 
 
 	/// Source type
-	SourceType m_source_type;
+	SourceShape m_source_shape;
 
 
+	/// The vector normal to the detector
 	VEC3 m_normal;
+
+
+	/// The viewing direction (i.e. the unit vector from the X-ray source to the centre of the detector)
 	VEC3 m_look_at_vector;
+
+
+	/// The cross product between m_look_at_vector and m_up_vector
 	VEC3 m_right_vector;
+
 
 	// OpenGL model of the source
 	GLUquadric* m_p_source_model;

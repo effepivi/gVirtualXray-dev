@@ -617,7 +617,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				}
 
 				// For each object
-				int object_number(0);
+				unsigned int object_number(0);
 				for (std::vector<TriangleMesh*>::const_iterator ite(m_p_inner_surface_set.begin());
 					ite != m_p_inner_surface_set.end();
 					++ite, ++object_number)
@@ -632,7 +632,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					// Only update the cummulated L-buffers if the outer surface exists
 					if (m_p_outer_surface)
 					{
-						computeCumulatedLBuffers(object_number);
+						updateCumulatedLBuffers(object_number);
 					}
 				}
 
@@ -1795,9 +1795,9 @@ void XRayRenderer::computeOuterSurfaceLBuffer(const TriangleMesh& anObject,
 }
 
 
-//---------------------------------------------------------
-void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
-//---------------------------------------------------------
+//--------------------------------------------------------
+void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
+//--------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -1902,9 +1902,9 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 }
 
 
-//------------------------------------------------------------
-void XRayRenderer::computeSumMUxDx(GLfloat HU, int anObjectID)
-//------------------------------------------------------------
+//---------------------------------------------------------------------
+void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
+//---------------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();

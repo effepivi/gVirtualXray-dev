@@ -95,27 +95,8 @@ inline void TriangleMesh::reset()
 	m_p_face_normal_set.clear();
 	m_p_vertex_normal_set.clear();
 	
-	// The data is manage externally
-	if (m_external_data_flag)
-	{
-		m_p_index_set  = 0;
-		m_p_vertex_set = 0;
-	}
-	// The data is manage internally
-	else
-	{
-		if (m_p_index_set)
-		{
-			delete [] m_p_index_set;
-			m_p_index_set = 0;
-		}
-
-		if (m_p_vertex_set)
-		{
-			delete [] m_p_vertex_set;
-			m_p_vertex_set = 0;
-		}
-	}
+	destroyIndexData();
+	destroyVertexData();
 
 	m_number_of_indices  = 0;
 	m_number_of_vertices = 0;
@@ -730,6 +711,78 @@ inline void TriangleMesh::inverNormalVectors()
 			++ite)
 	{
 		*ite = -(*ite);
+	}
+}
+
+
+//-------------------------------------------
+inline void TriangleMesh::destroyVertexData()
+//-------------------------------------------
+{
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_vertex_set = 0;
+	}
+	// The data is manage internally
+	else
+	{
+		if (m_p_vertex_set)
+		{
+			// Cannot release the memory of an array whose type is void*
+			switch (m_vertex_data_type)
+			{
+			case GL_FLOAT:
+				delete [] reinterpret_cast<GLfloat*>(m_p_vertex_set);
+				break;
+				
+			case GL_DOUBLE:
+				delete [] reinterpret_cast<GLdouble*>(m_p_vertex_set);
+				break;
+	
+			default:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			}
+			m_p_vertex_set = 0;
+		}
+	}
+}
+
+
+//------------------------------------------
+inline void TriangleMesh::destroyIndexData()
+//------------------------------------------
+{
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_index_set  = 0;
+	}
+	// The data is manage internally
+	else
+	{
+		if (m_p_index_set)
+		{
+			// Cannot release the memory of an array whose type is void*
+			switch (m_index_data_type)
+			{
+			case GL_UNSIGNED_INT:
+				delete [] reinterpret_cast<GLuint*>(m_p_index_set);
+				break;
+				
+			case GL_UNSIGNED_SHORT:
+				delete [] reinterpret_cast<GLushort*>(m_p_index_set);
+				break;
+	
+			case GL_UNSIGNED_BYTE:
+				delete [] reinterpret_cast<GLubyte*>(m_p_index_set);
+				break;
+				
+			default:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			}
+			m_p_index_set = 0;
+		}
 	}
 }
 

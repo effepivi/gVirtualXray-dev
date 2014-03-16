@@ -124,7 +124,11 @@ public:
 
 //******************************************************************************
 protected:
+	/// The number of photons
 	RATIONAL_NUMBER m_photon_number;
+
+
+	/// The energy of the photons
 	RATIONAL_NUMBER m_energy;
 
 

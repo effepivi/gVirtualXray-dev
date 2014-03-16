@@ -670,8 +670,7 @@ void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
 
 			// Set the index in the hash table and create the list of vertices
 			m_number_of_vertices = hash_table.size() * 3;
-			delete [] m_p_vertex_set;
-			m_p_vertex_set = 0;
+			destroyVertexData();
 
 			GLfloat* p_float_vertex_set(0);
 			GLdouble* p_double_vertex_set(0);

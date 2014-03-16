@@ -88,7 +88,7 @@ void XRayDetector::displayBeam()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (m_source_type == PARALLEL)
+	if (m_source_shape == PARALLEL)
 	{
 		m_parallel_beam.display();
 	}
@@ -100,7 +100,7 @@ void XRayDetector::displayBeam()
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 
-	if (m_source_type == PARALLEL)
+	if (m_source_shape == PARALLEL)
 	{
 		m_parallel_beam_highlight.display();
 	}
@@ -135,7 +135,7 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 	if (aNumberOfSamplesAlongOneDirection > 1)
 	{
 		// Save the source type
-		m_source_type = CUBE;
+		m_source_shape = CUBE;
 
 		// Sample the source along the 3 main axis
 		VEC3 source_lower_corner(m_xray_source_centre.getX() - aLength / 2.0,
@@ -166,7 +166,7 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 	else
 	{
 		// Save the source type
-		m_source_type = POINT;
+		m_source_shape = POINT;
 
 		// Add the centre
 		m_p_xray_source_position_set.push_back(m_xray_source_centre);
@@ -196,7 +196,7 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 	if (aNumberOfSamplesAlongOneDirection > 1)
 	{
 		// Save the source type
-		m_source_type = SQUARE;
+		m_source_shape = SQUARE;
 
 		// Compute the normal vector
 		VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
@@ -229,7 +229,7 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 	else
 	{
 		// Save the source type
-		m_source_type = POINT;
+		m_source_shape = POINT;
 
 		// Add the centre
 		m_p_xray_source_position_set.push_back(m_xray_source_centre);
@@ -263,7 +263,7 @@ void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 	if (aNumberOfSamplesAlongOneDirection > 1)
 	{
 		// Save the source type
-		m_source_type = LINE;
+		m_source_shape = LINE;
 
 		// Sample the source along the 3 main axis
 		VEC3 source_lower_end(m_xray_source_centre - unit_direction_vector * (aLength / 2.0));
@@ -284,7 +284,7 @@ void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 	else
 	{
 		// Save the source type
-		m_source_type = POINT;
+		m_source_shape = POINT;
 
 		// Add the centre
 		m_p_xray_source_position_set.push_back(m_xray_source_centre);

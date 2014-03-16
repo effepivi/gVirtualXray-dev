@@ -105,12 +105,27 @@ public:
 	void display(bool aVBOFlag = true) const;
 
 
+	//--------------------------------------------------------------------------
+	///	Display the triangular mesh in wireframe using OpenGL.
+	//--------------------------------------------------------------------------
 	void displayWireFrame() const;
 
 
+	//--------------------------------------------------------------------------
+	///	Display the face normal vectors.
+	/**
+	*	@param aNormalSize:	the size of the vectors (default value is 0.5 cm)
+	*/
+	//--------------------------------------------------------------------------
 	void displayFaceNormal(GLfloat aNormalSize = 0.5 * cm) const;
 
 
+	//--------------------------------------------------------------------------
+	///	Display the vertex normal vectors.
+	/**
+	*	@param aNormalSize:	the size of the vectors (default value is 0.5 cm)
+	*/
+	//--------------------------------------------------------------------------
 	void displayVertexNormal(GLfloat aNormalSize = 0.5 * cm) const;
 
 
@@ -149,6 +164,7 @@ public:
 	*	@param aPrintDebugInfoFlag:	a flag to display additional debug information in the console or not
 	*	@param aCreateVBOFlag:	a flag to use a vertex buffer object or not
 	*	@param aScale:	the unit in which data is stored in the file (e.g. mm, cm, m)
+	*	@param aBufferUsageHing:	the buffer usage hint; valid values are: GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
 	void loadSTLFile(bool aMoveToCentreFlag,
@@ -156,7 +172,7 @@ public:
 		bool aPrintDebugInfoFlag,
 		bool aCreateVBOFlag,
 		RATIONAL_NUMBER aScale,
-		GLenum aTypeOfVBO);
+		GLenum aBufferUsageHing);
 
 
 	//--------------------------------------------------------------------------
@@ -174,10 +190,11 @@ public:
 	//--------------------------------------------------------------------------
 	///	Use a vertex buffer object if possible.
 	/**
+	*	@param aBufferUsageHing:	the buffer usage hint; valid values are: GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*	@return true if the VBO can be used, false otherwise
 	*/
 	//--------------------------------------------------------------------------
-	bool useVBO(GLenum aTypeOfVBO);
+	bool useVBO(GLenum aBufferUsageHing);
 
 
 	//--------------------------------------------------------------------------
@@ -264,12 +281,20 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Accessor on the number of normal vectors.
+	///	Accessor on the number of face normal vectors.
 	/**
-	*	@return the number of normal vectors
+	*	@return the number of face normal vectors
 	*/
 	//--------------------------------------------------------------------------
 	unsigned int getFaceNormalNumber() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the number of vertex normal vectors.
+	/**
+	*	@return the number of vertex normal vectors
+	*/
+	//--------------------------------------------------------------------------
 	unsigned int getVertexNormalNumber() const;
 
 
@@ -280,6 +305,8 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	unsigned int getVertexNumber() const;
+
+
 	unsigned int getIndexNumber() const;
 
 
@@ -346,6 +373,8 @@ public:
 protected:
 	void computeBoundingBox();
 	void normaliseNormals();
+	void destroyVertexData();
+	void destroyIndexData();
 
 
 	/// Name of the file that contains the polygon mesh

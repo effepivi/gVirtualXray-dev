@@ -51,7 +51,7 @@ inline XRayDetector::XRayDetector():
 	m_resolution_in_unit_of_length_per_pixel(0),
 	m_distance_source_detector(0),
 	m_VBOs_need_update(true),
-	m_source_type(UNKNOWN),
+	m_source_shape(UNKNOWN_SHAPE),
 	m_p_source_model(0)
 //----------------------------------------------
 {
@@ -142,7 +142,7 @@ inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 	m_p_xray_source_position_set.push_back(m_xray_source_centre);
 
 	// Save the source type
-	m_source_type = POINT;	
+	m_source_shape = POINT;	
 	
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
@@ -194,7 +194,7 @@ inline void XRayDetector::setParallelBeam()
 //-----------------------------------------
 {
 	// Save the source type
-	m_source_type = PARALLEL;
+	m_source_shape = PARALLEL;
 	
 	// Clear the sample set
 	m_p_xray_source_position_set.clear();
@@ -209,7 +209,7 @@ inline void XRayDetector::setConeBeam()
 //-------------------------------------
 {
 	// Save the source type
-	m_source_type = CONE;
+	m_source_shape = POINT;
 	
 	// Clear the sample set
 	m_p_xray_source_position_set.clear();
@@ -299,11 +299,11 @@ inline const MATRIX4& XRayDetector::getRotationMatrix() const
 }
 
 
-//-----------------------------------------------------------------
-inline XRayDetector::SourceType XRayDetector::getSourceType() const
-//-----------------------------------------------------------------
+//-------------------------------------------------------------------
+inline XRayDetector::SourceShape XRayDetector::getSourceShape() const
+//-------------------------------------------------------------------
 {
-	return (m_source_type);
+	return (m_source_shape);
 }
 
 
@@ -311,7 +311,7 @@ inline XRayDetector::SourceType XRayDetector::getSourceType() const
 inline bool XRayDetector::useParallelBeam() const
 //-----------------------------------------------
 {
-	return (m_source_type == PARALLEL);
+	return (m_source_shape == PARALLEL);
 }
 
 

@@ -77,7 +77,7 @@ public:
 	//--------------------------------------------------------------------------
 	typedef enum DensityFunctionTypeTag
 	{
-		SPHERE,
+		SPHERE,				///< Electron density
 		BLOBBY_MOLECULE,	///< Blobby molecule, first created by Jim Blinn and modelled after electron density fields
 		META_BALL,			///< Meta balls
 		SOFT_OBJECT			///< Soft Objects, first created by the Wyvill brothers

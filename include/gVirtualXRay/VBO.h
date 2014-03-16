@@ -65,6 +65,9 @@ public:
 	~VBO();
 	
 	
+	//--------------------------------------------------------------------------
+	///	Release the data on the GPU.
+	//--------------------------------------------------------------------------
 	void destroy();
 
 
@@ -80,12 +83,15 @@ public:
 	*	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
 	*	@param aNumberOfVertices:				number of vertices
 	*	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
+	*	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
 	*	@param apVertices:						address of the first component of the first vertex
 	*	@param aNumberOfNormals:				number of normal vectors
 	*	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
+	*	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
 	*	@param apNormals:						address of the first component of the firth normal vector
 	*	@param aNumberOfTextureCoordinates:		number of texture coordinates
 	*	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
+	*	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
 	*	@param apTextureCoordinates:			address of the first component of the first texture coordinate
 	*/
 	//--------------------------------------------------------------------------
@@ -99,6 +105,7 @@ public:
 	///	Set the index.
 	/**
 	*	@param aNumberOfIndexes:	number of indices
+	*	@param anIndexDataType:		the data type of indices; valid values are GL_UNSGINED_BYTE, GL_UNSGINED_SHORT and GL_UNSGINED_INT
 	*	@param apIndexSet:			the index set
 	*/
 	//--------------------------------------------------------------------------
@@ -170,21 +177,49 @@ protected:
 	/// Number of vertices
 	GLuint m_number_of_vertices;
 
+
+	/// Number of indices
 	GLuint m_number_of_indices;
 
+
+	/// Size in bytes of the array of normal vectors
 	GLuint m_normal_size;
+
+
+	/// Size in bytes of the array of texture coordinates
 	GLuint m_texture_coordinate_size;
+
+
+	/// Size in bytes of the array of vertices
 	GLuint m_vertex_size;
+
+
+	/// Size in bytes of the array of indices
 	GLuint m_index_size;
 
+
+	/// Data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
 	GLenum m_normal_data_type;
+
+
+	/// Data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
 	GLenum m_texture_coordinate_data_type;
+
+
+	/// Data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
 	GLenum m_vertex_data_type;
+
+
+	/// Data type of indices; valid values are GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT and GL_UNSIGNED_INT
 	GLenum m_index_data_type;
 
+
+	/// Type of primitive to draw; valid values are  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
 	GLenum m_primitive_type;
 
-	GLenum m_storage_type; ///< GL_DYNAMIC_DRAW, GL_STATIC_DRAW, GL_STREAM_DRAW
+
+	/// The buffer usage hint; valid values are GL_DYNAMIC_DRAW, GL_STATIC_DRAW and GL_STREAM_DRAW
+	GLenum m_storage_type;
 };
 
 
