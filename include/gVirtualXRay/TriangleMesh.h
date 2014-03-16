@@ -11,7 +11,7 @@
 *
 *	@author		Dr Franck P. Vidal
 *
-*	@author		Dr Franck P. Vidal
+*	@todo		Make it possible to merge vertices if an array of indices exists
 *
 *	@section	License
 *				BSD 3-Clause License.
@@ -307,46 +307,89 @@ public:
 	unsigned int getVertexNumber() const;
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on the number of indices.
+	/**
+	*	@return the number of indices
+	*/
+	//--------------------------------------------------------------------------
 	unsigned int getIndexNumber() const;
 
 
+	//--------------------------------------------------------------------------
+	///	Merge the vertices of the triangle mesh if the data is managed by the
+	///	class instance, and if no index has been build.
+	/**
+	*	@return the number of indices
+	*/
+	//--------------------------------------------------------------------------
 	void mergeVertices(bool aPrintDebugInfoFlag = false);
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on a given vertex.
+	/**
+	*	@param anIndex: the index of the vertex to access
+	*	@return the vertex
+	*/
+	//--------------------------------------------------------------------------
 	VEC3 getVertex(unsigned int anIndex) const;
+
+
+	//--------------------------------------------------------------------------
+	///	Change the value of a given vertex.
+	/**
+	*	@param anIndex: the index of the vertex to access
+	*	@param aVertex: the new value of the vertex
+	*/
+	//--------------------------------------------------------------------------
 	void setVertex(unsigned int anIndex, const VEC3& aVertex);
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on a given index.
+	/**
+	*	@param anIndex: the index of the index to access
+	*	@return the index
+	*/
+	//--------------------------------------------------------------------------
 	int getIndex(unsigned int anIndex) const;
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on a given face normal.
+	/**
+	*	@param anIndex: the index of the normal to access
+	*	@return the normal
+	*/
+	//--------------------------------------------------------------------------
 	VEC3 getFaceNormal(unsigned int anIndex) const;
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on a given vertex normal.
+	/**
+	*	@param anIndex: the index of the normal to access
+	*	@return the normal
+	*/
+	//--------------------------------------------------------------------------
 	VEC3 getVertexNormal(unsigned int anIndex) const;
 
 
-	void setExternalData(const std::vector<GLfloat>* aVertexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
-
-
-	void setExternalData(const std::vector<GLdouble>* aVertexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
-
-
-	void setExternalData(const std::vector<GLfloat>* aVertexArray,
-			const std::vector<GLuint>* anIndexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
-
-
-	void setExternalData(const std::vector<GLdouble>* aVertexArray,
-			const std::vector<GLuint>* anIndexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
-
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param aNumberOfVertices:	number of vertices
+	*	@param aVertexDataType:		data type of the vertex data; valid values are GL_FLOAT, GL_DOUBLE and GL_NONE
+	*	@param anIndexArray:		array containing the index data
+	*	@param aNumberOfIndices:	number of indices
+	*	@param anIndexDataType:		data type of the index data; valid values are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, GL_UNSIGNED_BYTE and GL_NONE
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(const GLvoid* aVertexArray,
 			GLuint aNumberOfVertices,
 			GLenum aVertexDataType,
@@ -356,24 +399,136 @@ public:
 			bool aCreateVBOFlag,
 			GLenum aTypeOfVBO);
 
-	void applyScale(RATIONAL_NUMBER aScale);
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setExternalData(const std::vector<GLfloat>* aVertexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
 
 
-	void displayUsingImmediateModeWithIndex() const;
-	void displayUsingImmediateModeWithoutIndex() const;
-	void displayWireFrameWithIndex() const;
-	void displayWireFrameWithoutIndex() const;
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setExternalData(const std::vector<GLdouble>* aVertexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<GLfloat>* aVertexArray,
+			const std::vector<GLuint>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<GLdouble>* aVertexArray,
+			const std::vector<GLuint>* anIndexArray,
+			bool aCreateVBOFlag,
+			GLenum aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Apply a scaling factor to the vertex data. Note that the bounding box
+	///	will be automatically updated.
+	/**
+	*	@param aScale:	scaling factor
+	*/
+	void applyScale(const RATIONAL_NUMBER& aScale);
+
+
+	//--------------------------------------------------------------------------
+	///	Inverse the normal vectors.
+	//--------------------------------------------------------------------------
 	void inverNormalVectors();
 
 
+	//--------------------------------------------------------------------------
+	///	Update the VBO.
+	/**
+	*	@param aTypeOfVBO: the VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
 	void updateVBO(GLenum aTypeOfVBO);
 
 
 //******************************************************************************
 protected:
+	//--------------------------------------------------------------------------
+	///	Display the polygon mesh using OpenGL's immediate mode.
+	//--------------------------------------------------------------------------
+	void displayUsingImmediateModeWithIndex() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Display the polygon mesh using OpenGL's immediate mode.
+	//--------------------------------------------------------------------------
+	void displayUsingImmediateModeWithoutIndex() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Display the polygon mesh in wireframe using OpenGL's immediate mode.
+	//--------------------------------------------------------------------------
+	void displayWireFrameWithIndex() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Display the polygon mesh in wireframe using OpenGL's immediate mode.
+	//--------------------------------------------------------------------------
+	void displayWireFrameWithoutIndex() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Update the bounding box.
+	//--------------------------------------------------------------------------
 	void computeBoundingBox();
+
+
+	//--------------------------------------------------------------------------
+	///	Normalise the normal vectors.
+	//--------------------------------------------------------------------------
 	void normaliseNormals();
+
+
+	//--------------------------------------------------------------------------
+	///	Release the memory held by the vertex data if needed.
+	//--------------------------------------------------------------------------
 	void destroyVertexData();
+
+
+	//--------------------------------------------------------------------------
+	///	Release the memory held by the index data if needed.
+	//--------------------------------------------------------------------------
 	void destroyIndexData();
 
 
@@ -425,11 +580,24 @@ protected:
 	GLvoid* m_p_index_set;
 
 
+	/// Number of indices
 	unsigned int m_number_of_indices;
+
+
+	/// Number of vertices
 	unsigned int m_number_of_vertices;
+
+
+	/// Data type of the index data; valid values are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, GL_UNSIGNED_BYTE and GL_NONE
 	GLenum m_index_data_type;
+
+
+	/// Data type of the vertex data; valid values are GL_FLOAT, GL_DOUBLE and GL_NONE
 	GLenum m_vertex_data_type;
 
+
+	/// A flag set to true if the memory is managed outside of this class instance;
+	/// set to false if the memory is managed by this class instance
 	bool m_external_data_flag;
 };
 

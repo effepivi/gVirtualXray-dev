@@ -640,9 +640,9 @@ inline void TriangleMesh::computeBoundingBox()
 }
 
 
-//----------------------------------------------------------
-inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
-//----------------------------------------------------------
+//-----------------------------------------------------------------
+inline void TriangleMesh::applyScale(const RATIONAL_NUMBER& aScale)
+//-----------------------------------------------------------------
 {
 	// There are vertices
 	if (m_number_of_vertices)
@@ -708,6 +708,14 @@ inline void TriangleMesh::inverNormalVectors()
 {
 	for (std::vector<GLfloat>::iterator ite(m_p_vertex_normal_set.begin());
 			ite != m_p_vertex_normal_set.end();
+			++ite)
+	{
+		*ite = -(*ite);
+	}
+
+
+	for (std::vector<GLfloat>::iterator ite(m_p_face_normal_set.begin());
+			ite != m_p_face_normal_set.end();
 			++ite)
 	{
 		*ite = -(*ite);

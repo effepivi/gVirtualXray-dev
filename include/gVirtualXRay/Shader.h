@@ -118,6 +118,13 @@ public:
 	void loadFragmentShaderFile(const std::string& aFragmentShaderFilename);
 
 
+	//--------------------------------------------------------------------------
+	///	Load the shader source code
+	/**
+	*	@param aVertexShaderSourceCode: source code of the vertex shader
+	*	@param aFragmentShaderSourceCode: source code of the fragment shader
+	*/
+	//--------------------------------------------------------------------------
 	void loadSource(const std::string& aVertexShaderSourceCode,
 			const std::string& aFragmentShaderSourceCode);
 
