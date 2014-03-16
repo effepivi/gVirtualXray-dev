@@ -295,21 +295,6 @@ int main(int argc, char** argv)
 		loadXRaySimulator();
 
 		// Add the geometry to the X-ray renderer
-        std::string prefix;
-#ifdef HAS_BUNDLE
-        namespace fs = boost::filesystem;
-        fs::path p(argv[0]);
-        fs::path full_p = fs::complete(p);
-        if (full_p.has_parent_path())
-        {
-        	prefix = full_p.parent_path().string();
-
-        	if (prefix.length())
-        	{
-        		prefix += "/";
-        	}
-        }
-#endif
 		loadCube();
 		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
