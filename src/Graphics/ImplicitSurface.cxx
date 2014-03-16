@@ -71,20 +71,15 @@ using namespace Graphics;
 //******************************************************************************
 
 
+#ifdef HAS_ITK
 //-----------------------------------------------------------------
 ImplicitSurface::ImplicitSurface():
 //-----------------------------------------------------------------
-#ifdef HAS_ITK
 			m_p_volume(InputVolumeType::New()),
 			m_p_threshold_filter(BinaryThresholdType::New()),
-			m_p_iso_surface_extracter(IsoSurfaceExtracterType::New()),
-#endif
-			m_density_function(BLOBBY_MOLECULE),
-			m_a(1),
-			m_b(1)
+			m_p_iso_surface_extracter(IsoSurfaceExtracterType::New())
 //-----------------------------------------------------------------
 {
-#ifdef HAS_ITK
 	// Initialise the threshold filter
 	m_p_threshold_filter->SetInput(m_p_volume);
 	m_p_threshold_filter->SetOutsideValue(0);
@@ -94,8 +89,13 @@ ImplicitSurface::ImplicitSurface():
 	const OutputVoxelDataType object_value(static_cast<OutputVoxelDataType>(1));
 	m_p_iso_surface_extracter->SetObjectValue(object_value);
 	m_p_iso_surface_extracter->SetInput(m_p_threshold_filter->GetOutput());
-#endif
 }
+#else // HAS_ITK
+//--------------------------------
+ImplicitSurface::ImplicitSurface()
+//--------------------------------
+{}
+#endif // HAS_ITK
 
 
 //---------------------------------
@@ -210,21 +210,21 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 				voxel_center.setX(offset.getX() + x * aVoxelSize.getX());
 
 				// Process all the points
-				for (std::vector<VEC3>::const_iterator point_ite(m_control_point_set.begin());
+				for (std::vector<std::pair<DensityFunctionParameterType, VEC3> >::const_iterator point_ite(m_control_point_set.begin());
 						point_ite != m_control_point_set.end();
 						++point_ite)
 				{
-					r = (voxel_center - *point_ite).length();
-					voxel_value += evaluate(r);
+					r = (voxel_center - point_ite->second).length();
+					voxel_value += evaluate(r, point_ite->first);
 				}
 
 				// Process all the lines
-				for (std::vector<std::pair<VEC3, VEC3> >::const_iterator line_ite(m_control_line_set.begin());
+				for (std::vector<std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> > >::const_iterator line_ite(m_control_line_set.begin());
 						line_ite != m_control_line_set.end();
 						++line_ite)
 				{
-					point_1 = line_ite->first;
-					point_2 = line_ite->second;
+					point_1 = line_ite->second.first;
+					point_2 = line_ite->second.second;
 
 					const RATIONAL_NUMBER length_squared(pow((point_1 - point_2).length(), 2.0));
 					if (fabs(length_squared) < EPSILON)
@@ -249,7 +249,7 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 						}
 					}
 
-					voxel_value += evaluate(r);
+					voxel_value += evaluate(r, line_ite->first);
 				}
 
 				itk::Point<double, 3> voxel_position;

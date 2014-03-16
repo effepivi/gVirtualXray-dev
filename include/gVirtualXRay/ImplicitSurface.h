@@ -85,6 +85,35 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Type of density function parameter.
+	//--------------------------------------------------------------------------
+	class DensityFunctionParameterType
+	{
+	public:
+		//--------------------------------------------------------------------------
+		///	Default constructor.
+		/**
+		*	@param aDensityFunctionType:	the type of density function (default value: BLOBBY_MOLECULE)
+		*	@param a:	the first parameter (default value: 1)
+		*	@param b:	the second parameter (default value: 1)
+		*	@return the density
+		*/
+		//--------------------------------------------------------------------------
+		DensityFunctionParameterType(const DensityFunctionType aDensityFunctionType = BLOBBY_MOLECULE,
+				RATIONAL_NUMBER a = 1,
+				RATIONAL_NUMBER b = 1):
+			m_density_function(aDensityFunctionType),
+			m_a(a),
+			m_b(b)
+		{}
+
+		DensityFunctionType m_density_function;
+		RATIONAL_NUMBER m_a;
+		RATIONAL_NUMBER m_b;
+	};
+
+
+	//--------------------------------------------------------------------------
 	///	Default constructor.
 	//--------------------------------------------------------------------------
 	ImplicitSurface();
@@ -100,49 +129,51 @@ public:
 	///	Evaluate the density function for the distance r.
 	/**
 	*	@param r:	the distance
+	*	@param aParameter:	the parameter of the density function
 	*	@return the density
 	*/
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER evaluate(RATIONAL_NUMBER r) const;
+	RATIONAL_NUMBER evaluate(RATIONAL_NUMBER r,
+			const DensityFunctionParameterType& aParameter) const;
 
 
 	//--------------------------------------------------------------------------
-	///	Use the density function that creates spheres.
+	//	Use the density function that creates spheres.
 	//--------------------------------------------------------------------------
-	void setSphere();
+	//void setSphere();
 
 
 	//--------------------------------------------------------------------------
-	///	Use the density function that creates Blobby Molecules.
-	///	It was first created by Jim Blinn.
-	///	It is modelled after electron density fields.
-	/**
+	//	Use the density function that creates Blobby Molecules.
+	//	It was first created by Jim Blinn.
+	//	It is modelled after electron density fields.
+	/*
 	*	@param a:	the height
 	*	@param b:	the standard deviation of the curve
 	*/
 	//--------------------------------------------------------------------------
-	void setBlobbyMolecule(RATIONAL_NUMBER a, RATIONAL_NUMBER b);
+	//void setBlobbyMolecule(RATIONAL_NUMBER a, RATIONAL_NUMBER b);
 
 
 	//--------------------------------------------------------------------------
-	///	Use the density function that creates Meta Balls.
-	/**
+	//	Use the density function that creates Meta Balls.
+	/*
 	*	@param a:	the scaling factor
 	*	@param b:	the maximum distance a control primitive contributes to the field
 	*/
 	//--------------------------------------------------------------------------
-	void setMetaBall(RATIONAL_NUMBER a, RATIONAL_NUMBER b);
+	//void setMetaBall(RATIONAL_NUMBER a, RATIONAL_NUMBER b);
 
 
 	//--------------------------------------------------------------------------
-	///	Use the density function that creates Soft Objects.
-	///	It was first created by the Wyvill brothers.
-	/**
+	//	Use the density function that creates Soft Objects.
+	//	It was first created by the Wyvill brothers.
+	/*
 	*	@param a:	the scaling factor
 	*	@param b:	the maximum distance a control primitive contributes to the field
 	*/
 	//--------------------------------------------------------------------------
-	void setSoftObject(RATIONAL_NUMBER a, RATIONAL_NUMBER b);
+	//void setSoftObject(RATIONAL_NUMBER a, RATIONAL_NUMBER b);
 
 
 	//--------------------------------------------------------------------------
@@ -160,20 +191,25 @@ public:
 	//--------------------------------------------------------------------------
 	///	Add a control point.
 	/**
+	*	@param aParameter:	the parameter of the density function
 	*	@param aControlPoint:	the control point to add
 	*/
 	//--------------------------------------------------------------------------
-	void addControlPoint(const VEC3& aControlPoint);
+	void addControlPoint(const DensityFunctionParameterType& aParameter,
+			const VEC3& aControlPoint);
 
 
 	//--------------------------------------------------------------------------
 	///	Add a control line.
 	/**
+	*	@param aParameter:	the parameter of the density function
 	*	@param aControlPoint1:	the first point that defines the line segment
 	*	@param aControlPoint2:	the second point that defines the line segment
 	*/
 	//--------------------------------------------------------------------------
-	void addControlLine(const VEC3& aControlPoint1, const VEC3& aControlPoint2);
+	void addControlLine(const DensityFunctionParameterType& aParameter,
+			const VEC3& aControlPoint1,
+			const VEC3& aControlPoint2);
 
 
 	//--------------------------------------------------------------------------
@@ -308,9 +344,9 @@ public:
 //******************************************************************************
 protected:
 	RATIONAL_NUMBER evaluateSphere(RATIONAL_NUMBER r) const;
-	RATIONAL_NUMBER evaluateBlobbyMolecule(RATIONAL_NUMBER r) const;
-	RATIONAL_NUMBER evaluateMetaBall(RATIONAL_NUMBER r) const;
-	RATIONAL_NUMBER evaluateSoftObject(RATIONAL_NUMBER r) const;
+	RATIONAL_NUMBER evaluateBlobbyMolecule(RATIONAL_NUMBER r, RATIONAL_NUMBER a, RATIONAL_NUMBER b) const;
+	RATIONAL_NUMBER evaluateMetaBall(RATIONAL_NUMBER r, RATIONAL_NUMBER a, RATIONAL_NUMBER b) const;
+	RATIONAL_NUMBER evaluateSoftObject(RATIONAL_NUMBER r, RATIONAL_NUMBER a, RATIONAL_NUMBER b) const;
 
 #ifdef HAS_ITK
 	typedef RATIONAL_NUMBER InputVoxelDataType;
@@ -327,12 +363,8 @@ protected:
 	IsoSurfaceExtracterType::Pointer m_p_iso_surface_extracter;
 #endif // HAS_ITK
 
-	DensityFunctionType m_density_function;
-	RATIONAL_NUMBER m_a;
-	RATIONAL_NUMBER m_b;
-
-	std::vector<VEC3> m_control_point_set;
-	std::vector<std::pair<VEC3, VEC3> > m_control_line_set;
+	std::vector<std::pair<DensityFunctionParameterType, VEC3> > m_control_point_set;
+	std::vector<std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> > > m_control_line_set;
 
 	std::vector<GLfloat> m_p_vertex_data;
 	std::vector<GLuint> m_p_index_data;

@@ -1065,34 +1065,32 @@ void idle()
 void loadImplicitSurface()
 //------------------------
 {
-	g_sphere_1.setSphere();
-	g_sphere_2.setSphere();
+	ImplicitSurface::DensityFunctionParameterType density_function_parameter;
 
-	g_blobby_molecule_1.setBlobbyMolecule(2, 1);
-	g_blobby_molecule_2.setBlobbyMolecule(2, 1);
+	density_function_parameter.m_density_function = ImplicitSurface::SPHERE;
+	g_sphere_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_sphere_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_sphere_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
 
-	g_meta_ball_1.setMetaBall(1, 3);
-	g_meta_ball_2.setMetaBall(1, 3);
+	density_function_parameter.m_density_function = ImplicitSurface::BLOBBY_MOLECULE;
+	density_function_parameter.m_a = 2;
+	density_function_parameter.m_b = 1;
+	g_blobby_molecule_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_blobby_molecule_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_blobby_molecule_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
 
-	g_soft_object_1.setSoftObject(1, 3);
-	g_soft_object_2.setSoftObject(1, 3);
+	density_function_parameter.m_density_function = ImplicitSurface::META_BALL;
+	density_function_parameter.m_a = 1;
+	density_function_parameter.m_b = 3;
+	g_meta_ball_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_meta_ball_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_meta_ball_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
 
-	g_sphere_1.addControlPoint(VEC3(-2.0, 0, 0));
-	g_sphere_1.addControlPoint(VEC3( 2.0, 0, 0));
-
-	g_blobby_molecule_1.addControlPoint(VEC3(-2.0, 0, 0));
-	g_blobby_molecule_1.addControlPoint(VEC3( 2.0, 0, 0));
-
-	g_meta_ball_1.addControlPoint(VEC3(-2.0, 0, 0));
-	g_meta_ball_1.addControlPoint(VEC3( 2.0, 0, 0));
-
-	g_soft_object_1.addControlPoint(VEC3(-2.0, 0, 0));
-	g_soft_object_1.addControlPoint(VEC3( 2.0, 0, 0));
-
-	g_sphere_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-	g_blobby_molecule_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-	g_meta_ball_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-	g_blobby_molecule_2.addControlLine(VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+	density_function_parameter.m_density_function = ImplicitSurface::SOFT_OBJECT;
+	density_function_parameter.m_a = 1;
+	density_function_parameter.m_b = 3;
+	g_soft_object_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_soft_object_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
 
     // Set geometry
 	extractIsoSurface();

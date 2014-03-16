@@ -77,22 +77,22 @@ void loadImplicitSurface()
 	ImplicitSurface meta_ball;
 	ImplicitSurface soft_object;
 
-	sphere.setSphere();
-	blobby_molecule.setBlobbyMolecule(2, 1);
-	meta_ball.setMetaBall(1, 3);
-	soft_object.setSoftObject(1, 3);
+	ImplicitSurface::DensityFunctionParameterType sphere_parameter(         ImplicitSurface::SPHERE);
+	ImplicitSurface::DensityFunctionParameterType blobby_molecule_parameter(ImplicitSurface::BLOBBY_MOLECULE, 2, 1);
+	ImplicitSurface::DensityFunctionParameterType meta_ball_parameter(      ImplicitSurface::META_BALL,       1, 3);
+	ImplicitSurface::DensityFunctionParameterType soft_object_parameter(    ImplicitSurface::SOFT_OBJECT,     1, 3);
 
 	for (float i(0); i <= 4.0; i += 0.05)
 	{
 		std::cout << i;
 		std::cout << "\t";
-		std::cout << sphere.evaluate(i);
+		std::cout << sphere.evaluate(i, sphere_parameter);
 		std::cout << "\t";
-		std::cout << blobby_molecule.evaluate(i);
+		std::cout << blobby_molecule.evaluate(i, blobby_molecule_parameter);
 		std::cout << "\t";
-		std::cout << meta_ball.evaluate(i);
+		std::cout << meta_ball.evaluate(i, meta_ball_parameter);
 		std::cout << "\t";
-		std::cout << soft_object.evaluate(i);
+		std::cout << soft_object.evaluate(i, soft_object_parameter);
 		std::cout << std::endl;
 	}
 }

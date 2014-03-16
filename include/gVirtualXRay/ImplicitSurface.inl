@@ -51,30 +51,31 @@
 namespace Graphics {
 	
 
-//-----------------------------------------------------------------------
-inline RATIONAL_NUMBER ImplicitSurface::evaluate(RATIONAL_NUMBER r) const
-//-----------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER ImplicitSurface::evaluate(RATIONAL_NUMBER r,
+												 const DensityFunctionParameterType& aParameter) const
+//----------------------------------------------------------------------------------------------------
 {
-	switch (m_density_function)
+	switch (aParameter.m_density_function)
 	{
 	case SPHERE:
 		return (evaluateSphere(r));
 		
 	case BLOBBY_MOLECULE:
-		return (evaluateBlobbyMolecule(r));
+		return (evaluateBlobbyMolecule(r, aParameter.m_a, aParameter.m_b));
 		
 	case META_BALL:
-		return (evaluateMetaBall(r));
+		return (evaluateMetaBall(r, aParameter.m_a, aParameter.m_b));
 		
 	case SOFT_OBJECT:
-		return (evaluateSoftObject(r));
+		return (evaluateSoftObject(r, aParameter.m_a, aParameter.m_b));
 
 	default:
 		return (0);
 	}
 }
 
-
+/*
 //--------------------------------------
 inline void ImplicitSurface::setSphere()
 //--------------------------------------
@@ -113,7 +114,7 @@ inline void ImplicitSurface::setSoftObject(RATIONAL_NUMBER a,
 	m_density_function = SOFT_OBJECT;
 	m_a = a;
 	m_b = b;	
-}
+}*/
 
 
 //-----------------------------------------------
@@ -132,20 +133,22 @@ inline void ImplicitSurface::resetControlLines()
 }
 
 
-//---------------------------------------------------------------------
-inline void ImplicitSurface::addControlPoint(const VEC3& aControlPoint)
-//---------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
+inline void ImplicitSurface::addControlPoint(const DensityFunctionParameterType& aParameter,
+											 const VEC3& aControlPoint)
+//------------------------------------------------------------------------------------------
 {
-	m_control_point_set.push_back(aControlPoint);
+	m_control_point_set.push_back(std::pair<DensityFunctionParameterType, VEC3>(aParameter, aControlPoint));
 }
 
 
-//---------------------------------------------------------------------
-inline void ImplicitSurface::addControlLine(const VEC3& aControlPoint1,
+//-----------------------------------------------------------------------------------------
+inline void ImplicitSurface::addControlLine(const DensityFunctionParameterType& aParameter,
+											const VEC3& aControlPoint1,
 											const VEC3& aControlPoint2)
-//---------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 {
-	m_control_line_set.push_back(std::pair<VEC3, VEC3>(aControlPoint1, aControlPoint2));
+	m_control_line_set.push_back(std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> >(aParameter, std::pair<VEC3, VEC3>(aControlPoint1, aControlPoint2)));
 }
 
 
@@ -158,7 +161,7 @@ inline const VEC3& ImplicitSurface::getControlPoint(unsigned int anIndex) const
 		OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
-	return (m_control_point_set[anIndex]);
+	return (m_control_point_set[anIndex].second);
 }
 
 
@@ -171,7 +174,7 @@ inline VEC3& ImplicitSurface::getControlPoint(unsigned int anIndex)
 		OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
-	return (m_control_point_set[anIndex]);
+	return (m_control_point_set[anIndex].second);
 }
 
 
@@ -184,7 +187,7 @@ inline const std::pair<VEC3, VEC3>& ImplicitSurface::getControlLine(unsigned int
 		OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 	
-	return (m_control_line_set[anIndex]);
+	return (m_control_line_set[anIndex].second);
 }
 
 
@@ -197,7 +200,7 @@ inline std::pair<VEC3, VEC3>& ImplicitSurface::getControlLine(unsigned int anInd
 		OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 	
-	return (m_control_line_set[anIndex]);
+	return (m_control_line_set[anIndex].second);
 }
 
 
@@ -259,12 +262,14 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluateSphere(RATIONAL_NUMBER r) const
 
 
 //-------------------------------------------------------------------------------------
-inline RATIONAL_NUMBER ImplicitSurface::evaluateBlobbyMolecule(RATIONAL_NUMBER r) const
+inline RATIONAL_NUMBER ImplicitSurface::evaluateBlobbyMolecule(RATIONAL_NUMBER r,
+															   RATIONAL_NUMBER a,
+															   RATIONAL_NUMBER b) const
 //-------------------------------------------------------------------------------------
 {
 	if (0 <= r)
 	{
-		return (m_a * exp(-m_b * r * r));		
+		return (a * exp(-b * r * r));		
 	}
 	else
 	{
@@ -274,16 +279,18 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluateBlobbyMolecule(RATIONAL_NUMBER r
 
 
 //-------------------------------------------------------------------------------
-inline RATIONAL_NUMBER ImplicitSurface::evaluateMetaBall(RATIONAL_NUMBER r) const
+inline RATIONAL_NUMBER ImplicitSurface::evaluateMetaBall(RATIONAL_NUMBER r,
+														 RATIONAL_NUMBER a,
+														 RATIONAL_NUMBER b) const
 //-------------------------------------------------------------------------------
 {
-	if (0 <= r && r <= m_b / 3.0)
+	if (0 <= r && r <= b / 3.0)
 	{
-		return (m_a * (1.0 - (3.0 * r * r) / (m_b * m_b)));
+		return (a * (1.0 - (3.0 * r * r) / (b * b)));
 	}
-	else if (m_b / 3.0 <= r && r <= m_b)
+	else if (b / 3.0 <= r && r <= b)
 	{
-		return (((3.0 * m_a) / 2.0) * pow((1.0 - (r / m_b)), 2.0));
+		return (((3.0 * a) / 2.0) * pow((1.0 - (r / b)), 2.0));
 	}
 	else //if (m_b <= r)
 	{
@@ -293,16 +300,18 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluateMetaBall(RATIONAL_NUMBER r) cons
 
 
 //---------------------------------------------------------------------------------
-inline RATIONAL_NUMBER ImplicitSurface::evaluateSoftObject(RATIONAL_NUMBER r) const
+inline RATIONAL_NUMBER ImplicitSurface::evaluateSoftObject(RATIONAL_NUMBER r,
+														   RATIONAL_NUMBER a,
+														   RATIONAL_NUMBER b) const
 //---------------------------------------------------------------------------------
 {
-	if (0 <= r && r <= m_b)
+	if (0 <= r && r <= b)
 	{
-		return (m_a * 
+		return (a * 
 				(1.0 - 
-						(( 4.0 * std::pow(r, 6)) / (9.0 * std::pow(m_b, 6))) + 
-						((17.0 * std::pow(r, 4)) / (9.0 * std::pow(m_b, 4))) - 
-						((22.0 * std::pow(r, 2)) / (9.0 * std::pow(m_b, 2)))));
+						(( 4.0 * std::pow(r, 6)) / (9.0 * std::pow(b, 6))) + 
+						((17.0 * std::pow(r, 4)) / (9.0 * std::pow(b, 4))) - 
+						((22.0 * std::pow(r, 2)) / (9.0 * std::pow(b, 2)))));
 	}
 	else
 	{
