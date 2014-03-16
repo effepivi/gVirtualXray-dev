@@ -46,11 +46,11 @@
 
 
 //------------------------------------------------------------------------------
-///	operator<<
+///	Create a cube.
 /**
-*	@param 	anOutputStream:	the output stream
-*	@param 	anException:	the exception to add to the output stream
-*	@return the output stream
+*	@param 	aLenght:	the length of the cube
+*	@param 	aCentre:	the centre of the cube
+*	@param 	apVertexSet:	the vertices of the cube
 */
 //------------------------------------------------------------------------------
 void buildCube(Utilities::RATIONAL_NUMBER aLenght,
