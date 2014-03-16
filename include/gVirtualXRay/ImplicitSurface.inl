@@ -219,6 +219,14 @@ inline void ImplicitSurface::writeVoxelData(const std::string& aFileName) const
 }
 
 
+//-------------------------------------------------------------------------------
+inline void ImplicitSurface::writePolygonMesh(const std::string& aFileName) const
+//-------------------------------------------------------------------------------
+{
+	writePolygonMesh(aFileName.data());
+}
+
+
 //-----------------------------------------------------------------------
 inline const std::vector<GLfloat>& ImplicitSurface::getVertexData() const
 //-----------------------------------------------------------------------

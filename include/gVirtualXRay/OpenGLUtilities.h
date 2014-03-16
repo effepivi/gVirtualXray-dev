@@ -114,9 +114,18 @@ void pushTextureRectangle();
 void pushTexture3D();
 
 
+//------------------------------------------------------------------------------
+///	Add the enable/disable state to the corresponding stack.
+/**
+*	@param 	aParameter:	parameter to add
+*/
+//------------------------------------------------------------------------------
 void pushEnableDisableState(GLenum aParameter);
 
 
+//------------------------------------------------------------------------------
+///	Add the current shader program to the corresponding stack.
+//------------------------------------------------------------------------------
 void pushShaderProgram();
 
 
@@ -148,9 +157,17 @@ void popFBO();
 void popTexture();
 
 
+//------------------------------------------------------------------------------
+///	Restore the enable/disable state to the corresponding stack,
+///	and remove the last state of the stack.
+//------------------------------------------------------------------------------
 void popEnableDisableState();
 
 
+//------------------------------------------------------------------------------
+///	Restore the shader program to the corresponding stack,
+///	and remove the last state of the stack.
+//------------------------------------------------------------------------------
 void popShaderProgram();
 
 
@@ -166,6 +183,17 @@ void loadIdentityProjectionMatrix();
 void loadIdentityModelViewMatrix();
 
 
+//------------------------------------------------------------------------------
+///	Replace the projection matrix by a perspective projection matrix.
+/**
+*	@param 	left:	Specify the coordinates for the left vertical clipping plane.
+*	@param 	right:	Specify the coordinates for the right vertical clipping plane
+*	@param 	bottom:	Specify the coordinates for the bottom horizontal clipping plane
+*	@param 	top:	Specify the coordinates for the top horizontal clipping plane
+*	@param 	near:	Specify the distances to the near clipping plane. The value must be positive
+*	@param 	far:	Specify the distances to the far clipping plane. The value must be positive
+*/
+//------------------------------------------------------------------------------
 void loadFrustumProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
@@ -176,10 +204,31 @@ void loadFrustumProjectionMatrix(GLdouble left,
 
 //------------------------------------------------------------------------------
 ///	Replace the projection matrix by a perspective projection matrix.
+/**
+*	@param 	fovy:	specifies the field of view angle, in degrees, in the y direction.
+*	@param 	aspect:	Specifies the aspect ratio that determines
+*                   the field of view in the x direction.
+*                   The aspect ratio is the ratio of x (width) to y (height).
+*	@param 	zNear:	Specifies the distance from the viewer to the near clipping plane
+*                   (always positive)
+*	@param 	zFar:	Specifies the distance from the viewer to the far clipping plane
+*                   (always positive).
+*/
 //------------------------------------------------------------------------------
 void loadPerspectiveProjectionMatrix(GLdouble  fovy,  GLdouble  aspect,  GLdouble  zNear,  GLdouble  zFar);
 
 
+//------------------------------------------------------------------------------
+///	Replace the projection matrix by a orthographic projection matrix.
+/**
+*	@param 	left:	Specify the coordinates for the left vertical clipping plane.
+*	@param 	right:	Specify the coordinates for the right vertical clipping plane
+*	@param 	bottom:	Specify the coordinates for the bottom horizontal clipping plane
+*	@param 	top:	Specify the coordinates for the top horizontal clipping plane
+*	@param 	near:	Specify the distances to the near clipping plane
+*	@param 	far:	Specify the distances to the far clipping plane
+*/
+//------------------------------------------------------------------------------
 void loadOrthoProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
@@ -188,6 +237,18 @@ void loadOrthoProjectionMatrix(GLdouble left,
         GLdouble far);
 
 
+//------------------------------------------------------------------------------
+///	Create a orthographic projection matrix.
+/**
+*	@param 	left:	Specify the coordinates for the left vertical clipping plane.
+*	@param 	right:	Specify the coordinates for the right vertical clipping plane
+*	@param 	bottom:	Specify the coordinates for the bottom horizontal clipping plane
+*	@param 	top:	Specify the coordinates for the top horizontal clipping plane
+*	@param 	near:	Specify the distances to the near clipping plane. The value must be positive
+*	@param 	far:	Specify the distances to the far clipping plane. The value must be positive
+*	@return the projection matrix
+*/
+//------------------------------------------------------------------------------
 MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
@@ -196,6 +257,18 @@ MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
         GLdouble far);
 
 
+//------------------------------------------------------------------------------
+///	Create a perspective projection matrix.
+/**
+*	@param 	left:	Specify the coordinates for the left vertical clipping plane.
+*	@param 	right:	Specify the coordinates for the right vertical clipping plane
+*	@param 	bottom:	Specify the coordinates for the bottom horizontal clipping plane
+*	@param 	top:	Specify the coordinates for the top horizontal clipping plane
+*	@param 	near:	Specify the distances to the near clipping plane. The value must be positive
+*	@param 	far:	Specify the distances to the far clipping plane. The value must be positive
+*	@return the projection matrix
+*/
+//------------------------------------------------------------------------------
 MATRIX4 buildFrustumProjectionMatrix(GLdouble left,
         GLdouble right,
         GLdouble bottom,
@@ -204,51 +277,120 @@ MATRIX4 buildFrustumProjectionMatrix(GLdouble left,
         GLdouble far);
 
 
-MATRIX4 buildPerspectiveProjectionMatrix(GLdouble  fovy,
+//------------------------------------------------------------------------------
+///	Create a perspective projection matrix.
+/**
+*	@param 	fovy:	specifies the field of view angle, in degrees, in the y direction.
+*	@param 	aspect:	Specifies the aspect ratio that determines
+*                   the field of view in the x direction.
+*                   The aspect ratio is the ratio of x (width) to y (height).
+*	@param 	zNear:	Specifies the distance from the viewer to the near clipping plane
+*                   (always positive)
+*	@param 	zFar:	Specifies the distance from the viewer to the far clipping plane
+*                   (always positive).
+*	@return the projection matrix
+*/
+//------------------------------------------------------------------------------
+MATRIX4 buildPerspectiveProjectionMatrix(GLdouble fovy,
 		GLdouble aspect,
 		GLdouble zNear,
-		GLdouble
-		zFar);
+		GLdouble zFar);
 
 
+//------------------------------------------------------------------------------
+///	Replace the modelling-viewing matrix by a viewing transformation matrix.
+/**
+*	@param 	eye:	Specifies the position of the eye point
+*	@param 	centre:	Specifies the position of the reference point
+*	@param 	up:		Specifies the direction of the up vector
+*/
+//------------------------------------------------------------------------------
 void loadLookAtModelViewMatrix(const VEC3& eye,
-		const VEC3& center,
+		const VEC3& centre,
 		const VEC3& up);
 
 
+//------------------------------------------------------------------------------
+///	Replace the modelling-viewing matrix by a viewing transformation matrix.
+/**
+*	@param 	eyeX:		Specifies the position of the eye point along the X-axis
+*	@param 	eyeY:		Specifies the position of the eye point along the Y-axis
+*	@param 	eyeZ:		Specifies the position of the eye point along the Z-axis
+*	@param 	centreX:	Specifies the position of the reference point along the X-axis
+*	@param 	centreY:	Specifies the position of the reference point along the Y-axis
+*	@param 	centreZ:	Specifies the position of the reference point along the Z-axis
+*	@param 	upX			Specifies the direction of the up vector along the X-axis
+*	@param 	upY			Specifies the direction of the up vector along the Y-axis
+*	@param 	upZ			Specifies the direction of the up vector along the Z-axis
+*/
+//------------------------------------------------------------------------------
 void loadLookAtModelViewMatrix(GLdouble eyeX,
 		GLdouble eyeY,
 		GLdouble eyeZ,
-		GLdouble centerX,
-		GLdouble centerY,
-		GLdouble centerZ,
+		GLdouble centreX,
+		GLdouble centreY,
+		GLdouble centreZ,
 		GLdouble upX,
 		GLdouble upY,
 		GLdouble upZ);
 
 
+//------------------------------------------------------------------------------
+///	Create a modelling-viewing matrix.
+/**
+*	@param 	eye:	Specifies the position of the eye point
+*	@param 	centre:	Specifies the position of the reference point
+*	@param 	up:		Specifies the direction of the up vector
+*	@return	the modelling-viewing matrix
+*/
+//------------------------------------------------------------------------------
 MATRIX4 buildLookAtModelViewMatrix(const VEC3& eye,
-		  const VEC3& center,
+		  const VEC3& centre,
 		  const VEC3& up);
 
 
+//------------------------------------------------------------------------------
+///	Create a modelling-viewing matrix.
+/**
+*	@param 	eyeX:		Specifies the position of the eye point along the X-axis
+*	@param 	eyeY:		Specifies the position of the eye point along the Y-axis
+*	@param 	eyeZ:		Specifies the position of the eye point along the Z-axis
+*	@param 	centreX:	Specifies the position of the reference point along the X-axis
+*	@param 	centreY:	Specifies the position of the reference point along the Y-axis
+*	@param 	centreZ:	Specifies the position of the reference point along the Z-axis
+*	@param 	upX			Specifies the direction of the up vector along the X-axis
+*	@param 	upY			Specifies the direction of the up vector along the Y-axis
+*	@param 	upZ			Specifies the direction of the up vector along the Z-axis
+*	@return	the modelling-viewing matrix
+*/
+//------------------------------------------------------------------------------
 MATRIX4 buildLookAtModelViewMatrix(GLdouble eyeX,
 		GLdouble eyeY,
 		GLdouble eyeZ,
-		GLdouble centerX,
-		GLdouble centerY,
-		GLdouble centerZ,
+		GLdouble centreX,
+		GLdouble centreY,
+		GLdouble centreZ,
 		GLdouble upX,
 		GLdouble upY,
 		GLdouble upZ);
 
 
+//------------------------------------------------------------------------------
+///	Replace the projection matrix by OpenGL's projection matrix.
+//------------------------------------------------------------------------------
 void loadProjectionMatrixFromOpenGL();
 
 
+//------------------------------------------------------------------------------
+///	Replace the modelling-viewing matrix by OpenGL's modelling-viewing matrix.
+//------------------------------------------------------------------------------
 void loadModelViewMatrixFromOpenGL();
 
 
+//------------------------------------------------------------------------------
+///	Load the modelling-viewing matrix in the current shader program, or
+///	replace OpenGL's modelling-viewing matrix.
+//------------------------------------------------------------------------------
 void applyModelViewMatrix();
 
 

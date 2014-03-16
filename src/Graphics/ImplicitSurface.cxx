@@ -285,8 +285,33 @@ void ImplicitSurface::writeVoxelData(const char* aFileName) const
 
 
 //-----------------------------------------------------------------
-void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
+void ImplicitSurface::writePolygonMesh(const char* aFileName) const
 //-----------------------------------------------------------------
+{
+#ifdef HAS_ITK
+	typedef itk::MeshFileWriter< MeshType > WriterType;
+	WriterType::Pointer writer = WriterType::New();
+	writer->SetFileTypeAsBINARY ();
+	writer->SetFileName(aFileName);
+	writer->SetInput(m_p_iso_surface_extracter->GetOutput());
+	try
+	{
+		writer->Update();
+	}
+	catch( itk::ExceptionObject & error )
+	{
+		std::cerr << "Error: " << error << std::endl;
+		exit(EXIT_FAILURE);
+	}
+#else // HAS_ITK
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, you have to enable ITK using CMake.");
+#endif // HAS_ITK
+}
+
+
+//------------------------------------------------------------------------
+void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold)
+//------------------------------------------------------------------------
 {
 #ifdef HAS_ITK
 	// Clear the data
@@ -375,21 +400,6 @@ void ImplicitSurface::extractIsoSurface(RATIONAL_NUMBER aThreshold)
 			}
 		}
 	}
-
-	/*typedef itk::MeshFileWriter< MeshType > WriterType;
-	WriterType::Pointer writer = WriterType::New();
-	writer->SetFileTypeAsBINARY ();
-	writer->SetFileName("mesh.obj");
-	writer->SetInput(p_mesh);
-	try
-	{
-		writer->Update();
-	}
-	catch( itk::ExceptionObject & error )
-	{
-		std::cerr << "Error: " << error << std::endl;
-		exit(EXIT_FAILURE);
-	}*/
 #else // HAS_ITK
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, you have to enable ITK using CMake.");
 #endif // HAS_ITK
