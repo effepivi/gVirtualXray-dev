@@ -226,24 +226,12 @@ void VBO::setIndexData(const GLuint aNumberOfIndexes,
 	m_index_data_type = anIndexDataType;
 	switch (m_index_data_type)
 	{
-	case GL_INT:
-		m_index_size *= sizeof(GLint);
-		break;
-
 	case GL_UNSIGNED_INT:
 		m_index_size *= sizeof(GLuint);
 		break;
 
-	case GL_SHORT:
-		m_index_size *= sizeof(GLshort);
-		break;
-
 	case GL_UNSIGNED_SHORT:
 		m_index_size *= sizeof(GLushort);
-		break;
-
-	case GL_BYTE:
-		m_index_size *= sizeof(GLbyte);
 		break;
 
 	case GL_UNSIGNED_BYTE:

@@ -170,7 +170,7 @@ public:
 	void extractIsoSurface(RATIONAL_NUMBER aThreshold = 0);
 
 	const std::vector<GLfloat>& getVertexData() const;
-	const std::vector<GLint>& getIndexData() const;
+	const std::vector<GLuint>& getIndexData() const;
 
 
 //******************************************************************************
@@ -203,7 +203,7 @@ protected:
 	std::vector<std::pair<VEC3, VEC3> > m_control_line_set;
 
 	std::vector<GLfloat> m_p_vertex_data;
-	std::vector<GLint> m_p_index_data;
+	std::vector<GLuint> m_p_index_data;
 };
 
 

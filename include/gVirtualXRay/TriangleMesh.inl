@@ -48,20 +48,21 @@
 namespace Graphics {
 
 
-//--------------------------------------
+//---------------------------------------
 inline TriangleMesh::TriangleMesh():
-//--------------------------------------
+//---------------------------------------
 	m_use_hounsfield_value(true),
 	m_hounsfield_value(0),
 	m_attenuation_coefficient(0),
 	m_bounding_box_diagonal(0),
+	m_p_vertex_set(0),
+	m_p_index_set(0),
 	m_number_of_indices(0),
 	m_number_of_vertices(0),
-	m_external_index_set(0),
-	m_external_vertex_set(0),
-	m_external_index_data_type(GL_NONE),
-	m_external_vertex_data_type(GL_NONE)
-//--------------------------------------
+	m_index_data_type(GL_NONE),
+	m_vertex_data_type(GL_NONE),
+	m_external_data_flag(false)
+//---------------------------------------
 {
 }
 
@@ -93,16 +94,36 @@ inline void TriangleMesh::reset()
 	
 	m_p_face_normal_set.clear();
 	m_p_vertex_normal_set.clear();
-	m_p_internal_vertex_set.clear();
-	m_p_internal_index_set.clear();
+	
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_index_set  = 0;
+		m_p_vertex_set = 0;
+	}
+	// The data is manage internally
+	else
+	{
+		if (m_p_index_set)
+		{
+			delete [] m_p_index_set;
+			m_p_index_set = 0;
+		}
+
+		if (m_p_vertex_set)
+		{
+			delete [] m_p_vertex_set;
+			m_p_vertex_set = 0;
+		}
+	}
 
 	m_number_of_indices  = 0;
 	m_number_of_vertices = 0;
 
-	m_external_index_set  = 0;
-	m_external_vertex_set = 0;
-	m_external_index_data_type = GL_NONE;
-	m_external_vertex_data_type = GL_NONE;
+	m_index_data_type = GL_NONE;
+	m_vertex_data_type = GL_NONE;
+	
+	m_external_data_flag = false;
 }
 
 
@@ -119,7 +140,7 @@ inline void TriangleMesh::display(bool aVBOFlag) const
 	else
 	{
 		// There is an index
-		if (getIndexNumber())
+		if (m_number_of_indices)
 		{
 			displayUsingImmediateModeWithIndex();
 		}
@@ -140,7 +161,7 @@ inline void TriangleMesh::displayWireFrame() const
 //------------------------------------------------
 {
 	// There is an index
-	if (getIndexNumber())
+	if (m_number_of_indices)
 	{
 		displayWireFrameWithIndex();
 	}
@@ -160,10 +181,10 @@ inline void TriangleMesh::displayVertexNormal(GLfloat aNormalSize) const
 //----------------------------------------------------------------------
 {
 	// There are as many normals as there are vertices
-	if (getVertexNormalNumber() == getVertexNumber())
+	if (getVertexNormalNumber() == m_number_of_vertices)
 	{
 		glBegin(GL_LINES);
-		for (unsigned int i(0); i < getVertexNumber(); ++i)
+		for (unsigned int i(0); i < m_number_of_vertices; ++i)
 		{
 			VEC3 vertex(getVertex(i));
 			VEC3 normal(getVertexNormal(i));
@@ -180,7 +201,7 @@ inline void TriangleMesh::displayVertexNormal(GLfloat aNormalSize) const
 	else
 	{
 		std::stringstream error_message;
-		error_message << "There are not as many normals (" << getVertexNormalNumber() << ") as there are vertices (" << getVertexNumber() << ").";
+		error_message << "There are not as many normals (" << getVertexNormalNumber() << ") as there are vertices (" << m_number_of_vertices << ").";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 }
@@ -218,7 +239,7 @@ inline bool TriangleMesh::useVBO(GLenum aTypeOfVBO)
 //-------------------------------------------------
 {
 	// There is no data to store in a VBO
-	if (getVertexNumber() && (getVertexNormalNumber() || getFaceNormalNumber()))
+	if (m_number_of_vertices && (getVertexNormalNumber() || getFaceNormalNumber()))
 	{
 		// Create a VBO if possible
 		updateVBO(aTypeOfVBO);
@@ -300,18 +321,15 @@ inline const VEC3& TriangleMesh::getMaxCorner() const
 inline unsigned int TriangleMesh::getTriangleNumber() const
 //---------------------------------------------------------
 {
-	int number_of_indices(getIndexNumber());
-	int number_of_vertices(getVertexNumber());
-
 	// Return the number of triangles
-	if (number_of_indices)
+	if (m_number_of_indices)
 	{
-		return (number_of_indices / 3);
+		return (m_number_of_indices / 3);
 	}
 	else
 	{
 		// There are 3 vertices per triangle
-		return (number_of_vertices / 3);
+		return (m_number_of_vertices / 3);
 	}
 }
 
@@ -348,47 +366,37 @@ inline unsigned int TriangleMesh::getVertexNumber() const
 inline VEC3 TriangleMesh::getVertex(unsigned int anIndex) const
 //-------------------------------------------------------------
 {
-	if (getVertexNumber() <= anIndex)
+	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 	
 	double x, y, z;
 
-	// By default try the external data
-	if (m_external_vertex_set)
+	switch (m_vertex_data_type)
 	{
-		switch (m_external_vertex_data_type)
+	case GL_FLOAT:
 		{
-		case GL_FLOAT:
-			{
-				GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_external_vertex_set));
-				x = p_temp[anIndex * 3 + 0];
-				y = p_temp[anIndex * 3 + 1];
-				z = p_temp[anIndex * 3 + 2];
-			}
-			break;
-				
-		case GL_DOUBLE:
-			{
-				GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_external_vertex_set));
-				x = p_temp[anIndex * 3 + 0];
-				y = p_temp[anIndex * 3 + 1];
-				z = p_temp[anIndex * 3 + 2];
-			}
-			break;
-			
-		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
+			x = p_temp[anIndex * 3 + 0];
+			y = p_temp[anIndex * 3 + 1];
+			z = p_temp[anIndex * 3 + 2];
 		}
+		break;
+			
+	case GL_DOUBLE:
+		{
+			GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
+			x = p_temp[anIndex * 3 + 0];
+			y = p_temp[anIndex * 3 + 1];
+			z = p_temp[anIndex * 3 + 2];
+		}
+		break;
+		
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
 	}
-	// Use the internal data
-	else
-	{
-		x = m_p_internal_vertex_set[anIndex * 3 + 0];
-		y = m_p_internal_vertex_set[anIndex * 3 + 1];
-		z = m_p_internal_vertex_set[anIndex * 3 + 2];
-	}
+
 	return (VEC3(x, y, z));
 }
 
@@ -398,44 +406,33 @@ inline void TriangleMesh::setVertex(unsigned int anIndex,
 									const VEC3& aVertex)
 //-------------------------------------------------------
 {
-	if (getVertexNumber() <= anIndex)
+	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
-	// By default try the external data
-	if (m_external_vertex_set)
+	switch (m_vertex_data_type)
 	{
-		switch (m_external_vertex_data_type)
+	case GL_FLOAT:
 		{
-		case GL_FLOAT:
-			{
-				GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_external_vertex_set));
-				p_temp[anIndex * 3 + 0] = aVertex.getX();
-				p_temp[anIndex * 3 + 1] = aVertex.getY();
-				p_temp[anIndex * 3 + 2] = aVertex.getZ();
-			}
-			break;
-				
-		case GL_DOUBLE:
-			{
-				GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_external_vertex_set));
-				p_temp[anIndex * 3 + 0] = aVertex.getX();
-				p_temp[anIndex * 3 + 1] = aVertex.getY();
-				p_temp[anIndex * 3 + 2] = aVertex.getZ();
-			}
-			break;
-			
-		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
+			p_temp[anIndex * 3 + 0] = aVertex.getX();
+			p_temp[anIndex * 3 + 1] = aVertex.getY();
+			p_temp[anIndex * 3 + 2] = aVertex.getZ();
 		}
-	}
-	// Use the internal data
-	else
-	{
-		m_p_internal_vertex_set[anIndex * 3 + 0] = aVertex.getX();
-		m_p_internal_vertex_set[anIndex * 3 + 1] = aVertex.getY();
-		m_p_internal_vertex_set[anIndex * 3 + 2] = aVertex.getZ();
+		break;
+			
+	case GL_DOUBLE:
+		{
+			GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
+			p_temp[anIndex * 3 + 0] = aVertex.getX();
+			p_temp[anIndex * 3 + 1] = aVertex.getY();
+			p_temp[anIndex * 3 + 2] = aVertex.getZ();
+		}
+		break;
+		
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
 	}
 }
 
@@ -452,66 +449,36 @@ inline unsigned int TriangleMesh::getIndexNumber() const
 inline int TriangleMesh::getIndex(unsigned int anIndex) const
 //-----------------------------------------------------------
 {
-	if (getIndexNumber() <= anIndex)
+	if (m_number_of_indices <= anIndex && m_p_index_set)
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
-	// By default try the external data
-	if (m_external_index_set)
+	switch (m_index_data_type)
 	{
-		switch (m_external_index_data_type)
+	case GL_UNSIGNED_INT:
 		{
-		case GL_INT:
-			{
-				GLint* p_temp(reinterpret_cast<GLint*>(m_external_index_set));
-				return (p_temp[anIndex]);
-			}
-			break;
-			
-		case GL_UNSIGNED_INT:
-			{
-				GLuint* p_temp(reinterpret_cast<GLuint*>(m_external_index_set));
-				return (int(p_temp[anIndex]));
-			}
-			break;
-			
-		case GL_SHORT:
-			{
-				GLshort* p_temp(reinterpret_cast<GLshort*>(m_external_index_set));
-				return (int(p_temp[anIndex]));
-			}
-			break;
-			
-		case GL_UNSIGNED_SHORT:
-			{
-				GLushort* p_temp(reinterpret_cast<GLushort*>(m_external_index_set));
-				return (int(p_temp[anIndex]));
-			}
-			break;
-			
-		case GL_BYTE:
-			{
-				GLbyte* p_temp(reinterpret_cast<GLbyte*>(m_external_index_set));
-				return (int(p_temp[anIndex]));
-			}
-			break;
-			
-		case GL_UNSIGNED_BYTE:
-			{
-				GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_external_index_set));
-				return (int(p_temp[anIndex]));
-			}
-			break;
-			
-		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			GLuint* p_temp(reinterpret_cast<GLuint*>(m_p_index_set));
+			return (int(p_temp[anIndex]));
 		}
-	}
-	// Use the internal data
-	else
-	{
-		return (m_p_internal_index_set[anIndex]);
+		break;
+		
+	case GL_UNSIGNED_SHORT:
+		{
+			GLushort* p_temp(reinterpret_cast<GLushort*>(m_p_index_set));
+			return (int(p_temp[anIndex]));
+		}
+		break;
+		
+	case GL_UNSIGNED_BYTE:
+		{
+			GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
+			return (int(p_temp[anIndex]));
+		}
+		break;
+		
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
 	}
 }
 
@@ -582,42 +549,6 @@ inline void TriangleMesh::setExternalData(const std::vector<GLdouble>* aVertexAr
 
 //---------------------------------------------------------------------------------
 inline void TriangleMesh::setExternalData(const std::vector<GLfloat>* aVertexArray,
-										  const std::vector<GLint>* anIndexArray,
-										  bool aCreateVBOFlag,
-										  GLenum aTypeOfVBO)
-//---------------------------------------------------------------------------------
-{
-	setExternalData(&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_INT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
-}
-
-
-//----------------------------------------------------------------------------------
-inline void TriangleMesh::setExternalData(const std::vector<GLdouble>* aVertexArray,
-										  const std::vector<GLint>* anIndexArray,
-										  bool aCreateVBOFlag,
-										  GLenum aTypeOfVBO)
-//----------------------------------------------------------------------------------
-{
-	setExternalData(&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_INT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
-}
-
-
-//---------------------------------------------------------------------------------
-inline void TriangleMesh::setExternalData(const std::vector<GLfloat>* aVertexArray,
 										  const std::vector<GLuint>* anIndexArray,
 										  bool aCreateVBOFlag,
 										  GLenum aTypeOfVBO)
@@ -665,22 +596,24 @@ inline void TriangleMesh::setExternalData(const GLvoid* aVertexArray,
 {
 	reset();
 
-	m_external_vertex_set       = const_cast<GLvoid*>(aVertexArray);
+	m_external_data_flag = true;
+	
+	m_p_vertex_set       = const_cast<GLvoid*>(aVertexArray);
 	m_number_of_vertices        = aNumberOfVertices;
-	m_external_vertex_data_type = aVertexDataType;
+	m_vertex_data_type = aVertexDataType;
 
 	// There are index data
 	if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
 	{
-		m_external_index_set       = const_cast<GLvoid*>(anIndexArray);
-		m_number_of_indices        = aNumberOfIndices;
-		m_external_index_data_type = anIndexDataType;
+		m_p_index_set       = const_cast<GLvoid*>(anIndexArray);
+		m_number_of_indices = aNumberOfIndices;
+		m_index_data_type   = anIndexDataType;
 	}
 	else
 	{
-		m_external_index_set = 0;
+		m_p_index_set       = 0;
 		m_number_of_indices = 0;
-		m_external_index_data_type  = GL_NONE;
+		m_index_data_type   = GL_NONE;
 
 	}
 	
@@ -703,13 +636,12 @@ inline void TriangleMesh::computeBoundingBox()
 //--------------------------------------------
 {
 	// There are vertices
-	unsigned int number_of_vertices(getVertexNumber());
-	if (number_of_vertices)
+	if (m_number_of_vertices)
 	{
 		m_min_corner = getVertex(0);
 		m_max_corner = getVertex(0);
 
-		for (unsigned int i(1); i < number_of_vertices; ++i)
+		for (unsigned int i(1); i < m_number_of_vertices; ++i)
 		{
 			VEC3 vertex(getVertex(i));
 
@@ -732,10 +664,9 @@ inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
 //----------------------------------------------------------
 {
 	// There are vertices
-	unsigned int number_of_vertices(getVertexNumber());
-	if (number_of_vertices)
+	if (m_number_of_vertices)
 	{
-		for (unsigned int i(0); i < number_of_vertices; ++i)
+		for (unsigned int i(0); i < m_number_of_vertices; ++i)
 		{
 			VEC3 vertex(getVertex(i) * aScale);
 			setVertex(i, vertex);
@@ -759,19 +690,22 @@ inline void TriangleMesh::applyScale(RATIONAL_NUMBER aScale)
 inline void TriangleMesh::translate(const VEC3& aTranslationVector)
 //-----------------------------------------------------------------
 {
-	for (unsigned int i(0); i < getVertexNumber(); i++)
+	if (m_number_of_vertices)
 	{
-		VEC3 vertex(getVertex(i) + aTranslationVector);
-		setVertex(i, vertex);
-	}
-
-	m_min_corner += aTranslationVector;
-	m_max_corner += aTranslationVector;
-
-	// Update the VBO
-	if (m_vbo.isReady())
-	{
-		updateVBO(m_vbo.getBufferUsageHint());
+		for (unsigned int i(0); i < m_number_of_vertices; i++)
+		{
+			VEC3 vertex(getVertex(i) + aTranslationVector);
+			setVertex(i, vertex);
+		}
+	
+		m_min_corner += aTranslationVector;
+		m_max_corner += aTranslationVector;
+	
+		// Update the VBO
+		if (m_vbo.isReady())
+		{
+			updateVBO(m_vbo.getBufferUsageHint());
+		}
 	}
 }
 

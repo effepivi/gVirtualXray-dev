@@ -283,7 +283,7 @@ public:
 	unsigned int getIndexNumber() const;
 
 
-	void mergeVertices();
+	void mergeVertices(bool aPrintDebugInfoFlag = false);
 
 
 	VEC3 getVertex(unsigned int anIndex) const;
@@ -308,17 +308,6 @@ public:
 			bool aCreateVBOFlag,
 			GLenum aTypeOfVBO);
 
-
-	void setExternalData(const std::vector<GLfloat>* aVertexArray,
-			const std::vector<GLint>* anIndexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
-
-
-	void setExternalData(const std::vector<GLdouble>* aVertexArray,
-			const std::vector<GLint>* anIndexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
 
 	void setExternalData(const std::vector<GLfloat>* aVertexArray,
 			const std::vector<GLuint>* anIndexArray,
@@ -400,19 +389,19 @@ protected:
 
 
 	/// Array containing the vertices
-	std::vector<GLfloat> m_p_internal_vertex_set;
+	GLvoid* m_p_vertex_set;
 
 
 	/// Array containing the index
-	std::vector<GLuint> m_p_internal_index_set;
+	GLvoid* m_p_index_set;
 
 
 	unsigned int m_number_of_indices;
 	unsigned int m_number_of_vertices;
-	GLvoid* m_external_index_set;
-	GLvoid* m_external_vertex_set;
-	GLenum m_external_index_data_type;
-	GLenum m_external_vertex_data_type;
+	GLenum m_index_data_type;
+	GLenum m_vertex_data_type;
+
+	bool m_external_data_flag;
 };
 
 

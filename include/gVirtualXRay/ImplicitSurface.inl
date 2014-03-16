@@ -227,9 +227,9 @@ inline const std::vector<GLfloat>& ImplicitSurface::getVertexData() const
 }
 
 
-//--------------------------------------------------------------------
-inline const std::vector<GLint>& ImplicitSurface::getIndexData() const
-//--------------------------------------------------------------------
+//---------------------------------------------------------------------
+inline const std::vector<GLuint>& ImplicitSurface::getIndexData() const
+//---------------------------------------------------------------------
 {
 	return (m_p_index_data);
 }
