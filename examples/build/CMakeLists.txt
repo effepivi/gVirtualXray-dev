@@ -37,8 +37,15 @@ IF(WIN32)
 ENDIF(WIN32)
 
 
+IF(COMMAND cmake_policy)
+       cmake_policy(SET CMP0011 NEW)
+ENDIF(COMMAND cmake_policy)
+
+
 # Enable all compiler warnings #################################################
-add_definitions( -Wall )
+IF(NOT WIN32)
+	add_definitions( -Wall )
+ENDIF(NOT WIN32)
 
 
 # Project name #################################################################
@@ -47,14 +54,6 @@ set (examples_VERSION_MAJOR 1)
 set (examples_VERSION_MINOR 2)
 set (examples_VERSION_PATCH 0)
 
-IF(APPLE)
-	OPTION(USE_BUNDLE "Use Apple Bundle." ON)
-	SET(USE_GLUT 1)
-ELSE(APPLE)
-	OPTION(USE_FLTK "Use FLTK." ON)
-	OPTION(USE_GLUT "Use GLUT." OFF)
-ENDIF(APPLE)
-
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
@@ -62,7 +61,6 @@ INCLUDE_DIRECTORIES("../include")
 
 
 # FLTK ########################################################################
-IF (USE_FLTK)
 FIND_PACKAGE(FLTK REQUIRED)
 if(FLTK_FOUND)
         ADD_DEFINITIONS(-DHAS_FLTK)
@@ -70,8 +68,7 @@ if(FLTK_FOUND)
         SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
 ELSE(FLTK_FOUND)
         MESSAGE(FATAL_ERROR "FLTK not found.")
-endif(FLTK_FOUND)
-ENDIF (USE_FLTK)
+ENDIF(FLTK_FOUND)
 
 
 # OpenGL ######################################################################
@@ -82,19 +79,6 @@ IF(OPENGL_FOUND)
 ELSE(OPENGL_FOUND)
 	MESSAGE(FATAL_ERROR "OpenGL not found.")
 ENDIF(OPENGL_FOUND)
-
-
-# GLUT ########################################################################
-IF (USE_GLUT)
-FIND_PACKAGE(GLUT REQUIRED)
-IF(GLUT_FOUND)
-        ADD_DEFINITIONS(-DHAS_GLUT)
-        INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-        SET(requiredLibs ${requiredLibs} ${GLUT_glut_LIBRARY})
-ELSE(GLUT_FOUND)
-        MESSAGE(FATAL_ERROR "GLUT not found.")
-ENDIF(GLUT_FOUND)
-ENDIF (USE_GLUT)
 
 
 FIND_PACKAGE(GLEW REQUIRED)
@@ -131,52 +115,11 @@ IF(NOT GZIP_FOUND)
 ENDIF(NOT GZIP_FOUND)
 
 
-# portably convert binary file to header
-FUNCTION(FILE2C INFILE VARNAME OUTFILE)
-	FILE(READ ${INFILE} HEXFILE HEX)
-	STRING(LENGTH ${HEXFILE} XRSLEN)
-	SET(HEXPOS 0)
-	FILE(WRITE ${OUTFILE} "/* generated from ${INFILE}.tmp; do not edit */\n" "const unsigned char ${VARNAME}[] = {")
-	
-	WHILE(${HEXPOS} LESS ${XRSLEN})
-		MATH(EXPR LPOS "${HEXPOS} % 32")
-	
-		IF(NOT ${LPOS})
-			FILE(APPEND ${OUTFILE} "\n")
-		ENDIF(NOT ${LPOS})
-	
-		STRING(SUBSTRING ${HEXFILE} ${HEXPOS} 2 HEXBYTE)
-		FILE(APPEND ${OUTFILE} "0x${HEXBYTE}")
-		MATH(EXPR HEXPOS "${HEXPOS} + 2")
-	
-		IF(${HEXPOS} LESS ${XRSLEN})
-			FILE(APPEND ${OUTFILE} ",")
-		ENDIF(${HEXPOS} LESS ${XRSLEN})
-	ENDWHILE(${HEXPOS} LESS ${XRSLEN})
-	FILE(APPEND ${OUTFILE} "};\n")
-ENDFUNCTION(FILE2C)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../build/CreateHeaderFiles.cmake)
+CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 
 
-foreach(F ${RESOURCES_SOURCES})
-	# Get the file name
-	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
-
-	execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${F} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
-
-	execute_process(COMMAND ${GZIP_TOOL} --best --force --quiet ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
-
-	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
-	FILE2C(${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz g_${VARIABLE_NAME} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
-
-	add_dependencies(gVirtualXRay ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
-
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz)
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
-endforeach()
-
-
-# Create the the main programs #################################################
+# Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
 TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
@@ -200,7 +143,6 @@ ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_
 TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_BUNDLE)
-
 	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns)
         ADD_DEFINITIONS(-DHAS_BUNDLE)
 	SET_SOURCE_FILES_PROPERTIES (
@@ -222,3 +164,15 @@ IF(USE_BUNDLE)
 	set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
 	set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
 ENDIF(USE_BUNDLE)
+
+
+# Make sure the source is generated before the executable builds.
+ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
+ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
+ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
+ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
+ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
+IF(USE_BUNDLE)
+	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
+ENDIF(USE_BUNDLE)
+

@@ -66,7 +66,9 @@ configure_file (
 
 
 # Enable all compiler warnings #################################################
-add_definitions( -Wall )
+IF(NOT WIN32)
+	add_definitions( -Wall )
+ENDIF(NOT WIN32)
 
 
 # Libraries ####################################################################
@@ -75,7 +77,7 @@ SET(requiredLibs)
 
 
 # Options ######################################################################
-OPTION(USE_ITK   "Use ITK if possible." OFF)
+OPTION(USE_ITK   "Use ITK if possible." ON)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
@@ -203,14 +205,14 @@ ENDIF(GLEW_FOUND)
 
 
 # FreeImage ####################################################################
-FIND_PACKAGE(FreeImage)
-IF(FREEIMAGE_FOUND)
-	ADD_DEFINITIONS(-DHAS_FREEIMAGE)
-	INCLUDE_DIRECTORIES(${FREEIMAGE_INCLUDE_DIR})
-	SET(optionalLibs ${optionalLibs} ${FREEIMAGE_LIBRARY})
-ELSE(FREEIMAGE_FOUND)
-	MESSAGE("FREEIMAGE not found.")
-ENDIF(FREEIMAGE_FOUND)
+#FIND_PACKAGE(FreeImage)
+#IF(FREEIMAGE_FOUND)
+#	ADD_DEFINITIONS(-DHAS_FREEIMAGE)
+#	INCLUDE_DIRECTORIES(${FREEIMAGE_INCLUDE_DIR})
+#	SET(optionalLibs ${optionalLibs} ${FREEIMAGE_LIBRARY})
+#ELSE(FREEIMAGE_FOUND)
+#	MESSAGE("FREEIMAGE not found.")
+#ENDIF(FREEIMAGE_FOUND)
 
 
 # ITK ##########################################################################
@@ -274,53 +276,16 @@ IF(NOT GZIP_FOUND)
 ENDIF(NOT GZIP_FOUND)
 
 
-# portably convert binary file to header
-FUNCTION(FILE2C INFILE VARNAME OUTFILE)
-	FILE(READ ${INFILE} HEXFILE HEX)
-	STRING(LENGTH ${HEXFILE} XRSLEN)
-	SET(HEXPOS 0)
-	FILE(WRITE ${OUTFILE} "/* generated from ${INFILE}.tmp; do not edit */\n" "const unsigned char ${VARNAME}[] = {")
-	
-	WHILE(${HEXPOS} LESS ${XRSLEN})
-		MATH(EXPR LPOS "${HEXPOS} % 32")
-	
-		IF(NOT ${LPOS})
-			FILE(APPEND ${OUTFILE} "\n")
-		ENDIF(NOT ${LPOS})
-	
-		STRING(SUBSTRING ${HEXFILE} ${HEXPOS} 2 HEXBYTE)
-		FILE(APPEND ${OUTFILE} "0x${HEXBYTE}")
-		MATH(EXPR HEXPOS "${HEXPOS} + 2")
-	
-		IF(${HEXPOS} LESS ${XRSLEN})
-			FILE(APPEND ${OUTFILE} ",")
-		ENDIF(${HEXPOS} LESS ${XRSLEN})
-	ENDWHILE(${HEXPOS} LESS ${XRSLEN})
-	FILE(APPEND ${OUTFILE} "};\n")
-ENDFUNCTION(FILE2C)
-
-
-foreach(F ${RESOURCES_SOURCES})
-	# Get the file name
-	GET_FILENAME_COMPONENT(FILE_NAME ${F} NAME)
-
-	execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${F} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
-
-	execute_process(COMMAND ${GZIP_TOOL} --best --force --quiet ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
-
-	STRING(REGEX REPLACE "\\." "_" VARIABLE_NAME ${FILE_NAME})
-	FILE2C(${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz g_${VARIABLE_NAME} ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
-
-	add_dependencies(gVirtualXRay ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
-
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp)
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.tmp.gz)
-	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/${FILE_NAME}.h)
-endforeach()
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
+CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
 # Linkage of the target ########################################################
 TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+
+# Make sure the source is generated before the executable builds.
+ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
 
 # Doxygen documentation ########################################################
