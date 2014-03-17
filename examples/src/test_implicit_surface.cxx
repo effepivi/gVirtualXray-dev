@@ -1091,6 +1091,7 @@ void loadImplicitSurface()
 	density_function_parameter.m_b = 3;
 	g_soft_object_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
 	g_soft_object_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_soft_object_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
 
     // Set geometry
 	extractIsoSurface();
