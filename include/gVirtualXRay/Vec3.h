@@ -338,7 +338,23 @@ public:
 	const Vec3 operator-() const;
 
 
+	//---------------------------------------------------------------------------
+	///	Operator ==
+	/**
+	*	@param aVector:	the vector to compare the current vector with
+	*	@return true if the two vectors are the same, false if the two vectors are different
+	*/
+	//---------------------------------------------------------------------------
 	bool operator==(const Vec3& aVector) const;
+
+
+	//---------------------------------------------------------------------------
+	///	Operator !=
+	/**
+	*	@param aVector:	the vector to compare the current vector with
+	*	@return true if the two vectors are different, false if the two vectors are the same
+	*/
+	//---------------------------------------------------------------------------
 	bool operator!=(const Vec3& aVector) const;
 
 

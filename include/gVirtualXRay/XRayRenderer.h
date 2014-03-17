@@ -284,20 +284,98 @@ public:
 	void display();
 
 
+	//--------------------------------------------------------------------------
+	///	Get the attenuation coefficient of water for a given energy.
+	///	The value is computed using linear interpolation.
+	/**
+	*	@param anIncidentEnergy:	the energy
+	*	@return the corresponding attenuation coefficient of water
+	*/
+	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER getMuWaterLinearInterpolation(const RATIONAL_NUMBER& anIncidentEnergy);
+
+
+	//--------------------------------------------------------------------------
+	///	Get the attenuation coefficient of water for a given energy.
+	///	The value is computed using linear interpolation on a logarithmic scale.
+	/**
+	*	@param anIncidentEnergy:	the energy
+	*	@return the corresponding attenuation coefficient of water
+	*/
+	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER getMuWaterLogLinearInterpolation(const RATIONAL_NUMBER& anIncidentEnergy);
+
+
+	//--------------------------------------------------------------------------
+	///	Convert a Hounsfield value into an attenuation coefficient.
+	/**
+	*	@param HU:	the Hounsfield value to convert
+	*	@param mu_water:	the attenuation coefficient of water at a given energy
+	*	@return the corresponding attenuation coefficient
+	*/
+	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER convertHounsfieldValue2Mu(const RATIONAL_NUMBER& HU,
 			const RATIONAL_NUMBER& mu_water) const;
 
+
+	//--------------------------------------------------------------------------
+	///	Display the final image in negative or not.
+	/**
+	*	@param aFlag:	true is the final image is displayed in negative, false it is not (default value: true)
+	*/
+	//--------------------------------------------------------------------------
 	void useNegativeFilteringFlag(bool aFlag = true);
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the flag control the display of the final in negative.
+	/**
+	*	@return true if the final image is displayed in negative, false it is not
+	*/
+	//--------------------------------------------------------------------------
 	bool getNegativeFilteringFlag() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Output the talbe of attenuation coefficients of water into a data stream.
+	/**
+	*	@param anOutputStream:	the output data stream
+	*/
+	//--------------------------------------------------------------------------
 	void printMuWaterTable(std::ostream& anOutputStream);
 
-	int getNumberOfInnerSurfaces() const;
 
-	int getNumberOfOuterSurfaces() const;
+	//--------------------------------------------------------------------------
+	///	Accessor on the number of inner surfaces (e.g. an internal organ in case of a medical application).
+	/**
+	*	@return the number of inner surfaces
+	*/
+	//--------------------------------------------------------------------------
+	unsigned int getNumberOfInnerSurfaces() const;
 
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the number of outer surfaces (e.g. the skin surface in case of a medical application).
+	///	This value is either equal to 0 or 1.
+	/**
+	*	@return the number of outer surfaces
+	*/
+	//--------------------------------------------------------------------------
+	unsigned int getNumberOfOuterSurfaces() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Display a given inner surface (e.g. an internal organ in case of a medical application).
+	/**
+	*	@param anIndex:	the index of the inner surface to display
+	*/
+	//--------------------------------------------------------------------------
 	void displayInnerSurface(unsigned int anIndex) const;
+
+
+	//--------------------------------------------------------------------------
+	///	Display the outer surface (e.g. the skin surface in case of a medical application).
+	//--------------------------------------------------------------------------
 	void displayOuterSurface() const;
 
 
@@ -456,8 +534,33 @@ protected:
 			const MATRIX4& aModellingTransformationMatrix);
 
 
-	void computeCumulatedLBuffers(int aBlendingFlag);
-	void computeSumMUxDx(GLfloat HU, int anObjectID);
+	//--------------------------------------------------------------------------
+	///	Update the L-buffer of inner surfaces.
+	///	It integrates the L-buffers of all the inner surfaces.
+	/**
+	*	@param anObjectID:	the ID of the surface to integrate. If anObjectID is
+	*						equal to zero, the cumulated L-buffer is
+	*						re-initialsed with the L-buffer of this surface.
+	*						If anObjectID is greater than zero, L-buffer of this
+	*						surface is integrated into the cumulated L-buffer.
+	*/
+	//--------------------------------------------------------------------------
+	void updateCumulatedLBuffers(unsigned int anObjectID);
+
+
+	//--------------------------------------------------------------------------
+	///	Compute t.
+	/**
+	*	@param HU:
+	*	@param anObjectID:
+	*/
+	//--------------------------------------------------------------------------
+	void computeSumMUxDx(GLfloat HU, unsigned int anObjectID);
+
+
+	//--------------------------------------------------------------------------
+	///	Compute the energy fluence.
+	//--------------------------------------------------------------------------
 	void computeIntegratedEnergy();
 
 

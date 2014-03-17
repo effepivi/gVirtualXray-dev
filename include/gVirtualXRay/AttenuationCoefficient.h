@@ -119,7 +119,11 @@ public:
 
 //******************************************************************************
 protected:
+	/// Energy
 	RATIONAL_NUMBER m_energy;
+
+
+	/// Attenuation coefficient corresponding to m_energy
 	RATIONAL_NUMBER m_mu;
 
 

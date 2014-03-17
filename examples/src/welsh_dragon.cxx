@@ -106,7 +106,7 @@
 #endif
 
 #ifndef SHADER_H
-#include "gVirtualXRay/Graphics/Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef UTILITIES_H
@@ -298,9 +298,11 @@ int main(int argc, char** argv)
 		{
 			std::cout << "Stereo is not enable." << std::endl;
 		}
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
      	// Initialise OpenGL
 		initGL();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -323,8 +325,13 @@ int main(int argc, char** argv)
 
 		// Load the data
 		loadDetector();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		loadSource();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		loadXRaySimulator();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Add the geometry to the X-ray renderer
         std::string prefix;
@@ -342,8 +349,19 @@ int main(int argc, char** argv)
         	}
         }
 #endif
+
+#if defined(_WIN32) || defined(_WIN64)
         prefix += PREFIX;
+        prefix += "/";
+#endif
+
+        prefix += PREFIX;
+
+		prefix += "/examples/data/";
+
 		loadSTLFile(prefix);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		g_xray_renderer.addInnerSurface(&g_polygon_data);
 
 		// Rotate the sample
@@ -425,8 +443,14 @@ void initGL()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-    glEnable(GL_MULTISAMPLE);
-    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	
+	if (GLEW_ARB_multisample || GLEW_EXT_multisample)
+	{
+		glEnable(GL_MULTISAMPLE);
+		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 
 	// Initialise the shaders
 	char* p_vertex_shader(0);
@@ -452,6 +476,7 @@ void initGL()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -738,7 +763,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '1':
 		// This is a point source
-		if (g_xray_detector.getSourceType() != XRayDetector::PARALLEL)
+		if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
 		{
 			// Use a parallel source
 			g_xray_detector.setParallelBeam();
@@ -755,7 +780,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '2':
 		// This is not a line source
-		if (g_xray_detector.getSourceType() != XRayDetector::LINE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
 		{
 			g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 10.0*mm);
 		}
@@ -771,7 +796,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '3':
 		// This is not a square source
-		if (g_xray_detector.getSourceType() != XRayDetector::SQUARE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
 		{
 			g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 10, 10.0*mm);
 		}
@@ -787,7 +812,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '4':
 		// This is not a cubic source
-		if (g_xray_detector.getSourceType() != XRayDetector::CUBE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
 		{
 			g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 5, 10.0*mm);
 		}
@@ -1081,13 +1106,26 @@ void idle()
 void loadSTLFile(const std::string& aPrefix)
 //------------------------------------------
 {
-    std::string stl_filename(aPrefix);
-    stl_filename += "/examples/data/welsh-dragon-small.stl";
+	std::string stl_filename("welsh-dragon-small.stl");
 
-	// Set geometry
+	// Open the file
+	FILE* p_file_descriptor(fopen(stl_filename.data(), "rb"));
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor)
+	{
+		// Use the prefix
+		stl_filename = aPrefix + stl_filename;
+	}
+	else
+	{
+		fclose(p_file_descriptor);
+	}
+
+   	// Set geometry
 	g_polygon_data.setFilename(stl_filename.data());
-	g_polygon_data.loadSTLFile(true, true, true, true, mm);
-	g_polygon_data.mergeVertices();
+	g_polygon_data.loadSTLFile(true, true, true, true, mm, GL_STATIC_DRAW);
+	g_polygon_data.mergeVertices(true);
 	g_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date
@@ -1205,8 +1243,8 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
-#if defined(_WIN32) || defined(_WIN64)
-			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #else
 			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif

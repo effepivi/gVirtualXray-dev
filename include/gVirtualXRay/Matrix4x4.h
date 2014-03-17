@@ -145,9 +145,25 @@ public:
 	void translate(T x, T y, T z);
 
 
+	//--------------------------------------------------------------------------
+	///	Build a tranlation matrix.
+	/**
+	*	@param aVector: the translation vector
+	*	@return the corresponding translation matrix
+	*/
+	//--------------------------------------------------------------------------
 	static Matrix4x4 buildTranslationMatrix(const Vec3<T>& aVector);
 
 
+	//--------------------------------------------------------------------------
+	///	Build a tranlation matrix.
+	/**
+	*	@param x: the x-component of the translation vector
+	*	@param y: the y-component of the translation vector
+	*	@param z: the z-component of the translation vector
+	*	@return the corresponding translation matrix
+	*/
+	//--------------------------------------------------------------------------
 	static Matrix4x4 buildTranslationMatrix(T x, T y, T z);
 
 
@@ -271,10 +287,17 @@ public:
 
 //******************************************************************************
 protected:
-	//**************************************************************************
-	T m_p_4x4_data[4 * 4]; ///< the matrix data
-	T m_p_3x3_data[3 * 3]; ///< the matrix data
-	bool m_small_matrix_up_to_date; ///< A flag to check if the 3x3 matrix is up-to-date (useful for lazy evaluation)
+	/// the matrix data
+	T m_p_4x4_data[4 * 4];
+
+
+	/// the matrix data
+	T m_p_3x3_data[3 * 3];
+
+
+	/// A flag to check if the 3x3 matrix is up-to-date.
+	/// It is used for lazy evaluation.
+	bool m_small_matrix_up_to_date;
 };
 
 

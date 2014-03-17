@@ -165,13 +165,17 @@ inline RATIONAL_NUMBER XRayRenderer::convertHounsfieldValue2Mu(const RATIONAL_NU
 }
 
 
-inline int XRayRenderer::getNumberOfInnerSurfaces() const
+//----------------------------------------------------------------
+inline unsigned int XRayRenderer::getNumberOfInnerSurfaces() const
+//----------------------------------------------------------------
 {
 	return (m_p_inner_surface_set.size());
 }
 
 
-inline int XRayRenderer::getNumberOfOuterSurfaces() const
+//----------------------------------------------------------------
+inline unsigned int XRayRenderer::getNumberOfOuterSurfaces() const
+//----------------------------------------------------------------
 {
 	if (m_p_outer_surface)
 	{

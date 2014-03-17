@@ -88,7 +88,7 @@ void XRayDetector::displayBeam()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (m_source_type == PARALLEL)
+	if (m_source_shape == PARALLEL)
 	{
 		m_parallel_beam.display();
 	}
@@ -100,7 +100,7 @@ void XRayDetector::displayBeam()
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 
-	if (m_source_type == PARALLEL)
+	if (m_source_shape == PARALLEL)
 	{
 		m_parallel_beam_highlight.display();
 	}
@@ -135,7 +135,7 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 	if (aNumberOfSamplesAlongOneDirection > 1)
 	{
 		// Save the source type
-		m_source_type = CUBE;
+		m_source_shape = CUBE;
 
 		// Sample the source along the 3 main axis
 		VEC3 source_lower_corner(m_xray_source_centre.getX() - aLength / 2.0,
@@ -166,7 +166,7 @@ void XRayDetector::setCubicSource(const VEC3& aXraySourcePosition,
 	else
 	{
 		// Save the source type
-		m_source_type = POINT;
+		m_source_shape = POINT;
 
 		// Add the centre
 		m_p_xray_source_position_set.push_back(m_xray_source_centre);
@@ -196,7 +196,7 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 	if (aNumberOfSamplesAlongOneDirection > 1)
 	{
 		// Save the source type
-		m_source_type = SQUARE;
+		m_source_shape = SQUARE;
 
 		// Compute the normal vector
 		VEC3 look_at_vector(m_detector_position - m_xray_source_centre);
@@ -229,7 +229,7 @@ void XRayDetector::setSquareSource(const VEC3& aXraySourcePosition,
 	else
 	{
 		// Save the source type
-		m_source_type = POINT;
+		m_source_shape = POINT;
 
 		// Add the centre
 		m_p_xray_source_position_set.push_back(m_xray_source_centre);
@@ -263,7 +263,7 @@ void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 	if (aNumberOfSamplesAlongOneDirection > 1)
 	{
 		// Save the source type
-		m_source_type = LINE;
+		m_source_shape = LINE;
 
 		// Sample the source along the 3 main axis
 		VEC3 source_lower_end(m_xray_source_centre - unit_direction_vector * (aLength / 2.0));
@@ -284,7 +284,7 @@ void XRayDetector::setLineSource(const VEC3& aXraySourcePosition,
 	else
 	{
 		// Save the source type
-		m_source_type = POINT;
+		m_source_shape = POINT;
 
 		// Add the centre
 		m_p_xray_source_position_set.push_back(m_xray_source_centre);
@@ -373,9 +373,9 @@ void XRayDetector::updateDetectorVBO()
 	p_texture_coordinates.push_back(0);
 
 	m_detector_geometry.setVertexData(GL_QUADS,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			p_normal.size() / 3, 3, &p_normal[0],
-			p_texture_coordinates.size() / 3, 3, &p_texture_coordinates[0]);
+			p_vertices.size()            / 3, 3, GL_FLOAT, &p_vertices[0],
+			p_normal.size()              / 3, 3, GL_FLOAT, &p_normal[0],
+			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 }
 
 
@@ -451,7 +451,7 @@ void XRayDetector::updateParallelBeamVBO()
 
 
 	// The quads' indices
-	std::vector<GLuint> p_indices;
+	std::vector<GLubyte> p_indices;
 
 	p_indices.push_back(0);
 	p_indices.push_back(4);
@@ -479,11 +479,11 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(7);
 
 	m_parallel_beam.setVertexData(GL_QUADS,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			0, 0, 0,
-			0, 0, 0);
+			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+			0, 0, GL_NONE, 0,
+			0, 0, GL_NONE, 0);
 
-	m_parallel_beam.setIndexData(p_indices.size(), &p_indices[0]);
+	m_parallel_beam.setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
 
 	// The lines' indices
 	p_indices.clear();
@@ -512,11 +512,11 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(4);
 
 	m_parallel_beam_highlight.setVertexData(GL_LINES,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			0, 0, 0,
-			0, 0, 0);
+			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+			0, 0, GL_NONE, 0,
+			0, 0, GL_NONE, 0);
 
-	m_parallel_beam_highlight.setIndexData(p_indices.size(), &p_indices[0]);
+	m_parallel_beam_highlight.setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
 }
 
 
@@ -587,7 +587,7 @@ void XRayDetector::updateConeBeamVBO()
 
 
 	// The triangles' indices
-	std::vector<GLuint> p_indices;
+	std::vector<GLubyte> p_indices;
 
 	p_indices.push_back(0);
 	p_indices.push_back(4);
@@ -606,12 +606,11 @@ void XRayDetector::updateConeBeamVBO()
 	p_indices.push_back(0);
 
 	m_cone_beam.setVertexData(GL_TRIANGLES,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			0, 0, 0,
-			0, 0, 0);
+			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+			0, 0, GL_NONE, 0,
+			0, 0, GL_NONE, 0);
 
-	m_cone_beam.setIndexData(p_indices.size(), &p_indices[0]);
-
+	m_cone_beam.setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
 
 	// The lines, there is no need for an index as no vertex is used twice
 	p_vertices.clear();
@@ -649,7 +648,7 @@ void XRayDetector::updateConeBeamVBO()
 	p_vertices.push_back(v7.getZ());
 
 	m_cone_beam_highlight.setVertexData(GL_LINES,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			0, 0, 0,
-			0, 0, 0);
+			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+			0, 0, GL_NONE, 0,
+			0, 0, GL_NONE, 0);
 }

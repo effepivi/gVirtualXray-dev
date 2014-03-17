@@ -108,6 +108,7 @@
 //******************************************************************************
 using namespace Graphics;
 using namespace gVirtualXRay;
+using namespace std;
 
 
 //******************************************************************************
@@ -260,7 +261,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-	   std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
+	   cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << endl;
 
 	    // Register the exit callback
 		atexit(quit);
@@ -275,12 +276,12 @@ int main(int argc, char** argv)
 	    if (g_can_use_stereo)
 	    {
 	    	g_use_stereo = true;
-	    	std::cout << "Stereo is enable." << std::endl;
+	    	cout << "Stereo is enable." << endl;
 	    }
 	    else
 	    {
 	    	g_use_stereo = false;
-	    	std::cout << "Stereo is not enable." << std::endl;
+	    	cout << "Stereo is not enable." << endl;
 	    }
 
 		// Stereo is enable on the system
@@ -322,14 +323,14 @@ int main(int argc, char** argv)
 				GLenum glew_error_1(glewInit());
 				if (glew_error_1 != GLEW_OK)
 				{
-					std::stringstream error_message;
+					stringstream error_message;
 					error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error_1);
 					throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 				}
 			}
 			else
 			{
-				std::stringstream error_message;
+				stringstream error_message;
 				error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error_0);
 				throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 			}
@@ -369,9 +370,9 @@ int main(int argc, char** argv)
 		return (EXIT_SUCCESS);
 	}
 	// Catch exception if any
-	catch (const std::exception& error)
+	catch (const exception& error)
 	{
-		std::cerr << error.what() << std::endl;
+		cerr << error.what() << endl;
 	}
 }
 
@@ -417,8 +418,14 @@ void initGL()
 	//glEnable(GL_POLYGON_SMOOTH);
 
 
-    glEnable(GL_MULTISAMPLE);
-    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	if (GLEW_ARB_multisample || GLEW_EXT_multisample)
+	{
+		glEnable(GL_MULTISAMPLE);
+		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 
 	// Initialise the shaders
 	char* p_vertex_shader(0);
@@ -427,8 +434,8 @@ void initGL()
 	int z_lib_return_code_vertex(0);
 	int z_lib_return_code_fragment(0);
 
-	std::string vertex_shader;
-	std::string fragment_shader;
+	string vertex_shader;
+	string fragment_shader;
 
 	// L-buffer
 	z_lib_return_code_vertex   = inflate(g_display_vert, sizeof(g_display_vert),   &p_vertex_shader);
@@ -444,6 +451,8 @@ void initGL()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
+
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -601,9 +610,9 @@ void render()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	// Catch exception if any
-	catch (const std::exception& error)
+	catch (const exception& error)
 	{
-		std::cerr << error.what() << std::endl;
+		cerr << error.what() << endl;
 	}
 }
 
@@ -705,7 +714,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '1':
 		// This is a point source
-		if (g_xray_detector.getSourceType() != XRayDetector::PARALLEL)
+		if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
 		{
 			// Use a parallel source
 			g_xray_detector.setParallelBeam();
@@ -722,7 +731,7 @@ void keyboard(unsigned char key, int x, int y)
 
 	case '2':
 		// This is not a line source
-		if (g_xray_detector.getSourceType() != XRayDetector::LINE)
+		if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
 		{
 			g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 5.0*mm);
 		}
@@ -739,7 +748,7 @@ void keyboard(unsigned char key, int x, int y)
 	case '3':
 		{
 			// This is not a square source
-			if (g_xray_detector.getSourceType() != XRayDetector::SQUARE)
+			if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
 			{
 				g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 4, 5.0*mm);
 			}
@@ -756,7 +765,7 @@ void keyboard(unsigned char key, int x, int y)
 	case '4':
 		{
 			// This is not a cubic source
-			if (g_xray_detector.getSourceType() != XRayDetector::CUBE)
+			if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
 			{
 				g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 3, 5.0*mm);
 			}
@@ -775,17 +784,17 @@ void keyboard(unsigned char key, int x, int y)
 		{
 			if (g_rotation_mode == SCENE)
 			{
-				std::cout << "Rotation: select the object." << std::endl;
+				cout << "Rotation: select the object." << endl;
 				g_rotation_mode = OBJECT;
 			}
 			else if (g_rotation_mode == OBJECT)
 			{
-				std::cout << "Rotation: select the detector." << std::endl;
+				cout << "Rotation: select the detector." << endl;
 				g_rotation_mode = DETECTOR;
 			}
 			else if (g_rotation_mode == DETECTOR)
 			{
-				std::cout << "Rotation: select the scene." << std::endl;
+				cout << "Rotation: select the scene." << endl;
 				g_rotation_mode = SCENE;
 			}
 		}
@@ -802,29 +811,29 @@ void keyboard(unsigned char key, int x, int y)
 	case '+':
 		g_zoom += 1.0 * cm;
 		reshape(g_main_window_width, g_main_window_height);
-		std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
+		cout << "Zoom in cm)" << g_zoom / cm << endl;
 		break;
 
 	case '-':
 		g_zoom -= 1.0 * cm;
 		reshape(g_main_window_width, g_main_window_height);
-		std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
+		cout << "Zoom in cm)" << g_zoom / cm << endl;
 		break;
 
 	case 'o':
 		g_IOD += 5.0 * mm;
 		reshape(g_main_window_width, g_main_window_height);
-		std::cout << "IOD in cm" << g_IOD / cm << std::endl;
+		cout << "IOD in cm" << g_IOD / cm << endl;
 		break;
 
 	case 'p':
 		g_IOD -= 5.0 * mm;
 		reshape(g_main_window_width, g_main_window_height);
-		std::cout << "IOD in cm" << g_IOD / cm << std::endl;
+		cout << "IOD in cm" << g_IOD / cm << endl;
 		break;
 
 	default:
-		std::cout << "Key: " << key << std::endl;
+		cout << "Key: " << key << endl;
 		break;
 	}
 	
@@ -867,7 +876,7 @@ void specialKeyboard(int key, int x, int y)
 		break;
 
 	default:
-		std::cout << "Special key: " << key << std::endl;
+		cout << "Special key: " << key << endl;
 		break;
 	}
 
@@ -914,7 +923,7 @@ void mouse(int button, int button_state, int x, int y)
 	g_button = button;
 	g_button_state = button_state;
 
-	std::cout << g_button << "\t" << g_button_state << std::endl;
+	cout << g_button << "\t" << g_button_state << endl;
 
 	if (g_button == 3)
 	{
@@ -1051,18 +1060,51 @@ void idle()
 void loadSTLFile()
 //----------------
 {
-	const char* stl_filename_0(PREFIX"/examples/data/cylinder_bin.stl");
-	const char* stl_filename_1(PREFIX"/examples/data/cube_bin.stl");
-	//const char* g_STL_filename(PREFIX"/examples/data/dragon_vrip_res2.ply_binary.stl");
+	string stl_filename_0("cylinder_bin.stl");
+	string stl_filename_1("cube_bin.stl");
+
+	// Open the file
+	FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
+	FILE* p_file_descriptor_1(fopen(stl_filename_1.data(), "rb"));
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor_0)
+	{
+		// Use the prefix
+#if defined(_WIN32) || defined(_WIN64)
+		stl_filename_0 = "../../examples/data/" + stl_filename_0;
+#else
+		stl_filename_0 = "../examples/data/" + stl_filename_0;
+#endif
+	}
+	else
+	{
+		fclose(p_file_descriptor_0);
+	}
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor_1)
+	{
+		// Use the prefix
+#if defined(_WIN32) || defined(_WIN64)
+		stl_filename_1 = "../../examples/data/" + stl_filename_1;
+#else
+		stl_filename_1 = "../examples/data/" + stl_filename_1;
+#endif
+	}
+	else
+	{
+		fclose(p_file_descriptor_1);
+	}
 
 	// Set geometry
-	g_inside_polygon_data.setFilename(stl_filename_0);
-	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm);
+	g_inside_polygon_data.setFilename(stl_filename_0.data());
+	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
-	g_outside_polygon_data.setFilename(stl_filename_1);
-	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm);
+	g_outside_polygon_data.setFilename(stl_filename_1.data());
+	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_outside_polygon_data.mergeVertices();
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
@@ -1162,11 +1204,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
-#if defined(_WIN32) || defined(_WIN64)
 			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
-#else
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
-#endif
 
 			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
 			//axis_in_camera_coord.normalize();

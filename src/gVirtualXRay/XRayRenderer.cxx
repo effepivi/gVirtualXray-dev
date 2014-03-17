@@ -543,9 +543,9 @@ void XRayRenderer::checkGPUCapabilities()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support rectangular textures (ARB_texture_rectangle).");
 	}
 
-	if (!GLEW_EXT_framebuffer_object)
+	if (!GLEW_ARB_framebuffer_object && !GLEW_EXT_framebuffer_object)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support framebuffer objects (EXT_framebuffer_object).");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support framebuffer objects (EXT_framebuffer_object and ARB_framebuffer_object).");
 	}
 
 	if (!GLEW_ARB_texture_float)
@@ -617,7 +617,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				}
 
 				// For each object
-				int object_number(0);
+				unsigned int object_number(0);
 				for (std::vector<TriangleMesh*>::const_iterator ite(m_p_inner_surface_set.begin());
 					ite != m_p_inner_surface_set.end();
 					++ite, ++object_number)
@@ -632,7 +632,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					// Only update the cummulated L-buffers if the outer surface exists
 					if (m_p_outer_surface)
 					{
-						computeCumulatedLBuffers(object_number);
+						updateCumulatedLBuffers(object_number);
 					}
 				}
 
@@ -1795,9 +1795,9 @@ void XRayRenderer::computeOuterSurfaceLBuffer(const TriangleMesh& anObject,
 }
 
 
-//---------------------------------------------------------
-void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
-//---------------------------------------------------------
+//--------------------------------------------------------
+void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
+//--------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -1861,18 +1861,15 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 	glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID]);
 
 	// Enable blending
-	bool current_blending_status(false);
 	if (anObjectID != 0)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
-		current_blending_status = true;
 	}
 	// Disable blending
 	else
 	{
 		glDisable(GL_BLEND);
-		current_blending_status = false;
 	}
 
 	// Display the textured square
@@ -1902,9 +1899,9 @@ void XRayRenderer::computeCumulatedLBuffers(int anObjectID)
 }
 
 
-//------------------------------------------------------------
-void XRayRenderer::computeSumMUxDx(GLfloat HU, int anObjectID)
-//------------------------------------------------------------
+//---------------------------------------------------------------------
+void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
+//---------------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -2429,7 +2426,7 @@ void XRayRenderer::updateVBO()
 	p_texture_coordinates.push_back(0);
 
 	m_detector_temporary_geometry.setVertexData(GL_QUADS,
-			p_vertices.size() / 3, 3, &p_vertices[0],
-			0, 0, 0,
-			p_texture_coordinates.size() / 3, 3, &p_texture_coordinates[0]);
+			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+			0, 0, GL_NONE, 0,
+			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 }
