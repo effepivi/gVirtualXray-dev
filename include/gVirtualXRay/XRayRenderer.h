@@ -64,8 +64,6 @@
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#include "gVirtualXRay/framebufferObject.h"
-
 
 //******************************************************************************
 //	Definitions
@@ -74,6 +72,9 @@
 #define XRAY_DETECTOR_2D_TEXTURE_NUMBER 3	///< The total number of 2D textures
 #define XRAY_DETECTOR_3D_TEXTURE_NUMBER 1	///< The total number of 3D textures
 #define XRAY_DETECTOR_SHADER_NUMBER     6	///< The total number of program shaders
+
+
+class FramebufferObject;
 
 
 //******************************************************************************
@@ -94,7 +95,7 @@ class XRayRenderer
 {
 //******************************************************************************
 protected:
-	typedef GLfloat PixelType; ///< Pixel type
+	typedef RATIONAL_NUMBER PixelType; ///< Pixel type
 #ifdef HAS_ITK
 	typedef itk::Image<PixelType, 3> ImageType; ///< Image type
 #endif // HAS_ITK
@@ -205,7 +206,7 @@ public:
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
-	void printFBO(GLuint aFBOID, const char* aFileName);
+	void printFBO(unsigned int aFBOID, const char* aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -215,7 +216,7 @@ public:
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
-	void print2DTexture(GLuint aTextureID, const char* aFileName);
+	void print2DTexture(unsigned int aTextureID, const char* aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -257,7 +258,7 @@ public:
 	//--------------------------------------------------------------------------
 	///	Display a 2D texture using OpenGL.
 	//--------------------------------------------------------------------------
-	void display2DTexture(GLint aTexutreID);
+	void display2DTexture(unsigned int aTexutreID);
 
 
 	//--------------------------------------------------------------------------
@@ -418,7 +419,7 @@ protected:
 	*	@param aPBO:	ID of the PBO to create
 	*/
 	//--------------------------------------------------------------------------
-	void createPBO(GLuint& aPBO);
+	void createPBO(unsigned int& aPBO);
 
 
 	//--------------------------------------------------------------------------
@@ -427,7 +428,7 @@ protected:
 	*	@param aPBO:	ID of the PBO to delete
 	*/
 	//--------------------------------------------------------------------------
-	void deletePBO(GLuint& aPBO);
+	void deletePBO(unsigned int& aPBO);
 
 
 	//--------------------------------------------------------------------------
@@ -477,7 +478,7 @@ protected:
 	*	@param anInternalTextureFormat:	the internal format in which the texture will be stored in the device
 	*/
 	//--------------------------------------------------------------------------
-	void create2DTexture(GLuint* apTextureID,
+	void create2DTexture(unsigned int* apTextureID,
 			int anInternalTextureFormat);
 
 
@@ -487,7 +488,7 @@ protected:
 	*	@param aFrameBuffer:	the FBO to reset
 	*/
 	//--------------------------------------------------------------------------
-	void reset2DBuffer(GLuint aFrameBuffer);
+	void reset2DBuffer(unsigned int aFrameBuffer);
 
 
 	//--------------------------------------------------------------------------
@@ -555,7 +556,7 @@ protected:
 	*	@param anObjectID:
 	*/
 	//--------------------------------------------------------------------------
-	void computeSumMUxDx(GLfloat HU, unsigned int anObjectID);
+	void computeSumMUxDx(RATIONAL_NUMBER HU, unsigned int anObjectID);
 
 
 	//--------------------------------------------------------------------------
@@ -591,11 +592,11 @@ protected:
 
 
 	/// Set of PBOs
-	std::vector<GLuint>        m_p_pbo_set;
+	std::vector<unsigned int>        m_p_pbo_set;
 
 
 	/// Set of textures
-	std::vector<GLuint> m_p_texture_name_set;
+	std::vector<unsigned int> m_p_texture_name_set;
 
 
 	/// Set of shaders
@@ -629,15 +630,15 @@ protected:
 
 
 	/// Shift parameter of the shift/scale filter
-	GLfloat m_shift_filter;
+	RATIONAL_NUMBER m_shift_filter;
 
 
 	/// Scale parameter of the shift/scale filter
-	GLfloat m_scale_filter;
+	RATIONAL_NUMBER m_scale_filter;
 
 
 	/// Flag to display the result in negative or not
-	GLint m_negative_display_flag;
+	unsigned int m_negative_display_flag;
 
 
 	/// Flag set to true to use L-buffer artefact filtering

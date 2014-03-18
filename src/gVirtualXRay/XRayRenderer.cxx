@@ -86,6 +86,7 @@
 #include "mu_water.csv.h"
 
 #include <GL/glew.h>
+#include "gVirtualXRay/framebufferObject.h"
 
 
 //******************************************************************************
@@ -312,6 +313,26 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	{
 		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
 	}
+}
+
+
+//-----------------------------
+void XRayRenderer::deleteFBOs()
+//-----------------------------
+{
+	// Delete the FBOs
+	for (std::vector<FramebufferObject*>::iterator ite(m_p_fbo_set.begin());
+			ite != m_p_fbo_set.end();
+			++ite)
+	{
+		if (*ite)
+		{
+			delete *ite;
+			*ite = 0;
+		}
+	}
+
+	m_p_fbo_set.clear();
 }
 
 
@@ -1509,9 +1530,9 @@ void XRayRenderer::printEnergyFluence(const char* aFileName)
 }
 
 
-//---------------------------------------------------
-void XRayRenderer::display2DTexture(GLint aTexutreID)
-//---------------------------------------------------
+//----------------------------------------------------------
+void XRayRenderer::display2DTexture(unsigned int aTexutreID)
+//----------------------------------------------------------
 {
 	// Store the texturing flags
 	pushTexture2D();
@@ -2409,7 +2430,7 @@ void XRayRenderer::updateVBO()
 
 
 	// Texture coordinates
-	std::vector<GLfloat> p_texture_coordinates;
+	std::vector<float> p_texture_coordinates;
 
 	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(0);

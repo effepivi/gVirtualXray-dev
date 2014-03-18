@@ -29,7 +29,6 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-//#include <fstream>
 #include <sstream>
 
 #ifndef OPENGL_UTILITIES_H
@@ -88,31 +87,11 @@ inline void XRayRenderer::printMuWaterTable(std::ostream& anOutputStream)
 }
 
 
-//------------------------------------
-inline void XRayRenderer::deleteFBOs()
-//------------------------------------
-{
-	// Delete the FBOs
-	for (std::vector<FramebufferObject*>::iterator ite(m_p_fbo_set.begin());
-			ite != m_p_fbo_set.end();
-			++ite)
-	{
-		if (*ite)
-		{
-			delete *ite;
-			*ite = 0;
-		}
-	}
-	
-	m_p_fbo_set.clear();
-}
-
-
 //----------------------------------------
 inline void XRayRenderer::initialisePBOs()
 //----------------------------------------
 {
-	for (std::vector<GLuint>::iterator ite(m_p_texture_name_set.begin());
+	for (std::vector<unsigned int>::iterator ite(m_p_texture_name_set.begin());
 			ite != m_p_texture_name_set.end();
 			++ite)
 	{
