@@ -101,6 +101,8 @@ SET (CXX_SOURCES
 	../src/Graphics/VBO.cxx
 
     # Utilities
+	../src/Utilities/FBOException.cxx
+	../src/Utilities/OpenGLException.cxx
     ../src/Utilities/OpenGLUtilities.cxx
 	../src/Utilities/Utilities.cxx
 
@@ -124,7 +126,7 @@ SET (HXX_SOURCES
 	# Graphics
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/ImplicitSurface.h
-        ../include/gVirtualXRay/ImplicitSurface.inl
+   ../include/gVirtualXRay/ImplicitSurface.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
@@ -145,11 +147,9 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/Exception.h
 	../include/gVirtualXRay/Exception.inl
 	../include/gVirtualXRay/FBOException.h
-	../include/gVirtualXRay/FBOException.inl
 	../include/gVirtualXRay/FileDoesNotExistException.h
 	../include/gVirtualXRay/FileDoesNotExistException.inl
 	../include/gVirtualXRay/OpenGLException.h
-	../include/gVirtualXRay/OpenGLException.inl
 	../include/gVirtualXRay/OpenGLUtilities.h
 	../include/gVirtualXRay/OpenGLUtilities.inl
 	../include/gVirtualXRay/OutOfBoundsException.h
