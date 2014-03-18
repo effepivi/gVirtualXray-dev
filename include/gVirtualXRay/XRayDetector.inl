@@ -32,8 +32,6 @@
 #include <fstream>
 #include <iostream>
 
-#include<GL/glew.h>
-
 #ifndef OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
@@ -51,8 +49,7 @@ inline XRayDetector::XRayDetector():
 	m_resolution_in_unit_of_length_per_pixel(0),
 	m_distance_source_detector(0),
 	m_VBOs_need_update(true),
-	m_source_shape(UNKNOWN_SHAPE),
-	m_p_source_model(0)
+	m_source_shape(UNKNOWN_SHAPE)
 //----------------------------------------------
 {
 }
@@ -62,10 +59,6 @@ inline XRayDetector::XRayDetector():
 inline 	XRayDetector::~XRayDetector()
 //-----------------------------------
 {
-	if (m_p_source_model)
-	{
-		gluDeleteQuadric(m_p_source_model);
-	}
 }
 
 
@@ -73,12 +66,6 @@ inline 	XRayDetector::~XRayDetector()
 inline void XRayDetector::displaySource()
 //---------------------------------------
 {
-	// Create the sphere
-	if (!m_p_source_model)
-	{
-		m_p_source_model = gluNewQuadric();
-	}
-
 	// Display all the sub-sources
 	for (std::vector<VEC3>::const_iterator ite(m_p_xray_source_position_set.begin());
 			ite != m_p_xray_source_position_set.end();
@@ -89,8 +76,8 @@ inline void XRayDetector::displaySource()
 
 		g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
 		applyModelViewMatrix();
-		
-		gluSphere(m_p_source_model, 0.25 * cm, 5, 5);
+
+		// Draw sphere
 		
 		// Restore the model/view matrix
 		popModelViewMatrix();

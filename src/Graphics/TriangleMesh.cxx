@@ -43,6 +43,8 @@
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
+#include <GL/glew.h>
+
 
 //******************************************************************************
 //	Name space
@@ -63,6 +65,88 @@ using namespace Graphics;
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
+
+
+//-------------------------------
+TriangleMesh::TriangleMesh():
+//-------------------------------
+	m_use_hounsfield_value(true),
+	m_hounsfield_value(0),
+	m_attenuation_coefficient(0),
+	m_bounding_box_diagonal(0),
+	m_p_vertex_set(0),
+	m_p_index_set(0),
+	m_number_of_indices(0),
+	m_number_of_vertices(0),
+	m_index_data_type(GL_NONE),
+	m_vertex_data_type(GL_NONE),
+	m_external_data_flag(false)
+//-------------------------------
+{
+}
+
+
+//------------------------
+void TriangleMesh::reset()
+//------------------------
+{
+	// Reset class members to their default values
+	m_vbo.reset();
+
+	m_use_hounsfield_value = true;
+	m_hounsfield_value = 0;
+	m_attenuation_coefficient = 0;
+
+	m_bounding_box_diagonal = 0;
+
+	m_min_corner = VEC3();
+	m_max_corner = VEC3();
+
+	m_p_face_normal_set.clear();
+	m_p_vertex_normal_set.clear();
+
+	destroyIndexData();
+	destroyVertexData();
+
+	m_number_of_indices  = 0;
+	m_number_of_vertices = 0;
+
+	m_index_data_type = GL_NONE;
+	m_vertex_data_type = GL_NONE;
+
+	m_external_data_flag = false;
+}
+
+
+//-----------------------------------------------------------------------
+void TriangleMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
+//-----------------------------------------------------------------------
+{
+	// There are as many normals as there are vertices
+	if (getVertexNormalNumber() == m_number_of_vertices)
+	{
+		glBegin(GL_LINES);
+		for (unsigned int i(0); i < m_number_of_vertices; ++i)
+		{
+			VEC3 vertex(getVertex(i));
+			VEC3 normal(getVertexNormal(i));
+			normal.normalize();
+
+			normal = vertex + normal * aNormalSize;
+
+			glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+			glVertex3f(normal.getX(), normal.getY(), normal.getZ());
+		}
+		glEnd();
+	}
+	// There are not as many normals as there are vertices
+	else
+	{
+		std::stringstream error_message;
+		error_message << "There are not as many normals (" << getVertexNormalNumber() << ") as there are vertices (" << m_number_of_vertices << ").";
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+}
 
 
 //-----------------------------------------------------------
@@ -272,7 +356,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 							   bool aPrintDebugInfoFlag,
 							   bool aCreateVBOFlag,
 							   RATIONAL_NUMBER aScale,
-							   GLenum aTypeOfVBO)
+							   int aTypeOfVBO)
 //----------------------------------------------------------
 {
 	// Reset the data
@@ -752,9 +836,9 @@ void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
 }
 
 
-//---------------------------------------------
-void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
-//---------------------------------------------
+//------------------------------------------
+void TriangleMesh::updateVBO(int aTypeOfVBO)
+//------------------------------------------
 {
 	if (m_p_vertex_set && m_number_of_vertices)
 	{
@@ -783,6 +867,309 @@ void TriangleMesh::updateVBO(GLenum aTypeOfVBO)
 		if (m_p_index_set && m_number_of_indices && m_index_data_type != GL_NONE)
 		{
 			m_vbo.setIndexData(m_number_of_indices, m_index_data_type, m_p_index_set);
+		}
+	}
+}
+
+
+//------------------------------------------------------
+VEC3 TriangleMesh::getVertex(unsigned int anIndex) const
+//------------------------------------------------------
+{
+	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	double x, y, z;
+
+	switch (m_vertex_data_type)
+	{
+	case GL_FLOAT:
+		{
+			GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
+			x = p_temp[anIndex * 3 + 0];
+			y = p_temp[anIndex * 3 + 1];
+			z = p_temp[anIndex * 3 + 2];
+		}
+		break;
+
+	case GL_DOUBLE:
+		{
+			GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
+			x = p_temp[anIndex * 3 + 0];
+			y = p_temp[anIndex * 3 + 1];
+			z = p_temp[anIndex * 3 + 2];
+		}
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+
+	return (VEC3(x, y, z));
+}
+
+
+//------------------------------------------------
+void TriangleMesh::setVertex(unsigned int anIndex,
+							 const VEC3& aVertex)
+//------------------------------------------------
+{
+	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	switch (m_vertex_data_type)
+	{
+	case GL_FLOAT:
+		{
+			GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
+			p_temp[anIndex * 3 + 0] = aVertex.getX();
+			p_temp[anIndex * 3 + 1] = aVertex.getY();
+			p_temp[anIndex * 3 + 2] = aVertex.getZ();
+		}
+		break;
+
+	case GL_DOUBLE:
+		{
+			GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
+			p_temp[anIndex * 3 + 0] = aVertex.getX();
+			p_temp[anIndex * 3 + 1] = aVertex.getY();
+			p_temp[anIndex * 3 + 2] = aVertex.getZ();
+		}
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+}
+
+
+//----------------------------------------------------
+int TriangleMesh::getIndex(unsigned int anIndex) const
+//----------------------------------------------------
+{
+	if (m_number_of_indices <= anIndex && m_p_index_set)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	switch (m_index_data_type)
+	{
+	case GL_UNSIGNED_INT:
+		{
+			GLuint* p_temp(reinterpret_cast<GLuint*>(m_p_index_set));
+			return (int(p_temp[anIndex]));
+		}
+		break;
+
+	case GL_UNSIGNED_SHORT:
+		{
+			GLushort* p_temp(reinterpret_cast<GLushort*>(m_p_index_set));
+			return (int(p_temp[anIndex]));
+		}
+		break;
+
+	case GL_UNSIGNED_BYTE:
+		{
+			GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
+			return (int(p_temp[anIndex]));
+		}
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+}
+
+
+//------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			0,
+			0,
+			GL_NONE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//-------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//-------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			0,
+			0,
+			GL_NONE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//-------------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
+								   const std::vector<unsigned int>* anIndexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//-------------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_INT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//-------------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
+								   const std::vector<unsigned int>* anIndexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//-------------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_INT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//----------------------------------------------------------------
+void TriangleMesh::setExternalData(const void* aVertexArray,
+								   unsigned int aNumberOfVertices,
+								   int aVertexDataType,
+								   const void* anIndexArray,
+								   unsigned int aNumberOfIndices,
+								   int anIndexDataType,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//----------------------------------------------------------------
+{
+	reset();
+
+	m_external_data_flag = true;
+
+	m_p_vertex_set       = const_cast<void*>(aVertexArray);
+	m_number_of_vertices        = aNumberOfVertices;
+	m_vertex_data_type = aVertexDataType;
+
+	// There are index data
+	if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
+	{
+		m_p_index_set       = const_cast<void*>(anIndexArray);
+		m_number_of_indices = aNumberOfIndices;
+		m_index_data_type   = anIndexDataType;
+	}
+	else
+	{
+		m_p_index_set       = 0;
+		m_number_of_indices = 0;
+		m_index_data_type   = GL_NONE;
+
+	}
+
+	// Compute the bounding box
+	computeBoundingBox();
+
+	// Compute the normal vectors
+	computeNormalVectors();
+
+	// Update the VBO
+	if (aCreateVBOFlag)
+	{
+		updateVBO(aTypeOfVBO);
+	}
+}
+
+
+//------------------------------------
+void TriangleMesh::destroyVertexData()
+//------------------------------------
+{
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_vertex_set = 0;
+	}
+	// The data is manage internally
+	else
+	{
+		if (m_p_vertex_set)
+		{
+			// Cannot release the memory of an array whose type is void*
+			switch (m_vertex_data_type)
+			{
+			case GL_FLOAT:
+				delete [] reinterpret_cast<GLfloat*>(m_p_vertex_set);
+				break;
+
+			case GL_DOUBLE:
+				delete [] reinterpret_cast<GLdouble*>(m_p_vertex_set);
+				break;
+
+			default:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			}
+			m_p_vertex_set = 0;
+		}
+	}
+}
+
+
+//-----------------------------------
+void TriangleMesh::destroyIndexData()
+//-----------------------------------
+{
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_index_set  = 0;
+	}
+	// The data is manage internally
+	else
+	{
+		if (m_p_index_set)
+		{
+			// Cannot release the memory of an array whose type is void*
+			switch (m_index_data_type)
+			{
+			case GL_UNSIGNED_INT:
+				delete [] reinterpret_cast<GLuint*>(m_p_index_set);
+				break;
+
+			case GL_UNSIGNED_SHORT:
+				delete [] reinterpret_cast<GLushort*>(m_p_index_set);
+				break;
+
+			case GL_UNSIGNED_BYTE:
+				delete [] reinterpret_cast<GLubyte*>(m_p_index_set);
+				break;
+
+			default:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			}
+			m_p_index_set = 0;
 		}
 	}
 }

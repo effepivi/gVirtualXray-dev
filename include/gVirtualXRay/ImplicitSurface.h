@@ -39,8 +39,6 @@
 //******************************************************************************
 #include <vector>
 
-#include <GL/glew.h>
-
 #ifdef HAS_ITK
 #include <itkImage.h>
 #include <itkBinaryMask3DMeshSource.h>
@@ -329,7 +327,7 @@ public:
 	*	@return the vertex data
 	*/
 	//--------------------------------------------------------------------------
-	const std::vector<GLfloat>& getVertexData() const;
+	const std::vector<RATIONAL_NUMBER>& getVertexData() const;
 
 
 	//--------------------------------------------------------------------------
@@ -338,7 +336,7 @@ public:
 	*	@return the index data
 	*/
 	//--------------------------------------------------------------------------
-	const std::vector<GLuint>& getIndexData() const;
+	const std::vector<unsigned int>& getIndexData() const;
 
 
 //******************************************************************************
@@ -353,7 +351,7 @@ protected:
 	typedef unsigned char OutputVoxelDataType;
 	typedef itk::Image<InputVoxelDataType, 3> InputVolumeType;
 	typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
-	typedef itk::QuadEdgeMesh<GLfloat, 3> MeshType;
+	typedef itk::QuadEdgeMesh<float, 3> MeshType;
 
 	typedef itk::BinaryThresholdImageFilter<InputVolumeType, OutputVolumeType> BinaryThresholdType;
 	typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
@@ -366,8 +364,8 @@ protected:
 	std::vector<std::pair<DensityFunctionParameterType, VEC3> > m_control_point_set;
 	std::vector<std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> > > m_control_line_set;
 
-	std::vector<GLfloat> m_p_vertex_data;
-	std::vector<GLuint> m_p_index_data;
+	std::vector<RATIONAL_NUMBER> m_p_vertex_data;
+	std::vector<unsigned int> m_p_index_data;
 };
 
 

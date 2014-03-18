@@ -33,7 +33,6 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include<GL/glew.h>
 #include <limits>
 
 #ifndef VEC3_H
@@ -76,11 +75,11 @@ namespace Utilities {
 //	type declaration
 //******************************************************************************
 /// Type of data used to store sinograms
-typedef GLfloat                    SinogramType;
+typedef float                    SinogramType;
 
 
 /// Type of data used to store real numbers
-typedef GLfloat                    RATIONAL_NUMBER;
+typedef float                    RATIONAL_NUMBER;
 
 
 /// Type of data used to store 2D vectors

@@ -75,47 +75,6 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluate(RATIONAL_NUMBER r,
 	}
 }
 
-/*
-//--------------------------------------
-inline void ImplicitSurface::setSphere()
-//--------------------------------------
-{
-	m_density_function = SPHERE;
-}
-
-
-//---------------------------------------------------------------
-inline void ImplicitSurface::setBlobbyMolecule(RATIONAL_NUMBER a,
-											   RATIONAL_NUMBER b)
-//---------------------------------------------------------------
-{
-	m_density_function = BLOBBY_MOLECULE;
-	m_a = a;
-	m_b = b;	
-}
-
-
-//---------------------------------------------------------
-inline void ImplicitSurface::setMetaBall(RATIONAL_NUMBER a,
-										 RATIONAL_NUMBER b)
-//---------------------------------------------------------
-{
-	m_density_function = META_BALL;
-	m_a = a;
-	m_b = b;	
-}
-
-
-//-----------------------------------------------------------
-inline void ImplicitSurface::setSoftObject(RATIONAL_NUMBER a,
-										   RATIONAL_NUMBER b)
-//-----------------------------------------------------------
-{
-	m_density_function = SOFT_OBJECT;
-	m_a = a;
-	m_b = b;	
-}*/
-
 
 //-----------------------------------------------
 inline void ImplicitSurface::resetControlPoints()
@@ -230,17 +189,17 @@ inline void ImplicitSurface::writePolygonMesh(const std::string& aFileName) cons
 }
 
 
-//-----------------------------------------------------------------------
-inline const std::vector<GLfloat>& ImplicitSurface::getVertexData() const
-//-----------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+inline const std::vector<RATIONAL_NUMBER>& ImplicitSurface::getVertexData() const
+//-------------------------------------------------------------------------------
 {
 	return (m_p_vertex_data);
 }
 
 
-//---------------------------------------------------------------------
-inline const std::vector<GLuint>& ImplicitSurface::getIndexData() const
-//---------------------------------------------------------------------
+//---------------------------------------------------------------------------
+inline const std::vector<unsigned int>& ImplicitSurface::getIndexData() const
+//---------------------------------------------------------------------------
 {
 	return (m_p_index_data);
 }

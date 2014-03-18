@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		OpenGLException.inl
+*	@file		OpenGLException.cxx
 *
 *	@brief		Class to handle exceptions related to frame buffer objects (FBOs).
 *
@@ -31,11 +31,11 @@
 //******************************************************************************
 #include <sstream>
 
-#include<GL/glew.h>
-
 #ifndef EXCEPTION_H
-#include "gVirtualXRay/Exception.h"
+#include "gVirtualXRay/FBOException.h"
 #endif
+
+#include <GL/glew.h>
 
 
 //******************************************************************************
@@ -43,14 +43,14 @@
 //******************************************************************************
 namespace Utilities {
 
-//----------------------------------------------------------
-inline FBOException::FBOException(const char* aFileName,
-								  const char* aFunctionName,
-								  int anErrorLine,
-								  int anErrorCode):
-//----------------------------------------------------------
+//------------------------------------------------------
+FBOException::FBOException(const char* aFileName,
+						   const char* aFunctionName,
+						   int anErrorLine,
+						   int anErrorCode):
+//------------------------------------------------------
 		Exception(aFileName, aFunctionName, anErrorLine)
-//----------------------------------------------------------
+//------------------------------------------------------
 {
 	std::stringstream error_message;
 	

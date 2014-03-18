@@ -11,6 +11,9 @@
 *
 *	@author		Dr Franck P. Vidal
 *
+*	@todo		Create a class to draw spheres
+*				Use this class to display point sources (see line 80 in file XRayDetector.inl)
+*
 *	@section	License
 *				BSD 3-Clause License.
 *
@@ -33,13 +36,6 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <GL/glew.h>
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else // APPLE
-#include <GL/glu.h>
-#endif // APPLE
-
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -448,10 +444,6 @@ protected:
 
 	/// The cross product between m_look_at_vector and m_up_vector
 	VEC3 m_right_vector;
-
-
-	// OpenGL model of the source
-	GLUquadric* m_p_source_model;
 };
 
 

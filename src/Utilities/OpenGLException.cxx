@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		OpenGLException.inl
+*	@file		OpenGLException.cxx
 *
 *	@brief		Class to handle exceptions related to OpenGL.
 *
@@ -38,7 +38,7 @@
 #endif
 
 #ifndef EXCEPTION_H
-#include "gVirtualXRay/Exception.h"
+#include "gVirtualXRay/OpenGLException.h"
 #endif
 
 
@@ -47,14 +47,14 @@
 //******************************************************************************
 namespace Utilities {
 
-//----------------------------------------------------------------
-inline OpenGLException::OpenGLException(const char* aFileName,
-										const char* aFunctionName,
-										int anErrorLine,
-										int anErrorCode):
-//----------------------------------------------------------------
+//---------------------------------------------------------
+OpenGLException::OpenGLException(const char* aFileName,
+								 const char* aFunctionName,
+								 int anErrorLine,
+								 int anErrorCode):
+//---------------------------------------------------------
 		Exception(aFileName, aFunctionName, anErrorLine)
-//----------------------------------------------------------------
+//---------------------------------------------------------
 {
 	std::stringstream error_message;
 	error_message << "OpenGL error: " << gluErrorString(anErrorCode) << std::endl; 

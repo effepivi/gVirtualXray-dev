@@ -68,66 +68,9 @@ inline Shader::~Shader()
 }
 
 
-//--------------------------------
-inline void Shader::enable() const
-//--------------------------------
-{
-	// Shaders are supported
-	if (m_shader_capable)
-	{
-		if (m_valid && m_shader_program_id)
-		{
-			// Get the current program
-			GLint current_shader(0);
-			glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
-	
-			// Check the value
-			if (current_shader < 0)
-			{
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid program handle.");
-			}
-
-			// The current program is not he same as the one that being deleted.
-			if (GLuint(current_shader) != m_shader_program_id)
-			{
-				glUseProgram(m_shader_program_id);
-			}
-		}
-		else
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Trying to enable a shader program that is not ready.");
-		}
-	}
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Shader programs are not supported by your OpenGL implementation.");
-	}
-}
-
-
-//---------------------------
-inline void Shader::disable()
-//---------------------------
-{
-	// Shaders are supported
-	if (m_shader_capable)
-	{
-		// Get the current program
-		GLint current_shader(0);
-		glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
-
-		// Disable the shader
-		if (current_shader)
-		{
-			glUseProgram(0);
-		}
-	}
-}
-
-
-//--------------------------------------------
-inline GLuint Shader::getProgramHandle() const
-//--------------------------------------------
+//--------------------------------------------------
+inline unsigned int Shader::getProgramHandle() const
+//--------------------------------------------------
 {
 	return (m_shader_program_id);
 }

@@ -120,7 +120,7 @@ void pushTexture3D();
 *	@param 	aParameter:	parameter to add
 */
 //------------------------------------------------------------------------------
-void pushEnableDisableState(GLenum aParameter);
+void pushEnableDisableState(int aParameter);
 
 
 //------------------------------------------------------------------------------
@@ -171,6 +171,15 @@ void popEnableDisableState();
 void popShaderProgram();
 
 
+//--------------------------------------------------------------------------
+///	Load the current OpenGL matrix.
+/**
+*	@return the current OpenGL matrix.
+*/
+//--------------------------------------------------------------------------
+Math::Matrix4x4<float> getCurrentOpenGLMatrix();
+
+
 //------------------------------------------------------------------------------
 ///	Replace the projection matrix by the identity matrix.
 //------------------------------------------------------------------------------
@@ -194,12 +203,12 @@ void loadIdentityModelViewMatrix();
 *	@param 	far:	Specify the distances to the far clipping plane. The value must be positive
 */
 //------------------------------------------------------------------------------
-void loadFrustumProjectionMatrix(GLdouble left,
-        GLdouble right,
-        GLdouble bottom,
-        GLdouble top,
-        GLdouble near,
-        GLdouble far);
+void loadFrustumProjectionMatrix(double left,
+        double right,
+        double bottom,
+        double top,
+        double near,
+        double far);
 
 
 //------------------------------------------------------------------------------
@@ -215,7 +224,7 @@ void loadFrustumProjectionMatrix(GLdouble left,
 *                   (always positive).
 */
 //------------------------------------------------------------------------------
-void loadPerspectiveProjectionMatrix(GLdouble  fovy,  GLdouble  aspect,  GLdouble  zNear,  GLdouble  zFar);
+void loadPerspectiveProjectionMatrix(double  fovy,  double  aspect,  double  zNear,  double  zFar);
 
 
 //------------------------------------------------------------------------------
@@ -229,12 +238,12 @@ void loadPerspectiveProjectionMatrix(GLdouble  fovy,  GLdouble  aspect,  GLdoubl
 *	@param 	far:	Specify the distances to the far clipping plane
 */
 //------------------------------------------------------------------------------
-void loadOrthoProjectionMatrix(GLdouble left,
-        GLdouble right,
-        GLdouble bottom,
-        GLdouble top,
-        GLdouble near,
-        GLdouble far);
+void loadOrthoProjectionMatrix(double left,
+        double right,
+        double bottom,
+        double top,
+        double near,
+        double far);
 
 
 //------------------------------------------------------------------------------
@@ -249,12 +258,12 @@ void loadOrthoProjectionMatrix(GLdouble left,
 *	@return the projection matrix
 */
 //------------------------------------------------------------------------------
-MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
-        GLdouble right,
-        GLdouble bottom,
-        GLdouble top,
-        GLdouble near,
-        GLdouble far);
+MATRIX4 buildOrthoProjectionMatrix(double left,
+        double right,
+        double bottom,
+        double top,
+        double near,
+        double far);
 
 
 //------------------------------------------------------------------------------
@@ -269,12 +278,12 @@ MATRIX4 buildOrthoProjectionMatrix(GLdouble left,
 *	@return the projection matrix
 */
 //------------------------------------------------------------------------------
-MATRIX4 buildFrustumProjectionMatrix(GLdouble left,
-        GLdouble right,
-        GLdouble bottom,
-        GLdouble top,
-        GLdouble near,
-        GLdouble far);
+MATRIX4 buildFrustumProjectionMatrix(double left,
+        double right,
+        double bottom,
+        double top,
+        double near,
+        double far);
 
 
 //------------------------------------------------------------------------------
@@ -291,10 +300,10 @@ MATRIX4 buildFrustumProjectionMatrix(GLdouble left,
 *	@return the projection matrix
 */
 //------------------------------------------------------------------------------
-MATRIX4 buildPerspectiveProjectionMatrix(GLdouble fovy,
-		GLdouble aspect,
-		GLdouble zNear,
-		GLdouble zFar);
+MATRIX4 buildPerspectiveProjectionMatrix(double fovy,
+		double aspect,
+		double zNear,
+		double zFar);
 
 
 //------------------------------------------------------------------------------
@@ -324,15 +333,15 @@ void loadLookAtModelViewMatrix(const VEC3& eye,
 *	@param 	upZ			Specifies the direction of the up vector along the Z-axis
 */
 //------------------------------------------------------------------------------
-void loadLookAtModelViewMatrix(GLdouble eyeX,
-		GLdouble eyeY,
-		GLdouble eyeZ,
-		GLdouble centreX,
-		GLdouble centreY,
-		GLdouble centreZ,
-		GLdouble upX,
-		GLdouble upY,
-		GLdouble upZ);
+void loadLookAtModelViewMatrix(double eyeX,
+		double eyeY,
+		double eyeZ,
+		double centreX,
+		double centreY,
+		double centreZ,
+		double upX,
+		double upY,
+		double upZ);
 
 
 //------------------------------------------------------------------------------
@@ -364,15 +373,15 @@ MATRIX4 buildLookAtModelViewMatrix(const VEC3& eye,
 *	@return	the modelling-viewing matrix
 */
 //------------------------------------------------------------------------------
-MATRIX4 buildLookAtModelViewMatrix(GLdouble eyeX,
-		GLdouble eyeY,
-		GLdouble eyeZ,
-		GLdouble centreX,
-		GLdouble centreY,
-		GLdouble centreZ,
-		GLdouble upX,
-		GLdouble upY,
-		GLdouble upZ);
+MATRIX4 buildLookAtModelViewMatrix(double eyeX,
+		double eyeY,
+		double eyeZ,
+		double centreX,
+		double centreY,
+		double centreZ,
+		double upX,
+		double upY,
+		double upZ);
 
 
 //------------------------------------------------------------------------------
@@ -411,19 +420,19 @@ extern MATRIX4 g_current_projection_matrix;
 
 
 /// The stack of FBO binding
-extern std::vector<GLint> g_frame_buffer_object_stack;
+extern std::vector<int> g_frame_buffer_object_stack;
 
 
 /// The stack of texture binding
-extern std::vector<std::pair<GLenum, GLint> > g_texture_stack;
+extern std::vector<std::pair<int, int> > g_texture_stack;
 
 
 /// The stack of enable/disable states
-extern std::vector<std::pair<GLenum, GLboolean> > g_enable_disable_state_stack;
+extern std::vector<std::pair<int, bool> > g_enable_disable_state_stack;
 
 
 /// The stack of shader programs
-extern std::vector<GLint> g_shader_program_stack;
+extern std::vector<int> g_shader_program_stack;
 
 
 } // namespace Utilities

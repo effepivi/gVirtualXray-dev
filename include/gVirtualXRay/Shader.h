@@ -33,7 +33,6 @@
 //	Include
 //******************************************************************************
 #include <string>
-#include <GL/glew.h>
 
 
 //******************************************************************************
@@ -153,7 +152,7 @@ public:
 	*	@return the shader program handle
 	*/
 	//--------------------------------------------------------------------------
-	GLuint getProgramHandle() const;
+	unsigned int getProgramHandle() const;
 
 
 	//--------------------------------------------------------------------------
@@ -175,7 +174,7 @@ protected:
 	*	@return the number of lines in the file
 	*/
 	//--------------------------------------------------------------------------
-	int loadFile(const std::string& aShaderFilename, GLchar**& aShaderSource);
+	int loadFile(const std::string& aShaderFilename, char**& aShaderSource);
 
 	
 	//--------------------------------------------------------------------------
@@ -187,7 +186,9 @@ protected:
 	*	@return the corresponding ID
 	*/
 	//--------------------------------------------------------------------------
-	GLuint compileShader(GLenum aShaderType, int aLineNumber, GLchar** aShaderSource);
+	unsigned int compileShader(int aShaderType,
+			int aLineNumber,
+			char** aShaderSource);
 
 
 	//--------------------------------------------------------------------------
@@ -215,7 +216,7 @@ protected:
 	*	@param aShaderSource: source code of the vertex or fragment shader
 	*/
 	//--------------------------------------------------------------------------
-	void releaseSourceMemory(int& aLineNumber, GLchar**& aShaderSource);
+	void releaseSourceMemory(int& aLineNumber, char**& aShaderSource);
 
 
 	/// Flag set to true when a shader if fully valid
@@ -231,7 +232,7 @@ protected:
 
 
 	/// Source code of the vertex shader
-	GLchar **m_vertex_source;
+	char **m_vertex_source;
 
 
 	/// Number of line of the vertex shader
@@ -239,7 +240,7 @@ protected:
 
 
 	/// Source code of the fragment shader
-	GLchar **m_fragment_source;
+	char **m_fragment_source;
 
 
 	/// Number of line of the fragment shader
@@ -253,15 +254,15 @@ protected:
 	
 
 	/// ID of the shader program
-	GLuint m_shader_program_id;
+	unsigned int m_shader_program_id;
 
 
 	/// ID of the vertex shader
-	GLuint m_vertex_shader_id;
+	unsigned int m_vertex_shader_id;
 
 
 	/// ID of the fragment shader
-	GLuint m_fragment_shader_id;
+	unsigned int m_fragment_shader_id;
 };
 
 

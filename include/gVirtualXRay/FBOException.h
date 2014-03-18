@@ -71,8 +71,4 @@ public:
 } // namespace Utilities
 
 
-//******************************************************************************
-#include "FBOException.inl"
-
-
 #endif // FBO_EXCEPTION_H

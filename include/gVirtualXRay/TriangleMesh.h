@@ -38,13 +38,6 @@
 #include <string>
 #include <vector>
 
-#include<GL/glew.h>
-#ifdef __APPLE__
-#include<OpenGL/gl.h>
-#else
-#include<GL/gl.h>
-#endif
-
 #ifndef VBO_H
 #include "gVirtualXRay/VBO.h"
 #endif
@@ -117,7 +110,7 @@ public:
 	*	@param aNormalSize:	the size of the vectors (default value is 0.5 cm)
 	*/
 	//--------------------------------------------------------------------------
-	void displayFaceNormal(GLfloat aNormalSize = 0.5 * cm) const;
+	void displayFaceNormal(RATIONAL_NUMBER aNormalSize = 0.5 * cm) const;
 
 
 	//--------------------------------------------------------------------------
@@ -126,7 +119,7 @@ public:
 	*	@param aNormalSize:	the size of the vectors (default value is 0.5 cm)
 	*/
 	//--------------------------------------------------------------------------
-	void displayVertexNormal(GLfloat aNormalSize = 0.5 * cm) const;
+	void displayVertexNormal(RATIONAL_NUMBER aNormalSize = 0.5 * cm) const;
 
 
 	//--------------------------------------------------------------------------
@@ -172,7 +165,7 @@ public:
 		bool aPrintDebugInfoFlag,
 		bool aCreateVBOFlag,
 		RATIONAL_NUMBER aScale,
-		GLenum aBufferUsageHing);
+		int aBufferUsageHing);
 
 
 	//--------------------------------------------------------------------------
@@ -194,7 +187,7 @@ public:
 	*	@return true if the VBO can be used, false otherwise
 	*/
 	//--------------------------------------------------------------------------
-	bool useVBO(GLenum aBufferUsageHing);
+	bool useVBO(int aBufferUsageHing);
 
 
 	//--------------------------------------------------------------------------
@@ -390,14 +383,14 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(const GLvoid* aVertexArray,
-			GLuint aNumberOfVertices,
-			GLenum aVertexDataType,
-			const GLvoid* anIndexArray,
-			GLuint aNumberOfIndices,
-			GLenum anIndexDataType,
+	void setExternalData(const void* aVertexArray,
+			unsigned int aNumberOfVertices,
+			int aVertexDataType,
+			const void* anIndexArray,
+			unsigned int aNumberOfIndices,
+			int anIndexDataType,
 			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
+			int aTypeOfVBO);
 
 
 	//--------------------------------------------------------------------------
@@ -409,9 +402,9 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(const std::vector<GLfloat>* aVertexArray,
+	void setExternalData(const std::vector<float>* aVertexArray,
 			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
+			int aTypeOfVBO);
 
 
 	//--------------------------------------------------------------------------
@@ -423,24 +416,9 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(const std::vector<GLdouble>* aVertexArray,
+	void setExternalData(const std::vector<double>* aVertexArray,
 			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
-
-
-	//--------------------------------------------------------------------------
-	///	Set the polygon mesh using external data. The class instance will not
-	///	manage the memory.
-	/**
-	*	@param aVertexArray:		array containing the vertex data
-	*	@param anIndexArray:		array containing the index data
-	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
-	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
-	*/
-	void setExternalData(const std::vector<GLfloat>* aVertexArray,
-			const std::vector<GLuint>* anIndexArray,
-			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
+			int aTypeOfVBO);
 
 
 	//--------------------------------------------------------------------------
@@ -452,10 +430,25 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<GLdouble>* aVertexArray,
-			const std::vector<GLuint>* anIndexArray,
+	void setExternalData(const std::vector<float>* aVertexArray,
+			const std::vector<unsigned int>* anIndexArray,
 			bool aCreateVBOFlag,
-			GLenum aTypeOfVBO);
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<double>* aVertexArray,
+			const std::vector<unsigned int>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
 
 
 	//--------------------------------------------------------------------------
@@ -479,7 +472,7 @@ public:
 	*	@param aTypeOfVBO: the VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void updateVBO(GLenum aTypeOfVBO);
+	void updateVBO(int aTypeOfVBO);
 
 
 //******************************************************************************
@@ -565,19 +558,19 @@ protected:
 
 
 	/// Array containing the normal vectors (one per triangle)
-	std::vector<GLfloat> m_p_face_normal_set;
+	std::vector<RATIONAL_NUMBER> m_p_face_normal_set;
 
 
 	/// Array containing the normal vectors (one per vertex)
-	std::vector<GLfloat> m_p_vertex_normal_set;
+	std::vector<RATIONAL_NUMBER> m_p_vertex_normal_set;
 
 
 	/// Array containing the vertices
-	GLvoid* m_p_vertex_set;
+	void* m_p_vertex_set;
 
 
 	/// Array containing the index
-	GLvoid* m_p_index_set;
+	void* m_p_index_set;
 
 
 	/// Number of indices
@@ -589,11 +582,11 @@ protected:
 
 
 	/// Data type of the index data; valid values are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, GL_UNSIGNED_BYTE and GL_NONE
-	GLenum m_index_data_type;
+	int m_index_data_type;
 
 
 	/// Data type of the vertex data; valid values are GL_FLOAT, GL_DOUBLE and GL_NONE
-	GLenum m_vertex_data_type;
+	int m_vertex_data_type;
 
 
 	/// A flag set to true if the memory is managed outside of this class instance;

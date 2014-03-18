@@ -71,8 +71,4 @@ public:
 } // namespace Utilities
 
 
-//******************************************************************************
-#include "OpenGLException.inl"
-
-
 #endif // OPENGL_EXCEPTION_H

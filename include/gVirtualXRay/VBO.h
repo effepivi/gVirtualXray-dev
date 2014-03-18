@@ -31,12 +31,6 @@
 
 
 //******************************************************************************
-//	Include
-//******************************************************************************
-#include <GL/glew.h>
-
-
-//******************************************************************************
 //	namespace
 //******************************************************************************
 namespace Graphics {
@@ -95,10 +89,10 @@ public:
 	*	@param apTextureCoordinates:			address of the first component of the first texture coordinate
 	*/
 	//--------------------------------------------------------------------------
-	void setVertexData(GLenum aPrimitiveType,
-			const GLuint aNumberOfVertices,           GLuint aNumberOfCompontentsPerVertex, GLenum aVertexDataType, const GLvoid* apVertices,
-			const GLuint aNumberOfNormals,            GLuint aNumberOfCompontentsPerNormal, GLenum aNormalDataType, const GLvoid* apNormals,
-			const GLuint aNumberOfTextureCoordinates, GLuint aNumberOfCompontentsPerCoord,  GLenum aCoordDataType,  const GLvoid* apTextureCoordinates);
+	void setVertexData(int aPrimitiveType,
+			const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* apVertices,
+			const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
+			const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates);
 
 
 	//--------------------------------------------------------------------------
@@ -109,7 +103,7 @@ public:
 	*	@param apIndexSet:			the index set
 	*/
 	//--------------------------------------------------------------------------
-	void setIndexData(const GLuint aNumberOfIndexes, GLenum anIndexDataType, const GLvoid* apIndexSet);
+	void setIndexData(const unsigned int aNumberOfIndexes, int anIndexDataType, const void* apIndexSet);
 
 
 	//--------------------------------------------------------------------------
@@ -138,7 +132,7 @@ public:
 	*	@param aFlag: the buffer usage hint to set
 	*/
 	//--------------------------------------------------------------------------
-	void setBufferUsageHint(GLenum aFlag);
+	void setBufferUsageHint(int aFlag);
 
 
 	//--------------------------------------------------------------------------
@@ -147,7 +141,7 @@ public:
 	*	@return the buffer usage hint
 	*/
 	//--------------------------------------------------------------------------
-	GLenum getBufferUsageHint() const;
+	int getBufferUsageHint() const;
 
 
 	//--------------------------------------------------------------------------
@@ -163,63 +157,63 @@ public:
 //******************************************************************************
 protected:
 	/// ID of VBOs
-	GLuint m_id_set[4];
+	unsigned int m_id_set[4];
 
 
 	/// Number of normal vectors
-	GLuint m_number_of_normals;
+	unsigned int m_number_of_normals;
 
 
 	/// Number of vertices
-	GLuint m_number_of_texture_coordinates;
+	unsigned int m_number_of_texture_coordinates;
 
 
 	/// Number of vertices
-	GLuint m_number_of_vertices;
+	unsigned int m_number_of_vertices;
 
 
 	/// Number of indices
-	GLuint m_number_of_indices;
+	unsigned int m_number_of_indices;
 
 
 	/// Size in bytes of the array of normal vectors
-	GLuint m_normal_size;
+	unsigned int m_normal_size;
 
 
 	/// Size in bytes of the array of texture coordinates
-	GLuint m_texture_coordinate_size;
+	unsigned int m_texture_coordinate_size;
 
 
 	/// Size in bytes of the array of vertices
-	GLuint m_vertex_size;
+	unsigned int m_vertex_size;
 
 
 	/// Size in bytes of the array of indices
-	GLuint m_index_size;
+	unsigned int m_index_size;
 
 
 	/// Data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
-	GLenum m_normal_data_type;
+	int m_normal_data_type;
 
 
 	/// Data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
-	GLenum m_texture_coordinate_data_type;
+	int m_texture_coordinate_data_type;
 
 
 	/// Data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
-	GLenum m_vertex_data_type;
+	int m_vertex_data_type;
 
 
 	/// Data type of indices; valid values are GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT and GL_UNSIGNED_INT
-	GLenum m_index_data_type;
+	int m_index_data_type;
 
 
 	/// Type of primitive to draw; valid values are  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
-	GLenum m_primitive_type;
+	int m_primitive_type;
 
 
 	/// The buffer usage hint; valid values are GL_DYNAMIC_DRAW, GL_STATIC_DRAW and GL_STREAM_DRAW
-	GLenum m_storage_type;
+	int m_storage_type;
 };
 
 

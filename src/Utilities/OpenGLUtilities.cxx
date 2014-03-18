@@ -37,6 +37,8 @@
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#include <GL/glew.h>
+
 
 //******************************************************************************
 //	namespace
@@ -48,10 +50,202 @@ std::vector<MATRIX4> g_p_modelview_matrix_stack;
 std::vector<MATRIX4> g_p_projection_matrix_stack;
 MATRIX4 g_current_modelview_matrix;
 MATRIX4 g_current_projection_matrix;
-std::vector<GLint> g_frame_buffer_object_stack;
-std::vector<std::pair<GLenum, GLint> > g_texture_stack;
-std::vector<std::pair<GLenum, GLboolean> > g_enable_disable_state_stack;
-std::vector<GLint> g_shader_program_stack;
+std::vector<int> g_frame_buffer_object_stack;
+std::vector<std::pair<int, int> > g_texture_stack;
+std::vector<std::pair<int, bool> > g_enable_disable_state_stack;
+std::vector<int> g_shader_program_stack;
+
+
+//----------------------------------------------------
+void checkOpenGLErrorStatus(const char* aFileName,
+							const char* aFunctionName,
+							int aLineNumber)
+//----------------------------------------------------
+{
+	// Get the OpenGL error code
+	GLenum error_code(glGetError());
+
+	// There was an error
+	if (error_code != GL_NO_ERROR)
+	{
+		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+	}
+}
+
+
+//-------------------------------------------------
+void checkFBOErrorStatus(const char* aFileName,
+						 const char* aFunctionName,
+						 int aLineNumber)
+//-------------------------------------------------
+{
+	// Get the OpenGL error code
+	GLenum error_code(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT));
+
+	// There was an error
+	if (error_code != GL_FRAMEBUFFER_COMPLETE_EXT)
+	{
+		throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
+	}
+}
+
+
+//------------
+void pushFBO()
+//------------
+{
+	// Save the current FBO
+	GLint fbo_id(0);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo_id);
+
+	g_frame_buffer_object_stack.push_back(fbo_id);
+}
+
+
+//------------------
+void pushTexture1D()
+//------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_1D, &current_texture_id);
+
+	// Get the current 1D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_1D, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//------------------
+void pushTexture2D()
+//------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture_id);
+
+	// Get the current 2D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_2D, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//-------------------------
+void pushTextureRectangle()
+//-------------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+
+	// Get the current 2D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//------------------
+void pushTexture3D()
+//------------------
+{
+	// Save the current texture
+	GLint current_texture_id(0);
+	glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
+
+	// Get the current 3D texture
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_3D, current_texture_id);
+
+	// Add the last texture
+	g_texture_stack.push_back(current_texture_pair);
+}
+
+
+//-----------------------------------------
+void pushEnableDisableState(int aParameter)
+//-----------------------------------------
+{
+	GLboolean state;
+	glGetBooleanv(aParameter, &state);
+
+	g_enable_disable_state_stack.push_back(std::pair<int, bool>(aParameter, state));
+}
+
+
+//----------------------
+void pushShaderProgram()
+//----------------------
+{
+	GLint current_shader(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+
+	g_shader_program_stack.push_back(current_shader);
+}
+
+
+//-----------
+void popFBO()
+//-----------
+{
+	// Make sure the stack is not empty
+	if (g_frame_buffer_object_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Save the current FBO
+	GLint current_fbo_id(0);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &current_fbo_id);
+
+	// Get the previous FBO from the stack
+	GLint previous_fbo_id(g_frame_buffer_object_stack.back());
+
+	// The two FBOs are different
+	if (previous_fbo_id != current_fbo_id)
+	{
+		// Restore the FBO
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previous_fbo_id);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Remove the last FBO
+	g_frame_buffer_object_stack.pop_back();
+}
+
+
+//---------------------
+void popShaderProgram()
+//---------------------
+{
+	// Make sure the stack is not empty
+	if (g_shader_program_stack.size() == 0)
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Save the current program
+	GLint current_shader(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+
+	// Get the previous program from the stack
+	GLint previous_program(g_shader_program_stack.back());
+
+	// The two programs are different
+	if (previous_program != current_shader)
+	{
+		// Restore the FBO
+		glUseProgram(previous_program);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Remove the last program
+	g_shader_program_stack.pop_back();
+}
 
 
 //---------------
@@ -65,7 +259,7 @@ void popTexture()
 	}
 
 	// Get the previous texture from the stack
-	std::pair<GLenum, GLint> previous_texture(g_texture_stack.back());
+	std::pair<int, int> previous_texture(g_texture_stack.back());
 
 	// Remove the last texture
 	g_texture_stack.pop_back();
@@ -136,7 +330,7 @@ void popEnableDisableState()
 	}
 
 	// Get the previous state from the stack
-	std::pair<GLenum, GLboolean> previous_state(g_enable_disable_state_stack.back());
+	std::pair<int, bool> previous_state(g_enable_disable_state_stack.back());
 
 	// Remove the last state
 	g_enable_disable_state_stack.pop_back();
@@ -159,6 +353,42 @@ void popEnableDisableState()
 			glDisable(previous_state.first);
 		}
 	}
+}
+
+
+//---------------------------------------------
+Math::Matrix4x4<float> getCurrentOpenGLMatrix()
+//---------------------------------------------
+{
+	// Load the matrix from OpenGL
+	GLfloat transformation_matrix[16];
+
+	// Get the current matrix mode
+	GLint matrix_mode(0);
+	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
+
+	// Load the model/view matrix
+	if (matrix_mode == GL_MODELVIEW)
+	{
+		glGetFloatv(GL_MODELVIEW_MATRIX, transformation_matrix);
+	}
+	// Load the projection matrix
+	else if (matrix_mode == GL_PROJECTION)
+	{
+		glGetFloatv(GL_PROJECTION_MATRIX, transformation_matrix);
+	}
+	// Load the texture matrix
+	else if (matrix_mode == GL_TEXTURE)
+	{
+		glGetFloatv(GL_TEXTURE_MATRIX, transformation_matrix);
+	}
+	// Load the colour matrix
+	else if (matrix_mode == GL_COLOR)
+	{
+		glGetFloatv(GL_COLOR_MATRIX, transformation_matrix);
+	}
+
+	return (Math::Matrix4x4<float>(transformation_matrix));
 }
 
 
@@ -202,6 +432,26 @@ void applyModelViewMatrix()
 			glMatrixMode(matrix_mode);
 		}
 	}
+}
+
+
+//-----------------------------------
+void loadProjectionMatrixFromOpenGL()
+//-----------------------------------
+{
+	float opengl_matrix_data[16];
+	glGetFloatv(GL_PROJECTION_MATRIX, opengl_matrix_data);
+	g_current_projection_matrix = opengl_matrix_data;
+}
+
+
+//----------------------------------
+void loadModelViewMatrixFromOpenGL()
+//----------------------------------
+{
+	float opengl_matrix_data[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, opengl_matrix_data);
+	g_current_modelview_matrix = opengl_matrix_data;
 }
 
 

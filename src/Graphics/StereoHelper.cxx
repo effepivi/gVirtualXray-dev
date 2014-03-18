@@ -37,6 +37,8 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+#include <GL/glew.h>
+
 
 //******************************************************************************
 //	Name space

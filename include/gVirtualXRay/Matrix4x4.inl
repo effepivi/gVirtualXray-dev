@@ -33,16 +33,9 @@
 #include "gVirtualXRay/Units.h"
 #endif
 
+#include <iostream>
 #include <math.h>
 #include <string.h>
-
-#include<GL/glew.h>
-#ifdef __APPLE__
-#include<OpenGL/gl.h>
-#else
-#include<GL/gl.h>
-#endif
-
 
 
 //******************************************************************************
@@ -344,57 +337,6 @@ template<typename T> Matrix4x4<T>& Matrix4x4<T>::operator*=(const Matrix4x4<T>& 
 	m_small_matrix_up_to_date = false;
 
 	return (*this);
-}
-
-
-//------------------------------------------------------
-template<typename T> void Matrix4x4<T>::loadFromOpenGL()
-//------------------------------------------------------
-{
-	// Load the matrix from OpenGL
-	GLdouble transformation_matrix[16];
-	
-	// Get the current matrix mode
-	GLint matrix_mode(0);
-	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
-
-	// Load the model/view matrix
-	if (matrix_mode == GL_MODELVIEW)
-	{
-		glGetDoublev(GL_MODELVIEW_MATRIX, transformation_matrix);
-	}
-	// Load the projection matrix
-	else if (matrix_mode == GL_PROJECTION)
-	{
-		glGetDoublev(GL_PROJECTION_MATRIX, transformation_matrix);
-	}
-	// Load the texture matrix
-	else if (matrix_mode == GL_TEXTURE)
-	{
-		glGetDoublev(GL_TEXTURE_MATRIX, transformation_matrix);
-	}
-	// Load the colour matrix
-	else if (matrix_mode == GL_COLOR)
-	{
-		glGetDoublev(GL_COLOR_MATRIX, transformation_matrix);
-	}
-
-	m_p_4x4_data[0]  = transformation_matrix[0];
-	m_p_4x4_data[1]  = transformation_matrix[1];
-	m_p_4x4_data[2]  = transformation_matrix[2];
-	m_p_4x4_data[3]  = transformation_matrix[3];
-	m_p_4x4_data[4]  = transformation_matrix[4];
-	m_p_4x4_data[5]  = transformation_matrix[5];
-	m_p_4x4_data[6]  = transformation_matrix[6];
-	m_p_4x4_data[7]  = transformation_matrix[7];
-	m_p_4x4_data[8]  = transformation_matrix[8];
-	m_p_4x4_data[9]  = transformation_matrix[9];
-	m_p_4x4_data[10] = transformation_matrix[10];
-	m_p_4x4_data[11] = transformation_matrix[11];
-	m_p_4x4_data[12] = transformation_matrix[12];
-	m_p_4x4_data[13] = transformation_matrix[13];
-	m_p_4x4_data[14] = transformation_matrix[14];
-	m_p_4x4_data[15] = transformation_matrix[15];
 }
 
 
