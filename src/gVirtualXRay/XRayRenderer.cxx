@@ -141,8 +141,8 @@ XRayRenderer::XRayRenderer():
 		m_p_sum_mux_dx_image(ImageType::New()),
 		m_p_energy_fluence_image(ImageType::New()),
 #endif // HAS_ITK
-		m_shift_filter(0),
-		m_scale_filter(1),
+		m_min_value_in_simulated_xray_image(0),
+		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
 		m_use_L_buffer_artefact_filtering(true),
 		m_L_buffer_empty(false)
@@ -2226,35 +2226,21 @@ void XRayRenderer::normalise()
 	printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, 0);
 
 	// Get image statistics
-	PixelType min_value(FLT_MAX);
-	PixelType max_value(-FLT_MAX);
+	m_min_value_in_simulated_xray_image =  FLT_MAX;
+	m_max_value_in_simulated_xray_image = -FLT_MAX;
 	for (unsigned int i(0);
 			i < m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
 			++i)
 	{
 		PixelType pixel_value(m_p_temp_raw_data[i]);
-		if (min_value > pixel_value) min_value = pixel_value;
-		if (max_value < pixel_value) max_value = pixel_value;
+		if (m_min_value_in_simulated_xray_image > pixel_value) m_min_value_in_simulated_xray_image = pixel_value;
+		if (m_max_value_in_simulated_xray_image < pixel_value) m_max_value_in_simulated_xray_image = pixel_value;
 	}
 
 	// Make sure the min value is not negative (in which case it is an artefact due to the dot product sign)
-	if (min_value < 0)
+	if (m_min_value_in_simulated_xray_image < 0)
 	{
-		min_value = 0;
-	}
-
-	// Compute the filter parameters
-	double range(fabs(max_value - min_value));
-	if (range > EPSILON)
-	{
-		m_shift_filter = -min_value;
-		m_scale_filter = 1.0 / range;
-	}
-	// The image is homogeneous
-	else
-	{
-		m_shift_filter = 0;
-		m_scale_filter = 1;
+		m_min_value_in_simulated_xray_image = 0;
 	}
 }
 
@@ -2284,13 +2270,23 @@ void XRayRenderer::display()
 	handle = glGetUniformLocation(program_handle, "g_display_negative_image");
 	glUniform1i(handle, m_negative_display_flag);
 
+	// Compute the filter parameters
+	GLfloat shift_filter(0);
+	GLfloat scale_filter(1);
+	double range(fabs(m_max_value_in_simulated_xray_image - m_min_value_in_simulated_xray_image));
+	if (range > EPSILON)
+	{
+		shift_filter = -m_min_value_in_simulated_xray_image;
+		scale_filter = 1.0 / range;
+	}
+
 	// Pass the shift parameter of the shift-scale filter to the shader
 	handle = glGetUniformLocation(program_handle, "g_shift_filter");
-	glUniform1f(handle, m_shift_filter);
+	glUniform1f(handle, shift_filter);
 
 	// Pass the scale parameter of the shift-scale filter to the shader
 	handle = glGetUniformLocation(program_handle, "g_scale_filter");
-	glUniform1f(handle, m_scale_filter);
+	glUniform1f(handle, scale_filter);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(program_handle, "g_projection_matrix");

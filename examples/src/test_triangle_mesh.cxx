@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		welsh_dragon.cxx
+*	@file		test_triangle_mesh.cxx
 *
 *	@brief		Main test program.
 *

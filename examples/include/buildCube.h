@@ -53,9 +53,50 @@
 *	@param 	apVertexSet:	the vertices of the cube
 */
 //------------------------------------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLenght,
+void buildCube(Utilities::RATIONAL_NUMBER aLength,
 		Utilities::VEC3 aCentre,
 		std::vector<double>& apVertexSet);
+
+
+//------------------------------------------------------------------------------
+///	Create a cube.
+/**
+*	@param 	aLenght:	the length of the cube
+*	@param 	aCentre:	the centre of the cube
+*	@param 	apVertexSet:	the vertices of the cube
+*/
+//------------------------------------------------------------------------------
+void buildCube(Utilities::RATIONAL_NUMBER aLength,
+		Utilities::VEC3 aCentre,
+		std::vector<double>& apVertexSet,
+		std::vector<unsigned char>& apIndexSet);
+
+
+//------------------------------------------------------------------------------
+///	Create a cube.
+/**
+*	@param 	aLenght:	the length of the cube
+*	@param 	aCentre:	the centre of the cube
+*	@param 	apVertexSet:	the vertices of the cube
+*/
+//------------------------------------------------------------------------------
+void buildCube(Utilities::RATIONAL_NUMBER aLength,
+		Utilities::VEC3 aCentre,
+		std::vector<float>& apVertexSet);
+
+
+//------------------------------------------------------------------------------
+///	Create a cube.
+/**
+*	@param 	aLenght:	the length of the cube
+*	@param 	aCentre:	the centre of the cube
+*	@param 	apVertexSet:	the vertices of the cube
+*/
+//------------------------------------------------------------------------------
+void buildCube(Utilities::RATIONAL_NUMBER aLength,
+		Utilities::VEC3 aCentre,
+		std::vector<float>& apVertexSet,
+		std::vector<unsigned char>& apIndexSet);
 
 
 #endif // BUILD_CUBE_H

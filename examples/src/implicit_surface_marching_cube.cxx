@@ -174,7 +174,7 @@ float g_threshold(0.5);
 int g_selected_iso_surface(0);
 bool g_make_cube_bigger(true);
 
-RATIONAL_NUMBER g_scaling_factor(0.5);
+RATIONAL_NUMBER g_scaling_factor(0.25);
 Vec3ui g_number_of_voxel(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
 
 ImplicitSurface g_sphere_1;

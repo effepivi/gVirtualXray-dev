@@ -156,7 +156,31 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Build a tranlation matrix.
+	///	Build a rotation matrix.
+	/**
+	*	@param anAngle: the angle of rotation in degrees
+	*	@param x: the x-component of the axis of rotation
+	*	@param y: the y-component of the axis of rotation
+	*	@param z: the z-component of the axis of rotation
+	*	@return the corresponding rotation matrix
+	*/
+	//--------------------------------------------------------------------------
+	static Matrix4x4 buildRotationMatrix(T anAngle, T x, T y, T z);
+
+
+	//--------------------------------------------------------------------------
+	///	Build a rotation matrix.
+	/**
+	*	@param anAngle: the angle of rotation in degrees
+	*	@param aVector: the axis of rotation
+	*	@return the corresponding translation matrix
+	*/
+	//--------------------------------------------------------------------------
+	static Matrix4x4 buildRotationMatrix(T anAngle, const Vec3<T>& aVector);
+
+
+	//--------------------------------------------------------------------------
+	///	Build a rotation matrix.
 	/**
 	*	@param x: the x-component of the translation vector
 	*	@param y: the y-component of the translation vector

@@ -124,37 +124,7 @@ template<typename T> void Matrix4x4<T>::loadIdentity()
 template<typename T> void Matrix4x4<T>::rotate(const double anAngle, const Vec3<T>& aVector)
 //------------------------------------------------------------------------------------------
 {
-	Vec3<T> rotation_axis(aVector.normal());
-	double angle(Utilities::PI * anAngle / 180.0);
-	double c(cos(angle));
-	double s(sin(angle));
-	double one_minus_cos(1.0 - c);
-	double xy(rotation_axis.getX() * rotation_axis.getY());
-	double xz(rotation_axis.getX() * rotation_axis.getZ());
-	double yz(rotation_axis.getY() * rotation_axis.getZ());
-	
-	Matrix4x4<T> rotation_matrix(
-		rotation_axis.getX() * rotation_axis.getX() * (1.0 - c) + c,
-		xy * one_minus_cos + rotation_axis.getZ() * s,
-		xz * one_minus_cos - rotation_axis.getY() * s,
-		0.0,
-		
-		xy * one_minus_cos - rotation_axis.getZ() * s,
-		rotation_axis.getY() * rotation_axis.getY() * one_minus_cos + c,
-		yz * one_minus_cos + rotation_axis.getX() * s,
-		0.0,
-		
-		xz * one_minus_cos + rotation_axis.getY() * s,
-		yz * one_minus_cos - rotation_axis.getX() * s,
-		rotation_axis.getZ() * rotation_axis.getZ() * one_minus_cos + c,
-		0.0,
-		
-		0.0,
-		0.0,
-		0.0,
-		1.0);
-
-	*this *= rotation_matrix;
+	*this *= buildRotationMatrix(anAngle, aVector);
 
 	m_small_matrix_up_to_date = false;
 }
@@ -197,6 +167,54 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildTranslationMatrix(T x, T y,
 			0.0, 1.0, 0.0, 0.0,
 			0.0, 0.0, 1.0, 0.0,
 			  x,   y,   z, 1.0));
+}
+
+
+//-----------------------------------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
+																	const Vec3<T>& aVector)
+//-----------------------------------------------------------------------------------------
+{
+	return (buildRotationMatrix(anAngle, aVector.getX(), aVector.getY(), aVector.getZ()));
+}
+
+
+//--------------------------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
+																	T x, T y, T z)
+//--------------------------------------------------------------------------------
+{
+	Vec3<T> rotation_axis(Vec3<T>(x, y, z).normal());
+	double angle(Utilities::PI * anAngle / 180.0);
+	double c(cos(angle));
+	double s(sin(angle));
+	double one_minus_cos(1.0 - c);
+	double xy(rotation_axis.getX() * rotation_axis.getY());
+	double xz(rotation_axis.getX() * rotation_axis.getZ());
+	double yz(rotation_axis.getY() * rotation_axis.getZ());
+
+	Matrix4x4<T> rotation_matrix(
+		rotation_axis.getX() * rotation_axis.getX() * (1.0 - c) + c,
+		xy * one_minus_cos + rotation_axis.getZ() * s,
+		xz * one_minus_cos - rotation_axis.getY() * s,
+		0.0,
+
+		xy * one_minus_cos - rotation_axis.getZ() * s,
+		rotation_axis.getY() * rotation_axis.getY() * one_minus_cos + c,
+		yz * one_minus_cos + rotation_axis.getX() * s,
+		0.0,
+
+		xz * one_minus_cos + rotation_axis.getY() * s,
+		yz * one_minus_cos - rotation_axis.getX() * s,
+		rotation_axis.getZ() * rotation_axis.getZ() * one_minus_cos + c,
+		0.0,
+
+		0.0,
+		0.0,
+		0.0,
+		1.0);
+
+	return (rotation_matrix);
 }
 
 

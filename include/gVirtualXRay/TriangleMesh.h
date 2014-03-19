@@ -452,6 +452,66 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<float>* aVertexArray,
+			const std::vector<unsigned short>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<double>* aVertexArray,
+			const std::vector<unsigned short>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<float>* aVertexArray,
+			const std::vector<unsigned char>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will not
+	///	manage the memory.
+	/**
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	void setExternalData(const std::vector<double>* aVertexArray,
+			const std::vector<unsigned char>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
 	///	Apply a scaling factor to the vertex data. Note that the bounding box
 	///	will be automatically updated.
 	/**

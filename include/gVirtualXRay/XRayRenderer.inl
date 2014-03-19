@@ -193,4 +193,20 @@ inline void XRayRenderer::displayOuterSurface() const
 }
 
 
+//-----------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getMinPixelValue() const
+//-----------------------------------------------------------
+{
+	return (m_min_value_in_simulated_xray_image);
+}
+
+
+//-----------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getMaxPixelValue() const
+//-----------------------------------------------------------
+{
+	return (m_max_value_in_simulated_xray_image);
+}
+
+
 } // namespace gVirtualXRay

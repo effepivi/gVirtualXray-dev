@@ -380,6 +380,24 @@ public:
 	void displayOuterSurface() const;
 
 
+	//--------------------------------------------------------------------------
+	///	Accessor on the smallest pixel intensity in the latest simulated X-ray image.
+	/**
+	*	@return the min value in simulated X-ray image
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER getMinPixelValue() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the greatest pixel intensity in the latest simulated X-ray image.
+	/**
+	*	@return the max value in simulated X-ray image
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER getMaxPixelValue() const;
+
+
 //******************************************************************************
 protected:
 	//--------------------------------------------------------------------------
@@ -629,12 +647,12 @@ protected:
 #endif // HAS_ITK
 
 
-	/// Shift parameter of the shift/scale filter
-	RATIONAL_NUMBER m_shift_filter;
+	/// Min value in simulated X-ray image
+	RATIONAL_NUMBER m_min_value_in_simulated_xray_image;
 
 
-	/// Scale parameter of the shift/scale filter
-	RATIONAL_NUMBER m_scale_filter;
+	/// Max value in simulated X-ray image
+	RATIONAL_NUMBER m_max_value_in_simulated_xray_image;
 
 
 	/// Flag to display the result in negative or not

@@ -1055,6 +1055,78 @@ void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
 }
 
 
+//---------------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
+								   const std::vector<unsigned short>* anIndexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//---------------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_SHORT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//---------------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
+								   const std::vector<unsigned short>* anIndexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//---------------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_SHORT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//---------------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
+								   const std::vector<unsigned char>* anIndexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//---------------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_BYTE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//---------------------------------------------------------------------------------
+void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
+								   const std::vector<unsigned char>* anIndexArray,
+								   bool aCreateVBOFlag,
+								   int aTypeOfVBO)
+//---------------------------------------------------------------------------------
+{
+	setExternalData(&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_BYTE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
 //----------------------------------------------------------------
 void TriangleMesh::setExternalData(const void* aVertexArray,
 								   unsigned int aNumberOfVertices,

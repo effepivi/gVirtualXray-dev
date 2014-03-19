@@ -90,6 +90,15 @@ ELSE(GLEW_FOUND)
 ENDIF(GLEW_FOUND)
 
 
+FIND_PACKAGE(GLUT REQUIRED)
+IF(GLUT_FOUND)
+	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+	SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARY})
+ELSE(GLUT_FOUND)
+	MESSAGE(FATAL_ERROR "GLUT not found.")
+ENDIF(GLUT_FOUND)
+
+
 # BOOST #######################################################################
 IF(APPLE)
 	FIND_PACKAGE(Boost REQUIRED COMPONENTS system filesystem program_options)
@@ -141,6 +150,9 @@ TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs
 
 ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
 TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
+TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_BUNDLE)
 	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns)
