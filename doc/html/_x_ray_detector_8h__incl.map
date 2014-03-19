@@ -1,0 +1,21 @@
+<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/XRayDetector.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/XRayDetector.h">
+<area shape="rect" id="node3" href="$_types_8h.html" title="Type declarations." alt="" coords="302,416,455,443"/>
+<area shape="rect" id="node19" href="$_matrix4x4_8h.html" title="Template class to handle a 4x4 matrixs." alt="" coords="179,499,349,525"/>
+<area shape="rect" id="node31" href="$_v_b_o_8h.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="33,109,175,136"/>
+<area shape="rect" id="node71" href="$_x_ray_detector_8inl.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="861,184,984,211"/>
+<area shape="rect" id="node7" href="$_vec3_8h.html" title="Template class to handle 3D vectors." alt="" coords="325,573,469,600"/>
+<area shape="rect" id="node15" href="$_vec2_8h.html" title="Template class to handle 2D vectors." alt="" coords="501,499,645,525"/>
+<area shape="rect" id="node11" href="$_vec3_8inl.html" title="Template class to handle 3D vectors." alt="" coords="363,648,432,675"/>
+<area shape="rect" id="node17" href="$_vec2_8inl.html" title="Template class to handle 2D vectors." alt="" coords="511,573,580,600"/>
+<area shape="rect" id="node22" href="$_matrix4x4_8inl.html" title="Template class to handle 4x4 matrices." alt="" coords="206,573,300,600"/>
+<area shape="rect" id="node24" href="$_units_8h.html" title="Units, such as meters, etc." alt="" coords="145,648,287,675"/>
+<area shape="rect" id="node33" href="$_v_b_o_8inl.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="71,184,137,211"/>
+<area shape="rect" id="node40" href="$_open_g_l_utilities_8h.html" title="Some utility functions about OpenGL." alt="" coords="251,259,457,285"/>
+<area shape="rect" id="node46" href="$_open_g_l_utilities_8inl.html" title="Some utility functions about OpenGL." alt="" coords="571,333,700,360"/>
+<area shape="rect" id="node50" href="$_open_g_l_exception_8h.html" title="Class to handle exceptions related to frame buffer objects (FBOs)." alt="" coords="561,416,783,443"/>
+<area shape="rect" id="node62" href="$_out_of_bounds_exception_8h.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="1030,409,1212,450"/>
+<area shape="rect" id="node67" href="$_f_b_o_exception_8h.html" title="gVirtualXRay/FBOException.h" alt="" coords="807,416,1005,443"/>
+<area shape="rect" id="node52" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="689,499,860,525"/>
+<area shape="rect" id="node58" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="839,573,935,600"/>
+<area shape="rect" id="node65" href="$_out_of_bounds_exception_8inl.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="1034,499,1208,525"/>
+</map>

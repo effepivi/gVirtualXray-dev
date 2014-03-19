@@ -1,0 +1,23 @@
+<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/Exception.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/Exception.h">
+<area shape="rect" id="node3" href="$_f_b_o_exception_8h.html" title="/home/fpvidal/Documents\l/gvirtualxray&#45;code/trunk\l/include/gVirtualXRay/FBOException.h" alt="" coords="5,117,256,173"/>
+<area shape="rect" id="node27" href="$_file_does_not_exist_exception_8h.html" title="/home/fpvidal/Documents\l/gvirtualxray&#45;code/trunk\l/include/gVirtualXRay/FileDoesNot\lExistException.h" alt="" coords="837,110,1067,181"/>
+<area shape="rect" id="node34" href="$_open_g_l_exception_8h.html" title="Class to handle exceptions related to frame buffer objects (FBOs)." alt="" coords="281,117,553,173"/>
+<area shape="rect" id="node37" href="$_out_of_bounds_exception_8h.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="577,110,811,181"/>
+<area shape="rect" id="node48" href="$_out_of_memory_exception_8h.html" title="Class to handle exceptions when memory cannot be allocated dynamically." alt="" coords="1143,110,1379,181"/>
+<area shape="rect" id="node50" href="$_shader_8inl.html" title="Class to handle GLSL shaders." alt="" coords="1001,229,1215,285"/>
+<area shape="rect" id="node5" href="$_open_g_l_utilities_8inl.html" title="Some utility functions about OpenGL." alt="" coords="106,229,368,285"/>
+<area shape="rect" id="node7" href="$_open_g_l_utilities_8h.html" title="Some utility functions about OpenGL." alt="" coords="107,333,364,389"/>
+<area shape="rect" id="node9" href="$_v_b_o_8inl.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="335,437,533,493"/>
+<area shape="rect" id="node21" href="$_x_ray_detector_8inl.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="489,541,743,597"/>
+<area shape="rect" id="node24" href="$_x_ray_renderer_8inl.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="51,437,311,493"/>
+<area shape="rect" id="node11" href="$_v_b_o_8h.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="271,541,464,597"/>
+<area shape="rect" id="node13" href="$_triangle_mesh_8h.html" title="Class to handle 3D triangle meshes." alt="" coords="667,645,916,701"/>
+<area shape="rect" id="node15" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="527,749,781,805"/>
+<area shape="rect" id="node17" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="394,645,643,701"/>
+<area shape="rect" id="node29" href="$_x_ray_beam_8inl.html" title="Class to manage X&#45;Ray beams. The beam spectrum is discretised into energy channels." alt="" coords="736,229,976,285"/>
+<area shape="rect" id="node31" href="$_x_ray_beam_8h.html" title="Class to manage X&#45;Ray beams. The beam spectrum is discretised into energy channels." alt="" coords="836,437,1069,493"/>
+<area shape="rect" id="node39" href="$_implicit_surface_8inl.html" title="Class to build 3D implicit surfaces. To know what implicit surfaces are, please visit Paul Bourke&#39;s t..." alt="" coords="395,229,652,285"/>
+<area shape="rect" id="node44" href="$_triangle_mesh_8inl.html" title="Class to handle 3D triangle meshes." alt="" coords="665,333,919,389"/>
+<area shape="rect" id="node41" href="$_implicit_surface_8h.html" title="Class to build 3D implicit surfaces. To know what implicit surfaces are, please visit Paul Bourke&#39;s t..." alt="" coords="389,333,640,389"/>
+<area shape="rect" id="node52" href="$_shader_8h.html" title="Class to handle GLSL shaders." alt="" coords="997,541,1205,597"/>
+</map>

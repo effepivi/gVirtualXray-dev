@@ -1,0 +1,17 @@
+<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/Matrix4x4.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/Matrix4x4.h">
+<area shape="rect" id="node3" href="$_open_g_l_utilities_8h.html" title="Some utility functions about OpenGL." alt="" coords="769,325,1025,381"/>
+<area shape="rect" id="node13" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="919,645,1168,701"/>
+<area shape="rect" id="node23" href="$_stereo_helper_8h.html" title="Class to handle stereo vision using OpenGL&#39;s quad buffer. The code is relying on // http://www..." alt="" coords="1113,213,1356,269"/>
+<area shape="rect" id="node25" href="$_types_8h.html" title="Type declarations." alt="" coords="669,109,872,165"/>
+<area shape="rect" id="node5" href="$_v_b_o_8inl.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="738,437,936,493"/>
+<area shape="rect" id="node17" href="$_x_ray_detector_8inl.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="917,541,1171,597"/>
+<area shape="rect" id="node20" href="$_x_ray_renderer_8inl.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="389,437,648,493"/>
+<area shape="rect" id="node7" href="$_v_b_o_8h.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="699,541,892,597"/>
+<area shape="rect" id="node9" href="$_triangle_mesh_8h.html" title="Class to handle 3D triangle meshes." alt="" coords="537,645,785,701"/>
+<area shape="rect" id="node11" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="453,749,707,805"/>
+<area shape="rect" id="node27" href="$_attenuation_coefficient_8h.html" title="Class to manage an attenuation coefficient." alt="" coords="5,318,227,389"/>
+<area shape="rect" id="node30" href="$_implicit_surface_8h.html" title="Class to build 3D implicit surfaces. To know what implicit surfaces are, please visit Paul Bourke&#39;s t..." alt="" coords="56,213,307,269"/>
+<area shape="rect" id="node33" href="$_open_g_l_utilities_8inl.html" title="Some utility functions about OpenGL." alt="" coords="723,213,985,269"/>
+<area shape="rect" id="node36" href="$_spectrum_record_8h.html" title="Class to manage a record of the X&#45;Ray beam, i.e. an energy bin (number of photons, energy of the photons in the bin)." alt="" coords="331,213,596,269"/>
+<area shape="rect" id="node38" href="$_x_ray_beam_8h.html" title="Class to manage X&#45;Ray beams. The beam spectrum is discretised into energy channels." alt="" coords="347,325,580,381"/>
+</map>

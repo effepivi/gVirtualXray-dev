@@ -1,0 +1,16 @@
+<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/OutOfBoundsException.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/OutOfBoundsException.h">
+<area shape="rect" id="node3" href="$_implicit_surface_8inl.html" title="Class to build 3D implicit surfaces. To know what implicit surfaces are, please visit Paul Bourke&#39;s t..." alt="" coords="133,125,389,181"/>
+<area shape="rect" id="node7" href="$_open_g_l_utilities_8inl.html" title="Some utility functions about OpenGL." alt="" coords="425,125,687,181"/>
+<area shape="rect" id="node29" href="$_triangle_mesh_8inl.html" title="Class to handle 3D triangle meshes." alt="" coords="641,437,895,493"/>
+<area shape="rect" id="node32" href="$_x_ray_beam_8inl.html" title="Class to manage X&#45;Ray beams. The beam spectrum is discretised into energy channels." alt="" coords="808,229,1048,285"/>
+<area shape="rect" id="node5" href="$_implicit_surface_8h.html" title="Class to build 3D implicit surfaces. To know what implicit surfaces are, please visit Paul Bourke&#39;s t..." alt="" coords="116,229,367,285"/>
+<area shape="rect" id="node9" href="$_open_g_l_utilities_8h.html" title="Some utility functions about OpenGL." alt="" coords="391,229,648,285"/>
+<area shape="rect" id="node11" href="$_v_b_o_8inl.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="421,333,619,389"/>
+<area shape="rect" id="node23" href="$_x_ray_detector_8inl.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="145,437,399,493"/>
+<area shape="rect" id="node26" href="$_x_ray_renderer_8inl.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="5,333,264,389"/>
+<area shape="rect" id="node13" href="$_v_b_o_8h.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="423,437,616,493"/>
+<area shape="rect" id="node15" href="$_triangle_mesh_8h.html" title="Class to handle 3D triangle meshes." alt="" coords="557,541,805,597"/>
+<area shape="rect" id="node17" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="393,645,647,701"/>
+<area shape="rect" id="node19" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="234,541,483,597"/>
+<area shape="rect" id="node34" href="$_x_ray_beam_8h.html" title="Class to manage X&#45;Ray beams. The beam spectrum is discretised into energy channels." alt="" coords="813,333,1047,389"/>
+</map>
