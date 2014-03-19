@@ -60,15 +60,25 @@ INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
 
 
+# Options #####################################################################
+IF(APPLE)
+	OPTION(USE_BUNDLE "Use Apple Bundle." ON)
+ENDIF(APPLE)
+OPTION(USE_FLTK "Use FLTK." ON)
+OPTION(USE_GLUT "Use GLUT." ON)
+
+
 # FLTK ########################################################################
-FIND_PACKAGE(FLTK REQUIRED)
-if(FLTK_FOUND)
-        ADD_DEFINITIONS(-DHAS_FLTK)
-        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
-        SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
-ELSE(FLTK_FOUND)
-        MESSAGE(FATAL_ERROR "FLTK not found.")
-ENDIF(FLTK_FOUND)
+IF(USE_FLTK)
+	FIND_PACKAGE(FLTK)
+	if(FLTK_FOUND)
+        	ADD_DEFINITIONS(-DHAS_FLTK)
+	        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
+        	SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+	ELSE(FLTK_FOUND)
+        	MESSAGE(FATAL_ERROR "FLTK not found.")
+	ENDIF(FLTK_FOUND)
+ENDIF(USE_FLTK)
 
 
 # OpenGL ######################################################################
@@ -90,13 +100,29 @@ ELSE(GLEW_FOUND)
 ENDIF(GLEW_FOUND)
 
 
-FIND_PACKAGE(GLUT REQUIRED)
-IF(GLUT_FOUND)
-	INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-	SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARY})
-ELSE(GLUT_FOUND)
-	MESSAGE(FATAL_ERROR "GLUT not found.")
-ENDIF(GLUT_FOUND)
+IF(USE_GLUT)
+	FIND_PACKAGE(GLUT)
+	IF(GLUT_FOUND)
+		INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+		SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARY})
+	ELSE(GLUT_FOUND)
+		MESSAGE(FATAL_ERROR "GLUT not found.")
+	ENDIF(GLUT_FOUND)
+ELSE(USE_GLUT)
+	MESSAGE(WARNING "GLUT is required to build the tutorials.")
+ENDIF(USE_GLUT)
+
+
+# Check if GLUT or FLTK is enable #############################################
+IF(NOT USE_GLUT AND NOT USE_FLTK)
+	MESSAGE(FATAL_ERROR "Nor FLTK nor GLUT is enable, you have to select one or the other.")
+ENDIF(NOT USE_GLUT AND NOT USE_FLTK)
+
+
+# Check if GLUT or FLTK is enable #############################################
+IF((!USE_GLUT OR !FOUND_GLUT) AND (!USE_FLTK OR !FOUND_FLTK))
+	MESSAGE(FATAL_ERROR "Nor FLTK nor GLUT has been found, make sure one or the other is installed.")
+ENDIF((!USE_GLUT OR !FOUND_GLUT) AND (!USE_FLTK OR !FOUND_FLTK))
 
 
 # BOOST #######################################################################
@@ -151,8 +177,10 @@ TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs
 ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
 TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
+IF(USE_GLUT AND FOUND_GLUT)
 ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
 TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+ENDIF(USE_GLUT AND FOUND_GLUT)
 
 IF(USE_BUNDLE)
 	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns)
