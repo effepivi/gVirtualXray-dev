@@ -177,10 +177,17 @@ TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs
 ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
 TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-IF(USE_GLUT AND FOUND_GLUT)
-ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
-TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
-ENDIF(USE_GLUT AND FOUND_GLUT)
+IF(USE_GLUT)
+	IF(GLUT_FOUND)
+		ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
+		TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+	ELSE(GLUT_FOUND)
+		MESSAGE(WARNING "GLUT not found, the tutorials will not be built")
+	ENDIF(GLUT_FOUND)
+ELSE(USE_GLUT)
+	MESSAGE(WARNING "GLUT not in use, the tutorials will not be built")
+ENDIF(USE_GLUT)
+
 
 IF(USE_BUNDLE)
 	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns)
