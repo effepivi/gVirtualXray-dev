@@ -562,7 +562,7 @@ void render()
 		}
 		else
 		{
-			g_polygon_data.display(false);
+			g_polygon_data.display(true);
 		}
 
 		// Restore the current transformation matrix

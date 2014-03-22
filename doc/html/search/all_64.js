@@ -37,8 +37,8 @@ var searchData=
   ['displaywireframe',['displayWireFrame',['../class_graphics_1_1_triangle_mesh.html#a99bfd0dd68f83598f6afa5440db1915f',1,'Graphics::TriangleMesh']]],
   ['displaywireframewithindex',['displayWireFrameWithIndex',['../class_graphics_1_1_triangle_mesh.html#a01836381cac26a3491d919a3bf1ab92c',1,'Graphics::TriangleMesh']]],
   ['displaywireframewithoutindex',['displayWireFrameWithoutIndex',['../class_graphics_1_1_triangle_mesh.html#a155ce509ff70efecb84d24e22919b9f0',1,'Graphics::TriangleMesh']]],
-  ['distance',['distance',['../class_math_1_1_vec2.html#ac84f447085e84d4da56620a540579b3c',1,'Math::Vec2::distance()'],['../class_math_1_1_vec3.html#a07b04dd9df95dd4f2c048df7ba274226',1,'Math::Vec3::distance()']]],
+  ['distance',['distance',['../class_math_1_1_vec2.html#af8269f91dba4f7282d280bb29a0be4dc',1,'Math::Vec2::distance()'],['../class_math_1_1_vec3.html#a5aab62e1729b0e27b544cfd5c89cc0f4',1,'Math::Vec3::distance()']]],
   ['dm',['dm',['../namespace_utilities.html#a811d072b0676c0e47666a99c20fb5eee',1,'Utilities']]],
   ['dm2',['dm2',['../namespace_utilities.html#a4221fcd40efde1b0ac518ca98c9b8371',1,'Utilities']]],
-  ['dotproduct',['dotProduct',['../class_math_1_1_vec2.html#a6eb9163d2c8045fb6729fa267278a025',1,'Math::Vec2::dotProduct()'],['../class_math_1_1_vec3.html#acf0522f79502fb9ebc8995efa45a30ff',1,'Math::Vec3::dotProduct()']]]
+  ['dotproduct',['dotProduct',['../class_math_1_1_vec2.html#aa33630fea634ace9966b11f492e7fae8',1,'Math::Vec2::dotProduct()'],['../class_math_1_1_vec3.html#ae4fa4fabd84a4711c9494872a6593495',1,'Math::Vec3::dotProduct()']]]
 ];

@@ -1013,7 +1013,7 @@ void extractIsoSurface()
 	g_polygon_data.applyScale(15);
 
 	// Updat ethe VBO
-	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW);
+	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;

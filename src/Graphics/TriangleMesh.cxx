@@ -452,7 +452,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	// Create the VBO
 	if (aCreateVBOFlag)
 	{
-		updateVBO(aTypeOfVBO);
+		updateVBO(aTypeOfVBO, GL_TRIANGLES);
 	}
 }
 
@@ -809,7 +809,7 @@ void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
 			// Update the VBO
 			if (m_vbo.isReady())
 			{
-				updateVBO(m_vbo.getBufferUsageHint());
+				updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
 			}
 
 			// Display extra debug info
@@ -836,9 +836,9 @@ void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
 }
 
 
-//------------------------------------------
-void TriangleMesh::updateVBO(int aTypeOfVBO)
-//------------------------------------------
+//----------------------------------------------------------------
+void TriangleMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
+//----------------------------------------------------------------
 {
 	if (m_p_vertex_set && m_number_of_vertices)
 	{
@@ -847,19 +847,19 @@ void TriangleMesh::updateVBO(int aTypeOfVBO)
 
 		if (getVertexNormalNumber())
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+			m_vbo.setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 					0, 0, GL_NONE, 0);
 		}
 		else if (getFaceNormalNumber())
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+			m_vbo.setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getFaceNormalNumber(), 3, GL_FLOAT, &m_p_face_normal_set[0],
 					0, 0, GL_NONE, 0);
 		}
 		else
 		{
-			m_vbo.setVertexData(GL_TRIANGLES, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+			m_vbo.setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					0, 0, GL_NONE, 0,
 					0, 0, GL_NONE, 0);
 		}
@@ -1170,7 +1170,7 @@ void TriangleMesh::setExternalData(const void* aVertexArray,
 	// Update the VBO
 	if (aCreateVBOFlag)
 	{
-		updateVBO(aTypeOfVBO);
+		updateVBO(aTypeOfVBO, GL_TRIANGLES);
 	}
 }
 

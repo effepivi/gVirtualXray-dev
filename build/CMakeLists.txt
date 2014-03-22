@@ -96,6 +96,7 @@ SET (CXX_SOURCES
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
 	../src/Graphics/Shader.cxx
+	../src/Graphics/SphereMesh.cxx
 	../src/Graphics/StereoHelper.cxx
 	../src/Graphics/TriangleMesh.cxx
 	../src/Graphics/VBO.cxx

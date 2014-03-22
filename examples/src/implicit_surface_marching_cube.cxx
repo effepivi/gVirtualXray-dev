@@ -947,7 +947,7 @@ void extractIsoSurface()
 	g_polygon_data.applyScale(15);
 
 	// Updat ethe VBO
-	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW);
+	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
 }
 
 

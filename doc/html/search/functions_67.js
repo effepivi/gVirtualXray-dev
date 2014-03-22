@@ -59,8 +59,8 @@ var searchData=
   ['getvertexnormal',['getVertexNormal',['../class_graphics_1_1_triangle_mesh.html#ab0fc7baa1436c4386fa53529b8cea886',1,'Graphics::TriangleMesh']]],
   ['getvertexnormalnumber',['getVertexNormalNumber',['../class_graphics_1_1_triangle_mesh.html#ac7ee1803f7ef0dd7318f976e09d2a3d5',1,'Graphics::TriangleMesh']]],
   ['getvertexnumber',['getVertexNumber',['../class_graphics_1_1_triangle_mesh.html#ac1906fbc0d9ccffd2605f4966b9f0739',1,'Graphics::TriangleMesh']]],
-  ['getx',['getX',['../class_math_1_1_vec2.html#a94300752fa188de636bfdf46fdea1e11',1,'Math::Vec2::getX()'],['../class_math_1_1_vec3.html#a0b82143ab072d3215ded4100e9fa38f9',1,'Math::Vec3::getX()']]],
+  ['getx',['getX',['../class_math_1_1_vec2.html#a0a655d0d8cea609614afd3915b06c48a',1,'Math::Vec2::getX()'],['../class_math_1_1_vec3.html#a0e6a0ae44f04152b422347026a0fd1de',1,'Math::Vec3::getX()']]],
   ['getxraysourcecentre',['getXraySourceCentre',['../classg_virtual_x_ray_1_1_x_ray_detector.html#a04653d1dbe55f256889fe90207a46cf7',1,'gVirtualXRay::XRayDetector']]],
-  ['gety',['getY',['../class_math_1_1_vec2.html#a222f2e543d47692a1e72bf50ba43ad03',1,'Math::Vec2::getY()'],['../class_math_1_1_vec3.html#a351092c8c47c6974ff607a4e03669990',1,'Math::Vec3::getY()']]],
-  ['getz',['getZ',['../class_math_1_1_vec3.html#aa9e9b1e64b0e8eec03c1d4d966e7e0e4',1,'Math::Vec3']]]
+  ['gety',['getY',['../class_math_1_1_vec2.html#a270be9de3e990f63e60ce5c77dfb9ce5',1,'Math::Vec2::getY()'],['../class_math_1_1_vec3.html#a80aed59b26dc66cc526a8b90d60243d3',1,'Math::Vec3::getY()']]],
+  ['getz',['getZ',['../class_math_1_1_vec3.html#a644d7ca5de8c43849d192a47aebc1def',1,'Math::Vec3']]]
 ];

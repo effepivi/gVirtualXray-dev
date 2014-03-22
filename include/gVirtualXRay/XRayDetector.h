@@ -48,6 +48,10 @@
 #include "gVirtualXRay/VBO.h"
 #endif
 
+#ifndef SPHERE_MESH_H
+#include "gVirtualXRay/SphereMesh.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -428,6 +432,10 @@ protected:
 
 	/// The triangle mesh corresponding to the cone beam highlight
 	VBO m_cone_beam_highlight;
+
+
+	/// Polygon mesh of the source
+	SphereMesh m_source_mesh;
 
 
 	/// Source type

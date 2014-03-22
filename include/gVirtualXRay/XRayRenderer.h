@@ -183,7 +183,7 @@ public:
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void computeLBuffer(const TriangleMesh& anObject,
+	void computeLBuffer(TriangleMesh& anObject,
 			  const VEC3& aXRaySourceDetectorTranslation,
 			  const MATRIX4& aModellingTransformationMatrix);
 
@@ -535,7 +535,7 @@ protected:
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void computeInnerSurfaceLBuffer(const TriangleMesh& anObject,
+	void computeInnerSurfaceLBuffer(TriangleMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
 			const MATRIX4& aModellingTransformationMatrix);
 
@@ -548,7 +548,7 @@ protected:
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void computeOuterSurfaceLBuffer(const TriangleMesh& anObject,
+	void computeOuterSurfaceLBuffer(TriangleMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
 			const MATRIX4& aModellingTransformationMatrix);
 

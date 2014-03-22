@@ -87,6 +87,14 @@ inline int VBO::getBufferUsageHint() const
 }
 
 
+//--------------------------------------
+inline int VBO::getPrimitiveType() const
+//--------------------------------------
+{
+	return (m_primitive_type);
+}
+
+
 //-----------------------------------------
 inline VBO& VBO::operator=(const VBO& aVBO)
 //-----------------------------------------

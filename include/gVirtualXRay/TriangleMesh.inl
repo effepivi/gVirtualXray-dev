@@ -57,10 +57,16 @@ inline TriangleMesh::~TriangleMesh()
 }
 
 
-//----------------------------------------------------
-inline void TriangleMesh::display(bool aVBOFlag) const
-//----------------------------------------------------
+//----------------------------------------------
+inline void TriangleMesh::display(bool aVBOFlag)
+//----------------------------------------------
 {
+	// Update the VBO if needed
+	if (aVBOFlag && !m_vbo.isReady())
+	{
+		updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+	}
+
 	// Display the polygon mesh using a VBO
 	if (m_vbo.isReady() && aVBOFlag)
 	{
@@ -133,15 +139,15 @@ inline const std::string& TriangleMesh::getFilename() const
 }
 
 
-//----------------------------------------------
-inline bool TriangleMesh::useVBO(int aTypeOfVBO)
-//----------------------------------------------
+//--------------------------------------------------------------------
+inline bool TriangleMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
+//--------------------------------------------------------------------
 {
 	// There is no data to store in a VBO
 	if (m_number_of_vertices && (getVertexNormalNumber() || getFaceNormalNumber()))
 	{
 		// Create a VBO if possible
-		updateVBO(aTypeOfVBO);
+		updateVBO(aTypeOfVBO, aTypeOfPrimitive);
 	}
 	return (m_vbo.isReady());
 }
@@ -348,7 +354,7 @@ inline void TriangleMesh::applyScale(const RATIONAL_NUMBER& aScale)
 		// Update the VBO
 		if (m_vbo.isReady())
 		{
-			updateVBO(m_vbo.getBufferUsageHint());
+			updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
 		}
 	}
 }
@@ -372,7 +378,7 @@ inline void TriangleMesh::translate(const VEC3& aTranslationVector)
 		// Update the VBO
 		if (m_vbo.isReady())
 		{
-			updateVBO(m_vbo.getBufferUsageHint());
+			updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
 		}
 	}
 }

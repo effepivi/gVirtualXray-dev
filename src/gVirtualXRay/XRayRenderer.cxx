@@ -1251,7 +1251,7 @@ void XRayRenderer::resetSumMuxDx()
 
 
 //------------------------------------------------------------------------------
-void XRayRenderer::computeLBuffer(const TriangleMesh& anObject,
+void XRayRenderer::computeLBuffer(TriangleMesh& anObject,
 								  const VEC3& aXRaySourceDetectorTranslation,
 							  	  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------
@@ -1567,7 +1567,7 @@ void XRayRenderer::displayEnergyFluence()
 
 
 //------------------------------------------------------------------------------------------
-void XRayRenderer::computeInnerSurfaceLBuffer(const TriangleMesh& anObject,
+void XRayRenderer::computeInnerSurfaceLBuffer(TriangleMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------------
@@ -1679,7 +1679,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(const TriangleMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Display the object
-	anObject.display();
+	anObject.display(true);
 
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1706,7 +1706,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(const TriangleMesh& anObject,
 
 
 //------------------------------------------------------------------------------------------
-void XRayRenderer::computeOuterSurfaceLBuffer(const TriangleMesh& anObject,
+void XRayRenderer::computeOuterSurfaceLBuffer(TriangleMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------------

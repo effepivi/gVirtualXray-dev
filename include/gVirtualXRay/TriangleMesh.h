@@ -12,6 +12,7 @@
 *	@author		Dr Franck P. Vidal
 *
 *	@todo		Make it possible to merge vertices if an array of indices exists
+*				Convert triangle mesh into arbitrary polygon mesh
 *
 *	@section	License
 *				BSD 3-Clause License.
@@ -95,7 +96,7 @@ public:
 	*						(default value is TRUE)
 	*/
 	//--------------------------------------------------------------------------
-	void display(bool aVBOFlag = true) const;
+	void display(bool aVBOFlag = true);
 
 
 	//--------------------------------------------------------------------------
@@ -187,7 +188,7 @@ public:
 	*	@return true if the VBO can be used, false otherwise
 	*/
 	//--------------------------------------------------------------------------
-	bool useVBO(int aBufferUsageHing);
+	bool useVBO(int aBufferUsageHing, int aTypeOfPrimitive);
 
 
 	//--------------------------------------------------------------------------
@@ -532,7 +533,7 @@ public:
 	*	@param aTypeOfVBO: the VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void updateVBO(int aTypeOfVBO);
+	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
 
 
 //******************************************************************************
