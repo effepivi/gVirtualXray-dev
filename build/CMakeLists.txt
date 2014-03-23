@@ -93,6 +93,7 @@ SET (CXX_SOURCES
 	../src/gVirtualXRay/XRayRenderer.cxx
 
 	# Graphics
+	../src/Graphics/CubeMesh.cxx
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
 	../src/Graphics/Shader.cxx
@@ -125,9 +126,11 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/XRayRenderer.inl
 
 	# Graphics
+	../include/gVirtualXRay/CubeMesh.h
+	../include/gVirtualXRay/CubeMesh.inl
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/ImplicitSurface.h
-   ../include/gVirtualXRay/ImplicitSurface.inl
+   	../include/gVirtualXRay/ImplicitSurface.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
