@@ -118,6 +118,25 @@ void TriangleMesh::reset()
 }
 
 
+//-----------------------------------
+void TriangleMesh::displayWireFrame()
+//-----------------------------------
+{
+	// Turn on wireframe mode
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+
+	display(true);
+
+	// Turn off wireframe mode
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+
+	// Check the OpenGL error status
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
 //-----------------------------------------------------------------------
 void TriangleMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
 //-----------------------------------------------------------------------

@@ -92,26 +92,6 @@ inline void TriangleMesh::display(bool aVBOFlag)
 }
 
 
-//------------------------------------------------
-inline void TriangleMesh::displayWireFrame() const
-//------------------------------------------------
-{
-	// There is an index
-	if (m_number_of_indices)
-	{
-		displayWireFrameWithIndex();
-	}
-	// There is not any index
-	else
-	{
-		displayWireFrameWithoutIndex();
-	}
-
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
 //----------------------------------------------------------
 inline void TriangleMesh::setFilename(const char* aFilename)
 //----------------------------------------------------------

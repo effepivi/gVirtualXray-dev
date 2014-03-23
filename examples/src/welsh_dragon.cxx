@@ -531,7 +531,7 @@ void render()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		GLint lighting;
-		if (g_use_lighing && !g_display_wireframe)
+		if (g_use_lighing)
 		{
 			lighting = 1;
 		}
