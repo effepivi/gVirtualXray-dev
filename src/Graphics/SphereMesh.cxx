@@ -31,6 +31,12 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#if defined(WIN32) || defined(WIN64)
+#define _USE_MATH_DEFINES
+#endif
+
+#include <cmath>
+
 #ifndef SPHERE_MESH_H
 #include "gVirtualXRay/SphereMesh.h"
 #endif

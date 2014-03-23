@@ -55,7 +55,7 @@ inline SphereMesh::SphereMesh(unsigned int aNumberOfRings,
 							  unsigned int aNumberOfSectors,
 							  float aRadius):
 //----------------------------------------------------------
-		TriangleMesh::TriangleMesh()
+		TriangleMesh()
 //----------------------------------------------------------
 {
 	create(aNumberOfRings, aNumberOfSectors, aRadius);
