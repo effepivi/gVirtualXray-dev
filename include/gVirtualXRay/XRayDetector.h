@@ -52,6 +52,10 @@
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
+#ifndef CUBE_MESH_H
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
