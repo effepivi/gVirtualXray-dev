@@ -31,9 +31,14 @@
 //******************************************************************************
 #include <sstream>
 
+#if defined(WIN32) || defined(WIN64)
+#include <windows.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
+#include <GL/gl.h>
 #include <GL/glu.h>
 #endif
 
