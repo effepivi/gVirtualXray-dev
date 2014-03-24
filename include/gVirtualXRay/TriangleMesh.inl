@@ -57,41 +57,6 @@ inline TriangleMesh::~TriangleMesh()
 }
 
 
-//----------------------------------------------
-inline void TriangleMesh::display(bool aVBOFlag)
-//----------------------------------------------
-{
-	// Update the VBO if needed
-	if (aVBOFlag && !m_vbo.isReady())
-	{
-		updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
-	}
-
-	// Display the polygon mesh using a VBO
-	if (m_vbo.isReady() && aVBOFlag)
-	{
-		m_vbo.display();
-	}
-	// Do not use the VBO
-	else
-	{
-		// There is an index
-		if (m_number_of_indices)
-		{
-			displayUsingImmediateModeWithIndex();
-		}
-		// There is not any index
-		else
-		{
-			displayUsingImmediateModeWithoutIndex();
-		}
-	}
-
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
 //----------------------------------------------------------
 inline void TriangleMesh::setFilename(const char* aFilename)
 //----------------------------------------------------------

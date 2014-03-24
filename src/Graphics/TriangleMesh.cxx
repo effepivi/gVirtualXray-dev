@@ -118,6 +118,32 @@ void TriangleMesh::reset()
 }
 
 
+//--------------------------
+void TriangleMesh::display()
+//--------------------------
+{
+	// Update the VBO if needed
+	if (!m_vbo.isReady())
+	{
+		updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
+	}
+
+	// Display the polygon mesh using a VBO
+	if (m_vbo.isReady())
+	{
+		m_vbo.display();
+	}
+	// Do not use the VBO
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the VBO.");
+	}
+
+	// Check the OpenGL error status
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
 //-----------------------------------
 void TriangleMesh::displayWireFrame()
 //-----------------------------------
@@ -126,7 +152,7 @@ void TriangleMesh::displayWireFrame()
 	glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 
-	display(true);
+	display();
 
 	// Turn off wireframe mode
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -165,134 +191,6 @@ void TriangleMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
 		error_message << "There are not as many normals (" << getVertexNormalNumber() << ") as there are vertices (" << m_number_of_vertices << ").";
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
-}
-
-
-//-----------------------------------------------------------
-void TriangleMesh::displayUsingImmediateModeWithIndex() const
-//-----------------------------------------------------------
-{
-	if (m_number_of_indices == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	if (m_number_of_indices % 3 != 0)
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of indices.");
-	}
-
-	glBegin(GL_TRIANGLES);
-	for (unsigned int i(0); i < m_number_of_indices; ++i)
-	{
-		int id(getIndex(i));
-		VEC3 vertex(getVertex(id));
-		VEC3 normal(getVertexNormal(id));
-
-		glNormal3f(normal.getX(), normal.getY(), normal.getZ());
-		glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
-	}
-	glEnd();
-
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
-//--------------------------------------------------------------
-void TriangleMesh::displayUsingImmediateModeWithoutIndex() const
-//--------------------------------------------------------------
-{
-	if (m_number_of_vertices == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	if (m_number_of_vertices % 3 != 0)
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of vertices.");
-	}
-
-	glBegin(GL_TRIANGLES);
-	for (unsigned int i(0); i < m_number_of_vertices; ++i)
-	{
-		VEC3 vertex(getVertex(i));
-		VEC3 normal(getVertexNormal(i));
-
-		glNormal3f(normal.getX(), normal.getY(), normal.getZ());
-		glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
-	}
-	glEnd();
-
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
-//--------------------------------------------------
-void TriangleMesh::displayWireFrameWithIndex() const
-//--------------------------------------------------
-{
-	if (m_number_of_indices == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	if (m_number_of_indices % 3 != 0)
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of indices.");
-	}
-
-	for (unsigned int i(0); i < m_number_of_indices; i += 3)
-	{
-		glBegin(GL_LINE_LOOP);
-		for (unsigned int j(0); j < 3; ++j)
-		{
-			int id(getIndex(i + j));
-			VEC3 vertex(getVertex(id));
-			VEC3 normal(getVertexNormal(id));
-
-			glNormal3f(normal.getX(), normal.getY(), normal.getZ());
-			glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
-		}
-		glEnd();
-	}
-
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
-//-----------------------------------------------------
-void TriangleMesh::displayWireFrameWithoutIndex() const
-//-----------------------------------------------------
-{
-	if (m_number_of_vertices == 0)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	if (m_number_of_vertices % 3 != 0)
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of vertices.");
-	}
-
-	for (unsigned int i(0); i < m_number_of_vertices; i += 3)
-	{
-		glBegin(GL_LINE_LOOP);
-		for (unsigned int j(0); j < 3; ++j)
-		{
-			VEC3 vertex(getVertex(i + j));
-			VEC3 normal(getVertexNormal(i + j));
-
-			glNormal3f(normal.getX(), normal.getY(), normal.getZ());
-			glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
-		}
-		glEnd();
-	}
-
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

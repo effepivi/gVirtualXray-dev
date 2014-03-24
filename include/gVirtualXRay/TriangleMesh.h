@@ -90,13 +90,8 @@ public:
 
 	//--------------------------------------------------------------------------
 	///	Display the triangular mesh using OpenGL.
-	/**
-	*	@param aVBOFlag:	true to use a vertex buffer object,
-	*						false to use Immediate mode rendering
-	*						(default value is TRUE)
-	*/
 	//--------------------------------------------------------------------------
-	void display(bool aVBOFlag = true);
+	void display();
 
 
 	//--------------------------------------------------------------------------
@@ -538,30 +533,6 @@ public:
 
 //******************************************************************************
 protected:
-	//--------------------------------------------------------------------------
-	///	Display the polygon mesh using OpenGL's immediate mode.
-	//--------------------------------------------------------------------------
-	void displayUsingImmediateModeWithIndex() const;
-
-
-	//--------------------------------------------------------------------------
-	///	Display the polygon mesh using OpenGL's immediate mode.
-	//--------------------------------------------------------------------------
-	void displayUsingImmediateModeWithoutIndex() const;
-
-
-	//--------------------------------------------------------------------------
-	///	Display the polygon mesh in wireframe using OpenGL's immediate mode.
-	//--------------------------------------------------------------------------
-	void displayWireFrameWithIndex() const;
-
-
-	//--------------------------------------------------------------------------
-	///	Display the polygon mesh in wireframe using OpenGL's immediate mode.
-	//--------------------------------------------------------------------------
-	void displayWireFrameWithoutIndex() const;
-
-
 	//--------------------------------------------------------------------------
 	///	Update the bounding box.
 	//--------------------------------------------------------------------------

@@ -554,7 +554,7 @@ void render()
 		}
 		else
 		{
-			p_mesh->display(true);
+			p_mesh->display();
 		}
 
 		if (p_mesh->getVertexNormalNumber())

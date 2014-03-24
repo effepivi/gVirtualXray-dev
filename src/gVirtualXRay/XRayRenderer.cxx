@@ -1679,7 +1679,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(TriangleMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Display the object
-	anObject.display(true);
+	anObject.display();
 
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

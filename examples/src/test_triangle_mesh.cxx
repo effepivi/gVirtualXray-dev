@@ -490,7 +490,7 @@ void render()
 		}
 		else
 		{
-			g_polygon_data.display(true);
+			g_polygon_data.display();
 		}
 
 		// Restore the current transformation matrix

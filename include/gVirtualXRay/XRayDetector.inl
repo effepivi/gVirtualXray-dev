@@ -79,7 +79,7 @@ inline void XRayDetector::displaySource()
 		applyModelViewMatrix();
 
 		// Draw sphere
-		m_source_mesh.display(true);
+		m_source_mesh.display();
 		
 		// Restore the model/view matrix
 		popModelViewMatrix();
