@@ -1511,7 +1511,8 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 		if (m_p_index_set && m_number_of_indices)
 		{
 			// The polygon is made of triangles
-			if (m_polygon_type == GL_TRIANGLES)
+			if (m_polygon_type == GL_TRIANGLES ||
+					m_polygon_type == GL_QUADS)
 			{
 				// Reset the normal per face set
 				m_p_vertex_normal_set.clear();
@@ -1519,11 +1520,11 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 				// Reset the normal per face set
 				m_p_face_normal_set.clear();
 
-				// Get the current number of triangles
-				unsigned int triangle_number(getTriangleNumber());
+				// Store the new vertices
 				std::vector<double> p_new_vertex_set;
 
 				// Process every triangle
+				unsigned int triangle_number(getTriangleNumber());
 				for (int i(0); i < triangle_number; ++i)
 				{
 					// Get the current vertices
@@ -1551,6 +1552,47 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 					p_new_vertex_set.push_back(vertex_2.getZ());
 
 					for (int j(0); j < 3; ++j)
+					{
+						m_p_face_normal_set.push_back(normal.getX());
+						m_p_face_normal_set.push_back(normal.getY());
+						m_p_face_normal_set.push_back(normal.getZ());
+					}
+				}
+
+				// Process every triangle
+				unsigned int quad_number(getQuadNumber());
+				for (int i(0); i < quad_number; ++i)
+				{
+					// Get the current vertices
+					int id_0(getIndex(i * 4 + 0));
+					int id_1(getIndex(i * 4 + 1));
+					int id_2(getIndex(i * 4 + 2));
+					int id_3(getIndex(i * 4 + 3));
+
+					VEC3 vertex_0(getVertex(id_0));
+					VEC3 vertex_1(getVertex(id_1));
+					VEC3 vertex_2(getVertex(id_2));
+					VEC3 vertex_3(getVertex(id_3));
+
+					// Compute the normal vector
+					VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
+					normal.normalize();
+
+					// Add the first triangle
+					p_new_vertex_set.push_back(vertex_0.getX());
+					p_new_vertex_set.push_back(vertex_0.getY());
+					p_new_vertex_set.push_back(vertex_0.getZ());
+					p_new_vertex_set.push_back(vertex_1.getX());
+					p_new_vertex_set.push_back(vertex_1.getY());
+					p_new_vertex_set.push_back(vertex_1.getZ());
+					p_new_vertex_set.push_back(vertex_2.getX());
+					p_new_vertex_set.push_back(vertex_2.getY());
+					p_new_vertex_set.push_back(vertex_2.getZ());
+					p_new_vertex_set.push_back(vertex_3.getX());
+					p_new_vertex_set.push_back(vertex_3.getY());
+					p_new_vertex_set.push_back(vertex_3.getZ());
+
+					for (int j(0); j < 4; ++j)
 					{
 						m_p_face_normal_set.push_back(normal.getX());
 						m_p_face_normal_set.push_back(normal.getY());
