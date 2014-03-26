@@ -897,7 +897,8 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 		}
 
 		// The polygon is made of triangles
-		if (m_polygon_type == GL_TRIANGLES)
+		if (m_polygon_type == GL_TRIANGLES ||
+				m_polygon_type == GL_QUADS)
 		{
 			// Reset the normal per face set
 			m_p_vertex_normal_set.clear();
@@ -905,11 +906,11 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 			// Reset the normal per face set
 			m_p_face_normal_set.clear();
 
-			// Get the current number of triangles
-			unsigned int triangle_number(getTriangleNumber());
+			// Store the new vertices
 			std::vector<double> p_new_vertex_set;
 
 			// Process every triangle
+			unsigned int triangle_number(getTriangleNumber());
 			for (int i(0); i < triangle_number; ++i)
 			{
 				// Get the current vertices
@@ -992,6 +993,112 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_2.getZ());
 
 				for (int j(0); j < 3; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+			}
+
+			// Process every triangle
+			unsigned int quad_number(getQuadNumber());
+			for (int i(0); i < quad_number; ++i)
+			{
+				// Get the current vertices
+				VEC3 vertex_0(getVertex(i * 4 + 0));
+				VEC3 vertex_1(getVertex(i * 4 + 1));
+				VEC3 vertex_2(getVertex(i * 4 + 2));
+				VEC3 vertex_3(getVertex(i * 4 + 3));
+
+				// Get the new vertices
+				VEC3 vertex_4((vertex_0 + vertex_1) / 2.0);
+				VEC3 vertex_5((vertex_1 + vertex_2) / 2.0);
+				VEC3 vertex_6((vertex_2 + vertex_3) / 2.0);
+				VEC3 vertex_7((vertex_3 + vertex_0) / 2.0);
+				VEC3 vertex_8((vertex_0 + vertex_1 + vertex_2 + vertex_3) / 4.0);
+
+				// Compute the normal vector
+				VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
+				normal.normalize();
+
+				// Add the first quad
+				p_new_vertex_set.push_back(vertex_0.getX());
+				p_new_vertex_set.push_back(vertex_0.getY());
+				p_new_vertex_set.push_back(vertex_0.getZ());
+				p_new_vertex_set.push_back(vertex_4.getX());
+				p_new_vertex_set.push_back(vertex_4.getY());
+				p_new_vertex_set.push_back(vertex_4.getZ());
+				p_new_vertex_set.push_back(vertex_8.getX());
+				p_new_vertex_set.push_back(vertex_8.getY());
+				p_new_vertex_set.push_back(vertex_8.getZ());
+				p_new_vertex_set.push_back(vertex_7.getX());
+				p_new_vertex_set.push_back(vertex_7.getY());
+				p_new_vertex_set.push_back(vertex_7.getZ());
+
+				for (int j(0); j < 4; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+
+				// Add the second quad
+				p_new_vertex_set.push_back(vertex_4.getX());
+				p_new_vertex_set.push_back(vertex_4.getY());
+				p_new_vertex_set.push_back(vertex_4.getZ());
+				p_new_vertex_set.push_back(vertex_1.getX());
+				p_new_vertex_set.push_back(vertex_1.getY());
+				p_new_vertex_set.push_back(vertex_1.getZ());
+				p_new_vertex_set.push_back(vertex_5.getX());
+				p_new_vertex_set.push_back(vertex_5.getY());
+				p_new_vertex_set.push_back(vertex_5.getZ());
+				p_new_vertex_set.push_back(vertex_8.getX());
+				p_new_vertex_set.push_back(vertex_8.getY());
+				p_new_vertex_set.push_back(vertex_8.getZ());
+
+				for (int j(0); j < 4; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+
+				// Add the third quad
+				p_new_vertex_set.push_back(vertex_8.getX());
+				p_new_vertex_set.push_back(vertex_8.getY());
+				p_new_vertex_set.push_back(vertex_8.getZ());
+				p_new_vertex_set.push_back(vertex_5.getX());
+				p_new_vertex_set.push_back(vertex_5.getY());
+				p_new_vertex_set.push_back(vertex_5.getZ());
+				p_new_vertex_set.push_back(vertex_2.getX());
+				p_new_vertex_set.push_back(vertex_2.getY());
+				p_new_vertex_set.push_back(vertex_2.getZ());
+				p_new_vertex_set.push_back(vertex_6.getX());
+				p_new_vertex_set.push_back(vertex_6.getY());
+				p_new_vertex_set.push_back(vertex_6.getZ());
+
+				for (int j(0); j < 4; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+
+				// Add the fourth quad
+				p_new_vertex_set.push_back(vertex_8.getX());
+				p_new_vertex_set.push_back(vertex_8.getY());
+				p_new_vertex_set.push_back(vertex_8.getZ());
+				p_new_vertex_set.push_back(vertex_6.getX());
+				p_new_vertex_set.push_back(vertex_6.getY());
+				p_new_vertex_set.push_back(vertex_6.getZ());
+				p_new_vertex_set.push_back(vertex_3.getX());
+				p_new_vertex_set.push_back(vertex_3.getY());
+				p_new_vertex_set.push_back(vertex_3.getZ());
+				p_new_vertex_set.push_back(vertex_7.getX());
+				p_new_vertex_set.push_back(vertex_7.getY());
+				p_new_vertex_set.push_back(vertex_7.getZ());
+
+				for (int j(0); j < 4; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());

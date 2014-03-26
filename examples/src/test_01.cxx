@@ -69,6 +69,10 @@
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
+#ifndef CUBE_MESH_H
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
 #ifndef XRAY_BEAM_H
 #include "gVirtualXRay/XRayBeam.h"
 #endif
@@ -158,7 +162,7 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
 PolygonMesh g_inside_polygon_data;
-PolygonMesh g_outside_polygon_data;
+CubeMesh g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -1077,9 +1081,9 @@ void loadSTLFile()
 	//g_inside_polygon_data.mergeVertices();
 	g_inside_polygon_data.setHounsfieldValue(0.0);
 
-	g_outside_polygon_data.setFilename(stl_filename_1.data());
-	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-	g_outside_polygon_data.mergeVertices(true);
+	//g_outside_polygon_data.setFilename(stl_filename_1.data());
+	//g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+	//g_outside_polygon_data.mergeVertices(true);
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date
