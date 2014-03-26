@@ -261,7 +261,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-	   cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << endl;
+		cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << endl;
 
 	    // Register the exit callback
 		atexit(quit);
@@ -396,18 +396,22 @@ void initGL()
 	// Enable the Z-buffer
 	glEnable(GL_DEPTH_TEST);
 
-	// Rescale normal if needed
-	//glEnable(GL_RESCALE_NORMAL);
-
-	// Two-sided lighting
-	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
 	// Set the background colour
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	
 	// Choose smooth shading
-	//glShadeModel(GL_SMOOTH);
+	glShadeModel(GL_SMOOTH);
 	
+	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
 	// Use colour and texture coordinate interpolation
 	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -417,6 +421,8 @@ void initGL()
 	// Use antialiasing
 	//glEnable(GL_POLYGON_SMOOTH);
 
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -434,8 +440,8 @@ void initGL()
 	int z_lib_return_code_vertex(0);
 	int z_lib_return_code_fragment(0);
 
-	string vertex_shader;
-	string fragment_shader;
+	std::string vertex_shader;
+	std::string fragment_shader;
 
 	// L-buffer
 	z_lib_return_code_vertex   = inflate(g_display_vert, sizeof(g_display_vert),   &p_vertex_shader);
@@ -451,7 +457,6 @@ void initGL()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
-
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
@@ -462,16 +467,21 @@ void render()
 {
 	try
 	{
+		// Enable the shader
+		pushShaderProgram();
+		g_display_shader.enable();
+		GLint shader_id(g_display_shader.getProgramHandle());
+
 		// Define colours
-		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.19225,  1.0};
-		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.50754,  1.0};
-		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.508273, 1.0};
+		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.0, 1.0};
+		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.0, 1.0};
+		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.0, 1.0};
 
-		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.19225,  0.19225,  1.0};
-		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.50754,  0.50754,  1.0};
-		const GLfloat p_specular_silver_material_1[] = {0.0, 0.508273, 0.508273, 1.0};
+		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.39225,  0.39225,  1.0};
+		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.70754,  0.70754,  1.0};
+		const GLfloat p_specular_silver_material_1[] = {0.0, 0.708273, 0.708273, 1.0};
 
-		const GLfloat shininess_silver_material = 51.2;
+		const GLfloat shininess_silver_material = 50.2;
 
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -481,42 +491,30 @@ void render()
 		pushEnableDisableState(GL_LIGHT0);
 		pushEnableDisableState(GL_LIGHTING);
 
-		// Enable lighting
-		glEnable(GL_LIGHT0);
-		glEnable(GL_LIGHTING);
-
 		// Store the current transformation matrix
 		pushModelViewMatrix();
 
 		// Rotate the sample
 		g_current_modelview_matrix *= g_scene_rotation_matrix;
-		//glPushMatrix();
-		//glLoadIdentity();
-		//glMultMatrixf(g_current_modelview_matrix.get());
 
-		// Store the shader program
-		pushShaderProgram();
-
-		// Enable the shader program
-		g_display_shader.enable();
+		GLuint handle(0);
+		handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		GLuint projection_matrix_handle(glGetUniformLocation(g_display_shader.getProgramHandle(), "g_projection_matrix"));
-		glUniformMatrix4fv(projection_matrix_handle, 1, GL_FALSE, g_current_projection_matrix.get());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		GLuint modelview_matrix_handle(glGetUniformLocation(g_display_shader.getProgramHandle(), "g_modelview_matrix"));
-		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+		handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		MATRIX4 normal_matrix(g_current_modelview_matrix);
-		GLuint normal_matrix_handle(glGetUniformLocation(g_display_shader.getProgramHandle(), "g_normal_matrix"));
-		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
+		handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+		glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		GLint lighting(1);
-		GLuint lighting_handle(glGetUniformLocation(g_display_shader.getProgramHandle(),"g_use_lighting"));
-		glUniform1iv(lighting_handle, 1, &lighting);
+		GLint lighting;
+		lighting = 1;
+		handle = glGetUniformLocation(shader_id,"g_use_lighting");
+		glUniform1iv(handle, 1, &lighting);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Display the sample
@@ -532,54 +530,25 @@ void render()
 		g_current_modelview_matrix *= g_sample_rotation_matrix;
 		applyModelViewMatrix();
 
-/*		g_outside_polygon_data.display(true);
-
-		if (g_outside_polygon_data.getVertexNormalNumber())
-			g_outside_polygon_data.displayVertexNormal();
-*/
-		PolygonMesh* p_mesh;
-
-		if (g_display_outside_polygon)
-		{
-			p_mesh = &g_outside_polygon_data;
-		}
-		else
-		{
-			p_mesh = &g_inside_polygon_data;
-		}
-
 		if (g_display_wireframe)
 		{
-			//p_mesh->displayWireFrame();
+			g_outside_polygon_data.displayWireFrame();
+			g_inside_polygon_data.displayWireFrame();
 		}
 		else
 		{
-			p_mesh->display();
-		}
-
-		if (p_mesh->getVertexNormalNumber())
-		{
-			p_mesh->displayVertexNormal();
+			g_outside_polygon_data.display();
 		}
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
 
-		// Display the detector
-		// Set the colour of the sample
+		// Display the source
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_1);
 		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-
-		// Display the detector and the source
-		//g_xray_detector.displayDetector();
 		g_xray_detector.displaySource();
-
-		//g_display_shader.disable();
-
-		// Enable lighting
-		//glEnable(GL_LIGHTING);
 
 		// Display the X-Ray image
 		g_xray_renderer.display();
@@ -587,16 +556,18 @@ void render()
 		// Display the beam
 		if (g_display_beam)
 		{
+			glColor4f(0.75, 0, 0.5, 0.3);
+
 			lighting = 0;
-			glUniform1iv(lighting_handle, 1, &lighting);
+			handle = glGetUniformLocation(shader_id,"g_use_lighting");
+			glUniform1iv(handle, 1, &lighting);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			g_xray_detector.displayBeam();
 		}
 
-		// Restore the shader program
+		// Disable the shader
 		popShaderProgram();
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
@@ -610,9 +581,9 @@ void render()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	// Catch exception if any
-	catch (const exception& error)
+	catch (const std::exception& error)
 	{
-		cerr << error.what() << endl;
+		std::cerr << error.what() << std::endl;
 	}
 }
 
@@ -697,7 +668,6 @@ void keyboard(unsigned char key, int x, int y)
 		g_xray_renderer.printCumulatedLBuffer(PREFIX"/examples/data/cumulated_lbuffer.mhd");
 		break;
 
-	case 'a':
 	case 'f':
 		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 		g_xray_renderer.printEnergyFluence(PREFIX"/examples/data/energy_fluence.mhd");
@@ -710,6 +680,10 @@ void keyboard(unsigned char key, int x, int y)
 
 	case 'n':
 		g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+		break;
+
+	case 'a':
+		g_outside_polygon_data.splitFaces(true);
 		break;
 
 	case '1':
@@ -836,7 +810,7 @@ void keyboard(unsigned char key, int x, int y)
 		cout << "Key: " << key << endl;
 		break;
 	}
-	
+
 	glutPostRedisplay();
 }
 
@@ -1105,7 +1079,7 @@ void loadSTLFile()
 
 	g_outside_polygon_data.setFilename(stl_filename_1.data());
 	g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-	//g_outside_polygon_data.mergeVertices();
+	g_outside_polygon_data.mergeVertices(true);
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
 	// The X-ray image is not up-to-date

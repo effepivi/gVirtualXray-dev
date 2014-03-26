@@ -288,7 +288,7 @@ unsigned int PolygonMesh::getFaceNumber() const
 	}
 
 	// Return the number of faces
-	if (m_number_of_indices)
+	if (m_p_index_set && m_number_of_indices)
 	{
 		// There are 3 or 4 indices per face
 		return (m_number_of_indices / number_vertex_per_face);
@@ -309,7 +309,7 @@ unsigned int PolygonMesh::getTriangleNumber() const
 	{
 	case GL_TRIANGLES:
 		// Return the number of faces
-		if (m_number_of_indices)
+		if (m_p_index_set && m_number_of_indices)
 		{
 			// There are 3 indices per triangle
 			return (m_number_of_indices / 3);
@@ -444,7 +444,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 	if (aPrintDebugInfoFlag)
 	{
 		std::cout << "file_name:\t" << m_filename <<
-				"\tnb_triangles:\t" << getFaceNumber() <<
+				"\tnb_faces:\t" << getFaceNumber() <<
 				"\tnb_vertices:\t" << m_number_of_vertices <<
 				"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
 										m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
@@ -792,8 +792,8 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 				}
 
 				// Set the index in the hash table and create the list of vertices
-				m_number_of_vertices = hash_table.size();
 				destroyVertexData();
+				m_number_of_vertices = hash_table.size();
 
 				GLfloat* p_float_vertex_set(0);
 				GLdouble* p_double_vertex_set(0);
@@ -855,7 +855,7 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 				if (aPrintDebugInfoFlag)
 				{
 					std::cout << "file_name:\t" << m_filename <<
-							"\tnb_triangles:\t" << getFaceNumber() <<
+							"\tnb_faces:\t" << getFaceNumber() <<
 							"\tnb_vertices:\t" << m_number_of_vertices <<
 							"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
 													m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
@@ -871,6 +871,195 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 		else
 		{
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no vertex to merge.");
+		}
+	}
+	// Generate an error
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed.");
+	}
+}
+
+
+//----------------------------------------------------
+void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
+//----------------------------------------------------
+{
+	// Split faces only if external data is not used
+	if (!m_external_data_flag)
+	{
+		// It only works if no index has been set
+		bool has_an_index(false);
+		if (m_p_index_set && m_number_of_indices)
+		{
+			removeIndex(aPrintDebugInfoFlag);
+			has_an_index = true;
+		}
+
+		// The polygon is made of triangles
+		if (m_polygon_type == GL_TRIANGLES)
+		{
+			// Reset the normal per face set
+			m_p_vertex_normal_set.clear();
+
+			// Reset the normal per face set
+			m_p_face_normal_set.clear();
+
+			// Get the current number of triangles
+			unsigned int triangle_number(getTriangleNumber());
+			std::vector<double> p_new_vertex_set;
+
+			// Process every triangle
+			for (int i(0); i < triangle_number; ++i)
+			{
+				// Get the current vertices
+				VEC3 vertex_0(getVertex(i * 3 + 0));
+				VEC3 vertex_1(getVertex(i * 3 + 1));
+				VEC3 vertex_2(getVertex(i * 3 + 2));
+
+				// Get the new vertices
+				VEC3 vertex_3((vertex_0 + vertex_1) / 2.0);
+				VEC3 vertex_4((vertex_1 + vertex_2) / 2.0);
+				VEC3 vertex_5((vertex_2 + vertex_0) / 2.0);
+
+				// Compute the normal vector
+				VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
+				normal.normalize();
+
+				// Add the first triangle
+				p_new_vertex_set.push_back(vertex_0.getX());
+				p_new_vertex_set.push_back(vertex_0.getY());
+				p_new_vertex_set.push_back(vertex_0.getZ());
+				p_new_vertex_set.push_back(vertex_3.getX());
+				p_new_vertex_set.push_back(vertex_3.getY());
+				p_new_vertex_set.push_back(vertex_3.getZ());
+				p_new_vertex_set.push_back(vertex_5.getX());
+				p_new_vertex_set.push_back(vertex_5.getY());
+				p_new_vertex_set.push_back(vertex_5.getZ());
+
+				for (int j(0); j < 3; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+
+				// Add the second triangle
+				p_new_vertex_set.push_back(vertex_3.getX());
+				p_new_vertex_set.push_back(vertex_3.getY());
+				p_new_vertex_set.push_back(vertex_3.getZ());
+				p_new_vertex_set.push_back(vertex_1.getX());
+				p_new_vertex_set.push_back(vertex_1.getY());
+				p_new_vertex_set.push_back(vertex_1.getZ());
+				p_new_vertex_set.push_back(vertex_4.getX());
+				p_new_vertex_set.push_back(vertex_4.getY());
+				p_new_vertex_set.push_back(vertex_4.getZ());
+
+				for (int j(0); j < 3; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+
+				// Add the third triangle
+				p_new_vertex_set.push_back(vertex_3.getX());
+				p_new_vertex_set.push_back(vertex_3.getY());
+				p_new_vertex_set.push_back(vertex_3.getZ());
+				p_new_vertex_set.push_back(vertex_4.getX());
+				p_new_vertex_set.push_back(vertex_4.getY());
+				p_new_vertex_set.push_back(vertex_4.getZ());
+				p_new_vertex_set.push_back(vertex_5.getX());
+				p_new_vertex_set.push_back(vertex_5.getY());
+				p_new_vertex_set.push_back(vertex_5.getZ());
+
+				for (int j(0); j < 3; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+
+				// Add the fourth triangle
+				p_new_vertex_set.push_back(vertex_5.getX());
+				p_new_vertex_set.push_back(vertex_5.getY());
+				p_new_vertex_set.push_back(vertex_5.getZ());
+				p_new_vertex_set.push_back(vertex_4.getX());
+				p_new_vertex_set.push_back(vertex_4.getY());
+				p_new_vertex_set.push_back(vertex_4.getZ());
+				p_new_vertex_set.push_back(vertex_2.getX());
+				p_new_vertex_set.push_back(vertex_2.getY());
+				p_new_vertex_set.push_back(vertex_2.getZ());
+
+				for (int j(0); j < 3; ++j)
+				{
+					m_p_face_normal_set.push_back(normal.getX());
+					m_p_face_normal_set.push_back(normal.getY());
+					m_p_face_normal_set.push_back(normal.getZ());
+				}
+			}
+
+			// Set the index in the hash table and create the list of vertices
+			destroyVertexData();
+			m_number_of_vertices = p_new_vertex_set.size() / 3;
+
+			GLfloat* p_float_vertex_set(0);
+			GLdouble* p_double_vertex_set(0);
+			switch (m_vertex_data_type)
+			{
+			case GL_FLOAT:
+				m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
+				p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
+				break;
+
+			case GL_DOUBLE:
+				m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
+				p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
+				break;
+
+			default:
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+			}
+
+			// Save the result
+			for (int id(0); id < p_new_vertex_set.size(); ++id)
+			{
+				if (p_float_vertex_set)
+				{
+					p_float_vertex_set[id] = p_new_vertex_set[id];
+				}
+				if (p_double_vertex_set)
+				{
+					p_double_vertex_set[id] = p_new_vertex_set[id];
+				}
+			}
+
+			// Restore the index
+			if (has_an_index)
+			{
+				mergeVertices(aPrintDebugInfoFlag);
+			}
+
+			// Update the VBO
+			if (m_vbo.isReady())
+			{
+				updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+			}
+
+			// Display extra debug info
+			if (aPrintDebugInfoFlag)
+			{
+				std::cout << "file_name:\t" << m_filename <<
+						"\tnb_faces:\t" << getFaceNumber() <<
+						"\tnb_vertices:\t" << m_number_of_vertices <<
+						"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
+												m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
+			}
+		}
+		// Not supported
+		else
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
 		}
 	}
 	// Generate an error
@@ -1268,6 +1457,7 @@ void PolygonMesh::destroyVertexData()
 			m_p_vertex_set = 0;
 		}
 	}
+	m_number_of_vertices = 0;
 }
 
 
@@ -1305,5 +1495,131 @@ void PolygonMesh::destroyIndexData()
 			}
 			m_p_index_set = 0;
 		}
+	}
+	m_number_of_indices = 0;
+}
+
+
+//-----------------------------------------------------
+void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
+//-----------------------------------------------------
+{
+	// Split faces only if external data is not used
+	if (!m_external_data_flag)
+	{
+		// It only works if an index has been set
+		if (m_p_index_set && m_number_of_indices)
+		{
+			// The polygon is made of triangles
+			if (m_polygon_type == GL_TRIANGLES)
+			{
+				// Reset the normal per face set
+				m_p_vertex_normal_set.clear();
+
+				// Reset the normal per face set
+				m_p_face_normal_set.clear();
+
+				// Get the current number of triangles
+				unsigned int triangle_number(getTriangleNumber());
+				std::vector<double> p_new_vertex_set;
+
+				// Process every triangle
+				for (int i(0); i < triangle_number; ++i)
+				{
+					// Get the current vertices
+					int id_0(getIndex(i * 3 + 0));
+					int id_1(getIndex(i * 3 + 1));
+					int id_2(getIndex(i * 3 + 2));
+
+					VEC3 vertex_0(getVertex(id_0));
+					VEC3 vertex_1(getVertex(id_1));
+					VEC3 vertex_2(getVertex(id_2));
+
+					// Compute the normal vector
+					VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
+					normal.normalize();
+
+					// Add the first triangle
+					p_new_vertex_set.push_back(vertex_0.getX());
+					p_new_vertex_set.push_back(vertex_0.getY());
+					p_new_vertex_set.push_back(vertex_0.getZ());
+					p_new_vertex_set.push_back(vertex_1.getX());
+					p_new_vertex_set.push_back(vertex_1.getY());
+					p_new_vertex_set.push_back(vertex_1.getZ());
+					p_new_vertex_set.push_back(vertex_2.getX());
+					p_new_vertex_set.push_back(vertex_2.getY());
+					p_new_vertex_set.push_back(vertex_2.getZ());
+
+					for (int j(0); j < 3; ++j)
+					{
+						m_p_face_normal_set.push_back(normal.getX());
+						m_p_face_normal_set.push_back(normal.getY());
+						m_p_face_normal_set.push_back(normal.getZ());
+					}
+				}
+
+				// Set the index in the hash table and create the list of vertices
+				destroyIndexData();
+				destroyVertexData();
+				m_number_of_vertices = p_new_vertex_set.size() / 3;
+
+				GLfloat* p_float_vertex_set(0);
+				GLdouble* p_double_vertex_set(0);
+				switch (m_vertex_data_type)
+				{
+				case GL_FLOAT:
+					m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
+					p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
+					break;
+
+				case GL_DOUBLE:
+					m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
+					p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
+					break;
+
+				default:
+					throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+				}
+
+				// Save the result
+				for (int id(0); id < p_new_vertex_set.size(); ++id)
+				{
+					if (p_float_vertex_set)
+					{
+						p_float_vertex_set[id] = p_new_vertex_set[id];
+					}
+					if (p_double_vertex_set)
+					{
+						p_double_vertex_set[id] = p_new_vertex_set[id];
+					}
+				}
+
+				// Update the VBO
+				if (m_vbo.isReady())
+				{
+					updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+				}
+
+				// Display extra debug info
+				if (aPrintDebugInfoFlag)
+				{
+					std::cout << "file_name:\t" << m_filename <<
+							"\tnb_faces:\t" << getFaceNumber() <<
+							"\tnb_vertices:\t" << m_number_of_vertices <<
+							"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
+													m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
+				}
+			}
+			// Not supported
+			else
+			{
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+			}
+		}
+	}
+	// Generate an error
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed.");
 	}
 }

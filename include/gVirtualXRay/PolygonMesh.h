@@ -326,11 +326,14 @@ public:
 	//--------------------------------------------------------------------------
 	///	Merge the vertices of the mesh if the data is managed by the
 	///	class instance, and if no index has been build.
-	/**
-	*	@return the number of indices
-	*/
 	//--------------------------------------------------------------------------
 	void mergeVertices(bool aPrintDebugInfoFlag = false);
+
+
+	//--------------------------------------------------------------------------
+	///	Split each face into four faces
+	//--------------------------------------------------------------------------
+	void splitFaces(bool aPrintDebugInfoFlag = false);
 
 
 	//--------------------------------------------------------------------------
@@ -582,6 +585,12 @@ protected:
 	///	Release the memory held by the index data if needed.
 	//--------------------------------------------------------------------------
 	void destroyIndexData();
+
+
+	//--------------------------------------------------------------------------
+	///	Remove the index.
+	//--------------------------------------------------------------------------
+	void removeIndex(bool aPrintDebugInfoFlag = false);
 
 
 	/// Name of the file that contains the polygon mesh
