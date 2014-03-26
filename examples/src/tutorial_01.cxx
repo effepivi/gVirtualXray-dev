@@ -42,7 +42,7 @@
 
 #include "gVirtualXRay/Types.h"
 #include "gVirtualXRay/Units.h"
-#include "gVirtualXRay/TriangleMesh.h"
+#include "gVirtualXRay/PolygonMesh.h"
 #include "gVirtualXRay/XRayBeam.h"
 #include "gVirtualXRay/XRayDetector.h"
 #include "gVirtualXRay/XRayRenderer.h"
@@ -69,8 +69,8 @@ GLint   g_window_id(0);
 XRayDetector g_xray_detector;
 XRayBeam     g_xray_beam;
 XRayRenderer g_xray_simulator;
-TriangleMesh g_polygon_mesh_1;
-TriangleMesh g_polygon_mesh_2;
+PolygonMesh g_polygon_mesh_1;
+PolygonMesh g_polygon_mesh_2;
 
 MATRIX4 g_sample_rotation_matrix(MATRIX4::buildRotationMatrix(10.0, VEC3(1, 1, 1)));
 
@@ -405,8 +405,8 @@ void setScannedObject()
 	buildCube(length_2, cube_centre, g_p_vertex_set_2);
 
     // Set geometry
-	g_polygon_mesh_1.setExternalData(&g_p_vertex_set_1, &g_p_index_set_1, true, GL_STATIC_DRAW);
-	g_polygon_mesh_2.setExternalData(&g_p_vertex_set_2, true, GL_STATIC_DRAW);
+	g_polygon_mesh_1.setExternalData(GL_TRIANGLES, &g_p_vertex_set_1, &g_p_index_set_1, true, GL_STATIC_DRAW);
+	g_polygon_mesh_2.setExternalData(GL_TRIANGLES, &g_p_vertex_set_2, true, GL_STATIC_DRAW);
 
 	// Set the material properties
 	g_polygon_mesh_1.setHounsfieldValue(50.0);

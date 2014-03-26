@@ -38,8 +38,8 @@
 #include <string>
 #include <vector>
 
-#ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef TYPES_H
@@ -60,7 +60,7 @@ namespace Graphics {
 *	@brief	CubeMesh is a class to handle 3D meshes of cubes.
 */
 //==============================================================================
-class CubeMesh: public TriangleMesh
+class CubeMesh: public PolygonMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -75,15 +75,6 @@ public:
 	///	Create a new sphere.
 	//--------------------------------------------------------------------------
 	void create(float aLength = 1.0 * cm);
-
-
-	//--------------------------------------------------------------------------
-	///	Update the VBO.
-	/**
-	*	@param aTypeOfVBO: the VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
-	*/
-	//--------------------------------------------------------------------------
-	void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
 };
 
 

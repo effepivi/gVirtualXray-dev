@@ -641,7 +641,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 
 				// For each object
 				unsigned int object_number(0);
-				for (std::vector<TriangleMesh*>::const_iterator ite(m_p_inner_surface_set.begin());
+				for (std::vector<PolygonMesh*>::const_iterator ite(m_p_inner_surface_set.begin());
 					ite != m_p_inner_surface_set.end();
 					++ite, ++object_number)
 				{
@@ -1251,7 +1251,7 @@ void XRayRenderer::resetSumMuxDx()
 
 
 //------------------------------------------------------------------------------
-void XRayRenderer::computeLBuffer(TriangleMesh& anObject,
+void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
 								  const VEC3& aXRaySourceDetectorTranslation,
 							  	  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------
@@ -1567,7 +1567,7 @@ void XRayRenderer::displayEnergyFluence()
 
 
 //------------------------------------------------------------------------------------------
-void XRayRenderer::computeInnerSurfaceLBuffer(TriangleMesh& anObject,
+void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------------
@@ -1706,7 +1706,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(TriangleMesh& anObject,
 
 
 //------------------------------------------------------------------------------------------
-void XRayRenderer::computeOuterSurfaceLBuffer(TriangleMesh& anObject,
+void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------------
@@ -2444,6 +2444,7 @@ void XRayRenderer::updateVBO()
 	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
 
+	m_detector_temporary_geometry.setBufferUsageHint(GL_STATIC_DRAW);
 	m_detector_temporary_geometry.setVertexData(GL_QUADS,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,

@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		TriangleMesh.cxx
+*	@file		PolygonMesh.cxx
 *
-*	@brief		Class to handle 3D triangle meshes.
+*	@brief		Class to handle polygon (triangles or quads) meshes.
 *
 *	@version	1.0
 *
@@ -25,14 +25,13 @@
 ********************************************************************************
 */
 
-
 //******************************************************************************
 //	Include
 //******************************************************************************
 #include <map>
 
-#ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef UNITS_H
@@ -67,28 +66,29 @@ using namespace Graphics;
 //******************************************************************************
 
 
-//-------------------------------
-TriangleMesh::TriangleMesh():
-//-------------------------------
-	m_use_hounsfield_value(true),
-	m_hounsfield_value(0),
-	m_attenuation_coefficient(0),
-	m_bounding_box_diagonal(0),
-	m_p_vertex_set(0),
-	m_p_index_set(0),
-	m_number_of_indices(0),
-	m_number_of_vertices(0),
-	m_index_data_type(GL_NONE),
-	m_vertex_data_type(GL_NONE),
-	m_external_data_flag(false)
-//-------------------------------
+//-----------------------------------
+PolygonMesh::PolygonMesh():
+//-----------------------------------
+		m_use_hounsfield_value(true),
+		m_hounsfield_value(0),
+		m_attenuation_coefficient(0),
+		m_bounding_box_diagonal(0),
+		m_p_vertex_set(0),
+		m_p_index_set(0),
+		m_number_of_indices(0),
+		m_number_of_vertices(0),
+		m_index_data_type(GL_NONE),
+		m_vertex_data_type(GL_NONE),
+		m_polygon_type(GL_NONE),
+		m_external_data_flag(false)
+//-----------------------------------
 {
 }
 
 
-//------------------------
-void TriangleMesh::reset()
-//------------------------
+//-----------------------
+void PolygonMesh::reset()
+//-----------------------
 {
 	// Reset class members to their default values
 	m_vbo.reset();
@@ -118,14 +118,14 @@ void TriangleMesh::reset()
 }
 
 
-//--------------------------
-void TriangleMesh::display()
-//--------------------------
+//-------------------------
+void PolygonMesh::display()
+//-------------------------
 {
 	// Update the VBO if needed
 	if (!m_vbo.isReady())
 	{
-		updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
+		updateVBO(GL_DYNAMIC_DRAW, m_polygon_type);
 	}
 
 	// Display the polygon mesh using a VBO
@@ -144,9 +144,9 @@ void TriangleMesh::display()
 }
 
 
-//-----------------------------------
-void TriangleMesh::displayWireFrame()
-//-----------------------------------
+//----------------------------------
+void PolygonMesh::displayWireFrame()
+//----------------------------------
 {
 	// Turn on wireframe mode
 	glPolygonMode(GL_FRONT, GL_LINE);
@@ -163,9 +163,9 @@ void TriangleMesh::displayWireFrame()
 }
 
 
-//-----------------------------------------------------------------------
-void TriangleMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
-//-----------------------------------------------------------------------
+//----------------------------------------------------------------------
+void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
+//----------------------------------------------------------------------
 {
 	// There are as many normals as there are vertices
 	if (getVertexNormalNumber() == m_number_of_vertices)
@@ -194,9 +194,9 @@ void TriangleMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
 }
 
 
-//-------------------------------------------------------------
-void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
-//-------------------------------------------------------------
+//------------------------------------------------------------
+void PolygonMesh::displayFaceNormal(GLfloat aNormalSize) const
+//------------------------------------------------------------
 {
 	// There is an index
 	if (m_p_index_set && m_number_of_indices)
@@ -267,14 +267,98 @@ void TriangleMesh::displayFaceNormal(GLfloat aNormalSize) const
 }
 
 
-//----------------------------------------------------------
-void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
-							   bool anAutoComputeNormalFlag,
-							   bool aPrintDebugInfoFlag,
-							   bool aCreateVBOFlag,
-							   RATIONAL_NUMBER aScale,
-							   int aTypeOfVBO)
-//----------------------------------------------------------
+//---------------------------------------------
+unsigned int PolygonMesh::getFaceNumber() const
+//---------------------------------------------
+{
+	int number_vertex_per_face(0);
+
+	switch (m_polygon_type)
+	{
+	case GL_TRIANGLES:
+		number_vertex_per_face = 3;
+		break;
+
+	case GL_QUADS:
+		number_vertex_per_face = 4;
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid polygon type.");
+	}
+
+	// Return the number of faces
+	if (m_number_of_indices)
+	{
+		// There are 3 or 4 indices per face
+		return (m_number_of_indices / number_vertex_per_face);
+	}
+	else
+	{
+		// There are 3 or 4 vertices per face
+		return (m_number_of_vertices / number_vertex_per_face);
+	}
+}
+
+
+//-------------------------------------------------
+unsigned int PolygonMesh::getTriangleNumber() const
+//-------------------------------------------------
+{
+	switch (m_polygon_type)
+	{
+	case GL_TRIANGLES:
+		// Return the number of faces
+		if (m_number_of_indices)
+		{
+			// There are 3 indices per triangle
+			return (m_number_of_indices / 3);
+		}
+		else
+		{
+			// There are 3 vertices per triangle
+			return (m_number_of_vertices / 3);
+		}
+
+	default:
+		return (0);
+	}
+}
+
+
+//-------------------------------------------------
+unsigned int PolygonMesh::getQuadNumber() const
+//-------------------------------------------------
+{
+	switch (m_polygon_type)
+	{
+	case GL_QUADS:
+		// Return the number of faces
+		if (m_number_of_indices)
+		{
+			// There are 4 indices per quad
+			return (m_number_of_indices / 4);
+		}
+		else
+		{
+			// There are 4 vertices per quad
+			return (m_number_of_vertices / 4);
+		}
+
+	default:
+		return (0);
+	}
+}
+
+
+//---------------------------------------------------------
+void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
+							  bool anAutoComputeNormalFlag,
+							  bool aPrintDebugInfoFlag,
+							  bool aCreateVBOFlag,
+							  RATIONAL_NUMBER aScale,
+							  int aTypeOfVBO)
+//---------------------------------------------------------
 {
 	// Reset the data
 	reset();
@@ -295,6 +379,9 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	int triangle_number;
 	fread(&(triangle_number), sizeof(float),1,p_stream);
 
+	// Set the kind of polygon
+	m_polygon_type = GL_TRIANGLES;
+
 	// Set the size of arrays to store the vertices and normal vectors
 	m_external_data_flag = false;
 	m_number_of_vertices = triangle_number * 3;
@@ -307,7 +394,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 
 	
 	// Read the data
-	for (unsigned int i(0); i < getTriangleNumber(); i++)
+	for (unsigned int i(0); i < getFaceNumber(); i++)
 	{
 		// Read normals
 		fread(&m_p_face_normal_set[9 * i], sizeof(float), 3, p_stream);
@@ -357,7 +444,7 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	if (aPrintDebugInfoFlag)
 	{
 		std::cout << "file_name:\t" << m_filename <<
-				"\tnb_triangles:\t" << getTriangleNumber() <<
+				"\tnb_triangles:\t" << getFaceNumber() <<
 				"\tnb_vertices:\t" << m_number_of_vertices <<
 				"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
 										m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
@@ -369,14 +456,14 @@ void TriangleMesh::loadSTLFile(bool aMoveToCentreFlag,
 	// Create the VBO
 	if (aCreateVBOFlag)
 	{
-		updateVBO(aTypeOfVBO, GL_TRIANGLES);
+		updateVBO(aTypeOfVBO, m_polygon_type);
 	}
 }
 
 
-//---------------------------------------
-void TriangleMesh::computeNormalVectors()
-//---------------------------------------
+//--------------------------------------
+void PolygonMesh::computeNormalVectors()
+//--------------------------------------
 {
 	m_p_face_normal_set.clear();
 	m_p_vertex_normal_set.clear();
@@ -487,9 +574,9 @@ void TriangleMesh::computeNormalVectors()
 }
 
 
-//-----------------------------------
-void TriangleMesh::normaliseNormals()
-//-----------------------------------
+//----------------------------------
+void PolygonMesh::normaliseNormals()
+//----------------------------------
 {
 	if (!getFaceNormalNumber() && !getVertexNormalNumber())
 	{
@@ -595,9 +682,9 @@ public:
 };
 
 
-//--------------------------------------------------------
-void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
-//--------------------------------------------------------
+//-------------------------------------------------------
+void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
+//-------------------------------------------------------
 {
 	// Merge vertices only if external data is not used
 	if (!m_external_data_flag)
@@ -605,138 +692,179 @@ void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
 		// It only works if no index has been set
 		if (!m_p_index_set && !m_number_of_indices)
 		{
-			// Allocate the memory of the index
-			m_number_of_indices = getTriangleNumber() * 3;
-			GLuint* p_index_set(new GLuint[m_number_of_indices]);
-			m_index_data_type = GL_UNSIGNED_INT;
-			m_p_index_set = p_index_set;
-
-			std::map<VEC3, TempRecord, VectorComparer> hash_table;
-
-			// Add the vertices to the hash table
-			unsigned int number_of_vertices(m_number_of_vertices);
-			for (unsigned int i(0); i < number_of_vertices; ++i)
+			// The polygon is made of triangles
+			if (m_polygon_type == GL_TRIANGLES ||
+					m_polygon_type == GL_QUADS)
 			{
-				VEC3 current_vertex(getVertex(i));
-				VEC3 normal(getFaceNormal(i));
-
-				hash_table[current_vertex].m_normal += normal;
-			}
-
-			m_p_vertex_normal_set.clear();
-			m_p_vertex_normal_set.resize(hash_table.size() * 3);
-
-			unsigned int id(0);
-			for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
-					ite != hash_table.end();
-					++ite, ++id)
-			{
-				VEC3 normal(ite->second.m_normal.normal());
-
-				m_p_vertex_normal_set[id * 3 + 0] = normal.getX();
-				m_p_vertex_normal_set[id * 3 + 1] = normal.getY();
-				m_p_vertex_normal_set[id * 3 + 2] = normal.getZ();
-			}
-
-			// Set the index in the hash table
-			id = 0;
-			for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
-					ite != hash_table.end();
-					++ite, ++id)
-			{
-				ite->second.m_id = id;
-			}
-
-			// Fill the index
-			unsigned int number_of_triangles(getTriangleNumber());
-			for (unsigned int i(0); i < number_of_triangles; ++i)
-			{
-				VEC3 vertex_0(getVertex(i * 3 + 0));
-				VEC3 vertex_1(getVertex(i * 3 + 1));
-				VEC3 vertex_2(getVertex(i * 3 + 2));
-
-				unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
-				unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
-				unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
-
-				if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size())
+				// Allocate the memory of the index
+				int number_of_vertices_per_face(0);
+				if (m_polygon_type == GL_TRIANGLES)
 				{
-					throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid vertex index");
+					number_of_vertices_per_face = 3;
+				}
+				else
+				{
+					number_of_vertices_per_face = 4;
+				}
+				m_number_of_indices = getFaceNumber() * number_of_vertices_per_face;
+				GLuint* p_index_set(new GLuint[m_number_of_indices]);
+				m_index_data_type = GL_UNSIGNED_INT;
+				m_p_index_set = p_index_set;
+
+				// Add the vertices to the hash table
+				std::map<VEC3, TempRecord, VectorComparer> hash_table;
+				unsigned int number_of_vertices(m_number_of_vertices);
+				for (unsigned int i(0); i < number_of_vertices; ++i)
+				{
+					VEC3 current_vertex(getVertex(i));
+					VEC3 normal(getFaceNormal(i));
+
+					hash_table[current_vertex].m_normal += normal;
 				}
 
-				p_index_set[i * 3 + 0] = id_0;
-				p_index_set[i * 3 + 1] = id_1;
-				p_index_set[i * 3 + 2] = id_2;
-			}
-
-			// Set the index in the hash table and create the list of vertices
-			m_number_of_vertices = hash_table.size() * 3;
-			destroyVertexData();
-
-			GLfloat* p_float_vertex_set(0);
-			GLdouble* p_double_vertex_set(0);
-			switch (m_vertex_data_type)
-			{
-			case GL_FLOAT:
-				m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
-				p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
-				break;
-
-			case GL_DOUBLE:
-				m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
-				p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
-				break;
-
-			default:
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-			}
-			id = 0;
-			for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
-					ite != hash_table.end();
-					++ite, ++id)
-			{
-				if (p_float_vertex_set)
+				m_p_vertex_normal_set.clear();
+				m_p_vertex_normal_set.resize(hash_table.size() * 3);
+				unsigned int id(0);
+				for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
+						ite != hash_table.end();
+						++ite, ++id)
 				{
-					p_float_vertex_set[id * 3 + 0] = ite->first.getX();
-					p_float_vertex_set[id * 3 + 1] = ite->first.getY();
-					p_float_vertex_set[id * 3 + 2] = ite->first.getZ();
+					VEC3 normal(ite->second.m_normal.normal());
+
+					m_p_vertex_normal_set[id * 3 + 0] = normal.getX();
+					m_p_vertex_normal_set[id * 3 + 1] = normal.getY();
+					m_p_vertex_normal_set[id * 3 + 2] = normal.getZ();
 				}
-				if (p_double_vertex_set)
+
+				// Set the index in the hash table
+				id = 0;
+				for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
+						ite != hash_table.end();
+						++ite, ++id)
 				{
-					p_double_vertex_set[id * 3 + 0] = ite->first.getX();
-					p_double_vertex_set[id * 3 + 1] = ite->first.getY();
-					p_double_vertex_set[id * 3 + 2] = ite->first.getZ();
+					ite->second.m_id = id;
+				}
+
+				// Fill the index
+				unsigned int number_of_triangles(getTriangleNumber());
+				for (unsigned int i(0); i < number_of_triangles; ++i)
+				{
+					VEC3 vertex_0(getVertex(i * 3 + 0));
+					VEC3 vertex_1(getVertex(i * 3 + 1));
+					VEC3 vertex_2(getVertex(i * 3 + 2));
+
+					unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
+					unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
+					unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
+
+					if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size())
+					{
+						throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid vertex index");
+					}
+
+					p_index_set[i * 3 + 0] = id_0;
+					p_index_set[i * 3 + 1] = id_1;
+					p_index_set[i * 3 + 2] = id_2;
+				}
+
+				unsigned int number_of_quads(getQuadNumber());
+				for (unsigned int i(0); i < number_of_quads; ++i)
+				{
+					VEC3 vertex_0(getVertex(i * 4 + 0));
+					VEC3 vertex_1(getVertex(i * 4 + 1));
+					VEC3 vertex_2(getVertex(i * 4 + 2));
+					VEC3 vertex_3(getVertex(i * 4 + 3));
+
+					unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
+					unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
+					unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
+					unsigned int id_3(hash_table.find(vertex_3)->second.m_id);
+
+					if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size() || id_3 >= hash_table.size())
+					{
+						throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid vertex index");
+					}
+
+					p_index_set[i * 4 + 0] = id_0;
+					p_index_set[i * 4 + 1] = id_1;
+					p_index_set[i * 4 + 2] = id_2;
+					p_index_set[i * 4 + 3] = id_3;
+				}
+
+				// Set the index in the hash table and create the list of vertices
+				m_number_of_vertices = hash_table.size();
+				destroyVertexData();
+
+				GLfloat* p_float_vertex_set(0);
+				GLdouble* p_double_vertex_set(0);
+				switch (m_vertex_data_type)
+				{
+				case GL_FLOAT:
+					m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
+					p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
+					break;
+
+				case GL_DOUBLE:
+					m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
+					p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
+					break;
+
+				default:
+					throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+				}
+				id = 0;
+				for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
+						ite != hash_table.end();
+						++ite, ++id)
+				{
+					if (p_float_vertex_set)
+					{
+						p_float_vertex_set[id * 3 + 0] = ite->first.getX();
+						p_float_vertex_set[id * 3 + 1] = ite->first.getY();
+						p_float_vertex_set[id * 3 + 2] = ite->first.getZ();
+					}
+					if (p_double_vertex_set)
+					{
+						p_double_vertex_set[id * 3 + 0] = ite->first.getX();
+						p_double_vertex_set[id * 3 + 1] = ite->first.getY();
+						p_double_vertex_set[id * 3 + 2] = ite->first.getZ();
+					}
+				}
+
+				// Normalise the normals in the normal set
+				unsigned int number_of_normals(getVertexNormalNumber());
+				for (unsigned int i(0); i < number_of_normals; ++i)
+				{
+					VEC3 normal(getVertexNormal(i));
+					normal.normalise();
+					m_p_vertex_normal_set[i * 3 + 0] = normal.getX();
+					m_p_vertex_normal_set[i * 3 + 1] = normal.getY();
+					m_p_vertex_normal_set[i * 3 + 2] = normal.getZ();
+				}
+
+				// Reset the normal per face set
+				m_p_face_normal_set.clear();
+
+				// Update the VBO
+				if (m_vbo.isReady())
+				{
+					updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+				}
+
+				// Display extra debug info
+				if (aPrintDebugInfoFlag)
+				{
+					std::cout << "file_name:\t" << m_filename <<
+							"\tnb_triangles:\t" << getFaceNumber() <<
+							"\tnb_vertices:\t" << m_number_of_vertices <<
+							"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
+													m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
 				}
 			}
-
-			// Normalise the normals in the normal set
-			unsigned int number_of_normals(getVertexNormalNumber());
-			for (unsigned int i(0); i < number_of_normals; ++i)
+			// Not supported
+			else
 			{
-				VEC3 normal(getVertexNormal(i));
-				normal.normalise();
-				m_p_vertex_normal_set[i * 3 + 0] += normal.getX();
-				m_p_vertex_normal_set[i * 3 + 1] += normal.getY();
-				m_p_vertex_normal_set[i * 3 + 2] += normal.getZ();
-			}
-
-			// Reset the normal per face set
-			m_p_face_normal_set.clear();
-
-			// Update the VBO
-			if (m_vbo.isReady())
-			{
-				updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
-			}
-
-			// Display extra debug info
-			if (aPrintDebugInfoFlag)
-			{
-				std::cout << "file_name:\t" << m_filename <<
-						"\tnb_triangles:\t" << getTriangleNumber() <<
-						"\tnb_vertices:\t" << m_number_of_vertices <<
-						"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
-												m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
 			}
 		}
 		// Generate an error
@@ -753,9 +881,9 @@ void TriangleMesh::mergeVertices(bool aPrintDebugInfoFlag)
 }
 
 
-//----------------------------------------------------------------
-void TriangleMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
-//----------------------------------------------------------------
+//---------------------------------------------------------------
+void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
+//---------------------------------------------------------------
 {
 	if (m_p_vertex_set && m_number_of_vertices)
 	{
@@ -789,9 +917,9 @@ void TriangleMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 
-//------------------------------------------------------
-VEC3 TriangleMesh::getVertex(unsigned int anIndex) const
-//------------------------------------------------------
+//-----------------------------------------------------
+VEC3 PolygonMesh::getVertex(unsigned int anIndex) const
+//-----------------------------------------------------
 {
 	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
 	{
@@ -828,10 +956,10 @@ VEC3 TriangleMesh::getVertex(unsigned int anIndex) const
 }
 
 
-//------------------------------------------------
-void TriangleMesh::setVertex(unsigned int anIndex,
-							 const VEC3& aVertex)
-//------------------------------------------------
+//-----------------------------------------------
+void PolygonMesh::setVertex(unsigned int anIndex,
+							const VEC3& aVertex)
+//-----------------------------------------------
 {
 	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
 	{
@@ -864,9 +992,9 @@ void TriangleMesh::setVertex(unsigned int anIndex,
 }
 
 
-//----------------------------------------------------
-int TriangleMesh::getIndex(unsigned int anIndex) const
-//----------------------------------------------------
+//---------------------------------------------------
+int PolygonMesh::getIndex(unsigned int anIndex) const
+//---------------------------------------------------
 {
 	if (m_number_of_indices <= anIndex && m_p_index_set)
 	{
@@ -902,13 +1030,15 @@ int TriangleMesh::getIndex(unsigned int anIndex) const
 }
 
 
-//------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//------------------------------------------------------------------------
+//-----------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<float>* aVertexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//-----------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
 			0,
@@ -919,13 +1049,15 @@ void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
 }
 
 
-//-------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//-------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<double>* aVertexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
 			0,
@@ -936,14 +1068,16 @@ void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
 }
 
 
-//-------------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
-								   const std::vector<unsigned int>* anIndexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<float>* aVertexArray,
+								  const std::vector<unsigned int>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//------------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
 			&((*anIndexArray)[0]),
@@ -954,14 +1088,16 @@ void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
 }
 
 
-//-------------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
-								   const std::vector<unsigned int>* anIndexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<double>* aVertexArray,
+								  const std::vector<unsigned int>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//------------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
 			&((*anIndexArray)[0]),
@@ -972,14 +1108,16 @@ void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
 }
 
 
-//---------------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
-								   const std::vector<unsigned short>* anIndexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//---------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<float>* aVertexArray,
+								  const std::vector<unsigned short>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//--------------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
 			&((*anIndexArray)[0]),
@@ -990,14 +1128,16 @@ void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
 }
 
 
-//---------------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
-								   const std::vector<unsigned short>* anIndexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//---------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<double>* aVertexArray,
+								  const std::vector<unsigned short>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//--------------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
 			&((*anIndexArray)[0]),
@@ -1008,14 +1148,16 @@ void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
 }
 
 
-//---------------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
-								   const std::vector<unsigned char>* anIndexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//---------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<float>* aVertexArray,
+								  const std::vector<unsigned char>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//-------------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
 			&((*anIndexArray)[0]),
@@ -1026,14 +1168,16 @@ void TriangleMesh::setExternalData(const std::vector<float>* aVertexArray,
 }
 
 
-//---------------------------------------------------------------------------------
-void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
-								   const std::vector<unsigned char>* anIndexArray,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//---------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const std::vector<double>* aVertexArray,
+								  const std::vector<unsigned char>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//-------------------------------------------------------------------------------
 {
-	setExternalData(&((*aVertexArray)[0]),
+	setExternalData(aPolygonType,
+			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
 			&((*anIndexArray)[0]),
@@ -1044,24 +1188,25 @@ void TriangleMesh::setExternalData(const std::vector<double>* aVertexArray,
 }
 
 
-//----------------------------------------------------------------
-void TriangleMesh::setExternalData(const void* aVertexArray,
-								   unsigned int aNumberOfVertices,
-								   int aVertexDataType,
-								   const void* anIndexArray,
-								   unsigned int aNumberOfIndices,
-								   int anIndexDataType,
-								   bool aCreateVBOFlag,
-								   int aTypeOfVBO)
-//----------------------------------------------------------------
+//---------------------------------------------------------------
+void PolygonMesh::setExternalData(int aPolygonType,
+								  const void* aVertexArray,
+								  unsigned int aNumberOfVertices,
+								  int aVertexDataType,
+								  const void* anIndexArray,
+								  unsigned int aNumberOfIndices,
+								  int anIndexDataType,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//---------------------------------------------------------------
 {
 	reset();
 
 	m_external_data_flag = true;
-
+	m_polygon_type       = aPolygonType;
 	m_p_vertex_set       = const_cast<void*>(aVertexArray);
-	m_number_of_vertices        = aNumberOfVertices;
-	m_vertex_data_type = aVertexDataType;
+	m_number_of_vertices = aNumberOfVertices;
+	m_vertex_data_type   = aVertexDataType;
 
 	// There are index data
 	if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
@@ -1087,14 +1232,14 @@ void TriangleMesh::setExternalData(const void* aVertexArray,
 	// Update the VBO
 	if (aCreateVBOFlag)
 	{
-		updateVBO(aTypeOfVBO, GL_TRIANGLES);
+		updateVBO(aTypeOfVBO, m_polygon_type);
 	}
 }
 
 
-//------------------------------------
-void TriangleMesh::destroyVertexData()
-//------------------------------------
+//-----------------------------------
+void PolygonMesh::destroyVertexData()
+//-----------------------------------
 {
 	// The data is manage externally
 	if (m_external_data_flag)
@@ -1126,9 +1271,9 @@ void TriangleMesh::destroyVertexData()
 }
 
 
-//-----------------------------------
-void TriangleMesh::destroyIndexData()
-//-----------------------------------
+//----------------------------------
+void PolygonMesh::destroyIndexData()
+//----------------------------------
 {
 	// The data is manage externally
 	if (m_external_data_flag)

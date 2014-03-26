@@ -96,10 +96,10 @@ SET (CXX_SOURCES
 	../src/Graphics/CubeMesh.cxx
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
+        ../src/Graphics/PolygonMesh.cxx
 	../src/Graphics/Shader.cxx
 	../src/Graphics/SphereMesh.cxx
 	../src/Graphics/StereoHelper.cxx
-	../src/Graphics/TriangleMesh.cxx
 	../src/Graphics/VBO.cxx
 
     # Utilities
@@ -131,11 +131,11 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/ImplicitSurface.h
    	../include/gVirtualXRay/ImplicitSurface.inl
+        ../include/gVirtualXRay/PolygonMesh.h
+        ../include/gVirtualXRay/PolygonMesh.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
-	../include/gVirtualXRay/TriangleMesh.h
-	../include/gVirtualXRay/TriangleMesh.inl
 	../include/gVirtualXRay/VBO.h
 	../include/gVirtualXRay/VBO.inl
 

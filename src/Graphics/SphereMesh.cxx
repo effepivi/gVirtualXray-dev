@@ -91,6 +91,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     m_p_vertex_set = p_vertices;
     m_vertex_data_type = GL_FLOAT;
 
+	// Set the kind of polygon
+	m_polygon_type = GL_QUADS;
+
     m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
     GLfloat* v(p_vertices);
@@ -133,12 +136,4 @@ void SphereMesh::create(unsigned int aNumberOfRings,
             *i++ = (r + 1) * aNumberOfSectors +  s;
     	}
     }
-}
-
-
-//--------------------------------------------------------------
-void SphereMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
-//--------------------------------------------------------------
-{
-	TriangleMesh::updateVBO(GL_STATIC_DRAW, GL_QUADS);
 }

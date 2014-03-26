@@ -78,7 +78,7 @@
 #endif
 
 #ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef XRAY_BEAM_H
@@ -180,7 +180,7 @@ VEC3 g_source_position(   0.0, 0.0, -40.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-TriangleMesh g_polygon_data;
+PolygonMesh g_polygon_data;
 std::vector<GLfloat> g_p_vertex_set;
 
 XRayBeam g_xray_beam;
@@ -946,7 +946,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_sphere_1.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_sphere_1.getVertexData(), &g_sphere_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_sphere_1.getVertexData(), &g_sphere_1.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	case 1:
@@ -954,7 +954,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_sphere_2.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_sphere_2.getVertexData(), &g_sphere_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_sphere_2.getVertexData(), &g_sphere_2.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	// Blobby molecule
@@ -963,7 +963,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_blobby_molecule_1.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_blobby_molecule_1.getVertexData(), &g_blobby_molecule_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_blobby_molecule_1.getVertexData(), &g_blobby_molecule_1.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	case 3:
@@ -971,7 +971,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_blobby_molecule_2.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_blobby_molecule_2.getVertexData(), &g_blobby_molecule_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_blobby_molecule_2.getVertexData(), &g_blobby_molecule_2.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	// Meta ball
@@ -980,7 +980,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_meta_ball_1.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_meta_ball_1.getVertexData(), &g_meta_ball_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_meta_ball_1.getVertexData(), &g_meta_ball_1.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	case 5:
@@ -988,7 +988,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_meta_ball_2.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_meta_ball_2.getVertexData(), &g_meta_ball_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_meta_ball_2.getVertexData(), &g_meta_ball_2.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	// Soft object
@@ -997,7 +997,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_soft_object_1.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_soft_object_1.getVertexData(), &g_soft_object_1.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_soft_object_1.getVertexData(), &g_soft_object_1.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 
 	case 7:
@@ -1005,7 +1005,7 @@ void extractIsoSurface()
 				centre,
 				voxel_size);
 		g_soft_object_2.extractIsoSurface(g_threshold);
-		g_polygon_data.setExternalData(&g_soft_object_2.getVertexData(), &g_soft_object_2.getIndexData(), true, GL_DYNAMIC_DRAW);
+		g_polygon_data.setExternalData(GL_TRIANGLES, &g_soft_object_2.getVertexData(), &g_soft_object_2.getIndexData(), true, GL_DYNAMIC_DRAW);
 		break;
 	}
 

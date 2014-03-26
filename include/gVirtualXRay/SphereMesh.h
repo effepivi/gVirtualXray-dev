@@ -38,8 +38,8 @@
 #include <string>
 #include <vector>
 
-#ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef TYPES_H
@@ -60,7 +60,7 @@ namespace Graphics {
 *	@brief	SphereMesh is a class to handle 3D meshes of spheres.
 */
 //==============================================================================
-class SphereMesh: public TriangleMesh
+class SphereMesh: public PolygonMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -79,15 +79,6 @@ public:
 	void create(unsigned int aNumberOfRings = 10,
 			unsigned int aNumberOfSectors = 10,
 			float aRadius = 0.5 * cm);
-
-
-	//--------------------------------------------------------------------------
-	///	Update the VBO.
-	/**
-	*	@param aTypeOfVBO: the VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
-	*/
-	//--------------------------------------------------------------------------
-	void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
 };
 
 

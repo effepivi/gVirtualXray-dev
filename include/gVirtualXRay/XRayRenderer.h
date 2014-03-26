@@ -40,8 +40,8 @@
 #include <itkRGBPixel.h>
 #endif
 
-#ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef XRAY_DETECTOR_H
@@ -163,7 +163,7 @@ public:
 	*	@param apSurface:	the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void addInnerSurface(const TriangleMesh* apSurface);
+	void addInnerSurface(const PolygonMesh* apSurface);
 
 
 	//--------------------------------------------------------------------------
@@ -172,7 +172,7 @@ public:
 	*	@param apSurface:	the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void addOuterSurface(const TriangleMesh* apSurface);
+	void addOuterSurface(const PolygonMesh* apSurface);
 
 
 	//--------------------------------------------------------------------------
@@ -183,7 +183,7 @@ public:
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void computeLBuffer(TriangleMesh& anObject,
+	void computeLBuffer(PolygonMesh& anObject,
 			  const VEC3& aXRaySourceDetectorTranslation,
 			  const MATRIX4& aModellingTransformationMatrix);
 
@@ -535,7 +535,7 @@ protected:
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void computeInnerSurfaceLBuffer(TriangleMesh& anObject,
+	void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
 			const MATRIX4& aModellingTransformationMatrix);
 
@@ -548,7 +548,7 @@ protected:
 	*	@param aModellingTransformationMatrix:	the transformation matrix of the 3D object
 	*/
 	//--------------------------------------------------------------------------
-	void computeOuterSurfaceLBuffer(TriangleMesh& anObject,
+	void computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
 			const MATRIX4& aModellingTransformationMatrix);
 
@@ -598,11 +598,11 @@ protected:
 
 
 	/// Set of 3D geometries
-	std::vector<TriangleMesh*> m_p_inner_surface_set;
+	std::vector<PolygonMesh*> m_p_inner_surface_set;
 
 
 	/// The 3D geometry that will wrap the ones in m_p_inner_surface_set
-	TriangleMesh* m_p_outer_surface;
+	PolygonMesh* m_p_outer_surface;
 
 
 	/// The computing mode (OPENGL, CUDA, or OPENCL)

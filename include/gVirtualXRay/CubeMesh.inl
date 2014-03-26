@@ -53,7 +53,7 @@ namespace Graphics {
 //---------------------------------------
 inline CubeMesh::CubeMesh(float aLength):
 //---------------------------------------
-		TriangleMesh()
+		PolygonMesh()
 //---------------------------------------
 {
 	create(aLength);

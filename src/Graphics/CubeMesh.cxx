@@ -89,6 +89,8 @@ void CubeMesh::create(float aLength)
     m_p_index_set = p_indices;
     m_index_data_type = GL_UNSIGNED_BYTE;
 
+	// Set the kind of polygon
+	m_polygon_type = GL_QUADS;
 
     // Cache the half length
 	RATIONAL_NUMBER half_length(aLength / 2.0);
@@ -224,12 +226,4 @@ void CubeMesh::create(float aLength)
 	p_indices[5 * 4 + 1] = 6;
 	p_indices[5 * 4 + 2] = 2;
 	p_indices[5 * 4 + 3] = 1;
-}
-
-
-//--------------------------------------------------------------
-void CubeMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
-//--------------------------------------------------------------
-{
-	TriangleMesh::updateVBO(GL_STATIC_DRAW, GL_QUADS);
 }

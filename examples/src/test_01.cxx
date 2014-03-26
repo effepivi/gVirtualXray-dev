@@ -65,8 +65,8 @@
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef XRAY_BEAM_H
@@ -157,8 +157,8 @@ VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-TriangleMesh g_inside_polygon_data;
-TriangleMesh g_outside_polygon_data;
+PolygonMesh g_inside_polygon_data;
+PolygonMesh g_outside_polygon_data;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -537,7 +537,7 @@ void render()
 		if (g_outside_polygon_data.getVertexNormalNumber())
 			g_outside_polygon_data.displayVertexNormal();
 */
-		TriangleMesh* p_mesh;
+		PolygonMesh* p_mesh;
 
 		if (g_display_outside_polygon)
 		{

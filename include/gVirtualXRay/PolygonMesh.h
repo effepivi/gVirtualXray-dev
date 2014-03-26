@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		TriangleMesh.h
+*	@file		PolygonMesh.h
 *
-*	@brief		Class to handle 3D triangle meshes.
+*	@brief		Class to handle polygon (triangles or quads) meshes.
 *
 *	@version	1.0
 *
@@ -29,8 +29,8 @@
 */
 
 
-#ifndef TRIANGLE_MESH_H
-#define TRIANGLE_MESH_H
+#ifndef POLYGON_MESH_H
+#define POLYGON_MESH_H
 
 
 //******************************************************************************
@@ -61,11 +61,11 @@ namespace Graphics {
 
 //==============================================================================
 /**
-*	@class	TriangleMesh
-*	@brief	TriangleMesh is a class to handle a 3D triangle mesh.
+*	@class	PolygonMesh
+*	@brief	PolygonMesh is a class to handle polygon (triangles or quads) meshes.
 */
 //==============================================================================
-class TriangleMesh
+class PolygonMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -73,13 +73,13 @@ public:
 	//--------------------------------------------------------------------------
 	///	Default constructor.
 	//--------------------------------------------------------------------------
-	TriangleMesh();
+	PolygonMesh();
 
 
 	//--------------------------------------------------------------------------
 	///	Destructor.
 	//--------------------------------------------------------------------------
-	~TriangleMesh();
+	~PolygonMesh();
 
 
 	//--------------------------------------------------------------------------
@@ -261,12 +261,30 @@ public:
     
     
 	//--------------------------------------------------------------------------
+	///	Accessor on the number of faces.
+	/**
+	*	@return the number of faces
+	*/
+	//--------------------------------------------------------------------------
+	unsigned int getFaceNumber() const;
+
+
+	//--------------------------------------------------------------------------
 	///	Accessor on the number of triangles.
 	/**
 	*	@return the number of triangles
 	*/
 	//--------------------------------------------------------------------------
 	unsigned int getTriangleNumber() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the number of quads.
+	/**
+	*	@return the number of quads
+	*/
+	//--------------------------------------------------------------------------
+	unsigned int getQuadNumber() const;
 
 
 	//--------------------------------------------------------------------------
@@ -306,7 +324,7 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Merge the vertices of the triangle mesh if the data is managed by the
+	///	Merge the vertices of the mesh if the data is managed by the
 	///	class instance, and if no index has been build.
 	/**
 	*	@return the number of indices
@@ -379,7 +397,8 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(const void* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const void* aVertexArray,
 			unsigned int aNumberOfVertices,
 			int aVertexDataType,
 			const void* anIndexArray,
@@ -398,7 +417,8 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(const std::vector<float>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<float>* aVertexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
 
@@ -412,7 +432,8 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(const std::vector<double>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<double>* aVertexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
 
@@ -426,7 +447,8 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<float>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned int>* anIndexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -441,7 +463,8 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<double>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned int>* anIndexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -456,7 +479,8 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<float>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned short>* anIndexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -471,7 +495,8 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<double>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned short>* anIndexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -486,7 +511,8 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<float>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned char>* anIndexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -501,7 +527,8 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(const std::vector<double>* aVertexArray,
+	void setExternalData(int aPolygonType,
+			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned char>* anIndexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -621,6 +648,10 @@ protected:
 	int m_vertex_data_type;
 
 
+	/// Polygon type; valid values are GL_QUADS, and GL_TRIANGLES
+	int m_polygon_type;
+
+
 	/// A flag set to true if the memory is managed outside of this class instance;
 	/// set to false if the memory is managed by this class instance
 	bool m_external_data_flag;
@@ -631,7 +662,7 @@ protected:
 
 
 //******************************************************************************
-#include "TriangleMesh.inl"
+#include "PolygonMesh.inl"
 
 
-#endif // TRIANGLE_MESH_H
+#endif // POLYGON_MESH_H

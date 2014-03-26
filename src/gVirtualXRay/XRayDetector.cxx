@@ -374,6 +374,7 @@ void XRayDetector::updateDetectorVBO()
 	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(0);
 
+	m_detector_geometry.setBufferUsageHint(GL_STATIC_DRAW);
 	m_detector_geometry.setVertexData(GL_QUADS,
 			p_vertices.size()            / 3, 3, GL_FLOAT, &p_vertices[0],
 			p_normal.size()              / 3, 3, GL_FLOAT, &p_normal[0],
@@ -480,6 +481,7 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(6);
 	p_indices.push_back(7);
 
+	m_parallel_beam.setBufferUsageHint(GL_STATIC_DRAW);
 	m_parallel_beam.setVertexData(GL_QUADS,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
@@ -513,6 +515,7 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(7);
 	p_indices.push_back(4);
 
+	m_parallel_beam_highlight.setBufferUsageHint(GL_STATIC_DRAW);
 	m_parallel_beam_highlight.setVertexData(GL_LINES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
@@ -607,6 +610,7 @@ void XRayDetector::updateConeBeamVBO()
 	p_indices.push_back(7);
 	p_indices.push_back(0);
 
+	m_cone_beam.setBufferUsageHint(GL_STATIC_DRAW);
 	m_cone_beam.setVertexData(GL_TRIANGLES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
@@ -649,6 +653,7 @@ void XRayDetector::updateConeBeamVBO()
 	p_vertices.push_back(v7.getY());
 	p_vertices.push_back(v7.getZ());
 
+	m_cone_beam_highlight.setBufferUsageHint(GL_STATIC_DRAW);
 	m_cone_beam_highlight.setVertexData(GL_LINES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,

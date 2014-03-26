@@ -55,8 +55,8 @@
 #include "Utilities.h"
 #endif
 */
-#ifndef TRIANGLE_MESH_H
-#include "TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "PolygonMesh.h"
 #endif
 /*
 #ifndef VOLUMEDATASET_H

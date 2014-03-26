@@ -77,8 +77,8 @@
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef TRIANGLE_MESH_H
-#include "gVirtualXRay/TriangleMesh.h"
+#ifndef POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef XRAY_BEAM_H
@@ -176,7 +176,7 @@ VEC3 g_source_position(   0.0, 0.0, -40.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-TriangleMesh g_polygon_data;
+PolygonMesh g_polygon_data;
 std::vector<GLdouble> g_p_vertex_set;
 
 XRayBeam g_xray_beam;
@@ -989,7 +989,7 @@ void loadCube()
 	buildCube(10.0 * cm, VEC3(), g_p_vertex_set);
 
     // Set geometry
-	g_polygon_data.setExternalData(&g_p_vertex_set, true, GL_DYNAMIC_DRAW);
+	g_polygon_data.setExternalData(GL_TRIANGLES, &g_p_vertex_set, true, GL_DYNAMIC_DRAW);
 	//g_polygon_data.inverNormalVectors();
 	//g_polygon_data.mergeVertices();
 	g_polygon_data.setHounsfieldValue(500.0);

@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		TriangleMesh.inl
+*	@file		PolygonMesh.inl
 *
-*	@brief		Class to handle 3D triangle meshes.
+*	@brief		Class to handle polygon (triangles or quads) meshes.
 *
 *	@version	1.0
 *
@@ -14,12 +14,12 @@
 *	@section	License
 *				BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer 
+*				For details on use and redistribution please refer
 *				to http://opensource.org/licenses/BSD-3-Clause
 *
 *	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0, 
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
 *				BSD 3-Clause License
 *
 ********************************************************************************
@@ -48,45 +48,45 @@
 namespace Graphics {
 
 
-//----------------------------------
-inline TriangleMesh::~TriangleMesh()
-//----------------------------------
+//--------------------------------
+inline PolygonMesh::~PolygonMesh()
+//--------------------------------
 {
 	// Make sure the VBO and the dynamically allocated memory are released
 	reset();
 }
 
 
-//----------------------------------------------------------
-inline void TriangleMesh::setFilename(const char* aFilename)
-//----------------------------------------------------------
+//---------------------------------------------------------
+inline void PolygonMesh::setFilename(const char* aFilename)
+//---------------------------------------------------------
 {
 	// Store the name of the file that contains the polygon mesh
 	m_filename = aFilename;
 }
 
 
-//-----------------------------------------------------------------
-inline void TriangleMesh::setFilename(const std::string& aFilename)
-//-----------------------------------------------------------------
+//----------------------------------------------------------------
+inline void PolygonMesh::setFilename(const std::string& aFilename)
+//----------------------------------------------------------------
 {
 	// Store the name of the file that contains the polygon mesh
 	m_filename = aFilename;
 }
 
 
-//---------------------------------------------------------
-inline const std::string& TriangleMesh::getFilename() const
-//---------------------------------------------------------
+//--------------------------------------------------------
+inline const std::string& PolygonMesh::getFilename() const
+//--------------------------------------------------------
 {
 	// Return the name of the file that contains the polygon mesh
 	return (m_filename);
 }
 
 
-//--------------------------------------------------------------------
-inline bool TriangleMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------
+inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
+//-------------------------------------------------------------------
 {
 	// There is no data to store in a VBO
 	if (m_number_of_vertices && (getVertexNormalNumber() || getFaceNormalNumber()))
@@ -98,18 +98,18 @@ inline bool TriangleMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 
-//---------------------------------------------------------
-inline bool TriangleMesh::getUseHounsfieldValueFlag() const
-//---------------------------------------------------------
+//--------------------------------------------------------
+inline bool PolygonMesh::getUseHounsfieldValueFlag() const
+//--------------------------------------------------------
 {
 	// Return true if the Hounsfield value is used, false if the attenuation coefficient is used
 	return (m_use_hounsfield_value);
 }
 
 
-//-----------------------------------------------------------------------------------
-inline void TriangleMesh::setHounsfieldValue(const RATIONAL_NUMBER& aHounsfieldValue)
-//-----------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+inline void PolygonMesh::setHounsfieldValue(const RATIONAL_NUMBER& aHounsfieldValue)
+//----------------------------------------------------------------------------------
 {
 	// Set the Hounsfield value
 	m_hounsfield_value = aHounsfieldValue;
@@ -119,9 +119,9 @@ inline void TriangleMesh::setHounsfieldValue(const RATIONAL_NUMBER& aHounsfieldV
 }
 
 
-//--------------------------------------------------------------------------------------------------
-inline void TriangleMesh::setAttenuationCoefficient(const RATIONAL_NUMBER& anAttenuationCoefficient)
-//--------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+inline void PolygonMesh::setAttenuationCoefficient(const RATIONAL_NUMBER& anAttenuationCoefficient)
+//-------------------------------------------------------------------------------------------------
 {
 	// Set the attenuation coefficient
 	m_attenuation_coefficient = anAttenuationCoefficient;
@@ -131,62 +131,45 @@ inline void TriangleMesh::setAttenuationCoefficient(const RATIONAL_NUMBER& anAtt
 }
 
 
-//-------------------------------------------------------------
-inline RATIONAL_NUMBER TriangleMesh::getHounsfieldValue() const
-//-------------------------------------------------------------
+//------------------------------------------------------------
+inline RATIONAL_NUMBER PolygonMesh::getHounsfieldValue() const
+//------------------------------------------------------------
 {
 	// Return the Hounsfield value
 	return (m_hounsfield_value);
 }
 
 
-//--------------------------------------------------------------------
-inline RATIONAL_NUMBER TriangleMesh::getAttenuationCoefficient() const
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------
+inline RATIONAL_NUMBER PolygonMesh::getAttenuationCoefficient() const
+//-------------------------------------------------------------------
 {
 	// Return the attenuation coefficient
 	return (m_attenuation_coefficient);
 }
 
 
-//---------------------------------------------------
-inline const VEC3& TriangleMesh::getMinCorner() const
-//---------------------------------------------------
+//--------------------------------------------------
+inline const VEC3& PolygonMesh::getMinCorner() const
+//--------------------------------------------------
 {
 	// Return the bounding box lower corner
     return (m_min_corner);
 }
 
 
-//---------------------------------------------------
-inline const VEC3& TriangleMesh::getMaxCorner() const
-//---------------------------------------------------
+//--------------------------------------------------
+inline const VEC3& PolygonMesh::getMaxCorner() const
+//--------------------------------------------------
 {
 	// Return the bounding box upper corner
 	return (m_max_corner);
 }
 
 
-//---------------------------------------------------------
-inline unsigned int TriangleMesh::getTriangleNumber() const
-//---------------------------------------------------------
-{
-	// Return the number of triangles
-	if (m_number_of_indices)
-	{
-		return (m_number_of_indices / 3);
-	}
-	else
-	{
-		// There are 3 vertices per triangle
-		return (m_number_of_vertices / 3);
-	}
-}
-
-
-//-----------------------------------------------------------
-inline unsigned int TriangleMesh::getFaceNormalNumber() const
-//-----------------------------------------------------------
+//----------------------------------------------------------
+inline unsigned int PolygonMesh::getFaceNormalNumber() const
+//----------------------------------------------------------
 {
 	// Return the number of normal vectors
 	// There are 3 GLfloat values per normal
@@ -194,9 +177,9 @@ inline unsigned int TriangleMesh::getFaceNormalNumber() const
 }
 
 
-//-------------------------------------------------------------
-inline unsigned int TriangleMesh::getVertexNormalNumber() const
-//-------------------------------------------------------------
+//------------------------------------------------------------
+inline unsigned int PolygonMesh::getVertexNormalNumber() const
+//------------------------------------------------------------
 {
 	// Return the number of normal vectors
 	// There are 3 GLfloat values per normal
@@ -204,25 +187,25 @@ inline unsigned int TriangleMesh::getVertexNormalNumber() const
 }
 
 
-//-------------------------------------------------------
-inline unsigned int TriangleMesh::getVertexNumber() const
-//-------------------------------------------------------
+//------------------------------------------------------
+inline unsigned int PolygonMesh::getVertexNumber() const
+//------------------------------------------------------
 {
 	return (m_number_of_vertices);
 }
 
 
-//------------------------------------------------------
-inline unsigned int TriangleMesh::getIndexNumber() const
-//------------------------------------------------------
+//-----------------------------------------------------
+inline unsigned int PolygonMesh::getIndexNumber() const
+//-----------------------------------------------------
 {
 	return (m_number_of_indices);
 }
 
 
-//-----------------------------------------------------------------
-inline VEC3 TriangleMesh::getFaceNormal(unsigned int anIndex) const
-//-----------------------------------------------------------------
+//----------------------------------------------------------------
+inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
+//----------------------------------------------------------------
 {
 	if (getFaceNormalNumber() <= anIndex)
 	{
@@ -235,9 +218,9 @@ inline VEC3 TriangleMesh::getFaceNormal(unsigned int anIndex) const
 }
 
 
-//-------------------------------------------------------------------
-inline VEC3 TriangleMesh::getVertexNormal(unsigned int anIndex) const
-//-------------------------------------------------------------------
+//------------------------------------------------------------------
+inline VEC3 PolygonMesh::getVertexNormal(unsigned int anIndex) const
+//------------------------------------------------------------------
 {
 	if (getVertexNormalNumber() <= anIndex)
 	{
@@ -250,9 +233,9 @@ inline VEC3 TriangleMesh::getVertexNormal(unsigned int anIndex) const
 }
 
 
-//--------------------------------------------
-inline void TriangleMesh::computeBoundingBox()
-//--------------------------------------------
+//-------------------------------------------
+inline void PolygonMesh::computeBoundingBox()
+//-------------------------------------------
 {
 	// There are vertices
 	if (m_number_of_vertices)
@@ -278,9 +261,9 @@ inline void TriangleMesh::computeBoundingBox()
 }
 
 
-//-----------------------------------------------------------------
-inline void TriangleMesh::applyScale(const RATIONAL_NUMBER& aScale)
-//-----------------------------------------------------------------
+//----------------------------------------------------------------
+inline void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScale)
+//----------------------------------------------------------------
 {
 	// There are vertices
 	if (m_number_of_vertices)
@@ -305,9 +288,9 @@ inline void TriangleMesh::applyScale(const RATIONAL_NUMBER& aScale)
 }
 
 
-//-----------------------------------------------------------------
-inline void TriangleMesh::translate(const VEC3& aTranslationVector)
-//-----------------------------------------------------------------
+//----------------------------------------------------------------
+inline void PolygonMesh::translate(const VEC3& aTranslationVector)
+//----------------------------------------------------------------
 {
 	if (m_number_of_vertices)
 	{
@@ -329,9 +312,9 @@ inline void TriangleMesh::translate(const VEC3& aTranslationVector)
 }
 
 
-//--------------------------------------
-inline void TriangleMesh::moveToCentre()
-//--------------------------------------
+//-------------------------------------
+inline void PolygonMesh::moveToCentre()
+//-------------------------------------
 {
 	VEC3 translation_vector(m_min_corner + (m_max_corner - m_min_corner) / 2.0);
 	translation_vector *= -1.0;
@@ -340,9 +323,9 @@ inline void TriangleMesh::moveToCentre()
 }
 
 
-//--------------------------------------------
-inline void TriangleMesh::inverNormalVectors()
-//--------------------------------------------
+//-------------------------------------------
+inline void PolygonMesh::inverNormalVectors()
+//-------------------------------------------
 {
 	for (std::vector<RATIONAL_NUMBER>::iterator ite(m_p_vertex_normal_set.begin());
 			ite != m_p_vertex_normal_set.end();
