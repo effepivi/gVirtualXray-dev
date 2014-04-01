@@ -190,13 +190,29 @@ ENDIF(USE_GLUT)
 
 
 IF(USE_BUNDLE)
-	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns)
+	SET (DEPENDENCIES ${requiredLibs} ${optionalLibs})
+	FOREACH (library_file ${DEPENDENCIES})
+		get_filename_component(extension ${library_file} EXT)
+
+		IF (extension STREQUAL ".dylib")
+			SET (dylib_files ${dylib_files} ${library_file})
+		ENDIF()
+	ENDFOREACH()
+	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns ${dylib_files})
         ADD_DEFINITIONS(-DHAS_BUNDLE)
 	SET_SOURCE_FILES_PROPERTIES (
 		../data/welsh-dragon-small.stl
 		PROPERTIES
 		MACOSX_PACKAGE_LOCATION examples/data
 	)
+
+	FOREACH (library_file ${dylib_files})
+		SET_SOURCE_FILES_PROPERTIES (
+			${library_file}
+			PROPERTIES
+			MACOSX_PACKAGE_LOCATION MacOS
+		)
+	ENDFOREACH()
 
 	TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
 
