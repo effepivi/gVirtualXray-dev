@@ -35,7 +35,11 @@
 #include "gVirtualXRay/FBOException.h"
 #endif
 
-#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
 
 
 //******************************************************************************
@@ -56,31 +60,42 @@ FBOException::FBOException(const char* aFileName,
 	
 	switch (anErrorCode)
 	{
-	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-		error_message << "FBO error: Not all framebuffer attachment points are framebuffer attachment complete." << std::endl;
+    case GL_FRAMEBUFFER_UNDEFINED:
+        error_message << "FBO error: the target is the default framebuffer, but the default framebuffer does not exist." << std::endl;
 		break;
 
-	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-		error_message << "FBO error: No images are attached to the framebuffer." << std::endl;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        error_message << "FBO error: any of the framebuffer attachment points are framebuffer incomplete." << std::endl;
 		break;
 
-	case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-		error_message << "FBO error: Not all attached images have the same width and height." << std::endl;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        error_message << "FBO error: the framebuffer does not have at least one image attached to it." << std::endl;
 		break;
 
-	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-		error_message << "FBO error: incomplete draw buffer." << std::endl;
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+        error_message << "FBO error: the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for any color attachment point(s) named by GL_DRAW_BUFFERi." << std::endl;
 		break;
 
-	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-		error_message << "FBO error: incomplete read buffer." << std::endl;
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+        error_message << "FBO error: GL_READ_BUFFER is not GL_NONE and the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for the color attachment point named by GL_READ_BUFFER." << std::endl;
 		break;
 
-	case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-		error_message << "FBO error: The combination of internal formats of the attached images violates an implementation-dependent set of restrictions." << std::endl;
+    case GL_FRAMEBUFFER_UNSUPPORTED:
+        error_message << "FBO error: the combination of internal formats of the attached images violates an implementation-dependent set of restrictions." << std::endl;
 		break;
-	
-	default:
+
+    case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+        error_message << "FBO error:" << std::endl;
+        error_message << "the value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES." << std::endl;
+        error_message << "or" << std::endl;
+        error_message << "the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures." << std::endl;
+		break;
+
+    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+        error_message << "FBO error: any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target." << std::endl;
+		break;
+    
+    default:
 		error_message << "FBO error: unknown." << std::endl;
 		break;
 	}
