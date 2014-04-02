@@ -86,6 +86,15 @@
 #include "mu_water.csv.h"
 
 #include <GL/glew.h>
+
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
+#else
+#include <GL/gl3.h>
+#include <GL/gl3ext.h>
+#endif
+
 #include "gVirtualXRay/framebufferObject.h"
 
 
@@ -167,10 +176,10 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 //----------------------------------------------------------------------------
 {
 	// Check the texture format
-	if (anInternalTextureFormat != GL_RGB16F_ARB &&
-			anInternalTextureFormat != GL_RGB32F_ARB)
+	if (anInternalTextureFormat != GL_RGB16F &&
+			anInternalTextureFormat != GL_RGB32F)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F_ARB or GL_RGB32F_ARB.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
 	}
 
 	// Reset the X-ray detector
@@ -954,15 +963,14 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			GLint width(0);
-			glTexImage3D(GL_PROXY_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_LUMINANCE, GL_FLOAT, 0);
+			glTexImage3D(GL_PROXY_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RED, GL_FLOAT, 0);
 			glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &width);
 			if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
 			{
-				glTexImage3D(GL_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_LUMINANCE, GL_FLOAT, 0);
+				glTexImage3D(GL_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RED, GL_FLOAT, 0);
 			}
 			else
 			{
@@ -1007,13 +1015,13 @@ void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Attach color texture to FBO
-	m_p_fbo_set[aFBOIndex]->AttachTexture(GL_TEXTURE_2D, m_p_texture_name_set[aTextureIndex], GL_COLOR_ATTACHMENT0_EXT);
+	m_p_fbo_set[aFBOIndex]->AttachTexture(GL_TEXTURE_2D, m_p_texture_name_set[aTextureIndex], GL_COLOR_ATTACHMENT0);
 	//glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_2D_texture_target, m_p_texture_name_set[i], 0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Change draw/read buffers
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Check the FBO
@@ -1045,13 +1053,13 @@ void XRayRenderer::init3DFBOs()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Attach color texture to FBO
-		m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], GL_COLOR_ATTACHMENT0_EXT, 0, 0);
+		m_p_fbo_set[XRAY_DETECTOR_2D_FBO_NUMBER + i]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], GL_COLOR_ATTACHMENT0, 0, 0);
 		//glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_3D_texture_target, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER + i], 0, 0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Change draw/read buffers
-		glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-		glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glReadBuffer(GL_COLOR_ATTACHMENT0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Check the FBO
@@ -1093,7 +1101,6 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1306,7 +1313,7 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 
 			// Attach the texture
 			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0_EXT, 0, slice_number);
+			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, slice_number);
 
 			// Bind the FBO
 			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
@@ -1607,7 +1614,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
 
 	VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
 
@@ -1754,10 +1761,10 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
 
 	GLint saved_texture;
-	glGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &saved_texture);
+	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
 
 	GLint handle(glGetUniformLocation(program_handle, "g_cumulated_l_buffer_texture"));
 	glUniform1i(handle, saved_texture - GL_TEXTURE0);
@@ -1852,10 +1859,10 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
 
 	GLint saved_texture;
-	glGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &saved_texture);
+	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
 
 	GLint handle(glGetUniformLocation(program_handle, "g_l_buffer_texture"));
 	glUniform1i(handle, saved_texture - GL_TEXTURE0);
@@ -1959,10 +1966,10 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Values to pass to the shader
-			GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+			GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
 
 			GLint saved_texture;
-			glGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &saved_texture);
+			glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
 
 			GLint handle(glGetUniformLocation(program_handle, "g_l_buffer_texture"));
 			glUniform1i(handle, saved_texture - GL_TEXTURE0);
@@ -2024,7 +2031,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 
 					// Attach the texture
 					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0_EXT, 0, current_slice);
+					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
 
 					// Bind the FBO
 					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
@@ -2115,10 +2122,10 @@ void XRayRenderer::computeIntegratedEnergy()
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Values to pass to the shader
-			GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+			GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
 
 			GLint saved_texture;
-			glGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &saved_texture);
+			glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
 
 			GLint handle(glGetUniformLocation(program_handle, "g_sum_mu_x_dx_texture"));
 			glUniform1i(handle, saved_texture - GL_TEXTURE0);
@@ -2255,11 +2262,11 @@ void XRayRenderer::display()
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
 
 	// Get the current texture unit
 	GLint saved_texture;
-	glGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &saved_texture);
+	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
 
 	// Pass the current texture unit to the shader
 	GLint handle(glGetUniformLocation(program_handle, "g_attenuation"));
