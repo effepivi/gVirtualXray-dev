@@ -87,14 +87,14 @@
 
 #include <GL/glew.h>
 
-#ifdef __APPLE__
+/*#ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #include <OpenGL/gl3ext.h>
 #else
 #include <GL/gl3.h>
 #include <GL/gl3ext.h>
 #endif
-
+*/
 #include "gVirtualXRay/framebufferObject.h"
 
 
@@ -1614,7 +1614,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLint program_handle(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 	VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
 
@@ -1761,7 +1762,8 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLint program_handle(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 	GLint saved_texture;
 	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
@@ -1859,7 +1861,8 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLint program_handle(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 	GLint saved_texture;
 	glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
@@ -1966,7 +1969,8 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Values to pass to the shader
-			GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+			GLint program_handle(0);
+			glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 			GLint saved_texture;
 			glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
@@ -2122,7 +2126,8 @@ void XRayRenderer::computeIntegratedEnergy()
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Values to pass to the shader
-			GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+			GLint program_handle(0);
+			glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 			GLint saved_texture;
 			glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
@@ -2262,7 +2267,8 @@ void XRayRenderer::display()
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Values to pass to the shader
-	GLuint program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLint program_handle(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 	// Get the current texture unit
 	GLint saved_texture;
@@ -2428,6 +2434,14 @@ void XRayRenderer::updateVBO()
 	p_vertices.push_back(0);
 
 	p_vertices.push_back(0);
+	p_vertices.push_back(0);
+	p_vertices.push_back(0);
+
+	p_vertices.push_back(1);
+	p_vertices.push_back(1);
+	p_vertices.push_back(0);
+
+	p_vertices.push_back(0);
 	p_vertices.push_back(1);
 	p_vertices.push_back(0);
 
@@ -2448,11 +2462,19 @@ void XRayRenderer::updateVBO()
 	p_texture_coordinates.push_back(0);
 
 	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
 
 	m_detector_temporary_geometry.setBufferUsageHint(GL_STATIC_DRAW);
-	m_detector_temporary_geometry.setVertexData(GL_QUADS,
+	m_detector_temporary_geometry.setVertexData(GL_TRIANGLES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);

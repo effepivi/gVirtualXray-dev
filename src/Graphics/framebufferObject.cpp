@@ -239,6 +239,11 @@ bool FramebufferObject::IsValid( ostream& ostr )
   case GL_FRAMEBUFFER_COMPLETE: // Everything's OK
     isOK = true;
     break;
+  case GL_FRAMEBUFFER_UNDEFINED:
+    ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
+      << "GL_FRAMEBUFFER_UNDEFINED\n";
+    isOK = false;
+    break;
   case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
     ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
       << "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT\n";
@@ -247,16 +252,6 @@ bool FramebufferObject::IsValid( ostream& ostr )
   case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
     ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
       << "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT\n";
-    isOK = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-    ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
-      << "GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS\n";
-    isOK = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
-    ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
-      << "GL_FRAMEBUFFER_INCOMPLETE_FORMATS\n";
     isOK = false;
     break;
   case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
@@ -272,6 +267,16 @@ bool FramebufferObject::IsValid( ostream& ostr )
   case GL_FRAMEBUFFER_UNSUPPORTED:
     ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
       << "GL_FRAMEBUFFER_UNSUPPORTED\n";
+    isOK = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+    ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
+      << "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE\n";
+    isOK = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+    ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
+      << "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS\n";
     isOK = false;
     break;
   default:
