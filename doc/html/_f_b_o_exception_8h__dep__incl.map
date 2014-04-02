@@ -1,11 +1,13 @@
-<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/FBOException.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/FBOException.h">
-<area shape="rect" id="node3" href="$_open_g_l_utilities_8inl.html" title="Some utility functions about OpenGL." alt="" coords="319,109,581,165"/>
-<area shape="rect" id="node5" href="$_open_g_l_utilities_8h.html" title="Some utility functions about OpenGL." alt="" coords="322,213,579,269"/>
-<area shape="rect" id="node7" href="$_v_b_o_8inl.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="159,317,357,373"/>
-<area shape="rect" id="node19" href="$_x_ray_detector_8inl.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="325,421,579,477"/>
-<area shape="rect" id="node22" href="$_x_ray_renderer_8inl.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="487,317,747,373"/>
-<area shape="rect" id="node9" href="$_v_b_o_8h.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="107,421,300,477"/>
-<area shape="rect" id="node11" href="$_triangle_mesh_8h.html" title="Class to handle 3D triangle meshes." alt="" coords="5,525,253,581"/>
-<area shape="rect" id="node13" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="243,629,497,685"/>
-<area shape="rect" id="node15" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="327,525,576,581"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$_open_g_l_utilities_8inl.html" title="Some utility functions about OpenGL." alt="" coords="1074,83,1597,111"/>
+<area shape="rect" id="node5" href="$_open_g_l_utilities_8h.html" title="Some utility functions about OpenGL." alt="" coords="1077,161,1594,189"/>
+<area shape="rect" id="node7" href="$_v_b_o_8inl.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="541,238,1005,266"/>
+<area shape="rect" id="node25" href="$_x_ray_detector_8inl.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="1080,393,1594,421"/>
+<area shape="rect" id="node28" href="$_x_ray_renderer_8inl.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="1373,315,1890,343"/>
+<area shape="rect" id="node9" href="$_v_b_o_8h.html" title="Class to handle vertex buffer objects (VBOs)." alt="" coords="348,315,806,343"/>
+<area shape="rect" id="node11" href="$_polygon_mesh_8h.html" title="Class to handle polygon (triangles or quads) meshes." alt="" coords="176,393,685,421"/>
+<area shape="rect" id="node15" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="565,547,1074,575"/>
+<area shape="rect" id="node17" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="156,625,670,653"/>
+<area shape="rect" id="node13" href="$_cube_mesh_8h.html" title="Class to handle 3D meshes of cubes." alt="" coords="573,470,1066,498"/>
+<area shape="rect" id="node19" href="$_sphere_mesh_8h.html" title="Class to handle 3D meshes of spheres." alt="" coords="45,470,549,498"/>
 </map>

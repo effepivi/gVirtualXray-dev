@@ -1,6 +1,6 @@
-<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/ImplicitSurface.inl" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/ImplicitSurface.inl">
-<area shape="rect" id="node5" href="$_out_of_bounds_exception_8h.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="182,110,364,151"/>
-<area shape="rect" id="node7" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="89,200,260,227"/>
-<area shape="rect" id="node19" href="$_out_of_bounds_exception_8inl.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="285,200,459,227"/>
-<area shape="rect" id="node15" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="287,275,383,301"/>
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$_out_of_bounds_exception_8h.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="228,83,473,111"/>
+<area shape="rect" id="node7" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="172,161,337,189"/>
+<area shape="rect" id="node19" href="$_out_of_bounds_exception_8inl.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="361,161,532,189"/>
+<area shape="rect" id="node15" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="361,238,452,266"/>
 </map>

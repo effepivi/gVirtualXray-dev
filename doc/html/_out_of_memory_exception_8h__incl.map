@@ -1,5 +1,5 @@
-<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/OutOfMemoryException.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/OutOfMemoryException.h">
-<area shape="rect" id="node3" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="89,125,260,152"/>
-<area shape="rect" id="node15" href="$_out_of_memory_exception_8inl.html" title="Class to handle exceptions when memory cannot be allocated dynamically." alt="" coords="285,125,464,152"/>
-<area shape="rect" id="node11" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="287,200,383,227"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="109,83,275,111"/>
+<area shape="rect" id="node15" href="$_out_of_memory_exception_8inl.html" title="Class to handle exceptions when memory cannot be allocated dynamically." alt="" coords="299,83,469,111"/>
+<area shape="rect" id="node11" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="299,161,389,189"/>
 </map>

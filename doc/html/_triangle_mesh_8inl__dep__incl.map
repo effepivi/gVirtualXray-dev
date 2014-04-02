@@ -1,4 +1,7 @@
-<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/TriangleMesh.inl" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/TriangleMesh.inl">
-<area shape="rect" id="node3" href="$_triangle_mesh_8h.html" title="Class to handle 3D triangle meshes." alt="" coords="7,109,256,165"/>
-<area shape="rect" id="node5" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="5,213,259,269"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$_triangle_mesh_8h.html" title="Class to handle 3D triangle meshes." alt="" coords="521,83,1028,111"/>
+<area shape="rect" id="node5" href="$_cube_mesh_8h.html" title="Class to handle 3D meshes of cubes." alt="" coords="5,161,499,189"/>
+<area shape="rect" id="node9" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="660,315,1175,343"/>
+<area shape="rect" id="node11" href="$_sphere_mesh_8h.html" title="Class to handle 3D meshes of spheres." alt="" coords="523,161,1027,189"/>
+<area shape="rect" id="node7" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="517,238,1027,266"/>
 </map>

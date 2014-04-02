@@ -1,6 +1,6 @@
-<map id="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/Matrix4x4.h" name="/home/fpvidal/Documents/gvirtualxray&#45;code/trunk/include/gVirtualXRay/Matrix4x4.h">
-<area shape="rect" id="node3" href="$_vec3_8h.html" title="Template class to handle 3D vectors." alt="" coords="29,109,173,136"/>
-<area shape="rect" id="node11" href="$_matrix4x4_8inl.html" title="Template class to handle 4x4 matrices." alt="" coords="198,109,292,136"/>
-<area shape="rect" id="node7" href="$_vec3_8inl.html" title="Template class to handle 3D vectors." alt="" coords="5,184,75,211"/>
-<area shape="rect" id="node13" href="$_units_8h.html" title="Units, such as meters, etc." alt="" coords="249,184,391,211"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$_vec3_8h.html" title="Template class to handle 3D vectors." alt="" coords="109,83,248,111"/>
+<area shape="rect" id="node11" href="$_matrix4x4_8inl.html" title="Template class to handle 4x4 matrices." alt="" coords="272,83,363,111"/>
+<area shape="rect" id="node7" href="$_vec3_8inl.html" title="Template class to handle 3D vectors." alt="" coords="89,161,153,189"/>
+<area shape="rect" id="node13" href="$_units_8h.html" title="Units, such as meters, etc." alt="" coords="321,161,460,189"/>
 </map>
