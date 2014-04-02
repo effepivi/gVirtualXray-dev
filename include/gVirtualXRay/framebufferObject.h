@@ -42,7 +42,16 @@
 #ifndef UCDAVIS_FRAMEBUFFER_OBJECT_H
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
+
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
+#else
+#include <GL/gl3.h>
+#include <GL/gl3ext.h>
+#endif
+
 #include <iostream>
 
 /*!
@@ -113,7 +122,7 @@ public:
   /// Bind a texture to the "attachment" point of this FBO
   virtual void AttachTexture( GLenum texTarget, 
                               GLuint texId,
-                              GLenum attachment = GL_COLOR_ATTACHMENT0_EXT,
+                              GLenum attachment = GL_COLOR_ATTACHMENT0,
                               int mipLevel      = 0,
                               int zSlice        = 0 );
 
@@ -129,7 +138,7 @@ public:
 
   /// Bind a render buffer to the "attachment" point of this FBO
   virtual void AttachRenderBuffer( GLuint buffId,
-                                   GLenum attachment = GL_COLOR_ATTACHMENT0_EXT );
+                                   GLenum attachment = GL_COLOR_ATTACHMENT0 );
 
   /// Bind an array of render buffers to corresponding "attachment" points
   /// of this FBO.

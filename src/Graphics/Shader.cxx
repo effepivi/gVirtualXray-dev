@@ -47,8 +47,11 @@
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-
-#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
 
 
 //******************************************************************************
