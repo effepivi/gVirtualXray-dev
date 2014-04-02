@@ -37,7 +37,11 @@
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
 
 
 //******************************************************************************
@@ -80,17 +84,17 @@ void CubeMesh::create(float aLength)
 
     m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
-    GLubyte* p_indices = new GLubyte[4 * 6];
+    GLubyte* p_indices = new GLubyte[6 * 6];
     if (!p_indices)
     {
     	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
-    m_number_of_indices = 4 * 6;
+    m_number_of_indices = 6 * 6;
     m_p_index_set = p_indices;
     m_index_data_type = GL_UNSIGNED_BYTE;
 
 	// Set the kind of polygon
-	m_polygon_type = GL_QUADS;
+	m_polygon_type = GL_TRIANGLES;
 
     // Cache the half length
 	RATIONAL_NUMBER half_length(aLength / 2.0);
@@ -192,38 +196,50 @@ void CubeMesh::create(float aLength)
 	m_p_vertex_normal_set[7 * 3 + 2] = normal_vector.getZ();
 
 	// Top face
-	p_indices[0 * 4 + 0] = 0;
-	p_indices[0 * 4 + 1] = 1;
-	p_indices[0 * 4 + 2] = 2;
-	p_indices[0 * 4 + 3] = 3;
+	p_indices[0 * 6 + 0] = 0;
+	p_indices[0 * 6 + 1] = 1;
+	p_indices[0 * 6 + 2] = 2;
+	p_indices[0 * 6 + 3] = 0;
+	p_indices[0 * 6 + 4] = 2;
+    p_indices[0 * 6 + 5] = 3;
 
 	// Bottom face
-	p_indices[1 * 4 + 0] = 7;
-	p_indices[1 * 4 + 1] = 6;
-	p_indices[1 * 4 + 2] = 5;
-	p_indices[1 * 4 + 3] = 4;
+	p_indices[1 * 6 + 0] = 7;
+	p_indices[1 * 6 + 1] = 6;
+	p_indices[1 * 6 + 2] = 5;
+	p_indices[1 * 6 + 3] = 7;
+	p_indices[1 * 6 + 4] = 5;
+	p_indices[1 * 6 + 5] = 4;
 
 	// Front face
-	p_indices[2 * 4 + 0] = 4;
-	p_indices[2 * 4 + 1] = 5;
-	p_indices[2 * 4 + 2] = 1;
-	p_indices[2 * 4 + 3] = 0;
+	p_indices[2 * 6 + 0] = 4;
+	p_indices[2 * 6 + 1] = 5;
+	p_indices[2 * 6 + 2] = 1;
+	p_indices[2 * 6 + 3] = 4;
+	p_indices[2 * 6 + 4] = 1;
+	p_indices[2 * 6 + 5] = 0;
 
 	// Back face
-	p_indices[3 * 4 + 0] = 6;
-	p_indices[3 * 4 + 1] = 7;
-	p_indices[3 * 4 + 2] = 3;
-	p_indices[3 * 4 + 3] = 2;
+	p_indices[3 * 6 + 0] = 6;
+	p_indices[3 * 6 + 1] = 7;
+	p_indices[3 * 6 + 2] = 3;
+	p_indices[3 * 6 + 3] = 6;
+	p_indices[3 * 6 + 4] = 3;
+	p_indices[3 * 6 + 5] = 2;
 
 	// Left face
-	p_indices[4 * 4 + 0] = 4;
-	p_indices[4 * 4 + 1] = 0;
-	p_indices[4 * 4 + 2] = 3;
-	p_indices[4 * 4 + 3] = 7;
+	p_indices[4 * 6 + 0] = 4;
+	p_indices[4 * 6 + 1] = 0;
+	p_indices[4 * 6 + 2] = 3;
+	p_indices[4 * 6 + 3] = 4;
+	p_indices[4 * 6 + 4] = 3;
+	p_indices[4 * 6 + 5] = 7;
 
 	// Right face
-	p_indices[5 * 4 + 0] = 5;
-	p_indices[5 * 4 + 1] = 6;
-	p_indices[5 * 4 + 2] = 2;
-	p_indices[5 * 4 + 3] = 1;
+	p_indices[5 * 6 + 0] = 5;
+	p_indices[5 * 6 + 1] = 6;
+	p_indices[5 * 6 + 2] = 2;
+	p_indices[5 * 6 + 3] = 5;
+	p_indices[5 * 6 + 4] = 2;
+	p_indices[5 * 6 + 5] = 1;
 }
