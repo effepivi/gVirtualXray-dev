@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$_cube_mesh_8h.html" title="Class to handle 3D meshes of cubes." alt="" coords="5,83,499,111"/>
+<area shape="rect" id="node7" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="660,238,1175,266"/>
+<area shape="rect" id="node9" href="$_sphere_mesh_8h.html" title="Class to handle 3D meshes of spheres." alt="" coords="523,83,1027,111"/>
+<area shape="rect" id="node5" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="517,161,1027,189"/>
+</map>
