@@ -179,7 +179,7 @@ Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0 * keV);
 VEC2 g_detector_size(320.0 * mm, 320.0 * mm);
-Vec2ui g_number_of_pixels(640, 640);
+Vec2ui g_number_of_pixels(640 / 5, 640 / 5);
 GLfloat g_resolution(g_detector_size.getX() / g_number_of_pixels.getX());
 
 VEC3 g_source_position(   0.0, 0.0, -40.0 * cm);
@@ -266,6 +266,7 @@ int main(int argc, char** argv)
 		g_main_window_id = glutCreateWindow(window_title.str().data());
 
 		// Initialize GLEW
+		glewExperimental = TRUE;
 		GLenum glew_error_0(glewInit());
 		if (glew_error_0 != GLEW_OK)
 		{
@@ -280,6 +281,7 @@ int main(int argc, char** argv)
 			glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
 			g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
+			glewExperimental = TRUE;
 			GLenum glew_error_1(glewInit());
 			if (glew_error_1 != GLEW_OK)
 			{
@@ -1170,7 +1172,7 @@ void loadXRaySimulator()
 {
 	// Initialise the X-ray renderer
 	g_xray_renderer.initialise(XRayRenderer::OPENGL,
-		GL_RGB16F_ARB,
+		GL_RGB16F,
 		&g_xray_detector,
 		&g_xray_beam);
 

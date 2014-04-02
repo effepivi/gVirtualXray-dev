@@ -45,7 +45,7 @@
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
-#include <GL/gl3.h>
+#include <GL/glew.h>
 #endif
 
 #include <iostream>
@@ -118,7 +118,7 @@ public:
   /// Bind a texture to the "attachment" point of this FBO
   virtual void AttachTexture( GLenum texTarget, 
                               GLuint texId,
-                              GLenum attachment = GL_COLOR_ATTACHMENT0,
+                              GLenum attachment = GL_COLOR_ATTACHMENT0_EXT,
                               int mipLevel      = 0,
                               int zSlice        = 0 );
 
@@ -134,7 +134,7 @@ public:
 
   /// Bind a render buffer to the "attachment" point of this FBO
   virtual void AttachRenderBuffer( GLuint buffId,
-                                   GLenum attachment = GL_COLOR_ATTACHMENT0 );
+                                   GLenum attachment = GL_COLOR_ATTACHMENT0_EXT );
 
   /// Bind an array of render buffers to corresponding "attachment" points
   /// of this FBO.
@@ -179,7 +179,7 @@ public:
     GLint  GetAttachedCubeFace( GLenum attachment );
 
     /// Which z-slice is currently attached to "attachment?"
-    //GLint  GetAttachedZSlice( GLenum attachment );
+    GLint  GetAttachedZSlice( GLenum attachment );
   /// END : Accessors
 
 

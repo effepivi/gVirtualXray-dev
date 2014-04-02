@@ -40,7 +40,7 @@
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
-#include <GL/gl3.h>
+#include <GL/glew.h>
 #endif
 
 
@@ -84,7 +84,7 @@ void checkFBOErrorStatus(const char* aFileName,
 //-------------------------------------------------
 {
 	// Get the OpenGL error code
-	GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
+	GLenum error_code(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER));
 
 	// There was an error
 	if (error_code != GL_FRAMEBUFFER_COMPLETE)

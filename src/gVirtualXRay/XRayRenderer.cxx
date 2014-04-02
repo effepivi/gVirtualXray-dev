@@ -580,6 +580,16 @@ void XRayRenderer::checkGPUCapabilities()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support framebuffer objects (EXT_framebuffer_object and ARB_framebuffer_object).");
 	}
 
+	if (!GLEW_EXT_framebuffer_object)
+	{
+		std::cerr << "GPU capability error: your graphic card driver does not support framebuffer objects (EXT_framebuffer_object)." << std::endl;
+	}
+
+	if (!GLEW_ARB_framebuffer_object)
+	{
+		std::cerr << "GPU capability error: your graphic card driver does not support framebuffer objects (ARB_framebuffer_object)." << std::endl;
+	}
+
 	if (!GLEW_ARB_texture_float)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support floating point textures (ARB_texture_float).");
@@ -598,6 +608,11 @@ void XRayRenderer::checkGPUCapabilities()
 	if (!GLEW_ARB_pixel_buffer_object)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support pixel buffer objects (PBOs) (GL_ARB_pixel_buffer_object).");
+	}
+
+	if (!GLEW_EXT_texture3D)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support 3D textures (GL_EXT_texture3D).");
 	}
 }
 
@@ -952,32 +967,45 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Get the best anisotropic filtering level
-			GLint max_anisotropic_fliter_level(1);
+			GLint max_anisotropic_filter_level(1);
 			if (GLEW_EXT_texture_filter_anisotropic)
 			{
-				glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_fliter_level);
+				glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_filter_level);
 			}
 
 			// Set the texture properties
 			glBindTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 			if (GLEW_EXT_texture_filter_anisotropic)
 			{
-				glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
+				glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_filter_level);
 			}
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+			// Check the texture size
+			GLint texture_size;
+			glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
+			if (m_p_detector->getNumberOfPixels().getX() > texture_size ||
+				m_p_detector->getNumberOfPixels().getY() > texture_size ||
+				m_p_xray_beam->getEnergyChannelNumber() > texture_size)
+			{
+				std::stringstream error_message;
+				error_message << "Cannot create a " << "(" << m_p_detector->getNumberOfPixels().getX() << ", " << m_p_detector->getNumberOfPixels().getY() << ", " << m_p_xray_beam->getEnergyChannelNumber() << ") floating point render texture." << std::endl;
+				error_message << "The biggest 3D texture with this graphics card is " << "(" << texture_size << ", " << texture_size << ", " << texture_size << ").";
+				throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+			}
+
 			GLint width(0);
-			glTexImage3D(GL_PROXY_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RED, GL_FLOAT, 0);
+			glTexImage3D(GL_PROXY_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
 			glGetTexLevelParameteriv(GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &width);
 			if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
 			{
-				glTexImage3D(GL_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RED, GL_FLOAT, 0);
+				glTexImage3D(GL_TEXTURE_3D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), m_p_xray_beam->getEnergyChannelNumber(), 0, GL_RGB, GL_FLOAT, 0);
 			}
 			else
 			{
@@ -985,7 +1013,7 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 				error_message << "Cannot create a " << "(" << m_p_detector->getNumberOfPixels().getX() << ", " << m_p_detector->getNumberOfPixels().getY()  << ", " << m_p_xray_beam->getEnergyChannelNumber() << ") floating point render texture.";
 				throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 			}
-
+			
 			// Check if any OpenGL error had occured
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1023,7 +1051,6 @@ void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex)
 
 	// Attach color texture to FBO
 	m_p_fbo_set[aFBOIndex]->AttachTexture(GL_TEXTURE_2D, m_p_texture_name_set[aTextureIndex], GL_COLOR_ATTACHMENT0);
-	//glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, m_2D_texture_target, m_p_texture_name_set[i], 0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Change draw/read buffers
@@ -1098,22 +1125,22 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Get the best anisotropic filtering level
-	GLint max_anisotropic_fliter_level(1);
+	GLint max_anisotropic_filter_level(1);
 	if (GLEW_EXT_texture_filter_anisotropic)
 	{
-		glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_fliter_level);
+		glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_filter_level);
 	}
 
 	// Set the texture properties
 	glBindTexture(GL_TEXTURE_2D, *apTextureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	if (GLEW_EXT_texture_filter_anisotropic)
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_filter_level);
 	}
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
