@@ -61,9 +61,9 @@ INCLUDE_DIRECTORIES("../include")
 
 
 # Options #####################################################################
-IF(APPLE)
-	OPTION(USE_BUNDLE "Use Apple Bundle." ON)
-ENDIF(APPLE)
+IF(APPLE OR WIN32)
+	OPTION(USE_BUNDLE "Use Apple/Win32 Bundle." ON)
+ENDIF(APPLE OR WIN32)
 OPTION(USE_FLTK "Use FLTK." ON)
 OPTION(USE_GLUT "Use GLUT." ON)
 
@@ -126,16 +126,17 @@ ENDIF((!USE_GLUT OR !FOUND_GLUT) AND (!USE_FLTK OR !FOUND_FLTK))
 
 
 # BOOST #######################################################################
-IF(APPLE)
+IF(USE_BUNDLE)
 	FIND_PACKAGE(Boost REQUIRED COMPONENTS system filesystem program_options)
 	if(Boost_FOUND)
+		SET( Boost_USE_STATIC_LIBS OFF )
 		INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 		LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 		SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
 	ELSE(Boost_FOUND)
 		MESSAGE(FATAL_ERROR "Boost not found.")
 	ENDIF(Boost_FOUND)
-ENDIF(APPLE)
+ENDIF(USE_BUNDLE)
 
 
 # Create the RESOURCES ###########################################################
@@ -157,29 +158,37 @@ CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 # Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
+SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
+SET_PROPERTY(TARGET welsh_dragon PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
+SET_PROPERTY(TARGET test_triangle_mesh PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
+SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
+SET_PROPERTY(TARGET test_implicit_surface PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
+SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
+SET_PROPERTY(TARGET implicit_surface_marching_cube PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_GLUT)
 	IF(GLUT_FOUND)
 		ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
+		SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 		TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 	ELSE(GLUT_FOUND)
 		MESSAGE(WARNING "GLUT not found, the tutorials will not be built")
@@ -190,42 +199,77 @@ ENDIF(USE_GLUT)
 
 
 IF(USE_BUNDLE)
-	SET (DEPENDENCIES ${requiredLibs} ${optionalLibs})
-	FOREACH (library_file ${DEPENDENCIES})
-		get_filename_component(extension ${library_file} EXT)
-
-		IF (extension STREQUAL ".dylib")
-			SET (dylib_files ${dylib_files} ${library_file})
-		ENDIF()
-	ENDFOREACH()
-	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE ../src/welsh_dragon.cxx ../data/welsh-dragon-small.stl ../build/DragonDemo.icns ${dylib_files})
+	SET (MACOSX_RPATH 1)
         ADD_DEFINITIONS(-DHAS_BUNDLE)
-	SET_SOURCE_FILES_PROPERTIES (
-		../data/welsh-dragon-small.stl
-		PROPERTIES
-		MACOSX_PACKAGE_LOCATION examples/data
-	)
+	SET(DRAGON_DEMO_SRCS ../src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
 
-	FOREACH (library_file ${dylib_files})
-		SET_SOURCE_FILES_PROPERTIES (
-			${library_file}
-			PROPERTIES
-			MACOSX_PACKAGE_LOCATION MacOS
-		)
-	ENDFOREACH()
-
+	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE WIN32 ${DRAGON_DEMO_SRCS})
+	SET_PROPERTY(TARGET DragonDemo PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 	# Define some settings for the Bundle
-	set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
-	set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
-	SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-	set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
-	set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
-	set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
-	set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
-	set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
-	set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
+	if(APPLE)
+		set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
+		set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
+		SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+		set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
+		set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
+		set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
+		set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+		set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+		set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
+	ENDIF(APPLE)
+
+	SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo")
+	IF(APPLE)
+		SET(APPS "\${CMAKE_INSTALL_PREFIX}/DragonDemo.app")
+	ENDIF(APPLE)
+	IF(WIN32)
+		SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo.exe")
+	ENDIF(WIN32)
+
+	INSTALL(TARGETS DragonDemo 
+		BUNDLE DESTINATION . COMPONENT Runtime
+		RUNTIME DESTINATION bin COMPONENT Runtime
+	)
+
+	if(APPLE)
+		SET_SOURCE_FILES_PROPERTIES (
+			../data/welsh-dragon-small.stl
+			PROPERTIES
+			MACOSX_PACKAGE_LOCATION examples/data
+		)
+
+		SET_SOURCE_FILES_PROPERTIES (
+			../../LICENSE.txt
+			PROPERTIES
+			MACOSX_PACKAGE_LOCATION .
+		)
+
+		SET_SOURCE_FILES_PROPERTIES (
+			../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf
+			PROPERTIES
+			MACOSX_PACKAGE_LOCATION help
+		)
+	else(APPLE)
+		INSTALL(FILES ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION doc)
+		INSTALL(FILES ../data/welsh-dragon-small.stl                                    DESTINATION examples/data)
+	endif(APPLE)
+
+	INSTALL(FILES ../../LICENSE.txt DESTINATION .)
+
+	# directories to look for dependencies
+	SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
+
+	SET (LIBRARIES ${requiredLibs} ${optionalLibs})
+	INSTALL(CODE "
+		include(BundleUtilities)
+		fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
+		" COMPONENT Runtime)
+
+	# To Create a package
+	set(CPACK_BINARY_DRAGNDROP ON)
+	include(CPack)
 ENDIF(USE_BUNDLE)
 
 
