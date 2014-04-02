@@ -98,9 +98,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
 
     GLfloat* v(p_vertices);
     GLfloat* n(&m_p_vertex_normal_set[0]);
-    for(int r(0); r < aNumberOfRings; ++r)
+    for (unsigned int r(0); r < aNumberOfRings; ++r)
 	{
-    	for(int s(0); s < aNumberOfSectors; ++s)
+    	for (unsigned int s(0); s < aNumberOfSectors; ++s)
     	{
             float const y = sin( -M_PI_2 + M_PI * r * R );
             float const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
@@ -126,9 +126,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     m_index_data_type = GL_UNSIGNED_INT;
 
     GLuint* i(p_indices);
-    for (int r(0); r < aNumberOfRings - 1; ++r)
+    for (unsigned int r(0); r < aNumberOfRings - 1; ++r)
     {
-    	for (int s(0); s < aNumberOfSectors - 1; ++s)
+    	for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
     	{
             *i++ =  r      * aNumberOfSectors +  s;
             *i++ =  r      * aNumberOfSectors + (s + 1);
@@ -137,3 +137,4 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     	}
     }
 }
+

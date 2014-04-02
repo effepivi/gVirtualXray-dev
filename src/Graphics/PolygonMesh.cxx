@@ -911,7 +911,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
 			// Process every triangle
 			unsigned int triangle_number(getTriangleNumber());
-			for (int i(0); i < triangle_number; ++i)
+			for (unsigned int i(0); i < triangle_number; ++i)
 			{
 				// Get the current vertices
 				VEC3 vertex_0(getVertex(i * 3 + 0));
@@ -938,7 +938,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_5.getY());
 				p_new_vertex_set.push_back(vertex_5.getZ());
 
-				for (int j(0); j < 3; ++j)
+				for (unsigned int j(0); j < 3; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -956,7 +956,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_4.getY());
 				p_new_vertex_set.push_back(vertex_4.getZ());
 
-				for (int j(0); j < 3; ++j)
+				for (unsigned int j(0); j < 3; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -974,7 +974,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_5.getY());
 				p_new_vertex_set.push_back(vertex_5.getZ());
 
-				for (int j(0); j < 3; ++j)
+				for (unsigned int j(0); j < 3; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -992,7 +992,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_2.getY());
 				p_new_vertex_set.push_back(vertex_2.getZ());
 
-				for (int j(0); j < 3; ++j)
+				for (unsigned int j(0); j < 3; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -1002,7 +1002,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
 			// Process every triangle
 			unsigned int quad_number(getQuadNumber());
-			for (int i(0); i < quad_number; ++i)
+			for (unsigned int i(0); i < quad_number; ++i)
 			{
 				// Get the current vertices
 				VEC3 vertex_0(getVertex(i * 4 + 0));
@@ -1035,7 +1035,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_7.getY());
 				p_new_vertex_set.push_back(vertex_7.getZ());
 
-				for (int j(0); j < 4; ++j)
+				for (unsigned int j(0); j < 4; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -1056,7 +1056,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_8.getY());
 				p_new_vertex_set.push_back(vertex_8.getZ());
 
-				for (int j(0); j < 4; ++j)
+				for (unsigned int j(0); j < 4; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -1077,7 +1077,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_6.getY());
 				p_new_vertex_set.push_back(vertex_6.getZ());
 
-				for (int j(0); j < 4; ++j)
+				for (unsigned int j(0); j < 4; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -1098,7 +1098,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_7.getY());
 				p_new_vertex_set.push_back(vertex_7.getZ());
 
-				for (int j(0); j < 4; ++j)
+				for (unsigned int j(0); j < 4; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -1129,7 +1129,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 			}
 
 			// Save the result
-			for (int id(0); id < p_new_vertex_set.size(); ++id)
+			for (unsigned int id(0); id < p_new_vertex_set.size(); ++id)
 			{
 				if (p_float_vertex_set)
 				{
@@ -1632,7 +1632,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 
 				// Process every triangle
 				unsigned int triangle_number(getTriangleNumber());
-				for (int i(0); i < triangle_number; ++i)
+				for (unsigned int i(0); i < triangle_number; ++i)
 				{
 					// Get the current vertices
 					int id_0(getIndex(i * 3 + 0));
@@ -1658,7 +1658,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 					p_new_vertex_set.push_back(vertex_2.getY());
 					p_new_vertex_set.push_back(vertex_2.getZ());
 
-					for (int j(0); j < 3; ++j)
+					for (unsigned int j(0); j < 3; ++j)
 					{
 						m_p_face_normal_set.push_back(normal.getX());
 						m_p_face_normal_set.push_back(normal.getY());
@@ -1668,7 +1668,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 
 				// Process every triangle
 				unsigned int quad_number(getQuadNumber());
-				for (int i(0); i < quad_number; ++i)
+				for (unsigned int i(0); i < quad_number; ++i)
 				{
 					// Get the current vertices
 					int id_0(getIndex(i * 4 + 0));
@@ -1699,7 +1699,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 					p_new_vertex_set.push_back(vertex_3.getY());
 					p_new_vertex_set.push_back(vertex_3.getZ());
 
-					for (int j(0); j < 4; ++j)
+					for (unsigned int j(0); j < 4; ++j)
 					{
 						m_p_face_normal_set.push_back(normal.getX());
 						m_p_face_normal_set.push_back(normal.getY());
@@ -1731,7 +1731,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 				}
 
 				// Save the result
-				for (int id(0); id < p_new_vertex_set.size(); ++id)
+				for (unsigned int id(0); id < p_new_vertex_set.size(); ++id)
 				{
 					if (p_float_vertex_set)
 					{
