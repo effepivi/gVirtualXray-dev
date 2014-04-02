@@ -13,8 +13,6 @@
 *
 *	@author		Dr Franck P. Vidal
 *
-*	@author		Dr Franck P. Vidal
-*
 *	@section	License
 *				BSD 3-Clause License.
 *
@@ -105,8 +103,17 @@ public:
 			m_b(b)
 		{}
 
+
+        /// Type of density function
 		DensityFunctionType m_density_function;
+    
+    
+        /// First parameter of the density function
 		RATIONAL_NUMBER m_a;
+    
+    
+        /// Secnd parameter of the density function
+        /// (not used if m_density_function is SPHERE)
 		RATIONAL_NUMBER m_b;
 	};
 
