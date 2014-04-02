@@ -45,7 +45,11 @@
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
 
 
 //******************************************************************************
@@ -92,15 +96,15 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     m_vertex_data_type = GL_FLOAT;
 
 	// Set the kind of polygon
-	m_polygon_type = GL_QUADS;
+	m_polygon_type = GL_TRIANGLES;
 
     m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
     GLfloat* v(p_vertices);
     GLfloat* n(&m_p_vertex_normal_set[0]);
-    for (unsigned int r(0); r < aNumberOfRings; ++r)
+    for(unsigned int r(0); r < aNumberOfRings; ++r)
 	{
-    	for (unsigned int s(0); s < aNumberOfSectors; ++s)
+    	for(unsigned int s(0); s < aNumberOfSectors; ++s)
     	{
             float const y = sin( -M_PI_2 + M_PI * r * R );
             float const x = cos(2*M_PI * s * S) * sin( M_PI * r * R );
@@ -116,12 +120,12 @@ void SphereMesh::create(unsigned int aNumberOfRings,
     	}
     }
 
-    GLuint* p_indices = new GLuint[aNumberOfRings * aNumberOfSectors * 4];
+    GLuint* p_indices = new GLuint[aNumberOfRings * aNumberOfSectors * 6];
     if (!p_indices)
     {
     	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
-    m_number_of_indices = aNumberOfRings * aNumberOfSectors * 4;
+    m_number_of_indices = aNumberOfRings * aNumberOfSectors * 6;
     m_p_index_set = p_indices;
     m_index_data_type = GL_UNSIGNED_INT;
 
@@ -133,8 +137,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
             *i++ =  r      * aNumberOfSectors +  s;
             *i++ =  r      * aNumberOfSectors + (s + 1);
             *i++ = (r + 1) * aNumberOfSectors + (s + 1);
+            *i++ =  r      * aNumberOfSectors +  s;
+            *i++ = (r + 1) * aNumberOfSectors + (s + 1);
             *i++ = (r + 1) * aNumberOfSectors +  s;
     	}
     }
 }
-
