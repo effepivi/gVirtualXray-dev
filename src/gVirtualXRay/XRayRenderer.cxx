@@ -566,7 +566,7 @@ void XRayRenderer::checkGPUCapabilities()
 
 	/*if (!glewIsSupported("GL_VERSION_3_2"))
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support OpenGL 2.0.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support OpenGL 3.2.");
 	}*/
 
 	// Check for OpenGL extensions
