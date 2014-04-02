@@ -69,7 +69,7 @@
 #include <GL/glu.h>
 #endif // __APPLE__
 
-#ifdef __APPLE__
+#ifdef HAS_BUNDLE
 #include <boost/filesystem.hpp>
 #endif
 
