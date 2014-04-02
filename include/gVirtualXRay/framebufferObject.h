@@ -183,7 +183,7 @@ public:
     GLint  GetAttachedCubeFace( GLenum attachment );
 
     /// Which z-slice is currently attached to "attachment?"
-    GLint  GetAttachedZSlice( GLenum attachment );
+    //GLint  GetAttachedZSlice( GLenum attachment );
   /// END : Accessors
 
 

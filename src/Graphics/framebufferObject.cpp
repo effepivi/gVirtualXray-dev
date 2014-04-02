@@ -39,7 +39,7 @@
   OF SUCH DAMAGE.
 */
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -334,7 +334,7 @@ GLint FramebufferObject::GetAttachedCubeFace( GLenum attachment )
   _GuardedUnbind();
   return level;
 }
-
+/*
 GLint FramebufferObject::GetAttachedZSlice( GLenum attachment )
 {
   _GuardedBind();
@@ -345,6 +345,6 @@ GLint FramebufferObject::GetAttachedZSlice( GLenum attachment )
   _GuardedUnbind();
   return slice;
 }
-
+*/
 
 
