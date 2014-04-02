@@ -953,7 +953,10 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 
 			// Get the best anisotropic filtering level
 			GLint max_anisotropic_fliter_level(1);
-			glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_fliter_level);
+			if (GLEW_EXT_texture_filter_anisotropic)
+			{
+				glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_fliter_level);
+			}
 
 			// Set the texture properties
 			glBindTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
@@ -962,7 +965,11 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
+
+			if (GLEW_EXT_texture_filter_anisotropic)
+			{
+				glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
+			}
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			GLint width(0);
@@ -1092,7 +1099,10 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 
 	// Get the best anisotropic filtering level
 	GLint max_anisotropic_fliter_level(1);
-	glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_fliter_level);
+	if (GLEW_EXT_texture_filter_anisotropic)
+	{
+		glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_fliter_level);
+	}
 
 	// Set the texture properties
 	glBindTexture(GL_TEXTURE_2D, *apTextureID);
@@ -1100,7 +1110,11 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
+
+	if (GLEW_EXT_texture_filter_anisotropic)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_fliter_level);
+	}
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
