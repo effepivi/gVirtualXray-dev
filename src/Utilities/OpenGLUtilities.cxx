@@ -37,7 +37,11 @@
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
 
 
 //******************************************************************************
@@ -80,10 +84,10 @@ void checkFBOErrorStatus(const char* aFileName,
 //-------------------------------------------------
 {
 	// Get the OpenGL error code
-	GLenum error_code(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT));
+	GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
 	// There was an error
-	if (error_code != GL_FRAMEBUFFER_COMPLETE_EXT)
+	if (error_code != GL_FRAMEBUFFER_COMPLETE)
 	{
 		throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
@@ -209,7 +213,7 @@ void popFBO()
 	if (previous_fbo_id != current_fbo_id)
 	{
 		// Restore the FBO
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previous_fbo_id);
+		glBindFramebuffer(GL_FRAMEBUFFER, previous_fbo_id);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -356,48 +360,13 @@ void popEnableDisableState()
 }
 
 
-//---------------------------------------------
-Math::Matrix4x4<float> getCurrentOpenGLMatrix()
-//---------------------------------------------
-{
-	// Load the matrix from OpenGL
-	GLfloat transformation_matrix[16];
-
-	// Get the current matrix mode
-	GLint matrix_mode(0);
-	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
-
-	// Load the model/view matrix
-	if (matrix_mode == GL_MODELVIEW)
-	{
-		glGetFloatv(GL_MODELVIEW_MATRIX, transformation_matrix);
-	}
-	// Load the projection matrix
-	else if (matrix_mode == GL_PROJECTION)
-	{
-		glGetFloatv(GL_PROJECTION_MATRIX, transformation_matrix);
-	}
-	// Load the texture matrix
-	else if (matrix_mode == GL_TEXTURE)
-	{
-		glGetFloatv(GL_TEXTURE_MATRIX, transformation_matrix);
-	}
-	// Load the colour matrix
-	else if (matrix_mode == GL_COLOR)
-	{
-		glGetFloatv(GL_COLOR_MATRIX, transformation_matrix);
-	}
-
-	return (Math::Matrix4x4<float>(transformation_matrix));
-}
-
-
 //-------------------------
 void applyModelViewMatrix()
 //-------------------------
 {
 	// Store the current buffer
-	GLhandleARB program_handle(glGetHandleARB(GL_PROGRAM_OBJECT_ARB));
+	GLint program_handle(0);
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
 
 	// Load the matrices
 	if (program_handle)
@@ -411,47 +380,6 @@ void applyModelViewMatrix()
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
-	else
-	{
-		// Save the current matrix mode
-		GLint matrix_mode(0);
-		glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
-
-		// Change the matrix mode if needed
-		if (matrix_mode != GL_MODELVIEW)
-		{
-			glMatrixMode(GL_MODELVIEW);
-		}
-
-		// Load the matrix
-		glLoadMatrixf(g_current_modelview_matrix.get());
-
-		// Restore the matrix mode if needed
-		if (matrix_mode != GL_MODELVIEW)
-		{
-			glMatrixMode(matrix_mode);
-		}
-	}
-}
-
-
-//-----------------------------------
-void loadProjectionMatrixFromOpenGL()
-//-----------------------------------
-{
-	float opengl_matrix_data[16];
-	glGetFloatv(GL_PROJECTION_MATRIX, opengl_matrix_data);
-	g_current_projection_matrix = opengl_matrix_data;
-}
-
-
-//----------------------------------
-void loadModelViewMatrixFromOpenGL()
-//----------------------------------
-{
-	float opengl_matrix_data[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, opengl_matrix_data);
-	g_current_modelview_matrix = opengl_matrix_data;
 }
 
 
