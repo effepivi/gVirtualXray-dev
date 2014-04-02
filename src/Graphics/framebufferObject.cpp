@@ -39,14 +39,10 @@
   OF SUCH DAMAGE.
 */
 
-//#include <GL/glew.h>
-
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
 #else
 #include <GL/gl3.h>
-#include <GL/gl3ext.h>
 #endif
 
 #include "gVirtualXRay/framebufferObject.h"
