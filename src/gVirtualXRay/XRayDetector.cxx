@@ -37,14 +37,12 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#include <GL/glew.h>
-/*
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #include <GL/gl3.h>
 #endif
-*/
+
 
 //******************************************************************************
 //	Name space
@@ -84,13 +82,11 @@ void XRayDetector::displayBeam()
 	updateVBOs();
 
 	// Store the enable/disable state
-	pushEnableDisableState(GL_LIGHTING);
 	pushEnableDisableState(GL_DEPTH_TEST);
 	pushEnableDisableState(GL_BLEND);
 
-	glPushAttrib(GL_DEPTH_BUFFER_BIT);
-	glPushAttrib(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_LIGHTING);
+	//glPushAttrib(GL_DEPTH_BUFFER_BIT);
+	//glPushAttrib(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
@@ -120,10 +116,9 @@ void XRayDetector::displayBeam()
 	// Restore the enable/disable state
 	popEnableDisableState();
 	popEnableDisableState();
-	popEnableDisableState();
 
-	glPopAttrib();
-	glPopAttrib();
+	//glPopAttrib();
+	//glPopAttrib();
 }
 
 
@@ -349,6 +344,14 @@ void XRayDetector::updateDetectorVBO()
 	p_vertices.push_back(v2.getY());
 	p_vertices.push_back(v2.getZ());
 
+	p_vertices.push_back(v0.getX());
+	p_vertices.push_back(v0.getY());
+	p_vertices.push_back(v0.getZ());
+
+	p_vertices.push_back(v2.getX());
+	p_vertices.push_back(v2.getY());
+	p_vertices.push_back(v2.getZ());
+
 	p_vertices.push_back(v3.getX());
 	p_vertices.push_back(v3.getY());
 	p_vertices.push_back(v3.getZ());
@@ -377,11 +380,19 @@ void XRayDetector::updateDetectorVBO()
 	p_texture_coordinates.push_back(0);
 
 	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(0);
 
 	m_detector_geometry.setBufferUsageHint(GL_STATIC_DRAW);
-	m_detector_geometry.setVertexData(GL_QUADS,
+	m_detector_geometry.setVertexData(GL_TRIANGLES,
 			p_vertices.size()            / 3, 3, GL_FLOAT, &p_vertices[0],
 			p_normal.size()              / 3, 3, GL_FLOAT, &p_normal[0],
 			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
@@ -465,30 +476,40 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(0);
 	p_indices.push_back(4);
 	p_indices.push_back(5);
+	p_indices.push_back(0);
+	p_indices.push_back(5);
 	p_indices.push_back(1);
 
 	p_indices.push_back(1);
 	p_indices.push_back(5);
 	p_indices.push_back(6);
+	p_indices.push_back(1);
+	p_indices.push_back(6);
 	p_indices.push_back(2);
 
 	p_indices.push_back(2);
 	p_indices.push_back(6);
 	p_indices.push_back(7);
+	p_indices.push_back(2);
+	p_indices.push_back(7);
 	p_indices.push_back(3);
 
 	p_indices.push_back(3);
 	p_indices.push_back(7);
+	p_indices.push_back(4);
+	p_indices.push_back(3);
 	p_indices.push_back(4);
 	p_indices.push_back(0);
 
 	p_indices.push_back(4);
 	p_indices.push_back(5);
 	p_indices.push_back(6);
+	p_indices.push_back(4);
+	p_indices.push_back(6);
 	p_indices.push_back(7);
 
 	m_parallel_beam.setBufferUsageHint(GL_STATIC_DRAW);
-	m_parallel_beam.setVertexData(GL_QUADS,
+	m_parallel_beam.setVertexData(GL_TRIANGLES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			0, 0, GL_NONE, 0);
