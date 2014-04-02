@@ -609,11 +609,11 @@ void XRayRenderer::checkGPUCapabilities()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support pixel buffer objects (PBOs) (GL_ARB_pixel_buffer_object).");
 	}
-
+/*
 	if (!GLEW_EXT_texture3D)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support 3D textures (GL_EXT_texture3D).");
-	}
+	}*/
 }
 
 

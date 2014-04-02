@@ -84,7 +84,11 @@ void checkFBOErrorStatus(const char* aFileName,
 //-------------------------------------------------
 {
 	// Get the OpenGL error code
+#ifdef __APPLE__
+	GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
+#else
 	GLenum error_code(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER));
+#endif
 
 	// There was an error
 	if (error_code != GL_FRAMEBUFFER_COMPLETE)

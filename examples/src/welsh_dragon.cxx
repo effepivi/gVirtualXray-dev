@@ -266,7 +266,7 @@ int main(int argc, char** argv)
 		g_main_window_id = glutCreateWindow(window_title.str().data());
 
 		// Initialize GLEW
-		glewExperimental = TRUE;
+		glewExperimental = GL_TRUE;
 		GLenum glew_error_0(glewInit());
 		if (glew_error_0 != GLEW_OK)
 		{
@@ -281,7 +281,7 @@ int main(int argc, char** argv)
 			glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
 			g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
-			glewExperimental = TRUE;
+			glewExperimental = GL_TRUE;
 			GLenum glew_error_1(glewInit());
 			if (glew_error_1 != GLEW_OK)
 			{
