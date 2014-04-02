@@ -1,0 +1,2040 @@
+\hypertarget{namespace_utilities}{
+\section{Utilities Namespace Reference}
+\label{namespace_utilities}\index{Utilities@{Utilities}}
+}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_utilities_1_1_exception}{Exception}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_utilities_1_1_exception}{Exception} is a class to handle exceptions. \end{DoxyCompactList}\item 
+class \hyperlink{class_utilities_1_1_f_b_o_exception}{FBOException}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_utilities_1_1_f_b_o_exception}{FBOException} is a class to handle exceptions related to FBOs. \end{DoxyCompactList}\item 
+class \hyperlink{class_utilities_1_1_file_does_not_exist_exception}{FileDoesNotExistException}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_utilities_1_1_file_does_not_exist_exception}{FileDoesNotExistException} is a class to handle exceptions when trying to open a read-\/only file that is not accessible. \end{DoxyCompactList}\item 
+class \hyperlink{class_utilities_1_1_open_g_l_exception}{OpenGLException}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_utilities_1_1_open_g_l_exception}{OpenGLException} is a class to handle exceptions related to OpenGL. \end{DoxyCompactList}\item 
+class \hyperlink{class_utilities_1_1_out_of_bounds_exception}{OutOfBoundsException}
+\item 
+class \hyperlink{class_utilities_1_1_out_of_memory_exception}{OutOfMemoryException}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_utilities_1_1_out_of_memory_exception}{OutOfMemoryException} is a class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef float \hyperlink{namespace_utilities_aec83622a80513f15f2bdee483a6af7a0}{SinogramType}
+\begin{DoxyCompactList}\small\item\em Type of data used to store sinograms. \end{DoxyCompactList}\item 
+typedef float \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER}
+\begin{DoxyCompactList}\small\item\em Type of data used to store real numbers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec2}{Vec2}$<$ \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} $>$ \hyperlink{namespace_utilities_a077a697d578c30ddec5ec97382be0a92}{VEC2}
+\begin{DoxyCompactList}\small\item\em Type of data used to store 2D vectors. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec3}{Vec3}$<$ \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} $>$ \hyperlink{namespace_utilities_af627ed108a4935196373499e157d3937}{VEC3}
+\begin{DoxyCompactList}\small\item\em Type of data used to store 3D vectors. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_matrix4x4}{Matrix4x4}$<$ \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} $>$ \hyperlink{namespace_utilities_a1e64fcb5d60661c7b2a3a5e7c96cc09f}{MATRIX4}
+\begin{DoxyCompactList}\small\item\em Type of data used to store 4x4 matrices. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec2}{Vec2}$<$ double $>$ \hyperlink{namespace_utilities_aaa021d29b05a070e411503f3a16dfcf7}{Vec2d}
+\begin{DoxyCompactList}\small\item\em Vec2d is a class to handle a 2D vector using double precision floating point numbers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec2}{Vec2}$<$ float $>$ \hyperlink{namespace_utilities_ab79b80d506ad1b46bfb4f7979293d5d9}{Vec2f}
+\begin{DoxyCompactList}\small\item\em Vec2f is a class to handle a 2D vector using double precision floating point numbers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec2}{Vec2}$<$ int $>$ \hyperlink{namespace_utilities_a491fc17b2e433b915d450c5fd8bcb459}{Vec2i}
+\begin{DoxyCompactList}\small\item\em Vec2i is a class to handle a 2D vector using 32 bits integers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec2}{Vec2}$<$ unsigned int $>$ \hyperlink{namespace_utilities_a4a3a98a70cd4c9af9c3e49584516902f}{Vec2ui}
+\begin{DoxyCompactList}\small\item\em Vec2ui is a class to handle a 2D vector using unsigned 32 bits integers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec3}{Vec3}$<$ double $>$ \hyperlink{namespace_utilities_ab28ebcaa8d9272ab9f9375205bded517}{Vec3d}
+\begin{DoxyCompactList}\small\item\em Vec3d is a class to handle a 3D vector using double precision floating point numbers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec3}{Vec3}$<$ float $>$ \hyperlink{namespace_utilities_a39dfee93d59fd420ecf496f66606cbdd}{Vec3f}
+\begin{DoxyCompactList}\small\item\em Vec3f is a class to handle a 3D vector using double precision floating point numbers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec3}{Vec3}$<$ int $>$ \hyperlink{namespace_utilities_a49caf0d054fbd5f9eb148ed40ad97dcc}{Vec3i}
+\begin{DoxyCompactList}\small\item\em Vec3i is a class to handle a 3D vector using signed 32 bits integers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_vec3}{Vec3}$<$ unsigned int $>$ \hyperlink{namespace_utilities_ad931f5df25ecb686d1b3aea12bdc9d06}{Vec3ui}
+\begin{DoxyCompactList}\small\item\em Vec3ui is a class to handle a 3D vector using unsigned 32 bits integers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_matrix4x4}{Matrix4x4}$<$ double $>$ \hyperlink{namespace_utilities_a1f0db90cea8d87567b4dd719ffd7d274}{Matrix4x4d}
+\begin{DoxyCompactList}\small\item\em Matrix4x4d is a class to handle a 4x4 matrix using double precision floating point numbers. \end{DoxyCompactList}\item 
+typedef \hyperlink{class_math_1_1_matrix4x4}{Matrix4x4}$<$ float $>$ \hyperlink{namespace_utilities_a468a3c0ce8ea13f2b50bbc872a7a4bb7}{Matrix4x4f}
+\begin{DoxyCompactList}\small\item\em Matrix4x4f is a class to handle a 4x4 matrix using single precision floating point numbers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::ostream \& \hyperlink{namespace_utilities_a1b36a6b137d8abe02a7f79072473e3b4}{operator$<$$<$} (std::ostream \&anOutputStream, const \hyperlink{class_utilities_1_1_exception}{Exception} \&anException)
+\begin{DoxyCompactList}\small\item\em operator$<$$<$ \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ac80bf2d2d0e6f362b9fa305c6329d4dd}{checkOpenGLErrorStatus} (const char $\ast$aFileName, const char $\ast$aFunctionName, int aLineNumber)
+\begin{DoxyCompactList}\small\item\em Check OpenGL's error status. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_aa6d370633a054fc0d3867e172c410b8f}{checkFBOErrorStatus} (const char $\ast$aFileName, const char $\ast$aFunctionName, int aLineNumber)
+\begin{DoxyCompactList}\small\item\em Check the current FBO's error status. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a4ff1a91f49f45940ef3fe39374d6fad3}{pushProjectionMatrix} ()
+\begin{DoxyCompactList}\small\item\em Add the current matrix to the projection matrix stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a759523b332a302b032d7e1dbe3d70589}{pushModelViewMatrix} ()
+\begin{DoxyCompactList}\small\item\em Add the current matrix to the model/view matrix stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a4d73d1a6deada0aace5a5fb250971aa1}{pushFBO} ()
+\begin{DoxyCompactList}\small\item\em Add the current FBO binding to the FBO stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_acc7a477a449c637b37acf6e409ffda9a}{pushTexture1D} ()
+\begin{DoxyCompactList}\small\item\em Add the current 1D texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ac3f7c9af73fc18c8e905ec33e423e62a}{pushTexture2D} ()
+\begin{DoxyCompactList}\small\item\em Add the current 2D texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ade797d2da463a1e1774e46fb1519a3a6}{pushTextureRectangle} ()
+\begin{DoxyCompactList}\small\item\em Add the current rectangle texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a6c5b0b068baed228d72a5ab5bc171a27}{pushTexture3D} ()
+\begin{DoxyCompactList}\small\item\em Add the current 3D texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a397b32b08d50b0f86540e20ec9d9a8a6}{pushEnableDisableState} (int aParameter)
+\begin{DoxyCompactList}\small\item\em Add the enable/disable state to the corresponding stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_af3def433e5459d13617b1f3ac1f80bd4}{pushShaderProgram} ()
+\begin{DoxyCompactList}\small\item\em Add the current shader program to the corresponding stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a34e5aecb15bd70f3d358b1df30ad2b1e}{popProjectionMatrix} ()
+\item 
+void \hyperlink{namespace_utilities_afa855d36de0ce9d6d52e2157da5063b9}{popModelViewMatrix} ()
+\item 
+void \hyperlink{namespace_utilities_a155eb0147d0e117e1d34467ce4bf8495}{popFBO} ()
+\item 
+void \hyperlink{namespace_utilities_a399fdac28547b4cab45f640befd6350a}{popTexture} ()
+\item 
+void \hyperlink{namespace_utilities_a74d082f280da485386fb80a2a65cf36a}{popEnableDisableState} ()
+\item 
+void \hyperlink{namespace_utilities_adbc5643c5d6336e174b6bea3a22bdb29}{popShaderProgram} ()
+\item 
+\hyperlink{class_math_1_1_matrix4x4}{Math::Matrix4x4}$<$ float $>$ \hyperlink{namespace_utilities_a27ecbb568ab30c335d210de98b739757}{getCurrentOpenGLMatrix} ()
+\begin{DoxyCompactList}\small\item\em Load the current OpenGL matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_af4402f472bd1945b6792f547cd498f95}{loadIdentityProjectionMatrix} ()
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by the identity matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a80dad624c31abf68e2e44997020210a5}{loadIdentityModelViewMatrix} ()
+\begin{DoxyCompactList}\small\item\em Replace the model/view matrix by the identity matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ad6cddf27e1b4769a998710f48a74026d}{loadFrustumProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by a perspective projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a72a4f2b2d67dc75de5b6ebbf25248521}{loadPerspectiveProjectionMatrix} (double fovy, double aspect, double zNear, double zFar)
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by a perspective projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ae239a07fe9373e6a079a8c1465cab662}{loadOrthoProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by a orthographic projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_a7ffbee866eb154b2a032141c04d43021}{buildOrthoProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Create a orthographic projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_aaa85ac0797b49093c4344ce75c4a3265}{buildFrustumProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Create a perspective projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_ae473d6bd8d417fc07465944092a92938}{buildPerspectiveProjectionMatrix} (double fovy, double aspect, double zNear, double zFar)
+\begin{DoxyCompactList}\small\item\em Create a perspective projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_adcb191e43b838d267bd659167503a528}{loadLookAtModelViewMatrix} (const \hyperlink{class_math_1_1_vec3}{VEC3} \&eye, const \hyperlink{class_math_1_1_vec3}{VEC3} \&centre, const \hyperlink{class_math_1_1_vec3}{VEC3} \&up)
+\begin{DoxyCompactList}\small\item\em Replace the modelling-\/viewing matrix by a viewing transformation matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a8dfe8f9df9a5280d2b19e278b6c455eb}{loadLookAtModelViewMatrix} (double eyeX, double eyeY, double eyeZ, double centreX, double centreY, double centreZ, double upX, double upY, double upZ)
+\begin{DoxyCompactList}\small\item\em Replace the modelling-\/viewing matrix by a viewing transformation matrix. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_a84ad75173a3da5e4e8b355d03d100c59}{buildLookAtModelViewMatrix} (const \hyperlink{class_math_1_1_vec3}{VEC3} \&eye, const \hyperlink{class_math_1_1_vec3}{VEC3} \&centre, const \hyperlink{class_math_1_1_vec3}{VEC3} \&up)
+\begin{DoxyCompactList}\small\item\em Create a modelling-\/viewing matrix. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_a0dfa7bb57b5c491451a43d8b4d7dd983}{buildLookAtModelViewMatrix} (double eyeX, double eyeY, double eyeZ, double centreX, double centreY, double centreZ, double upX, double upY, double upZ)
+\begin{DoxyCompactList}\small\item\em Create a modelling-\/viewing matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a1787b9d17f79b46cd3fc546bfd9ee196}{loadProjectionMatrixFromOpenGL} ()
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by OpenGL's projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a8cc5454fb226411756900e06f3b121b2}{loadModelViewMatrixFromOpenGL} ()
+\begin{DoxyCompactList}\small\item\em Replace the modelling-\/viewing matrix by OpenGL's modelling-\/viewing matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a3fdfd69b196f894ae78f35a055d8683e}{applyModelViewMatrix} ()
+\item 
+void \hyperlink{namespace_utilities_ab6a11c99ddae551a4d7bc64d18d63046}{multiplyOrthoProjectionMatrix} (double left, double right, double bottom, double top, double nearPlane, double farPlane)
+\item 
+void \hyperlink{namespace_utilities_aaf402e609cb9931c8534ac08968fb49b}{multiplyPerspectiveProjectionMatrix} (double fovy, double aspect, double zNear, double zFar)
+\item 
+int \hyperlink{namespace_utilities_aaa3b1ecb143bfae45b704d5a35bd8269}{inflate} (const void $\ast$src, int srcLen, char $\ast$$\ast$apDst)
+\begin{DoxyCompactList}\small\item\em Uncompress data using the Zlib. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std::vector$<$ \hyperlink{class_math_1_1_matrix4x4}{MATRIX4} $>$ \hyperlink{namespace_utilities_af9f46e572978db79176b61edb1780b3c}{g\_\-p\_\-modelview\_\-matrix\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of model/view matrices. \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{class_math_1_1_matrix4x4}{MATRIX4} $>$ \hyperlink{namespace_utilities_a3e2a3a6c251bba50ffe4c069d085e0b7}{g\_\-p\_\-projection\_\-matrix\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_accdb6ed1387ebfbb3458b12fc5104fc0}{g\_\-current\_\-modelview\_\-matrix}
+\begin{DoxyCompactList}\small\item\em The model/view matrices. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \hyperlink{namespace_utilities_a8c2454e701dfbb5ec835d7d3a36869c5}{g\_\-current\_\-projection\_\-matrix}
+\begin{DoxyCompactList}\small\item\em The projection matrix. \end{DoxyCompactList}\item 
+std::vector$<$ int $>$ \hyperlink{namespace_utilities_a0c685e4387f8e43c77ef5931a213cfaf}{g\_\-frame\_\-buffer\_\-object\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of FBO binding. \end{DoxyCompactList}\item 
+std::vector$<$ std::pair$<$ int, int $>$ $>$ \hyperlink{namespace_utilities_a0f11bcfd46f3b7d0bdf66bc2127ba85f}{g\_\-texture\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of texture binding. \end{DoxyCompactList}\item 
+std::vector$<$ std::pair$<$ int, bool $>$ $>$ \hyperlink{namespace_utilities_a12dfa64d0c2f8186e94336a73defa7a8}{g\_\-enable\_\-disable\_\-state\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of enable/disable states. \end{DoxyCompactList}\item 
+std::vector$<$ int $>$ \hyperlink{namespace_utilities_adf21242b77777527da1f9e6d8f72a1e5}{g\_\-shader\_\-program\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of shader programs. \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a119d98992bec0bd0923f88ebf77ed86f}{PI} = 3.14159265358979323846
+\item 
+const double \hyperlink{namespace_utilities_a3d5b18587a483b13232097d2ac93341f}{PI\_\-2} = \hyperlink{namespace_utilities_a119d98992bec0bd0923f88ebf77ed86f}{PI} / 2.0
+\item 
+const double \hyperlink{namespace_utilities_a06654149ce3cba96084c785b079a7a31}{kilometer} = 1000.0 / 0.001
+\begin{DoxyCompactList}\small\item\em kilometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a3fb2d462bd1e7dc8fe4dbc1ad4f28ff3}{hectometer} = 100.0 / 0.001
+\begin{DoxyCompactList}\small\item\em hectometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a66e92dbad293594bf063d31aa9305983}{decameter} = 10.0 / 0.001
+\begin{DoxyCompactList}\small\item\em decametre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a2b626049c35729f994e12d5f4f950d6b}{meter} = 1.0 / 0.001
+\begin{DoxyCompactList}\small\item\em metre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a66145380051759756714059815f45e18}{decimeter} = 0.1 / 0.001
+\begin{DoxyCompactList}\small\item\em decimetre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a17483d8b3688f5a3786b48f4ed70588c}{centimeter} = 0.01 / 0.001
+\begin{DoxyCompactList}\small\item\em centimetre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ae8c7101098fba61f862817a083c422ca}{millimeter} = 0.001 / 0.001
+\begin{DoxyCompactList}\small\item\em millimetre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a99dfe40c94af0523293210aaf01a0435}{micrometer} = 0.0001 / 0.001
+\begin{DoxyCompactList}\small\item\em micrometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ae059df9243c641262f7a72694479ab09}{kilometre} = \hyperlink{namespace_utilities_a06654149ce3cba96084c785b079a7a31}{kilometer}
+\begin{DoxyCompactList}\small\item\em kilometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ac838a64f1022b1f9cb88f0f641ee26b1}{hectometre} = \hyperlink{namespace_utilities_a3fb2d462bd1e7dc8fe4dbc1ad4f28ff3}{hectometer}
+\begin{DoxyCompactList}\small\item\em hectometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ae6f96b1086168f4287845866c4a8a546}{decametre} = \hyperlink{namespace_utilities_a66e92dbad293594bf063d31aa9305983}{decameter}
+\begin{DoxyCompactList}\small\item\em decametre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_abf8ec967be8032f9546e417808f17cec}{metre} = \hyperlink{namespace_utilities_a2b626049c35729f994e12d5f4f950d6b}{meter}
+\begin{DoxyCompactList}\small\item\em metre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_acd1e513cc56efd8a5f237271a46afcfe}{decimetre} = \hyperlink{namespace_utilities_a66145380051759756714059815f45e18}{decimeter}
+\begin{DoxyCompactList}\small\item\em decimetre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a8f332608b463f7e22df3b1120be2cba2}{centimetre} = \hyperlink{namespace_utilities_a17483d8b3688f5a3786b48f4ed70588c}{centimeter}
+\begin{DoxyCompactList}\small\item\em centimetre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a8a754864202e3b90c9f70df567799d24}{millimetre} = \hyperlink{namespace_utilities_ae8c7101098fba61f862817a083c422ca}{millimeter}
+\begin{DoxyCompactList}\small\item\em millimetre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a6d2f4eead5bcae530f7c08291bf86931}{micrometre} = \hyperlink{namespace_utilities_a99dfe40c94af0523293210aaf01a0435}{micrometer}
+\begin{DoxyCompactList}\small\item\em micrometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a4e01876aaa4c4d98bcbf9526e980d996}{km} = \hyperlink{namespace_utilities_a06654149ce3cba96084c785b079a7a31}{kilometer}
+\begin{DoxyCompactList}\small\item\em kilometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_aacdd5d6ef494c74b5292a3966a1bd5e7}{hm} = \hyperlink{namespace_utilities_a3fb2d462bd1e7dc8fe4dbc1ad4f28ff3}{hectometer}
+\begin{DoxyCompactList}\small\item\em hectometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ad242ea541744880484ba811bc49fb881}{dam} = \hyperlink{namespace_utilities_a66e92dbad293594bf063d31aa9305983}{decameter}
+\begin{DoxyCompactList}\small\item\em decametre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a205e9c8c24630292f2d0213f433503e9}{m} = \hyperlink{namespace_utilities_a2b626049c35729f994e12d5f4f950d6b}{meter}
+\begin{DoxyCompactList}\small\item\em meter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a811d072b0676c0e47666a99c20fb5eee}{dm} = \hyperlink{namespace_utilities_a66145380051759756714059815f45e18}{decimeter}
+\begin{DoxyCompactList}\small\item\em decimeter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a43701408f4de13788368dce37066801f}{cm} = \hyperlink{namespace_utilities_a17483d8b3688f5a3786b48f4ed70588c}{centimeter}
+\begin{DoxyCompactList}\small\item\em centimeter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ada68d4ec8f02c2ffc43db9220cbdcba8}{mm} = \hyperlink{namespace_utilities_ae8c7101098fba61f862817a083c422ca}{millimeter}
+\begin{DoxyCompactList}\small\item\em millimeter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a79bb1876d9d2416239e3ca0b57582018}{um} = \hyperlink{namespace_utilities_a99dfe40c94af0523293210aaf01a0435}{micrometer}
+\begin{DoxyCompactList}\small\item\em micrometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a61a790dbfa282940ea38347f86885324}{km2} = \hyperlink{namespace_utilities_a4e01876aaa4c4d98bcbf9526e980d996}{km} $\ast$ \hyperlink{namespace_utilities_a4e01876aaa4c4d98bcbf9526e980d996}{km}
+\begin{DoxyCompactList}\small\item\em square kilometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a437509ab345193dd1d6d41934f7ff284}{hm2} = \hyperlink{namespace_utilities_aacdd5d6ef494c74b5292a3966a1bd5e7}{hm} $\ast$ \hyperlink{namespace_utilities_aacdd5d6ef494c74b5292a3966a1bd5e7}{hm}
+\begin{DoxyCompactList}\small\item\em square hectometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ab44794b92b08edcb68141cc381801bfc}{dam2} = \hyperlink{namespace_utilities_ad242ea541744880484ba811bc49fb881}{dam} $\ast$ \hyperlink{namespace_utilities_ad242ea541744880484ba811bc49fb881}{dam}
+\begin{DoxyCompactList}\small\item\em square decametre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_aa5d500d1242875d68aabe2a7ca84dee6}{m2} = \hyperlink{namespace_utilities_a205e9c8c24630292f2d0213f433503e9}{m} $\ast$ \hyperlink{namespace_utilities_a205e9c8c24630292f2d0213f433503e9}{m}
+\begin{DoxyCompactList}\small\item\em square meter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a4221fcd40efde1b0ac518ca98c9b8371}{dm2} = \hyperlink{namespace_utilities_a811d072b0676c0e47666a99c20fb5eee}{dm} $\ast$ \hyperlink{namespace_utilities_a811d072b0676c0e47666a99c20fb5eee}{dm}
+\begin{DoxyCompactList}\small\item\em square decimeter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_af8cd4e9cca8050523bb9ef0cc0519250}{cm2} = \hyperlink{namespace_utilities_a43701408f4de13788368dce37066801f}{cm} $\ast$ \hyperlink{namespace_utilities_a43701408f4de13788368dce37066801f}{cm}
+\begin{DoxyCompactList}\small\item\em square centimeter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a1bfe965c55c47b8f84c53b95d527da39}{mm2} = \hyperlink{namespace_utilities_ada68d4ec8f02c2ffc43db9220cbdcba8}{mm} $\ast$ \hyperlink{namespace_utilities_ada68d4ec8f02c2ffc43db9220cbdcba8}{mm}
+\begin{DoxyCompactList}\small\item\em square millimeter \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a89e97d06d21d5752d28b987caca1164e}{um2} = \hyperlink{namespace_utilities_a79bb1876d9d2416239e3ca0b57582018}{um} $\ast$ \hyperlink{namespace_utilities_a79bb1876d9d2416239e3ca0b57582018}{um}
+\begin{DoxyCompactList}\small\item\em square micrometre \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a9ae5f215b36e4775746428f61852bff9}{megaelectronvolt} = 1.0
+\begin{DoxyCompactList}\small\item\em megaelectron volt \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_adf9960a6afad6c0ee02c6a8104fe0bac}{kiloelectronvolt} = \hyperlink{namespace_utilities_a9ae5f215b36e4775746428f61852bff9}{megaelectronvolt} $\ast$ 1.0e-\/3
+\begin{DoxyCompactList}\small\item\em kiloelectron volt \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a0045e627e65f14bccdf9ba29f46f4b39}{electronvolt} = \hyperlink{namespace_utilities_a9ae5f215b36e4775746428f61852bff9}{megaelectronvolt} $\ast$ 1.0e-\/6
+\begin{DoxyCompactList}\small\item\em electronvolt \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a26374683c027fd82866b27124597f903}{MeV} = \hyperlink{namespace_utilities_a9ae5f215b36e4775746428f61852bff9}{megaelectronvolt}
+\begin{DoxyCompactList}\small\item\em megaelectron volt \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a767ae2d5cc9d3f6e952a73c396d6a76b}{keV} = \hyperlink{namespace_utilities_adf9960a6afad6c0ee02c6a8104fe0bac}{kiloelectronvolt}
+\begin{DoxyCompactList}\small\item\em kiloelectron volt \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a373e9baeec7c88baef6b6ba4f782097b}{eV} = \hyperlink{namespace_utilities_a0045e627e65f14bccdf9ba29f46f4b39}{electronvolt}
+\begin{DoxyCompactList}\small\item\em electronvolt \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a53892b9a331b44b7edb02383d2d3cc74}{kilogram} = 1000.0
+\begin{DoxyCompactList}\small\item\em kilogram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a06ccbbfaf687e7c9567fe53a74a815a4}{hectogram} = 100.0
+\begin{DoxyCompactList}\small\item\em hectogram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a0768cb48610ba03979360e95959f44d9}{decagram} = 10.0
+\begin{DoxyCompactList}\small\item\em decagram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a31f2c5ded8f5f13007b4704e0509ce8c}{gram} = 1.0
+\begin{DoxyCompactList}\small\item\em gram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a19cffac32ac7c8d1d469398620265431}{decigram} = 0.1
+\begin{DoxyCompactList}\small\item\em decigram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ae4b25dba2b30ec640f00b47acb80ff34}{centigram} = 0.01
+\begin{DoxyCompactList}\small\item\em centigram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_acad791e8ae3f5eb81fa1aeb7abf90f9f}{milligram} = 0.001
+\begin{DoxyCompactList}\small\item\em milligram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ab9752f0a0b8174ed273a2a505c2a83e4}{microgram} = 0.0001
+\begin{DoxyCompactList}\small\item\em microgram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ade5640692129a688db6afa41d15d8778}{kg} = \hyperlink{namespace_utilities_a53892b9a331b44b7edb02383d2d3cc74}{kilogram}
+\begin{DoxyCompactList}\small\item\em kilogram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_afce1fbb55c72d2f7670158b228e6be92}{hg} = \hyperlink{namespace_utilities_a06ccbbfaf687e7c9567fe53a74a815a4}{hectogram}
+\begin{DoxyCompactList}\small\item\em hectogram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a1a052c7a7614fc92834c71bc8029e0b3}{dag} = \hyperlink{namespace_utilities_a0768cb48610ba03979360e95959f44d9}{decagram}
+\begin{DoxyCompactList}\small\item\em decagram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_afa66a78e61dc36f0bf8236522c1d0495}{g} = \hyperlink{namespace_utilities_a31f2c5ded8f5f13007b4704e0509ce8c}{gram}
+\begin{DoxyCompactList}\small\item\em gram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a0560b0dea05b99f76fe3209784c11a14}{dg} = \hyperlink{namespace_utilities_a19cffac32ac7c8d1d469398620265431}{decigram}
+\begin{DoxyCompactList}\small\item\em decigram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a8657e04ecc892b1e9a3b84db62bf94df}{cg} = \hyperlink{namespace_utilities_ae4b25dba2b30ec640f00b47acb80ff34}{centigram}
+\begin{DoxyCompactList}\small\item\em centigram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_a644a781a973f0febf71abf06c267c8f3}{mg} = \hyperlink{namespace_utilities_acad791e8ae3f5eb81fa1aeb7abf90f9f}{milligram}
+\begin{DoxyCompactList}\small\item\em milligram \end{DoxyCompactList}\item 
+const double \hyperlink{namespace_utilities_ab7041baaaea73a172ddc834aaea10ec1}{ug} = \hyperlink{namespace_utilities_ab9752f0a0b8174ed273a2a505c2a83e4}{microgram}
+\begin{DoxyCompactList}\small\item\em microgram \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{namespace_utilities_a1e64fcb5d60661c7b2a3a5e7c96cc09f}{
+\index{Utilities@{Utilities}!MATRIX4@{MATRIX4}}
+\index{MATRIX4@{MATRIX4}!Utilities@{Utilities}}
+\subsubsection[{MATRIX4}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf Matrix4x4}$<${\bf RATIONAL\_\-NUMBER}$>$ {\bf Utilities::MATRIX4}}}
+\label{namespace_utilities_a1e64fcb5d60661c7b2a3a5e7c96cc09f}
+
+
+Type of data used to store 4x4 matrices. 
+
+
+
+Definition at line 94 of file Types.h.
+
+\hypertarget{namespace_utilities_a1f0db90cea8d87567b4dd719ffd7d274}{
+\index{Utilities@{Utilities}!Matrix4x4d@{Matrix4x4d}}
+\index{Matrix4x4d@{Matrix4x4d}!Utilities@{Utilities}}
+\subsubsection[{Matrix4x4d}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Matrix4x4d}}}
+\label{namespace_utilities_a1f0db90cea8d87567b4dd719ffd7d274}
+
+
+Matrix4x4d is a class to handle a 4x4 matrix using double precision floating point numbers. 
+
+
+
+Definition at line 186 of file Types.h.
+
+\hypertarget{namespace_utilities_a468a3c0ce8ea13f2b50bbc872a7a4bb7}{
+\index{Utilities@{Utilities}!Matrix4x4f@{Matrix4x4f}}
+\index{Matrix4x4f@{Matrix4x4f}!Utilities@{Utilities}}
+\subsubsection[{Matrix4x4f}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Matrix4x4f}}}
+\label{namespace_utilities_a468a3c0ce8ea13f2b50bbc872a7a4bb7}
+
+
+Matrix4x4f is a class to handle a 4x4 matrix using single precision floating point numbers. 
+
+
+
+Definition at line 196 of file Types.h.
+
+\hypertarget{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{
+\index{Utilities@{Utilities}!RATIONAL\_\-NUMBER@{RATIONAL\_\-NUMBER}}
+\index{RATIONAL\_\-NUMBER@{RATIONAL\_\-NUMBER}!Utilities@{Utilities}}
+\subsubsection[{RATIONAL\_\-NUMBER}]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Utilities::RATIONAL\_\-NUMBER}}}
+\label{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}
+
+
+Type of data used to store real numbers. 
+
+
+
+Definition at line 82 of file Types.h.
+
+\hypertarget{namespace_utilities_aec83622a80513f15f2bdee483a6af7a0}{
+\index{Utilities@{Utilities}!SinogramType@{SinogramType}}
+\index{SinogramType@{SinogramType}!Utilities@{Utilities}}
+\subsubsection[{SinogramType}]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Utilities::SinogramType}}}
+\label{namespace_utilities_aec83622a80513f15f2bdee483a6af7a0}
+
+
+Type of data used to store sinograms. 
+
+
+
+Definition at line 78 of file Types.h.
+
+\hypertarget{namespace_utilities_a077a697d578c30ddec5ec97382be0a92}{
+\index{Utilities@{Utilities}!VEC2@{VEC2}}
+\index{VEC2@{VEC2}!Utilities@{Utilities}}
+\subsubsection[{VEC2}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf Vec2}$<${\bf RATIONAL\_\-NUMBER}$>$ {\bf Utilities::VEC2}}}
+\label{namespace_utilities_a077a697d578c30ddec5ec97382be0a92}
+
+
+Type of data used to store 2D vectors. 
+
+
+
+Definition at line 86 of file Types.h.
+
+\hypertarget{namespace_utilities_aaa021d29b05a070e411503f3a16dfcf7}{
+\index{Utilities@{Utilities}!Vec2d@{Vec2d}}
+\index{Vec2d@{Vec2d}!Utilities@{Utilities}}
+\subsubsection[{Vec2d}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec2d}}}
+\label{namespace_utilities_aaa021d29b05a070e411503f3a16dfcf7}
+
+
+Vec2d is a class to handle a 2D vector using double precision floating point numbers. 
+
+
+
+Definition at line 107 of file Types.h.
+
+\hypertarget{namespace_utilities_ab79b80d506ad1b46bfb4f7979293d5d9}{
+\index{Utilities@{Utilities}!Vec2f@{Vec2f}}
+\index{Vec2f@{Vec2f}!Utilities@{Utilities}}
+\subsubsection[{Vec2f}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec2f}}}
+\label{namespace_utilities_ab79b80d506ad1b46bfb4f7979293d5d9}
+
+
+Vec2f is a class to handle a 2D vector using double precision floating point numbers. 
+
+
+
+Definition at line 117 of file Types.h.
+
+\hypertarget{namespace_utilities_a491fc17b2e433b915d450c5fd8bcb459}{
+\index{Utilities@{Utilities}!Vec2i@{Vec2i}}
+\index{Vec2i@{Vec2i}!Utilities@{Utilities}}
+\subsubsection[{Vec2i}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec2i}}}
+\label{namespace_utilities_a491fc17b2e433b915d450c5fd8bcb459}
+
+
+Vec2i is a class to handle a 2D vector using 32 bits integers. 
+
+
+
+Definition at line 126 of file Types.h.
+
+\hypertarget{namespace_utilities_a4a3a98a70cd4c9af9c3e49584516902f}{
+\index{Utilities@{Utilities}!Vec2ui@{Vec2ui}}
+\index{Vec2ui@{Vec2ui}!Utilities@{Utilities}}
+\subsubsection[{Vec2ui}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec2ui}}}
+\label{namespace_utilities_a4a3a98a70cd4c9af9c3e49584516902f}
+
+
+Vec2ui is a class to handle a 2D vector using unsigned 32 bits integers. 
+
+
+
+Definition at line 136 of file Types.h.
+
+\hypertarget{namespace_utilities_af627ed108a4935196373499e157d3937}{
+\index{Utilities@{Utilities}!VEC3@{VEC3}}
+\index{VEC3@{VEC3}!Utilities@{Utilities}}
+\subsubsection[{VEC3}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf Vec3}$<${\bf RATIONAL\_\-NUMBER}$>$ {\bf Utilities::VEC3}}}
+\label{namespace_utilities_af627ed108a4935196373499e157d3937}
+
+
+Type of data used to store 3D vectors. 
+
+
+
+Definition at line 90 of file Types.h.
+
+\hypertarget{namespace_utilities_ab28ebcaa8d9272ab9f9375205bded517}{
+\index{Utilities@{Utilities}!Vec3d@{Vec3d}}
+\index{Vec3d@{Vec3d}!Utilities@{Utilities}}
+\subsubsection[{Vec3d}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec3d}}}
+\label{namespace_utilities_ab28ebcaa8d9272ab9f9375205bded517}
+
+
+Vec3d is a class to handle a 3D vector using double precision floating point numbers. 
+
+
+
+Definition at line 146 of file Types.h.
+
+\hypertarget{namespace_utilities_a39dfee93d59fd420ecf496f66606cbdd}{
+\index{Utilities@{Utilities}!Vec3f@{Vec3f}}
+\index{Vec3f@{Vec3f}!Utilities@{Utilities}}
+\subsubsection[{Vec3f}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec3f}}}
+\label{namespace_utilities_a39dfee93d59fd420ecf496f66606cbdd}
+
+
+Vec3f is a class to handle a 3D vector using double precision floating point numbers. 
+
+
+
+Definition at line 156 of file Types.h.
+
+\hypertarget{namespace_utilities_a49caf0d054fbd5f9eb148ed40ad97dcc}{
+\index{Utilities@{Utilities}!Vec3i@{Vec3i}}
+\index{Vec3i@{Vec3i}!Utilities@{Utilities}}
+\subsubsection[{Vec3i}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec3i}}}
+\label{namespace_utilities_a49caf0d054fbd5f9eb148ed40ad97dcc}
+
+
+Vec3i is a class to handle a 3D vector using signed 32 bits integers. 
+
+
+
+Definition at line 166 of file Types.h.
+
+\hypertarget{namespace_utilities_ad931f5df25ecb686d1b3aea12bdc9d06}{
+\index{Utilities@{Utilities}!Vec3ui@{Vec3ui}}
+\index{Vec3ui@{Vec3ui}!Utilities@{Utilities}}
+\subsubsection[{Vec3ui}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Utilities::Vec3ui}}}
+\label{namespace_utilities_ad931f5df25ecb686d1b3aea12bdc9d06}
+
+
+Vec3ui is a class to handle a 3D vector using unsigned 32 bits integers. 
+
+
+
+Definition at line 176 of file Types.h.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{namespace_utilities_a3fdfd69b196f894ae78f35a055d8683e}{
+\index{Utilities@{Utilities}!applyModelViewMatrix@{applyModelViewMatrix}}
+\index{applyModelViewMatrix@{applyModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{applyModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::applyModelViewMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a3fdfd69b196f894ae78f35a055d8683e}
+Load the modelling-\/viewing matrix in the current shader program, or replace OpenGL's modelling-\/viewing matrix. \hypertarget{namespace_utilities_aaa85ac0797b49093c4344ce75c4a3265}{
+\index{Utilities@{Utilities}!buildFrustumProjectionMatrix@{buildFrustumProjectionMatrix}}
+\index{buildFrustumProjectionMatrix@{buildFrustumProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{buildFrustumProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} Utilities::buildFrustumProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{left, }
+\item[{double}]{right, }
+\item[{double}]{bottom, }
+\item[{double}]{top, }
+\item[{double}]{near, }
+\item[{double}]{far}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_aaa85ac0797b49093c4344ce75c4a3265}
+
+
+Create a perspective projection matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left,:} & Specify the coordinates for the left vertical clipping plane. \\
+\hline
+{\em right,:} & Specify the coordinates for the right vertical clipping plane \\
+\hline
+{\em bottom,:} & Specify the coordinates for the bottom horizontal clipping plane \\
+\hline
+{\em top,:} & Specify the coordinates for the top horizontal clipping plane \\
+\hline
+{\em near,:} & Specify the distances to the near clipping plane. The value must be positive \\
+\hline
+{\em far,:} & Specify the distances to the far clipping plane. The value must be positive \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the projection matrix 
+\end{DoxyReturn}
+
+
+Definition at line 192 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a84ad75173a3da5e4e8b355d03d100c59}{
+\index{Utilities@{Utilities}!buildLookAtModelViewMatrix@{buildLookAtModelViewMatrix}}
+\index{buildLookAtModelViewMatrix@{buildLookAtModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{buildLookAtModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} Utilities::buildLookAtModelViewMatrix (
+\begin{DoxyParamCaption}
+\item[{const VEC3 \&}]{eye, }
+\item[{const VEC3 \&}]{centre, }
+\item[{const VEC3 \&}]{up}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a84ad75173a3da5e4e8b355d03d100c59}
+
+
+Create a modelling-\/viewing matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em eye,:} & Specifies the position of the eye point \\
+\hline
+{\em centre,:} & Specifies the position of the reference point \\
+\hline
+{\em up,:} & Specifies the direction of the up vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modelling-\/viewing matrix 
+\end{DoxyReturn}
+
+
+Definition at line 298 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a0dfa7bb57b5c491451a43d8b4d7dd983}{
+\index{Utilities@{Utilities}!buildLookAtModelViewMatrix@{buildLookAtModelViewMatrix}}
+\index{buildLookAtModelViewMatrix@{buildLookAtModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{buildLookAtModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} Utilities::buildLookAtModelViewMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{eyeX, }
+\item[{double}]{eyeY, }
+\item[{double}]{eyeZ, }
+\item[{double}]{centreX, }
+\item[{double}]{centreY, }
+\item[{double}]{centreZ, }
+\item[{double}]{upX, }
+\item[{double}]{upY, }
+\item[{double}]{upZ}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a0dfa7bb57b5c491451a43d8b4d7dd983}
+
+
+Create a modelling-\/viewing matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em eyeX,:} & Specifies the position of the eye point along the X-\/axis \\
+\hline
+{\em eyeY,:} & Specifies the position of the eye point along the Y-\/axis \\
+\hline
+{\em eyeZ,:} & Specifies the position of the eye point along the Z-\/axis \\
+\hline
+{\em centreX,:} & Specifies the position of the reference point along the X-\/axis \\
+\hline
+{\em centreY,:} & Specifies the position of the reference point along the Y-\/axis \\
+\hline
+{\em centreZ,:} & Specifies the position of the reference point along the Z-\/axis \\
+\hline
+{\em upX} & Specifies the direction of the up vector along the X-\/axis \\
+\hline
+{\em upY} & Specifies the direction of the up vector along the Y-\/axis \\
+\hline
+{\em upZ} & Specifies the direction of the up vector along the Z-\/axis \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modelling-\/viewing matrix 
+\end{DoxyReturn}
+
+
+Definition at line 345 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a7ffbee866eb154b2a032141c04d43021}{
+\index{Utilities@{Utilities}!buildOrthoProjectionMatrix@{buildOrthoProjectionMatrix}}
+\index{buildOrthoProjectionMatrix@{buildOrthoProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{buildOrthoProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} Utilities::buildOrthoProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{left, }
+\item[{double}]{right, }
+\item[{double}]{bottom, }
+\item[{double}]{top, }
+\item[{double}]{near, }
+\item[{double}]{far}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a7ffbee866eb154b2a032141c04d43021}
+
+
+Create a orthographic projection matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left,:} & Specify the coordinates for the left vertical clipping plane. \\
+\hline
+{\em right,:} & Specify the coordinates for the right vertical clipping plane \\
+\hline
+{\em bottom,:} & Specify the coordinates for the bottom horizontal clipping plane \\
+\hline
+{\em top,:} & Specify the coordinates for the top horizontal clipping plane \\
+\hline
+{\em near,:} & Specify the distances to the near clipping plane. The value must be positive \\
+\hline
+{\em far,:} & Specify the distances to the far clipping plane. The value must be positive \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the projection matrix 
+\end{DoxyReturn}
+
+
+Definition at line 130 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_ae473d6bd8d417fc07465944092a92938}{
+\index{Utilities@{Utilities}!buildPerspectiveProjectionMatrix@{buildPerspectiveProjectionMatrix}}
+\index{buildPerspectiveProjectionMatrix@{buildPerspectiveProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{buildPerspectiveProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} Utilities::buildPerspectiveProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{fovy, }
+\item[{double}]{aspect, }
+\item[{double}]{zNear, }
+\item[{double}]{zFar}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_ae473d6bd8d417fc07465944092a92938}
+
+
+Create a perspective projection matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fovy,:} & specifies the field of view angle, in degrees, in the y direction. \\
+\hline
+{\em aspect,:} & Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height). \\
+\hline
+{\em zNear,:} & Specifies the distance from the viewer to the near clipping plane (always positive) \\
+\hline
+{\em zFar,:} & Specifies the distance from the viewer to the far clipping plane (always positive). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the projection matrix 
+\end{DoxyReturn}
+
+
+Definition at line 243 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_aa6d370633a054fc0d3867e172c410b8f}{
+\index{Utilities@{Utilities}!checkFBOErrorStatus@{checkFBOErrorStatus}}
+\index{checkFBOErrorStatus@{checkFBOErrorStatus}!Utilities@{Utilities}}
+\subsubsection[{checkFBOErrorStatus}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::checkFBOErrorStatus (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFileName, }
+\item[{const char $\ast$}]{aFunctionName, }
+\item[{int}]{aLineNumber}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_aa6d370633a054fc0d3867e172c410b8f}
+
+
+Check the current FBO's error status. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFileName,:} & name of the source file where FBO is checked \\
+\hline
+{\em aFunctionName,:} & name of the function where FBO is checked \\
+\hline
+{\em aLineNumber,:} & name at which FBO is checked \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespace_utilities_ac80bf2d2d0e6f362b9fa305c6329d4dd}{
+\index{Utilities@{Utilities}!checkOpenGLErrorStatus@{checkOpenGLErrorStatus}}
+\index{checkOpenGLErrorStatus@{checkOpenGLErrorStatus}!Utilities@{Utilities}}
+\subsubsection[{checkOpenGLErrorStatus}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::checkOpenGLErrorStatus (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFileName, }
+\item[{const char $\ast$}]{aFunctionName, }
+\item[{int}]{aLineNumber}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_ac80bf2d2d0e6f362b9fa305c6329d4dd}
+
+
+Check OpenGL's error status. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFileName,:} & name of the source file where OpenGL is checked \\
+\hline
+{\em aFunctionName,:} & name of the function where OpenGL is checked \\
+\hline
+{\em aLineNumber,:} & name at which OpenGL is checked \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespace_utilities_a27ecbb568ab30c335d210de98b739757}{
+\index{Utilities@{Utilities}!getCurrentOpenGLMatrix@{getCurrentOpenGLMatrix}}
+\index{getCurrentOpenGLMatrix@{getCurrentOpenGLMatrix}!Utilities@{Utilities}}
+\subsubsection[{getCurrentOpenGLMatrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Math::Matrix4x4}$<$float$>$ Utilities::getCurrentOpenGLMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a27ecbb568ab30c335d210de98b739757}
+
+
+Load the current OpenGL matrix. 
+
+\begin{DoxyReturn}{Returns}
+the current OpenGL matrix. 
+\end{DoxyReturn}
+\hypertarget{namespace_utilities_aaa3b1ecb143bfae45b704d5a35bd8269}{
+\index{Utilities@{Utilities}!inflate@{inflate}}
+\index{inflate@{inflate}!Utilities@{Utilities}}
+\subsubsection[{inflate}]{\setlength{\rightskip}{0pt plus 5cm}int Utilities::inflate (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{src, }
+\item[{int}]{srcLen, }
+\item[{char $\ast$$\ast$}]{apDst}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_aaa3b1ecb143bfae45b704d5a35bd8269}
+
+
+Uncompress data using the Zlib. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em src,:} & compressed data \\
+\hline
+{\em srcLen,:} & length of the uncompressed data \\
+\hline
+{\em apDst,:} & uncompressed data \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespace_utilities_ad6cddf27e1b4769a998710f48a74026d}{
+\index{Utilities@{Utilities}!loadFrustumProjectionMatrix@{loadFrustumProjectionMatrix}}
+\index{loadFrustumProjectionMatrix@{loadFrustumProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadFrustumProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadFrustumProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{left, }
+\item[{double}]{right, }
+\item[{double}]{bottom, }
+\item[{double}]{top, }
+\item[{double}]{near, }
+\item[{double}]{far}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_ad6cddf27e1b4769a998710f48a74026d}
+
+
+Replace the projection matrix by a perspective projection matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left,:} & Specify the coordinates for the left vertical clipping plane. \\
+\hline
+{\em right,:} & Specify the coordinates for the right vertical clipping plane \\
+\hline
+{\em bottom,:} & Specify the coordinates for the bottom horizontal clipping plane \\
+\hline
+{\em top,:} & Specify the coordinates for the top horizontal clipping plane \\
+\hline
+{\em near,:} & Specify the distances to the near clipping plane. The value must be positive \\
+\hline
+{\em far,:} & Specify the distances to the far clipping plane. The value must be positive \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 179 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a80dad624c31abf68e2e44997020210a5}{
+\index{Utilities@{Utilities}!loadIdentityModelViewMatrix@{loadIdentityModelViewMatrix}}
+\index{loadIdentityModelViewMatrix@{loadIdentityModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadIdentityModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadIdentityModelViewMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a80dad624c31abf68e2e44997020210a5}
+
+
+Replace the model/view matrix by the identity matrix. 
+
+
+
+Definition at line 122 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_af4402f472bd1945b6792f547cd498f95}{
+\index{Utilities@{Utilities}!loadIdentityProjectionMatrix@{loadIdentityProjectionMatrix}}
+\index{loadIdentityProjectionMatrix@{loadIdentityProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadIdentityProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadIdentityProjectionMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_af4402f472bd1945b6792f547cd498f95}
+
+
+Replace the projection matrix by the identity matrix. 
+
+
+
+Definition at line 114 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a8dfe8f9df9a5280d2b19e278b6c455eb}{
+\index{Utilities@{Utilities}!loadLookAtModelViewMatrix@{loadLookAtModelViewMatrix}}
+\index{loadLookAtModelViewMatrix@{loadLookAtModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadLookAtModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadLookAtModelViewMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{eyeX, }
+\item[{double}]{eyeY, }
+\item[{double}]{eyeZ, }
+\item[{double}]{centreX, }
+\item[{double}]{centreY, }
+\item[{double}]{centreZ, }
+\item[{double}]{upX, }
+\item[{double}]{upY, }
+\item[{double}]{upZ}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a8dfe8f9df9a5280d2b19e278b6c455eb}
+
+
+Replace the modelling-\/viewing matrix by a viewing transformation matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em eyeX,:} & Specifies the position of the eye point along the X-\/axis \\
+\hline
+{\em eyeY,:} & Specifies the position of the eye point along the Y-\/axis \\
+\hline
+{\em eyeZ,:} & Specifies the position of the eye point along the Z-\/axis \\
+\hline
+{\em centreX,:} & Specifies the position of the reference point along the X-\/axis \\
+\hline
+{\em centreY,:} & Specifies the position of the reference point along the Y-\/axis \\
+\hline
+{\em centreZ,:} & Specifies the position of the reference point along the Z-\/axis \\
+\hline
+{\em upX} & Specifies the direction of the up vector along the X-\/axis \\
+\hline
+{\em upY} & Specifies the direction of the up vector along the Y-\/axis \\
+\hline
+{\em upZ} & Specifies the direction of the up vector along the Z-\/axis \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 371 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_adcb191e43b838d267bd659167503a528}{
+\index{Utilities@{Utilities}!loadLookAtModelViewMatrix@{loadLookAtModelViewMatrix}}
+\index{loadLookAtModelViewMatrix@{loadLookAtModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadLookAtModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadLookAtModelViewMatrix (
+\begin{DoxyParamCaption}
+\item[{const VEC3 \&}]{eye, }
+\item[{const VEC3 \&}]{centre, }
+\item[{const VEC3 \&}]{up}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_adcb191e43b838d267bd659167503a528}
+
+
+Replace the modelling-\/viewing matrix by a viewing transformation matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em eye,:} & Specifies the position of the eye point \\
+\hline
+{\em centre,:} & Specifies the position of the reference point \\
+\hline
+{\em up,:} & Specifies the direction of the up vector \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 361 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a8cc5454fb226411756900e06f3b121b2}{
+\index{Utilities@{Utilities}!loadModelViewMatrixFromOpenGL@{loadModelViewMatrixFromOpenGL}}
+\index{loadModelViewMatrixFromOpenGL@{loadModelViewMatrixFromOpenGL}!Utilities@{Utilities}}
+\subsubsection[{loadModelViewMatrixFromOpenGL}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadModelViewMatrixFromOpenGL (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a8cc5454fb226411756900e06f3b121b2}
+
+
+Replace the modelling-\/viewing matrix by OpenGL's modelling-\/viewing matrix. 
+
+\hypertarget{namespace_utilities_ae239a07fe9373e6a079a8c1465cab662}{
+\index{Utilities@{Utilities}!loadOrthoProjectionMatrix@{loadOrthoProjectionMatrix}}
+\index{loadOrthoProjectionMatrix@{loadOrthoProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadOrthoProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadOrthoProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{left, }
+\item[{double}]{right, }
+\item[{double}]{bottom, }
+\item[{double}]{top, }
+\item[{double}]{near, }
+\item[{double}]{far}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_ae239a07fe9373e6a079a8c1465cab662}
+
+
+Replace the projection matrix by a orthographic projection matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left,:} & Specify the coordinates for the left vertical clipping plane. \\
+\hline
+{\em right,:} & Specify the coordinates for the right vertical clipping plane \\
+\hline
+{\em bottom,:} & Specify the coordinates for the bottom horizontal clipping plane \\
+\hline
+{\em top,:} & Specify the coordinates for the top horizontal clipping plane \\
+\hline
+{\em near,:} & Specify the distances to the near clipping plane \\
+\hline
+{\em far,:} & Specify the distances to the far clipping plane \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 166 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a72a4f2b2d67dc75de5b6ebbf25248521}{
+\index{Utilities@{Utilities}!loadPerspectiveProjectionMatrix@{loadPerspectiveProjectionMatrix}}
+\index{loadPerspectiveProjectionMatrix@{loadPerspectiveProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{loadPerspectiveProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadPerspectiveProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{fovy, }
+\item[{double}]{aspect, }
+\item[{double}]{zNear, }
+\item[{double}]{zFar}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a72a4f2b2d67dc75de5b6ebbf25248521}
+
+
+Replace the projection matrix by a perspective projection matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fovy,:} & specifies the field of view angle, in degrees, in the y direction. \\
+\hline
+{\em aspect,:} & Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height). \\
+\hline
+{\em zNear,:} & Specifies the distance from the viewer to the near clipping plane (always positive) \\
+\hline
+{\em zFar,:} & Specifies the distance from the viewer to the far clipping plane (always positive). \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 276 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a1787b9d17f79b46cd3fc546bfd9ee196}{
+\index{Utilities@{Utilities}!loadProjectionMatrixFromOpenGL@{loadProjectionMatrixFromOpenGL}}
+\index{loadProjectionMatrixFromOpenGL@{loadProjectionMatrixFromOpenGL}!Utilities@{Utilities}}
+\subsubsection[{loadProjectionMatrixFromOpenGL}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::loadProjectionMatrixFromOpenGL (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a1787b9d17f79b46cd3fc546bfd9ee196}
+
+
+Replace the projection matrix by OpenGL's projection matrix. 
+
+\hypertarget{namespace_utilities_ab6a11c99ddae551a4d7bc64d18d63046}{
+\index{Utilities@{Utilities}!multiplyOrthoProjectionMatrix@{multiplyOrthoProjectionMatrix}}
+\index{multiplyOrthoProjectionMatrix@{multiplyOrthoProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{multiplyOrthoProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::multiplyOrthoProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{left, }
+\item[{double}]{right, }
+\item[{double}]{bottom, }
+\item[{double}]{top, }
+\item[{double}]{nearPlane, }
+\item[{double}]{farPlane}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_ab6a11c99ddae551a4d7bc64d18d63046}
+
+
+Definition at line 230 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_aaf402e609cb9931c8534ac08968fb49b}{
+\index{Utilities@{Utilities}!multiplyPerspectiveProjectionMatrix@{multiplyPerspectiveProjectionMatrix}}
+\index{multiplyPerspectiveProjectionMatrix@{multiplyPerspectiveProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{multiplyPerspectiveProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::multiplyPerspectiveProjectionMatrix (
+\begin{DoxyParamCaption}
+\item[{double}]{fovy, }
+\item[{double}]{aspect, }
+\item[{double}]{zNear, }
+\item[{double}]{zFar}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_aaf402e609cb9931c8534ac08968fb49b}
+
+
+Definition at line 287 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a1b36a6b137d8abe02a7f79072473e3b4}{
+\index{Utilities@{Utilities}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!Utilities@{Utilities}}
+\subsubsection[{operator$<$$<$}]{\setlength{\rightskip}{0pt plus 5cm}std::ostream \& Utilities::operator$<$$<$ (
+\begin{DoxyParamCaption}
+\item[{std::ostream \&}]{anOutputStream, }
+\item[{const Exception \&}]{anException}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a1b36a6b137d8abe02a7f79072473e3b4}
+
+
+operator$<$$<$ 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anOutputStream,:} & the output stream \\
+\hline
+{\em anException,:} & the exception to add to the output stream \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the output stream 
+\end{DoxyReturn}
+
+
+Definition at line 47 of file Exception.inl.
+
+\hypertarget{namespace_utilities_a74d082f280da485386fb80a2a65cf36a}{
+\index{Utilities@{Utilities}!popEnableDisableState@{popEnableDisableState}}
+\index{popEnableDisableState@{popEnableDisableState}!Utilities@{Utilities}}
+\subsubsection[{popEnableDisableState}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::popEnableDisableState (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a74d082f280da485386fb80a2a65cf36a}
+Restore the enable/disable state to the corresponding stack, and remove the last state of the stack. \hypertarget{namespace_utilities_a155eb0147d0e117e1d34467ce4bf8495}{
+\index{Utilities@{Utilities}!popFBO@{popFBO}}
+\index{popFBO@{popFBO}!Utilities@{Utilities}}
+\subsubsection[{popFBO}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::popFBO (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a155eb0147d0e117e1d34467ce4bf8495}
+Restore the FBO binding from the FBO stack, and remove the last FBO of the stack. \hypertarget{namespace_utilities_afa855d36de0ce9d6d52e2157da5063b9}{
+\index{Utilities@{Utilities}!popModelViewMatrix@{popModelViewMatrix}}
+\index{popModelViewMatrix@{popModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{popModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::popModelViewMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_afa855d36de0ce9d6d52e2157da5063b9}
+Restore the matrix from the model.view matrix stack, and remove the last matrix of the stack. 
+
+Definition at line 95 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a34e5aecb15bd70f3d358b1df30ad2b1e}{
+\index{Utilities@{Utilities}!popProjectionMatrix@{popProjectionMatrix}}
+\index{popProjectionMatrix@{popProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{popProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::popProjectionMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a34e5aecb15bd70f3d358b1df30ad2b1e}
+Restore the matrix from the projection matrix stack, and remove the last matrix of the stack. 
+
+Definition at line 77 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_adbc5643c5d6336e174b6bea3a22bdb29}{
+\index{Utilities@{Utilities}!popShaderProgram@{popShaderProgram}}
+\index{popShaderProgram@{popShaderProgram}!Utilities@{Utilities}}
+\subsubsection[{popShaderProgram}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::popShaderProgram (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_adbc5643c5d6336e174b6bea3a22bdb29}
+Restore the shader program to the corresponding stack, and remove the last state of the stack. \hypertarget{namespace_utilities_a399fdac28547b4cab45f640befd6350a}{
+\index{Utilities@{Utilities}!popTexture@{popTexture}}
+\index{popTexture@{popTexture}!Utilities@{Utilities}}
+\subsubsection[{popTexture}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::popTexture (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a399fdac28547b4cab45f640befd6350a}
+Restore the texture binding from the texture stack, and remove the last texture of the stack. \hypertarget{namespace_utilities_a397b32b08d50b0f86540e20ec9d9a8a6}{
+\index{Utilities@{Utilities}!pushEnableDisableState@{pushEnableDisableState}}
+\index{pushEnableDisableState@{pushEnableDisableState}!Utilities@{Utilities}}
+\subsubsection[{pushEnableDisableState}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushEnableDisableState (
+\begin{DoxyParamCaption}
+\item[{int}]{aParameter}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a397b32b08d50b0f86540e20ec9d9a8a6}
+
+
+Add the enable/disable state to the corresponding stack. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aParameter,:} & parameter to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespace_utilities_a4d73d1a6deada0aace5a5fb250971aa1}{
+\index{Utilities@{Utilities}!pushFBO@{pushFBO}}
+\index{pushFBO@{pushFBO}!Utilities@{Utilities}}
+\subsubsection[{pushFBO}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushFBO (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a4d73d1a6deada0aace5a5fb250971aa1}
+
+
+Add the current FBO binding to the FBO stack. 
+
+\hypertarget{namespace_utilities_a759523b332a302b032d7e1dbe3d70589}{
+\index{Utilities@{Utilities}!pushModelViewMatrix@{pushModelViewMatrix}}
+\index{pushModelViewMatrix@{pushModelViewMatrix}!Utilities@{Utilities}}
+\subsubsection[{pushModelViewMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushModelViewMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a759523b332a302b032d7e1dbe3d70589}
+
+
+Add the current matrix to the model/view matrix stack. 
+
+
+
+Definition at line 69 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_a4ff1a91f49f45940ef3fe39374d6fad3}{
+\index{Utilities@{Utilities}!pushProjectionMatrix@{pushProjectionMatrix}}
+\index{pushProjectionMatrix@{pushProjectionMatrix}!Utilities@{Utilities}}
+\subsubsection[{pushProjectionMatrix}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushProjectionMatrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{namespace_utilities_a4ff1a91f49f45940ef3fe39374d6fad3}
+
+
+Add the current matrix to the projection matrix stack. 
+
+
+
+Definition at line 61 of file OpenGLUtilities.inl.
+
+\hypertarget{namespace_utilities_af3def433e5459d13617b1f3ac1f80bd4}{
+\index{Utilities@{Utilities}!pushShaderProgram@{pushShaderProgram}}
+\index{pushShaderProgram@{pushShaderProgram}!Utilities@{Utilities}}
+\subsubsection[{pushShaderProgram}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushShaderProgram (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_af3def433e5459d13617b1f3ac1f80bd4}
+
+
+Add the current shader program to the corresponding stack. 
+
+\hypertarget{namespace_utilities_acc7a477a449c637b37acf6e409ffda9a}{
+\index{Utilities@{Utilities}!pushTexture1D@{pushTexture1D}}
+\index{pushTexture1D@{pushTexture1D}!Utilities@{Utilities}}
+\subsubsection[{pushTexture1D}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushTexture1D (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_acc7a477a449c637b37acf6e409ffda9a}
+
+
+Add the current 1D texture binding to the texture stack. 
+
+\hypertarget{namespace_utilities_ac3f7c9af73fc18c8e905ec33e423e62a}{
+\index{Utilities@{Utilities}!pushTexture2D@{pushTexture2D}}
+\index{pushTexture2D@{pushTexture2D}!Utilities@{Utilities}}
+\subsubsection[{pushTexture2D}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushTexture2D (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_ac3f7c9af73fc18c8e905ec33e423e62a}
+
+
+Add the current 2D texture binding to the texture stack. 
+
+\hypertarget{namespace_utilities_a6c5b0b068baed228d72a5ab5bc171a27}{
+\index{Utilities@{Utilities}!pushTexture3D@{pushTexture3D}}
+\index{pushTexture3D@{pushTexture3D}!Utilities@{Utilities}}
+\subsubsection[{pushTexture3D}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushTexture3D (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_a6c5b0b068baed228d72a5ab5bc171a27}
+
+
+Add the current 3D texture binding to the texture stack. 
+
+\hypertarget{namespace_utilities_ade797d2da463a1e1774e46fb1519a3a6}{
+\index{Utilities@{Utilities}!pushTextureRectangle@{pushTextureRectangle}}
+\index{pushTextureRectangle@{pushTextureRectangle}!Utilities@{Utilities}}
+\subsubsection[{pushTextureRectangle}]{\setlength{\rightskip}{0pt plus 5cm}void Utilities::pushTextureRectangle (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespace_utilities_ade797d2da463a1e1774e46fb1519a3a6}
+
+
+Add the current rectangle texture binding to the texture stack. 
+
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespace_utilities_ae4b25dba2b30ec640f00b47acb80ff34}{
+\index{Utilities@{Utilities}!centigram@{centigram}}
+\index{centigram@{centigram}!Utilities@{Utilities}}
+\subsubsection[{centigram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::centigram} = 0.01}}
+\label{namespace_utilities_ae4b25dba2b30ec640f00b47acb80ff34}
+
+
+centigram 
+
+
+
+Definition at line 99 of file Units.h.
+
+\hypertarget{namespace_utilities_a17483d8b3688f5a3786b48f4ed70588c}{
+\index{Utilities@{Utilities}!centimeter@{centimeter}}
+\index{centimeter@{centimeter}!Utilities@{Utilities}}
+\subsubsection[{centimeter}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::centimeter} = 0.01 / 0.001}}
+\label{namespace_utilities_a17483d8b3688f5a3786b48f4ed70588c}
+
+
+centimetre 
+
+
+
+Definition at line 55 of file Units.h.
+
+\hypertarget{namespace_utilities_a8f332608b463f7e22df3b1120be2cba2}{
+\index{Utilities@{Utilities}!centimetre@{centimetre}}
+\index{centimetre@{centimetre}!Utilities@{Utilities}}
+\subsubsection[{centimetre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::centimetre} = {\bf centimeter}}}
+\label{namespace_utilities_a8f332608b463f7e22df3b1120be2cba2}
+
+
+centimetre 
+
+
+
+Definition at line 64 of file Units.h.
+
+\hypertarget{namespace_utilities_a8657e04ecc892b1e9a3b84db62bf94df}{
+\index{Utilities@{Utilities}!cg@{cg}}
+\index{cg@{cg}!Utilities@{Utilities}}
+\subsubsection[{cg}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::cg} = {\bf centigram}}}
+\label{namespace_utilities_a8657e04ecc892b1e9a3b84db62bf94df}
+
+
+centigram 
+
+
+
+Definition at line 108 of file Units.h.
+
+\hypertarget{namespace_utilities_a43701408f4de13788368dce37066801f}{
+\index{Utilities@{Utilities}!cm@{cm}}
+\index{cm@{cm}!Utilities@{Utilities}}
+\subsubsection[{cm}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::cm} = {\bf centimeter}}}
+\label{namespace_utilities_a43701408f4de13788368dce37066801f}
+
+
+centimeter 
+
+
+
+Definition at line 73 of file Units.h.
+
+\hypertarget{namespace_utilities_af8cd4e9cca8050523bb9ef0cc0519250}{
+\index{Utilities@{Utilities}!cm2@{cm2}}
+\index{cm2@{cm2}!Utilities@{Utilities}}
+\subsubsection[{cm2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::cm2} = {\bf cm} $\ast$ {\bf cm}}}
+\label{namespace_utilities_af8cd4e9cca8050523bb9ef0cc0519250}
+
+
+square centimeter 
+
+
+
+Definition at line 82 of file Units.h.
+
+\hypertarget{namespace_utilities_a1a052c7a7614fc92834c71bc8029e0b3}{
+\index{Utilities@{Utilities}!dag@{dag}}
+\index{dag@{dag}!Utilities@{Utilities}}
+\subsubsection[{dag}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::dag} = {\bf decagram}}}
+\label{namespace_utilities_a1a052c7a7614fc92834c71bc8029e0b3}
+
+
+decagram 
+
+
+
+Definition at line 105 of file Units.h.
+
+\hypertarget{namespace_utilities_ad242ea541744880484ba811bc49fb881}{
+\index{Utilities@{Utilities}!dam@{dam}}
+\index{dam@{dam}!Utilities@{Utilities}}
+\subsubsection[{dam}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::dam} = {\bf decameter}}}
+\label{namespace_utilities_ad242ea541744880484ba811bc49fb881}
+
+
+decametre 
+
+
+
+Definition at line 70 of file Units.h.
+
+\hypertarget{namespace_utilities_ab44794b92b08edcb68141cc381801bfc}{
+\index{Utilities@{Utilities}!dam2@{dam2}}
+\index{dam2@{dam2}!Utilities@{Utilities}}
+\subsubsection[{dam2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::dam2} = {\bf dam} $\ast$ {\bf dam}}}
+\label{namespace_utilities_ab44794b92b08edcb68141cc381801bfc}
+
+
+square decametre 
+
+
+
+Definition at line 79 of file Units.h.
+
+\hypertarget{namespace_utilities_a0768cb48610ba03979360e95959f44d9}{
+\index{Utilities@{Utilities}!decagram@{decagram}}
+\index{decagram@{decagram}!Utilities@{Utilities}}
+\subsubsection[{decagram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::decagram} = 10.0}}
+\label{namespace_utilities_a0768cb48610ba03979360e95959f44d9}
+
+
+decagram 
+
+
+
+Definition at line 96 of file Units.h.
+
+\hypertarget{namespace_utilities_a66e92dbad293594bf063d31aa9305983}{
+\index{Utilities@{Utilities}!decameter@{decameter}}
+\index{decameter@{decameter}!Utilities@{Utilities}}
+\subsubsection[{decameter}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::decameter} = 10.0 / 0.001}}
+\label{namespace_utilities_a66e92dbad293594bf063d31aa9305983}
+
+
+decametre 
+
+
+
+Definition at line 52 of file Units.h.
+
+\hypertarget{namespace_utilities_ae6f96b1086168f4287845866c4a8a546}{
+\index{Utilities@{Utilities}!decametre@{decametre}}
+\index{decametre@{decametre}!Utilities@{Utilities}}
+\subsubsection[{decametre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::decametre} = {\bf decameter}}}
+\label{namespace_utilities_ae6f96b1086168f4287845866c4a8a546}
+
+
+decametre 
+
+
+
+Definition at line 61 of file Units.h.
+
+\hypertarget{namespace_utilities_a19cffac32ac7c8d1d469398620265431}{
+\index{Utilities@{Utilities}!decigram@{decigram}}
+\index{decigram@{decigram}!Utilities@{Utilities}}
+\subsubsection[{decigram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::decigram} = 0.1}}
+\label{namespace_utilities_a19cffac32ac7c8d1d469398620265431}
+
+
+decigram 
+
+
+
+Definition at line 98 of file Units.h.
+
+\hypertarget{namespace_utilities_a66145380051759756714059815f45e18}{
+\index{Utilities@{Utilities}!decimeter@{decimeter}}
+\index{decimeter@{decimeter}!Utilities@{Utilities}}
+\subsubsection[{decimeter}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::decimeter} = 0.1 / 0.001}}
+\label{namespace_utilities_a66145380051759756714059815f45e18}
+
+
+decimetre 
+
+
+
+Definition at line 54 of file Units.h.
+
+\hypertarget{namespace_utilities_acd1e513cc56efd8a5f237271a46afcfe}{
+\index{Utilities@{Utilities}!decimetre@{decimetre}}
+\index{decimetre@{decimetre}!Utilities@{Utilities}}
+\subsubsection[{decimetre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::decimetre} = {\bf decimeter}}}
+\label{namespace_utilities_acd1e513cc56efd8a5f237271a46afcfe}
+
+
+decimetre 
+
+
+
+Definition at line 63 of file Units.h.
+
+\hypertarget{namespace_utilities_a0560b0dea05b99f76fe3209784c11a14}{
+\index{Utilities@{Utilities}!dg@{dg}}
+\index{dg@{dg}!Utilities@{Utilities}}
+\subsubsection[{dg}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::dg} = {\bf decigram}}}
+\label{namespace_utilities_a0560b0dea05b99f76fe3209784c11a14}
+
+
+decigram 
+
+
+
+Definition at line 107 of file Units.h.
+
+\hypertarget{namespace_utilities_a811d072b0676c0e47666a99c20fb5eee}{
+\index{Utilities@{Utilities}!dm@{dm}}
+\index{dm@{dm}!Utilities@{Utilities}}
+\subsubsection[{dm}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::dm} = {\bf decimeter}}}
+\label{namespace_utilities_a811d072b0676c0e47666a99c20fb5eee}
+
+
+decimeter 
+
+
+
+Definition at line 72 of file Units.h.
+
+\hypertarget{namespace_utilities_a4221fcd40efde1b0ac518ca98c9b8371}{
+\index{Utilities@{Utilities}!dm2@{dm2}}
+\index{dm2@{dm2}!Utilities@{Utilities}}
+\subsubsection[{dm2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::dm2} = {\bf dm} $\ast$ {\bf dm}}}
+\label{namespace_utilities_a4221fcd40efde1b0ac518ca98c9b8371}
+
+
+square decimeter 
+
+
+
+Definition at line 81 of file Units.h.
+
+\hypertarget{namespace_utilities_a0045e627e65f14bccdf9ba29f46f4b39}{
+\index{Utilities@{Utilities}!electronvolt@{electronvolt}}
+\index{electronvolt@{electronvolt}!Utilities@{Utilities}}
+\subsubsection[{electronvolt}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::electronvolt} = {\bf megaelectronvolt} $\ast$ 1.0e-\/6}}
+\label{namespace_utilities_a0045e627e65f14bccdf9ba29f46f4b39}
+
+
+electronvolt 
+
+
+
+Definition at line 88 of file Units.h.
+
+\hypertarget{namespace_utilities_a373e9baeec7c88baef6b6ba4f782097b}{
+\index{Utilities@{Utilities}!eV@{eV}}
+\index{eV@{eV}!Utilities@{Utilities}}
+\subsubsection[{eV}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::eV} = {\bf electronvolt}}}
+\label{namespace_utilities_a373e9baeec7c88baef6b6ba4f782097b}
+
+
+electronvolt 
+
+
+
+Definition at line 92 of file Units.h.
+
+\hypertarget{namespace_utilities_afa66a78e61dc36f0bf8236522c1d0495}{
+\index{Utilities@{Utilities}!g@{g}}
+\index{g@{g}!Utilities@{Utilities}}
+\subsubsection[{g}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::g} = {\bf gram}}}
+\label{namespace_utilities_afa66a78e61dc36f0bf8236522c1d0495}
+
+
+gram 
+
+
+
+Definition at line 106 of file Units.h.
+
+\hypertarget{namespace_utilities_accdb6ed1387ebfbb3458b12fc5104fc0}{
+\index{Utilities@{Utilities}!g\_\-current\_\-modelview\_\-matrix@{g\_\-current\_\-modelview\_\-matrix}}
+\index{g\_\-current\_\-modelview\_\-matrix@{g\_\-current\_\-modelview\_\-matrix}!Utilities@{Utilities}}
+\subsubsection[{g\_\-current\_\-modelview\_\-matrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} {\bf Utilities::g\_\-current\_\-modelview\_\-matrix}}}
+\label{namespace_utilities_accdb6ed1387ebfbb3458b12fc5104fc0}
+
+
+The model/view matrices. 
+
+\hypertarget{namespace_utilities_a8c2454e701dfbb5ec835d7d3a36869c5}{
+\index{Utilities@{Utilities}!g\_\-current\_\-projection\_\-matrix@{g\_\-current\_\-projection\_\-matrix}}
+\index{g\_\-current\_\-projection\_\-matrix@{g\_\-current\_\-projection\_\-matrix}!Utilities@{Utilities}}
+\subsubsection[{g\_\-current\_\-projection\_\-matrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf MATRIX4} {\bf Utilities::g\_\-current\_\-projection\_\-matrix}}}
+\label{namespace_utilities_a8c2454e701dfbb5ec835d7d3a36869c5}
+
+
+The projection matrix. 
+
+\hypertarget{namespace_utilities_a12dfa64d0c2f8186e94336a73defa7a8}{
+\index{Utilities@{Utilities}!g\_\-enable\_\-disable\_\-state\_\-stack@{g\_\-enable\_\-disable\_\-state\_\-stack}}
+\index{g\_\-enable\_\-disable\_\-state\_\-stack@{g\_\-enable\_\-disable\_\-state\_\-stack}!Utilities@{Utilities}}
+\subsubsection[{g\_\-enable\_\-disable\_\-state\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::pair$<$int, bool$>$ $>$ {\bf Utilities::g\_\-enable\_\-disable\_\-state\_\-stack}}}
+\label{namespace_utilities_a12dfa64d0c2f8186e94336a73defa7a8}
+
+
+The stack of enable/disable states. 
+
+\hypertarget{namespace_utilities_a0c685e4387f8e43c77ef5931a213cfaf}{
+\index{Utilities@{Utilities}!g\_\-frame\_\-buffer\_\-object\_\-stack@{g\_\-frame\_\-buffer\_\-object\_\-stack}}
+\index{g\_\-frame\_\-buffer\_\-object\_\-stack@{g\_\-frame\_\-buffer\_\-object\_\-stack}!Utilities@{Utilities}}
+\subsubsection[{g\_\-frame\_\-buffer\_\-object\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$int$>$ {\bf Utilities::g\_\-frame\_\-buffer\_\-object\_\-stack}}}
+\label{namespace_utilities_a0c685e4387f8e43c77ef5931a213cfaf}
+
+
+The stack of FBO binding. 
+
+\hypertarget{namespace_utilities_af9f46e572978db79176b61edb1780b3c}{
+\index{Utilities@{Utilities}!g\_\-p\_\-modelview\_\-matrix\_\-stack@{g\_\-p\_\-modelview\_\-matrix\_\-stack}}
+\index{g\_\-p\_\-modelview\_\-matrix\_\-stack@{g\_\-p\_\-modelview\_\-matrix\_\-stack}!Utilities@{Utilities}}
+\subsubsection[{g\_\-p\_\-modelview\_\-matrix\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf MATRIX4}$>$ {\bf Utilities::g\_\-p\_\-modelview\_\-matrix\_\-stack}}}
+\label{namespace_utilities_af9f46e572978db79176b61edb1780b3c}
+
+
+The stack of model/view matrices. 
+
+\hypertarget{namespace_utilities_a3e2a3a6c251bba50ffe4c069d085e0b7}{
+\index{Utilities@{Utilities}!g\_\-p\_\-projection\_\-matrix\_\-stack@{g\_\-p\_\-projection\_\-matrix\_\-stack}}
+\index{g\_\-p\_\-projection\_\-matrix\_\-stack@{g\_\-p\_\-projection\_\-matrix\_\-stack}!Utilities@{Utilities}}
+\subsubsection[{g\_\-p\_\-projection\_\-matrix\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf MATRIX4}$>$ {\bf Utilities::g\_\-p\_\-projection\_\-matrix\_\-stack}}}
+\label{namespace_utilities_a3e2a3a6c251bba50ffe4c069d085e0b7}
+
+
+The stack of projection matrix. 
+
+\hypertarget{namespace_utilities_adf21242b77777527da1f9e6d8f72a1e5}{
+\index{Utilities@{Utilities}!g\_\-shader\_\-program\_\-stack@{g\_\-shader\_\-program\_\-stack}}
+\index{g\_\-shader\_\-program\_\-stack@{g\_\-shader\_\-program\_\-stack}!Utilities@{Utilities}}
+\subsubsection[{g\_\-shader\_\-program\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$int$>$ {\bf Utilities::g\_\-shader\_\-program\_\-stack}}}
+\label{namespace_utilities_adf21242b77777527da1f9e6d8f72a1e5}
+
+
+The stack of shader programs. 
+
+\hypertarget{namespace_utilities_a0f11bcfd46f3b7d0bdf66bc2127ba85f}{
+\index{Utilities@{Utilities}!g\_\-texture\_\-stack@{g\_\-texture\_\-stack}}
+\index{g\_\-texture\_\-stack@{g\_\-texture\_\-stack}!Utilities@{Utilities}}
+\subsubsection[{g\_\-texture\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::pair$<$int, int$>$ $>$ {\bf Utilities::g\_\-texture\_\-stack}}}
+\label{namespace_utilities_a0f11bcfd46f3b7d0bdf66bc2127ba85f}
+
+
+The stack of texture binding. 
+
+\hypertarget{namespace_utilities_a31f2c5ded8f5f13007b4704e0509ce8c}{
+\index{Utilities@{Utilities}!gram@{gram}}
+\index{gram@{gram}!Utilities@{Utilities}}
+\subsubsection[{gram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::gram} = 1.0}}
+\label{namespace_utilities_a31f2c5ded8f5f13007b4704e0509ce8c}
+
+
+gram 
+
+
+
+Definition at line 97 of file Units.h.
+
+\hypertarget{namespace_utilities_a06ccbbfaf687e7c9567fe53a74a815a4}{
+\index{Utilities@{Utilities}!hectogram@{hectogram}}
+\index{hectogram@{hectogram}!Utilities@{Utilities}}
+\subsubsection[{hectogram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::hectogram} = 100.0}}
+\label{namespace_utilities_a06ccbbfaf687e7c9567fe53a74a815a4}
+
+
+hectogram 
+
+
+
+Definition at line 95 of file Units.h.
+
+\hypertarget{namespace_utilities_a3fb2d462bd1e7dc8fe4dbc1ad4f28ff3}{
+\index{Utilities@{Utilities}!hectometer@{hectometer}}
+\index{hectometer@{hectometer}!Utilities@{Utilities}}
+\subsubsection[{hectometer}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::hectometer} = 100.0 / 0.001}}
+\label{namespace_utilities_a3fb2d462bd1e7dc8fe4dbc1ad4f28ff3}
+
+
+hectometre 
+
+
+
+Definition at line 51 of file Units.h.
+
+\hypertarget{namespace_utilities_ac838a64f1022b1f9cb88f0f641ee26b1}{
+\index{Utilities@{Utilities}!hectometre@{hectometre}}
+\index{hectometre@{hectometre}!Utilities@{Utilities}}
+\subsubsection[{hectometre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::hectometre} = {\bf hectometer}}}
+\label{namespace_utilities_ac838a64f1022b1f9cb88f0f641ee26b1}
+
+
+hectometre 
+
+
+
+Definition at line 60 of file Units.h.
+
+\hypertarget{namespace_utilities_afce1fbb55c72d2f7670158b228e6be92}{
+\index{Utilities@{Utilities}!hg@{hg}}
+\index{hg@{hg}!Utilities@{Utilities}}
+\subsubsection[{hg}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::hg} = {\bf hectogram}}}
+\label{namespace_utilities_afce1fbb55c72d2f7670158b228e6be92}
+
+
+hectogram 
+
+
+
+Definition at line 104 of file Units.h.
+
+\hypertarget{namespace_utilities_aacdd5d6ef494c74b5292a3966a1bd5e7}{
+\index{Utilities@{Utilities}!hm@{hm}}
+\index{hm@{hm}!Utilities@{Utilities}}
+\subsubsection[{hm}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::hm} = {\bf hectometer}}}
+\label{namespace_utilities_aacdd5d6ef494c74b5292a3966a1bd5e7}
+
+
+hectometre 
+
+
+
+Definition at line 69 of file Units.h.
+
+\hypertarget{namespace_utilities_a437509ab345193dd1d6d41934f7ff284}{
+\index{Utilities@{Utilities}!hm2@{hm2}}
+\index{hm2@{hm2}!Utilities@{Utilities}}
+\subsubsection[{hm2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::hm2} = {\bf hm} $\ast$ {\bf hm}}}
+\label{namespace_utilities_a437509ab345193dd1d6d41934f7ff284}
+
+
+square hectometre 
+
+
+
+Definition at line 78 of file Units.h.
+
+\hypertarget{namespace_utilities_a767ae2d5cc9d3f6e952a73c396d6a76b}{
+\index{Utilities@{Utilities}!keV@{keV}}
+\index{keV@{keV}!Utilities@{Utilities}}
+\subsubsection[{keV}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::keV} = {\bf kiloelectronvolt}}}
+\label{namespace_utilities_a767ae2d5cc9d3f6e952a73c396d6a76b}
+
+
+kiloelectron volt 
+
+
+
+Definition at line 91 of file Units.h.
+
+\hypertarget{namespace_utilities_ade5640692129a688db6afa41d15d8778}{
+\index{Utilities@{Utilities}!kg@{kg}}
+\index{kg@{kg}!Utilities@{Utilities}}
+\subsubsection[{kg}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::kg} = {\bf kilogram}}}
+\label{namespace_utilities_ade5640692129a688db6afa41d15d8778}
+
+
+kilogram 
+
+
+
+Definition at line 103 of file Units.h.
+
+\hypertarget{namespace_utilities_adf9960a6afad6c0ee02c6a8104fe0bac}{
+\index{Utilities@{Utilities}!kiloelectronvolt@{kiloelectronvolt}}
+\index{kiloelectronvolt@{kiloelectronvolt}!Utilities@{Utilities}}
+\subsubsection[{kiloelectronvolt}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::kiloelectronvolt} = {\bf megaelectronvolt} $\ast$ 1.0e-\/3}}
+\label{namespace_utilities_adf9960a6afad6c0ee02c6a8104fe0bac}
+
+
+kiloelectron volt 
+
+
+
+Definition at line 87 of file Units.h.
+
+\hypertarget{namespace_utilities_a53892b9a331b44b7edb02383d2d3cc74}{
+\index{Utilities@{Utilities}!kilogram@{kilogram}}
+\index{kilogram@{kilogram}!Utilities@{Utilities}}
+\subsubsection[{kilogram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::kilogram} = 1000.0}}
+\label{namespace_utilities_a53892b9a331b44b7edb02383d2d3cc74}
+
+
+kilogram 
+
+
+
+Definition at line 94 of file Units.h.
+
+\hypertarget{namespace_utilities_a06654149ce3cba96084c785b079a7a31}{
+\index{Utilities@{Utilities}!kilometer@{kilometer}}
+\index{kilometer@{kilometer}!Utilities@{Utilities}}
+\subsubsection[{kilometer}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::kilometer} = 1000.0 / 0.001}}
+\label{namespace_utilities_a06654149ce3cba96084c785b079a7a31}
+
+
+kilometre 
+
+
+
+Definition at line 50 of file Units.h.
+
+\hypertarget{namespace_utilities_ae059df9243c641262f7a72694479ab09}{
+\index{Utilities@{Utilities}!kilometre@{kilometre}}
+\index{kilometre@{kilometre}!Utilities@{Utilities}}
+\subsubsection[{kilometre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::kilometre} = {\bf kilometer}}}
+\label{namespace_utilities_ae059df9243c641262f7a72694479ab09}
+
+
+kilometre 
+
+
+
+Definition at line 59 of file Units.h.
+
+\hypertarget{namespace_utilities_a4e01876aaa4c4d98bcbf9526e980d996}{
+\index{Utilities@{Utilities}!km@{km}}
+\index{km@{km}!Utilities@{Utilities}}
+\subsubsection[{km}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::km} = {\bf kilometer}}}
+\label{namespace_utilities_a4e01876aaa4c4d98bcbf9526e980d996}
+
+
+kilometre 
+
+
+
+Definition at line 68 of file Units.h.
+
+\hypertarget{namespace_utilities_a61a790dbfa282940ea38347f86885324}{
+\index{Utilities@{Utilities}!km2@{km2}}
+\index{km2@{km2}!Utilities@{Utilities}}
+\subsubsection[{km2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::km2} = {\bf km} $\ast$ {\bf km}}}
+\label{namespace_utilities_a61a790dbfa282940ea38347f86885324}
+
+
+square kilometre 
+
+
+
+Definition at line 77 of file Units.h.
+
+\hypertarget{namespace_utilities_a205e9c8c24630292f2d0213f433503e9}{
+\index{Utilities@{Utilities}!m@{m}}
+\index{m@{m}!Utilities@{Utilities}}
+\subsubsection[{m}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::m} = {\bf meter}}}
+\label{namespace_utilities_a205e9c8c24630292f2d0213f433503e9}
+
+
+meter 
+
+
+
+Definition at line 71 of file Units.h.
+
+\hypertarget{namespace_utilities_aa5d500d1242875d68aabe2a7ca84dee6}{
+\index{Utilities@{Utilities}!m2@{m2}}
+\index{m2@{m2}!Utilities@{Utilities}}
+\subsubsection[{m2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::m2} = {\bf m} $\ast$ {\bf m}}}
+\label{namespace_utilities_aa5d500d1242875d68aabe2a7ca84dee6}
+
+
+square meter 
+
+
+
+Definition at line 80 of file Units.h.
+
+\hypertarget{namespace_utilities_a9ae5f215b36e4775746428f61852bff9}{
+\index{Utilities@{Utilities}!megaelectronvolt@{megaelectronvolt}}
+\index{megaelectronvolt@{megaelectronvolt}!Utilities@{Utilities}}
+\subsubsection[{megaelectronvolt}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::megaelectronvolt} = 1.0}}
+\label{namespace_utilities_a9ae5f215b36e4775746428f61852bff9}
+
+
+megaelectron volt 
+
+
+
+Definition at line 86 of file Units.h.
+
+\hypertarget{namespace_utilities_a2b626049c35729f994e12d5f4f950d6b}{
+\index{Utilities@{Utilities}!meter@{meter}}
+\index{meter@{meter}!Utilities@{Utilities}}
+\subsubsection[{meter}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::meter} = 1.0 / 0.001}}
+\label{namespace_utilities_a2b626049c35729f994e12d5f4f950d6b}
+
+
+metre 
+
+
+
+Definition at line 53 of file Units.h.
+
+\hypertarget{namespace_utilities_abf8ec967be8032f9546e417808f17cec}{
+\index{Utilities@{Utilities}!metre@{metre}}
+\index{metre@{metre}!Utilities@{Utilities}}
+\subsubsection[{metre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::metre} = {\bf meter}}}
+\label{namespace_utilities_abf8ec967be8032f9546e417808f17cec}
+
+
+metre 
+
+
+
+Definition at line 62 of file Units.h.
+
+\hypertarget{namespace_utilities_a26374683c027fd82866b27124597f903}{
+\index{Utilities@{Utilities}!MeV@{MeV}}
+\index{MeV@{MeV}!Utilities@{Utilities}}
+\subsubsection[{MeV}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::MeV} = {\bf megaelectronvolt}}}
+\label{namespace_utilities_a26374683c027fd82866b27124597f903}
+
+
+megaelectron volt 
+
+
+
+Definition at line 90 of file Units.h.
+
+\hypertarget{namespace_utilities_a644a781a973f0febf71abf06c267c8f3}{
+\index{Utilities@{Utilities}!mg@{mg}}
+\index{mg@{mg}!Utilities@{Utilities}}
+\subsubsection[{mg}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::mg} = {\bf milligram}}}
+\label{namespace_utilities_a644a781a973f0febf71abf06c267c8f3}
+
+
+milligram 
+
+
+
+Definition at line 109 of file Units.h.
+
+\hypertarget{namespace_utilities_ab9752f0a0b8174ed273a2a505c2a83e4}{
+\index{Utilities@{Utilities}!microgram@{microgram}}
+\index{microgram@{microgram}!Utilities@{Utilities}}
+\subsubsection[{microgram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::microgram} = 0.0001}}
+\label{namespace_utilities_ab9752f0a0b8174ed273a2a505c2a83e4}
+
+
+microgram 
+
+
+
+Definition at line 101 of file Units.h.
+
+\hypertarget{namespace_utilities_a99dfe40c94af0523293210aaf01a0435}{
+\index{Utilities@{Utilities}!micrometer@{micrometer}}
+\index{micrometer@{micrometer}!Utilities@{Utilities}}
+\subsubsection[{micrometer}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::micrometer} = 0.0001 / 0.001}}
+\label{namespace_utilities_a99dfe40c94af0523293210aaf01a0435}
+
+
+micrometre 
+
+
+
+Definition at line 57 of file Units.h.
+
+\hypertarget{namespace_utilities_a6d2f4eead5bcae530f7c08291bf86931}{
+\index{Utilities@{Utilities}!micrometre@{micrometre}}
+\index{micrometre@{micrometre}!Utilities@{Utilities}}
+\subsubsection[{micrometre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::micrometre} = {\bf micrometer}}}
+\label{namespace_utilities_a6d2f4eead5bcae530f7c08291bf86931}
+
+
+micrometre 
+
+
+
+Definition at line 66 of file Units.h.
+
+\hypertarget{namespace_utilities_acad791e8ae3f5eb81fa1aeb7abf90f9f}{
+\index{Utilities@{Utilities}!milligram@{milligram}}
+\index{milligram@{milligram}!Utilities@{Utilities}}
+\subsubsection[{milligram}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::milligram} = 0.001}}
+\label{namespace_utilities_acad791e8ae3f5eb81fa1aeb7abf90f9f}
+
+
+milligram 
+
+
+
+Definition at line 100 of file Units.h.
+
+\hypertarget{namespace_utilities_ae8c7101098fba61f862817a083c422ca}{
+\index{Utilities@{Utilities}!millimeter@{millimeter}}
+\index{millimeter@{millimeter}!Utilities@{Utilities}}
+\subsubsection[{millimeter}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::millimeter} = 0.001 / 0.001}}
+\label{namespace_utilities_ae8c7101098fba61f862817a083c422ca}
+
+
+millimetre 
+
+
+
+Definition at line 56 of file Units.h.
+
+\hypertarget{namespace_utilities_a8a754864202e3b90c9f70df567799d24}{
+\index{Utilities@{Utilities}!millimetre@{millimetre}}
+\index{millimetre@{millimetre}!Utilities@{Utilities}}
+\subsubsection[{millimetre}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::millimetre} = {\bf millimeter}}}
+\label{namespace_utilities_a8a754864202e3b90c9f70df567799d24}
+
+
+millimetre 
+
+
+
+Definition at line 65 of file Units.h.
+
+\hypertarget{namespace_utilities_ada68d4ec8f02c2ffc43db9220cbdcba8}{
+\index{Utilities@{Utilities}!mm@{mm}}
+\index{mm@{mm}!Utilities@{Utilities}}
+\subsubsection[{mm}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::mm} = {\bf millimeter}}}
+\label{namespace_utilities_ada68d4ec8f02c2ffc43db9220cbdcba8}
+
+
+millimeter 
+
+
+
+Definition at line 74 of file Units.h.
+
+\hypertarget{namespace_utilities_a1bfe965c55c47b8f84c53b95d527da39}{
+\index{Utilities@{Utilities}!mm2@{mm2}}
+\index{mm2@{mm2}!Utilities@{Utilities}}
+\subsubsection[{mm2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::mm2} = {\bf mm} $\ast$ {\bf mm}}}
+\label{namespace_utilities_a1bfe965c55c47b8f84c53b95d527da39}
+
+
+square millimeter 
+
+
+
+Definition at line 83 of file Units.h.
+
+\hypertarget{namespace_utilities_a119d98992bec0bd0923f88ebf77ed86f}{
+\index{Utilities@{Utilities}!PI@{PI}}
+\index{PI@{PI}!Utilities@{Utilities}}
+\subsubsection[{PI}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::PI} = 3.14159265358979323846}}
+\label{namespace_utilities_a119d98992bec0bd0923f88ebf77ed86f}
+
+
+Definition at line 47 of file Units.h.
+
+\hypertarget{namespace_utilities_a3d5b18587a483b13232097d2ac93341f}{
+\index{Utilities@{Utilities}!PI\_\-2@{PI\_\-2}}
+\index{PI\_\-2@{PI\_\-2}!Utilities@{Utilities}}
+\subsubsection[{PI\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::PI\_\-2} = {\bf PI} / 2.0}}
+\label{namespace_utilities_a3d5b18587a483b13232097d2ac93341f}
+
+
+Definition at line 48 of file Units.h.
+
+\hypertarget{namespace_utilities_ab7041baaaea73a172ddc834aaea10ec1}{
+\index{Utilities@{Utilities}!ug@{ug}}
+\index{ug@{ug}!Utilities@{Utilities}}
+\subsubsection[{ug}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::ug} = {\bf microgram}}}
+\label{namespace_utilities_ab7041baaaea73a172ddc834aaea10ec1}
+
+
+microgram 
+
+
+
+Definition at line 110 of file Units.h.
+
+\hypertarget{namespace_utilities_a79bb1876d9d2416239e3ca0b57582018}{
+\index{Utilities@{Utilities}!um@{um}}
+\index{um@{um}!Utilities@{Utilities}}
+\subsubsection[{um}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::um} = {\bf micrometer}}}
+\label{namespace_utilities_a79bb1876d9d2416239e3ca0b57582018}
+
+
+micrometre 
+
+
+
+Definition at line 75 of file Units.h.
+
+\hypertarget{namespace_utilities_a89e97d06d21d5752d28b987caca1164e}{
+\index{Utilities@{Utilities}!um2@{um2}}
+\index{um2@{um2}!Utilities@{Utilities}}
+\subsubsection[{um2}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Utilities::um2} = {\bf um} $\ast$ {\bf um}}}
+\label{namespace_utilities_a89e97d06d21d5752d28b987caca1164e}
+
+
+square micrometre 
+
+
+
+Definition at line 84 of file Units.h.
+

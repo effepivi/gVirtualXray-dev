@@ -1,0 +1,1467 @@
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer}{
+\section{gVirtualXRay::XRayRenderer Class Reference}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer}\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+}
+
+
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer}{XRayRenderer} is a class to compute and renderer X-\/ray images on GPU.  
+
+
+
+
+{\ttfamily \#include $<$XRayRenderer.h$>$}
+
+
+
+Collaboration diagram for gVirtualXRay::XRayRenderer:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=600pt]{classg_virtual_x_ray_1_1_x_ray_renderer__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558}{ComputingModeTag} \{ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a7348b3681da412266fd6dd21cea6d285}{OPENGL}, 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a4e110903ce0c33feb2921b6729c8ea2f}{CUDA}, 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a14ce0ad1224e557c26f2faf8ef9a2529}{OPENCL}
+ \}
+\begin{DoxyCompactList}\small\item\em Type to store the computation engine (OpenGL, CUDA, OpenCL, etc.). \end{DoxyCompactList}\item 
+typedef enum \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558}{gVirtualXRay::XRayRenderer::ComputingModeTag} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_af306d3bab294f730af5a692f716c9f81}{ComputingMode}
+\begin{DoxyCompactList}\small\item\em Type to store the computation engine (OpenGL, CUDA, OpenCL, etc.). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_af946192494b2ccfbfa2cf0e5c4c04b30}{XRayRenderer} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a713b38707c30dfcb0a60f7b0e9d22ba0}{$\sim$XRayRenderer} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ad9bacedb45b8f2c89eb9ed25ca82e9fa}{initialise} (\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_af306d3bab294f730af5a692f716c9f81}{ComputingMode} aComputingMode, int anInternalTextureFormat, const \hyperlink{classg_virtual_x_ray_1_1_x_ray_detector}{XRayDetector} $\ast$apDetector, const \hyperlink{classg_virtual_x_ray_1_1_x_ray_beam}{XRayBeam} $\ast$apBeamSpectrum)
+\begin{DoxyCompactList}\small\item\em Initialise the renderer. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a4653f81b7f5fd198d82d9037caf132e5}{reset} ()
+\item 
+bool \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a5b8756ac0174d619b2c7daff536b846f}{isReady} () const 
+\begin{DoxyCompactList}\small\item\em Check if the renderer is ready to simulate X-\/ray images. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a65a11e213cc087fbbf83b232901ca443}{addInnerSurface} (const \hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} $\ast$apSurface)
+\begin{DoxyCompactList}\small\item\em Add a 3D object to be rendered. It will be used as an internal surface. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_aa92db653d03526432b6531f27cd54034}{addOuterSurface} (const \hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} $\ast$apSurface)
+\begin{DoxyCompactList}\small\item\em Add a 3D object to be rendered. It will be used as an external surface. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ab0dac046f1b64af44862b6cee9e46484}{computeLBuffer} (\hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} \&anObject, const \hyperlink{class_math_1_1_vec3}{VEC3} \&aXRaySourceDetectorTranslation, const \hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \&aModellingTransformationMatrix)
+\begin{DoxyCompactList}\small\item\em Compute the L-\/buffer of a 3D object. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a99cdb12e0b645163abfa53bafc2f74a2}{computeImage} (const \hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \&aModellingTransformationMatrix=\hyperlink{class_math_1_1_matrix4x4}{MATRIX4}())
+\begin{DoxyCompactList}\small\item\em Compute the X-\/ray image. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a7a8fbfaab41c0cbc382c53c91a2c2a31}{printFBO} (unsigned int aFBOID, const char $\ast$aFileName)
+\begin{DoxyCompactList}\small\item\em Save a FBO into a file. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a7dd8b89283ff68084488b4a8b9022c89}{print2DTexture} (unsigned int aTextureID, const char $\ast$aFileName)
+\begin{DoxyCompactList}\small\item\em Save a texture into a file. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a7d3ba3f88b17419c51b7b3c7c34dc19c}{printLBuffer} (const char $\ast$aFileName)
+\begin{DoxyCompactList}\small\item\em Save the current L-\/buffer into a file. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_abdf17ddb1dfb9f96c6577d8aa7a6c6d8}{printCumulatedLBuffer} (const char $\ast$aFileName)
+\begin{DoxyCompactList}\small\item\em Save the current cumulated L-\/buffer into a file. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a3e110bcab5cfa58ac074ba54a3549dcc}{printSumMuxDx} (const char $\ast$aFileName)
+\begin{DoxyCompactList}\small\item\em Save the current Mux Dx into a file. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a5ed67ac0091620328f9e0ca11b3725d5}{printEnergyFluence} (const char $\ast$aFileName)
+\begin{DoxyCompactList}\small\item\em Save the current energy fluence into a file. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a204c83d6cce239e173f2fa3679ac8820}{display2DTexture} (unsigned int aTexutreID)
+\begin{DoxyCompactList}\small\item\em Display a 2D texture using OpenGL. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a34ee8ba527acf9da3199d54181521f2e}{displayLBuffer} ()
+\begin{DoxyCompactList}\small\item\em Display the L-\/buffer using OpenGL. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_adece8b06fc47cad618596a378361c273}{displayEnergyFluence} ()
+\begin{DoxyCompactList}\small\item\em Display the energy fluence using OpenGL. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_abbd6c87260c167ca3b58874114cb89ac}{normalise} ()
+\begin{DoxyCompactList}\small\item\em Normalise the final result to display in OpenGL. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a3e9ed824d8c1b773fc3222abdf70c948}{display} ()
+\begin{DoxyCompactList}\small\item\em Display the X-\/ray image using OpenGL. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a834e6523f215a725d20cfc6b093e93a9}{getMuWaterLinearInterpolation} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&anIncidentEnergy)
+\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ae2a99079450fe70d5c0070445296200e}{getMuWaterLogLinearInterpolation} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&anIncidentEnergy)
+\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a14b80bab07a5b51b2069da606677f7ed}{convertHounsfieldValue2Mu} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&HU, const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&mu\_\-water) const 
+\begin{DoxyCompactList}\small\item\em Convert a Hounsfield value into an attenuation coefficient. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ac2969e479dce456def60e7b88e2184a9}{useNegativeFilteringFlag} (bool aFlag=true)
+\begin{DoxyCompactList}\small\item\em Display the final image in negative or not. \end{DoxyCompactList}\item 
+bool \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a945c565e34cf7b754adbad3ed4d96191}{getNegativeFilteringFlag} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the flag control the display of the final in negative. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a850046acb9a509e18766fd14ee07e035}{printMuWaterTable} (std::ostream \&anOutputStream)
+\begin{DoxyCompactList}\small\item\em Output the talbe of attenuation coefficients of water into a data stream. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a490556bca3d3b345081dd6c4b51a73c0}{getNumberOfInnerSurfaces} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of inner surfaces (e.g. an internal organ in case of a medical application). \end{DoxyCompactList}\item 
+unsigned int \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a4db9e64934d2753e9b7eff591dc88124}{getNumberOfOuterSurfaces} () const 
+\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a8c6675449f169cdd75f224b03d9510d0}{displayInnerSurface} (unsigned int anIndex) const 
+\begin{DoxyCompactList}\small\item\em Display a given inner surface (e.g. an internal organ in case of a medical application). \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a5318d429f1d2d8fda215227228c418bb}{displayOuterSurface} () const 
+\begin{DoxyCompactList}\small\item\em Display the outer surface (e.g. the skin surface in case of a medical application). \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a303d0c055e4b5841aaf9c96c6822b5e4}{getMinPixelValue} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the smallest pixel intensity in the latest simulated X-\/ray image. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_aaf76470c76161d0fa6afdd4fd0324d69}{getMaxPixelValue} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the greatest pixel intensity in the latest simulated X-\/ray image. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a1337efbad4ecdc7ea0054b187590596d}{PixelType}
+\begin{DoxyCompactList}\small\item\em Pixel type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a1a5573eb584f679e9c1128ce500e943e}{loadMuWater} ()
+\begin{DoxyCompactList}\small\item\em Load the table of water attenuation coefficients. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a5bbcfdeb612308a24c2c357fe64b1503}{checkGPUCapabilities} ()
+\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ae991fabec12a82228e5f678ef4c85305}{initShaders} ()
+\begin{DoxyCompactList}\small\item\em Initialise the shaders. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a08f781173c61d93a46a5b3f1b76cf87b}{createFBOs} ()
+\begin{DoxyCompactList}\small\item\em Create the FBOs. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a16ab1d2c97a7ac98a9f8a9e5c161d18b}{deleteFBOs} ()
+\begin{DoxyCompactList}\small\item\em Delete the FBOs. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a3e578c0b4e93b04a5cb495b23ca4ec29}{createPBO} (unsigned int \&aPBO)
+\begin{DoxyCompactList}\small\item\em Create a PBO. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ace71e81ac4d981e1c3474e5afabbb2d2}{deletePBO} (unsigned int \&aPBO)
+\begin{DoxyCompactList}\small\item\em Delete a PBO. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ab3dbe6cad45ae0cfedbc49050433bc23}{initialisePBOs} ()
+\begin{DoxyCompactList}\small\item\em Initialise the PBOs. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a7426f1da160716ac5a07ce77bef11d88}{init2DTextures} (int anInternalTextureFormat)
+\begin{DoxyCompactList}\small\item\em Initialise the 2D textures. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ae19e22db29248abc1697891358ddf4ef}{init3DData} (int anInternalTextureFormat)
+\begin{DoxyCompactList}\small\item\em Initialise the 3D textures. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ad0c1f3e117c0a473f7a27b760be8406b}{init2DFBO} (unsigned int aFBOIndex, unsigned int aTextureIndex)
+\begin{DoxyCompactList}\small\item\em Initialise a FBO (e.g. attach textures, etc.). \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a1e858d82bd7df2f02f98ce1fa700b352}{init3DFBOs} ()
+\begin{DoxyCompactList}\small\item\em Initialise a FBO with a 3D texture. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ae3a251145da088ff95dd299eb5394405}{create2DTexture} (unsigned int $\ast$apTextureID, int anInternalTextureFormat)
+\begin{DoxyCompactList}\small\item\em Create a 2D texture. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a9aceef4f519760a2694b0b19fe634996}{reset2DBuffer} (unsigned int aFrameBuffer)
+\begin{DoxyCompactList}\small\item\em Reset the value of a FBO to 0. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a6c875c895dc36457d367b7553a2c8e9c}{resetLBuffer} ()
+\begin{DoxyCompactList}\small\item\em Reset the L-\/buffer FBO to 0. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_aed59e8c837471d013e5b5ea006881465}{resetEnergyFluence} ()
+\begin{DoxyCompactList}\small\item\em Reset the energy fluence FBO to 0. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a9687410867e38b6d5140678b0a16c146}{resetSumMuxDx} ()
+\begin{DoxyCompactList}\small\item\em Reset the Mu\_\-x $\ast$ D\_\-x FBO to 0. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_aa9d6223020b229b98ba7a57eb15ec306}{computeInnerSurfaceLBuffer} (\hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} \&anObject, const \hyperlink{class_math_1_1_vec3}{VEC3} \&aXRaySourceSampleOffset, const \hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \&aModellingTransformationMatrix)
+\begin{DoxyCompactList}\small\item\em Compute the L-\/buffer of an internal object. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_acb29e82c18bd5e87359301e4557aefb8}{computeOuterSurfaceLBuffer} (\hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} \&anObject, const \hyperlink{class_math_1_1_vec3}{VEC3} \&aXRaySourceSampleOffset, const \hyperlink{class_math_1_1_matrix4x4}{MATRIX4} \&aModellingTransformationMatrix)
+\begin{DoxyCompactList}\small\item\em Compute the L-\/buffer of an external object. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a30af82b3a10279690ab2b395e6c812a6}{updateCumulatedLBuffers} (unsigned int anObjectID)
+\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a3190cdb7948bd2e446e44da82c39d7b1}{computeSumMUxDx} (\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} HU, unsigned int anObjectID)
+\begin{DoxyCompactList}\small\item\em Compute t. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a117022f350fe6b0ab342edd804f44fb8}{computeIntegratedEnergy} ()
+\begin{DoxyCompactList}\small\item\em Compute the energy fluence. \end{DoxyCompactList}\item 
+void \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ae800750bd503f2e18251c266d8e528e3}{updateVBO} ()
+\begin{DoxyCompactList}\small\item\em Update the VBO of the geometry. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_detector}{XRayDetector} $\ast$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_abe635fe1136fa3936fd5439cf888aad9}{m\_\-p\_\-detector}
+\begin{DoxyCompactList}\small\item\em The X-\/ray detector. \end{DoxyCompactList}\item 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_beam}{XRayBeam} $\ast$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a10326c78ad5b1ff35d529efa4212aa78}{m\_\-p\_\-xray\_\-beam}
+\begin{DoxyCompactList}\small\item\em The X-\/ray beam. \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} $\ast$ $>$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a18d3b60ab79b39221526a490935e955f}{m\_\-p\_\-inner\_\-surface\_\-set}
+\begin{DoxyCompactList}\small\item\em Set of 3D geometries. \end{DoxyCompactList}\item 
+\hyperlink{class_graphics_1_1_polygon_mesh}{PolygonMesh} $\ast$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a4d31028c769154394e7815f39c164bc7}{m\_\-p\_\-outer\_\-surface}
+\begin{DoxyCompactList}\small\item\em The 3D geometry that will wrap the ones in m\_\-p\_\-inner\_\-surface\_\-set. \end{DoxyCompactList}\item 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_af306d3bab294f730af5a692f716c9f81}{ComputingMode} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_acd744ca8277894c4e33c580c64e809b0}{m\_\-computing\_\-mode}
+\begin{DoxyCompactList}\small\item\em The computing mode (OPENGL, CUDA, or OPENCL) \end{DoxyCompactList}\item 
+std::vector$<$ unsigned int $>$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a3c98784b4ffd06d7dac0c43e20713b14}{m\_\-p\_\-pbo\_\-set}
+\begin{DoxyCompactList}\small\item\em Set of PBOs. \end{DoxyCompactList}\item 
+std::vector$<$ unsigned int $>$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a1075d6644118669ee6948eab5ee82f85}{m\_\-p\_\-texture\_\-name\_\-set}
+\begin{DoxyCompactList}\small\item\em Set of textures. \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{class_graphics_1_1_shader}{Shader} $>$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a737acc3cdfe28c3db90dfd69dce0a203}{m\_\-shader\_\-set}
+\begin{DoxyCompactList}\small\item\em Set of shaders. \end{DoxyCompactList}\item 
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a1337efbad4ecdc7ea0054b187590596d}{PixelType} $\ast$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ad6c887c8da3342dffaa237115e9b933d}{m\_\-p\_\-temp\_\-raw\_\-data}
+\begin{DoxyCompactList}\small\item\em The raw data of the last FBO that was loaded in the main memory. \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{classg_virtual_x_ray_1_1_attenuation_coefficient}{AttenuationCoefficient} $>$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a26aff3c3fd71edffc1559635eae312f3}{m\_\-mu\_\-water\_\-set}
+\begin{DoxyCompactList}\small\item\em The table of water energy fluence coefficients. \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{class_framebuffer_object}{FramebufferObject} $\ast$ $>$ \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ac3df573e0519dd9809dbf5e7e762f796}{m\_\-p\_\-fbo\_\-set}
+\begin{DoxyCompactList}\small\item\em The set of FBOs. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a350d7524f24139e16a4beebf16551d52}{m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image}
+\begin{DoxyCompactList}\small\item\em Min value in simulated X-\/ray image. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a5e6f1a20a2356390150648719106d4bb}{m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image}
+\begin{DoxyCompactList}\small\item\em Max value in simulated X-\/ray image. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_a8ae2b2b8eb0fe41316fcebcb7cfcd814}{m\_\-negative\_\-display\_\-flag}
+\begin{DoxyCompactList}\small\item\em Flag to display the result in negative or not. \end{DoxyCompactList}\item 
+bool \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ade779286f936cbe987f62796e2222916}{m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering}
+\begin{DoxyCompactList}\small\item\em Flag set to true to use L-\/buffer artefact filtering. \end{DoxyCompactList}\item 
+bool \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_aca5aa1801c0c56d9c2129d53a81aa2d1}{m\_\-L\_\-buffer\_\-empty}
+\begin{DoxyCompactList}\small\item\em Flag use for lazy evaluation of the L-\/Buffer. \end{DoxyCompactList}\item 
+bool \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_aab1918fd34945b6afc1d1105e946001e}{m\_\-energy\_\-fluence\_\-empty}
+\begin{DoxyCompactList}\small\item\em Flag use for lazy evaluation and blending of the energy fluence. \end{DoxyCompactList}\item 
+\hyperlink{class_graphics_1_1_v_b_o}{VBO} \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer_ad17a5ac822d9095a14d361a41dd2827c}{m\_\-detector\_\-temporary\_\-geometry}
+\begin{DoxyCompactList}\small\item\em The VBO used to display a rectangle corresponding to the detector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer}{XRayRenderer} is a class to compute and renderer X-\/ray images on GPU. 
+
+Definition at line 93 of file XRayRenderer.h.
+
+
+
+\subsection{Member Typedef Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_af306d3bab294f730af5a692f716c9f81}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!ComputingMode@{ComputingMode}}
+\index{ComputingMode@{ComputingMode}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{ComputingMode}]{\setlength{\rightskip}{0pt plus 5cm}typedef enum {\bf gVirtualXRay::XRayRenderer::ComputingModeTag}  {\bf gVirtualXRay::XRayRenderer::ComputingMode}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_af306d3bab294f730af5a692f716c9f81}
+
+
+Type to store the computation engine (OpenGL, CUDA, OpenCL, etc.). 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a1337efbad4ecdc7ea0054b187590596d}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!PixelType@{PixelType}}
+\index{PixelType@{PixelType}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{PixelType}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf RATIONAL\_\-NUMBER} {\bf gVirtualXRay::XRayRenderer::PixelType}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a1337efbad4ecdc7ea0054b187590596d}
+
+
+Pixel type. 
+
+
+
+Definition at line 98 of file XRayRenderer.h.
+
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!ComputingModeTag@{ComputingModeTag}}
+\index{ComputingModeTag@{ComputingModeTag}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{ComputingModeTag}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf gVirtualXRay::XRayRenderer::ComputingModeTag}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558}
+
+
+Type to store the computation engine (OpenGL, CUDA, OpenCL, etc.). 
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{OPENGL@{OPENGL}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!OPENGL@{OPENGL}}\item[{\em 
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a7348b3681da412266fd6dd21cea6d285}{
+OPENGL}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a7348b3681da412266fd6dd21cea6d285}
+}]Computation using OpenGL. \index{CUDA@{CUDA}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!CUDA@{CUDA}}\item[{\em 
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a4e110903ce0c33feb2921b6729c8ea2f}{
+CUDA}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a4e110903ce0c33feb2921b6729c8ea2f}
+}]Computation using CUDA. \index{OPENCL@{OPENCL}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!OPENCL@{OPENCL}}\item[{\em 
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a14ce0ad1224e557c26f2faf8ef9a2529}{
+OPENCL}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_add8cc810f7a8132fceaf3b8d32a4d558a14ce0ad1224e557c26f2faf8ef9a2529}
+}]Computation using OpenCL. \end{description}
+\end{Desc}
+
+
+
+Definition at line 109 of file XRayRenderer.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_af946192494b2ccfbfa2cf0e5c4c04b30}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!XRayRenderer@{XRayRenderer}}
+\index{XRayRenderer@{XRayRenderer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{XRayRenderer}]{\setlength{\rightskip}{0pt plus 5cm}gVirtualXRay::XRayRenderer::XRayRenderer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_af946192494b2ccfbfa2cf0e5c4c04b30}
+
+
+Default constructor. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a713b38707c30dfcb0a60f7b0e9d22ba0}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!$\sim$XRayRenderer@{$\sim$XRayRenderer}}
+\index{$\sim$XRayRenderer@{$\sim$XRayRenderer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{$\sim$XRayRenderer}]{\setlength{\rightskip}{0pt plus 5cm}gVirtualXRay::XRayRenderer::$\sim$XRayRenderer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a713b38707c30dfcb0a60f7b0e9d22ba0}
+
+
+Destructor. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a65a11e213cc087fbbf83b232901ca443}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!addInnerSurface@{addInnerSurface}}
+\index{addInnerSurface@{addInnerSurface}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{addInnerSurface}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::addInnerSurface (
+\begin{DoxyParamCaption}
+\item[{const {\bf PolygonMesh} $\ast$}]{apSurface}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a65a11e213cc087fbbf83b232901ca443}
+
+
+Add a 3D object to be rendered. It will be used as an internal surface. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em apSurface,:} & the 3D object \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 62 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_aa92db653d03526432b6531f27cd54034}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!addOuterSurface@{addOuterSurface}}
+\index{addOuterSurface@{addOuterSurface}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{addOuterSurface}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::addOuterSurface (
+\begin{DoxyParamCaption}
+\item[{const {\bf PolygonMesh} $\ast$}]{apSurface}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_aa92db653d03526432b6531f27cd54034}
+
+
+Add a 3D object to be rendered. It will be used as an external surface. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em apSurface,:} & the 3D object \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 70 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a5bbcfdeb612308a24c2c357fe64b1503}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!checkGPUCapabilities@{checkGPUCapabilities}}
+\index{checkGPUCapabilities@{checkGPUCapabilities}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{checkGPUCapabilities}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::checkGPUCapabilities (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a5bbcfdeb612308a24c2c357fe64b1503}
+Check that the device supports all the required OpenGL extensions that are needed. \hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a99cdb12e0b645163abfa53bafc2f74a2}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!computeImage@{computeImage}}
+\index{computeImage@{computeImage}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{computeImage}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::computeImage (
+\begin{DoxyParamCaption}
+\item[{const {\bf MATRIX4} \&}]{aModellingTransformationMatrix = {\ttfamily {\bf MATRIX4}()}}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a99cdb12e0b645163abfa53bafc2f74a2}
+
+
+Compute the X-\/ray image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aModellingTransformationMatrix,:} & a modelling transformation matrix that will be used on all the 3D objects \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_aa9d6223020b229b98ba7a57eb15ec306}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!computeInnerSurfaceLBuffer@{computeInnerSurfaceLBuffer}}
+\index{computeInnerSurfaceLBuffer@{computeInnerSurfaceLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{computeInnerSurfaceLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::computeInnerSurfaceLBuffer (
+\begin{DoxyParamCaption}
+\item[{{\bf PolygonMesh} \&}]{anObject, }
+\item[{const {\bf VEC3} \&}]{aXRaySourceSampleOffset, }
+\item[{const {\bf MATRIX4} \&}]{aModellingTransformationMatrix}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_aa9d6223020b229b98ba7a57eb15ec306}
+
+
+Compute the L-\/buffer of an internal object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anObject,:} & the 3D object to process \\
+\hline
+{\em aXRaySourceSampleOffset,:} & the translation vector to use when the source is not aligned with the detector \\
+\hline
+{\em aModellingTransformationMatrix,:} & the transformation matrix of the 3D object \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a117022f350fe6b0ab342edd804f44fb8}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!computeIntegratedEnergy@{computeIntegratedEnergy}}
+\index{computeIntegratedEnergy@{computeIntegratedEnergy}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{computeIntegratedEnergy}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::computeIntegratedEnergy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a117022f350fe6b0ab342edd804f44fb8}
+
+
+Compute the energy fluence. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ab0dac046f1b64af44862b6cee9e46484}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!computeLBuffer@{computeLBuffer}}
+\index{computeLBuffer@{computeLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{computeLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::computeLBuffer (
+\begin{DoxyParamCaption}
+\item[{{\bf PolygonMesh} \&}]{anObject, }
+\item[{const {\bf VEC3} \&}]{aXRaySourceDetectorTranslation, }
+\item[{const {\bf MATRIX4} \&}]{aModellingTransformationMatrix}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ab0dac046f1b64af44862b6cee9e46484}
+
+
+Compute the L-\/buffer of a 3D object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anObject,:} & the 3D object to process \\
+\hline
+{\em aXRaySourceDetectorTranslation,:} & the translation vector to use when the source is not aligned with the detector \\
+\hline
+{\em aModellingTransformationMatrix,:} & the transformation matrix of the 3D object \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_acb29e82c18bd5e87359301e4557aefb8}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!computeOuterSurfaceLBuffer@{computeOuterSurfaceLBuffer}}
+\index{computeOuterSurfaceLBuffer@{computeOuterSurfaceLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{computeOuterSurfaceLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::computeOuterSurfaceLBuffer (
+\begin{DoxyParamCaption}
+\item[{{\bf PolygonMesh} \&}]{anObject, }
+\item[{const {\bf VEC3} \&}]{aXRaySourceSampleOffset, }
+\item[{const {\bf MATRIX4} \&}]{aModellingTransformationMatrix}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_acb29e82c18bd5e87359301e4557aefb8}
+
+
+Compute the L-\/buffer of an external object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anObject,:} & the 3D object to process \\
+\hline
+{\em aXRaySourceSampleOffset,:} & the translation vector to use when the source is not aligned with the detector \\
+\hline
+{\em aModellingTransformationMatrix,:} & the transformation matrix of the 3D object \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a3190cdb7948bd2e446e44da82c39d7b1}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!computeSumMUxDx@{computeSumMUxDx}}
+\index{computeSumMUxDx@{computeSumMUxDx}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{computeSumMUxDx}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::computeSumMUxDx (
+\begin{DoxyParamCaption}
+\item[{{\bf RATIONAL\_\-NUMBER}}]{HU, }
+\item[{unsigned int}]{anObjectID}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a3190cdb7948bd2e446e44da82c39d7b1}
+
+
+Compute t. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HU,:} & \\
+\hline
+{\em anObjectID,:} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a14b80bab07a5b51b2069da606677f7ed}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!convertHounsfieldValue2Mu@{convertHounsfieldValue2Mu}}
+\index{convertHounsfieldValue2Mu@{convertHounsfieldValue2Mu}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{convertHounsfieldValue2Mu}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::XRayRenderer::convertHounsfieldValue2Mu (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{HU, }
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{mu\_\-water}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a14b80bab07a5b51b2069da606677f7ed}
+
+
+Convert a Hounsfield value into an attenuation coefficient. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HU,:} & the Hounsfield value to convert \\
+\hline
+{\em mu\_\-water,:} & the attenuation coefficient of water at a given energy \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the corresponding attenuation coefficient 
+\end{DoxyReturn}
+
+
+Definition at line 139 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ae3a251145da088ff95dd299eb5394405}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!create2DTexture@{create2DTexture}}
+\index{create2DTexture@{create2DTexture}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{create2DTexture}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::create2DTexture (
+\begin{DoxyParamCaption}
+\item[{unsigned int $\ast$}]{apTextureID, }
+\item[{int}]{anInternalTextureFormat}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ae3a251145da088ff95dd299eb5394405}
+
+
+Create a 2D texture. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em apTextureID,:} & the address on the ID of the texture \\
+\hline
+{\em anInternalTextureFormat,:} & the internal format in which the texture will be stored in the device \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a08f781173c61d93a46a5b3f1b76cf87b}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!createFBOs@{createFBOs}}
+\index{createFBOs@{createFBOs}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{createFBOs}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::createFBOs (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a08f781173c61d93a46a5b3f1b76cf87b}
+
+
+Create the FBOs. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a3e578c0b4e93b04a5cb495b23ca4ec29}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!createPBO@{createPBO}}
+\index{createPBO@{createPBO}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{createPBO}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::createPBO (
+\begin{DoxyParamCaption}
+\item[{unsigned int \&}]{aPBO}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a3e578c0b4e93b04a5cb495b23ca4ec29}
+
+
+Create a PBO. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aPBO,:} & ID of the PBO to create \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a16ab1d2c97a7ac98a9f8a9e5c161d18b}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!deleteFBOs@{deleteFBOs}}
+\index{deleteFBOs@{deleteFBOs}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{deleteFBOs}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::deleteFBOs (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a16ab1d2c97a7ac98a9f8a9e5c161d18b}
+
+
+Delete the FBOs. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ace71e81ac4d981e1c3474e5afabbb2d2}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!deletePBO@{deletePBO}}
+\index{deletePBO@{deletePBO}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{deletePBO}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::deletePBO (
+\begin{DoxyParamCaption}
+\item[{unsigned int \&}]{aPBO}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ace71e81ac4d981e1c3474e5afabbb2d2}
+
+
+Delete a PBO. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aPBO,:} & ID of the PBO to delete \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a3e9ed824d8c1b773fc3222abdf70c948}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!display@{display}}
+\index{display@{display}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{display}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::display (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a3e9ed824d8c1b773fc3222abdf70c948}
+
+
+Display the X-\/ray image using OpenGL. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a204c83d6cce239e173f2fa3679ac8820}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!display2DTexture@{display2DTexture}}
+\index{display2DTexture@{display2DTexture}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{display2DTexture}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::display2DTexture (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{aTexutreID}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a204c83d6cce239e173f2fa3679ac8820}
+
+
+Display a 2D texture using OpenGL. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_adece8b06fc47cad618596a378361c273}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!displayEnergyFluence@{displayEnergyFluence}}
+\index{displayEnergyFluence@{displayEnergyFluence}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{displayEnergyFluence}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::displayEnergyFluence (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_adece8b06fc47cad618596a378361c273}
+
+
+Display the energy fluence using OpenGL. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a8c6675449f169cdd75f224b03d9510d0}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!displayInnerSurface@{displayInnerSurface}}
+\index{displayInnerSurface@{displayInnerSurface}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{displayInnerSurface}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::displayInnerSurface (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anIndex}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a8c6675449f169cdd75f224b03d9510d0}
+
+
+Display a given inner surface (e.g. an internal organ in case of a medical application). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anIndex,:} & the index of the inner surface to display \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 171 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a34ee8ba527acf9da3199d54181521f2e}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!displayLBuffer@{displayLBuffer}}
+\index{displayLBuffer@{displayLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{displayLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::displayLBuffer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a34ee8ba527acf9da3199d54181521f2e}
+
+
+Display the L-\/buffer using OpenGL. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a5318d429f1d2d8fda215227228c418bb}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!displayOuterSurface@{displayOuterSurface}}
+\index{displayOuterSurface@{displayOuterSurface}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{displayOuterSurface}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::displayOuterSurface (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a5318d429f1d2d8fda215227228c418bb}
+
+
+Display the outer surface (e.g. the skin surface in case of a medical application). 
+
+
+
+Definition at line 184 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_aaf76470c76161d0fa6afdd4fd0324d69}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getMaxPixelValue@{getMaxPixelValue}}
+\index{getMaxPixelValue@{getMaxPixelValue}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getMaxPixelValue}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::XRayRenderer::getMaxPixelValue (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_aaf76470c76161d0fa6afdd4fd0324d69}
+
+
+Accessor on the greatest pixel intensity in the latest simulated X-\/ray image. 
+
+\begin{DoxyReturn}{Returns}
+the max value in simulated X-\/ray image 
+\end{DoxyReturn}
+
+
+Definition at line 205 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a303d0c055e4b5841aaf9c96c6822b5e4}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getMinPixelValue@{getMinPixelValue}}
+\index{getMinPixelValue@{getMinPixelValue}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getMinPixelValue}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::XRayRenderer::getMinPixelValue (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a303d0c055e4b5841aaf9c96c6822b5e4}
+
+
+Accessor on the smallest pixel intensity in the latest simulated X-\/ray image. 
+
+\begin{DoxyReturn}{Returns}
+the min value in simulated X-\/ray image 
+\end{DoxyReturn}
+
+
+Definition at line 197 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a834e6523f215a725d20cfc6b093e93a9}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getMuWaterLinearInterpolation@{getMuWaterLinearInterpolation}}
+\index{getMuWaterLinearInterpolation@{getMuWaterLinearInterpolation}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getMuWaterLinearInterpolation}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::XRayRenderer::getMuWaterLinearInterpolation (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{anIncidentEnergy}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a834e6523f215a725d20cfc6b093e93a9}
+Get the attenuation coefficient of water for a given energy. The value is computed using linear interpolation. 
+\begin{DoxyParams}{Parameters}
+{\em anIncidentEnergy,:} & the energy \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the corresponding attenuation coefficient of water 
+\end{DoxyReturn}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ae2a99079450fe70d5c0070445296200e}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getMuWaterLogLinearInterpolation@{getMuWaterLogLinearInterpolation}}
+\index{getMuWaterLogLinearInterpolation@{getMuWaterLogLinearInterpolation}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getMuWaterLogLinearInterpolation}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::XRayRenderer::getMuWaterLogLinearInterpolation (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{anIncidentEnergy}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ae2a99079450fe70d5c0070445296200e}
+Get the attenuation coefficient of water for a given energy. The value is computed using linear interpolation on a logarithmic scale. 
+\begin{DoxyParams}{Parameters}
+{\em anIncidentEnergy,:} & the energy \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the corresponding attenuation coefficient of water 
+\end{DoxyReturn}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a945c565e34cf7b754adbad3ed4d96191}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getNegativeFilteringFlag@{getNegativeFilteringFlag}}
+\index{getNegativeFilteringFlag@{getNegativeFilteringFlag}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getNegativeFilteringFlag}]{\setlength{\rightskip}{0pt plus 5cm}bool gVirtualXRay::XRayRenderer::getNegativeFilteringFlag (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a945c565e34cf7b754adbad3ed4d96191}
+
+
+Accessor on the flag control the display of the final in negative. 
+
+\begin{DoxyReturn}{Returns}
+true if the final image is displayed in negative, false it is not 
+\end{DoxyReturn}
+
+
+Definition at line 54 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a490556bca3d3b345081dd6c4b51a73c0}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getNumberOfInnerSurfaces@{getNumberOfInnerSurfaces}}
+\index{getNumberOfInnerSurfaces@{getNumberOfInnerSurfaces}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getNumberOfInnerSurfaces}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int gVirtualXRay::XRayRenderer::getNumberOfInnerSurfaces (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a490556bca3d3b345081dd6c4b51a73c0}
+
+
+Accessor on the number of inner surfaces (e.g. an internal organ in case of a medical application). 
+
+\begin{DoxyReturn}{Returns}
+the number of inner surfaces 
+\end{DoxyReturn}
+
+
+Definition at line 148 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a4db9e64934d2753e9b7eff591dc88124}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!getNumberOfOuterSurfaces@{getNumberOfOuterSurfaces}}
+\index{getNumberOfOuterSurfaces@{getNumberOfOuterSurfaces}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{getNumberOfOuterSurfaces}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int gVirtualXRay::XRayRenderer::getNumberOfOuterSurfaces (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a4db9e64934d2753e9b7eff591dc88124}
+Accessor on the number of outer surfaces (e.g. the skin surface in case of a medical application). This value is either equal to 0 or 1. \begin{DoxyReturn}{Returns}
+the number of outer surfaces 
+\end{DoxyReturn}
+
+
+Definition at line 156 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ad0c1f3e117c0a473f7a27b760be8406b}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!init2DFBO@{init2DFBO}}
+\index{init2DFBO@{init2DFBO}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{init2DFBO}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::init2DFBO (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{aFBOIndex, }
+\item[{unsigned int}]{aTextureIndex}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ad0c1f3e117c0a473f7a27b760be8406b}
+
+
+Initialise a FBO (e.g. attach textures, etc.). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFBOIndex,:} & the FBO to initialise \\
+\hline
+{\em aTextureIndex,:} & the texture to attach \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a7426f1da160716ac5a07ce77bef11d88}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!init2DTextures@{init2DTextures}}
+\index{init2DTextures@{init2DTextures}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{init2DTextures}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::init2DTextures (
+\begin{DoxyParamCaption}
+\item[{int}]{anInternalTextureFormat}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a7426f1da160716ac5a07ce77bef11d88}
+
+
+Initialise the 2D textures. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anInternalTextureFormat,:} & the internal format in which OpenGL textures will be stored (GL\_\-RGB16F\_\-ARB, or GL\_\-RGB32F\_\-ARB) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 121 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ae19e22db29248abc1697891358ddf4ef}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!init3DData@{init3DData}}
+\index{init3DData@{init3DData}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{init3DData}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::init3DData (
+\begin{DoxyParamCaption}
+\item[{int}]{anInternalTextureFormat}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ae19e22db29248abc1697891358ddf4ef}
+
+
+Initialise the 3D textures. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anInternalTextureFormat,:} & the internal format in which OpenGL textures will be stored (GL\_\-RGB16F\_\-ARB, or GL\_\-RGB32F\_\-ARB) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a1e858d82bd7df2f02f98ce1fa700b352}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!init3DFBOs@{init3DFBOs}}
+\index{init3DFBOs@{init3DFBOs}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{init3DFBOs}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::init3DFBOs (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a1e858d82bd7df2f02f98ce1fa700b352}
+
+
+Initialise a FBO with a 3D texture. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ad9bacedb45b8f2c89eb9ed25ca82e9fa}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!initialise@{initialise}}
+\index{initialise@{initialise}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{initialise}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::initialise (
+\begin{DoxyParamCaption}
+\item[{{\bf ComputingMode}}]{aComputingMode, }
+\item[{int}]{anInternalTextureFormat, }
+\item[{const {\bf XRayDetector} $\ast$}]{apDetector, }
+\item[{const {\bf XRayBeam} $\ast$}]{apBeamSpectrum}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ad9bacedb45b8f2c89eb9ed25ca82e9fa}
+
+
+Initialise the renderer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aComputingMode,:} & the computing mode (OPENGL, CUDA, or OPENCL) \\
+\hline
+{\em anInternalTextureFormat,:} & the internal format in which OpenGL textures will be stored (GL\_\-RGB16F\_\-ARB, or GL\_\-RGB32F\_\-ARB) \\
+\hline
+{\em apDetector,:} & the X-\/ray detector that will be used \\
+\hline
+{\em apBeamSpectrum,:} & the X-\/ray beam spectrum \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ab3dbe6cad45ae0cfedbc49050433bc23}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!initialisePBOs@{initialisePBOs}}
+\index{initialisePBOs@{initialisePBOs}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{initialisePBOs}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::initialisePBOs (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ab3dbe6cad45ae0cfedbc49050433bc23}
+
+
+Initialise the PBOs. 
+
+
+
+Definition at line 91 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ae991fabec12a82228e5f678ef4c85305}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!initShaders@{initShaders}}
+\index{initShaders@{initShaders}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{initShaders}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::initShaders (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ae991fabec12a82228e5f678ef4c85305}
+
+
+Initialise the shaders. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a5b8756ac0174d619b2c7daff536b846f}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!isReady@{isReady}}
+\index{isReady@{isReady}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{isReady}]{\setlength{\rightskip}{0pt plus 5cm}bool gVirtualXRay::XRayRenderer::isReady (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a5b8756ac0174d619b2c7daff536b846f}
+
+
+Check if the renderer is ready to simulate X-\/ray images. 
+
+\begin{DoxyReturn}{Returns}
+true if the renderer is ready, false if it is not 
+\end{DoxyReturn}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a1a5573eb584f679e9c1128ce500e943e}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!loadMuWater@{loadMuWater}}
+\index{loadMuWater@{loadMuWater}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{loadMuWater}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::loadMuWater (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a1a5573eb584f679e9c1128ce500e943e}
+
+
+Load the table of water attenuation coefficients. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_abbd6c87260c167ca3b58874114cb89ac}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!normalise@{normalise}}
+\index{normalise@{normalise}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{normalise}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::normalise (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_abbd6c87260c167ca3b58874114cb89ac}
+
+
+Normalise the final result to display in OpenGL. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a7dd8b89283ff68084488b4a8b9022c89}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!print2DTexture@{print2DTexture}}
+\index{print2DTexture@{print2DTexture}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{print2DTexture}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::print2DTexture (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{aTextureID, }
+\item[{const char $\ast$}]{aFileName}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a7dd8b89283ff68084488b4a8b9022c89}
+
+
+Save a texture into a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aTextureID,:} & the ID of the texture \\
+\hline
+{\em aFileName,:} & the file name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_abdf17ddb1dfb9f96c6577d8aa7a6c6d8}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!printCumulatedLBuffer@{printCumulatedLBuffer}}
+\index{printCumulatedLBuffer@{printCumulatedLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{printCumulatedLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::printCumulatedLBuffer (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFileName}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_abdf17ddb1dfb9f96c6577d8aa7a6c6d8}
+
+
+Save the current cumulated L-\/buffer into a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFileName,:} & the file name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a5ed67ac0091620328f9e0ca11b3725d5}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!printEnergyFluence@{printEnergyFluence}}
+\index{printEnergyFluence@{printEnergyFluence}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{printEnergyFluence}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::printEnergyFluence (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFileName}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a5ed67ac0091620328f9e0ca11b3725d5}
+
+
+Save the current energy fluence into a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFileName,:} & the file name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a7a8fbfaab41c0cbc382c53c91a2c2a31}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!printFBO@{printFBO}}
+\index{printFBO@{printFBO}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{printFBO}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::printFBO (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{aFBOID, }
+\item[{const char $\ast$}]{aFileName}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a7a8fbfaab41c0cbc382c53c91a2c2a31}
+
+
+Save a FBO into a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFBOID,:} & the ID of the FBO \\
+\hline
+{\em aFileName,:} & the file name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a7d3ba3f88b17419c51b7b3c7c34dc19c}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!printLBuffer@{printLBuffer}}
+\index{printLBuffer@{printLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{printLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::printLBuffer (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFileName}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a7d3ba3f88b17419c51b7b3c7c34dc19c}
+
+
+Save the current L-\/buffer into a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFileName,:} & the file name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a850046acb9a509e18766fd14ee07e035}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!printMuWaterTable@{printMuWaterTable}}
+\index{printMuWaterTable@{printMuWaterTable}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{printMuWaterTable}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::printMuWaterTable (
+\begin{DoxyParamCaption}
+\item[{std::ostream \&}]{anOutputStream}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a850046acb9a509e18766fd14ee07e035}
+
+
+Output the talbe of attenuation coefficients of water into a data stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anOutputStream,:} & the output data stream \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 78 of file XRayRenderer.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a3e110bcab5cfa58ac074ba54a3549dcc}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!printSumMuxDx@{printSumMuxDx}}
+\index{printSumMuxDx@{printSumMuxDx}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{printSumMuxDx}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::printSumMuxDx (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFileName}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a3e110bcab5cfa58ac074ba54a3549dcc}
+
+
+Save the current Mux Dx into a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFileName,:} & the file name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a4653f81b7f5fd198d82d9037caf132e5}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!reset@{reset}}
+\index{reset@{reset}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{reset}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::reset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a4653f81b7f5fd198d82d9037caf132e5}
+Reset the renderer (release memory on the host and the device, and restore default values). \hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a9aceef4f519760a2694b0b19fe634996}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!reset2DBuffer@{reset2DBuffer}}
+\index{reset2DBuffer@{reset2DBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{reset2DBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::reset2DBuffer (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{aFrameBuffer}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a9aceef4f519760a2694b0b19fe634996}
+
+
+Reset the value of a FBO to 0. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFrameBuffer,:} & the FBO to reset \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_aed59e8c837471d013e5b5ea006881465}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!resetEnergyFluence@{resetEnergyFluence}}
+\index{resetEnergyFluence@{resetEnergyFluence}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{resetEnergyFluence}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::resetEnergyFluence (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_aed59e8c837471d013e5b5ea006881465}
+
+
+Reset the energy fluence FBO to 0. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a6c875c895dc36457d367b7553a2c8e9c}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!resetLBuffer@{resetLBuffer}}
+\index{resetLBuffer@{resetLBuffer}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{resetLBuffer}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::resetLBuffer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a6c875c895dc36457d367b7553a2c8e9c}
+
+
+Reset the L-\/buffer FBO to 0. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a9687410867e38b6d5140678b0a16c146}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!resetSumMuxDx@{resetSumMuxDx}}
+\index{resetSumMuxDx@{resetSumMuxDx}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{resetSumMuxDx}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::resetSumMuxDx (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a9687410867e38b6d5140678b0a16c146}
+
+
+Reset the Mu\_\-x $\ast$ D\_\-x FBO to 0. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a30af82b3a10279690ab2b395e6c812a6}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!updateCumulatedLBuffers@{updateCumulatedLBuffers}}
+\index{updateCumulatedLBuffers@{updateCumulatedLBuffers}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{updateCumulatedLBuffers}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::updateCumulatedLBuffers (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anObjectID}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a30af82b3a10279690ab2b395e6c812a6}
+Update the L-\/buffer of inner surfaces. It integrates the L-\/buffers of all the inner surfaces. 
+\begin{DoxyParams}{Parameters}
+{\em anObjectID,:} & the ID of the surface to integrate. If anObjectID is equal to zero, the cumulated L-\/buffer is re-\/initialsed with the L-\/buffer of this surface. If anObjectID is greater than zero, L-\/buffer of this surface is integrated into the cumulated L-\/buffer. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ae800750bd503f2e18251c266d8e528e3}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!updateVBO@{updateVBO}}
+\index{updateVBO@{updateVBO}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{updateVBO}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::updateVBO (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ae800750bd503f2e18251c266d8e528e3}
+
+
+Update the VBO of the geometry. 
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ac2969e479dce456def60e7b88e2184a9}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!useNegativeFilteringFlag@{useNegativeFilteringFlag}}
+\index{useNegativeFilteringFlag@{useNegativeFilteringFlag}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{useNegativeFilteringFlag}]{\setlength{\rightskip}{0pt plus 5cm}void gVirtualXRay::XRayRenderer::useNegativeFilteringFlag (
+\begin{DoxyParamCaption}
+\item[{bool}]{aFlag = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ac2969e479dce456def60e7b88e2184a9}
+
+
+Display the final image in negative or not. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFlag,:} & true is the final image is displayed in negative, false it is not (default value: true) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 46 of file XRayRenderer.inl.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_acd744ca8277894c4e33c580c64e809b0}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-computing\_\-mode@{m\_\-computing\_\-mode}}
+\index{m\_\-computing\_\-mode@{m\_\-computing\_\-mode}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-computing\_\-mode}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ComputingMode} {\bf gVirtualXRay::XRayRenderer::m\_\-computing\_\-mode}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_acd744ca8277894c4e33c580c64e809b0}
+
+
+The computing mode (OPENGL, CUDA, or OPENCL) 
+
+
+
+Definition at line 609 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ad17a5ac822d9095a14d361a41dd2827c}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-detector\_\-temporary\_\-geometry@{m\_\-detector\_\-temporary\_\-geometry}}
+\index{m\_\-detector\_\-temporary\_\-geometry@{m\_\-detector\_\-temporary\_\-geometry}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-detector\_\-temporary\_\-geometry}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VBO} {\bf gVirtualXRay::XRayRenderer::m\_\-detector\_\-temporary\_\-geometry}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ad17a5ac822d9095a14d361a41dd2827c}
+
+
+The VBO used to display a rectangle corresponding to the detector. 
+
+
+
+Definition at line 675 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_aab1918fd34945b6afc1d1105e946001e}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-energy\_\-fluence\_\-empty@{m\_\-energy\_\-fluence\_\-empty}}
+\index{m\_\-energy\_\-fluence\_\-empty@{m\_\-energy\_\-fluence\_\-empty}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-energy\_\-fluence\_\-empty}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf gVirtualXRay::XRayRenderer::m\_\-energy\_\-fluence\_\-empty}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_aab1918fd34945b6afc1d1105e946001e}
+
+
+Flag use for lazy evaluation and blending of the energy fluence. 
+
+
+
+Definition at line 671 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_aca5aa1801c0c56d9c2129d53a81aa2d1}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-L\_\-buffer\_\-empty@{m\_\-L\_\-buffer\_\-empty}}
+\index{m\_\-L\_\-buffer\_\-empty@{m\_\-L\_\-buffer\_\-empty}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-L\_\-buffer\_\-empty}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf gVirtualXRay::XRayRenderer::m\_\-L\_\-buffer\_\-empty}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_aca5aa1801c0c56d9c2129d53a81aa2d1}
+
+
+Flag use for lazy evaluation of the L-\/Buffer. 
+
+
+
+Definition at line 667 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a5e6f1a20a2356390150648719106d4bb}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image@{m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image}}
+\index{m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image@{m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf gVirtualXRay::XRayRenderer::m\_\-max\_\-value\_\-in\_\-simulated\_\-xray\_\-image}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a5e6f1a20a2356390150648719106d4bb}
+
+
+Max value in simulated X-\/ray image. 
+
+
+
+Definition at line 655 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a350d7524f24139e16a4beebf16551d52}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image@{m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image}}
+\index{m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image@{m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf gVirtualXRay::XRayRenderer::m\_\-min\_\-value\_\-in\_\-simulated\_\-xray\_\-image}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a350d7524f24139e16a4beebf16551d52}
+
+
+Min value in simulated X-\/ray image. 
+
+
+
+Definition at line 651 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a26aff3c3fd71edffc1559635eae312f3}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-mu\_\-water\_\-set@{m\_\-mu\_\-water\_\-set}}
+\index{m\_\-mu\_\-water\_\-set@{m\_\-mu\_\-water\_\-set}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-mu\_\-water\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf AttenuationCoefficient}$>$ {\bf gVirtualXRay::XRayRenderer::m\_\-mu\_\-water\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a26aff3c3fd71edffc1559635eae312f3}
+
+
+The table of water energy fluence coefficients. 
+
+
+
+Definition at line 629 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a8ae2b2b8eb0fe41316fcebcb7cfcd814}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-negative\_\-display\_\-flag@{m\_\-negative\_\-display\_\-flag}}
+\index{m\_\-negative\_\-display\_\-flag@{m\_\-negative\_\-display\_\-flag}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-negative\_\-display\_\-flag}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf gVirtualXRay::XRayRenderer::m\_\-negative\_\-display\_\-flag}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a8ae2b2b8eb0fe41316fcebcb7cfcd814}
+
+
+Flag to display the result in negative or not. 
+
+
+
+Definition at line 659 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_abe635fe1136fa3936fd5439cf888aad9}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-detector@{m\_\-p\_\-detector}}
+\index{m\_\-p\_\-detector@{m\_\-p\_\-detector}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-detector}]{\setlength{\rightskip}{0pt plus 5cm}{\bf XRayDetector}$\ast$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-detector}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_abe635fe1136fa3936fd5439cf888aad9}
+
+
+The X-\/ray detector. 
+
+
+
+Definition at line 593 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ac3df573e0519dd9809dbf5e7e762f796}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-fbo\_\-set@{m\_\-p\_\-fbo\_\-set}}
+\index{m\_\-p\_\-fbo\_\-set@{m\_\-p\_\-fbo\_\-set}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-fbo\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf FramebufferObject}$\ast$$>$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-fbo\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ac3df573e0519dd9809dbf5e7e762f796}
+
+
+The set of FBOs. 
+
+
+
+Definition at line 633 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a18d3b60ab79b39221526a490935e955f}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-inner\_\-surface\_\-set@{m\_\-p\_\-inner\_\-surface\_\-set}}
+\index{m\_\-p\_\-inner\_\-surface\_\-set@{m\_\-p\_\-inner\_\-surface\_\-set}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-inner\_\-surface\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf PolygonMesh}$\ast$$>$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-inner\_\-surface\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a18d3b60ab79b39221526a490935e955f}
+
+
+Set of 3D geometries. 
+
+
+
+Definition at line 601 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a4d31028c769154394e7815f39c164bc7}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-outer\_\-surface@{m\_\-p\_\-outer\_\-surface}}
+\index{m\_\-p\_\-outer\_\-surface@{m\_\-p\_\-outer\_\-surface}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-outer\_\-surface}]{\setlength{\rightskip}{0pt plus 5cm}{\bf PolygonMesh}$\ast$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-outer\_\-surface}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a4d31028c769154394e7815f39c164bc7}
+
+
+The 3D geometry that will wrap the ones in m\_\-p\_\-inner\_\-surface\_\-set. 
+
+
+
+Definition at line 605 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a3c98784b4ffd06d7dac0c43e20713b14}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-pbo\_\-set@{m\_\-p\_\-pbo\_\-set}}
+\index{m\_\-p\_\-pbo\_\-set@{m\_\-p\_\-pbo\_\-set}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-pbo\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$unsigned int$>$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-pbo\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a3c98784b4ffd06d7dac0c43e20713b14}
+
+
+Set of PBOs. 
+
+
+
+Definition at line 613 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ad6c887c8da3342dffaa237115e9b933d}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-temp\_\-raw\_\-data@{m\_\-p\_\-temp\_\-raw\_\-data}}
+\index{m\_\-p\_\-temp\_\-raw\_\-data@{m\_\-p\_\-temp\_\-raw\_\-data}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-temp\_\-raw\_\-data}]{\setlength{\rightskip}{0pt plus 5cm}{\bf PixelType}$\ast$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-temp\_\-raw\_\-data}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ad6c887c8da3342dffaa237115e9b933d}
+
+
+The raw data of the last FBO that was loaded in the main memory. 
+
+
+
+Definition at line 625 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a1075d6644118669ee6948eab5ee82f85}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-texture\_\-name\_\-set@{m\_\-p\_\-texture\_\-name\_\-set}}
+\index{m\_\-p\_\-texture\_\-name\_\-set@{m\_\-p\_\-texture\_\-name\_\-set}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-texture\_\-name\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$unsigned int$>$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-texture\_\-name\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a1075d6644118669ee6948eab5ee82f85}
+
+
+Set of textures. 
+
+
+
+Definition at line 617 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a10326c78ad5b1ff35d529efa4212aa78}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-p\_\-xray\_\-beam@{m\_\-p\_\-xray\_\-beam}}
+\index{m\_\-p\_\-xray\_\-beam@{m\_\-p\_\-xray\_\-beam}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-p\_\-xray\_\-beam}]{\setlength{\rightskip}{0pt plus 5cm}{\bf XRayBeam}$\ast$ {\bf gVirtualXRay::XRayRenderer::m\_\-p\_\-xray\_\-beam}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a10326c78ad5b1ff35d529efa4212aa78}
+
+
+The X-\/ray beam. 
+
+
+
+Definition at line 597 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_a737acc3cdfe28c3db90dfd69dce0a203}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-shader\_\-set@{m\_\-shader\_\-set}}
+\index{m\_\-shader\_\-set@{m\_\-shader\_\-set}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-shader\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf Shader}$>$ {\bf gVirtualXRay::XRayRenderer::m\_\-shader\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_a737acc3cdfe28c3db90dfd69dce0a203}
+
+
+Set of shaders. 
+
+
+
+Definition at line 621 of file XRayRenderer.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_x_ray_renderer_ade779286f936cbe987f62796e2222916}{
+\index{gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}!m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering@{m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering}}
+\index{m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering@{m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering}!gVirtualXRay::XRayRenderer@{gVirtualXRay::XRayRenderer}}
+\subsubsection[{m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf gVirtualXRay::XRayRenderer::m\_\-use\_\-L\_\-buffer\_\-artefact\_\-filtering}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_x_ray_renderer_ade779286f936cbe987f62796e2222916}
+
+
+Flag set to true to use L-\/buffer artefact filtering. 
+
+
+
+Definition at line 663 of file XRayRenderer.h.
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_x_ray_renderer_8h}{XRayRenderer.h}\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_x_ray_renderer_8inl}{XRayRenderer.inl}\end{DoxyCompactItemize}

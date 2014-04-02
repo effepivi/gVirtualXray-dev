@@ -1,0 +1,591 @@
+\hypertarget{class_graphics_1_1_shader}{
+\section{Graphics::Shader Class Reference}
+\label{class_graphics_1_1_shader}\index{Graphics::Shader@{Graphics::Shader}}
+}
+
+
+\hyperlink{class_graphics_1_1_shader}{Shader} is a class to handle shaders written in GLSL.  
+
+
+
+
+{\ttfamily \#include $<$Shader.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_graphics_1_1_shader_ad0d4a9bd03afe7a728cfb1a820e1d48a}{Shader} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{class_graphics_1_1_shader_a89635504b68c4c591354d8a5bd887599}{$\sim$Shader} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_af5c60b74752b35c18dda9765a1906df8}{enable} () const 
+\begin{DoxyCompactList}\small\item\em Enable the current shader. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_a8b3873b50b15b053ca10334d919c5ea8}{reset} ()
+\item 
+void \hyperlink{class_graphics_1_1_shader_aa1bdb3991bed269afb6d7bd1c3d922d0}{loadFiles} (const std::string \&aVertexShaderFilename, const std::string \&aFragmentShaderFilename)
+\begin{DoxyCompactList}\small\item\em Load the shader from files. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_a0da28f14dc9ca5c8e008923184bee66d}{loadVertexShaderFile} (const std::string \&aVertexShaderFilename)
+\begin{DoxyCompactList}\small\item\em Load the vertex shader from a file. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_ad010d612d1342029340df373d0f72927}{loadFragmentShaderFile} (const std::string \&aFragmentShaderFilename)
+\begin{DoxyCompactList}\small\item\em Load the fragment shader from a file. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_a6cc2300317fff3297c160e5362592110}{loadSource} (const std::string \&aVertexShaderSourceCode, const std::string \&aFragmentShaderSourceCode)
+\begin{DoxyCompactList}\small\item\em Load the shader source code. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_add407f9caed153f212d7505db84a8548}{loadVertexShaderSource} (const std::string \&aVertexShaderSourceCode)
+\begin{DoxyCompactList}\small\item\em Load the vertex shader from a string. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_aa33a3e33b12469b576eca345997d7462}{loadFragmentShaderSource} (const std::string \&aFragmentShaderSourceCode)
+\begin{DoxyCompactList}\small\item\em Load the fragment shader from a string. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_shader_ab5b6c7831e9365b1020d0c30122b9213}{getProgramHandle} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the shader program handle. \end{DoxyCompactList}\item 
+bool \hyperlink{class_graphics_1_1_shader_a8e649b3a4b9dc0361f3090898b79de36}{isValid} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the validity status of the shader. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{class_graphics_1_1_shader_a788843bb4182207df3f8ae46cc5f2610}{disable} ()
+\begin{DoxyCompactList}\small\item\em Disable the current shader (if any) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{class_graphics_1_1_shader_ab0bd3f48b17216e94b0ebd0c1b5acb34}{loadFile} (const std::string \&aShaderFilename, char $\ast$$\ast$\&aShaderSource)
+\begin{DoxyCompactList}\small\item\em Load a text file and store its content. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_shader_aa4df5057c92cfbb8239eec2583aff5f2}{compileShader} (int aShaderType, int aLineNumber, char $\ast$$\ast$aShaderSource)
+\begin{DoxyCompactList}\small\item\em Compile the vertex shader or the fragment shader. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_a571cc74458a1b81170e53189944d4c90}{linkProgram} ()
+\begin{DoxyCompactList}\small\item\em Link the vertex and fragment programs. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_a4ca7f56e6f5a82259e0fbfb53c382892}{releaseVertexSourceMemory} ()
+\begin{DoxyCompactList}\small\item\em Release the memory held by the vertex shader. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_a19c19cd2977c2fa64178796c3e8de0b3}{releaseFragmentSourceMemory} ()
+\begin{DoxyCompactList}\small\item\em Release the memory held by the fragment shader. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_shader_ac91ea94d90af6221d67b8f48dc8fb774}{releaseSourceMemory} (int \&aLineNumber, char $\ast$$\ast$\&aShaderSource)
+\begin{DoxyCompactList}\small\item\em Release the memory held by the vertex shader or the fragment shader. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std::string \hyperlink{class_graphics_1_1_shader_aef681ca305c523ce6c4b413d0c90873c}{m\_\-vertex\_\-shader\_\-filename}
+\begin{DoxyCompactList}\small\item\em Name of the file containing the vertex shader. \end{DoxyCompactList}\item 
+std::string \hyperlink{class_graphics_1_1_shader_a988a04403316a32c0165e9b6de1a6b8b}{m\_\-fragment\_\-shader\_\-filename}
+\begin{DoxyCompactList}\small\item\em Name of the file containing the fragment shader. \end{DoxyCompactList}\item 
+char $\ast$$\ast$ \hyperlink{class_graphics_1_1_shader_a41febb8fce635e60755810d9559eeb4e}{m\_\-vertex\_\-source}
+\begin{DoxyCompactList}\small\item\em Source code of the vertex shader. \end{DoxyCompactList}\item 
+int \hyperlink{class_graphics_1_1_shader_a0245e27ab1999258ac1122de60f98aa2}{m\_\-vertex\_\-source\_\-number\_\-of\_\-lines}
+\begin{DoxyCompactList}\small\item\em Number of line of the vertex shader. \end{DoxyCompactList}\item 
+char $\ast$$\ast$ \hyperlink{class_graphics_1_1_shader_a96b941618154e8d71223eb8af86a5dee}{m\_\-fragment\_\-source}
+\begin{DoxyCompactList}\small\item\em Source code of the fragment shader. \end{DoxyCompactList}\item 
+int \hyperlink{class_graphics_1_1_shader_a4086155a5c6ac1c9b4983fb10f6c7418}{m\_\-fragment\_\-source\_\-number\_\-of\_\-lines}
+\begin{DoxyCompactList}\small\item\em Number of line of the fragment shader. \end{DoxyCompactList}\item 
+bool \hyperlink{class_graphics_1_1_shader_a06900d31b8c7f91a1f2090156e0177c5}{m\_\-valid}
+\item 
+unsigned int \hyperlink{class_graphics_1_1_shader_ab648e2b9fcc45d291890836ee158fd02}{m\_\-shader\_\-program\_\-id}
+\begin{DoxyCompactList}\small\item\em ID of the shader program. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_shader_ab74712775fe53e797ac9a6b0ed874785}{m\_\-vertex\_\-shader\_\-id}
+\begin{DoxyCompactList}\small\item\em ID of the vertex shader. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_shader_a64e39abd7b7f12eba636e0ab9941b450}{m\_\-fragment\_\-shader\_\-id}
+\begin{DoxyCompactList}\small\item\em ID of the fragment shader. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static bool \hyperlink{class_graphics_1_1_shader_a2e7ae863654c0f94813ab51698740f99}{m\_\-shader\_\-capable}
+\begin{DoxyCompactList}\small\item\em Flag set to true when a shader if fully valid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_graphics_1_1_shader}{Shader} is a class to handle shaders written in GLSL. 
+
+Definition at line 55 of file Shader.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_graphics_1_1_shader_ad0d4a9bd03afe7a728cfb1a820e1d48a}{
+\index{Graphics::Shader@{Graphics::Shader}!Shader@{Shader}}
+\index{Shader@{Shader}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{Shader}]{\setlength{\rightskip}{0pt plus 5cm}Graphics::Shader::Shader (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_shader_ad0d4a9bd03afe7a728cfb1a820e1d48a}
+
+
+Default constructor. 
+
+
+
+Definition at line 45 of file Shader.inl.
+
+\hypertarget{class_graphics_1_1_shader_a89635504b68c4c591354d8a5bd887599}{
+\index{Graphics::Shader@{Graphics::Shader}!$\sim$Shader@{$\sim$Shader}}
+\index{$\sim$Shader@{$\sim$Shader}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{$\sim$Shader}]{\setlength{\rightskip}{0pt plus 5cm}Graphics::Shader::$\sim$Shader (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_shader_a89635504b68c4c591354d8a5bd887599}
+
+
+Destructor. 
+
+
+
+Definition at line 64 of file Shader.inl.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_graphics_1_1_shader_aa4df5057c92cfbb8239eec2583aff5f2}{
+\index{Graphics::Shader@{Graphics::Shader}!compileShader@{compileShader}}
+\index{compileShader@{compileShader}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{compileShader}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::Shader::compileShader (
+\begin{DoxyParamCaption}
+\item[{int}]{aShaderType, }
+\item[{int}]{aLineNumber, }
+\item[{char $\ast$$\ast$}]{aShaderSource}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_aa4df5057c92cfbb8239eec2583aff5f2}
+
+
+Compile the vertex shader or the fragment shader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aShaderType,:} & type of shader (GL\_\-VERTEX\_\-SHADER or GL\_\-FRAGMENT\_\-SHADER) \\
+\hline
+{\em aLineNumber,:} & the number of lines of the source code \\
+\hline
+{\em aShaderSource,:} & source code of the vertex or fragment shader \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the corresponding ID 
+\end{DoxyReturn}
+\hypertarget{class_graphics_1_1_shader_a788843bb4182207df3f8ae46cc5f2610}{
+\index{Graphics::Shader@{Graphics::Shader}!disable@{disable}}
+\index{disable@{disable}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{disable}]{\setlength{\rightskip}{0pt plus 5cm}static void Graphics::Shader::disable (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{class_graphics_1_1_shader_a788843bb4182207df3f8ae46cc5f2610}
+
+
+Disable the current shader (if any) 
+
+\hypertarget{class_graphics_1_1_shader_af5c60b74752b35c18dda9765a1906df8}{
+\index{Graphics::Shader@{Graphics::Shader}!enable@{enable}}
+\index{enable@{enable}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{enable}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::enable (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_graphics_1_1_shader_af5c60b74752b35c18dda9765a1906df8}
+
+
+Enable the current shader. 
+
+\hypertarget{class_graphics_1_1_shader_ab5b6c7831e9365b1020d0c30122b9213}{
+\index{Graphics::Shader@{Graphics::Shader}!getProgramHandle@{getProgramHandle}}
+\index{getProgramHandle@{getProgramHandle}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{getProgramHandle}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::Shader::getProgramHandle (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_shader_ab5b6c7831e9365b1020d0c30122b9213}
+
+
+Accessor on the shader program handle. 
+
+\begin{DoxyReturn}{Returns}
+the shader program handle 
+\end{DoxyReturn}
+
+
+Definition at line 72 of file Shader.inl.
+
+\hypertarget{class_graphics_1_1_shader_a8e649b3a4b9dc0361f3090898b79de36}{
+\index{Graphics::Shader@{Graphics::Shader}!isValid@{isValid}}
+\index{isValid@{isValid}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{isValid}]{\setlength{\rightskip}{0pt plus 5cm}bool Graphics::Shader::isValid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_shader_a8e649b3a4b9dc0361f3090898b79de36}
+
+
+Accessor on the validity status of the shader. 
+
+\begin{DoxyReturn}{Returns}
+true if the shader is valid, false if it is not 
+\end{DoxyReturn}
+
+
+Definition at line 80 of file Shader.inl.
+
+\hypertarget{class_graphics_1_1_shader_a571cc74458a1b81170e53189944d4c90}{
+\index{Graphics::Shader@{Graphics::Shader}!linkProgram@{linkProgram}}
+\index{linkProgram@{linkProgram}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{linkProgram}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::linkProgram (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a571cc74458a1b81170e53189944d4c90}
+
+
+Link the vertex and fragment programs. 
+
+\hypertarget{class_graphics_1_1_shader_ab0bd3f48b17216e94b0ebd0c1b5acb34}{
+\index{Graphics::Shader@{Graphics::Shader}!loadFile@{loadFile}}
+\index{loadFile@{loadFile}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadFile}]{\setlength{\rightskip}{0pt plus 5cm}int Graphics::Shader::loadFile (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aShaderFilename, }
+\item[{char $\ast$$\ast$\&}]{aShaderSource}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_ab0bd3f48b17216e94b0ebd0c1b5acb34}
+
+
+Load a text file and store its content. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aShaderFilename,:} & file name of the vertex or fragment shader \\
+\hline
+{\em aShaderSource,:} & source code of the vertex or fragment shader \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the number of lines in the file 
+\end{DoxyReturn}
+\hypertarget{class_graphics_1_1_shader_aa1bdb3991bed269afb6d7bd1c3d922d0}{
+\index{Graphics::Shader@{Graphics::Shader}!loadFiles@{loadFiles}}
+\index{loadFiles@{loadFiles}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadFiles}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::loadFiles (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aVertexShaderFilename, }
+\item[{const std::string \&}]{aFragmentShaderFilename}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_aa1bdb3991bed269afb6d7bd1c3d922d0}
+
+
+Load the shader from files. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVertexShaderFilename,:} & file name of the vertex shader \\
+\hline
+{\em aFragmentShaderFilename,:} & file name of the fragment shader \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_ad010d612d1342029340df373d0f72927}{
+\index{Graphics::Shader@{Graphics::Shader}!loadFragmentShaderFile@{loadFragmentShaderFile}}
+\index{loadFragmentShaderFile@{loadFragmentShaderFile}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadFragmentShaderFile}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::loadFragmentShaderFile (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aFragmentShaderFilename}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_ad010d612d1342029340df373d0f72927}
+
+
+Load the fragment shader from a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFragmentShaderFilename,:} & file name of the fragment shader \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_aa33a3e33b12469b576eca345997d7462}{
+\index{Graphics::Shader@{Graphics::Shader}!loadFragmentShaderSource@{loadFragmentShaderSource}}
+\index{loadFragmentShaderSource@{loadFragmentShaderSource}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadFragmentShaderSource}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::loadFragmentShaderSource (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aFragmentShaderSourceCode}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_aa33a3e33b12469b576eca345997d7462}
+
+
+Load the fragment shader from a string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFragmentShaderSourceCode,:} & the fragment shader source code \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_a6cc2300317fff3297c160e5362592110}{
+\index{Graphics::Shader@{Graphics::Shader}!loadSource@{loadSource}}
+\index{loadSource@{loadSource}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadSource}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::loadSource (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aVertexShaderSourceCode, }
+\item[{const std::string \&}]{aFragmentShaderSourceCode}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_a6cc2300317fff3297c160e5362592110}
+
+
+Load the shader source code. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVertexShaderSourceCode,:} & source code of the vertex shader \\
+\hline
+{\em aFragmentShaderSourceCode,:} & source code of the fragment shader \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_a0da28f14dc9ca5c8e008923184bee66d}{
+\index{Graphics::Shader@{Graphics::Shader}!loadVertexShaderFile@{loadVertexShaderFile}}
+\index{loadVertexShaderFile@{loadVertexShaderFile}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadVertexShaderFile}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::loadVertexShaderFile (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aVertexShaderFilename}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_a0da28f14dc9ca5c8e008923184bee66d}
+
+
+Load the vertex shader from a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVertexShaderFilename,:} & file name of the vertex shader \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_add407f9caed153f212d7505db84a8548}{
+\index{Graphics::Shader@{Graphics::Shader}!loadVertexShaderSource@{loadVertexShaderSource}}
+\index{loadVertexShaderSource@{loadVertexShaderSource}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{loadVertexShaderSource}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::loadVertexShaderSource (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aVertexShaderSourceCode}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_add407f9caed153f212d7505db84a8548}
+
+
+Load the vertex shader from a string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVertexShaderSourceCode,:} & the vertex shader source code \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_a19c19cd2977c2fa64178796c3e8de0b3}{
+\index{Graphics::Shader@{Graphics::Shader}!releaseFragmentSourceMemory@{releaseFragmentSourceMemory}}
+\index{releaseFragmentSourceMemory@{releaseFragmentSourceMemory}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{releaseFragmentSourceMemory}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::releaseFragmentSourceMemory (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a19c19cd2977c2fa64178796c3e8de0b3}
+
+
+Release the memory held by the fragment shader. 
+
+
+
+Definition at line 96 of file Shader.inl.
+
+\hypertarget{class_graphics_1_1_shader_ac91ea94d90af6221d67b8f48dc8fb774}{
+\index{Graphics::Shader@{Graphics::Shader}!releaseSourceMemory@{releaseSourceMemory}}
+\index{releaseSourceMemory@{releaseSourceMemory}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{releaseSourceMemory}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::releaseSourceMemory (
+\begin{DoxyParamCaption}
+\item[{int \&}]{aLineNumber, }
+\item[{char $\ast$$\ast$\&}]{aShaderSource}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_ac91ea94d90af6221d67b8f48dc8fb774}
+
+
+Release the memory held by the vertex shader or the fragment shader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aLineNumber,:} & the number of lines of the source code \\
+\hline
+{\em aShaderSource,:} & source code of the vertex or fragment shader \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_shader_a4ca7f56e6f5a82259e0fbfb53c382892}{
+\index{Graphics::Shader@{Graphics::Shader}!releaseVertexSourceMemory@{releaseVertexSourceMemory}}
+\index{releaseVertexSourceMemory@{releaseVertexSourceMemory}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{releaseVertexSourceMemory}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::releaseVertexSourceMemory (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a4ca7f56e6f5a82259e0fbfb53c382892}
+
+
+Release the memory held by the vertex shader. 
+
+
+
+Definition at line 88 of file Shader.inl.
+
+\hypertarget{class_graphics_1_1_shader_a8b3873b50b15b053ca10334d919c5ea8}{
+\index{Graphics::Shader@{Graphics::Shader}!reset@{reset}}
+\index{reset@{reset}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{reset}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::Shader::reset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_shader_a8b3873b50b15b053ca10334d919c5ea8}
+Reset (delete the current shader if it is loaded, and restore default values). 
+
+\subsection{Member Data Documentation}
+\hypertarget{class_graphics_1_1_shader_a988a04403316a32c0165e9b6de1a6b8b}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-fragment\_\-shader\_\-filename@{m\_\-fragment\_\-shader\_\-filename}}
+\index{m\_\-fragment\_\-shader\_\-filename@{m\_\-fragment\_\-shader\_\-filename}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-fragment\_\-shader\_\-filename}]{\setlength{\rightskip}{0pt plus 5cm}std::string {\bf Graphics::Shader::m\_\-fragment\_\-shader\_\-filename}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a988a04403316a32c0165e9b6de1a6b8b}
+
+
+Name of the file containing the fragment shader. 
+
+
+
+Definition at line 231 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a64e39abd7b7f12eba636e0ab9941b450}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-fragment\_\-shader\_\-id@{m\_\-fragment\_\-shader\_\-id}}
+\index{m\_\-fragment\_\-shader\_\-id@{m\_\-fragment\_\-shader\_\-id}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-fragment\_\-shader\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf Graphics::Shader::m\_\-fragment\_\-shader\_\-id}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a64e39abd7b7f12eba636e0ab9941b450}
+
+
+ID of the fragment shader. 
+
+
+
+Definition at line 265 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a96b941618154e8d71223eb8af86a5dee}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-fragment\_\-source@{m\_\-fragment\_\-source}}
+\index{m\_\-fragment\_\-source@{m\_\-fragment\_\-source}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-fragment\_\-source}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf Graphics::Shader::m\_\-fragment\_\-source}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a96b941618154e8d71223eb8af86a5dee}
+
+
+Source code of the fragment shader. 
+
+
+
+Definition at line 243 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a4086155a5c6ac1c9b4983fb10f6c7418}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-fragment\_\-source\_\-number\_\-of\_\-lines@{m\_\-fragment\_\-source\_\-number\_\-of\_\-lines}}
+\index{m\_\-fragment\_\-source\_\-number\_\-of\_\-lines@{m\_\-fragment\_\-source\_\-number\_\-of\_\-lines}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-fragment\_\-source\_\-number\_\-of\_\-lines}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Graphics::Shader::m\_\-fragment\_\-source\_\-number\_\-of\_\-lines}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a4086155a5c6ac1c9b4983fb10f6c7418}
+
+
+Number of line of the fragment shader. 
+
+
+
+Definition at line 247 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a2e7ae863654c0f94813ab51698740f99}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-shader\_\-capable@{m\_\-shader\_\-capable}}
+\index{m\_\-shader\_\-capable@{m\_\-shader\_\-capable}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-shader\_\-capable}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Graphics::Shader::m\_\-shader\_\-capable}\hspace{0.3cm}{\ttfamily  \mbox{[}static, protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a2e7ae863654c0f94813ab51698740f99}
+
+
+Flag set to true when a shader if fully valid. 
+
+
+
+Definition at line 223 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_ab648e2b9fcc45d291890836ee158fd02}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-shader\_\-program\_\-id@{m\_\-shader\_\-program\_\-id}}
+\index{m\_\-shader\_\-program\_\-id@{m\_\-shader\_\-program\_\-id}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-shader\_\-program\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf Graphics::Shader::m\_\-shader\_\-program\_\-id}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_ab648e2b9fcc45d291890836ee158fd02}
+
+
+ID of the shader program. 
+
+
+
+Definition at line 257 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a06900d31b8c7f91a1f2090156e0177c5}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-valid@{m\_\-valid}}
+\index{m\_\-valid@{m\_\-valid}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-valid}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Graphics::Shader::m\_\-valid}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a06900d31b8c7f91a1f2090156e0177c5}
+Flag set to true if the vertex shader, the fragment shader and the shader program are all valid 
+
+Definition at line 253 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_aef681ca305c523ce6c4b413d0c90873c}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-vertex\_\-shader\_\-filename@{m\_\-vertex\_\-shader\_\-filename}}
+\index{m\_\-vertex\_\-shader\_\-filename@{m\_\-vertex\_\-shader\_\-filename}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-vertex\_\-shader\_\-filename}]{\setlength{\rightskip}{0pt plus 5cm}std::string {\bf Graphics::Shader::m\_\-vertex\_\-shader\_\-filename}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_aef681ca305c523ce6c4b413d0c90873c}
+
+
+Name of the file containing the vertex shader. 
+
+
+
+Definition at line 227 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_ab74712775fe53e797ac9a6b0ed874785}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-vertex\_\-shader\_\-id@{m\_\-vertex\_\-shader\_\-id}}
+\index{m\_\-vertex\_\-shader\_\-id@{m\_\-vertex\_\-shader\_\-id}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-vertex\_\-shader\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf Graphics::Shader::m\_\-vertex\_\-shader\_\-id}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_ab74712775fe53e797ac9a6b0ed874785}
+
+
+ID of the vertex shader. 
+
+
+
+Definition at line 261 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a41febb8fce635e60755810d9559eeb4e}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-vertex\_\-source@{m\_\-vertex\_\-source}}
+\index{m\_\-vertex\_\-source@{m\_\-vertex\_\-source}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-vertex\_\-source}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf Graphics::Shader::m\_\-vertex\_\-source}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a41febb8fce635e60755810d9559eeb4e}
+
+
+Source code of the vertex shader. 
+
+
+
+Definition at line 235 of file Shader.h.
+
+\hypertarget{class_graphics_1_1_shader_a0245e27ab1999258ac1122de60f98aa2}{
+\index{Graphics::Shader@{Graphics::Shader}!m\_\-vertex\_\-source\_\-number\_\-of\_\-lines@{m\_\-vertex\_\-source\_\-number\_\-of\_\-lines}}
+\index{m\_\-vertex\_\-source\_\-number\_\-of\_\-lines@{m\_\-vertex\_\-source\_\-number\_\-of\_\-lines}!Graphics::Shader@{Graphics::Shader}}
+\subsubsection[{m\_\-vertex\_\-source\_\-number\_\-of\_\-lines}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Graphics::Shader::m\_\-vertex\_\-source\_\-number\_\-of\_\-lines}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_shader_a0245e27ab1999258ac1122de60f98aa2}
+
+
+Number of line of the vertex shader. 
+
+
+
+Definition at line 239 of file Shader.h.
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_shader_8h}{Shader.h}\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_shader_8inl}{Shader.inl}\end{DoxyCompactItemize}

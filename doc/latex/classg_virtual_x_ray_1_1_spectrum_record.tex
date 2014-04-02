@@ -1,0 +1,211 @@
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record}{
+\section{gVirtualXRay::SpectrumRecord Class Reference}
+\label{classg_virtual_x_ray_1_1_spectrum_record}\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+}
+
+
+\hyperlink{classg_virtual_x_ray_1_1_spectrum_record}{SpectrumRecord} is a class to handle a record of the X-\/Ray beam, i.e. an energy bin (number of photons, energy of the photons in the bin).  
+
+
+
+
+{\ttfamily \#include $<$SpectrumRecord.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classg_virtual_x_ray_1_1_spectrum_record_a339181db91edbe3a0d293004de2334f5}{SpectrumRecord} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&aPhotonNumber=0, const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&anIncidentEnergy=0)
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_a13ab4844fceeeb6612987dc9aef2f7c0}{getPhotonNumber} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of photons in the bin. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_ab361257ffb98e889f68820c12f267ef1}{getPhotonEnergy} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the energy of photons. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_aedc7cfa913f395b4517160647784f9e4}{m\_\-photon\_\-number}
+\begin{DoxyCompactList}\small\item\em The number of photons. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_a4591e49e25dce0c8a2c03969c2a7e685}{m\_\-energy}
+\begin{DoxyCompactList}\small\item\em The energy of the photons. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_a557b59f8b44e4ba7ffeb47f5b996f88e}{XRayBeam}
+\item 
+std::istream \& \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_a2f9fcc5ea8b89bef18d2683a03ad50ef}{operator$>$$>$} (std::istream \&is, \hyperlink{classg_virtual_x_ray_1_1_spectrum_record}{SpectrumRecord} \&obj)
+\begin{DoxyCompactList}\small\item\em operator$>$$>$ \end{DoxyCompactList}\item 
+std::ostream \& \hyperlink{classg_virtual_x_ray_1_1_spectrum_record_a83ea879c8dc142f1a9220fa677d4f46c}{operator$<$$<$} (std::ostream \&os, const \hyperlink{classg_virtual_x_ray_1_1_spectrum_record}{SpectrumRecord} \&obj)
+\begin{DoxyCompactList}\small\item\em operator$<$$<$ \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classg_virtual_x_ray_1_1_spectrum_record}{SpectrumRecord} is a class to handle a record of the X-\/Ray beam, i.e. an energy bin (number of photons, energy of the photons in the bin). 
+
+Definition at line 91 of file SpectrumRecord.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_a339181db91edbe3a0d293004de2334f5}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!SpectrumRecord@{SpectrumRecord}}
+\index{SpectrumRecord@{SpectrumRecord}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{SpectrumRecord}]{\setlength{\rightskip}{0pt plus 5cm}gVirtualXRay::SpectrumRecord::SpectrumRecord (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{aPhotonNumber = {\ttfamily 0}, }
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{anIncidentEnergy = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_a339181db91edbe3a0d293004de2334f5}
+
+
+Default constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aPhotonNumber,:} & number of photons in the bin (default value: 0) \\
+\hline
+{\em anIncidentEnergy,:} & energy of the photons (default value: 0) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 48 of file SpectrumRecord.inl.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_ab361257ffb98e889f68820c12f267ef1}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!getPhotonEnergy@{getPhotonEnergy}}
+\index{getPhotonEnergy@{getPhotonEnergy}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{getPhotonEnergy}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::SpectrumRecord::getPhotonEnergy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_ab361257ffb98e889f68820c12f267ef1}
+
+
+Accessor on the energy of photons. 
+
+\begin{DoxyReturn}{Returns}
+the energy of photons 
+\end{DoxyReturn}
+
+
+Definition at line 66 of file SpectrumRecord.inl.
+
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_a13ab4844fceeeb6612987dc9aef2f7c0}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!getPhotonNumber@{getPhotonNumber}}
+\index{getPhotonNumber@{getPhotonNumber}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{getPhotonNumber}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} gVirtualXRay::SpectrumRecord::getPhotonNumber (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_a13ab4844fceeeb6612987dc9aef2f7c0}
+
+
+Accessor on the number of photons in the bin. 
+
+\begin{DoxyReturn}{Returns}
+the number of photons 
+\end{DoxyReturn}
+
+
+Definition at line 58 of file SpectrumRecord.inl.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_a83ea879c8dc142f1a9220fa677d4f46c}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{operator$<$$<$}]{\setlength{\rightskip}{0pt plus 5cm}std::ostream\& operator$<$$<$ (
+\begin{DoxyParamCaption}
+\item[{std::ostream \&}]{os, }
+\item[{const {\bf SpectrumRecord} \&}]{obj}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}friend\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_a83ea879c8dc142f1a9220fa677d4f46c}
+
+
+operator$<$$<$ 
+
+
+\begin{DoxyParams}{Parameters}
+{\em os,:} & the output stream \\
+\hline
+{\em obj,:} & the record to store in the stream \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the output stream 
+\end{DoxyReturn}
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_a2f9fcc5ea8b89bef18d2683a03ad50ef}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{operator$>$$>$}]{\setlength{\rightskip}{0pt plus 5cm}std::istream\& operator$>$$>$ (
+\begin{DoxyParamCaption}
+\item[{std::istream \&}]{is, }
+\item[{{\bf SpectrumRecord} \&}]{obj}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}friend\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_a2f9fcc5ea8b89bef18d2683a03ad50ef}
+
+
+operator$>$$>$ 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is,:} & the input stream \\
+\hline
+{\em obj,:} & the record to load from the stream \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the input stream 
+\end{DoxyReturn}
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_a557b59f8b44e4ba7ffeb47f5b996f88e}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!XRayBeam@{XRayBeam}}
+\index{XRayBeam@{XRayBeam}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{XRayBeam}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf XRayBeam}\hspace{0.3cm}{\ttfamily  \mbox{[}friend\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_a557b59f8b44e4ba7ffeb47f5b996f88e}
+
+
+Definition at line 138 of file SpectrumRecord.h.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_a4591e49e25dce0c8a2c03969c2a7e685}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!m\_\-energy@{m\_\-energy}}
+\index{m\_\-energy@{m\_\-energy}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{m\_\-energy}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf gVirtualXRay::SpectrumRecord::m\_\-energy}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_a4591e49e25dce0c8a2c03969c2a7e685}
+
+
+The energy of the photons. 
+
+
+
+Definition at line 132 of file SpectrumRecord.h.
+
+\hypertarget{classg_virtual_x_ray_1_1_spectrum_record_aedc7cfa913f395b4517160647784f9e4}{
+\index{gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}!m\_\-photon\_\-number@{m\_\-photon\_\-number}}
+\index{m\_\-photon\_\-number@{m\_\-photon\_\-number}!gVirtualXRay::SpectrumRecord@{gVirtualXRay::SpectrumRecord}}
+\subsubsection[{m\_\-photon\_\-number}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf gVirtualXRay::SpectrumRecord::m\_\-photon\_\-number}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classg_virtual_x_ray_1_1_spectrum_record_aedc7cfa913f395b4517160647784f9e4}
+
+
+The number of photons. 
+
+
+
+Definition at line 128 of file SpectrumRecord.h.
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_spectrum_record_8h}{SpectrumRecord.h}\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_spectrum_record_8inl}{SpectrumRecord.inl}\end{DoxyCompactItemize}

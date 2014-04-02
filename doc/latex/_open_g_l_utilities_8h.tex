@@ -1,0 +1,141 @@
+\hypertarget{_open_g_l_utilities_8h}{
+\section{/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/OpenGLUtilities.h File Reference}
+\label{_open_g_l_utilities_8h}\index{/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/OpenGLUtilities.h@{/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/OpenGLUtilities.h}}
+}
+
+
+Some utility functions about OpenGL.  
+
+
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/Matrix4x4.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/Types.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}OpenGLUtilities.inl\char`\"{}}\par
+Include dependency graph for OpenGLUtilities.h:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_open_g_l_utilities_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_open_g_l_utilities_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespace_utilities}{Utilities}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{namespace_utilities_ac80bf2d2d0e6f362b9fa305c6329d4dd}{Utilities::checkOpenGLErrorStatus} (const char $\ast$aFileName, const char $\ast$aFunctionName, int aLineNumber)
+\begin{DoxyCompactList}\small\item\em Check OpenGL's error status. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_aa6d370633a054fc0d3867e172c410b8f}{Utilities::checkFBOErrorStatus} (const char $\ast$aFileName, const char $\ast$aFunctionName, int aLineNumber)
+\begin{DoxyCompactList}\small\item\em Check the current FBO's error status. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a4ff1a91f49f45940ef3fe39374d6fad3}{Utilities::pushProjectionMatrix} ()
+\begin{DoxyCompactList}\small\item\em Add the current matrix to the projection matrix stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a759523b332a302b032d7e1dbe3d70589}{Utilities::pushModelViewMatrix} ()
+\begin{DoxyCompactList}\small\item\em Add the current matrix to the model/view matrix stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a4d73d1a6deada0aace5a5fb250971aa1}{Utilities::pushFBO} ()
+\begin{DoxyCompactList}\small\item\em Add the current FBO binding to the FBO stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_acc7a477a449c637b37acf6e409ffda9a}{Utilities::pushTexture1D} ()
+\begin{DoxyCompactList}\small\item\em Add the current 1D texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ac3f7c9af73fc18c8e905ec33e423e62a}{Utilities::pushTexture2D} ()
+\begin{DoxyCompactList}\small\item\em Add the current 2D texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ade797d2da463a1e1774e46fb1519a3a6}{Utilities::pushTextureRectangle} ()
+\begin{DoxyCompactList}\small\item\em Add the current rectangle texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a6c5b0b068baed228d72a5ab5bc171a27}{Utilities::pushTexture3D} ()
+\begin{DoxyCompactList}\small\item\em Add the current 3D texture binding to the texture stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a397b32b08d50b0f86540e20ec9d9a8a6}{Utilities::pushEnableDisableState} (int aParameter)
+\begin{DoxyCompactList}\small\item\em Add the enable/disable state to the corresponding stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_af3def433e5459d13617b1f3ac1f80bd4}{Utilities::pushShaderProgram} ()
+\begin{DoxyCompactList}\small\item\em Add the current shader program to the corresponding stack. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a34e5aecb15bd70f3d358b1df30ad2b1e}{Utilities::popProjectionMatrix} ()
+\item 
+void \hyperlink{namespace_utilities_afa855d36de0ce9d6d52e2157da5063b9}{Utilities::popModelViewMatrix} ()
+\item 
+void \hyperlink{namespace_utilities_a155eb0147d0e117e1d34467ce4bf8495}{Utilities::popFBO} ()
+\item 
+void \hyperlink{namespace_utilities_a399fdac28547b4cab45f640befd6350a}{Utilities::popTexture} ()
+\item 
+void \hyperlink{namespace_utilities_a74d082f280da485386fb80a2a65cf36a}{Utilities::popEnableDisableState} ()
+\item 
+void \hyperlink{namespace_utilities_adbc5643c5d6336e174b6bea3a22bdb29}{Utilities::popShaderProgram} ()
+\item 
+\hyperlink{class_math_1_1_matrix4x4}{Math::Matrix4x4}$<$ float $>$ \hyperlink{namespace_utilities_a27ecbb568ab30c335d210de98b739757}{Utilities::getCurrentOpenGLMatrix} ()
+\begin{DoxyCompactList}\small\item\em Load the current OpenGL matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_af4402f472bd1945b6792f547cd498f95}{Utilities::loadIdentityProjectionMatrix} ()
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by the identity matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a80dad624c31abf68e2e44997020210a5}{Utilities::loadIdentityModelViewMatrix} ()
+\begin{DoxyCompactList}\small\item\em Replace the model/view matrix by the identity matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ad6cddf27e1b4769a998710f48a74026d}{Utilities::loadFrustumProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by a perspective projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a72a4f2b2d67dc75de5b6ebbf25248521}{Utilities::loadPerspectiveProjectionMatrix} (double fovy, double aspect, double zNear, double zFar)
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by a perspective projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_ae239a07fe9373e6a079a8c1465cab662}{Utilities::loadOrthoProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by a orthographic projection matrix. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_a7ffbee866eb154b2a032141c04d43021}{Utilities::buildOrthoProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Create a orthographic projection matrix. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_aaa85ac0797b49093c4344ce75c4a3265}{Utilities::buildFrustumProjectionMatrix} (double left, double right, double bottom, double top, double near, double far)
+\begin{DoxyCompactList}\small\item\em Create a perspective projection matrix. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_ae473d6bd8d417fc07465944092a92938}{Utilities::buildPerspectiveProjectionMatrix} (double fovy, double aspect, double zNear, double zFar)
+\begin{DoxyCompactList}\small\item\em Create a perspective projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_adcb191e43b838d267bd659167503a528}{Utilities::loadLookAtModelViewMatrix} (const VEC3 \&eye, const VEC3 \&centre, const VEC3 \&up)
+\begin{DoxyCompactList}\small\item\em Replace the modelling-\/viewing matrix by a viewing transformation matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a8dfe8f9df9a5280d2b19e278b6c455eb}{Utilities::loadLookAtModelViewMatrix} (double eyeX, double eyeY, double eyeZ, double centreX, double centreY, double centreZ, double upX, double upY, double upZ)
+\begin{DoxyCompactList}\small\item\em Replace the modelling-\/viewing matrix by a viewing transformation matrix. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_a84ad75173a3da5e4e8b355d03d100c59}{Utilities::buildLookAtModelViewMatrix} (const VEC3 \&eye, const VEC3 \&centre, const VEC3 \&up)
+\begin{DoxyCompactList}\small\item\em Create a modelling-\/viewing matrix. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_a0dfa7bb57b5c491451a43d8b4d7dd983}{Utilities::buildLookAtModelViewMatrix} (double eyeX, double eyeY, double eyeZ, double centreX, double centreY, double centreZ, double upX, double upY, double upZ)
+\begin{DoxyCompactList}\small\item\em Create a modelling-\/viewing matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a1787b9d17f79b46cd3fc546bfd9ee196}{Utilities::loadProjectionMatrixFromOpenGL} ()
+\begin{DoxyCompactList}\small\item\em Replace the projection matrix by OpenGL's projection matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a8cc5454fb226411756900e06f3b121b2}{Utilities::loadModelViewMatrixFromOpenGL} ()
+\begin{DoxyCompactList}\small\item\em Replace the modelling-\/viewing matrix by OpenGL's modelling-\/viewing matrix. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_utilities_a3fdfd69b196f894ae78f35a055d8683e}{Utilities::applyModelViewMatrix} ()
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std::vector$<$ MATRIX4 $>$ \hyperlink{namespace_utilities_af9f46e572978db79176b61edb1780b3c}{Utilities::g\_\-p\_\-modelview\_\-matrix\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of model/view matrices. \end{DoxyCompactList}\item 
+std::vector$<$ MATRIX4 $>$ \hyperlink{namespace_utilities_a3e2a3a6c251bba50ffe4c069d085e0b7}{Utilities::g\_\-p\_\-projection\_\-matrix\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of projection matrix. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_accdb6ed1387ebfbb3458b12fc5104fc0}{Utilities::g\_\-current\_\-modelview\_\-matrix}
+\begin{DoxyCompactList}\small\item\em The model/view matrices. \end{DoxyCompactList}\item 
+MATRIX4 \hyperlink{namespace_utilities_a8c2454e701dfbb5ec835d7d3a36869c5}{Utilities::g\_\-current\_\-projection\_\-matrix}
+\begin{DoxyCompactList}\small\item\em The projection matrix. \end{DoxyCompactList}\item 
+std::vector$<$ int $>$ \hyperlink{namespace_utilities_a0c685e4387f8e43c77ef5931a213cfaf}{Utilities::g\_\-frame\_\-buffer\_\-object\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of FBO binding. \end{DoxyCompactList}\item 
+std::vector$<$ std::pair$<$ int, int $>$ $>$ \hyperlink{namespace_utilities_a0f11bcfd46f3b7d0bdf66bc2127ba85f}{Utilities::g\_\-texture\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of texture binding. \end{DoxyCompactList}\item 
+std::vector$<$ std::pair$<$ int, bool $>$ $>$ \hyperlink{namespace_utilities_a12dfa64d0c2f8186e94336a73defa7a8}{Utilities::g\_\-enable\_\-disable\_\-state\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of enable/disable states. \end{DoxyCompactList}\item 
+std::vector$<$ int $>$ \hyperlink{namespace_utilities_adf21242b77777527da1f9e6d8f72a1e5}{Utilities::g\_\-shader\_\-program\_\-stack}
+\begin{DoxyCompactList}\small\item\em The stack of shader programs. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Some utility functions about OpenGL. \begin{DoxyVersion}{Version}
+1.0
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+07/11/2013
+\end{DoxyDate}
+\begin{DoxyAuthor}{Author}
+Dr Franck P. Vidal
+\end{DoxyAuthor}
+\hypertarget{_x_ray_renderer_8inl_License}{}\subsection{License}\label{_x_ray_renderer_8inl_License}
+BSD 3-\/Clause License.
+
+For details on use and redistribution please refer to \href{http://opensource.org/licenses/BSD-3-Clause}{\tt http://opensource.org/licenses/BSD-\/3-\/Clause}\hypertarget{_x_ray_renderer_8inl_Copyright}{}\subsection{Copyright}\label{_x_ray_renderer_8inl_Copyright}
+(c) by Dr Franck P. Vidal (\href{mailto:franck.p.vidal@fpvidal.net}{\tt franck.p.vidal@fpvidal.net}), \href{http://www.fpvidal.net/,}{\tt http://www.fpvidal.net/,} Dec 2013, 2013, version 1.0, BSD 3-\/Clause License 
+
+Definition in file \hyperlink{_open_g_l_utilities_8h_source}{OpenGLUtilities.h}.
+

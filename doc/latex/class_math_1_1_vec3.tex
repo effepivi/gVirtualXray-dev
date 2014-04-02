@@ -1,0 +1,835 @@
+\hypertarget{class_math_1_1_vec3}{
+\section{Math::Vec3$<$ T $>$ Class Template Reference}
+\label{class_math_1_1_vec3}\index{Math::Vec3@{Math::Vec3}}
+}
+
+
+\hyperlink{class_math_1_1_vec3}{Vec3} is a template class to handle a 3D vector.  
+
+
+
+
+{\ttfamily \#include $<$Vec3.h$>$}
+
+
+
+Collaboration diagram for Math::Vec3$<$ T $>$:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=600pt]{class_math_1_1_vec3__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_math_1_1_vec3_aecaea0693c6d31b1df4f4d2d75beb868}{Vec3} (const T \&aX=0, const T \&aY=0, const T \&aZ=0)
+\begin{DoxyCompactList}\small\item\em Default Constructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_math_1_1_vec3_a5fc8f5b4eb732f0be26f7d90fc40488e}{setX} (const T \&aValue)
+\begin{DoxyCompactList}\small\item\em Set the position along the x-\/axis. \end{DoxyCompactList}\item 
+void \hyperlink{class_math_1_1_vec3_aa0aad7c28629148a5e9c587018f77dea}{setY} (const T \&aValue)
+\begin{DoxyCompactList}\small\item\em Set the position along the y-\/axis. \end{DoxyCompactList}\item 
+void \hyperlink{class_math_1_1_vec3_a567e7b6e9cd6bdf618b809c39f8103ef}{setZ} (const T \&aValue)
+\begin{DoxyCompactList}\small\item\em Set the position along the z-\/axis. \end{DoxyCompactList}\item 
+T \hyperlink{class_math_1_1_vec3_a0e6a0ae44f04152b422347026a0fd1de}{getX} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the position along the x-\/axis. \end{DoxyCompactList}\item 
+T \hyperlink{class_math_1_1_vec3_a80aed59b26dc66cc526a8b90d60243d3}{getY} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the position along the y-\/axis. \end{DoxyCompactList}\item 
+T \hyperlink{class_math_1_1_vec3_a644d7ca5de8c43849d192a47aebc1def}{getZ} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the position along the z-\/axis. \end{DoxyCompactList}\item 
+double \hyperlink{class_math_1_1_vec3_ac08670872d34c04db0643b20051aa2a6}{length} () const 
+\begin{DoxyCompactList}\small\item\em Get the length of the vector. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a7c297a2db8e2d2c8d96626e1f037c506}{normal} () const 
+\begin{DoxyCompactList}\small\item\em Get the unit vector corresponding to the normed current vector. \end{DoxyCompactList}\item 
+void \hyperlink{class_math_1_1_vec3_aac516bf8cf2b0abe1d96c32ae83644d0}{normalize} ()
+\begin{DoxyCompactList}\small\item\em Normalize the current vector so that its length is 1. \end{DoxyCompactList}\item 
+void \hyperlink{class_math_1_1_vec3_a6abaf3935a4507648c492d1fe90d4dc7}{normalise} ()
+\begin{DoxyCompactList}\small\item\em Normalise the current vector so that its length is 1. \end{DoxyCompactList}\item 
+double \hyperlink{class_math_1_1_vec3_ae4fa4fabd84a4711c9494872a6593495}{dotProduct} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\begin{DoxyCompactList}\small\item\em Get the dot product between the current vector and a given vector. \end{DoxyCompactList}\item 
+double \hyperlink{class_math_1_1_vec3_a5aab62e1729b0e27b544cfd5c89cc0f4}{distance} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\item 
+double \hyperlink{class_math_1_1_vec3_af4e46f39f829553745000a725f6b946a}{operator$\ast$} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a99eea813a1772346fbd86699eee96508}{operator+} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\begin{DoxyCompactList}\small\item\em Operator +. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \& \hyperlink{class_math_1_1_vec3_a1c558bd3744c7f5184267d5b72e7b356}{operator+=} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector)
+\begin{DoxyCompactList}\small\item\em Operator +=. \end{DoxyCompactList}\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a5f3ea1c937cb3a920eb9c4052df155db}{operator-\/} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\begin{DoxyCompactList}\small\item\em Operator -\/. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \& \hyperlink{class_math_1_1_vec3_adc2db7214b9e70e71b953abbcc8e202b}{operator-\/=} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector)
+\begin{DoxyCompactList}\small\item\em Operator -\/=. \end{DoxyCompactList}\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a95c1535c1a95edcaba9d09aa4131c5cb}{operator$\ast$} (const double \&aValue) const 
+\begin{DoxyCompactList}\small\item\em Operator $\ast$ to multiply each component of the vector by a given value. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \& \hyperlink{class_math_1_1_vec3_a4c6c9c61419433e5b48aea9868daaa65}{operator$\ast$=} (const double \&aValue)
+\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a21d4315f14832a75c6c5234eb53d0018}{operator$\ast$} (const float \&aValue) const 
+\begin{DoxyCompactList}\small\item\em Operator $\ast$ to multiply each component of the vector by a given value. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \& \hyperlink{class_math_1_1_vec3_a478a1fc0ef190230d112fde763a5aec5}{operator$\ast$=} (const float \&aValue)
+\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a6fefb99be30180f1ba0bf28650dab021}{operator/} (const double \&aValue) const 
+\begin{DoxyCompactList}\small\item\em Operator / to divide each component of the vector by a given value. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \& \hyperlink{class_math_1_1_vec3_a94a0ad94c50a92e7df4ef2eaa80b646d}{operator/=} (const double \&aValue)
+\begin{DoxyCompactList}\small\item\em Operator -\/=. \end{DoxyCompactList}\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a7b6edfec60d0610b207468266cef5f62}{operator/} (const float \&aValue) const 
+\begin{DoxyCompactList}\small\item\em Operator / to divide each component of the vector by a given value. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{Vec3} \& \hyperlink{class_math_1_1_vec3_a133821008073a67584bf7efe5996222a}{operator/=} (const float \&aValue)
+\begin{DoxyCompactList}\small\item\em Operator -\/=. \end{DoxyCompactList}\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_a3d2915ed100ea1cb23835fc6face8463}{operator$^\wedge$} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\item 
+const \hyperlink{class_math_1_1_vec3}{Vec3} \hyperlink{class_math_1_1_vec3_ad28e2086bad77ee4d341b8afa1590ca5}{operator-\/} () const 
+\begin{DoxyCompactList}\small\item\em Operator -\/ to get the opposite vector. \end{DoxyCompactList}\item 
+bool \hyperlink{class_math_1_1_vec3_a59cf913584768084bc2a557b230f2832}{operator==} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\begin{DoxyCompactList}\small\item\em Operator ==. \end{DoxyCompactList}\item 
+bool \hyperlink{class_math_1_1_vec3_afeec0386f8d8c80c93476e317cf4442e}{operator!=} (const \hyperlink{class_math_1_1_vec3}{Vec3} \&aVector) const 
+\begin{DoxyCompactList}\small\item\em Operator !=. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+T \hyperlink{class_math_1_1_vec3_ae5fc08da4fa89bade8c10a0d21458e3d}{m\_\-x}
+\begin{DoxyCompactList}\small\item\em the position along the x-\/axis \end{DoxyCompactList}\item 
+T \hyperlink{class_math_1_1_vec3_adf02f4fd76cc025b128490a011f50702}{m\_\-y}
+\begin{DoxyCompactList}\small\item\em the position along the y-\/axi \end{DoxyCompactList}\item 
+T \hyperlink{class_math_1_1_vec3_ae10650a6e5374095a3f35e53c9364c2b}{m\_\-z}
+\begin{DoxyCompactList}\small\item\em the position along the z-\/axi \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class Math::Vec3$<$ T $>$}
+
+\hyperlink{class_math_1_1_vec3}{Vec3} is a template class to handle a 3D vector. 
+
+Definition at line 67 of file Vec3.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_math_1_1_vec3_aecaea0693c6d31b1df4f4d2d75beb868}{
+\index{Math::Vec3@{Math::Vec3}!Vec3@{Vec3}}
+\index{Vec3@{Vec3}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{Vec3}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf Math::Vec3}$<$ T $>$::{\bf Vec3} (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{aX = {\ttfamily 0}, }
+\item[{const T \&}]{aY = {\ttfamily 0}, }
+\item[{const T \&}]{aZ = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_aecaea0693c6d31b1df4f4d2d75beb868}
+
+
+Default Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aX,:} & the position along the x-\/axis (default value is 0) \\
+\hline
+{\em aY,:} & the position along the y-\/axis (default value is 0) \\
+\hline
+{\em aZ,:} & the position along the z-\/axis (default value is 0) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 42 of file Vec3.inl.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_math_1_1_vec3_a5aab62e1729b0e27b544cfd5c89cc0f4}{
+\index{Math::Vec3@{Math::Vec3}!distance@{distance}}
+\index{distance@{distance}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{distance}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ double {\bf Math::Vec3}$<$ T $>$::distance (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a5aab62e1729b0e27b544cfd5c89cc0f4}
+Get the distance between the 3D position represented by the current vector and another position. 
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the distance 
+\end{DoxyReturn}
+
+
+Definition at line 151 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_ae4fa4fabd84a4711c9494872a6593495}{
+\index{Math::Vec3@{Math::Vec3}!dotProduct@{dotProduct}}
+\index{dotProduct@{dotProduct}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{dotProduct}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ double {\bf Math::Vec3}$<$ T $>$::dotProduct (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_ae4fa4fabd84a4711c9494872a6593495}
+
+
+Get the dot product between the current vector and a given vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the dot product 
+\end{DoxyReturn}
+
+
+Definition at line 135 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a0e6a0ae44f04152b422347026a0fd1de}{
+\index{Math::Vec3@{Math::Vec3}!getX@{getX}}
+\index{getX@{getX}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{getX}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf Math::Vec3}$<$ T $>$::getX (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a0e6a0ae44f04152b422347026a0fd1de}
+
+
+Accessor on the position along the x-\/axis. 
+
+\begin{DoxyReturn}{Returns}
+the position along the x-\/axis 
+\end{DoxyReturn}
+
+
+Definition at line 76 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a80aed59b26dc66cc526a8b90d60243d3}{
+\index{Math::Vec3@{Math::Vec3}!getY@{getY}}
+\index{getY@{getY}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{getY}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf Math::Vec3}$<$ T $>$::getY (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a80aed59b26dc66cc526a8b90d60243d3}
+
+
+Accessor on the position along the y-\/axis. 
+
+\begin{DoxyReturn}{Returns}
+the position along the y-\/axis 
+\end{DoxyReturn}
+
+
+Definition at line 84 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a644d7ca5de8c43849d192a47aebc1def}{
+\index{Math::Vec3@{Math::Vec3}!getZ@{getZ}}
+\index{getZ@{getZ}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{getZ}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf Math::Vec3}$<$ T $>$::getZ (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a644d7ca5de8c43849d192a47aebc1def}
+
+
+Accessor on the position along the z-\/axis. 
+
+\begin{DoxyReturn}{Returns}
+the position along the z-\/axis 
+\end{DoxyReturn}
+
+
+Definition at line 92 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_ac08670872d34c04db0643b20051aa2a6}{
+\index{Math::Vec3@{Math::Vec3}!length@{length}}
+\index{length@{length}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{length}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ double {\bf Math::Vec3}$<$ T $>$::length (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_ac08670872d34c04db0643b20051aa2a6}
+
+
+Get the length of the vector. 
+
+\begin{DoxyReturn}{Returns}
+the length of the vector 
+\end{DoxyReturn}
+
+
+Definition at line 100 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a7c297a2db8e2d2c8d96626e1f037c506}{
+\index{Math::Vec3@{Math::Vec3}!normal@{normal}}
+\index{normal@{normal}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{normal}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::normal (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a7c297a2db8e2d2c8d96626e1f037c506}
+
+
+Get the unit vector corresponding to the normed current vector. 
+
+\begin{DoxyReturn}{Returns}
+the unit vector 
+\end{DoxyReturn}
+
+
+Definition at line 108 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a6abaf3935a4507648c492d1fe90d4dc7}{
+\index{Math::Vec3@{Math::Vec3}!normalise@{normalise}}
+\index{normalise@{normalise}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{normalise}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf Math::Vec3}$<$ T $>$::normalise (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a6abaf3935a4507648c492d1fe90d4dc7}
+
+
+Normalise the current vector so that its length is 1. 
+
+
+
+Definition at line 127 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_aac516bf8cf2b0abe1d96c32ae83644d0}{
+\index{Math::Vec3@{Math::Vec3}!normalize@{normalize}}
+\index{normalize@{normalize}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{normalize}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf Math::Vec3}$<$ T $>$::normalize (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_aac516bf8cf2b0abe1d96c32ae83644d0}
+
+
+Normalize the current vector so that its length is 1. 
+
+
+
+Definition at line 116 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_afeec0386f8d8c80c93476e317cf4442e}{
+\index{Math::Vec3@{Math::Vec3}!operator!=@{operator!=}}
+\index{operator!=@{operator!=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator!=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ bool {\bf Math::Vec3}$<$ T $>$::operator!= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_afeec0386f8d8c80c93476e317cf4442e}
+
+
+Operator !=. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the vector to compare the current vector with \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the two vectors are different, false if the two vectors are the same 
+\end{DoxyReturn}
+
+
+Definition at line 313 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a95c1535c1a95edcaba9d09aa4131c5cb}{
+\index{Math::Vec3@{Math::Vec3}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator$\ast$}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator$\ast$ (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{aValue}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a95c1535c1a95edcaba9d09aa4131c5cb}
+
+
+Operator $\ast$ to multiply each component of the vector by a given value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the multiplicative value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 203 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a21d4315f14832a75c6c5234eb53d0018}{
+\index{Math::Vec3@{Math::Vec3}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator$\ast$}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator$\ast$ (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{aValue}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a21d4315f14832a75c6c5234eb53d0018}
+
+
+Operator $\ast$ to multiply each component of the vector by a given value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the multiplicative value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 223 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_af4e46f39f829553745000a725f6b946a}{
+\index{Math::Vec3@{Math::Vec3}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator$\ast$}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ double {\bf Math::Vec3}$<$ T $>$::operator$\ast$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_af4e46f39f829553745000a725f6b946a}
+Operator $\ast$ to compute the dot product between the current vector and a given vector. 
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the dot product 
+\end{DoxyReturn}
+
+
+Definition at line 143 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a4c6c9c61419433e5b48aea9868daaa65}{
+\index{Math::Vec3@{Math::Vec3}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator$\ast$=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ \& {\bf Math::Vec3}$<$ T $>$::operator$\ast$= (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a4c6c9c61419433e5b48aea9868daaa65}
+Operator $\ast$= to multiply each component of the vector by a given value, and modify the current vector. 
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the multiplicative value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 211 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a478a1fc0ef190230d112fde763a5aec5}{
+\index{Math::Vec3@{Math::Vec3}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator$\ast$=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ \& {\bf Math::Vec3}$<$ T $>$::operator$\ast$= (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a478a1fc0ef190230d112fde763a5aec5}
+Operator $\ast$= to multiply each component of the vector by a given value, and modify the current vector. 
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the multiplicative value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 231 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a99eea813a1772346fbd86699eee96508}{
+\index{Math::Vec3@{Math::Vec3}!operator+@{operator+}}
+\index{operator+@{operator+}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator+}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator+ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a99eea813a1772346fbd86699eee96508}
+
+
+Operator +. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the dot product 
+\end{DoxyReturn}
+
+
+Definition at line 163 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a1c558bd3744c7f5184267d5b72e7b356}{
+\index{Math::Vec3@{Math::Vec3}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator+=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ \& {\bf Math::Vec3}$<$ T $>$::operator+= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a1c558bd3744c7f5184267d5b72e7b356}
+
+
+Operator +=. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 171 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a5f3ea1c937cb3a920eb9c4052df155db}{
+\index{Math::Vec3@{Math::Vec3}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator-\/}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator-\/ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a5f3ea1c937cb3a920eb9c4052df155db}
+
+
+Operator -\/. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 183 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_ad28e2086bad77ee4d341b8afa1590ca5}{
+\index{Math::Vec3@{Math::Vec3}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator-\/}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator-\/ (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_ad28e2086bad77ee4d341b8afa1590ca5}
+
+
+Operator -\/ to get the opposite vector. 
+
+\begin{DoxyReturn}{Returns}
+the opposite vector 
+\end{DoxyReturn}
+
+
+Definition at line 293 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_adc2db7214b9e70e71b953abbcc8e202b}{
+\index{Math::Vec3@{Math::Vec3}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator-\/=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ \& {\bf Math::Vec3}$<$ T $>$::operator-\/= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_adc2db7214b9e70e71b953abbcc8e202b}
+
+
+Operator -\/=. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 191 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a6fefb99be30180f1ba0bf28650dab021}{
+\index{Math::Vec3@{Math::Vec3}!operator/@{operator/}}
+\index{operator/@{operator/}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator/}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator/ (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{aValue}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a6fefb99be30180f1ba0bf28650dab021}
+
+
+Operator / to divide each component of the vector by a given value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 243 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a7b6edfec60d0610b207468266cef5f62}{
+\index{Math::Vec3@{Math::Vec3}!operator/@{operator/}}
+\index{operator/@{operator/}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator/}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator/ (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{aValue}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a7b6edfec60d0610b207468266cef5f62}
+
+
+Operator / to divide each component of the vector by a given value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 263 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a94a0ad94c50a92e7df4ef2eaa80b646d}{
+\index{Math::Vec3@{Math::Vec3}!operator/=@{operator/=}}
+\index{operator/=@{operator/=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator/=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ \& {\bf Math::Vec3}$<$ T $>$::operator/= (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a94a0ad94c50a92e7df4ef2eaa80b646d}
+
+
+Operator -\/=. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 251 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a133821008073a67584bf7efe5996222a}{
+\index{Math::Vec3@{Math::Vec3}!operator/=@{operator/=}}
+\index{operator/=@{operator/=}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator/=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Vec3}$<$ T $>$ \& {\bf Math::Vec3}$<$ T $>$::operator/= (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a133821008073a67584bf7efe5996222a}
+
+
+Operator -\/=. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified vector 
+\end{DoxyReturn}
+
+
+Definition at line 271 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a59cf913584768084bc2a557b230f2832}{
+\index{Math::Vec3@{Math::Vec3}!operator==@{operator==}}
+\index{operator==@{operator==}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator==}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ bool {\bf Math::Vec3}$<$ T $>$::operator== (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a59cf913584768084bc2a557b230f2832}
+
+
+Operator ==. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the vector to compare the current vector with \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the two vectors are the same, false if the two vectors are different 
+\end{DoxyReturn}
+
+
+Definition at line 301 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a3d2915ed100ea1cb23835fc6face8463}{
+\index{Math::Vec3@{Math::Vec3}!operator$^\wedge$@{operator$^\wedge$}}
+\index{operator$^\wedge$@{operator$^\wedge$}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{operator$^\wedge$}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ const {\bf Vec3}$<$ T $>$ {\bf Math::Vec3}$<$ T $>$::operator$^\wedge$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vec3}$<$ T $>$ \&}]{aVector}
+\end{DoxyParamCaption}
+) const}}
+\label{class_math_1_1_vec3_a3d2915ed100ea1cb23835fc6face8463}
+Operator $^\wedge$ to compute the cross product between the current vector and a given vector. 
+\begin{DoxyParams}{Parameters}
+{\em aVector,:} & the other vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the cross product 
+\end{DoxyReturn}
+
+
+Definition at line 283 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a5fc8f5b4eb732f0be26f7d90fc40488e}{
+\index{Math::Vec3@{Math::Vec3}!setX@{setX}}
+\index{setX@{setX}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{setX}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf Math::Vec3}$<$ T $>$::setX (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a5fc8f5b4eb732f0be26f7d90fc40488e}
+
+
+Set the position along the x-\/axis. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the position along the x-\/axis \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 52 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_aa0aad7c28629148a5e9c587018f77dea}{
+\index{Math::Vec3@{Math::Vec3}!setY@{setY}}
+\index{setY@{setY}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{setY}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf Math::Vec3}$<$ T $>$::setY (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_aa0aad7c28629148a5e9c587018f77dea}
+
+
+Set the position along the y-\/axis. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the position along the y-\/axis \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 60 of file Vec3.inl.
+
+\hypertarget{class_math_1_1_vec3_a567e7b6e9cd6bdf618b809c39f8103ef}{
+\index{Math::Vec3@{Math::Vec3}!setZ@{setZ}}
+\index{setZ@{setZ}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{setZ}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf Math::Vec3}$<$ T $>$::setZ (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{aValue}
+\end{DoxyParamCaption}
+)}}
+\label{class_math_1_1_vec3_a567e7b6e9cd6bdf618b809c39f8103ef}
+
+
+Set the position along the z-\/axis. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aValue,:} & the position along the z-\/axis \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 68 of file Vec3.inl.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_math_1_1_vec3_ae5fc08da4fa89bade8c10a0d21458e3d}{
+\index{Math::Vec3@{Math::Vec3}!m\_\-x@{m\_\-x}}
+\index{m\_\-x@{m\_\-x}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{m\_\-x}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T {\bf Math::Vec3}$<$ T $>$::{\bf m\_\-x}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_math_1_1_vec3_ae5fc08da4fa89bade8c10a0d21458e3d}
+
+
+the position along the x-\/axis 
+
+
+
+Definition at line 364 of file Vec3.h.
+
+\hypertarget{class_math_1_1_vec3_adf02f4fd76cc025b128490a011f50702}{
+\index{Math::Vec3@{Math::Vec3}!m\_\-y@{m\_\-y}}
+\index{m\_\-y@{m\_\-y}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{m\_\-y}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T {\bf Math::Vec3}$<$ T $>$::{\bf m\_\-y}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_math_1_1_vec3_adf02f4fd76cc025b128490a011f50702}
+
+
+the position along the y-\/axi 
+
+
+
+Definition at line 365 of file Vec3.h.
+
+\hypertarget{class_math_1_1_vec3_ae10650a6e5374095a3f35e53c9364c2b}{
+\index{Math::Vec3@{Math::Vec3}!m\_\-z@{m\_\-z}}
+\index{m\_\-z@{m\_\-z}!Math::Vec3@{Math::Vec3}}
+\subsubsection[{m\_\-z}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T {\bf Math::Vec3}$<$ T $>$::{\bf m\_\-z}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_math_1_1_vec3_ae10650a6e5374095a3f35e53c9364c2b}
+
+
+the position along the z-\/axi 
+
+
+
+Definition at line 366 of file Vec3.h.
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_vec3_8h}{Vec3.h}\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_vec3_8inl}{Vec3.inl}\end{DoxyCompactItemize}

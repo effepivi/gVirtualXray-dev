@@ -1,0 +1,1454 @@
+\hypertarget{class_graphics_1_1_triangle_mesh}{
+\section{Graphics::TriangleMesh Class Reference}
+\label{class_graphics_1_1_triangle_mesh}\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+}
+
+
+\hyperlink{class_graphics_1_1_triangle_mesh}{TriangleMesh} is a class to handle a 3D triangle mesh.  
+
+
+
+
+{\ttfamily \#include $<$TriangleMesh.h$>$}
+
+
+
+Inheritance diagram for Graphics::TriangleMesh:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=600pt]{class_graphics_1_1_triangle_mesh__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Graphics::TriangleMesh:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=600pt]{class_graphics_1_1_triangle_mesh__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_graphics_1_1_triangle_mesh_ada2d98479ba2f70fd622ba56d4abe0d1}{TriangleMesh} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{class_graphics_1_1_triangle_mesh_acb7ab0f3560e85b69f86f068de342adf}{$\sim$TriangleMesh} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a87bee092cede75257a58d441f10c8f1e}{reset} ()
+\begin{DoxyCompactList}\small\item\em Reset the data. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a4914ed55a0874fe3951a0d860173aaab}{display} (bool aVBOFlag=true)
+\begin{DoxyCompactList}\small\item\em Display the triangular mesh using OpenGL. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a4c6e7476fd84c8353932eae154ff6543}{displayWireFrame} ()
+\begin{DoxyCompactList}\small\item\em Display the triangular mesh in wireframe using OpenGL. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a26136438bcb6d94e9608005317228bdf}{displayFaceNormal} (\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} aNormalSize=0.5 $\ast$cm) const 
+\begin{DoxyCompactList}\small\item\em Display the face normal vectors. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a59ee2f24eca1fffa9f5e3ead1bb46cf9}{displayVertexNormal} (\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} aNormalSize=0.5 $\ast$cm) const 
+\begin{DoxyCompactList}\small\item\em Display the vertex normal vectors. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_abb11091003f5a96b1ed5fefa17de7ad4}{setFilename} (const char $\ast$aFilename)
+\begin{DoxyCompactList}\small\item\em Set the name of the file that contains the polygon mesh. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a4cbfb0430a24f0369e31bcba04c2a13a}{setFilename} (const std::string \&aFilename)
+\begin{DoxyCompactList}\small\item\em Set the name of the file that contains the polygon mesh. \end{DoxyCompactList}\item 
+const std::string \& \hyperlink{class_graphics_1_1_triangle_mesh_abf08bcc810eb706892c32d653b17caf9}{getFilename} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the name of the file that contains the polygon mesh. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ae3fa5bbc167ad814727ce2a7c6868372}{loadSTLFile} (bool aMoveToCentreFlag, bool anAutoComputeNormalFlag, bool aPrintDebugInfoFlag, bool aCreateVBOFlag, \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} aScale, int aBufferUsageHing)
+\begin{DoxyCompactList}\small\item\em Set the name of the file that contains the polygon mesh. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a441adcf4bb07f505963f16647ef7b642}{moveToCentre} ()
+\begin{DoxyCompactList}\small\item\em Move the polygon to the center. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ad256fd2f1397c66f30149b63f1d298e8}{computeNormalVectors} ()
+\begin{DoxyCompactList}\small\item\em Compute the normal vectors using the cross product method. \end{DoxyCompactList}\item 
+bool \hyperlink{class_graphics_1_1_triangle_mesh_ae6175477fb00bba71f4c75b79834a4f8}{useVBO} (int aBufferUsageHing, int aTypeOfPrimitive)
+\begin{DoxyCompactList}\small\item\em Use a vertex buffer object if possible. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_affd0f454aa16d4b88046b5cbb0903f07}{setHounsfieldValue} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&aHounsfieldValue)
+\begin{DoxyCompactList}\small\item\em Set the Hounsfield value of the object material. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a7e8b31767d359a376e93050a4223ca96}{setAttenuationCoefficient} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&anAttenuationCoefficient)
+\begin{DoxyCompactList}\small\item\em Set the attenuation coefficient of the object material. \end{DoxyCompactList}\item 
+bool \hyperlink{class_graphics_1_1_triangle_mesh_a6e278a61ead1cb3ad8b070f120d976ae}{getUseHounsfieldValueFlag} () const 
+\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{class_graphics_1_1_triangle_mesh_a37ee91764ef3643de7d5b6664f9eafde}{getHounsfieldValue} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the Hounsfield value. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{class_graphics_1_1_triangle_mesh_a93fdf84e7b029f19345d4005fe8cb868}{getAttenuationCoefficient} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the attenuation coefficient. \end{DoxyCompactList}\item 
+const \hyperlink{class_math_1_1_vec3}{VEC3} \& \hyperlink{class_graphics_1_1_triangle_mesh_a8b75cac9817870e3f7ade5363a9e5662}{getMinCorner} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the bounding box lower corner. \end{DoxyCompactList}\item 
+const \hyperlink{class_math_1_1_vec3}{VEC3} \& \hyperlink{class_graphics_1_1_triangle_mesh_a8194f8e56a60bd0c1f60b653fccd42f7}{getMaxCorner} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the bounding box upper corner. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ae7a9b8bfda0e274707bb3af94dfb7971}{translate} (const \hyperlink{class_math_1_1_vec3}{VEC3} \&aTranslationVector)
+\begin{DoxyCompactList}\small\item\em Use a vertex buffer object if possible. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_a8be06f8a7862b67d4f02fad6b711afd3}{getTriangleNumber} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of triangles. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_ac08435b3a2b9d2a9b502fa57de34de57}{getFaceNormalNumber} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of face normal vectors. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_ac7ee1803f7ef0dd7318f976e09d2a3d5}{getVertexNormalNumber} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of vertex normal vectors. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_ac1906fbc0d9ccffd2605f4966b9f0739}{getVertexNumber} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of vertices. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_aa01446e2ed9291d7e69a9f1331cc997c}{getIndexNumber} () const 
+\begin{DoxyCompactList}\small\item\em Accessor on the number of indices. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a0ab4dddfc90950050ed9a4f64d9d5490}{mergeVertices} (bool aPrintDebugInfoFlag=false)
+\item 
+\hyperlink{class_math_1_1_vec3}{VEC3} \hyperlink{class_graphics_1_1_triangle_mesh_a7db528220a52978dbb80257a3955c3d3}{getVertex} (unsigned int anIndex) const 
+\begin{DoxyCompactList}\small\item\em Accessor on a given vertex. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a156fbcd7e56d166bf84606e2943ac15c}{setVertex} (unsigned int anIndex, const \hyperlink{class_math_1_1_vec3}{VEC3} \&aVertex)
+\begin{DoxyCompactList}\small\item\em Change the value of a given vertex. \end{DoxyCompactList}\item 
+int \hyperlink{class_graphics_1_1_triangle_mesh_a30d4abe2c11fa5b0881d8ce6a4269000}{getIndex} (unsigned int anIndex) const 
+\begin{DoxyCompactList}\small\item\em Accessor on a given index. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{VEC3} \hyperlink{class_graphics_1_1_triangle_mesh_a3a3fb5d36f569957094a7da26fbca1e2}{getFaceNormal} (unsigned int anIndex) const 
+\begin{DoxyCompactList}\small\item\em Accessor on a given face normal. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{VEC3} \hyperlink{class_graphics_1_1_triangle_mesh_ab0fc7baa1436c4386fa53529b8cea886}{getVertexNormal} (unsigned int anIndex) const 
+\begin{DoxyCompactList}\small\item\em Accessor on a given vertex normal. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a6d0362b072582c78f06d89fe51851ff4}{setExternalData} (const void $\ast$aVertexArray, unsigned int aNumberOfVertices, int aVertexDataType, const void $\ast$anIndexArray, unsigned int aNumberOfIndices, int anIndexDataType, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a110dd57a6619a10097c9abb920bc3473}{setExternalData} (const std::vector$<$ float $>$ $\ast$aVertexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ae90ee2bc9f71814351266f82a99180dc}{setExternalData} (const std::vector$<$ double $>$ $\ast$aVertexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a5fa2965e5581998b8081ba1588a0356f}{setExternalData} (const std::vector$<$ float $>$ $\ast$aVertexArray, const std::vector$<$ unsigned int $>$ $\ast$anIndexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ad2502e0bfa0b65e0e25e5271438f9cb3}{setExternalData} (const std::vector$<$ double $>$ $\ast$aVertexArray, const std::vector$<$ unsigned int $>$ $\ast$anIndexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ae5fc3b00004b69998028380c7d011335}{setExternalData} (const std::vector$<$ float $>$ $\ast$aVertexArray, const std::vector$<$ unsigned short $>$ $\ast$anIndexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a05f2a078113ffb8c80820a03a52b9bb2}{setExternalData} (const std::vector$<$ double $>$ $\ast$aVertexArray, const std::vector$<$ unsigned short $>$ $\ast$anIndexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a7a1216e1ed938b74bda09845d27f3658}{setExternalData} (const std::vector$<$ float $>$ $\ast$aVertexArray, const std::vector$<$ unsigned char $>$ $\ast$anIndexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a58fcb5b1323d0d7d7246e0063dad66c3}{setExternalData} (const std::vector$<$ double $>$ $\ast$aVertexArray, const std::vector$<$ unsigned char $>$ $\ast$anIndexArray, bool aCreateVBOFlag, int aTypeOfVBO)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a939fff82574df1f0150e3f0ddff0757e}{applyScale} (const \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \&aScale)
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a1e104006a495fbabd7c6c8abb38ec3b3}{inverNormalVectors} ()
+\begin{DoxyCompactList}\small\item\em Inverse the normal vectors. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_graphics_1_1_triangle_mesh_a94cb51475ab61e9c572eefb2d4cf1de6}{updateVBO} (int aTypeOfVBO, int aTypeOfPrimitive)
+\begin{DoxyCompactList}\small\item\em Update the \hyperlink{class_graphics_1_1_v_b_o}{VBO}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a9efdf4756ab73014ae197b1b5979e108}{displayUsingImmediateModeWithIndex} () const 
+\begin{DoxyCompactList}\small\item\em Display the polygon mesh using OpenGL's immediate mode. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a4843779d6f90b2889de7ba8c346d8321}{displayUsingImmediateModeWithoutIndex} () const 
+\begin{DoxyCompactList}\small\item\em Display the polygon mesh using OpenGL's immediate mode. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a01836381cac26a3491d919a3bf1ab92c}{displayWireFrameWithIndex} () const 
+\begin{DoxyCompactList}\small\item\em Display the polygon mesh in wireframe using OpenGL's immediate mode. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a155ce509ff70efecb84d24e22919b9f0}{displayWireFrameWithoutIndex} () const 
+\begin{DoxyCompactList}\small\item\em Display the polygon mesh in wireframe using OpenGL's immediate mode. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a06709382a9e87d0758fa3bda0268a805}{computeBoundingBox} ()
+\begin{DoxyCompactList}\small\item\em Update the bounding box. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a66f9f6680f8a6ae76eb290b0dbf7f57e}{normaliseNormals} ()
+\begin{DoxyCompactList}\small\item\em Normalise the normal vectors. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_ae6adf4bba9758b7f103036787290fdf0}{destroyVertexData} ()
+\begin{DoxyCompactList}\small\item\em Release the memory held by the vertex data if needed. \end{DoxyCompactList}\item 
+void \hyperlink{class_graphics_1_1_triangle_mesh_a9591dd372ed4052ac65f3c5ced71ffd2}{destroyIndexData} ()
+\begin{DoxyCompactList}\small\item\em Release the memory held by the index data if needed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std::string \hyperlink{class_graphics_1_1_triangle_mesh_a56b0d42513921080062ff7c9f3099b28}{m\_\-filename}
+\begin{DoxyCompactList}\small\item\em Name of the file that contains the polygon mesh. \end{DoxyCompactList}\item 
+\hyperlink{class_graphics_1_1_v_b_o}{VBO} \hyperlink{class_graphics_1_1_triangle_mesh_aa2ff3ba03b750b6b0900a02614db0277}{m\_\-vbo}
+\begin{DoxyCompactList}\small\item\em Vertex buffer object. \end{DoxyCompactList}\item 
+bool \hyperlink{class_graphics_1_1_triangle_mesh_afd8f8397af871a5c9ed07545cc12ae49}{m\_\-use\_\-hounsfield\_\-value}
+\begin{DoxyCompactList}\small\item\em Flag about the use of the Hounsfield value or attenuation coefficient. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{class_graphics_1_1_triangle_mesh_a08404cbf123b9ed99bd10ddb1b4626a4}{m\_\-hounsfield\_\-value}
+\begin{DoxyCompactList}\small\item\em Hounsfield value. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{class_graphics_1_1_triangle_mesh_af5c6eb131b9455e3b2dad2b4637b3fea}{m\_\-attenuation\_\-coefficient}
+\begin{DoxyCompactList}\small\item\em Attenuation coefficient. \end{DoxyCompactList}\item 
+\hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} \hyperlink{class_graphics_1_1_triangle_mesh_ab5f109d58c738507ae99bdcddcb48c34}{m\_\-bounding\_\-box\_\-diagonal}
+\begin{DoxyCompactList}\small\item\em Length of the bounding box diagonal. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{VEC3} \hyperlink{class_graphics_1_1_triangle_mesh_a0ec9a88bde30813c632178b5cbb4c3e5}{m\_\-min\_\-corner}
+\begin{DoxyCompactList}\small\item\em Lower corner of the bounding box. \end{DoxyCompactList}\item 
+\hyperlink{class_math_1_1_vec3}{VEC3} \hyperlink{class_graphics_1_1_triangle_mesh_a7b30119057f7194dc47925bcd4489e0a}{m\_\-max\_\-corner}
+\begin{DoxyCompactList}\small\item\em Upper corner of the bounding box. \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} $>$ \hyperlink{class_graphics_1_1_triangle_mesh_aa76c71675a25c5b58e40afcf2625f2c1}{m\_\-p\_\-face\_\-normal\_\-set}
+\begin{DoxyCompactList}\small\item\em Array containing the normal vectors (one per triangle) \end{DoxyCompactList}\item 
+std::vector$<$ \hyperlink{namespace_utilities_a40969b96bd8d847b962e297cb79f08ce}{RATIONAL\_\-NUMBER} $>$ \hyperlink{class_graphics_1_1_triangle_mesh_acd89938378236b129fc2f3700103084b}{m\_\-p\_\-vertex\_\-normal\_\-set}
+\begin{DoxyCompactList}\small\item\em Array containing the normal vectors (one per vertex) \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{class_graphics_1_1_triangle_mesh_af59f4953488d1e569ae0fb9d4a03aaff}{m\_\-p\_\-vertex\_\-set}
+\begin{DoxyCompactList}\small\item\em Array containing the vertices. \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{class_graphics_1_1_triangle_mesh_a41ed5fe89584f78a2798e663dd215ce5}{m\_\-p\_\-index\_\-set}
+\begin{DoxyCompactList}\small\item\em Array containing the index. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_ac778bb8fb96f1ab20315e02c1d46f7ae}{m\_\-number\_\-of\_\-indices}
+\begin{DoxyCompactList}\small\item\em Number of indices. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{class_graphics_1_1_triangle_mesh_a655397b9815909898ea02f20a1c4a059}{m\_\-number\_\-of\_\-vertices}
+\begin{DoxyCompactList}\small\item\em Number of vertices. \end{DoxyCompactList}\item 
+int \hyperlink{class_graphics_1_1_triangle_mesh_a2c16366d7cb7dd6aaff54d96e1bf0eaf}{m\_\-index\_\-data\_\-type}
+\begin{DoxyCompactList}\small\item\em Data type of the index data; valid values are GL\_\-UNSIGNED\_\-INT, GL\_\-UNSIGNED\_\-SHORT, GL\_\-UNSIGNED\_\-BYTE and GL\_\-NONE. \end{DoxyCompactList}\item 
+int \hyperlink{class_graphics_1_1_triangle_mesh_ae76c0a34fff7953312143e274acf1eff}{m\_\-vertex\_\-data\_\-type}
+\begin{DoxyCompactList}\small\item\em Data type of the vertex data; valid values are GL\_\-FLOAT, GL\_\-DOUBLE and GL\_\-NONE. \end{DoxyCompactList}\item 
+bool \hyperlink{class_graphics_1_1_triangle_mesh_a5cd39cd89a74ead177b28f465ca2731c}{m\_\-external\_\-data\_\-flag}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_graphics_1_1_triangle_mesh}{TriangleMesh} is a class to handle a 3D triangle mesh. 
+
+Definition at line 68 of file TriangleMesh.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_graphics_1_1_triangle_mesh_ada2d98479ba2f70fd622ba56d4abe0d1}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!TriangleMesh@{TriangleMesh}}
+\index{TriangleMesh@{TriangleMesh}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{TriangleMesh}]{\setlength{\rightskip}{0pt plus 5cm}Graphics::TriangleMesh::TriangleMesh (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_ada2d98479ba2f70fd622ba56d4abe0d1}
+
+
+Default constructor. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_acb7ab0f3560e85b69f86f068de342adf}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!$\sim$TriangleMesh@{$\sim$TriangleMesh}}
+\index{$\sim$TriangleMesh@{$\sim$TriangleMesh}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{$\sim$TriangleMesh}]{\setlength{\rightskip}{0pt plus 5cm}Graphics::TriangleMesh::$\sim$TriangleMesh (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_acb7ab0f3560e85b69f86f068de342adf}
+
+
+Destructor. 
+
+
+
+Definition at line 52 of file TriangleMesh.inl.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_graphics_1_1_triangle_mesh_a939fff82574df1f0150e3f0ddff0757e}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!applyScale@{applyScale}}
+\index{applyScale@{applyScale}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{applyScale}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::applyScale (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{aScale}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a939fff82574df1f0150e3f0ddff0757e}
+Apply a scaling factor to the vertex data. Note that the bounding box will be automatically updated. 
+\begin{DoxyParams}{Parameters}
+{\em aScale,:} & scaling factor \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 317 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a06709382a9e87d0758fa3bda0268a805}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!computeBoundingBox@{computeBoundingBox}}
+\index{computeBoundingBox@{computeBoundingBox}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{computeBoundingBox}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::computeBoundingBox (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a06709382a9e87d0758fa3bda0268a805}
+
+
+Update the bounding box. 
+
+
+
+Definition at line 289 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ad256fd2f1397c66f30149b63f1d298e8}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!computeNormalVectors@{computeNormalVectors}}
+\index{computeNormalVectors@{computeNormalVectors}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{computeNormalVectors}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::computeNormalVectors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_ad256fd2f1397c66f30149b63f1d298e8}
+
+
+Compute the normal vectors using the cross product method. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a9591dd372ed4052ac65f3c5ced71ffd2}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!destroyIndexData@{destroyIndexData}}
+\index{destroyIndexData@{destroyIndexData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{destroyIndexData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::destroyIndexData (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a9591dd372ed4052ac65f3c5ced71ffd2}
+
+
+Release the memory held by the index data if needed. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ae6adf4bba9758b7f103036787290fdf0}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!destroyVertexData@{destroyVertexData}}
+\index{destroyVertexData@{destroyVertexData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{destroyVertexData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::destroyVertexData (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ae6adf4bba9758b7f103036787290fdf0}
+
+
+Release the memory held by the vertex data if needed. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a4914ed55a0874fe3951a0d860173aaab}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!display@{display}}
+\index{display@{display}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{display}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::display (
+\begin{DoxyParamCaption}
+\item[{bool}]{aVBOFlag = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a4914ed55a0874fe3951a0d860173aaab}
+
+
+Display the triangular mesh using OpenGL. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aVBOFlag,:} & true to use a vertex buffer object, false to use Immediate mode rendering (default value is TRUE) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 61 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a26136438bcb6d94e9608005317228bdf}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayFaceNormal@{displayFaceNormal}}
+\index{displayFaceNormal@{displayFaceNormal}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayFaceNormal}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayFaceNormal (
+\begin{DoxyParamCaption}
+\item[{{\bf RATIONAL\_\-NUMBER}}]{aNormalSize = {\ttfamily 0.5~$\ast$cm}}
+\end{DoxyParamCaption}
+) const}}
+\label{class_graphics_1_1_triangle_mesh_a26136438bcb6d94e9608005317228bdf}
+
+
+Display the face normal vectors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aNormalSize,:} & the size of the vectors (default value is 0.5 cm) \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a9efdf4756ab73014ae197b1b5979e108}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayUsingImmediateModeWithIndex@{displayUsingImmediateModeWithIndex}}
+\index{displayUsingImmediateModeWithIndex@{displayUsingImmediateModeWithIndex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayUsingImmediateModeWithIndex}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayUsingImmediateModeWithIndex (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a9efdf4756ab73014ae197b1b5979e108}
+
+
+Display the polygon mesh using OpenGL's immediate mode. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a4843779d6f90b2889de7ba8c346d8321}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayUsingImmediateModeWithoutIndex@{displayUsingImmediateModeWithoutIndex}}
+\index{displayUsingImmediateModeWithoutIndex@{displayUsingImmediateModeWithoutIndex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayUsingImmediateModeWithoutIndex}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayUsingImmediateModeWithoutIndex (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a4843779d6f90b2889de7ba8c346d8321}
+
+
+Display the polygon mesh using OpenGL's immediate mode. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a59ee2f24eca1fffa9f5e3ead1bb46cf9}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayVertexNormal@{displayVertexNormal}}
+\index{displayVertexNormal@{displayVertexNormal}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayVertexNormal}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayVertexNormal (
+\begin{DoxyParamCaption}
+\item[{{\bf RATIONAL\_\-NUMBER}}]{aNormalSize = {\ttfamily 0.5~$\ast$cm}}
+\end{DoxyParamCaption}
+) const}}
+\label{class_graphics_1_1_triangle_mesh_a59ee2f24eca1fffa9f5e3ead1bb46cf9}
+
+
+Display the vertex normal vectors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aNormalSize,:} & the size of the vectors (default value is 0.5 cm) \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a4c6e7476fd84c8353932eae154ff6543}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayWireFrame@{displayWireFrame}}
+\index{displayWireFrame@{displayWireFrame}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayWireFrame}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayWireFrame (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a4c6e7476fd84c8353932eae154ff6543}
+
+
+Display the triangular mesh in wireframe using OpenGL. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a01836381cac26a3491d919a3bf1ab92c}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayWireFrameWithIndex@{displayWireFrameWithIndex}}
+\index{displayWireFrameWithIndex@{displayWireFrameWithIndex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayWireFrameWithIndex}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayWireFrameWithIndex (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a01836381cac26a3491d919a3bf1ab92c}
+
+
+Display the polygon mesh in wireframe using OpenGL's immediate mode. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a155ce509ff70efecb84d24e22919b9f0}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!displayWireFrameWithoutIndex@{displayWireFrameWithoutIndex}}
+\index{displayWireFrameWithoutIndex@{displayWireFrameWithoutIndex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{displayWireFrameWithoutIndex}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::displayWireFrameWithoutIndex (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a155ce509ff70efecb84d24e22919b9f0}
+
+
+Display the polygon mesh in wireframe using OpenGL's immediate mode. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a93fdf84e7b029f19345d4005fe8cb868}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getAttenuationCoefficient@{getAttenuationCoefficient}}
+\index{getAttenuationCoefficient@{getAttenuationCoefficient}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getAttenuationCoefficient}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} Graphics::TriangleMesh::getAttenuationCoefficient (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a93fdf84e7b029f19345d4005fe8cb868}
+
+
+Accessor on the attenuation coefficient. 
+
+\begin{DoxyReturn}{Returns}
+the attenuation coefficient 
+\end{DoxyReturn}
+
+
+Definition at line 179 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a3a3fb5d36f569957094a7da26fbca1e2}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getFaceNormal@{getFaceNormal}}
+\index{getFaceNormal@{getFaceNormal}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getFaceNormal}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VEC3} Graphics::TriangleMesh::getFaceNormal (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anIndex}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a3a3fb5d36f569957094a7da26fbca1e2}
+
+
+Accessor on a given face normal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anIndex,:} & the index of the normal to access \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the normal 
+\end{DoxyReturn}
+
+
+Definition at line 259 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ac08435b3a2b9d2a9b502fa57de34de57}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getFaceNormalNumber@{getFaceNormalNumber}}
+\index{getFaceNormalNumber@{getFaceNormalNumber}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getFaceNormalNumber}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::TriangleMesh::getFaceNormalNumber (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ac08435b3a2b9d2a9b502fa57de34de57}
+
+
+Accessor on the number of face normal vectors. 
+
+\begin{DoxyReturn}{Returns}
+the number of face normal vectors 
+\end{DoxyReturn}
+
+
+Definition at line 223 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_abf08bcc810eb706892c32d653b17caf9}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getFilename@{getFilename}}
+\index{getFilename@{getFilename}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getFilename}]{\setlength{\rightskip}{0pt plus 5cm}const std::string \& Graphics::TriangleMesh::getFilename (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_abf08bcc810eb706892c32d653b17caf9}
+
+
+Accessor on the name of the file that contains the polygon mesh. 
+
+\begin{DoxyReturn}{Returns}
+the file name 
+\end{DoxyReturn}
+
+
+Definition at line 114 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a37ee91764ef3643de7d5b6664f9eafde}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getHounsfieldValue@{getHounsfieldValue}}
+\index{getHounsfieldValue@{getHounsfieldValue}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getHounsfieldValue}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} Graphics::TriangleMesh::getHounsfieldValue (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a37ee91764ef3643de7d5b6664f9eafde}
+
+
+Accessor on the Hounsfield value. 
+
+\begin{DoxyReturn}{Returns}
+the Hounsfield value 
+\end{DoxyReturn}
+
+
+Definition at line 170 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a30d4abe2c11fa5b0881d8ce6a4269000}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getIndex@{getIndex}}
+\index{getIndex@{getIndex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getIndex}]{\setlength{\rightskip}{0pt plus 5cm}int Graphics::TriangleMesh::getIndex (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anIndex}
+\end{DoxyParamCaption}
+) const}}
+\label{class_graphics_1_1_triangle_mesh_a30d4abe2c11fa5b0881d8ce6a4269000}
+
+
+Accessor on a given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anIndex,:} & the index of the index to access \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the index 
+\end{DoxyReturn}
+\hypertarget{class_graphics_1_1_triangle_mesh_aa01446e2ed9291d7e69a9f1331cc997c}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getIndexNumber@{getIndexNumber}}
+\index{getIndexNumber@{getIndexNumber}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getIndexNumber}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::TriangleMesh::getIndexNumber (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_aa01446e2ed9291d7e69a9f1331cc997c}
+
+
+Accessor on the number of indices. 
+
+\begin{DoxyReturn}{Returns}
+the number of indices 
+\end{DoxyReturn}
+
+
+Definition at line 251 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a8194f8e56a60bd0c1f60b653fccd42f7}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getMaxCorner@{getMaxCorner}}
+\index{getMaxCorner@{getMaxCorner}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getMaxCorner}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf VEC3} \& Graphics::TriangleMesh::getMaxCorner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a8194f8e56a60bd0c1f60b653fccd42f7}
+
+
+Accessor on the bounding box upper corner. 
+
+\begin{DoxyReturn}{Returns}
+the bounding box upper corner 
+\end{DoxyReturn}
+
+
+Definition at line 197 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a8b75cac9817870e3f7ade5363a9e5662}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getMinCorner@{getMinCorner}}
+\index{getMinCorner@{getMinCorner}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getMinCorner}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf VEC3} \& Graphics::TriangleMesh::getMinCorner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a8b75cac9817870e3f7ade5363a9e5662}
+
+
+Accessor on the bounding box lower corner. 
+
+\begin{DoxyReturn}{Returns}
+the bounding box lower corner 
+\end{DoxyReturn}
+
+
+Definition at line 188 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a8be06f8a7862b67d4f02fad6b711afd3}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getTriangleNumber@{getTriangleNumber}}
+\index{getTriangleNumber@{getTriangleNumber}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getTriangleNumber}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::TriangleMesh::getTriangleNumber (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a8be06f8a7862b67d4f02fad6b711afd3}
+
+
+Accessor on the number of triangles. 
+
+\begin{DoxyReturn}{Returns}
+the number of triangles 
+\end{DoxyReturn}
+
+
+Definition at line 206 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a6e278a61ead1cb3ad8b070f120d976ae}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getUseHounsfieldValueFlag@{getUseHounsfieldValueFlag}}
+\index{getUseHounsfieldValueFlag@{getUseHounsfieldValueFlag}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getUseHounsfieldValueFlag}]{\setlength{\rightskip}{0pt plus 5cm}bool Graphics::TriangleMesh::getUseHounsfieldValueFlag (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a6e278a61ead1cb3ad8b070f120d976ae}
+Accessor on the flag about the use of the Hounsfield value or attenuation coefficient. \begin{DoxyReturn}{Returns}
+true the Hounsfield value is used, false if the attenuation coefficient is used 
+\end{DoxyReturn}
+
+
+Definition at line 137 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a7db528220a52978dbb80257a3955c3d3}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getVertex@{getVertex}}
+\index{getVertex@{getVertex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getVertex}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VEC3} Graphics::TriangleMesh::getVertex (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anIndex}
+\end{DoxyParamCaption}
+) const}}
+\label{class_graphics_1_1_triangle_mesh_a7db528220a52978dbb80257a3955c3d3}
+
+
+Accessor on a given vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anIndex,:} & the index of the vertex to access \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the vertex 
+\end{DoxyReturn}
+\hypertarget{class_graphics_1_1_triangle_mesh_ab0fc7baa1436c4386fa53529b8cea886}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getVertexNormal@{getVertexNormal}}
+\index{getVertexNormal@{getVertexNormal}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getVertexNormal}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VEC3} Graphics::TriangleMesh::getVertexNormal (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anIndex}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ab0fc7baa1436c4386fa53529b8cea886}
+
+
+Accessor on a given vertex normal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anIndex,:} & the index of the normal to access \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the normal 
+\end{DoxyReturn}
+
+
+Definition at line 274 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ac7ee1803f7ef0dd7318f976e09d2a3d5}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getVertexNormalNumber@{getVertexNormalNumber}}
+\index{getVertexNormalNumber@{getVertexNormalNumber}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getVertexNormalNumber}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::TriangleMesh::getVertexNormalNumber (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ac7ee1803f7ef0dd7318f976e09d2a3d5}
+
+
+Accessor on the number of vertex normal vectors. 
+
+\begin{DoxyReturn}{Returns}
+the number of vertex normal vectors 
+\end{DoxyReturn}
+
+
+Definition at line 233 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ac1906fbc0d9ccffd2605f4966b9f0739}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!getVertexNumber@{getVertexNumber}}
+\index{getVertexNumber@{getVertexNumber}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{getVertexNumber}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Graphics::TriangleMesh::getVertexNumber (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ac1906fbc0d9ccffd2605f4966b9f0739}
+
+
+Accessor on the number of vertices. 
+
+\begin{DoxyReturn}{Returns}
+the number of vertices 
+\end{DoxyReturn}
+
+
+Definition at line 243 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a1e104006a495fbabd7c6c8abb38ec3b3}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!inverNormalVectors@{inverNormalVectors}}
+\index{inverNormalVectors@{inverNormalVectors}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{inverNormalVectors}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::inverNormalVectors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a1e104006a495fbabd7c6c8abb38ec3b3}
+
+
+Inverse the normal vectors. 
+
+
+
+Definition at line 379 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ae3fa5bbc167ad814727ce2a7c6868372}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!loadSTLFile@{loadSTLFile}}
+\index{loadSTLFile@{loadSTLFile}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{loadSTLFile}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::loadSTLFile (
+\begin{DoxyParamCaption}
+\item[{bool}]{aMoveToCentreFlag, }
+\item[{bool}]{anAutoComputeNormalFlag, }
+\item[{bool}]{aPrintDebugInfoFlag, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{{\bf RATIONAL\_\-NUMBER}}]{aScale, }
+\item[{int}]{aBufferUsageHing}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_ae3fa5bbc167ad814727ce2a7c6868372}
+
+
+Set the name of the file that contains the polygon mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aMoveToCentreFlag,:} & a flag to move the polygon to the center or not \\
+\hline
+{\em anAutoComputeNormalFlag,:} & a flag to compute normals or nor \\
+\hline
+{\em aPrintDebugInfoFlag,:} & a flag to display additional debug information in the console or not \\
+\hline
+{\em aCreateVBOFlag,:} & a flag to use a vertex buffer object or not \\
+\hline
+{\em aScale,:} & the unit in which data is stored in the file (e.g. mm, cm, m) \\
+\hline
+{\em aBufferUsageHing,:} & the buffer usage hint; valid values are: GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a0ab4dddfc90950050ed9a4f64d9d5490}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!mergeVertices@{mergeVertices}}
+\index{mergeVertices@{mergeVertices}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{mergeVertices}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::mergeVertices (
+\begin{DoxyParamCaption}
+\item[{bool}]{aPrintDebugInfoFlag = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a0ab4dddfc90950050ed9a4f64d9d5490}
+Merge the vertices of the triangle mesh if the data is managed by the class instance, and if no index has been build. \begin{DoxyReturn}{Returns}
+the number of indices 
+\end{DoxyReturn}
+\hypertarget{class_graphics_1_1_triangle_mesh_a441adcf4bb07f505963f16647ef7b642}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!moveToCentre@{moveToCentre}}
+\index{moveToCentre@{moveToCentre}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{moveToCentre}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::moveToCentre (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a441adcf4bb07f505963f16647ef7b642}
+
+
+Move the polygon to the center. 
+
+
+
+Definition at line 368 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a66f9f6680f8a6ae76eb290b0dbf7f57e}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!normaliseNormals@{normaliseNormals}}
+\index{normaliseNormals@{normaliseNormals}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{normaliseNormals}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::normaliseNormals (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a66f9f6680f8a6ae76eb290b0dbf7f57e}
+
+
+Normalise the normal vectors. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a87bee092cede75257a58d441f10c8f1e}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!reset@{reset}}
+\index{reset@{reset}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{reset}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::reset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a87bee092cede75257a58d441f10c8f1e}
+
+
+Reset the data. 
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a7e8b31767d359a376e93050a4223ca96}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setAttenuationCoefficient@{setAttenuationCoefficient}}
+\index{setAttenuationCoefficient@{setAttenuationCoefficient}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setAttenuationCoefficient}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setAttenuationCoefficient (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{anAttenuationCoefficient}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a7e8b31767d359a376e93050a4223ca96}
+
+
+Set the attenuation coefficient of the object material. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anAttenuationCoefficient,:} & the attenuation coefficient of the object material \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 158 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a5fa2965e5581998b8081ba1588a0356f}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ float $>$ $\ast$}]{aVertexArray, }
+\item[{const std::vector$<$ unsigned int $>$ $\ast$}]{anIndexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a5fa2965e5581998b8081ba1588a0356f}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_ae5fc3b00004b69998028380c7d011335}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ float $>$ $\ast$}]{aVertexArray, }
+\item[{const std::vector$<$ unsigned short $>$ $\ast$}]{anIndexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_ae5fc3b00004b69998028380c7d011335}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_ae90ee2bc9f71814351266f82a99180dc}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ double $>$ $\ast$}]{aVertexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_ae90ee2bc9f71814351266f82a99180dc}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a6d0362b072582c78f06d89fe51851ff4}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{aVertexArray, }
+\item[{unsigned int}]{aNumberOfVertices, }
+\item[{int}]{aVertexDataType, }
+\item[{const void $\ast$}]{anIndexArray, }
+\item[{unsigned int}]{aNumberOfIndices, }
+\item[{int}]{anIndexDataType, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a6d0362b072582c78f06d89fe51851ff4}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em aNumberOfVertices,:} & number of vertices \\
+\hline
+{\em aVertexDataType,:} & data type of the vertex data; valid values are GL\_\-FLOAT, GL\_\-DOUBLE and GL\_\-NONE \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aNumberOfIndices,:} & number of indices \\
+\hline
+{\em anIndexDataType,:} & data type of the index data; valid values are GL\_\-UNSIGNED\_\-INT, GL\_\-UNSIGNED\_\-SHORT, GL\_\-UNSIGNED\_\-BYTE and GL\_\-NONE \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_ad2502e0bfa0b65e0e25e5271438f9cb3}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ double $>$ $\ast$}]{aVertexArray, }
+\item[{const std::vector$<$ unsigned int $>$ $\ast$}]{anIndexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_ad2502e0bfa0b65e0e25e5271438f9cb3}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a58fcb5b1323d0d7d7246e0063dad66c3}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ double $>$ $\ast$}]{aVertexArray, }
+\item[{const std::vector$<$ unsigned char $>$ $\ast$}]{anIndexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a58fcb5b1323d0d7d7246e0063dad66c3}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a110dd57a6619a10097c9abb920bc3473}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ float $>$ $\ast$}]{aVertexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a110dd57a6619a10097c9abb920bc3473}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a7a1216e1ed938b74bda09845d27f3658}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ float $>$ $\ast$}]{aVertexArray, }
+\item[{const std::vector$<$ unsigned char $>$ $\ast$}]{anIndexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a7a1216e1ed938b74bda09845d27f3658}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_a05f2a078113ffb8c80820a03a52b9bb2}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setExternalData@{setExternalData}}
+\index{setExternalData@{setExternalData}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setExternalData}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setExternalData (
+\begin{DoxyParamCaption}
+\item[{const std::vector$<$ double $>$ $\ast$}]{aVertexArray, }
+\item[{const std::vector$<$ unsigned short $>$ $\ast$}]{anIndexArray, }
+\item[{bool}]{aCreateVBOFlag, }
+\item[{int}]{aTypeOfVBO}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a05f2a078113ffb8c80820a03a52b9bb2}
+Set the polygon mesh using external data. The class instance will not manage the memory. 
+\begin{DoxyParams}{Parameters}
+{\em aVertexArray,:} & array containing the vertex data \\
+\hline
+{\em anIndexArray,:} & array containing the index data \\
+\hline
+{\em aCreateVBOFlag,:} & flag set to true to create a \hyperlink{class_graphics_1_1_v_b_o}{VBO}, set to false to not set a \hyperlink{class_graphics_1_1_v_b_o}{VBO} \\
+\hline
+{\em aTypeOfVBO,:} & \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_abb11091003f5a96b1ed5fefa17de7ad4}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setFilename@{setFilename}}
+\index{setFilename@{setFilename}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setFilename}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setFilename (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{aFilename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_abb11091003f5a96b1ed5fefa17de7ad4}
+
+
+Set the name of the file that contains the polygon mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFilename,:} & the file name \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 96 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a4cbfb0430a24f0369e31bcba04c2a13a}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setFilename@{setFilename}}
+\index{setFilename@{setFilename}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setFilename}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setFilename (
+\begin{DoxyParamCaption}
+\item[{const std::string \&}]{aFilename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a4cbfb0430a24f0369e31bcba04c2a13a}
+
+
+Set the name of the file that contains the polygon mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aFilename,:} & the file name \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 105 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_affd0f454aa16d4b88046b5cbb0903f07}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setHounsfieldValue@{setHounsfieldValue}}
+\index{setHounsfieldValue@{setHounsfieldValue}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setHounsfieldValue}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setHounsfieldValue (
+\begin{DoxyParamCaption}
+\item[{const {\bf RATIONAL\_\-NUMBER} \&}]{aHounsfieldValue}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_affd0f454aa16d4b88046b5cbb0903f07}
+
+
+Set the Hounsfield value of the object material. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aHounsfieldValue,:} & the Hounsfield value of the object material \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 146 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a156fbcd7e56d166bf84606e2943ac15c}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!setVertex@{setVertex}}
+\index{setVertex@{setVertex}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{setVertex}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::setVertex (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{anIndex, }
+\item[{const {\bf VEC3} \&}]{aVertex}
+\end{DoxyParamCaption}
+)}}
+\label{class_graphics_1_1_triangle_mesh_a156fbcd7e56d166bf84606e2943ac15c}
+
+
+Change the value of a given vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em anIndex,:} & the index of the vertex to access \\
+\hline
+{\em aVertex,:} & the new value of the vertex \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_1_1_triangle_mesh_ae7a9b8bfda0e274707bb3af94dfb7971}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!translate@{translate}}
+\index{translate@{translate}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{translate}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics::TriangleMesh::translate (
+\begin{DoxyParamCaption}
+\item[{const {\bf VEC3} \&}]{aTranslationVector}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ae7a9b8bfda0e274707bb3af94dfb7971}
+
+
+Use a vertex buffer object if possible. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aTranslationVector,:} & the translation vector \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 344 of file TriangleMesh.inl.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a94cb51475ab61e9c572eefb2d4cf1de6}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!updateVBO@{updateVBO}}
+\index{updateVBO@{updateVBO}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{updateVBO}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Graphics::TriangleMesh::updateVBO (
+\begin{DoxyParamCaption}
+\item[{int}]{aTypeOfVBO, }
+\item[{int}]{aTypeOfPrimitive}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a94cb51475ab61e9c572eefb2d4cf1de6}
+
+
+Update the \hyperlink{class_graphics_1_1_v_b_o}{VBO}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aTypeOfVBO,:} & the \hyperlink{class_graphics_1_1_v_b_o}{VBO} usage hint to set; valid values are GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_graphics_1_1_cube_mesh_ad451a1f2318f9fe4473d641c9d9eedf5}{Graphics::CubeMesh}, and \hyperlink{class_graphics_1_1_sphere_mesh_a02ee173ba4dae64071ebc00849f9801e}{Graphics::SphereMesh}.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ae6175477fb00bba71f4c75b79834a4f8}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!useVBO@{useVBO}}
+\index{useVBO@{useVBO}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{useVBO}]{\setlength{\rightskip}{0pt plus 5cm}bool Graphics::TriangleMesh::useVBO (
+\begin{DoxyParamCaption}
+\item[{int}]{aBufferUsageHing, }
+\item[{int}]{aTypeOfPrimitive}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ae6175477fb00bba71f4c75b79834a4f8}
+
+
+Use a vertex buffer object if possible. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em aBufferUsageHing,:} & the buffer usage hint; valid values are: GL\_\-STATIC\_\-DRAW, GL\_\-DYNAMIC\_\-DRAW and GL\_\-STREAM\_\-DRAW \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the \hyperlink{class_graphics_1_1_v_b_o}{VBO} can be used, false otherwise 
+\end{DoxyReturn}
+
+
+Definition at line 123 of file TriangleMesh.inl.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_graphics_1_1_triangle_mesh_af5c6eb131b9455e3b2dad2b4637b3fea}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-attenuation\_\-coefficient@{m\_\-attenuation\_\-coefficient}}
+\index{m\_\-attenuation\_\-coefficient@{m\_\-attenuation\_\-coefficient}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-attenuation\_\-coefficient}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf Graphics::TriangleMesh::m\_\-attenuation\_\-coefficient}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_af5c6eb131b9455e3b2dad2b4637b3fea}
+
+
+Attenuation coefficient. 
+
+
+
+Definition at line 606 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ab5f109d58c738507ae99bdcddcb48c34}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-bounding\_\-box\_\-diagonal@{m\_\-bounding\_\-box\_\-diagonal}}
+\index{m\_\-bounding\_\-box\_\-diagonal@{m\_\-bounding\_\-box\_\-diagonal}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-bounding\_\-box\_\-diagonal}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf Graphics::TriangleMesh::m\_\-bounding\_\-box\_\-diagonal}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ab5f109d58c738507ae99bdcddcb48c34}
+
+
+Length of the bounding box diagonal. 
+
+
+
+Definition at line 610 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a5cd39cd89a74ead177b28f465ca2731c}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-external\_\-data\_\-flag@{m\_\-external\_\-data\_\-flag}}
+\index{m\_\-external\_\-data\_\-flag@{m\_\-external\_\-data\_\-flag}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-external\_\-data\_\-flag}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Graphics::TriangleMesh::m\_\-external\_\-data\_\-flag}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a5cd39cd89a74ead177b28f465ca2731c}
+A flag set to true if the memory is managed outside of this class instance; set to false if the memory is managed by this class instance 
+
+Definition at line 655 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a56b0d42513921080062ff7c9f3099b28}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-filename@{m\_\-filename}}
+\index{m\_\-filename@{m\_\-filename}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-filename}]{\setlength{\rightskip}{0pt plus 5cm}std::string {\bf Graphics::TriangleMesh::m\_\-filename}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a56b0d42513921080062ff7c9f3099b28}
+
+
+Name of the file that contains the polygon mesh. 
+
+
+
+Definition at line 590 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a08404cbf123b9ed99bd10ddb1b4626a4}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-hounsfield\_\-value@{m\_\-hounsfield\_\-value}}
+\index{m\_\-hounsfield\_\-value@{m\_\-hounsfield\_\-value}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-hounsfield\_\-value}]{\setlength{\rightskip}{0pt plus 5cm}{\bf RATIONAL\_\-NUMBER} {\bf Graphics::TriangleMesh::m\_\-hounsfield\_\-value}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a08404cbf123b9ed99bd10ddb1b4626a4}
+
+
+Hounsfield value. 
+
+
+
+Definition at line 602 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a2c16366d7cb7dd6aaff54d96e1bf0eaf}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-index\_\-data\_\-type@{m\_\-index\_\-data\_\-type}}
+\index{m\_\-index\_\-data\_\-type@{m\_\-index\_\-data\_\-type}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-index\_\-data\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Graphics::TriangleMesh::m\_\-index\_\-data\_\-type}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a2c16366d7cb7dd6aaff54d96e1bf0eaf}
+
+
+Data type of the index data; valid values are GL\_\-UNSIGNED\_\-INT, GL\_\-UNSIGNED\_\-SHORT, GL\_\-UNSIGNED\_\-BYTE and GL\_\-NONE. 
+
+
+
+Definition at line 646 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a7b30119057f7194dc47925bcd4489e0a}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-max\_\-corner@{m\_\-max\_\-corner}}
+\index{m\_\-max\_\-corner@{m\_\-max\_\-corner}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-max\_\-corner}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VEC3} {\bf Graphics::TriangleMesh::m\_\-max\_\-corner}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a7b30119057f7194dc47925bcd4489e0a}
+
+
+Upper corner of the bounding box. 
+
+
+
+Definition at line 618 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a0ec9a88bde30813c632178b5cbb4c3e5}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-min\_\-corner@{m\_\-min\_\-corner}}
+\index{m\_\-min\_\-corner@{m\_\-min\_\-corner}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-min\_\-corner}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VEC3} {\bf Graphics::TriangleMesh::m\_\-min\_\-corner}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a0ec9a88bde30813c632178b5cbb4c3e5}
+
+
+Lower corner of the bounding box. 
+
+
+
+Definition at line 614 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ac778bb8fb96f1ab20315e02c1d46f7ae}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-number\_\-of\_\-indices@{m\_\-number\_\-of\_\-indices}}
+\index{m\_\-number\_\-of\_\-indices@{m\_\-number\_\-of\_\-indices}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-number\_\-of\_\-indices}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf Graphics::TriangleMesh::m\_\-number\_\-of\_\-indices}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ac778bb8fb96f1ab20315e02c1d46f7ae}
+
+
+Number of indices. 
+
+
+
+Definition at line 638 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a655397b9815909898ea02f20a1c4a059}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-number\_\-of\_\-vertices@{m\_\-number\_\-of\_\-vertices}}
+\index{m\_\-number\_\-of\_\-vertices@{m\_\-number\_\-of\_\-vertices}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-number\_\-of\_\-vertices}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf Graphics::TriangleMesh::m\_\-number\_\-of\_\-vertices}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a655397b9815909898ea02f20a1c4a059}
+
+
+Number of vertices. 
+
+
+
+Definition at line 642 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_aa76c71675a25c5b58e40afcf2625f2c1}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-p\_\-face\_\-normal\_\-set@{m\_\-p\_\-face\_\-normal\_\-set}}
+\index{m\_\-p\_\-face\_\-normal\_\-set@{m\_\-p\_\-face\_\-normal\_\-set}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-p\_\-face\_\-normal\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf RATIONAL\_\-NUMBER}$>$ {\bf Graphics::TriangleMesh::m\_\-p\_\-face\_\-normal\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_aa76c71675a25c5b58e40afcf2625f2c1}
+
+
+Array containing the normal vectors (one per triangle) 
+
+
+
+Definition at line 622 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_a41ed5fe89584f78a2798e663dd215ce5}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-p\_\-index\_\-set@{m\_\-p\_\-index\_\-set}}
+\index{m\_\-p\_\-index\_\-set@{m\_\-p\_\-index\_\-set}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-p\_\-index\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf Graphics::TriangleMesh::m\_\-p\_\-index\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_a41ed5fe89584f78a2798e663dd215ce5}
+
+
+Array containing the index. 
+
+
+
+Definition at line 634 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_acd89938378236b129fc2f3700103084b}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-p\_\-vertex\_\-normal\_\-set@{m\_\-p\_\-vertex\_\-normal\_\-set}}
+\index{m\_\-p\_\-vertex\_\-normal\_\-set@{m\_\-p\_\-vertex\_\-normal\_\-set}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-p\_\-vertex\_\-normal\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<${\bf RATIONAL\_\-NUMBER}$>$ {\bf Graphics::TriangleMesh::m\_\-p\_\-vertex\_\-normal\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_acd89938378236b129fc2f3700103084b}
+
+
+Array containing the normal vectors (one per vertex) 
+
+
+
+Definition at line 626 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_af59f4953488d1e569ae0fb9d4a03aaff}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-p\_\-vertex\_\-set@{m\_\-p\_\-vertex\_\-set}}
+\index{m\_\-p\_\-vertex\_\-set@{m\_\-p\_\-vertex\_\-set}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-p\_\-vertex\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf Graphics::TriangleMesh::m\_\-p\_\-vertex\_\-set}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_af59f4953488d1e569ae0fb9d4a03aaff}
+
+
+Array containing the vertices. 
+
+
+
+Definition at line 630 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_afd8f8397af871a5c9ed07545cc12ae49}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-use\_\-hounsfield\_\-value@{m\_\-use\_\-hounsfield\_\-value}}
+\index{m\_\-use\_\-hounsfield\_\-value@{m\_\-use\_\-hounsfield\_\-value}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-use\_\-hounsfield\_\-value}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Graphics::TriangleMesh::m\_\-use\_\-hounsfield\_\-value}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_afd8f8397af871a5c9ed07545cc12ae49}
+
+
+Flag about the use of the Hounsfield value or attenuation coefficient. 
+
+
+
+Definition at line 598 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_aa2ff3ba03b750b6b0900a02614db0277}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-vbo@{m\_\-vbo}}
+\index{m\_\-vbo@{m\_\-vbo}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-vbo}]{\setlength{\rightskip}{0pt plus 5cm}{\bf VBO} {\bf Graphics::TriangleMesh::m\_\-vbo}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_aa2ff3ba03b750b6b0900a02614db0277}
+
+
+Vertex buffer object. 
+
+
+
+Definition at line 594 of file TriangleMesh.h.
+
+\hypertarget{class_graphics_1_1_triangle_mesh_ae76c0a34fff7953312143e274acf1eff}{
+\index{Graphics::TriangleMesh@{Graphics::TriangleMesh}!m\_\-vertex\_\-data\_\-type@{m\_\-vertex\_\-data\_\-type}}
+\index{m\_\-vertex\_\-data\_\-type@{m\_\-vertex\_\-data\_\-type}!Graphics::TriangleMesh@{Graphics::TriangleMesh}}
+\subsubsection[{m\_\-vertex\_\-data\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Graphics::TriangleMesh::m\_\-vertex\_\-data\_\-type}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{class_graphics_1_1_triangle_mesh_ae76c0a34fff7953312143e274acf1eff}
+
+
+Data type of the vertex data; valid values are GL\_\-FLOAT, GL\_\-DOUBLE and GL\_\-NONE. 
+
+
+
+Definition at line 650 of file TriangleMesh.h.
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_triangle_mesh_8h}{TriangleMesh.h}\item 
+/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/\hyperlink{_triangle_mesh_8inl}{TriangleMesh.inl}\end{DoxyCompactItemize}

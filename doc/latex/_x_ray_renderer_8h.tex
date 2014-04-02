@@ -1,0 +1,121 @@
+\hypertarget{_x_ray_renderer_8h}{
+\section{/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/XRayRenderer.h File Reference}
+\label{_x_ray_renderer_8h}\index{/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/XRayRenderer.h@{/Users/fpvidal/Documents/gvirtualxray-\/code/trunk/include/gVirtualXRay/XRayRenderer.h}}
+}
+
+
+Class to compute and renderer X-\/ray images on GPU.  
+
+
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/PolygonMesh.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/XRayDetector.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/XRayBeam.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/Shader.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/AttenuationCoefficient.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}gVirtualXRay/VBO.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}XRayRenderer.inl\char`\"{}}\par
+Include dependency graph for XRayRenderer.h:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=400pt]{_x_ray_renderer_8h__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer}{gVirtualXRay::XRayRenderer}
+\begin{DoxyCompactList}\small\item\em \hyperlink{classg_virtual_x_ray_1_1_x_ray_renderer}{XRayRenderer} is a class to compute and renderer X-\/ray images on GPU. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespaceg_virtual_x_ray}{gVirtualXRay}
+\end{DoxyCompactItemize}
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{_x_ray_renderer_8h_a9ae4274c2504cc04ce6825be207e6f1c}{XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER}~2
+\begin{DoxyCompactList}\small\item\em The total number of PBOs. \end{DoxyCompactList}\item 
+\#define \hyperlink{_x_ray_renderer_8h_a3026db3ec2bc1ff1c683d45b2fb1ccb1}{XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER}~3
+\begin{DoxyCompactList}\small\item\em The total number of 2D textures. \end{DoxyCompactList}\item 
+\#define \hyperlink{_x_ray_renderer_8h_a78c4f391a360ef8d730500490a2d31c5}{XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER}~1
+\begin{DoxyCompactList}\small\item\em The total number of 3D textures. \end{DoxyCompactList}\item 
+\#define \hyperlink{_x_ray_renderer_8h_afc8224056b06f62ef628a3ab32ccbe0b}{XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER}~6
+\begin{DoxyCompactList}\small\item\em The total number of program shaders. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to compute and renderer X-\/ray images on GPU. \begin{DoxyVersion}{Version}
+1.0
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+01/12/2013
+\end{DoxyDate}
+\begin{DoxyAuthor}{Author}
+Dr Franck P. Vidal
+\end{DoxyAuthor}
+\hypertarget{_x_ray_renderer_8inl_License}{}\subsection{License}\label{_x_ray_renderer_8inl_License}
+BSD 3-\/Clause License.
+
+For details on use and redistribution please refer to \href{http://opensource.org/licenses/BSD-3-Clause}{\tt http://opensource.org/licenses/BSD-\/3-\/Clause}\hypertarget{_x_ray_renderer_8inl_Copyright}{}\subsection{Copyright}\label{_x_ray_renderer_8inl_Copyright}
+(c) by Dr Franck P. Vidal (\href{mailto:franck.p.vidal@fpvidal.net}{\tt franck.p.vidal@fpvidal.net}), \href{http://www.fpvidal.net/,}{\tt http://www.fpvidal.net/,} Dec 2013, 2013, version 1.0, BSD 3-\/Clause License 
+
+Definition in file \hyperlink{_x_ray_renderer_8h_source}{XRayRenderer.h}.
+
+
+
+\subsection{Define Documentation}
+\hypertarget{_x_ray_renderer_8h_a3026db3ec2bc1ff1c683d45b2fb1ccb1}{
+\index{XRayRenderer.h@{XRayRenderer.h}!XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER@{XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER}}
+\index{XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER@{XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER}!XRayRenderer.h@{XRayRenderer.h}}
+\subsubsection[{XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER}]{\setlength{\rightskip}{0pt plus 5cm}\#define XRAY\_\-DETECTOR\_\-2D\_\-TEXTURE\_\-NUMBER~3}}
+\label{_x_ray_renderer_8h_a3026db3ec2bc1ff1c683d45b2fb1ccb1}
+
+
+The total number of 2D textures. 
+
+
+
+Definition at line 72 of file XRayRenderer.h.
+
+\hypertarget{_x_ray_renderer_8h_a78c4f391a360ef8d730500490a2d31c5}{
+\index{XRayRenderer.h@{XRayRenderer.h}!XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER@{XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER}}
+\index{XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER@{XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER}!XRayRenderer.h@{XRayRenderer.h}}
+\subsubsection[{XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER}]{\setlength{\rightskip}{0pt plus 5cm}\#define XRAY\_\-DETECTOR\_\-3D\_\-TEXTURE\_\-NUMBER~1}}
+\label{_x_ray_renderer_8h_a78c4f391a360ef8d730500490a2d31c5}
+
+
+The total number of 3D textures. 
+
+
+
+Definition at line 73 of file XRayRenderer.h.
+
+\hypertarget{_x_ray_renderer_8h_a9ae4274c2504cc04ce6825be207e6f1c}{
+\index{XRayRenderer.h@{XRayRenderer.h}!XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER@{XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER}}
+\index{XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER@{XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER}!XRayRenderer.h@{XRayRenderer.h}}
+\subsubsection[{XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER}]{\setlength{\rightskip}{0pt plus 5cm}\#define XRAY\_\-DETECTOR\_\-PBO\_\-NUMBER~2}}
+\label{_x_ray_renderer_8h_a9ae4274c2504cc04ce6825be207e6f1c}
+
+
+The total number of PBOs. 
+
+
+
+Definition at line 71 of file XRayRenderer.h.
+
+\hypertarget{_x_ray_renderer_8h_afc8224056b06f62ef628a3ab32ccbe0b}{
+\index{XRayRenderer.h@{XRayRenderer.h}!XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER@{XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER}}
+\index{XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER@{XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER}!XRayRenderer.h@{XRayRenderer.h}}
+\subsubsection[{XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER}]{\setlength{\rightskip}{0pt plus 5cm}\#define XRAY\_\-DETECTOR\_\-SHADER\_\-NUMBER~6}}
+\label{_x_ray_renderer_8h_afc8224056b06f62ef628a3ab32ccbe0b}
+
+
+The total number of program shaders. 
+
+
+
+Definition at line 74 of file XRayRenderer.h.
+
