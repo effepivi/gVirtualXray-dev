@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_utilities_1_1_f_b_o_exception.html" title="FBOException is a class to handle exceptions related to FBOs." alt="" coords="5,193,152,274"/>
-<area shape="rect" id="node5" href="$class_utilities_1_1_file_does_not_exist_exception.html" title="FileDoesNotExistException is a class to handle exceptions when trying to open a read&#45;only file that i..." alt="" coords="176,185,392,282"/>
-<area shape="rect" id="node7" href="$class_utilities_1_1_open_g_l_exception.html" title="OpenGLException is a class to handle exceptions related to OpenGL." alt="" coords="416,193,587,274"/>
-<area shape="rect" id="node9" href="$class_utilities_1_1_out_of_bounds_exception.html" title="{Utilities::OutOfBoundsException\n||+ OutOfBoundsException()\l}" alt="" coords="611,193,811,274"/>
-<area shape="rect" id="node11" href="$class_utilities_1_1_out_of_memory_exception.html" title="OutOfMemoryException is a class to handle exceptions when accessing an array cell that is not accessi..." alt="" coords="835,193,1035,274"/>
-</map>

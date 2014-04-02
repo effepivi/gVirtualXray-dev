@@ -1,5 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node2" href="$class_graphics_1_1_polygon_mesh.html" title="PolygonMesh is a class to handle polygon (triangles or quads) meshes." alt="" coords="152,665,349,1850"/>
-<area shape="rect" id="node4" href="$class_math_1_1_vec3.html" title="{Math::Vec3\&lt; RATIONAL_NUMBER \&gt;\n|# m_x\l# m_y\l# m_z\l|+ Vec3()\l+ setX()\l+ setY()\l+ setZ()\l+ getX()\l+ getY()\l+ getZ()\l+ length()\l+ normal()\l+ normalize()\l+ normalise()\l+ dotProduct()\l+ distance()\l+ operator*()\l+ operator*()\l+ operator*()\l+ operator+()\l+ operator+=()\l+ operator&#45;()\l+ operator&#45;()\l+ operator&#45;=()\l+ operator*=()\l+ operator*=()\l+ operator/()\l+ operator/()\l+ operator/=()\l+ operator/=()\l+ operator^()\l+ operator==()\l+ operator!=()\l}" alt="" coords="5,6,243,583"/>
-<area shape="rect" id="node6" href="$class_graphics_1_1_v_b_o.html" title="VBO is a class to handle a vertex buffer object (VBO)." alt="" coords="267,54,491,535"/>
-</map>

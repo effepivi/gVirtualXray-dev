@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$_polygon_mesh_8h.html" title="Class to handle polygon (triangles or quads) meshes." alt="" coords="276,83,785,111"/>
-<area shape="rect" id="node7" href="$_x_ray_detector_8h.html" title="Class to handle virtual X&#45;Ray detectors." alt="" coords="538,238,1048,266"/>
-<area shape="rect" id="node9" href="$_x_ray_renderer_8h.html" title="Class to compute and renderer X&#45;ray images on GPU." alt="" coords="536,315,1050,343"/>
-<area shape="rect" id="node5" href="$_cube_mesh_8h.html" title="Class to handle 3D meshes of cubes." alt="" coords="24,161,517,189"/>
-<area shape="rect" id="node11" href="$_sphere_mesh_8h.html" title="Class to handle 3D meshes of spheres." alt="" coords="541,161,1045,189"/>
-</map>

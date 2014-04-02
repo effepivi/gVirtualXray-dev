@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node9" href="$_file_does_not_exist_exception_8h.html" title="gVirtualXRay/FileDoesNotExistException.h" alt="" coords="305,83,567,111"/>
-<area shape="rect" id="node26" href="$_out_of_bounds_exception_8h.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="591,83,836,111"/>
-<area shape="rect" id="node13" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="492,161,657,189"/>
-<area shape="rect" id="node23" href="$_file_does_not_exist_exception_8inl.html" title="Class to handle exceptions when trying to open a read&#45;only file that is not accessible." alt="" coords="231,161,417,189"/>
-<area shape="rect" id="node20" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="664,238,755,266"/>
-<area shape="rect" id="node29" href="$_out_of_bounds_exception_8inl.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="681,161,852,189"/>
-</map>

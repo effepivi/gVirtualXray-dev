@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node7" href="$_out_of_bounds_exception_8h.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="299,83,544,111"/>
-<area shape="rect" id="node9" href="$_exception_8h.html" title="Generic class to handle exceptions." alt="" coords="320,161,485,189"/>
-<area shape="rect" id="node19" href="$_out_of_bounds_exception_8inl.html" title="Class to handle exceptions when accessing an array cell that is not accessible, i.e. out of bounds memory access." alt="" coords="509,161,680,189"/>
-<area shape="rect" id="node16" href="$_exception_8inl.html" title="Generic class to handle exceptions." alt="" coords="339,238,429,266"/>
-</map>
