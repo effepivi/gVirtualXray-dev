@@ -285,6 +285,7 @@ CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
 # Linkage of the target ########################################################
+SET_PROPERTY(TARGET gVirtualXRay PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
