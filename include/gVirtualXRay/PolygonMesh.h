@@ -3,7 +3,7 @@
 *
 *	@file		PolygonMesh.h
 *
-*	@brief		Class to handle polygon (triangles or quads) meshes.
+*	@brief		Class to handle polygon (triangles) meshes.
 *
 *	@version	1.0
 *
@@ -62,7 +62,7 @@ namespace Graphics {
 //==============================================================================
 /**
 *	@class	PolygonMesh
-*	@brief	PolygonMesh is a class to handle polygon (triangles or quads) meshes.
+*	@brief	PolygonMesh is a class to handle polygon (triangles) meshes.
 */
 //==============================================================================
 class PolygonMesh
@@ -276,15 +276,6 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	unsigned int getTriangleNumber() const;
-
-
-	//--------------------------------------------------------------------------
-	///	Accessor on the number of quads.
-	/**
-	*	@return the number of quads
-	*/
-	//--------------------------------------------------------------------------
-	unsigned int getQuadNumber() const;
 
 
 	//--------------------------------------------------------------------------
@@ -657,7 +648,7 @@ protected:
 	int m_vertex_data_type;
 
 
-	/// Polygon type; valid values are GL_QUADS, and GL_TRIANGLES
+	/// Polygon type; valid values are GL_TRIANGLES
 	int m_polygon_type;
 
 

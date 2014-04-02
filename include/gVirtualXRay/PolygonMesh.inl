@@ -3,7 +3,7 @@
 *
 *	@file		PolygonMesh.inl
 *
-*	@brief		Class to handle polygon (triangles or quads) meshes.
+*	@brief		Class to handle polygon (triangles) meshes.
 *
 *	@version	1.0
 *

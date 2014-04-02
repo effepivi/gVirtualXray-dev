@@ -3,7 +3,7 @@
 *
 *	@file		PolygonMesh.cxx
 *
-*	@brief		Class to handle polygon (triangles or quads) meshes.
+*	@brief		Class to handle polygon (triangles) meshes.
 *
 *	@version	1.0
 *
@@ -42,7 +42,11 @@
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
 
 
 //******************************************************************************
@@ -170,19 +174,7 @@ void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
 	// There are as many normals as there are vertices
 	if (getVertexNormalNumber() == m_number_of_vertices)
 	{
-		glBegin(GL_LINES);
-		for (unsigned int i(0); i < m_number_of_vertices; ++i)
-		{
-			VEC3 vertex(getVertex(i));
-			VEC3 normal(getVertexNormal(i));
-			normal.normalize();
-
-			normal = vertex + normal * aNormalSize;
-
-			glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
-			glVertex3f(normal.getX(), normal.getY(), normal.getZ());
-		}
-		glEnd();
+    		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
 	}
 	// There are not as many normals as there are vertices
 	else
@@ -201,29 +193,7 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize) const
 	// There is an index
 	if (m_p_index_set && m_number_of_indices)
 	{
-		glBegin(GL_LINES);
-		for (unsigned int i(0); i < m_number_of_indices; i += 3)
-		{
-			unsigned int id_0(getIndex(i + 0));
-			unsigned int id_1(getIndex(i + 1));
-			unsigned int id_2(getIndex(i + 2));
-
-			// Normal per face does not exist, but it can be computed
-			VEC3 vertex_0(getVertex(id_0));
-			VEC3 vertex_1(getVertex(id_1));
-			VEC3 vertex_2(getVertex(id_2));
-
-			VEC3 centre((vertex_0 + vertex_1 + vertex_2) / 3.0);
-
-			VEC3 normal( (vertex_2 - vertex_0)^(vertex_2 - vertex_1) );
-			normal.normalize();
-
-			normal = centre + normal * 0.5 * cm;
-
-			glVertex3f(centre.getX(), centre.getY(), centre.getZ());
-			glVertex3f(normal.getX(), normal.getY(), normal.getZ());
-		}
-		glEnd();
+    		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
 	}
 	// There is no index
 	else
@@ -231,32 +201,7 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize) const
 		// There are as many normals as there are vertices
 		if (getFaceNormalNumber() == m_number_of_vertices)
 		{
-			glBegin(GL_LINES);
-			for (unsigned int i(0); i < m_number_of_vertices; i += 3)
-			{
-				unsigned int id_0(i + 0);
-				unsigned int id_1(i + 1);
-				unsigned int id_2(i + 2);
-
-				VEC3 vertex_0(getVertex(id_0));
-				VEC3 vertex_1(getVertex(id_1));
-				VEC3 vertex_2(getVertex(id_2));
-
-				VEC3 centre((vertex_0 + vertex_1 + vertex_2) / 3.0);
-
-				VEC3 normal_0(getFaceNormal(id_0));
-				VEC3 normal_1(getFaceNormal(id_1));
-				VEC3 normal_2(getFaceNormal(id_2));
-
-				VEC3 normal((normal_0 + normal_1 + normal_2) / 3.0);
-				normal.normalize();
-
-				normal = centre + normal * aNormalSize;
-
-				glVertex3f(centre.getX(), centre.getY(), centre.getZ());
-				glVertex3f(normal.getX(), normal.getY(), normal.getZ());
-			}
-			glEnd();
+    		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
 		}
 		// There are not as many normals as there are vertices
 		else
@@ -277,10 +222,6 @@ unsigned int PolygonMesh::getFaceNumber() const
 	{
 	case GL_TRIANGLES:
 		number_vertex_per_face = 3;
-		break;
-
-	case GL_QUADS:
-		number_vertex_per_face = 4;
 		break;
 
 	default:
@@ -318,31 +259,6 @@ unsigned int PolygonMesh::getTriangleNumber() const
 		{
 			// There are 3 vertices per triangle
 			return (m_number_of_vertices / 3);
-		}
-
-	default:
-		return (0);
-	}
-}
-
-
-//-------------------------------------------------
-unsigned int PolygonMesh::getQuadNumber() const
-//-------------------------------------------------
-{
-	switch (m_polygon_type)
-	{
-	case GL_QUADS:
-		// Return the number of faces
-		if (m_number_of_indices)
-		{
-			// There are 4 indices per quad
-			return (m_number_of_indices / 4);
-		}
-		else
-		{
-			// There are 4 vertices per quad
-			return (m_number_of_vertices / 4);
 		}
 
 	default:
@@ -693,19 +609,10 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 		if (!m_p_index_set && !m_number_of_indices)
 		{
 			// The polygon is made of triangles
-			if (m_polygon_type == GL_TRIANGLES ||
-					m_polygon_type == GL_QUADS)
+			if (m_polygon_type == GL_TRIANGLES)
 			{
 				// Allocate the memory of the index
-				int number_of_vertices_per_face(0);
-				if (m_polygon_type == GL_TRIANGLES)
-				{
-					number_of_vertices_per_face = 3;
-				}
-				else
-				{
-					number_of_vertices_per_face = 4;
-				}
+				int number_of_vertices_per_face(3);
 				m_number_of_indices = getFaceNumber() * number_of_vertices_per_face;
 				GLuint* p_index_set(new GLuint[m_number_of_indices]);
 				m_index_data_type = GL_UNSIGNED_INT;
@@ -765,30 +672,6 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 					p_index_set[i * 3 + 0] = id_0;
 					p_index_set[i * 3 + 1] = id_1;
 					p_index_set[i * 3 + 2] = id_2;
-				}
-
-				unsigned int number_of_quads(getQuadNumber());
-				for (unsigned int i(0); i < number_of_quads; ++i)
-				{
-					VEC3 vertex_0(getVertex(i * 4 + 0));
-					VEC3 vertex_1(getVertex(i * 4 + 1));
-					VEC3 vertex_2(getVertex(i * 4 + 2));
-					VEC3 vertex_3(getVertex(i * 4 + 3));
-
-					unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
-					unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
-					unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
-					unsigned int id_3(hash_table.find(vertex_3)->second.m_id);
-
-					if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size() || id_3 >= hash_table.size())
-					{
-						throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid vertex index");
-					}
-
-					p_index_set[i * 4 + 0] = id_0;
-					p_index_set[i * 4 + 1] = id_1;
-					p_index_set[i * 4 + 2] = id_2;
-					p_index_set[i * 4 + 3] = id_3;
 				}
 
 				// Set the index in the hash table and create the list of vertices
@@ -897,8 +780,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 		}
 
 		// The polygon is made of triangles
-		if (m_polygon_type == GL_TRIANGLES ||
-				m_polygon_type == GL_QUADS)
+		if (m_polygon_type == GL_TRIANGLES)
 		{
 			// Reset the normal per face set
 			m_p_vertex_normal_set.clear();
@@ -993,112 +875,6 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				p_new_vertex_set.push_back(vertex_2.getZ());
 
 				for (unsigned int j(0); j < 3; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
-			}
-
-			// Process every triangle
-			unsigned int quad_number(getQuadNumber());
-			for (unsigned int i(0); i < quad_number; ++i)
-			{
-				// Get the current vertices
-				VEC3 vertex_0(getVertex(i * 4 + 0));
-				VEC3 vertex_1(getVertex(i * 4 + 1));
-				VEC3 vertex_2(getVertex(i * 4 + 2));
-				VEC3 vertex_3(getVertex(i * 4 + 3));
-
-				// Get the new vertices
-				VEC3 vertex_4((vertex_0 + vertex_1) / 2.0);
-				VEC3 vertex_5((vertex_1 + vertex_2) / 2.0);
-				VEC3 vertex_6((vertex_2 + vertex_3) / 2.0);
-				VEC3 vertex_7((vertex_3 + vertex_0) / 2.0);
-				VEC3 vertex_8((vertex_0 + vertex_1 + vertex_2 + vertex_3) / 4.0);
-
-				// Compute the normal vector
-				VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
-				normal.normalize();
-
-				// Add the first quad
-				p_new_vertex_set.push_back(vertex_0.getX());
-				p_new_vertex_set.push_back(vertex_0.getY());
-				p_new_vertex_set.push_back(vertex_0.getZ());
-				p_new_vertex_set.push_back(vertex_4.getX());
-				p_new_vertex_set.push_back(vertex_4.getY());
-				p_new_vertex_set.push_back(vertex_4.getZ());
-				p_new_vertex_set.push_back(vertex_8.getX());
-				p_new_vertex_set.push_back(vertex_8.getY());
-				p_new_vertex_set.push_back(vertex_8.getZ());
-				p_new_vertex_set.push_back(vertex_7.getX());
-				p_new_vertex_set.push_back(vertex_7.getY());
-				p_new_vertex_set.push_back(vertex_7.getZ());
-
-				for (unsigned int j(0); j < 4; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
-
-				// Add the second quad
-				p_new_vertex_set.push_back(vertex_4.getX());
-				p_new_vertex_set.push_back(vertex_4.getY());
-				p_new_vertex_set.push_back(vertex_4.getZ());
-				p_new_vertex_set.push_back(vertex_1.getX());
-				p_new_vertex_set.push_back(vertex_1.getY());
-				p_new_vertex_set.push_back(vertex_1.getZ());
-				p_new_vertex_set.push_back(vertex_5.getX());
-				p_new_vertex_set.push_back(vertex_5.getY());
-				p_new_vertex_set.push_back(vertex_5.getZ());
-				p_new_vertex_set.push_back(vertex_8.getX());
-				p_new_vertex_set.push_back(vertex_8.getY());
-				p_new_vertex_set.push_back(vertex_8.getZ());
-
-				for (unsigned int j(0); j < 4; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
-
-				// Add the third quad
-				p_new_vertex_set.push_back(vertex_8.getX());
-				p_new_vertex_set.push_back(vertex_8.getY());
-				p_new_vertex_set.push_back(vertex_8.getZ());
-				p_new_vertex_set.push_back(vertex_5.getX());
-				p_new_vertex_set.push_back(vertex_5.getY());
-				p_new_vertex_set.push_back(vertex_5.getZ());
-				p_new_vertex_set.push_back(vertex_2.getX());
-				p_new_vertex_set.push_back(vertex_2.getY());
-				p_new_vertex_set.push_back(vertex_2.getZ());
-				p_new_vertex_set.push_back(vertex_6.getX());
-				p_new_vertex_set.push_back(vertex_6.getY());
-				p_new_vertex_set.push_back(vertex_6.getZ());
-
-				for (unsigned int j(0); j < 4; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
-
-				// Add the fourth quad
-				p_new_vertex_set.push_back(vertex_8.getX());
-				p_new_vertex_set.push_back(vertex_8.getY());
-				p_new_vertex_set.push_back(vertex_8.getZ());
-				p_new_vertex_set.push_back(vertex_6.getX());
-				p_new_vertex_set.push_back(vertex_6.getY());
-				p_new_vertex_set.push_back(vertex_6.getZ());
-				p_new_vertex_set.push_back(vertex_3.getX());
-				p_new_vertex_set.push_back(vertex_3.getY());
-				p_new_vertex_set.push_back(vertex_3.getZ());
-				p_new_vertex_set.push_back(vertex_7.getX());
-				p_new_vertex_set.push_back(vertex_7.getY());
-				p_new_vertex_set.push_back(vertex_7.getZ());
-
-				for (unsigned int j(0); j < 4; ++j)
 				{
 					m_p_face_normal_set.push_back(normal.getX());
 					m_p_face_normal_set.push_back(normal.getY());
@@ -1618,8 +1394,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 		if (m_p_index_set && m_number_of_indices)
 		{
 			// The polygon is made of triangles
-			if (m_polygon_type == GL_TRIANGLES ||
-					m_polygon_type == GL_QUADS)
+			if (m_polygon_type == GL_TRIANGLES)
 			{
 				// Reset the normal per face set
 				m_p_vertex_normal_set.clear();
@@ -1659,47 +1434,6 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 					p_new_vertex_set.push_back(vertex_2.getZ());
 
 					for (unsigned int j(0); j < 3; ++j)
-					{
-						m_p_face_normal_set.push_back(normal.getX());
-						m_p_face_normal_set.push_back(normal.getY());
-						m_p_face_normal_set.push_back(normal.getZ());
-					}
-				}
-
-				// Process every triangle
-				unsigned int quad_number(getQuadNumber());
-				for (unsigned int i(0); i < quad_number; ++i)
-				{
-					// Get the current vertices
-					int id_0(getIndex(i * 4 + 0));
-					int id_1(getIndex(i * 4 + 1));
-					int id_2(getIndex(i * 4 + 2));
-					int id_3(getIndex(i * 4 + 3));
-
-					VEC3 vertex_0(getVertex(id_0));
-					VEC3 vertex_1(getVertex(id_1));
-					VEC3 vertex_2(getVertex(id_2));
-					VEC3 vertex_3(getVertex(id_3));
-
-					// Compute the normal vector
-					VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
-					normal.normalize();
-
-					// Add the first triangle
-					p_new_vertex_set.push_back(vertex_0.getX());
-					p_new_vertex_set.push_back(vertex_0.getY());
-					p_new_vertex_set.push_back(vertex_0.getZ());
-					p_new_vertex_set.push_back(vertex_1.getX());
-					p_new_vertex_set.push_back(vertex_1.getY());
-					p_new_vertex_set.push_back(vertex_1.getZ());
-					p_new_vertex_set.push_back(vertex_2.getX());
-					p_new_vertex_set.push_back(vertex_2.getY());
-					p_new_vertex_set.push_back(vertex_2.getZ());
-					p_new_vertex_set.push_back(vertex_3.getX());
-					p_new_vertex_set.push_back(vertex_3.getY());
-					p_new_vertex_set.push_back(vertex_3.getZ());
-
-					for (unsigned int j(0); j < 4; ++j)
 					{
 						m_p_face_normal_set.push_back(normal.getX());
 						m_p_face_normal_set.push_back(normal.getY());
