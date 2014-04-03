@@ -185,6 +185,7 @@ ENDIF(WIN32)
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
+INCLUDE_DIRECTORIES("../include/OpenGL4")
 #INCLUDE_DIRECTORIES("/usr/local/include")
 
 
