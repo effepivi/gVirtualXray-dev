@@ -27,7 +27,7 @@
 
 
 # Initialise some states by default ############################################
-set(BUILD_SHARED_LIBS OFF)
+#set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
 
 
@@ -61,9 +61,9 @@ INCLUDE_DIRECTORIES("../include")
 
 
 # Options #####################################################################
-IF(APPLE OR WIN32)
+#IF(APPLE OR WIN32)
 	OPTION(USE_BUNDLE "Use Apple/Win32 Bundle." ON)
-ENDIF(APPLE OR WIN32)
+#ENDIF(APPLE OR WIN32)
 OPTION(USE_FLTK "Use FLTK." ON)
 OPTION(USE_GLUT "Use GLUT." ON)
 
@@ -158,37 +158,37 @@ CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 # Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
-SET_PROPERTY(TARGET welsh_dragon PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET welsh_dragon PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
-SET_PROPERTY(TARGET test_triangle_mesh PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET test_triangle_mesh PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
-SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
-SET_PROPERTY(TARGET test_implicit_surface PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET test_implicit_surface PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
-SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
-SET_PROPERTY(TARGET implicit_surface_marching_cube PROPERTY LINK_SEARCH_START_STATIC 1) 
+#SET_PROPERTY(TARGET implicit_surface_marching_cube PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_GLUT)
 	IF(GLUT_FOUND)
 		ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
-		SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
+		#SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 		TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 	ELSE(GLUT_FOUND)
 		MESSAGE(WARNING "GLUT not found, the tutorials will not be built")
@@ -204,7 +204,7 @@ IF(USE_BUNDLE)
 	SET(DRAGON_DEMO_SRCS ../src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
 
 	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE WIN32 ${DRAGON_DEMO_SRCS})
-	SET_PROPERTY(TARGET DragonDemo PROPERTY LINK_SEARCH_START_STATIC 1) 
+	#SET_PROPERTY(TARGET DragonDemo PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 	# Define some settings for the Bundle
@@ -268,7 +268,9 @@ IF(USE_BUNDLE)
 		" COMPONENT Runtime)
 
 	# To Create a package
-	set(CPACK_BINARY_DRAGNDROP ON)
+	IF(APPLE)
+		set(CPACK_BINARY_DRAGNDROP ON)
+	ENDIF(APPLE)
 	include(CPack)
 ENDIF(USE_BUNDLE)
 
