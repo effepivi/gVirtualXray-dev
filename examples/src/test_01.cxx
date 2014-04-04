@@ -308,6 +308,7 @@ int main(int argc, char** argv)
 		g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
 		// Initialize GLEW
+		glewExperimental = GL_TRUE;
 		GLenum glew_error_0(glewInit());
 		if (glew_error_0 != GLEW_OK)
 		{
@@ -688,6 +689,9 @@ void keyboard(unsigned char key, int x, int y)
 
 	case 'a':
 		g_outside_polygon_data.splitFaces(true);
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
 		break;
 
 	case '1':

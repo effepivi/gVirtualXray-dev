@@ -273,6 +273,7 @@ std::cout << "04" << std::endl;
 std::cout << "05" << std::endl;
 
 		// Initialize GLEW
+		glewExperimental = GL_TRUE;
 		GLenum glew_error_0(glewInit());
 		if (glew_error_0 != GLEW_OK)
 		{
@@ -288,6 +289,7 @@ std::cout << "09" << std::endl;
 			g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 std::cout << "10" << std::endl;
 
+            glewExperimental = GL_TRUE;
 			GLenum glew_error_1(glewInit());
 			if (glew_error_1 != GLEW_OK)
 			{

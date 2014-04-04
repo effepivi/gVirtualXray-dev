@@ -110,8 +110,9 @@ int main(int argc, char** argv)
 		// Initialise OpenGL
 		initGL();
 
-		GLenum glew_error_0(glewInit());
-		if (glew_error_0 != GLEW_OK)
+		glewExperimental = GL_TRUE;
+		GLenum glew_error(glewInit());
+		if (glew_error != GLEW_OK)
 		{
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise GLEW.");
 		}

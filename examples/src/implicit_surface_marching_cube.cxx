@@ -239,6 +239,7 @@ std::cout << "04" << std::endl;
 std::cout << "05" << std::endl;
 
 		// Initialize GLEW
+		glewExperimental = GL_TRUE;
 		GLenum glew_error(glewInit());
 		if (glew_error != GLEW_OK)
 		{

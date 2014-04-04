@@ -186,7 +186,7 @@ The \verb+Matrix4x4+ class provides such functionalities.
 
 \subsection{X-Ray Detector}
 
-\lstinputlisting[firstline=357, lastline=372, caption=Setting up the X-ray detector., label=lst:Detector]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=358, lastline=373, caption=Setting up the X-ray detector., label=lst:Detector]{../../../examples/src/tutorial_01.cxx}
 
 Listing~\ref{lst:Detector} shows how to initialise the detector. 
 Four attributes have to be set:
@@ -201,7 +201,7 @@ Four attributes have to be set:
 
 \subsection{X-Ray Source}
 
-\lstinputlisting[firstline=380, lastline=382, caption=Setting up the X-ray source., label=lst:Source]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=381, lastline=383, caption=Setting up the X-ray source., label=lst:Source]{../../../examples/src/tutorial_01.cxx}
 
 Listing~\ref{lst:Source} shows how to set the position and shape of the source. 
 In this case, the shape corresponds to an infinitely small point. 
@@ -210,7 +210,7 @@ Other shapes can be chosen. % (see Section~\ref{sec:Source Shapes})
 
 \subsection{Beam Spectrum}
 
-\lstinputlisting[firstline=390, lastline=392, caption=Setting up the spectrum of the incident beam., label=lst:Beam spectrum]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=391, lastline=393, caption=Setting up the spectrum of the incident beam., label=lst:Beam spectrum]{../../../examples/src/tutorial_01.cxx}
 
 Listing~\ref{lst:Beam spectrum} shows how to set the position and shape of the source. 
 In this case, the beam spectrum is monochromatic and the energy of all the photons is 80~\acrlongpl{keV} (~\acrshort{keV}). 
@@ -222,7 +222,7 @@ Polychromatism can be chosen, in which case a beam spectrum has to be loaded. % 
 
 \lstinputlisting[firstline=77, lastline=79, caption=Global variables used to store the topology of the scanned objects., label=lst:Scanned object topology]{../../../examples/src/tutorial_01.cxx}
 
-\lstinputlisting[firstline=400, lastline=411, caption=Setting up the properties of the scanned object., label=lst:Scanned object]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=401, lastline=412, caption=Setting up the properties of the scanned object., label=lst:Scanned object]{../../../examples/src/tutorial_01.cxx}
 
 In most simulation cases, the topology of the scan objects will be stored in the main memory as an array of triplets of floating point numbers. 
 Each triplet corresponds to a vertex. 
@@ -242,7 +242,7 @@ The next step is to set the material property (here the Hounsfield value).
 
 \subsection{Simulation Environment}
 
-\lstinputlisting[firstline=421, lastline=429, caption=Setting up the simulation environment., label=lst:Simulation Environment]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=422, lastline=430, caption=Setting up the simulation environment., label=lst:Simulation Environment]{../../../examples/src/tutorial_01.cxx}
 
 Listing~\ref{lst:Simulation Environment} shows how to set the simulation environment. 
 Only the OpenGL simulation has been implemented. 
@@ -255,14 +255,14 @@ The smaller one is used as \verb+InnerSurface+ (it would be the case of bones an
 \newpage
 \section{Running the Simulation}
 
-\lstinputlisting[firstline=321, lastline=328, caption=Running the simulation., label=lst:Running the simulation]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=322, lastline=329, caption=Running the simulation., label=lst:Running the simulation]{../../../examples/src/tutorial_01.cxx}
 
 To run the simulation, call \verb+XRayRenderer::computeImage(...)+ with the scanned object transformation matrix as parameter (see Listing~\ref{lst:Running the simulation}). 
 It may be useful to call \verb+XRayRenderer::normalise()+ to make sure that the X-ray image is normalise before it is displayed. 
 The image can be displayed in negative mode, or not. 
 To enable and disable this mode, use \verb+XRayRenderer::useNegativeFilteringFlag(boolean_flag)+.
 
-\lstinputlisting[firstline=239, lastline=288, caption=Display callback., label=lst:Display callback]{../../../examples/src/tutorial_01.cxx}
+\lstinputlisting[firstline=240, lastline=289, caption=Display callback., label=lst:Display callback]{../../../examples/src/tutorial_01.cxx}
 Listing~\ref{lst:Display callback} shows the \Gls{GLUT} display callback. 
 One may note that the X-ray beam is displayed using transparency. 
 It is the reason why it is displayed last. 

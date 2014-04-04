@@ -179,7 +179,7 @@ Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0 * keV);
 VEC2 g_detector_size(320.0 * mm, 320.0 * mm);
-Vec2ui g_number_of_pixels(640 / 5, 640 / 5);
+Vec2ui g_number_of_pixels(640, 640);
 GLfloat g_resolution(g_detector_size.getX() / g_number_of_pixels.getX());
 
 VEC3 g_source_position(   0.0, 0.0, -40.0 * cm);

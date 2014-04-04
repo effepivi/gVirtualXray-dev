@@ -109,6 +109,7 @@ int main(int argc, char** argv)
 		g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
 
 		// Initialize GLEW
+		glewExperimental = GL_TRUE;
 		GLenum glew_error(glewInit());
 		if (glew_error != GLEW_OK)
 		{
