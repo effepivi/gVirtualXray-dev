@@ -990,9 +990,9 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 			// Check the texture size
 			GLint texture_size;
 			glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &texture_size);
-			if (m_p_detector->getNumberOfPixels().getX() > texture_size ||
-				m_p_detector->getNumberOfPixels().getY() > texture_size ||
-				m_p_xray_beam->getEnergyChannelNumber() > texture_size)
+			if (m_p_detector->getNumberOfPixels().getX() > GLuint(texture_size) ||
+				m_p_detector->getNumberOfPixels().getY() > GLuint(texture_size) ||
+				m_p_xray_beam->getEnergyChannelNumber() > GLuint(texture_size))
 			{
 				std::stringstream error_message;
 				error_message << "Cannot create a " << "(" << m_p_detector->getNumberOfPixels().getX() << ", " << m_p_detector->getNumberOfPixels().getY() << ", " << m_p_xray_beam->getEnergyChannelNumber() << ") floating point render texture." << std::endl;
