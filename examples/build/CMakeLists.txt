@@ -54,6 +54,10 @@ set (examples_VERSION_MAJOR 1)
 set (examples_VERSION_MINOR 2)
 set (examples_VERSION_PATCH 0)
 
+SET(CPACK_PACKAGE_VERSION_MAJOR ${examples_VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${examples_VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${examples_VERSION_PATCH})
+
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
