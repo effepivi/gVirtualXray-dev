@@ -42,11 +42,8 @@
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
+#define GL_GLEXT_PROTOTYPES 1
+#include <GL/glcorearb.h>
 
 
 //******************************************************************************
