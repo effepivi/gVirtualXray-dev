@@ -81,9 +81,7 @@ OPTION(USE_ITK   "Use ITK if possible." ON)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
-IF (NOT APPLE)
-	ADD_DEFINITIONS(-DUSE_STEREO)
-ENDIF (NOT APPLE)
+ADD_DEFINITIONS(-DUSE_STEREO)
 
 
 # Library source code ##########################################################
@@ -186,6 +184,7 @@ ENDIF(WIN32)
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
 INCLUDE_DIRECTORIES("../include/OpenGL3")
+#INCLUDE_DIRECTORIES("../include/OpenGL4")
 #INCLUDE_DIRECTORIES("/usr/local/include")
 
 
