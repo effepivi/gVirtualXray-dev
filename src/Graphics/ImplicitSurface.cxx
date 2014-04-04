@@ -375,7 +375,6 @@ void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold)
 			}
 
 			typedef MeshType::CellType	CellType;
-			typedef itk::TriangleCell< CellType >	TriangleType;
 			typedef CellType::PointIdIterator	PointIdIterator;
 
 			for(MeshType::CellsContainer::Iterator ite(p_itk_cell_set->Begin());
