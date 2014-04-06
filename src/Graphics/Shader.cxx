@@ -447,13 +447,10 @@ unsigned int Shader::compileShader(int aShaderType,
 	if (compile_status != GL_TRUE)
 	{
 		// Get the size of the log message
-		glGetProgramiv(m_shader_program_id, GL_INFO_LOG_LENGTH, &log_size);
+		glGetShaderiv(shader_handle, GL_INFO_LOG_LENGTH, &log_size);
 
 		// Allocate memory to store the log message
-		if (log_size)
-		{
-			p_log_message = new char[log_size + 1];
-		}
+		p_log_message = new char[log_size + 1];
 
 		// The memory was not allocated
 		if (!p_log_message)
@@ -465,7 +462,7 @@ unsigned int Shader::compileShader(int aShaderType,
 		}
 
 		// Get the log message
-		glGetProgramInfoLog(m_shader_program_id, log_size, &log_size, p_log_message);
+        glGetShaderInfoLog(shader_handle, log_size, &log_size, p_log_message);
 
 		std::stringstream error_message;
 		error_message << "Shader program linkage error (see below)." << std::endl;
