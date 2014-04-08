@@ -42,7 +42,7 @@ precision highp float; // Video card drivers require this line to function prope
 //******************************************************************************
 //	Input variables
 //******************************************************************************
-in vec2 g_texture_coordinates;
+smooth in vec2 g_texture_coordinates;
 
 
 //******************************************************************************

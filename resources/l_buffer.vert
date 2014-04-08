@@ -55,10 +55,10 @@ in vec3 in_Normal;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out float g_distance_intersection_detector;
-out vec3 g_viewing_vector;
-out vec4 g_normal_0;
-out vec4 g_normal_1;
+smooth out float g_distance_intersection_detector;
+smooth out vec3 g_viewing_vector;
+smooth out vec4 g_normal_0;
+smooth out vec4 g_normal_1;
 
 
 //******************************************************************************
