@@ -48,6 +48,12 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 
+# Enable Stereo using OpenGL's quad buffering ##################################
+IF(NOT APPLE)
+	ADD_DEFINITIONS(-DUSE_STEREO)
+ENDIF(NOT APPLE)
+
+
 # Project name #################################################################
 project (examples)
 set (examples_VERSION_MAJOR 1)

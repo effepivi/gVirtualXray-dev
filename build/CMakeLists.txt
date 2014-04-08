@@ -80,10 +80,6 @@ SET(requiredLibs)
 OPTION(USE_ITK   "Use ITK if possible." ON)
 
 
-# Enable Stereo using OpenGL's quad buffering ##################################
-ADD_DEFINITIONS(-DUSE_STEREO)
-
-
 # Library source code ##########################################################
 SET (CXX_SOURCES
 	# gVirtualXRay
