@@ -8,7 +8,7 @@
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
 *          		Proceedings of Theory and Practice of Computer Graphics 2009,
-*          		pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
+*          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
 *	@version	1.0
@@ -56,3 +56,4 @@ void main(void)
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
 }
+
