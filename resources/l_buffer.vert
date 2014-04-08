@@ -47,7 +47,6 @@
 //	Input
 //******************************************************************************
 in vec3 in_Vertex;
-in vec4 in_Color;
 in vec3 in_TexCoord;
 in vec3 in_Normal;
 
