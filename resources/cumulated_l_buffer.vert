@@ -8,7 +8,7 @@
  *          	F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
  *          	N. W. John. Simulation of X-ray attenuation on the GPU. In
  *          	Proceedings of Theory and Practice of Computer Graphics 2009,
- *          	pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
+ *          	pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
  *          	Winner of Ken Brodlie Prize for Best Paper.
  *
  *	@version	1.0
@@ -33,9 +33,24 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+
+
+//******************************************************************************
+//	Input
+//******************************************************************************
+in vec3 in_Vertex;
+in vec4 in_Color;
+in vec3 in_TexCoord;
+in vec3 in_Normal;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out vec3 g_texture_coordinates;
 
 
 //******************************************************************************
@@ -50,8 +65,9 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	g_texture_coordinates = in_TexCoord;
     
     // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
+	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
 }
+

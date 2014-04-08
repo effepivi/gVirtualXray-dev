@@ -13,7 +13,7 @@
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
 *          		Proceedings of Theory and Practice of Computer Graphics 2009,
-*          		pages 25Ð32, Cardiff, UK, June 2009. Eurographics Association.
+*          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
 *	@version	1.0
@@ -38,18 +38,27 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
 
 
 //******************************************************************************
-//	Varying variables
+//	Input
 //******************************************************************************
-varying float g_distance_intersection_detector;
-varying vec3 g_viewing_vector;
-varying vec4 g_normal_0;
-varying vec4 g_normal_1;
+in vec3 in_Vertex;
+in vec4 in_Color;
+in vec3 in_TexCoord;
+in vec3 in_Normal;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out float g_distance_intersection_detector;
+out vec3 g_viewing_vector;
+out vec4 g_normal_0;
+out vec4 g_normal_1;
 
 
 //******************************************************************************
@@ -75,7 +84,7 @@ void main(void)
 	float v;
 	
 	// Transformed vertex
-	vec4 transformed_vertex = g_modelling_matrix * gl_Vertex;
+	vec4 transformed_vertex = g_modelling_matrix * vec4(in_Vertex, 1.0);
 	transformed_vertex.xyz /= transformed_vertex.w;
 	transformed_vertex.w = 1.0;
 	
@@ -112,6 +121,7 @@ void main(void)
 	gl_Position.w = 1.0;
 	
 	// Normals
-	g_normal_0 = vec4(-gl_Normal, 1.0);
-	g_normal_1 = vec4(-gl_MultiTexCoord0.xyz, 1.0);
+	g_normal_0 = vec4(-in_Normal, 1.0);
+	g_normal_1 = vec4(-in_TexCoord.xyz, 1.0);
 }
+

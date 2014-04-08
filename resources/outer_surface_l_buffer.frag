@@ -33,9 +33,22 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+precision highp float; // Video card drivers require this line to function properly
+
+
+//******************************************************************************
+//	Input variables
+//******************************************************************************
+in vec3 g_texture_coordinates;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out vec3 fragColor;
 
 
 //******************************************************************************
@@ -86,7 +99,7 @@ float filter7x7(float anInitialValue)
     for (i = 0; i < KERNEL_SIZE_7x7; ++i)
     {
     	// Get the texel value
-        vec2 tex_coord = vec2(gl_TexCoord[0].st + g_offset_7x7[i]);
+        vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_7x7[i]);
 
         // Get the L-buffer value
 		vec2 l_buffer_value = texture2D(g_cumulated_l_buffer_texture, tex_coord).rg;
@@ -126,7 +139,7 @@ float filter5x5(float anInitialValue)
 	for (i = 0; i < KERNEL_SIZE_5x5; ++i)
 	{
     	// Get the texel value
-		vec2 tex_coord = vec2(gl_TexCoord[0].st + g_offset_5x5[i]);
+		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_5x5[i]);
 
         // Get the L-buffer value
 		vec2 l_buffer_value = texture2D(g_cumulated_l_buffer_texture, tex_coord).rg;
@@ -171,7 +184,7 @@ float filter3x3(float anInitialValue)
 	for (i = 0; i < KERNEL_SIZE_3x3; ++i)
 	{
     	// Get the texel value
-		vec2 tex_coord = vec2(gl_TexCoord[0].st + g_offset_3x3[i]);
+		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_3x3[i]);
 
         // Get the L-buffer value
 		vec2 l_buffer_value = texture2D(g_cumulated_l_buffer_texture, tex_coord).rg;
@@ -209,7 +222,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-    vec2 texel_value = texture2D(g_cumulated_l_buffer_texture, gl_TexCoord[0].st).rg;
+    vec2 texel_value = texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).rg;
     
     // Get the L-buffer value
 	float intensity = texel_value.r;
@@ -226,5 +239,5 @@ void main(void)
 	}
 	
     // Save the pixel value
-	gl_FragColor.rgb = vec3(-intensity);
+	fragColor.rgb = vec3(-intensity);
 }
