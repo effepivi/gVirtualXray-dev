@@ -58,7 +58,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture3D(g_sum_mu_x_dx_texture, gl_TexCoord[0].xyz).r;
+	float intensity = texture(g_sum_mu_x_dx_texture, gl_TexCoord[0].stp).r;
 	
     // Compute received energy
 	if (intensity >= 0.0)

@@ -99,10 +99,10 @@ float filter7x7(float anInitialValue)
     for (i = 0; i < KERNEL_SIZE_7x7; ++i)
     {
     	// Get the texel value
-        vec2 tex_coord = vec2(g_texture_coordinates.xy + g_offset_7x7[i]);
+        vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_7x7[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_cumulated_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_cumulated_l_buffer_texture, tex_coord).rg;
 
     	// The L-buffer value is valid
         if (isValid(l_buffer_value))
@@ -139,10 +139,10 @@ float filter5x5(float anInitialValue)
 	for (i = 0; i < KERNEL_SIZE_5x5; ++i)
 	{
     	// Get the texel value
-		vec2 tex_coord = vec2(g_texture_coordinates.xy + g_offset_5x5[i]);
+		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_5x5[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_cumulated_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_cumulated_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
@@ -184,10 +184,10 @@ float filter3x3(float anInitialValue)
 	for (i = 0; i < KERNEL_SIZE_3x3; ++i)
 	{
     	// Get the texel value
-		vec2 tex_coord = vec2(g_texture_coordinates.xy + g_offset_3x3[i]);
+		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_3x3[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_cumulated_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_cumulated_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
@@ -222,7 +222,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-    vec2 texel_value = texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.xy).rg;
+    vec2 texel_value = texture(g_cumulated_l_buffer_texture, g_texture_coordinates.st).rg;
     
     // Get the L-buffer value
 	float intensity = texel_value.r;

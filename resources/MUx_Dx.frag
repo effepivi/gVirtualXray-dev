@@ -90,7 +90,7 @@ float filter7x7(float anInitialValue)
         vec2 tex_coord = vec2(gl_TexCoord[0].st + g_offset_7x7[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_l_buffer_texture, tex_coord).rg;
 
     	// The L-buffer value is valid
         if (isValid(l_buffer_value))
@@ -130,7 +130,7 @@ float filter5x5(float anInitialValue)
 		vec2 tex_coord = vec2(gl_TexCoord[0].st + g_offset_5x5[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
@@ -175,7 +175,7 @@ float filter3x3(float anInitialValue)
 		vec2 tex_coord = vec2(gl_TexCoord[0].st + g_offset_3x3[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
@@ -264,7 +264,7 @@ void main(void)
 	g_offset_7x7[23] = vec2( 3.0 * g_x_offset,  2.0 * g_y_offset);
 
     // Get the texel value
-    vec2 texel_value = texture2D(g_l_buffer_texture, gl_TexCoord[0].st).rg;
+    vec2 texel_value = texture(g_l_buffer_texture, gl_TexCoord[0].st).rg;
     
     // Get the L-buffer value
 	float intensity = texel_value.r;
