@@ -134,9 +134,9 @@
 using namespace gVirtualXRay;
 
 
-//-------------------------------
+//-------------------------------------------------------------------------------------------------
 XRayRenderer::XRayRenderer():
-//-------------------------------
+//-------------------------------------------------------------------------------------------------
 		m_p_detector(0),
 		m_p_xray_beam(0),
 		m_p_outer_surface(0),
@@ -155,7 +155,7 @@ XRayRenderer::XRayRenderer():
 		m_negative_display_flag(1),
 		m_use_L_buffer_artefact_filtering(true),
 		m_L_buffer_empty(false)
-//-------------------------------
+//-------------------------------------------------------------------------------------------------
 {
 }
 
@@ -168,12 +168,12 @@ XRayRenderer::~XRayRenderer()
 }
 
 
-//----------------------------------------------------------------------------
+//-----------------------------------------------------------
 void XRayRenderer::initialise(ComputingMode aComputingMode,
 							  int anInternalTextureFormat,
 							  const XRayDetector* apDetector,
 							  const XRayBeam* apBeamSpectrum)
-//----------------------------------------------------------------------------
+//-----------------------------------------------------------
 {
 	// Check the texture format
 	if (anInternalTextureFormat != GL_RGB16F &&
@@ -1704,12 +1704,12 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	glUniform3fv(handle, 1, p_float_4);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	VEC3 up_vector(-(m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
+	VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
 	handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
 	glUniform3f(handle, up_vector.getX(), up_vector.getY(), up_vector.getZ());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	VEC3 right_vector(-(m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
+	VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
 	right_vector.normalise();
 	handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
 	glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
@@ -1868,9 +1868,9 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 }
 
 
-//--------------------------------------------------------
+//-----------------------------------------------------------------
 void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
-//--------------------------------------------------------
+//-----------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
