@@ -54,7 +54,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture2D(g_attenuation, gl_TexCoord[0].xy).r;
+	float intensity = texture(g_attenuation, gl_TexCoord[0].st).r;
 
     // Apply the shift/scale filter
 	intensity = ((intensity) + g_shift_filter) * g_scale_filter;

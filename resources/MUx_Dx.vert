@@ -39,6 +39,20 @@
 
 
 //******************************************************************************
+//	Input
+//******************************************************************************
+in vec3 in_Vertex;
+in vec3 in_TexCoord;
+in vec3 in_Normal;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+smooth out vec3 g_texture_coordinates;
+
+
+//******************************************************************************
 //	Uniform variables
 //******************************************************************************
 uniform mat4 g_projection_matrix;
@@ -51,9 +65,9 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	g_texture_coordinates = gl_MultiTexCoord0.stp;
     
     // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
+	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
 }
 
