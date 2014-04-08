@@ -27,9 +27,24 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+precision highp float; // Video card drivers require this line to function properly
+
+
+//******************************************************************************
+//	Input
+//******************************************************************************
+smooth in vec3 g_texture_coordinates;
+smooth in vec3 g_normal;
+smooth in vec4 g_object_position;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out vec4 fragColor;
 
 
 //******************************************************************************
@@ -38,20 +53,11 @@
 uniform int g_use_lighting;
 
 
-//******************************************************************************
-//	Varying variables
-//******************************************************************************
-varying vec3 g_normal;
-varying vec4 g_object_position;
-
-
 //-------------
 void main(void)
 //-------------
 {
-    vec4 colour;
-
-    if (g_use_lighting  == 1)
+    /*if (g_use_lighting  == 1)
     {
 	    vec3 view_direction  = vec3(g_object_position) / g_object_position.w;
 	    vec3 normal_vector   = normalize(g_normal);
@@ -62,13 +68,12 @@ void main(void)
 	    vec3 diffuse        = vec3(gl_FrontMaterial.diffuse  * gl_LightSource[0].diffuse  * max(0.0, dot(light_direction, normal_vector)));
 	    vec3 specular       = vec3(gl_FrontMaterial.specular * gl_LightSource[0].specular * pow(max(dot(normal_vector, normalize(gl_LightSource[0].halfVector.xyz)), 0.0), gl_FrontMaterial.shininess));
 	
-    	colour = vec4(global_ambient + ambient + diffuse + specular, 1.0);
+    	fragColor = vec4(global_ambient + ambient + diffuse + specular, 1.0);
     }
     else
     {
-		colour = gl_Color;
-    }
-
-    // Save the final colour
-    gl_FragColor = colour;
+		fragColor = gl_Color;
+    }*/
+    
+    fragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

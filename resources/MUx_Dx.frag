@@ -36,6 +36,7 @@
 //	OpenGL 3.2
 //******************************************************************************
 #version 150
+precision highp float; // Video card drivers require this line to function properly
 
 
 //******************************************************************************

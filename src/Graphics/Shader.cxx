@@ -47,16 +47,7 @@
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifdef USE_OPENGL4
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#else
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
-#endif
+#include <GLFW/glfw3.h>
 
 
 //******************************************************************************

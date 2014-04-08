@@ -33,27 +33,8 @@
 #include <windows.h>
 #endif
 
-#include<GL/glew.h>
-
-#ifdef HAS_FLTK
-#include <FL/glut.H>
-#else // HAS_FLTK
-#ifdef HAS_GLUT
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else // __APPLE__
-#include <GL/glut.h>
-#endif // __APPLE__
-#endif // HAS_GLUT
-#endif // HAS_FLTK
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else // __APPLE__
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif // __APPLE__
+#include <GLFW/glfw3.h>
+#include <OpenGL/gl3.h>
 
 #include <stdlib.h>
 
@@ -101,6 +82,10 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifndef EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
 #include "gVirtualXRayConfig.h"
 
 #include "display.frag.h"
@@ -136,7 +121,7 @@ const int DETECTOR(2);
 //******************************************************************************
 GLsizei g_main_window_width(1280 / 2.0);
 GLsizei g_main_window_height(800 / 2.0);
-int g_main_window_id(0);
+GLFWwindow* g_p_main_window_id(0);
 GLfloat g_zoom(60.0 * cm);
 GLfloat g_eye_offset(2.0 * cm);
 
@@ -244,7 +229,7 @@ void setFrustum(void)
 void initGL();
 void display();
 void reshape(int width, int height);
-void keyboard(unsigned char key, int x, int y);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void specialKeyboard(int key, int x, int y);
 void mouse(int button, int button_state, int x, int y);
 void motion(int x, int y);
@@ -257,6 +242,7 @@ void loadXRaySimulator();
 Vec3<GLfloat> getArcballVector(int x, int y);
 void computeRotation(MATRIX4& aRotationMatrix);
 void updateXRayImage();
+void errorCallback(int error, const char* description);
 
 
 //-----------------------------
@@ -270,8 +256,38 @@ int main(int argc, char** argv)
 	    // Register the exit callback
 		atexit(quit);
 
-		// Initialize GLUT
-		glutInit(&argc, argv);
+		// Initialize GLFW
+	    if (!glfwInit())
+	    {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+	    }
+
+	    // Set an error callback
+	    glfwSetErrorCallback(errorCallback);
+
+	    // Enable OpenGL 3.2 if possible
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	    // Enable quad-buffering if possible
+	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
+
+	    // Enable anti-aliasing
+	    glfwWindowHint(GLFW_SAMPLES, 4);
+
+	    // Create a windowed mode window and its OpenGL context
+	    //g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", glfwGetPrimaryMonitor(), NULL);
+	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+	    if (!g_p_main_window_id)
+	    {
+	        glfwTerminate();
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+	    }
+
+	    // Make the window's context current
+	    glfwMakeContextCurrent(g_p_main_window_id);
 
 		// Is stereo enable
 #ifdef USE_STEREO
@@ -293,73 +309,26 @@ int main(int argc, char** argv)
     	g_use_stereo = true;
 #endif
 
-    	if (g_can_use_stereo)
-		{
-			glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STEREO);
-		}
-		// Stereo is not enable on the system
-		else
-		{
-			glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
-		}
-
-		// Create a GLUT window
-		glutInitWindowSize(g_main_window_width, g_main_window_height);
-		g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
-
-		// Initialize GLEW
-		glewExperimental = GL_TRUE;
-		GLenum glew_error_0(glewInit());
-		if (glew_error_0 != GLEW_OK)
-		{
-			if (g_can_use_stereo || g_use_stereo)
-			{
-			    g_can_use_stereo = false;
-		    	g_use_stereo = false;
-
-		    	// Stereo is not enable on the system
-				glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
-
-				// Create a GLUT window
-				if (g_main_window_id) glutDestroyWindow(g_main_window_id);
-				glutInitWindowSize(g_main_window_width, g_main_window_height);
-				g_main_window_id = glutCreateWindow("GPU X-Ray Demo");
-
-				GLenum glew_error_1(glewInit());
-				if (glew_error_1 != GLEW_OK)
-				{
-					stringstream error_message;
-					error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error_1);
-					throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-				}
-			}
-			else
-			{
-				stringstream error_message;
-				error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error_0);
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-			}
-		}
-
 		// Initialise OpenGL
 		initGL();
 
 		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Initialize GLUT callback
-		glutDisplayFunc(display);
+		// Initialize GLFL callback
+		/*glutDisplayFunc(display);
 		glutReshapeFunc(reshape);
 		glutMouseFunc(mouse);
 		glutMotionFunc(motion);
 		glutKeyboardFunc(keyboard);
 		glutSpecialFunc(specialKeyboard);
-		glutIdleFunc(idle);
+		glutIdleFunc(idle);*/
+		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
 
 		// Load the data
-		loadDetector();
-		loadSource();
-		loadXRaySimulator();
+		//loadDetector();
+		//loadSource();
+		//loadXRaySimulator();
 
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
@@ -370,15 +339,37 @@ int main(int argc, char** argv)
 		updateXRayImage();
 
 		// Launch the event loop
-		glutMainLoop();
+	    while (!glfwWindowShouldClose(g_p_main_window_id))
+	    {
+	        // Render here
+	    	display();
 
+	        // Swap front and back buffers
+	        glfwSwapBuffers(g_p_main_window_id);
+
+	        // Poll for and process events
+	        glfwPollEvents();
+	    }
+
+		glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+	    glfwTerminate();
 		return (EXIT_SUCCESS);
 	}
 	// Catch exception if any
 	catch (const exception& error)
 	{
 		cerr << error.what() << endl;
+		return (EXIT_FAILURE);
 	}
+}
+
+
+//----------------------------------------------------
+void errorCallback(int error, const char* description)
+//----------------------------------------------------
+{
+	std::cerr << "GLFW error: " << description << std::endl;
 }
 
 
@@ -386,10 +377,11 @@ int main(int argc, char** argv)
 void quit()
 //---------
 {
-	if (g_main_window_id)
+	if (g_p_main_window_id)
 	{
-		glutDestroyWindow(g_main_window_id);
-		g_main_window_id = 0;
+		glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        glfwTerminate();
 	}
 }
 
@@ -398,15 +390,19 @@ void quit()
 void initGL()
 //-----------
 {
+	std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
+	std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
+	std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	// Enable the Z-buffer
 	glEnable(GL_DEPTH_TEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Set the background colour
 	glClearColor(0.5, 0.5, 0.5, 1.0);
-	
-	// Choose smooth shading
-	glShadeModel(GL_SMOOTH);
-	
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+/*
 	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -416,27 +412,15 @@ void initGL()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-	// Use colour and texture coordinate interpolation
-	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-	// Use antialiased polygons
-	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-	// Use antialiasing
-	//glEnable(GL_POLYGON_SMOOTH);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	*/
 
-	if (GLEW_ARB_multisample || GLEW_EXT_multisample)
-	{
-		glEnable(GL_MULTISAMPLE);
-		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
+	glEnable(GL_MULTISAMPLE);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Initialise the shaders
 	char* p_vertex_shader(0);
@@ -492,10 +476,6 @@ void render()
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Store the current attributes
-		pushEnableDisableState(GL_LIGHT0);
-		pushEnableDisableState(GL_LIGHTING);
-
 		// Store the current transformation matrix
 		pushModelViewMatrix();
 
@@ -524,11 +504,11 @@ void render()
 
 		// Display the sample
 		// Set the colour of the sample
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_0);
+		/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_0);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_0);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_0);
 		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-
+*/
 		// Store the current transformation matrix
 		pushModelViewMatrix();
 
@@ -549,11 +529,11 @@ void render()
 		popModelViewMatrix();
 
 		// Display the source
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
+	/*	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_1);
 		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-		g_xray_detector.displaySource();
+	*/	g_xray_detector.displaySource();
 
 		// Display the X-Ray image
 		g_xray_renderer.display();
@@ -576,10 +556,6 @@ void render()
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
-
-		// Restore the attributes
-		popEnableDisableState();
-		popEnableDisableState();
 
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -630,126 +606,76 @@ void display()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render();
 	}
-
-	// Display the image
-	glutSwapBuffers();
 }
 
 
-//--------------------------------------------
-void keyboard(unsigned char key, int x, int y)
-//--------------------------------------------
+//-------------------------------------------------------------------------------
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//-------------------------------------------------------------------------------
 {
-	switch (key)
+	if (action == GLFW_PRESS)
 	{
-	case 'q':
-	case 27:
-		exit(EXIT_SUCCESS);
-		break;
-
-	case 's':
-		if (g_can_use_stereo)
+		switch (key)
 		{
-	    	g_use_stereo = !g_use_stereo;
-		}
-		break;
+		case 'q':
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+			break;
 
-	case 'b':
-		g_display_beam = !g_display_beam;
-		break;
 
-	case 'l':
-//		g_xray_renderer.computeImage(g_sample_rotation_matrix);
-
-		g_xray_renderer.computeLBuffer(g_inside_polygon_data, VEC3(), g_sample_rotation_matrix);
-		g_xray_renderer.printLBuffer(PREFIX"/examples/data/inside_lbuffer.mhd");
-
-		g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
-		g_xray_renderer.printLBuffer(PREFIX"/examples/data/outside_lbuffer.mhd");
-		break;
-
-	case 'c':
-		g_xray_renderer.computeImage(g_sample_rotation_matrix);
-		g_xray_renderer.printCumulatedLBuffer(PREFIX"/examples/data/cumulated_lbuffer.mhd");
-		break;
-
-	case 'f':
-		g_xray_renderer.computeImage(g_sample_rotation_matrix);
-		g_xray_renderer.printEnergyFluence(PREFIX"/examples/data/energy_fluence.mhd");
-		break;
-
-	case 'm':
-		g_xray_renderer.computeImage(g_sample_rotation_matrix);
-		g_xray_renderer.printSumMuxDx(PREFIX"/examples/data/Mux_Dx.mhd");
-		break;
-
-	case 'n':
-		g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
-		break;
-
-	case 'a':
-		g_outside_polygon_data.splitFaces(true);
-
-                // The X-ray image is not up-to-date
-                g_is_xray_image_up_to_date = false;
-		break;
-
-	case '1':
-		// This is a point source
-		if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
-		{
-			// Use a parallel source
-			g_xray_detector.setParallelBeam();
-		}
-		// This is a cubic source
-		else
-		{
-			g_xray_detector.setPointSource();
-		}
-
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
-
-	case '2':
-		// This is not a line source
-		if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
-		{
-			g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 5.0*mm);
-		}
-		// This is a cubic source
-		else
-		{
-			g_xray_detector.setPointSource();
-		}
-
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
-
-	case '3':
-		{
-			// This is not a square source
-			if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
+		case 's':
+			if (g_can_use_stereo)
 			{
-				g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 4, 5.0*mm);
+		    	g_use_stereo = !g_use_stereo;
 			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-		}
-		break;
+			break;
 
-	case '4':
-		{
-			// This is not a cubic source
-			if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
+		case 'b':
+			g_display_beam = !g_display_beam;
+			break;
+
+		case 'l':
+	//		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+
+			g_xray_renderer.computeLBuffer(g_inside_polygon_data, VEC3(), g_sample_rotation_matrix);
+			g_xray_renderer.printLBuffer(PREFIX"/examples/data/inside_lbuffer.mhd");
+
+			g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
+			g_xray_renderer.printLBuffer(PREFIX"/examples/data/outside_lbuffer.mhd");
+			break;
+
+		case 'c':
+			g_xray_renderer.computeImage(g_sample_rotation_matrix);
+			g_xray_renderer.printCumulatedLBuffer(PREFIX"/examples/data/cumulated_lbuffer.mhd");
+			break;
+
+		case 'f':
+			g_xray_renderer.computeImage(g_sample_rotation_matrix);
+			g_xray_renderer.printEnergyFluence(PREFIX"/examples/data/energy_fluence.mhd");
+			break;
+
+		case 'm':
+			g_xray_renderer.computeImage(g_sample_rotation_matrix);
+			g_xray_renderer.printSumMuxDx(PREFIX"/examples/data/Mux_Dx.mhd");
+			break;
+
+		case 'n':
+			g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+			break;
+
+		case 'a':
+			g_outside_polygon_data.splitFaces(true);
+
+	                // The X-ray image is not up-to-date
+	                g_is_xray_image_up_to_date = false;
+			break;
+
+		case '1':
+			// This is a point source
+			if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
 			{
-				g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 3, 5.0*mm);
+				// Use a parallel source
+				g_xray_detector.setParallelBeam();
 			}
 			// This is a cubic source
 			else
@@ -759,67 +685,116 @@ void keyboard(unsigned char key, int x, int y)
 
 			// The X-ray image is not up-to-date
 			g_is_xray_image_up_to_date = false;
+			break;
+
+		case '2':
+			// This is not a line source
+			if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
+			{
+				g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 5.0*mm);
+			}
+			// This is a cubic source
+			else
+			{
+				g_xray_detector.setPointSource();
+			}
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+			break;
+
+		case '3':
+			{
+				// This is not a square source
+				if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
+				{
+					g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 4, 5.0*mm);
+				}
+				// This is a cubic source
+				else
+				{
+					g_xray_detector.setPointSource();
+				}
+				// The X-ray image is not up-to-date
+				g_is_xray_image_up_to_date = false;
+			}
+			break;
+
+		case '4':
+			{
+				// This is not a cubic source
+				if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
+				{
+					g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 3, 5.0*mm);
+				}
+				// This is a cubic source
+				else
+				{
+					g_xray_detector.setPointSource();
+				}
+
+				// The X-ray image is not up-to-date
+				g_is_xray_image_up_to_date = false;
+			}
+			break;
+
+		case 't':
+			{
+				if (g_rotation_mode == SCENE)
+				{
+					cout << "Rotation: select the object." << endl;
+					g_rotation_mode = OBJECT;
+				}
+				else if (g_rotation_mode == OBJECT)
+				{
+					cout << "Rotation: select the detector." << endl;
+					g_rotation_mode = DETECTOR;
+				}
+				else if (g_rotation_mode == DETECTOR)
+				{
+					cout << "Rotation: select the scene." << endl;
+					g_rotation_mode = SCENE;
+				}
+			}
+			break;
+
+		case 'w':
+			g_display_wireframe = !g_display_wireframe;
+			break;
+
+		case 'v':
+			g_display_outside_polygon = !g_display_outside_polygon;
+			break;
+
+		case '+':
+			g_zoom += 1.0 * cm;
+			reshape(g_main_window_width, g_main_window_height);
+			cout << "Zoom in cm)" << g_zoom / cm << endl;
+			break;
+
+		case '-':
+			g_zoom -= 1.0 * cm;
+			reshape(g_main_window_width, g_main_window_height);
+			cout << "Zoom in cm)" << g_zoom / cm << endl;
+			break;
+
+		case 'o':
+			g_IOD += 5.0 * mm;
+			reshape(g_main_window_width, g_main_window_height);
+			cout << "IOD in cm" << g_IOD / cm << endl;
+			break;
+
+		case 'p':
+			g_IOD -= 5.0 * mm;
+			reshape(g_main_window_width, g_main_window_height);
+			cout << "IOD in cm" << g_IOD / cm << endl;
+			break;
+
+		default:
+			cout << "Key: " << key << endl;
+			break;
 		}
-		break;
-
-	case 't':
-		{
-			if (g_rotation_mode == SCENE)
-			{
-				cout << "Rotation: select the object." << endl;
-				g_rotation_mode = OBJECT;
-			}
-			else if (g_rotation_mode == OBJECT)
-			{
-				cout << "Rotation: select the detector." << endl;
-				g_rotation_mode = DETECTOR;
-			}
-			else if (g_rotation_mode == DETECTOR)
-			{
-				cout << "Rotation: select the scene." << endl;
-				g_rotation_mode = SCENE;
-			}
-		}
-		break;
-
-	case 'w':
-		g_display_wireframe = !g_display_wireframe;
-		break;
-
-	case 'v':
-		g_display_outside_polygon = !g_display_outside_polygon;
-		break;
-
-	case '+':
-		g_zoom += 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
-		cout << "Zoom in cm)" << g_zoom / cm << endl;
-		break;
-
-	case '-':
-		g_zoom -= 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
-		cout << "Zoom in cm)" << g_zoom / cm << endl;
-		break;
-
-	case 'o':
-		g_IOD += 5.0 * mm;
-		reshape(g_main_window_width, g_main_window_height);
-		cout << "IOD in cm" << g_IOD / cm << endl;
-		break;
-
-	case 'p':
-		g_IOD -= 5.0 * mm;
-		reshape(g_main_window_width, g_main_window_height);
-		cout << "IOD in cm" << g_IOD / cm << endl;
-		break;
-
-	default:
-		cout << "Key: " << key << endl;
-		break;
 	}
-
-	glutPostRedisplay();
 }
 
 
@@ -827,7 +802,7 @@ void keyboard(unsigned char key, int x, int y)
 void specialKeyboard(int key, int x, int y)
 //-----------------------------------------
 {
-	switch (key)
+	/*switch (key)
 	{
 	case GLUT_KEY_RIGHT:
 		{
@@ -862,7 +837,7 @@ void specialKeyboard(int key, int x, int y)
 		break;
 	}
 
-	glutPostRedisplay();
+	glutPostRedisplay();*/
 }
 
 
@@ -902,7 +877,7 @@ void reshape(int width, int height)
 void mouse(int button, int button_state, int x, int y)
 //----------------------------------------------------
 {
-	g_button = button;
+	/*g_button = button;
 	g_button_state = button_state;
 
 	cout << g_button << "\t" << g_button_state << endl;
@@ -955,7 +930,7 @@ void mouse(int button, int button_state, int x, int y)
 	g_current_y_position = y;
 
 	// No need to redisplay the screen as yet
-	//glutPostRedisplay();
+	//glutPostRedisplay();*/
 }
 
 
@@ -1021,7 +996,7 @@ void motion(int x, int y)
 		break;
 	}
 
-	glutPostRedisplay();
+//	glutPostRedisplay();
 }
 
 
@@ -1029,12 +1004,12 @@ void motion(int x, int y)
 void idle()
 //---------
 {
-	if (glutGetWindow() != g_main_window_id)
+/*	if (glutGetWindow() != g_main_window_id)
 	{
 		glutSetWindow(g_main_window_id);
 	}
 
-	glutPostRedisplay();
+	glutPostRedisplay();*/
 }
 
 
@@ -1134,7 +1109,7 @@ void loadXRaySimulator()
 {
 	// Initialise the X-ray renderer
 	g_xray_renderer.initialise(XRayRenderer::OPENGL,
-		GL_RGB16F_ARB,
+		GL_RGB16F,
 		&g_xray_detector,
 		&g_xray_beam);
 
@@ -1214,11 +1189,11 @@ void updateXRayImage()
 	if (!g_is_xray_image_up_to_date)
 	{
 		// Compute the X-Ray image
-		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+		/*g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 		// Normalise the X-ray image
 		g_xray_renderer.normalise();
-
+*/
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;
 	}

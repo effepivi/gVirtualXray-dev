@@ -40,6 +40,10 @@
 */
 
 #include "gVirtualXRay/framebufferObject.h"
+
+#include<OpenGL/gl3.h>
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 using namespace std;
 
@@ -54,17 +58,17 @@ FramebufferObject::FramebufferObject()
 
 FramebufferObject::~FramebufferObject() 
 {
-  glDeleteFramebuffersEXT(1, &m_fboId);
+  glDeleteFramebuffers(1, &m_fboId);
 }
 
 void FramebufferObject::Bind() 
 {
-  glBindFramebufferEXT(GL_FRAMEBUFFER, m_fboId);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_fboId);
 }
 
 void FramebufferObject::Disable() 
 {
-  glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void
@@ -113,7 +117,7 @@ FramebufferObject::AttachRenderBuffer( GLuint buffId, GLenum attachment )
   if( GetAttachedId(attachment) != buffId ) {
 #endif
 
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER, attachment, 
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment,
                                  GL_RENDERBUFFER, buffId);
 
 #ifndef NDEBUG
@@ -177,7 +181,7 @@ GLint FramebufferObject::GetMaxColorAttachments()
 GLuint FramebufferObject::_GenerateFboId()
 {
   GLuint id = 0;
-  glGenFramebuffersEXT(1, &id);
+  glGenFramebuffers(1, &id);
   return id;
 }
 
@@ -186,7 +190,7 @@ void FramebufferObject::_GuardedBind()
   // Only binds if m_fboId is different than the currently bound FBO
   glGetIntegerv( GL_FRAMEBUFFER_BINDING, &m_savedFboId );
   if (m_fboId != (GLuint)m_savedFboId) {
-    glBindFramebufferEXT(GL_FRAMEBUFFER, m_fboId);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fboId);
   }
 }
 
@@ -194,7 +198,7 @@ void FramebufferObject::_GuardedUnbind()
 {
   // Returns FBO binding to the previously enabled FBO
   if (m_fboId != (GLuint)m_savedFboId) {
-    glBindFramebufferEXT(GL_FRAMEBUFFER, (GLuint)m_savedFboId);
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)m_savedFboId);
   }
 }
 
@@ -204,16 +208,16 @@ FramebufferObject::_FramebufferTextureND( GLenum attachment, GLenum texTarget,
                                          int zSlice )
 {
   if (texTarget == GL_TEXTURE_1D) {
-    glFramebufferTexture1DEXT( GL_FRAMEBUFFER, attachment,
+    glFramebufferTexture1D( GL_FRAMEBUFFER, attachment,
                                GL_TEXTURE_1D, texId, mipLevel );
   }
   else if (texTarget == GL_TEXTURE_3D) {
-    glFramebufferTexture3DEXT( GL_FRAMEBUFFER, attachment,
+    glFramebufferTexture3D( GL_FRAMEBUFFER, attachment,
                                GL_TEXTURE_3D, texId, mipLevel, zSlice );
   }
   else {
     // Default is GL_TEXTURE_2D, GL_TEXTURE_RECTANGLE_ARB, or cube faces
-    glFramebufferTexture2DEXT( GL_FRAMEBUFFER, attachment,
+    glFramebufferTexture2D( GL_FRAMEBUFFER, attachment,
                                texTarget, texId, mipLevel );
   }
 }
@@ -226,7 +230,7 @@ bool FramebufferObject::IsValid( ostream& ostr )
   bool isOK = false;
 
   GLenum status;                                            
-  status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
+  status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   switch(status) {                                          
   case GL_FRAMEBUFFER_COMPLETE: // Everything's OK
     isOK = true;
@@ -241,17 +245,17 @@ bool FramebufferObject::IsValid( ostream& ostr )
       << "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT\n";
     isOK = false;
     break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+  /*case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
     ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
       << "GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS\n";
     isOK = false;
     break;
-  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
     ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
       << "GL_FRAMEBUFFER_INCOMPLETE_FORMATS\n";
     isOK = false;
     break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+*/  case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
     ostr << "glift::CheckFramebufferStatus() ERROR:\n\t"
       << "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER\n";
     isOK = false;
@@ -283,7 +287,7 @@ GLenum FramebufferObject::GetAttachedType( GLenum attachment )
   // Returns GL_RENDERBUFFER or GL_TEXTURE
   _GuardedBind();
   GLint type = 0;
-  glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER, attachment,
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, 
                                            &type);
   _GuardedUnbind();
@@ -294,7 +298,7 @@ GLuint FramebufferObject::GetAttachedId( GLenum attachment )
 {
   _GuardedBind();
   GLint id = 0;
-  glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER, attachment,
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
                                            &id);
   _GuardedUnbind();
@@ -305,7 +309,7 @@ GLint FramebufferObject::GetAttachedMipLevel( GLenum attachment )
 {
   _GuardedBind();
   GLint level = 0;
-  glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER, attachment,
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL, 
                                            &level);
   _GuardedUnbind();
@@ -316,23 +320,23 @@ GLint FramebufferObject::GetAttachedCubeFace( GLenum attachment )
 {
   _GuardedBind();
   GLint level = 0;
-  glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER, attachment,
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
                                            GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE,
                                            &level);
   _GuardedUnbind();
   return level;
 }
-
+/*
 GLint FramebufferObject::GetAttachedZSlice( GLenum attachment )
 {
   _GuardedBind();
   GLint slice = 0;
-  glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER, attachment,
-                                           GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_EXT,
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, attachment,
+                                           GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET,
                                            &slice);
   _GuardedUnbind();
   return slice;
 }
-
+*/
 
 

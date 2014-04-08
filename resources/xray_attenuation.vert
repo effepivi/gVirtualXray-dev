@@ -33,9 +33,24 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+
+
+//******************************************************************************
+//	Input
+//******************************************************************************
+in vec3 in_Vertex;
+in vec3 in_TexCoord;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+smooth out vec3 g_texture_coordinates;
+smooth out float u1;
+smooth out float v1;
 
 
 //******************************************************************************
@@ -44,8 +59,6 @@
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
 uniform mat4 g_text_coord_matrix;
-varying float u1;
-varying float v1;
 
 
 //-------------
@@ -53,10 +66,11 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	gl_TexCoord[0] = g_text_coord_matrix * gl_MultiTexCoord0;
+	vec4 temp = g_text_coord_matrix * vec4(in_TexCoord, 1.0);
+    g_texture_coordinates = temp.xyz / temp.w;
     
     // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
+	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
     u1 =gl_Position.x;
     v1 =gl_Position.y;
 }

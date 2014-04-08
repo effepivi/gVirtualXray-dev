@@ -33,9 +33,24 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+precision highp float; // Video card drivers require this line to function properly
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+smooth in vec3 g_texture_coordinates;
+smooth in float u1;
+smooth in float v1;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out vec3 fragColor;
 
 
 //******************************************************************************
@@ -49,8 +64,6 @@
 //******************************************************************************
 uniform sampler3D g_sum_mu_x_dx_texture;
 uniform float     g_n_input_energy;
-varying float u1;
-varying float v1;
 
 
 //-------------
@@ -58,7 +71,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture(g_sum_mu_x_dx_texture, gl_TexCoord[0].stp).r;
+	float intensity = texture(g_sum_mu_x_dx_texture, g_texture_coordinates.stp).r;
 	
     // Compute received energy
 	if (intensity >= 0.0)
@@ -67,6 +80,6 @@ void main(void)
 	}
 
     // Save the fragment value
-	gl_FragColor.rgb = vec3(intensity, u1, v1);
+	fragColor = vec3(intensity, u1, v1);
 }
 

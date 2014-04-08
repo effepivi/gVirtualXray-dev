@@ -33,9 +33,9 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
 
 
 //******************************************************************************
@@ -65,7 +65,7 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	g_texture_coordinates = gl_MultiTexCoord0.stp;
+	g_texture_coordinates = in_TexCoord;
     
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);

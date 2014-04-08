@@ -39,7 +39,7 @@
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 
 //******************************************************************************
@@ -129,9 +129,10 @@ void VBO::display() const
 		// There is vertices
 		if (m_number_of_vertices && m_vertex_data_type != GL_NONE)
 		{
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[VERTEX_SET_ID]);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, m_vertex_data_type, 0, 0);
+			glVertexAttribPointer(0, 3, m_vertex_data_type, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(0);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 
@@ -139,8 +140,8 @@ void VBO::display() const
 		if (m_number_of_texture_coordinates && m_texture_coordinate_data_type != GL_NONE)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(3, m_texture_coordinate_data_type, 0, 0);
+			glVertexAttribPointer(1, 3, m_texture_coordinate_data_type, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(1);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 
@@ -148,8 +149,8 @@ void VBO::display() const
 		if (m_number_of_normals && m_normal_data_type != GL_NONE)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[NORMAL_SET_ID]);
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glNormalPointer(m_normal_data_type, 0, 0);
+			glVertexAttribPointer(2, 3, m_normal_data_type, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(2);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 
@@ -158,31 +159,31 @@ void VBO::display() const
 		{
 			glDrawArrays(m_primitive_type, 0, m_number_of_vertices);
 		}
-		else
+		/*else
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
 			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, 0);
-		}
+		}*/
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// There are vertices
 		if (m_number_of_vertices)
 		{
-			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableVertexAttribArray(0);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 
 		// There are texture coordinates
 		if (m_number_of_texture_coordinates)
 		{
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glDisableVertexAttribArray(1);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 
 		// There are normal data
 		if(m_number_of_normals)
 		{
-			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableVertexAttribArray(2);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 

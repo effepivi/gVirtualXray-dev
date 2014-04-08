@@ -85,7 +85,9 @@
 
 #include "mu_water.csv.h"
 
-#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+//#include <GL/glew.h>
 
 /*#ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -554,7 +556,7 @@ void XRayRenderer::checkGPUCapabilities()
 //---------------------------------------
 {
 	// Check for OpenGL version
-	if (!GLEW_VERSION_2_0)
+	/*if (!GLEW_VERSION_2_0)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support OpenGL 2.0.");
 	}
@@ -564,10 +566,10 @@ void XRayRenderer::checkGPUCapabilities()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support OpenGL 2.0.");
 	}
 
-	/*if (!glewIsSupported("GL_VERSION_3_2"))
+	if (!glewIsSupported("GL_VERSION_3_2"))
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support OpenGL 3.2.");
-	}*/
+	}
 
 	// Check for OpenGL extensions
 	if (!GLEW_ARB_texture_rectangle)
@@ -608,7 +610,7 @@ void XRayRenderer::checkGPUCapabilities()
 	if (!GLEW_ARB_pixel_buffer_object)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "GPU capability error: your graphic card driver does not support pixel buffer objects (PBOs) (GL_ARB_pixel_buffer_object).");
-	}
+	}*/
 /*
 	if (!GLEW_EXT_texture3D)
 	{
@@ -966,25 +968,10 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 			glGenTextures(1, &m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			// Get the best anisotropic filtering level
-			GLint max_anisotropic_filter_level(1);
-			if (GLEW_EXT_texture_filter_anisotropic)
-			{
-				glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_filter_level);
-			}
-
 			// Set the texture properties
 			glBindTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-			if (GLEW_EXT_texture_filter_anisotropic)
-			{
-				glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_filter_level);
-			}
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// Check the texture size
@@ -1124,24 +1111,10 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 	glGenTextures(1, apTextureID);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Get the best anisotropic filtering level
-	GLint max_anisotropic_filter_level(1);
-	if (GLEW_EXT_texture_filter_anisotropic)
-	{
-		glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropic_filter_level);
-	}
-
 	// Set the texture properties
 	glBindTexture(GL_TEXTURE_2D, *apTextureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	if (GLEW_EXT_texture_filter_anisotropic)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropic_filter_level);
-	}
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

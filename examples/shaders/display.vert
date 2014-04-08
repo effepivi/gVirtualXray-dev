@@ -27,9 +27,25 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+
+
+//******************************************************************************
+//	Input
+//******************************************************************************
+in vec3 in_Vertex;
+in vec3 in_TexCoord;
+in vec3 in_Normal;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+smooth out vec3 g_texture_coordinates;
+smooth out vec3 g_normal;
+smooth out vec4 g_object_position;
 
 
 //******************************************************************************
@@ -40,22 +56,15 @@ uniform mat4 g_modelview_matrix;
 uniform mat3 g_normal_matrix;
 
 
-//******************************************************************************
-//	Varying variables
-//******************************************************************************
-varying vec3 g_normal;
-varying vec4 g_object_position;
-
-
 //-------------
 void main(void)
 //-------------
 {
-	g_object_position = g_modelview_matrix * gl_Vertex;
-	g_normal = normalize(g_normal_matrix * gl_Normal);
+	g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);
+	g_normal = normalize(g_normal_matrix * in_Normal);
 	
-    gl_TexCoord[0] = gl_MultiTexCoord0;
+    g_texture_coordinates = in_TexCoord;
 
-    gl_FrontColor = gl_Color;
-	gl_Position = g_projection_matrix * g_modelview_matrix * gl_Vertex;
+    //gl_FrontColor = gl_Color;
+	gl_Position = g_projection_matrix * g_object_position;
 }

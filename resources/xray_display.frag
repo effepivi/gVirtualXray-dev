@@ -35,9 +35,22 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+precision highp float; // Video card drivers require this line to function properly
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+smooth in vec3 g_texture_coordinates;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out float fragColor;
 
 
 //******************************************************************************
@@ -54,7 +67,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture(g_attenuation, gl_TexCoord[0].st).r;
+	float intensity = texture(g_attenuation, g_texture_coordinates.st).r;
 
     // Apply the shift/scale filter
 	intensity = ((intensity) + g_shift_filter) * g_scale_filter;
@@ -66,6 +79,6 @@ void main(void)
 	}
 
 	// Save the fragment value
-	gl_FragColor.rgb = vec3(intensity);
+	fragColor = intensity;
 }
 
