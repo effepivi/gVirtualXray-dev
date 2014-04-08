@@ -106,3 +106,4 @@ void main (void)
 	// In the alpha channel: 1.0 (unused)
 	gl_FragColor = vec4(value, dot_product_sign, dot(normal_0.xyz, viewing_vector), 1.0);
 }
+
