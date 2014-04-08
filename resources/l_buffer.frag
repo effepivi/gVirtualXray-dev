@@ -38,24 +38,31 @@
 
 
 //******************************************************************************
-//	OpenGL 3.0
+//	OpenGL 3.2
 //******************************************************************************
-#version 130
+#version 150
+precision highp float; // Video card drivers require this line to function properly
+
+
+//******************************************************************************
+//	Input
+//******************************************************************************
+smooth in float g_distance_intersection_detector;
+smooth in vec3 g_viewing_vector;
+smooth in vec4 g_normal_0;
+smooth in vec4 g_normal_1;
+
+
+//******************************************************************************
+//	Output
+//******************************************************************************
+out vec4 fragColor;
 
 
 //******************************************************************************
 //   Defines
 //******************************************************************************
 #define EPSILON         0.000001
-
-
-//******************************************************************************
-//	Varying variables
-//******************************************************************************
-varying float g_distance_intersection_detector;
-varying vec3 g_viewing_vector;
-varying vec4 g_normal_0;
-varying vec4 g_normal_1;
 
 
 //******************************************************************************
@@ -104,6 +111,6 @@ void main (void)
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
-	gl_FragColor = vec4(value, dot_product_sign, dot(normal_0.xyz, viewing_vector), 1.0);
+	fragColor = vec4(value, dot_product_sign, dot(normal_0.xyz, viewing_vector), 1.0);
 }
 
