@@ -58,7 +58,7 @@ using namespace std;
 //******************************************************************************
 GLsizei g_window_width( 640);
 GLsizei g_window_height(480);
-GLint   g_window_id(0);
+GLFWwindow* g_p_window_id(0);
 
 // Components needed to simulate X-ray images
 XRayDetector g_xray_detector;
@@ -77,13 +77,14 @@ std::vector<float> g_p_vertex_set_2;
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGLUT(int argc, char** argv);
+void initGLFW();
 void initGL();
-void reshape(int width, int height);
+void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 void display();
-void keyboard(unsigned char key, int x, int y);
+void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
 void idle();
 void quit();
+void errorCallback(int error, const char* description);
 
 void setDetector();
 void setSource();
@@ -100,17 +101,10 @@ int main(int argc, char** argv)
 	try
 	{
 		// Initialise GLUT
-		initGLUT(argc, argv);
+		initGLFW();
 
 		// Initialise OpenGL
 		initGL();
-
-		glewExperimental = GL_TRUE;
-		GLenum glew_error(glewInit());
-		if (glew_error != GLEW_OK)
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot initialise GLEW.");
-		}
 
 		// Initialise the position and shape of the X-ray detector
 		setDetector();
@@ -127,36 +121,84 @@ int main(int argc, char** argv)
 		// Initialise the X-ray simulation
 		setSimulator();
 
-		// Start the event loop
-		glutMainLoop();
+		// Set the projection matrix
+		GLint width(0);
+		GLint height(0);
+		glfwGetFramebufferSize(g_p_window_id, &width, &height);
+		framebufferSizeCallback(g_p_window_id, width, height);
+
+		// Launch the event loop
+	    while (!glfwWindowShouldClose(g_p_window_id))
+	    {
+	    	// Render here
+	    	display();
+
+	        // Swap front and back buffers
+	        glfwSwapBuffers(g_p_window_id);
+
+	        // Idle callback
+	        idle();
+
+	        // Poll for and process events
+	        glfwPollEvents();
+	    }
 	}
-	catch (const exception& error)
+	// Catch exception if any
+	catch (const std::exception& error)
 	{
-		cerr << "Exception caught:\t" << error.what() << endl;
+		std::cerr << error.what() << std::endl;
 		return_code = EXIT_FAILURE;
 	}
 
+	// Close the window and shut GLFW
+	if (g_p_window_id)
+	{
+		glfwDestroyWindow(g_p_window_id);
+		g_p_window_id = 0;
+		glfwTerminate();
+	}
+
+	// Return an exit code
 	return (return_code);
 }
 
 
-//----------------------------------
-void initGLUT(int argc, char** argv)
-//----------------------------------
+//-------------
+void initGLFW()
+//-------------
 {
-	// Initialise GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+    // Set an error callback
+    glfwSetErrorCallback(errorCallback);
 
-	// Initialise the window
-	glutInitWindowSize(g_window_width, g_window_height);
-	g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 01");
+    // Register the exit callback
+	atexit(quit);
 
-	// Initialise GLUT callbacks
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutKeyboardFunc(keyboard);
-	glutIdleFunc(idle);
+	// Initialize GLFW
+    if (!glfwInit())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+    }
+
+    // Enable OpenGL 3.2 if possible
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Enable anti-aliasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+    // Create a windowed mode window and its OpenGL context
+    g_p_window_id = glfwCreateWindow(g_window_width, g_window_height, "gVirtualXRay -- Tutorial 01", NULL, NULL);
+    if (!g_p_window_id)
+    {
+        glfwTerminate();
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+    }
+
+    // Make the window's context current
+    glfwMakeContextCurrent(g_p_window_id);
+
 }
 
 
@@ -193,9 +235,9 @@ void initGL()
 }
 
 
-//---------------------------------
-void reshape(int width, int height)
-//---------------------------------
+//-----------------------------------------------------------------------
+void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
+//-----------------------------------------------------------------------
 {
 	// Avoid a division by zero
 	if (height == 0)
@@ -278,35 +320,30 @@ void display()
 
 	// Display the shape of the beam
 	g_xray_detector.displayBeam();
-
-	// Display the image
-	glutSwapBuffers();
 }
 
 
-//--------------------------------------------
-void keyboard(unsigned char key, int x, int y)
-//--------------------------------------------
+//-------------------------------------------------------------------------------
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//-------------------------------------------------------------------------------
 {
 	switch(key)
 	{
 	// Close the program
-	case 'q':
-		case 27:
-		exit(EXIT_SUCCESS);
-		break;
+	case GLFW_KEY_Q:
+	case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
+			break;
 
 	// Toggle the rendering mode
 	// (negative image/positive image)
-	case 'n':
+	case GLFW_KEY_N:
 		g_xray_simulator.useNegativeFilteringFlag(!g_xray_simulator.getNegativeFilteringFlag());
 		break;
 
 	default:
 		break;
 	}
-
-	glutPostRedisplay();
 }
 
 
@@ -322,15 +359,6 @@ void idle()
 		// Normalise the X-ray image
 		g_xray_simulator.normalise();
 	}
-
-	// Make sure the window is active
-	if (glutGetWindow() != g_window_id)
-	{
-		glutSetWindow(g_window_id);
-	}
-
-	// Refresh the screen
-	glutPostRedisplay();
 }
 
 
@@ -338,10 +366,11 @@ void idle()
 void quit()
 //---------
 {
-	if (g_window_id)
+	if (g_p_window_id)
 	{
-		glutDestroyWindow(g_window_id);
-		g_window_id = 0;
+		glfwDestroyWindow(g_p_window_id);
+		g_p_window_id = 0;
+        glfwTerminate();
 	}
 }
 
@@ -416,11 +445,19 @@ void setSimulator()
 {
 	// Initialise the X-ray renderer
 	g_xray_simulator.initialise(XRayRenderer::OPENGL,
-		GL_RGB16F_ARB,
-		&g_xray_detector,
-		&g_xray_beam);
+			GL_RGB16F,
+			&g_xray_detector,
+			&g_xray_beam);
 
 	// Add the geometry to the X-ray renderer
 	g_xray_simulator.addInnerSurface(&g_polygon_mesh_1);
 	g_xray_simulator.addOuterSurface(&g_polygon_mesh_2);
+}
+
+
+//----------------------------------------------------
+void errorCallback(int error, const char* description)
+//----------------------------------------------------
+{
+	std::cerr << "GLFW error: " << description << std::endl;
 }

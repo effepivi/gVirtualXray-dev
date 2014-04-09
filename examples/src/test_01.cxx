@@ -1083,9 +1083,9 @@ void loadXRaySimulator()
 {
 	// Initialise the X-ray renderer
 	g_xray_renderer.initialise(XRayRenderer::OPENGL,
-		GL_RGB16F,
-		&g_xray_detector,
-		&g_xray_beam);
+			GL_RGB16F,
+			&g_xray_detector,
+			&g_xray_beam);
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
