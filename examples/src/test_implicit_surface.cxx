@@ -41,10 +41,6 @@
 
 #include <stdlib.h>
 
-#ifdef HAS_BUNDLE
-#include <boost/filesystem.hpp>
-#endif
-
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -55,10 +51,6 @@
 
 #ifndef POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
-#endif
-
-#ifndef CUBE_MESH_H
-#include "gVirtualXRay/CubeMesh.h"
 #endif
 
 #ifndef XRAY_BEAM_H
@@ -82,7 +74,7 @@
 #endif
 
 #ifndef SHADER_H
-#include "gVirtualXRay/Graphics/Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef UTILITIES_H

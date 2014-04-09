@@ -1,16 +1,13 @@
 /**
 ********************************************************************************
 *
-*	@file		test_implicit_surface.cxx
+*	@file		implicit_surface_marching_cube.cxx
 *
-*	@brief		Main test program for implicit surfaces with X-ray rendering.
+*	@brief		Main test program for implicit surfaces.
 *
 *	@version	1.0
 *
 *	@date		10/03/2014
-*
-*	@todo		Fix bug when using the special key.
-*				There is a problem with the internal vectors of the detector.
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -36,38 +33,10 @@
 #include <windows.h>
 #endif
 
-#include <ctime>
-#include <sstream>
+#include <GLFW/glfw3.h>
+#include <OpenGL/gl3.h>
 
-// Start: Resolve conflict when using MS VC++, thanks to Alastair Barrow.
-#ifdef min
-#undef min
-#endif
-#include <algorithm>
-// End: Resolve conflict when using MS VC++, thanks to Alastair Barrow.
-
-
-#include<GL/glew.h>
-
-#ifdef HAS_FLTK
-#include <FL/glut.H>
-#else // HAS_FLTK
-#ifdef HAS_GLUT
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else // __APPLE__
-#include <GL/glut.h>
-#endif // __APPLE__
-#endif // HAS_GLUT
-#endif // HAS_FLTK
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else // __APPLE__
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif // __APPLE__
+#include <stdlib.h>
 
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -77,7 +46,7 @@
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef TRIANGLE_MESH_H
+#ifndef POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
@@ -97,6 +66,10 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifndef EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
 #ifndef IMPLICIT_SURFACE_H
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
@@ -114,23 +87,14 @@ using namespace Graphics;
 
 
 //******************************************************************************
-//	Defines
-//******************************************************************************
-#define PREFIX ".."
-
-
-//******************************************************************************
 //	Constant variables
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const int NONE(0);
-const int SCENE(1);
-const int OBJECT(2);
-
 const double g_initial_fovy(45);                              // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);                        // Near clipping plane
 const double g_initial_far(500.0 * cm);                       // Far clipping plane
+const double g_initial_screen_projection_plane(10000.0 * cm); // Screen projection plane
 
 
 //******************************************************************************
@@ -140,8 +104,8 @@ GLsizei g_current_main_window_width(1280 / 2.0);
 GLsizei g_current_main_window_height(800 / 2.0);
 GLsizei g_original_main_window_width(g_current_main_window_width);
 GLsizei g_original_main_window_height(g_current_main_window_height);
-int g_main_window_id(0);
-GLfloat g_zoom(70.0 * cm);
+GLFWwindow* g_p_main_window_id(0);
+GLfloat g_zoom(100.0 * cm);
 
 int g_button(-1);
 int g_button_state(-1);
@@ -151,28 +115,27 @@ GLint g_last_y_position(0);
 GLint g_current_x_position(0);
 GLint g_current_y_position(0);
 
-bool g_display_beam(true);
-
-Matrix4x4<GLfloat> g_scene_rotation_matrix;
-Matrix4x4<GLfloat> g_sample_rotation_matrix;
+Matrix4x4<GLfloat> g_rotation_matrix;
 
 PolygonMesh g_polygon_data;
+std::vector<GLdouble> g_p_vertex_set;
 
 Shader g_display_shader;
 
-int g_rotation_mode(SCENE);
 bool g_display_wireframe(false);
 
 bool g_use_lighing(true);
+
 
 clock_t g_start(0);
 int g_image_computed(0);
 double g_number_of_seconds(0);
 double g_fps(0);
-float g_threshold(0.5);
+bool g_use_fullscreen(true);
+bool g_make_threshold_bigger(true);
 
+float g_threshold(0.5);
 int g_selected_iso_surface(0);
-bool g_make_cube_bigger(true);
 
 RATIONAL_NUMBER g_scaling_factor(0.25);
 Vec3ui g_number_of_voxel(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
@@ -191,21 +154,21 @@ ImplicitSurface g_soft_object_2;
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGL();
-void reshape(int width, int height);
 void display();
-void mouse(int button, int button_state, int x, int y);
-void motion(int x, int y);
-void keyboard(unsigned char key, int x, int y);
-void idle();
+void initGL();
+void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
+void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+void errorCallback(int error, const char* description);
 void quit();
+void idle();
 void extractIsoSurface();
 
 void computeRotation(MATRIX4& aRotationMatrix);
 void loadImplicitSurface();
 void render();
-void draw();
-void displayText(int x, int y, const std::string& aText);
 Vec3<GLfloat> getArcballVector(int x, int y);
 
 
@@ -217,72 +180,100 @@ int main(int argc, char** argv)
     {
 		std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
 
-std::cout << "01" << std::endl;
-		// Register the exit callback
+	    // Set an error callback
+	    glfwSetErrorCallback(errorCallback);
+
+	    // Register the exit callback
 		atexit(quit);
 
-		// Initialize GLUT
-		glutInit(&argc, argv);
-std::cout << "02" << std::endl;
+		// Initialize GLFW
+	    if (!glfwInit())
+	    {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+	    }
 
-		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH /*| GLUT_MULTISAMPLE*/);
-std::cout << "03" << std::endl;
-		
+	    // Enable OpenGL 3.2 if possible
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	    // Enable anti-aliasing
+	    glfwWindowHint(GLFW_SAMPLES, 4);
+
 		// Create the window title
 		std::stringstream window_title;
-		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
-std::cout << "04" << std::endl;
+		window_title << "gVirtualXRay -- Implicit surface/Marching cubes test (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
 
-    	// Create a GLUT window
-		glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
-		g_main_window_id = glutCreateWindow(window_title.str().data());
-std::cout << "05" << std::endl;
+	    // Create a windowed mode window and its OpenGL context
+	    g_p_main_window_id = glfwCreateWindow(g_current_main_window_width, g_current_main_window_height, window_title.str().data(), NULL, NULL);
+	    if (!g_p_main_window_id)
+	    {
+	        glfwTerminate();
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+	    }
 
-		// Initialize GLEW
-		glewExperimental = GL_TRUE;
-		GLenum glew_error(glewInit());
-		if (glew_error != GLEW_OK)
-		{
-			std::stringstream error_message;
-			error_message << "Cannot initialize GLEW: " << glewGetErrorString(glew_error);
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-		}
+	    // Make the window's context current
+	    glfwMakeContextCurrent(g_p_main_window_id);
 
      	// Initialise OpenGL
 		initGL();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Initialize GLUT callback
-		glutDisplayFunc(display);
-		glutReshapeFunc(reshape);
-		glutMouseFunc(mouse);
-		glutMotionFunc(motion);
-		glutKeyboardFunc(keyboard);
-		glutIdleFunc(idle);
+		// Initialize GLFW callback
+		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
+		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
+		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
+		glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
+		glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
 
 		// Load the data
 		loadImplicitSurface();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Rotate the sample
-		g_sample_rotation_matrix.rotate( 180, VEC3(0, 1, 0));
-		g_sample_rotation_matrix.rotate( 90, VEC3(0, 0, 1));
-		g_sample_rotation_matrix.rotate( 90, VEC3(0, 1, 0));
+		// Make fullscreen
 
-		// Rotate the scene
-		g_scene_rotation_matrix.rotate(-110, VEC3(0, 1, 0));
+		// Set the projection matrix
+		GLint width(0);
+		GLint height(0);
+		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+		framebufferSizeCallback(g_p_main_window_id, width, height);
 
 		// Launch the event loop
-		glutMainLoop();
+	    while (!glfwWindowShouldClose(g_p_main_window_id))
+	    {
+	    	// Render here
+	    	display();
 
-		return (EXIT_SUCCESS);
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << e.what() << std::endl;
-        return (EXIT_FAILURE);
-    }
+	        // Swap front and back buffers
+	        glfwSwapBuffers(g_p_main_window_id);
+
+	        // Idle callback
+	        idle();
+
+	        // Poll for and process events
+	        glfwPollEvents();
+	    }
+	}
+	// Catch exception if any
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << std::endl;
+	}
+
+	// Close the window and shut GLFW
+	if (g_p_main_window_id)
+	{
+		glfwDestroyWindow(g_p_main_window_id);
+		g_p_main_window_id = 0;
+		glfwTerminate();
+	}
+
+	// Return an exit code
+	return (EXIT_SUCCESS);
 }
 
 
@@ -290,10 +281,11 @@ std::cout << "05" << std::endl;
 void quit()
 //---------
 {
-	if (g_main_window_id)
+	if (g_p_main_window_id)
 	{
-		glutDestroyWindow(g_main_window_id);
-		g_main_window_id = 0;
+		glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        glfwTerminate();
 	}
 }
 
@@ -304,43 +296,14 @@ void initGL()
 {
 	// Enable the Z-buffer
 	glEnable(GL_DEPTH_TEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Set the background colour
 	glClearColor(0.5, 0.5, 0.5, 1.0);
-
-	// Choose smooth shading
-	glShadeModel(GL_SMOOTH);
-
-	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	//GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-	// Use colour and texture coordinate interpolation
-	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-	// Use antialiased polygons
-	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-	// Use antialiasing
-	//glEnable(GL_POLYGON_SMOOTH);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	if (GLEW_ARB_multisample || GLEW_EXT_multisample)
-	{
-		glEnable(GL_MULTISAMPLE);
-		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
+	glEnable(GL_MULTISAMPLE);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Initialise the shaders
 	char* p_vertex_shader(0);
@@ -365,9 +328,46 @@ void initGL()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
-	g_display_shader.loadSource(vertex_shader, fragment_shader);
 
+	g_display_shader.setLabels("display.vert", "display.frag");
+	g_display_shader.loadSource(vertex_shader, fragment_shader);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Enable the shader
+	g_display_shader.enable();
+	GLint shader_id(g_display_shader.getProgramHandle());
+
+	GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+	// Handle for shader variables
+	GLuint handle(0);
+
+	handle = glGetUniformLocation(shader_id, "light_global_ambient");
+	glUniform4fv(handle, 1, &light_global_ambient[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "light_ambient");
+	glUniform4fv(handle, 1, &light_ambient[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "light_diffuse");
+	glUniform4fv(handle, 1, &light_diffuse[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "light_specular");
+	glUniform4fv(handle, 1, &light_specular[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	VEC3 light_position(0, 0, g_zoom);
+	handle = glGetUniformLocation(shader_id, "light_position");
+	glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Disable the shader
+	g_display_shader.disable();
 }
 
 
@@ -377,35 +377,25 @@ void render()
 {
 	try
 	{
+		// Enable back face culling
+		pushEnableDisableState(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
 		// Enable the shader
 		pushShaderProgram();
 		g_display_shader.enable();
 		GLint shader_id(g_display_shader.getProgramHandle());
 
-		// Define colours
-		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.0, 1.0};
-		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.0, 1.0};
-		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.0, 1.0};
-
-		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.39225,  0.39225,  1.0};
-		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.70754,  0.70754,  1.0};
-		const GLfloat p_specular_silver_material_1[] = {0.0, 0.708273, 0.708273, 1.0};
-
-		const GLfloat shininess_silver_material = 50.2;
-
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		// Store the current attributes
-		pushEnableDisableState(GL_LIGHT0);
-		pushEnableDisableState(GL_LIGHTING);
 
 		// Store the current transformation matrix
 		pushModelViewMatrix();
 
 		// Rotate the sample
-		g_current_modelview_matrix *= g_scene_rotation_matrix;
+		g_current_modelview_matrix *= g_rotation_matrix;
 
 		GLuint handle(0);
 		handle = glGetUniformLocation(shader_id, "g_projection_matrix");
@@ -422,7 +412,7 @@ void render()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		GLint lighting;
-		if (g_use_lighing && !g_display_wireframe)
+		if (g_use_lighing)
 		{
 			lighting = 1;
 		}
@@ -434,37 +424,37 @@ void render()
 		glUniform1iv(handle, 1, &lighting);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	// Set the colour of the sample
+		const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
+		const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+		const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+		const GLfloat material_shininess = 50.2;
+
+		handle = glGetUniformLocation(shader_id, "material_ambient");
+		glUniform4fv(handle, 1, &material_ambient[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(shader_id, "material_diffuse");
+		glUniform4fv(handle, 1, &material_diffuse[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(shader_id, "material_specular");
+		glUniform4fv(handle, 1, &material_specular[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(shader_id, "material_shininess");
+		glUniform1fv(handle, 1, &material_shininess);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		// Display the sample
-		// Set the colour of the sample
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_0);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_0);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_0);
-		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-
-		// Store the current transformation matrix
-		pushModelViewMatrix();
-
-		g_current_modelview_matrix *= g_sample_rotation_matrix;
-		applyModelViewMatrix();
-
 		if (g_display_wireframe)
 		{
 			g_polygon_data.displayWireFrame();
-			g_polygon_data.displayVertexNormal();
 		}
 		else
 		{
 			g_polygon_data.display();
 		}
-
-		// Restore the current transformation matrix
-		popModelViewMatrix();
-
-		// Display the source
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_1);
-		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
 
 		// Disable the shader
 		popShaderProgram();
@@ -473,7 +463,6 @@ void render()
 		popModelViewMatrix();
 
 		// Restore the attributes
-		popEnableDisableState();
 		popEnableDisableState();
 
 		// Check the status of OpenGL and of the current FBO
@@ -484,41 +473,6 @@ void render()
 	catch (const std::exception& error)
 	{
 		std::cerr << error.what() << std::endl;
-	}
-}
-
-
-//---------
-void draw()
-//---------
-{
-	// Get the current draw buffer if needed
-	GLint back_buffer(0);
-	glGetIntegerv(GL_DRAW_BUFFER, &back_buffer);
-
-	// Clear the buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Display the 3D scene
-	render();
-
-	// Make sure all the OpenGL code is done
-	glFinish();
-
-	// Restore the draw buffer if needed
-	glDrawBuffer(back_buffer);
-}
-
-
-//------------------------------------------------------
-void displayText(int x, int y, const std::string& aText)
-//------------------------------------------------------
-{
-	glRasterPos2i(x, y);
-	for (std::string::const_iterator i = aText.begin(); i != aText.end(); ++i)
-	{
-	    char c = *i;
-	    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c);
 	}
 }
 
@@ -536,14 +490,14 @@ void display()
 	pushModelViewMatrix();
 	pushProjectionMatrix();
 
-	int number_of_vertices(g_polygon_data.getVertexNumber());
-	int number_of_triangles(g_polygon_data.getFaceNumber());
+	// Clear the buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Draw 3D scene
-	if (number_of_vertices && number_of_triangles)
-	{
-		draw();
-	}
+	// Display the 3D scene
+	render();
+
+	// Make sure all the OpenGL code is done
+	glFinish();
 
 	// Restore the current transformation matrix
 	popModelViewMatrix();
@@ -555,196 +509,93 @@ void display()
 	g_number_of_seconds = double(duration) / CLOCKS_PER_SEC;
 
 	g_fps = ++g_image_computed / g_number_of_seconds;
-
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluOrtho2D(0.0, g_current_main_window_width, 0.0, g_current_main_window_height);
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glColor3f(1, 0, 0);
-	int x(10);
-	int y(g_current_main_window_height);
-	{
-		y = y - 20;
-		std::stringstream message;
-		message << "FPS: " << g_fps;
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-
-		if (g_display_wireframe) message << "Use wireframe: true";
-		else message << "Use wireframe: false";
-
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-
-		if (g_display_wireframe) message << "Use shading: false";
-		else message << "Use shading: true";
-
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-
-		if (g_selected_iso_surface == 0 || g_selected_iso_surface == 1)
-			message << "Density function: 1.0 / (r * r)";
-		else if (g_selected_iso_surface == 2 || g_selected_iso_surface == 3)
-			message << "Density function: Blobby molecules";
-		else if (g_selected_iso_surface == 4 || g_selected_iso_surface == 5)
-			message << "Density function: Meta balls";
-		else if (g_selected_iso_surface == 6 || g_selected_iso_surface == 7)
-			message << "Density function: Soft objects";
-
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-		message << "Number of voxels: " << g_number_of_voxel.getX() << "x" << g_number_of_voxel.getY() << "x" << g_number_of_voxel.getZ();
-
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-		message << "Thresholds: " << g_threshold;
-
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-		message << "Number of vertices: " << number_of_vertices;
-
-		displayText(x, y, message.str());
-	}
-
-	{
-		y = y - 20;
-		std::stringstream message;
-		message << "Number of triangles: " << number_of_triangles;
-
-		displayText(x, y, message.str());
-	}
-
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	// Display the image
-	glutSwapBuffers();
 }
 
 
-//--------------------------------------------
-void keyboard(unsigned char key, int x, int y)
-//--------------------------------------------
+//-------------------------------------------------------------------------------
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//-------------------------------------------------------------------------------
 {
-	switch(key)
+	if (action == GLFW_PRESS)
 	{
-	case 'q':
-		case 27:
-		exit(EXIT_SUCCESS);
-		break;
-
-	case 'l':
-		g_use_lighing = !g_use_lighing;
-		break;
-
-	case 'b':
-		g_display_beam = !g_display_beam;
-		break;
-
-	case '+':
-		g_scaling_factor += 0.05;
-		g_number_of_voxel = Vec3ui(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
-		extractIsoSurface();
-		break;
-
-	case '-':
-		g_scaling_factor -= 0.05;
-		if (g_scaling_factor < 0.2)
+		switch(key)
 		{
-			g_scaling_factor = 0.2;
+		case GLFW_KEY_Q:
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+			break;
+
+		case GLFW_KEY_F:
+			g_use_fullscreen = !g_use_fullscreen;
+
+			if (g_use_fullscreen)
+			{
+			}
+			else
+			{
+			}
+			break;
+
+		case GLFW_KEY_L:
+			g_use_lighing = !g_use_lighing;
+			break;
+
+		case GLFW_KEY_0:
+			g_selected_iso_surface = 0;
+			break;
+
+		case GLFW_KEY_1:
+			g_selected_iso_surface = 1;
+			break;
+
+		case GLFW_KEY_2:
+			g_selected_iso_surface = 2;
+			break;
+
+		case GLFW_KEY_3:
+			g_selected_iso_surface = 3;
+			break;
+
+		case GLFW_KEY_4:
+			g_selected_iso_surface = 4;
+			break;
+
+		case GLFW_KEY_5:
+			g_selected_iso_surface = 5;
+			break;
+
+		case GLFW_KEY_6:
+			g_selected_iso_surface = 6;
+			break;
+
+		case GLFW_KEY_7:
+			g_selected_iso_surface = 7;
+			break;
+
+		case GLFW_KEY_W:
+			g_display_wireframe = !g_display_wireframe;
+			break;
+
+		case GLFW_KEY_I:
+			g_zoom -= 1.0 * cm;
+			framebufferSizeCallback(g_p_main_window_id, g_current_main_window_width, g_current_main_window_height);
+			break;
+
+		case GLFW_KEY_O:
+			g_zoom += 1.0 * cm;
+			framebufferSizeCallback(g_p_main_window_id, g_current_main_window_width, g_current_main_window_height);
+			break;
+
+		default:
+			break;
 		}
-		g_number_of_voxel = Vec3ui(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
-		extractIsoSurface();
-		break;
-
-	case '0':
-		g_selected_iso_surface = 0;
-		break;
-
-	case '1':
-		g_selected_iso_surface = 1;
-		break;
-
-	case '2':
-		g_selected_iso_surface = 2;
-		break;
-
-	case '3':
-		g_selected_iso_surface = 3;
-		break;
-
-	case '4':
-		g_selected_iso_surface = 4;
-		break;
-
-	case '5':
-		g_selected_iso_surface = 5;
-		break;
-
-	case '6':
-		g_selected_iso_surface = 6;
-		break;
-
-	case '7':
-		g_selected_iso_surface = 7;
-		break;
-
-	case 'w':
-		g_display_wireframe = !g_display_wireframe;
-		break;
-
-	case 'i':
-		g_zoom -= 1.0 * cm;
-		reshape(g_current_main_window_width, g_current_main_window_height);
-		break;
-
-	case 'o':
-		g_zoom += 1.0 * cm;
-		reshape(g_current_main_window_width, g_current_main_window_height);
-		break;
-
-	default:
-		break;
 	}
-
-	//glutPostRedisplay();
 }
 
 
-//---------------------------------
-void reshape(int width, int height)
-//---------------------------------
+//-----------------------------------------------------------------------
+void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
+//-----------------------------------------------------------------------
 {
 	if (height == 0)
 	{
@@ -758,46 +609,29 @@ void reshape(int width, int height)
 	g_current_main_window_height = height;
 
 	double screen_aspect_ratio(double(g_current_main_window_width) / double(g_current_main_window_height));
-	//g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
 	glViewport(x, y, w, h);
 
-	glMatrixMode(GL_PROJECTION);
 	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-	glLoadMatrixf(g_current_projection_matrix.get());
 
-	glMatrixMode(GL_MODELVIEW);
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
-
-	glLoadMatrixf(g_current_modelview_matrix.get());
 }
 
 
-//----------------------------------------------------
-void mouse(int button, int button_state, int x, int y)
-//----------------------------------------------------
+//--------------------------------------------
+void mouseButtonCallback(GLFWwindow* apWindow,
+						 int aButton,
+						 int aButtonState,
+						 int aModifierKey)
+//--------------------------------------------
 {
-	g_button = button;
-	g_button_state = button_state;
+	g_button = aButton;
+	g_button_state = aButtonState;
 
-	// This is a wheel event
-	if (g_button == 3)
-	{
-		g_use_arc_ball = false;
-		g_zoom += 1.0 * cm;
-		reshape(g_current_main_window_width, g_current_main_window_height);
-	}
-	// This is a wheel event
-	else if (g_button == 4)
-	{
-		g_use_arc_ball = false;
-		g_zoom -= 1.0 * cm;
-		reshape(g_current_main_window_width, g_current_main_window_height);
-	}
 	// Use the arc ball
-	else if (g_button_state == GLUT_DOWN)
+	if (g_button_state == GLFW_PRESS)
 	{
 		g_use_arc_ball = true;
 	}
@@ -807,58 +641,187 @@ void mouse(int button, int button_state, int x, int y)
 		g_use_arc_ball = false;
 	}
 
-	// Select the right transformation
-	switch (g_button)
-	{
-	case GLUT_LEFT_BUTTON:
-		g_rotation_mode = SCENE;
-		break;
+	double xpos(0);
+	double ypos(0);
+	glfwGetCursorPos (apWindow, &xpos, &ypos);
 
-	case GLUT_RIGHT_BUTTON:
-		g_rotation_mode = OBJECT;
-		break;
+	g_last_x_position = xpos;
+	g_last_y_position = ypos;
 
-	default:
-		g_rotation_mode = NONE;
-		break;
-	}
-
-	g_last_x_position = x;
-	g_last_y_position = y;
-
-	g_current_x_position = x;
-	g_current_y_position = y;
-
-	// No need to redisplay the screen as yet
-	//glutPostRedisplay();
+	g_current_x_position = xpos;
+	g_current_y_position = ypos;
 }
 
 
-//-----------------------
-void motion(int x, int y)
-//-----------------------
+//-----------------------------------------------------------------------
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//-----------------------------------------------------------------------
+{
+	// Scrolling along the Y-axis
+	if (fabs(yoffset) > EPSILON)
+	{
+		g_use_arc_ball = false;
+		g_zoom += yoffset * cm;
+		framebufferSizeCallback(apWindow, g_current_main_window_width, g_current_main_window_height);
+	}
+}
+
+
+//--------------------------------------------------------------
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
+//--------------------------------------------------------------
 {
 	g_current_x_position = x;
 	g_current_y_position = y;
 
-	// Update the rotation matrix if needed
-	switch (g_rotation_mode)
+	// Compute the rotation
+	computeRotation(g_rotation_matrix);
+}
+
+
+//------------------------
+void loadImplicitSurface()
+//------------------------
+{
+	ImplicitSurface::DensityFunctionParameterType density_function_parameter;
+
+	density_function_parameter.m_density_function = ImplicitSurface::SPHERE;
+	g_sphere_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_sphere_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_sphere_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+
+	density_function_parameter.m_density_function = ImplicitSurface::BLOBBY_MOLECULE;
+	density_function_parameter.m_a = 2;
+	density_function_parameter.m_b = 1;
+	g_blobby_molecule_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_blobby_molecule_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_blobby_molecule_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+
+	density_function_parameter.m_density_function = ImplicitSurface::META_BALL;
+	density_function_parameter.m_a = 1;
+	density_function_parameter.m_b = 3;
+	g_meta_ball_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_meta_ball_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_meta_ball_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+
+	density_function_parameter.m_density_function = ImplicitSurface::SOFT_OBJECT;
+	density_function_parameter.m_a = 1;
+	density_function_parameter.m_b = 3;
+	g_soft_object_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
+	g_soft_object_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
+	g_soft_object_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
+
+    // Set geometry
+	extractIsoSurface();
+}
+
+
+//------------------------------------------
+Vec3<GLfloat> getArcballVector(int x, int y)
+//------------------------------------------
+{
+	Vec3<GLfloat> P(2.0 * float(x) / float(g_current_main_window_width) - 1.0,
+			2.0 * float(y) / float(g_current_main_window_height) - 1.0,
+			0);
+
+	P.setY(-P.getY());
+
+	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+	if (OP_squared <= 1.0)
 	{
-	case SCENE:
-		// Compute the rotation
-		computeRotation(g_scene_rotation_matrix);
-		break;
-
-	case OBJECT:
-		// Compute the rotation
-		computeRotation(g_sample_rotation_matrix);
-		break;
-
-	default:
-		break;
+		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+	}
+	else
+	{
+		P.normalise();  // nearest point
 	}
 
-	//glutPostRedisplay();
+	return (P);
+}
+
+
+//--------------------------------
+float radian2degree(float anAngle)
+//--------------------------------
+{
+	return (180.0 * anAngle / Utilities::PI);
+}
+
+
+//--------------------------------------------
+void computeRotation(MATRIX4& aRotationMatrix)
+//--------------------------------------------
+{
+	if (g_use_arc_ball)
+	{
+		if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
+		{
+			Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
+			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
+
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+#else
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+#endif
+
+			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
+			//axis_in_camera_coord.normalize();
+
+			Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
+			Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
+			//axis_in_object_coord.normalize();
+
+			Matrix4x4<GLfloat> rotation_matrix;
+			rotation_matrix.rotate(angle, axis_in_object_coord);
+			aRotationMatrix = aRotationMatrix * rotation_matrix;
+
+			g_last_x_position = g_current_x_position;
+			g_last_y_position = g_current_y_position;
+		}
+	}
+}
+
+
+//----------------------------------------------------
+void errorCallback(int error, const char* description)
+//----------------------------------------------------
+{
+	std::cerr << "GLFW error: " << description << std::endl;
+}
+
+
+//---------
+void idle()
+//---------
+{
+	if ((g_image_computed % 25) == 0)
+	{
+		std::cout << "FPS:\t" << g_fps << std::endl;
+		g_image_computed = 0;
+	}
+
+	if (g_make_threshold_bigger)
+	{
+		g_threshold += 0.02;
+	}
+	else
+	{
+		g_threshold -= 0.02;
+	}
+
+	if (g_threshold > 1 - 0.01)
+	{
+		g_make_threshold_bigger = false;
+		g_threshold = 1 - 0.01;
+	}
+	else if (g_threshold < 0 + 0.01)
+	{
+		g_make_threshold_bigger = true;
+		g_threshold = 0 + 0.01;
+	}
+
+	extractIsoSurface();
 }
 
 
@@ -949,150 +912,4 @@ void extractIsoSurface()
 
 	// Updat ethe VBO
 	g_polygon_data.updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
-}
-
-
-//---------
-void idle()
-//---------
-{
-	if (glutGetWindow() != g_main_window_id)
-	{
-		glutSetWindow(g_main_window_id);
-	}
-
-	if ((g_image_computed % 25) == 0)
-	{
-		g_image_computed = 0;
-	}
-
-	if (g_make_cube_bigger)
-	{
-		g_threshold -= 0.02;
-	}
-	else
-	{
-		g_threshold += 0.02;
-	}
-
-	if (g_threshold > 1 - 0.01)
-	{
-		g_make_cube_bigger = true;
-		g_threshold = 1 - 0.01;
-	}
-	else if (g_threshold < 0 + 0.01)
-	{
-		g_make_cube_bigger = false;
-		g_threshold = 0 + 0.01;
-	}
-
-	extractIsoSurface();
-
-	glutPostRedisplay();
-}
-
-
-//------------------------
-void loadImplicitSurface()
-//------------------------
-{
-	ImplicitSurface::DensityFunctionParameterType density_function_parameter;
-
-	density_function_parameter.m_density_function = ImplicitSurface::SPHERE;
-	g_sphere_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
-	g_sphere_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
-	g_sphere_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-
-	density_function_parameter.m_density_function = ImplicitSurface::BLOBBY_MOLECULE;
-	density_function_parameter.m_a = 2;
-	density_function_parameter.m_b = 1;
-	g_blobby_molecule_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
-	g_blobby_molecule_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
-	g_blobby_molecule_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-
-	density_function_parameter.m_density_function = ImplicitSurface::META_BALL;
-	density_function_parameter.m_a = 1;
-	density_function_parameter.m_b = 3;
-	g_meta_ball_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
-	g_meta_ball_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
-	g_meta_ball_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-
-	density_function_parameter.m_density_function = ImplicitSurface::SOFT_OBJECT;
-	density_function_parameter.m_a = 1;
-	density_function_parameter.m_b = 3;
-	g_soft_object_1.addControlPoint(density_function_parameter, VEC3(-2.0, 0, 0));
-	g_soft_object_1.addControlPoint(density_function_parameter, VEC3( 2.0, 0, 0));
-	g_soft_object_2.addControlLine(density_function_parameter, VEC3(-2.0, 0, 0), VEC3( 2.0, 0, 0));
-
-    // Set geometry
-	extractIsoSurface();
-
-	g_polygon_data.setHounsfieldValue(500.0);
-}
-
-
-//------------------------------------------
-Vec3<GLfloat> getArcballVector(int x, int y)
-//------------------------------------------
-{
-	Vec3<GLfloat> P(2.0 * float(x) / float(g_current_main_window_width) - 1.0,
-			2.0 * float(y) / float(g_current_main_window_height) - 1.0,
-			0);
-
-	P.setY(-P.getY());
-
-	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
-	if (OP_squared <= 1.0)
-	{
-		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-	}
-	else
-	{
-		P.normalise();  // nearest point
-	}
-
-	return (P);
-}
-
-
-//--------------------------------
-float radian2degree(float anAngle)
-//--------------------------------
-{
-	return (180.0 * anAngle / Utilities::PI);
-}
-
-
-//--------------------------------------------
-void computeRotation(MATRIX4& aRotationMatrix)
-//--------------------------------------------
-{
-	if (g_use_arc_ball)
-	{
-		if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
-		{
-			Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
-			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
-
-#if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
-#else
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
-#endif
-
-			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-			//axis_in_camera_coord.normalize();
-
-			Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-			Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-			//axis_in_object_coord.normalize();
-
-			Matrix4x4<GLfloat> rotation_matrix;
-			rotation_matrix.rotate(angle, axis_in_object_coord);
-			aRotationMatrix = aRotationMatrix * rotation_matrix;
-
-			g_last_x_position = g_current_x_position;
-			g_last_y_position = g_current_y_position;
-		}
-	}
 }

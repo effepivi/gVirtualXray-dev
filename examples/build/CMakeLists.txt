@@ -168,6 +168,14 @@ CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 # Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 
+ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
+#SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
+TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
+#SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
+TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 IF(USE_GLFW)
 	ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
 	#SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
@@ -181,23 +189,14 @@ IF(USE_GLFW)
 	#SET_PROPERTY(TARGET test_triangle_mesh PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
 
+	ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
+	#SET_PROPERTY(TARGET implicit_surface_marching_cube PROPERTY LINK_SEARCH_START_STATIC 1) 
+	TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 	ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
 	#SET_PROPERTY(TARGET test_implicit_surface PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF(USE_GLFW)
-
-#ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
-##SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
-#TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-#	ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
-#	#SET_PROPERTY(TARGET implicit_surface_marching_cube PROPERTY LINK_SEARCH_START_STATIC 1) 
-#	TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-#ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
-##SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
-#TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
-
 
 #IF(USE_GLUT)
 #	IF(GLUT_FOUND)
@@ -293,8 +292,8 @@ ENDIF(USE_BUNDLE)
 ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
 ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
 ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
+ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
 ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
-#ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
 #IF(USE_BUNDLE)
 #	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
 #ENDIF(USE_BUNDLE)

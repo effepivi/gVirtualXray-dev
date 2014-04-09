@@ -465,7 +465,7 @@ unsigned int Shader::compileShader(int aShaderType,
 		std::stringstream error_message;
 		error_message << "Shader program compilation error in:" << std::endl;
 
-		if (label.size())
+		if (label.length())
 		{
 			error_message << "\t" << label << std::endl;
 		}
@@ -528,7 +528,7 @@ void Shader::linkProgram()
 		std::stringstream error_message;
 		error_message << "Shader program linkage error" << std::endl;
 
-		if (m_vertex_shader_label.size() && m_fragment_shader_label.size())
+		if (m_vertex_shader_label.length() && m_fragment_shader_label.length())
 		{
 			error_message << " in:" << std::endl;
 			error_message << "\t" << m_vertex_shader_label << " and " << m_fragment_shader_label << std::endl;
