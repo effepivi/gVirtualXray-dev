@@ -42,7 +42,6 @@
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
 
 

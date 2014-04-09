@@ -37,7 +37,6 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
 
 
