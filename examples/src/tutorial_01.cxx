@@ -29,13 +29,8 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <GL/glew.h>
-
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
+#define GLFW_INCLUDE_GLCOREARB 1
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <exception>

@@ -174,6 +174,28 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
 	}
 
+	// There is no detector
+	if (!apDetector)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no detector.");
+	}
+
+	// There is no beam
+	if (!apBeamSpectrum)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no beam spectrum.");
+	}
+
+	// Check the detector size
+	if (!apDetector->getNumberOfPixels().getX())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The width of the detector is null.");
+	}
+	if (!apDetector->getNumberOfPixels().getY())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The height of the detector is null.");
+	}
+
 	// Reset the X-ray detector
 	reset();
 

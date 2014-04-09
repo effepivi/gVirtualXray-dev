@@ -71,24 +71,8 @@ INCLUDE_DIRECTORIES("../include")
 
 
 # Options #####################################################################
-#IF(APPLE OR WIN32)
-	OPTION(USE_BUNDLE "Use Apple/Win32 Bundle." ON)
-#ENDIF(APPLE OR WIN32)
-OPTION(USE_FLTK "Use FLTK." ON)
+OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
 OPTION(USE_GLFW "Use GLFW." ON)
-
-
-# FLTK ########################################################################
-IF(USE_FLTK)
-	FIND_PACKAGE(FLTK)
-	if(FLTK_FOUND)
-        	ADD_DEFINITIONS(-DHAS_FLTK)
-	        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
-        	SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
-	ELSE(FLTK_FOUND)
-        	MESSAGE(FATAL_ERROR "FLTK not found.")
-	ENDIF(FLTK_FOUND)
-ENDIF(USE_FLTK)
 
 
 # OpenGL ######################################################################
@@ -102,7 +86,7 @@ ENDIF(OPENGL_FOUND)
 
 
 IF(USE_GLFW)
-	FIND_PACKAGE(GLFW)
+	FIND_PACKAGE(GLFW REQUIRED)
 	IF(GLFW_FOUND)
         	ADD_DEFINITIONS(-DHAS_GLFW)
 		INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
@@ -123,16 +107,10 @@ IF(USE_GLFW)
 ENDIF(USE_GLFW)
 
 
-# Check if GLFW or FLTK is enable #############################################
-IF(NOT USE_GLFW AND NOT USE_FLTK)
-	MESSAGE(FATAL_ERROR "Nor FLTK nor GLFW is enable, you have to select one or the other.")
-ENDIF(NOT USE_GLFW AND NOT USE_FLTK)
-
-
-# Check if GLFW or FLTK is enable #############################################
-IF((!USE_GLFW OR !FOUND_GLFW) AND (!USE_FLTK OR !FOUND_FLTK))
-	MESSAGE(FATAL_ERROR "Nor FLTK nor GLFW has been found, make sure one or the other is installed.")
-ENDIF((!USE_GLFW OR !FOUND_GLFW) AND (!USE_FLTK OR !FOUND_FLTK))
+# Check if GLFW is enable #####################################################
+IF(NOT USE_GLFW)
+	MESSAGE(FATAL_ERROR "GLFW is not enable, examples and tutorials cannot be built.")
+ENDIF(NOT USE_GLFW)
 
 
 # BOOST #######################################################################
@@ -168,15 +146,15 @@ CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 # Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 
-ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
-#SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
-TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
-
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
 #SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 IF(USE_GLFW)
+	ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
+	#SET_PROPERTY(TARGET test_mu_water PROPERTY LINK_SEARCH_START_STATIC 1) 
+	TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 	ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
 	#SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
@@ -196,19 +174,11 @@ IF(USE_GLFW)
 	ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
 	#SET_PROPERTY(TARGET test_implicit_surface PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
-ENDIF(USE_GLFW)
 
-#IF(USE_GLUT)
-#	IF(GLUT_FOUND)
-#		ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
-#		#SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
-#		TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
-#	ELSE(GLUT_FOUND)
-#		MESSAGE(WARNING "GLUT not found, the tutorials will not be built")
-#	ENDIF(GLUT_FOUND)
-#ELSE(USE_GLUT)
-#	MESSAGE(WARNING "GLUT not in use, the tutorials will not be built")
-#ENDIF(USE_GLUT)
+	#ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
+	##SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
+	#TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+ENDIF(USE_GLFW)
 
 
 IF(USE_BUNDLE)
@@ -294,7 +264,7 @@ ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
 ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
 ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
 ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
-#IF(USE_BUNDLE)
-#	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
-#ENDIF(USE_BUNDLE)
-
+#ADD_DEPENDENCIES(tutorial_01 BinaryDemoFiles)
+IF(USE_BUNDLE)
+	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
+ENDIF(USE_BUNDLE)
