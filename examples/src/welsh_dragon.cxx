@@ -178,7 +178,6 @@ StereoHelper g_stereo_helper;
 bool g_is_xray_image_up_to_date(false);
 int g_rotation_mode(SCENE);
 bool g_display_wireframe(false);
-//bool g_display_outside_polygon(true);
 
 bool g_use_lighing(true);
 bool g_display_detector(true);
@@ -203,6 +202,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void errorCallback(int error, const char* description);
 void quit();
+void idle();
 
 void computeRotation(MATRIX4& aRotationMatrix);
 void loadDetector();
@@ -290,7 +290,7 @@ int main(int argc, char** argv)
 		g_stereo_helper.setFar(g_initial_far);
 		g_stereo_helper.setScreenProjectionPlane(g_initial_screen_projection_plane);
 
-		// Initialize GLUT callback
+		// Initialize GLFW callback
 		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
 		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
 		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
@@ -365,6 +365,9 @@ int main(int argc, char** argv)
 
 	        // Swap front and back buffers
 	        glfwSwapBuffers(g_p_main_window_id);
+
+	        // Idle callback
+	        idle();
 
 	        // Poll for and process events
 	        glfwPollEvents();
@@ -450,7 +453,7 @@ void initGL()
 	GLint shader_id(g_display_shader.getProgramHandle());
 
 	GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
@@ -1084,8 +1087,6 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	default:
 		break;
 	}
-
-	//glutPostRedisplay();
 }
 
 
@@ -1259,4 +1260,16 @@ void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
 	std::cerr << "GLFW error: " << description << std::endl;
+}
+
+
+//---------
+void idle()
+//---------
+{
+	if ((g_image_computed % 50) == 0)
+	{
+		std::cout << "FPS:\t" << g_fps << std::endl;
+		g_image_computed = 0;
+	}
 }
