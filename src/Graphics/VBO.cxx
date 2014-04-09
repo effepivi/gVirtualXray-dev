@@ -263,10 +263,15 @@ void VBO::setVertexData(int aPrimitiveType,
 		glBufferData(GL_ARRAY_BUFFER, m_normal_size, apNormals, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glVertexAttribPointer(2, 3, m_normal_data_type, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(2);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 3, m_normal_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(2);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -287,10 +292,15 @@ void VBO::setVertexData(int aPrimitiveType,
 		glBufferData(GL_ARRAY_BUFFER, m_texture_coordinate_size, apTextureCoordinates, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glVertexAttribPointer(1, 3, m_texture_coordinate_data_type, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(1);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, m_texture_coordinate_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(1);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -311,10 +321,15 @@ void VBO::setVertexData(int aPrimitiveType,
 		glBufferData(GL_ARRAY_BUFFER, m_vertex_size, vertices, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glVertexAttribPointer(0, 3, m_vertex_data_type, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, m_vertex_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -368,6 +383,10 @@ void VBO::setIndexData(const unsigned int aNumberOfIndexes,
 {
 	m_number_of_indices = aNumberOfIndexes;
 
+	// Bind the VAO
+	glBindVertexArray(m_vao_id);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	// Create the VBO
 	if (!m_id_set[INDEX_SET_ID] && m_number_of_indices && apIndexSet)
 	{
@@ -420,4 +439,7 @@ void VBO::setIndexData(const unsigned int aNumberOfIndexes,
 			m_id_set[INDEX_SET_ID] = 0;
 		}
 	}
+
+	// Unbind the VAO
+	glBindVertexArray(0);
 }

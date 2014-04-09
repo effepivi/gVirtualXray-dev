@@ -488,6 +488,11 @@ void render()
 {
 	try
 	{
+		// Enable back face culling
+		pushEnableDisableState(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
 		// Enable the shader
 		pushShaderProgram();
 		g_display_shader.enable();
@@ -577,6 +582,9 @@ void render()
 		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
 		g_xray_detector.displaySource();
 
+		// Disable back face culling
+		glDisable(GL_CULL_FACE);
+
 		// Display the X-Ray image
 		if (g_display_detector)
 		{
@@ -603,6 +611,7 @@ void render()
 		popModelViewMatrix();
 
 		// Restore the attributes
+		popEnableDisableState();
 		popEnableDisableState();
 		popEnableDisableState();
 

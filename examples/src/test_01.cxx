@@ -86,6 +86,10 @@
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef STEREO_HELPER_H
+#include "gVirtualXRay/StereoHelper.h"
+#endif
+
 #include "gVirtualXRayConfig.h"
 
 #include "display.frag.h"
@@ -159,68 +163,13 @@ int g_rotation_mode(SCENE);
 bool g_display_wireframe(false);
 bool g_display_outside_polygon(true);
 
-GLboolean g_can_use_stereo(false);
-bool g_use_stereo(false);
+StereoHelper g_stereo_helper;
 
-// http://www.orthostereo.com/geometryopengl.html
-const float g_DTR(Utilities::PI / 180.0);  // one degree = 0.0174532925 Radians
-
-
-struct camera
-{
-	GLdouble m_left_frustum;
-	GLdouble m_right_frustum;
-	GLdouble m_bottom_frustum;
-	GLdouble m_top_frustum;
-	GLfloat m_model_translation;
-} g_left_camera, g_right_camera;
-
-double g_fovy = 45;                                          //field of view in y-axis
-double g_aspect = double(g_main_window_width)/double(g_main_window_height);  //screen aspect ratio
-double g_nearZ = 5.0 * cm;                                        //near clipping plane
-double g_farZ = 500.0 * cm;                                        //far clipping plane
-double g_screenZ = 10000.0 * cm;                                     //screen projection plane
-double g_IOD = 1.5 * cm;                                          //intraocular distance
-
-MATRIX4 g_left_eye_projection_matrix;
-MATRIX4 g_right_eye_projection_matrix;
-
-void setFrustum(void)
-{
-   double top = g_nearZ * tan(g_DTR * g_fovy / 2.0);                    //sets top of frustum based on fovy and near clipping plane
-   double right = g_aspect * top;                             //sets right of frustum based on aspect ratio
-   double frustum_shift = (g_IOD / 2.0) * g_nearZ / g_screenZ;
-
-   g_left_camera.m_top_frustum        = top;
-   g_left_camera.m_bottom_frustum     = -top;
-   g_left_camera.m_left_frustum       = -right + frustum_shift;
-   g_left_camera.m_right_frustum      = right + frustum_shift;
-   g_left_camera.m_model_translation  = g_IOD / 2.0;
-
-   g_left_eye_projection_matrix = buildFrustumProjectionMatrix(g_left_camera.m_left_frustum,
-		   g_left_camera.m_right_frustum,
-		   g_left_camera.m_bottom_frustum,
-		   g_left_camera.m_top_frustum,
-		   g_nearZ,
-		   g_farZ);
-
-   g_left_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(g_left_camera.m_model_translation, 0, 0);
-
-   g_right_camera.m_top_frustum       = top;
-   g_right_camera.m_bottom_frustum    = -top;
-   g_right_camera.m_left_frustum      = -right - frustum_shift;
-   g_right_camera.m_right_frustum     = right - frustum_shift;
-   g_right_camera.m_model_translation = -g_IOD / 2.0;
-
-   g_right_eye_projection_matrix = buildFrustumProjectionMatrix(g_right_camera.m_left_frustum,
-		   g_right_camera.m_right_frustum,
-		   g_right_camera.m_bottom_frustum,
-		   g_right_camera.m_top_frustum,
-		   g_nearZ,
-		   g_farZ);
-
-   g_right_eye_projection_matrix *= MATRIX4::buildTranslationMatrix(g_right_camera.m_model_translation, 0, 0);
-}
+const double g_initial_intraocular_distance(1.5 * cm);        // Intraocular distance
+const double g_initial_fovy(45);                              // Field of view along the y-axis
+const double g_initial_near(5.0 * cm);                        // Near clipping plane
+const double g_initial_far(500.0 * cm);                       // Far clipping plane
+const double g_initial_screen_projection_plane(10000.0 * cm); // Screen projection plane
 
 
 //******************************************************************************
@@ -233,7 +182,6 @@ void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, in
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void idle();
 void quit();
 void loadSTLFile();
 void loadDetector();
@@ -243,6 +191,7 @@ Vec3<GLfloat> getArcballVector(int x, int y);
 void computeRotation(MATRIX4& aRotationMatrix);
 void updateXRayImage();
 void errorCallback(int error, const char* description);
+void draw();
 
 
 //-----------------------------
@@ -289,19 +238,16 @@ int main(int argc, char** argv)
 	    // Make the window's context current
 	    glfwMakeContextCurrent(g_p_main_window_id);
 
-		// Is stereo enable
-	    glGetBooleanv(GL_STEREO, &g_can_use_stereo);
-
-	    if (g_can_use_stereo)
-	    {
-	    	g_use_stereo = true;
-	    	cout << "Stereo is enable." << endl;
-	    }
-	    else
-	    {
-	    	g_use_stereo = false;
-	    	cout << "Stereo is not enable." << endl;
-	    }
+ 		// Is stereo enable
+		if (g_stereo_helper.enable())
+		{
+			std::cout << "Stereo is enable." << std::endl;
+		}
+		else
+		{
+			std::cout << "Stereo is not enable." << std::endl;
+		}
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Initialise OpenGL
 		initGL();
@@ -328,6 +274,13 @@ int main(int argc, char** argv)
 
 		// Update the X-ray image
 		updateXRayImage();
+
+		// Set the stereo parameters
+		g_stereo_helper.setIntraocularDistance(g_initial_intraocular_distance);
+		g_stereo_helper.setFieldOfViewY(g_initial_fovy);
+		g_stereo_helper.setNear(g_initial_near);
+		g_stereo_helper.setFar(g_initial_far);
+		g_stereo_helper.setScreenProjectionPlane(g_initial_screen_projection_plane);
 
 		// Set the projection matrix
 		GLint width(0);
@@ -404,22 +357,6 @@ void initGL()
 	// Set the background colour
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-/*
-	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	//GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	*/
 
 	glEnable(GL_MULTISAMPLE);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -458,21 +395,70 @@ void render()
 {
 	try
 	{
+		// Handle for shader variables
+		GLuint handle(0);
+
+		// Enable back face culling
+		pushEnableDisableState(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
 		// Enable the shader
 		pushShaderProgram();
 		g_display_shader.enable();
 		GLint shader_id(g_display_shader.getProgramHandle());
 
+		// Define the light colours here
+		GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+		GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+		GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+		handle = glGetUniformLocation(shader_id, "light_global_ambient");
+		glUniform4fv(handle, 1, &light_global_ambient[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(shader_id, "light_ambient");
+		glUniform4fv(handle, 1, &light_ambient[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(shader_id, "light_diffuse");
+		glUniform4fv(handle, 1, &light_diffuse[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(shader_id, "light_specular");
+		glUniform4fv(handle, 1, &light_specular[0]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		VEC3 light_position(0, 0, g_zoom);
+		light_position = g_current_modelview_matrix * light_position;
+		handle = glGetUniformLocation(shader_id, "light_position");
+		glUniform4f(handle, 1, light_position.getX(), light_position.getY(), light_position.getZ());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		// Define colours
-		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.0, 1.0};
-		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.0, 1.0};
-		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.0, 1.0};
+		{
+			const GLfloat material_ambient[]  = {1.19225,  0.0, 0.0, 1.0};
+			const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+			const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+			const GLfloat material_shininess = 50.2;
 
-		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.39225,  0.39225,  1.0};
-		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.70754,  0.70754,  1.0};
-		const GLfloat p_specular_silver_material_1[] = {0.0, 0.708273, 0.708273, 1.0};
+			handle = glGetUniformLocation(shader_id, "material_ambient");
+			glUniform4fv(handle, 1, &material_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		const GLfloat shininess_silver_material = 50.2;
+			handle = glGetUniformLocation(shader_id, "material_diffuse");
+			glUniform4fv(handle, 1, &material_diffuse[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "material_specular");
+			glUniform4fv(handle, 1, &material_specular[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "material_shininess");
+			glUniform1fv(handle, 1, &material_shininess);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -484,7 +470,6 @@ void render()
 		// Rotate the sample
 		g_current_modelview_matrix *= g_scene_rotation_matrix;
 
-		GLuint handle(0);
 		handle = glGetUniformLocation(shader_id, "g_projection_matrix");
 		glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -504,19 +489,6 @@ void render()
 		glUniform1iv(handle, 1, &lighting);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Location binding code here
-		glBindAttribLocation (shader_id, 0, "in_Vertex");
-		glBindAttribLocation (shader_id, 1, "in_TexCoord");
-		glBindAttribLocation (shader_id, 2, "in_Normal");
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		// Display the sample
-		// Set the colour of the sample
-		/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_0);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_0);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_0);
-		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-*/
 		// Store the current transformation matrix
 		pushModelViewMatrix();
 
@@ -525,8 +497,14 @@ void render()
 
 		if (g_display_wireframe)
 		{
+			// Disable back face culling
+			glDisable(GL_CULL_FACE);
+
 			g_outside_polygon_data.displayWireFrame();
 			g_inside_polygon_data.displayWireFrame();
+
+			// Enable back face culling
+			glDisable(GL_CULL_FACE);
 		}
 		else
 		{
@@ -536,27 +514,53 @@ void render()
 		// Restore the current transformation matrix
 		popModelViewMatrix();
 
+		// Define colours
+		{
+			const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+			const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+			const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+			const GLfloat material_shininess = 50.2;
+
+			handle = glGetUniformLocation(shader_id, "material_ambient");
+			glUniform4fv(handle, 1, &material_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "material_diffuse");
+			glUniform4fv(handle, 1, &material_diffuse[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "material_specular");
+			glUniform4fv(handle, 1, &material_specular[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "material_shininess");
+			glUniform1fv(handle, 1, &material_shininess);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+
 		// Display the source
-	/*	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_1);
-		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
-	*/	g_xray_detector.displaySource();
+		g_xray_detector.displaySource();
+
+		// Disable back face culling
+		glDisable(GL_CULL_FACE);
 
 		// Display the X-Ray image
-		//g_xray_renderer.display();
+		g_xray_renderer.display();
 
 		// Display the beam
 		if (g_display_beam)
 		{
-			//glColor4f(0.75, 0, 0.5, 0.3);
+			const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.3};
+			handle = glGetUniformLocation(shader_id, "material_ambient");
+			glUniform4fv(handle, 1, &material_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			lighting = 0;
 			handle = glGetUniformLocation(shader_id,"g_use_lighting");
 			glUniform1iv(handle, 1, &lighting);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			//g_xray_detector.displayBeam();
+			g_xray_detector.displayBeam();
 		}
 
 		// Disable the shader
@@ -564,6 +568,9 @@ void render()
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
+
+		// Restore the attributes
+		popEnableDisableState();
 
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -581,40 +588,28 @@ void render()
 void display()
 //------------
 {
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+	pushProjectionMatrix();
+
 	// Update the X-ray image
 	updateXRayImage();
 
     // Use stereo
-	if (g_use_stereo)
+	if (g_stereo_helper.isActive() && g_stereo_helper.enable())
 	{
-		// Store the current transformation matrix
-		pushModelViewMatrix();
-		pushProjectionMatrix();
-
-		// Set left eye
-		glDrawBuffer(GL_BACK_LEFT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		g_current_projection_matrix = g_left_eye_projection_matrix;
-		render();
-
-		// Set right eye
-		glDrawBuffer(GL_BACK_RIGHT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		g_current_projection_matrix = g_right_eye_projection_matrix;
-		render();
-
-		// Restore the current transformation matrix
-		popModelViewMatrix();
-		popProjectionMatrix();
+		draw();
+		draw();
 	}
     // Cannot use stereo
 	else
 	{
-		// Clear the buffers
-		glDrawBuffer(GL_BACK);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		render();
+		draw();
 	}
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+	popProjectionMatrix();
 }
 
 
@@ -660,9 +655,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			break;
 
 		case GLFW_KEY_S:
-			if (g_can_use_stereo)
+			if (g_stereo_helper.isActive())
 			{
-		    	g_use_stereo = !g_use_stereo;
+				g_stereo_helper.disable();
+			}
+			else
+			{
+				g_stereo_helper.enable();
 			}
 			break;
 
@@ -816,15 +815,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			break;
 
 		case GLFW_KEY_O:
-			g_IOD += 5.0 * mm;
-			framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-			cout << "IOD in cm" << g_IOD / cm << endl;
+			g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
+			std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
 			break;
 
 		case GLFW_KEY_P:
-			g_IOD -= 5.0 * mm;
-			framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-			cout << "IOD in cm" << g_IOD / cm << endl;
+			g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() - 5.0 * mm);
+			std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
 			break;
 
 		default:
@@ -850,11 +847,10 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	g_main_window_width = width;
 	g_main_window_height = height;
 
-    g_aspect = double(g_main_window_width) / double(g_main_window_height);
+	double screen_aspect_ratio(double(g_main_window_height) / double(g_main_window_height));
+	//g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
-	loadPerspectiveProjectionMatrix(g_fovy, g_aspect, g_nearZ, g_farZ);
-
-    setFrustum();
+	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
 
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
@@ -1175,4 +1171,28 @@ void updateXRayImage()
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;
 	}
+}
+
+
+//---------
+void draw()
+//---------
+{
+	// Get the current draw buffer if needed
+	GLint back_buffer(0);
+	glGetIntegerv(GL_DRAW_BUFFER, &back_buffer);
+
+	g_stereo_helper.swapEye();
+
+	// Clear the buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Display the 3D scene
+	render();
+
+	// Make sure all the OpenGL code is done
+	glFinish();
+
+	// Restore the draw buffer if needed
+	glDrawBuffer(back_buffer);
 }

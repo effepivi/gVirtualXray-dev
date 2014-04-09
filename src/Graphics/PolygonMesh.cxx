@@ -42,16 +42,8 @@
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifdef USE_OPENGL4
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#else
-#ifdef __APPLE__
+#include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
-#endif
 
 
 //******************************************************************************
@@ -158,14 +150,13 @@ void PolygonMesh::displayWireFrame()
 //----------------------------------
 {
 	// Turn on wireframe mode
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	display();
 
 	// Turn off wireframe mode
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Check the OpenGL error status
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

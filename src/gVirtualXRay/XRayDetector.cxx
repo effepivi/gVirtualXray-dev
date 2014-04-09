@@ -37,11 +37,8 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifdef __APPLE__
+#include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
-#endif
 
 
 //******************************************************************************

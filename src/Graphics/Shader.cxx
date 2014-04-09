@@ -486,6 +486,11 @@ void Shader::linkProgram()
 	GLint log_size(0);
 	char* p_log_message(0);
 
+	// Location binding code here
+	glBindAttribLocation (m_shader_program_id, 0, "in_Vertex");
+	glBindAttribLocation (m_shader_program_id, 1, "in_TexCoord");
+	glBindAttribLocation (m_shader_program_id, 2, "in_Normal");
+
 	// Linkage
 	glLinkProgram(m_shader_program_id);
 
