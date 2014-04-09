@@ -228,11 +228,11 @@ void setFrustum(void)
 //******************************************************************************
 void initGL();
 void display();
-void reshape(int width, int height);
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void specialKeyboard(int key, int x, int y);
-void mouse(int button, int button_state, int x, int y);
-void motion(int x, int y);
+void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
+void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void idle();
 void quit();
 void loadSTLFile();
@@ -253,6 +253,9 @@ int main(int argc, char** argv)
 	{
 		cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << endl;
 
+	    // Set an error callback
+	    glfwSetErrorCallback(errorCallback);
+
 	    // Register the exit callback
 		atexit(quit);
 
@@ -261,9 +264,6 @@ int main(int argc, char** argv)
 	    {
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
-
-	    // Set an error callback
-	    glfwSetErrorCallback(errorCallback);
 
 	    // Enable OpenGL 3.2 if possible
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -290,7 +290,6 @@ int main(int argc, char** argv)
 	    glfwMakeContextCurrent(g_p_main_window_id);
 
 		// Is stereo enable
-#ifdef USE_STEREO
 	    glGetBooleanv(GL_STEREO, &g_can_use_stereo);
 
 	    if (g_can_use_stereo)
@@ -304,11 +303,6 @@ int main(int argc, char** argv)
 	    	cout << "Stereo is not enable." << endl;
 	    }
 
-		// Stereo is enable on the system
-	    g_can_use_stereo = true;
-    	g_use_stereo = true;
-#endif
-
 		// Initialise OpenGL
 		initGL();
 
@@ -316,19 +310,16 @@ int main(int argc, char** argv)
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Initialize GLFL callback
-		/*glutDisplayFunc(display);
-		glutReshapeFunc(reshape);
-		glutMouseFunc(mouse);
-		glutMotionFunc(motion);
-		glutKeyboardFunc(keyboard);
-		glutSpecialFunc(specialKeyboard);
-		glutIdleFunc(idle);*/
 		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
+		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
+		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
+		glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
+		glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
 
 		// Load the data
-		//loadDetector();
-		//loadSource();
-		//loadXRaySimulator();
+		loadDetector();
+		loadSource();
+		loadXRaySimulator();
 
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
@@ -338,10 +329,16 @@ int main(int argc, char** argv)
 		// Update the X-ray image
 		updateXRayImage();
 
+		// Set the projection matrix
+		GLint width(0);
+		GLint height(0);
+		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+		framebufferSizeCallback(g_p_main_window_id, width, height);
+
 		// Launch the event loop
 	    while (!glfwWindowShouldClose(g_p_main_window_id))
 	    {
-	        // Render here
+	    	// Render here
 	    	display();
 
 	        // Swap front and back buffers
@@ -350,18 +347,23 @@ int main(int argc, char** argv)
 	        // Poll for and process events
 	        glfwPollEvents();
 	    }
-
-		glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-	    glfwTerminate();
-		return (EXIT_SUCCESS);
 	}
 	// Catch exception if any
 	catch (const exception& error)
 	{
 		cerr << error.what() << endl;
-		return (EXIT_FAILURE);
 	}
+
+	// Close the window and shut GLFW
+	if (g_p_main_window_id)
+	{
+		glfwDestroyWindow(g_p_main_window_id);
+		g_p_main_window_id = 0;
+		glfwTerminate();
+	}
+
+	// Return an exit code
+	return (EXIT_SUCCESS);
 }
 
 
@@ -502,6 +504,12 @@ void render()
 		glUniform1iv(handle, 1, &lighting);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+		// Location binding code here
+		glBindAttribLocation (shader_id, 0, "in_Vertex");
+		glBindAttribLocation (shader_id, 1, "in_TexCoord");
+		glBindAttribLocation (shader_id, 2, "in_Normal");
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		// Display the sample
 		// Set the colour of the sample
 		/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_0);
@@ -536,19 +544,19 @@ void render()
 	*/	g_xray_detector.displaySource();
 
 		// Display the X-Ray image
-		g_xray_renderer.display();
+		//g_xray_renderer.display();
 
 		// Display the beam
 		if (g_display_beam)
 		{
-			glColor4f(0.75, 0, 0.5, 0.3);
+			//glColor4f(0.75, 0, 0.5, 0.3);
 
 			lighting = 0;
 			handle = glGetUniformLocation(shader_id,"g_use_lighting");
 			glUniform1iv(handle, 1, &lighting);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			g_xray_detector.displayBeam();
+			//g_xray_detector.displayBeam();
 		}
 
 		// Disable the shader
@@ -603,6 +611,7 @@ void display()
 	else
 	{
 		// Clear the buffers
+		glDrawBuffer(GL_BACK);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render();
 	}
@@ -617,24 +626,51 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	{
 		switch (key)
 		{
-		case 'q':
+		case GLFW_KEY_Q:
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
 			break;
 
+		case GLFW_KEY_RIGHT:
+			{
+				VEC3 translation(g_detector_position - g_source_position);
+				translation.normalise();
+				g_source_position += translation * 1.5 * mm;
 
-		case 's':
+				// Set the source position
+				g_xray_detector.setXrayPointSource(g_source_position);
+
+				// The X-ray image is not up-to-date
+				g_is_xray_image_up_to_date = false;
+			}
+			break;
+
+		case GLFW_KEY_LEFT:
+			{
+				VEC3 translation(g_detector_position - g_source_position);
+				translation.normalise();
+				g_source_position -= translation * 1.5 * mm;
+
+				// Set the source position
+				g_xray_detector.setXrayPointSource(g_source_position);
+
+				// The X-ray image is not up-to-date
+				g_is_xray_image_up_to_date = false;
+			}
+			break;
+
+		case GLFW_KEY_S:
 			if (g_can_use_stereo)
 			{
 		    	g_use_stereo = !g_use_stereo;
 			}
 			break;
 
-		case 'b':
+		case GLFW_KEY_B:
 			g_display_beam = !g_display_beam;
 			break;
 
-		case 'l':
+		case GLFW_KEY_L:
 	//		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 			g_xray_renderer.computeLBuffer(g_inside_polygon_data, VEC3(), g_sample_rotation_matrix);
@@ -644,33 +680,33 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_xray_renderer.printLBuffer(PREFIX"/examples/data/outside_lbuffer.mhd");
 			break;
 
-		case 'c':
+		case GLFW_KEY_C:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
 			g_xray_renderer.printCumulatedLBuffer(PREFIX"/examples/data/cumulated_lbuffer.mhd");
 			break;
 
-		case 'f':
+		case GLFW_KEY_F:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
 			g_xray_renderer.printEnergyFluence(PREFIX"/examples/data/energy_fluence.mhd");
 			break;
 
-		case 'm':
+		case GLFW_KEY_M:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
 			g_xray_renderer.printSumMuxDx(PREFIX"/examples/data/Mux_Dx.mhd");
 			break;
 
-		case 'n':
+		case GLFW_KEY_N:
 			g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 			break;
 
-		case 'a':
+		case GLFW_KEY_A:
 			g_outside_polygon_data.splitFaces(true);
 
-	                // The X-ray image is not up-to-date
-	                g_is_xray_image_up_to_date = false;
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
 			break;
 
-		case '1':
+		case GLFW_KEY_1:
 			// This is a point source
 			if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
 			{
@@ -687,7 +723,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_is_xray_image_up_to_date = false;
 			break;
 
-		case '2':
+		case GLFW_KEY_2:
 			// This is not a line source
 			if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
 			{
@@ -703,7 +739,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_is_xray_image_up_to_date = false;
 			break;
 
-		case '3':
+		case GLFW_KEY_3:
 			{
 				// This is not a square source
 				if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
@@ -720,7 +756,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			}
 			break;
 
-		case '4':
+		case GLFW_KEY_4:
 			{
 				// This is not a cubic source
 				if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
@@ -738,7 +774,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			}
 			break;
 
-		case 't':
+		case GLFW_KEY_T:
 			{
 				if (g_rotation_mode == SCENE)
 				{
@@ -758,35 +794,36 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			}
 			break;
 
-		case 'w':
+		case GLFW_KEY_W:
 			g_display_wireframe = !g_display_wireframe;
 			break;
 
-		case 'v':
+		case GLFW_KEY_V:
 			g_display_outside_polygon = !g_display_outside_polygon;
 			break;
 
-		case '+':
+		case GLFW_KEY_KP_ADD:
 			g_zoom += 1.0 * cm;
-			reshape(g_main_window_width, g_main_window_height);
+			framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
 			cout << "Zoom in cm)" << g_zoom / cm << endl;
 			break;
 
-		case '-':
+		case GLFW_KEY_MINUS:
+		case GLFW_KEY_KP_SUBTRACT:
 			g_zoom -= 1.0 * cm;
-			reshape(g_main_window_width, g_main_window_height);
+			framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
 			cout << "Zoom in cm)" << g_zoom / cm << endl;
 			break;
 
-		case 'o':
+		case GLFW_KEY_O:
 			g_IOD += 5.0 * mm;
-			reshape(g_main_window_width, g_main_window_height);
+			framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
 			cout << "IOD in cm" << g_IOD / cm << endl;
 			break;
 
-		case 'p':
+		case GLFW_KEY_P:
 			g_IOD -= 5.0 * mm;
-			reshape(g_main_window_width, g_main_window_height);
+			framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
 			cout << "IOD in cm" << g_IOD / cm << endl;
 			break;
 
@@ -798,106 +835,47 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 
-//-----------------------------------------
-void specialKeyboard(int key, int x, int y)
-//-----------------------------------------
+//-----------------------------------------------------------------------
+void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
+//-----------------------------------------------------------------------
 {
-	/*switch (key)
-	{
-	case GLUT_KEY_RIGHT:
-		{
-			VEC3 translation(g_detector_position - g_source_position);
-			translation.normalise();
-			g_source_position += translation * 1.5 * mm;
+	glViewport(0, 0, width, height);
 
-			// Set the source position
-			g_xray_detector.setXrayPointSource(g_source_position);
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-		}
-		break;
-
-	case GLUT_KEY_LEFT:
-		{
-			VEC3 translation(g_detector_position - g_source_position);
-			translation.normalise();
-			g_source_position -= translation * 1.5 * mm;
-
-			// Set the source position
-			g_xray_detector.setXrayPointSource(g_source_position);
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-		}
-		break;
-
-	default:
-		cout << "Special key: " << key << endl;
-		break;
-	}
-
-	glutPostRedisplay();*/
-}
-
-
-//---------------------------------
-void reshape(int width, int height)
-//---------------------------------
-{
 	if (height == 0)
 	{
 		// Prevent divide by 0
 		height = 1;
 	}
 
-	int x(0), y(0), w(width), h(height);
-    g_aspect = double(w) / double(h);
-
 	g_main_window_width = width;
 	g_main_window_height = height;
 
-	glViewport(x, y, w, h);
+    g_aspect = double(g_main_window_width) / double(g_main_window_height);
 
-	glMatrixMode(GL_PROJECTION);
 	loadPerspectiveProjectionMatrix(g_fovy, g_aspect, g_nearZ, g_farZ);
-	glLoadMatrixf(g_current_projection_matrix.get());
 
     setFrustum();
 
-	glMatrixMode(GL_MODELVIEW);
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
-	glLoadMatrixf(g_current_modelview_matrix.get());
 }
 
 
-//----------------------------------------------------
-void mouse(int button, int button_state, int x, int y)
-//----------------------------------------------------
+//--------------------------------------------
+void mouseButtonCallback(GLFWwindow* apWindow,
+						 int aButton,
+						 int aButtonState,
+						 int aModifierKey)
+//--------------------------------------------
 {
-	/*g_button = button;
-	g_button_state = button_state;
+	g_button = aButton;
+	g_button_state = aButtonState;
 
 	cout << g_button << "\t" << g_button_state << endl;
 
-	if (g_button == 3)
-	{
-		g_use_arc_ball = false;
-		g_zoom += 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
-		glutPostRedisplay();
-	}
-	else if (g_button == 4)
-	{
-		g_use_arc_ball = false;
-		g_zoom -= 1.0 * cm;
-		reshape(g_main_window_width, g_main_window_height);
-		glutPostRedisplay();
-	}
 	// Use the arc ball
-	else if (g_button_state == GLUT_DOWN)
+	if (g_button_state == GLFW_PRESS)
 	{
 		g_use_arc_ball = true;
 	}
@@ -910,45 +888,46 @@ void mouse(int button, int button_state, int x, int y)
 	// Select the right transformation
 	switch (g_button)
 	{
-	case GLUT_LEFT_BUTTON:
+	case GLFW_MOUSE_BUTTON_LEFT:
 		g_rotation_mode = SCENE;
 		break;
 
-	case GLUT_RIGHT_BUTTON:
+	case GLFW_MOUSE_BUTTON_RIGHT:
 		g_rotation_mode = OBJECT;
 		break;
 
-	case GLUT_MIDDLE_BUTTON:
+	case GLFW_MOUSE_BUTTON_MIDDLE:
 		g_rotation_mode = DETECTOR;
 		break;
 	}
 
-	g_last_x_position = x;
-	g_last_y_position = y;
+	double xpos(0);
+	double ypos(0);
+	glfwGetCursorPos (apWindow, &xpos, &ypos);
 
-	g_current_x_position = x;
-	g_current_y_position = y;
+	g_last_x_position = xpos;
+	g_last_y_position = ypos;
 
-	// No need to redisplay the screen as yet
-	//glutPostRedisplay();*/
+	g_current_x_position = xpos;
+	g_current_y_position = ypos;
 }
 
 
-//-----------------------
-void motion(int x, int y)
-//-----------------------
+//--------------------------------------------------------------
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
+//--------------------------------------------------------------
 {
 	g_current_x_position = x;
 	g_current_y_position = y;
 
 	// Update the rotation matrix if needed
-/*	switch (g_button)
+	switch (g_button)
 	{
-	case GLUT_LEFT_BUTTON:
+	case GLFW_MOUSE_BUTTON_LEFT:
 		computeRotation(g_scene_rotation_matrix);
 		break;
 
-	case GLUT_RIGHT_BUTTON:
+	case GLFW_MOUSE_BUTTON_RIGHT:
 		computeRotation(g_detector_rotation_matrix);
 		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
 
@@ -956,7 +935,7 @@ void motion(int x, int y)
 		g_is_xray_image_up_to_date = false;
 		break;
 
-	case GLUT_MIDDLE_BUTTON:
+	case GLFW_MOUSE_BUTTON_MIDDLE:
 		computeRotation(g_sample_rotation_matrix);
 
 		// The X-ray image is not up-to-date
@@ -965,7 +944,7 @@ void motion(int x, int y)
 
 	default:
 		break;
-	}*/
+	}
 
 
 	switch (g_rotation_mode)
@@ -995,21 +974,20 @@ void motion(int x, int y)
 	default:
 		break;
 	}
-
-//	glutPostRedisplay();
 }
 
 
-//---------
-void idle()
-//---------
+//-----------------------------------------------------------------------
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//-----------------------------------------------------------------------
 {
-/*	if (glutGetWindow() != g_main_window_id)
+	// Scrolling along the Y-axis
+	if (fabs(yoffset) > EPSILON)
 	{
-		glutSetWindow(g_main_window_id);
+		g_use_arc_ball = false;
+		g_zoom += yoffset * cm;
+		framebufferSizeCallback(apWindow, g_main_window_width, g_main_window_height);
 	}
-
-	glutPostRedisplay();*/
 }
 
 
@@ -1189,11 +1167,11 @@ void updateXRayImage()
 	if (!g_is_xray_image_up_to_date)
 	{
 		// Compute the X-Ray image
-		/*g_xray_renderer.computeImage(g_sample_rotation_matrix);
+		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 		// Normalise the X-ray image
 		g_xray_renderer.normalise();
-*/
+
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;
 	}

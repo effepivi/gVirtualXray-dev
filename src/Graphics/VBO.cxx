@@ -40,6 +40,7 @@
 #endif
 
 #include <GLFW/glfw3.h>
+#include <OpenGL/gl3.h>
 
 
 //******************************************************************************
@@ -48,24 +49,25 @@
 using namespace Graphics;
 
 
-//------------------------------------------
+//----------------------------------------------
 VBO::VBO():
-//------------------------------------------
-	m_number_of_normals(0),
-	m_number_of_texture_coordinates(0),
-	m_number_of_vertices(0),
-	m_number_of_indices(0),
-	m_normal_size(0),
-	m_texture_coordinate_size(0),
-	m_vertex_size(0),
-	m_index_size(0),
-	m_normal_data_type(GL_NONE),
-	m_texture_coordinate_data_type(GL_NONE),
-	m_vertex_data_type(GL_NONE),
-	m_index_data_type(GL_NONE),
-	m_primitive_type(GL_NONE),
-	m_storage_type(GL_DYNAMIC_DRAW)
-//------------------------------------------
+//----------------------------------------------
+		m_vao_id(0),
+		m_number_of_normals(0),
+		m_number_of_texture_coordinates(0),
+		m_number_of_vertices(0),
+		m_number_of_indices(0),
+		m_normal_size(0),
+		m_texture_coordinate_size(0),
+		m_vertex_size(0),
+		m_index_size(0),
+		m_normal_data_type(GL_NONE),
+		m_texture_coordinate_data_type(GL_NONE),
+		m_vertex_data_type(GL_NONE),
+		m_index_data_type(GL_NONE),
+		m_primitive_type(GL_NONE),
+		m_storage_type(GL_DYNAMIC_DRAW)
+//----------------------------------------------
 {
 	m_id_set[VERTEX_SET_ID]     = 0;
 	m_id_set[TEXT_COORD_SET_ID] = 0;
@@ -82,11 +84,13 @@ void VBO::destroy()
 	if (m_id_set[TEXT_COORD_SET_ID]) glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
 	if (m_id_set[NORMAL_SET_ID])     glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
 	if (m_id_set[INDEX_SET_ID])      glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
+	if (m_vao_id)                    glDeleteVertexArrays(1, &m_vao_id);
 
 	m_id_set[VERTEX_SET_ID]     = 0;
 	m_id_set[TEXT_COORD_SET_ID] = 0;
 	m_id_set[NORMAL_SET_ID]     = 0;
 	m_id_set[INDEX_SET_ID]      = 0;
+	m_vao_id = 0;
 
 	reset();
 }
@@ -126,69 +130,25 @@ void VBO::display() const
 {
 	if (m_primitive_type != GL_NONE)
 	{
-		// There is vertices
-		if (m_number_of_vertices && m_vertex_data_type != GL_NONE)
-		{
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[VERTEX_SET_ID]);
-			glVertexAttribPointer(0, 3, m_vertex_data_type, GL_FALSE, 0, 0);
-			glEnableVertexAttribArray(0);
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		// There is texture coordinates
-		if (m_number_of_texture_coordinates && m_texture_coordinate_data_type != GL_NONE)
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
-			glVertexAttribPointer(1, 3, m_texture_coordinate_data_type, GL_FALSE, 0, 0);
-			glEnableVertexAttribArray(1);
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		// There is normal data
-		if (m_number_of_normals && m_normal_data_type != GL_NONE)
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, m_id_set[NORMAL_SET_ID]);
-			glVertexAttribPointer(2, 3, m_normal_data_type, GL_FALSE, 0, 0);
-			glEnableVertexAttribArray(2);
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
+		// Bind the VAO
+		glBindVertexArray(m_vao_id);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Draw the polygon mesh
 		if (!m_number_of_indices)
 		{
 			glDrawArrays(m_primitive_type, 0, m_number_of_vertices);
 		}
-		/*else
+		else
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
 			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, 0);
-		}*/
+		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// There are vertices
-		if (m_number_of_vertices)
-		{
-			glDisableVertexAttribArray(0);
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		// There are texture coordinates
-		if (m_number_of_texture_coordinates)
-		{
-			glDisableVertexAttribArray(1);
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		// There are normal data
-		if(m_number_of_normals)
-		{
-			glDisableVertexAttribArray(2);
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		// Unbind the VAO
+		glBindVertexArray(0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	else
 	{
@@ -274,6 +234,18 @@ void VBO::setVertexData(int aPrimitiveType,
 	// Load the data in the VBO
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	// There is no VAO
+	if (!m_vao_id)
+	{
+		// Create a VAO
+		glGenVertexArrays(1, &m_vao_id);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Bind the VAO
+	glBindVertexArray(m_vao_id);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	// There is normal data
 	if (apNormals)
 	{
@@ -289,6 +261,12 @@ void VBO::setVertexData(int aPrimitiveType,
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		glBufferData(GL_ARRAY_BUFFER, m_normal_size, apNormals, m_storage_type);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(2, 3, m_normal_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glEnableVertexAttribArray(2);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -308,6 +286,12 @@ void VBO::setVertexData(int aPrimitiveType,
 
 		glBufferData(GL_ARRAY_BUFFER, m_texture_coordinate_size, apTextureCoordinates, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(1, 3, m_texture_coordinate_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glEnableVertexAttribArray(1);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// There are vertex coordinates
@@ -326,24 +310,39 @@ void VBO::setVertexData(int aPrimitiveType,
 
 		glBufferData(GL_ARRAY_BUFFER, m_vertex_size, vertices, m_storage_type);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(0, 3, m_vertex_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glEnableVertexAttribArray(0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	if (m_id_set[VERTEX_SET_ID] != 0 && m_number_of_vertices == 0)
 	{
 		glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
 		m_id_set[VERTEX_SET_ID] = 0;
+
+		glDisableVertexAttribArray(0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	if (m_id_set[TEXT_COORD_SET_ID] != 0 && m_texture_coordinate_size == 0)
 	{
 		glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
 		m_id_set[TEXT_COORD_SET_ID] = 0;
+
+		glDisableVertexAttribArray(1);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	if (m_id_set[NORMAL_SET_ID] != 0 && m_normal_size == 0)
 	{
 		glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
 		m_id_set[NORMAL_SET_ID] = 0;
+
+		glDisableVertexAttribArray(2);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	if (m_id_set[INDEX_SET_ID] != 0 && m_number_of_indices == 0)
@@ -351,6 +350,9 @@ void VBO::setVertexData(int aPrimitiveType,
 		glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
 		m_id_set[INDEX_SET_ID] = 0;
 	}
+
+	// Unbind the VAO
+	glBindVertexArray(0);
 
 	// Unbind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

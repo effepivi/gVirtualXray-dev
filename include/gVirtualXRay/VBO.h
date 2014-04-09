@@ -165,6 +165,10 @@ public:
 	
 //******************************************************************************
 protected:
+	/// ID of VAO
+	unsigned int m_vao_id;
+
+
 	/// ID of VBOs
 	unsigned int m_id_set[4];
 

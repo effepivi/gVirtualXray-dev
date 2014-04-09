@@ -1852,7 +1852,6 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	pushTexture2D();
 
 	// Store the state
-	pushEnableDisableState(GL_TEXTURE_2D);
 	pushEnableDisableState(GL_BLEND);
 
 	// Bind frame buffer object
@@ -1931,7 +1930,6 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	popFBO();
 
 	// Store the state
-	popEnableDisableState();
 	popEnableDisableState();
 
 	// Restore the texturing flags
@@ -2117,7 +2115,6 @@ void XRayRenderer::computeIntegratedEnergy()
 	pushTexture3D();
 
 	// Store the state
-	pushEnableDisableState(GL_TEXTURE_3D);
 	pushEnableDisableState(GL_BLEND);
 
 	switch (m_computing_mode)
@@ -2152,7 +2149,6 @@ void XRayRenderer::computeIntegratedEnergy()
 			// Rebind textures
 			// Cumulated L-buffers
 			glActiveTexture(saved_texture);
-			glEnable(GL_TEXTURE_3D);
 			glBindTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID]);
 
 			// Store the transformation matrices
@@ -2236,7 +2232,6 @@ void XRayRenderer::computeIntegratedEnergy()
 	popTexture();
 
 	// Restore the state
-	popEnableDisableState();
 	popEnableDisableState();
 
 	// Restore the FBO
