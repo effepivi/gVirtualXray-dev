@@ -974,7 +974,7 @@ void reshape(int width, int height)
 	g_current_main_window_height = height;
 
 	double screen_aspect_ratio(double(g_current_main_window_width) / double(g_current_main_window_height));
-	//g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
+	g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
 	glViewport(x, y, w, h);
 

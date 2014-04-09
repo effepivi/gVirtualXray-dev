@@ -751,6 +751,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].setLabels("l_buffer.vert", "l_buffer_fr.frag");
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
@@ -766,6 +767,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].setLabels("cumulated_l_buffer.vert", "cumulated_l_buffer.frag");
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
@@ -781,6 +783,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].setLabels("outer_surface_l_buffer.vert", "outer_surface_l_buffer.frag");
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
@@ -796,6 +799,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].setLabels("MUx_Dx.vert", "MUx_Dx.frag");
 	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
@@ -811,6 +815,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].setLabels("xray_attenuation.vert", "xray_attenuation.frag");
 	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
@@ -826,6 +831,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].setLabels("xray_display.vert", "xray_display.frag");
 	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Restore the current shader

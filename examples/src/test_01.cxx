@@ -384,6 +384,7 @@ void initGL()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
+	g_display_shader.setLabels("display.vert", "display.frag");
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -431,14 +432,13 @@ void render()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		VEC3 light_position(0, 0, g_zoom);
-		light_position = g_current_modelview_matrix * light_position;
 		handle = glGetUniformLocation(shader_id, "light_position");
-		glUniform4f(handle, 1, light_position.getX(), light_position.getY(), light_position.getZ());
+		glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Define colours
 		{
-			const GLfloat material_ambient[]  = {1.19225,  0.0, 0.0, 1.0};
+			const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
 			const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
 			const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
 			const GLfloat material_shininess = 50.2;
@@ -847,8 +847,8 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	g_main_window_width = width;
 	g_main_window_height = height;
 
-	double screen_aspect_ratio(double(g_main_window_height) / double(g_main_window_height));
-	//g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
+	double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
+	g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
 	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
 
@@ -917,13 +917,13 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	g_current_y_position = y;
 
 	// Update the rotation matrix if needed
-	switch (g_button)
+	switch (g_rotation_mode)
 	{
-	case GLFW_MOUSE_BUTTON_LEFT:
+	case SCENE:
 		computeRotation(g_scene_rotation_matrix);
 		break;
 
-	case GLFW_MOUSE_BUTTON_RIGHT:
+	case DETECTOR:
 		computeRotation(g_detector_rotation_matrix);
 		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
 
@@ -931,7 +931,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 		g_is_xray_image_up_to_date = false;
 		break;
 
-	case GLFW_MOUSE_BUTTON_MIDDLE:
+	case OBJECT:
 		computeRotation(g_sample_rotation_matrix);
 
 		// The X-ray image is not up-to-date
