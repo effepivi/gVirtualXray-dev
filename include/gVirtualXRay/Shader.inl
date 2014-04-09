@@ -68,6 +68,16 @@ inline Shader::~Shader()
 }
 
 
+//--------------------------------------------------------------------
+inline void Shader::setLabels(const std::string& aVertexShaderLabel,
+							  const std::string& aFragmentShaderLabel)
+//--------------------------------------------------------------------
+{
+	m_vertex_shader_label   = aVertexShaderLabel;
+	m_fragment_shader_label = aFragmentShaderLabel;
+}
+
+
 //--------------------------------------------------
 inline unsigned int Shader::getProgramHandle() const
 //--------------------------------------------------

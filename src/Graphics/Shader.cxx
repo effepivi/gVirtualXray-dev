@@ -190,6 +190,8 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create a shader program.");
 	}
 
+	m_vertex_shader_label = aVertexShaderFilename;
+	m_fragment_shader_label = aFragmentShaderFilename;
 	loadVertexShaderFile(aVertexShaderFilename);
 	loadFragmentShaderFile(aFragmentShaderFilename);
 	linkProgram();
@@ -443,11 +445,34 @@ unsigned int Shader::compileShader(int aShaderType,
 		// Allocate memory to store the log message
 		p_log_message = new char[log_size + 1];
 
+		// Get the label
+		std::string label;
+		switch (aShaderType)
+		{
+		case GL_VERTEX_SHADER:
+			label = m_vertex_shader_label;
+			break;
+
+		case GL_FRAGMENT_SHADER:
+			label = m_fragment_shader_label;
+			break;
+
+		default:
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create shader with an unknown type.");
+			break;
+		}
+
+		std::stringstream error_message;
+		error_message << "Shader program compilation error in:" << std::endl;
+
+		if (label.size())
+		{
+			error_message << "\t" << label << std::endl;
+		}
+
 		// The memory was not allocated
 		if (!p_log_message)
 		{
-			std::stringstream error_message;
-			error_message << "Shader program linkage error in:" << std::endl;
 			error_message << *aShaderSource;
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 		}
@@ -455,8 +480,8 @@ unsigned int Shader::compileShader(int aShaderType,
 		// Get the log message
         glGetShaderInfoLog(shader_handle, log_size, &log_size, p_log_message);
 
-		std::stringstream error_message;
-		error_message << "Shader program linkage error (see below)." << std::endl;
+        // Add the log to the error message
+		error_message << "See error below:" << std::endl;
 		error_message << p_log_message;
 
 		// Release the memory used to store the log message
@@ -500,23 +525,31 @@ void Shader::linkProgram()
 	// There was at least one error
 	if (link_status != GL_TRUE)
 	{
+		std::stringstream error_message;
+		error_message << "Shader program linkage error" << std::endl;
+
+		if (m_vertex_shader_label.size() && m_fragment_shader_label.size())
+		{
+			error_message << " in:" << std::endl;
+			error_message << "\t" << m_vertex_shader_label << " and " << m_fragment_shader_label << std::endl;
+		}
+
 		// Get the size of the log message
 		glGetProgramiv(m_shader_program_id, GL_INFO_LOG_LENGTH, &log_size);
-
-		// Allocate memory to store the log message
-		p_log_message = new char[log_size + 1];
 
 		// The memory was not allocated
 		if (!p_log_message)
 		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Shader program linkage error.");
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 		}
+
+		// Allocate memory to store the log message
+		p_log_message = new char[log_size + 1];
 
 		// Get the log message
 		glGetProgramInfoLog(m_shader_program_id, log_size, &log_size, p_log_message);
 
-		std::stringstream error_message;
-		error_message << "Shader program linkage error (see below)." << std::endl;
+		error_message << "See error below:" << std::endl;
 		error_message << p_log_message;
 
 		// Release the memory used to store the log message

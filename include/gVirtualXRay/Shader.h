@@ -100,6 +100,17 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Set the shader labels. This is useful for debugging.
+	/**
+	*	@param aVertexShaderLabel: label of the vertex shader
+	*	@param aFragmentShaderLabel: label of the fragment shader
+	*/
+	//--------------------------------------------------------------------------
+	void setLabels(const std::string& aVertexShaderLabel,
+			const std::string& aFragmentShaderLabel);
+
+
+	//--------------------------------------------------------------------------
 	///	Load the vertex shader from a file
 	/**
 	*	@param aVertexShaderFilename: file name of the vertex shader
@@ -221,6 +232,14 @@ protected:
 
 	/// Flag set to true when a shader if fully valid
 	static bool m_shader_capable;
+
+
+	/// Label of the vertex shader
+	std::string m_vertex_shader_label;
+
+
+	/// Label of the fragment shader
+	std::string m_fragment_shader_label;
 
 
 	/// Name of the file containing the vertex shader
