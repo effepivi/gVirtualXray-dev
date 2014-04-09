@@ -75,8 +75,7 @@ INCLUDE_DIRECTORIES("../include")
 	OPTION(USE_BUNDLE "Use Apple/Win32 Bundle." ON)
 #ENDIF(APPLE OR WIN32)
 OPTION(USE_FLTK "Use FLTK." ON)
-OPTION(USE_GLUT "Use GLUT." ON)
-OPTION(USE_GLFW "Use GLEW." ON)
+OPTION(USE_GLFW "Use GLFW." ON)
 
 
 # FLTK ########################################################################
@@ -133,31 +132,16 @@ IF(USE_GLFW)
 ENDIF(USE_GLFW)
 
 
-IF(USE_GLUT)
-	FIND_PACKAGE(GLUT)
-	IF(GLUT_FOUND)
-        	ADD_DEFINITIONS(-DHAS_GLUT)
-		INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-		LINK_DIRECTORIES(${GLUT_LIBRARY_DIRS})
-		SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARY})
-	ELSE(GLUT_FOUND)
-		MESSAGE(FATAL_ERROR "GLUT not found.")
-	ENDIF(GLUT_FOUND)
-ELSE(USE_GLUT)
-	MESSAGE(WARNING "GLUT is required to build the tutorials.")
-ENDIF(USE_GLUT)
+# Check if GLFW or FLTK is enable #############################################
+IF(NOT USE_GLFW AND NOT USE_FLTK)
+	MESSAGE(FATAL_ERROR "Nor FLTK nor GLFW is enable, you have to select one or the other.")
+ENDIF(NOT USE_GLFW AND NOT USE_FLTK)
 
 
-# Check if GLUT or FLTK is enable #############################################
-IF(NOT USE_GLUT AND NOT USE_FLTK)
-	MESSAGE(FATAL_ERROR "Nor FLTK nor GLUT is enable, you have to select one or the other.")
-ENDIF(NOT USE_GLUT AND NOT USE_FLTK)
-
-
-# Check if GLUT or FLTK is enable #############################################
-IF((!USE_GLUT OR !FOUND_GLUT) AND (!USE_FLTK OR !FOUND_FLTK))
-	MESSAGE(FATAL_ERROR "Nor FLTK nor GLUT has been found, make sure one or the other is installed.")
-ENDIF((!USE_GLUT OR !FOUND_GLUT) AND (!USE_FLTK OR !FOUND_FLTK))
+# Check if GLFW or FLTK is enable #############################################
+IF((!USE_GLFW OR !FOUND_GLFW) AND (!USE_FLTK OR !FOUND_FLTK))
+	MESSAGE(FATAL_ERROR "Nor FLTK nor GLFW has been found, make sure one or the other is installed.")
+ENDIF((!USE_GLFW OR !FOUND_GLFW) AND (!USE_FLTK OR !FOUND_FLTK))
 
 
 # BOOST #######################################################################
@@ -192,13 +176,16 @@ CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 
 # Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
-ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-#SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
-TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-#ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
-##SET_PROPERTY(TARGET welsh_dragon PROPERTY LINK_SEARCH_START_STATIC 1) 
-#TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
+IF(USE_GLFW)
+	ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
+	#SET_PROPERTY(TARGET test_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
+	TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+	ADD_EXECUTABLE (welsh_dragon ../src/welsh_dragon.cxx)
+	#SET_PROPERTY(TARGET welsh_dragon PROPERTY LINK_SEARCH_START_STATIC 1) 
+	TARGET_LINK_LIBRARIES (welsh_dragon gVirtualXRay ${requiredLibs} ${optionalLibs})
+ENDIF(USE_GLFW)
 
 #ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
 ##SET_PROPERTY(TARGET test_triangle_mesh PROPERTY LINK_SEARCH_START_STATIC 1) 
@@ -312,7 +299,7 @@ ENDIF(USE_BUNDLE)
 
 # Make sure the source is generated before the executable builds.
 ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
-#ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
+ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
 #ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
 #ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
 #ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
