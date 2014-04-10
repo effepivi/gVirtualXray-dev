@@ -41,6 +41,7 @@
 #include "gVirtualXRay/XRayBeam.h"
 #include "gVirtualXRay/XRayDetector.h"
 #include "gVirtualXRay/XRayRenderer.h"
+#include "gVirtualXRay/Shader.h"
 
 #include "buildCube.h"
 
@@ -66,6 +67,7 @@ XRayBeam     g_xray_beam;
 XRayRenderer g_xray_simulator;
 PolygonMesh g_polygon_mesh_1;
 PolygonMesh g_polygon_mesh_2;
+Shader g_display_shader;
 
 MATRIX4 g_sample_rotation_matrix(MATRIX4::buildRotationMatrix(10.0, VEC3(1, 1, 1)));
 
@@ -73,6 +75,44 @@ std::vector<double> g_p_vertex_set_1;
 std::vector<unsigned char> g_p_index_set_1;
 std::vector<float> g_p_vertex_set_2;
 
+const GLchar* g_vertex_shader = "\
+\n#version 150\n \
+in vec3 in_Vertex;\n \
+in vec3 in_TexCoord;\n \
+in vec3 in_Normal;\n \
+\n \
+smooth out vec3 g_texture_coordinates;\n \
+smooth out vec3 g_normal;\n \
+smooth out vec4 g_object_position;\n \
+\n \
+uniform mat4 g_projection_matrix;\n \
+uniform mat4 g_modelview_matrix;\n \
+uniform mat3 g_normal_matrix;\n \
+\n \
+void main(void)\n \
+{\n \
+	g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
+	g_normal = normalize(g_normal_matrix * in_Normal);\n \
+	g_texture_coordinates = in_TexCoord;\n \
+	gl_Position = g_projection_matrix * g_modelview_matrix * g_object_position;\n \
+}\n \
+";
+
+const GLchar* g_fragment_shader = "\
+\n#version 150\n \
+precision highp float;\n \
+\n \
+smooth in vec3 g_texture_coordinates;\n \
+smooth in vec3 g_normal;\n \
+smooth in vec4 g_object_position;\n \
+\n \
+out vec4 fragColor;\n \
+void main(void)\n \
+{\n \
+    vec3 light_direction = vec3(0.0, 1.0, 0.0);\n \
+    fragColor = vec4(vec3(1.0, 1.0, 1.0) * max(0.0, dot(light_direction, g_normal)), 1.0);\n \
+}\n \
+";
 
 //******************************************************************************
 //	Function declaration
@@ -105,6 +145,9 @@ int main(int argc, char** argv)
 
 		// Initialise OpenGL
 		initGL();
+
+		g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
+		g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
 
 		// Initialise the position and shape of the X-ray detector
 		setDetector();
@@ -212,23 +255,6 @@ void initGL()
 	// Set the background colour
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 
-	// Choose smooth shading
-	glShadeModel(GL_SMOOTH);
-
-	// Set up a light
-	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-
-	glEnable(GL_LIGHT0);
-
-	glEnable(GL_COLOR_MATERIAL);
-
-
 	// Check if any OpenGL error has occurred.
 	// If any has, an exception is thrown
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -257,20 +283,12 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	glViewport(x, y, w, h);
 
 	// Set up the projection matrix (g_current_projection_matrix)
-	glMatrixMode(GL_PROJECTION);
 	loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 5.0 * cm, 500.0 * cm);
 
-	// Update OpenGL's matrix as this example make use of it
-	glLoadMatrixf(g_current_projection_matrix.get());
-
 	// Set up the modelling-viewing matrix (g_current_modelview_matrix)
-	glMatrixMode(GL_MODELVIEW);
 	loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, -50.0 * cm,
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
-
-	// Update OpenGL's matrix as this example make use of it
-	glLoadMatrixf(g_current_modelview_matrix.get());
 }
 
 
@@ -282,7 +300,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Set the light position
-	GLfloat light_position[] = { 10.0 * cm, 50.0 * cm, 10.0 * cm, 1.0 };
+	/*GLfloat light_position[] = { 10.0 * cm, 50.0 * cm, 10.0 * cm, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	// Enable lighting
@@ -319,7 +337,7 @@ void display()
 	glColor4f(0.5f, 0.0f, 0.0f, 0.2f);
 
 	// Display the shape of the beam
-	g_xray_detector.displayBeam();
+	g_xray_detector.displayBeam();*/
 }
 
 
