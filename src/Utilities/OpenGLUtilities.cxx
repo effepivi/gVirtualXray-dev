@@ -38,7 +38,7 @@
 #endif
 
 #ifdef __APPLE__
-#include <OpenGL3.h>
+#include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
