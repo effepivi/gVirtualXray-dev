@@ -41,8 +41,6 @@
 
 #include "gVirtualXRay/framebufferObject.h"
 
-#include<OpenGL/gl3.h>
-
 #include <iostream>
 using namespace std;
 

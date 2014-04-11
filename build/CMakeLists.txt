@@ -179,8 +179,10 @@ ENDIF(WIN32)
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
-INCLUDE_DIRECTORIES("../include/OpenGL3")
-#INCLUDE_DIRECTORIES("../include/OpenGL4")
+IF(NOT APPLE)
+    #INCLUDE_DIRECTORIES("../include/OpenGL3")
+    INCLUDE_DIRECTORIES("../include/OpenGL4")
+ENDIF(NOT APPLE)
 #INCLUDE_DIRECTORIES("/usr/local/include")
 
 
@@ -192,16 +194,6 @@ IF(OPENGL_FOUND)
 ELSE(OPENGL_FOUND)
 	MESSAGE(FATAL_ERROR "OpenGL not found.")
 ENDIF(OPENGL_FOUND)
-
-
-FIND_PACKAGE(GLEW REQUIRED)
-IF(GLEW_FOUND)
-	ADD_DEFINITIONS(-DGLEW_STATIC)
-	INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-	SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
-ELSE(GLEW_FOUND)
-	MESSAGE(FATAL_ERROR "GLEW not found.")
-ENDIF(GLEW_FOUND)
 
 
 # FreeImage ####################################################################

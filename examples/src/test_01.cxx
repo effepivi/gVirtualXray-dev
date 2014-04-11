@@ -33,6 +33,12 @@
 #include <windows.h>
 #endif
 
+#ifdef __APPLE__
+#define GL3_PROTOTYPES 1
+#else
+#define GL_GLEXT_PROTOTYPES 1
+#endif
+
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
@@ -227,9 +233,20 @@ int main(int argc, char** argv)
 	    glfwWindowHint(GLFW_SAMPLES, 4);
 
 	    // Create a windowed mode window and its OpenGL context
-	    //g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", glfwGetPrimaryMonitor(), NULL);
 	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-	    if (!g_p_main_window_id)
+	   
+        // Window cannot be created 
+        if (!g_p_main_window_id)
+	    {
+            // Disable quad-buffering
+            glfwWindowHint(GLFW_STEREO, GL_FALSE);
+
+            // Create the window
+	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        }
+        
+        // Window cannot be created 
+        if (!g_p_main_window_id)
 	    {
 	        glfwTerminate();
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");

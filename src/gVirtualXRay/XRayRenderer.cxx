@@ -33,6 +33,13 @@
 #include <math.h>
 #include <cstring>
 
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#define GL_GLEXT_PROTOTYPES 1
+#include <GL/glcorearb.h>
+#endif
+
 #ifdef HAS_ITK
 #include <itkImageFileWriter.h>
 #endif
@@ -65,6 +72,8 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#include "gVirtualXRay/framebufferObject.h"
+
 #include "MUx_Dx.frag.h"
 #include "MUx_Dx.vert.h"
 
@@ -84,10 +93,6 @@
 #include "xray_display.vert.h"
 
 #include "mu_water.csv.h"
-
-#include <OpenGL/gl3.h>
-
-#include "gVirtualXRay/framebufferObject.h"
 
 
 //******************************************************************************
