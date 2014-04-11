@@ -26,8 +26,8 @@
 */
 
 
-#ifndef UNITS_H
-#define UNITS_H
+#ifndef GVXR_UNITS_H
+#define GVXR_UNITS_H
 
 
 //******************************************************************************

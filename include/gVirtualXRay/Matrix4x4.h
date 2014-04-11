@@ -26,14 +26,14 @@
 */
 
 
-#ifndef MATRIX4X4_H
-#define MATRIX4X4_H
+#ifndef GVXR_MATRIX4X4_H
+#define GVXR_MATRIX4X4_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef VEC3_H
+#ifndef GVXR_VEC3_H
 #include "gVirtualXRay/Vec3.h"
 #endif
 

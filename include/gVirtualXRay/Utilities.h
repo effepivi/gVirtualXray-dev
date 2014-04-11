@@ -26,8 +26,8 @@
 */
 
 
-#ifndef UTILITIES_H
-#define UTILITIES_H
+#ifndef GVXR_UTILITIES_H
+#define GVXR_UTILITIES_H
 
 
 //******************************************************************************

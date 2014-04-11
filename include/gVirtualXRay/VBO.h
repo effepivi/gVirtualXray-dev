@@ -26,8 +26,8 @@
 */
 
 
-#ifndef VBO_H
-#define VBO_H
+#ifndef GVXR_VBO_H
+#define GVXR_VBO_H
 
 
 //******************************************************************************

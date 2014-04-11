@@ -26,8 +26,8 @@
 */
 
 
-#ifndef OPENGL_UTILITIES_H
-#define OPENGL_UTILITIES_H
+#ifndef GVXR_OPENGL_UTILITIES_H
+#define GVXR_OPENGL_UTILITIES_H
 
 
 //******************************************************************************
@@ -35,11 +35,11 @@
 //******************************************************************************
 #include <vector>
 
-#ifndef MATRIX4X4_H
+#ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 

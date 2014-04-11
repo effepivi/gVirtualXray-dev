@@ -27,8 +27,8 @@
 */
 
 
-#ifndef XRAY_BEAM_H
-#define XRAY_BEAM_H
+#ifndef GVXR_XRAY_BEAM_H
+#define GVXR_XRAY_BEAM_H
 
 
 //******************************************************************************
@@ -37,11 +37,11 @@
 #include <vector>
 #include <iostream>
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef SPECTRUM_RECORD_H
+#ifndef GVXR_SPECTRUM_RECORD_H
 #include "gVirtualXRay/SpectrumRecord.h"
 #endif
 

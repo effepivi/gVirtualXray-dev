@@ -38,11 +38,11 @@
 #include <string>
 #include <vector>
 
-#ifndef POLYGON_MESH_H
+#ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 

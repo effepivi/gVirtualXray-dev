@@ -26,8 +26,8 @@
 */
 
 
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef GVXR_TYPES_H
+#define GVXR_TYPES_H
 
 
 //******************************************************************************
@@ -35,15 +35,15 @@
 //******************************************************************************
 #include <limits>
 
-#ifndef VEC3_H
+#ifndef GVXR_VEC3_H
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef VEC2_H
+#ifndef GVXR_VEC2_H
 #include "gVirtualXRay/Vec2.h"
 #endif
 
-#ifndef MATRIX4X4_H
+#ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 

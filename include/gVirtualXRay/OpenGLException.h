@@ -26,14 +26,14 @@
 */
 
 
-#ifndef OPENGL_EXCEPTION_H
-#define OPENGL_EXCEPTION_H
+#ifndef GVXR_OPENGL_EXCEPTION_H
+#define GVXR_OPENGL_EXCEPTION_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 

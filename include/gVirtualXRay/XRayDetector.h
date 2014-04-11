@@ -29,8 +29,8 @@
 */
 
 
-#ifndef XRAY_DETECTOR_H
-#define XRAY_DETECTOR_H
+#ifndef GVXR_XRAY_DETECTOR_H
+#define GVXR_XRAY_DETECTOR_H
 
 
 //******************************************************************************
@@ -40,19 +40,19 @@
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef MATRIX4X4_H
+#ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef VBO_H
+#ifndef GVXR_VBO_H
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef SPHERE_MESH_H
+#ifndef GVXR_SPHERE_MESH_H
 #include "gVirtualXRay/SphereMesh.h"
 #endif
 
-#ifndef CUBE_MESH_H
+#ifndef GVXR_UBE_MESH_H
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 

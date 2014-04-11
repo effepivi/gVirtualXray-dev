@@ -26,14 +26,14 @@
 */
 
 
-#ifndef FBO_EXCEPTION_H
-#define FBO_EXCEPTION_H
+#ifndef GVXR_FBO_EXCEPTION_H
+#define GVXR_FBO_EXCEPTION_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 

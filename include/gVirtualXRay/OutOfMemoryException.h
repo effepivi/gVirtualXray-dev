@@ -27,14 +27,14 @@
 */
 
 
-#ifndef OUT_OF_MEMORY_EXCEPTION_H
-#define OUT_OF_MEMORY_EXCEPTION_H
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#define GVXR_OUT_OF_MEMORY_EXCEPTION_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 

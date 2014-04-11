@@ -26,8 +26,8 @@
 */
 
 
-#ifndef XRAY_RENDERER_H
-#define XRAY_RENDERER_H
+#ifndef GVXR_XRAY_RENDERER_H
+#define GVXR_XRAY_RENDERER_H
 
 
 //******************************************************************************
@@ -40,27 +40,27 @@
 #include <itkRGBPixel.h>
 #endif
 
-#ifndef POLYGON_MESH_H
+#ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef XRAY_DETECTOR_H
+#ifndef GVXR_XRAY_DETECTOR_H
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef XRAY_BEAM_H
+#ifndef GVXR_XRAY_BEAM_H
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef SHADER_H
+#ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef ATTENUATION_COEFFICIENT_H
+#ifndef GVXR_ATTENUATION_COEFFICIENT_H
 #include "gVirtualXRay/AttenuationCoefficient.h"
 #endif
 
-#ifndef VBO_H
+#ifndef GVXR_VBO_H
 #include "gVirtualXRay/VBO.h"
 #endif
 

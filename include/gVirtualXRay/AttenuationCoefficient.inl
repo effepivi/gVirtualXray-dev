@@ -31,7 +31,7 @@
 //******************************************************************************
 #include <iostream>
 
-#ifndef UNITS_H
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 

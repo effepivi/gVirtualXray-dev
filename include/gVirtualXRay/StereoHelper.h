@@ -27,18 +27,18 @@
 */
 
 
-#ifndef STEREO_HELPER_H
-#define STEREO_HELPER_H
+#ifndef GVXR_STEREO_HELPER_H
+#define GVXR_STEREO_HELPER_H
 
 
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef MATRIX4X4_H
+#ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 

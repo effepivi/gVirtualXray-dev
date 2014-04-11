@@ -27,8 +27,8 @@
 */
 
 
-#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#define FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#define GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 
 
 //******************************************************************************
@@ -36,7 +36,7 @@
 //******************************************************************************
 #include <string>
 
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 

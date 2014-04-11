@@ -29,8 +29,8 @@
 */
 
 
-#ifndef POLYGON_MESH_H
-#define POLYGON_MESH_H
+#ifndef GVXR_POLYGON_MESH_H
+#define GVXR_POLYGON_MESH_H
 
 
 //******************************************************************************
@@ -39,15 +39,15 @@
 #include <string>
 #include <vector>
 
-#ifndef VBO_H
+#ifndef GVXR_VBO_H
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef UNITS_H
+#ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
 

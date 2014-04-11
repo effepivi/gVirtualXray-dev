@@ -28,8 +28,8 @@
 */
 
 
-#ifndef IMPLICIT_SURFACE_H
-#define IMPLICIT_SURFACE_H
+#ifndef GVXR_IMPLICIT_SURFACE_H
+#define GVXR_IMPLICIT_SURFACE_H
 
 
 //******************************************************************************
@@ -45,7 +45,7 @@
 #include <itkQuadEdgeMesh.h>
 #endif
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 

@@ -26,8 +26,8 @@
 */
 
 
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
+#define GVXR_EXCEPTION_H
 
 
 //******************************************************************************

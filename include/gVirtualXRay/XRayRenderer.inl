@@ -31,7 +31,7 @@
 //******************************************************************************
 #include <sstream>
 
-#ifndef OPENGL_UTILITIES_H
+#ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 

@@ -31,19 +31,19 @@
 //******************************************************************************
 #include <cmath>
 
-#ifndef OPENGL_EXCEPTION_H
+#ifndef GVXR_OPENGL_EXCEPTION_H
 #include "gVirtualXRay/OpenGLException.h"
 #endif
 
-#ifndef OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef FBO_EXCEPTION_H
+#ifndef GVXR_FBO_EXCEPTION_H
 #include "gVirtualXRay/FBOException.h"
 #endif
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 

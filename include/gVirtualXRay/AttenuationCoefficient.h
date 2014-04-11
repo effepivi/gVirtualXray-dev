@@ -26,8 +26,8 @@
 */
 
 
-#ifndef ATTENUATION_COEFFICIENT_H
-#define ATTENUATION_COEFFICIENT_H
+#ifndef GVXR_ATTENUATION_COEFFICIENT_H
+#define GVXR_ATTENUATION_COEFFICIENT_H
 
 
 //******************************************************************************
@@ -35,7 +35,7 @@
 //******************************************************************************
 #include <iostream>
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 

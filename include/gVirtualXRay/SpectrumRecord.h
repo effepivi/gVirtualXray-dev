@@ -28,8 +28,8 @@
 */
 
 
-#ifndef SPECTRUM_RECORD_H
-#define SPECTRUM_RECORD_H
+#ifndef GVXR_SPECTRUM_RECORD_H
+#define GVXR_SPECTRUM_RECORD_H
 
 
 //******************************************************************************
@@ -37,7 +37,7 @@
 //******************************************************************************
 #include <iostream>
 
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
 
