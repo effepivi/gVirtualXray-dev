@@ -30,23 +30,23 @@
 //******************************************************************************
 #include <map>
 
-#ifndef POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
-#ifndef UNITS_H
-#include "gVirtualXRay/Units.h"
-#endif
-
-#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "gVirtualXRay/FileDoesNotExistException.h"
-#endif
-
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
+
+#ifndef GVXR_POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
+#endif
+
+#ifndef GVXR_UNITS_H
+#include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 

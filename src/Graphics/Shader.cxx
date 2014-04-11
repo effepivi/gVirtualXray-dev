@@ -35,23 +35,23 @@
 #include <algorithm>
 #include <cstring>
 
-#ifndef SHADER_H
-#include "gVirtualXRay/Shader.h"
-#endif
-
-#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include "gVirtualXRay/FileDoesNotExistException.h"
-#endif
-
-#ifndef OUT_OF_MEMORY_EXCEPTION_H
-#include "gVirtualXRay/OutOfMemoryException.h"
-#endif
-
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
+
+#ifndef GVXR_SHADER_H
+#include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#include "gVirtualXRay/FileDoesNotExistException.h"
+#endif
+
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
 

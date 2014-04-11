@@ -26,8 +26,8 @@
 */
 
 
-#ifndef BUILD_CUBE_H
-#define BUILD_CUBE_H
+#ifndef GVXR_BUILD_CUBE_H
+#define GVXR_BUILD_CUBE_H
 
 
 //******************************************************************************
@@ -35,7 +35,7 @@
 //******************************************************************************
 #include <vector>
 
-#ifndef TYPES_H
+#ifndef GVXR_GVXR_TYPES_H
 #include <gVirtualXRay/Types.h>
 #endif
 

@@ -47,35 +47,35 @@
 #include <iostream>
 /*#include <sstream>
 */
-#ifndef TYPES_H
+#ifndef GVXR_TYPES_H
 #include "Types.h"
 #endif
 
-/*#ifndef UTILITIES_H
+/*#ifndef GVXR_UTILITIES_H
 #include "Utilities.h"
 #endif
 */
-#ifndef POLYGON_MESH_H
+#ifndef GVXR_POLYGON_MESH_H
 #include "PolygonMesh.h"
 #endif
 /*
-#ifndef VOLUMEDATASET_H
+#ifndef GVXR_VOLUMEDATASET_H
 #include "VolumeDataset.h"
 #endif
 */
-#ifndef XRAY_DETECTOR_H
+#ifndef GVXR_XRAY_DETECTOR_H
 #include "XRayDetector.h"
 #endif
 
-#ifndef XRAY_RENDERER_H
+#ifndef GVXR_XRAY_RENDERER_H
 #include "XRayRenderer.h"
 #endif
 
-#ifndef SHADER_H
+#ifndef GVXR_SHADER_H
 #include "Shader.h"
 #endif
 
-#ifndef OPENGL_UTILITIES_H
+#ifndef GVXR_OPENGL_UTILITIES_H
 #include "OpenGLUtilities.h"
 #endif
 

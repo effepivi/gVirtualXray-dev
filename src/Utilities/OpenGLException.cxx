@@ -42,7 +42,7 @@
 #include <GL/glu.h>
 #endif
 
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/OpenGLException.h"
 #endif
 

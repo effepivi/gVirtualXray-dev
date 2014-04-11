@@ -31,14 +31,14 @@
 //******************************************************************************
 #include <sstream>
 
-#ifndef EXCEPTION_H
-#include "gVirtualXRay/FBOException.h"
-#endif
-
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #include <GL/glew.h>
+#endif
+
+#ifndef GVXR_EXCEPTION_H
+#include "gVirtualXRay/FBOException.h"
 #endif
 
 

@@ -29,19 +29,19 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef STEREO_HELPER_H
-#include "gVirtualXRay/StereoHelper.h"
-#endif
-
-#ifndef OPENGL_UTILITIES_H
-#include "gVirtualXRay/OpenGLUtilities.h"
-#endif
-
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
+
+#ifndef GVXR_STEREO_HELPER_H
+#include "gVirtualXRay/StereoHelper.h"
+#endif
+
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 

@@ -35,7 +35,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#ifndef IMPLICIT_SURFACE_H
+#ifndef GVXR_IMPLICIT_SURFACE_H
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
 

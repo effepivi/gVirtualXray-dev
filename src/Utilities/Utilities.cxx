@@ -26,7 +26,7 @@
 */
 
 
-#ifndef UTILITIES_H
+#ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
 

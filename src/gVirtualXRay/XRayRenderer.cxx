@@ -44,31 +44,31 @@
 #include <itkImageFileWriter.h>
 #endif
 
-#ifndef XRAY_RENDERER_H
+#ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef OUT_OF_MEMORY_EXCEPTION_H
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifndef OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef OPENGL_UTILITIES_H
+#ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef UTILITIES_H
+#ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
 

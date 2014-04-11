@@ -29,20 +29,19 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef CUBE_MESH_H
-#include "gVirtualXRay/CubeMesh.h"
-#endif
-
-#ifndef OUT_OF_MEMORY_EXCEPTION_H
-#include "gVirtualXRay/OutOfMemoryException.h"
-#endif
-
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #include <GL/glcorearb.h>
 #endif
 
+#ifndef GVXR_CUBE_MESH_H
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#include "gVirtualXRay/OutOfMemoryException.h"
+#endif
 
 
 //******************************************************************************

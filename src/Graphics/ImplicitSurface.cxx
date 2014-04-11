@@ -41,11 +41,11 @@
 #include <itkMeshFileWriter.h>
 #endif
 
-#ifndef IMPLICIT_SURFACE_H
+#ifndef GVXR_IMPLICIT_SURFACE_H
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
 
-#ifndef EXCEPTION_H
+#ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
 
