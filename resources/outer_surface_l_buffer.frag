@@ -57,7 +57,7 @@ out float fragColor;
 #define KERNEL_SIZE_3x3  8
 #define KERNEL_SIZE_5x5 16
 #define KERNEL_SIZE_7x7 24
-#define EPSILON         0.000001
+#define EPSILON         0.01
 
 
 //******************************************************************************

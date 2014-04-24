@@ -36,7 +36,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+namespace gVirtualXRay {
 
 
 //-----------------------------------------------------------------------------------------
@@ -77,4 +77,4 @@ inline FileDoesNotExistException::FileDoesNotExistException(const char* aFileNam
 }
 
 
-} // namespace Utilities
+} // namespace gVirtualXRay

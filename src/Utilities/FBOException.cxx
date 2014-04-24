@@ -45,7 +45,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+using namespace gVirtualXRay;
 
 //------------------------------------------------------
 FBOException::FBOException(const char* aFileName,
@@ -106,6 +106,3 @@ FBOException::FBOException(const char* aFileName,
 	
 	m_error_message = error_message.str();
 }
-
-
-} // namespace Utilities

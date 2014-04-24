@@ -40,7 +40,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+namespace gVirtualXRay {
 
 
 //-----------------------------------------------------------
@@ -114,4 +114,4 @@ inline const char* Exception::what() const throw()
 }
 
 
-} // namespace Utilities
+} // namespace gVirtualXRay

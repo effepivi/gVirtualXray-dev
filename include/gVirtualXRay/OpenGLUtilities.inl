@@ -51,10 +51,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
-
-
-
+namespace gVirtualXRay {
 
 
 //--------------------------------
@@ -246,7 +243,7 @@ inline MATRIX4 buildPerspectiveProjectionMatrix(double fovy,
 												double zFar)
 //------------------------------------------------------------
 {
-	double f(tan(Utilities::PI_2 - (((fovy * Utilities::PI) / 180.0) / 2.0)));
+	double f(tan(gVirtualXRay::PI_2 - (((fovy * gVirtualXRay::PI) / 180.0) / 2.0)));
 
 	return (MATRIX4(			
 		f / aspect,
@@ -386,4 +383,4 @@ inline void loadLookAtModelViewMatrix(double eyeX,
 }
 
 
-} // namespace Utilities
+} // namespace gVirtualXRay

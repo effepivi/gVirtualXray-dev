@@ -47,7 +47,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
+namespace gVirtualXRay {
 
 
 //---------------------------------------
@@ -60,4 +60,4 @@ inline CubeMesh::CubeMesh(float aLength):
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay

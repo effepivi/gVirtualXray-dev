@@ -37,8 +37,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
-using namespace Utilities;
+namespace gVirtualXRay {
 
 
 //----------------------------
@@ -110,4 +109,4 @@ inline void Shader::releaseFragmentSourceMemory()
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay

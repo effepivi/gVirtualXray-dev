@@ -37,7 +37,7 @@
 //******************************************************************************
 //	Name space
 //******************************************************************************
-using namespace Utilities;
+using namespace gVirtualXRay;
 
 
 //----------------------------------------------
@@ -258,8 +258,8 @@ void buildCube(RATIONAL_NUMBER aLength,
 
 
 //---------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLength,
-			   Utilities::VEC3 aCentre,
+void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
+			   gVirtualXRay::VEC3 aCentre,
 			   std::vector<double>& apVertexSet,
 			   std::vector<unsigned char>& apIndexSet)
 //---------------------------------------------------
@@ -597,8 +597,8 @@ void buildCube(RATIONAL_NUMBER aLength,
 
 
 //---------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLength,
-			   Utilities::VEC3 aCentre,
+void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
+			   gVirtualXRay::VEC3 aCentre,
 			   std::vector<float>& apVertexSet,
 			   std::vector<unsigned char>& apIndexSet)
 //---------------------------------------------------

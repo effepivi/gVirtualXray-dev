@@ -105,7 +105,6 @@
 //******************************************************************************
 //	Name space
 //******************************************************************************
-using namespace Graphics;
 using namespace gVirtualXRay;
 using namespace std;
 
@@ -121,9 +120,10 @@ using namespace std;
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const int SCENE(0);
-const int OBJECT(1);
-const int DETECTOR(2);
+const int NONE(0);
+const int SCENE(1);
+const int OBJECT(2);
+const int DETECTOR(3);
 
 
 //******************************************************************************
@@ -149,9 +149,9 @@ Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
-GLfloat g_incident_energy(80.0 * keV);
-GLfloat g_resolution(0.15 * mm); // 1mm per pixel
-Vec2ui g_number_of_pixels(1200, 1000);
+GLfloat g_incident_energy(0.08 * MeV);
+GLfloat g_resolution(0.15 * mm * 4.0); // 1mm per pixel
+Vec2ui g_number_of_pixels(1200 / 4.0, 1000 / 4.0);
 VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
@@ -686,6 +686,17 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_display_beam = !g_display_beam;
 			break;
 
+		case GLFW_KEY_X:
+			// Compute the sinogram
+			g_xray_renderer.computeSinogram(180, 1.0);
+
+			// Save the sinogram
+			g_xray_renderer.printSinogram(PREFIX"/examples/data/sinogram.mhd");
+
+			// Compute the X-Ray image
+			g_xray_renderer.computeImage(g_sample_rotation_matrix);
+			break;
+
 		case GLFW_KEY_L:
 	//		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
@@ -792,20 +803,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 		case GLFW_KEY_T:
 			{
-				if (g_rotation_mode == SCENE)
+				switch (g_rotation_mode)
 				{
+				case SCENE:
 					cout << "Rotation: select the object." << endl;
 					g_rotation_mode = OBJECT;
-				}
-				else if (g_rotation_mode == OBJECT)
-				{
+					break;
+
+				case OBJECT:
 					cout << "Rotation: select the detector." << endl;
 					g_rotation_mode = DETECTOR;
-				}
-				else if (g_rotation_mode == DETECTOR)
-				{
+					break;
+
+				case DETECTOR:
 					cout << "Rotation: select the scene." << endl;
 					g_rotation_mode = SCENE;
+					break;
+
+				default:
+					cout << "Rotation: select the scene." << endl;
+					g_rotation_mode = SCENE;
+					break;
 				}
 			}
 			break;
@@ -899,19 +917,26 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 	}
 
 	// Select the right transformation
-	switch (g_button)
+	if (g_rotation_mode == NONE)
 	{
-	case GLFW_MOUSE_BUTTON_LEFT:
-		g_rotation_mode = SCENE;
-		break;
+		switch (g_button)
+		{
+		case GLFW_MOUSE_BUTTON_LEFT:
+			g_rotation_mode = SCENE;
+			break;
 
-	case GLFW_MOUSE_BUTTON_RIGHT:
-		g_rotation_mode = OBJECT;
-		break;
+		case GLFW_MOUSE_BUTTON_RIGHT:
+			g_rotation_mode = OBJECT;
+			break;
 
-	case GLFW_MOUSE_BUTTON_MIDDLE:
-		g_rotation_mode = DETECTOR;
-		break;
+		case GLFW_MOUSE_BUTTON_MIDDLE:
+			g_rotation_mode = DETECTOR;
+			break;
+
+		default:
+			g_rotation_mode = SCENE;
+			break;
+		}
 	}
 
 	double xpos(0);
@@ -1056,6 +1081,9 @@ void loadSTLFile()
 	//g_outside_polygon_data.mergeVertices(true);
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
+	g_inside_polygon_data.translate(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+	g_outside_polygon_data.translate(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
 }
@@ -1137,7 +1165,7 @@ Vec3<GLfloat> getArcballVector(int x, int y)
 float radian2degree(float anAngle)
 //--------------------------------
 {
-	return (180.0 * anAngle / Utilities::PI);
+	return (180.0 * anAngle / gVirtualXRay::PI);
 }
 
 

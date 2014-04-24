@@ -53,7 +53,7 @@
 //******************************************************************************
 //	Name space
 //******************************************************************************
-using namespace Graphics;
+using namespace gVirtualXRay;
 
 
 //******************************************************************************
@@ -130,7 +130,7 @@ void PolygonMesh::display()
 	// Update the VBO if needed
 	if (!m_vbo.isReady())
 	{
-		updateVBO(GL_DYNAMIC_DRAW, m_polygon_type);
+		updateVBO(m_vbo.getBufferUsageHint(), m_polygon_type);
 	}
 
 	// Display the polygon mesh using a VBO

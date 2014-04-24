@@ -50,7 +50,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+using namespace gVirtualXRay;
 
 //---------------------------------------------------------
 OpenGLException::OpenGLException(const char* aFileName,
@@ -69,6 +69,3 @@ OpenGLException::OpenGLException(const char* aFileName,
 	
 	m_error_message = error_message.str();
 }
-
-
-} // namespace Utilities

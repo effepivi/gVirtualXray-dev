@@ -45,7 +45,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
+namespace gVirtualXRay {
 
 
 //--------------------------------
@@ -344,4 +344,4 @@ inline void PolygonMesh::inverNormalVectors()
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay

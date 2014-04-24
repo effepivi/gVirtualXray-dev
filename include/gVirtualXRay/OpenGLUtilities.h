@@ -47,7 +47,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+namespace gVirtualXRay {
 
 
 //------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ void popShaderProgram();
 *	@return the current OpenGL matrix.
 */
 //--------------------------------------------------------------------------
-Math::Matrix4x4<float> getCurrentOpenGLMatrix();
+gVirtualXRay::Matrix4x4<float> getCurrentOpenGLMatrix();
 
 
 //------------------------------------------------------------------------------
@@ -435,7 +435,7 @@ extern std::vector<std::pair<int, bool> > g_enable_disable_state_stack;
 extern std::vector<int> g_shader_program_stack;
 
 
-} // namespace Utilities
+} // namespace gVirtualXRay
 
 
 //******************************************************************************
