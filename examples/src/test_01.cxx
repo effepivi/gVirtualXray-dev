@@ -165,7 +165,7 @@ XRayRenderer g_xray_renderer;
 Shader g_display_shader;
 
 bool g_is_xray_image_up_to_date(false);
-int g_rotation_mode(SCENE);
+int g_rotation_mode(NONE);
 bool g_display_wireframe(false);
 bool g_display_outside_polygon(true);
 
@@ -905,17 +905,6 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 
 	cout << g_button << "\t" << g_button_state << endl;
 
-	// Use the arc ball
-	if (g_button_state == GLFW_PRESS)
-	{
-		g_use_arc_ball = true;
-	}
-	// Stop using the arc ball
-	else
-	{
-		g_use_arc_ball = false;
-	}
-
 	// Select the right transformation
 	if (g_rotation_mode == NONE)
 	{
@@ -937,6 +926,18 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 			g_rotation_mode = SCENE;
 			break;
 		}
+	}
+
+	// Use the arc ball
+	if (g_button_state == GLFW_PRESS)
+	{
+		g_use_arc_ball = true;
+	}
+	// Stop using the arc ball
+	else
+	{
+		g_use_arc_ball = false;
+		g_rotation_mode = NONE;
 	}
 
 	double xpos(0);
@@ -1081,8 +1082,8 @@ void loadSTLFile()
 	//g_outside_polygon_data.mergeVertices(true);
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
-	g_inside_polygon_data.translate(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
-	g_outside_polygon_data.translate(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+	g_inside_polygon_data.translate( VEC3(3.0 * cm, 1.5 * cm, 3.0 * cm));
+	g_outside_polygon_data.translate(VEC3(3.0 * cm, 1.5 * cm, 3.0 * cm));
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
