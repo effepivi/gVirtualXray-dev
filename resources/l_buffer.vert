@@ -57,6 +57,15 @@ in vec3 in_Normal;
 smooth out vec3 g_in_vertex;
 smooth out vec3 g_normal_0;
 smooth out vec3 g_normal_1;
+smooth out vec4 g_position_in_screen_coordinate;
+
+
+//******************************************************************************
+//	Constants
+//******************************************************************************
+const bool PERSPECTIVE_PROJECTION = false;
+const bool PARALLEL_PROJECTION    = true;
+const float EPSILON = 0.01;
 
 
 //******************************************************************************
@@ -77,53 +86,74 @@ uniform mat4 g_detector_rotation_matrix;
 uniform mat4 g_inverse_detector_rotation_matrix;
 uniform mat4 g_source_translation_matrix;
 
+uniform bool g_projection_type;
+uniform vec3 g_ray_direction;
+uniform vec3 g_source_position;
+
 
 //-------------
 void main(void)
 //-------------
 {
-	float u;
-	float v;
-	
-	// Transformed vertex
-	//vec4 transformed_vertex = g_modelling_matrix * vec4(in_Vertex, 1.0);
+    // Save incoming vertex
+    g_in_vertex = in_Vertex;
+    
+    // Save incoming normal vectors
+	g_normal_0 = in_Normal;
+	g_normal_1 = in_TexCoord.xyz;
+
+	// Transform vertex
 	vec4 transformed_vertex = g_modelling_matrix * vec4(in_Vertex, 1.0);
 	transformed_vertex.xyz /= transformed_vertex.w;
 	transformed_vertex.w = 1.0;
-	
-    g_in_vertex = in_Vertex;
-    
 
+    // Get the viewing direction
+    vec3 viewing_vector;
+
+	// Use parallel beam
+	if (g_projection_type == PARALLEL_PROJECTION)
+	{
+		viewing_vector = -g_ray_direction;
+	}
+	// Use perspective beam
+	else
+	{
+		viewing_vector = -normalize(transformed_vertex.xyz - g_source_position);
+	}
+
+    // Compute the distance between the ray and the detector
+    // (using ray tracing between a ray and a plane)
+	float distance_intersection_detector = -(dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
 
 	// Find the intersection between the ray and the detector
-	/*g_distance_intersection_detector = -(dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-g_viewing_vector, g_detector_plane.xyz);
-	vec3 intersection_in_world_coordinates = transformed_vertex.xyz + g_distance_intersection_detector * g_viewing_vector;
-	
-	// Distance (u, v) from the detector centre to the intersection in world coordinates
-	v = (g_detector_right_vector.x * (intersection_in_world_coordinates.y - g_detector_center.y) - g_detector_right_vector.y * (intersection_in_world_coordinates.x - g_detector_center.x)) / (g_detector_up_vector.y * g_detector_right_vector.x - g_detector_up_vector.x * g_detector_right_vector.y);
+	vec3 intersection_in_world_coordinates = transformed_vertex.xyz + distance_intersection_detector * viewing_vector;
+    
+    // Compute the temporary vector
+    vec3 temp_vector = intersection_in_world_coordinates - g_detector_center;
 
-	if (abs(g_detector_right_vector.x) > 0.0000001)
-		u = (intersection_in_world_coordinates.x - g_detector_center.x - v * g_detector_up_vector.x) / g_detector_right_vector.x;
-	else if (abs(g_detector_right_vector.y) > 0.0000001)
-		u = (intersection_in_world_coordinates.y - g_detector_center.y - v * g_detector_up_vector.y) / g_detector_right_vector.y;
-	else if (abs(g_detector_right_vector.z) > 0.0000001)
-		u = (intersection_in_world_coordinates.z - g_detector_center.z - v * g_detector_up_vector.z) / g_detector_right_vector.z;
+    // Project the intersection on the g_detector_right_vector
+    float u = dot(g_detector_right_vector, temp_vector);
 
-	u /= g_detector_width_in_units_of_length / 2.0;
-	v /= g_detector_height_in_units_of_length / 2.0;
-	
+    // Project the intersection on the g_detector_up_vector
+    float v = -dot(g_detector_up_vector, temp_vector);
+
+    // Rescale the u, v coordinates
+	u /= (g_detector_width_in_units_of_length);
+	v /= (g_detector_height_in_units_of_length);
+    
+    u += u;
+    v += v;
+    
+    // Save the position
 	gl_Position.x = u;
 	gl_Position.y = v;
-	gl_Position.z = 0.0;
-	gl_Position.w = 1.0;
-	*/
-    
-    
-    // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_source_translation_matrix * g_detector_rotation_matrix * g_viewving_matrix * transformed_vertex;
+	gl_Position.z = 1;
+	gl_Position.w = 1;
+   // g_position_in_screen_coordinate = gl_Position;
 
-	// Normals
-	g_normal_0 = in_Normal;
-	g_normal_1 = in_TexCoord.xyz;
+    // Apply the modelling and viewing transformations
+//	gl_Position = g_projection_matrix * g_source_translation_matrix * g_detector_rotation_matrix * g_viewving_matrix * transformed_vertex;
+    //gl_Position.xyzw /= gl_Position.w;
+  //  g_position_in_screen_coordinate = gl_Position / gl_Position.w;
 }
 

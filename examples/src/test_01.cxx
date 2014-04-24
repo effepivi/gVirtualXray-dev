@@ -150,13 +150,15 @@ Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(0.08 * MeV);
-GLfloat g_resolution(0.15 * mm * 4.0); // 1mm per pixel
-Vec2ui g_number_of_pixels(1200 / 4.0, 1000 / 4.0);
+const GLfloat g_scaling_factor(2.0);
+GLfloat g_resolution(0.3 * mm * g_scaling_factor); // 1mm per pixel
+Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
 VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
 PolygonMesh g_inside_polygon_data;
+//CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
 CubeMesh g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
@@ -886,6 +888,10 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
 	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+	/*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
+			-height / 2.0, height / 2.0,
+			0.01, g_initial_far);
+	 */
 
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
@@ -1082,8 +1088,8 @@ void loadSTLFile()
 	//g_outside_polygon_data.mergeVertices(true);
 	g_outside_polygon_data.setHounsfieldValue(500.0);
 
-	g_inside_polygon_data.translate( VEC3(3.0 * cm, 1.5 * cm, 3.0 * cm));
-	g_outside_polygon_data.translate(VEC3(3.0 * cm, 1.5 * cm, 3.0 * cm));
+	g_inside_polygon_data.translate( VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+	g_outside_polygon_data.translate(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
