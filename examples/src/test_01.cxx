@@ -704,7 +704,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 		case GLFW_KEY_X:
 			// Compute the sinogram
-			g_xray_renderer.computeSinogram(180, 1.0);
+			g_xray_renderer.computeSinogram(g_sample_rotation_matrix, 180, 1.0);
 
 			// Save the sinogram
 			g_xray_renderer.printSinogram(PREFIX"/examples/data/sinogram.mhd");

@@ -184,7 +184,7 @@ public:
 	//--------------------------------------------------------------------------
 	void computeLBuffer(PolygonMesh& anObject,
 			  const VEC3& aXRaySourceDetectorTranslation,
-			  const MATRIX4& aModellingTransformationMatrix);
+			  MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------
@@ -195,7 +195,7 @@ public:
 	*											the 3D objects
 	*/
 	//--------------------------------------------------------------------------
-	void computeImage(const MATRIX4& aModellingTransformationMatrix = MATRIX4());
+	void computeImage(MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------
@@ -475,9 +475,9 @@ public:
 	RATIONAL_NUMBER getMaxPixelValue() const;
 
 
-	void computeSinogram(unsigned int aNumberOfAngle = 180,
-			RATIONAL_NUMBER anAngleOffset = 1.0,
-			const MATRIX4& aModellingTransformationMatrix = MATRIX4());
+	void computeSinogram(MATRIX4& aModellingTransformationMatrix,
+			unsigned int aNumberOfAngle = 180,
+			RATIONAL_NUMBER anAngleOffset = 1.0);
 
 
 	void printSinogram(const char* aFileName);
@@ -622,7 +622,7 @@ protected:
 	//--------------------------------------------------------------------------
 	void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
-			const MATRIX4& aModellingTransformationMatrix);
+			MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------
@@ -635,7 +635,7 @@ protected:
 	//--------------------------------------------------------------------------
 	void computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
-			const MATRIX4& aModellingTransformationMatrix);
+			MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------

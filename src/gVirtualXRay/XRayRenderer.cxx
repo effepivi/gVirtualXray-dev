@@ -366,11 +366,11 @@ void XRayRenderer::deleteFBOs()
 }
 
 
-//-------------------------------------------------------------------------------
-void XRayRenderer::computeSinogram(unsigned int aNumberOfAngle,
-								   RATIONAL_NUMBER anAngleOffset,
-								   const MATRIX4& aModellingTransformationMatrix)
-//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
+								   unsigned int aNumberOfAngle,
+								   RATIONAL_NUMBER anAngleOffset)
+//-------------------------------------------------------------------------
 {
 #ifdef HAS_ITK
 	// Compute the size of a pixel
@@ -436,8 +436,11 @@ void XRayRenderer::computeSinogram(unsigned int aNumberOfAngle,
 		// Translate the sample
 		transformation_matrix.translate(translation_vector);
 
+		// Apply the modelling transformation
+		transformation_matrix = aModellingTransformationMatrix * transformation_matrix;
+
 		// Compute the X-ray image
-		computeImage(transformation_matrix * aModellingTransformationMatrix);
+		computeImage(transformation_matrix);
 
 		// Load the FBO in the main memory
 		getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
@@ -784,9 +787,9 @@ void XRayRenderer::checkGPUCapabilities()
 }
 
 
-//----------------------------------------------------------------------------
-void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
-//----------------------------------------------------------------------------
+//----------------------------------------------------------------------
+void XRayRenderer::computeImage(MATRIX4& aModellingTransformationMatrix)
+//----------------------------------------------------------------------
 {
 	// The renderer is ready
 	if (isReady())
@@ -1442,11 +1445,11 @@ void XRayRenderer::resetSumMuxDx()
 }
 
 
-//------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
 								  const VEC3& aXRaySourceDetectorTranslation,
-							  	  const MATRIX4& aModellingTransformationMatrix)
-//------------------------------------------------------------------------------
+							  	  MATRIX4& aModellingTransformationMatrix)
+//---------------------------------------------------------------------------
 {
 	// This is an internal mesh
 	if (&anObject != m_p_outer_surface)
@@ -1842,11 +1845,11 @@ void XRayRenderer::displayXRayImage()
 }
 
 
-//------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
-											  const MATRIX4& aModellingTransformationMatrix)
-//------------------------------------------------------------------------------------------
+											  MATRIX4& aModellingTransformationMatrix)
+//------------------------------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -2044,11 +2047,11 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 }
 
 
-//------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
-											  const MATRIX4& aModellingTransformationMatrix)
-//------------------------------------------------------------------------------------------
+											  MATRIX4& aModellingTransformationMatrix)
+//------------------------------------------------------------------------------------
 {
 	// Save the viwport
 	GLint p_viewport[4];

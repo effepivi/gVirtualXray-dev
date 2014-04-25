@@ -77,15 +77,7 @@ uniform vec3 g_detector_up_vector;
 uniform vec3 g_detector_right_vector;
 uniform float g_detector_width_in_units_of_length;
 uniform float g_detector_height_in_units_of_length;
-
 uniform mat4 g_modelling_matrix;
-uniform mat4 g_viewving_matrix;
-uniform mat4 g_projection_matrix;
-uniform mat4 g_modelview_matrix;
-uniform mat4 g_detector_rotation_matrix;
-uniform mat4 g_inverse_detector_rotation_matrix;
-uniform mat4 g_source_translation_matrix;
-
 uniform bool g_projection_type;
 uniform vec3 g_ray_direction;
 uniform vec3 g_source_position;
@@ -137,41 +129,12 @@ void main(void)
     // Project the intersection on the g_detector_up_vector
     float v = -dot(g_detector_up_vector, temp_vector);
 
-	// Use parallel beam
-	if (g_projection_type == PARALLEL_PROJECTION)
-	{
-        // Rescale the u, v coordinates
-        u /= (g_detector_width_in_units_of_length)  / 2.0;
-        v /= (g_detector_height_in_units_of_length) / 2.0;
+    // Rescale the u, v coordinates
+    u /= (g_detector_width_in_units_of_length)  / 2.0;
+    v /= (g_detector_height_in_units_of_length) / 2.0;
 
-        gl_Position.x = u;
-        gl_Position.y = v;
-        gl_Position.z = 1.0;
-        gl_Position.w = 1.0;
-	}
-	// Use perspective beam
-	else
-	{
-        // Rescale the u, v coordinates
-        u /= (g_detector_width_in_units_of_length)  / 2.0;
-        v /= (g_detector_height_in_units_of_length) / 2.0;
-
-        gl_Position.x = u;
-        gl_Position.y = v;
-        gl_Position.z = 1.0;
-        gl_Position.w = 1.0;
-	}
-    
-    // Save the position
-	/*gl_Position.x = u;
-	gl_Position.y = v;
-	gl_Position.z = distance(transformed_vertex.xyz, g_source_position);
-	gl_Position.w = distance(transformed_vertex.xyz, g_source_position);
-  */ // g_position_in_screen_coordinate = gl_Position;
-
-    // Apply the modelling and viewing transformations
-//	gl_Position = g_projection_matrix * g_source_translation_matrix * g_detector_rotation_matrix * g_viewving_matrix * transformed_vertex;
-    //gl_Position.xyzw /= gl_Position.w;
-  //  g_position_in_screen_coordinate = gl_Position / gl_Position.w;
+    gl_Position.x = u;
+    gl_Position.y = v;
+    gl_Position.z = 0.0;
+    gl_Position.w = 1.0;
 }
-
