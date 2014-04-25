@@ -1909,11 +1909,6 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			handle = glGetUniformLocation(program_handle, "g_projection_type");
 			glUniform1i(handle, 0);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-			loadPerspectiveProjectionMatrix(m_p_detector->getFOVY(),
-				m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getSizeInUnitOfLength().getY(),
-				0.0,
-				(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).length());
 		}
 		else
 		{
@@ -1925,13 +1920,6 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			handle = glGetUniformLocation(program_handle, "g_ray_direction");
 			glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-			loadOrthoProjectionMatrix(-m_p_detector->getSizeInUnitOfLength().getX() / 2.0,
-					m_p_detector->getSizeInUnitOfLength().getX() / 2.0,
-					-m_p_detector->getSizeInUnitOfLength().getY() / 2.0,
-					m_p_detector->getSizeInUnitOfLength().getY() / 2.0,
-					0.0,
-					(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).length());
 		}
 
 		loadLookAtModelViewMatrix(source_sample_position,
