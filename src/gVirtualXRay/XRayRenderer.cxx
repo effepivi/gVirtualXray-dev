@@ -1922,16 +1922,12 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 
-		loadLookAtModelViewMatrix(source_sample_position,
-			m_p_detector->getDetectorPosition(),
-			m_p_detector->getUpVector());
-
 		// Load uniform variables to the GPU
 		handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
 		glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		MATRIX4 modelview_matrix(g_current_modelview_matrix * aModellingTransformationMatrix);
+		MATRIX4 modelview_matrix(aModellingTransformationMatrix);
 
 		handle = glGetUniformLocation(program_handle, "g_normal_matrix");
 		glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());

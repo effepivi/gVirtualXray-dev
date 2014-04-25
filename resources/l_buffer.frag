@@ -48,9 +48,7 @@ precision highp float; // Video card drivers require this line to function prope
 //	Input
 //******************************************************************************
 smooth in vec3 g_in_vertex;
-smooth in vec3 g_normal_0;
-smooth in vec3 g_normal_1;
-smooth in vec4 g_position_in_screen_coordinate;
+smooth in vec3 g_normal;
 
 
 //******************************************************************************
@@ -84,8 +82,7 @@ void main (void)
 //--------------
 {
 	// Transform normal vectors
-	vec3 normal_0 = normalize(g_normal_matrix * g_normal_0);
-	vec3 normal_1 = normalize(g_normal_matrix * g_normal_1);
+	vec3 normal = -normalize(g_normal_matrix * g_normal);
 
     // Transform the vertex
 	vec4 transformed_vertex = g_modelling_matrix * vec4(g_in_vertex, 1.0);
@@ -107,33 +104,32 @@ void main (void)
 	}
 
 	// Save the dot product
-	float dot_product = dot(normal_0, viewing_vector);
+	float dot_product = dot(normal, viewing_vector);
 	float dot_product_sign = sign(dot_product);
     
     // The dot product value is too small
 	if (abs(dot_product) < EPSILON)
 	{
         // Alter the normal
-		normal_0.x += 0.1;
-		normal_0.y += 0.1;
-		normal_0 = normalize(normal_0);
+		normal.x += 0.1;
+		normal.y += 0.1;
+		normal = normalize(normal);
 
         // Update the dot product
-        dot_product = dot(normal_0, viewing_vector);
+        dot_product = dot(normal, viewing_vector);
 		dot_product_sign = sign(dot_product);
 	}
 
     // Get the distance between the source and the vertex
-    float distance_intersection_detector = distance(transformed_vertex.xyz, g_source_position);
+    float distance_source_vertex = distance(transformed_vertex.xyz, g_source_position);
 	//float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
 
-	float value = dot_product_sign * distance_intersection_detector * g_to_cm_scale;
-	if (abs(distance_intersection_detector) < EPSILON) value = 0.0;
+	float value = dot_product_sign * distance_source_vertex * g_to_cm_scale;
+	if (abs(distance_source_vertex) < EPSILON) value = 0.0;
 	
 	// In the red channel: the L-buffer value
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
-	fragColor = vec4(value, dot_product_sign, distance_intersection_detector, 1.0);
-	//fragColor = vec4(g_position_in_screen_coordinate.w, g_position_in_screen_coordinate.y, g_position_in_screen_coordinate.z, 1.0);
+	fragColor = vec4(value, dot_product_sign, distance_source_vertex, 1.0);
 }

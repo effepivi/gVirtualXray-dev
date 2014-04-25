@@ -55,9 +55,7 @@ in vec3 in_Normal;
 //	Output
 //******************************************************************************
 smooth out vec3 g_in_vertex;
-smooth out vec3 g_normal_0;
-smooth out vec3 g_normal_1;
-smooth out vec4 g_position_in_screen_coordinate;
+smooth out vec3 g_normal;
 
 
 //******************************************************************************
@@ -65,7 +63,6 @@ smooth out vec4 g_position_in_screen_coordinate;
 //******************************************************************************
 const bool PERSPECTIVE_PROJECTION = false;
 const bool PARALLEL_PROJECTION    = true;
-const float EPSILON = 0.01;
 
 
 //******************************************************************************
@@ -91,8 +88,7 @@ void main(void)
     g_in_vertex = in_Vertex;
     
     // Save incoming normal vectors
-	g_normal_0 = in_Normal;
-	g_normal_1 = in_TexCoord.xyz;
+	g_normal = in_Normal;
 
 	// Transform vertex
 	vec4 transformed_vertex = g_modelling_matrix * vec4(in_Vertex, 1.0);
