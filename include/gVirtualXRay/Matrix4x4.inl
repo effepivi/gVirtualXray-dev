@@ -404,11 +404,29 @@ template<typename T> const T* Matrix4x4<T>::get3x3()
 template<typename T> void Matrix4x4<T>::print() const
 //---------------------------------------------------
 {
-	std::cout << m_p_4x4_data[0] << "  " << m_p_4x4_data[4] << "  " << m_p_4x4_data[ 8] << "  " << m_p_4x4_data[12] << std::endl;
-	std::cout << m_p_4x4_data[1] << "  " << m_p_4x4_data[5] << "  " << m_p_4x4_data[ 9] << "  " << m_p_4x4_data[13] << std::endl;
-	std::cout << m_p_4x4_data[2] << "  " << m_p_4x4_data[6] << "  " << m_p_4x4_data[10] << "  " << m_p_4x4_data[14] << std::endl;
-	std::cout << m_p_4x4_data[3] << "  " << m_p_4x4_data[7] << "  " << m_p_4x4_data[11] << "  " << m_p_4x4_data[15] << std::endl;
+	print(std::cout);
 }	
 
+
+//-------------------------------------------------------------------------------
+template<typename T> void Matrix4x4<T>::print(std::ostream& anOutputStream) const
+//-------------------------------------------------------------------------------
+{
+	anOutputStream << m_p_4x4_data[0] << "  " << m_p_4x4_data[4] << "  " << m_p_4x4_data[ 8] << "  " << m_p_4x4_data[12] << std::endl;
+	anOutputStream << m_p_4x4_data[1] << "  " << m_p_4x4_data[5] << "  " << m_p_4x4_data[ 9] << "  " << m_p_4x4_data[13] << std::endl;
+	anOutputStream << m_p_4x4_data[2] << "  " << m_p_4x4_data[6] << "  " << m_p_4x4_data[10] << "  " << m_p_4x4_data[14] << std::endl;
+	anOutputStream << m_p_4x4_data[3] << "  " << m_p_4x4_data[7] << "  " << m_p_4x4_data[11] << "  " << m_p_4x4_data[15] << std::endl;
+}	
+
+
+//--------------------------------------------------------------------------
+template <typename T> std::ostream& operator<<(std::ostream& anOutputStream,
+											   const Matrix4x4<T>& aMatrix)
+//--------------------------------------------------------------------------
+{
+	aMatrix.print(anOutputStream);
+	return (anOutputStream);
+}
+ 
 
 } // namespace gVirtualXRay
