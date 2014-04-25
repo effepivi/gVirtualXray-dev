@@ -429,11 +429,14 @@ inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 												 RATIONAL_NUMBER& D)
 //------------------------------------------------------------------
 {
+	// Transform the normal
 	VEC3 normal(m_rotation_matrix * m_normal);
+	
+	// Compute the plane equation
 	A = normal.getX();
 	B = normal.getY();
 	C = normal.getZ();
-	D = A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ();
+	D = -(A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ());
 }
 
 
