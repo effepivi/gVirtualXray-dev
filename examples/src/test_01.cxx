@@ -160,6 +160,7 @@ VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 PolygonMesh g_inside_polygon_data;
 //CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
 CubeMesh g_outside_polygon_data(3.0 * cm);
+VBO g_intersection_box_detector_vbo;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -200,6 +201,7 @@ void computeRotation(MATRIX4& aRotationMatrix);
 void updateXRayImage();
 void errorCallback(int error, const char* description);
 void draw();
+void updateIntersectionSet();
 
 
 //-----------------------------
@@ -293,6 +295,9 @@ int main(int argc, char** argv)
 
 		// Update the X-ray image
 		updateXRayImage();
+
+		// Update the intersections
+		updateIntersectionSet();
 
 		// Set the stereo parameters
 		g_stereo_helper.setIntraocularDistance(g_initial_intraocular_distance);
@@ -566,6 +571,9 @@ void render()
 		// Display the X-Ray image
 		g_xray_renderer.display();
 
+		// Display the intersections
+		g_intersection_box_detector_vbo.display();
+
 		// Display the beam
 		if (g_display_beam)
 		{
@@ -654,6 +662,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				// Set the source position
 				g_xray_detector.setXrayPointSource(g_source_position);
 
+				// Update the inertestions
+				updateIntersectionSet();
+
 				// The X-ray image is not up-to-date
 				g_is_xray_image_up_to_date = false;
 			}
@@ -667,6 +678,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 				// Set the source position
 				g_xray_detector.setXrayPointSource(g_source_position);
+
+				// Update the inertestions
+				updateIntersectionSet();
 
 				// The X-ray image is not up-to-date
 				g_is_xray_image_up_to_date = false;
@@ -748,6 +762,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				g_xray_detector.setPointSource();
 			}
 
+			// Update the inertestions
+			updateIntersectionSet();
+
 			// The X-ray image is not up-to-date
 			g_is_xray_image_up_to_date = false;
 			break;
@@ -763,6 +780,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			{
 				g_xray_detector.setPointSource();
 			}
+
+			// Update the inertestions
+			updateIntersectionSet();
 
 			// The X-ray image is not up-to-date
 			g_is_xray_image_up_to_date = false;
@@ -780,6 +800,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				{
 					g_xray_detector.setPointSource();
 				}
+
+				// Update the inertestions
+				updateIntersectionSet();
+
 				// The X-ray image is not up-to-date
 				g_is_xray_image_up_to_date = false;
 			}
@@ -797,6 +821,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				{
 					g_xray_detector.setPointSource();
 				}
+
+				// Update the inertestions
+				updateIntersectionSet();
 
 				// The X-ray image is not up-to-date
 				g_is_xray_image_up_to_date = false;
@@ -975,6 +1002,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	case DETECTOR:
 		computeRotation(g_detector_rotation_matrix);
 		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
+		updateIntersectionSet();
 
 		// The X-ray image is not up-to-date
 		g_is_xray_image_up_to_date = false;
@@ -982,35 +1010,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 
 	case OBJECT:
 		computeRotation(g_sample_rotation_matrix);
-
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
-
-	default:
-		break;
-	}
-
-
-	switch (g_rotation_mode)
-	{
-	case SCENE:
-		// Compute the rotation
-		computeRotation(g_scene_rotation_matrix);
-		break;
-
-	case OBJECT:
-		// Compute the rotation
-		computeRotation(g_sample_rotation_matrix);
-
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
-
-	case DETECTOR:
-		// Compute the rotation
-		computeRotation(g_detector_rotation_matrix);
-		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
+		updateIntersectionSet();
 
 		// The X-ray image is not up-to-date
 		g_is_xray_image_up_to_date = false;
@@ -1247,4 +1247,83 @@ void draw()
 
 	// Restore the draw buffer if needed
 	glDrawBuffer(back_buffer);
+}
+
+
+//--------------------------
+void updateIntersectionSet()
+//--------------------------
+{
+	// Get the number of vertices
+	unsigned int number_of_vertices(g_outside_polygon_data.getVertexNumber());
+
+	// Compute the positions
+	std::vector<float> intersection_box_detector_vertex_set(number_of_vertices * 2 * 3); // X lines, two vertices per line, three components per vertex
+
+	// Process every vertex of the box
+	for (unsigned int i(0); i < number_of_vertices; ++i)
+	{
+		// Get the vertex position
+		VEC3 vertex_position(g_outside_polygon_data.getVertex(i));
+
+		// Transform the vertex
+		vertex_position = g_sample_rotation_matrix * vertex_position;
+
+		// Compute the intersection position
+		VEC3 intersection_position(vertex_position);
+
+		// Use parallel beam
+		VEC3 viewing_vector;
+		if (g_xray_detector.getSourceShape() == XRayDetector::PARALLEL)
+		{
+			VEC3 ray_direction((g_xray_detector.getDetectorPosition() - g_xray_detector.getXraySourceCentre()).normal());
+			viewing_vector = ray_direction;
+		}
+		// Use perspective beam
+		else
+		{
+			viewing_vector = (vertex_position - g_source_position).normal();
+		}
+
+	    // Compute the distance between the ray and the detector
+	    // (using ray tracing between a ray and a plane)
+
+		GLfloat p_float_4[4];
+		g_xray_detector.getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
+		VEC3 detector_plane(p_float_4[0], p_float_4[1], p_float_4[2]);
+		float distance_intersection_detector = (vertex_position.dotProduct(detector_plane) + p_float_4[3]) / -viewing_vector.dotProduct(detector_plane);
+
+		// Find the intersection between the ray and the detector
+		intersection_position = vertex_position + distance_intersection_detector * viewing_vector;
+
+		// Parallel projection
+		if (g_xray_detector.getSourceShape() == XRayDetector::PARALLEL)
+		{
+			// Add the vertex position
+			intersection_box_detector_vertex_set.push_back(vertex_position.getX());
+			intersection_box_detector_vertex_set.push_back(vertex_position.getY());
+			intersection_box_detector_vertex_set.push_back(vertex_position.getZ());
+		}
+		// Perspective projection
+		else
+		{
+			// Add the source position
+			intersection_box_detector_vertex_set.push_back(g_source_position.getX());
+			intersection_box_detector_vertex_set.push_back(g_source_position.getY());
+			intersection_box_detector_vertex_set.push_back(g_source_position.getZ());
+		}
+
+		// Add the intersection position
+		intersection_box_detector_vertex_set.push_back(intersection_position.getX());
+		intersection_box_detector_vertex_set.push_back(intersection_position.getY());
+		intersection_box_detector_vertex_set.push_back(intersection_position.getZ());
+	}
+
+	// Update the VBO
+	g_intersection_box_detector_vbo.setBufferUsageHint(GL_STATIC_DRAW);
+
+	g_intersection_box_detector_vbo.setVertexData(GL_LINES,
+			intersection_box_detector_vertex_set.size() / 3, 3, GL_FLOAT, &intersection_box_detector_vertex_set[0],
+			0, 0, GL_NONE, 0,
+			0, 0, GL_NONE, 0);
 }
