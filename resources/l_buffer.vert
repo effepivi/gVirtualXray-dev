@@ -124,17 +124,15 @@ void main(void)
     vec3 temp_vector = intersection_in_world_coordinates - g_detector_center;
 
     // Project the intersection on the g_detector_right_vector
-    float u = dot(g_detector_right_vector, temp_vector);
+    gl_Position.x = dot(g_detector_right_vector, temp_vector);
 
     // Project the intersection on the g_detector_up_vector
-    float v = -dot(g_detector_up_vector, temp_vector);
+    gl_Position.y = -dot(g_detector_up_vector, temp_vector);
 
     // Rescale the u, v coordinates
-    u /= (g_detector_width_in_units_of_length)  / 2.0;
-    v /= (g_detector_height_in_units_of_length) / 2.0;
+    gl_Position.x /= (g_detector_width_in_units_of_length)  / 2.0;
+    gl_Position.y /= (g_detector_height_in_units_of_length) / 2.0;
 
-    gl_Position.x = u;
-    gl_Position.y = v;
     gl_Position.z = 0.0;
     gl_Position.w = 1.0;
 }
