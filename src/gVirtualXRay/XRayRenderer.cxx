@@ -1944,9 +1944,6 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		MATRIX4 modelview_matrix(g_current_modelview_matrix * aModellingTransformationMatrix);
-		handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
-		glUniformMatrix4fv(handle, 1, GL_FALSE, modelview_matrix.get());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		handle = glGetUniformLocation(program_handle, "g_normal_matrix");
 		glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
@@ -1975,19 +1972,6 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 		handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
 		glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		handle = glGetUniformLocation(program_handle, "g_detector_rotation_matrix");
-		glUniformMatrix4fv(handle, 1, GL_FALSE, m_p_detector->getRotationMatrix().get());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		handle = glGetUniformLocation(program_handle, "g_inverse_detector_rotation_matrix");
-		glUniformMatrix4fv(handle, 1, GL_FALSE, m_p_detector->getRotationMatrix().getInverse().get());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		handle = glGetUniformLocation(program_handle, "g_source_translation_matrix");
-		glUniformMatrix4fv(handle, 1, GL_FALSE, MATRIX4::buildTranslationMatrix(-aXRaySourceSampleOffset).get());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
 
 		handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
 		glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());

@@ -74,7 +74,6 @@ uniform vec4 g_detector_plane;
 uniform float g_to_cm_scale;
 uniform mat4 g_modelling_matrix;
 uniform mat3 g_normal_matrix;
-uniform mat4 g_inverse_modelview_matrix;
 uniform bool g_projection_type; // 1 for parallel beam
 uniform vec3 g_ray_direction;
 uniform vec3 g_source_position;
