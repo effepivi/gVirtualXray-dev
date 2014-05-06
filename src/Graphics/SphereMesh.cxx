@@ -37,11 +37,7 @@
 
 #include <cmath>
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
 #include <GL/glcorearb.h>
-#endif
 
 #ifndef GVXR_SPHERE_MESH_H
 #include "gVirtualXRay/SphereMesh.h"

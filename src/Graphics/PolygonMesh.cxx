@@ -30,12 +30,8 @@
 //******************************************************************************
 #include <map>
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
-#endif
 
 #ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
