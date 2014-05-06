@@ -36,12 +36,7 @@
 #include <windows.h>
 #endif
 
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
 #define GL_GLEXT_PROTOTYPES 1
-#endif
-
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
