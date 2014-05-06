@@ -33,7 +33,9 @@
 #include <windows.h>
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#include <GL/glcorearb.h>
+
+#define GLFW_INCLUDE_NONE 1
 #include <GLFW/glfw3.h>
 
 #ifndef GVXR_XRAY_RENDERER_H

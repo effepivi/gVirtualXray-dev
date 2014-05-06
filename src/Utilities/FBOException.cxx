@@ -31,7 +31,6 @@
 //******************************************************************************
 #include <sstream>
 
-//#define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
 
 #ifndef GVXR_EXCEPTION_H
