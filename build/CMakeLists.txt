@@ -179,7 +179,11 @@ ENDIF(WIN32)
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
-INCLUDE_DIRECTORIES("../include/OpenGL4")
+IF (APPLE)
+    INCLUDE_DIRECTORIES("../include/OpenGL3")
+ELSE(APPLE)
+    INCLUDE_DIRECTORIES("../include/OpenGL4")
+ENDIF(APPLE)
 #INCLUDE_DIRECTORIES("/usr/local/include")
 
 
