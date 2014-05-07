@@ -283,45 +283,30 @@ public:
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current L-buffer.
-	/**
-	*	@param aFileName:	the file name
-	*/
 	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER* getLBuffer() const;
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current cumulated L-buffer.
-	/**
-	*	@param aFileName:	the file name
-	*/
 	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER* getCumulatedLBuffer() const;
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current Mux Dx.
-	/**
-	*	@param aFileName:	the file name
-	*/
 	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER* getSumMuxDx() const;
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current energy fluence (same as getXRayImage()).
-	/**
-	*	@param aFileName:	the file name
-	*/
 	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER* getEnergyFluence() const;
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current energy fluence (same as getEnergyFluence()).
-	/**
-	*	@param aFileName:	the file name
-	*/
 	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER* getXRayImage() const;
 

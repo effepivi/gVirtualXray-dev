@@ -1104,13 +1104,13 @@ int PolygonMesh::getIndex(unsigned int anIndex) const
 
 
 //-----------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<float>* aVertexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //-----------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
@@ -1123,13 +1123,13 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<double>* aVertexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
@@ -1142,14 +1142,14 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<float>* aVertexArray,
 								  const std::vector<unsigned int>* anIndexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //------------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
@@ -1162,14 +1162,14 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<double>* aVertexArray,
 								  const std::vector<unsigned int>* anIndexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //------------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
@@ -1182,14 +1182,14 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //--------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<float>* aVertexArray,
 								  const std::vector<unsigned short>* anIndexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //--------------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
@@ -1202,14 +1202,14 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //--------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<double>* aVertexArray,
 								  const std::vector<unsigned short>* anIndexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //--------------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
@@ -1222,14 +1222,14 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //-------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<float>* aVertexArray,
 								  const std::vector<unsigned char>* anIndexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //-------------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_FLOAT,
@@ -1242,14 +1242,14 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //-------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const std::vector<double>* aVertexArray,
 								  const std::vector<unsigned char>* anIndexArray,
 								  bool aCreateVBOFlag,
 								  int aTypeOfVBO)
 //-------------------------------------------------------------------------------
 {
-	setExternalData(aPolygonType,
+	setExternalData(aTypeOfPrimitive,
 			&((*aVertexArray)[0]),
 			aVertexArray->size() / 3,
 			GL_DOUBLE,
@@ -1262,7 +1262,7 @@ void PolygonMesh::setExternalData(int aPolygonType,
 
 
 //---------------------------------------------------------------
-void PolygonMesh::setExternalData(int aPolygonType,
+void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 								  const void* aVertexArray,
 								  unsigned int aNumberOfVertices,
 								  int aVertexDataType,
@@ -1276,7 +1276,7 @@ void PolygonMesh::setExternalData(int aPolygonType,
 	reset();
 
 	m_external_data_flag = true;
-	m_polygon_type       = aPolygonType;
+	m_polygon_type       = aTypeOfPrimitive;
 	m_p_vertex_set       = const_cast<void*>(aVertexArray);
 	m_number_of_vertices = aNumberOfVertices;
 	m_vertex_data_type   = aVertexDataType;

@@ -179,6 +179,7 @@ public:
 	///	Use a vertex buffer object if possible.
 	/**
 	*	@param aBufferUsageHing:	the buffer usage hint; valid values are: GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*	@param aTypeOfPrimitive: type of primitive; valid values are GL_TRIANGLES
 	*	@return true if the VBO can be used, false otherwise
 	*/
 	//--------------------------------------------------------------------------
@@ -380,6 +381,7 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param aNumberOfVertices:	number of vertices
 	*	@param aVertexDataType:		data type of the vertex data; valid values are GL_FLOAT, GL_DOUBLE and GL_NONE
@@ -390,7 +392,7 @@ public:
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const void* aVertexArray,
 			unsigned int aNumberOfVertices,
 			int aVertexDataType,
@@ -405,12 +407,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -420,12 +423,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
 	//--------------------------------------------------------------------------
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			bool aCreateVBOFlag,
 			int aTypeOfVBO);
@@ -435,12 +439,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param anIndexArray:		array containing the index data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned int>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -451,12 +456,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param anIndexArray:		array containing the index data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned int>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -467,12 +473,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param anIndexArray:		array containing the index data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned short>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -483,12 +490,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param anIndexArray:		array containing the index data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned short>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -499,12 +507,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param anIndexArray:		array containing the index data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned char>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -515,12 +524,13 @@ public:
 	///	Set the polygon mesh using external data. The class instance will not
 	///	manage the memory.
 	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
 	*	@param aVertexArray:		array containing the vertex data
 	*	@param anIndexArray:		array containing the index data
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
-	void setExternalData(int aPolygonType,
+	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned char>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -545,7 +555,8 @@ public:
 	//--------------------------------------------------------------------------
 	///	Update the VBO.
 	/**
-	*	@param aTypeOfVBO: the VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
 	*/
 	//--------------------------------------------------------------------------
 	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
