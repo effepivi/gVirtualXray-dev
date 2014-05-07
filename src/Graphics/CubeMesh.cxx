@@ -29,7 +29,11 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
 #include <GL/glcorearb.h>
+#endif
 
 #ifndef GVXR_CUBE_MESH_H
 #include "gVirtualXRay/CubeMesh.h"
