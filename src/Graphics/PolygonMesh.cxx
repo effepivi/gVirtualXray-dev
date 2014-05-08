@@ -760,7 +760,7 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 	// Generate an error
 	else
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
 	}
 }
 
@@ -949,7 +949,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 	// Generate an error
 	else
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
 	}
 }
 
@@ -1504,6 +1504,6 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 	// Generate an error
 	else
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed.");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
 	}
 }

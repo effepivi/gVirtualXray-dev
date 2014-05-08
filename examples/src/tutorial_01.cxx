@@ -29,27 +29,33 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+// Ensure we are using opengl's core profile only
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
-#include <GLFW/glfw3.h>
+#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
 
-#include <iostream>
-#include <exception>
+#include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
 
+#include <iostream>   // Print error messages in the console
+#include <exception>  // Catch C++ exception
+
+// Define new types, e.g.~RATIONAL_NUMBER, VEC2, VEC3 and MATRIX4 to name a few
 #include "gVirtualXRay/Types.h"
-#include "gVirtualXRay/Units.h"
-#include "gVirtualXRay/PolygonMesh.h"
-#include "gVirtualXRay/XRayBeam.h"
-#include "gVirtualXRay/XRayDetector.h"
-#include "gVirtualXRay/XRayRenderer.h"
-#include "gVirtualXRay/Shader.h"
 
-#include "buildCube.h"
+// Define units such as metre, kilometre, electronvolt, gram, kilogram, etc.
+#include "gVirtualXRay/Units.h"
+
+#include "gVirtualXRay/PolygonMesh.h"  // Handle 3D triangle meshes
+#include "gVirtualXRay/XRayBeam.h"     // Manage X-Ray beams
+#include "gVirtualXRay/XRayDetector.h" // Handle virtual X-Ray detectors
+#include "gVirtualXRay/XRayRenderer.h" // Compute X-Ray images on the GPU
+#include "gVirtualXRay/Shader.h"       // Handle GLSL programs
+
+#include "buildCube.h" // Create the triangle mesh of a cube
 
 
 //******************************************************************************
@@ -65,6 +71,7 @@ using namespace std;
 GLsizei g_window_width( 640);
 GLsizei g_window_height(480);
 GLFWwindow* g_p_window_id(0);
+Shader g_display_shader;
 
 // Components needed to simulate X-ray images
 XRayDetector g_xray_detector;
@@ -72,9 +79,8 @@ XRayBeam     g_xray_beam;
 XRayRenderer g_xray_simulator;
 PolygonMesh g_polygon_mesh_1;
 PolygonMesh g_polygon_mesh_2;
-Shader g_display_shader;
 
-MATRIX4 g_sample_rotation_matrix(MATRIX4::buildRotationMatrix(10.0, VEC3(1, 1, 1)));
+MATRIX4 g_sample_rotation_matrix;
 
 std::vector<double> g_p_vertex_set_1;
 std::vector<unsigned char> g_p_index_set_1;
@@ -82,11 +88,11 @@ std::vector<float> g_p_vertex_set_2;
 
 const GLchar* g_vertex_shader = "\
 \n#version 150\n \
+\n \
 in vec3 in_Vertex;\n \
 in vec3 in_TexCoord;\n \
 in vec3 in_Normal;\n \
 \n \
-smooth out vec3 g_texture_coordinates;\n \
 smooth out vec3 g_normal;\n \
 smooth out vec4 g_object_position;\n \
 \n \
@@ -98,8 +104,7 @@ void main(void)\n \
 {\n \
 	g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
 	g_normal = normalize(g_normal_matrix * in_Normal);\n \
-	g_texture_coordinates = in_TexCoord;\n \
-	gl_Position = g_projection_matrix * g_modelview_matrix * g_object_position;\n \
+	gl_Position = g_projection_matrix * g_object_position;\n \
 }\n \
 ";
 
@@ -107,15 +112,14 @@ const GLchar* g_fragment_shader = "\
 \n#version 150\n \
 precision highp float;\n \
 \n \
-smooth in vec3 g_texture_coordinates;\n \
 smooth in vec3 g_normal;\n \
 smooth in vec4 g_object_position;\n \
 \n \
 out vec4 fragColor;\n \
 void main(void)\n \
 {\n \
-    vec3 light_direction = vec3(0.0, 1.0, 0.0);\n \
-    fragColor = vec4(vec3(1.0, 1.0, 1.0) * max(0.0, dot(light_direction, g_normal)), 1.0);\n \
+    vec3 light_direction = normalize(vec3(1.0, 0.5, 0.6));\n \
+    fragColor = vec4(vec3(0.0, 0.0, 1.0) * max(0.0, dot(light_direction, g_normal)), 1.0);\n \
 }\n \
 ";
 
@@ -145,7 +149,7 @@ int main(int argc, char** argv)
 	int return_code(EXIT_SUCCESS);
 	try
 	{
-		// Initialise GLUT
+		// Initialise GLFW
 		initGLFW();
 
 		// Initialise OpenGL
@@ -247,6 +251,8 @@ void initGLFW()
     // Make the window's context current
     glfwMakeContextCurrent(g_p_window_id);
 
+	// Initialize GLFW keyboard callback
+	glfwSetKeyCallback(g_p_window_id, keyCallback);
 }
 
 
@@ -263,6 +269,10 @@ void initGL()
 	// Check if any OpenGL error has occurred.
 	// If any has, an exception is thrown
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Set the projection matrix
+
+	// Set the viewving matrix
 }
 
 
@@ -288,7 +298,7 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	glViewport(x, y, w, h);
 
 	// Set up the projection matrix (g_current_projection_matrix)
-	loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 5.0 * cm, 500.0 * cm);
+	loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 0.1 * cm, 5000.0 * cm);
 
 	// Set up the modelling-viewing matrix (g_current_modelview_matrix)
 	loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, -50.0 * cm,
@@ -297,75 +307,29 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 }
 
 
-//------------
-void display()
-//------------
-{
-	// Clear the buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Set the light position
-	/*GLfloat light_position[] = { 10.0 * cm, 50.0 * cm, 10.0 * cm, 1.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-	// Enable lighting
-	glEnable(GL_LIGHTING);
-
-	// Set the source colour
-	glColor4f(1.0f, 0.0f, 1.0f, 0.2f);
-
-	// Display the source
-	g_xray_detector.displaySource();
-
-	// Store the current transformation matrix
-	glPushMatrix();
-
-	// Apply the transformation matrix
-	glMultMatrixf(g_sample_rotation_matrix.get4x4());
-
-	// Set the scanned object colour
-	glColor4f(0.0f, 0.0f, 1.0f, 0.2f);
-
-	// Display the scanned object colour
-	g_polygon_mesh_2.display();
-
-	// Restore the current transformation matrix
-	glPopMatrix();
-
-	// Disable lighting
-	glDisable(GL_LIGHTING);
-
-	// Display the detector with the corresponding X-ray image
-	g_xray_simulator.display();
-
-	// Set the beam colour (transparency is used, this is why the beam is displayed last)
-	glColor4f(0.5f, 0.0f, 0.0f, 0.2f);
-
-	// Display the shape of the beam
-	g_xray_detector.displayBeam();*/
-}
-
-
 //-------------------------------------------------------------------------------
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 //-------------------------------------------------------------------------------
 {
-	switch(key)
+	if (action == GLFW_PRESS)
 	{
-	// Close the program
-	case GLFW_KEY_Q:
-	case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
+		switch(key)
+		{
+		// Close the program
+		case GLFW_KEY_Q:
+		case GLFW_KEY_ESCAPE:
+				glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
+				break;
+
+		// Toggle the rendering mode
+		// (negative image/positive image)
+		case GLFW_KEY_N:
+			g_xray_simulator.useNegativeFilteringFlag(!g_xray_simulator.getNegativeFilteringFlag());
 			break;
 
-	// Toggle the rendering mode
-	// (negative image/positive image)
-	case GLFW_KEY_N:
-		g_xray_simulator.useNegativeFilteringFlag(!g_xray_simulator.getNegativeFilteringFlag());
-		break;
-
-	default:
-		break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -408,7 +372,6 @@ void setDetector()
 
 	// Size of pixels (in unit of length)
 	RATIONAL_NUMBER resolution(320.0 * mm / number_of_pixels.getX());
-
 	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(resolution);
 
 	// Position of the detector
@@ -452,13 +415,26 @@ void setScannedObject()
 	buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
 	buildCube(length_2, cube_centre, g_p_vertex_set_2);
 
-    // Set geometry
-	g_polygon_mesh_1.setExternalData(GL_TRIANGLES, &g_p_vertex_set_1, &g_p_index_set_1, true, GL_STATIC_DRAW);
-	g_polygon_mesh_2.setExternalData(GL_TRIANGLES, &g_p_vertex_set_2, true, GL_STATIC_DRAW);
+	// Rotate the sample
+	g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+	g_sample_rotation_matrix.rotate( 30, VEC3(0, 0, 1));
+	g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+
+	// Set geometry
+	g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
+			&g_p_vertex_set_1,
+			&g_p_index_set_1,
+			true,
+			GL_STATIC_DRAW);
+
+	g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
+			&g_p_vertex_set_2,
+			true,
+			GL_STATIC_DRAW);
 
 	// Set the material properties
-	g_polygon_mesh_1.setHounsfieldValue(50.0);
-	g_polygon_mesh_2.setHounsfieldValue( 0.0);
+	g_polygon_mesh_1.setHounsfieldValue(1000.0);
+	g_polygon_mesh_2.setHounsfieldValue(-200.0);
 }
 
 
@@ -483,4 +459,64 @@ void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
 	std::cerr << "GLFW error: " << description << std::endl;
+}
+
+
+//------------
+void display()
+//------------
+{
+	// Clear the buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Enable the shader
+	pushShaderProgram();
+	g_display_shader.enable();
+	GLint shader_id(g_display_shader.getProgramHandle());
+
+	// Check the status of OpenGL and of the current FBO
+	checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	GLuint handle(0);
+	handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	MATRIX4 normal_matrix(g_current_modelview_matrix);
+	handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+	glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Display the source
+	g_xray_detector.displaySource();
+
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+	pushProjectionMatrix();
+
+	// Rotate the sample
+	g_current_modelview_matrix *= g_sample_rotation_matrix;
+	applyModelViewMatrix();
+
+	// Display the scanned object colour
+	g_polygon_mesh_2.display();
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+	popProjectionMatrix();
+
+	// Display the detector with the corresponding X-ray image
+	g_xray_simulator.display();
+
+	// Disable the shader
+	popShaderProgram();
+
+	// Check the status of OpenGL and of the current FBO
+	checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
