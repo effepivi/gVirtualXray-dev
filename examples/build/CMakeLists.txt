@@ -140,6 +140,8 @@ ENDIF(USE_BUNDLE)
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES ../../examples/shaders/display.frag
 	../../examples/shaders/display.vert
+    ../src/tutorial_02.frag
+    ../src/tutorial_02.vert
 )
 
 
@@ -188,6 +190,10 @@ IF(USE_GLFW)
 	ADD_EXECUTABLE (tutorial_01 ../src/tutorial_01.cxx ../src/buildCube.cxx)
 	#SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (tutorial_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+	ADD_EXECUTABLE (tutorial_02 ../src/tutorial_02.cxx ../src/buildCube.cxx)
+	#SET_PROPERTY(TARGET tutorial_02 PROPERTY LINK_SEARCH_START_STATIC 1) 
+	TARGET_LINK_LIBRARIES (tutorial_02 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 	ADD_EXECUTABLE (tutorial_03 ../src/tutorial_03.cxx ../src/buildCube.cxx)
 	#SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
@@ -279,7 +285,7 @@ ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
 ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
 ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_01 BinaryDemoFiles)
-#ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
+ADD_DEPENDENCIES(tutorial_02 BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
 IF(USE_BUNDLE)
 	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
