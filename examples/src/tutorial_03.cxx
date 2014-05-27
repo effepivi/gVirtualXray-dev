@@ -6,6 +6,7 @@
 *   @brief      Improve the second tutorial by:
 *               - Adding a better shader program to display the 3D scene with Phong shading.
 *               - Adding the X-ray simulation.
+*               - Display objects in wireframe or not
 *
 *   @version    1.0
 *
@@ -130,6 +131,9 @@ GLint g_current_y_position(0); // Current x position of the cursor
 XRayDetector g_xray_detector;
 XRayBeam     g_xray_beam;
 XRayRenderer g_xray_simulator;
+
+// Control the display in wireframe or not
+bool g_wireframe(false);
 
 
 //******************************************************************************
@@ -394,6 +398,16 @@ void displayCallback()
     // Rotate the 3D scene
     g_current_modelview_matrix *= g_scene_rotation_matrix;
 
+    // Wireframe mode
+    handle = glGetUniformLocation(shader_id, "g_wireframe");
+    glUniform1i(handle, false);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // The first object is the inner cube
+    handle = glGetUniformLocation(shader_id, "g_inner_surface");
+    glUniform1i(handle, 0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     // Display the source
     g_xray_detector.displaySource();
 
@@ -406,11 +420,55 @@ void displayCallback()
     // Apply the change to the shader program
     applyModelViewMatrix();
 
+    // Wireframe mode
+    handle = glGetUniformLocation(shader_id, "g_wireframe");
+    glUniform1i(handle, g_wireframe);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // The first object is the inner cube
+    handle = glGetUniformLocation(shader_id, "g_inner_surface");
+    glUniform1i(handle, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     // Display the 1st object
-    g_polygon_mesh_1.display();
+    if (!g_wireframe)
+    {
+        g_polygon_mesh_1.display();
+    }
+    else
+    {
+        g_polygon_mesh_1.displayWireFrame();
+    }
+
+    // Store the state of alpha blending
+    if (!g_wireframe)
+    {
+        pushEnableDisableState(GL_BLEND);
+        glEnable(GL_BLEND);
+        glDepthMask (GL_FALSE);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    // The second object is the outer cube
+    glUniform1i(handle, 0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Display the 2nd object
-    g_polygon_mesh_2.display();
+    if (!g_wireframe)
+    {
+        g_polygon_mesh_2.display();
+    }
+    else
+    {
+        g_polygon_mesh_2.displayWireFrame();
+    }
+
+    // Restore the state of alpha blending
+    if (!g_wireframe)
+    {
+        popEnableDisableState();
+        glDepthMask (GL_TRUE);
+    }
 
     // Restore the current transformation matrix
     popModelViewMatrix();
@@ -506,6 +564,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
                 break;
+
+        case GLFW_KEY_W:
+            g_wireframe = !g_wireframe;
+            break;
 
         default:
             break;
