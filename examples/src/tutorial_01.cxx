@@ -96,7 +96,7 @@ vector<unsigned char> g_p_index_set_1;
 vector<float> g_p_vertex_set_2;
 
 // Control the zoom
-RATIONAL_NUMBER g_zoom(-50.0 * cm);
+RATIONAL_NUMBER g_zoom(50.0 * cm);
 
 // Vertex shader
 const GLchar* g_vertex_shader = "\
@@ -415,9 +415,11 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 
     int x(0), y(0), w(width), h(height);
 
+    // Store the width and height of the window
     g_window_width = width;
     g_window_height = height;
 
+    // Compute the aspect ratio of the size of the window
     double screen_aspect_ratio(double(g_window_width) / double(g_window_height));
 
     // Update the viewport
