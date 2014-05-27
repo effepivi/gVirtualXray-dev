@@ -142,6 +142,8 @@ SET (RESOURCES_SOURCES ../../examples/shaders/display.frag
 	../../examples/shaders/display.vert
     ../src/tutorial_02.frag
     ../src/tutorial_02.vert
+    ../src/tutorial_03.frag
+    ../src/tutorial_03.vert
 )
 
 

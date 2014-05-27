@@ -472,7 +472,7 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 0.1 * cm, 5000.0 * cm);
 
     // Set up the modelling-viewing matrix (g_current_modelview_matrix)
-    loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, g_zoom,
+    loadLookAtModelViewMatrix(0.0 * cm, 0.0 * cm, g_zoom,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 }
