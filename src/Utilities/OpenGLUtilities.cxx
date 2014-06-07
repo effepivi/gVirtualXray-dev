@@ -49,7 +49,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+namespace gVirtualXRay {
 
 
 std::vector<MATRIX4> g_p_modelview_matrix_stack;
@@ -124,7 +124,7 @@ void pushTexture1D()
 	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_1D, current_texture_id);
 
 	// Add the last texture
-	g_texture_stack.push_back(current_texture_pair);
+	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -140,7 +140,7 @@ void pushTexture2D()
 	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_2D, current_texture_id);
 
 	// Add the last texture
-	g_texture_stack.push_back(current_texture_pair);
+	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -156,7 +156,7 @@ void pushTextureRectangle()
 	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE, current_texture_id);
 
 	// Add the last texture
-	g_texture_stack.push_back(current_texture_pair);
+	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -172,7 +172,7 @@ void pushTexture3D()
 	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_3D, current_texture_id);
 
 	// Add the last texture
-	g_texture_stack.push_back(current_texture_pair);
+	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
 
@@ -183,7 +183,7 @@ void pushEnableDisableState(int aParameter)
 	GLboolean state;
 	glGetBooleanv(aParameter, &state);
 
-	g_enable_disable_state_stack.push_back(std::pair<int, bool>(aParameter, state));
+	gVirtualXRay::g_enable_disable_state_stack.push_back(std::pair<int, bool>(aParameter, state));
 }
 
 
@@ -194,7 +194,7 @@ void pushShaderProgram()
 	GLint current_shader(0);
 	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
 
-	g_shader_program_stack.push_back(current_shader);
+	gVirtualXRay::g_shader_program_stack.push_back(current_shader);
 }
 
 
@@ -220,7 +220,7 @@ void popFBO()
 	{
 		// Restore the FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, previous_fbo_id);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// Remove the last FBO
@@ -233,7 +233,7 @@ void popShaderProgram()
 //---------------------
 {
 	// Make sure the stack is not empty
-	if (g_shader_program_stack.size() == 0)
+	if (gVirtualXRay::g_shader_program_stack.size() == 0)
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
@@ -243,18 +243,18 @@ void popShaderProgram()
 	glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
 
 	// Get the previous program from the stack
-	GLint previous_program(g_shader_program_stack.back());
+	GLint previous_program(gVirtualXRay::g_shader_program_stack.back());
 
 	// The two programs are different
 	if (previous_program != current_shader)
 	{
 		// Restore the FBO
 		glUseProgram(previous_program);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// Remove the last program
-	g_shader_program_stack.pop_back();
+	gVirtualXRay::g_shader_program_stack.pop_back();
 }
 
 
@@ -263,16 +263,16 @@ void popTexture()
 //---------------
 {
 	// Make sure the stack is not empty
-	if (g_texture_stack.size() == 0)
+	if (gVirtualXRay::g_texture_stack.size() == 0)
 	{
 		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// Get the previous texture from the stack
-	std::pair<int, int> previous_texture(g_texture_stack.back());
+	std::pair<int, int> previous_texture(gVirtualXRay::g_texture_stack.back());
 
 	// Remove the last texture
-	g_texture_stack.pop_back();
+	gVirtualXRay::g_texture_stack.pop_back();
 
 	// Save the current texture
 	GLint current_texture_id(0);
@@ -379,14 +379,14 @@ void applyModelViewMatrix()
 	{
 		GLuint modelview_matrix_handle(glGetUniformLocation(program_handle, "g_modelview_matrix"));
 		glUniformMatrix4fv(modelview_matrix_handle, 1, GL_FALSE, g_current_modelview_matrix.get());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		MATRIX4 normal_matrix(g_current_modelview_matrix.getInverse().getTranspose());
 		GLuint normal_matrix_handle(glGetUniformLocation(program_handle, "g_normal_matrix"));
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 }
 
 
-} // namespace Utilities
+};

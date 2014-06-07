@@ -38,9 +38,9 @@
 #include <string.h>
 
 
-//---------------------------------------------------------------
-int Utilities::inflate(const void *src, int srcLen, char** apDst)
-//---------------------------------------------------------------
+//------------------------------------------------------------------
+int gVirtualXRay::inflate(const void *src, int srcLen, char** apDst)
+//------------------------------------------------------------------
 {
 	// See http://stackoverflow.com/questions/4901842/in-memory-decompression-with-zlib
 	int dstLen(50 * srcLen);
