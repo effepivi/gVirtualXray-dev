@@ -47,10 +47,9 @@ precision highp float; // Video card drivers require this line to function prope
 //******************************************************************************
 //	Input
 //******************************************************************************
-smooth in float g_distance_intersection_detector;
-smooth in vec3 g_viewing_vector;
-smooth in vec4 g_normal_0;
-smooth in vec4 g_normal_1;
+smooth in vec3 g_in_vertex;
+smooth in vec3 g_normal_0;
+smooth in vec3 g_normal_1;
 
 
 //******************************************************************************
@@ -60,9 +59,11 @@ out vec4 fragColor;
 
 
 //******************************************************************************
-//   Defines
+//	Constants
 //******************************************************************************
-#define EPSILON         0.000001
+const bool PERSPECTIVE_PROJECTION = false;
+const bool PARALLEL_PROJECTION    = true;
+const float EPSILON = 0.01;
 
 
 //******************************************************************************
@@ -70,47 +71,67 @@ out vec4 fragColor;
 //******************************************************************************
 uniform float g_to_cm_scale;
 uniform mat4 g_modelling_matrix;
+uniform mat3 g_normal_matrix;
+uniform mat4 g_inverse_modelview_matrix;
+uniform bool g_projection_type; // 1 for parallel beam
+uniform vec3 g_ray_direction;
+uniform vec3 g_source_position;
 
 
 //--------------
 void main (void)
 //--------------
 {
+    float distance_intersection_detector = distance(g_in_vertex, g_inverse_modelview_matrix[3].xyz);
+
 	// Transformed normal
-	vec4 normal_0 = g_modelling_matrix * g_normal_0;
-	vec4 normal_1 = g_modelling_matrix * g_normal_1;
-	vec3 viewing_vector = g_viewing_vector;
+	vec3 normal_0 = normalize(g_normal_matrix * g_normal_0);
+	vec3 normal_1 = normalize(g_normal_matrix * g_normal_1);
 
-	normal_0.xyz /= normal_0.w;
-	normal_0.w = 1.0;		
-	normal_0.xyz = normalize(normal_0.xyz);
+    // Transform the vertex
+	vec4 transformed_vertex = g_modelling_matrix * vec4(g_in_vertex, 1.0);
+	transformed_vertex.xyz /= transformed_vertex.w;
+	transformed_vertex.w = 1.0;
 
-	normal_1.xyz /= normal_1.w;
-	normal_1.w = 1.0;		
-	normal_1.xyz = normalize(normal_1.xyz);
+    // Get the viewing direction
+    vec3 viewing_vector;
+    
+	// Use parallel beam
+	if (g_projection_type == PARALLEL_PROJECTION)
+	{
+		viewing_vector = -g_ray_direction;
+	}
+    // Use perspective projection
+	else
+	{
+		viewing_vector = -normalize(transformed_vertex.xyz - g_source_position);
+	}
 
 	// Save the dot product
-	float dot_product_sign = sign(dot(normal_0.xyz, viewing_vector));
-/*	if (abs(dot_product_sign) < 0.5)
+	float dot_product = dot(normal_0, viewing_vector);
+	float dot_product_sign = sign(dot_product);
+    
+	if (abs(dot_product_sign) < 0.5)
 	{
 		normal_0.x += 0.1;
 		normal_0.y += 0.1;
-		normal_0.xyz = normalize(normal_0.xyz);
+		normal_0 = normalize(normal_0);
 
 		viewing_vector.x += 0.1;
 		viewing_vector.y += 0.1;
-		viewing_vector.xyz = normalize(viewing_vector);
+		viewing_vector = normalize(viewing_vector);
 
-		dot_product_sign = sign(dot(normal_0.xyz, viewing_vector));
+        dot_product = dot(normal_0, viewing_vector);
+		dot_product_sign = sign(dot_product);
 	}
-	*/
-	float value = -dot_product_sign * g_distance_intersection_detector * g_to_cm_scale;
+	
+	float value = dot_product_sign * distance_intersection_detector * g_to_cm_scale;
 	//if (g_distance_intersection_detector < 0.0) value = 0.0;
 	
 	// In the red channel: the L-buffer value
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
-	fragColor = vec4(value, dot_product_sign, dot(normal_0.xyz, viewing_vector), 1.0);
+	fragColor = vec4(value, dot_product_sign, dot_product, 1.0);
 }
 
