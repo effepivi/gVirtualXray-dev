@@ -30,8 +30,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
-using namespace Utilities;
+namespace gVirtualXRay {
 
 
 //----------------------------------------------------------------
@@ -130,4 +129,4 @@ inline bool StereoHelper::isActive() const
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay

@@ -30,7 +30,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+namespace gVirtualXRay {
 
 
 //--------------------------------------------------------------------------
@@ -47,4 +47,4 @@ inline OutOfMemoryException::OutOfMemoryException(const char* aFileName,
 }
 
 
-} // namespace Utilities
+} // namespace gVirtualXRay

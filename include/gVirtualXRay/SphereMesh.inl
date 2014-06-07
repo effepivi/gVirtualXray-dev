@@ -47,7 +47,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
+namespace gVirtualXRay {
 
 
 //----------------------------------------------------------
@@ -62,4 +62,4 @@ inline SphereMesh::SphereMesh(unsigned int aNumberOfRings,
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay
