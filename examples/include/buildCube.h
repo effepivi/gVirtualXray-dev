@@ -53,8 +53,8 @@
 *	@param 	apVertexSet:	the vertices of the cube
 */
 //------------------------------------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLength,
-		Utilities::VEC3 aCentre,
+void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
+		gVirtualXRay::VEC3 aCentre,
 		std::vector<double>& apVertexSet);
 
 
@@ -66,8 +66,8 @@ void buildCube(Utilities::RATIONAL_NUMBER aLength,
 *	@param 	apVertexSet:	the vertices of the cube
 */
 //------------------------------------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLength,
-		Utilities::VEC3 aCentre,
+void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
+		gVirtualXRay::VEC3 aCentre,
 		std::vector<double>& apVertexSet,
 		std::vector<unsigned char>& apIndexSet);
 
@@ -80,8 +80,8 @@ void buildCube(Utilities::RATIONAL_NUMBER aLength,
 *	@param 	apVertexSet:	the vertices of the cube
 */
 //------------------------------------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLength,
-		Utilities::VEC3 aCentre,
+void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
+		gVirtualXRay::VEC3 aCentre,
 		std::vector<float>& apVertexSet);
 
 
@@ -93,8 +93,8 @@ void buildCube(Utilities::RATIONAL_NUMBER aLength,
 *	@param 	apVertexSet:	the vertices of the cube
 */
 //------------------------------------------------------------------------------
-void buildCube(Utilities::RATIONAL_NUMBER aLength,
-		Utilities::VEC3 aCentre,
+void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
+		gVirtualXRay::VEC3 aCentre,
 		std::vector<float>& apVertexSet,
 		std::vector<unsigned char>& apIndexSet);
 
