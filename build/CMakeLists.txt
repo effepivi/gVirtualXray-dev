@@ -99,7 +99,7 @@ SET (CXX_SOURCES
     # Utilities
 	../src/Utilities/FBOException.cxx
 	../src/Utilities/OpenGLException.cxx
-    ../src/Utilities/OpenGLUtilities.cxx
+	../src/Utilities/OpenGLUtilities.cxx
 	../src/Utilities/Utilities.cxx
 
 )
@@ -108,6 +108,8 @@ SET (CXX_SOURCES
 # Add header files to the project
 SET (HXX_SOURCES
 	# gVirtualXRay
+	${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRayConfig.h
+
 	../include/gVirtualXRay/AttenuationCoefficient.h
 	../include/gVirtualXRay/AttenuationCoefficient.inl
 	../include/gVirtualXRay/SpectrumRecord.h
@@ -130,6 +132,9 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
+	../include/gVirtualXRay/StereoHelper.inl
+	../include/gVirtualXRay/SphereMesh.h
+	../include/gVirtualXRay/SphereMesh.inl
 	../include/gVirtualXRay/VBO.h
 	../include/gVirtualXRay/VBO.inl
 
