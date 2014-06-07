@@ -368,15 +368,11 @@ void XRayDetector::updateDetectorVBO()
 	// Texture coordinates
 	std::vector<GLfloat> p_texture_coordinates;
 
-	p_texture_coordinates.push_back(1);
-	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(0);
 
-	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(1);
-	p_texture_coordinates.push_back(0);
-
-	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(0);
 	p_texture_coordinates.push_back(0);
 
@@ -389,7 +385,11 @@ void XRayDetector::updateDetectorVBO()
 	p_texture_coordinates.push_back(0);
 
 	p_texture_coordinates.push_back(1);
+	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
+
+	p_texture_coordinates.push_back(0);
+	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
 
 	m_detector_geometry.setBufferUsageHint(GL_STATIC_DRAW);
