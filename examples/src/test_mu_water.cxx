@@ -123,19 +123,19 @@ int main(int argc, char** argv)
 		double energy(0);
 		for (energy = 1.00E-003; energy / MeV <= 0.1 * MeV; energy += 0.0001)
 		{
-			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
+			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy)    / (cm2/g) << " cm2/g" << std::endl;
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
 		for (; energy / MeV <= 100 * MeV; energy += 0.1)
 		{
-			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
+			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy)    / (cm2/g) << " cm2/g" << std::endl;
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
 		for (; energy / MeV <= 1.00E+005 / MeV; energy += 5)
 		{
-			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
+			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy)    / (cm2/g) << " cm2/g" << std::endl;
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
