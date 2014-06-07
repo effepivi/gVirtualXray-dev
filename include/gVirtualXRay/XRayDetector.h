@@ -61,8 +61,6 @@
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {
-	using namespace Utilities;
-	using namespace Graphics;
 
 
 //==============================================================================
@@ -138,21 +136,21 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Set the position of the X-ray source.
-	/**
-	*	@param aXraySourcePosition:	the position of the X-ray source
-	*/
-	//--------------------------------------------------------------------------
-	void setXrayPointSource(const VEC3& aXraySourcePosition);
-
-
-	//--------------------------------------------------------------------------
 	///	Set the position of the X-ray detector.
 	/**
 	*	@param aDetectorPosition:	the position of the X-ray detector
 	*/
 	//--------------------------------------------------------------------------
 	void setDetectorPosition(const VEC3& aDetectorPosition);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the position of the X-ray source.
+	/**
+	*	@param aXraySourcePosition:	the position of the X-ray source
+	*/
+	//--------------------------------------------------------------------------
+	void setXrayPointSource(const VEC3& aXraySourcePosition);
 
 
 	//--------------------------------------------------------------------------
@@ -194,6 +192,30 @@ public:
 			const VEC3& aDirection,
 			unsigned int aNumberOfSamplesAlongOneDirection,
 			RATIONAL_NUMBER aLength);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the position of the X-ray source.
+	//--------------------------------------------------------------------------
+	void setXrayPointSource();
+
+
+	//--------------------------------------------------------------------------
+	///	Set the shape of the source as a cube.
+	//--------------------------------------------------------------------------
+	void setCubicSource();
+
+
+	//--------------------------------------------------------------------------
+	///	Set the shape of the source as a square.
+	//--------------------------------------------------------------------------
+	void setSquareSource();
+
+
+	//--------------------------------------------------------------------------
+	///	Set the shape of the source as a line segment.
+	//--------------------------------------------------------------------------
+	void setLineSource();
 
 
 	//--------------------------------------------------------------------------
@@ -330,6 +352,12 @@ public:
 	SourceShape getSourceShape() const;
 
 
+	const std::vector<VEC3>& getSourcePositionSet() const;
+
+
+	void setSourcePositions(const std::vector<VEC3>& aSourcePostionSet);
+
+
 	//--------------------------------------------------------------------------
 	///	Accessor on the flag about projection.
 	/**
@@ -338,6 +366,16 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	bool useParallelBeam() const;
+
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the view along the Y-axis.
+	/**
+	*	@return the view along the Y-axis
+	*/
+	//--------------------------------------------------------------------------
+	const RATIONAL_NUMBER& getFOVY() const;
 
 
 //******************************************************************************
@@ -376,6 +414,12 @@ protected:
 	///	Update the VBO of the cone beam.
 	//--------------------------------------------------------------------------
 	void updateConeBeamVBO();
+
+
+	//--------------------------------------------------------------------------
+	///	Update the view along the Y-axis.
+	//--------------------------------------------------------------------------
+	void updateFOVY();
 
 
  	/// The position of the detector centre
@@ -456,6 +500,10 @@ protected:
 
 	/// The cross product between m_look_at_vector and m_up_vector
 	VEC3 m_right_vector;
+
+
+	/// Field of view along the Y-axis
+	RATIONAL_NUMBER m_fovy;
 };
 
 
