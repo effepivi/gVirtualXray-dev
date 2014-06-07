@@ -35,7 +35,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Math {
+namespace gVirtualXRay {
 
 
 //------------------------------------------------------------------------
@@ -342,4 +342,4 @@ template <typename T> std::ostream& operator<<(std::ostream& anOutputStream,
 }
  
 
-} // namespace Math
+} // namespace gVirtualXRay

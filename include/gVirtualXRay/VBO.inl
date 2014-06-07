@@ -51,8 +51,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
-using namespace Utilities;
+namespace gVirtualXRay {
 
 
 //----------------
@@ -124,4 +123,4 @@ inline VBO& VBO::operator=(const VBO& aVBO)
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay

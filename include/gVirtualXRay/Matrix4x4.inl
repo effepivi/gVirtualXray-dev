@@ -41,7 +41,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Math {
+namespace gVirtualXRay {
 
 
 //----------------------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
 //--------------------------------------------------------------------------------
 {
 	Vec3<T> rotation_axis(Vec3<T>(x, y, z).normal());
-	double angle(Utilities::PI * anAngle / 180.0);
+	double angle(gVirtualXRay::PI * anAngle / 180.0);
 	double c(cos(angle));
 	double s(sin(angle));
 	double one_minus_cos(1.0 - c);
@@ -411,4 +411,4 @@ template<typename T> void Matrix4x4<T>::print() const
 }	
 
 
-} // namespace Math
+} // namespace gVirtualXRay

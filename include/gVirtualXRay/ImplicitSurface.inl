@@ -48,7 +48,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Graphics {
+namespace gVirtualXRay {
 	
 
 //----------------------------------------------------------------------------------------------------
@@ -279,4 +279,4 @@ inline RATIONAL_NUMBER ImplicitSurface::evaluateSoftObject(RATIONAL_NUMBER r,
 }
 
 
-} // namespace Graphics
+} // namespace gVirtualXRay
