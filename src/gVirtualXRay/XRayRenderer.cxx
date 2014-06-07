@@ -146,12 +146,14 @@ XRayRenderer::XRayRenderer():
 		m_p_l_buffer_image(ImageType::New()),
 		m_p_sum_mux_dx_image(ImageType::New()),
 		m_p_energy_fluence_image(ImageType::New()),
+		m_p_sinogram_image(ImageType::New()),
 #endif // HAS_ITK
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
 		m_use_L_buffer_artefact_filtering(true),
-		m_L_buffer_empty(false)
+		m_L_buffer_empty(false),
+		m_energy_fluence_empty(false)
 //-------------------------------------------------------------------------------------------------
 {
 }
@@ -364,6 +366,151 @@ void XRayRenderer::deleteFBOs()
 }
 
 
+//-------------------------------------------------------------------------------
+void XRayRenderer::computeSinogram(unsigned int aNumberOfAngle,
+								   RATIONAL_NUMBER anAngleOffset,
+								   const MATRIX4& aModellingTransformationMatrix)
+//-------------------------------------------------------------------------------
+{
+#ifdef HAS_ITK
+	// Compute the size of a pixel
+	ImageType::SpacingType pixel_size;
+	pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
+	pixel_size[1] = anAngleOffset;
+	pixel_size[2] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
+
+	// Convert the size in mm * degree * mm
+	pixel_size[0] /= mm;
+	pixel_size[1] /= 1.0;
+	pixel_size[2] /= mm;
+
+	// Create a new image
+	ImageType::IndexType start;
+	start[0] = 0;
+	start[1] = 0;
+	start[2] = 0;
+
+	ImageType::SizeType sinogram_size;
+
+	sinogram_size[0] = m_p_detector->getNumberOfPixels().getX();
+	sinogram_size[1] = aNumberOfAngle;
+	sinogram_size[2] = m_p_detector->getNumberOfPixels().getY();
+
+	ImageType::RegionType sinogram_region;
+	sinogram_region.SetSize(sinogram_size);
+
+	sinogram_region.SetIndex(start);
+
+	// Allocate memory
+	m_p_sinogram_image->SetRegions(sinogram_region);
+
+	m_p_sinogram_image->Allocate();
+
+	// Set the pixel size
+	m_p_sinogram_image->SetSpacing(pixel_size);
+
+	// Compute the translation vector
+	VEC3 translation_vector((m_p_detector->getDetectorPosition() + m_p_detector->getXraySourceCentre()) / 2.0);
+
+	// Store the beam shape
+	XRayDetector::SourceShape source_shape(m_p_detector->getSourceShape());
+	const std::vector<VEC3> source_postion_set(m_p_detector->getSourcePositionSet());
+
+	// Make the beam parallel
+	if (source_shape != XRayDetector::PARALLEL)
+	{
+		m_p_detector->setParallelBeam();
+	}
+
+	// Compute the sinogram
+	for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
+	{
+		MATRIX4 transformation_matrix;
+
+		// Translate the sample
+		transformation_matrix.translate(-translation_vector);
+
+		// Rotate the sample
+		transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
+
+		// Translate the sample
+		transformation_matrix.translate(translation_vector);
+
+		// Compute the X-ray image
+		computeImage(transformation_matrix * aModellingTransformationMatrix);
+
+		// Load the FBO in the main memory
+		getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+
+		// Get the destination pointer
+		PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
+
+		// Save the data in the sinogram
+		//Process every line of the X-ray image
+		for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
+		{
+			// Compute the line position in the sinogram
+			unsigned int offset(j * aNumberOfAngle * m_p_detector->getNumberOfPixels().getX() +
+					angle * m_p_detector->getNumberOfPixels().getX());
+
+			// Copy the data
+			memcpy(p_pixel_set + offset, m_p_temp_raw_data + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
+		}
+	}
+
+
+	// Restore the beam shape
+	switch (source_shape)
+	{
+	case XRayDetector::POINT:
+		m_p_detector->setXrayPointSource();
+		break;
+
+	case XRayDetector::SQUARE:
+		m_p_detector->setSquareSource();
+		m_p_detector->setSourcePositions(source_postion_set);
+		break;
+
+	case XRayDetector::CUBE:
+		m_p_detector->setCubicSource();
+		m_p_detector->setSourcePositions(source_postion_set);
+		break;
+
+	case XRayDetector::LINE:
+		m_p_detector->setLineSource();
+		m_p_detector->setSourcePositions(source_postion_set);
+		break;
+
+	default:
+		break;
+	}
+#endif // HAS_ITK
+}
+
+
+//-----------------------------------------------------
+void XRayRenderer::printSinogram(const char* aFileName)
+//-----------------------------------------------------
+{
+#ifdef HAS_ITK
+	// The filename is not empty
+	if (aFileName)
+	{
+		// Create the file writer
+		typedef itk::ImageFileWriter<ImageType> ImageWriter;
+		ImageWriter::Pointer p_writer(ImageWriter::New());
+		p_writer->SetInput(m_p_sinogram_image);
+
+		// Set the writer
+		p_writer->SetFileName(aFileName);
+
+		// Write the data into a file
+		p_writer->Update();
+	}
+#endif // HAS_ITK
+}
+
+
 //------------------------------
 void XRayRenderer::loadMuWater()
 //------------------------------
@@ -492,6 +639,7 @@ void XRayRenderer::reset()
 	m_mu_water_set.clear();
 	m_p_fbo_set.clear();
 	m_L_buffer_empty = false;
+	m_energy_fluence_empty = false;
 
 	if (m_p_temp_raw_data)
 	{
@@ -768,7 +916,7 @@ void XRayRenderer::initShaders()
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
-	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].setLabels("l_buffer.vert", "l_buffer_fr.frag");
+	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].setLabels("l_buffer.vert", "l_buffer.frag");
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
@@ -1318,71 +1466,8 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 							const char* aFileName)
 //------------------------------------------------
 {
-	// The FBO does not exist
-	if (aFBOID >= m_p_fbo_set.size())
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// Save the current FBO
-	pushFBO();
-
-	switch (aFBOID)
-	{
-	case XRAY_DETECTOR_LBUFFER_FBO_ID:
-		// Bind frame buffer object
-		m_p_fbo_set[aFBOID]->Bind();
-
-		// Read data from the FBO
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_p_temp_raw_data);
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		break;
-
-	case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
-		// Read data from the FBO
-		for (unsigned int slice_number(0);
-				slice_number < m_p_xray_beam->getEnergyChannelNumber();
-				++slice_number)
-		{
-			// Bind default frame buffer
-			FramebufferObject::Disable();
-
-			// Attach the texture
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, slice_number);
-
-			// Bind the FBO
-			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-			glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_p_temp_raw_data + slice_number * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		}
-		break;
-
-	case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
-	case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
-		// Bind frame buffer object
-		m_p_fbo_set[aFBOID]->Bind();
-
-		// Read data from the FBO
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_p_temp_raw_data);
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		break;
-
-	default:
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
-		}
-		break;
-	}
-
-	// Check OpenGL
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Restore the current FBO
-	popFBO();
+	// Get the image
+	getFBO(aFBOID);
 
 #ifdef HAS_ITK
 	// The filename is not empty
@@ -1443,46 +1528,8 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 								  const char* aFileName)
 //------------------------------------------------------
 {
-	// The texture does not exist
-	if (aTextureID >= m_p_texture_name_set.size())
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
-
-	// Store the texturing flags
-	pushTexture2D();
-	pushTexture3D();
-
-	GLint texture_id(m_p_texture_name_set[aTextureID]);
-	switch (aTextureID)
-	{
-	case XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID:
-		glBindTexture(GL_TEXTURE_2D, texture_id);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		break;
-
-	case XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID:
-		glBindTexture(GL_TEXTURE_3D, texture_id);
-		glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-		break;
-
-	case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
-	case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
-		glBindTexture(GL_TEXTURE_2D, texture_id);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-		break;
-
-	default:
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
-		}
-		break;
-	}
-
-	// Restore the texturing flags
-	popTexture();
-	popTexture();
+	// Get the image
+	get2DTexture(aTextureID);
 
 #ifdef HAS_ITK
 	// The filename is not empty
@@ -1574,6 +1621,183 @@ void XRayRenderer::printEnergyFluence(const char* aFileName)
 }
 
 
+//------------------------------------------------------
+void XRayRenderer::printXRayImage(const char* aFileName)
+//------------------------------------------------------
+{
+	//print2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID, aFileName);
+	printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName);
+}
+
+
+//--------------------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
+//--------------------------------------------------------------
+{
+	// The FBO does not exist
+	if (aFBOID >= m_p_fbo_set.size())
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Save the current FBO
+	pushFBO();
+
+	switch (aFBOID)
+	{
+	case XRAY_DETECTOR_LBUFFER_FBO_ID:
+		// Bind frame buffer object
+		m_p_fbo_set[aFBOID]->Bind();
+
+		// Read data from the FBO
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_p_temp_raw_data);
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		break;
+
+	case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
+		// Read data from the FBO
+		for (unsigned int slice_number(0);
+				slice_number < m_p_xray_beam->getEnergyChannelNumber();
+				++slice_number)
+		{
+			// Bind default frame buffer
+			FramebufferObject::Disable();
+
+			// Attach the texture
+			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, slice_number);
+
+			// Bind the FBO
+			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_p_temp_raw_data + slice_number * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		}
+		break;
+
+	case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+	case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+		// Bind frame buffer object
+		m_p_fbo_set[aFBOID]->Bind();
+
+		// Read data from the FBO
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_p_temp_raw_data);
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		break;
+
+	default:
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+		}
+		break;
+	}
+
+	// Check OpenGL
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Restore the current FBO
+	popFBO();
+
+	return (m_p_temp_raw_data);
+}
+
+
+//------------------------------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID) const
+//------------------------------------------------------------------------
+{
+	// The texture does not exist
+	if (aTextureID >= m_p_texture_name_set.size())
+	{
+		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Store the texturing flags
+	pushTexture2D();
+	pushTexture3D();
+
+	GLint texture_id(m_p_texture_name_set[aTextureID]);
+	switch (aTextureID)
+	{
+	case XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID:
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		break;
+
+	case XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID:
+		glBindTexture(GL_TEXTURE_3D, texture_id);
+		glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
+		break;
+
+	case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
+	case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
+		break;
+
+	default:
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+		}
+		break;
+	}
+
+	// Restore the texturing flags
+	popTexture();
+	popTexture();
+
+	return (m_p_temp_raw_data);
+}
+
+
+//-----------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getLBuffer() const
+//-----------------------------------------------
+{
+	//return (get2DTexture(XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID));
+	return (getFBO(XRAY_DETECTOR_LBUFFER_FBO_ID));
+}
+
+
+//--------------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getCumulatedLBuffer() const
+//--------------------------------------------------------
+{
+	//return (get2DTexture(XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID));
+	return (getFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID));
+}
+
+
+//------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getSumMuxDx() const
+//------------------------------------------------
+{
+	//return (get2DTexture(XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID));
+	return (getFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID));
+}
+
+
+//-----------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getEnergyFluence() const
+//-----------------------------------------------------
+{
+	//return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
+	return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
+}
+
+
+//-------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getXRayImage() const
+//-------------------------------------------------
+{
+	//return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
+	return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
+}
+
+
 //----------------------------------------------------------
 void XRayRenderer::display2DTexture(unsigned int aTexutreID)
 //----------------------------------------------------------
@@ -1610,6 +1834,14 @@ void XRayRenderer::displayEnergyFluence()
 }
 
 
+//-----------------------------------
+void XRayRenderer::displayXRayImage()
+//-----------------------------------
+{
+	display2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID);
+}
+
+
 //------------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
@@ -1623,6 +1855,12 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	pushEnableDisableState(GL_BLEND);
 	pushEnableDisableState(GL_DEPTH_TEST);
 
+	// Store the current transformation matrix
+	pushModelViewMatrix();
+
+	// Store the current projection matrix
+	pushProjectionMatrix();
+
 	// Save the viwport
 	GLint p_viewport[4];
 	glGetIntegerv(GL_VIEWPORT, &p_viewport[0]);
@@ -1633,110 +1871,166 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	// Reset its L-buffer
 	resetLBuffer();
 
-	// Bind frame buffer object
-	m_p_fbo_set[XRAY_DETECTOR_LBUFFER_FBO_ID]->Bind();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Disable depth buffer
-	glDisable(GL_DEPTH_TEST);
-
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Activate the first shader
-	pushShaderProgram();
-	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Values to pass to the shader
-	GLint program_handle(0);
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
-
-	VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
-
-	GLuint handle(glGetUniformLocation(program_handle, "g_projection_type"));
-	if (!m_p_detector->useParallelBeam())
+	// The 3D object is not empty
+	if (anObject.getVertexNumber())
 	{
-		glUniform1i(handle, 0);
+		// Bind frame buffer object
+		m_p_fbo_set[XRAY_DETECTOR_LBUFFER_FBO_ID]->Bind();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		handle = glGetUniformLocation(program_handle, "g_source_position");
+		// Disable depth buffer
+		glDisable(GL_DEPTH_TEST);
+
+		// Enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Activate the first shader
+		pushShaderProgram();
+		m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Values to pass to the shader
+		GLint program_handle(0);
+		glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
+		GLuint handle(glGetUniformLocation(program_handle, "g_source_position"));
 		glUniform3f(handle, source_sample_position.getX(), source_sample_position.getY(), source_sample_position.getZ());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		if (!m_p_detector->useParallelBeam())
+		{
+			handle = glGetUniformLocation(program_handle, "g_projection_type");
+			glUniform1i(handle, 0);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			loadPerspectiveProjectionMatrix(m_p_detector->getFOVY(),
+				m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getSizeInUnitOfLength().getY(),
+				0.0,
+				(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).length());
+		}
+		else
+		{
+			handle = glGetUniformLocation(program_handle, "g_projection_type");
+			glUniform1i(handle, 1);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
+			handle = glGetUniformLocation(program_handle, "g_ray_direction");
+			glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			loadOrthoProjectionMatrix(-m_p_detector->getSizeInUnitOfLength().getX() / 2.0,
+					m_p_detector->getSizeInUnitOfLength().getX() / 2.0,
+					-m_p_detector->getSizeInUnitOfLength().getY() / 2.0,
+					m_p_detector->getSizeInUnitOfLength().getY() / 2.0,
+					0.0,
+					(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).length());
+		}
+
+		loadLookAtModelViewMatrix(source_sample_position,
+			m_p_detector->getDetectorPosition(),
+			m_p_detector->getUpVector());
+
+		// Load uniform variables to the GPU
+		handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_viewving_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_projection_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		MATRIX4 modelview_matrix(g_current_modelview_matrix * aModellingTransformationMatrix);
+		handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, modelview_matrix.get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_normal_matrix");
+		glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_inverse_modelview_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, modelview_matrix.getInverse().get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		GLfloat p_float_4[4];
+		m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
+		handle = glGetUniformLocation(program_handle,"g_detector_plane");
+		glUniform4fv(handle, 1, p_float_4);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		p_float_4[0] = m_p_detector->getDetectorPosition().getX();
+		p_float_4[1] = m_p_detector->getDetectorPosition().getY();
+		p_float_4[2] = m_p_detector->getDetectorPosition().getZ();
+		handle = glGetUniformLocation(program_handle,"g_detector_center");
+		glUniform3fv(handle, 1, p_float_4);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
+		handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
+		glUniform3f(handle, -up_vector.getX(), -up_vector.getY(), -up_vector.getZ());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
+		right_vector.normalise();
+		handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
+		glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_detector_rotation_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, m_p_detector->getRotationMatrix().get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_inverse_detector_rotation_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, m_p_detector->getRotationMatrix().getInverse().get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle, "g_source_translation_matrix");
+		glUniformMatrix4fv(handle, 1, GL_FALSE, MATRIX4::buildTranslationMatrix(-aXRaySourceSampleOffset).get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+		handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
+		glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle,"g_detector_height_in_units_of_length");
+		glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getY());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		handle = glGetUniformLocation(program_handle,"g_to_cm_scale");
+		glUniform1f(handle, GLfloat(1.0 / cm));
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Display the object
+		anObject.display();
+
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Restore the shader program
+		popShaderProgram();
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
-	else
-	{
-		glUniform1i(handle, 1);
-
-		VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
-
-		handle = glGetUniformLocation(program_handle, "g_ray_direction");
-		glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
-	}
-
-	//loadOrthoProjectionMatrix(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Load uniform variables to the GPU
-	handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
-	glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	/*MATRIX4 normal_matrix(aModellingTransformationMatrix);
-	handle = glGetUniformLocation(program_handle, "g_normal_matrix");
-	glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-*/
-	GLfloat p_float_4[4];
-	m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
-	handle = glGetUniformLocation(program_handle,"g_detector_plane");
-	glUniform4fv(handle, 1, p_float_4);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	p_float_4[0] = m_p_detector->getDetectorPosition().getX();
-	p_float_4[1] = m_p_detector->getDetectorPosition().getY();
-	p_float_4[2] = m_p_detector->getDetectorPosition().getZ();
-	handle = glGetUniformLocation(program_handle,"g_detector_center");
-	glUniform3fv(handle, 1, p_float_4);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
-	handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
-	glUniform3f(handle, up_vector.getX(), up_vector.getY(), up_vector.getZ());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
-	right_vector.normalise();
-	handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
-	glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
-	glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle,"g_detector_height_in_units_of_length");
-	glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getY());
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(program_handle,"g_to_cm_scale");
-	glUniform1f(handle, GLfloat(1.0 / cm));
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Display the object
-	anObject.display();
-
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	// Restore the shader program
-	popShaderProgram();
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Restore the viewport
 	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
 
 	// Restore the current FBO
 	popFBO();
+
+	// Restore the current transformation matrix
+	popModelViewMatrix();
+
+	// Restore the current projection matrix
+	popProjectionMatrix();
 
 	// Restore the state
 	popEnableDisableState();
@@ -2267,7 +2561,7 @@ void XRayRenderer::normalise()
 //----------------------------
 {
 	// Get the energy fluence map
-	printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, 0);
+	getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
 	// Get image statistics
 	m_min_value_in_simulated_xray_image =  FLT_MAX;

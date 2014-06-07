@@ -81,7 +81,6 @@ class FramebufferObject;
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {
-	using namespace Graphics;
 
 
 //==============================================================================
@@ -247,12 +246,84 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Save the current energy fluence into a file.
+	///	Save the current energy fluence into a file (same as printXRayImage()).
 	/**
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
 	void printEnergyFluence(const char* aFileName);
+
+
+	//--------------------------------------------------------------------------
+	///	Save the current energy fluence into a file (same as printEnergyFluence()).
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printXRayImage(const char* aFileName);
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from a FBO.
+	/**
+	*	@param aFBOID:	the ID of the FBO
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* getFBO(unsigned int aFBOID) const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from a texture.
+	/**
+	*	@param aTextureID:	the ID of the texture
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* get2DTexture(unsigned int aTextureID) const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from the current L-buffer.
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* getLBuffer() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from the current cumulated L-buffer.
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* getCumulatedLBuffer() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from the current Mux Dx.
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* getSumMuxDx() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from the current energy fluence (same as getXRayImage()).
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* getEnergyFluence() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the raw data from the current energy fluence (same as getEnergyFluence()).
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	RATIONAL_NUMBER* getXRayImage() const;
 
 
 	//--------------------------------------------------------------------------
@@ -268,9 +339,15 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Display the energy fluence using OpenGL.
+	///	Display the energy fluence using OpenGL (same as displayXRayImage()).
 	//--------------------------------------------------------------------------
 	void displayEnergyFluence();
+
+
+	//--------------------------------------------------------------------------
+	///	Display the energy fluence using OpenGL (same as displayEnergyFluence()).
+	//--------------------------------------------------------------------------
+	void displayXRayImage();
 
 
 	//--------------------------------------------------------------------------
@@ -396,6 +473,14 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	RATIONAL_NUMBER getMaxPixelValue() const;
+
+
+	void computeSinogram(unsigned int aNumberOfAngle = 180,
+			RATIONAL_NUMBER anAngleOffset = 1.0,
+			const MATRIX4& aModellingTransformationMatrix = MATRIX4());
+
+
+	void printSinogram(const char* aFileName);
 
 
 //******************************************************************************
@@ -638,12 +723,16 @@ protected:
 	ImageType::Pointer m_p_l_buffer_image;
 
 
-	/// L-buffer
+	/// Sum(Mu_x * d_x)
 	ImageType::Pointer m_p_sum_mux_dx_image;
 
 
-	/// EnergyFluence
+	/// Energy fluence
 	ImageType::Pointer m_p_energy_fluence_image;
+
+
+	/// sinogram
+	ImageType::Pointer m_p_sinogram_image;
 #endif // HAS_ITK
 
 
