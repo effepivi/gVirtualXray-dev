@@ -38,7 +38,7 @@
 //******************************************************************************
 //	namespace
 //******************************************************************************
-namespace Utilities {
+namespace gVirtualXRay {
 
 
 //******************************************************************************
@@ -109,7 +109,7 @@ const double cg  = centigram; ///< centigram
 const double mg  = milligram; ///< milligram
 const double ug  = microgram; ///< microgram
 
-} // namespace Utilities
+} // namespace gVirtualXRay
 
 
 #endif // UNITS_H
