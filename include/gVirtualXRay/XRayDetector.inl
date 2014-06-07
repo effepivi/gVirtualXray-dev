@@ -117,6 +117,21 @@ inline void XRayDetector::setNumberOfPixels(const Vec2ui& aSizeInPixels)
 }
 
 
+//--------------------------------------------------------------------------
+inline void XRayDetector::setDetectorPosition(const VEC3& aDetectorPosition)
+//--------------------------------------------------------------------------
+{
+	// The position of the source has changed
+	m_detector_position = aDetectorPosition;
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
 //---------------------------------------------------------------------------
 inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 //---------------------------------------------------------------------------
@@ -141,13 +156,58 @@ inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 }
 
 
-//--------------------------------------------------------------------------
-inline void XRayDetector::setDetectorPosition(const VEC3& aDetectorPosition)
-//--------------------------------------------------------------------------
+//--------------------------------------------
+inline void XRayDetector::setXrayPointSource()
+//--------------------------------------------
 {
-	// The position of the source has changed
-	m_detector_position = aDetectorPosition;
+	// Save the source type
+	m_source_shape = POINT;	
+	
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
 
+
+//----------------------------------------
+inline void XRayDetector::setCubicSource()
+//----------------------------------------
+{
+	// Save the source type
+	m_source_shape = CUBE;	
+	
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
+//-----------------------------------------
+inline void XRayDetector::setSquareSource()
+//-----------------------------------------
+{
+	// Save the source type
+	m_source_shape = SQUARE;	
+	
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
+//---------------------------------------
+inline void XRayDetector::setLineSource()
+//---------------------------------------
+{
+	// Save the source type
+	m_source_shape = LINE;	
+	
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
 	
@@ -296,11 +356,42 @@ inline XRayDetector::SourceShape XRayDetector::getSourceShape() const
 }
 
 
+//------------------------------------------------------------------------
+inline const std::vector<VEC3>& XRayDetector::getSourcePositionSet() const
+//------------------------------------------------------------------------
+{
+	return (m_p_xray_source_position_set);
+}
+
+
+//--------------------------------------------------------------------------------------
+inline void XRayDetector::setSourcePositions(const std::vector<VEC3>& aSourcePostionSet)
+//--------------------------------------------------------------------------------------
+{
+	// Set the position of sources
+	m_p_xray_source_position_set = aSourcePostionSet;
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_VBOs_need_update = true;
+}
+
+
 //-----------------------------------------------
 inline bool XRayDetector::useParallelBeam() const
 //-----------------------------------------------
 {
 	return (m_source_shape == PARALLEL);
+}
+
+
+//---------------------------------------------------------
+inline const RATIONAL_NUMBER& XRayDetector::getFOVY() const
+//---------------------------------------------------------
+{
+    return (m_fovy);
 }
 
 
@@ -325,6 +416,9 @@ inline void XRayDetector::updateInternalValues()
 	m_look_at_vector.normalize();
 	m_right_vector = m_look_at_vector ^ m_up_vector;
 	m_normal = m_up_vector ^ m_right_vector;
+	
+	// Update the view along the Y-axis
+	updateFOVY();
 }
 
 
@@ -340,6 +434,14 @@ inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 	B = normal.getY();
 	C = normal.getZ();
 	D = A * m_detector_position.getX() + B * m_detector_position.getY() + C * m_detector_position.getZ();
+}
+
+
+//------------------------------------
+inline void XRayDetector::updateFOVY()
+//------------------------------------
+{
+    m_fovy = 2.0 * (180.0  / M_PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), m_distance_source_detector);
 }
 
 
