@@ -88,7 +88,7 @@
 #endif
 
 #ifndef GVXR_SHADER_H
-#include "gVirtualXRay/Graphics/Shader.h"
+#include "gVirtualXRay/Shader.h"
 #endif
 
 #ifndef GVXR_UTILITIES_H
