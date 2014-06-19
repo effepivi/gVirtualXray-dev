@@ -158,14 +158,23 @@ public:
 	void translate(T x, T y, T z);
 
 
-	//--------------------------------------------------------------------------
-	///	Build a tranlation matrix.
-	/**
-	*	@param aVector: the translation vector
-	*	@return the corresponding translation matrix
-	*/
-	//--------------------------------------------------------------------------
-	static Matrix4x4 buildTranslationMatrix(const Vec3<T>& aVector);
+    //--------------------------------------------------------------------------
+    /// Build an identity matrix.
+    /**
+    *   @return the identity matrix
+    */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildIdentityMatrix();
+
+
+    //--------------------------------------------------------------------------
+    /// Build a tranlation matrix.
+    /**
+    *   @param aVector: the translation vector
+    *   @return the corresponding translation matrix
+    */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildTranslationMatrix(const Vec3<T>& aVector);
 
 
 	//--------------------------------------------------------------------------
