@@ -1293,7 +1293,6 @@ void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 		m_p_index_set       = 0;
 		m_number_of_indices = 0;
 		m_index_data_type   = GL_NONE;
-
 	}
 
 	// Compute the bounding box
