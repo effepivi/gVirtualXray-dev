@@ -66,9 +66,9 @@ configure_file (
 
 
 # Enable all compiler warnings #################################################
-IF(NOT WIN32)
-	add_definitions( -Wall )
-ENDIF(NOT WIN32)
+#IF(NOT WIN32)
+#	add_definitions( -Wall )
+#ENDIF(NOT WIN32)
 
 
 # Libraries ####################################################################
@@ -188,6 +188,13 @@ IF (NOT APPLE)
     INCLUDE_DIRECTORIES("../include/OpenGL4")
 ENDIF(NOT APPLE)
 #INCLUDE_DIRECTORIES("/usr/local/include")
+
+
+# GZIP ########################################################################
+FIND_PACKAGE(GZIP REQUIRED)
+IF(NOT GZIP_FOUND)
+	MESSAGE(FATAL_ERROR "GZIP not found.")
+ENDIF(NOT GZIP_FOUND)
 
 
 # OpenGL ######################################################################
