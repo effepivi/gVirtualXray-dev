@@ -184,7 +184,7 @@ public:
 	//--------------------------------------------------------------------------
 	void computeLBuffer(PolygonMesh& anObject,
 			  const VEC3& aXRaySourceDetectorTranslation,
-			  MATRIX4& aModellingTransformationMatrix);
+			  const MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------
@@ -195,7 +195,7 @@ public:
 	*											the 3D objects
 	*/
 	//--------------------------------------------------------------------------
-	void computeImage(MATRIX4& aModellingTransformationMatrix);
+	void computeImage(const MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------
@@ -607,7 +607,7 @@ protected:
 	//--------------------------------------------------------------------------
 	void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
-			MATRIX4& aModellingTransformationMatrix);
+			const MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------
@@ -620,7 +620,7 @@ protected:
 	//--------------------------------------------------------------------------
 	void computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 			const VEC3& aXRaySourceSampleOffset,
-			MATRIX4& aModellingTransformationMatrix);
+			const MATRIX4& aModellingTransformationMatrix);
 
 
 	//--------------------------------------------------------------------------

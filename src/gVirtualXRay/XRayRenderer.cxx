@@ -788,9 +788,9 @@ void XRayRenderer::checkGPUCapabilities()
 }
 
 
-//----------------------------------------------------------------------
-void XRayRenderer::computeImage(MATRIX4& aModellingTransformationMatrix)
-//----------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
+//----------------------------------------------------------------------------
 {
 	// The renderer is ready
 	if (isReady())
@@ -1449,7 +1449,7 @@ void XRayRenderer::resetSumMuxDx()
 //---------------------------------------------------------------------------
 void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
 								  const VEC3& aXRaySourceDetectorTranslation,
-							  	  MATRIX4& aModellingTransformationMatrix)
+							  	  const MATRIX4& aModellingTransformationMatrix)
 //---------------------------------------------------------------------------
 {
 	// This is an internal mesh
@@ -1849,7 +1849,7 @@ void XRayRenderer::displayXRayImage()
 //------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
-											  MATRIX4& aModellingTransformationMatrix)
+											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------
 {
 	// Save the current FBO
@@ -2007,7 +2007,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 //------------------------------------------------------------------------------------
 void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
-											  MATRIX4& aModellingTransformationMatrix)
+											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------
 {
 	// Save the viwport
