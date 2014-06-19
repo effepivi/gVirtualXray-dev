@@ -91,14 +91,29 @@ inline void XRayDetector::displaySource()
 inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NUMBER& aResolution)
 //------------------------------------------------------------------------------------------------
 {
-	// The resolution has changed
-	m_resolution_in_unit_of_length_per_pixel = aResolution;
-	
-	// Update the size of the detector
-	updateSizeInUnitOfLength();
-	
-	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+    // The resolution has changed
+    m_resolution_in_unit_of_length_per_pixel = VEC2(aResolution, aResolution);
+
+    // Update the size of the detector
+    updateSizeInUnitOfLength();
+
+    // The VBOs need to be updated
+    m_VBOs_need_update = true;
+}
+
+
+//-------------------------------------------------------------------------------------
+inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const VEC2& aResolution)
+//-------------------------------------------------------------------------------------
+{
+    // The resolution has changed
+    m_resolution_in_unit_of_length_per_pixel = aResolution;
+
+    // Update the size of the detector
+    updateSizeInUnitOfLength();
+
+    // The VBOs need to be updated
+    m_VBOs_need_update = true;
 }
 
 
@@ -399,8 +414,8 @@ inline const RATIONAL_NUMBER& XRayDetector::getFOVY() const
 inline void XRayDetector::updateSizeInUnitOfLength()
 //--------------------------------------------------
 {
-	m_size_in_unit_of_length.setX(m_resolution_in_unit_of_length_per_pixel * m_size_in_number_of_pixels.getX());
-	m_size_in_unit_of_length.setY(m_resolution_in_unit_of_length_per_pixel * m_size_in_number_of_pixels.getY());
+	m_size_in_unit_of_length.setX(m_resolution_in_unit_of_length_per_pixel.getX() * m_size_in_number_of_pixels.getX());
+	m_size_in_unit_of_length.setY(m_resolution_in_unit_of_length_per_pixel.getY() * m_size_in_number_of_pixels.getY());
 }
 
 

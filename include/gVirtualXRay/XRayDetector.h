@@ -116,14 +116,24 @@ public:
 	void displayBeam();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the pixel resolution (in units of length per pixel,
-	///	i.e. the inverse of the pixel size)
-	/**
-	*	@param aResolution:	the pixel resolution
-	*/
-	//--------------------------------------------------------------------------
-	void setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NUMBER& aResolution);
+    //--------------------------------------------------------------------------
+    /// Set the pixel resolution (in units of length per pixel,
+    /// i.e. the inverse of the pixel size)
+    /**
+    *   @param aResolution: the pixel resolution
+    */
+    //--------------------------------------------------------------------------
+    void setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NUMBER& aResolution);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the pixel resolution (in units of length per pixel,
+    /// i.e. the inverse of the pixel size)
+    /**
+    *   @param aResolution: the pixel resolution
+    */
+    //--------------------------------------------------------------------------
+    void setResolutionInUnitsOfLengthPerPixel(const VEC2& aResolution);
 
 
 	//--------------------------------------------------------------------------
@@ -447,7 +457,7 @@ protected:
 	
 
 	/// Resolution (in unit of length per pixel)
-	RATIONAL_NUMBER m_resolution_in_unit_of_length_per_pixel;
+	VEC2 m_resolution_in_unit_of_length_per_pixel;
 	
 
 	/// Distance between the source and the detector
