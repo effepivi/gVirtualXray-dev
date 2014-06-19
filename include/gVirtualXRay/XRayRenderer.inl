@@ -62,7 +62,7 @@ inline bool XRayRenderer::getNegativeFilteringFlag() const
 inline void XRayRenderer::addInnerSurface(const PolygonMesh* apSurface)
 //---------------------------------------------------------------------
 {
-	m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
+    m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
 }
 
 
@@ -70,7 +70,23 @@ inline void XRayRenderer::addInnerSurface(const PolygonMesh* apSurface)
 inline void XRayRenderer::addOuterSurface(const PolygonMesh* apSurface)
 //---------------------------------------------------------------------
 {
-	m_p_outer_surface = const_cast<PolygonMesh*>(apSurface);
+    m_p_outer_surface = const_cast<PolygonMesh*>(apSurface);
+}
+
+
+//---------------------------------------------
+inline void XRayRenderer::removeInnerSurfaces()
+//---------------------------------------------
+{
+    m_p_inner_surface_set.clear();
+}
+
+
+//--------------------------------------------
+inline void XRayRenderer::removeOuterSurface()
+//--------------------------------------------
+{
+    m_p_outer_surface = 0;
 }
 
 

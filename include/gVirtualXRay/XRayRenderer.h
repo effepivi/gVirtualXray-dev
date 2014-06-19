@@ -156,22 +156,34 @@ public:
 	bool isReady() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Add a 3D object to be rendered. It will be used as an internal surface.
-	/**
-	*	@param apSurface:	the 3D object
-	*/
-	//--------------------------------------------------------------------------
-	void addInnerSurface(const PolygonMesh* apSurface);
+    //--------------------------------------------------------------------------
+    /// Add a 3D object to be rendered. It will be used as an internal surface.
+    /**
+    *   @param apSurface:   the 3D object
+    */
+    //--------------------------------------------------------------------------
+    void addInnerSurface(const PolygonMesh* apSurface);
 
 
-	//--------------------------------------------------------------------------
-	///	Add a 3D object to be rendered. It will be used as an external surface.
-	/**
-	*	@param apSurface:	the 3D object
-	*/
-	//--------------------------------------------------------------------------
-	void addOuterSurface(const PolygonMesh* apSurface);
+    //--------------------------------------------------------------------------
+    /// Add a 3D object to be rendered. It will be used as an external surface.
+    /**
+    *   @param apSurface:   the 3D object
+    */
+    //--------------------------------------------------------------------------
+    void addOuterSurface(const PolygonMesh* apSurface);
+
+
+    //--------------------------------------------------------------------------
+    /// Remove the external surface from the renderer if any.
+    //--------------------------------------------------------------------------
+    void removeInnerSurfaces();
+
+
+    //--------------------------------------------------------------------------
+    /// Remove the internal surfaces from the renderer if any.
+    //--------------------------------------------------------------------------
+    void removeOuterSurface();
 
 
 	//--------------------------------------------------------------------------
