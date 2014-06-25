@@ -33,13 +33,17 @@
 #include <windows.h>
 #endif
 
+#ifdef HAS_OPENGL2
 #ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-//#define GL_GLEXT_PROTOTYPES 1
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#endif
 #endif
 
+#ifdef HAS_OPENGL3
 #define GLFW_INCLUDE_GLCOREARB 1
+#endif
+
 #include <GLFW/glfw3.h>
 
 #ifndef GVXR_XRAY_RENDERER_H
@@ -184,10 +188,19 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-	g_xray_renderer.initialise(XRayRenderer::OPENGL,
-			GL_RGB16F,
-			&g_xray_detector,
-			&g_xray_beam);
+#ifdef HAS_OPENGL2
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F_ARB,
+            &g_xray_detector,
+            &g_xray_beam);
+#endif
+
+#ifdef HAS_OPENGL3
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
+#endif
 }
 
 

@@ -33,6 +33,7 @@
 #include <windows.h>
 #endif
 
+#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -40,6 +41,8 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
+#endif
+
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>

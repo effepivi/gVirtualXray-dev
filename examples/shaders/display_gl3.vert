@@ -1,9 +1,9 @@
 /**
  ********************************************************************************
  *
- *	@file		display.frag
+ *	@file		display_gl3.vert
  *
- *	@brief		Fragment shader to display 3D objects with Phong shading.
+ *	@brief		Vertex shader to display 3D objects with Phong shading.
  *
  *	@version	1.0
  *

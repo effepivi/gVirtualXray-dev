@@ -32,6 +32,7 @@
 //  Include
 //******************************************************************************
 // Ensure we are using opengl's core profile only
+#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -39,6 +40,7 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
+#endif
 
 #include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
 

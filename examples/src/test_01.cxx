@@ -33,6 +33,14 @@
 #include <windows.h>
 #endif
 
+#ifdef HAS_OPENGL2
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#endif
+#endif
+
+#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -40,6 +48,8 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
+#endif
+
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
@@ -1134,10 +1144,19 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-	g_xray_renderer.initialise(XRayRenderer::OPENGL,
-			GL_RGB16F,
-			&g_xray_detector,
-			&g_xray_beam);
+#ifdef HAS_OPENGL2
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F_ARB,
+            &g_xray_detector,
+            &g_xray_beam);
+#endif
+
+#ifdef HAS_OPENGL3
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
+#endif
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
