@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		MUx_Dx.frag
+*	@file		MUx_Dx_gl3.frag
 *
 *	@brief		Fragment shader that computes Mu_x * Dx.
 *				see:

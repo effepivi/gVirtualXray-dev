@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		l_buffer.frag
+*	@file		l_buffer_gl3.frag
 *
 *	@brief		Fragment shader that computes a L-buffer.
 *				see: N. Freud, P. Duvauchelle, J. M. Letang, D. Babot,

@@ -1,16 +1,14 @@
 /**
 ********************************************************************************
 *
-*	@file		xray_attenuation.frag
+*	@file		xray_attenuation_gl3.frag
 *
-*	@brief		Fragment shader that displays the energy fluence. The image can 
-*				be in negative and the pixels can be filtered as follows:
-*				f(x) = g_scale_filter * (x + g_shift_filter)
+*	@brief		Fragment shader that computes the energy fluence.
 *				see:
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
 *          		Proceedings of Theory and Practice of Computer Graphics 2009,
-*          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
+*          		pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
 *	@version	1.0
@@ -45,21 +43,27 @@ precision highp float; // Video card drivers require this line to function prope
 //	Output
 //******************************************************************************
 smooth in vec3 g_texture_coordinates;
+smooth in float u1;
+smooth in float v1;
 
 
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragColor;
+out vec3 fragColor;
+
+
+//******************************************************************************
+//   Defines
+//******************************************************************************
+#define KERNEL_SIZE 8
 
 
 //******************************************************************************
 //   Uniform variables
 //******************************************************************************
-uniform sampler2D g_attenuation;
-uniform bool      g_display_negative_image;
-uniform float     g_shift_filter;
-uniform float     g_scale_filter;
+uniform sampler3D g_sum_mu_x_dx_texture;
+uniform float     g_n_input_energy;
 
 
 //-------------
@@ -67,18 +71,15 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture(g_attenuation, g_texture_coordinates.st).r;
-
-    // Apply the shift/scale filter
-	intensity = ((intensity) + g_shift_filter) * g_scale_filter;
-
-        // Display the negative image
-	if (g_display_negative_image)
-	{
-		intensity = 1.0 - intensity;
+	float intensity = texture(g_sum_mu_x_dx_texture, g_texture_coordinates.stp).r;
+	
+    // Compute received energy
+	if (intensity >= 0.0)
+    {
+    	intensity = g_n_input_energy * exp(-intensity);
 	}
 
-	// Save the fragment value
-	fragColor = vec4(intensity, intensity, intensity, 1.0);
+    // Save the fragment value
+	fragColor = vec3(intensity, u1, v1);
 }
 

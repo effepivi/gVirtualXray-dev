@@ -37,12 +37,20 @@
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifdef HAS_OPENGL2
 #ifdef __APPLE__
-#define GL3_PROTOTYPES 1
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#endif
+
+#ifdef HAS_OPENGL3
+#ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
-#define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
 #endif
 
 
@@ -144,14 +152,27 @@ void pushTexture2D()
 void pushTextureRectangle()
 //-------------------------
 {
-	// Save the current texture
+    // Save the current texture
 	GLint current_texture_id(0);
-	glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+
+#ifdef HAS_OPENGL2
+    glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
+#endif
+
+#ifdef HAS_OPENGL3
+    glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+#endif
 
 	// Get the current 2D texture
-	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE, current_texture_id);
+#ifdef HAS_OPENGL2
+	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE_ARB, current_texture_id);
+#endif
 
-	// Add the last texture
+#ifdef HAS_OPENGL3
+    std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE, current_texture_id);
+#endif
+
+    // Add the last texture
 	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
@@ -288,9 +309,17 @@ void popTexture()
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 		break;
 
-	case GL_TEXTURE_RECTANGLE:
-		glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
-		break;
+#ifdef HAS_OPENGL2
+    case GL_TEXTURE_RECTANGLE_ARB:
+        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
+        break;
+#endif
+
+#ifdef HAS_OPENGL3
+    case GL_TEXTURE_RECTANGLE:
+        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+        break;
+#endif
 
 	default:
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
@@ -314,11 +343,19 @@ void popTexture()
 			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
 			break;
 
-		case GL_TEXTURE_RECTANGLE:
-			glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
+#ifdef HAS_OPENGL2
+			case GL_TEXTURE_RECTANGLE_ARB:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, previous_texture.second);
 			break;
+#endif
 
-		default:
+#ifdef HAS_OPENGL3
+            case GL_TEXTURE_RECTANGLE:
+            glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
+            break;
+#endif
+
+        default:
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
 		}
 	}

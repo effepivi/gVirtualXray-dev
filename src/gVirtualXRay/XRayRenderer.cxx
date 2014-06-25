@@ -33,12 +33,22 @@
 #include <math.h>
 #include <cstring>
 
+#ifdef HAS_OPENGL2
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#endif
+
+#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
 #endif
 
 #ifdef HAS_ITK
@@ -75,23 +85,65 @@
 
 #include "gVirtualXRay/framebufferObject.h"
 
-#include "MUx_Dx.frag.h"
-#include "MUx_Dx.vert.h"
+#ifdef HAS_OPENGL2
+#include "MUx_Dx_gl2.frag.h"
+#include "MUx_Dx_gl2.vert.h"
+#endif
 
-#include "cumulated_l_buffer.frag.h"
-#include "cumulated_l_buffer.vert.h"
+#ifdef HAS_OPENGL3
+#include "MUx_Dx_gl3.frag.h"
+#include "MUx_Dx_gl3.vert.h"
+#endif
 
-#include "l_buffer.frag.h"
-#include "l_buffer.vert.h"
+#ifdef HAS_OPENGL2
+#include "cumulated_l_buffer_gl2.frag.h"
+#include "cumulated_l_buffer_gl2.vert.h"
+#endif
 
-#include "outer_surface_l_buffer.frag.h"
-#include "outer_surface_l_buffer.vert.h"
+#ifdef HAS_OPENGL3
+#include "cumulated_l_buffer_gl3.frag.h"
+#include "cumulated_l_buffer_gl3.vert.h"
+#endif
 
-#include "xray_attenuation.frag.h"
-#include "xray_attenuation.vert.h"
+#ifdef HAS_OPENGL2
+#include "l_buffer_gl2.frag.h"
+#include "l_buffer_gl2.vert.h"
+#endif
 
-#include "xray_display.frag.h"
-#include "xray_display.vert.h"
+#ifdef HAS_OPENGL3
+#include "l_buffer_gl3.frag.h"
+#include "l_buffer_gl3.vert.h"
+#endif
+
+#ifdef HAS_OPENGL2
+#include "outer_surface_l_buffer_gl2.frag.h"
+#include "outer_surface_l_buffer_gl2.vert.h"
+#endif
+
+#ifdef HAS_OPENGL3
+#include "outer_surface_l_buffer_gl3.frag.h"
+#include "outer_surface_l_buffer_gl3.vert.h"
+#endif
+
+#ifdef HAS_OPENGL2
+#include "xray_attenuation_gl2.frag.h"
+#include "xray_attenuation_gl2.vert.h"
+#endif
+
+#ifdef HAS_OPENGL3
+#include "xray_attenuation_gl3.frag.h"
+#include "xray_attenuation_gl3.vert.h"
+#endif
+
+#ifdef HAS_OPENGL2
+#include "xray_display_gl2.frag.h"
+#include "xray_display_gl2.vert.h"
+#endif
+
+#ifdef HAS_OPENGL3
+#include "xray_display_gl3.frag.h"
+#include "xray_display_gl3.vert.h"
+#endif
 
 #include "mu_water.csv.h"
 
@@ -176,13 +228,23 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 //-----------------------------------------------------------
 {
 	// Check the texture format
-	if (anInternalTextureFormat != GL_RGB16F &&
-			anInternalTextureFormat != GL_RGB32F)
+#ifdef HAS_OPENGL2
+    if (anInternalTextureFormat != GL_RGB16F_ARB &&
+			anInternalTextureFormat != GL_RGB32F_ARB)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
 	}
+#endif
 
-	// There is no detector
+#ifdef HAS_OPENGL3
+    if (anInternalTextureFormat != GL_RGB16F &&
+            anInternalTextureFormat != GL_RGB32F)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
+    }
+#endif
+
+    // There is no detector
 	if (!apDetector)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no detector.");
@@ -908,8 +970,15 @@ void XRayRenderer::initShaders()
 	std::string fragment_shader;
 
 	// L-buffer
-	z_lib_return_code_vertex   = inflate(g_l_buffer_vert, sizeof(g_l_buffer_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_l_buffer_frag, sizeof(g_l_buffer_frag), &p_fragment_shader);
+#ifdef HAS_OPENGL2
+	z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
+#endif
+
+#ifdef HAS_OPENGL3
+    z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
+#endif
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -924,8 +993,15 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
-	z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_vert, sizeof(g_cumulated_l_buffer_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_frag, sizeof(g_cumulated_l_buffer_frag), &p_fragment_shader);
+#ifdef HAS_OPENGL2
+    z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
+#endif
+
+#ifdef HAS_OPENGL3
+    z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
+#endif
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -940,10 +1016,17 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
-	z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_vert, sizeof(g_outer_surface_l_buffer_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_frag, sizeof(g_outer_surface_l_buffer_frag), &p_fragment_shader);
+#ifdef HAS_OPENGL2
+	z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
+#endif
 
-	vertex_shader   = p_vertex_shader;
+#ifdef HAS_OPENGL3
+    z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl3_vert, sizeof(g_outer_surface_l_buffer_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl3_frag, sizeof(g_outer_surface_l_buffer_gl3_frag), &p_fragment_shader);
+#endif
+
+    vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
@@ -956,8 +1039,15 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
-	z_lib_return_code_vertex   = inflate(g_MUx_Dx_vert, sizeof(g_MUx_Dx_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_MUx_Dx_frag, sizeof(g_MUx_Dx_frag), &p_fragment_shader);
+#ifdef HAS_OPENGL2
+    z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
+#endif
+
+#ifdef HAS_OPENGL3
+    z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl3_vert, sizeof(g_MUx_Dx_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_MUx_Dx_gl3_frag, sizeof(g_MUx_Dx_gl3_frag), &p_fragment_shader);
+#endif
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -972,10 +1062,17 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
-	z_lib_return_code_vertex   = inflate(g_xray_attenuation_vert, sizeof(g_xray_attenuation_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_xray_attenuation_frag, sizeof(g_xray_attenuation_frag), &p_fragment_shader);
+#ifdef HAS_OPENGL2
+	z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
+#endif
 
-	vertex_shader   = p_vertex_shader;
+#ifdef HAS_OPENGL3
+	z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl3_vert, sizeof(g_xray_attenuation_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_xray_attenuation_gl3_frag, sizeof(g_xray_attenuation_gl3_frag), &p_fragment_shader);
+#endif
+
+    vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
 	delete [] p_vertex_shader;     p_vertex_shader = 0;
 	delete [] p_fragment_shader; p_fragment_shader = 0;
@@ -988,8 +1085,15 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
-	z_lib_return_code_vertex   = inflate(g_xray_display_vert, sizeof(g_xray_display_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_xray_display_frag, sizeof(g_xray_display_frag), &p_fragment_shader);
+#ifdef HAS_OPENGL2
+    z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
+#endif
+
+#ifdef HAS_OPENGL3
+    z_lib_return_code_vertex   = inflate(g_xray_display_gl3_vert, sizeof(g_xray_display_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_xray_display_gl3_frag, sizeof(g_xray_display_gl3_frag), &p_fragment_shader);
+#endif
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;

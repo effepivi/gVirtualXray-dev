@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		xray_attenuation.frag
+*	@file		xray_attenuation_gl2.frag
 *
 *	@brief		Fragment shader that computes the energy fluence.
 *				see:
@@ -33,24 +33,17 @@
 
 
 //******************************************************************************
-//	OpenGL 3.2
+//	OpenGL 2.0
 //******************************************************************************
-#version 150
-precision highp float; // Video card drivers require this line to function properly
+#version 110
 
 
 //******************************************************************************
-//	Output
+//	Varying variables
 //******************************************************************************
-smooth in vec3 g_texture_coordinates;
-smooth in float u1;
-smooth in float v1;
-
-
-//******************************************************************************
-//	Output
-//******************************************************************************
-out vec3 fragColor;
+varying vec3 g_texture_coordinates;
+varying float u1;
+varying float v1;
 
 
 //******************************************************************************
@@ -71,7 +64,7 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture(g_sum_mu_x_dx_texture, g_texture_coordinates.stp).r;
+	float intensity = texture3D(g_sum_mu_x_dx_texture, g_texture_coordinates.stp).r;
 	
     // Compute received energy
 	if (intensity >= 0.0)
@@ -80,6 +73,6 @@ void main(void)
 	}
 
     // Save the fragment value
-	fragColor = vec3(intensity, u1, v1);
+	gl_FragColor.rgb = vec3(intensity, u1, v1);
 }
 

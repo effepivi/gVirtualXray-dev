@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		l_buffer.vert
+*	@file		l_buffer_gl2.frag
 *
-*	@brief		Vertex shader that computes a L-buffer.
+*	@brief		Fragment shader that computes a L-buffer.
 *				see: N. Freud, P. Duvauchelle, J. M. Letang, D. Babot,
 *				Fast and robust ray casting algorithms for virtual X-ray
 *				imaging, Nuclear Instruments and Methods in Physics Research
@@ -13,7 +13,7 @@
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
 *          		Proceedings of Theory and Practice of Computer Graphics 2009,
-*          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
+*         		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
 *	@version	1.0
@@ -38,24 +38,16 @@
 
 
 //******************************************************************************
-//	OpenGL 3.2
+//	OpenGL 2.0
 //******************************************************************************
-#version 150
+#version 110
 
 
 //******************************************************************************
-//	Input
+//	Varying variables
 //******************************************************************************
-in vec3 in_Vertex;
-in vec3 in_TexCoord;
-in vec3 in_Normal;
-
-
-//******************************************************************************
-//	Output
-//******************************************************************************
-smooth out vec3 g_in_vertex;
-smooth out vec3 g_normal;
+varying vec3 g_in_vertex;
+varying vec3 g_normal;
 
 
 //******************************************************************************
@@ -63,72 +55,74 @@ smooth out vec3 g_normal;
 //******************************************************************************
 const bool PERSPECTIVE_PROJECTION = false;
 const bool PARALLEL_PROJECTION    = true;
+const float EPSILON = 0.00001;
 
 
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
 uniform vec4 g_detector_plane;
-uniform vec3 g_detector_center;
-uniform vec3 g_detector_up_vector;
-uniform vec3 g_detector_right_vector;
-uniform float g_detector_width_in_units_of_length;
-uniform float g_detector_height_in_units_of_length;
+uniform float g_to_cm_scale;
 uniform mat4 g_modelling_matrix;
-uniform bool g_projection_type;
+uniform mat3 g_normal_matrix;
+uniform bool g_projection_type; // 1 for parallel beam
 uniform vec3 g_ray_direction;
 uniform vec3 g_source_position;
 
 
-//-------------
-void main(void)
-//-------------
+//--------------
+void main (void)
+//--------------
 {
-    // Save incoming vertex
-    g_in_vertex = in_Vertex;
-    
-    // Save incoming normal vectors
-	g_normal = in_Normal;
+	// Transform normal vectors
+	vec3 normal = -normalize(g_normal_matrix * g_normal);
 
-	// Transform vertex
-	vec4 transformed_vertex = g_modelling_matrix * vec4(in_Vertex, 1.0);
+    // Transform the vertex
+	vec4 transformed_vertex = g_modelling_matrix * vec4(g_in_vertex, 1.0);
 	transformed_vertex.xyz /= transformed_vertex.w;
 	transformed_vertex.w = 1.0;
 
     // Get the viewing direction
     vec3 viewing_vector;
-
+    
 	// Use parallel beam
 	if (g_projection_type == PARALLEL_PROJECTION)
 	{
-		viewing_vector = g_ray_direction;
+		viewing_vector = -g_ray_direction;
 	}
-	// Use perspective beam
+    // Use perspective projection
 	else
 	{
-		viewing_vector = normalize(transformed_vertex.xyz - g_source_position);
+		viewing_vector = -normalize(transformed_vertex.xyz - g_source_position);
 	}
 
-    // Compute the distance between the ray and the detector
-    // (using ray tracing between a ray and a plane)
-	float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
-
-	// Find the intersection between the ray and the detector
-	vec3 intersection_in_world_coordinates = transformed_vertex.xyz + distance_intersection_detector * viewing_vector;
+	// Save the dot product
+	float dot_product = dot(normal, viewing_vector);
+	float dot_product_sign = sign(dot_product);
     
-    // Compute the temporary vector
-    vec3 temp_vector = intersection_in_world_coordinates - g_detector_center;
+    // The dot product value is too small
+	if (abs(dot_product) < EPSILON)
+	{
+        // Alter the normal
+		normal.x += 0.1;
+		normal.y += 0.1;
+		normal = normalize(normal);
 
-    // Project the intersection on the g_detector_right_vector
-    gl_Position.x = dot(g_detector_right_vector, temp_vector);
+        // Update the dot product
+        dot_product = dot(normal, viewing_vector);
+		dot_product_sign = sign(dot_product);
+	}
 
-    // Project the intersection on the g_detector_up_vector
-    gl_Position.y = -dot(g_detector_up_vector, temp_vector);
+    // Get the distance between the source and the vertex
+    float distance_source_vertex = distance(transformed_vertex.xyz, g_source_position);
+	//float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
 
-    // Rescale the u, v coordinates
-    gl_Position.x /= (g_detector_width_in_units_of_length)  / 2.0;
-    gl_Position.y /= (g_detector_height_in_units_of_length) / 2.0;
-
-    gl_Position.z = 0.0;
-    gl_Position.w = 1.0;
+	float value = dot_product_sign * distance_source_vertex * g_to_cm_scale;
+	if (abs(distance_source_vertex) < EPSILON) value = 0.0;
+	
+	// In the red channel: the L-buffer value
+	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
+	// In the blue channel: 0.0 (unused)
+	// In the alpha channel: 1.0 (unused)
+	gl_FragColor = vec4(value, dot_product_sign, distance_source_vertex, 1.0);
 }

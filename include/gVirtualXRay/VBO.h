@@ -165,8 +165,12 @@ public:
 	
 //******************************************************************************
 protected:
+
+
+#ifdef HAS_OPENGL3
 	/// ID of VAO
 	unsigned int m_vao_id;
+#endif
 
 
 	/// ID of VBOs
@@ -177,12 +181,24 @@ protected:
 	unsigned int m_number_of_normals;
 
 
-	/// Number of vertices
+    /// Number of components per normal
+    unsigned int m_number_of_compontents_per_normal;
+
+
+    /// Number of texture coordinates
 	unsigned int m_number_of_texture_coordinates;
+
+
+	/// Number of components per texture coordinate
+	unsigned int m_number_of_compontents_per_texture_coord;
 
 
 	/// Number of vertices
 	unsigned int m_number_of_vertices;
+
+
+    /// Number of components per vertex
+    unsigned int m_number_of_compontents_per_vertex;
 
 
 	/// Number of indices

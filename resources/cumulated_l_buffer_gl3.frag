@@ -1,35 +1,35 @@
 /**
-********************************************************************************
-*
-*	@file		outer_surface_l_buffer.frag
-*
-*	@brief		Fragment shader that computes the L-buffer. of the external surface.
-*				see:
-*          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
-*          		N. W. John. Simulation of X-ray attenuation on the GPU. In
-*          		Proceedings of Theory and Practice of Computer Graphics 2009,
-*          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
-*          		Winner of Ken Brodlie Prize for Best Paper.
-*
-*	@version	1.0
-*
-*	@date		27/12/2013
-*
-*	@author		Dr Franck P. Vidal
-*
-*	@section	License
-*				BSD 3-Clause License.
-*
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
-*
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
-*				BSD 3-Clause License
-*
-********************************************************************************
-*/
+ *******************************************************************************
+ *
+ *	@file		cumulated_l_buffer_gl3.frag
+ *
+ *	@brief		Fragment shader that computes the cumulated L-buffer.
+ *				see:
+ *          	F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
+ *          	N. W. John. Simulation of X-ray attenuation on the GPU. In
+ *          	Proceedings of Theory and Practice of Computer Graphics 2009,
+ *          	pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
+ *          	Winner of Ken Brodlie Prize for Best Paper.
+ *
+ *	@version	1.0
+ *
+ *	@date		27/12/2013
+ *
+ *	@author		Dr Franck P. Vidal
+ *
+ *	@section	License
+ *				BSD 3-Clause License.
+ *
+ *				For details on use and redistribution please refer
+ *				to http://opensource.org/licenses/BSD-3-Clause
+ *
+ *	@section	Copyright
+ *				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+ *				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+ *				BSD 3-Clause License
+ *
+ *******************************************************************************
+ */
 
 
 //******************************************************************************
@@ -63,7 +63,7 @@ out float fragColor;
 //******************************************************************************
 //   Uniform variables
 //******************************************************************************
-uniform sampler2D g_cumulated_l_buffer_texture;
+uniform sampler2D g_l_buffer_texture;
 uniform bool      g_use_artefact_filtering;
 uniform float     g_x_offset;
 uniform float     g_y_offset;
@@ -102,7 +102,7 @@ float filter7x7(float anInitialValue)
         vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_7x7[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture(g_cumulated_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_l_buffer_texture, tex_coord).rg;
 
     	// The L-buffer value is valid
         if (isValid(l_buffer_value))
@@ -142,7 +142,7 @@ float filter5x5(float anInitialValue)
 		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_5x5[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture(g_cumulated_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
@@ -187,7 +187,7 @@ float filter3x3(float anInitialValue)
 		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_3x3[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture(g_cumulated_l_buffer_texture, tex_coord).rg;
+		vec2 l_buffer_value = texture(g_l_buffer_texture, tex_coord).rg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
@@ -222,10 +222,10 @@ void main(void)
 //-------------
 {
     // Get the texel value
-    vec2 texel_value = texture(g_cumulated_l_buffer_texture, g_texture_coordinates.st).rg;
+    vec2 texel_value = texture(g_l_buffer_texture, g_texture_coordinates.st).rg;
     
     // Get the L-buffer value
-	float intensity = texel_value.r;
+	fragColor = texel_value.r;
     
     // The artefact filtering is enable
 	if (g_use_artefact_filtering)
@@ -234,11 +234,8 @@ void main(void)
 		if (!isValid(texel_value))
 		{
             // Filter the artefact
-			intensity = filter3x3(intensity);
+			fragColor = filter3x3(fragColor);
 		}
 	}
-	
-    // Save the pixel value
-	fragColor = -intensity;
 }
 

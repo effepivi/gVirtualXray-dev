@@ -31,12 +31,20 @@
 //******************************************************************************
 #include <sstream>
 
+#ifdef HAS_OPENGL2
 #ifdef __APPLE__
-//#define GL3_PROTOTYPES 1
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#endif
+
+#ifdef HAS_OPENGL3
+#ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
-//#define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
 #endif
 
 #ifndef GVXR_EXCEPTION_H
@@ -93,10 +101,12 @@ FBOException::FBOException(const char* aFileName,
         error_message << "the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures." << std::endl;
 		break;
 
+#ifdef HAS_OPENGL3
     case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
         error_message << "FBO error: any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target." << std::endl;
 		break;
-    
+#endif
+
     default:
 		error_message << "FBO error: unknown." << std::endl;
 		break;

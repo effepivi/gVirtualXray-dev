@@ -37,11 +37,20 @@
 
 #include <cmath>
 
+#ifdef HAS_OPENGL2
 #ifdef __APPLE__
-//#define GL3_PROTOTYPES 1
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#endif
+
+#ifdef HAS_OPENGL3
+#ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #include <GL/glcorearb.h>
+#endif
 #endif
 
 #ifndef GVXR_SPHERE_MESH_H

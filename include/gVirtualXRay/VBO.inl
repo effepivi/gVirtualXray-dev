@@ -98,6 +98,10 @@ inline int VBO::getPrimitiveType() const
 inline VBO& VBO::operator=(const VBO& aVBO)
 //-----------------------------------------
 {
+#ifdef HAS_OPENGL3
+    m_vao_id = aVBO.m_vao_id;
+#endif
+
 	memcpy(m_id_set, aVBO.m_id_set, sizeof(m_id_set));
 
 	m_number_of_normals             = aVBO.m_number_of_normals;

@@ -78,6 +78,7 @@ SET(requiredLibs)
 
 # Options ######################################################################
 OPTION(USE_ITK   "Use ITK if possible." ON)
+OPTION(USE_OPENGL2  "Use OpenGL 2.x." OFF)
 
 
 # Library source code ##########################################################
@@ -207,6 +208,15 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
+IF (USE_OPENGL2)
+	MESSAGE(WARNING "OpenGL2 found.")
+	ADD_DEFINITIONS(-DHAS_OPENGL2)
+ELSE (USE_OPENGL2)
+	MESSAGE(WARNING "OpenGL3 found.")
+	ADD_DEFINITIONS(-DHAS_OPENGL3)
+ENDIF (USE_OPENGL2)
+
+
 # FreeImage ####################################################################
 #FIND_PACKAGE(FreeImage)
 #IF(FREEIMAGE_FOUND)
@@ -257,18 +267,31 @@ ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
 
 # Create the RESOURCES ###########################################################
-SET (RESOURCES_SOURCES ../resources/cumulated_l_buffer.frag
-	../resources/cumulated_l_buffer.vert
-	../resources/l_buffer.frag
-	../resources/l_buffer.vert
-	../resources/MUx_Dx.frag
-	../resources/MUx_Dx.vert
-	../resources/outer_surface_l_buffer.frag
-	../resources/outer_surface_l_buffer.vert
-	../resources/xray_attenuation.frag
-	../resources/xray_attenuation.vert
-	../resources/xray_display.frag
-	../resources/xray_display.vert
+SET (RESOURCES_SOURCES
+	../resources/cumulated_l_buffer_gl2.frag
+	../resources/cumulated_l_buffer_gl2.vert
+	../resources/cumulated_l_buffer_gl3.frag
+	../resources/cumulated_l_buffer_gl3.vert
+	../resources/l_buffer_gl2.frag
+	../resources/l_buffer_gl2.vert
+	../resources/l_buffer_gl3.frag
+	../resources/l_buffer_gl3.vert
+	../resources/MUx_Dx_gl2.frag
+	../resources/MUx_Dx_gl2.vert
+	../resources/MUx_Dx_gl3.frag
+	../resources/MUx_Dx_gl3.vert
+	../resources/outer_surface_l_buffer_gl2.frag
+	../resources/outer_surface_l_buffer_gl2.vert
+	../resources/outer_surface_l_buffer_gl3.frag
+	../resources/outer_surface_l_buffer_gl3.vert
+	../resources/xray_attenuation_gl2.frag
+	../resources/xray_attenuation_gl2.vert
+	../resources/xray_attenuation_gl3.frag
+	../resources/xray_attenuation_gl3.vert
+	../resources/xray_display_gl2.frag
+	../resources/xray_display_gl2.vert
+	../resources/xray_display_gl3.frag
+	../resources/xray_display_gl3.vert
 	../resources/mu_water.csv
 )
 

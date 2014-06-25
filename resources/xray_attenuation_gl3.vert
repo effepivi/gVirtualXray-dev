@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		outer_surface_l_buffer.vert
+*	@file		xray_attenuation_gl3.vert
 *
-*	@brief		Vertex shader that computes the L-buffer. of the external surface.
+*	@brief		Vertex shader that computes the energy fluence.
 *				see:
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
@@ -13,7 +13,7 @@
 *
 *	@version	1.0
 *
-*	@date		27/12/2013
+*	@date		20/12/2013
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -49,6 +49,8 @@ in vec3 in_TexCoord;
 //	Output
 //******************************************************************************
 smooth out vec3 g_texture_coordinates;
+smooth out float u1;
+smooth out float v1;
 
 
 //******************************************************************************
@@ -56,6 +58,7 @@ smooth out vec3 g_texture_coordinates;
 //******************************************************************************
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
+uniform mat4 g_text_coord_matrix;
 
 
 //-------------
@@ -63,9 +66,11 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	g_texture_coordinates = in_TexCoord;
+	vec4 temp = g_text_coord_matrix * vec4(in_TexCoord, 1.0);
+    g_texture_coordinates = temp.xyz / temp.w;
     
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
+    u1 =gl_Position.x;
+    v1 =gl_Position.y;
 }
-

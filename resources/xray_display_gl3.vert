@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		xray_display.vert
+*	@file		xray_display_gl3.vert
 *
 *	@brief		Vertex shader that display the energy fluence. The image can
 *				be in negative and the pixels can be filtered as follows:
