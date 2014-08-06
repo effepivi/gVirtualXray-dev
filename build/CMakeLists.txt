@@ -28,7 +28,6 @@
 
 # Initialise some states by default ############################################
 set(BUILD_SHARED_LIBS OFF)
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
 
 
 # Minimum CMake version ########################################################
@@ -40,6 +39,15 @@ IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0003 NEW)
        cmake_policy(SET CMP0013 NEW)
 ENDIF(COMMAND cmake_policy)
+
+
+# Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
 
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/modules)
@@ -209,10 +217,10 @@ ENDIF(OPENGL_FOUND)
 
 
 IF (USE_OPENGL2)
-	MESSAGE(WARNING "OpenGL2 found.")
+	MESSAGE(STATUS "OpenGL2 found.")
 	ADD_DEFINITIONS(-DHAS_OPENGL2)
 ELSE (USE_OPENGL2)
-	MESSAGE(WARNING "OpenGL3 found.")
+	MESSAGE(STATUS "OpenGL3 found.")
 	ADD_DEFINITIONS(-DHAS_OPENGL3)
 ENDIF (USE_OPENGL2)
 
