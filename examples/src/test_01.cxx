@@ -108,8 +108,15 @@
 
 #include "gVirtualXRayConfig.h"
 
-#include "display.frag.h"
-#include "display.vert.h"
+#ifdef HAS_OPENGL2
+#include "display_gl2.frag.h"
+#include "display_gl2.vert.h"
+#endif
+
+#ifdef HAS_OPENGL3
+#include "display_gl3.frag.h"
+#include "display_gl3.vert.h"
+#endif
 
 
 //******************************************************************************
@@ -405,9 +412,16 @@ void initGL()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-	// L-buffer
-	z_lib_return_code_vertex   = inflate(g_display_vert, sizeof(g_display_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_display_frag, sizeof(g_display_frag), &p_fragment_shader);
+	// Display shader
+#ifdef HAS_OPENGL2
+	z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+#endif
+
+#ifdef HAS_OPENGL3
+    z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+#endif
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
