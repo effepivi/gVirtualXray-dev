@@ -1694,7 +1694,7 @@ void loadVolumeDataset(const std::string& aFileName)
         short first_threshold(-1000);
 
         int i(0);
-        for (i = 0; i < g_number_of_polygon_meshes - 1; ++i)
+        for (i = 0; i < g_number_of_polygon_meshes + 1; ++i)
         {
             g_p_threshold_set.push_back(first_threshold + threshold_offset * i);
         }
@@ -2003,12 +2003,12 @@ void loadPoygonMeshes(const RealImageType::Pointer& aVolume,
     g_p_vertex_set.resize(g_number_of_polygon_meshes);
     g_p_index_set.resize(g_number_of_polygon_meshes);
 
-#ifdef HAS_OPENMP
+/*#ifdef HAS_OPENMP
 #pragma omp parallel for \
         default(none) \
         private(i) \
         shared(g_p_threshold_set, g_max_value, aVolume, aSaveSegmentationFlag, g_p_polygon_mesh_set, g_p_vertex_set, g_p_index_set)
-#endif
+#endif*/
     for (i = 0; i < g_p_polygon_mesh_set.size(); ++i)
     {
         short low_threshold(g_p_threshold_set[i]);
