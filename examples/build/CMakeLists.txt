@@ -42,10 +42,14 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../build/modules)
+
+
 # Enable all compiler warnings #################################################
-IF(NOT WIN32)
-	add_definitions( -Wall )
-ENDIF(NOT WIN32)
+#IF(NOT WIN32)
+#	add_definitions( -Wall )
+#ENDIF(NOT WIN32)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
@@ -73,6 +77,34 @@ INCLUDE_DIRECTORIES("../include")
 # Options #####################################################################
 OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
 OPTION(USE_GLFW "Use GLFW." ON)
+IF(APPLE)
+    OPTION(USE_OPENMP "Use OpenMP if possible."  OFF)
+ELSE(APPLE)
+    OPTION(USE_OPENMP "Use OpenMP if possible."  ON)
+ENDIF(APPLE)
+
+# Octave ######################################################################
+FIND_PACKAGE(Octave)
+if(OCTAVE_FOUND)
+    ADD_DEFINITIONS(-DHAS_OCTAVE)
+    INCLUDE_DIRECTORIES(${OCTAVE_INCLUDE_DIRS})
+    LINK_DIRECTORIES(${OCTAVE_LINK_DIRS})
+    SET(optionalLibs ${optionalLibs} ${OCTAVE_LIBRARY})
+ELSE(OCTAVE_FOUND)
+    MESSAGE(WARNING "GNU Octave not found, the use of GNU Octave will be disable.")
+ENDIF(OCTAVE_FOUND)
+
+
+# GSL #########################################################################
+FIND_PACKAGE(GSL)
+if(GSL_FOUND)
+    ADD_DEFINITIONS(-DHAS_GSL)
+    INCLUDE_DIRECTORIES(${GSL_INCLUDE_DIR})
+    LINK_DIRECTORIES(${GSL_LINK_DIRECTORIES})
+    SET(optionalLibs ${optionalLibs} ${GSL_LIBRARIES})
+ELSE(GSL_FOUND)
+    MESSAGE(WARNING "GNU scientific library (GSL) (see http://www.gnu.org/software/gsl/) not found, the use of GSL will be disable.")
+ENDIF(GSL_FOUND)
 
 
 # OpenGL ######################################################################
@@ -137,20 +169,31 @@ IF(USE_BUNDLE)
 ENDIF(USE_BUNDLE)
 
 
+# OpenMP #######################################################################
+IF (USE_OPENMP)
+	FIND_PACKAGE(OpenMP)
+	IF (OPENMP_FOUND)
+		ADD_DEFINITIONS(-DHAS_OPENMP)
+		SET (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
+		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+	ELSE(OPENMP_FOUND)
+		MESSAGE(WARNING "OpenMP not found, it will be disable.")
+		SET (USE_OPENMP OFF)
+	ENDIF(OPENMP_FOUND)
+ENDIF(USE_OPENMP)
+
+
 # Create the RESOURCES ###########################################################
-SET (RESOURCES_SOURCES ../../examples/shaders/display.frag
-	../../examples/shaders/display.vert
+SET (RESOURCES_SOURCES
+    ../../examples/shaders/display_gl2.frag
+    ../../examples/shaders/display_gl2.vert
+    ../../examples/shaders/display_gl3.frag
+    ../../examples/shaders/display_gl3.vert
     ../src/tutorial_02.frag
     ../src/tutorial_02.vert
     ../src/tutorial_03.frag
     ../src/tutorial_03.vert
 )
-
-
-FIND_PACKAGE(GZIP REQUIRED)
-IF(NOT GZIP_FOUND)
-	MESSAGE(FATAL_ERROR "GZIP not found.")
-ENDIF(NOT GZIP_FOUND)
 
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../build/CreateHeaderFiles.cmake)
@@ -200,6 +243,10 @@ IF(USE_GLFW)
 	ADD_EXECUTABLE (tutorial_03 ../src/tutorial_03.cxx ../src/buildCube.cxx)
 	#SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (tutorial_03 gVirtualXRay ${requiredLibs} ${optionalLibs})
+
+	ADD_EXECUTABLE (VoxelLabelisation ../src/VoxelLabelisation.cxx)
+	#SET_PROPERTY(TARGET VoxelLabelisation PROPERTY LINK_SEARCH_START_STATIC 1) 
+	TARGET_LINK_LIBRARIES (VoxelLabelisation gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF(USE_GLFW)
 
 
@@ -289,6 +336,7 @@ ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_01 BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_02 BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
+ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
 IF(USE_BUNDLE)
 	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
 ENDIF(USE_BUNDLE)
