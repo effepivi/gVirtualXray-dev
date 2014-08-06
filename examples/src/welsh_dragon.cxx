@@ -466,7 +466,7 @@ void initGL()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-	// L-buffer
+	// Display shader
 #ifdef HAS_OPENGL2
 	z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
     z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
