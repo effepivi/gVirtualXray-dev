@@ -65,6 +65,8 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/parsers.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
@@ -187,7 +189,7 @@ GLint g_current_x_position(0); // Current x position of the cursor
 GLint g_current_y_position(0); // Current x position of the cursor
 
 std::string g_input_file_name;
-std::string g_output_file_name;
+std::string g_output_path;
 std::vector<double> g_p_energy_set;
 std::vector<double> g_p_angle_set;
 std::vector<RealImageType::Pointer> g_p_high_resolution_mu_volume_set;
@@ -276,6 +278,7 @@ float radian2degree(float anAngle);
 void computeRotation(MATRIX4& aRotationMatrix);
 
 void loadParameters(int argc, char** argv);
+void setOutputPath(const std::string& aPath);
 void loadVolumeDataset(const std::string& aFileName);
 void loadSinograms();
 void volume2sinogram(const RealImageType::Pointer& aVolume,
@@ -491,9 +494,9 @@ void updateXRayImage(std::vector<RealImageType::Pointer>& aSimulatedProjectionSe
     if (!g_is_xray_image_up_to_date)
     {
         std::string file_name_prefix;
-        if (g_output_file_name.size())
+        if (g_output_path.size())
         {
-            file_name_prefix = g_output_file_name + "/";
+            file_name_prefix = g_output_path + "/";
         }
 
         // Process all the energy
@@ -1407,7 +1410,7 @@ void loadParameters(int argc, char** argv)
     input_message << "set the name of the file containing the CT scan";
 
     std::stringstream output_message;
-    input_message << "set the output path (i.e. where files will be saved)";
+    output_message << "set the output path (i.e. where files will be saved)";
 
     std::stringstream filter_message;
     filter_message << "use anisotropic diffusion";
@@ -1570,7 +1573,8 @@ void loadParameters(int argc, char** argv)
     // Set the output directory
     if (variables_map.count("output"))
     {
-        g_output_file_name =  variables_map["output"].as<std::string>();
+        g_output_path =  variables_map["output"].as<std::string>();
+        setOutputPath(g_output_path);
     }
 
     // Set the output directory
@@ -1712,9 +1716,9 @@ void loadVolumeDataset(const std::string& aFileName)
 
     // Compute the prefix file name of the output files
     std::string file_name_prefix;
-    if (g_output_file_name.size())
+    if (g_output_path.size())
     {
-        file_name_prefix = g_output_file_name + "/";
+        file_name_prefix = g_output_path + "/";
     }
 
     // Copy the image
@@ -1941,9 +1945,9 @@ void loadSinograms()
     const octave_value_list load_package_result = feval ("pkg", load_package_arguments);
 
     std::string file_name_prefix;
-    if (g_output_file_name.size())
+    if (g_output_path.size())
     {
-        file_name_prefix = g_output_file_name + "/";
+        file_name_prefix = g_output_path + "/";
     }
 
     int i(0);
@@ -2187,9 +2191,9 @@ void loadProjections()
     g_p_high_resolution_simulated_projection_set.resize(g_p_high_resolution_sinogram_set.size());
 
     std::string file_name_prefix;
-    if (g_output_file_name.size())
+    if (g_output_path.size())
     {
-        file_name_prefix = g_output_file_name + "/";
+        file_name_prefix = g_output_path + "/";
     }
 
     int i(0);
@@ -2386,9 +2390,9 @@ void extractIsosurface(const RealImageType::Pointer& aVolume,
         if (aSaveSegmentationFlag)
         {
             std::stringstream file_name_prefix;
-            if (g_output_file_name.size())
+            if (g_output_path.size())
             {
-                file_name_prefix << g_output_file_name << "/";
+                file_name_prefix << g_output_path << "/";
             }
             file_name_prefix << "segmentation_" << aMinHUValue << "_" << aMaxHUValue << ".mhd";
             ImageFileWriterType::Pointer p_writer(ImageFileWriterType::New());
@@ -2649,9 +2653,9 @@ double my_f (const gsl_vector *v, void *params)
 void writeProjections(std::vector<RealImageType::Pointer>& aSimulatedProjectionSet)
 {
     std::string file_name_prefix;
-    if (g_output_file_name.size())
+    if (g_output_path.size())
     {
-        file_name_prefix = g_output_file_name + "/";
+        file_name_prefix = g_output_path + "/";
     }
 
     int energy(0);
@@ -3348,3 +3352,35 @@ int optimise(const RealImageType::Pointer& aVolume,
     glfwSwapBuffers(g_p_window_id);
 }
 
+
+//------------------------------------------
+void setOutputPath(const std::string& aPath)
+//------------------------------------------
+{
+    // Get the output path
+    boost::filesystem::path data_dir(aPath);
+
+    // The path exists
+    if (boost::filesystem::exists(data_dir))
+    {
+        // The path is not a directory
+        if (!boost::filesystem::is_directory(data_dir))
+        {
+            std::stringstream error_message;
+            error_message << "The output path \"" << aPath << "\" exists, but it is not a directory. The program will terminate.";
+            throw (error_message.str());
+        }
+    }
+    // The path does not exist
+    else
+    {
+        // Create the directory
+        // The directory cannot be created
+        if (!boost::filesystem::create_directory(data_dir))
+        {
+            std::stringstream error_message;
+            error_message << "The output path \"" << aPath << "\" cannot be created (check R/W permissions). The program will terminate.";
+            throw (error_message.str());
+        }
+    }
+}
