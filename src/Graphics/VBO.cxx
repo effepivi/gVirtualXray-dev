@@ -29,6 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifdef HAS_OPENGL2
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -180,7 +184,7 @@ void VBO::display() const
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            glTexCoordPointer(m_number_of_compontents_per_coord, m_texture_coordinate_data_type, 0, NULL);
+            glTexCoordPointer(m_number_of_compontents_per_texture_coord, m_texture_coordinate_data_type, 0, NULL);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
 #endif

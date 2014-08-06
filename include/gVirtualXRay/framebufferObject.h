@@ -42,6 +42,10 @@
 #ifndef UCDAVIS_FRAMEBUFFER_OBJECT_H
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifdef HAS_OPENGL2
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

@@ -33,6 +33,10 @@
 #include <windows.h>
 #endif
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifdef HAS_OPENGL2
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -241,11 +245,19 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
+        // Enable OpenGL 2 if possible
+#ifdef HAS_OPENGL2
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#endif
+
 	    // Enable OpenGL 3.2 if possible
+#ifdef HAS_OPENGL3
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
 
 	    // Enable quad-buffering if possible
 	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
@@ -286,6 +298,13 @@ int main(int argc, char** argv)
 			std::cout << "Stereo is not enable." << std::endl;
 		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Initialise GLEW
+        if (glewInit() != GLEW_OK)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
+        }
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Initialise OpenGL
 		initGL();
@@ -686,7 +705,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				// Set the source position
 				g_xray_detector.setXrayPointSource(g_source_position);
 
-				// Update the inertestions
+				// Update the intersections
 				updateIntersectionSet();
 
 				// The X-ray image is not up-to-date
@@ -703,7 +722,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				// Set the source position
 				g_xray_detector.setXrayPointSource(g_source_position);
 
-				// Update the inertestions
+				// Update the intersections
 				updateIntersectionSet();
 
 				// The X-ray image is not up-to-date
@@ -769,6 +788,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		case GLFW_KEY_A:
 			g_outside_polygon_data.splitFaces(true);
 
+            // Update the intersections
+            updateIntersectionSet();
+
 			// The X-ray image is not up-to-date
 			g_is_xray_image_up_to_date = false;
 			break;
@@ -786,7 +808,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				g_xray_detector.setPointSource();
 			}
 
-			// Update the inertestions
+			// Update the intersections
 			updateIntersectionSet();
 
 			// The X-ray image is not up-to-date
@@ -805,7 +827,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				g_xray_detector.setPointSource();
 			}
 
-			// Update the inertestions
+			// Update the intersections
 			updateIntersectionSet();
 
 			// The X-ray image is not up-to-date
@@ -825,7 +847,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 					g_xray_detector.setPointSource();
 				}
 
-				// Update the inertestions
+				// Update the intersections
 				updateIntersectionSet();
 
 				// The X-ray image is not up-to-date
@@ -846,7 +868,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 					g_xray_detector.setPointSource();
 				}
 
-				// Update the inertestions
+				// Update the intersections
 				updateIntersectionSet();
 
 				// The X-ray image is not up-to-date
@@ -1026,7 +1048,10 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	case DETECTOR:
 		computeRotation(g_detector_rotation_matrix);
 		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
-		updateIntersectionSet();
+
+        // Update the intersections
+        updateIntersectionSet();
+
 
 		// The X-ray image is not up-to-date
 		g_is_xray_image_up_to_date = false;
@@ -1034,7 +1059,9 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 
 	case OBJECT:
 		computeRotation(g_sample_rotation_matrix);
-		updateIntersectionSet();
+
+        // Update the intersections
+        updateIntersectionSet();
 
 		// The X-ray image is not up-to-date
 		g_is_xray_image_up_to_date = false;

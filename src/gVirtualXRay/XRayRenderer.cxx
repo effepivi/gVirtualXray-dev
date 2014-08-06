@@ -33,6 +33,10 @@
 #include <math.h>
 #include <cstring>
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifdef HAS_OPENGL2
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

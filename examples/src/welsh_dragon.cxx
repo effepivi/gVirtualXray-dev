@@ -36,6 +36,10 @@
 #include <windows.h>
 #endif
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifdef HAS_OPENGL2
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -311,6 +315,13 @@ int main(int argc, char** argv)
 			std::cout << "Stereo is not enable." << std::endl;
 		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Initialise GLEW
+        if (glewInit() != GLEW_OK)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
+        }
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
      	// Initialise OpenGL
 		initGL();

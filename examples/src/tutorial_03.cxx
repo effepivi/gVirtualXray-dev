@@ -32,7 +32,12 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 // Ensure we are using opengl's core profile only
+#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -40,6 +45,7 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
+#endif
 
 #include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
 
@@ -177,6 +183,13 @@ int main(int argc, char** argv)
         // Initialise GLFW
         initGLFW();
 
+        // Initialise GLEW
+        if (glewInit() != GLEW_OK)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
+        }
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
         // Initialise OpenGL
         initGL();
 
@@ -249,11 +262,19 @@ void initGLFW()
                 "ERROR: cannot initialise GLFW.");
     }
 
-    // Enable OpenGL 3.2
+    // Enable OpenGL 2 if possible
+#ifdef HAS_OPENGL2
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#endif
+
+    // Enable OpenGL 3.2 if possible
+#ifdef HAS_OPENGL3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);

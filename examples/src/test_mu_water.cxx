@@ -33,6 +33,10 @@
 #include <windows.h>
 #endif
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifdef HAS_OPENGL2
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -99,11 +103,19 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-	    // Enable OpenGL 3.2 if possible
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Enable OpenGL 2 if possible
+#ifdef HAS_OPENGL2
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#endif
+
+        // Enable OpenGL 3.2 if possible
+#ifdef HAS_OPENGL3
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
 
 	    // Create the window
 	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
@@ -115,8 +127,16 @@ int main(int argc, char** argv)
 
 	    // Make the window's context current
 	    glfwMakeContextCurrent(p_main_window_id);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	    // Load the data
+        // Initialise GLEW
+        if (glewInit() != GLEW_OK)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
+        }
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Load the data
 		loadDetector();
 		loadSource();
 		loadXRaySimulator();
