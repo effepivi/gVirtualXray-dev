@@ -338,6 +338,12 @@ int main(int argc, char** argv)
         }
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+        // Check the OpenGL version
+        std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
+
+        // Check the GLSL version
+        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
         // Initialise OpenGL
 		initGL();
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

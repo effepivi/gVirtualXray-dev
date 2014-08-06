@@ -264,6 +264,12 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
+	    // Enable OpenGL 2 if possible
+#ifdef HAS_OPENGL2
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#endif
+
 #ifdef HAS_OPENGL3
 	    // Enable OpenGL 3.2 if possible
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -322,6 +328,12 @@ int main(int argc, char** argv)
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
         }
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Check the OpenGL version
+        std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
+
+        // Check the GLSL version
+        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
      	// Initialise OpenGL
 		initGL();
