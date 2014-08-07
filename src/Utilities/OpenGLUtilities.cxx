@@ -462,6 +462,15 @@ bool useOpenGL3_2OrAbove()
         {
             use_gl_3_2 = false;
         }
+
+        if (use_gl_3_2)
+        {
+            std::cout << "Use OpenGL 3.2 or above." << std::endl;
+        }
+        else
+        {
+            std::cout << "Use OpenGL 2.0 or above." << std::endl;
+        }
     }
 
     has_been_initialised = true;

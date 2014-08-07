@@ -48,6 +48,7 @@
 #endif // __APPLE__
 
 #ifdef HAS_BUNDLE
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem.hpp>
 #endif
 
@@ -102,6 +103,22 @@ const GLfloat g_rotation_speed(2.0);
 //	Global variables
 //******************************************************************************
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
+
+
+void OpenGLWindow::setExecutable(char *argv)
+{
+    m_executable_path.clear();
+
+    namespace fs = boost::filesystem;
+    fs::path p(argv);
+    fs::path full_p = fs::complete(p);
+    if (full_p.has_parent_path())
+    {
+        m_executable_path = full_p.parent_path().string();
+    }
+
+    std::cout << "Executable path:\t" << m_executable_path << std::endl;
+}
 
 
 //-----------------------------
@@ -185,26 +202,12 @@ void OpenGLWindow::initializeGL()
 		//glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 
 		// Add the geometry to the X-ray renderer
-        std::string prefix;
-#ifdef HAS_BUNDLE
-        /*namespace fs = boost::filesystem;
-        fs::path p(argv[0]);
-        fs::path full_p = fs::complete(p);
-        if (full_p.has_parent_path())
+        std::string prefix(m_executable_path);
+        if (prefix.length())
         {
-        	prefix = full_p.parent_path().string();
-
-        	if (prefix.length())
-        	{
-        		prefix += "/";
-        	}
-        }*/
-#endif
+            prefix += "/";
+        }
         prefix += "..";
-
-#if defined(WIN32) || defined(WIN64)
-        prefix += "/..";
-#endif
 
 		std::string stl_filename(prefix);
         stl_filename += "/examples/data/welsh-dragon-small.stl";

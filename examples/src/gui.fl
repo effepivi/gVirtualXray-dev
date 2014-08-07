@@ -144,7 +144,7 @@ Function {} {open
 } {
   Fl_Window {} {
     callback WinQuit_CB open
-    xywh {9 122 1050 670} type Single resizable visible
+    xywh {94 320 1050 670} type Single resizable visible
   } {
     Fl_Box m_opengl_window {
       label OpenGLWindow
@@ -276,7 +276,7 @@ Function {} {open
       Fl_Round_Button g_square_source_widget {
         label {Square Source}
         user_data m_opengl_window
-        callback setSourceSquare_CB selected
+        callback setSourceSquare_CB
         xywh {845 565 64 20} type Radio down_box ROUND_DOWN_BOX
       }
       Fl_Round_Button g_line_source_widget {
@@ -292,5 +292,7 @@ Function {} {open
         xywh {730 585 64 20} type Radio down_box ROUND_DOWN_BOX
       }
     }
+  }
+  code {m_opengl_window->setExecutable(argv[0]);} {selected
   }
 } 

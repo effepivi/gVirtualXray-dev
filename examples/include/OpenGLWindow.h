@@ -191,6 +191,9 @@ public:
 	gVirtualXRay::VEC3 getArcballVector(int x, int y);
 
 
+	void setExecutable(char *argv);
+
+
 //******************************************************************************
 private:
 	//--------------------------------------------------------------------------
@@ -265,6 +268,9 @@ private:
 	///	Update the X-ry image using lazy evaluation.
 	//--------------------------------------------------------------------------
 	void updateXRayImage();
+
+
+	std::string m_executable_path;
 
 
 	/// The scene rotation angle
