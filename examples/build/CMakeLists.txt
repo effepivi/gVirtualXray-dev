@@ -83,6 +83,17 @@ ELSE(APPLE)
     OPTION(USE_OPENMP "Use OpenMP if possible."  ON)
 ENDIF(APPLE)
 
+# FLTK ########################################################################
+FIND_PACKAGE(FLTK)
+if(FLTK_FOUND)
+        ADD_DEFINITIONS(-DHAS_FLTK)
+        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
+        SET(requiredLibs ${optionalLibs} ${FLTK_LIBRARIES})
+ELSE(FLTK_FOUND)
+        MESSAGE(WARNING "FLTK not found, it will be disable.")
+ENDIF(FLTK_FOUND)
+
+
 # Octave ######################################################################
 FIND_PACKAGE(Octave)
 if(OCTAVE_FOUND)
@@ -188,6 +199,8 @@ SET (RESOURCES_SOURCES
     ../../examples/shaders/display_gl2.vert
     ../../examples/shaders/display_gl3.frag
     ../../examples/shaders/display_gl3.vert
+    ../../examples/shaders/display_gui.frag
+    ../../examples/shaders/display_gui.vert
     ../src/tutorial_02.frag
     ../src/tutorial_02.vert
     ../src/tutorial_03.frag
@@ -197,6 +210,24 @@ SET (RESOURCES_SOURCES
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../build/CreateHeaderFiles.cmake)
 CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
+
+
+# Create the GUI files with Fluid ##############################################
+IF (FLTK_FOUND)
+    SET (FLUID_OUTPUT_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_command(OUTPUT ${FLUID_OUTPUT_FILES}
+    	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui.fl
+    	COMMAND ${FLTK_FLUID_EXECUTABLE}
+    	ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui.fl
+    	COMMENT "Build the GUI using Fluid"
+    )
+
+    ADD_CUSTOM_TARGET(FluidFiles ALL echo DEPENDS ${FLUID_OUTPUT_FILES})
+
+    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h)
+    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
+ENDIF (FLTK_FOUND)
 
 
 # Create the main programs #####################################################
@@ -247,6 +278,12 @@ IF(USE_GLFW)
 	#SET_PROPERTY(TARGET VoxelLabelisation PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (VoxelLabelisation gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF(USE_GLFW)
+
+
+IF (FLTK_FOUND)
+    ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)
+    TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${requiredLibs} ${optionalLibs})
+ENDIF (FLTK_FOUND)
 
 
 IF(USE_BUNDLE)

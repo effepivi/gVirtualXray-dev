@@ -86,7 +86,6 @@ SET(requiredLibs)
 
 # Options ######################################################################
 OPTION(USE_ITK   "Use ITK if possible." ON)
-OPTION(USE_OPENGL2  "Use OpenGL 2.x." OFF)
 
 
 # Library source code ##########################################################
@@ -242,15 +241,6 @@ IF(GLEW_FOUND)
 ELSE(GLEW_FOUND)
     MESSAGE(FATAL_ERROR "GLEW not found.")
 ENDIF(GLEW_FOUND)
-
-
-IF (USE_OPENGL2)
-	MESSAGE(STATUS "OpenGL2 found.")
-	ADD_DEFINITIONS(-DHAS_OPENGL2)
-ELSE (USE_OPENGL2)
-	MESSAGE(STATUS "OpenGL3 found.")
-	ADD_DEFINITIONS(-DHAS_OPENGL3)
-ENDIF (USE_OPENGL2)
 
 
 # FreeImage ####################################################################
