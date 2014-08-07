@@ -279,7 +279,6 @@ IF(USE_GLFW)
 	TARGET_LINK_LIBRARIES (VoxelLabelisation gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF(USE_GLFW)
 
-
 IF (FLTK_FOUND)
     ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)
     TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${requiredLibs} ${optionalLibs})
@@ -288,8 +287,13 @@ ENDIF (FLTK_FOUND)
 
 IF(USE_BUNDLE)
 	SET (MACOSX_RPATH 1)
-        ADD_DEFINITIONS(-DHAS_BUNDLE)
-	SET(DRAGON_DEMO_SRCS ../src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+    ADD_DEFINITIONS(-DHAS_BUNDLE)
+
+    IF (FLTK_FOUND)
+    	SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+    ELSE (FLTK_FOUND)
+    	SET(DRAGON_DEMO_SRCS ../src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+    ENDIF (FLTK_FOUND)
 
 	ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE WIN32 ${DRAGON_DEMO_SRCS})
 	#SET_PROPERTY(TARGET DragonDemo PROPERTY LINK_SEARCH_START_STATIC 1) 
