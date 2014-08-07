@@ -33,18 +33,8 @@
 #include <windows.h>
 #endif
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
+#include <boost/scoped_ptr.hpp>
 
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -52,7 +42,6 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
-#endif
 
 #include <GLFW/glfw3.h>
 
@@ -112,15 +101,11 @@
 
 #include "gVirtualXRayConfig.h"
 
-#ifdef HAS_OPENGL2
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
-#endif
 
 
 //******************************************************************************
@@ -181,7 +166,7 @@ VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 PolygonMesh g_inside_polygon_data;
 //CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
 CubeMesh g_outside_polygon_data(3.0 * cm);
-VBO g_intersection_box_detector_vbo;
+boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -245,19 +230,10 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-        // Enable OpenGL 2 if possible
-#ifdef HAS_OPENGL2
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#endif
-
-	    // Enable OpenGL 3.2 if possible
-#ifdef HAS_OPENGL3
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
 
 	    // Enable quad-buffering if possible
 	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
@@ -298,13 +274,6 @@ int main(int argc, char** argv)
 			std::cout << "Stereo is not enable." << std::endl;
 		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		// Initialise GLEW
-        if (glewInit() != GLEW_OK)
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
-        }
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the OpenGL version
         std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
@@ -438,15 +407,16 @@ void initGL()
 	std::string fragment_shader;
 
 	// Display shader
-#ifdef HAS_OPENGL2
-	z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
-#endif
+	if (useOpenGL3_2OrAbove())
+	{
+	    z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
+	    z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+	}
+	else
+	{
+	    z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+	    z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+	}
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -621,7 +591,7 @@ void render()
 		g_xray_renderer.display();
 
 		// Display the intersections
-		g_intersection_box_detector_vbo.display();
+		g_intersection_box_detector_vbo->display();
 
 		// Display the beam
 		if (g_display_beam)
@@ -1191,19 +1161,10 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-#ifdef HAS_OPENGL2
-    g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F_ARB,
-            &g_xray_detector,
-            &g_xray_beam);
-#endif
-
-#ifdef HAS_OPENGL3
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
             GL_RGB16F,
             &g_xray_detector,
             &g_xray_beam);
-#endif
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
@@ -1385,10 +1346,16 @@ void updateIntersectionSet()
 		intersection_box_detector_vertex_set.push_back(intersection_position.getZ());
 	}
 
-	// Update the VBO
-	g_intersection_box_detector_vbo.setBufferUsageHint(GL_STATIC_DRAW);
+    // Create the VBO if needed
+    if (!g_intersection_box_detector_vbo.get())
+    {
+        g_intersection_box_detector_vbo.reset(createVBO());
+    }
 
-	g_intersection_box_detector_vbo.setVertexData(GL_LINES,
+	// Update the VBO
+	g_intersection_box_detector_vbo->setBufferUsageHint(GL_STATIC_DRAW);
+
+	g_intersection_box_detector_vbo->setVertexData(GL_LINES,
 			intersection_box_detector_vertex_set.size() / 3, 3, GL_FLOAT, &intersection_box_detector_vertex_set[0],
 			0, 0, GL_NONE, 0,
 			0, 0, GL_NONE, 0);

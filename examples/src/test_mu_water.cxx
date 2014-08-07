@@ -33,20 +33,7 @@
 #include <windows.h>
 #endif
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
 #define GLFW_INCLUDE_GLCOREARB 1
-#endif
 
 #include <GLFW/glfw3.h>
 
@@ -103,19 +90,11 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-        // Enable OpenGL 2 if possible
-#ifdef HAS_OPENGL2
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#endif
-
         // Enable OpenGL 3.2 if possible
-#ifdef HAS_OPENGL3
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
 
 	    // Create the window
 	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
@@ -127,13 +106,6 @@ int main(int argc, char** argv)
 
 	    // Make the window's context current
 	    glfwMakeContextCurrent(p_main_window_id);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Initialise GLEW
-        if (glewInit() != GLEW_OK)
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
-        }
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Load the data
@@ -208,19 +180,10 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-#ifdef HAS_OPENGL2
-    g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F_ARB,
-            &g_xray_detector,
-            &g_xray_beam);
-#endif
-
-#ifdef HAS_OPENGL3
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
             GL_RGB16F,
             &g_xray_detector,
             &g_xray_beam);
-#endif
 }
 
 

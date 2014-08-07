@@ -36,18 +36,6 @@
 #include <windows.h>
 #endif
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -55,7 +43,6 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
-#endif
 
 #include <GLFW/glfw3.h>
 
@@ -115,15 +102,11 @@
 
 #include "gVirtualXRayConfig.h"
 
-#ifdef HAS_OPENGL2
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
-#endif
 
 
 //******************************************************************************
@@ -273,19 +256,11 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-        // Enable OpenGL 2 if possible
-#ifdef HAS_OPENGL2
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#endif
-
         // Enable OpenGL 3.2 if possible
-#ifdef HAS_OPENGL3
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
 
 	    // Enable quad-buffering if possible
 	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
@@ -330,13 +305,6 @@ int main(int argc, char** argv)
 			std::cout << "Stereo is not enable." << std::endl;
 		}
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Initialise GLEW
-        if (glewInit() != GLEW_OK)
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLEW.");
-        }
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the OpenGL version
         std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
@@ -473,16 +441,17 @@ void initGL()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-	// Display shader
-#ifdef HAS_OPENGL2
-	z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
-#endif
+    // Display shader
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+    }
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -1260,19 +1229,10 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-#ifdef HAS_OPENGL2
-    g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F_ARB,
-            &g_xray_detector,
-            &g_xray_beam);
-#endif
-
-#ifdef HAS_OPENGL3
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
             GL_RGB16F,
             &g_xray_detector,
             &g_xray_beam);
-#endif
 
 	g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 
