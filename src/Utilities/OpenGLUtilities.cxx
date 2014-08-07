@@ -37,19 +37,6 @@
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
@@ -57,7 +44,8 @@
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
 #endif
-#endif
+
+#include "gVirtualXRay/Shader.h"
 
 
 //******************************************************************************
@@ -159,26 +147,28 @@ void pushTextureRectangle()
 //-------------------------
 {
     // Save the current texture
-	GLint current_texture_id(0);
+    GLint current_texture_id(0);
+    GLint current_texture_type(0);
 
-#ifdef HAS_OPENGL2
+#ifdef GL_TEXTURE_BINDING_RECTANGLE_ARB
     glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
 #endif
 
-#ifdef HAS_OPENGL3
+#ifdef GL_TEXTURE_BINDING_RECTANGLE
     glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
 #endif
 
 	// Get the current 2D texture
-#ifdef HAS_OPENGL2
-	std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE_ARB, current_texture_id);
+#ifdef GL_TEXTURE_RECTANGLE_ARB
+    current_texture_type = GL_TEXTURE_RECTANGLE_ARB;
 #endif
 
-#ifdef HAS_OPENGL3
-    std::pair<GLint, GLint> current_texture_pair(GL_TEXTURE_RECTANGLE, current_texture_id);
+#ifdef GL_TEXTURE_RECTANGLE
+	current_texture_type = GL_TEXTURE_RECTANGLE;
 #endif
 
     // Add the last texture
+    std::pair<GLint, GLint> current_texture_pair(current_texture_type, current_texture_id);
 	gVirtualXRay::g_texture_stack.push_back(current_texture_pair);
 }
 
@@ -315,17 +305,9 @@ void popTexture()
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 		break;
 
-#ifdef HAS_OPENGL2
-    case GL_TEXTURE_RECTANGLE_ARB:
-        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
-        break;
-#endif
-
-#ifdef HAS_OPENGL3
     case GL_TEXTURE_RECTANGLE:
         glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
         break;
-#endif
 
 	default:
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
@@ -349,17 +331,9 @@ void popTexture()
 			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
 			break;
 
-#ifdef HAS_OPENGL2
-			case GL_TEXTURE_RECTANGLE_ARB:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, previous_texture.second);
-			break;
-#endif
-
-#ifdef HAS_OPENGL3
             case GL_TEXTURE_RECTANGLE:
             glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
             break;
-#endif
 
         default:
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture type");
@@ -425,6 +399,74 @@ void applyModelViewMatrix()
 		glUniformMatrix3fv(normal_matrix_handle, 1, GL_FALSE, normal_matrix.get3x3());
 		gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
+}
+
+
+//------------------------
+bool useOpenGL3_2OrAbove()
+//------------------------
+{
+    // Set static variables
+    static bool has_been_initialised(false);
+    static bool use_gl_3_2(true);
+
+    // This is the first time the method is called
+    if (!has_been_initialised)
+    {
+        try
+        {
+            // Compile a dummy shader for OpenGL 3.2
+            // Vertex shader
+            const GLchar* g_vertex_shader = "\
+            \n#version 150\n \
+            \n \
+            in vec3 in_Vertex;\n \
+            \n \
+            uniform mat4 g_projection_matrix;\n \
+            uniform mat4 g_modelview_matrix;\n \
+            \n \
+            void main(void)\n \
+            {\n \
+                gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
+            }\n \
+            ";
+
+            // Fragment shader
+            const GLchar* g_fragment_shader = "\
+            \n#version 150\n \
+            precision highp float;\n \
+            \n \
+            out vec4 fragColor;\n \
+            void main(void)\n \
+            {\n \
+                fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+            }\n \
+            ";
+
+            Shader dummy_shader;
+
+            // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
+            dummy_shader.setLabels("g_vertex_shader", "g_fragment_shader");
+
+            // Load the source code of the shaders onto the GPU
+            dummy_shader.loadSource(g_vertex_shader, g_fragment_shader);
+
+            // An error occurred
+            if (!dummy_shader.isValid())
+            {
+                use_gl_3_2 = false;
+            }
+        }
+        // An error occured, OpenGL 3.2 is not supported
+        catch (const std::exception& e)
+        {
+            use_gl_3_2 = false;
+        }
+    }
+
+    has_been_initialised = true;
+
+    return (use_gl_3_2);
 }
 
 

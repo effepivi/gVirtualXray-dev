@@ -37,23 +37,6 @@
 #include <GL/glew.h>
 #endif
 
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#endif
-#endif
 
 #ifdef HAS_ITK
 #include <itkImageFileWriter.h>
@@ -89,65 +72,41 @@
 
 #include "gVirtualXRay/framebufferObject.h"
 
-#ifdef HAS_OPENGL2
 #include "MUx_Dx_gl2.frag.h"
 #include "MUx_Dx_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "MUx_Dx_gl3.frag.h"
 #include "MUx_Dx_gl3.vert.h"
-#endif
 
-#ifdef HAS_OPENGL2
 #include "cumulated_l_buffer_gl2.frag.h"
 #include "cumulated_l_buffer_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "cumulated_l_buffer_gl3.frag.h"
 #include "cumulated_l_buffer_gl3.vert.h"
-#endif
 
-#ifdef HAS_OPENGL2
 #include "l_buffer_gl2.frag.h"
 #include "l_buffer_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "l_buffer_gl3.frag.h"
 #include "l_buffer_gl3.vert.h"
-#endif
 
-#ifdef HAS_OPENGL2
 #include "outer_surface_l_buffer_gl2.frag.h"
 #include "outer_surface_l_buffer_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "outer_surface_l_buffer_gl3.frag.h"
 #include "outer_surface_l_buffer_gl3.vert.h"
-#endif
 
-#ifdef HAS_OPENGL2
 #include "xray_attenuation_gl2.frag.h"
 #include "xray_attenuation_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "xray_attenuation_gl3.frag.h"
 #include "xray_attenuation_gl3.vert.h"
-#endif
 
-#ifdef HAS_OPENGL2
 #include "xray_display_gl2.frag.h"
 #include "xray_display_gl2.vert.h"
-#endif
 
-#ifdef HAS_OPENGL3
 #include "xray_display_gl3.frag.h"
 #include "xray_display_gl3.vert.h"
-#endif
 
 #include "mu_water.csv.h"
 
@@ -232,21 +191,11 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 //-----------------------------------------------------------
 {
 	// Check the texture format
-#ifdef HAS_OPENGL2
-    if (anInternalTextureFormat != GL_RGB16F_ARB &&
-			anInternalTextureFormat != GL_RGB32F_ARB)
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
-	}
-#endif
-
-#ifdef HAS_OPENGL3
     if (anInternalTextureFormat != GL_RGB16F &&
             anInternalTextureFormat != GL_RGB32F)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
     }
-#endif
 
     // There is no detector
 	if (!apDetector)
@@ -973,16 +922,16 @@ void XRayRenderer::initShaders()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-	// L-buffer
-#ifdef HAS_OPENGL2
-	z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
-#endif
+	if (useOpenGL3_2OrAbove())
+	{
+	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
+	    z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
+	}
+	else
+	{
+        z_lib_return_code_vertex   = inflate(g_l_buffer_gl2_vert, sizeof(g_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_l_buffer_gl2_frag, sizeof(g_l_buffer_gl2_frag), &p_fragment_shader);
+	}
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -997,15 +946,16 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
-#ifdef HAS_OPENGL2
-    z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
-#endif
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl2_vert, sizeof(g_cumulated_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl2_frag, sizeof(g_cumulated_l_buffer_gl2_frag), &p_fragment_shader);
+    }
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -1020,15 +970,16 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
-#ifdef HAS_OPENGL2
-	z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl3_vert, sizeof(g_outer_surface_l_buffer_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl3_frag, sizeof(g_outer_surface_l_buffer_gl3_frag), &p_fragment_shader);
-#endif
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl3_vert, sizeof(g_outer_surface_l_buffer_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl3_frag, sizeof(g_outer_surface_l_buffer_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl2_vert, sizeof(g_outer_surface_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl2_frag, sizeof(g_outer_surface_l_buffer_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -1043,15 +994,16 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
-#ifdef HAS_OPENGL2
-    z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl3_vert, sizeof(g_MUx_Dx_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_MUx_Dx_gl3_frag, sizeof(g_MUx_Dx_gl3_frag), &p_fragment_shader);
-#endif
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl3_vert, sizeof(g_MUx_Dx_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_MUx_Dx_gl3_frag, sizeof(g_MUx_Dx_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl2_vert, sizeof(g_MUx_Dx_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_MUx_Dx_gl2_frag, sizeof(g_MUx_Dx_gl2_frag), &p_fragment_shader);
+    }
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -1066,15 +1018,16 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
-#ifdef HAS_OPENGL2
-	z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-	z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl3_vert, sizeof(g_xray_attenuation_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_xray_attenuation_gl3_frag, sizeof(g_xray_attenuation_gl3_frag), &p_fragment_shader);
-#endif
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl3_vert, sizeof(g_xray_attenuation_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_attenuation_gl3_frag, sizeof(g_xray_attenuation_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl2_vert, sizeof(g_xray_attenuation_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_attenuation_gl2_frag, sizeof(g_xray_attenuation_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -1089,15 +1042,16 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
-#ifdef HAS_OPENGL2
-    z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
-#endif
-
-#ifdef HAS_OPENGL3
-    z_lib_return_code_vertex   = inflate(g_xray_display_gl3_vert, sizeof(g_xray_display_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_xray_display_gl3_frag, sizeof(g_xray_display_gl3_frag), &p_fragment_shader);
-#endif
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_xray_display_gl3_vert, sizeof(g_xray_display_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_display_gl3_frag, sizeof(g_xray_display_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_xray_display_gl2_vert, sizeof(g_xray_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_display_gl2_frag, sizeof(g_xray_display_gl2_frag), &p_fragment_shader);
+    }
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -2198,7 +2152,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	glBlendFunc(GL_ONE, GL_ONE);
 
 	// Display the textured square
-	m_detector_temporary_geometry.display();
+	m_detector_temporary_geometry->display();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Restore the transformation matrices
@@ -2304,7 +2258,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	}
 
 	// Display the textured square
-	m_detector_temporary_geometry.display();
+	m_detector_temporary_geometry->display();
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Restore the transformation matrices
@@ -2448,7 +2402,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 				// Display the textured square
-				m_detector_temporary_geometry.display();
+				m_detector_temporary_geometry->display();
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 			}
 
@@ -2581,7 +2535,7 @@ void XRayRenderer::computeIntegratedEnergy()
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 				// Display the textured square
-				m_detector_temporary_geometry.display();
+				m_detector_temporary_geometry->display();
 
 				// The energy fluence is not empty
 				m_energy_fluence_empty = false;
@@ -2867,8 +2821,13 @@ void XRayRenderer::updateVBO()
 	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
 
-	m_detector_temporary_geometry.setBufferUsageHint(GL_STATIC_DRAW);
-	m_detector_temporary_geometry.setVertexData(GL_TRIANGLES,
+	if (!m_detector_temporary_geometry.get())
+	{
+	    m_detector_temporary_geometry.reset(createVBO());
+	}
+
+	m_detector_temporary_geometry->setBufferUsageHint(GL_STATIC_DRAW);
+	m_detector_temporary_geometry->setVertexData(GL_TRIANGLES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);

@@ -34,6 +34,7 @@
 //	Include
 //******************************************************************************
 #include <vector>
+#include <boost/scoped_ptr.hpp>
 
 #ifdef HAS_ITK
 #include <itkImage.h>
@@ -758,7 +759,7 @@ protected:
 
 
 	/// The VBO used to display a rectangle corresponding to the detector
-	VBO m_detector_temporary_geometry;
+	boost::scoped_ptr<VBO> m_detector_temporary_geometry;
 };
 
 

@@ -43,6 +43,18 @@
 #include "gVirtualXRay/Types.h"
 #endif
 
+#ifndef GVXR_VBO_H
+#include "gVirtualXRay/VBO.h"
+#endif
+
+#ifndef GVXR_OPENGL2_VBO_H
+#include "gVirtualXRay/OpenGL2VBO.h"
+#endif
+
+#ifndef GVXR_OPENGL3_VBO_H
+#include "gVirtualXRay/OpenGL3VBO.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -401,6 +413,42 @@ void loadModelViewMatrixFromOpenGL();
 ///	replace OpenGL's modelling-viewing matrix.
 //------------------------------------------------------------------------------
 void applyModelViewMatrix();
+
+
+//------------------------------------------------------------------------------
+/// Check if OpenGL 3.2 or above is supported by the current OpenGL context.
+/*
+* @return true if the current OpenGL context supports OpenGL 3.x or above, false otherwise
+*/
+//------------------------------------------------------------------------------
+bool useOpenGL3_2OrAbove();
+
+
+//------------------------------------------------------------------------------
+/// Create an OpenGL VBO suitable for the current OpenGL context.
+/*
+* @return the new OpenGL VBO
+*/
+//------------------------------------------------------------------------------
+VBO* createVBO();
+
+
+//------------------------------------------------------------------------------
+/// Create an OpenGL 2.x VBO.
+/*
+* @return the new OpenGL VBO
+*/
+//------------------------------------------------------------------------------
+OpenGL2VBO* createOpenGL2VBO();
+
+
+//------------------------------------------------------------------------------
+/// Create an OpenGL 3.x or 4.x VBO.
+/*
+* @return the new OpenGL VBO
+*/
+//------------------------------------------------------------------------------
+OpenGL3VBO* createOpenGL3VBO();
 
 
 /// The stack of model/view matrices

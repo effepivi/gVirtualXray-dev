@@ -30,22 +30,12 @@
 //******************************************************************************
 #include <map>
 
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
-#endif
 #endif
 
 #ifndef GVXR_POLYGON_MESH_H
@@ -102,12 +92,35 @@ PolygonMesh::PolygonMesh():
 }
 
 
+//--------------------------------------------------------------------
+PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
+//--------------------------------------------------------------------
+    m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
+    m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
+    m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
+    m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
+    m_number_of_indices(aPolygonMesh.m_number_of_indices),
+    m_number_of_vertices(aPolygonMesh.m_number_of_vertices),
+    m_index_data_type(aPolygonMesh.m_index_data_type),
+    m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
+    m_polygon_type(aPolygonMesh.m_polygon_type),
+    m_external_data_flag(aPolygonMesh.m_external_data_flag)
+//--------------------------------------------------------------------
+{
+    copyVertexSet(aPolygonMesh.m_p_vertex_set);
+    copyIndexSet(aPolygonMesh.m_p_index_set);
+}
+
+
 //-----------------------
 void PolygonMesh::reset()
 //-----------------------
 {
 	// Reset class members to their default values
-	m_vbo.reset();
+	if (m_vbo.get())
+	{
+	    m_vbo->reset();
+	}
 
 	m_use_hounsfield_value = true;
 	m_hounsfield_value = 0;
@@ -138,16 +151,22 @@ void PolygonMesh::reset()
 void PolygonMesh::display()
 //-------------------------
 {
-	// Update the VBO if needed
-	if (!m_vbo.isReady())
+	// Create the VBO if needed
+    if (!m_vbo.get())
+    {
+        m_vbo.reset(createVBO());
+    }
+
+    // Update the VBO if needed
+	if (!m_vbo->isReady())
 	{
-		updateVBO(m_vbo.getBufferUsageHint(), m_polygon_type);
+		updateVBO(m_vbo->getBufferUsageHint(), m_polygon_type);
 	}
 
 	// Display the polygon mesh using a VBO
-	if (m_vbo.isReady())
+	if (m_vbo->isReady())
 	{
-		m_vbo.display();
+		m_vbo->display();
 	}
 	// Do not use the VBO
 	else
@@ -501,6 +520,38 @@ void PolygonMesh::computeNormalVectors()
 }
 
 
+//------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
+//------------------------------------------------------------------
+{
+    m_filename                = aPolygonMesh.m_filename;
+
+
+    /// Vertex buffer object
+    //boost::scoped_ptr<VBO> m_vbo;
+
+
+    m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
+    m_hounsfield_value        = aPolygonMesh.m_hounsfield_value;
+    m_attenuation_coefficient = aPolygonMesh.m_attenuation_coefficient;
+    m_bounding_box_diagonal   = aPolygonMesh.m_bounding_box_diagonal;
+    m_min_corner              = aPolygonMesh.m_min_corner;
+    m_max_corner              = aPolygonMesh.m_max_corner;
+    m_p_face_normal_set       = aPolygonMesh.m_p_face_normal_set;
+    m_p_vertex_normal_set     = aPolygonMesh.m_p_vertex_normal_set;
+    m_number_of_indices       = aPolygonMesh.m_number_of_indices;
+    m_number_of_vertices      = aPolygonMesh.m_number_of_vertices;
+    m_index_data_type         = aPolygonMesh.m_index_data_type;
+    m_vertex_data_type        = aPolygonMesh.m_vertex_data_type;
+    m_polygon_type            = aPolygonMesh.m_polygon_type;
+
+    copyVertexSet(aPolygonMesh.m_p_vertex_set);
+    copyIndexSet(aPolygonMesh.m_p_index_set);
+
+    return (*this);
+}
+
+
 //----------------------------------
 void PolygonMesh::normaliseNormals()
 //----------------------------------
@@ -739,10 +790,16 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 				// Reset the normal per face set
 				m_p_face_normal_set.clear();
 
+		        // Create the VBO if needed
+		        if (!m_vbo.get())
+		        {
+		            m_vbo.reset(createVBO());
+		        }
+
 				// Update the VBO
-				if (m_vbo.isReady())
+				if (m_vbo->isReady())
 				{
-					updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+					updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 				}
 
 				// Display extra debug info
@@ -934,10 +991,16 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 				mergeVertices(aPrintDebugInfoFlag);
 			}
 
+	        // Create the VBO if needed
+	        if (!m_vbo.get())
+	        {
+	            m_vbo.reset(createVBO());
+	        }
+
 			// Update the VBO
-			if (m_vbo.isReady())
+			if (m_vbo->isReady())
 			{
-				updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+				updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 			}
 
 			// Display extra debug info
@@ -970,31 +1033,37 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 {
 	if (m_p_vertex_set && m_number_of_vertices)
 	{
+        // Create the VBO if needed
+        if (!m_vbo.get())
+        {
+            m_vbo.reset(createVBO());
+        }
+
 		// Set the type of VBO
-		m_vbo.setBufferUsageHint(aTypeOfVBO);
+		m_vbo->setBufferUsageHint(aTypeOfVBO);
 
 		if (getVertexNormalNumber())
 		{
-			m_vbo.setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 					0, 0, GL_NONE, 0);
 		}
 		else if (getFaceNormalNumber())
 		{
-			m_vbo.setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getFaceNormalNumber(), 3, GL_FLOAT, &m_p_face_normal_set[0],
 					0, 0, GL_NONE, 0);
 		}
 		else
 		{
-			m_vbo.setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					0, 0, GL_NONE, 0,
 					0, 0, GL_NONE, 0);
 		}
 
 		if (m_p_index_set && m_number_of_indices && m_index_data_type != GL_NONE)
 		{
-			m_vbo.setIndexData(m_number_of_indices, m_index_data_type, m_p_index_set);
+			m_vbo->setIndexData(m_number_of_indices, m_index_data_type, m_p_index_set);
 		}
 	}
 }
@@ -1487,10 +1556,16 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 					}
 				}
 
+		        // Create the VBO if needed
+		        if (!m_vbo.get())
+		        {
+		            m_vbo.reset(createVBO());
+		        }
+
 				// Update the VBO
-				if (m_vbo.isReady())
+				if (m_vbo->isReady())
 				{
-					updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+					updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 				}
 
 				// Display extra debug info
@@ -1515,4 +1590,62 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
 	}
+}
+
+
+//------------------------------------------------
+void PolygonMesh::copyVertexSet(void* apVertexSet)
+//------------------------------------------------
+{
+    unsigned int size_to_copy(m_number_of_vertices * 3);
+
+    switch (m_vertex_data_type)
+    {
+    case GL_FLOAT:
+        size_to_copy *= sizeof(GLfloat);
+        break;
+
+    case GL_DOUBLE:
+        size_to_copy *= sizeof(GLdouble);
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+    }
+}
+
+
+//----------------------------------------------
+void PolygonMesh::copyIndexSet(void* apIndexSet)
+//----------------------------------------------
+{
+    unsigned int size_to_copy(m_number_of_indices);
+
+    switch (m_vertex_data_type)
+    {
+    case GL_UNSIGNED_INT:
+        size_to_copy *= sizeof(GLuint);
+        break;
+
+    case GL_UNSIGNED_SHORT:
+        size_to_copy *= sizeof(GLushort);
+        break;
+
+    case GL_UNSIGNED_BYTE:
+        size_to_copy *= sizeof(GLubyte);
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+    }
+
+    switch (m_polygon_type)
+    {
+    case GL_TRIANGLES:
+        size_to_copy *= 3;
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+    }
 }

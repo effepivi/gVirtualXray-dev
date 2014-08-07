@@ -99,7 +99,9 @@ SET (CXX_SOURCES
 	../src/Graphics/CubeMesh.cxx
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
-        ../src/Graphics/PolygonMesh.cxx
+	../src/Graphics/OpenGL2VBO.cxx
+	../src/Graphics/OpenGL3VBO.cxx
+    ../src/Graphics/PolygonMesh.cxx
 	../src/Graphics/Shader.cxx
 	../src/Graphics/SphereMesh.cxx
 	../src/Graphics/StereoHelper.cxx
@@ -136,8 +138,12 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/ImplicitSurface.h
    	../include/gVirtualXRay/ImplicitSurface.inl
-        ../include/gVirtualXRay/PolygonMesh.h
-        ../include/gVirtualXRay/PolygonMesh.inl
+	../include/gVirtualXRay/OpenGL2VBO.h
+	../include/gVirtualXRay/OpenGL2VBO.inl
+	../include/gVirtualXRay/OpenGL3VBO.h
+	../include/gVirtualXRay/OpenGL3VBO.inl
+    ../include/gVirtualXRay/PolygonMesh.h
+    ../include/gVirtualXRay/PolygonMesh.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
@@ -206,6 +212,18 @@ IF(NOT GZIP_FOUND)
 ENDIF(NOT GZIP_FOUND)
 
 
+# BOOST #######################################################################
+FIND_PACKAGE(Boost QUIET REQUIRED)
+if(Boost_FOUND)
+	SET( Boost_USE_STATIC_LIBS OFF )
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+ELSE(Boost_FOUND)
+	MESSAGE(FATAL_ERROR "Boost not found.")
+ENDIF(Boost_FOUND)
+
+
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)
@@ -216,18 +234,19 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
+FIND_PACKAGE(GLEW)
+IF(GLEW_FOUND)
+    ADD_DEFINITIONS(-DHAS_GLEW)
+    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARIES})
+ELSE(GLEW_FOUND)
+    MESSAGE(FATAL_ERROR "GLEW not found.")
+ENDIF(GLEW_FOUND)
+
+
 IF (USE_OPENGL2)
 	MESSAGE(STATUS "OpenGL2 found.")
 	ADD_DEFINITIONS(-DHAS_OPENGL2)
-
-    FIND_PACKAGE(GLEW)
-    IF(GLEW_FOUND)
-		ADD_DEFINITIONS(-DHAS_GLEW)
-    	INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-    	SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARIES})
-    ELSE(GLEW_FOUND)
-    	MESSAGE(FATAL_ERROR "GLEW not found.")
-    ENDIF(GLEW_FOUND)
 ELSE (USE_OPENGL2)
 	MESSAGE(STATUS "OpenGL3 found.")
 	ADD_DEFINITIONS(-DHAS_OPENGL3)

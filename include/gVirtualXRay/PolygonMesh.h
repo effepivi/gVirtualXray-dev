@@ -38,6 +38,7 @@
 //******************************************************************************
 #include <string>
 #include <vector>
+#include <boost/scoped_ptr.hpp>
 
 #ifndef GVXR_VBO_H
 #include "gVirtualXRay/VBO.h"
@@ -75,7 +76,16 @@ public:
 	PolygonMesh();
 
 
-	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    /// Copy constructor.
+    /**
+    *   @param aPolygonMesh:    the polygon mesh to copy
+    */
+    //--------------------------------------------------------------------------
+    PolygonMesh(const PolygonMesh& aPolygonMesh);
+
+
+    //--------------------------------------------------------------------------
 	///	Destructor.
 	//--------------------------------------------------------------------------
 	~PolygonMesh();
@@ -562,6 +572,16 @@ public:
 	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
 
 
+    //--------------------------------------------------------------------------
+    /// Copy operator.
+    /**
+    *   @param aPolygonMesh:    the polygon mesh to copy
+    *   @return the new PolygonMesh
+    */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh& operator=(const PolygonMesh& aPolygonMesh);
+
+
 //******************************************************************************
 protected:
 	//--------------------------------------------------------------------------
@@ -594,12 +614,24 @@ protected:
 	void removeIndex(bool aPrintDebugInfoFlag = false);
 
 
+    //--------------------------------------------------------------------------
+    /// Copy a vertex set.
+    //--------------------------------------------------------------------------
+    void copyVertexSet(void* apVertexSet);
+
+
+    //--------------------------------------------------------------------------
+    /// Copy an index set.
+    //--------------------------------------------------------------------------
+    void copyIndexSet(void* apIndexSet);
+
+
 	/// Name of the file that contains the polygon mesh
 	std::string m_filename;
 
 
 	/// Vertex buffer object
-	VBO m_vbo;
+	boost::scoped_ptr<VBO> m_vbo;
 
 
 	/// Flag about the use of the Hounsfield value or attenuation coefficient

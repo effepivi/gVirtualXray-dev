@@ -29,20 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_OPENGL2
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#endif
-
-#ifdef HAS_OPENGL3
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
 #include <GL/glcorearb.h>
-#endif
 #endif
 
 #ifndef GVXR_CUBE_MESH_H
