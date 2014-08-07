@@ -361,43 +361,59 @@ int OpenGLWindow::handle(int anEvent)
 	case FL_PUSH:
 
 		m_use_arc_ball = true;
-		m_last_x_position = m_current_x_position = Fl::event_x();
-		m_last_y_position = m_current_y_position = Fl::event_y();
+
+        m_last_x_position = m_current_x_position = Fl::event_x();
+
+        if ( Fl::event_button() == FL_LEFT_MOUSE)
+		{
+	        m_last_y_position = m_current_y_position = Fl::event_y();
+		}
+		else
+		{
+	        m_last_y_position = m_current_y_position = h() - Fl::event_y();
+		}
 		return (1);
 
 	case FL_RELEASE:
 		m_use_arc_ball = false;
 		return (1);
 
-	case FL_DRAG:
-		if ( Fl::event_button() == FL_LEFT_MOUSE) { 
-		m_current_x_position = Fl::event_x();
-		m_current_y_position = Fl::event_y();
-		// left click rotates environment
-		computeRotation(m_scene_rotation_matrix);
-		m_is_xray_image_up_to_date = false;
-		redraw();
-		return (1);
-		}
+    case FL_DRAG:
+        if ( Fl::event_button() == FL_LEFT_MOUSE)
+        {
+            m_current_x_position = Fl::event_x();
+            m_current_y_position = Fl::event_y();
+            // left click rotates environment
+            computeRotation(m_scene_rotation_matrix);
+            m_is_xray_image_up_to_date = false;
+            redraw();
+            return (1);
+        }
 
-		if ( Fl::event_button() == FL_RIGHT_MOUSE) {
-		m_current_x_position = Fl::event_x();
-		m_current_y_position = Fl::event_y();
-		// right click rotates object
-		computeRotation(m_sample_rotation_matrix);
-		m_is_xray_image_up_to_date = false;
-		redraw();
-		return (1);
-		}
+        if ( Fl::event_button() == FL_RIGHT_MOUSE)
+        {
+            m_current_x_position = Fl::event_x();
+            m_current_y_position = h() - Fl::event_y();
+            // right click rotates object
+            computeRotation(m_sample_rotation_matrix);
+            m_is_xray_image_up_to_date = false;
+            redraw();
+            return (1);
+        }
 
-		if ( Fl::event_button() == FL_MIDDLE_MOUSE) {
-		m_current_x_position = Fl::event_x();
-		m_current_y_position = Fl::event_y();
-		// middle click rotates x-ray detector
-		computeRotation(m_detector_rotation_matrix);
-		redraw();
-		return (1);
-		}
+        if ( Fl::event_button() == FL_MIDDLE_MOUSE)
+        {
+            std::cout << "MIDDLE BUTTON." << std::endl;
+            m_current_x_position = Fl::event_x();
+            m_current_y_position = h() - Fl::event_y();
+            // middle click rotates x-ray detector
+            computeRotation(m_detector_rotation_matrix);
+            m_xray_detector.setRotationMatrix(m_detector_rotation_matrix);
+            m_is_xray_image_up_to_date = false;
+            redraw();
+            return (1);
+        }
+        break;
 
 	case FL_MOUSEWHEEL:
 		m_zoom += float(Fl::event_dy()) * cm;
@@ -406,7 +422,7 @@ int OpenGLWindow::handle(int anEvent)
 		g_zoom_slider->value(m_zoom);
 		reshape(w(), h());
 		return (1);
-	    }
+    }
 
 
 	return (Fl_Gl_Window::handle(anEvent));
