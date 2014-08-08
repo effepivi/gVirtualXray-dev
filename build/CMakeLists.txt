@@ -74,9 +74,9 @@ configure_file (
 
 
 # Enable all compiler warnings #################################################
-IF(NOT WIN32)
-	add_definitions( -Wall )
-ENDIF(NOT WIN32)
+#IF(NOT WIN32)
+#	add_definitions( -Wall )
+#ENDIF(NOT WIN32)
 
 
 # Libraries ####################################################################
