@@ -26,6 +26,9 @@
 ################################################################################
 
 
+SET (WEBSITE http://sourceforge.net/projects/gvirtualxray/)
+
+
 # Initialise some states by default ############################################
 set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
@@ -43,9 +46,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../build/
 
 
 # Enable all compiler warnings #################################################
-IF(NOT WIN32)
-	add_definitions( -Wall )
-ENDIF(NOT WIN32)
+#IF(NOT WIN32)
+#	add_definitions( -Wall )
+#ENDIF(NOT WIN32)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
@@ -329,6 +332,8 @@ IF(USE_BUNDLE)
     set(CPACK_PACKAGE_VENDOR "gVirtualXRay team")
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
+    
+    set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 	SET (MACOSX_RPATH 1)
     ADD_DEFINITIONS(-DHAS_BUNDLE)
@@ -364,6 +369,11 @@ IF(USE_BUNDLE)
 
 	IF(WIN32)
 		SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo.exe")
+		set(CPACK_NSIS_MENU_LINKS "${WEBSITE}" "Homepage for gVirtualXRay")
+		set(CPACK_NSIS_URL_INFO_ABOUT "${WEBSITE}")
+		set(CPACK_NSIS_HELP_LINK "${WEBSITE}")
+		set(CPACK_NSIS_MENU_LINKS bin "DragonDemo")
+
 	ENDIF(WIN32)
 
 	IF (APPLE)
