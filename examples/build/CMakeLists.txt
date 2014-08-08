@@ -32,15 +32,11 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeR
 
 
 # Minimum CMake version ########################################################
-IF(WIN32)
-	cmake_minimum_required(VERSION 2.6.0)
-ENDIF(WIN32)
-
+cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 
 IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0011 NEW)
 ENDIF(COMMAND cmake_policy)
-
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../build/modules)
@@ -63,10 +59,6 @@ project (examples)
 set (examples_VERSION_MAJOR 1)
 set (examples_VERSION_MINOR 2)
 set (examples_VERSION_PATCH 0)
-
-SET(CPACK_PACKAGE_VERSION_MAJOR ${examples_VERSION_MAJOR})
-SET(CPACK_PACKAGE_VERSION_MINOR ${examples_VERSION_MINOR})
-SET(CPACK_PACKAGE_VERSION_PATCH ${examples_VERSION_PATCH})
 
 
 # Headers of the project #######################################################
@@ -325,6 +317,19 @@ ENDIF (FLTK_FOUND)
 
 
 IF(USE_BUNDLE)
+    # Set the package name
+    SET (CPACK_PACKAGE_NAME "gVirtualXRay")
+
+    # Set the package version
+    SET(CPACK_PACKAGE_VERSION_MAJOR ${examples_VERSION_MAJOR})
+    SET(CPACK_PACKAGE_VERSION_MINOR ${examples_VERSION_MINOR})
+    SET(CPACK_PACKAGE_VERSION_PATCH ${examples_VERSION_PATCH})
+    set(CPACK_PACKAGE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+
+    set(CPACK_PACKAGE_VENDOR "gVirtualXRay team")
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
+
 	SET (MACOSX_RPATH 1)
     ADD_DEFINITIONS(-DHAS_BUNDLE)
 
@@ -339,30 +344,31 @@ IF(USE_BUNDLE)
 	TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 	# Define some settings for the Bundle
-	if(APPLE)
-		set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
-		set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
-		SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+	IF(APPLE)
+		#set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
+		#set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
+		#SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 		set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
-		set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
-		set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
-		set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
-		set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
-		set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
+		#set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
+		#set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
+		#set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+		#set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+		#set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
 	ENDIF(APPLE)
 
 	SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo")
-	IF(APPLE)
+	
+    IF(APPLE)
 		SET(APPS "\${CMAKE_INSTALL_PREFIX}/DragonDemo.app")
 	ENDIF(APPLE)
+
 	IF(WIN32)
 		SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo.exe")
 	ENDIF(WIN32)
 
-	INSTALL(TARGETS DragonDemo 
-		BUNDLE DESTINATION . COMPONENT Runtime
-		RUNTIME DESTINATION bin COMPONENT Runtime
-	)
+	#INSTALL(TARGETS DragonDemo BUNDLE DESTINATION . COMPONENT Runtime RUNTIME DESTINATION bin COMPONENT Runtime)
+
+    install(TARGETS DragonDemo RUNTIME DESTINATION bin COMPONENT applications)
 
 	if(APPLE)
 		SET_SOURCE_FILES_PROPERTIES (
@@ -383,11 +389,18 @@ IF(USE_BUNDLE)
 			MACOSX_PACKAGE_LOCATION help
 		)
 	else(APPLE)
-		INSTALL(FILES ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION doc)
-		INSTALL(FILES ../data/welsh-dragon-small.stl                                    DESTINATION examples/data)
+		INSTALL(FILES ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION doc COMPONENT applications)
+		INSTALL(FILES ../data/welsh-dragon-small.stl                                    DESTINATION examples/data COMPONENT applications)
 	endif(APPLE)
 
-	INSTALL(FILES ../../LICENSE.txt DESTINATION .)
+	#INSTALL(FILES ../../LICENSE.txt DESTINATION .)
+
+    set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "gVirtualXRay Application")
+    set(CPACK_COMPONENT_APPLICATIONS_DESCRIPTION "A demo application that makes use of gVirtualXRay")
+    set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
+    set(CPACK_COMPONENT_APPLICATIONS_INSTALL_TYPES Full)
+
+    set(CPACK_COMPONENTS_ALL applications libraries headers)
 
 	# directories to look for dependencies
 	SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
@@ -396,7 +409,7 @@ IF(USE_BUNDLE)
 	INSTALL(CODE "
 		include(BundleUtilities)
 		fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
-		" COMPONENT Runtime)
+		" COMPONENT applications)
 
 	# To Create a package
 	IF(APPLE)

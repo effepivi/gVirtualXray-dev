@@ -367,6 +367,21 @@ ELSE (BUILD_EXAMPLES)
 ENDIF (BUILD_EXAMPLES)
 
 
-install (TARGETS gVirtualXRay DESTINATION lib)
-install (FILES ${HXX_SOURCES} DESTINATION include/gVirtualXRay)
-install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h" DESTINATION include/gVirtualXRay)
+install (TARGETS                               gVirtualXRay ARCHIVE DESTINATION lib                  COMPONENT libraries)
+install (FILES                               ${HXX_SOURCES}         DESTINATION include/gVirtualXRay COMPONENT headers)
+install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"         DESTINATION include/gVirtualXRay COMPONENT headers)
+
+set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+
+set(CPACK_COMPONENT_LIBRARIES_DESCRIPTION "Static libraries used to build programs with gVirtualXRay")
+set(CPACK_COMPONENT_HEADERS_DESCRIPTION "C/C++ header files for use with gVirtualXRay")
+
+set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
+set(CPACK_COMPONENT_HEADERS_GROUP "Development")
+
+set(CPACK_COMPONENT_GROUP_DEVELOPMENT_DESCRIPTION "All of the tools you'll ever need to develop software with gVirtualXRay")
+
+set(CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
+set(CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
+
