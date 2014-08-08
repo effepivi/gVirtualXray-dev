@@ -83,27 +83,48 @@ ELSE(APPLE)
     OPTION(USE_OPENMP "Use OpenMP if possible."  ON)
 ENDIF(APPLE)
 
+IF(WIN32)
+    OPTION(USE_OCTAVE "Use GNU Octave if possible."  OFF)
+ELSE(WIN32)
+    SET(USE_OCTAVE ON)
+ENDIF(WIN32)
+
+
 # FLTK ########################################################################
 FIND_PACKAGE(FLTK)
 if(FLTK_FOUND)
         ADD_DEFINITIONS(-DHAS_FLTK)
         INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
         SET(requiredLibs ${optionalLibs} ${FLTK_LIBRARIES})
+
+        FIND_PACKAGE(GLEW)
+        IF(GLEW_FOUND)
+            ADD_DEFINITIONS(-DHAS_GLEW)
+            INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+            LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+            SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
+        ELSE(GLEW_FOUND)
+            MESSAGE(FATAL_ERROR "GLEW not found.")
+        ENDIF(GLEW_FOUND)
+
 ELSE(FLTK_FOUND)
         MESSAGE(WARNING "FLTK not found, it will be disable.")
 ENDIF(FLTK_FOUND)
 
 
 # Octave ######################################################################
-FIND_PACKAGE(Octave)
-if(OCTAVE_FOUND)
-    ADD_DEFINITIONS(-DHAS_OCTAVE)
-    INCLUDE_DIRECTORIES(${OCTAVE_INCLUDE_DIRS})
-    LINK_DIRECTORIES(${OCTAVE_LINK_DIRS})
-    SET(optionalLibs ${optionalLibs} ${OCTAVE_LIBRARY})
-ELSE(OCTAVE_FOUND)
-    MESSAGE(WARNING "GNU Octave not found, the use of GNU Octave will be disable.")
-ENDIF(OCTAVE_FOUND)
+IF(USE_OCTAVE)
+    FIND_PACKAGE(Octave)
+    if(OCTAVE_FOUND)
+        ADD_DEFINITIONS(-DHAS_OCTAVE)
+        INCLUDE_DIRECTORIES(${OCTAVE_INCLUDE_DIRS})
+        LINK_DIRECTORIES(${OCTAVE_LINK_DIRS})
+        MESSAGE(WARNING ${OCTAVE_LINK_DIRS)
+        SET(optionalLibs ${optionalLibs} ${OCTAVE_LIBRARY})
+    ELSE(OCTAVE_FOUND)
+        MESSAGE(WARNING "GNU Octave not found, the use of GNU Octave will be disable.")
+    ENDIF(OCTAVE_FOUND)
+ENDIF(USE_OCTAVE)
 
 
 # GSL #########################################################################
@@ -162,7 +183,7 @@ ENDIF(USE_GLFW)
 
 # Check if GLFW is enable #####################################################
 IF(NOT USE_GLFW)
-	MESSAGE(FATAL_ERROR "GLFW is not enable, examples and tutorials cannot be built.")
+	MESSAGE(WARNING "GLFW is not enable, examples and tutorials cannot be built.")
 ENDIF(NOT USE_GLFW)
 
 
@@ -274,9 +295,13 @@ IF(USE_GLFW)
 	#SET_PROPERTY(TARGET tutorial_01 PROPERTY LINK_SEARCH_START_STATIC 1) 
 	TARGET_LINK_LIBRARIES (tutorial_03 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-	ADD_EXECUTABLE (VoxelLabelisation ../src/VoxelLabelisation.cxx)
-	#SET_PROPERTY(TARGET VoxelLabelisation PROPERTY LINK_SEARCH_START_STATIC 1) 
-	TARGET_LINK_LIBRARIES (VoxelLabelisation gVirtualXRay ${requiredLibs} ${optionalLibs})
+    IF(USE_OCTAVE)
+        IF(OCTAVE_FOUND)
+        	ADD_EXECUTABLE (VoxelLabelisation ../src/VoxelLabelisation.cxx)
+	        #SET_PROPERTY(TARGET VoxelLabelisation PROPERTY LINK_SEARCH_START_STATIC 1) 
+    	    TARGET_LINK_LIBRARIES (VoxelLabelisation gVirtualXRay ${requiredLibs} ${optionalLibs})
+        ENDIF(OCTAVE_FOUND)
+    ENDIF(USE_OCTAVE)
 ENDIF(USE_GLFW)
 
 IF (FLTK_FOUND)
@@ -376,7 +401,13 @@ ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_01 BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_02 BinaryDemoFiles)
 ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
-ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
+IF(USE_OCTAVE)
+    IF(OCTAVE_FOUND)
+        ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
+    ENDIF(OCTAVE_FOUND)
+ENDIF(USE_OCTAVE)
+
 IF(USE_BUNDLE)
 	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
 ENDIF(USE_BUNDLE)
+
