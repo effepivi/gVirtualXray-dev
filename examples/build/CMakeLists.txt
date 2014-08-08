@@ -345,15 +345,15 @@ IF(USE_BUNDLE)
 
 	# Define some settings for the Bundle
 	IF(APPLE)
-		#set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
-		#set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
-		#SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+		set(MACOSX_BUNDLE_BUNDLE_NAME DragonDemo)
+		set(MACOSX_BUNDLE_GUI_IDENTIFIER "DragonDemo")
+		SET_SOURCE_FILES_PROPERTIES(../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 		set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
-		#set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
-		#set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
-		#set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
-		#set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
-		#set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
+		set(MACOSX_BUNDLE_INFO_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}, Copyright 2014 gVirtualXRay team")
+		set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}")
+		set(MACOSX_BUNDLE_LONG_VERSION_STRING "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+		set(MACOSX_BUNDLE_BUNDLE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+		set(MACOSX_BUNDLE_COPYRIGHT "(C) 2013-2014 Franck P. Vidal")
 	ENDIF(APPLE)
 
 	SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo")
@@ -366,9 +366,11 @@ IF(USE_BUNDLE)
 		SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo.exe")
 	ENDIF(WIN32)
 
-	#INSTALL(TARGETS DragonDemo BUNDLE DESTINATION . COMPONENT Runtime RUNTIME DESTINATION bin COMPONENT Runtime)
-
-    install(TARGETS DragonDemo RUNTIME DESTINATION bin COMPONENT applications)
+	IF (APPLE)
+		INSTALL(TARGETS DragonDemo BUNDLE DESTINATION . COMPONENT applications RUNTIME DESTINATION bin COMPONENT applications)
+	ELSE (APPLE)
+		install(TARGETS DragonDemo RUNTIME DESTINATION bin COMPONENT applications)
+	ENDIF (APPLE)
 
 	if(APPLE)
 		SET_SOURCE_FILES_PROPERTIES (
@@ -393,7 +395,7 @@ IF(USE_BUNDLE)
 		INSTALL(FILES ../data/welsh-dragon-small.stl                                    DESTINATION examples/data COMPONENT applications)
 	endif(APPLE)
 
-	#INSTALL(FILES ../../LICENSE.txt DESTINATION .)
+	INSTALL(FILES ../../LICENSE.txt DESTINATION .)
 
     set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "gVirtualXRay Application")
     set(CPACK_COMPONENT_APPLICATIONS_DESCRIPTION "A demo application that makes use of gVirtualXRay")
@@ -407,6 +409,7 @@ IF(USE_BUNDLE)
 
 	SET (LIBRARIES ${requiredLibs} ${optionalLibs})
 	INSTALL(CODE "
+		SET(BU_CHMOD_BUNDLE_ITEMS 1)
 		include(BundleUtilities)
 		fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
 		" COMPONENT applications)
