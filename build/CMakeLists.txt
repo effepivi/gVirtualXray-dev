@@ -99,7 +99,7 @@ SET (CXX_SOURCES
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
 	../src/Graphics/OpenGL2VBO.cxx
-	../src/Graphics/OpenGL3VBO.cxx
+    ../src/Graphics/OpenGL3VBO.cxx
     ../src/Graphics/PolygonMesh.cxx
 	../src/Graphics/Shader.cxx
 	../src/Graphics/SphereMesh.cxx
@@ -211,18 +211,6 @@ IF(NOT GZIP_FOUND)
 ENDIF(NOT GZIP_FOUND)
 
 
-# BOOST #######################################################################
-FIND_PACKAGE(Boost QUIET REQUIRED)
-if(Boost_FOUND)
-	SET( Boost_USE_STATIC_LIBS OFF )
-	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
-ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
-ENDIF(Boost_FOUND)
-
-
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)
@@ -243,6 +231,18 @@ IF(GLEW_FOUND)
 ELSE(GLEW_FOUND)
     MESSAGE(FATAL_ERROR "GLEW not found.")
 ENDIF(GLEW_FOUND)
+
+
+# BOOST #######################################################################
+FIND_PACKAGE(Boost QUIET REQUIRED)
+if(Boost_FOUND)
+	SET( Boost_USE_STATIC_LIBS OFF )
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+ELSE(Boost_FOUND)
+	MESSAGE(FATAL_ERROR "Boost not found.")
+ENDIF(Boost_FOUND)
 
 
 # FreeImage ####################################################################

@@ -95,10 +95,59 @@ FIND_PACKAGE(FLTK)
 if(FLTK_FOUND)
         ADD_DEFINITIONS(-DHAS_FLTK)
         INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
-        SET(requiredLibs ${optionalLibs} ${FLTK_LIBRARIES})
+        SET(optionalLibs ${optionalLibs} ${FLTK_LIBRARIES})
 ELSE(FLTK_FOUND)
         MESSAGE(WARNING "FLTK not found, it will be disable.")
 ENDIF(FLTK_FOUND)
+
+
+if(FLTK_FOUND)
+        FIND_PACKAGE(GLEW REQUIRED)
+        IF(GLEW_FOUND)
+        	ADD_DEFINITIONS(-DGLEW_STATIC)
+            ADD_DEFINITIONS(-DHAS_GLEW)
+            INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+            LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+            SET(optionalLibs ${optionalLibs} ${GLEW_LIBRARY})
+        ELSE(GLEW_FOUND)
+            MESSAGE(FATAL_ERROR "GLEW not found.")
+        ENDIF(GLEW_FOUND)
+ENDIF(FLTK_FOUND)
+
+
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED)
+IF(OPENGL_FOUND)
+	INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
+	SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
+ELSE(OPENGL_FOUND)
+	MESSAGE(FATAL_ERROR "OpenGL not found.")
+ENDIF(OPENGL_FOUND)
+
+
+# BOOST #######################################################################
+FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS system filesystem program_options)
+IF(Boost_FOUND)
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+ELSE(Boost_FOUND)
+	MESSAGE(FATAL_ERROR "Boost not found.")
+ENDIF(Boost_FOUND)
+
+
+# OpenMP #######################################################################
+IF (USE_OPENMP)
+	FIND_PACKAGE(OpenMP)
+	IF (OPENMP_FOUND)
+		ADD_DEFINITIONS(-DHAS_OPENMP)
+		SET (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
+		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+	ELSE(OPENMP_FOUND)
+		MESSAGE(WARNING "OpenMP not found, it will be disable.")
+		SET (USE_OPENMP OFF)
+	ENDIF(OPENMP_FOUND)
+ENDIF(USE_OPENMP)
 
 
 # Octave ######################################################################
@@ -126,30 +175,6 @@ if(GSL_FOUND)
 ELSE(GSL_FOUND)
     MESSAGE(WARNING "GNU scientific library (GSL) (see http://www.gnu.org/software/gsl/) not found, the use of GSL will be disable.")
 ENDIF(GSL_FOUND)
-
-
-# OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED)
-IF(OPENGL_FOUND)
-	INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
-	SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
-ELSE(OPENGL_FOUND)
-	MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF(OPENGL_FOUND)
-
-
-if(FLTK_FOUND)
-        FIND_PACKAGE(GLEW REQUIRED)
-        IF(GLEW_FOUND)
-        	ADD_DEFINITIONS(-DGLEW_STATIC)
-            ADD_DEFINITIONS(-DHAS_GLEW)
-            INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-            LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
-            SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
-        ELSE(GLEW_FOUND)
-            MESSAGE(FATAL_ERROR "GLEW not found.")
-        ENDIF(GLEW_FOUND)
-ENDIF(FLTK_FOUND)
 
 
 IF(USE_GLFW)
@@ -188,33 +213,6 @@ ENDIF(USE_GLFW)
 IF(NOT USE_GLFW)
 	MESSAGE(WARNING "GLFW is not enable, examples and tutorials cannot be built.")
 ENDIF(NOT USE_GLFW)
-
-
-# BOOST #######################################################################
-IF(USE_BUNDLE)
-	FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS system filesystem program_options)
-	if(Boost_FOUND)
-		INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-		LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-		SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
-	ELSE(Boost_FOUND)
-		MESSAGE(FATAL_ERROR "Boost not found.")
-	ENDIF(Boost_FOUND)
-ENDIF(USE_BUNDLE)
-
-
-# OpenMP #######################################################################
-IF (USE_OPENMP)
-	FIND_PACKAGE(OpenMP)
-	IF (OPENMP_FOUND)
-		ADD_DEFINITIONS(-DHAS_OPENMP)
-		SET (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
-		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-	ELSE(OPENMP_FOUND)
-		MESSAGE(WARNING "OpenMP not found, it will be disable.")
-		SET (USE_OPENMP OFF)
-	ENDIF(OPENMP_FOUND)
-ENDIF(USE_OPENMP)
 
 
 # Create the RESOURCES ###########################################################
@@ -261,7 +259,9 @@ ENDIF (FLTK_FOUND)
 
 
 # Create the main programs #####################################################
-REMOVE_DEFINITIONS(-DHAS_BUNDLE)
+IF(USE_BUNDLE)
+    REMOVE_DEFINITIONS(-DHAS_BUNDLE)
+ENDIF(USE_BUNDLE)
 
 
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
@@ -405,14 +405,17 @@ ENDIF(USE_BUNDLE)
 
 
 # Make sure the source is generated before the executable builds.
-ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
-ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
-ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
-ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
-ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
-ADD_DEPENDENCIES(tutorial_01 BinaryDemoFiles)
-ADD_DEPENDENCIES(tutorial_02 BinaryDemoFiles)
-ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
+IF(USE_GLFW)
+    ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
+    ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
+    ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
+    ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
+    ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
+    ADD_DEPENDENCIES(tutorial_01 BinaryDemoFiles)
+    ADD_DEPENDENCIES(tutorial_02 BinaryDemoFiles)
+    ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
+ENDIF(USE_GLFW)
+
 IF(USE_OCTAVE)
     IF(OCTAVE_FOUND)
         ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)

@@ -47,10 +47,8 @@
 #include <GL/glu.h>
 #endif // __APPLE__
 
-#ifdef HAS_BUNDLE
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem.hpp>
-#endif
 
 #ifndef OPENGL_WINDOW_H
 #include "OpenGLWindow.h"
