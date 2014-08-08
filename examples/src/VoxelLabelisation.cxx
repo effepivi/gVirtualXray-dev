@@ -33,6 +33,9 @@
 #include <windows.h>
 #endif
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glew.h>
+#else
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -40,6 +43,7 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
+#endif
 
 #include <GLFW/glfw3.h>
 
@@ -184,7 +188,7 @@ std::vector<RealImageType::Pointer> g_p_low_resolution_reference_projection_set;
 std::vector<RealImageType::Pointer> g_p_high_resolution_simulated_projection_set;
 std::vector<RealImageType::Pointer> g_p_low_resolution_simulated_projection_set;
 std::vector<short> g_p_threshold_set;
-int g_default_number_of_threshold(2);
+unsigned int g_default_number_of_threshold(2);
 std::vector<std::vector<float> > g_p_vertex_set;
 std::vector<std::vector<unsigned int> > g_p_index_set;
 std::vector<PolygonMesh> g_p_polygon_mesh_set;
@@ -223,18 +227,18 @@ VEC3 g_centre;
 bool g_is_xray_image_up_to_date(true);
 
 bool g_restart(false);
-int g_max_iteration(100);
+unsigned int g_max_iteration(100);
 short g_min_value(0);
 short g_max_value(0);
 
 std::string g_optimizer("random");
 std::vector<bool> g_p_mesh_visibility_flag_set;
-int g_pop_size(50);
+unsigned int g_pop_size(50);
 
 std::vector<std::vector<short> > g_p_parent_population;
 std::vector<std::vector<short> > g_p_child_population;
 
-int g_number_of_polygon_meshes(0);
+unsigned int g_number_of_polygon_meshes(0);
 double g_immigration_probability(0.2);
 double g_mutation_probability(0.5);
 double g_crossover_probability(0.3);
@@ -500,7 +504,7 @@ void updateXRayImage(std::vector<RealImageType::Pointer>& aSimulatedProjectionSe
                 float* p_energy_fluence(g_xray_renderer.getEnergyFluence());
                 p_simulated_image = aSimulatedProjectionSet[energy]->GetBufferPointer() + angle * g_number_of_pixels.getX() * g_number_of_pixels.getY();
 
-                for (int i(0); i < g_number_of_pixels.getX() * g_number_of_pixels.getY(); ++i)
+                for (unsigned int i(0); i < g_number_of_pixels.getX() * g_number_of_pixels.getY(); ++i)
                 {
                     p_simulated_image[i] = -log((p_energy_fluence[i] * MeV) / *ite_energy);
                 }
@@ -1031,7 +1035,7 @@ inline void reloadMeshes()
         g_xray_renderer.removeInnerSurfaces();
         g_xray_renderer.removeOuterSurface();
 
-        for (int i(0); i < g_number_of_polygon_meshes; ++i)
+        for (unsigned int i(0); i < g_number_of_polygon_meshes; ++i)
         {
             if (g_p_mesh_visibility_flag_set[i])
             {
@@ -1080,7 +1084,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_0:
             {
-                int index(0);
+                unsigned int index(0);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1091,7 +1095,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_1:
             {
-                int index(1);
+                unsigned int index(1);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1102,7 +1106,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_2:
             {
-                int index(2);
+                unsigned int index(2);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1113,7 +1117,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_3:
             {
-                int index(3);
+                unsigned int index(3);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1124,7 +1128,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_4:
             {
-                int index(4);
+                unsigned int index(4);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1135,7 +1139,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_5:
             {
-                int index(5);
+                unsigned int index(5);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1146,7 +1150,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_6:
             {
-                int index(6);
+                unsigned int index(6);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1157,7 +1161,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_7:
             {
-                int index(7);
+                unsigned int index(7);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1168,7 +1172,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_8:
             {
-                int index(8);
+                unsigned int index(8);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1179,7 +1183,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_9:
             {
-                int index(9);
+                unsigned int index(9);
                 if (g_p_mesh_visibility_flag_set.size() > index)
                 {
                     g_p_mesh_visibility_flag_set[index] = !g_p_mesh_visibility_flag_set[index];
@@ -1200,7 +1204,7 @@ void setColours()
 //---------------
 {
     g_p_polygon_mesh_colour_set.clear();
-    for (int i(0); i < g_number_of_polygon_meshes; ++i)
+    for (unsigned int i(0); i < g_number_of_polygon_meshes; ++i)
     {
         VEC3 colour(float(rand()) / RAND_MAX,
                 float(rand()) / RAND_MAX,
@@ -1590,7 +1594,7 @@ void loadParameters(int argc, char** argv)
             p_threshold_set.push_back(current_threshold);
         }
 
-        short number_of_thresholds;
+        unsigned int number_of_thresholds;
         if (p_threshold_set.size() == 1)
         {
             // At least two thresholds are needed
@@ -1653,8 +1657,7 @@ void loadVolumeDataset(const std::string& aFileName)
 
         short first_threshold(-1000);
 
-        int i(0);
-        for (i = 0; i < g_number_of_polygon_meshes + 1; ++i)
+        for (unsigned i(0); i < g_number_of_polygon_meshes + 1; ++i)
         {
             g_p_threshold_set.push_back(first_threshold + threshold_offset * i);
         }
@@ -1797,7 +1800,7 @@ void loadVolumeDataset(const std::string& aFileName)
         g_p_low_resolution_mu_volume_set.resize(g_p_energy_set.size());
     }
 
-    int i;
+    unsigned int i;
 #ifdef HAS_OPENMP
 #pragma omp parallel for \
         default(none) \
@@ -1945,7 +1948,7 @@ void loadPoygonMeshes(const RealImageType::Pointer& aVolume,
 
     std::sort(g_p_threshold_set.begin(), g_p_threshold_set.end());
 
-    int i;
+    unsigned int i;
     g_p_polygon_mesh_set.clear();
     g_p_vertex_set.clear();
     g_p_index_set.clear();
@@ -2014,8 +2017,8 @@ void volume2sinogram(const RealImageType::Pointer& aVolume,
     Matrix slice_sinogram;
 
     // The slice size
-    int slice_width(0);
-    int slice_height(0);
+    //int slice_width(0);
+    //int slice_height(0);
 
     // The volume data
     float* p_volume_data(aVolume->GetBufferPointer());
@@ -2033,7 +2036,7 @@ void volume2sinogram(const RealImageType::Pointer& aVolume,
     // Process all the slices
     int sinogram_width(0);
     int sinogram_height(0);
-    for (int k(0); k < volume_size[2]; ++k)
+    for (unsigned int k(0); k < volume_size[2]; ++k)
     {
         // Copy the slice into Octave's matrix
         for (octave_idx_type j(0); j < volume_size[1]; ++j)
@@ -2102,9 +2105,9 @@ void volume2sinogram(const RealImageType::Pointer& aVolume,
 
         // Copy voxels
         RealImageType::IndexType index;
-        for (unsigned int j = 0; j < sinogram_height; ++j)
+        for (int j = 0; j < sinogram_height; ++j)
         {
-            for (unsigned int i = 0; i < sinogram_width; ++i)
+            for (int i = 0; i < sinogram_width; ++i)
             {
                 index[0] = i;
                 index[1] = j;
@@ -2147,7 +2150,7 @@ void loadProjections()
         file_name_prefix = g_output_path + "/";
     }
 
-    int i(0);
+    unsigned int i(0);
 #ifdef HAS_OPENMP
 #pragma omp parallel for \
         default(none) \
@@ -2245,7 +2248,6 @@ void sinogram2projection(const RealImageType::Pointer& aSinogram,
 
     RealImageType::IndexType sinogram_index;
     RealImageType::IndexType projection_index;
-    float value;
     for (unsigned int k = 0; k < sinogram_size[2]; ++k)
     {
         for (unsigned int j = 0; j < sinogram_size[1]; ++j)
@@ -2320,7 +2322,7 @@ void extractIsosurface(const RealImageType::Pointer& aVolume,
     ImageIterator image_ite2(aVolume, region2);
 
     // Compute the average value of the segmented volume
-    int number_of_voxels(0);
+    unsigned int number_of_voxels(0);
     for (image_ite1.GoToBegin(), image_ite2.GoToBegin(); !image_ite1.IsAtEnd() && !image_ite2.IsAtEnd(); ++image_ite1,  ++image_ite2, ++number_of_voxels)
     {
         if (image_ite1.Get() > 0.5)
@@ -2494,7 +2496,7 @@ double computeMetrics(const std::vector<RealImageType::Pointer>& aReferenceProje
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 
-    int i;
+    unsigned int i;
 /*#ifdef HAS_OPENMP
 #pragma omp parallel for \
             default(none) \
@@ -2590,7 +2592,7 @@ double my_f (const gsl_vector *v, void *params)
 {
     // Get the parameters
     std::vector<short> threshold_set;
-    for (int i(0); i < g_p_threshold_set.size(); ++i)
+    for (unsigned int i(0); i < g_p_threshold_set.size(); ++i)
     {
         threshold_set.push_back(gsl_vector_get (v, i));
         checkThreshold(threshold_set[i]);
@@ -2647,12 +2649,12 @@ int nmsimplexSearch(const RealImageType::Pointer& aVolume,
     par[1] = &aReferenceProjectionSet;
     par[2] = &aSimulatedProjectionSet;
 
-    size_t np = g_p_threshold_set.size();
+    unsigned int np(g_p_threshold_set.size());
 
     gsl_multimin_fminimizer *s ;
     gsl_vector *ss, *x;
     gsl_multimin_function ex4_fn;
-    size_t iter = 0, i;
+    unsigned int iter(0);
     int status;
     double size;
 
@@ -2664,7 +2666,7 @@ int nmsimplexSearch(const RealImageType::Pointer& aVolume,
 
     // Starting point
     x = gsl_vector_alloc (np);
-    for (int i(0); i < g_p_threshold_set.size(); ++i)
+    for (unsigned int i(0); i < g_p_threshold_set.size(); ++i)
     {
         gsl_vector_set (x, i, g_p_threshold_set[i]);
     }
@@ -2693,14 +2695,14 @@ int nmsimplexSearch(const RealImageType::Pointer& aVolume,
         }
 
         printf ("%5d ", iter);
-        for (i = 0; i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             short param(gsl_vector_get (s->x, i));
             g_p_threshold_set[i] = param;
         }
         std::sort(g_p_threshold_set.begin(), g_p_threshold_set.end());
 
-        for (i = 0; i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             printf ("%5d ", g_p_threshold_set[i]);
         }
@@ -2732,6 +2734,8 @@ int nmsimplexSearch(const RealImageType::Pointer& aVolume,
     gsl_vector_free(ss);
     gsl_multimin_fminimizer_free (s);
 #endif // HAS_GSL
+
+    return (0);
 }
 
 
@@ -2746,12 +2750,12 @@ int nmsimplex2Search(const RealImageType::Pointer& aVolume,
     par[1] = &aReferenceProjectionSet;
     par[2] = &aSimulatedProjectionSet;
 
-    size_t np = g_p_threshold_set.size();
+    unsigned int np(g_p_threshold_set.size());
 
     gsl_multimin_fminimizer *s ;
     gsl_vector *ss, *x;
     gsl_multimin_function ex4_fn;
-    size_t iter = 0, i;
+    unsigned int iter(0);
     int status;
     double size;
 
@@ -2763,7 +2767,7 @@ int nmsimplex2Search(const RealImageType::Pointer& aVolume,
 
     // Starting point
     x = gsl_vector_alloc (np);
-    for (int i(0); i < g_p_threshold_set.size(); ++i)
+    for (unsigned int i(0); i < g_p_threshold_set.size(); ++i)
     {
         gsl_vector_set (x, i, g_p_threshold_set[i]);
     }
@@ -2792,14 +2796,14 @@ int nmsimplex2Search(const RealImageType::Pointer& aVolume,
         }
 
         printf ("%5d ", iter);
-        for (i = 0; i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             short param(gsl_vector_get (s->x, i));
             g_p_threshold_set[i] = param;
         }
         std::sort(g_p_threshold_set.begin(), g_p_threshold_set.end());
 
-        for (i = 0; i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             printf ("%5d ", g_p_threshold_set[i]);
         }
@@ -2830,6 +2834,8 @@ int nmsimplex2Search(const RealImageType::Pointer& aVolume,
     gsl_vector_free(x);
     gsl_vector_free(ss);
 #endif // HAS_GSL
+
+    return (0);
 }
 
 
@@ -2844,12 +2850,12 @@ int nmsimplex2randSearch(const RealImageType::Pointer& aVolume,
     par[1] = &aReferenceProjectionSet;
     par[2] = &aSimulatedProjectionSet;
 
-    size_t np = g_p_threshold_set.size();
+    unsigned int np(g_p_threshold_set.size());
 
     gsl_multimin_fminimizer *s ;
     gsl_vector *ss, *x;
     gsl_multimin_function ex4_fn;
-    size_t iter = 0, i;
+    unsigned int iter(0);
     int status;
     double size;
 
@@ -2861,7 +2867,7 @@ int nmsimplex2randSearch(const RealImageType::Pointer& aVolume,
 
     // Starting point
     x = gsl_vector_alloc (np);
-    for (int i(0); i < g_p_threshold_set.size(); ++i)
+    for (unsigned int i(0); i < g_p_threshold_set.size(); ++i)
     {
         gsl_vector_set (x, i, g_p_threshold_set[i]);
     }
@@ -2890,14 +2896,14 @@ int nmsimplex2randSearch(const RealImageType::Pointer& aVolume,
         }
 
         printf ("%5d ", iter);
-        for (i = 0; i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             short param(gsl_vector_get (s->x, i));
             g_p_threshold_set[i] = param;
         }
         std::sort(g_p_threshold_set.begin(), g_p_threshold_set.end());
 
-        for (i = 0; i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             printf ("%5d ", g_p_threshold_set[i]);
         }
@@ -2928,6 +2934,8 @@ int nmsimplex2randSearch(const RealImageType::Pointer& aVolume,
     gsl_vector_free(x);
     gsl_vector_free(ss);
 #endif // HAS_GSL
+
+    return (0);
 }
 
 
@@ -2972,9 +2980,9 @@ int randomSearch(const RealImageType::Pointer& aVolume,
     std::vector<short> p_best_param(g_p_threshold_set);
     double best_fitness(DBL_MAX);
 
-    size_t np = g_p_threshold_set.size();
+    unsigned int np(g_p_threshold_set.size());
 
-    size_t iter(0);
+    unsigned int iter(0);
     do
     {
         iter++;
@@ -2984,7 +2992,7 @@ int randomSearch(const RealImageType::Pointer& aVolume,
 
         // Print the results
         printf ("%5d ", iter);
-        for (int i(0); i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             printf ("%5d ", p_best_param[i]);
         }
@@ -2992,7 +3000,7 @@ int randomSearch(const RealImageType::Pointer& aVolume,
         printf ("f() = %7.6f\n", best_fitness);
 
         // Generate random parameters
-        for (int i(0); i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             double param(double(rand()) / double(RAND_MAX));
             param *= g_max_value - g_min_value;
@@ -3090,7 +3098,7 @@ void mutation(int anIndividualToKill,
     while (individual_to_reproduce == anIndividualToKill);
 
     // Mutation of each gene
-    for (int gene(0); gene < g_p_threshold_set.size(); gene++)
+    for (unsigned int gene(0); gene < g_p_threshold_set.size(); gene++)
     {
         double delta(double(rand()) / double(RAND_MAX));
         delta *= 0.01 * (g_max_value - g_min_value);
@@ -3123,7 +3131,7 @@ void crossOver(int anIndividualToKill,
     while (individual_to_reproduce_1 == anIndividualToKill || individual_to_reproduce_2 == anIndividualToKill);
 
     // Crossover of each gene
-    for (int gene(0); gene < g_p_threshold_set.size(); gene++)
+    for (unsigned int gene(0); gene < g_p_threshold_set.size(); gene++)
     {
         double t(double(rand()) / double(RAND_MAX));
 
@@ -3137,7 +3145,7 @@ void crossOver(int anIndividualToKill,
 void immigration(int anIndividualToKill)
 //--------------------------------------
 {
-    for (int i(0); i < g_p_threshold_set.size(); i++)
+    for (unsigned int i(0); i < g_p_threshold_set.size(); i++)
     {
         double param(double(rand()) / double(RAND_MAX));
         param *= g_max_value - g_min_value;
@@ -3165,7 +3173,7 @@ int geneticSearch(const RealImageType::Pointer& aVolume,
     std::vector<double> p_child_fitness(g_pop_size);
     double best_fitness(DBL_MAX);
 
-    size_t np = g_p_threshold_set.size();
+    unsigned int np(g_p_threshold_set.size());
 
     // Starting point
     std::vector<short> x(np);
@@ -3182,7 +3190,7 @@ int geneticSearch(const RealImageType::Pointer& aVolume,
     evaluate(g_p_parent_population[0], p_parent_fitness[0], p_best_param, best_fitness, par);
 
     // Add random individuals
-    for (int j(1); j < g_pop_size; ++j)
+    for (unsigned int j(1); j < g_pop_size; ++j)
     {
         immigration(j);
 
@@ -3190,7 +3198,7 @@ int geneticSearch(const RealImageType::Pointer& aVolume,
     }
 
 
-    size_t iter(0);
+    unsigned int iter(0);
     do
     {
         iter++;
@@ -3199,7 +3207,7 @@ int geneticSearch(const RealImageType::Pointer& aVolume,
         g_p_child_population[0] = p_best_param;
         p_child_fitness[0] = best_fitness;
 
-        for (int population(1); population < g_pop_size; ++population)
+        for (unsigned int population(1); population < g_pop_size; ++population)
         {
             // Individual to kill
             //int to_kill(selectIndividualToKill(p_fitness));
@@ -3238,7 +3246,7 @@ int geneticSearch(const RealImageType::Pointer& aVolume,
 
         // Print the results
         printf ("%5d ", iter);
-        for (int i(0); i < np; i++)
+        for (unsigned int i(0); i < np; i++)
         {
             printf ("%5d ", p_best_param[i]);
         }
@@ -3335,3 +3343,4 @@ void setOutputPath(const std::string& aPath)
         }
     }
 }
+
