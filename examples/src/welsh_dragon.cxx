@@ -47,6 +47,7 @@
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
+#include <ctime>
 
 #ifdef HAS_BUNDLE
 #include <boost/filesystem.hpp>
