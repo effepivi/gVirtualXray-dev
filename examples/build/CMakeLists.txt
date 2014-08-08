@@ -27,7 +27,7 @@
 
 
 # Initialise some states by default ############################################
-#set(BUILD_SHARED_LIBS OFF)
+set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
 
 
@@ -42,14 +42,14 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../build/modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../build/modules)
 
 
 # Enable all compiler warnings #################################################
-#IF(NOT WIN32)
-#	add_definitions( -Wall )
-#ENDIF(NOT WIN32)
+IF(NOT WIN32)
+	add_definitions( -Wall )
+ENDIF(NOT WIN32)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
@@ -96,18 +96,6 @@ if(FLTK_FOUND)
         ADD_DEFINITIONS(-DHAS_FLTK)
         INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
         SET(requiredLibs ${optionalLibs} ${FLTK_LIBRARIES})
-
-        FIND_PACKAGE(GLEW)
-        IF(GLEW_FOUND)
-        	ADD_DEFINITIONS(-DGLEW_STATIC)
-            ADD_DEFINITIONS(-DHAS_GLEW)
-            INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-            LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
-            SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
-        ELSE(GLEW_FOUND)
-            MESSAGE(FATAL_ERROR "GLEW not found.")
-        ENDIF(GLEW_FOUND)
-
 ELSE(FLTK_FOUND)
         MESSAGE(WARNING "FLTK not found, it will be disable.")
 ENDIF(FLTK_FOUND)
@@ -148,6 +136,20 @@ IF(OPENGL_FOUND)
 ELSE(OPENGL_FOUND)
 	MESSAGE(FATAL_ERROR "OpenGL not found.")
 ENDIF(OPENGL_FOUND)
+
+
+if(FLTK_FOUND)
+        FIND_PACKAGE(GLEW REQUIRED)
+        IF(GLEW_FOUND)
+        	ADD_DEFINITIONS(-DGLEW_STATIC)
+            ADD_DEFINITIONS(-DHAS_GLEW)
+            INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+            LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+            SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
+        ELSE(GLEW_FOUND)
+            MESSAGE(FATAL_ERROR "GLEW not found.")
+        ENDIF(GLEW_FOUND)
+ENDIF(FLTK_FOUND)
 
 
 IF(USE_GLFW)
@@ -230,6 +232,12 @@ SET (RESOURCES_SOURCES
 )
 
 
+FIND_PACKAGE(GZIP REQUIRED)
+IF(NOT GZIP_FOUND)
+	MESSAGE(FATAL_ERROR "GZIP not found.")
+ENDIF(NOT GZIP_FOUND)
+
+
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../build/CreateHeaderFiles.cmake)
 CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
 
@@ -255,9 +263,11 @@ ENDIF (FLTK_FOUND)
 # Create the main programs #####################################################
 REMOVE_DEFINITIONS(-DHAS_BUNDLE)
 
+
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
 #SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
+
 
 IF(USE_GLFW)
 	ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
@@ -304,6 +314,7 @@ IF(USE_GLFW)
         ENDIF(OCTAVE_FOUND)
     ENDIF(USE_OCTAVE)
 ENDIF(USE_GLFW)
+
 
 IF (FLTK_FOUND)
     ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)

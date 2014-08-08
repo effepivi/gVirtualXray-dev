@@ -50,7 +50,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules)
 
 
 # Make include files in paths like /usr/local/include have preference before
