@@ -74,9 +74,9 @@ configure_file (
 
 
 # Enable all compiler warnings #################################################
-#IF(NOT WIN32)
-#	add_definitions( -Wall )
-#ENDIF(NOT WIN32)
+IF(NOT WIN32)
+	add_definitions( -Wall )
+ENDIF(NOT WIN32)
 
 
 # Libraries ####################################################################
@@ -235,9 +235,11 @@ ENDIF(OPENGL_FOUND)
 
 FIND_PACKAGE(GLEW)
 IF(GLEW_FOUND)
+	ADD_DEFINITIONS(-DGLEW_STATIC)
     ADD_DEFINITIONS(-DHAS_GLEW)
     INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARIES})
+    LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ELSE(GLEW_FOUND)
     MESSAGE(FATAL_ERROR "GLEW not found.")
 ENDIF(GLEW_FOUND)
