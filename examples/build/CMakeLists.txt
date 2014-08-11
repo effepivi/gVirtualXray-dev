@@ -314,7 +314,11 @@ ENDIF(USE_GLFW)
 
 
 IF (FLTK_FOUND)
-    ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)
+    IF(WIN32)
+        ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx ../src/DragonDemo.res)
+    ELSE(WIN32)
+       	ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)
+    ENDIF(WIN32)
     TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF (FLTK_FOUND)
 
@@ -339,7 +343,11 @@ IF(USE_BUNDLE)
     ADD_DEFINITIONS(-DHAS_BUNDLE)
 
     IF (FLTK_FOUND)
-    	SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+        IF(WIN32)
+        	SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx ../src/DragonDemo.res ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+        ELSE(WIN32)
+        	SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+        ENDIF(WIN32)
     ELSE (FLTK_FOUND)
     	SET(DRAGON_DEMO_SRCS ../src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
     ENDIF (FLTK_FOUND)
@@ -369,11 +377,14 @@ IF(USE_BUNDLE)
 
 	IF(WIN32)
 		SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/DragonDemo.exe")
-		set(CPACK_NSIS_MENU_LINKS "${WEBSITE}" "Homepage for gVirtualXRay")
-		set(CPACK_NSIS_URL_INFO_ABOUT "${WEBSITE}")
-		set(CPACK_NSIS_HELP_LINK "${WEBSITE}")
-		set(CPACK_NSIS_MENU_LINKS bin "DragonDemo")
-
+		#set(CPACK_NSIS_MENU_LINKS "${WEBSITE}" "Homepage for gVirtualXRay")
+		#set(CPACK_NSIS_URL_INFO_ABOUT "${WEBSITE}")
+		#set(CPACK_NSIS_HELP_LINK "${WEBSITE}")
+		set(CPACK_NSIS_MENU_LINKS bin\\DragonDemo.exe "DragonDemo"
+            doc\\quick_reference_guide.pdf "Quick reference guide"
+        )
+        set(CPACK_CREATE_DESKTOP_LINKS bin\\DragonDemo.exe "DragonDemo")
+        #SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\build\\DragonDemo64x64.ico")
 	ENDIF(WIN32)
 
 	IF (APPLE)
@@ -451,6 +462,10 @@ IF(USE_OCTAVE)
         ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
     ENDIF(OCTAVE_FOUND)
 ENDIF(USE_OCTAVE)
+
+IF(FLTK_FOUND)
+	ADD_DEPENDENCIES(gVirtualXRay-gui BinaryDemoFiles)
+ENDIF(FLTK_FOUND)
 
 IF(USE_BUNDLE)
 	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)

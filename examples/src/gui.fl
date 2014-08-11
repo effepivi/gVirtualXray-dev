@@ -8,7 +8,7 @@ decl {\#include <stdio.h>} {private local
 decl {\#include <stdlib.h>} {private local
 } 
 
-decl {\#include "../build/DragonDemo.xbm"} {selected private local
+decl {\#include "../build/DragonDemo.xbm"} {private local
 } 
 
 decl {\#include <FL/x.H>} {private global
@@ -148,10 +148,14 @@ p_opengl_window->setPointSource(value);} {}
 
 Function {} {open
 } {
+  code {\#ifdef WIN32
+\#include <FL/x.H>               // needed for fl_display
+\#include <windows.h>            // needed for LoadIcon()
+\#endif /*WIN32*/} {}
   Fl_Window {} {
     label {gVirtualXRay - DragonDemo}
     callback WinQuit_CB open
-    xywh {94 320 1050 670} type Single resizable xclass {gVirtualXRay - DragonDemo} visible
+    xywh {2030 131 1050 670} type Single xclass {gVirtualXRay - DragonDemo} visible
   } {
     Fl_Box m_opengl_window {
       label OpenGLWindow
@@ -303,14 +307,12 @@ Function {} {open
   code {m_opengl_window->setExecutable(argv[0]);
 
 \#ifndef WIN32
-extern Display *fl_display;
-//std::cout << fl_display << std::endl;
-
 Pixmap p = XCreateBitmapFromData(fl_display, DefaultRootWindow(fl_display),
                                  (char*)DragonDemo_bits, DragonDemo_width, DragonDemo_height);
 
 w->icon((char *)p);
 \#else
-//w->icon((char *)LoadIcon(fl_display, "test"));
-\#endif} {}
+w->icon((char *)LoadIcon(fl_display, MAKEINTRESOURCE(101)));
+\#endif} {selected
+  }
 } 
