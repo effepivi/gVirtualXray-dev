@@ -455,19 +455,19 @@ IF(USE_GLFW)
         ADD_DEPENDENCIES(tutorial_03 BinaryDemoFiles)
         ADD_DEPENDENCIES(welsh_dragon BinaryDemoFiles)
     ENDIF(NOT WIN32)
+
+    IF(USE_OCTAVE)
+        IF(OCTAVE_FOUND)
+            ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
+        ENDIF(OCTAVE_FOUND)
+    ENDIF(USE_OCTAVE)
 ENDIF(USE_GLFW)
 
-IF(USE_OCTAVE)
-    IF(OCTAVE_FOUND)
-        ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
-    ENDIF(OCTAVE_FOUND)
-ENDIF(USE_OCTAVE)
-
 IF(FLTK_FOUND)
-	ADD_DEPENDENCIES(gVirtualXRay-gui BinaryDemoFiles)
+    ADD_DEPENDENCIES(gVirtualXRay-gui BinaryDemoFiles)
 ENDIF(FLTK_FOUND)
 
 IF(USE_BUNDLE)
-	ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
+    ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
 ENDIF(USE_BUNDLE)
 
