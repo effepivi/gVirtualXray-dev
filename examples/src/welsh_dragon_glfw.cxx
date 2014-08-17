@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		welsh_dragon.cxx
+*	@file		welsh_dragon_glfw.cxx
 *
 *	@brief		Main test program.
 *
@@ -32,10 +32,6 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#endif
-
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else

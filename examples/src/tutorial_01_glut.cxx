@@ -1,14 +1,13 @@
 /**
 ********************************************************************************
 *
-*   @file       tutorial_01.cxx
+*   @file       tutorial_01_glut.cxx
 *
-*   @brief      Creating a Window and an OpenGL Core Profile 3.2 Context Using GLFW.
+*   @brief      Creating a Window and an OpenGL 2.x Context Using GLUT.
 *
 *   @version    1.0
 *
-*   @date       06/05/2014
-*
+*   @date       17/08/2014
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -29,16 +28,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-
-#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
-
-#include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
+#include <GL/glut.h>  // Create an OpenGL context and attach a window to it
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -76,8 +66,8 @@ GLsizei g_window_width(640);
 // Keep track of the window height
 GLsizei g_window_height(480);
 
-// GLFW window ID
-GLFWwindow* g_p_window_id(0);
+// GLUT window ID
+int g_window_id(0);
 
 // Shader program used to display the 3D scene
 Shader g_display_shader;
@@ -129,7 +119,7 @@ void main(void)\n \
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGLFW();
+void initGLUT(int argc, char** argv);
 void initGL();
 void load3DObjects();
 void displayCallback();
@@ -138,7 +128,6 @@ void quitCallback();
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void errorCallback(int error, const char* description);
 
 
 //-----------------------------
@@ -153,8 +142,8 @@ int main(int argc, char** argv)
 
     try
     {
-        // Initialise GLFW
-        initGLFW();
+        // Initialise GLUT
+        initGLUT(argc, argv);
 
         // Initialise OpenGL
         initGL();
@@ -202,47 +191,29 @@ int main(int argc, char** argv)
 }
 
 
-//-------------
-void initGLFW()
-//-------------
+//----------------------------------
+void initGLFW(int argc, char** argv)
+//----------------------------------
 {
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
+	// GLUT initialisation
+	glutInit (&argc, argv);
 
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot initialise GLFW.");
-    }
-
-    // Enable OpenGL 3.2 if possible
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 01", NULL, NULL);
+	// Create a windowed mode window and its OpenGL context
+	glutInitWindowSize(g_window_width, g_window_height);
+	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 01");
 
     // The window has not been created
-    if (!g_p_window_id)
+    if (!g_window_id)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
                 "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
     }
 
-    // Make the window's context current
-    glfwMakeContextCurrent(g_p_window_id);
-
-    // Register GLFW callbacks
-    glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
-    glfwSetKeyCallback(g_p_window_id, keyCallback);
-    glfwSetScrollCallback(g_p_window_id, scrollCallback);
+    // Register GLUT callbacks
+    glfutReshapeFunc(framebufferSizeCallback);
+    glutKeyboardFunc(keyCallback);
+    //glfwSetScrollCallback(scrollCallback);
 }
 
 
@@ -469,13 +440,4 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
         // Update the projection matrix
         framebufferSizeCallback(apWindow, g_window_width, g_window_height);
     }
-}
-
-
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
-{
-    // Throw an error
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, description);
 }

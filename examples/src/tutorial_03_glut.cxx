@@ -1,15 +1,16 @@
 /**
 ********************************************************************************
 *
-*   @file       tutorial_02.cxx
+*   @file       tutorial_02_glut.cxx
 *
-*   @brief      Improve the first tutorial by:
-*               - Loading the shader program from a file compressed with the Z library.
-*               - Adding an efficient mouse control to turn the 3D scene.
+*   @brief      Improve the second tutorial by:
+*               - Adding a better shader program to display the 3D scene with Phong shading.
+*               - Adding the X-ray simulation.
+*               - Display objects in wireframe or not
 *
 *   @version    1.0
 *
-*   @date       27/05/2014
+*   @date       17/08/2014
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -31,16 +32,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-
-#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
-
-#include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
+#include <GL/glut.h>  // Create an OpenGL context and attach a window to it
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -61,10 +53,14 @@
 
 #include "gVirtualXRay/Utilities.h" // Handle decompression using the Z library
 
+#include "gVirtualXRay/XRayBeam.h"     // Manage X-Ray beams
+#include "gVirtualXRay/XRayDetector.h" // Handle virtual X-Ray detectors
+#include "gVirtualXRay/XRayRenderer.h" // Compute X-Ray images on the GPU
+
 #include "buildCube.h" // Create the triangle mesh of a cube
 
-#include "tutorial_02.frag.h"
-#include "tutorial_02.vert.h"
+#include "tutorial_03.frag.h"
+#include "tutorial_03.vert.h"
 
 
 //******************************************************************************
@@ -100,8 +96,7 @@ PolygonMesh g_polygon_mesh_1;
 PolygonMesh g_polygon_mesh_2;
 
 // Transformation matrices
-MATRIX4 g_object_1_rotation_matrix;
-MATRIX4 g_object_2_rotation_matrix;
+MATRIX4 g_sample_rotation_matrix;
 MATRIX4 g_scene_rotation_matrix;
 
 // Geometric data
@@ -123,6 +118,14 @@ GLint g_last_y_position(0); // Previous y position of the cursor
 GLint g_current_x_position(0); // Current x position of the cursor
 GLint g_current_y_position(0); // Current x position of the cursor
 
+// Components needed to simulate X-ray images
+XRayDetector g_xray_detector;
+XRayBeam     g_xray_beam;
+XRayRenderer g_xray_simulator;
+
+// Control the display in wireframe or not
+bool g_wireframe(false);
+
 
 //******************************************************************************
 //  Function declaration
@@ -143,6 +146,11 @@ void errorCallback(int error, const char* description);
 VEC3 getArcballVector(int x, int y);
 float radian2degree(float anAngle);
 void computeRotation(MATRIX4& aRotationMatrix);
+void setDetector();
+void setSource();
+void setBeam();
+void setScannedObjects();
+void setSimulator();
 
 
 //-----------------------------
@@ -168,6 +176,21 @@ int main(int argc, char** argv)
 
         // Initialise the geometry of the 3D objects
         load3DObjects();
+
+        // Initialise the position and shape of the X-ray detector
+        setDetector();
+
+        // Initialise the position and shape of the X-ray source
+        setSource();
+
+        // Initialise the spectrum of the X-ray beam
+        setBeam();
+
+        // Initialise the geometry of the scanned object
+        setScannedObjects();
+
+        // Initialise the X-ray simulation
+        setSimulator();
 
         // Set the projection matrix
         framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
@@ -264,8 +287,8 @@ void initShader()
     std::string fragment_shader;
 
     // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_02_vert, sizeof(g_tutorial_02_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_02_frag, sizeof(g_tutorial_02_frag), &p_fragment_shader);
+    z_lib_return_code_vertex   = inflate(g_tutorial_03_vert, sizeof(g_tutorial_03_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_tutorial_03_frag, sizeof(g_tutorial_03_frag), &p_fragment_shader);
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -302,20 +325,19 @@ void initGL()
 void load3DObjects()
 //------------------
 {
-    // Centre of the cubes
+    // Create the cube
     VEC3 cube_centre(0, 0, 0);
-
-    // Size of the cubes
     RATIONAL_NUMBER length_1( 5.0 * cm);
     RATIONAL_NUMBER length_2(10.0 * cm);
-
-    // Create the cube using vertex data and index data
     buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
-
-    // Create the cube using vertex data only
     buildCube(length_2, cube_centre, g_p_vertex_set_2);
 
-    // Set geometry (using VAOs and VBOs)
+    // Rotate the sample
+    g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+    g_sample_rotation_matrix.rotate( 30, VEC3(0, 0, 1));
+    g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+
+    // Set geometry
     g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
             &g_p_vertex_set_1,
             &g_p_index_set_1,
@@ -367,45 +389,79 @@ void displayCallback()
     // Rotate the 3D scene
     g_current_modelview_matrix *= g_scene_rotation_matrix;
 
-    // Store the current transformation matrices
-    pushModelViewMatrix();
+    // Wireframe mode
+    handle = glGetUniformLocation(shader_id, "g_wireframe");
+    glUniform1i(handle, false);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    // Translate the 1st object
-    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
-            VEC3(8.0 * cm, 0.0, 0.0));
+    // The first object is the inner cube
+    handle = glGetUniformLocation(shader_id, "g_inner_surface");
+    glUniform1i(handle, 0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Display the source
+    g_xray_detector.displaySource();
+
+    // Display the detector with the corresponding X-ray image
+    g_xray_simulator.display();
 
     // Rotate the 1st object
-    g_current_modelview_matrix *= g_object_1_rotation_matrix;
+    g_current_modelview_matrix *= g_sample_rotation_matrix;
 
     // Apply the change to the shader program
     applyModelViewMatrix();
+
+    // Wireframe mode
+    handle = glGetUniformLocation(shader_id, "g_wireframe");
+    glUniform1i(handle, g_wireframe);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // The first object is the inner cube
+    handle = glGetUniformLocation(shader_id, "g_inner_surface");
+    glUniform1i(handle, 1);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Display the 1st object
-    g_polygon_mesh_1.display();
+    if (!g_wireframe)
+    {
+        g_polygon_mesh_1.display();
+    }
+    else
+    {
+        g_polygon_mesh_1.displayWireFrame();
+    }
 
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-    popProjectionMatrix();
+    // Store the state of alpha blending
+    if (!g_wireframe)
+    {
+        pushEnableDisableState(GL_BLEND);
+        glEnable(GL_BLEND);
+        glDepthMask (GL_FALSE);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
-    // Store the current transformation matrices
-    pushModelViewMatrix();
-    pushProjectionMatrix();
-
-    // Translate the 2nd object
-    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
-            VEC3(-8.0 * cm, 0.0, 0.0));
-
-    // Rotate the 2nd object
-    g_current_modelview_matrix *= g_object_2_rotation_matrix;
-
-    // Apply the change to the shader program
-    applyModelViewMatrix();
+    // The second object is the outer cube
+    glUniform1i(handle, 0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Display the 2nd object
-    g_polygon_mesh_2.display();
+    if (!g_wireframe)
+    {
+        g_polygon_mesh_2.display();
+    }
+    else
+    {
+        g_polygon_mesh_2.displayWireFrame();
+    }
+
+    // Restore the state of alpha blending
+    if (!g_wireframe)
+    {
+        popEnableDisableState();
+        glDepthMask (GL_TRUE);
+    }
 
     // Restore the current transformation matrix
-    popModelViewMatrix();
     popModelViewMatrix();
     popProjectionMatrix();
 
@@ -423,8 +479,16 @@ void idleCallback()
 //-----------------
 {
     // Rotate the objects
-    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
-    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+    g_sample_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
+
+    // Compute the X-Ray image
+    if (g_xray_simulator.isReady())
+    {
+        g_xray_simulator.computeImage(g_sample_rotation_matrix);
+
+        // Normalise the X-ray image
+        g_xray_simulator.normalise();
+    }
 }
 
 
@@ -491,6 +555,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
                 break;
+
+        case GLFW_KEY_W:
+            g_wireframe = !g_wireframe;
+            break;
 
         default:
             break;
@@ -628,5 +696,72 @@ void computeRotation(MATRIX4& aRotationMatrix)
             g_last_y_position = g_current_y_position;
         }
     }
+}
+
+//----------------
+void setDetector()
+//----------------
+{
+    // Number of pixels of the detector
+    Vec2ui number_of_pixels(640, 640);
+    g_xray_detector.setNumberOfPixels(number_of_pixels);
+
+    // Size of pixels (in unit of length)
+    RATIONAL_NUMBER resolution(320.0 * mm / number_of_pixels.getX());
+    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(resolution);
+
+    // Position of the detector
+    VEC3 detector_position( 0.0, 0.0, 10.0 * cm);
+    g_xray_detector.setDetectorPosition(detector_position);
+
+    // Orientation of the detector
+    VEC3 detector_up_vector(0.0, 1.0, 0.0);
+    g_xray_detector.setUpVector(detector_up_vector);
+}
+
+
+//--------------
+void setSource()
+//--------------
+{
+    // Set the source position and shape
+    VEC3 source_position(0.0, 0.0, -40.0 * cm);
+    g_xray_detector.setXrayPointSource(source_position);
+}
+
+
+//------------
+void setBeam()
+//------------
+{
+    // Set the energy
+    RATIONAL_NUMBER incident_energy(80.0 * keV);
+    g_xray_beam.initialise(incident_energy);
+}
+
+
+//----------------------
+void setScannedObjects()
+//----------------------
+{
+    // Set the material properties
+    g_polygon_mesh_1.setHounsfieldValue(1000.0);
+    g_polygon_mesh_2.setHounsfieldValue(-200.0);
+}
+
+
+//-----------------
+void setSimulator()
+//-----------------
+{
+    // Initialise the X-ray renderer
+    g_xray_simulator.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
+
+    // Add the geometry to the X-ray renderer
+    g_xray_simulator.addInnerSurface(&g_polygon_mesh_1);
+    g_xray_simulator.addOuterSurface(&g_polygon_mesh_2);
 }
 
