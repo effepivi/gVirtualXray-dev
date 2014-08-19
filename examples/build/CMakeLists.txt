@@ -239,8 +239,10 @@ SET (RESOURCES_SOURCES
     ../../examples/shaders/display_gl3.vert
     ../../examples/shaders/display_gui.frag
     ../../examples/shaders/display_gui.vert
-    ../src/tutorial_02.frag
-    ../src/tutorial_02.vert
+    ../src/tutorial_02_gl2.frag
+    ../src/tutorial_02_gl2.vert
+    ../src/tutorial_02_gl3.frag
+    ../src/tutorial_02_gl3.vert
     ../src/tutorial_03.frag
     ../src/tutorial_03.vert
 )
@@ -305,14 +307,14 @@ IF(USE_GLFW)
         ADD_EXECUTABLE (tutorial_01_glfw ../src/tutorial_01_glfw.cxx ../src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_01_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        #ADD_EXECUTABLE (tutorial_02_glfw ../src/tutorial_02_glfw.cxx ../src/buildCube.cxx)
-        #TARGET_LINK_LIBRARIES (tutorial_02_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
+        ADD_EXECUTABLE (tutorial_02_glfw ../src/tutorial_02_glfw.cxx ../src/buildCube.cxx)
+        TARGET_LINK_LIBRARIES (tutorial_02_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        #ADD_EXECUTABLE (tutorial_03_glfw ../src/tutorial_03_glfw.cxx ../src/buildCube.cxx)
-        #TARGET_LINK_LIBRARIES (tutorial_03_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
+        ADD_EXECUTABLE (tutorial_03_glfw ../src/tutorial_03_glfw.cxx ../src/buildCube.cxx)
+        TARGET_LINK_LIBRARIES (tutorial_03_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        #ADD_EXECUTABLE (welsh_dragon_glfw ../src/welsh_dragon_glfw.cxx)
-        #TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
+        ADD_EXECUTABLE (welsh_dragon_glfw ../src/welsh_dragon_glfw.cxx)
+        TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
     ENDIF(NOT WIN32)
 
     IF(USE_ITK AND ITK_FOUND)
@@ -332,11 +334,11 @@ IF(USE_GLUT)
         ADD_EXECUTABLE (tutorial_02_glut ../src/tutorial_02_glut.cxx ../src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_02_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        ADD_EXECUTABLE (tutorial_03_glut ../src/tutorial_03_glut.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_03_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
+        #ADD_EXECUTABLE (tutorial_03_glut ../src/tutorial_03_glut.cxx ../src/buildCube.cxx)
+        #TARGET_LINK_LIBRARIES (tutorial_03_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
-        TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
+        #ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
+        #TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
     ENDIF(NOT WIN32)
 ENDIF(USE_GLUT)
 
@@ -479,23 +481,23 @@ IF(USE_GLFW)
         ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
         ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
         ADD_DEPENDENCIES(tutorial_01_glfw BinaryDemoFiles)
-        #ADD_DEPENDENCIES(tutorial_02_glfw BinaryDemoFiles)
-        #ADD_DEPENDENCIES(tutorial_03_glfw BinaryDemoFiles)
-        #ADD_DEPENDENCIES(welsh_dragon_glfw BinaryDemoFiles)
+        ADD_DEPENDENCIES(tutorial_02_glfw BinaryDemoFiles)
+        ADD_DEPENDENCIES(tutorial_03_glfw BinaryDemoFiles)
+        ADD_DEPENDENCIES(welsh_dragon_glfw BinaryDemoFiles)
     ENDIF(NOT WIN32)
 
     IF(USE_ITK AND ITK_FOUND)
         IF(USE_OCTAVE AND OCTAVE_FOUND)
             ADD_DEPENDENCIES(VoxelLabelisation BinaryDemoFiles)
         ENDIF(USE_OCTAVE AND OCTAVE_FOUND)
-    ENDIF(USE_ITK AND ITK_FO)
+    ENDIF(USE_ITK AND ITK_FOUND)
 ENDIF(USE_GLFW)
 
 
 IF(USE_GLUT)
     IF(NOT WIN32)
         ADD_DEPENDENCIES(tutorial_01_glut BinaryDemoFiles)
-        #ADD_DEPENDENCIES(tutorial_02_glut BinaryDemoFiles)
+        ADD_DEPENDENCIES(tutorial_02_glut BinaryDemoFiles)
         #ADD_DEPENDENCIES(tutorial_03_glut BinaryDemoFiles)
         #ADD_DEPENDENCIES(welsh_dragon_glut BinaryDemoFiles)
     ENDIF(NOT WIN32)

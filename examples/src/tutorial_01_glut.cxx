@@ -362,6 +362,9 @@ void idleCallback()
     // Rotate the objects
     g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
     g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
@@ -424,17 +427,15 @@ void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
 	// Close the program
 	case 27:
 	case 'q':
-		if (g_window_id)
-		{
-			glutDestroyWindow(g_window_id);
-			g_window_id = 0;
-		}
 		exit(EXIT_SUCCESS);
 		break;
 
 	default:
 		break;
 	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 //--------------------------------------------------------------------------
@@ -463,5 +464,8 @@ void scrollCallback(int aButton, int aState, int aXPosition, int aYPosition)
 			framebufferSizeCallback(g_window_width, g_window_height);
 		}
 	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
