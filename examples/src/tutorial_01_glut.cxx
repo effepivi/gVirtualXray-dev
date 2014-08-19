@@ -28,9 +28,11 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <GL/glew.h>  // Handle shaders
 #include <GL/glut.h>  // Create an OpenGL context and attach a window to it
 
 #include <iostream>   // Print error messages in the console
+#include <sstream>    // Generate error messages
 #include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
 
@@ -90,28 +92,24 @@ RATIONAL_NUMBER g_zoom(50.0 * cm);
 
 // Vertex shader
 const GLchar* g_vertex_shader = "\
-\n#version 150\n \
-\n \
-in vec3 in_Vertex;\n \
+\n#version 110\n \
 \n \
 uniform mat4 g_projection_matrix;\n \
 uniform mat4 g_modelview_matrix;\n \
 \n \
 void main(void)\n \
 {\n \
-    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
+    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);\n \
 }\n \
 ";
 
 // Fragment shader
 const GLchar* g_fragment_shader = "\
-\n#version 150\n \
-precision highp float;\n \
+\n#version 110\n \
 \n \
-out vec4 fragColor;\n \
 void main(void)\n \
 {\n \
-    fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
 }\n \
 ";
 
@@ -120,14 +118,15 @@ void main(void)\n \
 //  Function declaration
 //******************************************************************************
 void initGLUT(int argc, char** argv);
+void initGLEW();
 void initGL();
 void load3DObjects();
 void displayCallback();
 void idleCallback();
 void quitCallback();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+void framebufferSizeCallback(int aWidth, int aHeight);
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
+void scrollCallback(int aButton, int aState, int aXPosition, int aYPosition);
 
 
 //-----------------------------
@@ -145,6 +144,9 @@ int main(int argc, char** argv)
         // Initialise GLUT
         initGLUT(argc, argv);
 
+        // Initialise GLEW
+        initGLEW();
+
         // Initialise OpenGL
         initGL();
 
@@ -158,23 +160,10 @@ int main(int argc, char** argv)
         load3DObjects();
 
         // Set the projection matrix
-        framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
+        framebufferSizeCallback(g_window_width, g_window_height);
 
         // Launch the event loop
-        while (!glfwWindowShouldClose(g_p_window_id))
-        {
-            // Render here
-            displayCallback();
-
-            // Swap front and back buffers
-            glfwSwapBuffers(g_p_window_id);
-
-            // Poll for and process events
-            glfwPollEvents();
-
-            // Idle callback
-            idleCallback();
-        }
+        glutMainLoop();
     }
     // Catch exception if any
     catch (const exception& error)
@@ -192,7 +181,7 @@ int main(int argc, char** argv)
 
 
 //----------------------------------
-void initGLFW(int argc, char** argv)
+void initGLUT(int argc, char** argv)
 //----------------------------------
 {
 	// GLUT initialisation
@@ -207,13 +196,30 @@ void initGLFW(int argc, char** argv)
     if (!g_window_id)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+                "ERROR: cannot create a GLUT windowed mode window and its OpenGL context.");
     }
 
     // Register GLUT callbacks
-    glfutReshapeFunc(framebufferSizeCallback);
+    glutDisplayFunc(displayCallback);
+    glutReshapeFunc(framebufferSizeCallback);
     glutKeyboardFunc(keyCallback);
-    //glfwSetScrollCallback(scrollCallback);
+    glutMouseFunc(scrollCallback);
+    glutIdleFunc(idleCallback);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
 }
 
 
@@ -343,6 +349,9 @@ void displayCallback()
     // Check the status of OpenGL and of the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Swap front and back buffers
+    glutSwapBuffers();
 }
 
 
@@ -361,21 +370,18 @@ void quitCallback()
 //-----------------
 {
     // The window exists
-    if (g_p_window_id)
+    if (g_window_id)
     {
         // Close the window
-        glfwDestroyWindow(g_p_window_id);
-        g_p_window_id = 0;
-
-        // Cleanup GLFW
-        glfwTerminate();
+        glutDestroyWindow(g_window_id);
+        g_window_id = 0;
     }
 }
 
 
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//-------------------------------------------------
+void framebufferSizeCallback(int width, int height)
+//-------------------------------------------------
 {
     // Avoid a division by zero
     if (height == 0)
@@ -403,41 +409,59 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, g_zoom,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
+//------------------------------------------------------------------
 {
-    if (action == GLFW_PRESS)
-    {
-        switch(key)
-        {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
+	switch(aKey)
+	{
+	// Close the program
+	case 27:
+	case 'q':
+		if (g_window_id)
+		{
+			glutDestroyWindow(g_window_id);
+			g_window_id = 0;
+		}
+		exit(EXIT_SUCCESS);
+		break;
 
-        default:
-            break;
-        }
-    }
+	default:
+		break;
+	}
 }
 
-
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
+//--------------------------------------------------------------------------
+void scrollCallback(int aButton, int aState, int aXPosition, int aYPosition)
+//--------------------------------------------------------------------------
 {
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
-    {
-        // Change the zoom
-        g_zoom += 5 * yoffset * cm;
+	// The button is down
+	if (aState == GLUT_DOWN)
+	{
+		// This is a wheel event
+		if (aButton == 3)
+		{
+	        // Change the zoom
+	        g_zoom += 5 * cm;
 
-        // Update the projection matrix
-        framebufferSizeCallback(apWindow, g_window_width, g_window_height);
-    }
+	        // Update the projection matrix
+	        framebufferSizeCallback(g_window_width, g_window_height);
+		}
+		// This is a wheel event
+		else if (aButton == 4)
+		{
+			// Change the zoom
+			g_zoom -= 5 * cm;
+
+			// Update the projection matrix
+			framebufferSizeCallback(g_window_width, g_window_height);
+		}
+	}
 }
+
