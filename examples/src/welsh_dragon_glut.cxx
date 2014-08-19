@@ -32,6 +32,7 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include <GL/glew.h>
 #include <GL/glut.h>
 
 #include <stdlib.h>
@@ -138,7 +139,7 @@ GLsizei g_current_main_window_width(1280 / 2.0);
 GLsizei g_current_main_window_height(800 / 2.0);
 GLsizei g_original_main_window_width(g_current_main_window_width);
 GLsizei g_original_main_window_height(g_current_main_window_height);
-GLFWwindow* g_p_main_window_id(0);
+int g_main_window_id(0);
 GLfloat g_zoom(100.0 * cm);
 
 int g_button(-1);
@@ -191,14 +192,15 @@ bool g_use_fullscreen(true);
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void display();
+void initGLUT(int argc, char** argv);
+void initGLEW();
 void initGL();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void errorCallback(int error, const char* description);
+void displayCallback();
+void framebufferSizeCallback(int aWidth, int aHeight);
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
+void specialKeyCallback(int aKey, int aXPosition, int aYPosition);
+void mouseButtonCallback(int aButton, int aState, int aXPosition, int aYPosition);
+void cursorPosCallback(int aXPosition, int aYPosition);
 void quit();
 void idle();
 
@@ -224,56 +226,17 @@ int main(int argc, char** argv)
     {
 		std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
 
-	    // Set an error callback
-	    glfwSetErrorCallback(errorCallback);
-
 	    // Register the exit callback
 		atexit(quit);
 
-		// Initialize GLFW
-	    if (!glfwInit())
-	    {
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-	    }
+        // Initialise GLFW
+        initGLUT(argc, argv);
 
-        // Enable OpenGL 3.2 if possible
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Initialise GLEW
+        initGLEW();
 
-	    // Enable quad-buffering if possible
-	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
-	    // Enable anti-aliasing
-	    glfwWindowHint(GLFW_SAMPLES, 4);
-
-		// Create the window title
-		std::stringstream window_title;
-		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
-
-	    // Create a windowed mode window and its OpenGL context
-	    g_p_main_window_id = glfwCreateWindow(g_current_main_window_width, g_current_main_window_height, window_title.str().data(), NULL, NULL);
-
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-	    {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-	        g_p_main_window_id = glfwCreateWindow(g_current_main_window_width, g_current_main_window_height, window_title.str().data(), NULL, NULL);
-        }
-        
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-	    {
-	        glfwTerminate();
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-	    }
-
-	    // Make the window's context current
-	    glfwMakeContextCurrent(g_p_main_window_id);
+        // Initialise OpenGL
+        initGL();
 
  		// Is stereo enable
 		if (g_stereo_helper.enable())
@@ -305,13 +268,6 @@ int main(int argc, char** argv)
 		g_stereo_helper.setNear(g_initial_near);
 		g_stereo_helper.setFar(g_initial_far);
 		g_stereo_helper.setScreenProjectionPlane(g_initial_screen_projection_plane);
-
-		// Initialize GLFW callback
-		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
-		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
-		glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
-		glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
 
 		// Load the data
 		loadDetector();
@@ -370,24 +326,10 @@ int main(int argc, char** argv)
 		// Set the projection matrix
 		GLint width(0);
 		GLint height(0);
-		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
-		framebufferSizeCallback(g_p_main_window_id, width, height);
+		framebufferSizeCallback(g_current_main_window_width, g_current_main_window_height);
 
 		// Launch the event loop
-	    while (!glfwWindowShouldClose(g_p_main_window_id))
-	    {
-	    	// Render here
-	    	display();
-
-	        // Swap front and back buffers
-	        glfwSwapBuffers(g_p_main_window_id);
-
-	        // Idle callback
-	        idle();
-
-	        // Poll for and process events
-	        glfwPollEvents();
-	    }
+        glutMainLoop();
 	}
 	// Catch exception if any
 	catch (const std::exception& error)
@@ -395,16 +337,57 @@ int main(int argc, char** argv)
 		std::cerr << error.what() << std::endl;
 	}
 
-	// Close the window and shut GLFW
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-		g_p_main_window_id = 0;
-		glfwTerminate();
-	}
-
 	// Return an exit code
 	return (EXIT_SUCCESS);
+}
+
+
+//----------------------------------
+void initGLUT(int argc, char** argv)
+//----------------------------------
+{
+	// GLUT initialisation
+	glutInit (&argc, argv);
+
+	// Create a windowed mode window and its OpenGL context
+	glutInitWindowSize(g_current_main_window_width, g_current_main_window_height);
+	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+
+	// Create the window title
+	std::stringstream window_title;
+	window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
+
+	g_main_window_id = glutCreateWindow(window_title.str().c_str());
+
+    // The window has not been created
+    if (!g_main_window_id)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLUT windowed mode window and its OpenGL context.");
+    }
+
+    // Register GLUT callbacks
+    glutDisplayFunc(displayCallback);
+    glutReshapeFunc(framebufferSizeCallback);
+    glutKeyboardFunc(keyCallback);
+    glutSpecialFunc(specialKeyCallback);
+    glutMouseFunc(mouseButtonCallback);
+    glutMotionFunc(cursorPosCallback);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
 }
 
 
@@ -412,11 +395,10 @@ int main(int argc, char** argv)
 void quit()
 //---------
 {
-	if (g_p_main_window_id)
+	if (g_main_window_id)
 	{
-		glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
+		glutDestroyWindow(g_main_window_id);
+        g_main_window_id = 0;
 	}
 }
 
@@ -723,9 +705,9 @@ void drawMono()
 }
 
 
-//------------
-void display()
-//------------
+//--------------------
+void displayCallback()
+//--------------------
 {
 	if (!g_image_computed)
 	{
@@ -760,230 +742,246 @@ void display()
 	g_number_of_seconds = double(duration) / CLOCKS_PER_SEC;
 
 	g_fps = ++g_image_computed / g_number_of_seconds;
+
+    // Swap front and back buffers
+    glutSwapBuffers();
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
+//------------------------------------------------------------------
 {
-	if (action == GLFW_PRESS)
+	switch(aKey)
 	{
-		switch(key)
+	case 'q':
+	case 27:
+		exit(EXIT_SUCCESS);
+		break;
+
+	case 'f':
+		g_use_fullscreen = !g_use_fullscreen;
+
+		if (g_use_fullscreen)
 		{
-		case GLFW_KEY_Q:
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-			break;
-
-		case GLFW_KEY_F:
-			g_use_fullscreen = !g_use_fullscreen;
-
-			if (g_use_fullscreen)
-			{
-			}
-			else
-			{
-			}
-			break;
-
-		case GLFW_KEY_S:
-			if (g_stereo_helper.isActive())
-			{
-				g_stereo_helper.disable();
-			}
-			else
-			{
-				g_stereo_helper.enable();
-			}
-			break;
-
-		case GLFW_KEY_L:
-			g_use_lighing = !g_use_lighing;
-			break;
-
-		case GLFW_KEY_B:
-			g_display_beam = !g_display_beam;
-			break;
-
-		case GLFW_KEY_N:
-			g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
-			break;
-
-		case GLFW_KEY_1:
-			// This is a point source
-			if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
-			{
-				// Use a parallel source
-				g_xray_detector.setParallelBeam();
-			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-			break;
-
-		case GLFW_KEY_2:
-			// This is not a line source
-			if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
-			{
-				g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 10.0*mm);
-			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-			break;
-
-		case GLFW_KEY_3:
-			// This is not a square source
-			if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
-			{
-				g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 10, 10.0*mm);
-			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-
-			break;
-
-		case GLFW_KEY_4:
-			// This is not a cubic source
-			if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
-			{
-				g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 5, 10.0*mm);
-			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-			break;
-
-		case GLFW_KEY_T:
-			if (g_rotation_mode == SCENE)
-			{
-					std::cout << "Rotation: select the object." << std::endl;
-					g_rotation_mode = OBJECT;
-			}
-			else if (g_rotation_mode == OBJECT)
-			{
-				std::cout << "Rotation: select the detector." << std::endl;
-				g_rotation_mode = DETECTOR;
-			}
-			else if (g_rotation_mode == DETECTOR)
-			{
-				std::cout << "Rotation: select the scene." << std::endl;
-				g_rotation_mode = SCENE;
-			}
-			break;
-
-		case GLFW_KEY_W:
-			g_display_wireframe = !g_display_wireframe;
-			break;
-
-		case GLFW_KEY_I:
-			g_zoom -= 1.0 * cm;
-			framebufferSizeCallback(g_p_main_window_id, g_current_main_window_width, g_current_main_window_height);
-			break;
-
-		case GLFW_KEY_O:
-			g_zoom += 1.0 * cm;
-			framebufferSizeCallback(g_p_main_window_id, g_current_main_window_width, g_current_main_window_height);
-			break;
-
-		case GLFW_KEY_D:
-			g_display_detector = !g_display_detector;
-			break;
-
-		case GLFW_KEY_KP_ADD:
-			g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
-			std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
-			break;
-
-		case GLFW_KEY_MINUS:
-		case GLFW_KEY_KP_SUBTRACT:
-			g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() - 5.0 * mm);
-			std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
-			break;
-
-		case GLFW_KEY_RIGHT:
-			{
-				VEC3 translation(g_detector_position - g_source_position);
-				translation.normalise();
-				g_source_position += translation * 1.0 * cm;
-
-				// Set the source position
-				g_xray_detector.setXrayPointSource(g_source_position);
-
-				// The X-ray image is not up-to-date
-				g_is_xray_image_up_to_date = false;
-			}
-			break;
-
-		case GLFW_KEY_LEFT:
-			{
-				VEC3 translation(g_detector_position - g_source_position);
-				translation.normalise();
-				g_source_position -= translation * 1.0 * cm;
-
-				// Set the source position
-				g_xray_detector.setXrayPointSource(g_source_position);
-
-				// The X-ray image is not up-to-date
-				g_is_xray_image_up_to_date = false;
-			}
-			break;
-
-		case GLFW_KEY_UP:
-			{
-				g_source_position += VEC3(0, 1.0 * cm, 0);
-
-				// Set the source position
-				g_xray_detector.setXrayPointSource(g_source_position);
-
-				// The X-ray image is not up-to-date
-				g_is_xray_image_up_to_date = false;
-			}
-			break;
-
-		case GLFW_KEY_DOWN:
-			{
-				g_source_position -= VEC3(0, 1.0 * cm, 0);
-
-				// Set the source position
-				g_xray_detector.setXrayPointSource(g_source_position);
-
-				// The X-ray image is not up-to-date
-				g_is_xray_image_up_to_date = false;
-			}
-			break;
-
-		default:
-			break;
 		}
+		else
+		{
+		}
+		break;
+
+	case 's':
+		if (g_stereo_helper.isActive())
+		{
+			g_stereo_helper.disable();
+		}
+		else
+		{
+			g_stereo_helper.enable();
+		}
+		break;
+
+	case 'l':
+		g_use_lighing = !g_use_lighing;
+		break;
+
+	case 'b':
+		g_display_beam = !g_display_beam;
+		break;
+
+	case 'n':
+		g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+		break;
+
+	case '1':
+		// This is a point source
+		if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
+		{
+			// Use a parallel source
+			g_xray_detector.setParallelBeam();
+		}
+		// This is a cubic source
+		else
+		{
+			g_xray_detector.setPointSource();
+		}
+
+		// The X-ray image is not up-to-date
+		g_is_xray_image_up_to_date = false;
+		break;
+
+	case '2':
+		// This is not a line source
+		if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
+		{
+			g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 10.0*mm);
+		}
+		// This is a cubic source
+		else
+		{
+			g_xray_detector.setPointSource();
+		}
+
+		// The X-ray image is not up-to-date
+		g_is_xray_image_up_to_date = false;
+		break;
+
+	case '3':
+		// This is not a square source
+		if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
+		{
+			g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 10, 10.0*mm);
+		}
+		// This is a cubic source
+		else
+		{
+			g_xray_detector.setPointSource();
+		}
+		// The X-ray image is not up-to-date
+		g_is_xray_image_up_to_date = false;
+
+		break;
+
+	case '4':
+		// This is not a cubic source
+		if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
+		{
+			g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 5, 10.0*mm);
+		}
+		// This is a cubic source
+		else
+		{
+			g_xray_detector.setPointSource();
+		}
+
+		// The X-ray image is not up-to-date
+		g_is_xray_image_up_to_date = false;
+		break;
+
+	case 't':
+		if (g_rotation_mode == SCENE)
+		{
+				std::cout << "Rotation: select the object." << std::endl;
+				g_rotation_mode = OBJECT;
+		}
+		else if (g_rotation_mode == OBJECT)
+		{
+			std::cout << "Rotation: select the detector." << std::endl;
+			g_rotation_mode = DETECTOR;
+		}
+		else if (g_rotation_mode == DETECTOR)
+		{
+			std::cout << "Rotation: select the scene." << std::endl;
+			g_rotation_mode = SCENE;
+		}
+		break;
+
+	case 'w':
+		g_display_wireframe = !g_display_wireframe;
+		break;
+
+	case 'i':
+		g_zoom -= 1.0 * cm;
+		framebufferSizeCallback(g_current_main_window_width, g_current_main_window_height);
+		break;
+
+	case 'o':
+		g_zoom += 1.0 * cm;
+		framebufferSizeCallback(g_current_main_window_width, g_current_main_window_height);
+		break;
+
+	case 'd':
+		g_display_detector = !g_display_detector;
+		break;
+
+	case '+':
+		g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
+		std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
+		break;
+
+	case '-':
+		g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() - 5.0 * mm);
+		std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
+		break;
+
+	default:
+		break;
 	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+void specialKeyCallback(int aKey, int aXPosition, int aYPosition)
+{
+	switch(aKey)
+	{
+	case GLUT_KEY_RIGHT:
+		{
+			VEC3 translation(g_detector_position - g_source_position);
+			translation.normalise();
+			g_source_position += translation * 1.0 * cm;
+
+			// Set the source position
+			g_xray_detector.setXrayPointSource(g_source_position);
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+		}
+		break;
+
+	case GLUT_KEY_LEFT:
+		{
+			VEC3 translation(g_detector_position - g_source_position);
+			translation.normalise();
+			g_source_position -= translation * 1.0 * cm;
+
+			// Set the source position
+			g_xray_detector.setXrayPointSource(g_source_position);
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+		}
+		break;
+
+	case GLUT_KEY_UP:
+		{
+			g_source_position += VEC3(0, 1.0 * cm, 0);
+
+			// Set the source position
+			g_xray_detector.setXrayPointSource(g_source_position);
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+		}
+		break;
+
+	case GLUT_KEY_DOWN:
+		{
+			g_source_position -= VEC3(0, 1.0 * cm, 0);
+
+			// Set the source position
+			g_xray_detector.setXrayPointSource(g_source_position);
+
+			// The X-ray image is not up-to-date
+			g_is_xray_image_up_to_date = false;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
+
+}
+
+
+//-------------------------------------------------
+void framebufferSizeCallback(int width, int height)
+//-------------------------------------------------
 {
 	if (height == 0)
 	{
@@ -1006,42 +1004,55 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//--------------------------------------------
-void mouseButtonCallback(GLFWwindow* apWindow,
-						 int aButton,
-						 int aButtonState,
-						 int aModifierKey)
-//--------------------------------------------
+//-------------------------------------------------------------------------------
+void mouseButtonCallback(int aButton, int aState, int aXPosition, int aYPosition)
+//-------------------------------------------------------------------------------
 {
 	g_button = aButton;
-	g_button_state = aButtonState;
+	g_button_state = aState;
 
-	// Use the arc ball
-	if (g_button_state == GLFW_PRESS)
-	{
-		g_use_arc_ball = true;
-	}
-	// Stop using the arc ball
-	else
-	{
-		g_use_arc_ball = false;
-	}
+    // This is a click event
+    if (g_button == GLUT_LEFT_BUTTON || g_button == GLUT_RIGHT_BUTTON || g_button == GLUT_MIDDLE_BUTTON)
+    {
+		// Use the arc ball
+		if (g_button_state == GLUT_DOWN)
+		{
+			g_use_arc_ball = true;
+		}
+		// Stop using the arc ball
+		else
+		{
+			g_use_arc_ball = false;
+		}
+
+		double xpos(aXPosition);
+		double ypos(aYPosition);
+
+		g_last_x_position = xpos;
+		g_last_y_position = ypos;
+
+		g_current_x_position = xpos;
+		g_current_y_position = ypos;
+    }
 
 	// Select the right transformation
 	switch (g_button)
 	{
-	case GLFW_MOUSE_BUTTON_LEFT:
+	case GLUT_LEFT_BUTTON:
 		g_rotation_mode = SCENE;
 		break;
 
-	case GLFW_MOUSE_BUTTON_RIGHT:
+	case GLUT_RIGHT_BUTTON:
 		g_rotation_mode = OBJECT;
 		break;
 
-	case GLFW_MOUSE_BUTTON_MIDDLE:
+	case GLUT_MIDDLE_BUTTON:
 		g_rotation_mode = DETECTOR;
 		break;
 
@@ -1050,38 +1061,40 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 		break;
 	}
 
-	double xpos(0);
-	double ypos(0);
-	glfwGetCursorPos (apWindow, &xpos, &ypos);
-
-	g_last_x_position = xpos;
-	g_last_y_position = ypos;
-
-	g_current_x_position = xpos;
-	g_current_y_position = ypos;
-}
-
-
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
-{
-	// Scrolling along the Y-axis
-	if (fabs(yoffset) > EPSILON)
+	// The button is down
+	if (aState == GLUT_DOWN)
 	{
-		g_use_arc_ball = false;
-		g_zoom += yoffset * cm;
-		framebufferSizeCallback(apWindow, g_current_main_window_width, g_current_main_window_height);
+		// This is a wheel event
+		if (aButton == 3)
+		{
+			// Change the zoom
+			g_zoom += 5 * cm;
+
+			// Update the projection matrix
+			framebufferSizeCallback(g_current_main_window_width, g_current_main_window_height);
+		}
+		// This is a wheel event
+		else if (aButton == 4)
+		{
+			// Change the zoom
+			g_zoom -= 5 * cm;
+
+			// Update the projection matrix
+			framebufferSizeCallback(g_current_main_window_width, g_current_main_window_height);
+		}
 	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//--------------------------------------------------------------
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
-//--------------------------------------------------------------
+//----------------------------------------------------
+void cursorPosCallback(int aXPosition, int aYPosition)
+//----------------------------------------------------
 {
-	g_current_x_position = x;
-	g_current_y_position = y;
+    g_current_x_position = aXPosition;
+    g_current_y_position = aYPosition;
 
 	// Update the rotation matrix if needed
 	switch (g_rotation_mode)
@@ -1111,6 +1124,9 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	default:
 		break;
 	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
@@ -1208,6 +1224,9 @@ void updateXRayImage()
 
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;
+
+		// Redisplay the scene
+		glutPostRedisplay();
 	}
 }
 
