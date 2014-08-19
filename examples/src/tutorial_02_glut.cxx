@@ -132,7 +132,6 @@ void framebufferSizeCallback(int aWidth, int aHeight);
 void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
 void mouseButtonCallback(int aButton, int aState, int aXPosition, int aYPosition);
 void cursorPosCallback(int aXPosition, int aYPosition);
-void errorCallback(int error, const char* description);
 VEC3 getArcballVector(int x, int y);
 float radian2degree(float anAngle);
 void computeRotation(MATRIX4& aRotationMatrix);

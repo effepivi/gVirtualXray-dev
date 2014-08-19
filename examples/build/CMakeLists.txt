@@ -243,8 +243,10 @@ SET (RESOURCES_SOURCES
     ../src/tutorial_02_gl2.vert
     ../src/tutorial_02_gl3.frag
     ../src/tutorial_02_gl3.vert
-    ../src/tutorial_03.frag
-    ../src/tutorial_03.vert
+    ../src/tutorial_03_gl2.frag
+    ../src/tutorial_03_gl2.vert
+    ../src/tutorial_03_gl3.frag
+    ../src/tutorial_03_gl3.vert
 )
 
 
@@ -283,7 +285,6 @@ ENDIF(USE_BUNDLE)
 
 
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
-#SET_PROPERTY(TARGET test_implicit_surface_density_function PROPERTY LINK_SEARCH_START_STATIC 1) 
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
@@ -334,8 +335,8 @@ IF(USE_GLUT)
         ADD_EXECUTABLE (tutorial_02_glut ../src/tutorial_02_glut.cxx ../src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_02_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        #ADD_EXECUTABLE (tutorial_03_glut ../src/tutorial_03_glut.cxx ../src/buildCube.cxx)
-        #TARGET_LINK_LIBRARIES (tutorial_03_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
+        ADD_EXECUTABLE (tutorial_03_glut ../src/tutorial_03_glut.cxx ../src/buildCube.cxx)
+        TARGET_LINK_LIBRARIES (tutorial_03_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
 
         #ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
         #TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
@@ -498,7 +499,7 @@ IF(USE_GLUT)
     IF(NOT WIN32)
         ADD_DEPENDENCIES(tutorial_01_glut BinaryDemoFiles)
         ADD_DEPENDENCIES(tutorial_02_glut BinaryDemoFiles)
-        #ADD_DEPENDENCIES(tutorial_03_glut BinaryDemoFiles)
+        ADD_DEPENDENCIES(tutorial_03_glut BinaryDemoFiles)
         #ADD_DEPENDENCIES(welsh_dragon_glut BinaryDemoFiles)
     ENDIF(NOT WIN32)
 ENDIF(USE_GLUT)

@@ -32,9 +32,11 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <GL/glew.h>  // Handle shaders
 #include <GL/glut.h>  // Create an OpenGL context and attach a window to it
 
 #include <iostream>   // Print error messages in the console
+#include <sstream>    // Generate error messages
 #include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
 
@@ -59,8 +61,8 @@
 
 #include "buildCube.h" // Create the triangle mesh of a cube
 
-#include "tutorial_03.frag.h"
-#include "tutorial_03.vert.h"
+#include "tutorial_03_gl2.frag.h" // Fragment shader for OpenGL 2.x
+#include "tutorial_03_gl2.vert.h" // Vertex shader for OpenGL 2.x
 
 
 //******************************************************************************
@@ -85,8 +87,8 @@ GLsizei g_window_width(640);
 // Keep track of the window height
 GLsizei g_window_height(480);
 
-// GLFW window ID
-GLFWwindow* g_p_window_id(0);
+// GLUT window ID
+int g_window_id(0);
 
 // Shader program used to display the 3D scene
 Shader g_display_shader;
@@ -130,19 +132,18 @@ bool g_wireframe(false);
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGLFW();
+void initGLUT(int argc, char** argv);
+void initGLEW();
 void initGL();
 void initShader();
 void load3DObjects();
 void displayCallback();
 void idleCallback();
 void quitCallback();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void errorCallback(int error, const char* description);
+void framebufferSizeCallback(int aWidth, int aHeight);
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
+void mouseButtonCallback(int aButton, int aState, int aXPosition, int aYPosition);
+void cursorPosCallback(int aXPosition, int aYPosition);
 VEC3 getArcballVector(int x, int y);
 float radian2degree(float anAngle);
 void computeRotation(MATRIX4& aRotationMatrix);
@@ -166,7 +167,10 @@ int main(int argc, char** argv)
     try
     {
         // Initialise GLFW
-        initGLFW();
+        initGLUT(argc, argv);
+
+        // Initialise GLEW
+        initGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -193,23 +197,11 @@ int main(int argc, char** argv)
         setSimulator();
 
         // Set the projection matrix
-        framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
+        // Set the projection matrix
+        framebufferSizeCallback(g_window_width, g_window_height);
 
         // Launch the event loop
-        while (!glfwWindowShouldClose(g_p_window_id))
-        {
-            // Render here
-            displayCallback();
-
-            // Swap front and back buffers
-            glfwSwapBuffers(g_p_window_id);
-
-            // Poll for and process events
-            glfwPollEvents();
-
-            // Idle callback
-            idleCallback();
-        }
+        glutMainLoop();
     }
     // Catch exception if any
     catch (const exception& error)
@@ -226,49 +218,47 @@ int main(int argc, char** argv)
 }
 
 
-//-------------
-void initGLFW()
-//-------------
+//----------------------------------
+void initGLUT(int argc, char** argv)
+//----------------------------------
 {
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
+	// GLUT initialisation
+	glutInit (&argc, argv);
 
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot initialise GLFW.");
-    }
-
-    // Enable OpenGL 3.2 if possible
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 02", NULL, NULL);
+	// Create a windowed mode window and its OpenGL context
+	glutInitWindowSize(g_window_width, g_window_height);
+	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 03");
 
     // The window has not been created
-    if (!g_p_window_id)
+    if (!g_window_id)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+                "ERROR: cannot create a GLUT windowed mode window and its OpenGL context.");
     }
 
-    // Make the window's context current
-    glfwMakeContextCurrent(g_p_window_id);
+    // Register GLUT callbacks
+    glutDisplayFunc(displayCallback);
+    glutReshapeFunc(framebufferSizeCallback);
+    glutKeyboardFunc(keyCallback);
+    glutMouseFunc(mouseButtonCallback);
+    glutMotionFunc(cursorPosCallback);
+    glutIdleFunc(idleCallback);
+}
 
-    // Register GLFW callbacks
-    glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
-    glfwSetKeyCallback(g_p_window_id, keyCallback);
-    glfwSetMouseButtonCallback(g_p_window_id, mouseButtonCallback);
-    glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback);
-    glfwSetScrollCallback(g_p_window_id, scrollCallback);
+
+//-------------
+void initGLEW()
+//-------------
+{
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
 }
 
 
@@ -287,8 +277,8 @@ void initShader()
     std::string fragment_shader;
 
     // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_03_vert, sizeof(g_tutorial_03_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_03_frag, sizeof(g_tutorial_03_frag), &p_fragment_shader);
+    z_lib_return_code_vertex   = inflate(g_tutorial_03_gl2_vert, sizeof(g_tutorial_03_gl2_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_tutorial_03_gl2_frag, sizeof(g_tutorial_03_gl2_frag), &p_fragment_shader);
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -471,6 +461,9 @@ void displayCallback()
     // Check the status of OpenGL and of the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Swap front and back buffers
+    glutSwapBuffers();
 }
 
 
@@ -497,21 +490,18 @@ void quitCallback()
 //-----------------
 {
     // The window exists
-    if (g_p_window_id)
+    if (g_window_id)
     {
         // Close the window
-        glfwDestroyWindow(g_p_window_id);
-        g_p_window_id = 0;
-
-        // Cleanup GLFW
-        glfwTerminate();
+        glutDestroyWindow(g_window_id);
+        g_window_id = 0;
     }
 }
 
 
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//-------------------------------------------------
+void framebufferSizeCallback(int width, int height)
+//-------------------------------------------------
 {
     // Avoid a division by zero
     if (height == 0)
@@ -539,100 +529,107 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     loadLookAtModelViewMatrix(0.0 * cm, 0.0 * cm, g_zoom,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
+//------------------------------------------------------------------
 {
-    if (action == GLFW_PRESS)
-    {
-        switch(key)
-        {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
+	switch(aKey)
+	{
+	// Close the program
+	case 27:
+	case 'q':
+		exit(EXIT_SUCCESS);
+		break;
 
-        case GLFW_KEY_W:
-            g_wireframe = !g_wireframe;
-            break;
+    case 'w':
+        g_wireframe = !g_wireframe;
+        break;
 
-        default:
-            break;
-        }
-    }
+	default:
+		break;
+	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//--------------------------------------------
-void mouseButtonCallback(GLFWwindow* apWindow,
-                         int aButton,
-                         int aButtonState,
-                         int aModifierKey)
-//--------------------------------------------
+//-------------------------------------------------------------------------------
+void mouseButtonCallback(int aButton, int aState, int aXPosition, int aYPosition)
+//-------------------------------------------------------------------------------
 {
     g_button = aButton;
-    g_button_state = aButtonState;
+    g_button_state = aState;
 
-    // Use the arc ball
-    if (g_button_state == GLFW_PRESS)
+    // This is a click event
+    if (g_button == GLUT_LEFT_BUTTON || g_button == GLUT_RIGHT_BUTTON || g_button == GLUT_MIDDLE_BUTTON)
     {
-        g_use_arc_ball = true;
+		// Use the arc ball
+		if (g_button_state == GLUT_DOWN)
+		{
+			g_use_arc_ball = true;
+		}
+		// Stop using the arc ball
+		else
+		{
+			g_use_arc_ball = false;
+		}
+
+		double xpos(aXPosition);
+		double ypos(aYPosition);
+
+		g_last_x_position = xpos;
+		g_last_y_position = ypos;
+
+		g_current_x_position = xpos;
+		g_current_y_position = ypos;
     }
-    // Stop using the arc ball
-    else
-    {
-        g_use_arc_ball = false;
-    }
 
-    double xpos(0);
-    double ypos(0);
-    glfwGetCursorPos (apWindow, &xpos, &ypos);
+	// The button is down
+	if (aState == GLUT_DOWN)
+	{
+		// This is a wheel event
+		if (aButton == 3)
+		{
+			// Change the zoom
+			g_zoom += 5 * cm;
 
-    g_last_x_position = xpos;
-    g_last_y_position = ypos;
+			// Update the projection matrix
+			framebufferSizeCallback(g_window_width, g_window_height);
+		}
+		// This is a wheel event
+		else if (aButton == 4)
+		{
+			// Change the zoom
+			g_zoom -= 5 * cm;
 
-    g_current_x_position = xpos;
-    g_current_y_position = ypos;
+			// Update the projection matrix
+			framebufferSizeCallback(g_window_width, g_window_height);
+		}
+	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
-//--------------------------------------------------------------
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
-//--------------------------------------------------------------
+//----------------------------------------------------
+void cursorPosCallback(int aXPosition, int aYPosition)
+//----------------------------------------------------
 {
-    g_current_x_position = x;
-    g_current_y_position = y;
+    g_current_x_position = aXPosition;
+    g_current_y_position = aYPosition;
 
     computeRotation(g_scene_rotation_matrix);
-}
 
-
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
-{
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
-    {
-        // Change the zoom
-        g_zoom += 5 * yoffset * cm;
-
-        // Update the projection matrix
-        framebufferSizeCallback(apWindow, g_window_width, g_window_height);
-    }
-}
-
-
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
-{
-    // Throw an error
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, description);
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
