@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*   @file       tutorial_02_glfw.cxx
+*   @file       tutorial_03_glfw.cxx
 *
 *   @brief      Improve the second tutorial by:
 *               - Adding a better shader program to display the 3D scene with Phong shading.
