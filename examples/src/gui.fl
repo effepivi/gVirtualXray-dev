@@ -154,8 +154,8 @@ Function {} {open
 \#endif /*WIN32*/} {}
   Fl_Window {} {
     label {gVirtualXRay - DragonDemo}
-    callback WinQuit_CB open selected
-    xywh {2030 131 1050 670} type Single resizable xclass {gVirtualXRay - DragonDemo} visible
+    callback WinQuit_CB open
+    xywh {386 131 1050 670} type Single resizable xclass {gVirtualXRay - DragonDemo} visible
   } {
     Fl_Box m_opengl_window {
       label OpenGLWindow
@@ -307,11 +307,14 @@ Function {} {open
   code {m_opengl_window->setExecutable(argv[0]);
 
 \#ifndef WIN32
+\#ifndef __APPLE__
 Pixmap p = XCreateBitmapFromData(fl_display, DefaultRootWindow(fl_display),
                                  (char*)DragonDemo_bits, DragonDemo_width, DragonDemo_height);
 
 w->icon((char *)p);
+\#endif
 \#else
 w->icon((char *)LoadIcon(fl_display, MAKEINTRESOURCE(101)));
-\#endif} {}
+\#endif} {selected
+  }
 } 

@@ -32,7 +32,13 @@
 //  Include
 //******************************************************************************
 #include <GL/glew.h>  // Handle shaders
-#include <GL/glut.h>  // Create an OpenGL context and attach a window to it
+
+// Create an OpenGL context and attach a window to it
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
 #include <iostream>   // Print error messages in the console
 #include <sstream>    // Generate error messages
