@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*   @file       tutorial_02_glut.cxx
+*   @file       tutorial_03_glut.cxx
 *
 *   @brief      Improve the second tutorial by:
 *               - Adding a better shader program to display the 3D scene with Phong shading.
@@ -482,6 +482,9 @@ void idleCallback()
         // Normalise the X-ray image
         g_xray_simulator.normalise();
     }
+
+	// Redisplay the scene
+	glutPostRedisplay();
 }
 
 
