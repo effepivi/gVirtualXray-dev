@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle virtual X-Ray detectors.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		30/11/2013
 *
@@ -30,6 +30,7 @@
 //	Include
 //******************************************************************************
 #ifdef __APPLE__
+#define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
@@ -68,7 +69,7 @@ void XRayDetector::displayDetector()
 	applyModelViewMatrix();
 
 	// Display the detector using OpenGL's direct mode rendering
-	m_detector_geometry.display();
+	m_detector_geometry->display();
 
 	// Restore the current transformation matrix
 	popModelViewMatrix();
@@ -95,11 +96,11 @@ void XRayDetector::displayBeam()
 
 	if (m_source_shape == PARALLEL)
 	{
-		m_parallel_beam.display();
+		m_parallel_beam->display();
 	}
 	else
 	{
-		m_cone_beam.display();
+		m_cone_beam->display();
 	}
 
 	glDisable(GL_BLEND);
@@ -107,11 +108,11 @@ void XRayDetector::displayBeam()
 
 	if (m_source_shape == PARALLEL)
 	{
-		m_parallel_beam_highlight.display();
+		m_parallel_beam_highlight->display();
 	}
 	else
 	{
-		m_cone_beam_highlight.display();
+		m_cone_beam_highlight->display();
 	}
 
 	// Restore the enable/disable state
@@ -392,8 +393,14 @@ void XRayDetector::updateDetectorVBO()
 	p_texture_coordinates.push_back(1);
 	p_texture_coordinates.push_back(0);
 
-	m_detector_geometry.setBufferUsageHint(GL_STATIC_DRAW);
-	m_detector_geometry.setVertexData(GL_TRIANGLES,
+    // Create the VBO if needed
+    if (!m_detector_geometry.get())
+    {
+        m_detector_geometry.reset(createVBO());
+    }
+
+    m_detector_geometry->setBufferUsageHint(GL_STATIC_DRAW);
+	m_detector_geometry->setVertexData(GL_TRIANGLES,
 			p_vertices.size()            / 3, 3, GL_FLOAT, &p_vertices[0],
 			p_normal.size()              / 3, 3, GL_FLOAT, &p_normal[0],
 			p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
@@ -509,13 +516,19 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(6);
 	p_indices.push_back(7);
 
-	m_parallel_beam.setBufferUsageHint(GL_STATIC_DRAW);
-	m_parallel_beam.setVertexData(GL_TRIANGLES,
+    // Create the VBO if needed
+    if (!m_parallel_beam.get())
+    {
+        m_parallel_beam.reset(createVBO());
+    }
+
+	m_parallel_beam->setBufferUsageHint(GL_STATIC_DRAW);
+	m_parallel_beam->setVertexData(GL_TRIANGLES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			0, 0, GL_NONE, 0);
 
-	m_parallel_beam.setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
+	m_parallel_beam->setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
 
 	// The lines' indices
 	p_indices.clear();
@@ -543,13 +556,19 @@ void XRayDetector::updateParallelBeamVBO()
 	p_indices.push_back(7);
 	p_indices.push_back(4);
 
-	m_parallel_beam_highlight.setBufferUsageHint(GL_STATIC_DRAW);
-	m_parallel_beam_highlight.setVertexData(GL_LINES,
+    // Create the VBO if needed
+    if (!m_parallel_beam_highlight.get())
+    {
+        m_parallel_beam_highlight.reset(createVBO());
+    }
+
+	m_parallel_beam_highlight->setBufferUsageHint(GL_STATIC_DRAW);
+	m_parallel_beam_highlight->setVertexData(GL_LINES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			0, 0, GL_NONE, 0);
 
-	m_parallel_beam_highlight.setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
+	m_parallel_beam_highlight->setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
 }
 
 
@@ -638,13 +657,19 @@ void XRayDetector::updateConeBeamVBO()
 	p_indices.push_back(7);
 	p_indices.push_back(0);
 
-	m_cone_beam.setBufferUsageHint(GL_STATIC_DRAW);
-	m_cone_beam.setVertexData(GL_TRIANGLES,
+    // Create the VBO if needed
+    if (!m_cone_beam.get())
+    {
+        m_cone_beam.reset(createVBO());
+    }
+
+	m_cone_beam->setBufferUsageHint(GL_STATIC_DRAW);
+	m_cone_beam->setVertexData(GL_TRIANGLES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			0, 0, GL_NONE, 0);
 
-	m_cone_beam.setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
+	m_cone_beam->setIndexData(p_indices.size(), GL_UNSIGNED_BYTE, &p_indices[0]);
 
 	// The lines, there is no need for an index as no vertex is used twice
 	p_vertices.clear();
@@ -681,8 +706,14 @@ void XRayDetector::updateConeBeamVBO()
 	p_vertices.push_back(v7.getY());
 	p_vertices.push_back(v7.getZ());
 
-	m_cone_beam_highlight.setBufferUsageHint(GL_STATIC_DRAW);
-	m_cone_beam_highlight.setVertexData(GL_LINES,
+    // Create the VBO if needed
+    if (!m_cone_beam_highlight.get())
+    {
+        m_cone_beam_highlight.reset(createVBO());
+    }
+
+	m_cone_beam_highlight->setBufferUsageHint(GL_STATIC_DRAW);
+	m_cone_beam_highlight->setVertexData(GL_LINES,
 			p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
 			0, 0, GL_NONE, 0,
 			0, 0, GL_NONE, 0);

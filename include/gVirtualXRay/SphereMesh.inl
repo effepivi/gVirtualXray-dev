@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle 3D meshes of spheres.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		22/03/2014
 *

@@ -5,7 +5,7 @@
 *
 *	@brief		Template class to handle 3D vectors.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		11/11/2013
 *

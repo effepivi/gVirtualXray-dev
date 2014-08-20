@@ -5,7 +5,7 @@
 *
 *	@brief		Class to compute and renderer X-ray images on GPU.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		01/12/2013
 *
@@ -62,7 +62,7 @@ inline bool XRayRenderer::getNegativeFilteringFlag() const
 inline void XRayRenderer::addInnerSurface(const PolygonMesh* apSurface)
 //---------------------------------------------------------------------
 {
-	m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
+    m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
 }
 
 
@@ -70,7 +70,23 @@ inline void XRayRenderer::addInnerSurface(const PolygonMesh* apSurface)
 inline void XRayRenderer::addOuterSurface(const PolygonMesh* apSurface)
 //---------------------------------------------------------------------
 {
-	m_p_outer_surface = const_cast<PolygonMesh*>(apSurface);
+    m_p_outer_surface = const_cast<PolygonMesh*>(apSurface);
+}
+
+
+//---------------------------------------------
+inline void XRayRenderer::removeInnerSurfaces()
+//---------------------------------------------
+{
+    m_p_inner_surface_set.clear();
+}
+
+
+//--------------------------------------------
+inline void XRayRenderer::removeOuterSurface()
+//--------------------------------------------
+{
+    m_p_outer_surface = 0;
 }
 
 

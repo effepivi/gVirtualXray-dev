@@ -34,6 +34,7 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
+
 #include <GLFW/glfw3.h>
 
 #ifndef GVXR_XRAY_RENDERER_H
@@ -89,11 +90,11 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-	    // Enable OpenGL 3.2 if possible
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Enable OpenGL 3.2 if possible
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	    // Create the window
 	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
@@ -105,8 +106,9 @@ int main(int argc, char** argv)
 
 	    // Make the window's context current
 	    glfwMakeContextCurrent(p_main_window_id);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	    // Load the data
+        // Load the data
 		loadDetector();
 		loadSource();
 		loadXRaySimulator();
@@ -117,19 +119,19 @@ int main(int argc, char** argv)
 		double energy(0);
 		for (energy = 1.00E-003; energy / MeV <= 0.1 * MeV; energy += 0.0001)
 		{
-			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
+			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy)    / (cm2/g) << " cm2/g" << std::endl;
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
 		for (; energy / MeV <= 100 * MeV; energy += 0.1)
 		{
-			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
+			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy)    / (cm2/g) << " cm2/g" << std::endl;
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
 		for (; energy / MeV <= 1.00E+005 / MeV; energy += 5)
 		{
-			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
+			test_linear_interpoation_stream     << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLinearInterpolation(energy)    / (cm2/g) << " cm2/g" << std::endl;
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
@@ -178,10 +180,10 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-	g_xray_renderer.initialise(XRayRenderer::OPENGL,
-			GL_RGB16F,
-			&g_xray_detector,
-			&g_xray_beam);
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
 }
 
 

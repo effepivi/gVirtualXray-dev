@@ -7,7 +7,7 @@
 *				surfaces are, please visit Paul Bourke's tutorial available at
 *				http://paulbourke.net/geometry/implicitsurf/
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		08/03/2014
 *

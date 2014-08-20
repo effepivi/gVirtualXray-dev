@@ -1,0 +1,317 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0302 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <stdio.h>} {private local
+} 
+
+decl {\#include <stdlib.h>} {private local
+} 
+
+decl {\#include "../build/DragonDemo.xbm"} {private local
+} 
+
+decl {\#include <FL/x.H>} {private global
+} 
+
+Function {WinQuit_CB(Fl_Widget*, void*)} {return_type {static void}
+} {
+  code {printf("Window Quit Callback\\n");
+exit(0);} {}
+} 
+
+Function {setZoom_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Slider* p_slider(static_cast<Fl_Slider*>(apWidget));
+int value = p_slider->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Zoom: %i\\n", value);
+p_opengl_window->setZoom(value);} {}
+} 
+
+Function {rotateEnvironment_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Roller* p_roller(static_cast<Fl_Roller*>(apWidget));
+int value = p_roller->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Rotate: %i\\n", value);
+p_opengl_window->rotateEnvironment(value);} {}
+} 
+
+Function {rotateDetector_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Roller* p_roller(static_cast<Fl_Roller*>(apWidget));
+int value = p_roller->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Rotate: %i\\n", value);
+p_opengl_window->rotateDetector(value);} {}
+} 
+
+Function {rotateObject_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Roller* p_roller(static_cast<Fl_Roller*>(apWidget));
+int value = p_roller->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Rotate: %i\\n", value);
+p_opengl_window->rotateObject(value);} {}
+} 
+
+Function {setStereo_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Check_Button* check_button(static_cast<Fl_Check_Button*>(apWidget));
+int value = check_button->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Zoom: %i\\n", value);
+p_opengl_window->setStereo(value);} {}
+} 
+
+Function {setWireframe_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Check_Button* check_button(static_cast<Fl_Check_Button*>(apWidget));
+int value = check_button->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Wireframe: %i\\n", value);
+p_opengl_window->setWireframe(value);} {}
+} 
+
+Function {setNegative_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Check_Button* check_button(static_cast<Fl_Check_Button*>(apWidget));
+int value = check_button->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Negative: %i\\n", value);
+p_opengl_window->setNegative(value);} {}
+} 
+
+Function {setBeam_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Check_Button* check_button(static_cast<Fl_Check_Button*>(apWidget));
+int value = check_button->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Beam: %i\\n", value);
+p_opengl_window->setBeam(value);} {}
+} 
+
+Function {intraDistance_CB(Fl_Widget* apWidget, void* userdata)} {open return_type {static void}
+} {
+  code {Fl_Slider* p_slider(static_cast<Fl_Slider*>(apWidget));
+int value = p_slider->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Zoom: %i\\n", value);
+p_opengl_window->setIntraocularDistance(value);} {}
+} 
+
+Function {setSourceParallel_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Round_Button* rb(static_cast<Fl_Round_Button*>(apWidget));
+int value = rb->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Parallel Source: %i\\n", value);
+p_opengl_window->setSourceParallel(value);} {}
+} 
+
+Function {setSourceLine_CB(Fl_Widget* apWidget, void* userdata)} {open return_type {static void}
+} {
+  code {Fl_Round_Button* rb(static_cast<Fl_Round_Button*>(apWidget));
+int value = rb->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Line Source: %i\\n", value);
+p_opengl_window->setSourceLine(value);} {}
+} 
+
+Function {setSourceSquare_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Round_Button* rb(static_cast<Fl_Round_Button*>(apWidget));
+int value = rb->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Square Source: %i\\n", value);
+p_opengl_window->setSourceSquare(value);} {}
+} 
+
+Function {setSourceCube_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Round_Button* rb(static_cast<Fl_Round_Button*>(apWidget));
+int value = rb->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Cube Source: %i\\n", value);
+p_opengl_window->setSourceCube(value);} {}
+} 
+
+Function {setPointSource_CB(Fl_Widget* apWidget, void* userdata)} {return_type {static void}
+} {
+  code {Fl_Round_Button* rb(static_cast<Fl_Round_Button*>(apWidget));
+int value = rb->value();
+OpenGLWindow* p_opengl_window(static_cast<OpenGLWindow*>(userdata));
+printf("Point Source: %i\\n", value);
+p_opengl_window->setPointSource(value);} {}
+} 
+
+Function {} {open
+} {
+  code {\#ifdef WIN32
+\#include <FL/x.H>               // needed for fl_display
+\#include <windows.h>            // needed for LoadIcon()
+\#endif /*WIN32*/} {}
+  Fl_Window {} {
+    label {gVirtualXRay - DragonDemo}
+    callback WinQuit_CB open selected
+    xywh {2030 131 1050 670} type Single resizable xclass {gVirtualXRay - DragonDemo} visible
+  } {
+    Fl_Box m_opengl_window {
+      label OpenGLWindow
+      xywh {5 38 700 584} box GTK_DOWN_FRAME
+      code0 {\#include "OpenGLWindow.h"}
+      class OpenGLWindow
+    }
+    Fl_Button {} {
+      label Quit
+      callback WinQuit_CB
+      xywh {925 630 110 30} box GTK_ROUND_UP_BOX
+    }
+    Fl_Menu_Bar {} {open
+      xywh {0 0 1115 20} box GTK_THIN_UP_BOX
+    } {
+      Submenu {} {
+        label File open
+        xywh {0 0 62 20}
+      } {
+        MenuItem {} {
+          label Open
+          user_data m_opengl_window
+          xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label Save
+          xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label Quit
+          callback WinQuit_CB
+          xywh {10 10 30 20}
+        }
+      }
+      Submenu {} {
+        label Help
+        xywh {0 0 62 20}
+      } {
+        MenuItem {} {
+          label Controls
+          xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label About
+          tooltip dgdfg xywh {10 10 30 20}
+        }
+      }
+    }
+    Fl_Group {} {
+      label {View Controls} open
+      xywh {715 40 315 235} box GTK_DOWN_BOX
+    } {
+      Fl_Slider g_zoom_slider {
+        label Zoom
+        user_data m_opengl_window
+        callback setZoom_CB
+        xywh {725 55 35 190} type {Vert Knob} box GTK_ROUND_DOWN_BOX maximum 1500 step 1 value 1150
+      }
+      Fl_Roller {} {
+        label {Rotate Object}
+        user_data m_opengl_window
+        callback rotateObject_CB
+        xywh {775 200 230 25} type Horizontal box GTK_UP_BOX minimum -180 maximum 180 step 1
+      }
+      Fl_Roller {} {
+        label {Rotate X-ray Detector}
+        user_data m_opengl_window
+        callback rotateDetector_CB
+        xywh {775 140 230 25} type Horizontal box GTK_UP_BOX minimum -180 maximum 180 step 1
+      }
+      Fl_Roller {} {
+        label {Rotate Environment}
+        user_data m_opengl_window
+        callback rotateEnvironment_CB
+        xywh {775 75 230 25} type Horizontal box GTK_UP_BOX minimum -180 maximum 180 step 1
+      }
+    }
+    Fl_Group {} {
+      label {Source Controls} open
+      xywh {715 305 320 205} box GTK_DOWN_BOX
+    } {
+      Fl_Check_Button g_p_stereo_button {
+        label Stereo
+        user_data m_opengl_window
+        callback setStereo_CB
+        xywh {725 465 95 20} down_box DOWN_BOX
+      }
+      Fl_Check_Button {} {
+        label {Wire-frame}
+        user_data m_opengl_window
+        callback setWireframe_CB
+        xywh {725 375 95 20} down_box DOWN_BOX
+      }
+      Fl_Check_Button {} {
+        label {Display negative X-ray}
+        user_data m_opengl_window
+        callback setNegative_CB
+        xywh {725 315 95 20} down_box DOWN_BOX
+      }
+      Fl_Check_Button {} {
+        label {X-ray Beam on/off}
+        user_data m_opengl_window
+        callback setBeam_CB
+        xywh {725 345 95 20} down_box DOWN_BOX
+      }
+      Fl_Slider g_p_intraocular_distance_slider {
+        label {Intra ocular Distance}
+        user_data m_opengl_window
+        callback intraDistance_CB
+        xywh {725 410 295 30} type {Horz Knob} box GTK_ROUND_DOWN_BOX maximum 100 value 52
+      }
+    }
+    Fl_Group g_source_shape {
+      label {Source Selection} open
+      xywh {715 535 320 85} box GTK_DOWN_BOX
+    } {
+      Fl_Round_Button g_cube_source_widget {
+        label {Cube Source}
+        user_data m_opengl_window
+        callback setSourceCube_CB
+        xywh {730 565 64 20} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button g_parallel_source_widget {
+        label {Parallel Beam Source}
+        user_data m_opengl_window
+        callback setSourceParallel_CB
+        xywh {845 545 64 20} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button g_square_source_widget {
+        label {Square Source}
+        user_data m_opengl_window
+        callback setSourceSquare_CB
+        xywh {845 565 64 20} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button g_line_source_widget {
+        label {Line Source }
+        user_data m_opengl_window
+        callback setSourceLine_CB
+        xywh {730 545 64 20} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button g_point_source_widget {
+        label {Point Source}
+        user_data m_opengl_window
+        callback setPointSource_CB
+        xywh {730 585 64 20} type Radio down_box ROUND_DOWN_BOX
+      }
+    }
+  }
+  code {m_opengl_window->setExecutable(argv[0]);
+
+\#ifndef WIN32
+Pixmap p = XCreateBitmapFromData(fl_display, DefaultRootWindow(fl_display),
+                                 (char*)DragonDemo_bits, DragonDemo_width, DragonDemo_height);
+
+w->icon((char *)p);
+\#else
+w->icon((char *)LoadIcon(fl_display, MAKEINTRESOURCE(101)));
+\#endif} {}
+} 

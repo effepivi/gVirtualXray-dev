@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle polygon (triangles) meshes.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		07/11/2013
 *
@@ -88,13 +88,19 @@ inline const std::string& PolygonMesh::getFilename() const
 inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 //-------------------------------------------------------------------
 {
+    // Create the VBO if needed
+    if (!m_vbo.get())
+    {
+        m_vbo.reset(createVBO());
+    }
+
 	// There is no data to store in a VBO
 	if (m_number_of_vertices && (getVertexNormalNumber() || getFaceNormalNumber()))
 	{
 		// Create a VBO if possible
 		updateVBO(aTypeOfVBO, aTypeOfPrimitive);
 	}
-	return (m_vbo.isReady());
+	return (m_vbo->isReady());
 }
 
 
@@ -279,10 +285,16 @@ inline void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScale)
 		m_max_corner *= aScale;
 		m_bounding_box_diagonal *= aScale;
 
-		// Update the VBO
-		if (m_vbo.isReady())
+	    // Create the VBO if needed
+		if (!m_vbo.get())
 		{
-			updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+		    m_vbo.reset(createVBO());
+		}
+
+        // Update the VBO
+		if (m_vbo->isReady())
+		{
+			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 		}
 	}
 }
@@ -303,10 +315,16 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
 		m_min_corner += aTranslationVector;
 		m_max_corner += aTranslationVector;
 	
-		// Update the VBO
-		if (m_vbo.isReady())
+		// Create the VBO if needed
+		if (!m_vbo.get())
 		{
-			updateVBO(m_vbo.getBufferUsageHint(), m_vbo.getPrimitiveType());
+		    m_vbo.reset(createVBO());
+		}
+
+		// Update the VBO
+		if (m_vbo->isReady())
+		{
+			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 		}
 	}
 }

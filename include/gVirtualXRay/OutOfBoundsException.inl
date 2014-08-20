@@ -6,7 +6,7 @@
 *	@brief		Class to handle exceptions when accessing an array cell that is
 *				not accessible, i.e. out of bounds memory access.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		30/11/2013
 *

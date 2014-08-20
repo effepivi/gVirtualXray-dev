@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle exceptions related to OpenGL.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		07/11/2013
 *
@@ -38,7 +38,6 @@
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
-#include <GL/gl.h>
 #include <GL/glu.h>
 #endif
 

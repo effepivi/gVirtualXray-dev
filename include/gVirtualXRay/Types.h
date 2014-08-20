@@ -5,7 +5,7 @@
 *
 *	@brief		Type declarations.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		08/11/2013
 *

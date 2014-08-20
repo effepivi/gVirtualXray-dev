@@ -6,7 +6,7 @@
 *	@brief		Class to handle exceptions when trying to open a read-only file
 *				that is not accessible.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		30/11/2013
 *

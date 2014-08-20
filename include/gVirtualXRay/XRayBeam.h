@@ -6,7 +6,7 @@
 *	@brief		Class to manage X-Ray beams. The beam spectrum is discretised
 *				into energy channels.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		29/11/2013
 *

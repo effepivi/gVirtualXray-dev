@@ -5,7 +5,7 @@
 *
 *	@brief		Class to manage an attenuation coefficient
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		30/11/2013
 *

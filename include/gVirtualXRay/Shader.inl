@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle GLSL shaders.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		29/11/2013
 *

@@ -1,5 +1,7 @@
 \documentclass[11pt,oneside,a4paper,final]{article}
 
+\usepackage{ifpdf}
+
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 
@@ -20,7 +22,7 @@
 \usepackage{textcomp}  
 \usepackage{lmodern}  
 
-\usepackage[style=numeric,backend=biber]{biblatex}
+% \usepackage[style=numeric,backend=biber]{biblatex}
 % \usepackage[style=numeric]{biblatex}
 \bibliography{programmer_guide}
 \usepackage[hidelinks=true]{hyperref}
@@ -28,7 +30,8 @@
 \usepackage[british=nohyphenation]{hyphsubst}
 \usepackage[british]{babel}
 \usepackage{graphicx}
-\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage[font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\captionsetup*[subfigure]{position=bottom}
 \usepackage{color}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -67,18 +70,26 @@
 
 \usepackage[acronym,toc]{glossaries}
 \makeglossaries
-\input{acronyms}
+\input{../acronyms}
 
-\title{gVirtualXRay -- Tutorial 01}
+\title{gVirtualXRay -- Tutorial 01: Creating a Window and\\an OpenGL Core 
+	Profile 3.2 Context Using GLFW}
+
 \author{Dr Franck P. Vidal}
-\date{19\textsuperscript{th} March 2014}
+\date{6\textsuperscript{th} May 2014}
 
 \begin{document}
  \sloppy
 
 \maketitle
+\vfill
+\begin{center}
+\includegraphics[width=0.5\textwidth]{screenshot}
+\end{center}
+\vfill
 
-\newpage
+
+ \newpage
 \phantomsection
 \addcontentsline{toc}{section}{Table of contents}
 \tableofcontents
@@ -93,207 +104,516 @@
 % \addcontentsline{toc}{section}{List of tables}
 % \listoftables
 
-\newpage
+% \newpage
 \phantomsection
 \addcontentsline{toc}{section}{List of listings}
 \lstlistoflistings
 
 \newpage
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-The complete source code of this tutorial is available in \verb+example/src/tutorial_01.cxx+. 
-It shows how to build a basic simulation pipeline and display the simulation setup using OpenGL. 
-Basic knowledge of OpenGL and \Gls{GLUT} is a pre-requisite. 
-The gVirtualXRay library is built using modern programming paradigm. 
-Errors are handles using C++ exceptions. 
-In the OpenGL code, the fix rendering pipeline and direct rendering have both been avoided. 
-Depreciated functions and features have also been avoided. 
-In this tutorial, some of these functionalities are still in used to lighten the tutorial. 
-For example, the matrix stacks are used and the fix rendering pipeline is used too.
+The complete source code of this tutorial is available in 
+Appendix~\ref{sec:Program Source Code} and on the \Gls{SVN} repository at 
+\verb+example/src/tutorial_01.cxx+. 
+It shows how to create a window with GLFW\,\footnote{\url{http://www.glfw.org/}} 
+and attach an OpenGL context to it. 
+Two cubes are displayed (see Figure~\ref{fig:scene}). 
+\begin{figure}[tbh]
+ \centering
+ \includegraphics[width=0.5\textwidth]{screenshot}
+ \caption{\label{fig:scene} Definition of the main components needed to 
+simulated X-ray images.}
+\end{figure}
+They both rotate automatically. 
+The rendering makes use of \Gls{GLSL} as the fix rendering pipeline and direct 
+rendering are both depreciated in any modern computer graphics applications. 
 
-It is an introductory tutorial, for more details, the reader may refer to the code (it is well documented) and the Doxygen documentation. 
+It is an introductory tutorial, for more details, the reader may refer to the 
+code (it is well documented) and the 
+Doxygen\,\footnote{\url{http://www.doxygen.org/}} documentation of the 
+project\,\footnote{\url{http://gvirtualxray.sourceforge.net/documentation.php}}
+. 
 
 The tutorial is organised as follows:
-Section~\ref{sec:Header inclusion} shows the header files to include. 
-Section~\ref{sec:Name Spaces} shows some of the name spaces that can be included to lighten the code. 
-How to set up all the main components of the simulation is describe in Section~\ref{sec:Setting Components of the X-Ray Simulation}.
+\begin{itemize}
+ \item Section~\ref{sec:Header inclusion} shows the header files to include. 
+
+ \item Section~\ref{sec:Name Spaces} shows some of the name spaces that can be 
+	included to lighten the code. 
+	% How to set up all the main components of the simulation is describe in 
+
+ \item Section~\ref{sec:Program Source Code} shows the source code of this 
+	tutorial. 
+
+ \item Section~\ref{sec:Global Variables} shows the global variables that are 
+	used. 
+
+ \item Section~\ref{sec:Function Declarations} what typical functions have to 
+	be declared in a basic GLFW program. 
+
+ \item Appendix~\ref{sec:Program Source Code} shows the source code of this 
+	tutorial. 
+	
+\end{itemize}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Header inclusion}
 \label{sec:Header inclusion}
 
-\lstinputlisting[firstline=32, lastline=50, caption=Header inclusion., label=lst:header]{../../../examples/src/tutorial_01.cxx}
-
-Listing~\ref{lst:header} shows the header files that need to be included to build a simple program based on the \Gls{GLUT}. 
+Listing~\ref{lst:header} shows i) the macros that have to be defines to include 
+OpenGL core profile hears and ii) the header files that need to be included to 
+build a simple program based on the GLFW 
+library:
 \begin{itemize}
- \item \verb+glew.h+ is the main header file from the \Gls{GLEW} . 
- It is required to include this file. 
- \Gls{GLEW} is used to handles \glspl{VBO}, \glspl{FBO}, and the \gls{GLSL}. 
- It has to be included before any other OpenGL header inclusion\ e.g.~\Gls{GLUT}.
- \item \verb+glut.h+ is the main \Gls{GLUT} header file.
- \item \verb+iostream.h+ is used for output streams.
- \item \verb+exception.h+ is used for C++ exceptions.
- \item \verb+Types.h+ defines new types, e.g.~\verb+RATIONAL_NUMBER+, \verb+VEC2+, \verb+VEC3+ and \verb+MATRIX4+ to name a few.
- \item \verb+Units.h+ defines units such as metre, kilometre, electronvolt, kiloelectron volt, gram, kilogram, etc.
- \item \verb+TriangleMesh.h+ corresponds to a class used to handle \Acrshort{3D} triangle meshes.
- \item \verb+XRayBeam.h+ corresponds to a class used to manage X-Ray beams. The beam spectrum is discretised into energy channels.
- \item \verb+XRayDetector.h+ corresponds to a class that handles virtual X-Ray detectors.
- \item \verb+XRayRenderer.h+ is used to compute X-Ray images on the \Gls{GPU}.
- \item \verb+buildCube.h+ is used to compute create the triangle mesh of a cube.
+ \item \verb+GL3_PROTOTYPES+ is a macro that ensures that we are using opengl's 
+core profile only. It has to be included before any other OpenGL header 
+inclusion.
+ \item \verb+GL_GLEXT_PROTOTYPES+ is a macro that ensures that we are using opengl's core profile only. It has to be included before any other OpenGL header inclusion.
+ \item \verb+GLFW_INCLUDE_GLCOREARB+ is a macro that tells GLFW to include the OpenGL core profile header. It has to be included before any other OpenGL header inclusion.
+ \item \verb+glfw3.h+ is the main GLFW header file.
+ \item \verb+iostream+ is used for output streams.
+ \item \verb+exception+ is used for C++ exceptions.
+ \item \verb+cstdlib+ defines return status (\verb+EXIT_SUCCESS+ and 
+	\verb+EXIT_FAILURE+).
+ \item \verb+Types.h+ defines new types, e.g \verb+RATIONAL_NUMBER+, 
+	\verb+VEC2+, \verb+VEC3+ and \verb+MATRIX4+ to name a few.
+ \item \verb+Units.h+ defines units such as metre, kilometre, electronvolt, 
+	kiloelectron volt, gram, kilogram, etc.
+ \item \verb+OpenGLUtilities.h+ defines some utility functions about OpenGL, 
+	e.g. matrix stacks,
+// how to set the projection matrix, etc.
+ \item \verb+PolygonMesh.h+ corresponds to a class used to handle \Acrshort{3D} 
+triangle meshes.
+ \item \verb+Shader.h+ corresponds to a class that handles \Gls{GLSL} programs.
+ \item \verb+buildCube.h+ is used to create the triangle mesh of a cube.
 \end{itemize}
 
+\lstinputlisting[firstline=32, lastline=60, caption=Header inclusion., 
+label=lst:header]{../../../examples/src/tutorial_01.cxx}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Name Spaces}
 \label{sec:Name Spaces}
 
-\lstinputlisting[firstline=56, lastline=58, caption=Name spaces., label=lst:name space]{../../../examples/src/tutorial_01.cxx}
-
-Listing~\ref{lst:name space} shows the name spaces that can be selected. 
+Listing~\ref{lst:name space} shows the name spaces that can be selected:
 \begin{itemize}
- \item \verb+Graphics+ is used to defined graphics elements such as \verb+TriangleMesh+. 
- \item \verb+gVirtualXRay+ is used to defined all the components of the X-ray simulation.
+ \item \verb+gVirtualXRay+ includes graphics elements such as \verb+PolygonMesh+ 
+	and utilities such as \verb+Exception+. 
  \item \verb+std+ is used for output streams and exceptions.
 \end{itemize}
 
+\lstinputlisting[firstline=66, lastline=67, caption=Name spaces., 
+label=lst:name space]{../../../examples/src/tutorial_01.cxx}
 
-\section{Setting Components of the X-Ray Simulation}
-\label{sec:Setting Components of the X-Ray Simulation}
 
-Figure~\ref{fig:scene} illustrates the main components of the simulation. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Global Variables}
+\label{sec:Global Variables}
+
+Listing~\ref{lst:global variables} shows the global variables that are used:
+\begin{itemize}
+	\item \verb+GLsizei g_window_width+ keeps track of the window width.
+
+	\item \verb+GLsizei g_window_height+ keeps track of the window height.
+	
+	\item \verb+GLFWwindow* g_p_window_id+ is the GLFW window ID.
+	
+	\item \verb+Shader g_display_shader+ is the shader program used to 
+		display the 3D scene
+	
+	\item \verb+PolygonMesh g_polygon_mesh_1+ is the polygon mesh of the first 
+		3D object.
+	
+	\item \verb+PolygonMesh g_polygon_mesh_2+ is the polygon mesh of the second 
+		3D object.
+
+	\item \verb+MATRIX4 g_object_1_rotation_matrix+ corresponds to the 
+		transformation matrix of the first 3D object.
+	
+	\item \verb+MATRIX4 g_object_2_rotation_matrix+corresponds to the 
+		transformation matrix of the second 3D object.
+
+	\item \verb+vector<double> g_p_vertex_set_1+ is an array containing 
+		the vertices of the first 3D object.
+		
+	\item \verb+vector<unsigned char> g_p_index_set_1+ is an array 
+		containing vertex indices to build triangles from 
+		\verb+g_p_vertex_set_1+.
+
+	\item \verb+vector<float> g_p_vertex_set_2+ is an array containing 
+		the vertices of the second 3D object. Note that no index is used in 
+		this case.
+
+	\item \verb+RATIONAL_NUMBER g_zoom+ controls the zoom.
+
+	\item \verb+const GLchar* g_vertex_shader+ is the source code of the vertex 
+		shader.
+
+	\item \verb+const GLchar* g_fragment_shader+ is the source code of the 
+		fragment shader.
+\end{itemize}
+
+
+\lstinputlisting[firstline=73, lastline=126, caption=Global variables., 
+label=lst:global variables]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Function Declarations}
+\label{sec:Function Declarations}
+
+Listing~\ref{lst:function declarations} shows the typical functions 
+that have to be declared in a basic GLFW program:
+\begin{itemize}
+ \item \verb+initGLFW+ is used i) to initialise GLFW, ii) to create an OpenGL 
+	context, iii) to create a window, and iv) attach the OpenGL context to the 
+	window (see Section~\ref{sec:Initialise GLFW}).
+ \item \verb+initGL+ is used to initialise some states of OpenGL, e.g. the 
+	background colour and enable the Z-buffer (see Section~\ref{sec:Initialise 
+	OpenGL}).
+ \item \verb+load3DObjects+ loads the \Gls{3D} geometry of two cubes (see 
+	Section~\ref{sec:Load Objects}).
+ \item \verb+displayCallback+ render the two cubes on the screen (see 
+	Section~\ref{sec:Display Scene}).
+ \item \verb+idleCallback+ is an idle callback (see Section~\ref{sec:Idle 
+	Callback}). It is 	called once every event loop and can be used to perform 
+	animation.
+ \item \verb+quitCallback+ is call when the program terminates  (see 
+	Section~\ref{sec:Quit Callback}). It closes the window and cleans up 
+	GLFW.
+ \item \verb+framebufferSizeCallback+ is called every time the frame buffer 
+	size changes (see Section~\ref{sec:frame buffer callback}). It initialises 
+	the viewport size and the 	projection matrix.
+ \item \verb+keyCallback+ is called every time a key is pressed or released on 
+	the keyboard (see Section~\ref{sec:Keyboard Callback}). It can be used to 
+	close the window when the \verb+escape+ key is pressed.
+\item \verb+scrollCallback+ processes the mouse scroll button. It can be used 
+	to zoom in and out (see Section~\ref{sec:Scroll button callback}).
+ \item \verb+errorCallback+ is called to throw an exception when GLFW generates 
+	an error (see Section~\ref{sec:Error Callback}).
+\end{itemize}
+
+\lstinputlisting[firstline=132, lastline=141, caption=Function declarations., 
+label=lst:function declarations]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Initialise GLFW}
+\label{sec:Initialise GLFW}
+
+Listing~\ref{lst:Initialise GLFW} shows how to initialise GLFW to create an 
+OpenGL core profile 3.2 context and how to attach a window to it. There are 
+nime main steps:
+\begin{itemize}
+    \item Register an error callback
+    \item Initialise the GLFW library.
+    \item If it cannot be initialised, an exception is thrown.
+    \item Enable OpenGL 3.2 (this is compulsory)
+    \item Enable anti-aliasing (this is optional).
+    \item Create a windowed mode window and its OpenGL context
+    \item If the window has not been created, an exception is thrown.
+    \item Make the window's context current
+    \item Register GLFW callbacks
+\end{itemize}
+
+\lstinputlisting[firstline=209, lastline=245, caption=Initialise GLFW., 
+label=lst:Initialise GLFW]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Initialise OpenGL}
+\label{sec:Initialise OpenGL}
+
+Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states 
+(Z-buffer, and background colour) and check OpenGL's error status. 
+
+\lstinputlisting[firstline=253, lastline=261, caption=Initialise OpenGL., 
+label=lst:Initialise OpenGL]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Load \Acrshort{3D} Objects}
+\label{sec:Load Objects}
+
+Listing~\ref{lst:Load Objects} shows creates \gls{3D} objects. It implements 
+two cubes. The first one makes use of a vertex list and an index list (see 
+Figure~\ref{fig:cube_01}). The second cube only makes use of a vertex list. 
+Vertices are repeated several times. This is because each vertex is shared by 
+different triangles. The second cube is therefore much bigger in term of 
+memory usage. Listing~\ref{lst:Load Objects} shows that our implementation 
+supports both type of topologies.
+
 \begin{figure}[tbh]
  \centering
- \includegraphics[width=0.5\textwidth]{scene.pdf}
- \caption{\label{fig:scene} Definition of the main components needed to simulated X-ray images.}
+ \subfloat[Geometry.]{\includegraphics[width=0.2\textwidth]{cube_01}}
+ \subfloat[Vertex list.]{
+\raisebox{3em}{\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+	0 & -2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	1 & -2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	2 &  2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	3 &  2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	4 & -2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	5 & -2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+	6 &  2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	7 &  2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+\end{tabular}}
+ }
+\subfloat[Index list.]{
+\raisebox{1em}{
+\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Face List}} \\
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \textbf{i} & \textbf{j} & \textbf{k} \\
+	\hline
+	Top face & 1 & 2 & 0 \\
+	\hline
+	Top face & 2 & 1 & 3 \\
+	\hline
+	Bottom face & 6 & 5 & 4 \\
+	\hline
+	Bottom face & 5 & 6 & 7 \\
+	\hline
+	Front face & 5 & 3 & 1 \\
+	\hline
+	Front face & 3 & 5 & 7 \\
+	\hline
+	Back face & 2 & 4 & 0 \\
+	\hline
+	Back face & 4 & 2 & 6 \\
+	\hline
+	Left face & 5 & 0 & 4 \\
+	\hline
+	Left face & 0 & 5 & 1 \\
+	\hline
+	Right face & 2 & 7 & 6 \\
+	\hline
+	Right face & 7 & 2 & 3 \\
+	\hline
+\end{tabular}}}
+ \caption{\label{fig:cube_01} Topology of the first cube.}
 \end{figure}
 
-\lstinputlisting[firstline=69, lastline=75, caption=Declaration of the simulation components., label=lst:Global variables]{../../../examples/src/tutorial_01.cxx}
-
-Four of them have to be defined to simulate X-Ray images:
-\begin{enumerate}
- \item The detector (its position, orientation, number of pixels and the size of pixels); and
- \item The source (it includes the shape and position of the source);
- \item The beam (its energy spectrum);
- \item The scanned objects (their topologies, positions, orientations and material properties).
-\end{enumerate}
-
-To facilitate their integration into the \Gls{GLUT} example, they are declared as global variables (see Listing~\ref{lst:Global variables}).
-\verb+g_sample_rotation_matrix+ is the modelling matrix that is used to transform the scanned object. 
-By default it is a identity matrix. 
-It could be used to move, rotate and scale the object. 
-The \verb+Matrix4x4+ class provides such functionalities. 
-
-
-\subsection{X-Ray Detector}
-
-\lstinputlisting[firstline=358, lastline=373, caption=Setting up the X-ray detector., label=lst:Detector]{../../../examples/src/tutorial_01.cxx}
-
-Listing~\ref{lst:Detector} shows how to initialise the detector. 
-Four attributes have to be set:
-\begin{enumerate}
- \item Number of pixels of the detector;
- \item Size of pixels (in unit of length);
- \item Position of the detector;
- \item Orientation of the detector.
-\end{enumerate}
-
-\textbf{Note: see how lengths are set in order to internally store them all in the same unit, e.g.} \verb+320.0 * mm+\textbf{, or} \verb+10.0 * cm+\textbf{.}
-
-\subsection{X-Ray Source}
-
-\lstinputlisting[firstline=381, lastline=383, caption=Setting up the X-ray source., label=lst:Source]{../../../examples/src/tutorial_01.cxx}
-
-Listing~\ref{lst:Source} shows how to set the position and shape of the source. 
-In this case, the shape corresponds to an infinitely small point. 
-Other shapes can be chosen. % (see Section~\ref{sec:Source Shapes})
-
-
-\subsection{Beam Spectrum}
-
-\lstinputlisting[firstline=391, lastline=393, caption=Setting up the spectrum of the incident beam., label=lst:Beam spectrum]{../../../examples/src/tutorial_01.cxx}
-
-Listing~\ref{lst:Beam spectrum} shows how to set the position and shape of the source. 
-In this case, the beam spectrum is monochromatic and the energy of all the photons is 80~\acrlongpl{keV} (~\acrshort{keV}). 
-Polychromatism can be chosen, in which case a beam spectrum has to be loaded. % (see Section~\ref{sec:Beam spectrum}).
-
-\textbf{Note: see how energies are set, e.g.} \verb+80.0 * keV+\textbf{ for 80~\acrshort{keV}.}
-
-\subsection{Scanned Object}
-
-\lstinputlisting[firstline=77, lastline=79, caption=Global variables used to store the topology of the scanned objects., label=lst:Scanned object topology]{../../../examples/src/tutorial_01.cxx}
-
-\lstinputlisting[firstline=401, lastline=412, caption=Setting up the properties of the scanned object., label=lst:Scanned object]{../../../examples/src/tutorial_01.cxx}
-
-In most simulation cases, the topology of the scan objects will be stored in the main memory as an array of triplets of floating point numbers. 
-Each triplet corresponds to a vertex. 
-An index of vertices can also be given to reduce the memory consumption, and eventually speed-up the computations. 
-This is a well known practice in computer graphics.
-Two objects are considered here (see Listing~\ref{lst:Scanned object topology}). 
-The first one makes use of two arrays (one for vertices and one for indices); the second one makes use of a single array (for vertices).
-
-Listing~\ref{lst:Scanned object} shows how to set the properties of the scanned objects. 
-\verb+buildCube(...)+ is used to initialise the topology of the two scanned objects as cubes. 
-The topology of each cube is then passed on to instances of \verb+TriangleMesh+. 
-Note that in this case, the memory is managed by the calling program, not by the class instance. 
-It is also possible to load \Gls{STL} binary files, in which case the \verb+TriangleMesh+ class instance will manage the memory. 
-
-The next step is to set the material property (here the Hounsfield value). 
-
-
-\subsection{Simulation Environment}
-
-\lstinputlisting[firstline=422, lastline=430, caption=Setting up the simulation environment., label=lst:Simulation Environment]{../../../examples/src/tutorial_01.cxx}
-
-Listing~\ref{lst:Simulation Environment} shows how to set the simulation environment. 
-Only the OpenGL simulation has been implemented. 
-For fast computation, use \verb+GL_RGB16F_ARB+; for accurate results, use \verb+GL_RGB32F_ARB+. 
-This parameter controls the number of bits used by floating point number. 
-Finally, the detector, source and geometries have to be registered. 
-One may note that the biggest cube, which totally enclose the smaller one is used as \verb+OuterSurface+ (it would be the case of the skin surface in the case of a medical simulation).
-The smaller one is used as \verb+InnerSurface+ (it would be the case of bones and internal organs in the case of a medical simulation).
-
-\newpage
-\section{Running the Simulation}
-
-\lstinputlisting[firstline=322, lastline=329, caption=Running the simulation., label=lst:Running the simulation]{../../../examples/src/tutorial_01.cxx}
-
-To run the simulation, call \verb+XRayRenderer::computeImage(...)+ with the scanned object transformation matrix as parameter (see Listing~\ref{lst:Running the simulation}). 
-It may be useful to call \verb+XRayRenderer::normalise()+ to make sure that the X-ray image is normalise before it is displayed. 
-The image can be displayed in negative mode, or not. 
-To enable and disable this mode, use \verb+XRayRenderer::useNegativeFilteringFlag(boolean_flag)+.
-
-\lstinputlisting[firstline=240, lastline=289, caption=Display callback., label=lst:Display callback]{../../../examples/src/tutorial_01.cxx}
-Listing~\ref{lst:Display callback} shows the \Gls{GLUT} display callback. 
-One may note that the X-ray beam is displayed using transparency. 
-It is the reason why it is displayed last. 
-Figure~\ref{fig:tutorial 01 screenshot} shows the corresponding rendering.
 \begin{figure}[tbh]
  \centering
- \includegraphics[width=0.5\textwidth]{tutorial_01.png}
- \caption{\label{fig:tutorial 01 screenshot} OpenGL rendering.}
+ \subfloat[Geometry.]{\includegraphics[width=0.35\textwidth]{cube_02}}
+\subfloat[Vertex list.]{
+\raisebox{2cm}{\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+% 	// Top face
+	 0 & -2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+	 1 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	 $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+	\hline
+% 	 2 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 3 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 4 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	 5 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Bottom face
+% 	 6 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 7 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	 8 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 9 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	10 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	11 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Front face
+% 	12 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	13 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	14 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	15 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	16 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	17 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Back face
+% 	18 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	19 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	20 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	21 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	22 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	23 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% % 	// Left face
+% 	24 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	25 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	26 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	27 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	28 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	29 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Right face
+% 	30 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	31 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	32 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	33 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+	34 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	35 & 2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+\end{tabular}}}
+ \caption{\label{fig:cube_02} Topology of the second cube.}
 \end{figure}
 
-\section{Next Tutorial}
+ 
+
+
+\lstinputlisting[firstline=269, lastline=292, caption=Create \Acrshort{3D} 
+	objects., label=lst:Load Objects]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Display the \Acrshort{3D} Scene}
+\label{sec:Display Scene}
+
+Listing~\ref{lst:Display Scene} display the \gls{3D} objects.
+
+\lstinputlisting[firstline=300, lastline=374, caption=display the 
+	\Acrshort{3D} scene., label=lst:Display 
+	Scene]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Idle Callback}
+\label{sec:Idle Callback}
+
+
+\lstinputlisting[firstline=378, lastline=385, caption=Idle callback., 
+label=lst:Idle callback]{../../../examples/src/tutorial_01.cxx}
+
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quit Callback}
+\label{sec:Quit Callback}
+
+
+\lstinputlisting[firstline=388, lastline=402, caption=Quit callback., 
+label=lst:Quit callback]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Frame Buffer Size Callback}
+\label{sec:frame buffer callback}
+
+
+\lstinputlisting[firstline=405, lastline=435, caption=Change of frame buffer 
+size callback., 
+label=lst:frame buffer callback]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Keyboard Callback}
+\label{sec:Keyboard Callback}
+
+
+\lstinputlisting[firstline=438, lastline=456, caption=Keyboard callback., 
+label=lst:Keyboard Callback]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Scroll Button Callback}
+\label{sec:Scroll button callback}
+
+
+\lstinputlisting[firstline=459, lastline=472, caption=Scroll button callback., 
+label=lst:Scroll button callback]{../../../examples/src/tutorial_01.cxx}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Error Callback}
+\label{sec:Error Callback}
+
+\lstinputlisting[firstline=475, lastline=481, caption=Error callback., 
+label=lst:Error Callback]{../../../examples/src/tutorial_01.cxx}
+
+
+
+\section{Next Tutorial...}
 
 In the next tutorial:
 \begin{itemize}
- \item  You will see how to get rid of OpenGL's fixed pipeline (which is now depreciated). 
- 
- \item You will see how to get rid of OpenGL's matrix stack (which is now depreciated).
-
- \item We will see how to create an efficient mouse control to turn the \Acrshort{3D} scene, object, and detector (the detector does not have to be centered and orthogonal to the beam). 
-
- \item You will also see how to update the topology of the triangle meshes. 
- This is important in medical simulations with soft tissue deformations. 
+	\item Load the shader from a file compressed using 
+		the Zlib\,\footnote{\url{http://www.zlib.net/}}
+%  \item  You will see how to get rid of OpenGL's fixed pipeline (which is now depreciated). 
+%  
+%  \item You will see how to get rid of OpenGL's matrix stack (which is now depreciated).
+% 
+	\item We will see how to create an efficient mouse control to turn the 
+		\Acrshort{3D} scene. 
+% 
+%  \item You will also see how to update the topology of the triangle meshes. 
+%  This is important in medical simulations with soft tissue deformations. 
 \end{itemize}
 
-\newpage
-\printglossary[type=\acronymtype] 
 
+% \newpage
+\ifpdf
+\printglossary[type=\acronymtype] 
+\fi
+
+\appendix
+\section{Program Source Code}
+\label{sec:Program Source Code}
+
+\lstinputlisting[caption=All the source code of this tutorial., 
+label=lst:Program Source Code]{../../../examples/src/tutorial_01.cxx}
+
+% 
 % \newpage
 % \phantomsection
 % \addcontentsline{toc}{section}{References}
 % \printbibliography
-
+% 
 
 \end{document}

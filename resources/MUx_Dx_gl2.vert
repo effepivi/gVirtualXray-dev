@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		MUx_Dx.frag
+*	@file		MUx_Dx_gl2.frag
 *
 *	@brief		Vertex shader that computes Mu_x * Dx.
 *				see:
@@ -11,7 +11,7 @@
 *          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		20/12/2013
 *
@@ -33,23 +33,15 @@
 
 
 //******************************************************************************
-//	OpenGL 3.2
+//	OpenGL 2.0
 //******************************************************************************
-#version 150
+#version 110
 
 
 //******************************************************************************
-//	Input
+//	Varying variables
 //******************************************************************************
-in vec3 in_Vertex;
-in vec3 in_TexCoord;
-in vec3 in_Normal;
-
-
-//******************************************************************************
-//	Output
-//******************************************************************************
-smooth out vec3 g_texture_coordinates;
+varying vec3 g_texture_coordinates;
 
 
 //******************************************************************************
@@ -65,9 +57,9 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	g_texture_coordinates = in_TexCoord;
+	g_texture_coordinates = gl_MultiTexCoord0.xyz;
     
     // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
+	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);
 }
 

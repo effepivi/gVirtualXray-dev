@@ -5,7 +5,7 @@
 *
 *	@brief		Generic class to handle exceptions.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		07/11/2013
 *

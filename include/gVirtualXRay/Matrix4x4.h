@@ -5,7 +5,7 @@
 *
 *	@brief		Template class to handle a 4x4 matrixs.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		11/11/2013
 *
@@ -42,6 +42,19 @@
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+
+//******************************************************************************
+//	class declaration
+//******************************************************************************
+template<typename T> class Matrix4x4;
+
+
+//******************************************************************************
+//	function declaration
+//******************************************************************************
+template <typename T> std::ostream& operator<<(std::ostream& anOutputStream,
+		const Matrix4x4<T>& aMatrix);
 
 
 //==============================================================================
@@ -145,14 +158,23 @@ public:
 	void translate(T x, T y, T z);
 
 
-	//--------------------------------------------------------------------------
-	///	Build a tranlation matrix.
-	/**
-	*	@param aVector: the translation vector
-	*	@return the corresponding translation matrix
-	*/
-	//--------------------------------------------------------------------------
-	static Matrix4x4 buildTranslationMatrix(const Vec3<T>& aVector);
+    //--------------------------------------------------------------------------
+    /// Build an identity matrix.
+    /**
+    *   @return the identity matrix
+    */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildIdentityMatrix();
+
+
+    //--------------------------------------------------------------------------
+    /// Build a tranlation matrix.
+    /**
+    *   @param aVector: the translation vector
+    *   @return the corresponding translation matrix
+    */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildTranslationMatrix(const Vec3<T>& aVector);
 
 
 	//--------------------------------------------------------------------------
@@ -301,6 +323,15 @@ public:
 	///	Print the matrix in the console.
 	//--------------------------------------------------------------------------
 	void print() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Print the matrix in the console.
+	/**
+	*	@param anOutputStream: the stream in which the matrix will be printed
+	*/
+	//--------------------------------------------------------------------------
+	void print(std::ostream& anOutputStream) const;
 
 
 //******************************************************************************

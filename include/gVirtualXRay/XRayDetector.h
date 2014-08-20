@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle virtual X-Ray detectors.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		30/11/2013
 *
@@ -36,6 +36,8 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include <boost/scoped_ptr.hpp>
+
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -116,14 +118,24 @@ public:
 	void displayBeam();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the pixel resolution (in units of length per pixel,
-	///	i.e. the inverse of the pixel size)
-	/**
-	*	@param aResolution:	the pixel resolution
-	*/
-	//--------------------------------------------------------------------------
-	void setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NUMBER& aResolution);
+    //--------------------------------------------------------------------------
+    /// Set the pixel resolution (in units of length per pixel,
+    /// i.e. the inverse of the pixel size)
+    /**
+    *   @param aResolution: the pixel resolution
+    */
+    //--------------------------------------------------------------------------
+    void setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NUMBER& aResolution);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the pixel resolution (in units of length per pixel,
+    /// i.e. the inverse of the pixel size)
+    /**
+    *   @param aResolution: the pixel resolution
+    */
+    //--------------------------------------------------------------------------
+    void setResolutionInUnitsOfLengthPerPixel(const VEC2& aResolution);
 
 
 	//--------------------------------------------------------------------------
@@ -447,7 +459,7 @@ protected:
 	
 
 	/// Resolution (in unit of length per pixel)
-	RATIONAL_NUMBER m_resolution_in_unit_of_length_per_pixel;
+	VEC2 m_resolution_in_unit_of_length_per_pixel;
 	
 
 	/// Distance between the source and the detector
@@ -463,23 +475,23 @@ protected:
 
 
 	/// The triangle mesh corresponding to the detector
-	VBO m_detector_geometry;
+	boost::scoped_ptr<VBO> m_detector_geometry;
 
 
 	/// The triangle mesh corresponding to the parallel beam
-	VBO m_parallel_beam;
+	boost::scoped_ptr<VBO> m_parallel_beam;
 
 
 	/// The triangle mesh corresponding to the cone beam
-	VBO m_cone_beam;
+	boost::scoped_ptr<VBO> m_cone_beam;
 
 
 	/// The triangle mesh corresponding to the parallel beam highlight
-	VBO m_parallel_beam_highlight;
+	boost::scoped_ptr<VBO> m_parallel_beam_highlight;
 
 
 	/// The triangle mesh corresponding to the cone beam highlight
-	VBO m_cone_beam_highlight;
+	boost::scoped_ptr<VBO> m_cone_beam_highlight;
 
 
 	/// Polygon mesh of the source

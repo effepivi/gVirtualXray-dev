@@ -40,9 +40,11 @@
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
+
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
+#include <ctime>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -82,8 +84,11 @@
 
 #include "gVirtualXRayConfig.h"
 
-#include "display.frag.h"
-#include "display.vert.h"
+#include "display_gl2.frag.h"
+#include "display_gl2.vert.h"
+
+#include "display_gl3.frag.h"
+#include "display_gl3.vert.h"
 
 
 //******************************************************************************
@@ -198,11 +203,10 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-	    // Enable OpenGL 3.2 if possible
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	    // Enable anti-aliasing
 	    glfwWindowHint(GLFW_SAMPLES, 4);
@@ -221,6 +225,7 @@ int main(int argc, char** argv)
 
 	    // Make the window's context current
 	    glfwMakeContextCurrent(g_p_main_window_id);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
      	// Initialise OpenGL
 		initGL();
@@ -301,7 +306,7 @@ void initGL()
 //-----------
 {
 	// Enable the Z-buffer
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Set the background colour
@@ -321,9 +326,17 @@ void initGL()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-	// L-buffer
-	z_lib_return_code_vertex   = inflate(g_display_vert, sizeof(g_display_vert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(g_display_frag, sizeof(g_display_frag), &p_fragment_shader);
+    // Display shader
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+    }
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;

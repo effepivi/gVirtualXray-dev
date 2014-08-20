@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle GLSL shaders.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		29/11/2013
 *
@@ -35,11 +35,16 @@
 #include <algorithm>
 #include <cstring>
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glew.h>
+#else
 #ifdef __APPLE__
+#define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/glcorearb.h>
+#endif
 #endif
 
 #ifndef GVXR_SHADER_H

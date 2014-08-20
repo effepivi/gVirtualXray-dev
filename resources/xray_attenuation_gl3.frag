@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		xray_attenuation.frag
+*	@file		xray_attenuation_gl3.frag
 *
 *	@brief		Fragment shader that computes the energy fluence.
 *				see:
@@ -11,7 +11,7 @@
 *          		pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		20/12/2013
 *

@@ -8,7 +8,7 @@
 *	@todo		Add an exception in Length().
 *				Add a header for constants, use EPSILON instead of 0.0000001
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		11/11/2013
 *

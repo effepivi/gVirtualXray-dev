@@ -1,11 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		xray_display.vert
+*	@file		outer_surface_l_buffer_gl3.vert
 *
-*	@brief		Vertex shader that display the energy fluence. The image can
-*				be in negative and the pixels can be filtered as follows:
-*        		f(x) = ScaleFilter * (x + ShiftFilter)
+*	@brief		Vertex shader that computes the L-buffer. of the external surface.
 *				see:
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
@@ -13,9 +11,9 @@
 *          		pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
-*	@version	1.0
+*	@version	1.2
 *
-*	@date		20/12/2013
+*	@date		27/12/2013
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -70,3 +68,4 @@ void main(void)
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
 }
+

@@ -28,7 +28,6 @@
 
 # Initialise some states by default ############################################
 set(BUILD_SHARED_LIBS OFF)
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
 
 
 # Minimum CMake version ########################################################
@@ -42,7 +41,16 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/modules)
+# Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules)
 
 
 # Make include files in paths like /usr/local/include have preference before
@@ -66,9 +74,9 @@ configure_file (
 
 
 # Enable all compiler warnings #################################################
-IF(NOT WIN32)
-	add_definitions( -Wall )
-ENDIF(NOT WIN32)
+#IF(NOT WIN32)
+#	add_definitions( -Wall )
+#ENDIF(NOT WIN32)
 
 
 # Libraries ####################################################################
@@ -78,6 +86,7 @@ SET(requiredLibs)
 
 # Options ######################################################################
 OPTION(USE_ITK   "Use ITK if possible." ON)
+OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
 
 
 # Library source code ##########################################################
@@ -90,7 +99,9 @@ SET (CXX_SOURCES
 	../src/Graphics/CubeMesh.cxx
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
-        ../src/Graphics/PolygonMesh.cxx
+	../src/Graphics/OpenGL2VBO.cxx
+    ../src/Graphics/OpenGL3VBO.cxx
+    ../src/Graphics/PolygonMesh.cxx
 	../src/Graphics/Shader.cxx
 	../src/Graphics/SphereMesh.cxx
 	../src/Graphics/StereoHelper.cxx
@@ -99,7 +110,7 @@ SET (CXX_SOURCES
     # Utilities
 	../src/Utilities/FBOException.cxx
 	../src/Utilities/OpenGLException.cxx
-    ../src/Utilities/OpenGLUtilities.cxx
+	../src/Utilities/OpenGLUtilities.cxx
 	../src/Utilities/Utilities.cxx
 
 )
@@ -108,6 +119,8 @@ SET (CXX_SOURCES
 # Add header files to the project
 SET (HXX_SOURCES
 	# gVirtualXRay
+	${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRayConfig.h
+
 	../include/gVirtualXRay/AttenuationCoefficient.h
 	../include/gVirtualXRay/AttenuationCoefficient.inl
 	../include/gVirtualXRay/SpectrumRecord.h
@@ -125,11 +138,18 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/ImplicitSurface.h
    	../include/gVirtualXRay/ImplicitSurface.inl
-        ../include/gVirtualXRay/PolygonMesh.h
-        ../include/gVirtualXRay/PolygonMesh.inl
+	../include/gVirtualXRay/OpenGL2VBO.h
+	../include/gVirtualXRay/OpenGL2VBO.inl
+	../include/gVirtualXRay/OpenGL3VBO.h
+	../include/gVirtualXRay/OpenGL3VBO.inl
+    ../include/gVirtualXRay/PolygonMesh.h
+    ../include/gVirtualXRay/PolygonMesh.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
+	../include/gVirtualXRay/StereoHelper.inl
+	../include/gVirtualXRay/SphereMesh.h
+	../include/gVirtualXRay/SphereMesh.inl
 	../include/gVirtualXRay/VBO.h
 	../include/gVirtualXRay/VBO.inl
 
@@ -179,11 +199,17 @@ ENDIF(WIN32)
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
 INCLUDE_DIRECTORIES("../include")
-IF(NOT APPLE)
-    #INCLUDE_DIRECTORIES("../include/OpenGL3")
+IF (NOT APPLE)
     INCLUDE_DIRECTORIES("../include/OpenGL4")
 ENDIF(NOT APPLE)
 #INCLUDE_DIRECTORIES("/usr/local/include")
+
+
+# GZIP ########################################################################
+FIND_PACKAGE(GZIP REQUIRED)
+IF(NOT GZIP_FOUND)
+	MESSAGE(FATAL_ERROR "GZIP not found.")
+ENDIF(NOT GZIP_FOUND)
 
 
 # OpenGL ######################################################################
@@ -194,6 +220,30 @@ IF(OPENGL_FOUND)
 ELSE(OPENGL_FOUND)
 	MESSAGE(FATAL_ERROR "OpenGL not found.")
 ENDIF(OPENGL_FOUND)
+
+
+FIND_PACKAGE(GLEW REQUIRED)
+IF(GLEW_FOUND)
+	ADD_DEFINITIONS(-DGLEW_STATIC)
+    ADD_DEFINITIONS(-DHAS_GLEW)
+    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+    LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
+ELSE(GLEW_FOUND)
+    MESSAGE(FATAL_ERROR "GLEW not found.")
+ENDIF(GLEW_FOUND)
+
+
+# BOOST #######################################################################
+FIND_PACKAGE(Boost QUIET REQUIRED)
+if(Boost_FOUND)
+	SET( Boost_USE_STATIC_LIBS OFF )
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+ELSE(Boost_FOUND)
+	MESSAGE(FATAL_ERROR "Boost not found.")
+ENDIF(Boost_FOUND)
 
 
 # FreeImage ####################################################################
@@ -246,18 +296,31 @@ ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
 
 # Create the RESOURCES ###########################################################
-SET (RESOURCES_SOURCES ../resources/cumulated_l_buffer.frag
-	../resources/cumulated_l_buffer.vert
-	../resources/l_buffer.frag
-	../resources/l_buffer.vert
-	../resources/MUx_Dx.frag
-	../resources/MUx_Dx.vert
-	../resources/outer_surface_l_buffer.frag
-	../resources/outer_surface_l_buffer.vert
-	../resources/xray_attenuation.frag
-	../resources/xray_attenuation.vert
-	../resources/xray_display.frag
-	../resources/xray_display.vert
+SET (RESOURCES_SOURCES
+	../resources/cumulated_l_buffer_gl2.frag
+	../resources/cumulated_l_buffer_gl2.vert
+	../resources/cumulated_l_buffer_gl3.frag
+	../resources/cumulated_l_buffer_gl3.vert
+	../resources/l_buffer_gl2.frag
+	../resources/l_buffer_gl2.vert
+	../resources/l_buffer_gl3.frag
+	../resources/l_buffer_gl3.vert
+	../resources/MUx_Dx_gl2.frag
+	../resources/MUx_Dx_gl2.vert
+	../resources/MUx_Dx_gl3.frag
+	../resources/MUx_Dx_gl3.vert
+	../resources/outer_surface_l_buffer_gl2.frag
+	../resources/outer_surface_l_buffer_gl2.vert
+	../resources/outer_surface_l_buffer_gl3.frag
+	../resources/outer_surface_l_buffer_gl3.vert
+	../resources/xray_attenuation_gl2.frag
+	../resources/xray_attenuation_gl2.vert
+	../resources/xray_attenuation_gl3.frag
+	../resources/xray_attenuation_gl3.vert
+	../resources/xray_display_gl2.frag
+	../resources/xray_display_gl2.vert
+	../resources/xray_display_gl3.frag
+	../resources/xray_display_gl3.vert
 	../resources/mu_water.csv
 )
 
@@ -305,6 +368,24 @@ ELSE (BUILD_EXAMPLES)
 ENDIF (BUILD_EXAMPLES)
 
 
-install (TARGETS gVirtualXRay DESTINATION lib)
-install (FILES ${HXX_SOURCES} DESTINATION include/gVirtualXRay)
-install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h" DESTINATION include/gVirtualXRay)
+install (TARGETS                               gVirtualXRay ARCHIVE DESTINATION lib                  COMPONENT libraries)
+install (FILES                               ${HXX_SOURCES}         DESTINATION include/gVirtualXRay COMPONENT headers)
+install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"         DESTINATION include/gVirtualXRay COMPONENT headers)
+
+IF (USE_BUNDLE)
+	set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+	set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+
+	set(CPACK_COMPONENT_LIBRARIES_DESCRIPTION "Static libraries used to build programs with gVirtualXRay")
+	set(CPACK_COMPONENT_HEADERS_DESCRIPTION "C/C++ header files for use with gVirtualXRay")
+
+	set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
+	set(CPACK_COMPONENT_HEADERS_GROUP "Development")
+
+	set(CPACK_COMPONENT_GROUP_DEVELOPMENT_DESCRIPTION "All of the tools you'll ever need to develop software with gVirtualXRay")
+
+	set(CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
+	set(CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
+	cpack_add_install_type(Developer)
+ENDIF (USE_BUNDLE)
+

@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle exceptions related to frame buffer objects (FBOs).
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		07/11/2013
 *
@@ -34,7 +34,7 @@
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
-#include <GL/glew.h>
+#include <GL/glcorearb.h>
 #endif
 
 #ifndef GVXR_EXCEPTION_H
@@ -94,7 +94,7 @@ FBOException::FBOException(const char* aFileName,
     case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
         error_message << "FBO error: any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target." << std::endl;
 		break;
-    
+
     default:
 		error_message << "FBO error: unknown." << std::endl;
 		break;

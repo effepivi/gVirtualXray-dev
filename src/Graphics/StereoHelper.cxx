@@ -6,7 +6,7 @@
 *	@brief		Class to handle stereo vision using OpenGL's quad buffer.
 *				The code is relying on // http://www.orthostereo.com/geometryopengl.html
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		14/02/2014
 *
@@ -30,6 +30,7 @@
 //	Include
 //******************************************************************************
 #ifdef __APPLE__
+#define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
 #else
 #define GL_GLEXT_PROTOTYPES 1

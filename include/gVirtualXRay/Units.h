@@ -5,7 +5,7 @@
 *
 *	@brief		Units, such as meters, etc.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		17/11/2013
 *

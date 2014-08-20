@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		xray_attenuation.vert
+*	@file		outer_surface_l_buffer_gl2.vert
 *
-*	@brief		Vertex shader that computes the energy fluence.
+*	@brief		Vertex shader that computes the L-buffer. of the external surface.
 *				see:
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
@@ -11,9 +11,9 @@
 *          		pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
-*	@version	1.0
+*	@version	1.2
 *
-*	@date		20/12/2013
+*	@date		27/12/2013
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -33,24 +33,15 @@
 
 
 //******************************************************************************
-//	OpenGL 3.2
+//	OpenGL 2.0
 //******************************************************************************
-#version 150
+#version 110
 
 
 //******************************************************************************
-//	Input
+//	Varying variables
 //******************************************************************************
-in vec3 in_Vertex;
-in vec3 in_TexCoord;
-
-
-//******************************************************************************
-//	Output
-//******************************************************************************
-smooth out vec3 g_texture_coordinates;
-smooth out float u1;
-smooth out float v1;
+varying vec3 g_texture_coordinates;
 
 
 //******************************************************************************
@@ -58,7 +49,6 @@ smooth out float v1;
 //******************************************************************************
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
-uniform mat4 g_text_coord_matrix;
 
 
 //-------------
@@ -66,11 +56,9 @@ void main(void)
 //-------------
 {
     // Save the texture coordinates
-	vec4 temp = g_text_coord_matrix * vec4(in_TexCoord, 1.0);
-    g_texture_coordinates = temp.xyz / temp.w;
+	g_texture_coordinates = gl_MultiTexCoord0.xyz;
     
     // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
-    u1 =gl_Position.x;
-    v1 =gl_Position.y;
+	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);
 }
+

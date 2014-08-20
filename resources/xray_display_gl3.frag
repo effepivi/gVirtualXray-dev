@@ -1,19 +1,21 @@
 /**
 ********************************************************************************
 *
-*	@file		outer_surface_l_buffer.vert
+*	@file		xray_display_gl3.frag
 *
-*	@brief		Vertex shader that computes the L-buffer. of the external surface.
+*	@brief		Fragment shader that displays the energy fluence. The image can 
+*				be in negative and the pixels can be filtered as follows:
+*				f(x) = g_scale_filter * (x + g_shift_filter)
 *				see:
 *          		F. P. Vidal, M. Garnier, N. Freud, J. M. Letang, and
 *          		N. W. John. Simulation of X-ray attenuation on the GPU. In
 *          		Proceedings of Theory and Practice of Computer Graphics 2009,
-*          		pages 25–32, Cardiff, UK, June 2009. Eurographics Association.
+*          		pages 25-32, Cardiff, UK, June 2009. Eurographics Association.
 *          		Winner of Ken Brodlie Prize for Best Paper.
 *
-*	@version	1.0
+*	@version	1.2
 *
-*	@date		27/12/2013
+*	@date		20/12/2013
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -36,36 +38,47 @@
 //	OpenGL 3.2
 //******************************************************************************
 #version 150
+precision highp float; // Video card drivers require this line to function properly
 
 
 //******************************************************************************
 //	Input
 //******************************************************************************
-in vec3 in_Vertex;
-in vec3 in_TexCoord;
+smooth in vec3 g_texture_coordinates;
 
 
 //******************************************************************************
 //	Output
 //******************************************************************************
-smooth out vec3 g_texture_coordinates;
+out vec4 fragColor;
 
 
 //******************************************************************************
-//	Uniform variables
+//   Uniform variables
 //******************************************************************************
-uniform mat4 g_projection_matrix;
-uniform mat4 g_modelview_matrix;
+uniform sampler2D g_attenuation;
+uniform bool      g_display_negative_image;
+uniform float     g_shift_filter;
+uniform float     g_scale_filter;
 
 
 //-------------
 void main(void)
 //-------------
 {
-    // Save the texture coordinates
-	g_texture_coordinates = in_TexCoord;
-    
-    // Apply the modelling and viewing transformations
-	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
+    // Get the texel value
+	float intensity = texture(g_attenuation, g_texture_coordinates.st).r;
+
+    // Apply the shift/scale filter
+	intensity = ((intensity) + g_shift_filter) * g_scale_filter;
+
+        // Display the negative image
+	if (g_display_negative_image)
+	{
+		intensity = 1.0 - intensity;
+	}
+
+	// Save the fragment value
+	fragColor = vec4(intensity, intensity, intensity, 1.0);
 }
 

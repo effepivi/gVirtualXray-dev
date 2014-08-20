@@ -7,7 +7,7 @@
 *				i.e. an energy bin (number of photons, energy of the photons in
 *				the bin).
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		30/11/2013
 *

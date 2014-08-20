@@ -5,7 +5,7 @@
 *
 *	@brief		Class to handle vertex buffer objects (VBOs).
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		07/11/2013
 *
@@ -56,13 +56,13 @@ public:
 	//--------------------------------------------------------------------------
 	///	Destructor.
 	//--------------------------------------------------------------------------
-	~VBO();
+	virtual ~VBO();
 	
 	
-	//--------------------------------------------------------------------------
-	///	Release the data on the GPU.
-	//--------------------------------------------------------------------------
-	void destroy();
+    //--------------------------------------------------------------------------
+    ///	Release the data on the GPU.
+    //--------------------------------------------------------------------------
+    virtual void destroy();
 
 
 	//--------------------------------------------------------------------------
@@ -71,45 +71,47 @@ public:
 	void reset();
 	
 	
-	//--------------------------------------------------------------------------
-	///	Set the vertex data.
-	/**
-	*	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
-	*	@param aNumberOfVertices:				number of vertices
-	*	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
-	*	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apVertices:						address of the first component of the first vertex
-	*	@param aNumberOfNormals:				number of normal vectors
-	*	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
-	*	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apNormals:						address of the first component of the firth normal vector
-	*	@param aNumberOfTextureCoordinates:		number of texture coordinates
-	*	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
-	*	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apTextureCoordinates:			address of the first component of the first texture coordinate
-	*/
-	//--------------------------------------------------------------------------
-	void setVertexData(int aPrimitiveType,
-			const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* apVertices,
-			const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
-			const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates);
+    //--------------------------------------------------------------------------
+    ///	Set the vertex data.
+    /**
+    *	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
+    *	@param aNumberOfVertices:				number of vertices
+    *	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
+    *	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apVertices:						address of the first component of the first vertex
+    *	@param aNumberOfNormals:				number of normal vectors
+    *	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
+    *	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apNormals:						address of the first component of the firth normal vector
+    *	@param aNumberOfTextureCoordinates:		number of texture coordinates
+    *	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
+    *	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apTextureCoordinates:			address of the first component of the first texture coordinate
+    */
+    //--------------------------------------------------------------------------
+	virtual void setVertexData(int aPrimitiveType,
+            const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* apVertices,
+            const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
+            const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates) = 0;
 
 
-	//--------------------------------------------------------------------------
-	///	Set the index.
-	/**
-	*	@param aNumberOfIndexes:	number of indices
-	*	@param anIndexDataType:		the data type of indices; valid values are GL_UNSGINED_BYTE, GL_UNSGINED_SHORT and GL_UNSGINED_INT
-	*	@param apIndexSet:			the index set
-	*/
-	//--------------------------------------------------------------------------
-	void setIndexData(const unsigned int aNumberOfIndexes, int anIndexDataType, const void* apIndexSet);
+    //--------------------------------------------------------------------------
+    ///	Set the index.
+    /**
+    *	@param aNumberOfIndexes:	number of indices
+    *	@param anIndexDataType:		the data type of indices; valid values are GL_UNSGINED_BYTE, GL_UNSGINED_SHORT and GL_UNSGINED_INT
+    *	@param apIndexSet:			the index set
+    */
+    //--------------------------------------------------------------------------
+    virtual void setIndexData(const unsigned int aNumberOfIndexes,
+            int anIndexDataType,
+            const void* apIndexSet) = 0;
 
 
-	//--------------------------------------------------------------------------
-	///	Display the triangular mesh using OpenGL.
-	//--------------------------------------------------------------------------
-	void display() const;
+    //--------------------------------------------------------------------------
+    ///	Display the triangular mesh using OpenGL.
+    //--------------------------------------------------------------------------
+    virtual void display() const = 0;
 
 
 	//--------------------------------------------------------------------------
@@ -160,15 +162,11 @@ public:
 	*	@return the new VBO
 	*/
 	//--------------------------------------------------------------------------
-	VBO& operator=(const VBO& aVbo);
+	virtual VBO& operator=(const VBO& aVbo);
 
 	
 //******************************************************************************
 protected:
-	/// ID of VAO
-	unsigned int m_vao_id;
-
-
 	/// ID of VBOs
 	unsigned int m_id_set[4];
 
@@ -177,12 +175,24 @@ protected:
 	unsigned int m_number_of_normals;
 
 
-	/// Number of vertices
+    /// Number of components per normal
+    unsigned int m_number_of_compontents_per_normal;
+
+
+    /// Number of texture coordinates
 	unsigned int m_number_of_texture_coordinates;
+
+
+	/// Number of components per texture coordinate
+	unsigned int m_number_of_compontents_per_texture_coord;
 
 
 	/// Number of vertices
 	unsigned int m_number_of_vertices;
+
+
+    /// Number of components per vertex
+    unsigned int m_number_of_compontents_per_vertex;
 
 
 	/// Number of indices

@@ -6,7 +6,7 @@
 *	@brief		Class to handle stereo vision using OpenGL's quad buffer.
 *				The code is relying on // http://www.orthostereo.com/geometryopengl.html
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		14/02/2014
 *

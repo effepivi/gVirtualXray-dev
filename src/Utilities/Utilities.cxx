@@ -5,7 +5,7 @@
 *
 *	@brief		Some utility functions that do not fit anywhere else.
 *
-*	@version	1.0
+*	@version	1.2
 *
 *	@date		12/02/2014
 *
