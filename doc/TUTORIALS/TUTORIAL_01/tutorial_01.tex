@@ -1,7 +1,9 @@
 \documentclass[11pt,oneside,a4paper,final]{article}
 
 \usepackage{ifpdf}
+%HEVEA\pdffalse
 
+\ifpdf
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 
@@ -15,6 +17,7 @@
 \lfoot{}
 \cfoot{Page {\thepage} of \pageref{LastPage}}
 \rfoot{}
+\fi
 
 \usepackage{longtable}
 
@@ -26,9 +29,12 @@
 % \usepackage[style=numeric]{biblatex}
 \bibliography{programmer_guide}
 % \usepackage[hidelinks=true]{hyperref}
+
+
+
 \usepackage{hyperref}
 
-\hypersetup{backref,  
+\hypersetup{  
   colorlinks=true,
   final=true,
   pdftitle="gVirtualXRay - Tutorial 01 - GLFW",
@@ -38,7 +44,10 @@ Using GLFW"
 }
 
 \usepackage[paper=a4paper,margin=1.6cm]{geometry}	% 1 inch margins all around
+
 \usepackage[british=nohyphenation]{hyphsubst}
+
+
 \usepackage[british]{babel}
 \usepackage{graphicx}
 \usepackage[font=normalsize,labelfont=sf,textfont=sf]{subfig}
@@ -79,15 +88,15 @@ Using GLFW"
   title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
 
-\usepackage[acronym,toc]{glossaries}
-\makeglossaries
-\input{../acronyms}
+% \usepackage[acronym,toc]{glossaries}
+% \makeglossaries
+% \input{../acronyms}
 
 \title{gVirtualXRay -- Tutorial 01: Creating a Window and\\an OpenGL Core 
 	Profile 3.2 Context Using GLFW}
 
 \author{Dr Franck P. Vidal}
-\date{6\textsuperscript{th} May 2014}
+\date{21\textsuperscript{st} August 2014}
 
 \begin{document}
  \sloppy
@@ -105,6 +114,7 @@ Using GLFW"
 \addcontentsline{toc}{section}{Table of contents}
 \tableofcontents
 
+\ifpdf
 \newpage
 \phantomsection
 \addcontentsline{toc}{section}{List of figures}
@@ -119,6 +129,7 @@ Using GLFW"
 \phantomsection
 \addcontentsline{toc}{section}{List of listings}
 \lstlistoflistings
+\fi
 
 \newpage
 
@@ -127,8 +138,13 @@ Using GLFW"
 \section{Introduction}
 
 The complete source code of this tutorial is available in 
-Appendix~\ref{sec:Program Source Code} and on the \Gls{SVN} repository at 
+Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
+at 
 \verb+example/src/tutorial_01_glfw.cxx+. 
+It can be downloaded here: 
+\url{
+https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/examples/src/tutoria
+l_01_glfw.cxx}.
 It shows how to create a window with GLFW\,\footnote{\url{http://www.glfw.org/}} 
 and attach an OpenGL context to it. 
 Two cubes are displayed (see Figure~\ref{fig:scene}). 
@@ -139,7 +155,8 @@ Two cubes are displayed (see Figure~\ref{fig:scene}).
 simulated X-ray images.}
 \end{figure}
 They both rotate automatically. 
-The rendering makes use of \Gls{GLSL} as the fix rendering pipeline and direct 
+The rendering makes use of OpenGL Shading Language (GLSL) as the fix rendering 
+pipeline and direct 
 rendering are both depreciated in any modern computer graphics applications. 
 
 It is an introductory tutorial, for more details, the reader may refer to the 
@@ -202,18 +219,18 @@ electronvolt,
 	kiloelectron volt, gram, kilogram, etc.
  \item \verb+gVirtualXRay/OpenGLUtilities.h+ defines some utility functions 
 about OpenGL, 
-	e.g. matrix stacks,
-// how to set the projection matrix, etc.
+	e.g. matrix stacks, how to set the projection matrix, etc.
  \item \verb+gVirtualXRay/PolygonMesh.h+ corresponds to a class used to handle 
-\Acrshort{3D} 
-triangle meshes.
+three-dimensional (3D) triangle meshes.
  \item \verb+gVirtualXRay/Shader.h+ corresponds to a class that handles 
-\Gls{GLSL} programs.
+(GLSL) programs.
  \item \verb+buildCube.h+ is used to create the triangle mesh of a cube.
 \end{itemize}
 
+\begin{center}
 \lstinputlisting[firstline=29, lastline=60, caption=Header inclusion., 
 label=lst:header]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,8 +244,10 @@ Listing~\ref{lst:name space} shows the name spaces that can be selected:
  \item \verb+std+ is used for output streams and exceptions.
 \end{itemize}
 
+\begin{center}
 \lstinputlisting[firstline=63, lastline=67, caption=Name spaces., 
 label=lst:name space]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -279,8 +298,10 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 \end{itemize}
 
 
+\begin{center}
 \lstinputlisting[firstline=70, lastline=126, caption=Global variables., 
 label=lst:global variables]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,21 +315,21 @@ that have to be declared in a basic GLFW program:
 	context, iii) to create a window, and iv) attach the OpenGL context to the 
 	window (see Section~\ref{sec:Initialise GLFW}).
  \item \verb+initGL+ is used to initialise some states of OpenGL, e.g. the 
-	background colour and enable the Z-buffer (see Section~\ref{sec:Initialise 
-	OpenGL}).
- \item \verb+load3DObjects+ loads the \Gls{3D} geometry of two cubes (see 
+	background colour and enable the Z-buffer (see 
+	Section~\ref{sec:Initialise OpenGL}).
+ \item \verb+load3DObjects+ loads the 3D geometry of two cubes (see 
 	Section~\ref{sec:Load Objects}).
  \item \verb+displayCallback+ render the two cubes on the screen (see 
 	Section~\ref{sec:Display Scene}).
- \item \verb+idleCallback+ is an idle callback (see Section~\ref{sec:Idle 
-	Callback}). It is 	called once every event loop and can be used to perform 
-	animation.
+ \item \verb+idleCallback+ is an idle callback 
+	(see Section~\ref{sec:Idle Callback}). It is called once every event 
+	loop and can be used to perform animation.
  \item \verb+quitCallback+ is call when the program terminates  (see 
 	Section~\ref{sec:Quit Callback}). It closes the window and cleans up 
 	GLFW.
  \item \verb+framebufferSizeCallback+ is called every time the frame buffer 
 	size changes (see Section~\ref{sec:frame buffer callback}). It initialises 
-	the viewport size and the 	projection matrix.
+	the viewport size and the projection matrix.
  \item \verb+keyCallback+ is called every time a key is pressed or released on 
 	the keyboard (see Section~\ref{sec:Keyboard Callback}). It can be used to 
 	close the window when the \verb+escape+ key is pressed.
@@ -318,8 +339,10 @@ that have to be declared in a basic GLFW program:
 	an error (see Section~\ref{sec:Error Callback}).
 \end{itemize}
 
+\begin{center}
 \lstinputlisting[firstline=129, lastline=141, caption=Function declarations., 
 label=lst:function declarations]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -341,8 +364,10 @@ nime main steps:
     \item Register GLFW callbacks
 \end{itemize}
 
+\begin{center}
 \lstinputlisting[firstline=205, lastline=246, caption=Initialise GLFW., 
 label=lst:Initialise GLFW]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,28 +377,31 @@ label=lst:Initialise GLFW]{../../../examples/src/tutorial_01_glfw.cxx}
 Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states 
 (Z-buffer, and background colour) and check OpenGL's error status. 
 
+\begin{center}
 \lstinputlisting[firstline=249, lastline=262, caption=Initialise OpenGL., 
 label=lst:Initialise OpenGL]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Load \Acrshort{3D} Objects}
+\section{Load 3D Objects}
 \label{sec:Load Objects}
 
-Listing~\ref{lst:Load Objects} shows how to create \gls{3D} objects. It 
+Listing~\ref{lst:Load_Objects} shows how to create 3D objects. It 
 implements 
 two cubes. The first one makes use of a vertex list and an index list (see 
 Figure~\ref{fig:cube_01}). The second cube only makes use of a vertex list. 
 Vertices are repeated several times. This is because each vertex is shared by 
 different triangles. The second cube is therefore much bigger in term of 
-memory usage. Listing~\ref{lst:Load Objects} shows that our implementation 
-supports both type of topologies.
+memory usage. Listing~\ref{lst:Load_Objects} shows that our implementation 
+supports both type of topology.
 
 \begin{figure}[tbh]
  \centering
- \subfloat[Geometry.]{\includegraphics[width=0.2\textwidth]{cube_01}}
- \subfloat[Vertex list.]{
-\raisebox{3em}{\begin{tabular}{|c|c|c|c|}
+ \ifpdf
+  \subfloat[Geometry.]{\includegraphics[width=0.2\textwidth]{cube_01}}
+  \subfloat[Vertex list.]{
+    \raisebox{3em}{\begin{tabular}{|c|c|c|c|}
 	\cline{2-4}
 	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
 	\hline
@@ -430,11 +458,75 @@ supports both type of topologies.
 	Right face & 7 & 2 & 3 \\
 	\hline
 \end{tabular}}}
+\else
+  Geometry.\\{\includegraphics[width=0.2\textwidth]{cube_01}}\\[1em]
+  
+  Vertex list.\\{
+    {\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+	0 & -2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	1 & -2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	2 &  2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	3 &  2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	4 & -2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	5 & -2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+	6 &  2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	7 &  2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+\end{tabular}}
+ }\\[1em]
+
+ Index list.\\{
+{
+\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Face List}} \\
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \textbf{i} & \textbf{j} & \textbf{k} \\
+	\hline
+	Top face & 1 & 2 & 0 \\
+	\hline
+	Top face & 2 & 1 & 3 \\
+	\hline
+	Bottom face & 6 & 5 & 4 \\
+	\hline
+	Bottom face & 5 & 6 & 7 \\
+	\hline
+	Front face & 5 & 3 & 1 \\
+	\hline
+	Front face & 3 & 5 & 7 \\
+	\hline
+	Back face & 2 & 4 & 0 \\
+	\hline
+	Back face & 4 & 2 & 6 \\
+	\hline
+	Left face & 5 & 0 & 4 \\
+	\hline
+	Left face & 0 & 5 & 1 \\
+	\hline
+	Right face & 2 & 7 & 6 \\
+	\hline
+	Right face & 7 & 2 & 3 \\
+	\hline
+\end{tabular}}}
+\fi
  \caption{\label{fig:cube_01} Topology of the first cube.}
 \end{figure}
 
 \begin{figure}[tbh]
  \centering
+ \ifpdf
  \subfloat[Geometry.]{\includegraphics[width=0.35\textwidth]{cube_02}}
 \subfloat[Vertex list.]{
 \raisebox{2cm}{\begin{tabular}{|c|c|c|c|}
@@ -524,6 +616,98 @@ supports both type of topologies.
 	35 & 2.5 cm &  2.5 cm & 2.5 cm \\
 	\hline
 \end{tabular}}}
+\else
+ Geometry.\\{\includegraphics[width=0.35\textwidth]{cube_02}}\\[1em]
+ 
+Vertex list.\\{
+{\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+% 	// Top face
+	 0 & -2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+	 1 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	 $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+	\hline
+% 	 2 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 3 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 4 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	 5 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Bottom face
+% 	 6 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 7 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	 8 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 9 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	10 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	11 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Front face
+% 	12 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	13 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	14 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	15 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	16 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	17 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Back face
+% 	18 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	19 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	20 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	21 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	22 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	23 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% % 	// Left face
+% 	24 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	25 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	26 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	27 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	28 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	29 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Right face
+% 	30 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	31 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	32 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	33 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+	34 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	35 & 2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+\end{tabular}}}
+\fi
  \caption{\label{fig:cube_02} Topology of the second cube.}
 \end{figure}
 
@@ -543,9 +727,10 @@ supports both type of topologies.
     \verb+GL_STATIC_DRAW)+ loads both the vertex (\verb+&g_p_vertex_set_1+) and 
     index (\verb+&g_p_index_set_1+) data of the geometry. 
     \verb+GL_TRIANGLES+ indicates that the mesh corresponds to a triangle mesh. 
-    \verb+true+ means that the \gls{VBO} should be created instantly if 
+    \verb+true+ means that the vertex buffer object (VBO) should be 
+created instantly if 
     possible. 
-    \verb+GL_STATIC_DRAW+ is used because the \gls{VBO} data will be set once 
+    \verb+GL_STATIC_DRAW+ is used because the (VBO) data will be set once 
     and used many times.
      
   \item \verb+g_polygon_mesh_2.setExternalData(GL_TRIANGLES,+ 
@@ -554,16 +739,18 @@ supports both type of topologies.
     the geometry. There is no index data for this mesh. 
 \end{itemize}
 
-\lstinputlisting[firstline=265, lastline=293, caption=Create \Acrshort{3D} 
-	objects., label=lst:Load 
-Objects]{../../../examples/src/tutorial_01_glfw.cxx}
+\begin{center}
+\lstinputlisting[label=lst:Load_Objects,
+    firstline=265, lastline=293, 
+    caption=Create 3D objects.]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Display the \Acrshort{3D} Scene}
+\section{Display the 3D Scene}
 \label{sec:Display Scene}
 
-Listing~\ref{lst:Display Scene} shows how to display the \gls{3D} objects. 
+Listing~\ref{lst:Display_Scene} shows how to display the 3D objects. 
 \begin{itemize}
  \item 
     // Clear the buffers
@@ -578,7 +765,7 @@ Listing~\ref{lst:Display Scene} shows how to display the \gls{3D} objects.
  \item Its unique OpenGL ID can be retrieved with 
     \verb+g_display_shader.getProgramHandle()+.
 
- \item The status of the \gls{FBO} can be checked with 
+ \item The status of the frame buffer object (FBO) can be checked with 
     \verb+checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__)+. 
     If an error had occurred, then an exception will be thrown.
 
@@ -592,7 +779,7 @@ Listing~\ref{lst:Display Scene} shows how to display the \gls{3D} objects.
   Using a shader program, when the fixed pipeline functions are disabled (as in 
   modern OpenGL implementation), the programmer has to supply the projection 
   and modelling-viewing matrices to the shader program. This is what Lines~22 
-to~30 are taking care of in Listing~\ref{lst:Display Scene}.
+to~30 are taking care of in Listing~\ref{lst:Display_Scene}.
 
  \item To store the current transformation matrices, 
     \verb+pushModelViewMatrix()+ and \verb+pushProjectionMatrix()+ are used. 
@@ -639,14 +826,16 @@ to~30 are taking care of in Listing~\ref{lst:Display Scene}.
   \item \verb+popShaderProgram()+ disables the current shader and restores the 
     previous shader from the stack.
 
-  \item Finally, we check the error status of both OpenGL and the \gls{FBO}.
+  \item Finally, we check the error status of both OpenGL and the (FBO).
 
 \end{itemize}
 
 
-\lstinputlisting[firstline=296, lastline=375, caption=display the 
-	\Acrshort{3D} scene., label=lst:Display 
-	Scene]{../../../examples/src/tutorial_01_glfw.cxx}
+\begin{center}
+\lstinputlisting[label=lst:Display_Scene,
+    firstline=296, lastline=375,
+    caption=display the 3D scene.]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -660,8 +849,10 @@ the transformation matrix (\verb+g_object_1_rotation_matrix+) by a rotation
 matrix defined by angle in degrees (\verb+1.0+ in this example) and a rotation 
 axis (\verb+VEC3(1.0, 0.0, 0.0)+).
 
+\begin{center}
 \lstinputlisting[firstline=378, lastline=385, caption=Idle callback., 
 label=lst:Idle callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -672,8 +863,10 @@ Listing~\ref{lst:Quit callback} shows how to clean up GLFW.
 If the window exists, then it is destroyed. 
 Finally, the GLFW application is terminated. 
 
+\begin{center}
 \lstinputlisting[firstline=388, lastline=402, caption=Quit callback., 
 label=lst:Quit callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -698,9 +891,11 @@ performed (see Listing~\ref{lst:frame buffer callback}).
  
 \end{itemize}
 
+\begin{center}
 \lstinputlisting[firstline=405, lastline=435, caption=Change of frame buffer 
 size callback., 
 label=lst:frame buffer callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -710,21 +905,25 @@ label=lst:frame buffer callback]{../../../examples/src/tutorial_01_glfw.cxx}
 Listing~\ref{lst:Keyboard Callback} shows a typical GLFW keyboard callback. 
 Here the window is closed when the user presses \verb+Q+ or \verb+Esc+.
 
+\begin{center}
 \lstinputlisting[firstline=438, lastline=456, caption=Keyboard callback., 
 label=lst:Keyboard Callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scroll Button Callback}
 \label{sec:Scroll button callback}
 
-The zoom is updated with the mouse wheel (see Listing~\ref{lst:Scroll button 
-callback}). 
+The zoom is updated with the mouse wheel 
+(see Listing~\ref{lst:Scroll button callback}). 
 To update the modelling-viewing matrix, the Frame Buffer Size Callback is 
 called.
 
+\begin{center}
 \lstinputlisting[firstline=459, lastline=472, caption=Scroll button callback., 
 label=lst:Scroll button callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -734,8 +933,10 @@ label=lst:Scroll button callback]{../../../examples/src/tutorial_01_glfw.cxx}
 In the error callback an exception is thrown with the details of the error 
 (see Listing~\ref{lst:Error Callback}).
 
+\begin{center}
 \lstinputlisting[firstline=475, lastline=481, caption=Error callback., 
 label=lst:Error Callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\end{center}
 
 
 \section{Next Tutorial...}
@@ -744,22 +945,22 @@ In the next tutorial:
 \begin{itemize}
 	\item Load the shader from a file compressed using 
 		the Zlib\,\footnote{\url{http://www.zlib.net/}}
-%  \item  You will see how to get rid of OpenGL's fixed pipeline (which is now depreciated). 
+%  \item  You will see how to get rid of OpenGL's fixed pipeline (which is now 
+depreciated). 
 %  
-%  \item You will see how to get rid of OpenGL's matrix stack (which is now depreciated).
+%  \item You will see how to get rid of OpenGL's matrix stack (which is now 
+depreciated).
 % 
 	\item We will see how to create an efficient mouse control to turn the 
-		\Acrshort{3D} scene. 
+		3D scene. 
 % 
 %  \item You will also see how to update the topology of the triangle meshes. 
 %  This is important in medical simulations with soft tissue deformations. 
 \end{itemize}
 
 
-% \newpage
-\ifpdf
-\printglossary[type=\acronymtype] 
-\fi
+% % \newpage
+% \printglossary[type=\acronymtype] 
 
 \appendix
 \section{Program Source Code}
