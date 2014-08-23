@@ -29,18 +29,7 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#endif
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-
-#define GLFW_INCLUDE_GLCOREARB 1
-
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
@@ -203,10 +192,8 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
 	    // Enable anti-aliasing
 	    glfwWindowHint(GLFW_SAMPLES, 4);
@@ -227,7 +214,17 @@ int main(int argc, char** argv)
 	    glfwMakeContextCurrent(g_p_main_window_id);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-     	// Initialise OpenGL
+	    // Initialise GLEW
+		GLenum err = glewInit();
+		if (GLEW_OK != err)
+		{
+			std::stringstream error_message;
+			error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+	        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+		}
+
+		// Initialise OpenGL
 		initGL();
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

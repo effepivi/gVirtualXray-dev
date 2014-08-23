@@ -32,21 +32,7 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
-#else
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-
-#define GLFW_INCLUDE_GLCOREARB 1
-#endif
 
 #include <GLFW/glfw3.h>
 
@@ -260,11 +246,9 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-        // Enable OpenGL 3.2 if possible
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Enable OpenGL 2.1 if possible
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
 	    // Enable quad-buffering if possible
 	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
@@ -298,6 +282,16 @@ int main(int argc, char** argv)
 
 	    // Make the window's context current
 	    glfwMakeContextCurrent(g_p_main_window_id);
+
+	    // Initialise GLEW
+		GLenum err = glewInit();
+		if (GLEW_OK != err)
+		{
+			std::stringstream error_message;
+			error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+	        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+		}
 
  		// Is stereo enable
 		if (g_stereo_helper.enable())
@@ -336,8 +330,8 @@ int main(int argc, char** argv)
 		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
 		glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
 		glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
-
-		// Load the data
+		
+        // Load the data
 		loadDetector();
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
