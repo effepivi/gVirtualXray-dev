@@ -258,7 +258,7 @@ int main(int argc, char** argv)
 
 		// Create the window title
 		std::stringstream window_title;
-		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
+		window_title << "gVirtualXRay -- Implicit surface/Marching cubes test (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
 
 	    // Create a windowed mode window and its OpenGL context
 	    g_p_main_window_id = glfwCreateWindow(g_current_main_window_width, g_current_main_window_height, window_title.str().data(), NULL, NULL);

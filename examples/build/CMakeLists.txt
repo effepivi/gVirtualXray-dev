@@ -206,14 +206,6 @@ SET (RESOURCES_SOURCES
     ../../examples/shaders/display_gl3.vert
     ../../examples/shaders/display_gui.frag
     ../../examples/shaders/display_gui.vert
-    ../src/tutorial_02_gl2.frag
-    ../src/tutorial_02_gl2.vert
-    ../src/tutorial_02_gl3.frag
-    ../src/tutorial_02_gl3.vert
-    ../src/tutorial_03_gl2.frag
-    ../src/tutorial_03_gl2.vert
-    ../src/tutorial_03_gl3.frag
-    ../src/tutorial_03_gl3.vert
 )
 
 
@@ -256,51 +248,31 @@ TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${req
 
 
 IF(USE_GLFW)
-    IF(NOT WIN32)
+    IF(USE_ITK)
         ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
         TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-        TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
-
         ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
         TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
+    ENDIF(USE_ITK)
 
-        ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
-        TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+    ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
+    TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
+    ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
+    TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        ADD_EXECUTABLE (tutorial_01_glfw ../src/tutorial_01_glfw.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_01_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
+    ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
+    TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
 
-        ADD_EXECUTABLE (tutorial_02_glfw ../src/tutorial_02_glfw.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_02_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-        ADD_EXECUTABLE (tutorial_03_glfw ../src/tutorial_03_glfw.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_03_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-        ADD_EXECUTABLE (welsh_dragon_glfw ../src/welsh_dragon_glfw.cxx)
-        TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
-    ENDIF(NOT WIN32)
+    ADD_EXECUTABLE (welsh_dragon_glfw ../src/welsh_dragon_glfw.cxx)
+    TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF(USE_GLFW)
 
 
 IF(USE_GLUT)
-    IF(NOT WIN32)
-        ADD_EXECUTABLE (tutorial_01_glut ../src/tutorial_01_glut.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_01_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-        ADD_EXECUTABLE (tutorial_02_glut ../src/tutorial_02_glut.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_02_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-        ADD_EXECUTABLE (tutorial_03_glut ../src/tutorial_03_glut.cxx ../src/buildCube.cxx)
-        TARGET_LINK_LIBRARIES (tutorial_03_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
-
-        ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
-        TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
-    ENDIF(NOT WIN32)
+    ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
+    TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
 ENDIF(USE_GLUT)
 
 
@@ -318,6 +290,10 @@ IF(USE_BUNDLE)
     # Set the package name
     SET (CPACK_PACKAGE_NAME "gVirtualXRay")
 
+    # Handling of shared libraries
+    #SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS library_name)
+    #INCLUDE(InstallRequiredSystemLibraries)
+
     # Set the package version
     SET(CPACK_PACKAGE_VERSION_MAJOR ${examples_VERSION_MAJOR})
     SET(CPACK_PACKAGE_VERSION_MINOR ${examples_VERSION_MINOR})
@@ -328,9 +304,7 @@ IF(USE_BUNDLE)
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
     
-    IF(WIN32)
-        set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
-    ENDIF(WIN32)
+    set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
     SET (MACOSX_RPATH 1)
     ADD_DEFINITIONS(-DHAS_BUNDLE)
@@ -415,7 +389,6 @@ IF(USE_BUNDLE)
     set(CPACK_COMPONENT_APPLICATIONS_DESCRIPTION "A demo application that makes use of gVirtualXRay")
     set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
     set(CPACK_COMPONENT_APPLICATIONS_INSTALL_TYPES Full)
-
     set(CPACK_COMPONENTS_ALL applications libraries headers)
 
     # directories to look for dependencies
@@ -438,26 +411,18 @@ ENDIF(USE_BUNDLE)
 
 # Make sure the source is generated before the executable builds.
 IF(USE_GLFW)
-    IF(NOT WIN32)
+    IF (USE_ITK)
         ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
-        ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
         ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
-        ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
-        ADD_DEPENDENCIES(tutorial_01_glfw BinaryDemoFiles)
-        ADD_DEPENDENCIES(tutorial_02_glfw BinaryDemoFiles)
-        ADD_DEPENDENCIES(tutorial_03_glfw BinaryDemoFiles)
-        ADD_DEPENDENCIES(welsh_dragon_glfw BinaryDemoFiles)
-    ENDIF(NOT WIN32)
+    ENDIF(USE_ITK)
+    ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
+    ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
+    ADD_DEPENDENCIES(welsh_dragon_glfw BinaryDemoFiles)
 ENDIF(USE_GLFW)
 
 
 IF(USE_GLUT)
-    IF(NOT WIN32)
-        ADD_DEPENDENCIES(tutorial_01_glut BinaryDemoFiles)
-        ADD_DEPENDENCIES(tutorial_02_glut BinaryDemoFiles)
-        ADD_DEPENDENCIES(tutorial_03_glut BinaryDemoFiles)
-        ADD_DEPENDENCIES(welsh_dragon_glut BinaryDemoFiles)
-    ENDIF(NOT WIN32)
+    ADD_DEPENDENCIES(welsh_dragon_glut BinaryDemoFiles)
 ENDIF(USE_GLUT)
 
 

@@ -84,6 +84,10 @@ SET(optionalLibs)
 SET(requiredLibs)
 
 
+SET (gVirtualXRay_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
+
+
 # Options ######################################################################
 OPTION(USE_ITK   "Use ITK if possible." ON)
 OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
@@ -336,7 +340,7 @@ CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
 # Linkage of the target ########################################################
-SET_PROPERTY(TARGET gVirtualXRay PROPERTY LINK_SEARCH_START_STATIC 1) 
+set_target_properties(gVirtualXRay PROPERTIES LINK_SEARCH_START_STATIC ON)
 TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
@@ -368,6 +372,18 @@ ELSE (BUILD_EXAMPLES)
 ENDIF (BUILD_EXAMPLES)
 
 
+# Tutorials ####################################################################
+option(BUILD_TUTORIALS "Build tutorials." ON)
+IF (BUILD_TUTORIALS)
+    	MESSAGE(STATUS "Build tutorials.")
+
+	add_subdirectory(../tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
+ELSE (BUILD_TUTORIALS)
+    	MESSAGE("Do not build tutorials.")
+ENDIF (BUILD_TUTORIALS)
+
+
+
 install (TARGETS                               gVirtualXRay ARCHIVE DESTINATION lib                  COMPONENT libraries)
 install (FILES                               ${HXX_SOURCES}         DESTINATION include/gVirtualXRay COMPONENT headers)
 install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"         DESTINATION include/gVirtualXRay COMPONENT headers)
@@ -386,6 +402,7 @@ IF (USE_BUNDLE)
 
 	set(CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
 	set(CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
-	cpack_add_install_type(Developer)
 ENDIF (USE_BUNDLE)
+
+include(CPack)
 
