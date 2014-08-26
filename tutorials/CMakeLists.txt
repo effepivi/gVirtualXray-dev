@@ -60,6 +60,12 @@ IF(NOT APPLE)
 ENDIF(NOT APPLE)
 
 
+IF (WIN32)
+	ADD_DEFINITIONS(-DGLEW_STATIC)
+	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+    SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
+ENDIF (WIN32)
+
 
 # gVirtualXRay ################################################################
 find_package(gVirtualXRay REQUIRED)
@@ -69,16 +75,6 @@ IF(gVirtualXRay_FOUND)
 ELSE(gVirtualXRay_FOUND)
     MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
 ENDIF(gVirtualXRay_FOUND)
-
-
-# OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED)
-IF(OPENGL_FOUND)
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
-    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
-ELSE(OPENGL_FOUND)
-    MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF(OPENGL_FOUND)
 
 
 # ZLIB #########################################################################
@@ -141,6 +137,16 @@ ELSE(GLUT_FOUND)
 ENDIF(GLUT_FOUND)
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED)
+IF(OPENGL_FOUND)
+    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
+    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+ELSE(OPENGL_FOUND)
+    MESSAGE(FATAL_ERROR "OpenGL not found.")
+ENDIF(OPENGL_FOUND)
+
+
 # Check if GLUT is enable #####################################################
 IF(NOT glfw_FOUND AND NOT GLUT_FOUND)
     MESSAGE(FATAL_ERROR "GLFW and GLUT were not found. No tutorial can be built.")
@@ -172,39 +178,43 @@ CreateHeaderFiles("." "BinaryFiles" "${RESOURCES_SOURCES}")
 
 # Create the main programs #####################################################
 IF(glfw_FOUND)
+    ADD_EXECUTABLE (tutorial_00_glfw src/tutorial_00_glfw.cxx)
+    TARGET_LINK_LIBRARIES (tutorial_00_glfw ${optionalLibs} ${requiredLibs})
+
     ADD_EXECUTABLE (tutorial_01_glfw src/tutorial_01_glfw.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_01_glfw ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (tutorial_01_glfw ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (tutorial_02_glfw src/tutorial_02_glfw.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_02_glfw ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (tutorial_02_glfw ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (tutorial_03_glfw src/tutorial_03_glfw.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_03_glfw ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (tutorial_03_glfw ${optionalLibs} ${requiredLibs})
 ENDIF(glfw_FOUND)
 
 
 IF(GLUT_FOUND)
+    ADD_EXECUTABLE (tutorial_00_glut src/tutorial_00_glut.cxx)
+    TARGET_LINK_LIBRARIES (tutorial_00_glut ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+
     ADD_EXECUTABLE (tutorial_01_glut src/tutorial_01_glut.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_01_glut ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (tutorial_01_glut ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (tutorial_02_glut src/tutorial_02_glut.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_02_glut ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (tutorial_02_glut ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (tutorial_03_glut src/tutorial_03_glut.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_03_glut ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (tutorial_03_glut ${optionalLibs} ${requiredLibs})
 ENDIF(GLUT_FOUND)
 
 
 # Make sure the source is generated before the executable builds.
 IF(glfw_FOUND)
-    ADD_DEPENDENCIES(tutorial_01_glfw BinaryFiles)
     ADD_DEPENDENCIES(tutorial_02_glfw BinaryFiles)
     ADD_DEPENDENCIES(tutorial_03_glfw BinaryFiles)
 ENDIF(glfw_FOUND)
 
 
 IF(GLUT_FOUND)
-    ADD_DEPENDENCIES(tutorial_01_glut BinaryFiles)
     ADD_DEPENDENCIES(tutorial_02_glut BinaryFiles)
     ADD_DEPENDENCIES(tutorial_03_glut BinaryFiles)
 ENDIF(GLUT_FOUND)

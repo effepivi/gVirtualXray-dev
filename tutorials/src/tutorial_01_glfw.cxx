@@ -29,6 +29,10 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef _WIN32
+#include <GL/glew.h> // Fix undefined references on Windows
+#endif
+
 // Ensure we are using opengl's core profile only
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -130,6 +134,7 @@ void main(void)\n \
 //  Function declaration
 //******************************************************************************
 void initGLFW();
+void initGLEW();
 void initGL();
 void load3DObjects();
 void displayCallback();
@@ -155,6 +160,9 @@ int main(int argc, char** argv)
     {
         // Initialise GLFW
         initGLFW();
+
+        // Initialise GLEW
+        initGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -243,6 +251,23 @@ void initGLFW()
     glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
     glfwSetKeyCallback(g_p_window_id, keyCallback);
     glfwSetScrollCallback(g_p_window_id, scrollCallback);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+#ifdef _WIN32
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+#endif
 }
 
 

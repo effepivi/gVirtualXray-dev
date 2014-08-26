@@ -31,6 +31,10 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef _WIN32
+#include <GL/glew.h> // Fix undefined references on Windows
+#endif
+
 // Ensure we are using opengl's core profile only
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -128,6 +132,7 @@ GLint g_current_y_position(0); // Current x position of the cursor
 //  Function declaration
 //******************************************************************************
 void initGLFW();
+void initGLEW();
 void initGL();
 void initShader();
 void load3DObjects();
@@ -159,6 +164,9 @@ int main(int argc, char** argv)
     {
         // Initialise GLFW
         initGLFW();
+
+        // Initialise GLEW
+        initGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -246,6 +254,23 @@ void initGLFW()
     glfwSetMouseButtonCallback(g_p_window_id, mouseButtonCallback);
     glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback);
     glfwSetScrollCallback(g_p_window_id, scrollCallback);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+#ifdef _WIN32
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+#endif
 }
 
 
