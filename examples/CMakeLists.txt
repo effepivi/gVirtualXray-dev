@@ -303,6 +303,8 @@ IF (FLTK_FOUND)
     TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(gVirtualXRay-gui BinaryExampleFiles)
     INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION bin COMPONENT examples)
+    INSTALL(FILES ../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION doc  COMPONENT examples)
+    INSTALL(FILES data/welsh-dragon-small.stl                                 DESTINATION data COMPONENT examples)
 ENDIF (FLTK_FOUND)
 
 

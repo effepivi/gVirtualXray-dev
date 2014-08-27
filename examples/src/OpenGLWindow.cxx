@@ -206,7 +206,7 @@ void OpenGLWindow::initializeGL()
         prefix += "..";
 
 		std::string stl_filename(prefix);
-        stl_filename += "/examples/data/welsh-dragon-small.stl";
+        stl_filename += "/data/welsh-dragon-small.stl";
 
 		loadSTLFile(stl_filename);
 

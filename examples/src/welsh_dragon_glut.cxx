@@ -304,7 +304,7 @@ int main(int argc, char** argv)
 
         prefix += PREFIX;
 
-		prefix += "/examples/data/";
+		prefix += "/data/";
 
 		loadSTLFile(prefix);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
