@@ -83,7 +83,7 @@ configure_file (
 SET(optionalLibs)
 SET(requiredLibs)
 
-
+SET (gVirtualXRay_BASE_DIR ${PROJECT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 

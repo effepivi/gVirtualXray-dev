@@ -74,11 +74,81 @@ OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
 OPTION(USE_GLFW "Use GLFW." ON)
 OPTION(USE_GLUT "Use GLUT." ON)
 
-IF(APPLE)
+IF(APPLE OR WIN32)
     OPTION(USE_OPENMP "Use OpenMP if possible."  OFF)
 ELSE(APPLE)
     OPTION(USE_OPENMP "Use OpenMP if possible."  ON)
-ENDIF(APPLE)
+ENDIF(APPLE OR WIN32)
+
+
+IF (WIN32)
+	ADD_DEFINITIONS(-DGLEW_STATIC)
+
+    IF (USE_GLUT)
+    	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+    ENDIF (USE_GLUT)
+    SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
+ENDIF (WIN32)
+
+
+# ZLIB #########################################################################
+FIND_PACKAGE(ZLIB REQUIRED)
+IF(ZLIB_FOUND)
+	INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+	SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
+ELSE(ZLIB_FOUND)
+	MESSAGE("ZLIB not found.")
+ENDIF(ZLIB_FOUND)
+
+
+# GLEW ########################################################################
+FIND_PACKAGE(GLEW REQUIRED)
+IF(GLEW_FOUND)
+    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
+ELSE(GLUT_FOUND)
+    MESSAGE(FATAL_ERROR "GLEW not found.")
+ENDIF(GLEW_FOUND)
+
+
+# GLFW ########################################################################
+FIND_PACKAGE(glfw)
+IF(glfw_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
+    LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
+    SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
+
+    IF (APPLE)
+        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+        FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+        FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
+        FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
+
+        SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
+    ENDIF(APPLE)
+
+    IF (UNIX)
+        FIND_PACKAGE (X11 REQUIRED)
+        iF (X11_FOUND)
+            INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB})
+        ELSE (X11_FOUND)
+            MESSAGE(FATAL_ERROR "X11 not found.")
+        ENDIF (X11_FOUND)
+    ENDIF(UNIX)
+ELSE(glfw_FOUND)
+    MESSAGE(WARNING "GLFW not found.")
+ENDIF(glfw_FOUND)
+
+
+# GLUT ########################################################################
+FIND_PACKAGE(GLUT)
+IF(GLUT_FOUND)
+    INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+    SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
+ELSE(GLUT_FOUND)
+    MESSAGE(WARNING "GLUT not found.")
+ENDIF(GLUT_FOUND)
 
 
 # FLTK ########################################################################
@@ -92,28 +162,22 @@ ELSE(FLTK_FOUND)
 ENDIF(FLTK_FOUND)
 
 
-IF(FLTK_FOUND)
-    FIND_PACKAGE(GLEW REQUIRED)
-    IF(GLEW_FOUND)
-        ADD_DEFINITIONS(-DGLEW_STATIC)
-        ADD_DEFINITIONS(-DHAS_GLEW)
-        INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-        LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
-        SET(optionalLibs ${optionalLibs} ${GLEW_LIBRARY})
-    ELSE(GLEW_FOUND)
-        MESSAGE(FATAL_ERROR "GLEW not found.")
-    ENDIF(GLEW_FOUND)
-ENDIF(FLTK_FOUND)
-
-
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)
     INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
-    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
+    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
 ELSE(OPENGL_FOUND)
     MESSAGE(FATAL_ERROR "OpenGL not found.")
 ENDIF(OPENGL_FOUND)
+
+
+
+
+
+
+
+
 
 
 # BOOST #######################################################################
@@ -139,51 +203,6 @@ IF (USE_OPENMP)
         SET (USE_OPENMP OFF)
     ENDIF(OPENMP_FOUND)
 ENDIF(USE_OPENMP)
-
-
-# OpenGL ######################################################################
-IF(USE_GLFW)
-    FIND_PACKAGE(glfw REQUIRED)
-    IF(glfw_FOUND)
-        ADD_DEFINITIONS(-DHAS_GLFW)
-        INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-        LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
-        SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
-
-        IF (APPLE)
-            FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-            FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-            FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-            FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
-
-            SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-        ENDIF(APPLE)
-
-        IF (UNIX)
-            FIND_PACKAGE (X11 REQUIRED)
-            iF (X11_FOUND)
-                INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-                SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB})
-            ELSE (X11_FOUND)
-                MESSAGE(FATAL_ERROR "X11 not found.")
-            ENDIF (X11_FOUND)
-        ENDIF(UNIX)
-    ELSE(glfw_FOUND)
-        MESSAGE(FATAL_ERROR "GLFW not found.")
-    ENDIF(glfw_FOUND)
-ENDIF(USE_GLFW)
-
-
-IF(USE_GLUT)
-    FIND_PACKAGE(GLUT REQUIRED)
-    IF(GLUT_FOUND)
-        ADD_DEFINITIONS(-DHAS_GLUT)
-        INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-        SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
-    ELSE(GLUT_FOUND)
-        MESSAGE(FATAL_ERROR "GLUT not found.")
-    ENDIF(GLUT_FOUND)
-ENDIF(USE_GLUT)
 
 
 # Check if GLFW is enable #####################################################
@@ -244,35 +263,35 @@ ENDIF(USE_BUNDLE)
 
 
 ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
-TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${requiredLibs} ${optionalLibs})
+TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${optionalLibs} ${requiredLibs})
 
 
 IF(USE_GLFW)
     IF(USE_ITK)
         ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
-        TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${requiredLibs} ${optionalLibs})
+        TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${optionalLibs} ${requiredLibs})
 
         ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
-        TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${requiredLibs} ${optionalLibs})
+        TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${optionalLibs} ${requiredLibs})
     ENDIF(USE_ITK)
 
     ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
-    TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
-    TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${optionalLibs} ${requiredLibs})
 
     ADD_EXECUTABLE (welsh_dragon_glfw ../src/welsh_dragon_glfw.cxx)
-    TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${optionalLibs} ${requiredLibs})
 ENDIF(USE_GLFW)
 
 
 IF(USE_GLUT)
     ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
-    TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${optionalLibs} ${requiredLibs})
 ENDIF(USE_GLUT)
 
 
@@ -282,7 +301,7 @@ IF (FLTK_FOUND)
     ELSE(WIN32)
         ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)
     ENDIF(WIN32)
-    TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredLibs})
 ENDIF (FLTK_FOUND)
 
 
@@ -321,7 +340,7 @@ IF(USE_BUNDLE)
 
     ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE WIN32 ${DRAGON_DEMO_SRCS})
     #SET_PROPERTY(TARGET DragonDemo PROPERTY LINK_SEARCH_START_STATIC 1) 
-    TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${requiredLibs} ${optionalLibs})
+    TARGET_LINK_LIBRARIES (DragonDemo gVirtualXRay ${optionalLibs} ${requiredLibs})
 
     # Define some settings for the Bundle
     IF(APPLE)
@@ -394,7 +413,7 @@ IF(USE_BUNDLE)
     # directories to look for dependencies
     SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
 
-    SET (LIBRARIES ${requiredLibs} ${optionalLibs})
+    SET (LIBRARIES ${optionalLibs} ${requiredLibs})
     INSTALL(CODE "
         SET(BU_CHMOD_BUNDLE_ITEMS 1)
         include(BundleUtilities)

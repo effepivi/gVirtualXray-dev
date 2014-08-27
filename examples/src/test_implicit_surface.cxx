@@ -37,6 +37,7 @@
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
+#include <ctime>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"

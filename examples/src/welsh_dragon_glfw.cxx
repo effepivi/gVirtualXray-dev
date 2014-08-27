@@ -32,6 +32,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glew.h>
+#endif
+
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -200,6 +204,7 @@ bool g_use_fullscreen(true);
 //	Function declaration
 //******************************************************************************
 void display();
+void initGLEW();
 void initGL();
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
@@ -280,6 +285,9 @@ int main(int argc, char** argv)
 
 	    // Make the window's context current
 	    glfwMakeContextCurrent(g_p_main_window_id);
+
+        // Initialise GLEW
+        initGLEW();
 
  		// Is stereo enable
 		if (g_stereo_helper.enable())
@@ -424,6 +432,23 @@ void quit()
         g_p_main_window_id = 0;
         glfwTerminate();
 	}
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+#if defined(_WIN32) || defined(_WIN64)
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+#endif
 }
 
 

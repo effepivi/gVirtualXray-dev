@@ -147,6 +147,32 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
+# ITK ##########################################################################
+IF(USE_ITK)
+	FIND_PACKAGE(ITK)
+	IF(ITK_FOUND)
+		ADD_DEFINITIONS(-DHAS_ITK)
+		INCLUDE(${USE_ITK_FILE})
+		SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+
+		IF(ITKVtkGlue_LOADED)
+			FIND_PACKAGE(VTK REQUIRED)
+			IF(VTK_FOUND)
+				INCLUDE(${VTK_USE_FILE})
+				LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+				SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+			ELSE(VTK_FOUND)
+				MESSAGE(WARNING "VTK not found.")
+			ENDIF(VTK_FOUND)
+		ENDIF(ITKVtkGlue_LOADED)
+	ELSE(ITK_FOUND)
+		MESSAGE(WARNING "ITK not found, tutorial 3 will be disable.")
+	ENDIF(ITK_FOUND)
+ELSE(USE_ITK)
+	MESSAGE(WARNING "ITK is not enable, tutorial 3 will be disable.")
+ENDIF(USE_ITK)
+
+
 # Check if GLUT is enable #####################################################
 IF(NOT glfw_FOUND AND NOT GLUT_FOUND)
     MESSAGE(FATAL_ERROR "GLFW and GLUT were not found. No tutorial can be built.")
@@ -187,8 +213,10 @@ IF(glfw_FOUND)
     ADD_EXECUTABLE (tutorial_02_glfw src/tutorial_02_glfw.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_02_glfw ${optionalLibs} ${requiredLibs})
 
-    ADD_EXECUTABLE (tutorial_03_glfw src/tutorial_03_glfw.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_03_glfw ${optionalLibs} ${requiredLibs})
+    IF (USE_ITK AND ITK_FOUND)
+        ADD_EXECUTABLE (tutorial_03_glfw src/tutorial_03_glfw.cxx src/buildCube.cxx)
+        TARGET_LINK_LIBRARIES (tutorial_03_glfw ${optionalLibs} ${requiredLibs})
+    ENDIF (USE_ITK AND ITK_FOUND)
 ENDIF(glfw_FOUND)
 
 
@@ -202,21 +230,29 @@ IF(GLUT_FOUND)
     ADD_EXECUTABLE (tutorial_02_glut src/tutorial_02_glut.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_02_glut ${optionalLibs} ${requiredLibs})
 
-    ADD_EXECUTABLE (tutorial_03_glut src/tutorial_03_glut.cxx src/buildCube.cxx)
-    TARGET_LINK_LIBRARIES (tutorial_03_glut ${optionalLibs} ${requiredLibs})
+    IF (USE_ITK AND ITK_FOUND)
+        ADD_EXECUTABLE (tutorial_03_glut src/tutorial_03_glut.cxx src/buildCube.cxx)
+        TARGET_LINK_LIBRARIES (tutorial_03_glut ${optionalLibs} ${requiredLibs})
+    ENDIF (USE_ITK AND ITK_FOUND)
 ENDIF(GLUT_FOUND)
 
 
 # Make sure the source is generated before the executable builds.
 IF(glfw_FOUND)
     ADD_DEPENDENCIES(tutorial_02_glfw BinaryFiles)
-    ADD_DEPENDENCIES(tutorial_03_glfw BinaryFiles)
+
+    IF (USE_ITK AND ITK_FOUND)
+        ADD_DEPENDENCIES(tutorial_03_glfw BinaryFiles)
+    ENDIF (USE_ITK AND ITK_FOUND)
 ENDIF(glfw_FOUND)
 
 
 IF(GLUT_FOUND)
     ADD_DEPENDENCIES(tutorial_02_glut BinaryFiles)
-    ADD_DEPENDENCIES(tutorial_03_glut BinaryFiles)
+
+    IF (USE_ITK AND ITK_FOUND)
+        ADD_DEPENDENCIES(tutorial_03_glut BinaryFiles)
+    ENDIF (USE_ITK AND ITK_FOUND)
 ENDIF(GLUT_FOUND)
 
 # Set the package name
@@ -238,8 +274,24 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay/tutorials")
     
 SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
 
-INSTALL(TARGETS tutorial_01_glfw tutorial_02_glfw tutorial_03_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
-INSTALL(TARGETS tutorial_01_glut tutorial_02_glut tutorial_03_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+IF(glfw_FOUND)
+    INSTALL(TARGETS tutorial_01_glfw tutorial_02_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+
+    IF (USE_ITK AND ITK_FOUND)
+        INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+    ENDIF (USE_ITK AND ITK_FOUND)
+ENDIF(glfw_FOUND)
+
+
+IF(GLUT_FOUND)
+    INSTALL(TARGETS tutorial_01_glut tutorial_02_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+
+    IF (USE_ITK AND ITK_FOUND)
+        INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+    ENDIF (USE_ITK AND ITK_FOUND)
+ENDIF(GLUT_FOUND)
+
+
 INSTALL(FILES ../LICENSE.txt DESTINATION .)
 
 IF(APPLE)
