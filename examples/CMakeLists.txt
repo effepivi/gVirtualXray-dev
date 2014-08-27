@@ -3,8 +3,8 @@
 #   @file       CMakeLists.txt
 #
 #   @brief      Configuration file to generate Makefiles, 
-#           Project/Solution files for MS VC++, Xcode projects, etc.
-#            using the CMake tool. (see http://www.cmake.org/)
+#               Project/Solution files for MS VC++, Xcode projects, etc.
+#               using the CMake tool. (see http://www.cmake.org/)
 #
 #   @version    1.0
 #
@@ -41,14 +41,14 @@ IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0011 NEW)
 ENDIF(COMMAND cmake_policy)
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../build/modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
 
 
-# Enable all compiler warnings #################################################
-#IF(NOT WIN32)
-#   add_definitions( -Wall )
-#ENDIF(NOT WIN32)
+# Project name #################################################################
+project (examples)
+set (examples_VERSION_MAJOR 1)
+set (examples_VERSION_MINOR 0)
+set (examples_VERSION_PATCH 0)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
@@ -57,38 +57,30 @@ IF(NOT APPLE)
 ENDIF(NOT APPLE)
 
 
-# Project name #################################################################
-project (examples)
-set (examples_VERSION_MAJOR 1)
-set (examples_VERSION_MINOR 2)
-set (examples_VERSION_PATCH 0)
-
-
 # Headers of the project #######################################################
-INCLUDE_DIRECTORIES("${PROJECT_BINARY_DIR}")
-INCLUDE_DIRECTORIES("../include")
-
-
-# Options #####################################################################
-OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
-OPTION(USE_GLFW "Use GLFW." ON)
-OPTION(USE_GLUT "Use GLUT." ON)
-
-IF(APPLE OR WIN32)
-    OPTION(USE_OPENMP "Use OpenMP if possible."  OFF)
-ELSE(APPLE)
-    OPTION(USE_OPENMP "Use OpenMP if possible."  ON)
-ENDIF(APPLE OR WIN32)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+IF(NOT APPLE)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/OpenGL4)
+ENDIF(NOT APPLE)
 
 
 IF (WIN32)
 	ADD_DEFINITIONS(-DGLEW_STATIC)
-
-    IF (USE_GLUT)
-    	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
-    ENDIF (USE_GLUT)
+	ADD_DEFINITIONS(-DFREEGLUT_STATIC)
     SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
 ENDIF (WIN32)
+
+
+# gVirtualXRay ################################################################
+find_package(gVirtualXRay REQUIRED)
+IF(gVirtualXRay_FOUND)
+    INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
+    LINK_DIRECTORIES(${gVirtualXRay_LIBRARY_DIR})
+    SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
+ELSE(gVirtualXRay_FOUND)
+    MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
+ENDIF(gVirtualXRay_FOUND)
 
 
 # ZLIB #########################################################################
@@ -172,59 +164,54 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
+# ITK ##########################################################################
+FIND_PACKAGE(ITK)
+IF(ITK_FOUND)
+	ADD_DEFINITIONS(-DHAS_ITK)
+	INCLUDE(${USE_ITK_FILE})
+	SET(requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
 
-
-
-
-
-
+	IF(ITKVtkGlue_LOADED)
+		FIND_PACKAGE(VTK REQUIRED)
+		IF(VTK_FOUND)
+			INCLUDE(${VTK_USE_FILE})
+			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+		ELSE(VTK_FOUND)
+			MESSAGE(WARNING "VTK not found.")
+		ENDIF(VTK_FOUND)
+	ENDIF(ITKVtkGlue_LOADED)
+ELSE(ITK_FOUND)
+	MESSAGE(WARNING "ITK not found, tutorial 3 will be disable.")
+ENDIF(ITK_FOUND)
 
 
 # BOOST #######################################################################
-FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS system filesystem program_options)
-IF(Boost_FOUND)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-    SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS filesystem system)
+if(Boost_FOUND)
+	SET( Boost_USE_STATIC_LIBS OFF )
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
 ELSE(Boost_FOUND)
-    MESSAGE(FATAL_ERROR "Boost not found.")
+	MESSAGE(FATAL_ERROR "Boost not found.")
 ENDIF(Boost_FOUND)
 
 
-# OpenMP #######################################################################
-IF (USE_OPENMP)
-    FIND_PACKAGE(OpenMP)
-    IF (OPENMP_FOUND)
-        ADD_DEFINITIONS(-DHAS_OPENMP)
-        SET (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
-        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    ELSE(OPENMP_FOUND)
-        MESSAGE(WARNING "OpenMP not found, it will be disable.")
-        SET (USE_OPENMP OFF)
-    ENDIF(OPENMP_FOUND)
-ENDIF(USE_OPENMP)
-
-
-# Check if GLFW is enable #####################################################
-IF(NOT USE_GLFW)
-    MESSAGE(WARNING "GLFW is not enable, examples and tutorials using GLFW cannot be built.")
-ENDIF(NOT USE_GLFW)
-
-
 # Check if GLUT is enable #####################################################
-IF(NOT USE_GLUT)
-    MESSAGE(WARNING "GLUT is not enable, examples and tutorials using GLUT cannot be built.")
-ENDIF(NOT USE_GLUT)
+IF(NOT glfw_FOUND AND NOT GLUT_FOUND)
+    MESSAGE(FATAL_ERROR "GLFW and GLUT were not found. Some examples cannot be built.")
+ENDIF(NOT glfw_FOUND AND NOT GLUT_FOUND)
 
 
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES
-    ../../examples/shaders/display_gl2.frag
-    ../../examples/shaders/display_gl2.vert
-    ../../examples/shaders/display_gl3.frag
-    ../../examples/shaders/display_gl3.vert
-    ../../examples/shaders/display_gui.frag
-    ../../examples/shaders/display_gui.vert
+    shaders/display_gl2.frag
+    shaders/display_gl2.vert
+    shaders/display_gl3.frag
+    shaders/display_gl3.vert
+    shaders/display_gui.frag
+    shaders/display_gui.vert
 )
 
 
@@ -234,8 +221,8 @@ IF(NOT GZIP_FOUND)
 ENDIF(NOT GZIP_FOUND)
 
 
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../build/CreateHeaderFiles.cmake)
-CreateHeaderFiles("../.." "BinaryDemoFiles" "${RESOURCES_SOURCES}")
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
+CreateHeaderFiles("." "BinaryExampleFiles" "${RESOURCES_SOURCES}")
 
 
 # Create the GUI files with Fluid ##############################################
@@ -243,9 +230,9 @@ IF (FLTK_FOUND)
     SET (FLUID_OUTPUT_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
     add_custom_command(OUTPUT ${FLUID_OUTPUT_FILES}
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui.fl
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/gui.fl
         COMMAND ${FLTK_FLUID_EXECUTABLE}
-        ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui.fl
+        ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/src/gui.fl
         COMMENT "Build the GUI using Fluid"
     )
 
@@ -257,51 +244,65 @@ ENDIF (FLTK_FOUND)
 
 
 # Create the main programs #####################################################
-IF(USE_BUNDLE)
-    REMOVE_DEFINITIONS(-DHAS_BUNDLE)
-ENDIF(USE_BUNDLE)
-
-
-ADD_EXECUTABLE (test_implicit_surface_density_function ../src/test_implicit_surface_density_function.cxx)
+ADD_EXECUTABLE (test_implicit_surface_density_function src/test_implicit_surface_density_function.cxx)
 TARGET_LINK_LIBRARIES (test_implicit_surface_density_function gVirtualXRay ${optionalLibs} ${requiredLibs})
 
 
-IF(USE_GLFW)
-    IF(USE_ITK)
-        ADD_EXECUTABLE (implicit_surface_marching_cube ../src/implicit_surface_marching_cube.cxx)
+#IF(USE_BUNDLE)
+#    REMOVE_DEFINITIONS(-DHAS_BUNDLE)
+#ENDIF(USE_BUNDLE)
+
+
+IF(glfw_FOUND)
+    IF(ITK_FOUND)
+        ADD_EXECUTABLE (implicit_surface_marching_cube src/implicit_surface_marching_cube.cxx)
         TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${optionalLibs} ${requiredLibs})
+        ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryExampleFiles)
+        INSTALL(TARGETS implicit_surface_marching_cube RUNTIME DESTINATION bin COMPONENT examples)
 
-        ADD_EXECUTABLE (test_implicit_surface ../src/test_implicit_surface.cxx)
+        ADD_EXECUTABLE (test_implicit_surface src/test_implicit_surface.cxx)
         TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ENDIF(USE_ITK)
+        ADD_DEPENDENCIES(test_implicit_surface BinaryExampleFiles)
+        INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION bin COMPONENT examples)
+    ENDIF(ITK_FOUND)
 
-    ADD_EXECUTABLE (test_01 ../src/test_01.cxx)
+    ADD_EXECUTABLE (test_01 src/test_01.cxx)
     TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(test_01 BinaryExampleFiles)
+    INSTALL(TARGETS test_01 RUNTIME DESTINATION bin COMPONENT examples)
 
-    ADD_EXECUTABLE (test_mu_water ../src/test_mu_water.cxx)
+    ADD_EXECUTABLE (test_mu_water src/test_mu_water.cxx)
     TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${optionalLibs} ${requiredLibs})
 
-    ADD_EXECUTABLE (test_triangle_mesh ../src/test_triangle_mesh.cxx ../src/buildCube.cxx)
+    ADD_EXECUTABLE (test_triangle_mesh src/test_triangle_mesh.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(test_triangle_mesh BinaryExampleFiles)
+    INSTALL(TARGETS test_triangle_mesh RUNTIME DESTINATION bin COMPONENT examples)
 
-    ADD_EXECUTABLE (welsh_dragon_glfw ../src/welsh_dragon_glfw.cxx)
+    ADD_EXECUTABLE (welsh_dragon_glfw src/welsh_dragon_glfw.cxx)
     TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${optionalLibs} ${requiredLibs})
-ENDIF(USE_GLFW)
+    ADD_DEPENDENCIES(welsh_dragon_glfw BinaryExampleFiles)
+    INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION bin COMPONENT examples)
+ENDIF(glfw_FOUND)
 
 
-IF(USE_GLUT)
-    ADD_EXECUTABLE (welsh_dragon_glut ../src/welsh_dragon_glut.cxx)
+IF(GLUT_FOUND)
+    ADD_EXECUTABLE (welsh_dragon_glut src/welsh_dragon_glut.cxx)
     TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${optionalLibs} ${requiredLibs})
-ENDIF(USE_GLUT)
+    ADD_DEPENDENCIES(welsh_dragon_glut BinaryExampleFiles)
+    INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION bin COMPONENT examples)
+ENDIF(GLUT_FOUND)
 
 
 IF (FLTK_FOUND)
     IF(WIN32)
-        ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx ../src/DragonDemo.res)
+        ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx src/DragonDemo.res)
     ELSE(WIN32)
-        ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx)
+        ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx)
     ENDIF(WIN32)
     TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(gVirtualXRay-gui BinaryExampleFiles)
+    INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION bin COMPONENT examples)
 ENDIF (FLTK_FOUND)
 
 
@@ -330,12 +331,12 @@ IF(USE_BUNDLE)
 
     IF (FLTK_FOUND)
         IF(WIN32)
-            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx ../src/DragonDemo.res ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx src/DragonDemo.res ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
         ELSE(WIN32)
-            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx ../src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
         ENDIF(WIN32)
     ELSE (FLTK_FOUND)
-        SET(DRAGON_DEMO_SRCS ../src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+        SET(DRAGON_DEMO_SRCS src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
     ENDIF (FLTK_FOUND)
 
     ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE WIN32 ${DRAGON_DEMO_SRCS})
@@ -428,29 +429,36 @@ IF(USE_BUNDLE)
 ENDIF(USE_BUNDLE)
 
 
-# Make sure the source is generated before the executable builds.
-IF(USE_GLFW)
-    IF (USE_ITK)
-        ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryDemoFiles)
-        ADD_DEPENDENCIES(test_implicit_surface BinaryDemoFiles)
-    ENDIF(USE_ITK)
-    ADD_DEPENDENCIES(test_01 BinaryDemoFiles)
-    ADD_DEPENDENCIES(test_triangle_mesh BinaryDemoFiles)
-    ADD_DEPENDENCIES(welsh_dragon_glfw BinaryDemoFiles)
-ENDIF(USE_GLFW)
-
-
-IF(USE_GLUT)
-    ADD_DEPENDENCIES(welsh_dragon_glut BinaryDemoFiles)
-ENDIF(USE_GLUT)
-
-
-IF(FLTK_FOUND)
-    ADD_DEPENDENCIES(gVirtualXRay-gui BinaryDemoFiles)
-ENDIF(FLTK_FOUND)
-
 
 IF(USE_BUNDLE)
-    ADD_DEPENDENCIES(DragonDemo BinaryDemoFiles)
+    ADD_DEPENDENCIES(DragonDemo BinaryExampleFiles)
 ENDIF(USE_BUNDLE)
+
+
+# Set the package name
+SET (CPACK_PACKAGE_NAME "gVirtualXRay-examples")
+
+# Handling of shared libraries
+#SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS library_name)
+#INCLUDE(InstallRequiredSystemLibraries)
+
+# Set the package version
+SET(CPACK_PACKAGE_VERSION_MAJOR ${examples_VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${examples_VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${examples_VERSION_PATCH})
+SET(CPACK_PACKAGE_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
+
+SET(CPACK_PACKAGE_VENDOR "gVirtualXRay team")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay/examples")
+    
+SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
+
+INSTALL(FILES ../LICENSE.txt DESTINATION .)
+
+IF(APPLE)
+    set(CPACK_BINARY_DRAGNDROP ON)
+ENDIF(APPLE)
+
+include(CPack)
 

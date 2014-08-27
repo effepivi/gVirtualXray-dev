@@ -42,7 +42,6 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-#SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../build/modules)
 
 
 # Project name #################################################################
@@ -71,6 +70,7 @@ ENDIF (WIN32)
 find_package(gVirtualXRay REQUIRED)
 IF(gVirtualXRay_FOUND)
     INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
+    LINK_DIRECTORIES(${gVirtualXRay_LIBRARY_DIR})
     SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
 ELSE(gVirtualXRay_FOUND)
     MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
@@ -148,29 +148,25 @@ ENDIF(OPENGL_FOUND)
 
 
 # ITK ##########################################################################
-IF(USE_ITK)
-	FIND_PACKAGE(ITK)
-	IF(ITK_FOUND)
-		ADD_DEFINITIONS(-DHAS_ITK)
-		INCLUDE(${USE_ITK_FILE})
-		SET(requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
+FIND_PACKAGE(ITK)
+IF(ITK_FOUND)
+	ADD_DEFINITIONS(-DHAS_ITK)
+	INCLUDE(${USE_ITK_FILE})
+	SET(requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
 
-		IF(ITKVtkGlue_LOADED)
-			FIND_PACKAGE(VTK REQUIRED)
-			IF(VTK_FOUND)
-				INCLUDE(${VTK_USE_FILE})
-				LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
-				SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-			ELSE(VTK_FOUND)
-				MESSAGE(WARNING "VTK not found.")
-			ENDIF(VTK_FOUND)
-		ENDIF(ITKVtkGlue_LOADED)
-	ELSE(ITK_FOUND)
-		MESSAGE(WARNING "ITK not found, tutorial 3 will be disable.")
-	ENDIF(ITK_FOUND)
-ELSE(USE_ITK)
-	MESSAGE(WARNING "ITK is not enable, tutorial 3 will be disable.")
-ENDIF(USE_ITK)
+	IF(ITKVtkGlue_LOADED)
+		FIND_PACKAGE(VTK REQUIRED)
+		IF(VTK_FOUND)
+			INCLUDE(${VTK_USE_FILE})
+			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+		ELSE(VTK_FOUND)
+			MESSAGE(WARNING "VTK not found.")
+		ENDIF(VTK_FOUND)
+	ENDIF(ITKVtkGlue_LOADED)
+ELSE(ITK_FOUND)
+	MESSAGE(WARNING "ITK not found, tutorial 3 will be disable.")
+ENDIF(ITK_FOUND)
 
 
 # Check if GLUT is enable #####################################################
@@ -199,61 +195,55 @@ ENDIF(NOT GZIP_FOUND)
 
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
-CreateHeaderFiles("." "BinaryFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinaryTutorialFiles" "${RESOURCES_SOURCES}")
 
 
 # Create the main programs #####################################################
 IF(glfw_FOUND)
     ADD_EXECUTABLE (tutorial_00_glfw src/tutorial_00_glfw.cxx)
     TARGET_LINK_LIBRARIES (tutorial_00_glfw ${optionalLibs} ${requiredLibs})
+    INSTALL(TARGETS tutorial_00_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
 
     ADD_EXECUTABLE (tutorial_01_glfw src/tutorial_01_glfw.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_01_glfw ${optionalLibs} ${requiredLibs})
+    INSTALL(TARGETS tutorial_01_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
 
     ADD_EXECUTABLE (tutorial_02_glfw src/tutorial_02_glfw.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_02_glfw ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(tutorial_02_glfw BinaryTutorialFiles)
+    INSTALL(TARGETS tutorial_02_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
 
-    IF (USE_ITK AND ITK_FOUND)
+    IF (ITK_FOUND)
         ADD_EXECUTABLE (tutorial_03_glfw src/tutorial_03_glfw.cxx src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_03_glfw ${optionalLibs} ${requiredLibs})
-    ENDIF (USE_ITK AND ITK_FOUND)
+        ADD_DEPENDENCIES(tutorial_03_glfw BinaryTutorialFiles)
+        INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+    ENDIF (ITK_FOUND)
 ENDIF(glfw_FOUND)
 
 
 IF(GLUT_FOUND)
     ADD_EXECUTABLE (tutorial_00_glut src/tutorial_00_glut.cxx)
     TARGET_LINK_LIBRARIES (tutorial_00_glut ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+    INSTALL(TARGETS tutorial_00_glut RUNTIME DESTINATION bin COMPONENT tutorials)
 
     ADD_EXECUTABLE (tutorial_01_glut src/tutorial_01_glut.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_01_glut ${optionalLibs} ${requiredLibs})
+    INSTALL(TARGETS tutorial_01_glut RUNTIME DESTINATION bin COMPONENT tutorials)
 
     ADD_EXECUTABLE (tutorial_02_glut src/tutorial_02_glut.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_02_glut ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(tutorial_02_glut BinaryTutorialFiles)
+    INSTALL(TARGETS tutorial_02_glut RUNTIME DESTINATION bin COMPONENT tutorials)
 
-    IF (USE_ITK AND ITK_FOUND)
+    IF (ITK_FOUND)
         ADD_EXECUTABLE (tutorial_03_glut src/tutorial_03_glut.cxx src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_03_glut ${optionalLibs} ${requiredLibs})
-    ENDIF (USE_ITK AND ITK_FOUND)
+        ADD_DEPENDENCIES(tutorial_03_glut BinaryTutorialFiles)
+        INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+    ENDIF (ITK_FOUND)
 ENDIF(GLUT_FOUND)
 
-
-# Make sure the source is generated before the executable builds.
-IF(glfw_FOUND)
-    ADD_DEPENDENCIES(tutorial_02_glfw BinaryFiles)
-
-    IF (USE_ITK AND ITK_FOUND)
-        ADD_DEPENDENCIES(tutorial_03_glfw BinaryFiles)
-    ENDIF (USE_ITK AND ITK_FOUND)
-ENDIF(glfw_FOUND)
-
-
-IF(GLUT_FOUND)
-    ADD_DEPENDENCIES(tutorial_02_glut BinaryFiles)
-
-    IF (USE_ITK AND ITK_FOUND)
-        ADD_DEPENDENCIES(tutorial_03_glut BinaryFiles)
-    ENDIF (USE_ITK AND ITK_FOUND)
-ENDIF(GLUT_FOUND)
 
 # Set the package name
 SET (CPACK_PACKAGE_NAME "gVirtualXRay-tutorials")
@@ -273,24 +263,6 @@ SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay/tutorials")
     
 SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
-
-IF(glfw_FOUND)
-    INSTALL(TARGETS tutorial_01_glfw tutorial_02_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
-
-    IF (USE_ITK AND ITK_FOUND)
-        INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
-    ENDIF (USE_ITK AND ITK_FOUND)
-ENDIF(glfw_FOUND)
-
-
-IF(GLUT_FOUND)
-    INSTALL(TARGETS tutorial_01_glut tutorial_02_glut RUNTIME DESTINATION bin COMPONENT tutorials)
-
-    IF (USE_ITK AND ITK_FOUND)
-        INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION bin COMPONENT tutorials)
-    ENDIF (USE_ITK AND ITK_FOUND)
-ENDIF(GLUT_FOUND)
-
 
 INSTALL(FILES ../LICENSE.txt DESTINATION .)
 

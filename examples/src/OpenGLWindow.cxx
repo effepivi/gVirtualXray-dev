@@ -58,8 +58,6 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#include "gVirtualXRayConfig.h"
-
 #ifdef min
 #undef min
 #endif

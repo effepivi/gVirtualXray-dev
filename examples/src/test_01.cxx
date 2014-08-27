@@ -99,8 +99,6 @@
 #include "gVirtualXRay/StereoHelper.h"
 #endif
 
-#include "gVirtualXRayConfig.h"
-
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
@@ -217,8 +215,6 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << endl;
-
 	    // Set an error callback
 	    glfwSetErrorCallback(errorCallback);
 

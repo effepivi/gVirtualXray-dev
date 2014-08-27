@@ -105,8 +105,6 @@
 #include "gVirtualXRay/StereoHelper.h"
 #endif
 
-#include "gVirtualXRayConfig.h"
-
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
@@ -235,8 +233,6 @@ int main(int argc, char** argv)
 {
     try
     {
-		std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
-
 	    // Set an error callback
 	    glfwSetErrorCallback(errorCallback);
 
@@ -249,7 +245,7 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-        // Enable OpenGL 2.0 if possible
+        // Enable OpenGL 2.1 if possible
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
@@ -261,7 +257,7 @@ int main(int argc, char** argv)
 
 		// Create the window title
 		std::stringstream window_title;
-		window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
+		window_title << "gVirtualXRay -- DragonDemo";
 
 	    // Create a windowed mode window and its OpenGL context
 	    g_p_main_window_id = glfwCreateWindow(g_current_main_window_width, g_current_main_window_height, window_title.str().data(), NULL, NULL);

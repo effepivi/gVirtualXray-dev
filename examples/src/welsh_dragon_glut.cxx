@@ -99,8 +99,6 @@
 #include "gVirtualXRay/StereoHelper.h"
 #endif
 
-#include "gVirtualXRayConfig.h"
-
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
@@ -229,8 +227,6 @@ int main(int argc, char** argv)
 {
     try
     {
-		std::cout << argv[0] << " Version " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << std::endl;
-
 	    // Register the exit callback
 		atexit(quit);
 
@@ -360,7 +356,7 @@ void initGLUT(int argc, char** argv)
 
 	// Create the window title
 	std::stringstream window_title;
-	window_title << "gVirtualXRay -- DragonDemo (" << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << ")";
+	window_title << "gVirtualXRay -- DragonDemo";
 
 	g_main_window_id = glutCreateWindow(window_title.str().c_str());
 
