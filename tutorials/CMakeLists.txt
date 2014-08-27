@@ -153,7 +153,7 @@ IF(USE_ITK)
 	IF(ITK_FOUND)
 		ADD_DEFINITIONS(-DHAS_ITK)
 		INCLUDE(${USE_ITK_FILE})
-		SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+		SET(requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
 
 		IF(ITKVtkGlue_LOADED)
 			FIND_PACKAGE(VTK REQUIRED)
