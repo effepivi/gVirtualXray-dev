@@ -258,18 +258,19 @@ IF(glfw_FOUND)
         ADD_EXECUTABLE (implicit_surface_marching_cube src/implicit_surface_marching_cube.cxx)
         TARGET_LINK_LIBRARIES (implicit_surface_marching_cube gVirtualXRay ${optionalLibs} ${requiredLibs})
         ADD_DEPENDENCIES(implicit_surface_marching_cube BinaryExampleFiles)
-        INSTALL(TARGETS implicit_surface_marching_cube RUNTIME DESTINATION bin COMPONENT examples)
+        INSTALL(TARGETS implicit_surface_marching_cube RUNTIME DESTINATION examples/bin COMPONENT examples)
 
         ADD_EXECUTABLE (test_implicit_surface src/test_implicit_surface.cxx)
         TARGET_LINK_LIBRARIES (test_implicit_surface gVirtualXRay ${optionalLibs} ${requiredLibs})
         ADD_DEPENDENCIES(test_implicit_surface BinaryExampleFiles)
-        INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION bin COMPONENT examples)
+        INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION examples/bin COMPONENT examples)
     ENDIF(ITK_FOUND)
 
     ADD_EXECUTABLE (test_01 src/test_01.cxx)
     TARGET_LINK_LIBRARIES (test_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(test_01 BinaryExampleFiles)
-    INSTALL(TARGETS test_01 RUNTIME DESTINATION bin COMPONENT examples)
+    INSTALL(TARGETS test_01 RUNTIME DESTINATION examples/bin COMPONENT examples)
+    INSTALL(FILES data/cylinder_bin.stl DESTINATION examples/data COMPONENT examples)
 
     ADD_EXECUTABLE (test_mu_water src/test_mu_water.cxx)
     TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${optionalLibs} ${requiredLibs})
@@ -277,12 +278,13 @@ IF(glfw_FOUND)
     ADD_EXECUTABLE (test_triangle_mesh src/test_triangle_mesh.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(test_triangle_mesh BinaryExampleFiles)
-    INSTALL(TARGETS test_triangle_mesh RUNTIME DESTINATION bin COMPONENT examples)
+    INSTALL(TARGETS test_triangle_mesh RUNTIME DESTINATION examples/bin COMPONENT examples)
 
     ADD_EXECUTABLE (welsh_dragon_glfw src/welsh_dragon_glfw.cxx)
     TARGET_LINK_LIBRARIES (welsh_dragon_glfw gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(welsh_dragon_glfw BinaryExampleFiles)
-    INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION bin COMPONENT examples)
+    INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION examples/bin  COMPONENT examples)
+    INSTALL(FILES data/welsh-dragon-small.stl DESTINATION examples/data COMPONENT examples)
 ENDIF(glfw_FOUND)
 
 
@@ -290,7 +292,8 @@ IF(GLUT_FOUND)
     ADD_EXECUTABLE (welsh_dragon_glut src/welsh_dragon_glut.cxx)
     TARGET_LINK_LIBRARIES (welsh_dragon_glut gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(welsh_dragon_glut BinaryExampleFiles)
-    INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION bin COMPONENT examples)
+    INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION examples/bin  COMPONENT examples)
+    INSTALL(FILES data/welsh-dragon-small.stl DESTINATION examples/data COMPONENT examples)
 ENDIF(GLUT_FOUND)
 
 
@@ -302,9 +305,9 @@ IF (FLTK_FOUND)
     ENDIF(WIN32)
     TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(gVirtualXRay-gui BinaryExampleFiles)
-    INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION bin COMPONENT examples)
-    INSTALL(FILES ../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION doc  COMPONENT examples)
-    INSTALL(FILES data/welsh-dragon-small.stl                                 DESTINATION data COMPONENT examples)
+    INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION examples/bin COMPONENT examples)
+    INSTALL(FILES ../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION examples/doc  COMPONENT examples)
+    INSTALL(FILES data/welsh-dragon-small.stl                                 DESTINATION examples/data COMPONENT examples)
 ENDIF (FLTK_FOUND)
 
 
@@ -326,19 +329,19 @@ IF(USE_BUNDLE)
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
     
-    set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
+    set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
 
     SET (MACOSX_RPATH 1)
     ADD_DEFINITIONS(-DHAS_BUNDLE)
 
     IF (FLTK_FOUND)
         IF(WIN32)
-            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx src/DragonDemo.res ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx src/DragonDemo.res ../data/welsh-dragon-small.stl ../LICENSE.txt ../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
         ELSE(WIN32)
-            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+            SET(DRAGON_DEMO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx src/OpenGLWindow.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../LICENSE.txt ../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
         ENDIF(WIN32)
     ELSE (FLTK_FOUND)
-        SET(DRAGON_DEMO_SRCS src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../../LICENSE.txt ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
+        SET(DRAGON_DEMO_SRCS src/welsh_dragon.cxx DragonDemo.icns ../data/welsh-dragon-small.stl ../LICENSE.txt ../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf)
     ENDIF (FLTK_FOUND)
 
     ADD_EXECUTABLE (DragonDemo MACOSX_BUNDLE WIN32 ${DRAGON_DEMO_SRCS})
@@ -377,9 +380,9 @@ IF(USE_BUNDLE)
     ENDIF(WIN32)
 
     IF (APPLE)
-        INSTALL(TARGETS DragonDemo BUNDLE DESTINATION . COMPONENT applications RUNTIME DESTINATION bin COMPONENT applications)
+        INSTALL(TARGETS DragonDemo BUNDLE DESTINATION examples COMPONENT applications RUNTIME DESTINATION examples/bin COMPONENT applications)
     ELSE (APPLE)
-        install(TARGETS DragonDemo RUNTIME DESTINATION bin COMPONENT applications)
+        install(TARGETS DragonDemo RUNTIME DESTINATION examples/bin COMPONENT applications)
     ENDIF (APPLE)
 
     if(APPLE)
@@ -390,7 +393,7 @@ IF(USE_BUNDLE)
         )
 
         SET_SOURCE_FILES_PROPERTIES (
-            ../../LICENSE.txt
+            ../LICENSE.txt
             PROPERTIES
             MACOSX_PACKAGE_LOCATION .
         )
@@ -401,11 +404,11 @@ IF(USE_BUNDLE)
             MACOSX_PACKAGE_LOCATION help
         )
     else(APPLE)
-        INSTALL(FILES ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION doc COMPONENT applications)
+        INSTALL(FILES ../../doc/screenshots/welsh_dragon_demo/quick_reference_guide.pdf DESTINATION examples/doc COMPONENT applications)
         INSTALL(FILES ../data/welsh-dragon-small.stl                                    DESTINATION examples/data COMPONENT applications)
     endif(APPLE)
 
-    INSTALL(FILES ../../LICENSE.txt DESTINATION .)
+    INSTALL(FILES ../LICENSE.txt DESTINATION examples)
 
     set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "gVirtualXRay Application")
     set(CPACK_COMPONENT_APPLICATIONS_DESCRIPTION "A demo application that makes use of gVirtualXRay")
@@ -456,11 +459,17 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay/examples")
     
 SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
 
-INSTALL(FILES ../LICENSE.txt DESTINATION .)
+INSTALL(FILES ../LICENSE.txt DESTINATION examples)
+
+SET (CPACK_COMPONENT_EXAMPLES_DISPLAY_NAME "Demo programs")
+SET (CPACK_COMPONENT_EXAMPLES_DESCRIPTION "All of the demos and example programs using gVirtualXRay")
+#SET (CPACK_COMPONENT_EXAMPLES_INSTALL_TYPES Demos Full)
 
 IF(APPLE)
     set(CPACK_BINARY_DRAGNDROP ON)
 ENDIF(APPLE)
 
-include(CPack)
+IF (NOT CPack_CMake_INCLUDED)
+    INCLUDE(CPack)
+ENDIF (NOT CPack_CMake_INCLUDED)
 

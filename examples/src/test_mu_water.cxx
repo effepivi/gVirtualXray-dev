@@ -112,8 +112,8 @@ int main(int argc, char** argv)
 		loadXRaySimulator();
 
 		// Print the energy in MeV and the attenuation coefficient of water in cm2/g
-		std::ofstream test_linear_interpoation_stream(PREFIX"/examples/data/test_mu_water_linear_interpolation.csv");
-		std::ofstream test_log_linear_interpoation_stream(PREFIX"/examples/data/test_mu_water_log_linear_interpolation.csv");
+		std::ofstream test_linear_interpoation_stream(PREFIX"/data/test_mu_water_linear_interpolation.csv");
+		std::ofstream test_log_linear_interpoation_stream(PREFIX"/data/test_mu_water_log_linear_interpolation.csv");
 		double energy(0);
 		for (energy = 1.00E-003; energy / MeV <= 0.1 * MeV; energy += 0.0001)
 		{
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 			test_log_linear_interpoation_stream << energy / MeV << " MeV\t" << g_xray_renderer.getMuWaterLogLinearInterpolation(energy) / (cm2/g) << " cm2/g" << std::endl;
 		}
 
-		std::ofstream reference_stream(PREFIX"/examples/data/test_mu_water1.csv");
+		std::ofstream reference_stream(PREFIX"/data/test_mu_water1.csv");
 		g_xray_renderer.printMuWaterTable(reference_stream);
 
 		// Close the window and shut GLFW
@@ -169,7 +169,7 @@ void loadSource()
 {
 	// Set the energy
 	//g_xray_beam.initialise(g_incident_energy);
-	g_xray_beam.initialise(PREFIX"/examples/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
+	g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 }
 
 

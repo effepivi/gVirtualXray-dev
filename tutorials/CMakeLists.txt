@@ -186,7 +186,17 @@ SET (RESOURCES_SOURCES
     shaders/tutorial_03_gl3.frag
     shaders/tutorial_03_gl3.vert
 )
-
+INSTALL(FILES 
+    shaders/tutorial_02_gl2.frag 
+    shaders/tutorial_02_gl2.vert
+    shaders/tutorial_02_gl3.frag
+    shaders/tutorial_02_gl3.vert
+    shaders/tutorial_03_gl2.frag
+    shaders/tutorial_03_gl2.vert
+    shaders/tutorial_03_gl3.frag
+    shaders/tutorial_03_gl3.vert
+    DESTINATION tutorials/shaders 
+    COMPONENT sources)
 
 FIND_PACKAGE(GZIP REQUIRED)
 IF(NOT GZIP_FOUND)
@@ -202,22 +212,29 @@ CreateHeaderFiles("." "BinaryTutorialFiles" "${RESOURCES_SOURCES}")
 IF(glfw_FOUND)
     ADD_EXECUTABLE (tutorial_00_glfw src/tutorial_00_glfw.cxx)
     TARGET_LINK_LIBRARIES (tutorial_00_glfw ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS tutorial_00_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_00_glfw RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+    INSTALL(FILES src/tutorial_00_glfw.cxx DESTINATION tutorials/src COMPONENT sources)
 
     ADD_EXECUTABLE (tutorial_01_glfw src/tutorial_01_glfw.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_01_glfw ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS tutorial_01_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_01_glfw RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+    INSTALL(FILES src/tutorial_01_glfw.cxx src/buildCube.cxx DESTINATION tutorials/src COMPONENT sources)
+    INSTALL(FILES include/buildCube.h DESTINATION tutorials/include COMPONENT sources)
 
     ADD_EXECUTABLE (tutorial_02_glfw src/tutorial_02_glfw.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_02_glfw ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(tutorial_02_glfw BinaryTutorialFiles)
-    INSTALL(TARGETS tutorial_02_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_02_glfw RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+    INSTALL(FILES src/tutorial_02_glfw.cxx src/buildCube.cxx DESTINATION tutorials/src COMPONENT sources)
+    INSTALL(FILES include/buildCube.h DESTINATION tutorials/include COMPONENT sources)
 
     IF (ITK_FOUND)
         ADD_EXECUTABLE (tutorial_03_glfw src/tutorial_03_glfw.cxx src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_03_glfw ${optionalLibs} ${requiredLibs})
         ADD_DEPENDENCIES(tutorial_03_glfw BinaryTutorialFiles)
-        INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION bin COMPONENT tutorials)
+        INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+        INSTALL(FILES src/tutorial_03_glfw.cxx src/buildCube.cxx DESTINATION tutorials/src COMPONENT sources)
+        INSTALL(FILES include/buildCube.h DESTINATION tutorials/include COMPONENT sources)
     ENDIF (ITK_FOUND)
 ENDIF(glfw_FOUND)
 
@@ -225,22 +242,29 @@ ENDIF(glfw_FOUND)
 IF(GLUT_FOUND)
     ADD_EXECUTABLE (tutorial_00_glut src/tutorial_00_glut.cxx)
     TARGET_LINK_LIBRARIES (tutorial_00_glut ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
-    INSTALL(TARGETS tutorial_00_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_00_glut RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+    INSTALL(FILES src/tutorial_00_glut.cxx DESTINATION tutorials/src COMPONENT sources)
 
     ADD_EXECUTABLE (tutorial_01_glut src/tutorial_01_glut.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_01_glut ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS tutorial_01_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_01_glut RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+    INSTALL(FILES src/tutorial_01_glut.cxx src/buildCube.cxx DESTINATION tutorials/src COMPONENT sources)
+    INSTALL(FILES include/buildCube.h DESTINATION tutorials/include COMPONENT sources)
 
     ADD_EXECUTABLE (tutorial_02_glut src/tutorial_02_glut.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (tutorial_02_glut ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(tutorial_02_glut BinaryTutorialFiles)
-    INSTALL(TARGETS tutorial_02_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_02_glut RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+    INSTALL(FILES src/tutorial_02_glut.cxx src/buildCube.cxx DESTINATION tutorials/src COMPONENT sources)
+    INSTALL(FILES include/buildCube.h DESTINATION tutorials/include COMPONENT sources)
 
     IF (ITK_FOUND)
         ADD_EXECUTABLE (tutorial_03_glut src/tutorial_03_glut.cxx src/buildCube.cxx)
         TARGET_LINK_LIBRARIES (tutorial_03_glut ${optionalLibs} ${requiredLibs})
         ADD_DEPENDENCIES(tutorial_03_glut BinaryTutorialFiles)
-        INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION bin COMPONENT tutorials)
+        INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION tutorials/bin COMPONENT tutorials)
+        INSTALL(FILES src/tutorial_03_glut.cxx src/buildCube.cxx DESTINATION tutorials/src COMPONENT sources)
+        INSTALL(FILES include/buildCube.h DESTINATION tutorials/include COMPONENT sources)
     ENDIF (ITK_FOUND)
 ENDIF(GLUT_FOUND)
 
@@ -262,13 +286,25 @@ SET(CPACK_PACKAGE_VENDOR "gVirtualXRay team")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay/tutorials")
     
-SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
+SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
 
-INSTALL(FILES ../LICENSE.txt DESTINATION .)
+INSTALL(FILES LICENSE.txt DESTINATION tutorials)
+INSTALL(FILES CMakeLists.txt DESTINATION tutorials COMPONENT sources)
+INSTALL(FILES FindgVirtualXRay.cmake DESTINATION tutorials COMPONENT sources)
+INSTALL(FILES FindGZIP.cmake DESTINATION tutorials COMPONENT sources)
+INSTALL(FILES CreateHeaderFiles.cmake DESTINATION tutorials COMPONENT sources)
+INSTALL(FILES Bin2C.cmake DESTINATION tutorials COMPONENT sources)
+INSTALL(FILES include/OpenGL4/GL/glcorearb.h DESTINATION tutorials/include/OpenGL4/GL COMPONENT sources)
+
+SET (CPACK_COMPONENT_TUTORIALS_DISPLAY_NAME "Tutorials")
+SET (CPACK_COMPONENT_TUTORIALS_DESCRIPTION "All of the tutorials to learn how to develop programs using gVirtualXRay")
+#SET (CPACK_COMPONENT_TUTORIALS_INSTALL_TYPES Tutorials Full)
 
 IF(APPLE)
     set(CPACK_BINARY_DRAGNDROP ON)
 ENDIF(APPLE)
 
-include(CPack)
+IF (NOT CPack_CMake_INCLUDED)
+    INCLUDE(CPack)
+ENDIF (NOT CPack_CMake_INCLUDED)
 

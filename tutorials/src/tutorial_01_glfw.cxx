@@ -504,3 +504,4 @@ void errorCallback(int error, const char* description)
     // Throw an error
     throw Exception(__FILE__, __FUNCTION__, __LINE__, description);
 }
+

@@ -743,7 +743,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_xray_renderer.computeSinogram(g_sample_rotation_matrix, 180, 1.0);
 
 			// Save the sinogram
-			g_xray_renderer.printSinogram(PREFIX"/examples/data/sinogram.mhd");
+			g_xray_renderer.printSinogram(PREFIX"/data/sinogram.mhd");
 
 			// Compute the X-Ray image
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
@@ -753,25 +753,25 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	//		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 			g_xray_renderer.computeLBuffer(g_inside_polygon_data, VEC3(), g_sample_rotation_matrix);
-			g_xray_renderer.printLBuffer(PREFIX"/examples/data/inside_lbuffer.mhd");
+			g_xray_renderer.printLBuffer(PREFIX"/data/inside_lbuffer.mhd");
 
 			g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
-			g_xray_renderer.printLBuffer(PREFIX"/examples/data/outside_lbuffer.mhd");
+			g_xray_renderer.printLBuffer(PREFIX"/data/outside_lbuffer.mhd");
 			break;
 
 		case GLFW_KEY_C:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
-			g_xray_renderer.printCumulatedLBuffer(PREFIX"/examples/data/cumulated_lbuffer.mhd");
+			g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
 			break;
 
 		case GLFW_KEY_F:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
-			g_xray_renderer.printEnergyFluence(PREFIX"/examples/data/energy_fluence.mhd");
+			g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
 			break;
 
 		case GLFW_KEY_M:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
-			g_xray_renderer.printSumMuxDx(PREFIX"/examples/data/Mux_Dx.mhd");
+			g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
 			break;
 
 		case GLFW_KEY_N:
@@ -1095,11 +1095,7 @@ void loadSTLFile()
 	if (!p_file_descriptor_0)
 	{
 		// Use the prefix
-#if defined(_WIN32) || defined(_WIN64)
-		stl_filename_0 = "../../examples/data/" + stl_filename_0;
-#else
-		stl_filename_0 = "../examples/data/" + stl_filename_0;
-#endif
+		stl_filename_0 = "../data/" + stl_filename_0;
 	}
 	else
 	{
@@ -1110,11 +1106,7 @@ void loadSTLFile()
 	if (!p_file_descriptor_1)
 	{
 		// Use the prefix
-#if defined(_WIN32) || defined(_WIN64)
-		stl_filename_1 = "../../examples/data/" + stl_filename_1;
-#else
-		stl_filename_1 = "../examples/data/" + stl_filename_1;
-#endif
+		stl_filename_1 = "../data/" + stl_filename_1;
 	}
 	else
 	{
@@ -1160,7 +1152,7 @@ void loadSource()
 {
 	// Set the energy
 	g_xray_beam.initialise(g_incident_energy);
-	//g_xray_beam.initialise(PREFIX"/examples/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
+	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);

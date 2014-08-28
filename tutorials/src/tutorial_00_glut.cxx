@@ -238,6 +238,7 @@ void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
 	// Close the program
 	case 27:
 	case 'q':
+        quitCallback();
 		exit(EXIT_SUCCESS);
 		break;
 

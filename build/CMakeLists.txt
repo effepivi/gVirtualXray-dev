@@ -61,7 +61,7 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 # Project name #################################################################
 PROJECT(gVirtualXRay)
 set (gVirtualXRay_VERSION_MAJOR 1)
-set (gVirtualXRay_VERSION_MINOR 2)
+set (gVirtualXRay_VERSION_MINOR 0)
 set (gVirtualXRay_VERSION_PATCH 0)
 
 
@@ -86,11 +86,6 @@ SET(requiredLibs)
 SET (gVirtualXRay_BASE_DIR ${PROJECT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
-
-
-# Options ######################################################################
-OPTION(USE_ITK   "Use ITK if possible." ON)
-OPTION(USE_BUNDLE "Create bundles or packages using CPack." ON)
 
 
 # Library source code ##########################################################
@@ -262,27 +257,25 @@ ENDIF(Boost_FOUND)
 
 
 # ITK ##########################################################################
-IF(USE_ITK)
-	FIND_PACKAGE(ITK)
-	IF(ITK_FOUND)
-		ADD_DEFINITIONS(-DHAS_ITK)
-		INCLUDE(${USE_ITK_FILE})
-		SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+FIND_PACKAGE(ITK)
+IF(ITK_FOUND)
+	ADD_DEFINITIONS(-DHAS_ITK)
+	INCLUDE(${USE_ITK_FILE})
+	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
 
-		IF(ITKVtkGlue_LOADED)
-			FIND_PACKAGE(VTK REQUIRED)
-			IF(VTK_FOUND)
-				INCLUDE(${VTK_USE_FILE})
-				LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
-				SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-			ELSE(VTK_FOUND)
-				MESSAGE("VTK not found.")
-			ENDIF(VTK_FOUND)
-		ENDIF(ITKVtkGlue_LOADED)
-	ELSE(ITK_FOUND)
-		MESSAGE("ITK not found.")
-	ENDIF(ITK_FOUND)
-ENDIF(USE_ITK)
+	IF(ITKVtkGlue_LOADED)
+		FIND_PACKAGE(VTK REQUIRED)
+		IF(VTK_FOUND)
+			INCLUDE(${VTK_USE_FILE})
+			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+		ELSE(VTK_FOUND)
+			MESSAGE(WARNING "VTK not found.")
+		ENDIF(VTK_FOUND)
+	ENDIF(ITKVtkGlue_LOADED)
+ELSE(ITK_FOUND)
+	MESSAGE(WARNING "ITK not found.")
+ENDIF(ITK_FOUND)
 
 
 # ZLIB #########################################################################
@@ -364,45 +357,55 @@ ENDIF(WIN32)
 # Examples #####################################################################
 option(BUILD_EXAMPLES "Build examples." ON)
 IF (BUILD_EXAMPLES)
-    	MESSAGE(STATUS "Build examples.")
+   	MESSAGE(STATUS "Build examples.")
 
-	add_subdirectory(../examples/build ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
+	add_subdirectory(../examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
 ELSE (BUILD_EXAMPLES)
-    	MESSAGE("Do not build examples.")
+   	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
 
 
 # Tutorials ####################################################################
 option(BUILD_TUTORIALS "Build tutorials." ON)
 IF (BUILD_TUTORIALS)
-    	MESSAGE(STATUS "Build tutorials.")
+   	MESSAGE(STATUS "Build tutorials.")
 
 	add_subdirectory(../tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
 ELSE (BUILD_TUTORIALS)
-    	MESSAGE("Do not build tutorials.")
+   	MESSAGE("Do not build tutorials.")
 ENDIF (BUILD_TUTORIALS)
 
+INSTALL (TARGETS                               gVirtualXRay ARCHIVE DESTINATION library/lib                  COMPONENT libraries)
+INSTALL (FILES                               ${HXX_SOURCES}         DESTINATION library/include/gVirtualXRay COMPONENT headers)
+INSTALL (FILES ../LICENSE.txt DESTINATION library)
+INSTALL (FILES ../LICENSE.txt DESTINATION .)
 
+SET (CPACK_PACKAGE_VERSION_MAJOR ${gVirtualXRay_VERSION_MAJOR})
+SET (CPACK_PACKAGE_VERSION_MINOR ${gVirtualXRay_VERSION_MINOR})
+SET (CPACK_PACKAGE_VERSION_PATCH ${gVirtualXRay_VERSION_PATCH})
+SET (CPACK_PACKAGE_VERSION "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
 
-install (TARGETS                               gVirtualXRay ARCHIVE DESTINATION lib                  COMPONENT libraries)
-install (FILES                               ${HXX_SOURCES}         DESTINATION include/gVirtualXRay COMPONENT headers)
-install (FILES "${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"         DESTINATION include/gVirtualXRay COMPONENT headers)
+SET (CPACK_PACKAGE_VENDOR "gVirtualXRay team")
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
+SET (CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
+    
+SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
 
-IF (USE_BUNDLE)
-	set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
-	set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+SET (CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+SET (CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
 
-	set(CPACK_COMPONENT_LIBRARIES_DESCRIPTION "Static libraries used to build programs with gVirtualXRay")
-	set(CPACK_COMPONENT_HEADERS_DESCRIPTION "C/C++ header files for use with gVirtualXRay")
+SET (CPACK_COMPONENT_LIBRARIES_DESCRIPTION "Static libraries used to build programs with gVirtualXRay")
+SET (CPACK_COMPONENT_HEADERS_DESCRIPTION "C/C++ header files for use with gVirtualXRay")
 
-	set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
-	set(CPACK_COMPONENT_HEADERS_GROUP "Development")
+SET (CPACK_COMPONENT_LIBRARIES_GROUP "Development")
+SET (CPACK_COMPONENT_HEADERS_GROUP "Development")
 
-	set(CPACK_COMPONENT_GROUP_DEVELOPMENT_DESCRIPTION "All of the tools you'll ever need to develop software with gVirtualXRay")
+SET (CPACK_COMPONENT_GROUP_DEVELOPMENT_DESCRIPTION "All of the tools you'll ever need to develop software with gVirtualXRay")
 
-	set(CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
-	set(CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
-ENDIF (USE_BUNDLE)
+SET (CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
+SET (CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
 
-include(CPack)
+IF (NOT CPack_CMake_INCLUDED)
+    INCLUDE(CPack)
+ENDIF (NOT CPack_CMake_INCLUDED)
 
