@@ -29,8 +29,9 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef _WIN32
-#include <GL/glew.h> // Fix undefined references on Windows
+// Fix undefined references on Windows
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glew.h>
 #endif
 
 // Ensure we are using opengl's core profile only
