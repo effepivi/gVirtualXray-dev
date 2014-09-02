@@ -96,7 +96,7 @@ Using GLFW"
 	Profile 3.2 Context Using GLFW}
 
 \author{Dr Franck P. Vidal}
-\date{21\textsuperscript{st} August 2014}
+\date{2\textsuperscript{nd} September 2014}
 
 \begin{document}
  \sloppy
@@ -143,8 +143,8 @@ at
 \verb+example/src/tutorial_01_glfw.cxx+. 
 It can be downloaded here: 
 \url{
-https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/examples/src/tutoria
-l_01_glfw.cxx}.
+https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/src/
+  tutorial_01_glfw.cxx}.
 It shows how to create a window with GLFW\,\footnote{\url{http://www.glfw.org/}} 
 and attach an OpenGL context to it. 
 Two cubes are displayed (see Figure~\ref{fig:scene}). 
@@ -173,15 +173,41 @@ The tutorial is organised as follows:
 	included to lighten the code. 
 	% How to set up all the main components of the simulation is describe in 
 
- \item Section~\ref{sec:Program Source Code} shows the source code of this 
-	tutorial. 
-
  \item Section~\ref{sec:Global Variables} shows the global variables that are 
 	used. 
 
  \item Section~\ref{sec:Function Declarations} what typical functions have to 
 	be declared in a basic GLFW program. 
 
+ \item Section~\ref{sec:Initialise GLFW} shows how to initialise GLFW. 
+
+ \item Section~\ref{sec:Initialise GLEW} shows how to initialise 
+    GLEW\,\footnote{\url{glew.sourceforge.net/}}. 
+
+ \item Section~\ref{sec:Initialise OpenGL} shows how to initialise OpenGL. 
+
+ \item How to load 3D objects is explained in Section~\ref{sec:Load Objects} 
+
+ \item They are displayed in Section~\ref{sec:Display Scene}.
+
+ \item Section~\ref{sec:Idle Callback} shows the idle callback. 
+
+ \item Section~\ref{sec:Quit Callback} shows the routine that is called when 
+  the program shuts.
+
+ \item Section~\ref{sec:frame buffer callback} shows what is done when the sze 
+of the frame buffer changes, i.e.~when the window is resized.
+
+ \item Section~\ref{sec:Keyboard Callback} shows how to handle the keyboard.
+
+ \item Section~\ref{sec:Scroll button callback} shows how to handle the 
+  scroll button.
+ 
+ \item Section~\ref{sec:Error Callback} deals with the error callback. 
+ 
+ \item Section~\ref{sec:Next Tutorial} gives a preview of what the next 
+  tutorial will be about.
+ 
  \item Appendix~\ref{sec:Program Source Code} shows the source code of this 
 	tutorial. 
 	
@@ -197,6 +223,9 @@ OpenGL core profile hears and ii) the header files that need to be included to
 build a simple program based on the GLFW 
 library:
 \begin{itemize}
+ \item \verb+GL/glew.h+ is the GLEW header file. It can be found at 
+  \url{glew.sourceforge.net/}. GLEW is used to ensure that there is no 
+  undefined references when the Windows executable is created.
  \item \verb+GL3_PROTOTYPES+ is a macro that ensures that we are using opengl's 
 core profile only. It has to be included before any other OpenGL header 
 inclusion (Mac users only).
@@ -228,8 +257,8 @@ three-dimensional (3D) triangle meshes.
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=29, lastline=60, caption=Header inclusion., 
-label=lst:header]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=29, lastline=65, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -245,8 +274,8 @@ Listing~\ref{lst:name space} shows the name spaces that can be selected:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=63, lastline=67, caption=Name spaces., 
-label=lst:name space]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=68, lastline=72, caption=Name spaces., 
+label=lst:name space]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -299,8 +328,8 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 
 
 \begin{center}
-\lstinputlisting[firstline=70, lastline=126, caption=Global variables., 
-label=lst:global variables]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=75, lastline=131, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -314,6 +343,8 @@ that have to be declared in a basic GLFW program:
  \item \verb+initGLFW+ is used i) to initialise GLFW, ii) to create an OpenGL 
 	context, iii) to create a window, and iv) attach the OpenGL context to the 
 	window (see Section~\ref{sec:Initialise GLFW}).
+ \item \verb+initGLEW+ is used to initialise GLEW (see 
+	Section~\ref{sec:Initialise GLEW}).
  \item \verb+initGL+ is used to initialise some states of OpenGL, e.g. the 
 	background colour and enable the Z-buffer (see 
 	Section~\ref{sec:Initialise OpenGL}).
@@ -340,8 +371,8 @@ that have to be declared in a basic GLFW program:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=129, lastline=141, caption=Function declarations., 
-label=lst:function declarations]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=134, lastline=147, caption=Function declarations., 
+label=lst:function declarations]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -365,8 +396,21 @@ nime main steps:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=205, lastline=246, caption=Initialise GLFW., 
-label=lst:Initialise GLFW]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=214, lastline=255, caption=Initialise GLFW., 
+label=lst:Initialise GLFW]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Initialise GLEW}
+\label{sec:Initialise GLEW}
+
+Listing~\ref{lst:Initialise GLEW} shows how to initialise GLEW when a Windows 
+platform is used.
+
+\begin{center}
+\lstinputlisting[firstline=258, lastline=272, caption=Initialise GLEW., 
+label=lst:Initialise GLEW]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -378,8 +422,8 @@ Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states
 (Z-buffer, and background colour) and check OpenGL's error status. 
 
 \begin{center}
-\lstinputlisting[firstline=249, lastline=262, caption=Initialise OpenGL., 
-label=lst:Initialise OpenGL]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=275, lastline=288, caption=Initialise OpenGL., 
+label=lst:Initialise OpenGL]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -741,8 +785,8 @@ created instantly if
 
 \begin{center}
 \lstinputlisting[label=lst:Load_Objects,
-    firstline=265, lastline=293, 
-    caption=Create 3D objects.]{../../../examples/src/tutorial_01_glfw.cxx}
+    firstline=291, lastline=319, 
+    caption=Create 3D objects.]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -833,8 +877,8 @@ to~30 are taking care of in Listing~\ref{lst:Display_Scene}.
 
 \begin{center}
 \lstinputlisting[label=lst:Display_Scene,
-    firstline=296, lastline=375,
-    caption=display the 3D scene.]{../../../examples/src/tutorial_01_glfw.cxx}
+    firstline=322, lastline=401,
+    caption=display the 3D scene.]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -850,8 +894,8 @@ matrix defined by angle in degrees (\verb+1.0+ in this example) and a rotation
 axis (\verb+VEC3(1.0, 0.0, 0.0)+).
 
 \begin{center}
-\lstinputlisting[firstline=378, lastline=385, caption=Idle callback., 
-label=lst:Idle callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=404, lastline=411, caption=Idle callback., 
+label=lst:Idle callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 	
@@ -864,8 +908,8 @@ If the window exists, then it is destroyed.
 Finally, the GLFW application is terminated. 
 
 \begin{center}
-\lstinputlisting[firstline=388, lastline=402, caption=Quit callback., 
-label=lst:Quit callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=414, lastline=428, caption=Quit callback., 
+label=lst:Quit callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -892,9 +936,9 @@ performed (see Listing~\ref{lst:frame buffer callback}).
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=405, lastline=435, caption=Change of frame buffer 
+\lstinputlisting[firstline=431, lastline=461, caption=Change of frame buffer 
 size callback., 
-label=lst:frame buffer callback]{../../../examples/src/tutorial_01_glfw.cxx}
+label=lst:frame buffer callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -906,8 +950,8 @@ Listing~\ref{lst:Keyboard Callback} shows a typical GLFW keyboard callback.
 Here the window is closed when the user presses \verb+Q+ or \verb+Esc+.
 
 \begin{center}
-\lstinputlisting[firstline=438, lastline=456, caption=Keyboard callback., 
-label=lst:Keyboard Callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=464, lastline=482, caption=Keyboard callback., 
+label=lst:Keyboard Callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -921,8 +965,8 @@ To update the modelling-viewing matrix, the Frame Buffer Size Callback is
 called.
 
 \begin{center}
-\lstinputlisting[firstline=459, lastline=472, caption=Scroll button callback., 
-label=lst:Scroll button callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=485, lastline=498, caption=Scroll button callback., 
+label=lst:Scroll button callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
@@ -934,12 +978,13 @@ In the error callback an exception is thrown with the details of the error
 (see Listing~\ref{lst:Error Callback}).
 
 \begin{center}
-\lstinputlisting[firstline=475, lastline=481, caption=Error callback., 
-label=lst:Error Callback]{../../../examples/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=501, lastline=507, caption=Error callback., 
+label=lst:Error Callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 
 \section{Next Tutorial...}
+\label{sec:Next Tutorial}
 
 In the next tutorial:
 \begin{itemize}
@@ -968,7 +1013,7 @@ In the next tutorial:
 
 \begin{center}
   \lstinputlisting[caption=All the source code of this tutorial., 
-  label=lst:Program Source Code,numbers=none]{../../../examples/src/tutorial_01_glfw.cxx}
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \end{center}
 
 % 
