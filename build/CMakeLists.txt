@@ -26,6 +26,19 @@
 ################################################################################
 
 
+# Project name #################################################################
+PROJECT(gVirtualXRay)
+SET (gVirtualXRay_VERSION_MAJOR 1)
+SET (gVirtualXRay_VERSION_MINOR 0)
+SET (gVirtualXRay_VERSION_PATCH 0)
+
+SET (PROJECT_NAME         "gVirtualXRay")
+SET (EMAIL                "franck.p.vidal@fpvidal.net")
+SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
+SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")
+SET (MAIN_PROJECT_VERSION "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
+
+
 # Initialise some states by default ############################################
 set(BUILD_SHARED_LIBS OFF)
 
@@ -56,13 +69,6 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules)
 # Make include files in paths like /usr/local/include have preference before
 # files in OSX frameworks. 
 SET(CMAKE_FIND_FRAMEWORK "LAST")
-
-
-# Project name #################################################################
-PROJECT(gVirtualXRay)
-set (gVirtualXRay_VERSION_MAJOR 1)
-set (gVirtualXRay_VERSION_MINOR 0)
-set (gVirtualXRay_VERSION_PATCH 0)
 
 
 # configure a header file to pass some of the CMake settings
@@ -404,6 +410,17 @@ SET (CPACK_COMPONENT_GROUP_DEVELOPMENT_DESCRIPTION "All of the tools you'll ever
 
 SET (CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
 SET (CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
+
+
+IF (WIN32)
+    SET (CPACK_GENERATOR NSIS)
+    SET (CPACK_NSIS_PACKAGE_NAME ${MAIN_PACKAGE_NAME})
+    SET (CPACK_NSIS_DISPLAY_NAME ${MAIN_PACKAGE_NAME})
+    SET (CPACK_NSIS_CONTACT ${EMAIL})
+    SET (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${MAIN_PACKAGE_NAME}-${PROJECT_VERSION}")
+    SET (CPACK_NSIS_MENU_LINKS "${MAIN_WEBSITE}" "Homepage for ${MAIN_PACKAGE_NAME}")
+ENDIF (WIN32)
+
 
 IF (NOT CPack_CMake_INCLUDED)
     INCLUDE(CPack)

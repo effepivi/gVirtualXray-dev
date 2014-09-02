@@ -26,7 +26,18 @@
 ################################################################################
 
 
-SET (WEBSITE http://sourceforge.net/projects/gvirtualxray/)
+# Project name #################################################################
+project (examples)
+set (examples_VERSION_MAJOR 1)
+set (examples_VERSION_MINOR 0)
+set (examples_VERSION_PATCH 0)
+
+
+SET (PROJECT_NAME            "gVirtualXRay")
+SET (EMAIL                   "franck.p.vidal@fpvidal.net")
+SET (EXAMPLE_WEBSITE         "http://gvirtualxray.sourceforge.net/demos/")
+SET (EXAMPLE_PACKAGE_NAME    "${PROJECT_NAME} -- Demo Programs")
+SET (EXAMPLE_PROJECT_VERSION "${examples_VERSION_MAJOR}.${examples_VERSION_MINOR}.${examples_VERSION_PATCH}")
 
 
 # Initialise some states by default ############################################
@@ -42,13 +53,6 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-
-
-# Project name #################################################################
-project (examples)
-set (examples_VERSION_MAJOR 1)
-set (examples_VERSION_MINOR 0)
-set (examples_VERSION_PATCH 0)
 
 
 # Enable Stereo using OpenGL's quad buffering ##################################
@@ -465,9 +469,21 @@ SET (CPACK_COMPONENT_EXAMPLES_DISPLAY_NAME "Demo programs")
 SET (CPACK_COMPONENT_EXAMPLES_DESCRIPTION "All of the demos and example programs using gVirtualXRay")
 #SET (CPACK_COMPONENT_EXAMPLES_INSTALL_TYPES Demos Full)
 
+
 IF(APPLE)
     set(CPACK_BINARY_DRAGNDROP ON)
 ENDIF(APPLE)
+
+
+IF (WIN32)
+    SET (CPACK_GENERATOR NSIS)
+    SET (CPACK_NSIS_PACKAGE_NAME ${EXAMPLE_PACKAGE_NAME})
+    SET (CPACK_NSIS_DISPLAY_NAME ${EXAMPLE_PACKAGE_NAME})
+    SET (CPACK_NSIS_CONTACT ${EMAIL})
+    SET (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${EXAMPLE_PACKAGE_NAME}-${EXAMPLE_PROJECT_VERSION}")
+    SET (CPACK_NSIS_MENU_LINKS "${EXAMPLE_WEBSITE}" "Homepage for ${EXAMPLE_PACKAGE_NAME}")
+ENDIF (WIN32)
+
 
 IF (NOT CPack_CMake_INCLUDED)
     INCLUDE(CPack)

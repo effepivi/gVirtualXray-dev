@@ -26,7 +26,18 @@
 ################################################################################
 
 
-SET (WEBSITE http://sourceforge.net/projects/gvirtualxray/)
+# Project name #################################################################
+project (tutorials)
+set (tutorials_VERSION_MAJOR 1)
+set (tutorials_VERSION_MINOR 0)
+set (tutorials_VERSION_PATCH 0)
+
+
+SET (PROJECT_NAME             "gVirtualXRay")
+SET (EMAIL                    "franck.p.vidal@fpvidal.net")
+SET (TUTORIAL_WEBSITE         "http://gvirtualxray.sourceforge.net/tutorials/")
+SET (TUTORIAL_PACKAGE_NAME    "${PROJECT_NAME} -- Tutorials")
+SET (TUTORIAL_PROJECT_VERSION "${tutorials_VERSION_MAJOR}.${tutorials_VERSION_MINOR}.${tutorials_VERSION_PATCH}")
 
 
 # Initialise some states by default ############################################
@@ -42,13 +53,6 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-
-
-# Project name #################################################################
-project (tutorials)
-set (tutorials_VERSION_MAJOR 1)
-set (tutorials_VERSION_MINOR 0)
-set (tutorials_VERSION_PATCH 0)
 
 
 # Headers of the project #######################################################
@@ -300,9 +304,21 @@ SET (CPACK_COMPONENT_TUTORIALS_DISPLAY_NAME "Tutorials")
 SET (CPACK_COMPONENT_TUTORIALS_DESCRIPTION "All of the tutorials to learn how to develop programs using gVirtualXRay")
 #SET (CPACK_COMPONENT_TUTORIALS_INSTALL_TYPES Tutorials Full)
 
+
 IF(APPLE)
     set(CPACK_BINARY_DRAGNDROP ON)
 ENDIF(APPLE)
+
+
+IF (WIN32)
+    SET (CPACK_GENERATOR NSIS)
+    SET (CPACK_NSIS_PACKAGE_NAME            ${TUTORIAL_PACKAGE_NAME})
+    SET (CPACK_NSIS_DISPLAY_NAME            ${TUTORIAL_PACKAGE_NAME})
+    SET (CPACK_NSIS_CONTACT                 ${EMAIL})
+    SET (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${TUTORIAL_PACKAGE_NAME}-${TUTORIAL_PROJECT_VERSION}")
+    SET (CPACK_NSIS_MENU_LINKS "${TUTORIAL_WEBSITE}" "Homepage for ${TUTORIAL_PACKAGE_NAME}")
+ENDIF (WIN32)
+
 
 IF (NOT CPack_CMake_INCLUDED)
     INCLUDE(CPack)
