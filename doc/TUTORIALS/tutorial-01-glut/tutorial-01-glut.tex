@@ -37,10 +37,9 @@
 \hypersetup{  
   colorlinks=true,
   final=true,
-  pdftitle="gVirtualXRay - Tutorial 01 - GLFW",
+  pdftitle="gVirtualXRay - Tutorial 01 - GLUT",
   pdfauthor="Dr Franck P. Vidal",  
-  pdfsubject="Creating a Window and an OpenGL Core Profile 3.2 Context 
-Using GLFW"
+  pdfsubject="Creating a Window and an OpenGL Context Using GLUT"
 }
 
 \usepackage[paper=a4paper,margin=1.6cm]{geometry}	% 1 inch margins all around
@@ -92,11 +91,10 @@ Using GLFW"
 % \makeglossaries
 % \input{../acronyms}
 
-\title{gVirtualXRay -- Tutorial 01: Creating a Window and\\an OpenGL Core 
-	Profile 3.2 Context Using GLFW}
+\title{gVirtualXRay -- Tutorial 01: Creating a Window and\\an OpenGL Context Using GLUT}
 
 \author{Dr Franck P. Vidal}
-\date{2\textsuperscript{nd} September 2014}
+\date{4\textsuperscript{th} September 2014}
 
 \begin{document}
  \sloppy
@@ -140,12 +138,12 @@ Using GLFW"
 The complete source code of this tutorial is available in 
 Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
 at 
-\verb+example/src/tutorial_01_glfw.cxx+. 
+\verb+example/src/tutorial_01_glut.cxx+. 
 It can be downloaded here: 
 \url{
 https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/src/
-  tutorial_01_glfw.cxx}.
-It shows how to create a window with GLFW\,\footnote{\url{http://www.glfw.org/}} 
+  tutorial_01_glut.cxx}.
+It shows how to create a window with GLUT\,\footnote{\url{http://www.pengl.org/resources/libraries/glut//}} 
 and attach an OpenGL context to it. 
 Two cubes are displayed (see Figure~\ref{fig:scene}). 
 \begin{figure}[tbh]
@@ -177,12 +175,12 @@ The tutorial is organised as follows:
 	used. 
 
  \item Section~\ref{sec:Function Declarations} what typical functions have to 
-	be declared in a basic GLFW program. 
+	be declared in a basic GLUT program. 
 
- \item Section~\ref{sec:Initialise GLFW} shows how to initialise GLFW. 
+ \item Section~\ref{sec:Initialise GLUT} shows how to initialise GLUT. 
 
  \item Section~\ref{sec:Initialise GLEW} shows how to initialise 
-    GLEW\,\footnote{\url{glew.sourceforge.net/}}. 
+    GLEW\,\footnote{\url{http://glew.sourceforge.net/}}. 
 
  \item Section~\ref{sec:Initialise OpenGL} shows how to initialise OpenGL. 
 
@@ -202,9 +200,7 @@ of the frame buffer changes, i.e.~when the window is resized.
 
  \item Section~\ref{sec:Scroll button callback} shows how to handle the 
   scroll button.
- 
- \item Section~\ref{sec:Error Callback} deals with the error callback. 
- 
+  
  \item Section~\ref{sec:Next Tutorial} gives a preview of what the next 
   tutorial will be about.
  
@@ -220,23 +216,15 @@ of the frame buffer changes, i.e.~when the window is resized.
 
 Listing~\ref{lst:header} shows i) the macros that have to be defines to include 
 OpenGL core profile hears and ii) the header files that need to be included to 
-build a simple program based on the GLFW 
+build a simple program based on the GLUT 
 library:
 \begin{itemize}
  \item \verb+GL/glew.h+ is the GLEW header file. It can be found at 
-  \url{glew.sourceforge.net/}. GLEW is used to ensure that there is no 
+  \url{http://glew.sourceforge.net/}. GLEW is used to ensure that there is no 
   undefined references when the Windows executable is created.
- \item \verb+GL3_PROTOTYPES+ is a macro that ensures that we are using opengl's 
-core profile only. It has to be included before any other OpenGL header 
-inclusion (Mac users only).
- \item \verb+GL_GLEXT_PROTOTYPES+ is a macro that ensures that we are using 
-OpenGL's core profile only. It has to be included before any other OpenGL header 
-inclusion (Windows or Linux users).
- \item \verb+GLFW_INCLUDE_GLCOREARB+ is a macro that tells GLFW to include the 
-OpenGL core profile header. It has to be included before any other OpenGL header 
-inclusion (all users).
- \item \verb+glfw3.h+ is the main GLFW header file.
+ \item \verb+glut.h+ is the GLUT header file. Be careful here as Apple installed it somewhere else... 
  \item \verb+iostream+ is used for output streams.
+ \item \verb+sstream+ is used to generate error messages
  \item \verb+exception+ is used for C++ exceptions.
  \item \verb+cstdlib+ defines return status (\verb+EXIT_SUCCESS+ and 
 	\verb+EXIT_FAILURE+).
@@ -257,8 +245,8 @@ three-dimensional (3D) triangle meshes.
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=29, lastline=65, caption=Header inclusion., 
-label=lst:header]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=28, lastline=58, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -274,8 +262,8 @@ Listing~\ref{lst:name space} shows the name spaces that can be selected:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=68, lastline=72, caption=Name spaces., 
-label=lst:name space]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=61, lastline=65, caption=Name spaces., 
+label=lst:name space]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -289,7 +277,7 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 
 	\item \verb+GLsizei g_window_height+ keeps track of the window height.
 	
-	\item \verb+GLFWwindow* g_p_window_id+ is the GLFW window ID.
+	\item \verb+int g_window_id+ is the GLUT window ID.
 	
 	\item \verb+Shader g_display_shader+ is the shader program used to 
 		display the 3D scene
@@ -328,8 +316,8 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 
 
 \begin{center}
-\lstinputlisting[firstline=75, lastline=131, caption=Global variables., 
-label=lst:global variables]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=68, lastline=120, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -338,11 +326,11 @@ label=lst:global variables]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \label{sec:Function Declarations}
 
 Listing~\ref{lst:function declarations} shows the typical functions 
-that have to be declared in a basic GLFW program:
+that have to be declared in a basic GLUT program:
 \begin{itemize}
- \item \verb+initGLFW+ is used i) to initialise GLFW, ii) to create an OpenGL 
+ \item \verb+initGLUT+ is used i) to initialise GLUT, ii) to create an OpenGL 
 	context, iii) to create a window, and iv) attach the OpenGL context to the 
-	window (see Section~\ref{sec:Initialise GLFW}).
+	window (see Section~\ref{sec:Initialise GLUT}).
  \item \verb+initGLEW+ is used to initialise GLEW (see 
 	Section~\ref{sec:Initialise GLEW}).
  \item \verb+initGL+ is used to initialise some states of OpenGL, e.g. the 
@@ -357,7 +345,7 @@ that have to be declared in a basic GLFW program:
 	loop and can be used to perform animation.
  \item \verb+quitCallback+ is call when the program terminates  (see 
 	Section~\ref{sec:Quit Callback}). It closes the window and cleans up 
-	GLFW.
+	GLUT.
  \item \verb+framebufferSizeCallback+ is called every time the frame buffer 
 	size changes (see Section~\ref{sec:frame buffer callback}). It initialises 
 	the viewport size and the projection matrix.
@@ -366,38 +354,31 @@ that have to be declared in a basic GLFW program:
 	close the window when the \verb+escape+ key is pressed.
 \item \verb+scrollCallback+ processes the mouse scroll button. It can be used 
 	to zoom in and out (see Section~\ref{sec:Scroll button callback}).
- \item \verb+errorCallback+ is called to throw an exception when GLFW generates 
-	an error (see Section~\ref{sec:Error Callback}).
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=134, lastline=147, caption=Function declarations., 
-label=lst:function declarations]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=123, lastline=135, caption=Function declarations., 
+label=lst:function declarations]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Initialise GLFW}
-\label{sec:Initialise GLFW}
+\section{Initialise GLUT}
+\label{sec:Initialise GLUT}
 
-Listing~\ref{lst:Initialise GLFW} shows how to initialise GLFW to create an 
+Listing~\ref{lst:Initialise GLUT} shows how to initialise GLUT to create an 
 OpenGL core profile 3.2 context and how to attach a window to it. There are 
 nime main steps:
 \begin{itemize}
-    \item Register an error callback
-    \item Initialise the GLFW library.
-    \item If it cannot be initialised, an exception is thrown.
-    \item Enable OpenGL 3.2 (this is compulsory)
-    \item Enable anti-aliasing (this is optional).
+    \item Initialise the GLUT library.
     \item Create a windowed mode window and its OpenGL context
     \item If the window has not been created, an exception is thrown.
-    \item Make the window's context current
-    \item Register GLFW callbacks
+    \item Register GLUT callbacks
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=214, lastline=255, caption=Initialise GLFW., 
-label=lst:Initialise GLFW]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=189, lastline=214, caption=Initialise GLUT., 
+label=lst:Initialise GLUT]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -405,12 +386,11 @@ label=lst:Initialise GLFW]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \section{Initialise GLEW}
 \label{sec:Initialise GLEW}
 
-Listing~\ref{lst:Initialise GLEW} shows how to initialise GLEW when a Windows 
-platform is used.
+Listing~\ref{lst:Initialise GLEW} shows how to initialise GLEW.
 
 \begin{center}
-\lstinputlisting[firstline=258, lastline=272, caption=Initialise GLEW., 
-label=lst:Initialise GLEW]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=217, lastline=229, caption=Initialise GLEW., 
+label=lst:Initialise GLEW]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -422,8 +402,8 @@ Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states
 (Z-buffer, and background colour) and check OpenGL's error status. 
 
 \begin{center}
-\lstinputlisting[firstline=275, lastline=288, caption=Initialise OpenGL., 
-label=lst:Initialise OpenGL]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=232, lastline=245, caption=Initialise OpenGL., 
+label=lst:Initialise OpenGL]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -785,8 +765,8 @@ created instantly if
 
 \begin{center}
 \lstinputlisting[label=lst:Load_Objects,
-    firstline=291, lastline=319, 
-    caption=Create 3D objects.]{../../../tutorials/src/tutorial_01_glfw.cxx}
+    firstline=248, lastline=276, 
+    caption=Create 3D objects.]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -877,8 +857,8 @@ to~30 are taking care of in Listing~\ref{lst:Display_Scene}.
 
 \begin{center}
 \lstinputlisting[label=lst:Display_Scene,
-    firstline=322, lastline=401,
-    caption=display the 3D scene.]{../../../tutorials/src/tutorial_01_glfw.cxx}
+    firstline=279, lastline=361,
+    caption=display the 3D scene.]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -894,8 +874,8 @@ matrix defined by angle in degrees (\verb+1.0+ in this example) and a rotation
 axis (\verb+VEC3(1.0, 0.0, 0.0)+).
 
 \begin{center}
-\lstinputlisting[firstline=404, lastline=411, caption=Idle callback., 
-label=lst:Idle callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=364, lastline=374, caption=Idle callback., 
+label=lst:Idle callback]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 	
@@ -903,13 +883,13 @@ label=lst:Idle callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \section{Quit Callback}
 \label{sec:Quit Callback}
 
-Listing~\ref{lst:Quit callback} shows how to clean up GLFW. 
+Listing~\ref{lst:Quit callback} shows how to clean up GLUT. 
 If the window exists, then it is destroyed. 
-Finally, the GLFW application is terminated. 
+Finally, the GLUT application is terminated. 
 
 \begin{center}
-\lstinputlisting[firstline=414, lastline=428, caption=Quit callback., 
-label=lst:Quit callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=377, lastline=388, caption=Quit callback., 
+label=lst:Quit callback]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -936,9 +916,9 @@ performed (see Listing~\ref{lst:frame buffer callback}).
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=431, lastline=461, caption=Change of frame buffer 
+\lstinputlisting[firstline=391, lastline=424, caption=Change of frame buffer 
 size callback., 
-label=lst:frame buffer callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:frame buffer callback]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -946,12 +926,12 @@ label=lst:frame buffer callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \section{Keyboard Callback}
 \label{sec:Keyboard Callback}
 
-Listing~\ref{lst:Keyboard Callback} shows a typical GLFW keyboard callback. 
+Listing~\ref{lst:Keyboard Callback} shows a typical GLUT keyboard callback. 
 Here the window is closed when the user presses \verb+Q+ or \verb+Esc+.
 
 \begin{center}
-\lstinputlisting[firstline=464, lastline=482, caption=Keyboard callback., 
-label=lst:Keyboard Callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=427, lastline=446, caption=Keyboard callback., 
+label=lst:Keyboard Callback]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -965,24 +945,12 @@ To update the modelling-viewing matrix, the Frame Buffer Size Callback is
 called.
 
 \begin{center}
-\lstinputlisting[firstline=485, lastline=498, caption=Scroll button callback., 
-label=lst:Scroll button callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=448, lastline=477, caption=Scroll button callback., 
+label=lst:Scroll button callback]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Error Callback}
-\label{sec:Error Callback}
-
-In the error callback an exception is thrown with the details of the error 
-(see Listing~\ref{lst:Error Callback}).
-
-\begin{center}
-\lstinputlisting[firstline=501, lastline=507, caption=Error callback., 
-label=lst:Error Callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
-\end{center}
-
-
 \section{Next Tutorial...}
 \label{sec:Next Tutorial}
 
@@ -1013,7 +981,7 @@ In the next tutorial:
 
 \begin{center}
   \lstinputlisting[caption=All the source code of this tutorial., 
-  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_01_glfw.cxx}
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_01_glut.cxx}
 \end{center}
 
 % 
