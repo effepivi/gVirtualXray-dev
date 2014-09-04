@@ -37,10 +37,10 @@
 \hypersetup{  
   colorlinks=true,
   final=true,
-  pdftitle="gVirtualXRay - Tutorial 01 - GLFW",
+  pdftitle="gVirtualXRay - Tutorial 02 - GLFW",
   pdfauthor="Dr Franck P. Vidal",  
-  pdfsubject="Creating a Window and an OpenGL Core Profile 3.2 Context 
-Using GLFW"
+  pdfsubject="Loading the shader program from a file compressed with the Z library. 
+		Adding an efficient mouse control to turn the 3D scene."
 }
 
 \usepackage[paper=a4paper,margin=1.6cm]{geometry}	% 1 inch margins all around
@@ -92,11 +92,12 @@ Using GLFW"
 % \makeglossaries
 % \input{../acronyms}
 
-\title{gVirtualXRay -- Tutorial 01: Creating a Window and\\an OpenGL Core 
-	Profile 3.2 Context Using GLFW}
+\title{gVirtualXRay -- Tutorial 02: \\
+		Loading the shader program from a file compressed with the Z library.\\
+		Adding an efficient mouse control to turn the 3D scene.}
 
 \author{Dr Franck P. Vidal}
-\date{2\textsuperscript{nd} September 2014}
+\date{4\textsuperscript{th} September 2014}
 
 \begin{document}
  \sloppy
@@ -105,6 +106,7 @@ Using GLFW"
 \vfill
 \begin{center}
 \includegraphics[width=0.5\textwidth]{screenshot}
+{\\ \Huge Change screenshot}
 \end{center}
 \vfill
 
@@ -140,30 +142,28 @@ Using GLFW"
 The complete source code of this tutorial is available in 
 Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
 at 
-\verb+example/src/tutorial_01_glfw.cxx+. 
+\verb+example/src/tutorial_02_glfw.cxx+. 
 It can be downloaded here: 
 \url{
 https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/src/
-  tutorial_01_glfw.cxx}.
-It shows how to create a window with GLFW\,\footnote{\url{http://www.glfw.org/}} 
-and attach an OpenGL context to it. 
+  tutorial_02_glfw.cxx}.
+It improves the 1st tutorial in two ways:
+\begin{enumerate}
+	\item Loading the shader program from a file compressed with the Z library.
+	\item Adding an efficient mouse control to turn the 3D scene.
+\end{enumerate}
 Two cubes are displayed (see Figure~\ref{fig:scene}). 
 \begin{figure}[tbh]
  \centering
  \includegraphics[width=0.5\textwidth]{screenshot}
- \caption{\label{fig:scene} Definition of the main components needed to 
-simulated X-ray images.}
+{\\ \Huge Change screenshot}
+ \caption{\label{fig:scene} Screen capture of the second tutorial.}
 \end{figure}
-They both rotate automatically. 
-The rendering makes use of OpenGL Shading Language (GLSL) as the fix rendering 
-pipeline and direct 
-rendering are both depreciated in any modern computer graphics applications. 
-
-It is an introductory tutorial, for more details, the reader may refer to the 
-code (it is well documented) and the 
-Doxygen\,\footnote{\url{http://www.doxygen.org/}} documentation of the 
-project\,\footnote{\url{http://gvirtualxray.sourceforge.net/documentation.php}}
-. 
+First the fragment program is saved into \verb+tutorial_02_gl3.frag+. 
+The vertex program is saved into \verb+tutorial_02_gl3.vert+. 
+The files are individually compressed using \textit{gzip}\,\footnote{\url{http://www.gzip.org/}}. 
+Finally each compressed file is converted into a C header file. 
+It can be achieved CMake\,\footnote{\url{http://www.cmake.org/}} or an external tool such as bin2c\,\footnote{\url{http://sourceforge.net/projects/bin2c/}}. 
 
 The tutorial is organised as follows:
 \begin{itemize}
@@ -218,47 +218,20 @@ of the frame buffer changes, i.e.~when the window is resized.
 \section{Header inclusion}
 \label{sec:Header inclusion}
 
-Listing~\ref{lst:header} shows i) the macros that have to be defines to include 
+Listing~\ref{lst:header} only shows the new i) the macros that have to be defines to include 
 OpenGL core profile hears and ii) the header files that need to be included to 
 build a simple program based on the GLFW 
-library:
+library and decompress the data using the \textbf{zlib} library\,\footnote{\url{http://www.zlib.net/}}:
 \begin{itemize}
- \item \verb+GL/glew.h+ is the GLEW header file. It can be found at 
-  \url{http://glew.sourceforge.net/}. GLEW is used to ensure that there is no 
-  undefined references when the Windows executable is created.
- \item \verb+GL3_PROTOTYPES+ is a macro that ensures that we are using opengl's 
-core profile only. It has to be included before any other OpenGL header 
-inclusion (Mac users only).
- \item \verb+GL_GLEXT_PROTOTYPES+ is a macro that ensures that we are using 
-OpenGL's core profile only. It has to be included before any other OpenGL header 
-inclusion (Windows or Linux users).
- \item \verb+GLFW_INCLUDE_GLCOREARB+ is a macro that tells GLFW to include the 
-OpenGL core profile header. It has to be included before any other OpenGL header 
-inclusion (all users).
- \item \verb+glfw3.h+ is the main GLFW header file.
- \item \verb+iostream+ is used for output streams.
- \item \verb+exception+ is used for C++ exceptions.
- \item \verb+cstdlib+ defines return status (\verb+EXIT_SUCCESS+ and 
-	\verb+EXIT_FAILURE+).
- \item \verb+gVirtualXRay/Types.h+ defines new types, e.g 
-\verb+RATIONAL_NUMBER+, 
-	\verb+VEC2+, \verb+VEC3+ and \verb+MATRIX4+ to name a few.
- \item \verb+gVirtualXRay/Units.h+ defines units such as metre, kilometre, 
-electronvolt, 
-	kiloelectron volt, gram, kilogram, etc.
- \item \verb+gVirtualXRay/OpenGLUtilities.h+ defines some utility functions 
-about OpenGL, 
-	e.g. matrix stacks, how to set the projection matrix, etc.
- \item \verb+gVirtualXRay/PolygonMesh.h+ corresponds to a class used to handle 
-three-dimensional (3D) triangle meshes.
- \item \verb+gVirtualXRay/Shader.h+ corresponds to a class that handles 
-(GLSL) programs.
- \item \verb+buildCube.h+ is used to create the triangle mesh of a cube.
+ \item \verb+gVirtualXRay/Utilities.h+ is the new header file that is used to handle decompression using the Z library. 
+ \item \verb+tutorial_02_gl3.frag.h+ is the compressed fragment shader for OpenGL 3.x. 
+ \item \verb+tutorial_02_gl3.vert.h+ is the compressed vertex shader for OpenGL 3.x. 
+ \item For other header files, see the GLFW version of Tutorial 1.
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=29, lastline=65, caption=Header inclusion., 
-label=lst:header]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=31, lastline=71, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -266,17 +239,7 @@ label=lst:header]{../../../tutorials/src/tutorial_01_glfw.cxx}
 \section{Name Spaces}
 \label{sec:Name Spaces}
 
-Listing~\ref{lst:name space} shows the name spaces that can be selected:
-\begin{itemize}
- \item \verb+gVirtualXRay+ includes graphics elements such as \verb+PolygonMesh+ 
-	and utilities such as \verb+Exception+. 
- \item \verb+std+ is used for output streams and exceptions.
-\end{itemize}
-
-\begin{center}
-\lstinputlisting[firstline=68, lastline=72, caption=Name spaces., 
-label=lst:name space]{../../../tutorials/src/tutorial_01_glfw.cxx}
-\end{center}
+See Tutorial 1.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,51 +248,34 @@ label=lst:name space]{../../../tutorials/src/tutorial_01_glfw.cxx}
 
 Listing~\ref{lst:global variables} shows the global variables that are used:
 \begin{itemize}
-	\item \verb+GLsizei g_window_width+ keeps track of the window width.
 
-	\item \verb+GLsizei g_window_height+ keeps track of the window height.
-	
-	\item \verb+GLFWwindow* g_p_window_id+ is the GLFW window ID.
-	
-	\item \verb+Shader g_display_shader+ is the shader program used to 
-		display the 3D scene
-	
-	\item \verb+PolygonMesh g_polygon_mesh_1+ is the polygon mesh of the first 
-		3D object.
-	
-	\item \verb+PolygonMesh g_polygon_mesh_2+ is the polygon mesh of the second 
-		3D object.
+ \item \verb+g_tutorial_02_gl3_frag+  is declared in \verb+tutorial_02_gl3.frag.h+. 
+ It is the compressed fragment shader for OpenGL 3.x.
+ 
+ \item \verb+g_tutorial_02_gl3_vert+  is declared in \verb+tutorial_02_gl3.vert.h+. 
+ It is the compressed vertex shader for OpenGL 3.x.
 
-	\item \verb+MATRIX4 g_object_1_rotation_matrix+ corresponds to the 
-		transformation matrix of the first 3D object.
-	
-	\item \verb+MATRIX4 g_object_2_rotation_matrix+corresponds to the 
-		transformation matrix of the second 3D object.
+\item \verb+bool g_use_arc_ball+ is used to know if arc ball rotation is currently in use.
 
-	\item \verb+vector<double> g_p_vertex_set_1+ is an array containing 
-		the vertices of the first 3D object.
-		
-	\item \verb+vector<unsigned char> g_p_index_set_1+ is an array 
-		containing vertex indices to build triangles from 
-		\verb+g_p_vertex_set_1+.
+\item \verb+int g_button+ stores which button generated an event last.
 
-	\item \verb+vector<float> g_p_vertex_set_2+ is an array containing 
-		the vertices of the second 3D object. Note that no index is used in 
-		this case.
+\item \verb+int g_button_state+ stores the new state of this button.
 
-	\item \verb+RATIONAL_NUMBER g_zoom+ controls the zoom.
+\item \verb+GLint g_last_x_position+ is the previous last known X position of the cursor.
 
-	\item \verb+const GLchar* g_vertex_shader+ is the source code of the vertex 
-		shader.
+\item \verb+GLint g_last_y_position+ is the previous last known Y position of the cursor.
 
-	\item \verb+const GLchar* g_fragment_shader+ is the source code of the 
-		fragment shader.
+\item \verb+GLint g_current_x_position+ is the current X position of the cursor.
+
+\item \verb+GLint g_current_y_position+ is the current Y position of the cursor.
+
+	 \item For other global variables, see the GLFW version of Tutorial 1.
 \end{itemize}
 
 
 \begin{center}
-\lstinputlisting[firstline=75, lastline=131, caption=Global variables., 
-label=lst:global variables]{../../../tutorials/src/tutorial_01_glfw.cxx}
+\lstinputlisting[firstline=87, lastline=128, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -372,7 +318,7 @@ that have to be declared in a basic GLFW program:
 
 \begin{center}
 \lstinputlisting[firstline=134, lastline=147, caption=Function declarations., 
-label=lst:function declarations]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:function declarations]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -397,7 +343,7 @@ nime main steps:
 
 \begin{center}
 \lstinputlisting[firstline=214, lastline=255, caption=Initialise GLFW., 
-label=lst:Initialise GLFW]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Initialise GLFW]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -410,7 +356,7 @@ platform is used.
 
 \begin{center}
 \lstinputlisting[firstline=258, lastline=272, caption=Initialise GLEW., 
-label=lst:Initialise GLEW]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Initialise GLEW]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -423,7 +369,7 @@ Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states
 
 \begin{center}
 \lstinputlisting[firstline=275, lastline=288, caption=Initialise OpenGL., 
-label=lst:Initialise OpenGL]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Initialise OpenGL]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -786,7 +732,7 @@ created instantly if
 \begin{center}
 \lstinputlisting[label=lst:Load_Objects,
     firstline=291, lastline=319, 
-    caption=Create 3D objects.]{../../../tutorials/src/tutorial_01_glfw.cxx}
+    caption=Create 3D objects.]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -878,7 +824,7 @@ to~30 are taking care of in Listing~\ref{lst:Display_Scene}.
 \begin{center}
 \lstinputlisting[label=lst:Display_Scene,
     firstline=322, lastline=401,
-    caption=display the 3D scene.]{../../../tutorials/src/tutorial_01_glfw.cxx}
+    caption=display the 3D scene.]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -895,7 +841,7 @@ axis (\verb+VEC3(1.0, 0.0, 0.0)+).
 
 \begin{center}
 \lstinputlisting[firstline=404, lastline=411, caption=Idle callback., 
-label=lst:Idle callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Idle callback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 	
@@ -909,7 +855,7 @@ Finally, the GLFW application is terminated.
 
 \begin{center}
 \lstinputlisting[firstline=414, lastline=428, caption=Quit callback., 
-label=lst:Quit callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Quit callback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -938,7 +884,7 @@ performed (see Listing~\ref{lst:frame buffer callback}).
 \begin{center}
 \lstinputlisting[firstline=431, lastline=461, caption=Change of frame buffer 
 size callback., 
-label=lst:frame buffer callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:frame buffer callback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -951,7 +897,7 @@ Here the window is closed when the user presses \verb+Q+ or \verb+Esc+.
 
 \begin{center}
 \lstinputlisting[firstline=464, lastline=482, caption=Keyboard callback., 
-label=lst:Keyboard Callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Keyboard Callback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -966,7 +912,7 @@ called.
 
 \begin{center}
 \lstinputlisting[firstline=485, lastline=498, caption=Scroll button callback., 
-label=lst:Scroll button callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Scroll button callback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -979,7 +925,7 @@ In the error callback an exception is thrown with the details of the error
 
 \begin{center}
 \lstinputlisting[firstline=501, lastline=507, caption=Error callback., 
-label=lst:Error Callback]{../../../tutorials/src/tutorial_01_glfw.cxx}
+label=lst:Error Callback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -1013,7 +959,7 @@ In the next tutorial:
 
 \begin{center}
   \lstinputlisting[caption=All the source code of this tutorial., 
-  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_01_glfw.cxx}
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_02_glfw.cxx}
 \end{center}
 
 % 
