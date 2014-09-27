@@ -56,7 +56,7 @@ td p{margin:0px;}
 </title>
 </head>
 <body >
-<!--HEVEA command line is: hevea -fix tutorial-02-glfw -->
+<!--HEVEA command line is: hevea -fix tutorial-02-glfw.tex -->
 <!--CUT STYLE article--><!--CUT DEF section 1 --><table class="title"><tr><td style="padding:1ex"><h1 class="titlemain">gVirtualXRay &#X2013; Tutorial 02: <br>
 		Loading the shader program from a file compressed with the Z library.<br>
 		Adding an efficient mouse control to turn the 3D scene.</h1><h3 class="titlerest">Dr Franck P. Vidal</h3><h3 class="titlerest">27<sup>th</sup> September 2014</h3></td></tr>
@@ -332,7 +332,8 @@ Listing&#XA0;<a href="#lst%3AInitialise%20Shaders">4</a> shows how to perform al
 <h2 id="sec8" class="section">7&#XA0;&#XA0;Callback for Mouse Button Events</h2><!--SEC END --><p>
 <a id="mouseButtonCallback"></a></p><p>This callback stores the mouse states in global variables, i.e.&#XA0;which button generated an event, the type of events and the cursor&#X2019;s position in screen coordinates) (see Listing&#XA0;<a href="#lst%3AmouseButtonCallback">5</a>).
 If the mouse button is pressed, then arcball rotation is in used. 
-If the mouse button is released, then arcball rotation is stopped.</p><div class="center">
+If the mouse button is released, then arcball rotation is stopped.</p><p>In <code>void initGLFW()</code>, the callback is registered as follows:
+<code>glfwSetMouseButtonCallback(g_p_window_id, mouseButtonCallback)</code>.</p><div class="center">
 
 <div class="center">Listing&#XA0;5: <a id="lst:mouseButtonCallback"></a>Callback for mouse button events.</div><br>
 <table class="lstframe" style="padding:1ex;background-color:white;border-style:solid;border-color:black;"><tr><td class="lstlisting"><span style="font-size:xx-small"><span style="color:#7F7F7F"> 535</span></span><span style="font-size:small"> </span><span style="font-size:small"><span style="color:#009900"><span style="font-size:small">//--------------------------------------------</span></span></span><span style="font-size:small">
@@ -371,7 +372,8 @@ If the mouse button is released, then arcball rotation is stopped.</p><div class
 <!--TOC section id="sec9" Callback for Cursor Position Events-->
 <h2 id="sec9" class="section">8&#XA0;&#XA0;Callback for Cursor Position Events</h2><!--SEC END --><p>
 <a id="cursorPosCallback"></a></p><p>Listing&#XA0;<a href="#lst%3AcursorPosCallback">6</a> shows i) how to store the cursor&#X2019;s position in global variables,and ii) 
-how the matrix rotation is updated accordingly.</p><div class="center">
+how the matrix rotation is updated accordingly.</p><p>In <code>void initGLFW()</code>, the callback is registered as follows:
+<code>glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback)</code>.</p><div class="center">
 
 <div class="center">Listing&#XA0;6: <a id="lst:cursorPosCallback"></a>Callback for cursor position events.</div><br>
 <table class="lstframe" style="padding:1ex;background-color:white;border-style:solid;border-color:black;"><tr><td class="lstlisting"><span style="font-size:xx-small"><span style="color:#7F7F7F"> 568</span></span><span style="font-size:small"> </span><span style="font-size:small"><span style="color:#009900"><span style="font-size:small">//--------------------------------------------------------------</span></span></span><span style="font-size:small">

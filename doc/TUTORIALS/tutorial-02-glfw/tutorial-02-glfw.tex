@@ -350,6 +350,10 @@ This callback stores the mouse states in global variables, i.e.~which button gen
 If the mouse button is pressed, then arcball rotation is in used. 
 If the mouse button is released, then arcball rotation is stopped.
 
+In \verb+void initGLFW()+, the callback is registered as follows:
+\verb+glfwSetMouseButtonCallback(g_p_window_id, mouseButtonCallback)+.
+
+
 \begin{center}
 \lstinputlisting[firstline=535, lastline=565, caption=Callback for mouse button events., 
 label=lst:mouseButtonCallback]{../../../tutorials/src/tutorial_02_glfw.cxx}
@@ -362,6 +366,9 @@ label=lst:mouseButtonCallback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 
 Listing~\ref{lst:cursorPosCallback} shows i) how to store the cursor's position in global variables,and ii) 
 how the matrix rotation is updated accordingly.
+
+In \verb+void initGLFW()+, the callback is registered as follows:
+\verb+glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback)+.
 
 \begin{center}
 \lstinputlisting[firstline=568, lastline=576, caption=Callback for cursor position events., 
