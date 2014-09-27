@@ -92,7 +92,7 @@
 % \makeglossaries
 % \input{../acronyms}
 
-\title{gVirtualXRay -- Tutorial 02: \\
+\title{gVirtualXRay -- Tutorial 02 -- GLFW: \\
 		Loading the shader program from a file compressed with the Z library.\\
 		Adding an efficient mouse control to turn the 3D scene.}
 
@@ -157,10 +157,10 @@ Two cubes are displayed (see Figure~\ref{fig:scene}).
  \includegraphics[width=0.5\textwidth]{screenshot}
  \caption{\label{fig:scene} Screen capture of the second tutorial.}
 \end{figure}
-First the fragment program is saved into \verb+tutorial_02_gl2.frag+ and \verb+tutorial_02_gl3.frag+. 
-The vertex program is saved into \verb+tutorial_02_gl2.vert+ and \verb+tutorial_02_gl3.vert+. 
-%Our implementation supports OpenGL 2.x, OpenGL 3.x and above. 
+First the fragment program is saved into \verb+tutorial_02_gl3.frag+. 
+The vertex program is saved into \verb+tutorial_02_gl3.vert+. 
 Our implementation supports OpenGL 3.x and OpenGL 4.x. 
+%Our implementation supports OpenGL 2.x, OpenGL 3.x and above. 
 The files are individually compressed using \textit{gzip}\,\footnote{\url{http://www.gzip.org/}}. 
 Finally each compressed file is converted into a C header file. 
 It can be achieved CMake\,\footnote{\url{http://www.cmake.org/}} or an external tool such as bin2c\,\footnote{\url{http://sourceforge.net/projects/bin2c/}}. 

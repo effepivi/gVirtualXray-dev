@@ -50,14 +50,14 @@ td p{margin:0px;}
 .part{margin:2ex auto;text-align:center}
 .lstlisting{font-family:monospace;white-space:pre;margin-right:auto;margin-left:0pt;text-align:left}
 </style>
-<title>gVirtualXRay -- Tutorial 02:  
+<title>gVirtualXRay -- Tutorial 02 -- GLFW:  
 		Loading the shader program from a file compressed with the Z library. 
 		Adding an efficient mouse control to turn the 3D scene.
 </title>
 </head>
 <body >
 <!--HEVEA command line is: hevea -fix tutorial-02-glfw.tex -->
-<!--CUT STYLE article--><!--CUT DEF section 1 --><table class="title"><tr><td style="padding:1ex"><h1 class="titlemain">gVirtualXRay &#X2013; Tutorial 02: <br>
+<!--CUT STYLE article--><!--CUT DEF section 1 --><table class="title"><tr><td style="padding:1ex"><h1 class="titlemain">gVirtualXRay &#X2013; Tutorial 02 &#X2013; GLFW: <br>
 		Loading the shader program from a file compressed with the Z library.<br>
 		Adding an efficient mouse control to turn the 3D scene.</h1><h3 class="titlerest">Dr Franck P. Vidal</h3><h3 class="titlerest">27<sup>th</sup> September 2014</h3></td></tr>
 </table><div class="center">
@@ -101,8 +101,8 @@ Two cubes are displayed (see Figure&#XA0;<a href="#fig%3Ascene">1</a>).
 <div class="caption"><table style="border-spacing:6px;border-collapse:separate;" class="cellpading0"><tr><td style="vertical-align:top;text-align:left;" >Figure 1: <a id="fig:scene"></a> Screen capture of the second tutorial.</td></tr>
 </table></div>
 <div class="center"><hr style="width:80%;height:2"></div></div></blockquote><p>
-First the fragment program is saved into <code>tutorial_02_gl2.frag</code> and <code>tutorial_02_gl3.frag</code>. 
-The vertex program is saved into <code>tutorial_02_gl2.vert</code> and <code>tutorial_02_gl3.vert</code>. 
+First the fragment program is saved into <code>tutorial_02_gl3.frag</code>. 
+The vertex program is saved into <code>tutorial_02_gl3.vert</code>. 
 Our implementation supports OpenGL 3.x and OpenGL 4.x. 
 The files are individually compressed using <span style="font-style:italic">gzip</span>&#XA0;<sup><a id="text1" href="#note1">1</a></sup>. 
 Finally each compressed file is converted into a C header file. 
