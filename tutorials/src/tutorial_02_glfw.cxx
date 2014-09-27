@@ -31,7 +31,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h> // Fix undefined references on Windows
 #endif
 
@@ -289,17 +289,25 @@ void initShader()
     std::string fragment_shader;
 
     // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert, sizeof(g_tutorial_02_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag, sizeof(g_tutorial_02_gl3_frag), &p_fragment_shader);
+    z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert,
+            sizeof(g_tutorial_02_gl3_vert),
+            &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag,
+            sizeof(g_tutorial_02_gl3_frag),
+            &p_fragment_shader);
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
     delete [] p_vertex_shader;     p_vertex_shader = 0;
     delete [] p_fragment_shader; p_fragment_shader = 0;
 
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    if (z_lib_return_code_vertex <= 0 ||
+        z_lib_return_code_fragment <= 0 ||
+        !vertex_shader.size() ||
+        !fragment_shader.size())
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot decode the shader using ZLib.");
     }
     g_display_shader.setLabels("display.vert", "display.frag");
     g_display_shader.loadSource(vertex_shader, fragment_shader);
@@ -617,9 +625,9 @@ VEC3 getArcballVector(int x, int y)
 }
 
 
-//--------------------------------
-float radian2degree(float anAngle)
-//--------------------------------
+//---------------------------------------
+inline float radian2degree(float anAngle)
+//---------------------------------------
 {
     return (180.0 * anAngle / gVirtualXRay::PI);
 }
@@ -639,11 +647,11 @@ void computeRotation(MATRIX4& aRotationMatrix)
             float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
 
             VEC3 axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
+            axis_in_camera_coord.normalize();
 
             MATRIX4 camera2object(aRotationMatrix.getInverse());
             VEC3 axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
+            axis_in_object_coord.normalize();
 
             MATRIX4 rotation_matrix;
             rotation_matrix.rotate(angle, axis_in_object_coord);
