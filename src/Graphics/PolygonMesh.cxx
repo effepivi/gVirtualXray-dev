@@ -107,8 +107,15 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
     m_external_data_flag(aPolygonMesh.m_external_data_flag)
 //--------------------------------------------------------------------
 {
-    copyVertexSet(aPolygonMesh.m_p_vertex_set);
-    copyIndexSet(aPolygonMesh.m_p_index_set);
+    if (aPolygonMesh.m_p_vertex_set)
+    {
+        copyVertexSet(aPolygonMesh.m_p_vertex_set);
+    }
+
+    if (aPolygonMesh.m_p_index_set)
+    {
+        copyIndexSet(aPolygonMesh.m_p_index_set);
+    }
 }
 
 
