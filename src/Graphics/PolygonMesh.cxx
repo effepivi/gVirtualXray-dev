@@ -111,10 +111,18 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
     {
         copyVertexSet(aPolygonMesh.m_p_vertex_set);
     }
+    else
+    {
+        m_p_vertex_set = 0;
+    }
 
     if (aPolygonMesh.m_p_index_set)
     {
         copyIndexSet(aPolygonMesh.m_p_index_set);
+    }
+    else
+    {
+        m_p_index_set = 0;
     }
 }
 
