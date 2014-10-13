@@ -44,9 +44,6 @@ namespace gVirtualXRay {
 //******************************************************************************
 //	Constant declarations
 //******************************************************************************
-const double PI = 3.14159265358979323846;
-const double PI_2 = PI / 2.0;
-
 const double kilometer  = 1000.0    / 0.001; ///< kilometre
 const double hectometer =  100.0    / 0.001; ///< hectometre
 const double decameter  =   10.0    / 0.001; ///< decametre
@@ -83,6 +80,15 @@ const double cm2  = cm * cm;   ///< square centimeter
 const double mm2  = mm * mm;   ///< square millimeter
 const double um2  = um * um;   ///< square micrometre
 
+const double km3  = km * km * km;    ///< cubic kilometre
+const double hm3  = hm * hm * hm;    ///< cubic hectometre
+const double dam3 = dam * dam * dam; ///< cubic decametre
+const double m3   = m * m * m;       ///< cubic meter
+const double dm3  = dm * dm * dm;    ///< cubic decimeter
+const double cm3  = cm * cm * cm;    ///< cubic centimeter
+const double mm3  = mm * mm * mm;    ///< cubic millimeter
+const double um3  = um * um * um;    ///< cubic micrometre
+
 const double megaelectronvolt  = 1.0; ///< megaelectron volt
 const double kiloelectronvolt  = megaelectronvolt * 1.0e-3;    ///< kiloelectron volt
 const double electronvolt      = megaelectronvolt * 1.0e-6;       ///< electronvolt
@@ -108,6 +114,8 @@ const double dg  = decigram;  ///< decigram
 const double cg  = centigram; ///< centigram
 const double mg  = milligram; ///< milligram
 const double ug  = microgram; ///< microgram
+
+const double mole = 1.0; ///< mole
 
 } // namespace gVirtualXRay
 

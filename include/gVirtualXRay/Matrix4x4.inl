@@ -29,8 +29,8 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_UNITS_H
-#include "gVirtualXRay/Units.h"
+#ifndef GVXR_CONSTANT_VALUES_H
+#include "gVirtualXRay/ConstantValues.h"
 #endif
 
 #include <iostream>

@@ -65,6 +65,14 @@
 #include "gVirtualXRay/VBO.h"
 #endif
 
+#ifndef GVXR_ELEMENT_SET_H
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
+#ifndef GVXR_MATERIAL_SET_H
+#include "gVirtualXRay/MaterialSet.h"
+#endif
+
 
 //******************************************************************************
 //	Definitions
@@ -473,12 +481,22 @@ public:
 	RATIONAL_NUMBER getMaxPixelValue() const;
 
 
-	void computeSinogram(MATRIX4& aModellingTransformationMatrix,
-			unsigned int aNumberOfAngle = 180,
-			RATIONAL_NUMBER anAngleOffset = 1.0);
+    void computeSinogram(MATRIX4& aModellingTransformationMatrix,
+            VEC3 aRotationCenter = VEC3(),
+            unsigned int aNumberOfAngle = 180,
+            RATIONAL_NUMBER anAngleOffset = 1.0);
 
 
-	void printSinogram(const char* aFileName);
+    void printSinogram(const char* aFileName);
+
+
+    void computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
+            VEC3 aRotationCenter = VEC3(),
+            unsigned int aNumberOfAngle = 180,
+            RATIONAL_NUMBER anAngleOffset = 1.0);
+
+
+    void printProjectionSet(const char* aFileName);
 
 
 //******************************************************************************
@@ -489,7 +507,19 @@ protected:
 	void loadMuWater();
 
 
-	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    /// Load the table of elements.
+    //--------------------------------------------------------------------------
+	void loadElementSet();
+
+
+    //--------------------------------------------------------------------------
+    /// Load the table of materials.
+    //--------------------------------------------------------------------------
+    void loadMaterialSet(const ElementSet* apElementSet);
+
+
+    //--------------------------------------------------------------------------
 	///	Check that the device supports all the required OpenGL extensions
 	///	that are needed.
 	//--------------------------------------------------------------------------
@@ -729,8 +759,12 @@ protected:
 	ImageType::Pointer m_p_energy_fluence_image;
 
 
-	/// sinogram
-	ImageType::Pointer m_p_sinogram_image;
+    /// Sinogram
+    ImageType::Pointer m_p_sinogram_image;
+
+
+    /// Projection set
+    ImageType::Pointer m_p_projection_set;
 #endif // HAS_ITK
 
 
@@ -760,6 +794,14 @@ protected:
 
 	/// The VBO used to display a rectangle corresponding to the detector
 	boost::scoped_ptr<VBO> m_detector_temporary_geometry;
+
+
+    /// Set of elements
+    ElementSet m_element_set;
+
+
+    /// Set of materials
+    MaterialSet m_material_set;
 };
 
 

@@ -142,5 +142,5 @@ protected:
 #include "AttenuationCoefficient.inl"
 
 
-#endif // ATTENUATION_COEFFICIENT_H
+#endif // GVXR_ATTENUATION_COEFFICIENT_H
 

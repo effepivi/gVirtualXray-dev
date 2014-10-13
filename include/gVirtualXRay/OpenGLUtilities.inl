@@ -47,6 +47,10 @@
 #include "gVirtualXRay/Types.h"
 #endif
 
+#ifndef GVXR_CONSTANT_VALUES_H
+#include "gVirtualXRay/ConstantValues.h"
+#endif
+
 
 //******************************************************************************
 //	namespace

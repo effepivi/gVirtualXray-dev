@@ -28,8 +28,8 @@
 */
 
 
-#ifndef CUBE_MESH_H
-#define CUBE_MESH_H
+#ifndef GVXR_CUBE_MESH_H
+#define GVXR_CUBE_MESH_H
 
 
 //******************************************************************************

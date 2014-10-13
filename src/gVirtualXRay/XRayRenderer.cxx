@@ -77,6 +77,10 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#include "AtomicElement.h"
+#endif
+
 #include "gVirtualXRay/framebufferObject.h"
 
 #include "MUx_Dx_gl2.frag.h"
@@ -116,6 +120,8 @@
 #include "xray_display_gl3.vert.h"
 
 #include "mu_water.csv.h"
+#include "element.csv.h"
+#include "correlation_CT_number_and_tissue_material.csv.h"
 
 
 //******************************************************************************
@@ -169,7 +175,8 @@ XRayRenderer::XRayRenderer():
 		m_p_l_buffer_image(ImageType::New()),
 		m_p_sum_mux_dx_image(ImageType::New()),
 		m_p_energy_fluence_image(ImageType::New()),
-		m_p_sinogram_image(ImageType::New()),
+        m_p_sinogram_image(ImageType::New()),
+        m_p_projection_set(ImageType::New()),
 #endif // HAS_ITK
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
@@ -232,8 +239,14 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	// Set the detector
 	m_p_detector = const_cast<XRayDetector*>(apDetector);
 
-	// Load mu water table
-	loadMuWater();
+    // Load mu water table
+    loadMuWater();
+
+    // Load the element set
+    loadElementSet();
+
+    // Load the meterial set
+    loadMaterialSet(&m_element_set);
 
 	// Set the beam spectrum
 	m_p_xray_beam = const_cast<XRayBeam*>(apBeamSpectrum);
@@ -391,125 +404,124 @@ void XRayRenderer::deleteFBOs()
 
 //-------------------------------------------------------------------------
 void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
-								   unsigned int aNumberOfAngle,
-								   RATIONAL_NUMBER anAngleOffset)
+                                   VEC3 aRotationCenter,
+                                   unsigned int aNumberOfAngle,
+                                   RATIONAL_NUMBER anAngleOffset)
 //-------------------------------------------------------------------------
 {
 #ifdef HAS_ITK
-	// Compute the size of a pixel
-	ImageType::SpacingType pixel_size;
-	pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
-	pixel_size[1] = anAngleOffset;
-	pixel_size[2] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
+    // Compute the size of a pixel
+    ImageType::SpacingType pixel_size;
+    pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
+    pixel_size[1] = anAngleOffset;
+    pixel_size[2] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
 
-	// Convert the size in mm * degree * mm
-	pixel_size[0] /= mm;
-	pixel_size[1] /= 1.0;
-	pixel_size[2] /= mm;
+    // Convert the size in mm * degree * mm
+    pixel_size[0] /= mm;
+    pixel_size[1] /= 1.0;
+    pixel_size[2] /= mm;
 
-	// Create a new image
-	ImageType::IndexType start;
-	start[0] = 0;
-	start[1] = 0;
-	start[2] = 0;
+    // Create a new image
+    ImageType::IndexType start;
+    start[0] = 0;
+    start[1] = 0;
+    start[2] = 0;
 
-	ImageType::SizeType sinogram_size;
+    ImageType::SizeType sinogram_size;
+    sinogram_size[0] = m_p_detector->getNumberOfPixels().getX();
+    sinogram_size[1] = aNumberOfAngle;
+    sinogram_size[2] = m_p_detector->getNumberOfPixels().getY();
 
-	sinogram_size[0] = m_p_detector->getNumberOfPixels().getX();
-	sinogram_size[1] = aNumberOfAngle;
-	sinogram_size[2] = m_p_detector->getNumberOfPixels().getY();
+    ImageType::RegionType sinogram_region;
+    sinogram_region.SetSize(sinogram_size);
+    sinogram_region.SetIndex(start);
 
-	ImageType::RegionType sinogram_region;
-	sinogram_region.SetSize(sinogram_size);
+    // Allocate memory
+    m_p_sinogram_image->SetRegions(sinogram_region);
 
-	sinogram_region.SetIndex(start);
+    m_p_sinogram_image->Allocate();
 
-	// Allocate memory
-	m_p_sinogram_image->SetRegions(sinogram_region);
+    // Set the pixel size
+    m_p_sinogram_image->SetSpacing(pixel_size);
 
-	m_p_sinogram_image->Allocate();
+    // Compute the translation vector
+    VEC3 translation_vector((m_p_detector->getDetectorPosition() + m_p_detector->getXraySourceCentre()) / 2.0);
 
-	// Set the pixel size
-	m_p_sinogram_image->SetSpacing(pixel_size);
+    // Store the beam shape
+    XRayDetector::SourceShape source_shape(m_p_detector->getSourceShape());
+    const std::vector<VEC3> source_postion_set(m_p_detector->getSourcePositionSet());
 
-	// Compute the translation vector
-	VEC3 translation_vector((m_p_detector->getDetectorPosition() + m_p_detector->getXraySourceCentre()) / 2.0);
+    // Make the beam parallel
+    if (source_shape != XRayDetector::PARALLEL)
+    {
+        m_p_detector->setParallelBeam();
+    }
 
-	// Store the beam shape
-	XRayDetector::SourceShape source_shape(m_p_detector->getSourceShape());
-	const std::vector<VEC3> source_postion_set(m_p_detector->getSourcePositionSet());
+    // Compute the sinogram
+    for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
+    {
+        MATRIX4 transformation_matrix;
 
-	// Make the beam parallel
-	if (source_shape != XRayDetector::PARALLEL)
-	{
-		m_p_detector->setParallelBeam();
-	}
+        // Translate the sample
+        transformation_matrix.translate(-translation_vector);
 
-	// Compute the sinogram
-	for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
-	{
-		MATRIX4 transformation_matrix;
+        // Rotate the sample
+        transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
 
-		// Translate the sample
-		transformation_matrix.translate(-translation_vector);
+        // Translate the sample
+        transformation_matrix.translate(translation_vector);
 
-		// Rotate the sample
-		transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
+        // Apply the modelling transformation
+        transformation_matrix = aModellingTransformationMatrix * transformation_matrix;
 
-		// Translate the sample
-		transformation_matrix.translate(translation_vector);
+        // Compute the X-ray image
+        computeImage(transformation_matrix);
 
-		// Apply the modelling transformation
-		transformation_matrix = aModellingTransformationMatrix * transformation_matrix;
+        // Load the FBO in the main memory
+        getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
-		// Compute the X-ray image
-		computeImage(transformation_matrix);
+        // Get the destination pointer
+        PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
 
-		// Load the FBO in the main memory
-		getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+        // Save the data in the sinogram
+        //Process every line of the X-ray image
+        for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
+        {
+            // Compute the line position in the sinogram
+            unsigned int offset(j * aNumberOfAngle * m_p_detector->getNumberOfPixels().getX() +
+                    angle * m_p_detector->getNumberOfPixels().getX());
 
-		// Get the destination pointer
-		PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
-
-		// Save the data in the sinogram
-		//Process every line of the X-ray image
-		for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
-		{
-			// Compute the line position in the sinogram
-			unsigned int offset(j * aNumberOfAngle * m_p_detector->getNumberOfPixels().getX() +
-					angle * m_p_detector->getNumberOfPixels().getX());
-
-			// Copy the data
-			memcpy(p_pixel_set + offset, m_p_temp_raw_data + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
-		}
-	}
+            // Copy the data
+            memcpy(p_pixel_set + offset, m_p_temp_raw_data + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
+        }
+    }
 
 
-	// Restore the beam shape
-	switch (source_shape)
-	{
-	case XRayDetector::POINT:
-		m_p_detector->setXrayPointSource();
-		break;
+    // Restore the beam shape
+    switch (source_shape)
+    {
+    case XRayDetector::POINT:
+        m_p_detector->setXrayPointSource();
+        break;
 
-	case XRayDetector::SQUARE:
-		m_p_detector->setSquareSource();
-		m_p_detector->setSourcePositions(source_postion_set);
-		break;
+    case XRayDetector::SQUARE:
+        m_p_detector->setSquareSource();
+        m_p_detector->setSourcePositions(source_postion_set);
+        break;
 
-	case XRayDetector::CUBE:
-		m_p_detector->setCubicSource();
-		m_p_detector->setSourcePositions(source_postion_set);
-		break;
+    case XRayDetector::CUBE:
+        m_p_detector->setCubicSource();
+        m_p_detector->setSourcePositions(source_postion_set);
+        break;
 
-	case XRayDetector::LINE:
-		m_p_detector->setLineSource();
-		m_p_detector->setSourcePositions(source_postion_set);
-		break;
+    case XRayDetector::LINE:
+        m_p_detector->setLineSource();
+        m_p_detector->setSourcePositions(source_postion_set);
+        break;
 
-	default:
-		break;
-	}
+    default:
+        break;
+    }
 #endif // HAS_ITK
 }
 
@@ -519,20 +531,158 @@ void XRayRenderer::printSinogram(const char* aFileName)
 //-----------------------------------------------------
 {
 #ifdef HAS_ITK
-	// The filename is not empty
-	if (aFileName)
-	{
-		// Create the file writer
-		typedef itk::ImageFileWriter<ImageType> ImageWriter;
-		ImageWriter::Pointer p_writer(ImageWriter::New());
-		p_writer->SetInput(m_p_sinogram_image);
+    // The filename is not empty
+    if (aFileName)
+    {
+        // Create the file writer
+        typedef itk::ImageFileWriter<ImageType> ImageWriter;
+        ImageWriter::Pointer p_writer(ImageWriter::New());
+        p_writer->SetInput(m_p_sinogram_image);
 
-		// Set the writer
-		p_writer->SetFileName(aFileName);
+        // Set the writer
+        p_writer->SetFileName(aFileName);
 
-		// Write the data into a file
-		p_writer->Update();
-	}
+        // Write the data into a file
+        p_writer->Update();
+    }
+#endif // HAS_ITK
+}
+
+
+//------------------------------------------------------------------------------
+void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
+                                        VEC3 aRotationCenter,
+                                        unsigned int aNumberOfAngle,
+                                        RATIONAL_NUMBER anAngleOffset)
+//------------------------------------------------------------------------------
+{
+#ifdef HAS_ITK
+    // Compute the size of a pixel
+    ImageType::SpacingType pixel_size;
+    pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
+    pixel_size[1] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
+    pixel_size[2] = anAngleOffset;
+
+    // Convert the size in mm * degree * mm
+    pixel_size[0] /= mm;
+    pixel_size[1] /= mm;
+    pixel_size[2] /= 1.0;
+
+    // Create a new image
+    ImageType::IndexType start;
+    start[0] = 0;
+    start[1] = 0;
+    start[2] = 0;
+
+    ImageType::SizeType projection_set_size;
+    projection_set_size[0] = m_p_detector->getNumberOfPixels().getX();
+    projection_set_size[1] = m_p_detector->getNumberOfPixels().getY();
+    projection_set_size[2] = aNumberOfAngle;
+
+    ImageType::RegionType projection_set_region;
+    projection_set_region.SetSize(projection_set_size);
+    projection_set_region.SetIndex(start);
+
+    // Allocate memory
+    m_p_projection_set->SetRegions(projection_set_region);
+
+    m_p_projection_set->Allocate();
+
+    // Set the pixel size
+    m_p_projection_set->SetSpacing(pixel_size);
+
+    // Compute the translation vector
+    VEC3 translation_vector(-aRotationCenter);
+
+    // Store the beam shape
+    XRayDetector::SourceShape source_shape(m_p_detector->getSourceShape());
+    const std::vector<VEC3> source_postion_set(m_p_detector->getSourcePositionSet());
+
+    // Make the beam parallel
+    if (source_shape != XRayDetector::PARALLEL)
+    {
+        m_p_detector->setParallelBeam();
+    }
+
+    // Compute the sinogram
+    for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
+    {
+        MATRIX4 transformation_matrix;
+
+        // Translate the sample
+        transformation_matrix.translate(-translation_vector);
+
+        // Rotate the sample
+        transformation_matrix.rotate(anAngleOffset * angle, m_p_detector->getUpVector());
+
+        // Translate the sample
+        transformation_matrix.translate(translation_vector);
+
+        // Apply the modelling transformation
+        transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
+
+        // Compute the X-ray image
+        computeImage(transformation_matrix);
+
+        // Load the FBO in the main memory
+        getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+
+        // Get the destination pointer
+        PixelType* p_pixel_set(m_p_projection_set->GetBufferPointer());
+
+        // Copy the data
+        memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+    }
+
+
+    // Restore the beam shape
+    switch (source_shape)
+    {
+    case XRayDetector::POINT:
+        m_p_detector->setXrayPointSource();
+        break;
+
+    case XRayDetector::SQUARE:
+        m_p_detector->setSquareSource();
+        m_p_detector->setSourcePositions(source_postion_set);
+        break;
+
+    case XRayDetector::CUBE:
+        m_p_detector->setCubicSource();
+        m_p_detector->setSourcePositions(source_postion_set);
+        break;
+
+    case XRayDetector::LINE:
+        m_p_detector->setLineSource();
+        m_p_detector->setSourcePositions(source_postion_set);
+        break;
+
+    default:
+        break;
+    }
+#endif // HAS_ITK
+}
+
+
+//----------------------------------------------------------
+void XRayRenderer::printProjectionSet(const char* aFileName)
+//----------------------------------------------------------
+{
+#ifdef HAS_ITK
+    // The filename is not empty
+    if (aFileName)
+    {
+        // Create the file writer
+        typedef itk::ImageFileWriter<ImageType> ImageWriter;
+        ImageWriter::Pointer p_writer(ImageWriter::New());
+        p_writer->SetInput(m_p_projection_set);
+
+        // Set the writer
+        p_writer->SetFileName(aFileName);
+
+        // Write the data into a file
+        p_writer->Update();
+    }
 #endif // HAS_ITK
 }
 
@@ -583,6 +733,107 @@ void XRayRenderer::loadMuWater()
 			m_mu_water_set.push_back(temp);
 		}
 	}
+}
+
+
+//---------------------------------
+void XRayRenderer::loadElementSet()
+//---------------------------------
+{
+    // Clear the data
+    m_element_set.clearMemory();
+
+    char* p_dest(0);
+    int z_lib_return_code = inflate(g_element_csv, sizeof(g_element_csv), &p_dest);
+
+    // It does not exist
+    if (!z_lib_return_code)
+    {
+        delete [] p_dest;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element was decoded.");
+    }
+
+    // Open the file
+    std::stringstream element_stream;
+    element_stream << (char*)p_dest;
+    delete [] p_dest;
+
+    // It does not exist
+    if (!element_stream.str().size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element was provided.");
+    }
+
+    // Ignore the first line
+    char first_line[1024];
+    element_stream.getline(first_line, 1024);
+
+    // Process every record
+    AtomicElement temp;
+    while (!element_stream.eof())
+    {
+        // Load the record
+        element_stream >> temp;
+
+        // The record is valid
+        if (!element_stream.eof())
+        {
+            // Store the record
+            m_element_set.addElement(temp);
+        }
+    }
+}
+
+
+//----------------------------------------------------------------
+void XRayRenderer::loadMaterialSet(const ElementSet* apElementSet)
+//----------------------------------------------------------------
+{
+    // Clear the data
+    m_material_set.clearMemory();
+
+    char* p_dest(0);
+    int z_lib_return_code = inflate(g_correlation_CT_number_and_tissue_material_csv, sizeof(g_correlation_CT_number_and_tissue_material_csv), &p_dest);
+
+    // It does not exist
+    if (!z_lib_return_code)
+    {
+        delete [] p_dest;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No material was decoded.");
+    }
+
+    // Open the file
+    std::stringstream material_stream;
+    material_stream << (char*)p_dest;
+    delete [] p_dest;
+
+    // It does not exist
+    if (!material_stream.str().size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No material was provided.");
+    }
+
+    // Ignore the first line
+    char first_line[1024];
+    material_stream.getline(first_line, 1024);
+
+    // Register the element set
+    TissueMaterial::registerElementSet(apElementSet);
+
+    // Process every record
+    TissueMaterial temp;
+    while (!material_stream.eof())
+    {
+        // Load the record
+        material_stream >> temp;
+
+        // The record is valid
+        if (!material_stream.eof())
+        {
+            // Store the record
+            m_material_set.addMaterial(temp);
+        }
+    }
 }
 
 
@@ -2385,7 +2636,12 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 				RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
 				RATIONAL_NUMBER mu(convertHounsfieldValue2Mu(HU, mu_water));
 
-				// Bind the corresponding slice of the 3D texture
+               /* std::cout << "I_0 " << m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy() << std::endl;
+                std::cout << "mu water " << mu_water << std::endl;
+                std::cout << "HU " << HU << std::endl;
+                std::cout << "mu " << mu << std::endl;
+*/
+                // Bind the corresponding slice of the 3D texture
 				if (m_p_xray_beam->getEnergyChannelNumber() > 1)
 				{
 					// Bind default frame buffer
@@ -2404,6 +2660,9 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 				//glBlendColor(1.0, 1.0, 1.0, mu);
 				// Convert mu in cm2/g
 				mu /= cm2 / g;
+
+                //std::cout << "mu " << mu << "(cm2/g)" << std::endl;
+
 				handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
 				glUniform1f(handle, mu);
 				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

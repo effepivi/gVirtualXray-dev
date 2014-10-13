@@ -98,7 +98,7 @@ SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 SET (CXX_SOURCES
 	# gVirtualXRay
 	../src/gVirtualXRay/XRayDetector.cxx
-	../src/gVirtualXRay/XRayRenderer.cxx
+    	../src/gVirtualXRay/XRayRenderer.cxx
 
 	# Graphics
 	../src/Graphics/CubeMesh.cxx
@@ -113,11 +113,14 @@ SET (CXX_SOURCES
 	../src/Graphics/VBO.cxx
 
     # Utilities
+	../src/Utilities/AtomicElement.cxx
+	../src/Utilities/ElementSet.cxx
 	../src/Utilities/FBOException.cxx
+	../src/Utilities/MaterialSet.cxx
 	../src/Utilities/OpenGLException.cxx
 	../src/Utilities/OpenGLUtilities.cxx
+	../src/Utilities/TissueMaterial.cxx
 	../src/Utilities/Utilities.cxx
-
 )
 
 
@@ -167,11 +170,18 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/Vec3.inl
 
 	# Utilities
+	../include/gVirtualXRay/AtomicElement.h
+	../include/gVirtualXRay/AtomicElement.inl
+	../include/gVirtualXRay/ConstantValues.h
+	../include/gVirtualXRay/ElementSet.h
+	../include/gVirtualXRay/ElementSet.inl
 	../include/gVirtualXRay/Exception.h
 	../include/gVirtualXRay/Exception.inl
 	../include/gVirtualXRay/FBOException.h
 	../include/gVirtualXRay/FileDoesNotExistException.h
 	../include/gVirtualXRay/FileDoesNotExistException.inl
+	../include/gVirtualXRay/MaterialSet.h
+	../include/gVirtualXRay/MaterialSet.inl
 	../include/gVirtualXRay/OpenGLException.h
 	../include/gVirtualXRay/OpenGLUtilities.h
 	../include/gVirtualXRay/OpenGLUtilities.inl
@@ -179,6 +189,8 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/OutOfBoundsException.inl
 	../include/gVirtualXRay/OutOfMemoryException.h
 	../include/gVirtualXRay/OutOfMemoryException.inl
+	../include/gVirtualXRay/TissueMaterial.h
+	../include/gVirtualXRay/TissueMaterial.inl
 	../include/gVirtualXRay/Types.h
 	../include/gVirtualXRay/Units.h
 	../include/gVirtualXRay/Utilities.h
@@ -325,6 +337,8 @@ SET (RESOURCES_SOURCES
 	../resources/xray_display_gl3.frag
 	../resources/xray_display_gl3.vert
 	../resources/mu_water.csv
+	../resources/element.csv
+	../resources/correlation_CT_number_and_tissue_material.csv
 )
 
 
@@ -369,6 +383,17 @@ IF (BUILD_EXAMPLES)
 ELSE (BUILD_EXAMPLES)
    	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
+
+
+# Validation ###################################################################
+option(BUILD_VALIDATION "Build validation tests." ON)
+IF (BUILD_VALIDATION)
+   	MESSAGE(STATUS "Build validation tests.")
+
+	add_subdirectory(../validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
+ELSE (BUILD_VALIDATION)
+   	MESSAGE("Do not build validation tests.")
+ENDIF (BUILD_VALIDATION)
 
 
 # Tutorials ####################################################################
