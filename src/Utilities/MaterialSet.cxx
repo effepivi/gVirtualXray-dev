@@ -30,7 +30,6 @@
 //	Include
 //******************************************************************************
 #include <fstream>
-#include <CLHEP/Random/RandFlat.h>
 
 #ifndef GVXR_MATERIAL_SET_H
 #include "gVirtualXRay/MaterialSet.h"
