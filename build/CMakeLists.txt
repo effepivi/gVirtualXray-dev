@@ -306,6 +306,21 @@ ELSE(ZLIB_FOUND)
 ENDIF(ZLIB_FOUND)
 
 
+# XCOM Database ################################################################
+
+# XCOM: Photon Cross Sections Database
+
+# http://www.nist.gov/pml/data/xcom/
+
+# http://physics.nist.gov/PhysRefData/Xcom/Text/download.html
+
+
+find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
+IF (NOT XCOM_PATH)
+	MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
+ENDIF(NOT XCOM_PATH)
+
+
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
