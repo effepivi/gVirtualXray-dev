@@ -127,26 +127,6 @@ int main(int argc, char** argv)
 
         double energy(0);
 
-        double HU_water(0);
-        double HU_soft_tissue(51.9216113228);
-        double HU_bone(1329.8856831791);
-        double HU_lung(1329.8856831791);
-
-        double rho_water(      1.000E+00 * g/cm3);
-        double rho_soft_tissue(1.060E+00 * g/cm3);
-        double rho_bone(       1.920E+00 * g/cm3);
-        double rho_lung(       1.050E+00 * g/cm3);
-
-        double mu_rho_water_xcom(0);
-        double mu_rho_soft_tissue_xcom(0);
-        double mu_rho_bone_xcom(0);
-        double mu_rho_lung_xcom(0);
-
-        double mu_water_mu_water(0);
-        double mu_soft_tissue_mu_water(0);
-        double mu_bone_mu_water(0);
-        double mu_lung_mu_water(0);
-
         test_stream     << "Energy in MeV\t" <<
                 "water_xcom\t" <<
                 "water_HU\t" <<
@@ -249,11 +229,11 @@ void printAttenuationCoeffiecient(double& anEnergy,
     double HU_soft_tissue(52);
     double HU_water(0);
 
-    double rho_bone(       1.920E+00 * g/cm3);
-    double rho_brain(      1.040E+00 * g/cm3);
-    double rho_gas(        1.826E-03 * g/cm3);
-    double rho_soft_tissue(1.060E+00 * g/cm3);
-    double rho_water(      1.000E+00 * g/cm3);
+    double rho_bone(g_xray_renderer.getDensityFromHU(HU_bone));
+    double rho_brain(g_xray_renderer.getDensityFromHU(HU_brain));
+    double rho_gas(g_xray_renderer.getDensityFromHU(HU_gas));
+    double rho_soft_tissue(g_xray_renderer.getDensityFromHU(HU_soft_tissue));
+    double rho_water(g_xray_renderer.getDensityFromHU(HU_water));
 
     double mu_rho_bone_xcom(0);
     double mu_rho_brain_xcom(0);
