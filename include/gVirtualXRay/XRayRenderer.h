@@ -426,6 +426,16 @@ public:
             const RATIONAL_NUMBER& anEnergy);
 
 
+    //--------------------------------------------------------------------------
+    /// Get the density (rho) of a tissue given a Hounsfield value.
+    /**
+    *   @param HU:  the Hounsfield value to consider
+    *   @return the corresponding density
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getDensityFromHU(const RATIONAL_NUMBER& HU);
+
+
 	//--------------------------------------------------------------------------
 	///	Display the final image in negative or not.
 	/**

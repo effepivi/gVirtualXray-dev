@@ -169,7 +169,7 @@ inline RATIONAL_NUMBER XRayRenderer::getMuFromHU(const RATIONAL_NUMBER& HU,
                                                  const RATIONAL_NUMBER& anEnergy)
 //-------------------------------------------------------------------------------
 {
-    if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOT_FOUND")
+    if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
     {
         if (!m_element_set.getElementSetSize())
         {
@@ -195,7 +195,7 @@ inline RATIONAL_NUMBER XRayRenderer::getMassAttenuationFromHU(const RATIONAL_NUM
                                                               const RATIONAL_NUMBER& anEnergy)
 //--------------------------------------------------------------------------------------------
 {
-    if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOT_FOUND")
+    if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
     {
         if (!m_element_set.getElementSetSize())
         {
@@ -213,6 +213,24 @@ inline RATIONAL_NUMBER XRayRenderer::getMassAttenuationFromHU(const RATIONAL_NUM
     }
 
     return (m_material_set.getMaterial(HU).getMassAttenuationTotal(HU, anEnergy));
+}
+
+
+//------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getDensityFromHU(const RATIONAL_NUMBER& HU)
+//------------------------------------------------------------------------------
+{
+    if (!m_element_set.getElementSetSize())
+    {
+        loadElementSet();
+    }
+
+    if (!m_material_set.getMaterialNumber())
+    {
+        loadMaterialSet();
+    }
+    
+    return (TissueMaterial::getDensity(HU));
 }
 
 
