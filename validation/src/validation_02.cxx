@@ -1,9 +1,9 @@
 /**
 ********************************************************************************
 *
-*	@file		validation_01.cxx
+*	@file		validation_02.cxx
 *
-*	@brief		Main program to test the value of mass attenuation coefficients
+*	@brief		Main program to test the value of density (rho)
 *				for various tissues.
 *
 *	@version	1.0
@@ -114,58 +114,25 @@ int main(int argc, char** argv)
 		loadSource();
 		loadXRaySimulator();
 
-		// Print the energy in MeV and the attenuation coefficient of water in cm2/g
-		std::ofstream test_stream(PREFIX"/data/test_mass_attenuation_coefficients.csv");
+		// Print the density in g/cm3 for a range of HU values
+		std::ofstream test_stream(PREFIX"/data/test_density.csv");
 
         if (!test_stream.is_open())
         {
             std::stringstream error_message;
-            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_stream.csv";
+            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_density.csv";
 
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
 
-        double energy(0);
-
-        double HU_water(0);
-        double HU_soft_tissue(51.9216113228);
-        double HU_bone(1329.8856831791);
-        double HU_lung(1329.8856831791);
-
-        double rho_water(      1.000E+00 * g/cm3);
-        double rho_soft_tissue(1.060E+00 * g/cm3);
-        double rho_bone(       1.920E+00 * g/cm3);
-        double rho_lung(       1.050E+00 * g/cm3);
-
-        double mu_rho_water_xcom(0);
-        double mu_rho_soft_tissue_xcom(0);
-        double mu_rho_bone_xcom(0);
-        double mu_rho_lung_xcom(0);
-
-        double mu_water_mu_water(0);
-        double mu_soft_tissue_mu_water(0);
-        double mu_bone_mu_water(0);
-        double mu_lung_mu_water(0);
-
-        test_stream     << "Energy in MeV\t" <<
-                "water_xcom\t" <<
-                "water_HU\t" <<
-                "soft_tissue_xcom\t" <<
-                "soft_tissue_HU\t" <<
-                "bone_xcom\t" <<
-                "bone_HU\t" <<
-                "lung_xcom\t" <<
-                "lung_HU" <<
+        test_stream     << "HU\t" <<
+                "density (in g/cm3)" <<
                 std::endl;
 
-        energy = 1.00E-003 * MeV;
-
-        printAttenuationCoeffiecient(energy, 1e-2 * MeV, 0.00001, test_stream);
-        printAttenuationCoeffiecient(energy,  0.5 * MeV, 0.0001,  test_stream);
-        printAttenuationCoeffiecient(energy, 10E2 * MeV, 0.1,     test_stream);
-
-		std::ofstream reference_stream(PREFIX"/data/test_mu_water1.csv");
-		g_xray_renderer.printMuWaterTable(reference_stream);
+        for (short HU(-1000); HU <= 2000; ++HU)
+        {
+        	test_stream << HU << "\t" << g_xray_renderer.getDensityFromHU(HU) / (g/cm3) << std::endl;
+        }
 
 		// Close the window and shut GLFW
 		if (p_main_window_id)
@@ -236,74 +203,4 @@ void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
 	std::cerr << "GLFW error: " << description << std::endl;
-}
-
-
-//-------------------------------------------------------
-void printAttenuationCoeffiecient(double& anEnergy,
-								  double aThreshold,
-								  double anOffset,
-								  std::ostream& anOutput)
-//-------------------------------------------------------
-{
-    double HU_bone(1330);
-    double HU_brain(37);
-    double HU_gas(-998);
-    double HU_soft_tissue(52);
-    double HU_water(0);
-
-    double rho_bone(       1.920E+00 * g/cm3);
-    double rho_brain(      1.040E+00 * g/cm3);
-    double rho_gas(        1.826E-03 * g/cm3);
-    double rho_soft_tissue(1.060E+00 * g/cm3);
-    double rho_water(      1.000E+00 * g/cm3);
-
-    double mu_rho_bone_xcom(0);
-    double mu_rho_brain_xcom(0);
-    double mu_rho_gas_xcom(0);
-    double mu_rho_soft_tissue_xcom(0);
-    double mu_rho_water_xcom(0);
-
-    double mu_bone_mu_water(0);
-    double mu_brain_mu_water(0);
-    double mu_gas_mu_water(0);
-    double mu_soft_tissue_mu_water(0);
-    double mu_water_mu_water(0);
-
-    for (anEnergy; anEnergy <= aThreshold; anEnergy += anOffset)
-    {
-        anOutput     << anEnergy / MeV;
-
-        mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, anEnergy);
-        mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(anEnergy);
-
-        anOutput     << "\t" << mu_rho_water_xcom                           / (cm2/g);
-        anOutput     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
-
-        mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, anEnergy);
-        mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
-
-        anOutput     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
-        anOutput     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
-
-        mu_rho_brain_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_brain, anEnergy);
-        mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain, mu_water_mu_water);
-
-        anOutput     << "\t" << mu_rho_brain_xcom                            / (cm2/g);
-        anOutput     << "\t" << (mu_brain_mu_water / rho_bone)               / (cm2/g);
-
-        mu_rho_gas_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_gas, anEnergy);
-        mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, mu_water_mu_water);
-
-        anOutput     << "\t" << mu_rho_gas_xcom                            / (cm2/g);
-        anOutput     << "\t" << (mu_gas_mu_water / rho_bone)               / (cm2/g);
-
-        mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, anEnergy);
-        mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
-
-        anOutput     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
-        anOutput     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
-
-        anOutput     << std::endl;
-    }
 }
