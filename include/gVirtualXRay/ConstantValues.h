@@ -47,6 +47,8 @@ namespace gVirtualXRay {
 const double PI = 3.14159265358979323846;
 const double PI_2 = PI / 2.0;
 
+const double N_Avogadro = 6.02552 * 1.0e23;
+
 const unsigned short Z_H  =  1; ///< Hydrogen atomic number
 const unsigned short Z_C  =  6; ///< Carbon atomic number
 const unsigned short Z_N  =  7; ///< Nitrogen atomic number
