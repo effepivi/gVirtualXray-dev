@@ -37,7 +37,7 @@
 #include <GL/glcorearb.h>
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef GVXR_FBO_EXCEPTION_H
 #include "gVirtualXRay/FBOException.h"
 #endif
 
