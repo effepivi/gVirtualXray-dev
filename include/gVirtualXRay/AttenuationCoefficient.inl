@@ -77,7 +77,7 @@ inline std::istream& operator >>(std::istream &is,
 	is >> obj.m_mu;
 	
 	obj.m_energy *= MeV;
-	obj.m_mu *= cm2/g;
+	obj.m_mu *= 1.0 / cm;
 	
 	return (is);
 }
