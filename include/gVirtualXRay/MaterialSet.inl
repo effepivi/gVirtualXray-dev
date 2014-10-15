@@ -94,22 +94,6 @@ inline float MaterialSet::getMuMaxEnergy() const
 }
 
 
-//----------------------------------------
-inline float MaterialSet::getSMinX() const
-//----------------------------------------
-{
-	return (m_S_min_x);
-}
-
-
-//----------------------------------------
-inline float MaterialSet::getSMaxX() const
-//----------------------------------------
-{
-	return (m_S_max_x);
-}
-
-
 inline short MaterialSet::getMinHU() const
 {
 	return (m_min_HU);
