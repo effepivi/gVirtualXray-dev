@@ -75,7 +75,7 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 # to the source code
 configure_file (
 	"${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
-	"${PROJECT_BINARY_DIR}/gVirtualXRayConfig.h"
+	"${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
 )
 
 
@@ -127,7 +127,7 @@ SET (CXX_SOURCES
 # Add header files to the project
 SET (HXX_SOURCES
 	# gVirtualXRay
-	${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRayConfig.h
+	${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h
 
 	../include/gVirtualXRay/AttenuationCoefficient.h
 	../include/gVirtualXRay/AttenuationCoefficient.inl

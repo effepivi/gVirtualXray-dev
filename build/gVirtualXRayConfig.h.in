@@ -1,5 +1,11 @@
+#ifndef GVXR_CONFIG_H
+#define GVXR_CONFIG_H
+
 // the configured options and settings for gVirtualXRay
 #define gVirtualXRay_VERSION_MAJOR @gVirtualXRay_VERSION_MAJOR@
 #define gVirtualXRay_VERSION_MINOR @gVirtualXRay_VERSION_MINOR@
 #define gVirtualXRay_VERSION_PATCH @gVirtualXRay_VERSION_PATCH@
 
+#define gVirtualXRay_XCOM_PATH "@XCOM_PATH@"
+
+#endif // GVXR_CONFIG_H
