@@ -276,9 +276,6 @@ IF(glfw_FOUND)
     INSTALL(TARGETS test_01 RUNTIME DESTINATION examples/bin COMPONENT examples)
     INSTALL(FILES data/cylinder_bin.stl DESTINATION examples/data COMPONENT examples)
 
-    ADD_EXECUTABLE (test_mu_water src/test_mu_water.cxx)
-    TARGET_LINK_LIBRARIES (test_mu_water gVirtualXRay ${optionalLibs} ${requiredLibs})
-
     ADD_EXECUTABLE (test_triangle_mesh src/test_triangle_mesh.cxx src/buildCube.cxx)
     TARGET_LINK_LIBRARIES (test_triangle_mesh gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(test_triangle_mesh BinaryExampleFiles)

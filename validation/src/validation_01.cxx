@@ -1,0 +1,325 @@
+/**
+********************************************************************************
+*
+*	@file		validation_01.cxx
+*
+*	@brief		Main test program to test the value of mu water.
+*
+*	@version	1.0
+*
+*	@date		24/12/2013
+*
+*	@author		Dr Franck P. Vidal
+*
+*	@section	License
+*				BSD 3-Clause License.
+*
+*				For details on use and redistribution please refer
+*				to http://opensource.org/licenses/BSD-3-Clause
+*
+*	@section	Copyright
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+*				BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+#include <GL/glew.h>
+
+#define GLFW_INCLUDE_GLCOREARB 1
+
+#include <GLFW/glfw3.h>
+
+#ifndef GVXR_XRAY_RENDERER_H
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+
+//******************************************************************************
+//	Name space
+//******************************************************************************
+using namespace gVirtualXRay;
+
+
+//******************************************************************************
+//	Defines
+//******************************************************************************
+#define PREFIX ".."
+
+
+//******************************************************************************
+//	Global variables
+//******************************************************************************
+RATIONAL_NUMBER g_incident_energy(80.0 * keV);
+Vec2ui g_number_of_pixels(64, 64);
+GLfloat g_resolution(0.15 * mm); // 1mm per pixel
+
+XRayBeam g_xray_beam;
+XRayDetector g_xray_detector;
+XRayRenderer g_xray_renderer;
+
+
+//******************************************************************************
+//	Function declaration
+//******************************************************************************
+void initGLEW();
+void loadDetector();
+void loadSource();
+void loadXRaySimulator();
+void errorCallback(int error, const char* description);
+
+
+//-----------------------------
+int main(int argc, char** argv)
+//-----------------------------
+{
+	try
+	{
+	    // Set an error callback
+	    glfwSetErrorCallback(errorCallback);
+
+	    // Initialize GLFW
+	    if (!glfwInit())
+	    {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+	    }
+
+        // Enable OpenGL 2.1 if possible
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+	    // Create the window
+	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
+	    if (!p_main_window_id)
+	    {
+	        glfwTerminate();
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+	    }
+
+	    // Make the window's context current
+	    glfwMakeContextCurrent(p_main_window_id);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Initialise GLEW
+        initGLEW();
+
+        // Load the data
+		loadDetector();
+		loadSource();
+		loadXRaySimulator();
+
+		// Print the energy in MeV and the attenuation coefficient of water in cm2/g
+		std::ofstream test_stream(PREFIX"/data/test_mass_attenuation_coefficients.csv");
+
+        if (!test_stream.is_open())
+        {
+            std::stringstream error_message;
+            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_stream.csv";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
+
+        double energy(0);
+
+        double HU_water(0);
+        double HU_soft_tissue(51.9216113228);
+        double HU_bone(1329.8856831791);
+        double HU_lung(1329.8856831791);
+
+        double rho_water(      1.000E+00 * g/cm3);
+        double rho_soft_tissue(1.060E+00 * g/cm3);
+        double rho_bone(       1.920E+00 * g/cm3);
+        double rho_lung(       1.050E+00 * g/cm3);
+
+        double mu_rho_water_xcom(0);
+        double mu_rho_soft_tissue_xcom(0);
+        double mu_rho_bone_xcom(0);
+        double mu_rho_lung_xcom(0);
+
+        double mu_water_mu_water(0);
+        double mu_soft_tissue_mu_water(0);
+        double mu_bone_mu_water(0);
+        double mu_lung_mu_water(0);
+
+        test_stream     << "Energy in MeV\t" <<
+                "water_xcom\t" <<
+                "water_HU\t" <<
+                "soft_tissue_xcom\t" <<
+                "soft_tissue_HU\t" <<
+                "bone_xcom\t" <<
+                "bone_HU\t" <<
+                "lung_xcom\t" <<
+                "lung_HU" <<
+                std::endl;
+
+        for (energy = 1.00E-003 * MeV; energy <= 1e-2 * MeV; energy += 0.00001)
+        {
+            mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, energy);
+            mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(energy);
+
+            mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, energy);
+            mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
+
+            mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, energy);
+            mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
+
+            mu_rho_lung_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_lung, energy);
+            mu_lung_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_lung, mu_water_mu_water);
+
+            test_stream     << energy / MeV;
+
+            test_stream     << "\t" << mu_rho_water_xcom                           / (cm2/g);
+            test_stream     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
+            test_stream     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
+            test_stream     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_lung_xcom                            / (cm2/g);
+            test_stream     << "\t" << (mu_lung_mu_water / rho_bone)               / (cm2/g);
+
+            test_stream     << std::endl;
+        }
+
+        for (; energy <= 0.5 * MeV; energy += 0.0001)
+        {
+            mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, energy);
+            mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(energy);
+
+            mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, energy);
+            mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
+
+            mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, energy);
+            mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
+
+            mu_rho_lung_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_lung, energy);
+            mu_lung_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_lung, mu_water_mu_water);
+
+            test_stream     << energy / MeV;
+
+            test_stream     << "\t" << mu_rho_water_xcom                           / (cm2/g);
+            test_stream     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
+            test_stream     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
+            test_stream     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_lung_xcom                            / (cm2/g);
+            test_stream     << "\t" << (mu_lung_mu_water / rho_bone)               / (cm2/g);
+
+            test_stream     << std::endl;
+        }
+
+        for (; energy <= 1.00E2 * MeV; energy += 0.1)
+        {
+            mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, energy);
+            mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(energy);
+
+            mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, energy);
+            mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
+
+            mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, energy);
+            mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
+
+            mu_rho_lung_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_lung, energy);
+            mu_lung_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_lung, mu_water_mu_water);
+
+            test_stream     << energy / MeV;
+
+            test_stream     << "\t" << mu_rho_water_xcom                           / (cm2/g);
+            test_stream     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
+            test_stream     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
+            test_stream     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
+
+            test_stream     << "\t" << mu_rho_lung_xcom                            / (cm2/g);
+            test_stream     << "\t" << (mu_lung_mu_water / rho_bone)               / (cm2/g);
+
+            test_stream     << std::endl;
+        }
+
+		std::ofstream reference_stream(PREFIX"/data/test_mu_water1.csv");
+		g_xray_renderer.printMuWaterTable(reference_stream);
+
+		// Close the window and shut GLFW
+		if (p_main_window_id)
+		{
+			glfwDestroyWindow(p_main_window_id);
+			p_main_window_id = 0;
+			glfwTerminate();
+		}
+	}
+	// Catch exception if any
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << std::endl;
+	}
+
+	return (EXIT_SUCCESS);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        std::stringstream error_message;
+        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+}
+
+
+//-----------------
+void loadDetector()
+//-----------------
+{
+	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+}
+
+
+//---------------
+void loadSource()
+//---------------
+{
+	// Set the energy
+	g_xray_beam.initialise(g_incident_energy);
+	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
+}
+
+
+//----------------------
+void loadXRaySimulator()
+//----------------------
+{
+	// Initialise the X-ray renderer
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
+}
+
+
+//----------------------------------------------------
+void errorCallback(int error, const char* description)
+//----------------------------------------------------
+{
+	std::cerr << "GLFW error: " << description << std::endl;
+}
