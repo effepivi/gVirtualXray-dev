@@ -96,9 +96,9 @@ void MaterialSet::addMaterial(const TissueMaterial& aMaterial)
 }
 
 
-//------------------------------------------------------------
-const TissueMaterial& MaterialSet::getMaterial(short aHUValue)
-//------------------------------------------------------------
+//------------------------------------------------------------------
+const TissueMaterial& MaterialSet::getMaterial(short aHUValue) const
+//------------------------------------------------------------------
 {
 	// The material table is empty
 	if (m_material_set.size() == 0)

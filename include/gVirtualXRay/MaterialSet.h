@@ -122,7 +122,7 @@ public:
 	*	@param aHUValue:	the HU value of the material
 	*/
 	//---------------------------------------------------------------------------
-	const TissueMaterial& getMaterial(short aHUValue);
+	const TissueMaterial& getMaterial(short aHUValue) const;
 
 
 	//---------------------------------------------------------------------------
@@ -141,24 +141,6 @@ public:
 	*/
 	//---------------------------------------------------------------------------
 	float getMuMaxEnergy() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the lower cutoff for Compton scattering cross section samples.
-	/*
-	*	@return the lower cutoff for Compton scattering cross section samples
-	*/
-	//---------------------------------------------------------------------------
-	float getSMinX() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the higher cutoff for Compton scattering cross section samples.
-	/*
-	*	@return the higher cutoff for Compton scattering cross section samples
-	*/
-	//---------------------------------------------------------------------------
-	float getSMaxX() const;
 
 
 	//---------------------------------------------------------------------------
