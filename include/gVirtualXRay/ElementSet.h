@@ -162,17 +162,8 @@ public:
 	*	@return	the number of elements in the set
 	*/
 	//---------------------------------------------------------------------------
-	int getElementSetSize() const;
+	unsigned int getElementSetSize() const;
 
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the smallest energy step in the attenuation coefficient list.
-	/*
-	*	@return	the smallest energy step in the attenuation coefficient list
-	*/
-	//---------------------------------------------------------------------------
-	float getSmallestEnergyStep() const;
-	
 
 	//---------------------------------------------------------------------------
 	///	operator <<
@@ -198,12 +189,6 @@ private:
 	///	An indexed table containing elements.
 	//---------------------------------------------------------------------------
 	std::map<unsigned short, AtomicElement> m_element_set;
-
-
-	//---------------------------------------------------------------------------
-	///	The smallest energy step in attenuation coefficient database.
-	//---------------------------------------------------------------------------
-	float m_smallest_energy_step;
 };
 
 

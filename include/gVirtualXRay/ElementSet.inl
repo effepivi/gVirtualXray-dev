@@ -42,20 +42,16 @@
 namespace gVirtualXRay {
 
 
-//--------------------------------------
-inline ElementSet::ElementSet():
-//--------------------------------------
-        m_smallest_energy_step(-1)
-//--------------------------------------
+//-----------------------------
+inline ElementSet::ElementSet()
+//-----------------------------
 {
 }
 
 
-//----------------------------------------------------------
-inline ElementSet::ElementSet(const std::string& aFileName):
-//----------------------------------------------------------
-        m_smallest_energy_step(-1)
-//----------------------------------------------------------
+//---------------------------------------------------------
+inline ElementSet::ElementSet(const std::string& aFileName)
+//---------------------------------------------------------
 {
 	loadFromFile(aFileName);
 }
@@ -84,6 +80,13 @@ inline void ElementSet::addElement(const AtomicElement& anElement)
     m_element_set.insert(std::pair<unsigned short, AtomicElement>(anElement.getAtomicNumber(), anElement));
 }
 
+
+//-------------------------------------------------------
+inline unsigned int ElementSet::getElementSetSize() const
+//-------------------------------------------------------
+{
+    return (m_element_set.size());
+}
 
 //-------------------------------------------------------------------------
 inline AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber)
@@ -140,14 +143,6 @@ inline const AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber
         error_message << "ERROR: Element (atomic number: " << anAtomicNumber << ") not found.";
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
-}
-
-
-//----------------------------------------------------
-inline float ElementSet::getSmallestEnergyStep() const
-//----------------------------------------------------
-{
-	return (m_smallest_energy_step);
 }
 
 
