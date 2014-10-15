@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		test.cxx
+*	@file		validation_03.cxx
 *
 *	@brief		Main test program.
 *
@@ -32,6 +32,8 @@
 #if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #endif
+
+#include <iomanip>
 
 #include <boost/scoped_ptr.hpp>
 
@@ -100,7 +102,6 @@
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-using namespace std;
 
 
 //******************************************************************************
@@ -128,7 +129,7 @@ VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-//PolygonMesh g_inside_polygon_data;
+PolygonMesh g_inside_polygon_data;
 CubeMesh g_outside_polygon_data(3.0 * cm);
 boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
 
@@ -220,7 +221,7 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
-		//g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
+		g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
 		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
 
 		// Set the projection matrix
@@ -251,9 +252,9 @@ int main(int argc, char** argv)
 	    }
 	}
 	// Catch exception if any
-	catch (const exception& error)
+	catch (const std::exception& error)
 	{
-		cerr << error.what() << endl;
+		std::cerr << error.what() << std::endl;
 	}
 
 	// Close the window and shut GLFW
@@ -333,8 +334,8 @@ void initGL()
 void loadSTLFile()
 //----------------
 {
-	string stl_filename_0("cylinder_bin.stl");
-	string stl_filename_1("cube_bin.stl");
+	std::string stl_filename_0("cylinder_bin.stl");
+	std::string stl_filename_1("cube_bin.stl");
 
 	// Open the file
 	FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
@@ -363,30 +364,28 @@ void loadSTLFile()
 	}
 
 	// Set geometry
-	//g_inside_polygon_data.setFilename(stl_filename_0.data());
-	//g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-	//g_inside_polygon_data.mergeVertices();
-    //g_inside_polygon_data.setHounsfieldValue(-100.0);
-    //g_inside_polygon_data.setHounsfieldValue(0.0);
+	g_inside_polygon_data.setFilename(stl_filename_0.data());
+	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+	g_inside_polygon_data.mergeVertices();
+    g_inside_polygon_data.setHounsfieldValue(1330);
 
 	//g_outside_polygon_data.setFilename(stl_filename_1.data());
 	//g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
 	//g_outside_polygon_data.mergeVertices(true);
-    g_outside_polygon_data.setHounsfieldValue(500.0);
-    g_outside_polygon_data.setHounsfieldValue(0.0);
+    g_outside_polygon_data.setHounsfieldValue(52);
 
     // Get the energy and the corresponding attenuation coefficient
-    RATIONAL_NUMBER mu_water(g_xray_renderer.getMuWaterLogLinearInterpolation(g_incident_energy));
+    std::cout << "Incident energy: " << g_incident_energy / keV << " keV" << std::endl;
+    std::cout << "HU = -998, mu = " << std::scientific << g_xray_renderer.getMuFromHU(-998, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
+    std::cout << "HU =    0, mu = " << std::scientific << g_xray_renderer.getMuFromHU(   0, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
+    std::cout << "HU =   37, mu = " << std::scientific << g_xray_renderer.getMuFromHU(  37, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
+    std::cout << "HU =   52, mu = " << std::scientific << g_xray_renderer.getMuFromHU(  52, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
+    std::cout << "HU = 1330, mu = " << std::scientific << g_xray_renderer.getMuFromHU(1330, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl;
 
-    std::cout << "Incident energy: " << g_incident_energy << std::endl;
-    std::cout << "HU =    0, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater(   0, mu_water) << std::endl;
-    std::cout << "HU = -100, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater(-100, mu_water) << std::endl;
-    std::cout << "HU =  500, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater( 500, mu_water) << std::endl;
-
-    /*g_inside_polygon_data.splitFaces(false);
+    g_inside_polygon_data.splitFaces(false);
 	g_inside_polygon_data.splitFaces(false);
 	g_inside_polygon_data.splitFaces(false);
-*/
+
     g_outside_polygon_data.splitFaces(false);
     g_outside_polygon_data.splitFaces(false);
     g_outside_polygon_data.splitFaces(false);
