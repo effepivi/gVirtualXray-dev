@@ -34,7 +34,7 @@
 //	Include
 //******************************************************************************
 #include <iostream>
-#include <map>
+#include <vector>
 #include <string>
 
 
@@ -156,7 +156,7 @@ public:
 	*	@return	the corresponding linear attenuation coefficient
 	*/
 	//---------------------------------------------------------------------------
-	double getMassAttenuationTotal(double anEnergy) const;
+	double getMassAttenuationTotal(double anEnergy);
 
 
 	//---------------------------------------------------------------------------
@@ -166,17 +166,7 @@ public:
 	*	@return	the corresponding linear attenuation coefficient
 	*/
 	//---------------------------------------------------------------------------
-	double getMU(double anEnergy) const;
-
-
-	//---------------------------------------------------------------------------
-	///	Get a Compton scattering cross section sample (values are interpolated).
-	/*
-	*	@param x:	the sample
-	*	@return	the Compton scattering cross section value
-	*/
-	//---------------------------------------------------------------------------
-	double getS(double x) const;
+	double getMU(double anEnergy);
 
 
 	//---------------------------------------------------------------------------
@@ -286,14 +276,17 @@ public:
 
 //*****************************************************************************
 private:
+    void loadDataFromXCOM();
+
     std::string    m_name;                  ///< The name of the element
     std::string    m_symbol;                ///< The symbol of the element
     unsigned short m_atomic_number;         ///< The atomic number of the element
     double         m_molar_mass;            ///< The molar mass of the element
     double         m_density;               ///< The density of the element
     std::string    m_state;                 ///< The state of the element
-    unsigned int   m_energy_channel_number; ///< The number of energy channels in the list of linear attenuation coefficients
-    double         m_smallest_energy_step;  ///< The smallest energy step in the list of linear attenuation coefficients
+
+    std::vector<double> m_p_energy_set;
+    std::vector<double> m_p_mass_attenuation_coefficient_set;
 };
 
 
