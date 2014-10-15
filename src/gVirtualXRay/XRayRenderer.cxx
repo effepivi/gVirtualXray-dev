@@ -29,6 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <cfloat>
 #include <math.h>
 #include <cstring>
@@ -246,7 +250,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     loadElementSet();
 
     // Load the meterial set
-    loadMaterialSet(&m_element_set);
+    loadMaterialSet();
 
 	// Set the beam spectrum
 	m_p_xray_beam = const_cast<XRayBeam*>(apBeamSpectrum);
@@ -785,9 +789,9 @@ void XRayRenderer::loadElementSet()
 }
 
 
-//----------------------------------------------------------------
-void XRayRenderer::loadMaterialSet(const ElementSet* apElementSet)
-//----------------------------------------------------------------
+//----------------------------------
+void XRayRenderer::loadMaterialSet()
+//----------------------------------
 {
     // Clear the data
     m_material_set.clearMemory();
@@ -818,7 +822,7 @@ void XRayRenderer::loadMaterialSet(const ElementSet* apElementSet)
     material_stream.getline(first_line, 1024);
 
     // Register the element set
-    TissueMaterial::registerElementSet(apElementSet);
+    TissueMaterial::registerElementSet(&m_element_set);
 
     // Process every record
     TissueMaterial temp;
@@ -2633,8 +2637,19 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 					++current_slice)
 			{
 				// Get the energy and the corresponding attenuation coefficient
-				RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
-				RATIONAL_NUMBER mu(convertHounsfieldValue2Mu(HU, mu_water));
+				RATIONAL_NUMBER mu;
+
+				if (m_material_set.getMaterialNumber() &&
+				        m_element_set.getElementSetSize() &&
+				        std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOT_FOUND")
+				{
+				    mu = getMuFromHU(HU, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+				}
+				else
+				{
+                    RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
+                    mu = getMuFromHUAndMuWater(HU, mu_water);
+                }
 
                /* std::cout << "I_0 " << m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy() << std::endl;
                 std::cout << "mu water " << mu_water << std::endl;
