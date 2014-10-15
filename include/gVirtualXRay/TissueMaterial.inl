@@ -290,36 +290,6 @@ inline double TissueMaterial::getMU(short aHounsfieldValue, double anEnergy) con
 }
 
 
-//----------------------------------------------
-inline double TissueMaterial::getS(double x) const
-//----------------------------------------------
-{
-    if (!m_p_element_set)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element set has been registered.");
-    }
-
-	return (m_p_weight_set[ 0] * m_p_element_set->getElement(Z_H).getS(x) +
-            m_p_weight_set[ 1] * m_p_element_set->getElement(Z_C).getS(x) +
-            m_p_weight_set[ 2] * m_p_element_set->getElement(Z_N).getS(x) +
-            m_p_weight_set[ 3] * m_p_element_set->getElement(Z_O).getS(x) +
-            m_p_weight_set[ 4] * m_p_element_set->getElement(Z_Na).getS(x) +
-            m_p_weight_set[ 5] * m_p_element_set->getElement(Z_Mg).getS(x) +
-            m_p_weight_set[ 6] * m_p_element_set->getElement(Z_P).getS(x) +
-            m_p_weight_set[ 7] * m_p_element_set->getElement(Z_S).getS(x) +
-            m_p_weight_set[ 8] * m_p_element_set->getElement(Z_Cl).getS(x) +
-            m_p_weight_set[ 9] * m_p_element_set->getElement(Z_Ar).getS(x) +
-            m_p_weight_set[10] * m_p_element_set->getElement(Z_K).getS(x) +
-            m_p_weight_set[11] * m_p_element_set->getElement(Z_Ca).getS(x) +
-            m_p_weight_set[12] * m_p_element_set->getElement(Z_Ti).getS(x) +
-            m_p_weight_set[13] * m_p_element_set->getElement(Z_Zn).getS(x) +
-            m_p_weight_set[14] * m_p_element_set->getElement(Z_Cu).getS(x) +
-            m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getS(x) +
-            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getS(x)
-    );
-}
-
-
 //-------------------------------------------------------------------------------
 inline TissueMaterial& TissueMaterial::operator=(const TissueMaterial& aMaterial)
 //-------------------------------------------------------------------------------

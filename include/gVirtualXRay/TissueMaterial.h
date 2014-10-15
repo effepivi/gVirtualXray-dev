@@ -196,16 +196,6 @@ public:
 
 
 	//---------------------------------------------------------------------------
-	///	Accessor on the number of element atom per voxel.
-	/*
-	*	@param aHounsfieldValue:	the material (HU) value
-	*	@return the number of element atom per voxel
-	*/
-	//---------------------------------------------------------------------------
-	double getAtomNumberPexVoxel(short aHounsfieldValue) const;
-
-
-	//---------------------------------------------------------------------------
 	///	Get the mass attenuation coefficient at a given energy (values are interpolated).
 	/*
 	*	@param aHounsfieldValue:	the material (HU) value
