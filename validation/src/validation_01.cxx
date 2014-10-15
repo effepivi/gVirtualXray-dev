@@ -3,11 +3,12 @@
 *
 *	@file		validation_01.cxx
 *
-*	@brief		Main test program to test the value of mu water.
+*	@brief		Main program to test the value of mass attenuation coefficients
+*				for various tissues.
 *
 *	@version	1.0
 *
-*	@date		24/12/2013
+*	@date		15/10/2014
 *
 *	@author		Dr Franck P. Vidal
 *
