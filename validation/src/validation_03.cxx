@@ -1,0 +1,433 @@
+/**
+********************************************************************************
+*
+*	@file		test.cxx
+*
+*	@brief		Main test program.
+*
+*	@version	1.0
+*
+*	@date		11/11/2013
+*
+*	@author		Dr Franck P. Vidal
+*
+*	@section	License
+*				BSD 3-Clause License.
+*
+*				For details on use and redistribution please refer
+*				to http://opensource.org/licenses/BSD-3-Clause
+*
+*	@section	Copyright
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+*				BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glew.h>
+#endif
+
+#include <boost/scoped_ptr.hpp>
+
+#ifdef __APPLE__
+#define GL3_PROTOTYPES 1
+#else
+#define GL_GLEXT_PROTOTYPES 1
+#endif
+
+#define GLFW_INCLUDE_GLCOREARB 1
+
+#include <GLFW/glfw3.h>
+
+#include <stdlib.h>
+
+#ifndef GVXR_TYPES_H
+#include "gVirtualXRay/Types.h"
+#endif
+
+#ifndef GVXR_UNITS_H
+#include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef GVXR_POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
+#endif
+
+#ifndef GVXR_CUBE_MESH_H
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
+#ifndef GVXR_XRAY_BEAM_H
+#include "gVirtualXRay/XRayBeam.h"
+#endif
+
+#ifndef GVXR_XRAY_DETECTOR_H
+#include "gVirtualXRay/XRayDetector.h"
+#endif
+
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
+#ifndef GVXR_MATRIX4X4_H
+#include "gVirtualXRay/Matrix4x4.h"
+#endif
+
+#ifndef GVXR_XRAY_RENDERER_H
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef GVXR_SHADER_H
+#include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef GVXR_UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
+
+#ifndef GVXR_EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
+
+//******************************************************************************
+//	Name space
+//******************************************************************************
+using namespace gVirtualXRay;
+using namespace std;
+
+
+//******************************************************************************
+//	Defines
+//******************************************************************************
+#define PREFIX ".."
+
+
+//******************************************************************************
+//	Global variables
+//******************************************************************************
+GLsizei g_main_window_width(1280 / 2.0);
+GLsizei g_main_window_height(800 / 2.0);
+GLFWwindow* g_p_main_window_id(0);
+
+Matrix4x4<GLfloat> g_scene_rotation_matrix;
+Matrix4x4<GLfloat> g_detector_rotation_matrix;
+Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
+GLfloat g_incident_energy(80.0 * keV);
+const GLfloat g_scaling_factor(2.0);
+GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
+Vec2ui g_number_of_pixels(600 / g_scaling_factor, 1);
+VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
+VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
+VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
+
+//PolygonMesh g_inside_polygon_data;
+CubeMesh g_outside_polygon_data(3.0 * cm);
+boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
+
+XRayBeam g_xray_beam;
+XRayDetector g_xray_detector;
+XRayRenderer g_xray_renderer;
+
+
+//******************************************************************************
+//	Function declaration
+//******************************************************************************
+void initGLEW();
+void initGL();
+void loadSTLFile();
+void loadDetector();
+void loadSource();
+void loadXRaySimulator();
+void errorCallback(int error, const char* description);
+
+
+//-----------------------------
+int main(int argc, char** argv)
+//-----------------------------
+{
+	try
+	{
+	    // Set an error callback
+	    glfwSetErrorCallback(errorCallback);
+
+		// Initialize GLFW
+	    if (!glfwInit())
+	    {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+	    }
+
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	    // Enable quad-buffering if possible
+	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
+
+	    // Enable anti-aliasing
+	    glfwWindowHint(GLFW_SAMPLES, 4);
+
+	    // Create a windowed mode window and its OpenGL context
+	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+	   
+        // Window cannot be created 
+        if (!g_p_main_window_id)
+	    {
+            // Disable quad-buffering
+            glfwWindowHint(GLFW_STEREO, GL_FALSE);
+
+            // Create the window
+	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        }
+        
+        // Window cannot be created 
+        if (!g_p_main_window_id)
+	    {
+	        glfwTerminate();
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+	    }
+
+	    // Make the window's context current
+	    glfwMakeContextCurrent(g_p_main_window_id);
+
+        // Initialise GLEW
+        initGLEW();
+
+        // Check the OpenGL version
+        std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
+
+        // Check the GLSL version
+        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
+        // Initialise OpenGL
+		initGL();
+
+		// Check the current FBO
+		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Load the data
+		loadDetector();
+		loadSource();
+		loadXRaySimulator();
+
+		// Add the geometry to the X-ray renderer
+		loadSTLFile();
+		//g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
+		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+
+		// Set the projection matrix
+		GLint width(0);
+		GLint height(0);
+		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+
+		// Launch the event loop
+	    while (!glfwWindowShouldClose(g_p_main_window_id))
+	    {
+            // Compute the sinogram
+            g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), 360, 0.5);
+
+            // Save the sinogram
+            g_xray_renderer.printSinogram(PREFIX"/data/sinogram.mhd");
+
+            // Compute the projection set
+            g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), 360, 0.5);
+
+            // Save the projection set
+            g_xray_renderer.printProjectionSet(PREFIX"/data/projection_set.mhd");
+
+            // Compute the X-Ray image
+            g_xray_renderer.computeImage(g_sample_rotation_matrix);
+
+            // Close the window
+            glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+	    }
+	}
+	// Catch exception if any
+	catch (const exception& error)
+	{
+		cerr << error.what() << endl;
+	}
+
+	// Close the window and shut GLFW
+	if (g_p_main_window_id)
+	{
+		glfwDestroyWindow(g_p_main_window_id);
+		g_p_main_window_id = 0;
+		glfwTerminate();
+	}
+
+	// Return an exit code
+	return (EXIT_SUCCESS);
+}
+
+
+//----------------------------------------------------
+void errorCallback(int error, const char* description)
+//----------------------------------------------------
+{
+	std::cerr << "GLFW error: " << description << std::endl;
+}
+
+
+//---------
+void quit()
+//---------
+{
+	if (g_p_main_window_id)
+	{
+		glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        glfwTerminate();
+	}
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+#if defined(_WIN32) || defined(_WIN64)
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+#endif
+}
+
+
+//-----------
+void initGL()
+//-----------
+{
+	std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
+	std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
+	std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Enable the Z-buffer
+	glEnable(GL_DEPTH_TEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Set the background colour
+	glClearColor(0.5, 0.5, 0.5, 1.0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	glEnable(GL_MULTISAMPLE);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//----------------
+void loadSTLFile()
+//----------------
+{
+	string stl_filename_0("cylinder_bin.stl");
+	string stl_filename_1("cube_bin.stl");
+
+	// Open the file
+	FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
+	FILE* p_file_descriptor_1(fopen(stl_filename_1.data(), "rb"));
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor_0)
+	{
+		// Use the prefix
+		stl_filename_0 = "../data/" + stl_filename_0;
+	}
+	else
+	{
+		fclose(p_file_descriptor_0);
+	}
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor_1)
+	{
+		// Use the prefix
+		stl_filename_1 = "../data/" + stl_filename_1;
+	}
+	else
+	{
+		fclose(p_file_descriptor_1);
+	}
+
+	// Set geometry
+	//g_inside_polygon_data.setFilename(stl_filename_0.data());
+	//g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+	//g_inside_polygon_data.mergeVertices();
+    //g_inside_polygon_data.setHounsfieldValue(-100.0);
+    //g_inside_polygon_data.setHounsfieldValue(0.0);
+
+	//g_outside_polygon_data.setFilename(stl_filename_1.data());
+	//g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+	//g_outside_polygon_data.mergeVertices(true);
+    g_outside_polygon_data.setHounsfieldValue(500.0);
+    g_outside_polygon_data.setHounsfieldValue(0.0);
+
+    // Get the energy and the corresponding attenuation coefficient
+    RATIONAL_NUMBER mu_water(g_xray_renderer.getMuWaterLogLinearInterpolation(g_incident_energy));
+
+    std::cout << "Incident energy: " << g_incident_energy << std::endl;
+    std::cout << "HU =    0, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater(   0, mu_water) << std::endl;
+    std::cout << "HU = -100, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater(-100, mu_water) << std::endl;
+    std::cout << "HU =  500, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater( 500, mu_water) << std::endl;
+
+    /*g_inside_polygon_data.splitFaces(false);
+	g_inside_polygon_data.splitFaces(false);
+	g_inside_polygon_data.splitFaces(false);
+*/
+    g_outside_polygon_data.splitFaces(false);
+    g_outside_polygon_data.splitFaces(false);
+    g_outside_polygon_data.splitFaces(false);
+    g_outside_polygon_data.splitFaces(false);
+}
+
+
+//-----------------
+void loadDetector()
+//-----------------
+{
+	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+	g_xray_detector.setDetectorPosition(g_detector_position);
+	g_xray_detector.setUpVector(g_detector_up_vector);
+}
+
+
+//---------------
+void loadSource()
+//---------------
+{
+	// Set the energy
+	g_xray_beam.initialise(g_incident_energy);
+	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
+
+	// Set the source position
+	g_xray_detector.setXrayPointSource(g_source_position);
+
+	// Use a parallel source
+	g_xray_detector.setParallelBeam();
+}
+
+
+//----------------------
+void loadXRaySimulator()
+//----------------------
+{
+	// Initialise the X-ray renderer
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB32F,
+            &g_xray_detector,
+            &g_xray_beam);
+}

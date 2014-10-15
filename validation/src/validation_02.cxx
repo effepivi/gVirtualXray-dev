@@ -1,13 +1,14 @@
 /**
 ********************************************************************************
 *
-*	@file		test.cxx
+*	@file		validation_01.cxx
 *
-*	@brief		Main test program.
+*	@brief		Main program to test the value of mass attenuation coefficients
+*				for various tissues.
 *
 *	@version	1.0
 *
-*	@date		11/11/2013
+*	@date		15/10/2014
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -29,70 +30,14 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
-#endif
-
-#include <boost/scoped_ptr.hpp>
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h>
 
-#include <stdlib.h>
-
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
-#ifndef GVXR_UNITS_H
-#include "gVirtualXRay/Units.h"
-#endif
-
-#ifndef GVXR_POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
-#ifndef GVXR_CUBE_MESH_H
-#include "gVirtualXRay/CubeMesh.h"
-#endif
-
-#ifndef GVXR_XRAY_BEAM_H
-#include "gVirtualXRay/XRayBeam.h"
-#endif
-
-#ifndef GVXR_XRAY_DETECTOR_H
-#include "gVirtualXRay/XRayDetector.h"
-#endif
-
-#ifndef GVXR_OPENGL_UTILITIES_H
-#include "gVirtualXRay/OpenGLUtilities.h"
-#endif
-
-#ifndef GVXR_MATRIX4X4_H
-#include "gVirtualXRay/Matrix4x4.h"
-#endif
-
 #ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
-#endif
-
-#ifndef GVXR_SHADER_H
-#include "gVirtualXRay/Shader.h"
-#endif
-
-#ifndef GVXR_UTILITIES_H
-#include "gVirtualXRay/Utilities.h"
-#endif
-
-#ifndef GVXR_EXCEPTION_H
-#include "gVirtualXRay/Exception.h"
 #endif
 
 
@@ -100,7 +45,6 @@
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-using namespace std;
 
 
 //******************************************************************************
@@ -112,25 +56,9 @@ using namespace std;
 //******************************************************************************
 //	Global variables
 //******************************************************************************
-GLsizei g_main_window_width(1280 / 2.0);
-GLsizei g_main_window_height(800 / 2.0);
-GLFWwindow* g_p_main_window_id(0);
-
-Matrix4x4<GLfloat> g_scene_rotation_matrix;
-Matrix4x4<GLfloat> g_detector_rotation_matrix;
-Matrix4x4<GLfloat> g_sample_rotation_matrix;
-
-GLfloat g_incident_energy(80.0 * keV);
-const GLfloat g_scaling_factor(2.0);
-GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
-Vec2ui g_number_of_pixels(600 / g_scaling_factor, 1);
-VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
-VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
-VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
-
-//PolygonMesh g_inside_polygon_data;
-CubeMesh g_outside_polygon_data(3.0 * cm);
-boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
+RATIONAL_NUMBER g_incident_energy(80.0 * keV);
+Vec2ui g_number_of_pixels(64, 64);
+GLfloat g_resolution(0.15 * mm); // 1mm per pixel
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -141,13 +69,11 @@ XRayRenderer g_xray_renderer;
 //	Function declaration
 //******************************************************************************
 void initGLEW();
-void initGL();
-void loadSTLFile();
 void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
-
+void printAttenuationCoeffiecient(double& anEnergy, double aThreshold, double anOffset, std::ostream& anOutput);
 
 //-----------------------------
 int main(int argc, char** argv)
@@ -158,114 +84,150 @@ int main(int argc, char** argv)
 	    // Set an error callback
 	    glfwSetErrorCallback(errorCallback);
 
-		// Initialize GLFW
+	    // Initialize GLFW
 	    if (!glfwInit())
 	    {
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Enable OpenGL 2.1 if possible
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-	    // Enable quad-buffering if possible
-	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
-	    // Enable anti-aliasing
-	    glfwWindowHint(GLFW_SAMPLES, 4);
-
-	    // Create a windowed mode window and its OpenGL context
-	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-	   
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-	    {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-        }
-        
-        // Window cannot be created 
-        if (!g_p_main_window_id)
+	    // Create the window
+	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
+	    if (!p_main_window_id)
 	    {
 	        glfwTerminate();
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
 	    }
 
 	    // Make the window's context current
-	    glfwMakeContextCurrent(g_p_main_window_id);
+	    glfwMakeContextCurrent(p_main_window_id);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Initialise GLEW
         initGLEW();
 
-        // Check the OpenGL version
-        std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
-
-        // Check the GLSL version
-        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
-        // Initialise OpenGL
-		initGL();
-
-		// Check the current FBO
-		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		// Load the data
+        // Load the data
 		loadDetector();
 		loadSource();
 		loadXRaySimulator();
 
-		// Add the geometry to the X-ray renderer
-		loadSTLFile();
-		//g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
-		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+		// Print the energy in MeV and the attenuation coefficient of water in cm2/g
+		std::ofstream test_stream(PREFIX"/data/test_mass_attenuation_coefficients.csv");
 
-		// Set the projection matrix
-		GLint width(0);
-		GLint height(0);
-		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+        if (!test_stream.is_open())
+        {
+            std::stringstream error_message;
+            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_stream.csv";
 
-		// Launch the event loop
-	    while (!glfwWindowShouldClose(g_p_main_window_id))
-	    {
-            // Compute the sinogram
-            g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), 360, 0.5);
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
 
-            // Save the sinogram
-            g_xray_renderer.printSinogram(PREFIX"/data/sinogram.mhd");
+        double energy(0);
 
-            // Compute the projection set
-            g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), 360, 0.5);
+        double HU_water(0);
+        double HU_soft_tissue(51.9216113228);
+        double HU_bone(1329.8856831791);
+        double HU_lung(1329.8856831791);
 
-            // Save the projection set
-            g_xray_renderer.printProjectionSet(PREFIX"/data/projection_set.mhd");
+        double rho_water(      1.000E+00 * g/cm3);
+        double rho_soft_tissue(1.060E+00 * g/cm3);
+        double rho_bone(       1.920E+00 * g/cm3);
+        double rho_lung(       1.050E+00 * g/cm3);
 
-            // Compute the X-Ray image
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
+        double mu_rho_water_xcom(0);
+        double mu_rho_soft_tissue_xcom(0);
+        double mu_rho_bone_xcom(0);
+        double mu_rho_lung_xcom(0);
 
-            // Close the window
-            glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-	    }
+        double mu_water_mu_water(0);
+        double mu_soft_tissue_mu_water(0);
+        double mu_bone_mu_water(0);
+        double mu_lung_mu_water(0);
+
+        test_stream     << "Energy in MeV\t" <<
+                "water_xcom\t" <<
+                "water_HU\t" <<
+                "soft_tissue_xcom\t" <<
+                "soft_tissue_HU\t" <<
+                "bone_xcom\t" <<
+                "bone_HU\t" <<
+                "lung_xcom\t" <<
+                "lung_HU" <<
+                std::endl;
+
+        energy = 1.00E-003 * MeV;
+
+        printAttenuationCoeffiecient(energy, 1e-2 * MeV, 0.00001, test_stream);
+        printAttenuationCoeffiecient(energy,  0.5 * MeV, 0.0001,  test_stream);
+        printAttenuationCoeffiecient(energy, 10E2 * MeV, 0.1,     test_stream);
+
+		std::ofstream reference_stream(PREFIX"/data/test_mu_water1.csv");
+		g_xray_renderer.printMuWaterTable(reference_stream);
+
+		// Close the window and shut GLFW
+		if (p_main_window_id)
+		{
+			glfwDestroyWindow(p_main_window_id);
+			p_main_window_id = 0;
+			glfwTerminate();
+		}
 	}
 	// Catch exception if any
-	catch (const exception& error)
+	catch (const std::exception& error)
 	{
-		cerr << error.what() << endl;
+		std::cerr << error.what() << std::endl;
 	}
 
-	// Close the window and shut GLFW
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-		g_p_main_window_id = 0;
-		glfwTerminate();
-	}
-
-	// Return an exit code
 	return (EXIT_SUCCESS);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        std::stringstream error_message;
+        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+}
+
+
+//-----------------
+void loadDetector()
+//-----------------
+{
+	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+}
+
+
+//---------------
+void loadSource()
+//---------------
+{
+	// Set the energy
+	g_xray_beam.initialise(g_incident_energy);
+	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
+}
+
+
+//----------------------
+void loadXRaySimulator()
+//----------------------
+{
+	// Initialise the X-ray renderer
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
 }
 
 
@@ -277,157 +239,71 @@ void errorCallback(int error, const char* description)
 }
 
 
-//---------
-void quit()
-//---------
+//-------------------------------------------------------
+void printAttenuationCoeffiecient(double& anEnergy,
+								  double aThreshold,
+								  double anOffset,
+								  std::ostream& anOutput)
+//-------------------------------------------------------
 {
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-	}
-}
+    double HU_bone(1330);
+    double HU_brain(37);
+    double HU_gas(-998);
+    double HU_soft_tissue(52);
+    double HU_water(0);
 
+    double rho_bone(       1.920E+00 * g/cm3);
+    double rho_brain(      1.040E+00 * g/cm3);
+    double rho_gas(        1.826E-03 * g/cm3);
+    double rho_soft_tissue(1.060E+00 * g/cm3);
+    double rho_water(      1.000E+00 * g/cm3);
 
-//-------------
-void initGLEW()
-//-------------
-{
-#if defined(_WIN32) || defined(_WIN64)
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+    double mu_rho_bone_xcom(0);
+    double mu_rho_brain_xcom(0);
+    double mu_rho_gas_xcom(0);
+    double mu_rho_soft_tissue_xcom(0);
+    double mu_rho_water_xcom(0);
 
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
-}
+    double mu_bone_mu_water(0);
+    double mu_brain_mu_water(0);
+    double mu_gas_mu_water(0);
+    double mu_soft_tissue_mu_water(0);
+    double mu_water_mu_water(0);
 
+    for (anEnergy; anEnergy <= aThreshold; anEnergy += anOffset)
+    {
+        anOutput     << anEnergy / MeV;
 
-//-----------
-void initGL()
-//-----------
-{
-	std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
-	std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
-	std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, anEnergy);
+        mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(anEnergy);
 
-	// Enable the Z-buffer
-	glEnable(GL_DEPTH_TEST);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        anOutput     << "\t" << mu_rho_water_xcom                           / (cm2/g);
+        anOutput     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
 
-	// Set the background colour
-	glClearColor(0.5, 0.5, 0.5, 1.0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, anEnergy);
+        mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
 
-	glEnable(GL_MULTISAMPLE);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
+        anOutput     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
+        anOutput     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
 
+        mu_rho_brain_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_brain, anEnergy);
+        mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain, mu_water_mu_water);
 
-//----------------
-void loadSTLFile()
-//----------------
-{
-	string stl_filename_0("cylinder_bin.stl");
-	string stl_filename_1("cube_bin.stl");
+        anOutput     << "\t" << mu_rho_brain_xcom                            / (cm2/g);
+        anOutput     << "\t" << (mu_brain_mu_water / rho_bone)               / (cm2/g);
 
-	// Open the file
-	FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
-	FILE* p_file_descriptor_1(fopen(stl_filename_1.data(), "rb"));
+        mu_rho_gas_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_gas, anEnergy);
+        mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, mu_water_mu_water);
 
-	// The file is not in the same directory as the executable
-	if (!p_file_descriptor_0)
-	{
-		// Use the prefix
-		stl_filename_0 = "../data/" + stl_filename_0;
-	}
-	else
-	{
-		fclose(p_file_descriptor_0);
-	}
+        anOutput     << "\t" << mu_rho_gas_xcom                            / (cm2/g);
+        anOutput     << "\t" << (mu_gas_mu_water / rho_bone)               / (cm2/g);
 
-	// The file is not in the same directory as the executable
-	if (!p_file_descriptor_1)
-	{
-		// Use the prefix
-		stl_filename_1 = "../data/" + stl_filename_1;
-	}
-	else
-	{
-		fclose(p_file_descriptor_1);
-	}
+        mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, anEnergy);
+        mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
 
-	// Set geometry
-	//g_inside_polygon_data.setFilename(stl_filename_0.data());
-	//g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-	//g_inside_polygon_data.mergeVertices();
-    //g_inside_polygon_data.setHounsfieldValue(-100.0);
-    //g_inside_polygon_data.setHounsfieldValue(0.0);
+        anOutput     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
+        anOutput     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
 
-	//g_outside_polygon_data.setFilename(stl_filename_1.data());
-	//g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-	//g_outside_polygon_data.mergeVertices(true);
-    g_outside_polygon_data.setHounsfieldValue(500.0);
-    g_outside_polygon_data.setHounsfieldValue(0.0);
-
-    // Get the energy and the corresponding attenuation coefficient
-    RATIONAL_NUMBER mu_water(g_xray_renderer.getMuWaterLogLinearInterpolation(g_incident_energy));
-
-    std::cout << "Incident energy: " << g_incident_energy << std::endl;
-    std::cout << "HU =    0, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater(   0, mu_water) << std::endl;
-    std::cout << "HU = -100, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater(-100, mu_water) << std::endl;
-    std::cout << "HU =  500, mu(80 keV) = " << g_xray_renderer.getMuFromHUAndMuWater( 500, mu_water) << std::endl;
-
-    /*g_inside_polygon_data.splitFaces(false);
-	g_inside_polygon_data.splitFaces(false);
-	g_inside_polygon_data.splitFaces(false);
-*/
-    g_outside_polygon_data.splitFaces(false);
-    g_outside_polygon_data.splitFaces(false);
-    g_outside_polygon_data.splitFaces(false);
-    g_outside_polygon_data.splitFaces(false);
-}
-
-
-//-----------------
-void loadDetector()
-//-----------------
-{
-	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
-	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
-	g_xray_detector.setDetectorPosition(g_detector_position);
-	g_xray_detector.setUpVector(g_detector_up_vector);
-}
-
-
-//---------------
-void loadSource()
-//---------------
-{
-	// Set the energy
-	g_xray_beam.initialise(g_incident_energy);
-	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
-
-	// Set the source position
-	g_xray_detector.setXrayPointSource(g_source_position);
-
-	// Use a parallel source
-	g_xray_detector.setParallelBeam();
-}
-
-
-//----------------------
-void loadXRaySimulator()
-//----------------------
-{
-	// Initialise the X-ray renderer
-    g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB32F,
-            &g_xray_detector,
-            &g_xray_beam);
+        anOutput     << std::endl;
+    }
 }
