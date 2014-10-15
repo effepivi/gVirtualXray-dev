@@ -1,251 +1,133 @@
-<html>
+<!DOCTYPE html>
+<html lang="en-GB">
+	<head>
+		<title>Validation of Tissue Properties</title>
 
-<h1>Attenuation coefficients for diferent materials</h1>
+		<style type="text/css">
+			table {
+				width:100%;
+			}
+			table, th, td {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+			th, td {
+				padding: 5px;
+				text-align: left;
+			}
+			table#t01 tr:nth-child(even) {
+				background-color: #eee;
+			}
+			table#t01 tr:nth-child(odd) {
+				background-color:#fff;
+			}
+			table#t01 th	{
+				background-color: black;
+				color: white;
+			}
+		</style>
+	</head>
 
-<a href="http://www.nist.gov/pml/data/xraycoef/">The reference data for mass attenuation coefficients is available on the NIST X-ray Attenuation Databases website</a>.
-<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/tab2.html">The reference data for tissue densities is available on the NIST website</a>.
+	<body>
 
-<br/>
+		<h1>Attenuation coefficients for diferent materials</h1>
 
-<h2>Water, Liquid</h2>
+		The linear attenuation coefficients (&mu; values) used to estimate Hounsfield values (HU) for various tissues corresponds to 80 keV. 
+		Mass attenuation coefficients (&mu;/&rho; values) for various human tissues can be found at: 
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/tab4.html">X-Ray Mass Attenuation Coefficients</a>.
+		The density (&rho; values) for various human tissues can be found at: 
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/tab2.html">X-Ray Mass Attenuation Coefficients</a>.
+		They are taken from the  ICRU Report 44 (1989).
+		HU values are coumputed as follows:
 
-<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/water.html">Source</a><br/>
+		<math mode="display" xmlns="http://www.w3.org/1998/Math/MathML">
+			<mrow>
+				<msub>
+					<mi>HU</mi>
+					<mn>x</mn>
+				</msub>
+				<mo>=</mo>
+				1000
+				<mfrac>
+					<mrow>
+						<msub>
+							<mi>&mu;</mi>
+							<mn>x</mn>
+						</msub>
+						<mo>-</mo>
+						<msub>
+							<mi>&mu;</mi>
+							<mn>water</mn>
+						</msub>
+					</mrow>
+					<mrow>
+						<msub>
+							<mi>&mu;</mi>
+							<mn>water</mn>
+						</msub>
+					</mrow>
+				</mfrac>
+			</mrow>
+		</math>
 
-<table>
-<tr>
-    <td>Energy:</td>
-    <td>80 keV</td>
-    <td></td>
-</tr>
-<tr>
-    <td>Mass Attenuation Coefficient:</td>
-    <td>&mu;<sub>water</sub>/&rho;<sub>water</sub>:</td>
-    <td>1.837E-01 cm2/g</td>
-</tr>
-<tr>
-    <td>Density:</td>
-    <td>&rho;<sub>water</sub>:</td>
-    <td>1.000E+00 g/cm3</td>
-</tr>
-<tr>
-    <td>Linear Attenuation Coefficient:</td>
-    <td>&mu;<sub>water</sub>:</td>
-    <td>(&mu;<sub>water</sub>/&rho;<sub>water</sub>) * &rho;<sub>water</sub></td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1.837E-01 * 1.000E+00</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1.837E-01 cm-1</td>
-</tr>
+		<table id="t01" border="1" style="width:100%">
+		<tr>
+			<th>Material</th><th>Density (&rho;) (in g/cm<sup>3</sup>)</th><th>Mass attenuation coefficient (&mu;/&rho;) at 80 keV (in cm<sup>2</sup>/g)</th><th>Linear attenuation coefficient (&mu;) at 80 keV (in cm<sup>-1</sup>)</th><th>HU (estimated at 80 keV)</th>
+		</tr>
+			<td>Bone, Cortical (ICRU-44)</td><td>1.920E+00</td><td>2.229E-01</td><td>4.280E-01</td><td>1330</td>
+		</tr>
+		<tr>
+			<td>Brain, Grey/White Matter (ICRU-44)</td><td>1.040E+00</td><td>1.831E-01</td><td>1.904E-01</td><td>37</td>
+		</tr>
+		<tr>
+			<td>Tissue-Equivalent Gas, Propane Based</td><td>1.826E-03</td><td>1.783E-01</td><td>3.256E-04</td><td>-998</td>
+		</tr>
+		<tr>
+			<td>Tissue, Soft (ICRU-44)</td><td>1.060E+00</td><td>1.823E-01</td><td>1.932E-01</td><td>52</td>
+		</tr>
+		<tr>
+			<td>Water, Liquid</td><td>1.000E+00</td><td>1.837E-01</td><td>1.837E-01</td><td>0</td>
+		</tr>
+		</table>
 
-<tr>
-    <td>Hounsfield Unit</td>
-    <td>HU<sub>water</sub>:</td>
-    <td>((&mu;<sub>water</sub> - &mu;<sub>water</sub>) / &mu;<sub>water</sub>) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>((1.837E-01 - 1.837E-01) / 1.837E-01) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>0</td>
-</tr>
-</table>
+		<h2>Bone, Cortical (ICRU-44)</h2>
 
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/bone.html">Source</a><br/>
 
-<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/water.gif">
-<img src="test_water.png">
-<br/>
-<img src="test_water_zoom.png">
+		<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/bone.gif">
+		<img src="test_bone.png">
+		<!--img src="test_bone_zoom.png"-->
 
-<h2>Tissue, Soft (ICRU-44)</h2>
+		<h2>Brain, Grey/White Matter (ICRU-44)</h2>
 
-<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/tissue.html">Source</a><br/>
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/brain.html">Source</a><br/>
 
+		<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/brain.gif">
+		<img src="test_brain.png">
+		<!--img src="test_brain_zoom.png"-->
 
-<table>
-<tr>
-    <td>Energy:</td>
-    <td>80 keV</td>
-</tr>
+		<h2>Tissue-Equivalent Gas, Propane Based</h2>
 
-<tr>
-    <td>Mass Attenuation Coefficient:</td>
-    <td>&mu;<sub>soft tissue</sub>/&rho;<sub>soft tissue</sub>:</td>
-    <td>1.823E-01 cm2/g</td>
-</tr>
-<tr>
-    <td>Density:</td>
-    <td>&rho;<sub>soft tissue</sub>:</td>
-    <td>1.060E+00 g/cm3</td>
-</tr>
-<tr>
-    <td>Linear Attenuation Coefficient:</td>
-    <td>&mu;<sub>soft tissue</sub>:</td>
-    <td>(&mu;<sub>soft tissue</sub>/&rho;<sub>soft tissue</sub>) * &rho;<sub>soft tissue</sub></td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1.823E-01 * 1.060E+00</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1.93E-01 cm-1</td>
-</tr>
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/tepropane.html">Source</a><br/>
 
-<tr>
-    <td>Hounsfield Unit</td>
-    <td>HU<sub>soft tissue</sub>:</td>
-    <td>((&mu;<sub>soft tissue</sub> - &mu;<sub>water</sub>) / &mu;<sub>water</sub>) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>((1.93E-01 - 1.837E-01) / 1.837E-01) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>51.9216113228</td>
-</tr>
-</table>
+		<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/tepropan.gif">
+		<img src="test_gas.png">
+		<!--img src="test_gas_zoom.png"-->
 
-<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/tissue.gif">
-<img src="test_soft_tissue.png">
-<br/>
-<img src="test_soft_tissue_zoom.png">
+		<h2>Tissue, Soft (ICRU-44)</h2>
 
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/tissue.html">Source</a><br/>
 
+		<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/tissue.gif">
+		<img src="test_soft_tissue.png">
+		<!--img src="test_soft_tissue_zoom.png"-->
 
-<h2>Bone, Cortical (ICRU-44)</h2>
+		<h2>Water, Liquid</h2>
 
-<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/bone.html">Source</a><br/>
+		<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/water.html">Source</a><br/>
 
-
-<table>
-<tr>
-    <td>Energy:</td>
-    <td>80 keV</td>
-</tr>
-
-<tr>
-    <td>Mass Attenuation Coefficient:</td>
-    <td>&mu;<sub>bone</sub>/&rho;<sub>bone</sub>:</td>
-    <td>2.229E-01 cm2/g</td>
-</tr>
-<tr>
-    <td>Density:</td>
-    <td>&rho;<sub>bone</sub>:</td>
-    <td>1.920E+00 g/cm3</td>
-</tr>
-<tr>
-    <td>Linear Attenuation Coefficient:</td>
-    <td>&mu;<sub>bone</sub>:</td>
-    <td>(&mu;<sub>bone</sub>/&rho;<sub>bone</sub>) * &rho;<sub>bone</sub></td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>2.229E-01 * 1.920E+00</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>4.28E-01 cm-1</td>
-</tr>
-
-<tr>
-    <td>Hounsfield Unit</td>
-    <td>HU<sub>bone</sub>:</td>
-    <td>((&mu;<sub>bone</sub> - &mu;<sub>water</sub>) / &mu;<sub>water</sub>) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>((4.28E-01 - 1.837E-01) / 1.837E-01) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1329.8856831791</td>
-</tr>
-</table>
-
-<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/bone.gif">
-<img src="test_bone.png">
-<br/>
-<img src="test_bone_zoom.png">
-
-
-<h2>Lung Tissue (ICRU-44)</h2>
-
-<a href="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/lung.html">Source</a><br/>
-
-
-<table>
-<tr>
-    <td>Energy:</td>
-    <td>80 keV</td>
-</tr>
-
-<tr>
-    <td>Mass Attenuation Coefficient:</td>
-    <td>&mu;<sub>lung</sub>/&rho;<sub>lung</sub>:</td>
-    <td>1.826E-01 cm2/g</td>
-</tr>
-<tr>
-    <td>Density:</td>
-    <td>&rho;<sub>lung</sub>:</td>
-    <td>1.050E+00 g/cm3</td>
-</tr>
-<tr>
-    <td>Linear Attenuation Coefficient:</td>
-    <td>&mu;<sub>lung</sub>:</td>
-    <td>(&mu;<sub>lung</sub>/&rho;<sub>lung</sub>) * &rho;<sub>lung</sub></td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1.826E-01*1.050E+00</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1.9173-01 cm-1</td>
-</tr>
-
-<tr>
-    <td>Hounsfield Unit</td>
-    <td>HU<sub>lung</sub>:</td>
-    <td>((&mu;<sub>lung</sub> - &mu;<sub>water</sub>) / &mu;<sub>water</sub>) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>((1.9173-01 - 1.837E-01) / 1.837E-01) * 1000</td>
-</tr>
-<tr>
-    <td></td>
-    <td></td>
-    <td>1329.8856831791</td>
-</tr>
-</table>
-
-<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/lung.gif">
-<img src="test_lung.png">
-<br/>
-<img src="test_lung_zoom.png">
-
-
+		<img src="http://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/Graphs/water.gif">
+		<img src="test_water.png">
+		<!--img src="test_water_zoom.png"-->
+	</body>
 </html>
-

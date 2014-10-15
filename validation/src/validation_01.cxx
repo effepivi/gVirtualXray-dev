@@ -72,7 +72,7 @@ void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
-
+void printAttenuationCoeffiecient(double& anEnergy, double aThreshold, double anOffset, std::ostream& anOutput);
 
 //-----------------------------
 int main(int argc, char** argv)
@@ -157,98 +157,11 @@ int main(int argc, char** argv)
                 "lung_HU" <<
                 std::endl;
 
-        for (energy = 1.00E-003 * MeV; energy <= 1e-2 * MeV; energy += 0.00001)
-        {
-            mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, energy);
-            mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(energy);
+        energy = 1.00E-003 * MeV;
 
-            mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, energy);
-            mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
-
-            mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, energy);
-            mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
-
-            mu_rho_lung_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_lung, energy);
-            mu_lung_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_lung, mu_water_mu_water);
-
-            test_stream     << energy / MeV;
-
-            test_stream     << "\t" << mu_rho_water_xcom                           / (cm2/g);
-            test_stream     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
-            test_stream     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
-            test_stream     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_lung_xcom                            / (cm2/g);
-            test_stream     << "\t" << (mu_lung_mu_water / rho_bone)               / (cm2/g);
-
-            test_stream     << std::endl;
-        }
-
-        for (; energy <= 0.5 * MeV; energy += 0.0001)
-        {
-            mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, energy);
-            mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(energy);
-
-            mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, energy);
-            mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
-
-            mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, energy);
-            mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
-
-            mu_rho_lung_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_lung, energy);
-            mu_lung_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_lung, mu_water_mu_water);
-
-            test_stream     << energy / MeV;
-
-            test_stream     << "\t" << mu_rho_water_xcom                           / (cm2/g);
-            test_stream     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
-            test_stream     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
-            test_stream     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_lung_xcom                            / (cm2/g);
-            test_stream     << "\t" << (mu_lung_mu_water / rho_bone)               / (cm2/g);
-
-            test_stream     << std::endl;
-        }
-
-        for (; energy <= 1.00E2 * MeV; energy += 0.1)
-        {
-            mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, energy);
-            mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(energy);
-
-            mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, energy);
-            mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
-
-            mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, energy);
-            mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
-
-            mu_rho_lung_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_lung, energy);
-            mu_lung_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_lung, mu_water_mu_water);
-
-            test_stream     << energy / MeV;
-
-            test_stream     << "\t" << mu_rho_water_xcom                           / (cm2/g);
-            test_stream     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
-            test_stream     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
-            test_stream     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
-
-            test_stream     << "\t" << mu_rho_lung_xcom                            / (cm2/g);
-            test_stream     << "\t" << (mu_lung_mu_water / rho_bone)               / (cm2/g);
-
-            test_stream     << std::endl;
-        }
+        printAttenuationCoeffiecient(energy, 1e-2 * MeV, 0.00001, test_stream);
+        printAttenuationCoeffiecient(energy,  0.5 * MeV, 0.0001,  test_stream);
+        printAttenuationCoeffiecient(energy, 10E2 * MeV, 0.1,     test_stream);
 
 		std::ofstream reference_stream(PREFIX"/data/test_mu_water1.csv");
 		g_xray_renderer.printMuWaterTable(reference_stream);
@@ -322,4 +235,74 @@ void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
 	std::cerr << "GLFW error: " << description << std::endl;
+}
+
+
+//-------------------------------------------------------
+void printAttenuationCoeffiecient(double& anEnergy,
+								  double aThreshold,
+								  double anOffset,
+								  std::ostream& anOutput)
+//-------------------------------------------------------
+{
+    double HU_bone(1330);
+    double HU_brain(37);
+    double HU_gas(-998);
+    double HU_soft_tissue(52);
+    double HU_water(0);
+
+    double rho_bone(       1.920E+00 * g/cm3);
+    double rho_brain(      1.040E+00 * g/cm3);
+    double rho_gas(        1.826E-03 * g/cm3);
+    double rho_soft_tissue(1.060E+00 * g/cm3);
+    double rho_water(      1.000E+00 * g/cm3);
+
+    double mu_rho_bone_xcom(0);
+    double mu_rho_brain_xcom(0);
+    double mu_rho_gas_xcom(0);
+    double mu_rho_soft_tissue_xcom(0);
+    double mu_rho_water_xcom(0);
+
+    double mu_bone_mu_water(0);
+    double mu_brain_mu_water(0);
+    double mu_gas_mu_water(0);
+    double mu_soft_tissue_mu_water(0);
+    double mu_water_mu_water(0);
+
+    for (anEnergy; anEnergy <= aThreshold; anEnergy += anOffset)
+    {
+        anOutput     << anEnergy / MeV;
+
+        mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, anEnergy);
+        mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(anEnergy);
+
+        anOutput     << "\t" << mu_rho_water_xcom                           / (cm2/g);
+        anOutput     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
+
+        mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, anEnergy);
+        mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
+
+        anOutput     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
+        anOutput     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
+
+        mu_rho_brain_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_brain, anEnergy);
+        mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain, mu_water_mu_water);
+
+        anOutput     << "\t" << mu_rho_brain_xcom                            / (cm2/g);
+        anOutput     << "\t" << (mu_brain_mu_water / rho_bone)               / (cm2/g);
+
+        mu_rho_gas_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_gas, anEnergy);
+        mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, mu_water_mu_water);
+
+        anOutput     << "\t" << mu_rho_gas_xcom                            / (cm2/g);
+        anOutput     << "\t" << (mu_gas_mu_water / rho_bone)               / (cm2/g);
+
+        mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, anEnergy);
+        mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
+
+        anOutput     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
+        anOutput     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
+
+        anOutput     << std::endl;
+    }
 }
