@@ -120,7 +120,7 @@ int main(int argc, char** argv)
         if (!test_stream.is_open())
         {
             std::stringstream error_message;
-            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_stream.csv";
+            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_mass_attenuation_coefficients.csv";
 
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
@@ -163,9 +163,6 @@ int main(int argc, char** argv)
         printAttenuationCoeffiecient(energy, 1e-2 * MeV, 0.00001, test_stream);
         printAttenuationCoeffiecient(energy,  0.5 * MeV, 0.0001,  test_stream);
         printAttenuationCoeffiecient(energy, 10E2 * MeV, 0.1,     test_stream);
-
-		std::ofstream reference_stream(PREFIX"/data/test_mu_water1.csv");
-		g_xray_renderer.printMuWaterTable(reference_stream);
 
 		// Close the window and shut GLFW
 		if (p_main_window_id)
