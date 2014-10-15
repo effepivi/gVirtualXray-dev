@@ -66,7 +66,7 @@ void AtomicElement::loadDataFromXCOM()
     {
         // The XCOM database path is set
         std::string xcom_database_path(gVirtualXRay_XCOM_PATH);
-        if (xcom_database_path.size() && xcom_database_path != "XCOM_PATH-NOT_FOUND")
+        if (xcom_database_path.size() && xcom_database_path != "XCOM_PATH-NOTFOUND")
         {
             // Clear the current list of attenuation coefficients
             m_p_mass_attenuation_coefficient_set.clear();

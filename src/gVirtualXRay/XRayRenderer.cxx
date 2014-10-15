@@ -2641,7 +2641,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 
 				if (m_material_set.getMaterialNumber() &&
 				        m_element_set.getElementSetSize() &&
-				        std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOT_FOUND")
+				        std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
 				{
 				    mu = getMuFromHU(HU, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
 				}
