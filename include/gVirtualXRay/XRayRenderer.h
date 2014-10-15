@@ -390,16 +390,40 @@ public:
 	RATIONAL_NUMBER getMuWaterLogLinearInterpolation(const RATIONAL_NUMBER& anIncidentEnergy);
 
 
-	//--------------------------------------------------------------------------
-	///	Convert a Hounsfield value into an attenuation coefficient.
-	/**
-	*	@param HU:	the Hounsfield value to convert
-	*	@param mu_water:	the attenuation coefficient of water at a given energy
-	*	@return the corresponding attenuation coefficient
-	*/
-	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER convertHounsfieldValue2Mu(const RATIONAL_NUMBER& HU,
-			const RATIONAL_NUMBER& mu_water) const;
+    //--------------------------------------------------------------------------
+    /// Convert a Hounsfield value into a linear attenuation coefficient.
+    /**
+    *   @param HU:  the Hounsfield value to convert
+    *   @param mu_water:    the attenuation coefficient of water at a given energy
+    *   @return the corresponding attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getMuFromHUAndMuWater(const RATIONAL_NUMBER& HU,
+            const RATIONAL_NUMBER& mu_water) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Convert a Hounsfield value into a linear attenuation coefficient.
+    /**
+    *   @param HU:  the Hounsfield value to convert
+    *   @param anEnergy:    a given energy
+    *   @return the corresponding attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getMuFromHU(const RATIONAL_NUMBER& HU,
+            const RATIONAL_NUMBER& anEnergy);
+
+
+    //--------------------------------------------------------------------------
+    /// Convert a Hounsfield value into a mass attenuation coefficient.
+    /**
+    *   @param HU:  the Hounsfield value to convert
+    *   @param anEnergy:    a given energy
+    *   @return the corresponding attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
+            const RATIONAL_NUMBER& anEnergy);
 
 
 	//--------------------------------------------------------------------------
@@ -516,7 +540,7 @@ protected:
     //--------------------------------------------------------------------------
     /// Load the table of materials.
     //--------------------------------------------------------------------------
-    void loadMaterialSet(const ElementSet* apElementSet);
+    void loadMaterialSet();
 
 
     //--------------------------------------------------------------------------

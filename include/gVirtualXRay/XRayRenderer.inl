@@ -29,6 +29,10 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <sstream>
 
 #ifndef GVXR_OPENGL_UTILITIES_H
@@ -151,12 +155,64 @@ inline void XRayRenderer::init2DTextures(int anInternalTextureFormat)
 }
 
 
-//---------------------------------------------------------------------------------------------------
-inline RATIONAL_NUMBER XRayRenderer::convertHounsfieldValue2Mu(const RATIONAL_NUMBER& HU,
-															   const RATIONAL_NUMBER& mu_water) const
-//---------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getMuFromHUAndMuWater(const RATIONAL_NUMBER& HU,
+                                                           const RATIONAL_NUMBER& mu_water) const
+//-----------------------------------------------------------------------------------------------
 {
 	return RATIONAL_NUMBER(mu_water * (1.0 + HU / 1000.0));
+}
+
+
+//-------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getMuFromHU(const RATIONAL_NUMBER& HU,
+                                                 const RATIONAL_NUMBER& anEnergy)
+//-------------------------------------------------------------------------------
+{
+    if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOT_FOUND")
+    {
+        if (!m_element_set.getElementSetSize())
+        {
+            loadElementSet();
+        }
+
+        if (!m_material_set.getMaterialNumber())
+        {
+            loadMaterialSet();
+        }
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
+    }
+
+    return (m_material_set.getMaterial(HU).getMU(HU, anEnergy));
+}
+
+
+//--------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayRenderer::getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
+                                                              const RATIONAL_NUMBER& anEnergy)
+//--------------------------------------------------------------------------------------------
+{
+    if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOT_FOUND")
+    {
+        if (!m_element_set.getElementSetSize())
+        {
+            loadElementSet();
+        }
+
+        if (!m_material_set.getMaterialNumber())
+        {
+            loadMaterialSet();
+        }
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
+    }
+
+    return (m_material_set.getMaterial(HU).getMassAttenuationTotal(HU, anEnergy));
 }
 
 
