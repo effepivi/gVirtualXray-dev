@@ -286,7 +286,7 @@ inline double TissueMaterial::getMassAttenuationTotal(short aHounsfieldValue, do
 inline double TissueMaterial::getMU(short aHounsfieldValue, double anEnergy) const
 //------------------------------------------------------------------------------
 {
-	return (getMassAttenuationTotal(aHounsfieldValue, anEnergy) * (getDensity(aHounsfieldValue) / (g/cm3)) * 0.1); // in mm-1
+	return (getMassAttenuationTotal(aHounsfieldValue, anEnergy) * (getDensity(aHounsfieldValue)));
 }
 
 
