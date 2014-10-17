@@ -113,17 +113,23 @@ CreateHeaderFiles("." "BinaryValidationFiles" "${RESOURCES_SOURCES}")
 IF(glfw_FOUND)
     ADD_EXECUTABLE (validation_01 src/validation_01.cxx)
     TARGET_LINK_LIBRARIES (validation_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS validation_01 RUNTIME DESTINATION validation_01/bin COMPONENT validation)
+    INSTALL(TARGETS validation_01 RUNTIME DESTINATION validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_02 src/validation_02.cxx)
     TARGET_LINK_LIBRARIES (validation_02 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS validation_02 RUNTIME DESTINATION validation_02/bin COMPONENT validation)
+    INSTALL(TARGETS validation_02 RUNTIME DESTINATION validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_03 src/validation_03.cxx)
     TARGET_LINK_LIBRARIES (validation_03 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_03 BinaryValidationFiles)
-    INSTALL(TARGETS validation_03 RUNTIME DESTINATION validation_03/bin COMPONENT validation)
-    INSTALL(FILES data/cylinder_bin.stl DESTINATION validation_03/data COMPONENT validation)
+    INSTALL(TARGETS validation_03 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
+
+    ADD_EXECUTABLE (validation_04 src/validation_04.cxx)
+    TARGET_LINK_LIBRARIES (validation_04 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(validation_04 BinaryValidationFiles)
+    INSTALL(TARGETS validation_04 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
 
 
