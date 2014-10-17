@@ -129,7 +129,7 @@ int main(int argc, char** argv)
                 "density (in g/cm3)" <<
                 std::endl;
 
-        for (short HU(-1000); HU <= 2000; ++HU)
+        for (short HU(-1000); HU <= 1600; ++HU)
         {
         	test_stream << HU << "\t" << g_xray_renderer.getDensityFromHU(HU) / (g/cm3) << std::endl;
         }
