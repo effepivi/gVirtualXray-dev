@@ -134,6 +134,11 @@ IF(glfw_FOUND)
     ADD_DEPENDENCIES(validation_05 BinaryValidationFiles)
     INSTALL(TARGETS validation_05 RUNTIME DESTINATION validation/bin COMPONENT validation)
 
+    ADD_EXECUTABLE (validation_06 src/validation_06.cxx)
+    TARGET_LINK_LIBRARIES (validation_06 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(validation_06 BinaryValidationFiles)
+    INSTALL(TARGETS validation_06 RUNTIME DESTINATION validation/bin COMPONENT validation)
+
     INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
 
