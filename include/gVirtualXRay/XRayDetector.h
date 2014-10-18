@@ -207,7 +207,7 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	///	Set the position of the X-ray source.
+    /// Set the shape of the source as an infinitely small point.
 	//--------------------------------------------------------------------------
 	void setXrayPointSource();
 
