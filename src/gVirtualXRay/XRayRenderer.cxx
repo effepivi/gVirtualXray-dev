@@ -487,6 +487,17 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         // Get the destination pointer
         PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
 
+        // Convert the data into a sinogram
+        PixelType* p_input_data(m_p_temp_raw_data);
+        RATIONAL_NUMBER total_input_energy(m_p_xray_beam->getTotalEnergy());
+        for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
+        {
+            for (unsigned i(0); i < m_p_detector->getNumberOfPixels().getX(); ++i, ++p_input_data)
+            {
+                *p_input_data = log(total_input_energy / *p_input_data);
+            }
+        }
+
         // Save the data in the sinogram
         //Process every line of the X-ray image
         for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
@@ -567,6 +578,11 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     pixel_size[1] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
     pixel_size[2] = anAngleOffset;
 
+    if (std::abs(pixel_size[2]) < EPSILON)
+    {
+        pixel_size[2] = 1.0;
+    }
+
     // Convert the size in mm * degree * mm
     pixel_size[0] /= mm;
     pixel_size[1] /= mm;
@@ -582,6 +598,11 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     projection_set_size[0] = m_p_detector->getNumberOfPixels().getX();
     projection_set_size[1] = m_p_detector->getNumberOfPixels().getY();
     projection_set_size[2] = aNumberOfAngle;
+
+    if (projection_set_size[2] <= 0)
+    {
+        projection_set_size[2] = 1;
+    }
 
     ImageType::RegionType projection_set_region;
     projection_set_region.SetSize(projection_set_size);
@@ -2673,8 +2694,8 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 
 				// Set the attenuation coefficient
 				//glBlendColor(1.0, 1.0, 1.0, mu);
-				// Convert mu in cm2/g
-				mu /= cm2 / g;
+				// Convert mu in cm-1
+				mu /= 1.0 / cm;
 
                 //std::cout << "mu " << mu << "(cm2/g)" << std::endl;
 
