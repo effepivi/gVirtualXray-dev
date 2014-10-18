@@ -57,6 +57,37 @@ inline XRayBeam::XRayBeam():
 {}
 
 
+//---------------------------
+inline void XRayBeam::clear()
+//---------------------------
+{
+    // Remove all the energy channels
+    m_beam_spectrum.clear();
+}
+
+
+//-----------------------------------------------------------------------
+inline void XRayBeam::addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
+                                 const RATIONAL_NUMBER& anIncidentEnergy)
+//-----------------------------------------------------------------------
+{
+    // Temporary structure
+	SpectrumRecord temp;
+    
+    // Store the number of photons
+    temp.m_photon_number = aNumberOfPhotons;
+
+    // The number of photons is above the cut-off threshold
+    if (temp.m_photon_number > m_number_of_photons_lower_threshold)
+    {
+        // Store the energy
+        temp.m_energy = anIncidentEnergy;
+        
+        // Store the data
+        m_beam_spectrum.push_back(temp);
+    }
+}
+
 
 //-------------------------------------------------------------
 inline void XRayBeam::initialise(const char* aFileName,
@@ -237,6 +268,23 @@ inline const SpectrumRecord& XRayBeam::getEnergyChannel(unsigned int anID) const
 	}
 	
 	return (m_beam_spectrum[anID]);
+}
+
+
+//-----------------------------------------------------
+inline RATIONAL_NUMBER XRayBeam::getTotalEnergy() const
+//-----------------------------------------------------
+{
+    // Compute the total incident energy
+    RATIONAL_NUMBER total_energy(0);
+    for (std::vector<SpectrumRecord>::const_iterator ite_beam_spectrum(m_beam_spectrum.begin());
+        ite_beam_spectrum != m_beam_spectrum.end();
+        ++ite_beam_spectrum)
+    {
+        total_energy += ite_beam_spectrum->m_energy * ite_beam_spectrum->m_photon_number;
+    }
+
+    return (total_energy);
 }
 
 

@@ -71,6 +71,23 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Remove all the energy channels from the beam.
+	//--------------------------------------------------------------------------
+	void clear();
+
+
+	//--------------------------------------------------------------------------
+	///	Add an energy channel to the beam.
+	/**
+	*	@param aNumberOfPhotons:	the number of photons in this energy channel
+	*	@param anIncidentEnergy:	the energy of the photons in this energy channel
+	*/
+	//--------------------------------------------------------------------------
+	void addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
+            const RATIONAL_NUMBER& anIncidentEnergy);
+
+
+	//--------------------------------------------------------------------------
 	///	Initialise the X-ray beam specturm with a polychromatic spectrum.
 	/**
 	*	@param aFileName:	name of the file that stores the spectrum
@@ -125,6 +142,15 @@ public:
 	//--------------------------------------------------------------------------
 	const SpectrumRecord& getEnergyChannel(unsigned int anID) const;
 	
+
+    //--------------------------------------------------------------------------
+    /// Accessor on a total energy of the beam.
+    /**
+    *   @return the total energy
+    */
+    //--------------------------------------------------------------------------
+	RATIONAL_NUMBER getTotalEnergy() const;
+
 
 //******************************************************************************
 protected:
