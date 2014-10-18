@@ -123,12 +123,17 @@ IF(glfw_FOUND)
     TARGET_LINK_LIBRARIES (validation_03 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_03 BinaryValidationFiles)
     INSTALL(TARGETS validation_03 RUNTIME DESTINATION validation/bin COMPONENT validation)
-    INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
 
     ADD_EXECUTABLE (validation_04 src/validation_04.cxx)
     TARGET_LINK_LIBRARIES (validation_04 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_04 BinaryValidationFiles)
     INSTALL(TARGETS validation_04 RUNTIME DESTINATION validation/bin COMPONENT validation)
+
+    ADD_EXECUTABLE (validation_05 src/validation_05.cxx)
+    TARGET_LINK_LIBRARIES (validation_05 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(validation_05 BinaryValidationFiles)
+    INSTALL(TARGETS validation_05 RUNTIME DESTINATION validation/bin COMPONENT validation)
+
     INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
 
