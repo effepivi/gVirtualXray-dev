@@ -54,6 +54,8 @@ ENDIF(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
 
 # gVirtualXRay ################################################################
 find_package(gVirtualXRay REQUIRED)
@@ -138,6 +140,11 @@ IF(glfw_FOUND)
     TARGET_LINK_LIBRARIES (validation_06 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_06 BinaryValidationFiles)
     INSTALL(TARGETS validation_06 RUNTIME DESTINATION validation/bin COMPONENT validation)
+
+    ADD_EXECUTABLE (validation_07 src/validation_07.cxx)
+    TARGET_LINK_LIBRARIES (validation_07 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(validation_07 BinaryValidationFiles)
+    INSTALL(TARGETS validation_07 RUNTIME DESTINATION validation/bin COMPONENT validation)
 
     INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
