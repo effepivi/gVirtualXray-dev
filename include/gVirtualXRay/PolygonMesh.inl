@@ -362,4 +362,20 @@ inline void PolygonMesh::inverNormalVectors()
 }
 
 
+//-----------------------------------------------------
+inline const Material& PolygonMesh::getMaterial() const
+//-----------------------------------------------------
+{
+    return (m_material);
+}
+
+
+//-----------------------------------------
+inline Material& PolygonMesh::getMaterial()
+//-----------------------------------------
+{
+    return (m_material);
+}
+
+
 } // namespace gVirtualXRay

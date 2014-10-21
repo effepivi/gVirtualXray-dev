@@ -146,6 +146,8 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/framebufferObject.h
 	../include/gVirtualXRay/ImplicitSurface.h
    	../include/gVirtualXRay/ImplicitSurface.inl
+	../include/gVirtualXRay/Material.h
+        ../include/gVirtualXRay/Material.inl
 	../include/gVirtualXRay/OpenGL2VBO.h
 	../include/gVirtualXRay/OpenGL2VBO.inl
 	../include/gVirtualXRay/OpenGL3VBO.h

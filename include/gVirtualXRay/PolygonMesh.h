@@ -52,6 +52,10 @@
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef GVXR_MATERIAL_H
+#include "gVirtualXRay/Material.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -573,6 +577,24 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the material of the polygon mesh.
+    /**
+    *   @return the material
+    */
+    //--------------------------------------------------------------------------
+    const Material& getMaterial() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the material of the polygon mesh.
+    /**
+    *   @return the material
+    */
+    //--------------------------------------------------------------------------
+    Material& getMaterial();
+
+
+    //--------------------------------------------------------------------------
     /// Copy operator.
     /**
     *   @param aPolygonMesh:    the polygon mesh to copy
@@ -697,6 +719,10 @@ protected:
 	/// A flag set to true if the memory is managed outside of this class instance;
 	/// set to false if the memory is managed by this class instance
 	bool m_external_data_flag;
+
+
+	/// Material of the object
+	Material m_material;
 };
 
 
