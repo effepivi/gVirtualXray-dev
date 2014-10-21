@@ -292,5 +292,5 @@ protected:
 #include "Shader.inl"
 
 
-#endif // SHADER_H
+#endif // GVXR_SHADER_H
 
