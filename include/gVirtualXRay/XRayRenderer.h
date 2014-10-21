@@ -785,6 +785,10 @@ protected:
 	ImageType::Pointer m_p_l_buffer_image;
 
 
+    /// Cumulated L-buffer for all the inner surfaces
+    ImageType::Pointer m_p_cumulated_lbuffer_image;
+
+
 	/// Sum(Mu_x * d_x)
 	ImageType::Pointer m_p_sum_mux_dx_image;
 

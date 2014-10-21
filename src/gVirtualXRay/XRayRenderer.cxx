@@ -177,6 +177,7 @@ XRayRenderer::XRayRenderer():
 		m_p_temp_raw_data(0),
 #ifdef HAS_ITK
 		m_p_l_buffer_image(ImageType::New()),
+		m_p_cumulated_lbuffer_image(ImageType::New()),
 		m_p_sum_mux_dx_image(ImageType::New()),
 		m_p_energy_fluence_image(ImageType::New()),
         m_p_sinogram_image(ImageType::New()),
@@ -338,7 +339,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 
 	l_buffer_size[2]       = 3;
 	sum_mu_x_d_x_size[2]   = m_p_xray_beam->getEnergyChannelNumber();
-	energy_fluence_size[2] = 3;
+	energy_fluence_size[2] = 1;
 
 	ImageType::RegionType l_buffer_region;
 	ImageType::RegionType sum_mu_x_d_x_region;
@@ -353,15 +354,18 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 
 	// Allocate memory
 	m_p_l_buffer_image->SetRegions(l_buffer_region);
+	m_p_cumulated_lbuffer_image->SetRegions(l_buffer_region);;
 	m_p_sum_mux_dx_image->SetRegions(sum_mu_x_d_x_region);
 	m_p_energy_fluence_image->SetRegions(energy_fluence_region);
 
 	m_p_l_buffer_image->Allocate();
+	m_p_cumulated_lbuffer_image->Allocate();
 	m_p_sum_mux_dx_image->Allocate();
 	m_p_energy_fluence_image->Allocate();
 
 	// Set the pixel size
 	m_p_l_buffer_image->SetSpacing(pixel_size);
+	m_p_cumulated_lbuffer_image->SetSpacing(pixel_size);
 	m_p_sum_mux_dx_image->SetSpacing(pixel_size);
 	m_p_energy_fluence_image->SetSpacing(pixel_size);
 #endif // HAS_ITK
@@ -1773,13 +1777,19 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 			p_writer->SetInput(m_p_sum_mux_dx_image);
 			break;
 
-		case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
-		case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
-			p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
-			memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3) ;
+        case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+            p_pixel_set = m_p_cumulated_lbuffer_image->GetBufferPointer();
+            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3) ;
 
-			p_writer->SetInput(m_p_energy_fluence_image);
-			break;
+            p_writer->SetInput(m_p_cumulated_lbuffer_image);
+            break;
+
+        case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+            p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
+            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY()) ;
+
+            p_writer->SetInput(m_p_energy_fluence_image);
+            break;
 
 		default:
 			{
@@ -1835,13 +1845,19 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 			p_writer->SetInput(m_p_sum_mux_dx_image);
 			break;
 
-		case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
-		case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
-			p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
-			memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
+            p_pixel_set = m_p_cumulated_lbuffer_image->GetBufferPointer();
+            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
 
-			p_writer->SetInput(m_p_energy_fluence_image);
-			break;
+            p_writer->SetInput(m_p_cumulated_lbuffer_image);
+            break;
+
+        case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
+            p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
+            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+
+            p_writer->SetInput(m_p_energy_fluence_image);
+            break;
 
 		default:
 			{
