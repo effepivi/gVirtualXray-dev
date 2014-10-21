@@ -451,16 +451,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     // Compute the translation vector
     VEC3 translation_vector((m_p_detector->getDetectorPosition() + m_p_detector->getXraySourceCentre()) / 2.0);
 
-    // Store the beam shape
-    XRayDetector::SourceShape source_shape(m_p_detector->getSourceShape());
-    const std::vector<VEC3> source_postion_set(m_p_detector->getSourcePositionSet());
-
-    // Make the beam parallel
-    if (source_shape != XRayDetector::PARALLEL)
-    {
-        m_p_detector->setParallelBeam();
-    }
-
     // Compute the sinogram
     for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
     {
@@ -509,33 +499,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
             // Copy the data
             memcpy(p_pixel_set + offset, m_p_temp_raw_data + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
         }
-    }
-
-
-    // Restore the beam shape
-    switch (source_shape)
-    {
-    case XRayDetector::POINT:
-        m_p_detector->setXrayPointSource();
-        break;
-
-    case XRayDetector::SQUARE:
-        m_p_detector->setSquareSource();
-        m_p_detector->setSourcePositions(source_postion_set);
-        break;
-
-    case XRayDetector::CUBE:
-        m_p_detector->setCubicSource();
-        m_p_detector->setSourcePositions(source_postion_set);
-        break;
-
-    case XRayDetector::LINE:
-        m_p_detector->setLineSource();
-        m_p_detector->setSourcePositions(source_postion_set);
-        break;
-
-    default:
-        break;
     }
 #endif // HAS_ITK
 }
@@ -619,16 +582,6 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     // Compute the translation vector
     VEC3 translation_vector(-aRotationCenter);
 
-    // Store the beam shape
-    XRayDetector::SourceShape source_shape(m_p_detector->getSourceShape());
-    const std::vector<VEC3> source_postion_set(m_p_detector->getSourcePositionSet());
-
-    // Make the beam parallel
-    if (source_shape != XRayDetector::PARALLEL)
-    {
-        m_p_detector->setParallelBeam();
-    }
-
     // Compute the sinogram
     for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
     {
@@ -657,33 +610,6 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
 
         // Copy the data
         memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-    }
-
-
-    // Restore the beam shape
-    switch (source_shape)
-    {
-    case XRayDetector::POINT:
-        m_p_detector->setXrayPointSource();
-        break;
-
-    case XRayDetector::SQUARE:
-        m_p_detector->setSquareSource();
-        m_p_detector->setSourcePositions(source_postion_set);
-        break;
-
-    case XRayDetector::CUBE:
-        m_p_detector->setCubicSource();
-        m_p_detector->setSourcePositions(source_postion_set);
-        break;
-
-    case XRayDetector::LINE:
-        m_p_detector->setLineSource();
-        m_p_detector->setSourcePositions(source_postion_set);
-        break;
-
-    default:
-        break;
     }
 #endif // HAS_ITK
 }
