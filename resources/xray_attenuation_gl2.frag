@@ -42,8 +42,6 @@
 //	Varying variables
 //******************************************************************************
 varying vec3 g_texture_coordinates;
-varying float u1;
-varying float v1;
 
 
 //******************************************************************************
@@ -73,6 +71,6 @@ void main(void)
 	}
 
     // Save the fragment value
-	gl_FragColor.rgb = vec3(intensity, u1, v1);
+	gl_FragColor.rgb = vec3(intensity, intensity, intensity);
 }
 

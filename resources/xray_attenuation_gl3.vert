@@ -49,8 +49,6 @@ in vec3 in_TexCoord;
 //	Output
 //******************************************************************************
 smooth out vec3 g_texture_coordinates;
-smooth out float u1;
-smooth out float v1;
 
 
 //******************************************************************************
@@ -71,6 +69,4 @@ void main(void)
     
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);
-    u1 =gl_Position.x;
-    v1 =gl_Position.y;
 }

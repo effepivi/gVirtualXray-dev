@@ -43,8 +43,6 @@ precision highp float; // Video card drivers require this line to function prope
 //	Output
 //******************************************************************************
 smooth in vec3 g_texture_coordinates;
-smooth in float u1;
-smooth in float v1;
 
 
 //******************************************************************************
@@ -80,6 +78,6 @@ void main(void)
 	}
 
     // Save the fragment value
-	fragColor = vec3(intensity, u1, v1);
+	fragColor = vec3(intensity, intensity, intensity);
 }
 

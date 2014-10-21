@@ -42,8 +42,6 @@
 //	Varying variables
 //******************************************************************************
 varying vec3 g_texture_coordinates;
-varying float u1;
-varying float v1;
 
 
 //******************************************************************************
@@ -64,6 +62,4 @@ void main(void)
     
     // Apply the modelling and viewing transformations
 	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);
-    u1 =gl_Position.x;
-    v1 =gl_Position.y;
 }
