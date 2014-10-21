@@ -124,7 +124,7 @@ Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0 * keV);
 const GLfloat g_scaling_factor(2.0);
-GLfloat g_resolution(0.1 * mm * g_scaling_factor); // 1mm per pixel
+GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
 Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
 VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
@@ -132,17 +132,10 @@ VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
 PolygonMesh g_inside_polygon_data;
 CubeMesh g_outside_polygon_data(3.0 * cm);
-boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_renderer;
-
-RATIONAL_NUMBER g_literature_result(0.0);
-RATIONAL_NUMBER g_expected_result(0.0);
-
-unsigned int g_angle_number(360);
-RATIONAL_NUMBER g_angle_step(0.5);
 
 
 //******************************************************************************
