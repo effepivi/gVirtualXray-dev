@@ -261,12 +261,6 @@ int main(int argc, char** argv)
 
         // Save the projection set
         g_xray_renderer.printProjectionSet(PREFIX"/data/projection_set.mhd");
-
-        // Compute the X-Ray image
-        g_xray_renderer.computeImage(g_sample_rotation_matrix);
-
-        // Close the window
-        glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
 	}
 	// Catch exception if any
 	catch (const std::exception& error)
