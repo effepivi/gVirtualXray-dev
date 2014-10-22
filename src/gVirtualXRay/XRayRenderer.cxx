@@ -424,6 +424,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     pixel_size[1] = anAngleOffset;
     pixel_size[2] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
 
+    if (std::abs(pixel_size[2]) < EPSILON)
+    {
+        pixel_size[2] = 1.0;
+    }
+
     // Convert the size in mm * degree * mm
     pixel_size[0] /= mm;
     pixel_size[1] /= 1.0;
@@ -440,6 +445,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     sinogram_size[1] = aNumberOfAngle;
     sinogram_size[2] = m_p_detector->getNumberOfPixels().getY();
 
+    if (sinogram_size[2] <= 0)
+    {
+        sinogram_size[2] = 1;
+    }
+
     ImageType::RegionType sinogram_region;
     sinogram_region.SetSize(sinogram_size);
     sinogram_region.SetIndex(start);
@@ -453,7 +463,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     m_p_sinogram_image->SetSpacing(pixel_size);
 
     // Compute the translation vector
-    VEC3 translation_vector((m_p_detector->getDetectorPosition() + m_p_detector->getXraySourceCentre()) / 2.0);
+    VEC3 translation_vector(-aRotationCenter);
 
     // Compute the sinogram
     for (unsigned int angle(0); angle < aNumberOfAngle; ++angle)
@@ -470,7 +480,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         transformation_matrix.translate(translation_vector);
 
         // Apply the modelling transformation
-        transformation_matrix = aModellingTransformationMatrix * transformation_matrix;
+        transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
         // Compute the X-ray image
         computeImage(transformation_matrix);
