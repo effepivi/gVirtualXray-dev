@@ -98,6 +98,28 @@ ELSE(glfw_FOUND)
 ENDIF(glfw_FOUND)
 
 
+# ITK #########################################################################
+FIND_PACKAGE (ITK)
+IF (ITK_FOUND)
+	ADD_DEFINITIONS(-DHAS_ITK)
+	INCLUDE( ${ITK_USE_FILE} )
+	set (optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+ELSE(ITK_FOUND)
+    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
+ENDIF(ITK_FOUND)
+
+
+# VTK #########################################################################
+FIND_PACKAGE (VTK)
+IF (VTK_FOUND)
+	ADD_DEFINITIONS(-DHAS_VTK)
+	INCLUDE( ${VTK_USE_FILE} )
+	set (optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+ELSE(VTK_FOUND)
+    MESSAGE(WARNING "VTK not found. It will be disabled.")
+ENDIF(VTK_FOUND)
+
+
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES
     shaders/display_gl2.frag
@@ -146,8 +168,17 @@ IF(glfw_FOUND)
     ADD_DEPENDENCIES(validation_07 BinaryValidationFiles)
     INSTALL(TARGETS validation_07 RUNTIME DESTINATION validation/bin COMPONENT validation)
 
+	IF (ITK_FOUND)
+	    ADD_EXECUTABLE (validation_08 src/validation_08.cxx)
+	    TARGET_LINK_LIBRARIES (validation_08 gVirtualXRay ${optionalLibs} ${requiredLibs})
+	    ADD_DEPENDENCIES(validation_08 BinaryValidationFiles)
+	    INSTALL(TARGETS validation_08 RUNTIME DESTINATION validation/bin COMPONENT validation)
+	ENDIF (ITK_FOUND)
+
     INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
+
+
 
 
 # Set the package name
