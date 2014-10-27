@@ -9,59 +9,11 @@ pkg load image
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function volume=loadVolume(aFileNameWithExtension,
-                           aWidth,
-                           aHeight,
-                           aDepth)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add the path with octave routines
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	% Allocate the memory
-    volume = zeros([aWidth aHeight aDepth]);
-    slice = zeros([aWidth aHeight]);
-
-	% Open the file
-    file_descriptor = fopen(aFileNameWithExtension, "rb");
-
-	% Read all the slices
-	for slice_id = 1:aDepth
-
-	    % Read the sinogram
-		slice = fread(file_descriptor, [aWidth, aHeight], "float32");
-
-        % Get the corresponding slice
-        volume(:, :, slice_id) = slice;
-    endfor
-
-    % Close the file
-    fclose(file_descriptor);
-
-	% Return the volume
-    return;
-
-endfunction
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function writeVolume(aFileNameWithExtension,
-                     aVolume)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-	% Open the file
-    file_descriptor = fopen(aFileNameWithExtension, "wb");
-
-	% Write all the slices
-    fwrite(file_descriptor, aVolume, "float32");
-
-    % Close the file
-    fclose(file_descriptor);
-
-    size(aVolume)
-    return;
-
-endfunction
+addpath("../octave")
 
 
 
@@ -84,7 +36,7 @@ angle_span                = first_angle:angle_offset:((number_of_angles - 1) * a
 % Load the data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-sinogram = loadVolume("sinogram.raw", width_in_number_of_pixels, number_of_angles, 1);
+sinogram = loadVolume("sinogram.raw", "float32", width_in_number_of_pixels, number_of_angles, 1);
 
 
 
@@ -94,17 +46,7 @@ sinogram = loadVolume("sinogram.raw", width_in_number_of_pixels, number_of_angle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ct_volume_in_mu_80keV = iradon(sinogram, angle_span, 'Spline', 'Hamming');
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Normalise data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-ratio = width_in_number_of_pixels / (width_in_number_of_pixels * pixel_size_in_mm / 10);
-ct_volume_in_mu_80keV *= ratio;
-writeVolume("ct_volume_in_mu_80keV.raw", ct_volume_in_mu_80keV);
+writeVolume("ct_volume_in_mu_80keV.raw", "float32", ct_volume_in_mu_80keV);
 
 
 

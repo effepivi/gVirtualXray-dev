@@ -108,7 +108,8 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Defines
 //******************************************************************************
-#define PREFIX ".."
+#define PREFIX "../data/validation_04"
+
 
 
 //******************************************************************************
@@ -254,13 +255,13 @@ int main(int argc, char** argv)
         g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
 
         // Save the sinogram
-        g_xray_renderer.printSinogram(PREFIX"/data/sinogram.mhd");
+        g_xray_renderer.printSinogram(PREFIX"/sinogram.mhd");
 
         // Compute the projection set
         g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
 
         // Save the projection set
-        g_xray_renderer.printProjectionSet(PREFIX"/data/projection_set.mhd");
+        g_xray_renderer.printProjectionSet(PREFIX"/projection_set.mhd");
 	}
 	// Catch exception if any
 	catch (const std::exception& error)
@@ -351,7 +352,7 @@ void loadSTLFile()
 	if (!p_file_descriptor)
 	{
 		// Use the prefix
-		stl_filename = "../data/" + stl_filename;
+        stl_filename = std::string(PREFIX) + "/../" + stl_filename;
 	}
 	else
 	{
@@ -447,7 +448,6 @@ void loadSource()
 {
 	// Set the energy
 	g_xray_beam.initialise(g_incident_energy);
-	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);
