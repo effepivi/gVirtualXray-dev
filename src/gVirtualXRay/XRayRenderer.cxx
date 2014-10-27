@@ -494,11 +494,15 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         // Convert the data into a sinogram
         PixelType* p_input_data(m_p_temp_raw_data);
         RATIONAL_NUMBER total_input_energy(m_p_xray_beam->getTotalEnergy());
+        RATIONAL_NUMBER scaling_factor(
+                RATIONAL_NUMBER(m_p_detector->getNumberOfPixels().getX()) / (m_p_detector->getSizeInUnitOfLength().getX() / cm)
+        );
+
         for (unsigned j(0); j < m_p_detector->getNumberOfPixels().getY(); ++j)
         {
             for (unsigned i(0); i < m_p_detector->getNumberOfPixels().getX(); ++i, ++p_input_data)
             {
-                *p_input_data = log(total_input_energy / *p_input_data);
+                *p_input_data = scaling_factor * log(total_input_energy / *p_input_data);
             }
         }
 
