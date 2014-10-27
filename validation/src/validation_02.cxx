@@ -50,7 +50,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Defines
 //******************************************************************************
-#define PREFIX ".."
+#define PREFIX "../data/validation_02"
 
 
 //******************************************************************************
@@ -115,12 +115,12 @@ int main(int argc, char** argv)
 		loadXRaySimulator();
 
 		// Print the density in g/cm3 for a range of HU values
-		std::ofstream test_stream(PREFIX"/data/test_density.csv");
+		std::ofstream test_stream(PREFIX"/test_density.csv");
 
         if (!test_stream.is_open())
         {
             std::stringstream error_message;
-            error_message << "ERROR: cannot open file:\t" << PREFIX"/data/test_density.csv";
+            error_message << "ERROR: cannot open file:\t" << PREFIX"//test_density.csv";
 
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
@@ -182,7 +182,6 @@ void loadSource()
 {
 	// Set the energy
 	g_xray_beam.initialise(g_incident_energy);
-	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 }
 
 
