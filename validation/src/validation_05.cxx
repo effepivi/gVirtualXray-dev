@@ -108,7 +108,8 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Defines
 //******************************************************************************
-#define PREFIX ".."
+#define PREFIX "../data/validation_05"
+
 
 
 //******************************************************************************
@@ -348,7 +349,7 @@ void loadSTLFile()
 	if (!p_file_descriptor)
 	{
 		// Use the prefix
-		stl_filename = "../data/" + stl_filename;
+        stl_filename = std::string(PREFIX) + "/../" + stl_filename;
 	}
 	else
 	{
