@@ -27,54 +27,6 @@ addpath("../octave")
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function projections=buildProjections(aSinogram)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    width = size(aSinogram, 1);
-    slice_number = size(aSinogram, 3);
-    angle_number = size(aSinogram, 2);
-
-    % Allocate the memory
-    projections = zeros([width slice_number angle_number]);
-
-    % Process all the angle
-    for angle_id = 1:angle_number
-
-        % Process all the slices
-        for slice_id = 1:slice_number
-            % Copy the data
-            projections(:,slice_id,angle_id) = aSinogram(:,angle_id,slice_id);
-        endfor
-    endfor
-
-    % Return the projections
-    return;
-
-endfunction
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function ct_slice=reconstructSlice(aSinogram,
-                                   aSliceID,
-                                   anAngleSpan)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % Reconstruct the slice
-    ct_slice = iradon(aSinogram(:,:, aSliceID), anAngleSpan, "Spline", "Hamming");
-
-    % Copy the data
-    ct_slice = ct_slice(2:size(ct_slice, 1) - 1,2:size(ct_slice, 2) - 1);
-
-    return;
-
-endfunction
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,7 +47,7 @@ number_of_processes       = 6;
 % Load the volume in HU
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ct_volume_in_HU = loadVolume("validation_08_phantom.raw", "int16", volume_size(1), volume_size(2), volume_size(3));
+ct_volume_in_HU = loadVolume("phantom.raw", "int16", volume_size(1), volume_size(2), volume_size(3));
 
 
 
@@ -106,7 +58,7 @@ ct_volume_in_HU = loadVolume("validation_08_phantom.raw", "int16", volume_size(1
 
 mu_water = 1.844E-01;
 ct_volume_in_mu_80keV = (1.0 + ct_volume_in_HU / 1000.0) * mu_water;
-writeVolume("validation_08_phantom_in_mu_80keV.raw", "float32", ct_volume_in_mu_80keV);
+writeVolume("phantom_in_mu_80keV.raw", "float32", ct_volume_in_mu_80keV);
 
 
 
@@ -116,7 +68,17 @@ writeVolume("validation_08_phantom_in_mu_80keV.raw", "float32", ct_volume_in_mu_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 sinogram_80keV = buildSinogram(6, ct_volume_in_mu_80keV, angle_span);
-writeVolume("validation_08_phantom_sinogram.raw", "float32", sinogram_80keV);
+writeVolume("phantom_sinogram.raw", "float32", sinogram_80keV);
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Build corresponding projections
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+projections_80keV = buildProjectionsFromSinogram(sinogram_80keV);
+writeVolume("phantom_projections.raw", "float32", projections_80keV);
 
 
 
@@ -127,7 +89,7 @@ writeVolume("validation_08_phantom_sinogram.raw", "float32", sinogram_80keV);
 
 reconstructed_ct_volume = reconstructVolume(number_of_processes, sinogram_80keV, angle_span);
 reconstructed_ct_volume = cell2mat(reconstructed_ct_volume);
-writeVolume("validation_08_reconstructed_phantom.raw", "float32", reconstructed_ct_volume);
+writeVolume("reconstructed_phantom.raw", "float32", reconstructed_ct_volume);
 
 
 
@@ -136,7 +98,17 @@ writeVolume("validation_08_reconstructed_phantom.raw", "float32", reconstructed_
 % Load the sinogram
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-simulation_sinogram = loadVolume("validation_08_simulation_sinogram.raw", "float32", size(sinogram_80keV, 1), size(sinogram_80keV, 2), size(sinogram_80keV, 3));
+simulation_sinogram = loadVolume("simulation_sinogram.raw", "float32", size(sinogram_80keV, 1), size(sinogram_80keV, 2), size(sinogram_80keV, 3));
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Build corresponding projections
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+simulation_projections = buildProjectionsFromSinogram(simulation_sinogram);
+writeVolume("simulation_projections.raw", "float32", simulation_projections);
 
 
 
@@ -147,7 +119,7 @@ simulation_sinogram = loadVolume("validation_08_simulation_sinogram.raw", "float
 
 simulation_reconstructed_ct_volume = reconstructVolume(number_of_processes, simulation_sinogram, angle_span);
 simulation_reconstructed_ct_volume = cell2mat(simulation_reconstructed_ct_volume);
-writeVolume("validation_08_simulation_reconstructed_phantom.raw", "float32", simulation_reconstructed_ct_volume);
+writeVolume("simulation_reconstructed_phantom.raw", "float32", simulation_reconstructed_ct_volume);
 
 
 
@@ -156,7 +128,7 @@ writeVolume("validation_08_simulation_reconstructed_phantom.raw", "float32", sim
 % Sinogram error
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sinogram_error = abs(sinogram_80keV - simulation_sinogram);
-writeVolume("validation_08_sinogram_error.raw", "float32", sinogram_error);
+writeVolume("sinogram_error.raw", "float32", sinogram_error);
 mean(mean(mean(sinogram_error)))
 min(min(min(sinogram_error)))
 max(max(max(sinogram_error)))
@@ -174,7 +146,7 @@ ans =  43.929
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 reconstruction_error = abs(ct_volume_in_mu_80keV - simulation_reconstructed_ct_volume);
-writeVolume("validation_08_reconstruction_error.raw", "float32", reconstruction_error);
+writeVolume("reconstruction_error.raw", "float32", reconstruction_error);
 mean(mean(mean(reconstruction_error)))
 min(min(min(reconstruction_error)))
 max(max(max(reconstruction_error)))
