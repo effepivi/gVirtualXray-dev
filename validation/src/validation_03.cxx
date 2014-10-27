@@ -108,7 +108,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Defines
 //******************************************************************************
-#define PREFIX ".."
+#define PREFIX "../data/validation_03"
 
 
 //******************************************************************************
@@ -340,7 +340,7 @@ void loadSTLFile()
 	if (!p_file_descriptor)
 	{
 		// Use the prefix
-		stl_filename = "../data/" + stl_filename;
+        stl_filename = std::string(PREFIX) + "/../" + stl_filename;
 	}
 	else
 	{
@@ -454,7 +454,6 @@ void loadSource()
 {
 	// Set the energy
 	g_xray_beam.initialise(g_incident_energy);
-	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);
