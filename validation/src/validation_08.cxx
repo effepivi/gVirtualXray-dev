@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		test.cxx
+*	@file		validation_08.cxx
 *
 *	@brief		Main test program.
 *
@@ -48,7 +48,7 @@
 #include <itkQuadEdgeMesh.h>
 #include <itkMeshFileWriter.h>
 #include <itkQuadEdgeMeshDecimationCriteria.h>
-
+/*
 #ifdef HAS_VTK
 #include <itkImageToVTKImageFilter.h>
 
@@ -61,7 +61,7 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkRenderer.h>
 #endif
-
+*/
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -132,7 +132,8 @@
 //******************************************************************************
 //  Defines
 //******************************************************************************
-#define PREFIX ".."
+#define PREFIX "../data/validation_08"
+
 
 
 //******************************************************************************
@@ -339,13 +340,13 @@ int main(int argc, char** argv)
         g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
 
         // Save the sinogram
-        g_xray_renderer.printSinogram(PREFIX"/data/validation_08_simulation_sinogram.mhd");
+        g_xray_renderer.printSinogram(PREFIX"/simulation_sinogram.mhd");
 
         // Compute the projection set
         g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
 
         // Save the projection set
-        g_xray_renderer.printProjectionSet(PREFIX"/data/validation_08_simulation_projection_set.mhd");
+        g_xray_renderer.printProjectionSet(PREFIX"/simulation_projection_set.mhd");
 
         // Launch the event loop
 	    while (!glfwWindowShouldClose(g_p_main_window_id))
@@ -394,11 +395,7 @@ void createPhantom()
 
 	VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
 	p_writer->SetInput(p_phantom);
-	p_writer->SetFileName(PREFIX"/data/validation_08_phantom.mhd");
-
-	//typedef itk::ImageToVTKImageFilter<ImageType> ConnectorType;
-	//ConnectorType::Pointer p_itk2vtk_conntector(ConnectorType::New());
-
+	p_writer->SetFileName(PREFIX"/phantom.mhd");
 
 	ImageType::SizeType	size;
 	size[0] = 256;
@@ -490,7 +487,7 @@ void createPhantom()
 	typedef itk::ImageFileWriter <OutputVolumeType> MaskVolumeType;
 	MaskVolumeType::Pointer p_mask_writer(MaskVolumeType::New());
 	p_mask_writer->SetInput(p_threshold_filter->GetOutput());
-	p_mask_writer->SetFileName(PREFIX"/data/validation_08_phantom_mask.mhd");
+	p_mask_writer->SetFileName(PREFIX"/phantom_mask.mhd");
 	p_mask_writer->Update();
 
 	// Extract the isosurface
@@ -567,7 +564,7 @@ void createPhantom()
 	typedef itk::MeshFileWriter< MeshType > MeshWriterType;
 	MeshWriterType::Pointer writer(MeshWriterType::New());
 	writer->SetFileTypeAsBINARY ();
-	writer->SetFileName(PREFIX"/data/validation_08_sinogram.mhd");
+	writer->SetFileName(PREFIX"/sinogram.mhd");
 	writer->SetInput(p_iso_surface_extracter->GetOutput());
 	try
 	{
@@ -575,7 +572,7 @@ void createPhantom()
 	}
 	catch( itk::ExceptionObject & error )
 	{
-		std::cerr << "Cannot save the polygon mesh in STL file: \"" << PREFIX"/data/validation_08_sinogram.mhd" << "\"" << std::endl;
+		std::cerr << "Cannot save the polygon mesh in STL file: \"" << PREFIX"/sinogram.mhd" << "\"" << std::endl;
 		std::cerr << "Error: " << error << std::endl;
 	}
 }
@@ -1212,7 +1209,6 @@ void loadSource()
 {
 	// Set the energy
 	g_xray_beam.initialise(g_incident_energy);
-	//g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);
