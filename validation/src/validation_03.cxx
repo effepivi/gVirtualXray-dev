@@ -3,7 +3,8 @@
 *
 *	@file		validation_03.cxx
 *
-*	@brief		Main test program.
+*   @brief      Main program to test the Beer-Lambert law in the monochromatic
+*               case.
 *
 *	@version	1.0
 *

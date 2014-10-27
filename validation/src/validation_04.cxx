@@ -1,9 +1,12 @@
 /**
 ********************************************************************************
 *
-*	@file		validation_03.cxx
+*	@file		validation_04.cxx
 *
-*	@brief		Main test program.
+*   @brief      Main program to test the sinogram in a simple case.
+*               Tomographic reconstruction is then perform using
+*               the FBP algorithm in GNU Octave. Reconstructed Mu values are
+*               finally compared with theoretical values.
 *
 *	@version	1.0
 *

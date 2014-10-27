@@ -1,9 +1,10 @@
 /**
 ********************************************************************************
 *
-*	@file		validation_03.cxx
+*	@file		validation_05.cxx
 *
-*	@brief		Main test program.
+*   @brief      Main program to test the Beer-Lambert law in the polychromatic
+*               case.
 *
 *	@version	1.0
 *
