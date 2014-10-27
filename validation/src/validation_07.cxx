@@ -1,9 +1,11 @@
 /**
 ********************************************************************************
 *
-*	@file		validation_03.cxx
+*	@file		validation_07.cxx
 *
-*	@brief		Main test program.
+*   @brief      Main test program to test a scared source. A similar
+*               experimental set up is used with a validated Monte Carlo
+*               simulation tool.
 *
 *	@version	1.0
 *
@@ -108,7 +110,8 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Defines
 //******************************************************************************
-#define PREFIX ".."
+#define PREFIX "../data/validation_07"
+
 
 
 //******************************************************************************
@@ -245,7 +248,7 @@ int main(int argc, char** argv)
         g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), 1, 0);
 
         // Save the projection set
-        g_xray_renderer.printProjectionSet(PREFIX"/data/single_projection_cubic_source.mhd");
+        g_xray_renderer.printProjectionSet(PREFIX"/single_projection_cubic_source.mhd");
 
         // Close the window
         glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
@@ -339,7 +342,7 @@ void loadSTLFile()
 	if (!p_file_descriptor)
 	{
 		// Use the prefix
-		stl_filename = "../data/" + stl_filename;
+        stl_filename = std::string(PREFIX) + "/../" + stl_filename;
 	}
 	else
 	{
