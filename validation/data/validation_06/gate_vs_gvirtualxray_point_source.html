@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+	<head>
+		<title>Validation of the Physics: Gate vs gVirtualXRay, Point Source Case</title>
+        
+		<style type="text/css">
+			table {
+				width:100%;
+			}
+			table, th, td {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+			th, td {
+				padding: 5px;
+				text-align: left;
+			}
+			table#t01 tr:nth-child(even) {
+				background-color: #eee;
+			}
+			table#t01 tr:nth-child(odd) {
+				background-color:#fff;
+			}
+			table#t01 th	{
+				background-color: black;
+				color: white;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Gate vs gVirtualXRay, Point Source Case</h1>
+
+        <p>
+            The results presented here have been generated using <a href="https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/validation/src/validation_06.cxx">validation_06.cxx</a>.
+            In this test, we will simulate the geometry as follows:
+            <ul>
+                <li>A cube, which has edge length of 3 cm, is made of soft tissue (HU &#8776; 52).</li>
+                <li>Inside, a cylinder is inserted. It is made of bone (HU &#8776; 1330), its height is 3 cm and its diameter is 2 cm.</li>
+            </ul>
+            
+            <figure>
+                <center>
+                    <img src="validation_3D_scene.png" width="450px" height="398px">
+                    <figcaption>Fig 1. Sample used in the simulation.</figcaption>
+                </center>
+            </figure>
+            
+            <figure>
+                <center>
+                    <img src="scene.png" width="348px" height="608px">
+                    <figcaption>Fig 2. 3D scene used in the simulation.</figcaption>
+                </center>
+            </figure>
+
+        </p>
+        
+		<p>The incident energy, <i>I<sub>i</sub></i>, is 80 keV (i.e. 0.08 MeV).</p>
+
+		
+            <figure>
+                <center>
+                    <img src="gate_simulation_normalised-grey.png" width="301px" height="301px">
+                    <img src="single_projection_normalised-grey.png" width="301px" height="301px">
+                    <figcaption>Fig 3. .</figcaption>
+                </center>
+            </figure>
+
+            <figure>
+                <center>
+                    <img src="test_profile.png" width="648px" height="504px">
+                    <figcaption>Fig 4. .</figcaption>
+                </center>
+            </figure>
+
+	</body>
+</html>
