@@ -1,0 +1,109 @@
+%!/usr/bin/octave
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load the statistics package (needed for std)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+pkg load statistics
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add the path with octave routines
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+addpath("../octave")
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+volume_size = [301 301 1];
+voxel_size = [1.0 1.0 1.0];
+number_of_directory = 4;
+number_of_tests_per_series = 4;
+
+gate_simulation_image = zeros(volume_size);
+
+for i = [1:number_of_directory]
+	for j = [0:number_of_tests_per_series-1]
+		directory_name = strcat("gate_simulation_0", int2str(i))
+		if j < 10
+			file_name = strcat(directory_name, "/run_");
+			file_name = strcat(file_name, int2str(j));
+			file_name = strcat(file_name, "/benchmarkVRTCT_000.dat");
+			
+			gate_simulation_image += loadVolume(file_name, "float32", volume_size(1), volume_size(2), volume_size(3));
+		end
+	end
+end
+
+writeVolume("gate_simulation.raw", "float32", gate_simulation_image);
+
+
+mean_gate = mean(gate_simulation_image(:));
+std_gate  = std(gate_simulation_image(:));
+gate_norm =  (gate_simulation_image - mean_gate) / std_gate;
+
+writeVolume("gate_simulation_normalised.raw", "float32", gate_norm);
+
+gpu_simulation_image = loadVolume("single_projection.raw", "float32", volume_size(1), volume_size(2), volume_size(3));
+
+mean_gpu = mean(gpu_simulation_image(:));
+std_gpu  = std(gpu_simulation_image(:));
+gpu_norm =  (gpu_simulation_image - mean_gpu) / std_gpu;
+
+writeVolume("single_projection_normalised.raw", "float32", gpu_norm);
+
+figure;
+imagesc(gate_norm);
+
+figure;
+imagesc(gpu_norm);
+
+figure;
+error_map = 100.0 * abs(abs(gpu_norm - gate_norm) / gate_norm);
+writeVolume("error_map.raw", "float32", error_map);
+imagesc(error_map);
+
+gate_profile = gate_norm( : , int32(size(gate_norm, 2) / 2));
+gpu_profile  =  gpu_norm( : , int32(size( gpu_norm, 2) / 2));
+
+gate_profile += gate_norm( : , int32(size(gate_norm, 2) / 2) + 1);
+gpu_profile  +=  gpu_norm( : , int32(size( gpu_norm, 2) / 2) + 1);
+
+gate_profile += gate_norm( : , int32(size(gate_norm, 2) / 2) - 1);
+gpu_profile  +=  gpu_norm( : , int32(size( gpu_norm, 2) / 2) - 1);
+
+gate_profile += gate_norm( : , int32(size(gate_norm, 2) / 2) + 2);
+gpu_profile  +=  gpu_norm( : , int32(size( gpu_norm, 2) / 2) + 2);
+
+gate_profile += gate_norm( : , int32(size(gate_norm, 2) / 2) - 2);
+gpu_profile  +=  gpu_norm( : , int32(size( gpu_norm, 2) / 2) - 2);
+
+gate_profile += gate_norm( : , int32(size(gate_norm, 2) / 2) + 3);
+gpu_profile  +=  gpu_norm( : , int32(size( gpu_norm, 2) / 2) + 3);
+
+gate_profile += gate_norm( : , int32(size(gate_norm, 2) / 2) - 3);
+gpu_profile  +=  gpu_norm( : , int32(size( gpu_norm, 2) / 2) - 3);
+
+gate_profile /= 7;
+gpu_profile  /= 7;
+
+figure
+
+x = 1:size(gate_profile, 1);
+plot(x, gpu_profile, '-', x, gate_profile, 'ro');
+
+xlabel('Pixel Index');
+ylabel('Normalised Energy');
+title('Horizontal Profile');
+legend('gVirtualXRay','Gate');
+
+save -ascii gate_profile.txt gate_profile;
+save -ascii gpu_profile.txt  gpu_profile;
+
