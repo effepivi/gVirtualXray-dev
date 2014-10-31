@@ -22,22 +22,28 @@ addpath("../octave")
 % Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+close all;
+
 volume_size = [301 301 1];
 voxel_size = [1.0 1.0 1.0];
-number_of_directory = 4;
-number_of_tests_per_series = 4;
+number_of_directory = 5;
+number_of_tests_per_series = 50;
 
 gate_simulation_image = zeros(volume_size);
 
 for i = [1:number_of_directory]
 	for j = [0:number_of_tests_per_series-1]
-		directory_name = strcat("gate_simulation_0", int2str(i))
+		directory_name = strcat("gate_simulation_0", int2str(i));
 		if j < 10
 			file_name = strcat(directory_name, "/run_");
 			file_name = strcat(file_name, int2str(j));
 			file_name = strcat(file_name, "/benchmarkVRTCT_000.dat");
 			
-			gate_simulation_image += loadVolume(file_name, "float32", volume_size(1), volume_size(2), volume_size(3));
+            % Check if the file exists
+            if  exist (file_name, "file")
+    			gate_simulation_image += loadVolume(file_name, "float32", volume_size(1), volume_size(2), volume_size(3));
+            end
 		end
 	end
 end
@@ -59,16 +65,36 @@ gpu_norm =  (gpu_simulation_image - mean_gpu) / std_gpu;
 
 writeVolume("single_projection_normalised.raw", "float32", gpu_norm);
 
-figure;
-imagesc(gate_norm);
-
-figure;
-imagesc(gpu_norm);
-
-figure;
 error_map = 100.0 * abs(abs(gpu_norm - gate_norm) / gate_norm);
 writeVolume("error_map.raw", "float32", error_map);
+
+min_value = min(min(gate_norm));
+max_value = max(max(gate_norm));
+
+gate_norm = (gate_norm - min_value) / (max_value - min_value);
+gpu_norm  = ( gpu_norm - min_value) / (max_value - min_value);
+
+climits = [min(min(gate_norm)), max(max(gate_norm))];
+figure;
+imagesc(gate_norm', climits);
+colormap("rainbow");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("gate_norm.png","-dpng"); 
+
+figure;
+imagesc(gpu_norm', climits);
+colormap("rainbow");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("gpu_norm.png","-dpng"); 
+
+figure;
 imagesc(error_map);
+colormap("rainbow");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("error.png","-dpng"); 
 
 gate_profile = gate_norm( : , int32(size(gate_norm, 2) / 2));
 gpu_profile  =  gpu_norm( : , int32(size( gpu_norm, 2) / 2));

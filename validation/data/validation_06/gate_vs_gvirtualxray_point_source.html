@@ -33,21 +33,166 @@
 		<h1>Gate vs gVirtualXRay, Point Source Case</h1>
 
         <p>
-            The results presented here have been generated using <a href="https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/validation/src/validation_06.cxx">validation_06.cxx</a>.
-            In this test, we will simulate the geometry as follows:
+            In this study, we simulate a test case twice:
+            <ol>
+				<li>Using a Monte Carlo method for particle physics implemented in <a href="http://www.opengatecollaboration.org/">GATE</a></li>
+				<li>Using our GPU implementation</li>
+			</ol>
+			<a href="http://www.opengatecollaboration.org/">GATE</a> is an opensource software developed by the international collaboration. 
+			Its focus is on Monte Carlo simulation in medical imaging and radiotherapy. 
+			To achieve this <a href="http://www.opengatecollaboration.org/">GATE</a> makes use of the Geant4 libraries. 
+			<a href="http://geant4.cern.ch/">Geant 4</a> is <a href="http://www.cern.ch/">CERN</a>'s Monte Carlo simulation platform dedicated to particle physics in nuclear research (<a href="http://www.cern.ch/">CERN</a> is the European Organization for Nuclear Research). 
+            The results presented here have been generated using <a href="https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/validation/src/validation_06.cxx">validation_06.cxx</a>. 
+            <a href="http://www.opengatecollaboration.org/">GATE</a> scripts are available <a href="">here</a>; 
+            raw results <a href="https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/validation/data/validation_06/raw_results.tar.gz">here</a>; 
+            and <a href="https://www.gnu.org/software/octave/">GNU Octave</a> scripts <a href="https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/validation/data/validation_06/octave.tar.gz">here</a>. 
+        </p>
+        
+        <p>
+            <a href="#fig1">Fig. 1.</a> shows the geometry that we consider:
             <ul>
-                <li>A cube, which has edge length of 3 cm, is made of soft tissue (HU &#8776; 52).</li>
-                <li>Inside, a cylinder is inserted. It is made of bone (HU &#8776; 1330), its height is 3 cm and its diameter is 2 cm.</li>
+                <li>A cube, which has edge length of 3 cm, is made of soft tissue (HU &#8776; 52). Its density is 1.062619 g/cm<sup>3</sup></li>
+                <li>Inside, a cylinder is inserted. It is made of bone (HU &#8776; 1330), its height is 3 cm and its diameter is 2 cm. Its density is 1.803768 g/cm<sup>3</sup></li>
             </ul>
-            
-            <figure>
+            <a href="#t01">Tab. 1.</a> shows the composition of the materials. <a href="#fig2">Fig. 2.</a> is an illustration of the geometrical setup of the simulation.
+			The incident energy, <i>I<sub>i</sub></i>, is 80 keV (i.e. 0.08 MeV).
+
+            <figure id="fig1">
                 <center>
                     <img src="validation_3D_scene.png" width="450px" height="398px">
                     <figcaption>Fig 1. Sample used in the simulation.</figcaption>
                 </center>
             </figure>
+
+            <center>
+				<table id="t01" border="1" style="width:30%">
+					<tr>
+						<th>Material</th>
+						<th>Element</th>
+						<th>Element weight</th>
+					</tr>
+					
+					<tr>
+						<td>Bone</td>
+						<td>Hydrogen</td>
+						<td>0.039</td>
+					</tr>
+					
+					<tr>
+						<td></td>
+						<td>Carbon</td>
+						<td>0.179</td>
+					</tr>
+
+					
+					<tr>
+						<td></td>
+						<td>Nitrogen</td>
+						<td>0.041</td>
+					</tr>
+					
+					<tr>
+						<td></td>
+						<td>Oxygen</td>
+						<td>0.429</td>
+					</tr>
+
+					
+					<tr>
+						<td></td>
+						<td>Sodium</td>
+						<td>0.001</td>
+					</tr>
+
+					
+					<tr>
+						<td></td>
+						<td>Magnesium</td>
+						<td>0.002</td>
+					</tr>
+
+					
+					<tr>
+						<td></td>
+						<td>Phosphor</td>
+						<td>0.096</td>
+					</tr>
+
+					
+					<tr>
+						<td></td>
+						<td>Sulfur</td>
+						<td>0.003</td>
+					</tr>
+
+					
+					<tr>
+						<td></td>
+						<td>Calcium</td>
+						<td>0.21</td>
+					</tr>
+
+					<tr>
+						<td>Soft tissue</td>
+						<td>Hydrogen</td>
+						<td>0.103</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Carbon</td>
+						<td>0.134</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Nitrogen</td>
+						<td>0.03</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Oxygen</td>
+						<td>0.723</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Sodium</td>
+						<td>0.002</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Phosphor</td>
+						<td>0.002</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Sulfur</td>
+						<td>0.002</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Chlorine</td>
+						<td>0.002</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td>Potassium</td>
+						<td>0.002</td>
+					</tr>
+
+
+
+				</table>
+			</center>
             
-            <figure>
+            
+            <figure id="fig2">
                 <center>
                     <img src="scene.png" width="348px" height="608px">
                     <figcaption>Fig 2. 3D scene used in the simulation.</figcaption>
@@ -56,23 +201,27 @@
 
         </p>
         
-		<p>The incident energy, <i>I<sub>i</sub></i>, is 80 keV (i.e. 0.08 MeV).</p>
-
-		
-            <figure>
+		<p>
+			<a href="#fig3">Fig. 3.</a> shows the images simulated using <a href="http://www.opengatecollaboration.org/">GATE</a> and using gVirtualXRay. 
+			<a href="http://www.opengatecollaboration.org/">GATE</a> takes into account photon scattering; gVirtualXRay does not. 
+			However, the two images are very close. 
+			<a href="#fig4">Fig. 4.</a> shows horizontal profiles. As Monte Carlo methods produces noisy results, average profiles along the 7<sup>th</sup> central lines are considered. 
+			Again, the two profiles are very close to each others. 
+			
+            <figure id="fig3">
                 <center>
-                    <img src="gate_simulation_normalised-grey.png" width="301px" height="301px">
-                    <img src="single_projection_normalised-grey.png" width="301px" height="301px">
-                    <figcaption>Fig 3. .</figcaption>
+                    <img src="gate_norm.png" width="600px" height="450px">
+                    <img src="gpu_norm.png"  width="600px" height="450px">
+                    <figcaption>Fig 3. Simulated images. (left) using <a href="http://www.opengatecollaboration.org/">GATE</a>; (right) using gVirtualXRay.</figcaption>
                 </center>
             </figure>
 
-            <figure>
+            <figure id="fig4">
                 <center>
                     <img src="test_profile.png" width="648px" height="504px">
-                    <figcaption>Fig 4. .</figcaption>
+                    <figcaption>Fig 4. Average profile along the 7<sup>th</sup> central lines.</figcaption>
                 </center>
             </figure>
-
+		</p>
 	</body>
 </html>
