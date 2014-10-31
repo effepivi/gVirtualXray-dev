@@ -27,25 +27,20 @@ close all;
 
 volume_size = [301 301 1];
 voxel_size = [1.0 1.0 1.0];
-number_of_directory = 5;
-number_of_tests_per_series = 50;
+number_of_tests = 999;
 
 gate_simulation_image = zeros(volume_size);
 
-for i = [1:number_of_directory]
-	for j = [0:number_of_tests_per_series-1]
-		directory_name = strcat("gate_simulation_0", int2str(i));
-		if j < 10
-			file_name = strcat(directory_name, "/run_");
-			file_name = strcat(file_name, int2str(j));
-			file_name = strcat(file_name, "/benchmarkVRTCT_000.dat");
-			
-            % Check if the file exists
-            if  exist (file_name, "file")
-    			gate_simulation_image += loadVolume(file_name, "float32", volume_size(1), volume_size(2), volume_size(3));
-            end
-		end
-	end
+for j = [0:number_of_tests-1]
+	directory_name = "gate_simulation";
+	file_name = strcat(directory_name, "/run_");
+	file_name = strcat(file_name, int2str(j));
+	file_name = strcat(file_name, "/benchmarkVRTCT_000.dat");
+		
+    % Check if the file exists
+    if  exist (file_name, "file")
+   	    gate_simulation_image += loadVolume(file_name, "float32", volume_size(1), volume_size(2), volume_size(3));
+    end
 end
 
 writeVolume("gate_simulation.raw", "float32", gate_simulation_image);
