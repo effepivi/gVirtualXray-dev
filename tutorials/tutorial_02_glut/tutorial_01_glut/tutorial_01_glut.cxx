@@ -1,0 +1,478 @@
+/**
+********************************************************************************
+*
+*   @file       tutorial_01_glut.cxx
+*
+*   @brief      Creating a Window and an OpenGL 2.x Context Using GLUT.
+*
+*   @version    1.0
+*
+*   @date       17/08/2014
+*   @author     Dr Franck P. Vidal
+*
+*   @section    License
+*               BSD 3-Clause License.
+*
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
+*
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+*               BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//  Include
+//******************************************************************************
+#include <GL/glew.h>  // Handle shaders
+
+// Create an OpenGL context and attach a window to it
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
+#include <iostream>   // Print error messages in the console
+#include <sstream>    // Generate error messages
+#include <exception>  // Catch C++ exception
+#include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
+
+// Define new types, e.g.~RATIONAL_NUMBER, VEC2, VEC3 and MATRIX4 to name a few
+#include "gVirtualXRay/Types.h"
+
+// Define units such as metre, kilometre, electronvolt, gram, kilogram, etc.
+#include "gVirtualXRay/Units.h"
+
+// Some utility functions about OpenGL, e.g. matrix stacks,
+// how to set the projection matrix, etc.
+#include "gVirtualXRay/OpenGLUtilities.h"
+
+#include "gVirtualXRay/PolygonMesh.h"  // Handle 3D triangle meshes
+#include "gVirtualXRay/Shader.h"       // Handle GLSL programs
+
+#include "buildCube.h" // Create the triangle mesh of a cube
+
+
+//******************************************************************************
+//  Name space
+//******************************************************************************
+using namespace gVirtualXRay;
+using namespace std;
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+// Keep track of the window width
+GLsizei g_window_width(640);
+
+// Keep track of the window height
+GLsizei g_window_height(480);
+
+// GLUT window ID
+int g_window_id(0);
+
+// Shader program used to display the 3D scene
+Shader g_display_shader;
+
+// 3D objects as VAOs and VBOs
+PolygonMesh g_polygon_mesh_1;
+PolygonMesh g_polygon_mesh_2;
+
+// Transformation matrices
+MATRIX4 g_object_1_rotation_matrix;
+MATRIX4 g_object_2_rotation_matrix;
+
+// Geometric data
+vector<double> g_p_vertex_set_1;
+vector<unsigned char> g_p_index_set_1;
+vector<float> g_p_vertex_set_2;
+
+// Control the zoom
+RATIONAL_NUMBER g_zoom(50.0 * cm);
+
+// Vertex shader
+const GLchar* g_vertex_shader = "\
+\n#version 110\n \
+\n \
+uniform mat4 g_projection_matrix;\n \
+uniform mat4 g_modelview_matrix;\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);\n \
+}\n \
+";
+
+// Fragment shader
+const GLchar* g_fragment_shader = "\
+\n#version 110\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+}\n \
+";
+
+
+//******************************************************************************
+//  Function declaration
+//******************************************************************************
+void initGLUT(int argc, char** argv);
+void initGLEW();
+void initGL();
+void load3DObjects();
+void displayCallback();
+void idleCallback();
+void quitCallback();
+void framebufferSizeCallback(int aWidth, int aHeight);
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
+void scrollCallback(int aButton, int aState, int aXPosition, int aYPosition);
+
+
+//-----------------------------
+int main(int argc, char** argv)
+//-----------------------------
+{
+    // Return code
+    int return_code(EXIT_SUCCESS);
+
+    // Register the exit callback
+    atexit(quitCallback);
+
+    try
+    {
+        // Initialise GLUT
+        initGLUT(argc, argv);
+
+        // Initialise GLEW
+        initGLEW();
+
+        // Initialise OpenGL
+        initGL();
+
+        // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
+        g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
+
+        // Load the source code of the shaders onto the GPU
+        g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
+
+        // Initialise the geometry of the 3D objects
+        load3DObjects();
+
+        // Set the projection matrix
+        framebufferSizeCallback(g_window_width, g_window_height);
+
+        // Launch the event loop
+        glutMainLoop();
+    }
+    // Catch exception if any
+    catch (const exception& error)
+    {
+        cerr << error.what() << endl;
+        return_code = EXIT_FAILURE;
+    }
+
+    // Close the window and shut GLFW if needed
+    quitCallback();
+
+    // Return an exit code
+    return (return_code);
+}
+
+
+//----------------------------------
+void initGLUT(int argc, char** argv)
+//----------------------------------
+{
+	// GLUT initialisation
+	glutInit (&argc, argv);
+
+	// Create a windowed mode window and its OpenGL context
+	glutInitWindowSize(g_window_width, g_window_height);
+	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 01");
+
+    // The window has not been created
+    if (!g_window_id)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLUT windowed mode window and its OpenGL context.");
+    }
+
+    // Register GLUT callbacks
+    glutDisplayFunc(displayCallback);
+    glutReshapeFunc(framebufferSizeCallback);
+    glutKeyboardFunc(keyCallback);
+    glutMouseFunc(scrollCallback);
+    glutIdleFunc(idleCallback);
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+}
+
+
+//-----------
+void initGL()
+//-----------
+{
+    // Enable the Z-buffer
+    glEnable(GL_DEPTH_TEST);
+
+    // Set the background colour
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+
+    // Check if any OpenGL error has occurred.
+    // If any has, an exception is thrown
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//------------------
+void load3DObjects()
+//------------------
+{
+    // Centre of the cubes
+    VEC3 cube_centre(0, 0, 0);
+
+    // Size of the cubes
+    RATIONAL_NUMBER length_1( 5.0 * cm);
+    RATIONAL_NUMBER length_2(10.0 * cm);
+
+    // Create the cube using vertex data and index data
+    buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
+
+    // Create the cube using vertex data only
+    buildCube(length_2, cube_centre, g_p_vertex_set_2);
+
+    // Set geometry (using VAOs and VBOs)
+    g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
+            &g_p_vertex_set_1,
+            &g_p_index_set_1,
+            true,
+            GL_STATIC_DRAW);
+
+    g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
+            &g_p_vertex_set_2,
+            true,
+            GL_STATIC_DRAW);
+}
+
+
+//--------------------
+void displayCallback()
+//--------------------
+{
+    // Clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Add the current shader to the shader stack
+    pushShaderProgram();
+
+    // Enable the shader
+    g_display_shader.enable();
+    GLint shader_id(g_display_shader.getProgramHandle());
+
+    // Check the status of OpenGL and of the current FBO
+    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // A handle for shader resources
+    GLuint handle(0);
+
+    // Upload the projection matrix
+    handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Upload the modelview matrix
+    handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Store the current transformation matrices
+    pushModelViewMatrix();
+    pushProjectionMatrix();
+
+    // Translate the 1st object
+    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
+            VEC3(8.0 * cm, 0.0, 0.0));
+
+    // Rotate the 1st object
+    g_current_modelview_matrix *= g_object_1_rotation_matrix;
+
+    // Apply the change to the shader program
+    applyModelViewMatrix();
+
+    // Display the 1st object
+    g_polygon_mesh_1.display();
+
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+    popProjectionMatrix();
+
+    // Store the current transformation matrices
+    pushModelViewMatrix();
+    pushProjectionMatrix();
+
+    // Translate the 2nd object
+    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
+            VEC3(-8.0 * cm, 0.0, 0.0));
+
+    // Rotate the 2nd object
+    g_current_modelview_matrix *= g_object_2_rotation_matrix;
+
+    // Apply the change to the shader program
+    applyModelViewMatrix();
+
+    // Display the 2nd object
+    g_polygon_mesh_2.display();
+
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+    popProjectionMatrix();
+
+    // Disable the shader and restore the previous shader from the stack
+    popShaderProgram();
+
+    // Check the status of OpenGL and of the current FBO
+    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Swap front and back buffers
+    glutSwapBuffers();
+}
+
+
+//-----------------
+void idleCallback()
+//-----------------
+{
+    // Rotate the objects
+    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
+    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+
+	// Redisplay the scene
+	glutPostRedisplay();
+}
+
+
+//-----------------
+void quitCallback()
+//-----------------
+{
+    // The window exists
+    if (g_window_id)
+    {
+        // Close the window
+        glutDestroyWindow(g_window_id);
+        g_window_id = 0;
+    }
+}
+
+
+//-------------------------------------------------
+void framebufferSizeCallback(int width, int height)
+//-------------------------------------------------
+{
+    // Avoid a division by zero
+    if (height == 0)
+    {
+        // Prevent divide by 0
+        height = 1;
+    }
+
+    int x(0), y(0), w(width), h(height);
+
+    // Store the width and height of the window
+    g_window_width = width;
+    g_window_height = height;
+
+    // Compute the aspect ratio of the size of the window
+    double screen_aspect_ratio(double(g_window_width) / double(g_window_height));
+
+    // Update the viewport
+    glViewport(x, y, w, h);
+
+    // Set up the projection matrix (g_current_projection_matrix)
+    loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 0.1 * cm, 5000.0 * cm);
+
+    // Set up the modelling-viewing matrix (g_current_modelview_matrix)
+    loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, g_zoom,
+            0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0);
+
+	// Redisplay the scene
+	glutPostRedisplay();
+}
+
+
+//------------------------------------------------------------------
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
+//------------------------------------------------------------------
+{
+	switch(aKey)
+	{
+	// Close the program
+	case 27:
+	case 'q':
+        quitCallback();
+		exit(EXIT_SUCCESS);
+		break;
+
+	default:
+		break;
+	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
+}
+
+//--------------------------------------------------------------------------
+void scrollCallback(int aButton, int aState, int aXPosition, int aYPosition)
+//--------------------------------------------------------------------------
+{
+	// The button is down
+	if (aState == GLUT_DOWN)
+	{
+		// This is a wheel event
+		if (aButton == 3)
+		{
+	        // Change the zoom
+	        g_zoom += 5 * cm;
+
+	        // Update the projection matrix
+	        framebufferSizeCallback(g_window_width, g_window_height);
+		}
+		// This is a wheel event
+		else if (aButton == 4)
+		{
+			// Change the zoom
+			g_zoom -= 5 * cm;
+
+			// Update the projection matrix
+			framebufferSizeCallback(g_window_width, g_window_height);
+		}
+	}
+
+	// Redisplay the scene
+	glutPostRedisplay();
+}
+
