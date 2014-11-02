@@ -28,16 +28,8 @@
 
 # Project name #################################################################
 PROJECT(gVirtualXRay)
-SET (gVirtualXRay_VERSION_MAJOR 1)
-SET (gVirtualXRay_VERSION_MINOR 0)
-SET (gVirtualXRay_VERSION_PATCH 0)
 
-SET (PROJECT_NAME         "gVirtualXRay")
-SET (EMAIL                "franck.p.vidal@fpvidal.net")
-SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
-SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")
-SET (MAIN_PROJECT_VERSION "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
-
+INCLUDE(${CMAKE_SOURCE_DIR}/version.cmake)
 
 # Initialise some states by default ############################################
 set(BUILD_SHARED_LIBS OFF)
@@ -105,8 +97,8 @@ SET (CXX_SOURCES
 	../src/Graphics/framebufferObject.cpp
 	../src/Graphics/ImplicitSurface.cxx
 	../src/Graphics/OpenGL2VBO.cxx
-    ../src/Graphics/OpenGL3VBO.cxx
-    ../src/Graphics/PolygonMesh.cxx
+	../src/Graphics/OpenGL3VBO.cxx
+	../src/Graphics/PolygonMesh.cxx
 	../src/Graphics/Shader.cxx
 	../src/Graphics/SphereMesh.cxx
 	../src/Graphics/StereoHelper.cxx
@@ -428,16 +420,6 @@ INSTALL (FILES                               ${HXX_SOURCES}         DESTINATION 
 INSTALL (FILES ../LICENSE.txt DESTINATION library)
 INSTALL (FILES ../LICENSE.txt DESTINATION .)
 
-SET (CPACK_PACKAGE_VERSION_MAJOR ${gVirtualXRay_VERSION_MAJOR})
-SET (CPACK_PACKAGE_VERSION_MINOR ${gVirtualXRay_VERSION_MINOR})
-SET (CPACK_PACKAGE_VERSION_PATCH ${gVirtualXRay_VERSION_PATCH})
-SET (CPACK_PACKAGE_VERSION "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
-
-SET (CPACK_PACKAGE_VENDOR "gVirtualXRay team")
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
-SET (CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
-    
-SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
 
 SET (CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
 SET (CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
