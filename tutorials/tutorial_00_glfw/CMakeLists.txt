@@ -1,0 +1,45 @@
+project(gVirtualXRay-tutorial_00_glfw)
+
+# Initialise some states by default ############################################
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../build/version.cmake)
+
+
+# GLFW ########################################################################
+FIND_PACKAGE(glfw)
+IF(glfw_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
+    LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
+    SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
+
+    IF (APPLE)
+        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+        FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+        FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
+        FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
+
+        SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
+    ENDIF(APPLE)
+
+    IF (UNIX)
+        FIND_PACKAGE (X11 REQUIRED)
+        iF (X11_FOUND)
+            INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB})
+        ELSE (X11_FOUND)
+            MESSAGE(FATAL_ERROR "X11 not found.")
+        ENDIF (X11_FOUND)
+    ENDIF(UNIX)
+ELSE(glfw_FOUND)
+    MESSAGE(FATAL_ERROR "GLFW not found.")
+ENDIF(glfw_FOUND)
+
+
+# Create the main program ######################################################
+add_executable(tutorial_00_glfw tutorial_00_glfw.cxx )
+target_link_libraries(tutorial_00_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+
+INSTALL(TARGETS tutorial_00_glfw RUNTIME DESTINATION tutorials/tutorial_00_glfw/bin  COMPONENT tutorials)
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION tutorials/tutorial_00_glfw COMPONENT tutorials)
+
+
