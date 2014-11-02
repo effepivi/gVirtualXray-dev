@@ -5,6 +5,24 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeR
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../build/version.cmake)
 
 
+# Fix linkage problem with windows and cross-compilation #######################
+IF (WIN32)
+    ADD_DEFINITIONS(-DGLEW_STATIC)
+    ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+    SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
+ENDIF (WIN32)
+
+
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED)
+IF(OPENGL_FOUND)
+    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
+    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+ELSE(OPENGL_FOUND)
+    MESSAGE(FATAL_ERROR "OpenGL not found.")
+ENDIF(OPENGL_FOUND)
+
+
 # GLFW ########################################################################
 FIND_PACKAGE(glfw)
 IF(glfw_FOUND)

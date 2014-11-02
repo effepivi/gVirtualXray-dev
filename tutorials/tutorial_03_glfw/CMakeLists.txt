@@ -16,6 +16,24 @@ CreateHeaderFiles("." "Binarytutorial_03_glfwFiles" "${RESOURCES_SOURCES}")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
+# Fix linkage problem with windows and cross-compilation #######################
+IF (WIN32)
+    ADD_DEFINITIONS(-DGLEW_STATIC)
+    ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+    SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
+ENDIF (WIN32)
+
+
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED)
+IF(OPENGL_FOUND)
+    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
+    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+ELSE(OPENGL_FOUND)
+    MESSAGE(FATAL_ERROR "OpenGL not found.")
+ENDIF(OPENGL_FOUND)
+
+
 # GLFW ########################################################################
 FIND_PACKAGE(glfw)
 IF(glfw_FOUND)
