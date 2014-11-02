@@ -37,6 +37,7 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <ctime>
 
 #include <itkMacro.h>
 #include <itkImage.h>
