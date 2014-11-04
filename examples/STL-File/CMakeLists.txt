@@ -28,7 +28,7 @@ ENDIF(NOT glfw_FOUND AND NOT GLUT_FOUND)
 IF(glfw_FOUND)
     add_executable(welsh_dragon_glfw welsh_dragon_glfw.cxx )
     target_link_libraries(welsh_dragon_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(welsh_dragon_glfw BinaryExampleFiles)
+    ADD_DEPENDENCIES(welsh_dragon_glfw BinarySTLFiles)
 
     INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION demos/STL-File/bin  COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION demos/STL-File/data COMPONENT demos)
