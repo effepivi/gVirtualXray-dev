@@ -438,17 +438,6 @@ void OpenGLWindow::render()
 		m_display_shader.enable();
 		GLint shader_id(m_display_shader.getProgramHandle());
 
-		// Define colours
-		const GLfloat p_ambiant_silver_material_0[]  = {0.19225,  0.0, 0.0, 1.0};
-		const GLfloat p_diffuse_silver_material_0[]  = {0.50754,  0.0, 0.0, 1.0};
-		const GLfloat p_specular_silver_material_0[] = {0.508273, 0.0, 0.0, 1.0};
-
-		const GLfloat p_ambiant_silver_material_1[]  = {0.0, 0.39225,  0.39225,  1.0};
-		const GLfloat p_diffuse_silver_material_1[]  = {0.0, 0.70754,  0.70754,  1.0};
-		const GLfloat p_specular_silver_material_1[] = {0.0, 0.708273, 0.708273, 1.0};
-
-		const GLfloat shininess_silver_material = 50.2;
-
 		// Check the status of OpenGL and of the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -464,6 +453,12 @@ void OpenGLWindow::render()
 		g_current_modelview_matrix *= m_scene_rotation_matrix;
 
 		GLuint handle(0);
+
+	    VEC3 light_position(0, 0, m_zoom);
+	    handle = glGetUniformLocation(shader_id, "light_position");
+	    glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		handle = glGetUniformLocation(shader_id, "g_projection_matrix");
 		glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -491,11 +486,30 @@ void OpenGLWindow::render()
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Display the sample
-		// Set the colour of the sample
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_0);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_0);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_0);
-		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
+
+        // Set the colour of the sample
+        {
+            const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
+            const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+            const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
 
 		// Store the current transformation matrix
 		pushModelViewMatrix();
@@ -516,10 +530,28 @@ void OpenGLWindow::render()
 		popModelViewMatrix();
 
 		// Display the source
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   p_ambiant_silver_material_1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   p_diffuse_silver_material_1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  p_specular_silver_material_1);
-		glMaterialf(GL_FRONT_AND_BACK,  GL_SHININESS, shininess_silver_material);
+        {
+	        const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
 		
 		lighting = 1;
 		handle = glGetUniformLocation(shader_id,"g_use_lighting");
@@ -537,7 +569,11 @@ void OpenGLWindow::render()
 		// Display the beam
 		if (m_display_beam)
 		{
-			glColor4f(0.75, 0, 0.5, 0.3);
+            const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.3};
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			lighting = 0;
 			handle = glGetUniformLocation(shader_id,"g_use_lighting");
@@ -709,6 +745,39 @@ void OpenGLWindow::loadShader()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
 	}
 	m_display_shader.loadSource(vertex_shader, fragment_shader);
+
+    // Enable the shader
+    pushShaderProgram();
+    m_display_shader.enable();
+    GLint shader_id(m_display_shader.getProgramHandle());
+
+    // Handle for shader variables
+    GLuint handle(0);
+
+    GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+    GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+    GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+    handle = glGetUniformLocation(shader_id, "light_global_ambient");
+    glUniform4fv(handle, 1, &light_global_ambient[0]);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(shader_id, "light_ambient");
+    glUniform4fv(handle, 1, &light_ambient[0]);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(shader_id, "light_diffuse");
+    glUniform4fv(handle, 1, &light_diffuse[0]);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(shader_id, "light_specular");
+    glUniform4fv(handle, 1, &light_specular[0]);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Disable the shader
+    m_display_shader.disable();
+    popShaderProgram();
 }
 
 

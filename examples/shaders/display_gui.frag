@@ -27,6 +27,12 @@
 
 
 //******************************************************************************
+//	OpenGL 2.0
+//******************************************************************************
+#version 110
+
+
+//******************************************************************************
 //	Uniform variables
 //******************************************************************************
 uniform int g_use_lighting;
@@ -37,6 +43,15 @@ uniform int g_use_lighting;
 //******************************************************************************
 varying vec3 g_normal;
 varying vec4 g_object_position;
+uniform vec4 light_global_ambient;
+uniform vec4 light_ambient;
+uniform vec4 light_diffuse;
+uniform vec4 light_specular;
+uniform vec4 light_position;
+uniform vec4 material_ambient;
+uniform vec4 material_diffuse;
+uniform vec4 material_specular;
+uniform float material_shininess;
 
 
 //-------------
@@ -49,18 +64,20 @@ void main(void)
     {
 	    vec3 view_direction  = vec3(g_object_position) / g_object_position.w;
 	    vec3 normal_vector   = normalize(g_normal);
-	    vec3 light_direction = normalize(vec3(gl_LightSource[0].position));
+        vec3 light_direction = normalize(vec3(light_position.xyz));
 	
-	    vec3 global_ambient = vec3(gl_LightModel.ambient     * gl_FrontMaterial.ambient);
-	    vec3 ambient        = vec3(gl_FrontMaterial.ambient  * gl_LightSource[0].ambient);
-	    vec3 diffuse        = vec3(gl_FrontMaterial.diffuse  * gl_LightSource[0].diffuse  * max(0.0, dot(light_direction, normal_vector)));
-	    vec3 specular       = vec3(gl_FrontMaterial.specular * gl_LightSource[0].specular * pow(max(dot(normal_vector, normalize(gl_LightSource[0].halfVector.xyz)), 0.0), gl_FrontMaterial.shininess));
+        vec3 half_vector     = normalize(view_direction + light_direction);
+    
+	    vec3 global_ambient = vec3(light_global_ambient     * material_ambient);
+	    vec3 ambient        = vec3(material_ambient  * light_ambient);
+	    vec3 diffuse        = vec3(material_diffuse  * light_diffuse  * max(0.0, dot(light_direction, normal_vector)));
+	    vec3 specular       = vec3(material_specular * light_specular * pow(max(dot(normal_vector, half_vector), 0.0), material_shininess));
 	
     	colour = vec4(global_ambient + ambient + diffuse + specular, 1.0);
     }
     else
     {
-		colour = gl_Color;
+		colour = material_ambient;
     }
 
     // Save the final colour
