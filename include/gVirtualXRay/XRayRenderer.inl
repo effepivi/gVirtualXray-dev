@@ -169,6 +169,8 @@ inline RATIONAL_NUMBER XRayRenderer::getMuFromHU(const RATIONAL_NUMBER& HU,
                                                  const RATIONAL_NUMBER& anEnergy)
 //-------------------------------------------------------------------------------
 {
+    bool mu_values_loaded(false);
+#ifdef gVirtualXRay_XCOM_PATH
     if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
     {
         if (!m_element_set.getElementSetSize())
@@ -180,8 +182,12 @@ inline RATIONAL_NUMBER XRayRenderer::getMuFromHU(const RATIONAL_NUMBER& HU,
         {
             loadMaterialSet();
         }
+
+        mu_values_loaded = true;
     }
-    else
+#endif
+
+    if (!mu_values_loaded)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
     }
@@ -195,6 +201,8 @@ inline RATIONAL_NUMBER XRayRenderer::getMassAttenuationFromHU(const RATIONAL_NUM
                                                               const RATIONAL_NUMBER& anEnergy)
 //--------------------------------------------------------------------------------------------
 {
+    bool rho_values_loaded(false);
+#ifdef gVirtualXRay_XCOM_PATH
     if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
     {
         if (!m_element_set.getElementSetSize())
@@ -206,8 +214,12 @@ inline RATIONAL_NUMBER XRayRenderer::getMassAttenuationFromHU(const RATIONAL_NUM
         {
             loadMaterialSet();
         }
+
+        rho_values_loaded = true;
     }
-    else
+#endif
+
+    if (!rho_values_loaded)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
     }

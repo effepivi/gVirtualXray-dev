@@ -2616,13 +2616,19 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 				// Get the energy and the corresponding attenuation coefficient
 				RATIONAL_NUMBER mu;
 
+			    bool mu_values_loaded(false);
+
+#ifdef gVirtualXRay_XCOM_PATH
 				if (m_material_set.getMaterialNumber() &&
 				        m_element_set.getElementSetSize() &&
 				        std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
 				{
 				    mu = getMuFromHU(HU, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+				    mu_values_loaded = true;
 				}
-				else
+#endif
+
+				if (!mu_values_loaded)
 				{
                     RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
                     mu = getMuFromHUAndMuWater(HU, mu_water);

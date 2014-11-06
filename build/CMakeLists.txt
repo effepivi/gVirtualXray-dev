@@ -63,14 +63,6 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules)
 SET(CMAKE_FIND_FRAMEWORK "LAST")
 
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file (
-	"${PROJECT_SOURCE_DIR}/gVirtualXRayConfig.h.in"
-	"${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-)
-
-
 # Enable all compiler warnings #################################################
 #IF(NOT WIN32)
 #	add_definitions( -Wall )
@@ -315,40 +307,87 @@ IF (NOT XCOM_PATH)
 ENDIF(NOT XCOM_PATH)
 
 
+# configure a header file to pass some of the CMake settings
+# to the source code
+IF (XCOM_PATH)
+    configure_file (
+        "${PROJECT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
+        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
+    )
+ELSE (XCOM_PATH)
+    configure_file (
+        "${PROJECT_SOURCE_DIR}/gVirtualXRayConfigNoXCOM.h.in"
+        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
+    )
+ENDIF (XCOM_PATH)
+
+
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
 
 # Create the RESOURCES ###########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
+
 SET (RESOURCES_SOURCES
-	../resources/cumulated_l_buffer_gl2.frag
-	../resources/cumulated_l_buffer_gl2.vert
-	../resources/cumulated_l_buffer_gl3.frag
-	../resources/cumulated_l_buffer_gl3.vert
-	../resources/l_buffer_gl2.frag
-	../resources/l_buffer_gl2.vert
-	../resources/l_buffer_gl3.frag
-	../resources/l_buffer_gl3.vert
-	../resources/MUx_Dx_gl2.frag
-	../resources/MUx_Dx_gl2.vert
-	../resources/MUx_Dx_gl3.frag
-	../resources/MUx_Dx_gl3.vert
-	../resources/outer_surface_l_buffer_gl2.frag
-	../resources/outer_surface_l_buffer_gl2.vert
-	../resources/outer_surface_l_buffer_gl3.frag
-	../resources/outer_surface_l_buffer_gl3.vert
-	../resources/xray_attenuation_gl2.frag
-	../resources/xray_attenuation_gl2.vert
-	../resources/xray_attenuation_gl3.frag
-	../resources/xray_attenuation_gl3.vert
-	../resources/xray_display_gl2.frag
-	../resources/xray_display_gl2.vert
-	../resources/xray_display_gl3.frag
-	../resources/xray_display_gl3.vert
-	../resources/mu_water.csv
-	../resources/element.csv
-	../resources/correlation_CT_number_and_tissue_material.csv
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/l_buffer_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/l_buffer_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/l_buffer_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/l_buffer_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/MUx_Dx_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/MUx_Dx_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/MUx_Dx_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/MUx_Dx_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/outer_surface_l_buffer_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/outer_surface_l_buffer_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/outer_surface_l_buffer_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/outer_surface_l_buffer_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_attenuation_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_attenuation_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_attenuation_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_attenuation_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/mu_water.csv
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/element.csv
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/correlation_CT_number_and_tissue_material.csv
 )
+CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
+
+
+IF (XCOM_PATH)
+    SET (XCOM_SOURCES
+        ${XCOM_PATH}/MDATX3.001
+        ${XCOM_PATH}/MDATX3.006
+        ${XCOM_PATH}/MDATX3.007
+        ${XCOM_PATH}/MDATX3.008
+        ${XCOM_PATH}/MDATX3.011
+        ${XCOM_PATH}/MDATX3.012
+        ${XCOM_PATH}/MDATX3.015
+        ${XCOM_PATH}/MDATX3.016
+        ${XCOM_PATH}/MDATX3.017
+        ${XCOM_PATH}/MDATX3.018
+        ${XCOM_PATH}/MDATX3.019
+        ${XCOM_PATH}/MDATX3.020
+        ${XCOM_PATH}/MDATX3.026
+        ${XCOM_PATH}/MDATX3.022
+        ${XCOM_PATH}/MDATX3.029
+        ${XCOM_PATH}/MDATX3.030
+        ${XCOM_PATH}/MDATX3.047
+        ${XCOM_PATH}/MDATX3.050
+    )
+
+	CreateHeaderFiles(".." "XCOMLibFiles" "${XCOM_SOURCES}")
+ENDIF (XCOM_PATH)
+
+
+
 
 
 FIND_PACKAGE(GZIP REQUIRED)
@@ -357,8 +396,6 @@ IF(NOT GZIP_FOUND)
 ENDIF(NOT GZIP_FOUND)
 
 
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
-CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
 # Linkage of the target ########################################################
@@ -369,6 +406,9 @@ TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 # Make sure the source is generated before the executable builds.
 ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
+IF (XCOM_PATH)
+    ADD_DEPENDENCIES(gVirtualXRay XCOMLibFiles)
+ENDIF(XCOM_PATH)
 
 # Doxygen documentation ########################################################
 IF(WIN32)
@@ -420,6 +460,15 @@ INSTALL (FILES                               ${HXX_SOURCES}         DESTINATION 
 INSTALL (FILES ../LICENSE.txt DESTINATION library)
 INSTALL (FILES ../LICENSE.txt DESTINATION .)
 
+SET (CPACK_PACKAGE_FILE_NAME gVirtualXRay)
+SET (CPACK_PACKAGE_ICON ../doc/logo.ico)
+
+IF (APPLE)
+	SET (CPACK_BUNDLE_NAME gVirtualXRay)
+	SET (CPACK_BUNDLE_ICON ../examples/build/DragonDemo.icns)
+	#SET (CPACK_BUNDLE_PLIST - path to a file that will become the bundle plist.
+	#SET (CPACK_BUNDLE_STARTUP_COMMAND - path to a file that will be executed when the user opens the bundle. Could be a shell-script or a binary. 
+ENDIF(APPLE)
 
 SET (CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
 SET (CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")

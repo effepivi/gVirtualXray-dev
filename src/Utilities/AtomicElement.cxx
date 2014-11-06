@@ -37,6 +37,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 #ifndef GVXR_CONSTANT_VALUES_H
 #include "gVirtualXRay/ConstantValues.h"
@@ -50,6 +51,35 @@
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
+
+#ifdef gVirtualXRay_XCOM_PATH
+#include "MDATX3.001.h"
+#include "MDATX3.006.h"
+#include "MDATX3.007.h"
+#include "MDATX3.008.h"
+
+#include "MDATX3.011.h"
+#include "MDATX3.012.h"
+#include "MDATX3.015.h"
+#include "MDATX3.016.h"
+#include "MDATX3.017.h"
+#include "MDATX3.018.h"
+#include "MDATX3.019.h"
+
+#include "MDATX3.020.h"
+#include "MDATX3.026.h"
+#include "MDATX3.022.h"
+#include "MDATX3.029.h"
+
+#include "MDATX3.030.h"
+
+#include "MDATX3.047.h"
+
+#include "MDATX3.050.h"
+#endif
 
 //******************************************************************************
 //	namespace
@@ -64,8 +94,20 @@ void AtomicElement::loadDataFromXCOM()
     // The atomic number is valid
     if (1 <= m_atomic_number && m_atomic_number <= 100)
     {
+        std::string xcom_database_path;
+
         // The XCOM database path is set
-        std::string xcom_database_path(gVirtualXRay_XCOM_PATH);
+#ifdef gVirtualXRay_XCOM_PATH
+        xcom_database_path = gVirtualXRay_XCOM_PATH;
+#endif
+
+        // The environment variable may overwrite gVirtualXRay_XCOM_PATH
+        char* p_environment_variable = std::getenv("XCOM_PATH");
+        if (p_environment_variable)
+        {
+            xcom_database_path = p_environment_variable;
+        }
+
         if (xcom_database_path.size() && xcom_database_path != "XCOM_PATH-NOTFOUND")
         {
             // Clear the current list of attenuation coefficients
@@ -73,13 +115,164 @@ void AtomicElement::loadDataFromXCOM()
 
             // Set the file name
             std::stringstream file_name;
-            file_name << gVirtualXRay_XCOM_PATH << "/" << "MDATX3." << std::setw(3) << std::setfill('0') << m_atomic_number;
+            file_name << xcom_database_path << "/" << "MDATX3." << std::setw(3) << std::setfill('0') << m_atomic_number;
 
             // Open the file
             std::ifstream file_stream(file_name.str().data());
+            std::stringstream input_stream;
 
             // The file is open
+            bool open_stream(false);
             if (file_stream.is_open())
+            {
+                // Load the stream
+                std::string temp;
+                while (!file_stream.eof())
+                {
+                    // Load the record
+                    file_stream >> temp;
+
+                    // The record is valid
+                    if (!file_stream.eof())
+                    {
+                        // Store the record
+                        input_stream << temp << "\t";
+                    }
+                }
+
+                open_stream = true;
+            }
+            // The file is not open
+            // Find the data from the header file is possible
+#ifdef gVirtualXRay_XCOM_PATH
+            if (!open_stream)
+            {
+                // Initialise the buffer
+                char* p_buffer(0);
+
+                int z_lib_return_code(0);
+
+                std::string element_data;
+
+                unsigned char const* p_compressed_data(0);
+                unsigned int p_compressed_size(0);
+
+                switch (m_atomic_number)
+                {
+                    case 1:
+                        p_compressed_data = g_MDATX3_001;
+                        p_compressed_size = sizeof(g_MDATX3_001);
+                        break;
+
+                    case 6:
+                        p_compressed_data = g_MDATX3_006;
+                        p_compressed_size = sizeof(g_MDATX3_006);
+                        break;
+
+                    case 7:
+                        p_compressed_data = g_MDATX3_007;
+                        p_compressed_size = sizeof(g_MDATX3_007);
+                        break;
+
+                    case 8:
+                        p_compressed_data = g_MDATX3_008;
+                        p_compressed_size = sizeof(g_MDATX3_008);
+                        break;
+
+                    case 11:
+                        p_compressed_data = g_MDATX3_011;
+                        p_compressed_size = sizeof(g_MDATX3_011);
+                        break;
+
+                    case 12:
+                        p_compressed_data = g_MDATX3_012;
+                        p_compressed_size = sizeof(g_MDATX3_012);
+                        break;
+
+                    case 15:
+                        p_compressed_data = g_MDATX3_015;
+                        p_compressed_size = sizeof(g_MDATX3_015);
+                        break;
+
+                    case 16:
+                        p_compressed_data = g_MDATX3_016;
+                        p_compressed_size = sizeof(g_MDATX3_016);
+                        break;
+
+                    case 17:
+                        p_compressed_data = g_MDATX3_017;
+                        p_compressed_size = sizeof(g_MDATX3_017);
+                        break;
+
+                    case 18:
+                        p_compressed_data = g_MDATX3_018;
+                        p_compressed_size = sizeof(g_MDATX3_018);
+                        break;
+
+                    case 19:
+                        p_compressed_data = g_MDATX3_019;
+                        p_compressed_size = sizeof(g_MDATX3_019);
+                        break;
+
+                    case 20:
+                        p_compressed_data = g_MDATX3_020;
+                        p_compressed_size = sizeof(g_MDATX3_020);
+                        break;
+
+                    case 22:
+                        p_compressed_data = g_MDATX3_022;
+                        p_compressed_size = sizeof(g_MDATX3_022);
+                        break;
+
+                    case 26:
+                        p_compressed_data = g_MDATX3_026;
+                        p_compressed_size = sizeof(g_MDATX3_026);
+                        break;
+
+                    case 29:
+                        p_compressed_data = g_MDATX3_029;
+                        p_compressed_size = sizeof(g_MDATX3_029);
+                        break;
+
+                    case 30:
+                        p_compressed_data = g_MDATX3_030;
+                        p_compressed_size = sizeof(g_MDATX3_030);
+                        break;
+
+                    case 47:
+                        p_compressed_data = g_MDATX3_047;
+                        p_compressed_size = sizeof(g_MDATX3_047);
+                        break;
+
+                    case 50:
+                        p_compressed_data = g_MDATX3_050;
+                        p_compressed_size = sizeof(g_MDATX3_050);
+                        break;
+
+                    default:
+                        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown element.");
+                }
+
+                z_lib_return_code = inflate(p_compressed_data, p_compressed_size,   &p_buffer);
+
+                element_data   = p_buffer;
+                delete [] p_buffer;
+
+                p_buffer = 0;
+
+                if (z_lib_return_code <= 0 || !element_data.size())
+                {
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the element data using ZLib.");
+                }
+
+                input_stream << element_data;
+
+                open_stream = true;
+            }
+#endif // gVirtualXRay_XCOM_PATH
+
+            // The strem is open
+            if (open_stream)
             {
                 unsigned int atomic_number;
                 unsigned int energy_channel_number;
@@ -89,8 +282,8 @@ void AtomicElement::loadDataFromXCOM()
                 std::string temp_string;
                 double molar_mass;
 
-                file_stream >> atomic_number >> molar_mass;
-                file_stream >> repeat >> energy_channel_number;
+                input_stream >> atomic_number >> molar_mass;
+                input_stream >> repeat >> energy_channel_number;
 
                 if (atomic_number != m_atomic_number)
                 {
@@ -99,11 +292,6 @@ void AtomicElement::loadDataFromXCOM()
                     throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
                 }
 
-                /*std::cout << "Attenuation table for " << m_name << std::endl;
-                std::cout << "Symbol " << m_symbol << std::endl;
-                std::cout << "Z " << m_atomic_number << std::endl;
-                std::cout << energy_channel_number << " Energy channels in total" << std::endl;
-*/
                 std::vector<double> coherent_scattering_set(energy_channel_number);
                 std::vector<double> incoherent_scattering_set(energy_channel_number);
                 std::vector<double> photo_electric_absorption_set(energy_channel_number);
@@ -119,23 +307,23 @@ void AtomicElement::loadDataFromXCOM()
 
                 for (unsigned int i(0); i < repeat; ++i)
                 {
-                    file_stream >> temp_int;
+                    input_stream >> temp_int;
                 }
 
                 for (unsigned int i(0); i < repeat; ++i)
                 {
-                    file_stream >> temp_string;
+                    input_stream >> temp_string;
                 }
 
                 for (unsigned int i(0); i < repeat; ++i)
                 {
-                    file_stream >> temp_double;
+                    input_stream >> temp_double;
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
                     double energy;
-                    file_stream >> energy;
+                    input_stream >> energy;
                     energy /= 10e5;
                     energy *= MeV;
 
@@ -144,27 +332,27 @@ void AtomicElement::loadDataFromXCOM()
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    file_stream >> coherent_scattering_set[i];
+                    input_stream >> coherent_scattering_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    file_stream >> incoherent_scattering_set[i];
+                    input_stream >> incoherent_scattering_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    file_stream >> photo_electric_absorption_set[i];
+                    input_stream >> photo_electric_absorption_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    file_stream >> pair_production_in_nuclear_field_set[i];
+                    input_stream >> pair_production_in_nuclear_field_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    file_stream >> pair_production_in_electron_field_set[i];
+                    input_stream >> pair_production_in_electron_field_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
@@ -195,28 +383,6 @@ void AtomicElement::loadDataFromXCOM()
                     attenuation *= cm2 / g;
                     m_p_mass_attenuation_coefficient_set[i] = attenuation;
                 }
-/*
-                for (unsigned int i(0); i < energy_channel_number; ++i)
-                {
-                    // Attenuation in b/atom
-                    double attenuation =
-                            incoherent_scattering_set[i] +
-                            photo_electric_absorption_set[i] +
-                            pair_production_in_nuclear_field_set[i] +
-                            pair_production_in_electron_field_set[i];
-
-                    // Attenuation in cm2/g
-                    attenuation *= (N_Avogadro / molar_mass) * 1.0E-24;
-
-                    std::cout << std::scientific << m_p_energy_set[i] / MeV << "\t" <<
-                            coherent_scattering_set[i] << "\t" <<
-                            incoherent_scattering_set[i] << "\t" <<
-                            photo_electric_absorption_set[i] << "\t" <<
-                            pair_production_in_nuclear_field_set[i] << "\t" <<
-                            pair_production_in_electron_field_set[i] << "\t" <<
-                            m_p_mass_attenuation_coefficient_set[i] / (cm2/g) << "\t" <<
-                            attenuation << std::endl;
-                }*/
             }
             // The file is not open
             else
