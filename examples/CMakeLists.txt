@@ -7,6 +7,7 @@ find_package(gVirtualXRay REQUIRED)
 add_subdirectory(STL-File)
 add_subdirectory(GUI-FLTK)
 add_subdirectory(Iso-Surfaces)
+add_subdirectory(Intersections)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION demos COMPONENT demos)
 
