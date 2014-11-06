@@ -32,7 +32,7 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__APPLE__)
 #include <GL/glew.h>
 #endif
 
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
 
 		// Create the window title
 		std::stringstream window_title;
-		window_title << "gVirtualXRay -- DragonDemo";
+		window_title << "gVirtualXRay -- DragonDemo -- GLFW";
 
 	    // Create a windowed mode window and its OpenGL context
 	    g_p_main_window_id = glfwCreateWindow(g_current_main_window_width, g_current_main_window_height, window_title.str().data(), NULL, NULL);
@@ -335,25 +335,6 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
         std::string prefix;
-#ifdef HAS_BUNDLE
-        namespace fs = boost::filesystem;
-        fs::path p(argv[0]);
-        fs::path full_p = fs::complete(p);
-        if (full_p.has_parent_path())
-        {
-        	prefix = full_p.parent_path().string();
-
-        	if (prefix.length())
-        	{
-        		prefix += "/";
-        	}
-        }
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-        prefix += PREFIX;
-        prefix += "/";
-#endif
 
         prefix += PREFIX;
 
@@ -435,7 +416,7 @@ void quit()
 void initGLEW()
 //-------------
 {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(__APPLE__)
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{

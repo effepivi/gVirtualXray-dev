@@ -282,25 +282,6 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
         std::string prefix;
-#ifdef HAS_BUNDLE
-        namespace fs = boost::filesystem;
-        fs::path p(argv[0]);
-        fs::path full_p = fs::complete(p);
-        if (full_p.has_parent_path())
-        {
-        	prefix = full_p.parent_path().string();
-
-        	if (prefix.length())
-        	{
-        		prefix += "/";
-        	}
-        }
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-        prefix += PREFIX;
-        prefix += "/";
-#endif
 
         prefix += PREFIX;
 
@@ -356,7 +337,7 @@ void initGLUT(int argc, char** argv)
 
 	// Create the window title
 	std::stringstream window_title;
-	window_title << "gVirtualXRay -- DragonDemo";
+	window_title << "gVirtualXRay -- DragonDemo -- GLUT";
 
 	g_main_window_id = glutCreateWindow(window_title.str().c_str());
 
