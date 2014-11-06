@@ -28,7 +28,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-//#include <GL/glew.h>  // Handle shaders
+#include <GL/glew.h>  // Handle shaders
 
 // Create an OpenGL context and attach a window to it
 #ifdef __APPLE__
@@ -103,6 +103,17 @@ int main(int argc, char** argv)
         glutMainLoop();
     }
     // Catch exception if any
+    catch (const char* error)
+    {
+        cerr << error << endl;
+        return_code = EXIT_FAILURE;
+    }
+    catch (const string& error)
+    {
+        cerr << error << endl;
+        return_code = EXIT_FAILURE;
+    }
+    // Catch exception if any
     catch (const exception& error)
     {
         cerr << error.what() << endl;
@@ -147,14 +158,14 @@ void initGLUT(int argc, char** argv)
 void initGLEW()
 //-------------
 {
-/*	GLenum err = glewInit();
+	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{
 		std::stringstream error_message;
 		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
 
         throw (error_message.str());
-	}*/
+	}
 }
 
 
