@@ -28,21 +28,11 @@
 
 # Project name #################################################################
 project (validation)
-set (validation_VERSION_MAJOR 1)
-set (validation_VERSION_MINOR 0)
-set (validation_VERSION_PATCH 0)
-
-
-SET (PROJECT_NAME            "gVirtualXRay")
-SET (EMAIL                   "franck.p.vidal@fpvidal.net")
-SET (validation_WEBSITE         "http://gvirtualxray.sourceforge.net/validation/")
-SET (validation_PACKAGE_NAME    "${PROJECT_NAME} -- Validation Programs")
-SET (validation_PROJECT_VERSION "${validation_VERSION_MAJOR}.${validation_VERSION_MINOR}.${validation_VERSION_PATCH}")
 
 
 # Initialise some states by default ############################################
-set(BUILD_SHARED_LIBS OFF)
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../build/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/config.cmake)
 
 
 # Minimum CMake version ########################################################
@@ -68,36 +58,6 @@ ELSE(gVirtualXRay_FOUND)
 ENDIF(gVirtualXRay_FOUND)
 
 
-# GLFW ########################################################################
-FIND_PACKAGE(glfw)
-IF(glfw_FOUND)
-    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-    LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
-    SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
-
-    IF (APPLE)
-        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-        FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-        FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-        FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
-
-        SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-    ENDIF(APPLE)
-
-    IF (UNIX)
-        FIND_PACKAGE (X11 REQUIRED)
-        iF (X11_FOUND)
-            INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB})
-        ELSE (X11_FOUND)
-            MESSAGE(FATAL_ERROR "X11 not found.")
-        ENDIF (X11_FOUND)
-    ENDIF(UNIX)
-ELSE(glfw_FOUND)
-    MESSAGE(WARNING "GLFW not found.")
-ENDIF(glfw_FOUND)
-
-
 # ITK #########################################################################
 FIND_PACKAGE (ITK)
 IF (ITK_FOUND)
@@ -110,14 +70,14 @@ ENDIF(ITK_FOUND)
 
 
 # VTK #########################################################################
-FIND_PACKAGE (VTK)
-IF (VTK_FOUND)
-	ADD_DEFINITIONS(-DHAS_VTK)
-	INCLUDE( ${VTK_USE_FILE} )
-	set (optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-ELSE(VTK_FOUND)
-    MESSAGE(WARNING "VTK not found. It will be disabled.")
-ENDIF(VTK_FOUND)
+#FIND_PACKAGE (VTK)
+#IF (VTK_FOUND)
+#	ADD_DEFINITIONS(-DHAS_VTK)
+#	INCLUDE( ${VTK_USE_FILE} )
+#	set (optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+#ELSE(VTK_FOUND)
+#    MESSAGE(WARNING "VTK not found. It will be disabled.")
+#ENDIF(VTK_FOUND)
 
 
 # Create the RESOURCES ###########################################################
