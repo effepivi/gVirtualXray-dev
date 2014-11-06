@@ -1,7 +1,6 @@
 project(gVirtualXRay-GUI-FLTK)
 
 # Initialise some states by default ############################################
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../build/version.cmake)
 
 
@@ -72,3 +71,56 @@ INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION demos/GUI-FLTK/bin  COMPONE
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION demos/GUI-FLTK/data COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION demos/GUI-FLTK COMPONENT demos)
 
+IF (APPLE)
+    SET (MACOSX_RPATH 1)
+    SET(GUI-FLTK_SRCS
+        ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/OpenGLWindow.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+    )
+
+    ADD_EXECUTABLE (GUI-FLTK MACOSX_BUNDLE ${GUI-FLTK_SRCS})
+    TARGET_LINK_LIBRARIES (GUI-FLTK gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(GUI-FLTK BinaryGUIFLTKFiles)
+
+    set(MACOSX_BUNDLE_BUNDLE_NAME GUI-FLTK)
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "GUI-FLTK")
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
+    set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
+    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MAIN_PROJECT_VERSION}")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
+    set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
+
+    SET(APPS "\${CMAKE_INSTALL_PREFIX}/GUI-FLTK.app")
+
+    INSTALL(TARGETS GUI-FLTK 
+        BUNDLE DESTINATION . COMPONENT Runtime
+        RUNTIME DESTINATION bin COMPONENT Runtime
+    )
+
+    SET_SOURCE_FILES_PROPERTIES (
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+        PROPERTIES
+        MACOSX_PACKAGE_LOCATION data
+    )
+
+    # directories to look for dependencies
+    SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
+
+    SET (LIBRARIES ${requiredLibs} ${optionalLibs})
+    INSTALL(CODE "
+        include(BundleUtilities)
+        fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
+        " COMPONENT Runtime)
+
+    set(CPACK_BINARY_DRAGNDROP ON)
+ENDIF(APPLE)
+
+SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
+
+include(CPack)
