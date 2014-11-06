@@ -24,6 +24,16 @@ IF (WIN32)
 ENDIF (WIN32)
 
 
+# gVirtualXRay #################################################################
+FIND_PACKAGE(gVirtualXRay REQUIRED)
+IF(gVirtualXRay_FOUND)
+    INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
+ELSE(gVirtualXRay_FOUND)
+    MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
+ENDIF(gVirtualXRay_FOUND)
+
+
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)

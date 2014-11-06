@@ -2,8 +2,6 @@ project(gVirtualXRay-tutorials)
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../build/version.cmake)
 
-find_package(gVirtualXRay REQUIRED)
-
 add_subdirectory(tutorial_00_glfw)
 add_subdirectory(tutorial_00_glut)
 add_subdirectory(tutorial_01_glfw)

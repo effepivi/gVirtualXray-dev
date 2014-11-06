@@ -1,9 +1,5 @@
 project(gVirtualXRay-tutorial_01_glut)
 
-# Initialise some states by default ############################################
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../build/version.cmake)
-
 
 # Fix linkage problem with windows and cross-compilation #######################
 IF (WIN32)
@@ -11,6 +7,16 @@ IF (WIN32)
     ADD_DEFINITIONS(-DFREEGLUT_STATIC)
     SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
 ENDIF (WIN32)
+
+
+# gVirtualXRay #################################################################
+FIND_PACKAGE(gVirtualXRay REQUIRED)
+IF(gVirtualXRay_FOUND)
+    INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
+ELSE(gVirtualXRay_FOUND)
+    MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
+ENDIF(gVirtualXRay_FOUND)
 
 
 # OpenGL ######################################################################
