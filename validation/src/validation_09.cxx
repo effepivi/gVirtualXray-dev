@@ -130,7 +130,7 @@ GLfloat g_incident_energy(80.0 * keV);
 const GLfloat g_scaling_factor(2.0);
 GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
 Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
-VEC3 g_source_position(   -5.0 * cm, 7.0 * cm, -10.0 * cm);
+VEC3 g_source_position(   0.5 * cm, 0.5 * cm, -15.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
