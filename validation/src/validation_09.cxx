@@ -1,0 +1,426 @@
+/**
+********************************************************************************
+*
+*	@file		validation_09.cxx
+*
+*	@brief		Main test program to test a point source that is not
+*               orthogonally centered with respect to the detector.
+*               A similar experimental set up is used with a validated Monte
+*               Carlo simulation tool.
+*
+*	@version	1.0
+*
+*	@date		31/11/2014
+*
+*	@author		Dr Franck P. Vidal
+*
+*	@section	License
+*				BSD 3-Clause License.
+*
+*				For details on use and redistribution please refer
+*				to http://opensource.org/licenses/BSD-3-Clause
+*
+*	@section	Copyright
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*				http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+*				BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+#if defined(_WIN32) || defined(_WIN64)
+#include <GL/glew.h>
+#endif
+
+#include <cmath>
+#include <iomanip>
+
+#include <boost/scoped_ptr.hpp>
+
+#ifdef __APPLE__
+#define GL3_PROTOTYPES 1
+#else
+#define GL_GLEXT_PROTOTYPES 1
+#endif
+
+#define GLFW_INCLUDE_GLCOREARB 1
+
+#include <GLFW/glfw3.h>
+
+#include <stdlib.h>
+
+#ifndef GVXR_TYPES_H
+#include "gVirtualXRay/Types.h"
+#endif
+
+#ifndef GVXR_UNITS_H
+#include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef GVXR_POLYGON_MESH_H
+#include "gVirtualXRay/PolygonMesh.h"
+#endif
+
+#ifndef GVXR_CUBE_MESH_H
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
+#ifndef GVXR_XRAY_BEAM_H
+#include "gVirtualXRay/XRayBeam.h"
+#endif
+
+#ifndef GVXR_XRAY_DETECTOR_H
+#include "gVirtualXRay/XRayDetector.h"
+#endif
+
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
+#ifndef GVXR_MATRIX4X4_H
+#include "gVirtualXRay/Matrix4x4.h"
+#endif
+
+#ifndef GVXR_XRAY_RENDERER_H
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef GVXR_SHADER_H
+#include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef GVXR_UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
+
+#ifndef GVXR_EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
+
+//******************************************************************************
+//	Name space
+//******************************************************************************
+using namespace gVirtualXRay;
+
+
+//******************************************************************************
+//	Defines
+//******************************************************************************
+#define PREFIX "../data/validation_09"
+
+
+
+//******************************************************************************
+//	Global variables
+//******************************************************************************
+GLsizei g_main_window_width(1280 / 2.0);
+GLsizei g_main_window_height(800 / 2.0);
+GLFWwindow* g_p_main_window_id(0);
+
+Matrix4x4<GLfloat> g_scene_rotation_matrix;
+Matrix4x4<GLfloat> g_detector_rotation_matrix;
+Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
+GLfloat g_incident_energy(80.0 * keV);
+const GLfloat g_scaling_factor(2.0);
+GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
+Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
+VEC3 g_source_position(   -5.0 * cm, 7.0 * cm, -10.0 * cm);
+VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
+VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
+
+CubeMesh g_outside_polygon_data(3.0 * cm);
+
+XRayBeam g_xray_beam;
+XRayDetector g_xray_detector;
+XRayRenderer g_xray_renderer;
+
+
+//******************************************************************************
+//	Function declaration
+//******************************************************************************
+void initGLEW();
+void initGL();
+void loadSTLFile();
+void loadDetector();
+void loadSource();
+void loadXRaySimulator();
+void errorCallback(int error, const char* description);
+
+
+//-----------------------------
+int main(int argc, char** argv)
+//-----------------------------
+{
+    // Make sure the detector has an odd number of columns
+    if ((g_number_of_pixels.getX() % 2) == 0)
+    {
+        g_number_of_pixels.setX(g_number_of_pixels.getX() + 1);
+    }
+
+    // Make sure the detector has an odd number of rows
+    if ((g_number_of_pixels.getY() % 2) == 0)
+    {
+        g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
+    }
+
+	try
+	{
+	    // Set an error callback
+	    glfwSetErrorCallback(errorCallback);
+
+		// Initialize GLFW
+	    if (!glfwInit())
+	    {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+	    }
+
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	    // Enable quad-buffering if possible
+	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
+
+	    // Enable anti-aliasing
+	    glfwWindowHint(GLFW_SAMPLES, 4);
+
+	    // Create a windowed mode window and its OpenGL context
+	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+	   
+        // Window cannot be created 
+        if (!g_p_main_window_id)
+	    {
+            // Disable quad-buffering
+            glfwWindowHint(GLFW_STEREO, GL_FALSE);
+
+            // Create the window
+	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        }
+        
+        // Window cannot be created 
+        if (!g_p_main_window_id)
+	    {
+	        glfwTerminate();
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+	    }
+
+	    // Make the window's context current
+	    glfwMakeContextCurrent(g_p_main_window_id);
+
+        // Initialise GLEW
+        initGLEW();
+
+        // Initialise OpenGL
+		initGL();
+
+		// Check the current FBO
+		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		// Load the data
+		loadDetector();
+		loadSource();
+		loadXRaySimulator();
+
+		// Add the geometry to the X-ray renderer
+		loadSTLFile();
+		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+
+		// Set the projection matrix
+		GLint width(0);
+		GLint height(0);
+		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+
+		// Output the detector properties
+		std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
+		std::cout << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
+        std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
+		std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
+		std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
+
+        RATIONAL_NUMBER tangent(((g_resolution * g_number_of_pixels.getX()) / 2.0) /
+            ((g_detector_position - g_source_position).length()));
+
+        RATIONAL_NUMBER angle_in_radians(2.0 * std::atan(tangent));
+        RATIONAL_NUMBER angle_in_degrees(180.0 * angle_in_radians / M_PI);
+		std::cout << "Field of view: "   << angle_in_degrees << " degrees" << std::endl;
+
+        // Compute the projection set
+        g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), 1, 0);
+
+        // Save the projection set
+        g_xray_renderer.printProjectionSet(PREFIX"/single_projection.mhd");
+
+        // Close the window
+        glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+	}
+	// Catch exception if any
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << std::endl;
+	}
+
+	// Close the window and shut GLFW
+	if (g_p_main_window_id)
+	{
+		glfwDestroyWindow(g_p_main_window_id);
+		g_p_main_window_id = 0;
+		glfwTerminate();
+	}
+
+	// Return an exit code
+	return (EXIT_SUCCESS);
+}
+
+
+//----------------------------------------------------
+void errorCallback(int error, const char* description)
+//----------------------------------------------------
+{
+	std::cerr << "GLFW error: " << description << std::endl;
+}
+
+
+//---------
+void quit()
+//---------
+{
+	if (g_p_main_window_id)
+	{
+		glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        glfwTerminate();
+	}
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+#if defined(_WIN32) || defined(_WIN64)
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+#endif
+}
+
+
+//-----------
+void initGL()
+//-----------
+{
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Enable the Z-buffer
+	glEnable(GL_DEPTH_TEST);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Set the background colour
+	glClearColor(0.5, 0.5, 0.5, 1.0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	glEnable(GL_MULTISAMPLE);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//----------------
+void loadSTLFile()
+//----------------
+{
+	std::string stl_filename("cylinder_bin.stl");
+
+	// Open the file
+	FILE* p_file_descriptor(fopen(stl_filename.data(), "rb"));
+
+	// The file is not in the same directory as the executable
+	if (!p_file_descriptor)
+	{
+		// Use the prefix
+        stl_filename = std::string(PREFIX) + "/../" + stl_filename;
+	}
+	else
+	{
+		fclose(p_file_descriptor);
+	}
+
+	// HU values
+    RATIONAL_NUMBER HU_soft_tissue(51.714752);
+
+	// Set geometry
+    g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
+
+    std::cout << "We run the simulation as follows:" << std::endl;
+    std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
+    std::cout << "- We consider the energy of the incident beam is " << g_incident_energy / keV << " keV (i.e. " << g_incident_energy / MeV << " MeV). " << std::endl << std::endl;
+
+    std::cout << "From the literature, we know:" << std::endl;
+    std::cout.precision(3);
+
+
+    std::cout <<
+            "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
+            "rho = "    << std::scientific << 1.060E+00 << " g/cm3,\t" <<
+            "mu/rho = " << std::scientific << 1.823E-01 << " cm2/g,\t" <<
+            "mu = "     << std::scientific << 1.932E-01 << " cm-1" << std::endl << std::endl;
+
+    std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
+
+    std::cout <<
+            "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
+            "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
+            "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
+            "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_soft_tissue, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl << std::endl;
+
+    g_outside_polygon_data.splitFaces(false);
+    g_outside_polygon_data.splitFaces(false);
+    g_outside_polygon_data.splitFaces(false);
+    g_outside_polygon_data.splitFaces(false);
+}
+
+
+//-----------------
+void loadDetector()
+//-----------------
+{
+	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+	g_xray_detector.setDetectorPosition(g_detector_position);
+	g_xray_detector.setUpVector(g_detector_up_vector);
+}
+
+
+//---------------
+void loadSource()
+//---------------
+{
+	// Set the energy
+	g_xray_beam.initialise(g_incident_energy);
+
+	// Set the source position
+	g_xray_detector.setXrayPointSource(g_source_position);
+}
+
+
+//----------------------
+void loadXRaySimulator()
+//----------------------
+{
+	// Initialise the X-ray renderer
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB32F,
+            &g_xray_detector,
+            &g_xray_beam);
+}
