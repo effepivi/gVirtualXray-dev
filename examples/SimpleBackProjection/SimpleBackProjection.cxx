@@ -135,13 +135,14 @@ const int DETECTOR(3);
 const float g_incident_energy(0.08 * MeV);
 const VEC2 g_resolution(0.75 * mm, 5.0 * mm);
 const Vec2ui g_number_of_pixels(256, 1);
-const VEC3 g_source_position(   0.0,  10.0 * cm, 0.0);
-const VEC3 g_detector_position( 0.0, -10.0 * cm, 0.0);
-const VEC3 g_detector_up_vector(0.0, 0.0, 1.0);
 
 const double g_initial_fovy(45);                              // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);                        // Near clipping plane
 const double g_initial_far(500.0 * cm);                       // Far clipping plane
+
+const VEC3 g_initial_source_position(   0.0,  10.0 * cm, 0.0);
+const VEC3 g_initial_detector_position( 0.0, -10.0 * cm, 0.0);
+const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 
 typedef enum AcquisitionTypeTag
 {
@@ -202,8 +203,8 @@ RATIONAL_NUMBER g_first_angle(0);
 RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
 unsigned int g_next_angle_to_process(0);
 unsigned int g_current_angle(0);
-AcquisitionType g_acquisition_type(ROTATE_SAMPLE);
-VEC3 g_rotation_axis(g_detector_up_vector);
+AcquisitionType g_acquisition_type(ROTATE_SOURCE_DETECTOR);
+VEC3 g_rotation_axis(g_initial_detector_up_vector);
 VEC3 g_rotation_centre(0, 0, 0);
 GLuint g_projection_texture_id(0);
 GLuint g_sinogram_texture_id(0);
@@ -217,6 +218,10 @@ float g_min_sinogram(0);
 float g_max_sinogram(0);
 float g_min_tomography(0);
 float g_max_tomography(0);
+
+VEC3 g_source_position(g_initial_source_position);
+VEC3 g_detector_position(g_initial_detector_position);
+VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
 
 //******************************************************************************
@@ -393,6 +398,24 @@ int main(int argc, char** argv)
                         break;
 
                     case ROTATE_SOURCE_DETECTOR:
+                        {
+                            Matrix4x4<GLfloat> rotation_matrix;
+                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
+                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
+                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
+
+                            g_source_position   = rotation_matrix * g_source_position;
+                            g_detector_position = rotation_matrix * g_detector_position;
+
+                            // Set the source position
+                            g_xray_detector.setXrayPointSource(g_source_position);
+
+                            // Use a parallel source
+                            g_xray_detector.setParallelBeam();
+
+                            // Set the detector position
+                            g_xray_detector.setDetectorPosition(g_detector_position);
+                        }
                         break;
 	                }
 	            }
@@ -2043,6 +2066,10 @@ void reset()
     popTexture();
 
     g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+
+    g_source_position = g_initial_source_position;
+    g_detector_position = g_initial_detector_position;
+    g_detector_up_vector = g_initial_detector_up_vector;
 
     g_next_angle_to_process = 0;
     g_current_angle = 0;
