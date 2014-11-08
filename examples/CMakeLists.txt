@@ -8,6 +8,7 @@ add_subdirectory(STL-File)
 add_subdirectory(GUI-FLTK)
 add_subdirectory(Iso-Surfaces)
 add_subdirectory(Intersections)
+add_subdirectory(SimpleBackProjection)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION demos COMPONENT demos)
 
