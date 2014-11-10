@@ -43,12 +43,12 @@ varying vec2 g_texture_coordinates;
 //******************************************************************************
 uniform float shift;
 uniform float scale;
-uniform sampler2D texture;
+uniform sampler2D imageTexture;
 
 //-------------
 void main(void)
 //-------------
 {
-    float color = (texture2D(texture, g_texture_coordinates.st).r + shift) * scale;
+    float color = (texture2D(imageTexture, g_texture_coordinates.st).r + shift) * scale;
     gl_FragColor = vec4(color, color, color, 1.0);
 }

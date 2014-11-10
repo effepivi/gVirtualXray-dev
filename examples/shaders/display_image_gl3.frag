@@ -50,14 +50,15 @@ out vec4 fragColor;
 //******************************************************************************
 uniform float shift;
 uniform float scale;
-uniform sampler2D texture;
+uniform sampler2D imageTexture;
 
 
 //-------------
 void main(void)
 //-------------
 {
-    float color = (texture2D(texture, g_texture_coordinates.st).r + shift) * scale;
+    float color;
+    color = (texture(imageTexture, g_texture_coordinates.st).r + shift) * scale;
     fragColor = vec4(color, color, color, 1.0);
 }
 

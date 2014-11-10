@@ -285,6 +285,7 @@ int main(int argc, char** argv)
 	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
 	    }
 
+	    // Enable OpenGL 2.1 if possible
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
@@ -296,6 +297,7 @@ int main(int argc, char** argv)
 
 	    // Create a windowed mode window and its OpenGL context
 	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	   
         // Window cannot be created 
         if (!g_p_main_window_id)
@@ -319,6 +321,7 @@ int main(int argc, char** argv)
 
         // Initialise GLEW
         initGLEW();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the OpenGL version
         std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
@@ -328,6 +331,7 @@ int main(int argc, char** argv)
 
         // Initialise OpenGL
 		initGL();
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -489,7 +493,7 @@ int main(int argc, char** argv)
 	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	        glActiveTexture(GL_TEXTURE0);
-	        glUniform1i(glGetUniformLocation(shader_id, "texture"), 0);
+	        glUniform1i(glGetUniformLocation(shader_id, "imageTexture"), 0);
 
 	        pushTexture2D();
 
@@ -801,14 +805,24 @@ void quit()
 void initGLEW()
 //-------------
 {
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        std::stringstream error_message;
+        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
+    }
+
+    try
+    {
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+    // Catch exception if any
+    catch (const std::exception& error)
+    {
+        std::cerr << error.what() << std::endl;
+    }
 }
 
 
@@ -1882,6 +1896,25 @@ void updateSinogram()
 void updateTomography()
 //---------------------
 {
+    // Get the current projection from the sinogram
+    float* p_current_projection(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX() * 3);
+    float current_angle(g_angle_step * g_current_angle);
+
+    // Get the position of the first point in the projection
+    VEC2 first_projection_sample_position(-(g_resolution.getX() * g_number_of_pixels.getX()) / 2.0 + g_resolution.getX() / 2.0, 0);
+    Vec2i first_projection_sample_id;
+
+    // Get the position of the last point in the projection
+    VEC2 last_projection_sample_position;
+//    VEC2 last_projection_sample_position((g_resolution.getX() * g_number_of_pixels.getX()) / 2.0 - g_resolution.getX() / 2.0, 0);
+    Vec2i last_projection_sample_id;
+
+    VEC2 centre(0.0, 0.0);
+
+ //   https://courses.engr.illinois.edu/ece390/archive/archive-f2000/mp/mp4/anti.html
+
+
+    // Process all the point of the line
 
 }
 
