@@ -262,6 +262,7 @@ void displayProjection();
 void displaySinogram();
 void displayTomography();
 void reset();
+void AALine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData);
 
 
 //-----------------------------
@@ -460,7 +461,7 @@ int main(int argc, char** argv)
                 updateSinogram();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-              //  updateTomography();
+                updateTomography();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
                 g_update_projection_and_sinogram = false;
@@ -1844,6 +1845,7 @@ void updateProjection()
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
 
@@ -1889,6 +1891,7 @@ void updateSinogram()
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
 
@@ -1901,28 +1904,49 @@ void updateTomography()
     float* p_current_projection(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
     float current_angle(g_angle_step * g_current_angle);
 
+    float width(g_resolution.getX() * g_number_of_pixels.getX());
+    float half_width(width / 2.0);
+
     // Get the position of the first point in the projection
-    VEC2 first_projection_sample_position(-(g_resolution.getX() * g_number_of_pixels.getX()) / 2.0 + g_resolution.getX() / 2.0, 0);
-    Vec2i first_projection_sample_id;
+    VEC3 rotation_axis(0, 0, 1);
+    MATRIX4 rotation_matrix(MATRIX4::buildRotationMatrix(current_angle, rotation_axis));
+    VEC3 first_projection_sample_position(-half_width + g_resolution.getX() / 2.0, 0, 0);
+    first_projection_sample_position = rotation_matrix * first_projection_sample_position;
 
     // Get the position of the last point in the projection
-    VEC2 last_projection_sample_position;
-//    VEC2 last_projection_sample_position((g_resolution.getX() * g_number_of_pixels.getX()) / 2.0 - g_resolution.getX() / 2.0, 0);
-    Vec2i last_projection_sample_id;
+    VEC3 last_projection_sample_position(half_width - g_resolution.getX() / 2.0, 0, 0);
+    last_projection_sample_position = rotation_matrix * last_projection_sample_position;
 
-    VEC2 centre(0.0, 0.0);
+    Vec2i first_projection_sample_id((first_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
+    		(first_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
+    Vec2i last_projection_sample_id((last_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
+    		(last_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
 
  //   https://courses.engr.illinois.edu/ece390/archive/archive-f2000/mp/mp4/anti.html
-
+    AALine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_p_tomography_data);
 
     // Process all the point of the line
+
+    unsigned int number_of_pixels(g_number_of_pixels.getX() * g_number_of_pixels.getX());
+    for (unsigned int i(0); i < number_of_pixels; ++i)
+    {
+        if (g_min_tomography > g_p_tomography_data[i])
+        {
+        	g_min_tomography = g_p_tomography_data[i];
+        }
+
+        if (g_max_tomography < g_p_tomography_data[i])
+        {
+        	g_max_tomography = g_p_tomography_data[i];
+        }
+    }
 
     // Update the texture
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), 1,  GL_RED, GL_FLOAT, g_p_tomography_data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
-
 }
 
 
@@ -2008,7 +2032,7 @@ void displayTomography()
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_sinogram != g_min_tomography)
+    if (g_max_tomography != g_min_tomography)
     {
         scale = 1.0 / (g_max_tomography - g_min_tomography);
     }
@@ -2068,3 +2092,81 @@ void reset()
     g_next_angle_to_process = 0;
     g_current_angle = 0;
 }
+
+
+void AALine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData)
+{
+    int addr = (aVector0.getY()*width+aVector0.getX());
+    int dx = aVector1.getX()-aVector0.getX();
+    int dy = aVector1.getY()-aVector0.getY();
+
+    int du;
+    int dv;
+    int u;
+    int v;
+    int uincr;
+    int vincr;
+
+    if (abs(dx) > abs(dy))
+    {
+		du = abs(dx);
+		dv = abs(dy);
+		u = aVector1.getX();
+		v = aVector1.getY();
+		uincr = 1;
+		vincr = height*1;
+		if (dx < 0) uincr = -uincr;
+		if (dy < 0) vincr = -vincr;
+    }
+    else
+    {
+		du = abs(dy);
+		dv = abs(dx);
+		u = aVector1.getY();
+		v = aVector1.getX();
+		uincr = width*1;
+		vincr = 1;
+		if (dy < 0) uincr = -uincr;
+		if (dx < 0) vincr = -vincr;
+    }
+    int uend = u + 2 * du;
+    int d = (2 * dv) - du;
+    int incrS = 2 * dv;
+    int incrD = 2 * (dv - du);
+    int twovdu = 0;
+    double invD = 1.0 / (2.0*sqrt(du*du + dv*dv));   /* Precomputed inverse denominator */
+    double invD2du = 2.0 * (du*invD);   /* Precomputed constant */
+    do
+    {
+		/* Note: this pseudocode doesn't ensure that the address is
+		 * valid, or that it even represents a pixel on the same side of
+		 * the screen as the adjacent pixel */
+    	if (addr >= 0)
+    	{
+			apData[addr] += twovdu*invD;
+			apData[addr + vincr] += invD2du - twovdu*invD;
+			apData[addr - vincr] += invD2du + twovdu*invD;
+			//DrawPixelD(addr, twovdu*invD);
+			//DrawPixelD(addr + vincr, invD2du - twovdu*invD);
+			//DrawPixelD(addr - vincr, invD2du + twovdu*invD);
+    	}
+
+		if (d < 0)
+		{
+			/* choose straight (u direction) */
+			twovdu = d + du;
+			d = d + incrS;
+		}
+		else
+		{
+			/* choose diagonal (u+v direction) */
+			twovdu = d - du;
+			d = d + incrD;
+			v = v+1;
+			addr = addr + vincr;
+		}
+		u = u+1;
+		addr = addr+uincr;
+    } while (u < uend);
+}
+
