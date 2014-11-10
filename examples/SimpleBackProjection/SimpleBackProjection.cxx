@@ -112,8 +112,14 @@
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
+#include "display_gl3.frag.h"
+#include "display_gl3.vert.h"
+
 #include "display_image_gl2.frag.h"
 #include "display_image_gl2.vert.h"
+
+#include "display_image_gl3.frag.h"
+#include "display_image_gl3.vert.h"
 
 
 //******************************************************************************
@@ -460,6 +466,33 @@ int main(int argc, char** argv)
 	    	display();
 	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	        // Display the 2D images
+	        glViewport(0, 0, g_main_window_width / 2, g_main_window_height);
+
+	        // Enable the shader
+	        pushShaderProgram();
+	        g_display_image_shader.enable();
+	        GLint shader_id(g_display_image_shader.getProgramHandle());
+
+
+	        pushEnableDisableState(GL_CULL_FACE);
+	        pushEnableDisableState(GL_DEPTH_TEST);
+	        pushEnableDisableState(GL_BLEND);
+
+	        glDisable(GL_DEPTH_TEST);
+	        glDisable(GL_CULL_FACE);
+	        glDisable(GL_BLEND);
+
+	        // Draw the projections
+	        GLuint handle(glGetUniformLocation(shader_id, "g_projection_matrix"));
+	        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
+	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	        glActiveTexture(GL_TEXTURE0);
+	        glUniform1i(glGetUniformLocation(shader_id, "texture"), 0);
+
+	        pushTexture2D();
+
             displayProjection();
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -467,6 +500,20 @@ int main(int argc, char** argv)
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             displayTomography();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            popTexture();
+
+            // Disable the shader
+            popShaderProgram();
+
+            // Restore the attributes
+            popEnableDisableState();
+            popEnableDisableState();
+            popEnableDisableState();
+
+            // Check the status of OpenGL and of the current FBO
+            checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Swap front and back buffers
@@ -796,8 +843,17 @@ void initGL()
 	std::string fragment_shader;
 
 	// Display shader
-    z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+    // Display shader
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+    }
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
@@ -813,8 +869,16 @@ void initGL()
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Display shader
-    z_lib_return_code_vertex   = inflate(g_display_image_gl2_vert, sizeof(g_display_image_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_image_gl2_frag, sizeof(g_display_image_gl2_frag), &p_fragment_shader);
+	if (useOpenGL3_2OrAbove())
+	{
+		z_lib_return_code_vertex   = inflate(g_display_image_gl3_vert, sizeof(g_display_image_gl3_vert),   &p_vertex_shader);
+		z_lib_return_code_fragment = inflate(g_display_image_gl3_frag, sizeof(g_display_image_gl3_frag), &p_fragment_shader);
+	}
+	else
+	{
+		z_lib_return_code_vertex   = inflate(g_display_image_gl2_vert, sizeof(g_display_image_gl2_vert),   &p_vertex_shader);
+		z_lib_return_code_fragment = inflate(g_display_image_gl2_frag, sizeof(g_display_image_gl2_frag), &p_fragment_shader);
+	}
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -1526,6 +1590,8 @@ void createTexture(GLuint& aTextureID,
 {
     unsigned int number_of_pixels(aWidth * aHeight);
 
+    glActiveTexture(GL_TEXTURE0);
+
     if (aTextureID)
     {
         glDeleteTextures(1, &aTextureID);
@@ -1824,38 +1890,14 @@ void updateTomography()
 void displayProjection()
 //----------------------
 {
-    // Display the 2D images
-    glViewport(0, 0, g_main_window_width / 2, g_main_window_height);
-
-    // Enable the shader
-    pushShaderProgram();
-    g_display_image_shader.enable();
     GLint shader_id(g_display_image_shader.getProgramHandle());
-
-
-    pushEnableDisableState(GL_CULL_FACE);
-    pushEnableDisableState(GL_DEPTH_TEST);
-    pushEnableDisableState(GL_BLEND);
-
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
-
-    // Draw the projections
-    GLuint handle(glGetUniformLocation(shader_id, "g_projection_matrix"));
-    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     MATRIX4 model_view;
     model_view.loadIdentity();
-    handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+    GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
     glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(glGetUniformLocation(shader_id, "texture"), 0);
-
-    pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
@@ -1872,20 +1914,6 @@ void displayProjection()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     g_sinogram_rectangle->display();
-
-    popTexture();
-
-    // Disable the shader
-    popShaderProgram();
-
-    // Restore the attributes
-    popEnableDisableState();
-    popEnableDisableState();
-    popEnableDisableState();
-
-    // Check the status of OpenGL and of the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -1893,42 +1921,18 @@ void displayProjection()
 void displaySinogram()
 //--------------------
 {
-    // Display the 2D images
-    glViewport(0, 0, g_main_window_width / 2, g_main_window_height);
-
-    // Enable the shader
-    pushShaderProgram();
-    g_display_image_shader.enable();
     GLint shader_id(g_display_image_shader.getProgramHandle());
-
-
-    pushEnableDisableState(GL_CULL_FACE);
-    pushEnableDisableState(GL_DEPTH_TEST);
-    pushEnableDisableState(GL_BLEND);
-
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
-
-    // Draw the projections
-    GLuint handle(glGetUniformLocation(shader_id, "g_projection_matrix"));
-    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
     MATRIX4 model_view(MATRIX4::buildTranslationMatrix(0, y * 1.05, 0));
-    handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+    GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
     glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(glGetUniformLocation(shader_id, "texture"), 0);
-
-    pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_projection);
+    glUniform1f(handle, -g_min_sinogram);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
@@ -1941,20 +1945,6 @@ void displaySinogram()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     g_sinogram_rectangle->display();
-
-    popTexture();
-
-    // Disable the shader
-    popShaderProgram();
-
-    // Restore the attributes
-    popEnableDisableState();
-    popEnableDisableState();
-    popEnableDisableState();
-
-    // Check the status of OpenGL and of the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -1962,42 +1952,18 @@ void displaySinogram()
 void displayTomography()
 //----------------------
 {
-    // Display the 2D images
-    glViewport(0, 0, g_main_window_width / 2, g_main_window_height);
-
-    // Enable the shader
-    pushShaderProgram();
-    g_display_image_shader.enable();
     GLint shader_id(g_display_image_shader.getProgramHandle());
-
-
-    pushEnableDisableState(GL_CULL_FACE);
-    pushEnableDisableState(GL_DEPTH_TEST);
-    pushEnableDisableState(GL_BLEND);
-
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
-
-    // Draw the projections
-    GLuint handle(glGetUniformLocation(shader_id, "g_projection_matrix"));
-    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
     MATRIX4 model_view(MATRIX4::buildTranslationMatrix(0, y * 2.1, 0));
-    handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+    GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
     glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(glGetUniformLocation(shader_id, "texture"), 0);
-
-    pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_projection);
+    glUniform1f(handle, -g_min_tomography);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
@@ -2010,20 +1976,6 @@ void displayTomography()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     g_tomography_rectangle->display();
-
-    popTexture();
-
-    // Disable the shader
-    popShaderProgram();
-
-    // Restore the attributes
-    popEnableDisableState();
-    popEnableDisableState();
-    popEnableDisableState();
-
-    // Check the status of OpenGL and of the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -2053,6 +2005,8 @@ void reset()
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RGB, GL_FLOAT, g_p_projection_data);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

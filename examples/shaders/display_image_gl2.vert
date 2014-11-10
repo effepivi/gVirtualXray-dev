@@ -52,3 +52,4 @@ void main(void)
     g_texture_coordinates = gl_MultiTexCoord0.xy;
 	gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);
 }
+

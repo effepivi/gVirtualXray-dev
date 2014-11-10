@@ -65,6 +65,6 @@ void main(void)
 	
     g_texture_coordinates = in_TexCoord;
 
-    //gl_FrontColor = gl_Color;
 	gl_Position = g_projection_matrix * g_object_position;
 }
+
