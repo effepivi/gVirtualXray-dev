@@ -8,7 +8,7 @@
 *
 *	@version	1.0
 *
-*	@date		11/11/2013
+*	@date		10/11/2014
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -460,7 +460,7 @@ int main(int argc, char** argv)
                 updateSinogram();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                updateTomography();
+              //  updateTomography();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
                 g_update_projection_and_sinogram = false;
@@ -1618,8 +1618,8 @@ void createTexture(GLuint& aTextureID,
         *apImage = 0;
     }
 
-    *apImage = new float[number_of_pixels * 3];
-    for (unsigned int i(0); i < number_of_pixels * 3; ++i)
+    *apImage = new float[number_of_pixels];
+    for (unsigned int i(0); i < number_of_pixels; ++i)
     {
         (*apImage)[i] = 0;
     }
@@ -1638,7 +1638,7 @@ void createTexture(GLuint& aTextureID,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, aWidth, aHeight, 0, GL_RGB, GL_FLOAT, *apImage);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, aWidth, aHeight, 0, GL_RED, GL_FLOAT, *apImage);
 
     popTexture();
 
@@ -1813,34 +1813,37 @@ void updateProjection()
 //---------------------
 {
     RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_p_projection_data + g_current_angle * g_number_of_pixels.getX() * 3);
+    float* p_output_image(g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
+
+    float value;
 
     if (g_current_angle == 0)
     {
+    	value = *p_input_image;
         g_min_projection = *p_input_image;
         g_max_projection = *p_input_image;
     }
 
     for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
     {
-        if (g_min_projection > *p_input_image)
+    	value = *p_input_image++;
+
+        if (g_min_projection > value)
         {
-            g_min_projection = *p_input_image;
+            g_min_projection = value;
         }
 
-        if (g_max_projection < *p_input_image)
+        if (g_max_projection < value)
         {
-            g_max_projection = *p_input_image;
+            g_max_projection = value;
         }
 
-        *p_output_image++ = *p_input_image;
-        *p_output_image++ = *p_input_image;
-        *p_output_image++ = *p_input_image++;
+        *p_output_image++ = value;
     }
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RGB, GL_FLOAT, g_p_projection_data + g_current_angle * g_number_of_pixels.getX() * 3);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
     popTexture();
 }
 
@@ -1850,7 +1853,7 @@ void updateSinogram()
 //-------------------
 {
     RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX() * 3);
+    float* p_output_image(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
 
     float total_input_energy(g_xray_beam.getTotalEnergy());
     float scaling_factor(
@@ -1881,13 +1884,11 @@ void updateSinogram()
         }
 
         *p_output_image++ = value;
-        *p_output_image++ = value;
-        *p_output_image++ = value;
     }
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RGB, GL_FLOAT, g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX() * 3);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
     popTexture();
 }
 
@@ -1897,7 +1898,7 @@ void updateTomography()
 //---------------------
 {
     // Get the current projection from the sinogram
-    float* p_current_projection(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX() * 3);
+    float* p_current_projection(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
     float current_angle(g_angle_step * g_current_angle);
 
     // Get the position of the first point in the projection
@@ -1915,6 +1916,12 @@ void updateTomography()
 
 
     // Process all the point of the line
+
+    // Update the texture
+    pushTexture2D();
+    glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), 1,  GL_RED, GL_FLOAT, g_p_tomography_data);
+    popTexture();
 
 }
 
@@ -2017,14 +2024,14 @@ void reset()
 //----------
 {
     unsigned int number_of_pixels(g_number_of_pixels.getX() * g_angle_number);
-    for (unsigned int i(0); i < number_of_pixels * 3; ++i)
+    for (unsigned int i(0); i < number_of_pixels; ++i)
     {
         g_p_projection_data[i] = 0;
         g_p_sinogram_data[i] = 0;
     }
 
     number_of_pixels = g_number_of_pixels.getX() * g_number_of_pixels.getX();
-    for (unsigned int i(0); i < number_of_pixels * 3; ++i)
+    for (unsigned int i(0); i < number_of_pixels; ++i)
     {
         g_p_tomography_data[i] = 0;
     }
@@ -2040,15 +2047,15 @@ void reset()
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RGB, GL_FLOAT, g_p_projection_data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RED, GL_FLOAT, g_p_projection_data);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RGB, GL_FLOAT, g_p_sinogram_data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RED, GL_FLOAT, g_p_sinogram_data);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RGB, GL_FLOAT, g_p_tomography_data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 
