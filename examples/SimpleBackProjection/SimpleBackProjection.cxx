@@ -133,11 +133,6 @@ using namespace gVirtualXRay;
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const int NONE(0);
-const int SCENE(1);
-const int OBJECT(2);
-const int DETECTOR(3);
-
 const float g_incident_energy(0.08 * MeV);
 const VEC2 g_resolution(0.75 * mm, 5.0 * mm);
 const Vec2ui g_number_of_pixels(256, 1);
@@ -177,7 +172,6 @@ GLint g_current_y_position(0);
 bool g_display_beam(true);
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
-Matrix4x4<GLfloat> g_detector_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 Matrix4x4<GLfloat> g_current_2D_projection_matrix;
 VEC3 g_translation_vector;
@@ -197,14 +191,13 @@ Shader g_display_image_shader;
 
 bool g_is_xray_image_up_to_date(false);
 bool g_update_projection_and_sinogram(false);
-int g_rotation_mode(NONE);
 bool g_display_wireframe(false);
 bool g_display_outside_polygon(true);
 
-bool g_run_tomography_acquisition(false);
+bool g_run_tomography_acquisition(true);
 
-unsigned int g_angle_number(90);
-RATIONAL_NUMBER g_angle_step(4);
+unsigned int g_angle_number(360);
+RATIONAL_NUMBER g_angle_step(0.5);
 RATIONAL_NUMBER g_first_angle(0);
 RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
 unsigned int g_next_angle_to_process(0);
@@ -262,7 +255,60 @@ void displayProjection();
 void displaySinogram();
 void displayTomography();
 void reset();
-void AALine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData);
+void drawLine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData, float intensity);
+
+
+//------------------------
+inline int ipart(double X)
+//------------------------
+{
+	return (int(X));
+}
+
+
+//---------------------------
+inline double fpart(double X)
+//---------------------------
+{
+	return (double(X) - double(ipart(X)));
+}
+
+
+//----------------------------
+inline double rfpart(double X)
+//----------------------------
+{
+	return (1.0 - fpart(X));
+}
+
+
+//------------------------------
+inline void swap(int& a, int& b)
+//------------------------------
+{
+	int temp(b);
+	b = a;
+	a = temp;
+}
+
+
+//-------------------------------
+inline void plot(int x,
+				 int y,
+				 float distance,
+				 int width,
+				 int height,
+				 float* apData,
+				 float intensity)
+//-------------------------------
+{
+	int index(x + y * width);
+
+	if (index >= 0 && index < width * height)
+	{
+		apData[x + y * width] += fabs(distance * intensity);
+	}
+}
 
 
 //-----------------------------
@@ -386,6 +432,8 @@ int main(int argc, char** argv)
         createSinogram();
         createTomography();
 
+        g_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(120.0, VEC3(1, 0, 0));
+
 		// Launch the event loop
 	    while (!glfwWindowShouldClose(g_p_main_window_id))
 	    {
@@ -401,7 +449,7 @@ int main(int argc, char** argv)
                         {
                             Matrix4x4<GLfloat> rotation_matrix;
                             rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_translation_vector);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
+                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
                             rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
 
                             g_sample_rotation_matrix *= rotation_matrix;
@@ -630,6 +678,7 @@ void createPhantom()
 			}
 		}
 	}
+
 //	p_writer->Update();
 
 
@@ -1149,102 +1198,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 			break;
 
-		case GLFW_KEY_1:
-			// This is a point source
-			if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
-			{
-				// Use a parallel source
-				g_xray_detector.setParallelBeam();
-			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-			break;
-
-		case GLFW_KEY_2:
-			// This is not a line source
-			if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
-			{
-				g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 5.0*mm);
-			}
-			// This is a cubic source
-			else
-			{
-				g_xray_detector.setPointSource();
-			}
-
-			// The X-ray image is not up-to-date
-			g_is_xray_image_up_to_date = false;
-			break;
-
-		case GLFW_KEY_3:
-			{
-				// This is not a square source
-				if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
-				{
-					g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 4, 5.0*mm);
-				}
-				// This is a cubic source
-				else
-				{
-					g_xray_detector.setPointSource();
-				}
-
-				// The X-ray image is not up-to-date
-				g_is_xray_image_up_to_date = false;
-			}
-			break;
-
-		case GLFW_KEY_4:
-			{
-				// This is not a cubic source
-				if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
-				{
-					g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 3, 5.0*mm);
-				}
-				// This is a cubic source
-				else
-				{
-					g_xray_detector.setPointSource();
-				}
-
-				// The X-ray image is not up-to-date
-				g_is_xray_image_up_to_date = false;
-			}
-			break;
-
-		case GLFW_KEY_T:
-			{
-				switch (g_rotation_mode)
-				{
-				case SCENE:
-					std::cout << "Rotation: select the object." << std::endl;
-					g_rotation_mode = OBJECT;
-					break;
-
-				case OBJECT:
-					std::cout << "Rotation: select the detector." << std::endl;
-					g_rotation_mode = DETECTOR;
-					break;
-
-				case DETECTOR:
-					std::cout << "Rotation: select the scene." << std::endl;
-					g_rotation_mode = SCENE;
-					break;
-
-				default:
-					std::cout << "Rotation: select the scene." << std::endl;
-					g_rotation_mode = SCENE;
-					break;
-				}
-			}
-			break;
-
 		case GLFW_KEY_W:
 			g_display_wireframe = !g_display_wireframe;
 			break;
@@ -1301,10 +1254,33 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0);
 
+
+	double x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
+	double y(float(g_angle_number) / float(g_number_of_pixels.getX()));
+	y *= 2.1;
+	y += 1.0;
+
+    double w(double(g_main_window_width) / 2.0);
+    double h(g_main_window_height);
+
+    double scaling_x(x / w);
+    double scaling_y(y / h);
+
+    if (scaling_x < scaling_y)
+    {
+    	scaling_x = y * w / h;
+    	scaling_y = y;
+    }
+    else
+    {
+    	scaling_x = x;
+    	scaling_y = x * h / w;
+    }
+
 	g_current_2D_projection_matrix = buildOrthoProjectionMatrix(0,
-	        double(g_main_window_width / 2) / double(g_main_window_width / 2),
+			scaling_x,
 	        0,
-	        double(g_main_window_height) / double(g_main_window_width / 2),
+	        scaling_y,
 	        -1.0,
 	        1.0);
 }
@@ -1320,29 +1296,6 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 	g_button = aButton;
 	g_button_state = aButtonState;
 
-	// Select the right transformation
-	if (g_rotation_mode == NONE)
-	{
-		switch (g_button)
-		{
-		case GLFW_MOUSE_BUTTON_LEFT:
-			g_rotation_mode = SCENE;
-			break;
-
-		case GLFW_MOUSE_BUTTON_RIGHT:
-			g_rotation_mode = OBJECT;
-			break;
-
-		case GLFW_MOUSE_BUTTON_MIDDLE:
-			g_rotation_mode = DETECTOR;
-			break;
-
-		default:
-			g_rotation_mode = SCENE;
-			break;
-		}
-	}
-
 	// Use the arc ball
 	if (g_button_state == GLFW_PRESS)
 	{
@@ -1352,7 +1305,6 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 	else
 	{
 		g_use_arc_ball = false;
-		g_rotation_mode = NONE;
 	}
 
 	double xpos(0);
@@ -1375,30 +1327,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	g_current_y_position = y;
 
 	// Update the rotation matrix if needed
-	switch (g_rotation_mode)
-	{
-	case SCENE:
-		computeRotation(g_scene_rotation_matrix);
-		break;
-
-	case DETECTOR:
-		computeRotation(g_detector_rotation_matrix);
-		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
-
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
-
-	case OBJECT:
-		computeRotation(g_sample_rotation_matrix);
-
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
-
-	default:
-		break;
-	}
+	computeRotation(g_scene_rotation_matrix);
 }
 
 
@@ -1639,7 +1568,7 @@ void createTexture(GLuint& aTextureID,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, aWidth, aHeight, 0, GL_RED, GL_FLOAT, *apImage);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, aWidth, aHeight, 0, GL_RED, GL_FLOAT, *apImage);
 
     popTexture();
 
@@ -1910,25 +1839,44 @@ void updateTomography()
     // Get the position of the first point in the projection
     VEC3 rotation_axis(0, 0, 1);
     MATRIX4 rotation_matrix(MATRIX4::buildRotationMatrix(current_angle, rotation_axis));
-    VEC3 first_projection_sample_position(-half_width + g_resolution.getX() / 2.0, 0, 0);
-    first_projection_sample_position = rotation_matrix * first_projection_sample_position;
+    VEC3 first_projection_point_position(-half_width + g_resolution.getX() / 2.0, 0, 0);
+    first_projection_point_position = rotation_matrix * first_projection_point_position;
 
     // Get the position of the last point in the projection
-    VEC3 last_projection_sample_position(half_width - g_resolution.getX() / 2.0, 0, 0);
-    last_projection_sample_position = rotation_matrix * last_projection_sample_position;
+    VEC3 last_projection_point_position(half_width - g_resolution.getX() / 2.0, 0, 0);
+    last_projection_point_position = rotation_matrix * last_projection_point_position;
 
-    Vec2i first_projection_sample_id((first_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
-    		(first_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
-    Vec2i last_projection_sample_id((last_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
-    		(last_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
+    // Get the normal vector
+    VEC3 direction((last_projection_point_position - first_projection_point_position).normal());
+    VEC3 normal(direction ^ VEC3(0, 0, 1));
 
- //   https://courses.engr.illinois.edu/ece390/archive/archive-f2000/mp/mp4/anti.html
-    AALine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_p_tomography_data);
+    // Process every pixel of the projection
+    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
+    {
+    	// Get the pixel color
+    	float intensity(*p_current_projection++);
 
-    // Process all the point of the line
+    	// Get the pixel position
+    	VEC3 pixel_position(first_projection_point_position + direction * (float(i) * g_resolution.getX()));
+
+    	VEC3 first_projection_sample_position(pixel_position + normal * half_width);
+    	VEC3 last_projection_sample_position( pixel_position - normal * half_width);
+
+    	// Get the first end point
+        Vec2i first_projection_sample_id((first_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
+        		(first_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
+
+        // Get the second end point
+        Vec2i last_projection_sample_id((last_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
+        		(last_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
+
+    	// Backproject the pixel
+    	drawLine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_p_tomography_data, intensity / width);
+    }
 
     unsigned int number_of_pixels(g_number_of_pixels.getX() * g_number_of_pixels.getX());
-    for (unsigned int i(0); i < number_of_pixels; ++i)
+    g_min_tomography = g_max_tomography = g_p_tomography_data[0];
+    for (unsigned int i(1); i < number_of_pixels; ++i)
     {
         if (g_min_tomography > g_p_tomography_data[i])
         {
@@ -2091,82 +2039,100 @@ void reset()
 
     g_next_angle_to_process = 0;
     g_current_angle = 0;
-}
 
-
-void AALine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData)
-{
-    int addr = (aVector0.getY()*width+aVector0.getX());
-    int dx = aVector1.getX()-aVector0.getX();
-    int dy = aVector1.getY()-aVector0.getY();
-
-    int du;
-    int dv;
-    int u;
-    int v;
-    int uincr;
-    int vincr;
-
-    if (abs(dx) > abs(dy))
+    if (g_acquisition_type == ROTATE_SOURCE_DETECTOR)
     {
-		du = abs(dx);
-		dv = abs(dy);
-		u = aVector1.getX();
-		v = aVector1.getY();
-		uincr = 1;
-		vincr = height*1;
-		if (dx < 0) uincr = -uincr;
-		if (dy < 0) vincr = -vincr;
+    	g_acquisition_type = ROTATE_SAMPLE;
     }
     else
     {
-		du = abs(dy);
-		dv = abs(dx);
-		u = aVector1.getY();
-		v = aVector1.getX();
-		uincr = width*1;
-		vincr = 1;
-		if (dy < 0) uincr = -uincr;
-		if (dx < 0) vincr = -vincr;
+    	g_acquisition_type = ROTATE_SOURCE_DETECTOR;
     }
-    int uend = u + 2 * du;
-    int d = (2 * dv) - du;
-    int incrS = 2 * dv;
-    int incrD = 2 * (dv - du);
-    int twovdu = 0;
-    double invD = 1.0 / (2.0*sqrt(du*du + dv*dv));   /* Precomputed inverse denominator */
-    double invD2du = 2.0 * (du*invD);   /* Precomputed constant */
-    do
-    {
-		/* Note: this pseudocode doesn't ensure that the address is
-		 * valid, or that it even represents a pixel on the same side of
-		 * the screen as the adjacent pixel */
-    	if (addr >= 0)
-    	{
-			apData[addr] += twovdu*invD;
-			apData[addr + vincr] += invD2du - twovdu*invD;
-			apData[addr - vincr] += invD2du + twovdu*invD;
-			//DrawPixelD(addr, twovdu*invD);
-			//DrawPixelD(addr + vincr, invD2du - twovdu*invD);
-			//DrawPixelD(addr - vincr, invD2du + twovdu*invD);
-    	}
-
-		if (d < 0)
-		{
-			/* choose straight (u direction) */
-			twovdu = d + du;
-			d = d + incrS;
-		}
-		else
-		{
-			/* choose diagonal (u+v direction) */
-			twovdu = d - du;
-			d = d + incrD;
-			v = v+1;
-			addr = addr + vincr;
-		}
-		u = u+1;
-		addr = addr+uincr;
-    } while (u < uend);
 }
 
+
+//----------------------------------
+void drawLine(const Vec2i& aVector0,
+		      const Vec2i& aVector1,
+		      int width,
+		      int height,
+		      float* apData,
+		      float intensity)
+//----------------------------------
+{
+	// Draw a line using Xiaolin Wu's algorithm for Anti-Aliased line
+	// For an example, see http://rosettacode.org/wiki/Xiaolin_Wu%27s_line_algorithm
+	int x1(aVector0.getX());
+	int y1(aVector0.getY());
+	int x2(aVector1.getX());
+	int y2(aVector1.getY());
+
+	double dx = (double)x2 - (double)x1;
+	double dy = (double)y2 - (double)y1;
+	if ( fabs(dx) > fabs(dy) )
+	{
+		if ( x2 < x1 )
+		{
+			swap(x1, x2);
+			swap(y1, y2);
+		}
+		double gradient = dy / dx;
+		double xend = round(x1);
+		double yend = y1 + gradient*(xend - x1);
+		double xgap = rfpart(x1 + 0.5);
+		int xpxl1 = xend;
+		int ypxl1 = ipart(yend);
+		plot(xpxl1, ypxl1, rfpart(yend)*xgap, width, height, apData, intensity);
+		plot(xpxl1, ypxl1+1, fpart(yend)*xgap, width, height, apData, intensity);
+		double intery = yend + gradient;
+
+		xend = round(x2);
+		yend = y2 + gradient*(xend - x2);
+		xgap = fpart(x2+0.5);
+		int xpxl2 = xend;
+		int ypxl2 = ipart(yend);
+		plot(xpxl2, ypxl2, rfpart(yend) * xgap, width, height, apData, intensity);
+		plot(xpxl2, ypxl2 + 1, fpart(yend) * xgap, width, height, apData, intensity);
+
+		int x;
+		for(x=xpxl1+1; x <= (xpxl2-1); x++)
+		{
+			plot(x, ipart(intery), rfpart(intery), width, height, apData, intensity);
+			plot(x, ipart(intery) + 1, fpart(intery), width, height, apData, intensity);
+			intery += gradient;
+		}
+	}
+	else
+	{
+		if ( y2 < y1 )
+		{
+			swap(x1, x2);
+			swap(y1, y2);
+		}
+		double gradient = dx / dy;
+		double yend = round(y1);
+		double xend = x1 + gradient*(yend - y1);
+		double ygap = rfpart(y1 + 0.5);
+		int ypxl1 = yend;
+		int xpxl1 = ipart(xend);
+		plot(xpxl1, ypxl1, rfpart(xend)*ygap, width, height, apData, intensity);
+		plot(xpxl1, ypxl1+1, fpart(xend)*ygap, width, height, apData, intensity);
+		double interx = xend + gradient;
+
+		yend = round(y2);
+		xend = x2 + gradient*(yend - y2);
+		ygap = fpart(y2+0.5);
+		int ypxl2 = yend;
+		int xpxl2 = ipart(xend);
+		plot(xpxl2, ypxl2, rfpart(xend) * ygap, width, height, apData, intensity);
+		plot(xpxl2, ypxl2 + 1, fpart(xend) * ygap, width, height, apData, intensity);
+
+		int y;
+		for(y=ypxl1+1; y <= (ypxl2-1); y++)
+		{
+			plot(ipart(interx), y, rfpart(interx), width, height, apData, intensity);
+			plot(ipart(interx) + 1, y, fpart(interx), width, height, apData, intensity);
+			interx += gradient;
+		}
+	}
+}
