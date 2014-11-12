@@ -178,6 +178,27 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Set the name of the file that contains the polygon mesh.
+	/**
+	*	@param anInputStream:	the input stream to load
+	*	@param aMoveToCentreFlag:	a flag to move the polygon to the center or not
+	*	@param anAutoComputeNormalFlag:	a flag to compute normals or nor
+	*	@param aPrintDebugInfoFlag:	a flag to display additional debug information in the console or not
+	*	@param aCreateVBOFlag:	a flag to use a vertex buffer object or not
+	*	@param aScale:	the unit in which data is stored in the file (e.g. mm, cm, m)
+	*	@param aBufferUsageHing:	the buffer usage hint; valid values are: GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void loadSTLDataFromStream(const char* apInputData,
+			bool aMoveToCentreFlag,
+			bool anAutoComputeNormalFlag,
+			bool aPrintDebugInfoFlag,
+			bool aCreateVBOFlag,
+			RATIONAL_NUMBER aScale,
+			int aBufferUsageHing);
+
+
+	//--------------------------------------------------------------------------
 	///	Move the polygon to the center.
 	//--------------------------------------------------------------------------
 	void moveToCentre();

@@ -31,6 +31,10 @@
 #include <map>
 #include <fstream>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #include <OpenGL/gl3.h>
@@ -319,7 +323,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 							  bool aPrintDebugInfoFlag,
 							  bool aCreateVBOFlag,
 							  RATIONAL_NUMBER aScale,
-							  int aTypeOfVBO)
+							  int aBufferUsageHing)
 //---------------------------------------------------------
 {
 	// Reset the data
@@ -334,12 +338,56 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, m_filename);
 	}
 
+	char* p_data(0);
+
+    struct stat stat_buf;
+    int rc = stat(m_filename.c_str(), &stat_buf);
+
+    if (rc != 0)
+    {
+		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, m_filename);
+    }
+
+    p_data = new char[stat_buf.st_size];
+
+    input_stream.read(p_data, stat_buf.st_size);
+
+	// Load the data
+	loadSTLDataFromStream(p_data,
+			aMoveToCentreFlag,
+			anAutoComputeNormalFlag,
+			aPrintDebugInfoFlag,
+			aCreateVBOFlag,
+			aScale,
+			aBufferUsageHing);
+
+	delete [] p_data;
+
+	// Close the STL file
+	input_stream.close();
+}
+
+
+//------------------------------------------------------------------
+void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
+										bool aMoveToCentreFlag,
+										bool anAutoComputeNormalFlag,
+										bool aPrintDebugInfoFlag,
+										bool aCreateVBOFlag,
+										RATIONAL_NUMBER aScale,
+										int aBufferUsageHing)
+//------------------------------------------------------------------
+{
 	// Get the number of triangles in the file header
 	// (the header is made of 80 bytes followded by the number of triangles (4 bytes))
-	input_stream.seekg(80, input_stream.beg);
+	char const* p_input_data(apInputData);
+	p_input_data += 80;
 
+	unsigned int read_size(0);
 	int triangle_number;
-	input_stream.read(reinterpret_cast<char*>(&triangle_number), sizeof(int));
+
+	memcpy(&triangle_number, p_input_data, sizeof(int));
+	p_input_data += sizeof(int);
 
 	// Set the kind of polygon
 	m_polygon_type = GL_TRIANGLES;
@@ -359,7 +407,8 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 	for (unsigned int i(0); i < getFaceNumber(); i++)
 	{
 		// Read normals
-		input_stream.read(reinterpret_cast<char*>(&m_p_face_normal_set[9 * i]), sizeof(float) * 3);
+		memcpy(&m_p_face_normal_set[9 * i], p_input_data, sizeof(float) * 3);
+		p_input_data += sizeof(float) * 3;
 
 		// Copy one normal per vertex 
 		if (!anAutoComputeNormalFlag)
@@ -377,12 +426,11 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 		}
 
 		// Read vertices
-		input_stream.read(reinterpret_cast<char*>(&p_vertex_set[9 * i    ]), sizeof(float) * 3);
-		input_stream.read(reinterpret_cast<char*>(&p_vertex_set[9 * i + 3]), sizeof(float) * 3);
-		input_stream.read(reinterpret_cast<char*>(&p_vertex_set[9 * i + 6]), sizeof(float) * 3);
+		memcpy(&p_vertex_set[9 * i], p_input_data, sizeof(float) * 3 * 3);
+		p_input_data += sizeof(float) * 3 * 3;
 
 		// Skip data
-		input_stream.seekg(2, std::ios_base::cur);
+		p_input_data += 2;
 	}
 
 	// Compute the normal vectors using the cross product
@@ -412,13 +460,10 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 										m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
 	}
 	
-	// Close the STL file
-	input_stream.close();
-
 	// Create the VBO
 	if (aCreateVBOFlag)
 	{
-		updateVBO(aTypeOfVBO, m_polygon_type);
+		updateVBO(aBufferUsageHing, m_polygon_type);
 	}
 }
 
