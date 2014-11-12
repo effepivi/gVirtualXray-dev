@@ -36,6 +36,7 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <streambuf>
 #include <ctime>
 
 #ifdef __APPLE__
@@ -104,6 +105,34 @@
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
+#include "skin.stl.h"
+#include "liver.stl.h"
+#include "lung.stl.h"
+#include "diaph.stl.h"
+#include "spine.stl.h"
+#include "rib1L.stl.h"
+#include "rib1R.stl.h"
+#include "rib2L.stl.h"
+#include "rib2R.stl.h"
+#include "rib3L.stl.h"
+#include "rib3R.stl.h"
+#include "rib4L.stl.h"
+#include "rib4R.stl.h"
+#include "rib5L.stl.h"
+#include "rib5R.stl.h"
+#include "rib6L.stl.h"
+#include "rib6R.stl.h"
+#include "rib7L.stl.h"
+#include "rib7R.stl.h"
+#include "rib8L.stl.h"
+#include "rib8R.stl.h"
+#include "rib9L.stl.h"
+#include "rib9R.stl.h"
+#include "rib10L.stl.h"
+#include "rib10R.stl.h"
+#include "rib11L.stl.h"
+#include "rib11R.stl.h"
+
 
 //******************************************************************************
 //	Name space
@@ -125,7 +154,7 @@ const GLfloat g_rotation_speed(2.0);
 const float g_incident_energy(0.08 * MeV);
 const float g_scaling_factor(2);
 const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
-const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 250 / g_scaling_factor);
+const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
 
 const double g_initial_fovy(45);                              // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);                        // Near clipping plane
@@ -141,14 +170,36 @@ typedef enum AcquisitionTypeTag
     ROTATE_SOURCE_DETECTOR
 } AcquisitionType;
 
-
 std::vector<PolygonMesh> g_p_polygon_mesh_set(27);
 
 const unsigned char SKIN_ID(0);
-/*const unsigned char LIVER_ID(1);
+const unsigned char LIVER_ID(1);
 const unsigned char LUNG_ID(2);
 const unsigned char DIAPH_ID(3);
-*/
+const unsigned char SPINE_ID(4);
+const unsigned char RIB1L_ID(5);
+const unsigned char RIB1R_ID(6);
+const unsigned char RIB2L_ID(7);
+const unsigned char RIB2R_ID(8);
+const unsigned char RIB3L_ID(9);
+const unsigned char RIB3R_ID(10);
+const unsigned char RIB4L_ID(11);
+const unsigned char RIB4R_ID(12);
+const unsigned char RIB5L_ID(13);
+const unsigned char RIB5R_ID(14);
+const unsigned char RIB6L_ID(15);
+const unsigned char RIB6R_ID(16);
+const unsigned char RIB7L_ID(17);
+const unsigned char RIB7R_ID(18);
+const unsigned char RIB8L_ID(19);
+const unsigned char RIB8R_ID(20);
+const unsigned char RIB9L_ID(21);
+const unsigned char RIB9R_ID(22);
+const unsigned char RIB10L_ID(23);
+const unsigned char RIB10R_ID(24);
+const unsigned char RIB11L_ID(25);
+const unsigned char RIB11R_ID(26);
+
 const double g_p_HU_set [] =
 {
         -36.6789,
@@ -178,38 +229,6 @@ const double g_p_HU_set [] =
         323.115,
         323.115,
         323.115,
-};
-
-
-const std::string g_p_file_name_set [] =
-{
-        std::string("skin_bin.stl"),
-        std::string("liver.stl"),
-        std::string("lung.stl"),
-        std::string("diaph4.stl"),
-        std::string("spine.stl"),
-        std::string("rib1L.stl"),
-        std::string("rib1R.stl"),
-        std::string("rib2L.stl"),
-        std::string("rib2R.stl"),
-        std::string("rib3L.stl"),
-        std::string("rib3R.stl"),
-        std::string("rib4L.stl"),
-        std::string("rib4R.stl"),
-        std::string("rib5L.stl"),
-        std::string("rib5R.stl"),
-        std::string("rib6L.stl"),
-        std::string("rib6R.stl"),
-        std::string("rib7L.stl"),
-        std::string("rib7R.stl"),
-        std::string("rib8L.stl"),
-        std::string("rib8R.stl"),
-        std::string("rib9L.stl"),
-        std::string("rib9R.stl"),
-        std::string("rib10L.stl"),
-        std::string("rib10R.stl"),
-        std::string("rib11L.stl"),
-        std::string("rib11R.stl"),
 };
 
 
@@ -512,10 +531,12 @@ int main(int argc, char** argv)
                 }
 	        }
 
-	        draw();
-
 	        // Update the X-ray image
 	        updateXRayImage();
+	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	        // Draw the 3D scene
+	        draw();
 	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	        // Swap front and back buffers
@@ -1038,6 +1059,140 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 }
 
 
+//---------------------------------------------------------------------------
+void decompressMesh(unsigned int aMeshID, char*& apData, unsigned int& aSize)
+//---------------------------------------------------------------------------
+{
+	// Initialise the data
+	if (apData)
+	{
+		delete [] apData;
+		apData = 0;
+	}
+
+	aSize = 0;
+
+	switch (aMeshID)
+	{
+	case SKIN_ID:
+		aSize = inflate(g_skin_stl, sizeof(g_skin_stl), &apData);
+		break;
+
+	case LIVER_ID:
+		aSize = inflate(g_liver_stl, sizeof(g_liver_stl), &apData);
+		break;
+
+	case LUNG_ID:
+		aSize = inflate(g_lung_stl, sizeof(g_lung_stl), &apData);
+		break;
+
+	case DIAPH_ID:
+		aSize = inflate(g_diaph_stl, sizeof(g_diaph_stl), &apData);
+		break;
+
+	case SPINE_ID:
+		aSize = inflate(g_spine_stl, sizeof(g_spine_stl), &apData);
+		break;
+
+	case RIB1R_ID:
+		aSize = inflate(g_rib1R_stl, sizeof(g_rib1R_stl), &apData);
+		break;
+
+	case RIB1L_ID:
+		aSize = inflate(g_rib1L_stl, sizeof(g_rib1L_stl), &apData);
+		break;
+
+	case RIB2L_ID:
+		aSize = inflate(g_rib2L_stl, sizeof(g_rib2L_stl), &apData);
+		break;
+
+	case RIB2R_ID:
+		aSize = inflate(g_rib2R_stl, sizeof(g_rib2R_stl), &apData);
+		break;
+
+	case RIB3L_ID:
+		aSize = inflate(g_rib3L_stl, sizeof(g_rib3L_stl), &apData);
+		break;
+
+	case RIB3R_ID:
+		aSize = inflate(g_rib3R_stl, sizeof(g_rib3R_stl), &apData);
+		break;
+
+	case RIB4L_ID:
+		aSize = inflate(g_rib4L_stl, sizeof(g_rib4L_stl), &apData);
+		break;
+
+	case RIB4R_ID:
+		aSize = inflate(g_rib4R_stl, sizeof(g_rib4R_stl), &apData);
+		break;
+
+	case RIB5L_ID:
+		aSize = inflate(g_rib5L_stl, sizeof(g_rib5L_stl), &apData);
+		break;
+
+	case RIB5R_ID:
+		aSize = inflate(g_rib5R_stl, sizeof(g_rib5R_stl), &apData);
+		break;
+
+	case RIB6L_ID:
+		aSize = inflate(g_rib6L_stl, sizeof(g_rib6L_stl), &apData);
+		break;
+
+	case RIB6R_ID:
+		aSize = inflate(g_rib6R_stl, sizeof(g_rib6R_stl), &apData);
+		break;
+
+	case RIB7L_ID:
+		aSize = inflate(g_rib7L_stl, sizeof(g_rib7L_stl), &apData);
+		break;
+
+	case RIB7R_ID:
+		aSize = inflate(g_rib7R_stl, sizeof(g_rib7R_stl), &apData);
+		break;
+
+	case RIB8L_ID:
+		aSize = inflate(g_rib8L_stl, sizeof(g_rib8L_stl), &apData);
+		break;
+
+	case RIB8R_ID:
+		aSize = inflate(g_rib8R_stl, sizeof(g_rib8R_stl), &apData);
+		break;
+
+	case RIB9L_ID:
+		aSize = inflate(g_rib9L_stl, sizeof(g_rib9L_stl), &apData);
+		break;
+
+	case RIB9R_ID:
+		aSize = inflate(g_rib9R_stl, sizeof(g_rib9R_stl), &apData);
+		break;
+
+	case RIB10L_ID:
+		aSize = inflate(g_rib10L_stl, sizeof(g_rib10L_stl), &apData);
+		break;
+
+	case RIB10R_ID:
+		aSize = inflate(g_rib10R_stl, sizeof(g_rib10R_stl), &apData);
+		break;
+
+	case RIB11L_ID:
+		aSize = inflate(g_rib11L_stl, sizeof(g_rib11L_stl), &apData);
+		break;
+
+	case RIB11R_ID:
+		aSize = inflate(g_rib11R_stl, sizeof(g_rib11R_stl), &apData);
+		break;
+
+	default:
+		break;
+	}
+
+	if (aSize <= 0)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+}
+
+
 //----------------
 void loadSTLFile()
 //----------------
@@ -1045,9 +1200,20 @@ void loadSTLFile()
     // Set geometry
     for (unsigned int i(0); i < g_p_polygon_mesh_set.size(); ++i)
     {
-        g_p_polygon_mesh_set[i].setFilename(std::string(PREFIX"/data/") + g_p_file_name_set[i]);
-        g_p_polygon_mesh_set[i].loadSTLFile(false, true, false, true, mm, GL_STATIC_DRAW);
-        //g_p_polygon_mesh_set[i].mergeVertices(true);
+    	char* p_data(0);
+    	unsigned int data_size(0);
+    	decompressMesh(i, p_data, data_size);
+
+    	g_p_polygon_mesh_set[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+
+    	// Delete data
+    	if (p_data)
+    	{
+    		delete [] p_data;
+    		p_data = 0;
+    	}
+
+    	//g_p_polygon_mesh_set[i].mergeVertices();
         g_p_polygon_mesh_set[i].setHounsfieldValue(g_p_HU_set[i]);
 
         float red((float(rand()) / (RAND_MAX)) + 1);
@@ -1199,7 +1365,10 @@ void updateXRayImage()
 		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 		// Normalise the X-ray image
-		g_xray_renderer.normalise();
+		if (g_current_angle == 0)
+		{
+			g_xray_renderer.normalise();
+		}
 
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;

@@ -11,6 +11,7 @@ CreateHeaderFiles("." "BinaryAnatomicalDataFiles" "${RESOURCES_SOURCES}")
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 
 # Configure the project ########################################################
