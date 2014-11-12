@@ -58,6 +58,7 @@ out vec4 fragColor;
 //******************************************************************************
 uniform sampler2D g_attenuation;
 uniform bool      g_display_negative_image;
+uniform bool      g_use_log_scale;
 uniform float     g_shift_filter;
 uniform float     g_scale_filter;
 
@@ -68,6 +69,12 @@ void main(void)
 {
     // Get the texel value
 	float intensity = texture(g_attenuation, g_texture_coordinates.st).r;
+
+    // Use the log scale
+    if (g_use_log_scale)
+    {
+        intensity = log(intensity);
+    }
 
     // Apply the shift/scale filter
 	intensity = ((intensity) + g_shift_filter) * g_scale_filter;

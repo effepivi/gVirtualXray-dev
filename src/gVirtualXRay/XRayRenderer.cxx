@@ -2869,9 +2869,9 @@ void XRayRenderer::normalise()
 }
 
 
-//--------------------------
-void XRayRenderer::display()
-//--------------------------
+//------------------------------------------
+void XRayRenderer::display(bool useLogScale)
+//------------------------------------------
 {
 	// Activate shaders
 	pushShaderProgram();
@@ -2898,21 +2898,35 @@ void XRayRenderer::display()
 	// Compute the filter parameters
 	GLfloat shift_filter(0);
 	GLfloat scale_filter(1);
-	double range(fabs(m_max_value_in_simulated_xray_image - m_min_value_in_simulated_xray_image));
-	if (range > EPSILON)
-	{
-		shift_filter = -m_min_value_in_simulated_xray_image;
-		scale_filter = 1.0 / range;
-	}
+	double range(m_max_value_in_simulated_xray_image - m_min_value_in_simulated_xray_image);
+
+    if (fabs(range) > EPSILON)
+    {
+        if (!useLogScale)
+        {
+            shift_filter = -m_min_value_in_simulated_xray_image;
+            scale_filter = 1.0 / range;
+        }
+        else
+        {
+            shift_filter = -log(m_min_value_in_simulated_xray_image);
+            scale_filter = 1.0 / (log(m_max_value_in_simulated_xray_image) - log(m_min_value_in_simulated_xray_image));
+        }
+    }
 
 	// Pass the shift parameter of the shift-scale filter to the shader
 	handle = glGetUniformLocation(program_handle, "g_shift_filter");
 	glUniform1f(handle, shift_filter);
 
-	// Pass the scale parameter of the shift-scale filter to the shader
-	handle = glGetUniformLocation(program_handle, "g_scale_filter");
-	glUniform1f(handle, scale_filter);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // Pass the scale parameter of the shift-scale filter to the shader
+    handle = glGetUniformLocation(program_handle, "g_scale_filter");
+    glUniform1f(handle, scale_filter);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Pass the scale parameter of the shift-scale filter to the shader
+    handle = glGetUniformLocation(program_handle, "g_use_log_scale");
+    glUniform1i(handle, useLogScale);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
 	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
