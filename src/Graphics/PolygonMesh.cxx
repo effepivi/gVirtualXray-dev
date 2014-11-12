@@ -29,6 +29,7 @@
 //	Include
 //******************************************************************************
 #include <map>
+#include <fstream>
 
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -325,20 +326,20 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 	reset();
 	
 	// Open the file in reading more
-	FILE* p_stream(fopen(m_filename.c_str(),"rb"));
+    std::ifstream input_stream(m_filename.c_str(), std::ios::in | std::ios::binary);
 
 	// The file is not open
-	if (!p_stream)
+	if (!input_stream.is_open())
 	{
 		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, m_filename);
 	}
 
 	// Get the number of triangles in the file header
 	// (the header is made of 80 bytes followded by the number of triangles (4 bytes))
-	fseek(p_stream, 80, SEEK_SET);
-	
+	input_stream.seekg(80, input_stream.beg);
+
 	int triangle_number;
-	fread(&(triangle_number), sizeof(float),1,p_stream);
+	input_stream.read(reinterpret_cast<char*>(&triangle_number), sizeof(int));
 
 	// Set the kind of polygon
 	m_polygon_type = GL_TRIANGLES;
@@ -358,7 +359,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 	for (unsigned int i(0); i < getFaceNumber(); i++)
 	{
 		// Read normals
-		fread(&m_p_face_normal_set[9 * i], sizeof(float), 3, p_stream);
+		input_stream.read(reinterpret_cast<char*>(&m_p_face_normal_set[9 * i]), sizeof(float) * 3);
 
 		// Copy one normal per vertex 
 		if (!anAutoComputeNormalFlag)
@@ -376,12 +377,12 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 		}
 
 		// Read vertices
-		fread(&p_vertex_set[9 * i],     sizeof(float), 3, p_stream);
-		fread(&p_vertex_set[9 * i + 3], sizeof(float), 3, p_stream);
-		fread(&p_vertex_set[9 * i + 6], sizeof(float), 3, p_stream);
+		input_stream.read(reinterpret_cast<char*>(&p_vertex_set[9 * i    ]), sizeof(float) * 3);
+		input_stream.read(reinterpret_cast<char*>(&p_vertex_set[9 * i + 3]), sizeof(float) * 3);
+		input_stream.read(reinterpret_cast<char*>(&p_vertex_set[9 * i + 6]), sizeof(float) * 3);
 
 		// Skip data
-		fseek(p_stream, 2, SEEK_CUR);
+		input_stream.seekg(2, std::ios_base::cur);
 	}
 
 	// Compute the normal vectors using the cross product
@@ -412,7 +413,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
 	}
 	
 	// Close the STL file
-	fclose(p_stream);
+	input_stream.close();
 
 	// Create the VBO
 	if (aCreateVBOFlag)
