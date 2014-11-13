@@ -38,7 +38,7 @@ ENDIF(ITK_FOUND)
 add_executable(demo-simple-back-projection SimpleBackProjection.cxx)
 target_link_libraries(demo-simple-back-projection ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(welsh_dragon_glut BinarySimpleBackProjectionFiles)
-INSTALL(TARGETS demo-simple-back-projection RUNTIME DESTINATION demos/SimpleBackProjection/bin  COMPONENT demos)
+INSTALL(TARGETS demo-simple-back-projection RUNTIME DESTINATION demos/SimpleBackProjection COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION demos/SimpleBackProjection COMPONENT demos)
 
 IF (APPLE)

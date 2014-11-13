@@ -28,8 +28,7 @@ ENDIF(NOT glfw_FOUND)
 add_executable(demo-anatomical-data AnatomicalData.cxx)
 target_link_libraries(demo-anatomical-data ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-anatomical-data BinaryAnatomicalDataFiles)
-INSTALL(TARGETS demo-anatomical-data RUNTIME DESTINATION demos/AnatomicalData/bin  COMPONENT demos)
-#INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl DESTINATION demos/AnatomicalData/data COMPONENT demos)
+INSTALL(TARGETS demo-anatomical-data RUNTIME DESTINATION demos/AnatomicalData COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION demos/AnatomicalData COMPONENT demos)
 
 IF (APPLE)
@@ -38,33 +37,6 @@ IF (APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/skin_bin.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/spine.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/liver.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/lung.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/diaph4.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib1L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib1R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib2L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib2R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib3L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib3R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib4L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib4R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib5L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib5R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib6L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib6R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib7L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib7R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib8L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib8R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib9L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib9R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib10L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib10R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib11L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib11R.stl
     )
 
     ADD_EXECUTABLE (AnatomicalData MACOSX_BUNDLE ${AnatomicalData_SRCS})
@@ -90,33 +62,6 @@ IF (APPLE)
 
     SET_SOURCE_FILES_PROPERTIES (
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/skin_bin.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/spine.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/liver.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/lung.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/diaph4.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib1L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib1R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib2L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib2R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib3L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib3R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib4L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib4R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib5L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib5R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib6L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib6R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib7L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib7R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib8L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib8R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib9L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib9R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib10L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib10R.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib11L.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/rib11R.stl
         PROPERTIES
         MACOSX_PACKAGE_LOCATION data
     )

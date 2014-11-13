@@ -27,7 +27,7 @@ ENDIF(NOT glfw_FOUND)
 add_executable(test_implicit_surface test_implicit_surface.cxx)
 target_link_libraries(test_implicit_surface ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(welsh_dragon_glut BinaryIsoSurfaceFiles)
-INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION demos/Iso-Surfaces/bin  COMPONENT demos)
+INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION demos/Iso-Surfaces/  COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION demos/Iso-Surfaces COMPONENT demos)
 
 IF (APPLE)
