@@ -320,51 +320,36 @@ int main(int argc, char** argv)
 	    // Initialize random seed
 	    srand(time(0));
 
-	    // Set an error callback
-	    glfwSetErrorCallback(errorCallback);
+        // Set an error callback
+        glfwSetErrorCallback(errorCallback);
 
-	    // Register the exit callback
-		atexit(quit);
+        // Register the exit callback
+        atexit(quit);
 
-		// Initialize GLFW
-	    if (!glfwInit())
-	    {
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-	    }
-
-	    // Enable OpenGL 2.1 if possible
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-
-	    // Enable quad-buffering if possible
-	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
-	    // Enable anti-aliasing
-	    glfwWindowHint(GLFW_SAMPLES, 4);
-
-	    // Create a windowed mode window and its OpenGL context
-	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	   
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-	    {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        // Initialize GLFW
+        if (!glfwInit())
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
         }
-        
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+        // Enable anti-aliasing
+        glfwWindowHint(GLFW_SAMPLES, 4);
+
+        // Create a windowed mode window and its OpenGL context
+        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+
         // Window cannot be created 
         if (!g_p_main_window_id)
-	    {
-	        glfwTerminate();
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-	    }
+        {
+            glfwTerminate();
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+        }
 
-	    // Make the window's context current
-	    glfwMakeContextCurrent(g_p_main_window_id);
+        // Make the window's context current
+        glfwMakeContextCurrent(g_p_main_window_id);
 
         // Initialise GLEW
         initGLEW();
@@ -377,8 +362,8 @@ int main(int argc, char** argv)
         std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         // Initialise OpenGL
-		initGL();
-	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        initGL();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -864,15 +849,9 @@ void initGLEW()
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 
-    try
+    do
     {
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
-    // Catch exception if any
-    catch (const std::exception& error)
-    {
-        std::cerr << error.what() << std::endl;
-    }
+    } while (glGetError() != GL_NO_ERROR);
 }
 
 
