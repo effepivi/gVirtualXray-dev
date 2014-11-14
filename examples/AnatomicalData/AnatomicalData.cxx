@@ -110,28 +110,7 @@
 #include "lung.stl.h"
 #include "diaph.stl.h"
 #include "spine.stl.h"
-#include "rib1L.stl.h"
-#include "rib1R.stl.h"
-#include "rib2L.stl.h"
-#include "rib2R.stl.h"
-#include "rib3L.stl.h"
-#include "rib3R.stl.h"
-#include "rib4L.stl.h"
-#include "rib4R.stl.h"
-#include "rib5L.stl.h"
-#include "rib5R.stl.h"
-#include "rib6L.stl.h"
-#include "rib6R.stl.h"
-#include "rib7L.stl.h"
-#include "rib7R.stl.h"
-#include "rib8L.stl.h"
-#include "rib8R.stl.h"
-#include "rib9L.stl.h"
-#include "rib9R.stl.h"
-#include "rib10L.stl.h"
-#include "rib10R.stl.h"
-#include "rib11L.stl.h"
-#include "rib11R.stl.h"
+#include "ribs.stl.h"
 
 
 //******************************************************************************
@@ -170,35 +149,14 @@ typedef enum AcquisitionTypeTag
     ROTATE_SOURCE_DETECTOR
 } AcquisitionType;
 
-std::vector<PolygonMesh> g_p_polygon_mesh_set(27);
+std::vector<PolygonMesh> g_p_polygon_mesh_set(6);
 
 const unsigned char SKIN_ID(0);
 const unsigned char LIVER_ID(1);
 const unsigned char LUNG_ID(2);
 const unsigned char DIAPH_ID(3);
 const unsigned char SPINE_ID(4);
-const unsigned char RIB1L_ID(5);
-const unsigned char RIB1R_ID(6);
-const unsigned char RIB2L_ID(7);
-const unsigned char RIB2R_ID(8);
-const unsigned char RIB3L_ID(9);
-const unsigned char RIB3R_ID(10);
-const unsigned char RIB4L_ID(11);
-const unsigned char RIB4R_ID(12);
-const unsigned char RIB5L_ID(13);
-const unsigned char RIB5R_ID(14);
-const unsigned char RIB6L_ID(15);
-const unsigned char RIB6R_ID(16);
-const unsigned char RIB7L_ID(17);
-const unsigned char RIB7R_ID(18);
-const unsigned char RIB8L_ID(19);
-const unsigned char RIB8R_ID(20);
-const unsigned char RIB9L_ID(21);
-const unsigned char RIB9R_ID(22);
-const unsigned char RIB10L_ID(23);
-const unsigned char RIB10R_ID(24);
-const unsigned char RIB11L_ID(25);
-const unsigned char RIB11R_ID(26);
+const unsigned char RIBS_ID(5);
 
 const double g_p_HU_set [] =
 {
@@ -206,27 +164,6 @@ const double g_p_HU_set [] =
         33.267,
         -803.976,
         -19.3418,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
-        323.115,
         323.115,
         323.115,
 };
@@ -375,51 +312,36 @@ int main(int argc, char** argv)
 	    // Initialize random seed
 	    srand(time(0));
 
-	    // Set an error callback
-	    glfwSetErrorCallback(errorCallback);
+        // Set an error callback
+        glfwSetErrorCallback(errorCallback);
 
-	    // Register the exit callback
-		atexit(quit);
+        // Register the exit callback
+        atexit(quit);
 
-		// Initialize GLFW
-	    if (!glfwInit())
-	    {
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-	    }
-
-	    // Enable OpenGL 2.1 if possible
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-
-	    // Enable quad-buffering if possible
-	    glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
-	    // Enable anti-aliasing
-	    glfwWindowHint(GLFW_SAMPLES, 4);
-
-	    // Create a windowed mode window and its OpenGL context
-	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	   
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-	    {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        // Initialize GLFW
+        if (!glfwInit())
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
         }
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+        // Enable anti-aliasing
+        glfwWindowHint(GLFW_SAMPLES, 4);
+
+        // Create a windowed mode window and its OpenGL context
+        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
         
         // Window cannot be created 
         if (!g_p_main_window_id)
-	    {
-	        glfwTerminate();
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-	    }
+        {
+            glfwTerminate();
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+        }
 
-	    // Make the window's context current
-	    glfwMakeContextCurrent(g_p_main_window_id);
+        // Make the window's context current
+        glfwMakeContextCurrent(g_p_main_window_id);
 
         // Initialise GLEW
         initGLEW();
@@ -611,15 +533,9 @@ void initGLEW()
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 
-    try
+    do
     {
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
-    // Catch exception if any
-    catch (const std::exception& error)
-    {
-        std::cerr << error.what() << std::endl;
-    }
+    } while (glGetError() != GL_NO_ERROR);
 }
 
 
@@ -802,17 +718,24 @@ void render()
 		}
 
 		// Display the skin with transparency
-        if (!g_display_wireframe)
-        {
-            pushEnableDisableState(GL_BLEND);
+		if (g_display_outside_polygon)
+		{
+            if (!g_display_wireframe)
+            {
+                pushEnableDisableState(GL_BLEND);
 
-            glEnable (GL_BLEND);
-            glBlendFunc (GL_ONE, GL_ONE);
+                glEnable (GL_BLEND);
+                glBlendFunc (GL_ONE, GL_ONE);
 
-            g_p_polygon_mesh_set[SKIN_ID].display();
+                g_p_polygon_mesh_set[SKIN_ID].display();
 
-            popEnableDisableState();
-        }
+                popEnableDisableState();
+            }
+            else
+            {
+                g_p_polygon_mesh_set[SKIN_ID].displayWireFrame();
+            }
+		}
 
         // Restore the current transformation matrix
 		popModelViewMatrix();
@@ -943,12 +866,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		case GLFW_KEY_V:
 			g_display_outside_polygon = !g_display_outside_polygon;
 			break;
-
-        case GLFW_KEY_X:
-        case GLFW_KEY_F:
-        case GLFW_KEY_P:
-            g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
-            break;
 
 		case GLFW_KEY_KP_ADD:
 			g_zoom += 1.0 * cm;
@@ -1094,92 +1011,8 @@ void decompressMesh(unsigned int aMeshID, char*& apData, unsigned int& aSize)
 		aSize = inflate(g_spine_stl, sizeof(g_spine_stl), &apData);
 		break;
 
-	case RIB1R_ID:
-		aSize = inflate(g_rib1R_stl, sizeof(g_rib1R_stl), &apData);
-		break;
-
-	case RIB1L_ID:
-		aSize = inflate(g_rib1L_stl, sizeof(g_rib1L_stl), &apData);
-		break;
-
-	case RIB2L_ID:
-		aSize = inflate(g_rib2L_stl, sizeof(g_rib2L_stl), &apData);
-		break;
-
-	case RIB2R_ID:
-		aSize = inflate(g_rib2R_stl, sizeof(g_rib2R_stl), &apData);
-		break;
-
-	case RIB3L_ID:
-		aSize = inflate(g_rib3L_stl, sizeof(g_rib3L_stl), &apData);
-		break;
-
-	case RIB3R_ID:
-		aSize = inflate(g_rib3R_stl, sizeof(g_rib3R_stl), &apData);
-		break;
-
-	case RIB4L_ID:
-		aSize = inflate(g_rib4L_stl, sizeof(g_rib4L_stl), &apData);
-		break;
-
-	case RIB4R_ID:
-		aSize = inflate(g_rib4R_stl, sizeof(g_rib4R_stl), &apData);
-		break;
-
-	case RIB5L_ID:
-		aSize = inflate(g_rib5L_stl, sizeof(g_rib5L_stl), &apData);
-		break;
-
-	case RIB5R_ID:
-		aSize = inflate(g_rib5R_stl, sizeof(g_rib5R_stl), &apData);
-		break;
-
-	case RIB6L_ID:
-		aSize = inflate(g_rib6L_stl, sizeof(g_rib6L_stl), &apData);
-		break;
-
-	case RIB6R_ID:
-		aSize = inflate(g_rib6R_stl, sizeof(g_rib6R_stl), &apData);
-		break;
-
-	case RIB7L_ID:
-		aSize = inflate(g_rib7L_stl, sizeof(g_rib7L_stl), &apData);
-		break;
-
-	case RIB7R_ID:
-		aSize = inflate(g_rib7R_stl, sizeof(g_rib7R_stl), &apData);
-		break;
-
-	case RIB8L_ID:
-		aSize = inflate(g_rib8L_stl, sizeof(g_rib8L_stl), &apData);
-		break;
-
-	case RIB8R_ID:
-		aSize = inflate(g_rib8R_stl, sizeof(g_rib8R_stl), &apData);
-		break;
-
-	case RIB9L_ID:
-		aSize = inflate(g_rib9L_stl, sizeof(g_rib9L_stl), &apData);
-		break;
-
-	case RIB9R_ID:
-		aSize = inflate(g_rib9R_stl, sizeof(g_rib9R_stl), &apData);
-		break;
-
-	case RIB10L_ID:
-		aSize = inflate(g_rib10L_stl, sizeof(g_rib10L_stl), &apData);
-		break;
-
-	case RIB10R_ID:
-		aSize = inflate(g_rib10R_stl, sizeof(g_rib10R_stl), &apData);
-		break;
-
-	case RIB11L_ID:
-		aSize = inflate(g_rib11L_stl, sizeof(g_rib11L_stl), &apData);
-		break;
-
-	case RIB11R_ID:
-		aSize = inflate(g_rib11R_stl, sizeof(g_rib11R_stl), &apData);
+	case RIBS_ID:
+		aSize = inflate(g_ribs_stl, sizeof(g_ribs_stl), &apData);
 		break;
 
 	default:
