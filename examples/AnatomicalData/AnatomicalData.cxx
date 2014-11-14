@@ -105,12 +105,19 @@
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
-#include "skin.stl.h"
-#include "liver.stl.h"
-#include "lung.stl.h"
-#include "diaph.stl.h"
-#include "spine.stl.h"
-#include "ribs.stl.h"
+#include "P4_skin.stl.h"
+#include "P4_liver.stl.h"
+#include "P4_lung.stl.h"
+#include "P4_diaph.stl.h"
+#include "P4_spine.stl.h"
+#include "P4_ribs.stl.h"
+
+#include "P5_skin.stl.h"
+#include "P5_liver.stl.h"
+#include "P5_lung.stl.h"
+#include "P5_diaph.stl.h"
+#include "P5_spine.stl.h"
+#include "P5_ribs.stl.h"
 
 
 //******************************************************************************
@@ -149,7 +156,16 @@ typedef enum AcquisitionTypeTag
     ROTATE_SOURCE_DETECTOR
 } AcquisitionType;
 
-std::vector<PolygonMesh> g_p_polygon_mesh_set(6);
+typedef enum PatientIDTag
+{
+    P4,
+    P5
+} PatientID;
+
+
+std::vector<PolygonMesh> g_p_P4_polygon_mesh_set(6);
+std::vector<PolygonMesh> g_p_P5_polygon_mesh_set(6);
+PatientID g_current_patient(P4);
 
 const unsigned char SKIN_ID(0);
 const unsigned char LIVER_ID(1);
@@ -158,7 +174,17 @@ const unsigned char DIAPH_ID(3);
 const unsigned char SPINE_ID(4);
 const unsigned char RIBS_ID(5);
 
-const double g_p_HU_set [] =
+const double g_p_P4_HU_set [] =
+{
+        -70.202,
+        36.9,
+        -687.297,
+        -41.284,
+        181.08,
+        181.08,
+};
+
+const double g_p_P5_HU_set [] =
 {
         -36.6789,
         33.267,
@@ -189,8 +215,10 @@ GLint g_current_y_position(0);
 bool g_display_beam(true);
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
-Matrix4x4<GLfloat> g_sample_rotation_matrix;
-VEC3 g_translation_vector;
+Matrix4x4<GLfloat> g_P4_rotation_matrix;
+Matrix4x4<GLfloat> g_P5_rotation_matrix;
+VEC3 g_P4_translation_vector;
+VEC3 g_P5_translation_vector;
 
 std::vector<float> g_p_vertex_data;
 std::vector<unsigned int> g_p_index_data;
@@ -248,6 +276,7 @@ void errorCallback(int error, const char* description);
 void draw();
 void reset();
 void drawLine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData, float intensity);
+void usePatient(const PatientID& aPatientID);
 
 
 //------------------------
@@ -375,15 +404,8 @@ int main(int argc, char** argv)
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
 
-		if (!g_p_polygon_mesh_set.size())
-		{
-		    throw "No anatomical data provided.";
-		}
-
-		for (unsigned int i(0); i < g_p_polygon_mesh_set.size(); ++i)
-		{
-		    g_xray_renderer.addInnerSurface(&g_p_polygon_mesh_set[i]);
-		}
+		// Set the patient
+		usePatient(g_current_patient);
 
 		// Set the projection matrix
 		GLint width(0);
@@ -407,12 +429,20 @@ int main(int argc, char** argv)
 	                {
                     case ROTATE_SAMPLE:
                         {
-                            Matrix4x4<GLfloat> rotation_matrix;
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_translation_vector);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+                            Matrix4x4<GLfloat> P4_rotation_matrix;
+                            P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P4_translation_vector);
+                            P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
+                            P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
 
-                            g_sample_rotation_matrix *= rotation_matrix;
+                            Matrix4x4<GLfloat> P5_rotation_matrix;
+                            P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P5_translation_vector);
+                            P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
+                            P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
+
+                            g_P4_rotation_matrix *= P4_rotation_matrix;
+                            g_P5_rotation_matrix *= P5_rotation_matrix;
+
+
                         }
                         break;
 
@@ -597,6 +627,65 @@ void initGL()
 }
 
 
+//------------------------------------------------------
+void displayPatient(std::vector<PolygonMesh>& apMeshSet,
+                    GLint aShaderID)
+//------------------------------------------------------
+{
+    for (unsigned int i(1); i < apMeshSet.size(); ++i)
+    {
+        // Get the material
+        Material& material(apMeshSet[i].getMaterial());
+
+        // Define colours inshader
+        GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
+        glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(aShaderID, "material_diffuse");
+        glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(aShaderID, "material_specular");
+        glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(aShaderID, "material_shininess");
+        glUniform1f(handle, material.getShininess());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        if (g_display_wireframe)
+        {
+            apMeshSet[i].displayWireFrame();
+        }
+        else
+        {
+            apMeshSet[i].display();
+        }
+    }
+
+    // Display the skin with transparency
+    if (g_display_outside_polygon)
+    {
+        if (!g_display_wireframe)
+        {
+            pushEnableDisableState(GL_BLEND);
+
+            glEnable (GL_BLEND);
+            glBlendFunc (GL_ONE, GL_ONE);
+
+            apMeshSet[SKIN_ID].display();
+
+            popEnableDisableState();
+        }
+        else
+        {
+            apMeshSet[SKIN_ID].displayWireFrame();
+        }
+    }
+}
+
+
 //-----------
 void render()
 //-----------
@@ -682,59 +771,26 @@ void render()
 		// Store the current transformation matrix
 		pushModelViewMatrix();
 
-		g_current_modelview_matrix *= g_sample_rotation_matrix;
+        // Set the modelview matrix
+        if (g_current_patient == P4)
+        {
+            g_current_modelview_matrix *= g_P4_rotation_matrix;
+        }
+        else
+        {
+            g_current_modelview_matrix *= g_P5_rotation_matrix;
+        }
+
 		applyModelViewMatrix();
 
-		for (unsigned int i(1); i < g_p_polygon_mesh_set.size(); ++i)
+		// Display the current patient
+		if (g_current_patient == P4)
 		{
-            // Get the material
-            Material& material(g_p_polygon_mesh_set[i].getMaterial());
-
-            // Define colours inshader
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1f(handle, material.getShininess());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            if (g_display_wireframe)
-            {
-                g_p_polygon_mesh_set[i].displayWireFrame();
-            }
-            else
-            {
-                g_p_polygon_mesh_set[i].display();
-            }
+		    displayPatient(g_p_P4_polygon_mesh_set, shader_id);
 		}
-
-		// Display the skin with transparency
-		if (g_display_outside_polygon)
+		else
 		{
-            if (!g_display_wireframe)
-            {
-                pushEnableDisableState(GL_BLEND);
-
-                glEnable (GL_BLEND);
-                glBlendFunc (GL_ONE, GL_ONE);
-
-                g_p_polygon_mesh_set[SKIN_ID].display();
-
-                popEnableDisableState();
-            }
-            else
-            {
-                g_p_polygon_mesh_set[SKIN_ID].displayWireFrame();
-            }
+		    displayPatient(g_p_P5_polygon_mesh_set, shader_id);
 		}
 
         // Restore the current transformation matrix
@@ -859,9 +915,15 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
 			break;
 
-		case GLFW_KEY_W:
-			g_display_wireframe = !g_display_wireframe;
-			break;
+        case GLFW_KEY_W:
+            g_display_wireframe = !g_display_wireframe;
+            break;
+
+        case GLFW_KEY_P:
+            if (g_current_patient == P4) g_current_patient = P5;
+            else g_current_patient = P4;
+            usePatient(g_current_patient);
+            break;
 
 		case GLFW_KEY_V:
 			g_display_outside_polygon = !g_display_outside_polygon;
@@ -976,9 +1038,55 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 }
 
 
-//---------------------------------------------------------------------------
-void decompressMesh(unsigned int aMeshID, char*& apData, unsigned int& aSize)
-//---------------------------------------------------------------------------
+//------------------------------------------
+void usePatient(const PatientID& aPatientID)
+//------------------------------------------
+{
+    std::vector<PolygonMesh>* p_mesh_set(0);
+
+    switch (aPatientID)
+    {
+        case P4:
+            g_current_patient = P4;
+            p_mesh_set = &g_p_P4_polygon_mesh_set;
+            break;
+
+        case P5:
+            g_current_patient = P5;
+            p_mesh_set = &g_p_P5_polygon_mesh_set;
+            break;
+
+        default:
+            g_current_patient = P5;
+            p_mesh_set = &g_p_P5_polygon_mesh_set;
+    }
+
+    if (!p_mesh_set->size())
+    {
+        throw "No anatomical data provided.";
+    }
+
+    g_xray_renderer.removeInnerSurfaces();
+    g_xray_renderer.removeOuterSurface();
+    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
+    {
+        g_xray_renderer.addInnerSurface(&((*p_mesh_set)[i]));
+    }
+
+    // Reset the simulation state
+    reset();
+
+    // The X-ray image is not up-to-date
+    g_is_xray_image_up_to_date = false;
+}
+
+
+//---------------------------------------
+void decompressMesh(unsigned int aMeshID,
+                    PatientID aPatientID,
+                    char*& apData,
+                    unsigned int& aSize)
+//---------------------------------------
 {
 	// Initialise the data
 	if (apData)
@@ -989,34 +1097,69 @@ void decompressMesh(unsigned int aMeshID, char*& apData, unsigned int& aSize)
 
 	aSize = 0;
 
-	switch (aMeshID)
+	if (aPatientID == P4)
 	{
-	case SKIN_ID:
-		aSize = inflate(g_skin_stl, sizeof(g_skin_stl), &apData);
-		break;
+	    switch (aMeshID)
+        {
+        case SKIN_ID:
+            aSize = inflate(g_P4_skin_stl, sizeof(g_P4_skin_stl), &apData);
+            break;
 
-	case LIVER_ID:
-		aSize = inflate(g_liver_stl, sizeof(g_liver_stl), &apData);
-		break;
+        case LIVER_ID:
+            aSize = inflate(g_P4_liver_stl, sizeof(g_P4_liver_stl), &apData);
+            break;
 
-	case LUNG_ID:
-		aSize = inflate(g_lung_stl, sizeof(g_lung_stl), &apData);
-		break;
+        case LUNG_ID:
+            aSize = inflate(g_P4_lung_stl, sizeof(g_P4_lung_stl), &apData);
+            break;
 
-	case DIAPH_ID:
-		aSize = inflate(g_diaph_stl, sizeof(g_diaph_stl), &apData);
-		break;
+        case DIAPH_ID:
+            aSize = inflate(g_P4_diaph_stl, sizeof(g_P4_diaph_stl), &apData);
+            break;
 
-	case SPINE_ID:
-		aSize = inflate(g_spine_stl, sizeof(g_spine_stl), &apData);
-		break;
+        case SPINE_ID:
+            aSize = inflate(g_P4_spine_stl, sizeof(g_P4_spine_stl), &apData);
+            break;
 
-	case RIBS_ID:
-		aSize = inflate(g_ribs_stl, sizeof(g_ribs_stl), &apData);
-		break;
+        case RIBS_ID:
+            aSize = inflate(g_P4_ribs_stl, sizeof(g_P4_ribs_stl), &apData);
+            break;
 
-	default:
-		break;
+        default:
+            break;
+        }
+	}
+	else
+	{
+        switch (aMeshID)
+        {
+        case SKIN_ID:
+            aSize = inflate(g_P5_skin_stl, sizeof(g_P5_skin_stl), &apData);
+            break;
+
+        case LIVER_ID:
+            aSize = inflate(g_P5_liver_stl, sizeof(g_P5_liver_stl), &apData);
+            break;
+
+        case LUNG_ID:
+            aSize = inflate(g_P5_lung_stl, sizeof(g_P5_lung_stl), &apData);
+            break;
+
+        case DIAPH_ID:
+            aSize = inflate(g_P5_diaph_stl, sizeof(g_P5_diaph_stl), &apData);
+            break;
+
+        case SPINE_ID:
+            aSize = inflate(g_P5_spine_stl, sizeof(g_P5_spine_stl), &apData);
+            break;
+
+        case RIBS_ID:
+            aSize = inflate(g_P5_ribs_stl, sizeof(g_P5_ribs_stl), &apData);
+            break;
+
+        default:
+            break;
+        }
 	}
 
 	if (aSize <= 0)
@@ -1026,28 +1169,46 @@ void decompressMesh(unsigned int aMeshID, char*& apData, unsigned int& aSize)
 }
 
 
-//----------------
-void loadSTLFile()
-//----------------
+void loadPatient(PatientID aPatientID)
 {
-    // Set geometry
-    for (unsigned int i(0); i < g_p_polygon_mesh_set.size(); ++i)
+    std::vector<PolygonMesh>* p_mesh_set(0);
+    double const* p_HU_set(0);
+
+    switch (aPatientID)
     {
-    	char* p_data(0);
-    	unsigned int data_size(0);
-    	decompressMesh(i, p_data, data_size);
+        case P4:
+            p_mesh_set = &g_p_P4_polygon_mesh_set;
+            p_HU_set = g_p_P4_HU_set;
+            break;
 
-    	g_p_polygon_mesh_set[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+        case P5:
+            p_mesh_set = &g_p_P5_polygon_mesh_set;
+            p_HU_set = g_p_P5_HU_set;
+            break;
 
-    	// Delete data
-    	if (p_data)
-    	{
-    		delete [] p_data;
-    		p_data = 0;
-    	}
+        default:
+            p_mesh_set = &g_p_P5_polygon_mesh_set;
+            p_HU_set = g_p_P5_HU_set;
+    }
 
-    	//g_p_polygon_mesh_set[i].mergeVertices();
-        g_p_polygon_mesh_set[i].setHounsfieldValue(g_p_HU_set[i]);
+    // Set geometry
+    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
+    {
+        char* p_data(0);
+        unsigned int data_size(0);
+        decompressMesh(i, aPatientID, p_data, data_size);
+
+        (*p_mesh_set)[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+
+        // Delete data
+        if (p_data)
+        {
+            delete [] p_data;
+            p_data = 0;
+        }
+
+        //g_p_polygon_mesh_set[i].mergeVertices();
+        (*p_mesh_set)[i].setHounsfieldValue(p_HU_set[i]);
 
         float red((float(rand()) / (RAND_MAX)) + 1);
         float green((float(rand()) / (RAND_MAX)) + 1);
@@ -1062,15 +1223,40 @@ void loadSTLFile()
         VEC3 base_colour(red, green, blue);
         base_colour.normalise();
 
-        g_p_polygon_mesh_set[i].getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-        g_p_polygon_mesh_set[i].getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-        g_p_polygon_mesh_set[i].getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
-        g_p_polygon_mesh_set[i].getMaterial().setShininess(50);
+        (*p_mesh_set)[i].getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
+        (*p_mesh_set)[i].getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
+        (*p_mesh_set)[i].getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
+        (*p_mesh_set)[i].getMaterial().setShininess(50);
     }
 
     // Compute the translation vector
-    g_translation_vector = g_p_polygon_mesh_set[SKIN_ID].getMinCorner() + (g_p_polygon_mesh_set[SKIN_ID].getMaxCorner() - g_p_polygon_mesh_set[SKIN_ID].getMinCorner()) / 2.0;
-    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+    switch (aPatientID)
+    {
+        case P4:
+            g_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            g_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
+            g_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
+            break;
+
+        case P5:
+            g_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            g_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+//----------------
+void loadSTLFile()
+//----------------
+{
+    std::cout << "Load P4" << std::endl;
+    loadPatient(P4);
+    std::cout << "Load P5" << std::endl;
+    loadPatient(P5);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1195,7 +1381,14 @@ void updateXRayImage()
 	if (!g_is_xray_image_up_to_date)
 	{
 		// Compute the X-Ray image
-		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+	    if (g_current_patient == P4)
+	    {
+	        g_xray_renderer.computeImage(g_P4_rotation_matrix);
+	    }
+	    else
+	    {
+            g_xray_renderer.computeImage(g_P5_rotation_matrix);
+	    }
 
 		// Normalise the X-ray image
 		if (g_current_angle == 0)
