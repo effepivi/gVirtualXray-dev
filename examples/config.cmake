@@ -54,3 +54,14 @@ IF(GLUT_FOUND)
 ELSE(GLUT_FOUND)
     MESSAGE(WARNING "GLUT not found.")
 ENDIF(GLUT_FOUND)
+
+
+# FREETYPE ####################################################################
+FIND_PACKAGE(FreeType)
+IF(FREETYPE_FOUND)
+    ADD_DEFINITIONS(-DHAS_FREETYPE)
+    INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
+    SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+ELSE(FREETYPE_FOUND)
+    MESSAGE(WARNING "FreeType not found.")
+ENDIF(FREETYPE_FOUND)

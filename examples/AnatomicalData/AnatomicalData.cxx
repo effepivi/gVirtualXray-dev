@@ -51,6 +51,11 @@
 
 #include <stdlib.h>
 
+#ifdef HAS_FREETYPE
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#endif
+
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -105,6 +110,12 @@
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
+#include "display_image_gl2.frag.h"
+#include "display_image_gl2.vert.h"
+
+#include "display_image_gl3.frag.h"
+#include "display_image_gl3.vert.h"
+
 #include "P4_skin.stl.h"
 #include "P4_liver.stl.h"
 #include "P4_lung.stl.h"
@@ -149,6 +160,7 @@ const double g_initial_far(500.0 * cm);                       // Far clipping pl
 const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
 const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
 const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
+const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
 typedef enum AcquisitionTypeTag
 {
@@ -214,6 +226,7 @@ GLint g_current_y_position(0);
 
 bool g_display_beam(true);
 
+Matrix4x4<GLfloat> g_current_2D_projection_matrix;
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_P4_rotation_matrix;
 Matrix4x4<GLfloat> g_P5_rotation_matrix;
@@ -222,9 +235,6 @@ VEC3 g_P5_translation_vector;
 
 std::vector<float> g_p_vertex_data;
 std::vector<unsigned int> g_p_index_data;
-
-boost::scoped_ptr<VBO> g_sinogram_rectangle;
-boost::scoped_ptr<VBO> g_tomography_rectangle;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -252,18 +262,29 @@ VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
 VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
+bool g_display_help(true);
+
+#ifdef HAS_FREETYPE
+FT_Library g_free_type;
+FT_Face g_face;
+GLuint g_text_texture(0);
+boost::scoped_ptr<VBO> g_text_vbo;
+#endif
+
 
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
 void initGLEW();
 void initGL();
-void display();
+void initFreeType();
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+void draw();
+void render();
 void quit();
 void loadSTLFile();
 void loadDetector();
@@ -273,9 +294,8 @@ Vec3<GLfloat> getArcballVector(int x, int y);
 void computeRotation(MATRIX4& aRotationMatrix);
 void updateXRayImage();
 void errorCallback(int error, const char* description);
-void draw();
 void reset();
-void drawLine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData, float intensity);
+void displayHelp(GLint aShaderID);
 void usePatient(const PatientID& aPatientID);
 
 
@@ -389,6 +409,9 @@ int main(int argc, char** argv)
 		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+		// Initialise FreeType
+		initFreeType();
+
 		// Initialize GLFL callback
 		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
 		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
@@ -419,79 +442,9 @@ int main(int argc, char** argv)
 		// Launch the event loop
 	    while (!glfwWindowShouldClose(g_p_main_window_id))
 	    {
-
-	        if (g_run_tomography_acquisition)
-	        {
-	            // Rotation
-	            if (g_current_angle != g_next_angle_to_process)
-	            {
-	                switch (g_acquisition_type)
-	                {
-                    case ROTATE_SAMPLE:
-                        {
-                            Matrix4x4<GLfloat> P4_rotation_matrix;
-                            P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P4_translation_vector);
-                            P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                            P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
-
-                            Matrix4x4<GLfloat> P5_rotation_matrix;
-                            P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P5_translation_vector);
-                            P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                            P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
-
-                            g_P4_rotation_matrix *= P4_rotation_matrix;
-                            g_P5_rotation_matrix *= P5_rotation_matrix;
-
-
-                        }
-                        break;
-
-                    case ROTATE_SOURCE_DETECTOR:
-                        {
-                            Matrix4x4<GLfloat> rotation_matrix;
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
-
-                            g_source_position   = rotation_matrix * g_source_position;
-                            g_detector_position = rotation_matrix * g_detector_position;
-
-                            // Set the source position
-                            g_xray_detector.setXrayPointSource(g_source_position);
-
-                            // Use a parallel source
-                            g_xray_detector.setParallelBeam();
-
-                            // Set the detector position
-                            g_xray_detector.setDetectorPosition(g_detector_position);
-                        }
-                        break;
-	                }
-	            }
-
-	            // Update the X-ray image
-	            g_is_xray_image_up_to_date = false;
-
-	            // Update the current angle
-                g_current_angle = g_next_angle_to_process;
-                ++g_next_angle_to_process;
-
-                // Stop the acquisition
-                if (g_next_angle_to_process == g_angle_number)
-                {
-                    g_run_tomography_acquisition = false;
-                }
-	        }
-
-	        // Update the X-ray image
-	        updateXRayImage();
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	        // Draw the 3D scene
 	        draw();
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	        // Swap front and back buffers
+            // Swap front and back buffers
 	        glfwSwapBuffers(g_p_main_window_id);
 
 	        // Poll for and process events
@@ -583,7 +536,7 @@ void initGL()
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Set the background colour
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glClearColor(g_background_colour.getX(), g_background_colour.getY(), g_background_colour.getZ(), 1.0);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	glEnable(GL_MULTISAMPLE);
@@ -624,6 +577,142 @@ void initGL()
 	g_display_shader.setLabels("display.vert", "display.frag");
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Display shader
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_display_image_gl3_vert, sizeof(g_display_image_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_image_gl3_frag, sizeof(g_display_image_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_display_image_gl2_vert, sizeof(g_display_image_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_image_gl2_frag, sizeof(g_display_image_gl2_frag), &p_fragment_shader);
+    }
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    g_display_image_shader.setLabels("display_image.vert", "display_image.frag");
+    g_display_image_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//-----------------
+void initFreeType()
+//-----------------
+{
+#ifdef HAS_FREETYPE
+    if (FT_Init_FreeType(&g_free_type))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
+    }
+
+    if (FT_New_Face(g_free_type, "../data/FreeSans.ttf", 0, &g_face))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
+    }
+
+    if (FT_Set_Char_Size(g_face, // handle to face object
+            0, // char_width in 1/64th of points
+            16*38, // char_height in 1/64th of points
+            300, // horizontal device resolution
+            300 )) // vertical device resolution
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
+    }
+
+    pushTexture2D();
+
+    glGenTextures(1, &g_text_texture);
+    glBindTexture(GL_TEXTURE_2D, g_text_texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    popTexture();
+
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+    std::vector<GLfloat> p_vertices;
+    p_vertices.push_back(0);
+    p_vertices.push_back(0);
+    p_vertices.push_back(0);
+
+    p_vertices.push_back(1);
+    p_vertices.push_back(0);
+    p_vertices.push_back(0);
+
+    p_vertices.push_back(1);
+    p_vertices.push_back(1);
+    p_vertices.push_back(0);
+
+    p_vertices.push_back(0);
+    p_vertices.push_back(0);
+    p_vertices.push_back(0);
+
+    p_vertices.push_back(1);
+    p_vertices.push_back(1);
+    p_vertices.push_back(0);
+
+    p_vertices.push_back(0);
+    p_vertices.push_back(1);
+    p_vertices.push_back(0);
+
+    // Texture coordinates
+    std::vector<float> p_texture_coordinates;
+
+    p_texture_coordinates.push_back(0);
+    p_texture_coordinates.push_back(0);
+    p_texture_coordinates.push_back(0);
+
+    p_texture_coordinates.push_back(1);
+    p_texture_coordinates.push_back(0);
+    p_texture_coordinates.push_back(0);
+
+    p_texture_coordinates.push_back(1);
+    p_texture_coordinates.push_back(1);
+    p_texture_coordinates.push_back(0);
+
+    p_texture_coordinates.push_back(0);
+    p_texture_coordinates.push_back(0);
+    p_texture_coordinates.push_back(0);
+
+    p_texture_coordinates.push_back(1);
+    p_texture_coordinates.push_back(1);
+    p_texture_coordinates.push_back(0);
+
+    p_texture_coordinates.push_back(0);
+    p_texture_coordinates.push_back(1);
+    p_texture_coordinates.push_back(0);
+
+    if (!g_text_vbo.get())
+    {
+        g_text_vbo.reset(createVBO());
+    }
+
+    g_text_vbo->setBufferUsageHint(GL_STATIC_DRAW);
+    g_text_vbo->setVertexData(GL_TRIANGLES,
+        p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+        0, 0, GL_NONE, 0,
+        p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+#else
+    g_display_help = false;
+#endif
 }
 
 
@@ -686,15 +775,167 @@ void displayPatient(std::vector<PolygonMesh>& apMeshSet,
 }
 
 
+//---------
+void draw()
+//---------
+{
+    // Clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Display the 3D elements
+    glViewport(0, 0, g_main_window_width, g_main_window_height);
+
+    // Store the current transformation matrix
+    pushModelViewMatrix();
+    pushProjectionMatrix();
+
+    // Draw the help message
+    if (g_display_help)
+    {
+        // Enable the shader
+        pushShaderProgram();
+        g_display_image_shader.enable();
+        GLint shader_id(g_display_image_shader.getProgramHandle());
+
+        pushEnableDisableState(GL_CULL_FACE);
+        pushEnableDisableState(GL_DEPTH_TEST);
+        pushEnableDisableState(GL_BLEND);
+
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_BLEND);
+
+        glActiveTexture(GL_TEXTURE0);
+        glUniform1i(glGetUniformLocation(shader_id, "imageTexture"), 0);
+
+        GLuint handle(glGetUniformLocation(shader_id, "g_projection_matrix"));
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "shift");
+        glUniform1f(handle, 0.0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "scale");
+        glUniform1f(handle, 1.0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        displayHelp(shader_id);
+
+        // Disable the shader
+        popShaderProgram();
+
+        // Restore the attributes
+        popEnableDisableState();
+        popEnableDisableState();
+        popEnableDisableState();
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+    // Display the 3D
+    else
+    {
+        double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
+
+        loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+        /*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
+                -height / 2.0, height / 2.0,
+                0.01, g_initial_far);
+         */
+
+        loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0);
+
+        if (g_run_tomography_acquisition)
+        {
+            // Rotation
+            if (g_current_angle != g_next_angle_to_process)
+            {
+                switch (g_acquisition_type)
+                {
+                case ROTATE_SAMPLE:
+                    {
+                        Matrix4x4<GLfloat> P4_rotation_matrix;
+                        P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P4_translation_vector);
+                        P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
+                        P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
+
+                        Matrix4x4<GLfloat> P5_rotation_matrix;
+                        P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P5_translation_vector);
+                        P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
+                        P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
+
+                        g_P4_rotation_matrix *= P4_rotation_matrix;
+                        g_P5_rotation_matrix *= P5_rotation_matrix;
+
+
+                    }
+                    break;
+
+                case ROTATE_SOURCE_DETECTOR:
+                    {
+                        Matrix4x4<GLfloat> rotation_matrix;
+                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
+                        rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
+                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
+
+                        g_source_position   = rotation_matrix * g_source_position;
+                        g_detector_position = rotation_matrix * g_detector_position;
+
+                        // Set the source position
+                        g_xray_detector.setXrayPointSource(g_source_position);
+
+                        // Use a parallel source
+                        g_xray_detector.setParallelBeam();
+
+                        // Set the detector position
+                        g_xray_detector.setDetectorPosition(g_detector_position);
+                    }
+                    break;
+                }
+            }
+
+            // Update the X-ray image
+            g_is_xray_image_up_to_date = false;
+
+            // Update the current angle
+            g_current_angle = g_next_angle_to_process;
+            ++g_next_angle_to_process;
+
+            // Stop the acquisition
+            if (g_next_angle_to_process == g_angle_number)
+            {
+                g_run_tomography_acquisition = false;
+            }
+        }
+
+        // Update the X-ray image
+        updateXRayImage();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Draw the 3D scene
+        render();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+        popProjectionMatrix();
+    }
+
+    // Make sure all the OpenGL code is done
+    glFinish();
+}
+
+
 //-----------
 void render()
 //-----------
 {
 	try
 	{
-	    // Display the 3D elements
-	    glViewport(0, 0, g_main_window_width, g_main_window_height);
-
 		// Handle for shader variables
 		GLuint handle(0);
 
@@ -866,25 +1107,6 @@ void render()
 }
 
 
-//------------
-void display()
-//------------
-{
-	// Store the current transformation matrix
-	pushModelViewMatrix();
-	pushProjectionMatrix();
-
-	// Update the X-ray image
-	updateXRayImage();
-
-    draw();
-
-	// Restore the current transformation matrix
-	popModelViewMatrix();
-	popProjectionMatrix();
-}
-
-
 //-------------------------------------------------------------------------------
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 //-------------------------------------------------------------------------------
@@ -917,6 +1139,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_W:
             g_display_wireframe = !g_display_wireframe;
+            break;
+
+        case GLFW_KEY_H:
+            g_display_help = !g_display_help;
             break;
 
         case GLFW_KEY_P:
@@ -965,17 +1191,12 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	g_main_window_width = width;
 	g_main_window_height = height;
 
-	double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
-
-	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-	/*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
-			-height / 2.0, height / 2.0,
-			0.01, g_initial_far);
-	 */
-
-	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-			0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0);
+    g_current_2D_projection_matrix = buildOrthoProjectionMatrix(0,
+            g_main_window_width,
+            g_main_window_height,
+            0,
+            -1.0,
+            1.0);
 }
 
 
@@ -1402,28 +1623,6 @@ void updateXRayImage()
 }
 
 
-//---------
-void draw()
-//---------
-{
-	// Get the current draw buffer if needed
-	GLint back_buffer(0);
-	glGetIntegerv(GL_DRAW_BUFFER, &back_buffer);
-
-	// Clear the buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Display the 3D scene
-	render();
-
-	// Make sure all the OpenGL code is done
-	glFinish();
-
-	// Restore the draw buffer if needed
-	glDrawBuffer(back_buffer);
-}
-
-
 //------------------------------------
 void createTexture(GLuint& aTextureID,
                    unsigned int aWidth,
@@ -1500,88 +1699,109 @@ void reset()
 }
 
 
-//----------------------------------
-void drawLine(const Vec2i& aVector0,
-		      const Vec2i& aVector1,
-		      int width,
-		      int height,
-		      float* apData,
-		      float intensity)
-//----------------------------------
+void render_text(const std::string& aText, float x, float y, GLint aShaderID) {
+
+#ifdef HAS_FREETYPE
+    pushTexture2D();
+
+    glBindTexture(GL_TEXTURE_2D, g_text_texture);
+
+    FT_GlyphSlot  slot(g_face->glyph);
+    for (unsigned int i(0); i < aText.size(); ++i)
+    {
+        if (FT_Load_Char(g_face, aText[i], FT_LOAD_RENDER))
+        {
+            std::cerr << "Could not load character " << aText[i] << std::endl;
+        }
+        else
+        {
+            int w = slot->bitmap.width;
+            int h = slot->bitmap.rows;
+
+            // Change the background colour
+            unsigned char background_colour(floor((255.0 * g_background_colour.getX() +
+                    255.0 * g_background_colour.getY() +
+                    255.0 * g_background_colour.getZ()) / 3.0));
+            unsigned char* p_buffer(slot->bitmap.buffer);
+            for (unsigned int j(0); j < w * h; ++j, ++p_buffer)
+            {
+                if (*p_buffer == 0)
+                {
+                    *p_buffer = background_colour;
+                }
+                else
+                {
+                    *p_buffer = 255;
+                }
+            }
+
+            glTexImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_RED,
+                    w,
+                    h,
+                    0,
+                    GL_RED,
+                    GL_UNSIGNED_BYTE,
+                    slot->bitmap.buffer
+            );
+
+            float large_width(slot->metrics.width);
+            float large_height(slot->metrics.height);
+
+            float small_width(w);
+            float small_height(h);
+
+            float x_ratio(small_width  / large_width);
+            float y_ratio(small_height / large_height);
+
+            const float vx = g_face->glyph->bitmap_left;
+            const float vy = g_face->glyph->bitmap_top;
+
+            MATRIX4 model_view(g_current_modelview_matrix);
+            model_view.translate(x, y - vy, 0);
+            model_view.scale(w, h, 1);
+
+            GLuint handle(glGetUniformLocation(aShaderID, "g_modelview_matrix"));
+            glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            g_text_vbo->display();
+
+            x += (g_face->glyph->advance.x >> 6);
+            y += (g_face->glyph->advance.y >> 6);
+        }
+    }
+    popTexture();
+
+#endif
+}
+
+
+//-------------------------------
+void displayHelp(GLint aShaderID)
+//-------------------------------
 {
-	// Draw a line using Xiaolin Wu's algorithm for Anti-Aliased line
-	// For an example, see http://rosettacode.org/wiki/Xiaolin_Wu%27s_line_algorithm
-	int x1(aVector0.getX());
-	int y1(aVector0.getY());
-	int x2(aVector1.getX());
-	int y2(aVector1.getY());
+#ifdef HAS_FREETYPE
+    glBindTexture(GL_TEXTURE_2D, g_text_texture);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	double dx = (double)x2 - (double)x1;
-	double dy = (double)y2 - (double)y1;
-	if ( fabs(dx) > fabs(dy) )
-	{
-		if ( x2 < x1 )
-		{
-			swap(x1, x2);
-			swap(y1, y2);
-		}
-		double gradient = dy / dx;
-		double xend = round(x1);
-		double yend = y1 + gradient*(xend - x1);
-		double xgap = rfpart(x1 + 0.5);
-		int xpxl1 = xend;
-		int ypxl1 = ipart(yend);
-		plot(xpxl1, ypxl1, rfpart(yend)*xgap, width, height, apData, intensity);
-		plot(xpxl1, ypxl1+1, fpart(yend)*xgap, width, height, apData, intensity);
-		double intery = yend + gradient;
+    render_text(std::string("Help"),
+                20,   50, aShaderID);
 
-		xend = round(x2);
-		yend = y2 + gradient*(xend - x2);
-		xgap = fpart(x2+0.5);
-		int xpxl2 = xend;
-		int ypxl2 = ipart(yend);
-		plot(xpxl2, ypxl2, rfpart(yend) * xgap, width, height, apData, intensity);
-		plot(xpxl2, ypxl2 + 1, fpart(yend) * xgap, width, height, apData, intensity);
+    render_text(std::string("\'h\': display|hide help message"),
+                40, 100, aShaderID);
+    render_text(std::string("\'n\': toggle negative image"),
+                40, 150, aShaderID);
+    render_text(std::string("\'p\': change patient"),
+                40, 200, aShaderID);
+    render_text(std::string("\'b\': display|hide X-ray beam"),
+                40, 250, aShaderID);
+    render_text(std::string("\'w\': wireframe|solid rendering"),
+                40, 300, aShaderID);
+    render_text(std::string("\'q\', 'Esc': quit"),
+                40, 350, aShaderID);
 
-		int x;
-		for(x=xpxl1+1; x <= (xpxl2-1); x++)
-		{
-			plot(x, ipart(intery), rfpart(intery), width, height, apData, intensity);
-			plot(x, ipart(intery) + 1, fpart(intery), width, height, apData, intensity);
-			intery += gradient;
-		}
-	}
-	else
-	{
-		if ( y2 < y1 )
-		{
-			swap(x1, x2);
-			swap(y1, y2);
-		}
-		double gradient = dx / dy;
-		double yend = round(y1);
-		double xend = x1 + gradient*(yend - y1);
-		double ygap = rfpart(y1 + 0.5);
-		int ypxl1 = yend;
-		int xpxl1 = ipart(xend);
-		plot(xpxl1, ypxl1, rfpart(xend)*ygap, width, height, apData, intensity);
-		plot(xpxl1, ypxl1+1, fpart(xend)*ygap, width, height, apData, intensity);
-		double interx = xend + gradient;
-
-		yend = round(y2);
-		xend = x2 + gradient*(yend - y2);
-		ygap = fpart(y2+0.5);
-		int ypxl2 = yend;
-		int xpxl2 = ipart(xend);
-		plot(xpxl2, ypxl2, rfpart(xend) * ygap, width, height, apData, intensity);
-		plot(xpxl2, ypxl2 + 1, fpart(xend) * ygap, width, height, apData, intensity);
-
-		int y;
-		for(y=ypxl1+1; y <= (ypxl2-1); y++)
-		{
-			plot(ipart(interx), y, rfpart(interx), width, height, apData, intensity);
-			plot(ipart(interx) + 1, y, fpart(interx), width, height, apData, intensity);
-			interx += gradient;
-		}
-	}
+#endif
 }
