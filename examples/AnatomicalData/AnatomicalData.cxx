@@ -32,6 +32,7 @@
 //******************************************************************************
 #include <GL/glew.h>
 
+#include <map>
 #include <boost/scoped_ptr.hpp>
 
 #include <cstdlib>
@@ -264,12 +265,275 @@ VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
 bool g_display_help(true);
 
+
+
+class FontRendering
+{
+private:
+    class Character
+    {
+    public:
+        inline Character(GLuint aTextureID = 0,
+                int aWidth = 0,
+                int aHeight = 0,
+                float aVX = 0,
+                float aVY = 0,
+                float aXOffset = 0,
+                float aYOffset = 0):
+            m_texture_id(aTextureID),
+            m_width(aWidth),
+            m_height(aHeight),
+            m_vx(aVX),
+            m_vy(aVY),
+            m_x_offset(aXOffset),
+            m_y_offset(aYOffset)
+        {
+        }
+
+        inline ~Character()
+        {
+            if (m_texture_id)
+            {
+                glDeleteTextures(1, &m_texture_id);
+            }
+        }
+        GLuint m_texture_id;
+        int m_width;
+        int m_height;
+        float m_vx;
+        float m_vy;
+        float m_x_offset;
+        float m_y_offset;
+    };
+
+
+public:
+    inline FontRendering():
+        m_initialised(false)
+    {
+
+    }
+
+
+    ~FontRendering()
+    {
+        m_character_set.clear();
+    }
+
+    inline void initialise()
+    {
+        if (!m_initialised)
+        {
 #ifdef HAS_FREETYPE
-FT_Library g_free_type;
-FT_Face g_face;
-GLuint g_text_texture(0);
-boost::scoped_ptr<VBO> g_text_vbo;
+            if (FT_Init_FreeType(&m_free_type))
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
+            }
+
+            if (FT_New_Face(m_free_type, "../data/FreeSans.ttf", 0, &m_face))
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
+            }
+
+            if (FT_Set_Char_Size(m_face, // handle to face object
+                    0, // char_width in 1/64th of points
+                    16*38, // char_height in 1/64th of points
+                    300, // horizontal device resolution
+                    300 )) // vertical device resolution
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
+            }
+
+
+            std::vector<GLfloat> p_vertices;
+            p_vertices.push_back(0);
+            p_vertices.push_back(0);
+            p_vertices.push_back(0);
+
+            p_vertices.push_back(1);
+            p_vertices.push_back(0);
+            p_vertices.push_back(0);
+
+            p_vertices.push_back(1);
+            p_vertices.push_back(1);
+            p_vertices.push_back(0);
+
+            p_vertices.push_back(0);
+            p_vertices.push_back(0);
+            p_vertices.push_back(0);
+
+            p_vertices.push_back(1);
+            p_vertices.push_back(1);
+            p_vertices.push_back(0);
+
+            p_vertices.push_back(0);
+            p_vertices.push_back(1);
+            p_vertices.push_back(0);
+
+            // Texture coordinates
+            std::vector<float> p_texture_coordinates;
+
+            p_texture_coordinates.push_back(0);
+            p_texture_coordinates.push_back(0);
+            p_texture_coordinates.push_back(0);
+
+            p_texture_coordinates.push_back(1);
+            p_texture_coordinates.push_back(0);
+            p_texture_coordinates.push_back(0);
+
+            p_texture_coordinates.push_back(1);
+            p_texture_coordinates.push_back(1);
+            p_texture_coordinates.push_back(0);
+
+            p_texture_coordinates.push_back(0);
+            p_texture_coordinates.push_back(0);
+            p_texture_coordinates.push_back(0);
+
+            p_texture_coordinates.push_back(1);
+            p_texture_coordinates.push_back(1);
+            p_texture_coordinates.push_back(0);
+
+            p_texture_coordinates.push_back(0);
+            p_texture_coordinates.push_back(1);
+            p_texture_coordinates.push_back(0);
+
+            if (!m_text_vbo.get())
+            {
+                m_text_vbo.reset(createVBO());
+            }
+
+            m_text_vbo->setBufferUsageHint(GL_STATIC_DRAW);
+            m_text_vbo->setVertexData(GL_TRIANGLES,
+                p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+                0, 0, GL_NONE, 0,
+                p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+#endif // HAS_FREETYPE
+
+            m_initialised = true;
+        }
+    }
+
+
+    inline void initialize()
+    {
+        initialise();
+    }
+
+
+    inline void renderText(const std::string& aText, float x, float y, GLint aShaderID)
+    {
+#ifdef HAS_FREETYPE
+        // Initialise the renderer if needed
+        initialise();
+
+        // Save the current texture
+        pushTexture2D();
+
+        // Process all the characters
+        for (unsigned int i(0); i < aText.size(); ++i)
+        {
+            // Find the character
+            std::map<char, Character>::const_iterator ite(m_character_set.find(aText[i]));
+
+            // The character is not in the set yet
+            if (ite == m_character_set.end())
+            {
+                FT_GlyphSlot  slot(m_face->glyph);
+
+                if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
+                {
+                    std::cerr << "Could not load character " << aText[i] << std::endl;
+                }
+                else
+                {
+                    m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
+                            slot->advance.x >> 6,
+                            slot->advance.y >> 6)));
+
+                    glGenTextures(1, &(m_character_set[aText[i]].m_texture_id));
+                    glBindTexture(GL_TEXTURE_2D, m_character_set[aText[i]].m_texture_id);
+
+
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+                    // Change the background colour
+                    unsigned char background_colour(floor((255.0 * g_background_colour.getX() +
+                            255.0 * g_background_colour.getY() +
+                            255.0 * g_background_colour.getZ()) / 3.0));
+                    unsigned char* p_buffer(slot->bitmap.buffer);
+                    for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_buffer)
+                    {
+                        if (*p_buffer == 0)
+                        {
+                            *p_buffer = background_colour;
+                        }
+                        else
+                        {
+                            *p_buffer = 255;
+                        }
+                    }
+
+                    glTexImage2D(
+                            GL_TEXTURE_2D,
+                            0,
+                            GL_RED,
+                            slot->bitmap.width,
+                            slot->bitmap.rows,
+                            0,
+                            GL_RED,
+                            GL_UNSIGNED_BYTE,
+                            slot->bitmap.buffer
+                    );
+                }
+            }
+
+            const Character& character(m_character_set[aText[i]]);
+
+            glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
+
+            MATRIX4 model_view(g_current_modelview_matrix);
+            model_view.translate(x, y - character.m_vy, 0);
+            model_view.scale(character.m_width, character.m_height, 1);
+
+            GLuint handle(glGetUniformLocation(aShaderID, "g_modelview_matrix"));
+            glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            m_text_vbo->display();
+
+            x += character.m_x_offset;
+            y += character.m_y_offset;
+        }
+
+        // Restore the saved texture
+        popTexture();
+
 #endif
+    }
+
+private:
+
+#ifdef HAS_FREETYPE
+    FT_Library m_free_type;
+    FT_Face m_face;
+    std::map<char, Character> m_character_set;
+    boost::scoped_ptr<VBO> m_text_vbo;
+#endif
+
+bool m_initialised;
+};
+
+
+FontRendering g_font_rendered;
 
 
 //******************************************************************************
@@ -609,108 +873,9 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
-    if (FT_Init_FreeType(&g_free_type))
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
-    }
+    g_font_rendered.initialise();
 
-    if (FT_New_Face(g_free_type, "../data/FreeSans.ttf", 0, &g_face))
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
-    }
-
-    if (FT_Set_Char_Size(g_face, // handle to face object
-            0, // char_width in 1/64th of points
-            16*38, // char_height in 1/64th of points
-            300, // horizontal device resolution
-            300 )) // vertical device resolution
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
-    }
-
-    pushTexture2D();
-
-    glGenTextures(1, &g_text_texture);
-    glBindTexture(GL_TEXTURE_2D, g_text_texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    popTexture();
-
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-
-    std::vector<GLfloat> p_vertices;
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(1);
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(1);
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-
-    p_vertices.push_back(0);
-    p_vertices.push_back(1);
-    p_vertices.push_back(0);
-
-    // Texture coordinates
-    std::vector<float> p_texture_coordinates;
-
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-
-    p_texture_coordinates.push_back(0);
-    p_texture_coordinates.push_back(1);
-    p_texture_coordinates.push_back(0);
-
-    if (!g_text_vbo.get())
-    {
-        g_text_vbo.reset(createVBO());
-    }
-
-    g_text_vbo->setBufferUsageHint(GL_STATIC_DRAW);
-    g_text_vbo->setVertexData(GL_TRIANGLES,
-        p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
-        0, 0, GL_NONE, 0,
-        p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
-
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-#else
+#ifndef HAS_FREETYPE
     g_display_help = false;
 #endif
 }
@@ -1623,58 +1788,6 @@ void updateXRayImage()
 }
 
 
-//------------------------------------
-void createTexture(GLuint& aTextureID,
-                   unsigned int aWidth,
-                   unsigned int aHeight,
-                   float** apImage)
-//------------------------------------
-{
-    unsigned int number_of_pixels(aWidth * aHeight);
-
-    glActiveTexture(GL_TEXTURE0);
-
-    if (aTextureID)
-    {
-        glDeleteTextures(1, &aTextureID);
-        aTextureID = 0;
-    }
-
-    if (*apImage)
-    {
-        delete [] *apImage;
-        *apImage = 0;
-    }
-
-    *apImage = new float[number_of_pixels];
-    for (unsigned int i(0); i < number_of_pixels; ++i)
-    {
-        (*apImage)[i] = 0;
-    }
-
-    glGenTextures(1, &aTextureID);
-
-    pushTexture2D();
-    glBindTexture(GL_TEXTURE_2D, aTextureID);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, aWidth, aHeight, 0, GL_RED, GL_FLOAT, *apImage);
-
-    popTexture();
-
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
-
 //----------
 void reset()
 //----------
@@ -1699,109 +1812,23 @@ void reset()
 }
 
 
-void render_text(const std::string& aText, float x, float y, GLint aShaderID) {
-
-#ifdef HAS_FREETYPE
-    pushTexture2D();
-
-    glBindTexture(GL_TEXTURE_2D, g_text_texture);
-
-    FT_GlyphSlot  slot(g_face->glyph);
-    for (unsigned int i(0); i < aText.size(); ++i)
-    {
-        if (FT_Load_Char(g_face, aText[i], FT_LOAD_RENDER))
-        {
-            std::cerr << "Could not load character " << aText[i] << std::endl;
-        }
-        else
-        {
-            int w = slot->bitmap.width;
-            int h = slot->bitmap.rows;
-
-            // Change the background colour
-            unsigned char background_colour(floor((255.0 * g_background_colour.getX() +
-                    255.0 * g_background_colour.getY() +
-                    255.0 * g_background_colour.getZ()) / 3.0));
-            unsigned char* p_buffer(slot->bitmap.buffer);
-            for (unsigned int j(0); j < w * h; ++j, ++p_buffer)
-            {
-                if (*p_buffer == 0)
-                {
-                    *p_buffer = background_colour;
-                }
-                else
-                {
-                    *p_buffer = 255;
-                }
-            }
-
-            glTexImage2D(
-                    GL_TEXTURE_2D,
-                    0,
-                    GL_RED,
-                    w,
-                    h,
-                    0,
-                    GL_RED,
-                    GL_UNSIGNED_BYTE,
-                    slot->bitmap.buffer
-            );
-
-            float large_width(slot->metrics.width);
-            float large_height(slot->metrics.height);
-
-            float small_width(w);
-            float small_height(h);
-
-            float x_ratio(small_width  / large_width);
-            float y_ratio(small_height / large_height);
-
-            const float vx = g_face->glyph->bitmap_left;
-            const float vy = g_face->glyph->bitmap_top;
-
-            MATRIX4 model_view(g_current_modelview_matrix);
-            model_view.translate(x, y - vy, 0);
-            model_view.scale(w, h, 1);
-
-            GLuint handle(glGetUniformLocation(aShaderID, "g_modelview_matrix"));
-            glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            g_text_vbo->display();
-
-            x += (g_face->glyph->advance.x >> 6);
-            y += (g_face->glyph->advance.y >> 6);
-        }
-    }
-    popTexture();
-
-#endif
-}
-
-
 //-------------------------------
 void displayHelp(GLint aShaderID)
 //-------------------------------
 {
-#ifdef HAS_FREETYPE
-    glBindTexture(GL_TEXTURE_2D, g_text_texture);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    render_text(std::string("Help"),
+    g_font_rendered.renderText(std::string("Help"),
                 20,   50, aShaderID);
 
-    render_text(std::string("\'h\': display|hide help message"),
+    g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
                 40, 100, aShaderID);
-    render_text(std::string("\'n\': toggle negative image"),
+    g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
                 40, 150, aShaderID);
-    render_text(std::string("\'p\': change patient"),
+    g_font_rendered.renderText(std::string("\'p\': change patient"),
                 40, 200, aShaderID);
-    render_text(std::string("\'b\': display|hide X-ray beam"),
+    g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
                 40, 250, aShaderID);
-    render_text(std::string("\'w\': wireframe|solid rendering"),
+    g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
                 40, 300, aShaderID);
-    render_text(std::string("\'q\', 'Esc': quit"),
+    g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
                 40, 350, aShaderID);
-
-#endif
 }
