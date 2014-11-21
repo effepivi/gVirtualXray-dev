@@ -94,6 +94,7 @@ SET (CXX_SOURCES
 	../src/Graphics/Shader.cxx
 	../src/Graphics/SphereMesh.cxx
 	../src/Graphics/StereoHelper.cxx
+	../src/Graphics/TextRenderer.cxx
 	../src/Graphics/VBO.cxx
 
     # Utilities
@@ -136,8 +137,8 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/OpenGL2VBO.inl
 	../include/gVirtualXRay/OpenGL3VBO.h
 	../include/gVirtualXRay/OpenGL3VBO.inl
-    ../include/gVirtualXRay/PolygonMesh.h
-    ../include/gVirtualXRay/PolygonMesh.inl
+	../include/gVirtualXRay/PolygonMesh.h
+	../include/gVirtualXRay/PolygonMesh.inl
 	../include/gVirtualXRay/Shader.h
 	../include/gVirtualXRay/Shader.inl
 	../include/gVirtualXRay/StereoHelper.h
@@ -146,6 +147,8 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/SphereMesh.inl
 	../include/gVirtualXRay/VBO.h
 	../include/gVirtualXRay/VBO.inl
+	../include/gVirtualXRay/TextRenderer.h
+	../include/gVirtualXRay/TextRenderer.inl
 
 	# Math
 	../include/gVirtualXRay/Matrix4x4.h
@@ -292,6 +295,17 @@ ELSE(ZLIB_FOUND)
 ENDIF(ZLIB_FOUND)
 
 
+# FREETYPE ####################################################################
+FIND_PACKAGE(Freetype)
+IF(FREETYPE_FOUND)
+    ADD_DEFINITIONS(-DHAS_FREETYPE)
+    INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
+    SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+ELSE(FREETYPE_FOUND)
+    MESSAGE(WARNING "Freetype not found.")
+ENDIF(FREETYPE_FOUND)
+
+
 # XCOM Database ################################################################
 
 # XCOM: Photon Cross Sections Database
@@ -356,7 +370,11 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl3.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/mu_water.csv
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/element.csv
-	${CMAKE_CURRENT_SOURCE_DIR}/../resources/correlation_CT_number_and_tissue_material.csv
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/FreeSans.ttf
 )
 CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
