@@ -32,9 +32,6 @@
 //******************************************************************************
 #include <GL/glew.h>
 
-#include <map>
-#include <boost/scoped_ptr.hpp>
-
 #include <cstdlib>
 #include <sstream>
 #include <streambuf>
@@ -52,10 +49,6 @@
 
 #include <stdlib.h>
 
-#ifdef HAS_FREETYPE
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#endif
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -105,17 +98,15 @@
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
+#endif
+
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
-
-#include "display_image_gl2.frag.h"
-#include "display_image_gl2.vert.h"
-
-#include "display_image_gl3.frag.h"
-#include "display_image_gl3.vert.h"
 
 #include "P4_skin.stl.h"
 #include "P4_liver.stl.h"
@@ -241,7 +232,6 @@ XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_renderer;
 Shader g_display_shader;
-Shader g_display_image_shader;
 
 bool g_is_xray_image_up_to_date(false);
 bool g_display_wireframe(false);
@@ -263,277 +253,10 @@ VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
 VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
+#ifdef HAS_FREETYPE
 bool g_display_help(true);
-
-
-
-class FontRendering
-{
-private:
-    class Character
-    {
-    public:
-        inline Character(GLuint aTextureID = 0,
-                int aWidth = 0,
-                int aHeight = 0,
-                float aVX = 0,
-                float aVY = 0,
-                float aXOffset = 0,
-                float aYOffset = 0):
-            m_texture_id(aTextureID),
-            m_width(aWidth),
-            m_height(aHeight),
-            m_vx(aVX),
-            m_vy(aVY),
-            m_x_offset(aXOffset),
-            m_y_offset(aYOffset)
-        {
-        }
-
-        inline ~Character()
-        {
-            if (m_texture_id)
-            {
-                glDeleteTextures(1, &m_texture_id);
-            }
-        }
-        GLuint m_texture_id;
-        int m_width;
-        int m_height;
-        float m_vx;
-        float m_vy;
-        float m_x_offset;
-        float m_y_offset;
-    };
-
-
-public:
-    inline FontRendering():
-        m_initialised(false)
-    {
-
-    }
-
-
-    ~FontRendering()
-    {
-        m_character_set.clear();
-    }
-
-    inline void initialise()
-    {
-        if (!m_initialised)
-        {
-#ifdef HAS_FREETYPE
-            if (FT_Init_FreeType(&m_free_type))
-            {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not initialise the FreeType library.");
-            }
-
-            if (FT_New_Face(m_free_type, "../data/FreeSans.ttf", 0, &m_face))
-            {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
-            }
-
-            if (FT_Set_Char_Size(m_face, // handle to face object
-                    0, // char_width in 1/64th of points
-                    16*38, // char_height in 1/64th of points
-                    300, // horizontal device resolution
-                    300 )) // vertical device resolution
-            {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not set the char size.");
-            }
-
-
-            std::vector<GLfloat> p_vertices;
-            p_vertices.push_back(0);
-            p_vertices.push_back(0);
-            p_vertices.push_back(0);
-
-            p_vertices.push_back(1);
-            p_vertices.push_back(0);
-            p_vertices.push_back(0);
-
-            p_vertices.push_back(1);
-            p_vertices.push_back(1);
-            p_vertices.push_back(0);
-
-            p_vertices.push_back(0);
-            p_vertices.push_back(0);
-            p_vertices.push_back(0);
-
-            p_vertices.push_back(1);
-            p_vertices.push_back(1);
-            p_vertices.push_back(0);
-
-            p_vertices.push_back(0);
-            p_vertices.push_back(1);
-            p_vertices.push_back(0);
-
-            // Texture coordinates
-            std::vector<float> p_texture_coordinates;
-
-            p_texture_coordinates.push_back(0);
-            p_texture_coordinates.push_back(0);
-            p_texture_coordinates.push_back(0);
-
-            p_texture_coordinates.push_back(1);
-            p_texture_coordinates.push_back(0);
-            p_texture_coordinates.push_back(0);
-
-            p_texture_coordinates.push_back(1);
-            p_texture_coordinates.push_back(1);
-            p_texture_coordinates.push_back(0);
-
-            p_texture_coordinates.push_back(0);
-            p_texture_coordinates.push_back(0);
-            p_texture_coordinates.push_back(0);
-
-            p_texture_coordinates.push_back(1);
-            p_texture_coordinates.push_back(1);
-            p_texture_coordinates.push_back(0);
-
-            p_texture_coordinates.push_back(0);
-            p_texture_coordinates.push_back(1);
-            p_texture_coordinates.push_back(0);
-
-            if (!m_text_vbo.get())
-            {
-                m_text_vbo.reset(createVBO());
-            }
-
-            m_text_vbo->setBufferUsageHint(GL_STATIC_DRAW);
-            m_text_vbo->setVertexData(GL_TRIANGLES,
-                p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
-                0, 0, GL_NONE, 0,
-                p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
-
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-#endif // HAS_FREETYPE
-
-            m_initialised = true;
-        }
-    }
-
-
-    inline void initialize()
-    {
-        initialise();
-    }
-
-
-    inline void renderText(const std::string& aText, float x, float y, GLint aShaderID)
-    {
-#ifdef HAS_FREETYPE
-        // Initialise the renderer if needed
-        initialise();
-
-        // Save the current texture
-        pushTexture2D();
-
-        // Process all the characters
-        for (unsigned int i(0); i < aText.size(); ++i)
-        {
-            // Find the character
-            std::map<char, Character>::const_iterator ite(m_character_set.find(aText[i]));
-
-            // The character is not in the set yet
-            if (ite == m_character_set.end())
-            {
-                FT_GlyphSlot  slot(m_face->glyph);
-
-                if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
-                {
-                    std::cerr << "Could not load character " << aText[i] << std::endl;
-                }
-                else
-                {
-                    m_character_set.insert(std::pair<char, Character>(aText[i], Character(0, slot->bitmap.width, slot->bitmap.rows, slot->bitmap_left, slot->bitmap_top,
-                            slot->advance.x >> 6,
-                            slot->advance.y >> 6)));
-
-                    glGenTextures(1, &(m_character_set[aText[i]].m_texture_id));
-                    glBindTexture(GL_TEXTURE_2D, m_character_set[aText[i]].m_texture_id);
-
-
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-                    // Change the background colour
-                    unsigned char background_colour(floor((255.0 * g_background_colour.getX() +
-                            255.0 * g_background_colour.getY() +
-                            255.0 * g_background_colour.getZ()) / 3.0));
-                    unsigned char* p_buffer(slot->bitmap.buffer);
-                    for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_buffer)
-                    {
-                        if (*p_buffer == 0)
-                        {
-                            *p_buffer = background_colour;
-                        }
-                        else
-                        {
-                            *p_buffer = 255;
-                        }
-                    }
-
-                    glTexImage2D(
-                            GL_TEXTURE_2D,
-                            0,
-                            GL_RED,
-                            slot->bitmap.width,
-                            slot->bitmap.rows,
-                            0,
-                            GL_RED,
-                            GL_UNSIGNED_BYTE,
-                            slot->bitmap.buffer
-                    );
-                }
-            }
-
-            const Character& character(m_character_set[aText[i]]);
-
-            glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
-
-            MATRIX4 model_view(g_current_modelview_matrix);
-            model_view.translate(x, y - character.m_vy, 0);
-            model_view.scale(character.m_width, character.m_height, 1);
-
-            GLuint handle(glGetUniformLocation(aShaderID, "g_modelview_matrix"));
-            glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            m_text_vbo->display();
-
-            x += character.m_x_offset;
-            y += character.m_y_offset;
-        }
-
-        // Restore the saved texture
-        popTexture();
-
+TextRenderer g_font_rendered;
 #endif
-    }
-
-private:
-
-#ifdef HAS_FREETYPE
-    FT_Library m_free_type;
-    FT_Face m_face;
-    std::map<char, Character> m_character_set;
-    boost::scoped_ptr<VBO> m_text_vbo;
-#endif
-
-bool m_initialised;
-};
-
-
-FontRendering g_font_rendered;
 
 
 //******************************************************************************
@@ -559,7 +282,7 @@ void computeRotation(MATRIX4& aRotationMatrix);
 void updateXRayImage();
 void errorCallback(int error, const char* description);
 void reset();
-void displayHelp(GLint aShaderID);
+void displayHelp();
 void usePatient(const PatientID& aPatientID);
 
 
@@ -841,31 +564,6 @@ void initGL()
 	g_display_shader.setLabels("display.vert", "display.frag");
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Display shader
-    if (useOpenGL3_2OrAbove())
-    {
-        z_lib_return_code_vertex   = inflate(g_display_image_gl3_vert, sizeof(g_display_image_gl3_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_image_gl3_frag, sizeof(g_display_image_gl3_frag), &p_fragment_shader);
-    }
-    else
-    {
-        z_lib_return_code_vertex   = inflate(g_display_image_gl2_vert, sizeof(g_display_image_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_image_gl2_frag, sizeof(g_display_image_gl2_frag), &p_fragment_shader);
-    }
-
-    vertex_shader   = p_vertex_shader;
-    fragment_shader = p_fragment_shader;
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
-
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-    }
-    g_display_image_shader.setLabels("display_image.vert", "display_image.frag");
-    g_display_image_shader.loadSource(vertex_shader, fragment_shader);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -873,7 +571,7 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-    g_font_rendered.initialise();
+    g_font_rendered.initialise(g_background_colour, VEC3(1, 0, 0));
 
 #ifndef HAS_FREETYPE
     g_display_help = false;
@@ -955,12 +653,12 @@ void draw()
     pushProjectionMatrix();
 
     // Draw the help message
+#ifdef HAS_FREETYPE
     if (g_display_help)
     {
         // Enable the shader
         pushShaderProgram();
-        g_display_image_shader.enable();
-        GLint shader_id(g_display_image_shader.getProgramHandle());
+        GLint shader_id(g_font_rendered.getShaderID());
 
         pushEnableDisableState(GL_CULL_FACE);
         pushEnableDisableState(GL_DEPTH_TEST);
@@ -970,22 +668,7 @@ void draw()
         glDisable(GL_CULL_FACE);
         glDisable(GL_BLEND);
 
-        glActiveTexture(GL_TEXTURE0);
-        glUniform1i(glGetUniformLocation(shader_id, "imageTexture"), 0);
-
-        GLuint handle(glGetUniformLocation(shader_id, "g_projection_matrix"));
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "shift");
-        glUniform1f(handle, 0.0);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "scale");
-        glUniform1f(handle, 1.0);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        displayHelp(shader_id);
+        displayHelp();
 
         // Disable the shader
         popShaderProgram();
@@ -1001,6 +684,7 @@ void draw()
     }
     // Display the 3D
     else
+#endif
     {
         double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
 
@@ -1306,9 +990,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             g_display_wireframe = !g_display_wireframe;
             break;
 
+#ifdef HAS_FREETYPE
         case GLFW_KEY_H:
             g_display_help = !g_display_help;
             break;
+#endif
 
         case GLFW_KEY_P:
             if (g_current_patient == P4) g_current_patient = P5;
@@ -1812,23 +1498,28 @@ void reset()
 }
 
 
-//-------------------------------
-void displayHelp(GLint aShaderID)
-//-------------------------------
+//----------------
+void displayHelp()
+//----------------
 {
     g_font_rendered.renderText(std::string("Help"),
-                20,   50, aShaderID);
+                20,   50, g_current_2D_projection_matrix);
 
     g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-                40, 100, aShaderID);
+                40, 100, g_current_2D_projection_matrix);
+
     g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-                40, 150, aShaderID);
+                40, 150, g_current_2D_projection_matrix);
+
     g_font_rendered.renderText(std::string("\'p\': change patient"),
-                40, 200, aShaderID);
+                40, 200, g_current_2D_projection_matrix);
+
     g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-                40, 250, aShaderID);
+                40, 250, g_current_2D_projection_matrix);
+
     g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-                40, 300, aShaderID);
+                40, 300, g_current_2D_projection_matrix);
+
     g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-                40, 350, aShaderID);
+                40, 350, g_current_2D_projection_matrix);
 }
