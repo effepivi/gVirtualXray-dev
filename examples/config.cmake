@@ -57,11 +57,11 @@ ENDIF(GLUT_FOUND)
 
 
 # FREETYPE ####################################################################
-FIND_PACKAGE(FreeType)
+FIND_PACKAGE(Freetype)
 IF(FREETYPE_FOUND)
     ADD_DEFINITIONS(-DHAS_FREETYPE)
     INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
     SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
 ELSE(FREETYPE_FOUND)
-    MESSAGE(WARNING "FreeType not found.")
+    MESSAGE(WARNING "Freetype not found.")
 ENDIF(FREETYPE_FOUND)
