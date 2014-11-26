@@ -218,7 +218,7 @@ GLint g_current_y_position(0);
 
 bool g_display_beam(true);
 
-Matrix4x4<GLfloat> g_current_2D_projection_matrix;
+Matrix4x4<GLfloat> g_text_2D_projection_matrix;
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_P4_rotation_matrix;
 Matrix4x4<GLfloat> g_P5_rotation_matrix;
@@ -571,7 +571,7 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-    g_font_rendered.initialise(g_background_colour, VEC3(1, 0, 0));
+    g_font_rendered.initialise();
 
 #ifndef HAS_FREETYPE
     g_display_help = false;
@@ -1042,7 +1042,7 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	g_main_window_width = width;
 	g_main_window_height = height;
 
-    g_current_2D_projection_matrix = buildOrthoProjectionMatrix(0,
+    g_text_2D_projection_matrix = buildOrthoProjectionMatrix(0,
             g_main_window_width,
             g_main_window_height,
             0,
@@ -1502,24 +1502,59 @@ void reset()
 void displayHelp()
 //----------------
 {
+    GLfloat p_background_colour [] = {
+            g_background_colour.getX(),
+            g_background_colour.getY(),
+            g_background_colour.getZ(),
+            1.0
+    };
+
+    GLfloat p_font_colour [] = {
+            1.0,
+            1.0,
+            0.0,
+            1.0
+    };
+
     g_font_rendered.renderText(std::string("Help"),
-                20,   50, g_current_2D_projection_matrix);
+                20,   50,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 
     g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-                40, 100, g_current_2D_projection_matrix);
+                40, 100,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 
     g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-                40, 150, g_current_2D_projection_matrix);
+                40, 150,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 
     g_font_rendered.renderText(std::string("\'p\': change patient"),
-                40, 200, g_current_2D_projection_matrix);
+                40, 200,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 
     g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-                40, 250, g_current_2D_projection_matrix);
+                40, 250,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 
     g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-                40, 300, g_current_2D_projection_matrix);
+                40, 300,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 
     g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-                40, 350, g_current_2D_projection_matrix);
+                40, 350,
+                g_text_2D_projection_matrix,
+                p_background_colour,
+                p_font_colour);
 }
