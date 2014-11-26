@@ -258,6 +258,8 @@ bool g_display_help(true);
 TextRenderer g_font_rendered;
 #endif
 
+bool g_swap_patient(false);
+
 
 //******************************************************************************
 //	Function declaration
@@ -652,113 +654,94 @@ void draw()
     pushModelViewMatrix();
     pushProjectionMatrix();
 
-    // Draw the help message
-#ifdef HAS_FREETYPE
-    if (g_display_help)
+    double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
+
+    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+    /*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
+            -height / 2.0, height / 2.0,
+            0.01, g_initial_far);
+     */
+
+    loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+            0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0);
+
+    if (g_run_tomography_acquisition)
     {
-        // Enable the shader
-        pushShaderProgram();
-        GLint shader_id(g_font_rendered.getShaderID());
-
-        pushEnableDisableState(GL_CULL_FACE);
-        pushEnableDisableState(GL_DEPTH_TEST);
-        pushEnableDisableState(GL_BLEND);
-
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_BLEND);
-
-        displayHelp();
-
-        // Disable the shader
-        popShaderProgram();
-
-        // Restore the attributes
-        popEnableDisableState();
-        popEnableDisableState();
-        popEnableDisableState();
-
-        // Check the status of OpenGL and of the current FBO
-        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
-    // Display the 3D
-    else
-#endif
-    {
-        double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
-
-        loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-        /*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
-                -height / 2.0, height / 2.0,
-                0.01, g_initial_far);
-         */
-
-        loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-                0.0, 0.0, 0.0,
-                0.0, 1.0, 0.0);
-
-        if (g_run_tomography_acquisition)
+        // Rotation
+        if (g_current_angle != g_next_angle_to_process)
         {
-            // Rotation
-            if (g_current_angle != g_next_angle_to_process)
+            switch (g_acquisition_type)
             {
-                switch (g_acquisition_type)
+            case ROTATE_SAMPLE:
                 {
-                case ROTATE_SAMPLE:
-                    {
-                        Matrix4x4<GLfloat> P4_rotation_matrix;
-                        P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P4_translation_vector);
-                        P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                        P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
+                    Matrix4x4<GLfloat> P4_rotation_matrix;
+                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P4_translation_vector);
+                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
+                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
 
-                        Matrix4x4<GLfloat> P5_rotation_matrix;
-                        P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P5_translation_vector);
-                        P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                        P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
+                    Matrix4x4<GLfloat> P5_rotation_matrix;
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P5_translation_vector);
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
 
-                        g_P4_rotation_matrix *= P4_rotation_matrix;
-                        g_P5_rotation_matrix *= P5_rotation_matrix;
+                    g_P4_rotation_matrix *= P4_rotation_matrix;
+                    g_P5_rotation_matrix *= P5_rotation_matrix;
 
 
-                    }
-                    break;
+                }
+                break;
 
-                case ROTATE_SOURCE_DETECTOR:
-                    {
-                        Matrix4x4<GLfloat> rotation_matrix;
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
+            case ROTATE_SOURCE_DETECTOR:
+                {
+                    Matrix4x4<GLfloat> rotation_matrix;
+                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
+                    rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
+                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
 
-                        g_source_position   = rotation_matrix * g_source_position;
-                        g_detector_position = rotation_matrix * g_detector_position;
+                    g_source_position   = rotation_matrix * g_source_position;
+                    g_detector_position = rotation_matrix * g_detector_position;
 
-                        // Set the source position
-                        g_xray_detector.setXrayPointSource(g_source_position);
+                    // Set the source position
+                    g_xray_detector.setXrayPointSource(g_source_position);
 
-                        // Use a parallel source
-                        g_xray_detector.setParallelBeam();
+                    // Use a parallel source
+                    g_xray_detector.setParallelBeam();
 
-                        // Set the detector position
-                        g_xray_detector.setDetectorPosition(g_detector_position);
-                    }
-                    break;
+                    // Set the detector position
+                    g_xray_detector.setDetectorPosition(g_detector_position);
+                }
+                break;
+            }
+        }
+
+        // Update the X-ray image
+        g_is_xray_image_up_to_date = false;
+
+        // Update the current angle
+        g_current_angle = g_next_angle_to_process;
+        ++g_next_angle_to_process;
+
+        // Stop the acquisition
+        if (g_next_angle_to_process == g_angle_number)
+        {
+            if (g_swap_patient)
+            {
+                if (g_current_patient == P4)
+                {
+                    usePatient(P5);
+                }
+                else
+                {
+                    usePatient(P4);
                 }
             }
-
-            // Update the X-ray image
-            g_is_xray_image_up_to_date = false;
-
-            // Update the current angle
-            g_current_angle = g_next_angle_to_process;
-            ++g_next_angle_to_process;
-
-            // Stop the acquisition
-            if (g_next_angle_to_process == g_angle_number)
+            else
             {
-                g_run_tomography_acquisition = false;
+                reset();
             }
+
+            g_swap_patient = !g_swap_patient;
         }
 
         // Update the X-ray image
@@ -768,6 +751,38 @@ void draw()
         // Draw the 3D scene
         render();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Draw the help message
+#ifdef HAS_FREETYPE
+        if (g_display_help)
+        {
+            // Enable the shader
+            pushShaderProgram();
+            GLint shader_id(g_font_rendered.getShaderID());
+
+            pushEnableDisableState(GL_CULL_FACE);
+            pushEnableDisableState(GL_DEPTH_TEST);
+            pushEnableDisableState(GL_BLEND);
+
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_CULL_FACE);
+            glDisable(GL_BLEND);
+
+            displayHelp();
+
+            // Disable the shader
+            popShaderProgram();
+
+            // Restore the attributes
+            popEnableDisableState();
+            popEnableDisableState();
+            popEnableDisableState();
+
+            // Check the status of OpenGL and of the current FBO
+            checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+#endif
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -970,8 +985,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			break;
 
 		case GLFW_KEY_SPACE:
-		    g_run_tomography_acquisition = !g_run_tomography_acquisition;
-
 		    if (g_run_tomography_acquisition)
 		    {
 		        reset();
@@ -1146,7 +1159,10 @@ void usePatient(const PatientID& aPatientID)
     }
 
     // Reset the simulation state
-    reset();
+    //reset();
+
+    g_next_angle_to_process = 0;
+    g_current_angle = 0;
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1506,7 +1522,7 @@ void displayHelp()
             g_background_colour.getX(),
             g_background_colour.getY(),
             g_background_colour.getZ(),
-            1.0
+            0.0
     };
 
     GLfloat p_font_colour [] = {
@@ -1515,6 +1531,10 @@ void displayHelp()
             0.0,
             1.0
     };
+
+    pushEnableDisableState(GL_BLEND);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     g_font_rendered.renderText(std::string("Help"),
                 20,   50,
@@ -1557,4 +1577,6 @@ void displayHelp()
                 g_text_2D_projection_matrix,
                 p_background_colour,
                 p_font_colour);
+
+    popEnableDisableState();
 }
