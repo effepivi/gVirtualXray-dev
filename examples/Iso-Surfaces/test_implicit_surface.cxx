@@ -537,6 +537,161 @@ void render()
 {
 	try
 	{
+        // Enable back face culling
+        pushEnableDisableState(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
+        // Enable the shader
+        pushShaderProgram();
+        g_display_shader.enable();
+        GLint shader_id(g_display_shader.getProgramHandle());
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Store the current transformation matrix
+        pushModelViewMatrix();
+
+        // Rotate the sample
+        g_current_modelview_matrix *= g_scene_rotation_matrix;
+
+        GLuint handle(0);
+        handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        MATRIX4 normal_matrix(g_current_modelview_matrix);
+        handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+        glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        GLint lighting;
+        if (g_use_lighing)
+        {
+            lighting = 1;
+        }
+        else
+        {
+            lighting = 0;
+        }
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Set the colour of the sample
+        {
+            const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
+            const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+            const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Store the current transformation matrix
+        pushModelViewMatrix();
+
+        g_current_modelview_matrix *= g_sample_rotation_matrix;
+        applyModelViewMatrix();
+
+        // Display the sample
+        if (g_display_wireframe)
+        {
+            g_polygon_data.displayWireFrame();
+        }
+        else
+        {
+            g_polygon_data.display();
+        }
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Set the colour of the source
+        {
+            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Display the source
+        g_xray_detector.displaySource();
+
+        // Disable back face culling
+        glDisable(GL_CULL_FACE);
+
+        // Display the X-Ray image
+        if (g_display_detector)
+        {
+            g_xray_renderer.display();
+        }
+
+        // Display the beam
+        if (g_display_beam)
+        {
+            const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.3};
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            lighting = 0;
+            handle = glGetUniformLocation(shader_id,"g_use_lighting");
+            glUniform1iv(handle, 1, &lighting);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            g_xray_detector.displayBeam();
+        }
+
+        // Disable the shader
+        popShaderProgram();
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Restore the attributes
+        popEnableDisableState();
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 #ifdef HAS_FREETYPE
         if (g_display_help)
         {
@@ -565,166 +720,8 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-        // Display the 3D
-        else
 #endif
-        {
-            // Enable back face culling
-            pushEnableDisableState(GL_CULL_FACE);
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
-
-            // Enable the shader
-            pushShaderProgram();
-            g_display_shader.enable();
-            GLint shader_id(g_display_shader.getProgramHandle());
-
-            // Check the status of OpenGL and of the current FBO
-            checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            // Store the current transformation matrix
-            pushModelViewMatrix();
-
-            // Rotate the sample
-            g_current_modelview_matrix *= g_scene_rotation_matrix;
-
-            GLuint handle(0);
-            handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-            glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-            glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            MATRIX4 normal_matrix(g_current_modelview_matrix);
-            handle = glGetUniformLocation(shader_id, "g_normal_matrix");
-            glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            GLint lighting;
-            if (g_use_lighing)
-            {
-                lighting = 1;
-            }
-            else
-            {
-                lighting = 0;
-            }
-            handle = glGetUniformLocation(shader_id,"g_use_lighting");
-            glUniform1iv(handle, 1, &lighting);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            // Set the colour of the sample
-            {
-                const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
-                const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
-                const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
-                const GLfloat material_shininess = 50.2;
-
-                handle = glGetUniformLocation(shader_id, "material_ambient");
-                glUniform4fv(handle, 1, &material_ambient[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                handle = glGetUniformLocation(shader_id, "material_diffuse");
-                glUniform4fv(handle, 1, &material_diffuse[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                handle = glGetUniformLocation(shader_id, "material_specular");
-                glUniform4fv(handle, 1, &material_specular[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                handle = glGetUniformLocation(shader_id, "material_shininess");
-                glUniform1fv(handle, 1, &material_shininess);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-            }
-
-            // Store the current transformation matrix
-            pushModelViewMatrix();
-
-            g_current_modelview_matrix *= g_sample_rotation_matrix;
-            applyModelViewMatrix();
-
-            // Display the sample
-            if (g_display_wireframe)
-            {
-                g_polygon_data.displayWireFrame();
-            }
-            else
-            {
-                g_polygon_data.display();
-            }
-
-            // Restore the current transformation matrix
-            popModelViewMatrix();
-
-            // Set the colour of the source
-            {
-                const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-                const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-                const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-                const GLfloat material_shininess = 50.2;
-
-                handle = glGetUniformLocation(shader_id, "material_ambient");
-                glUniform4fv(handle, 1, &material_ambient[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                handle = glGetUniformLocation(shader_id, "material_diffuse");
-                glUniform4fv(handle, 1, &material_diffuse[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                handle = glGetUniformLocation(shader_id, "material_specular");
-                glUniform4fv(handle, 1, &material_specular[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                handle = glGetUniformLocation(shader_id, "material_shininess");
-                glUniform1fv(handle, 1, &material_shininess);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-            }
-
-            // Display the source
-            g_xray_detector.displaySource();
-
-            // Disable back face culling
-            glDisable(GL_CULL_FACE);
-
-            // Display the X-Ray image
-            if (g_display_detector)
-            {
-                g_xray_renderer.display();
-            }
-
-            // Display the beam
-            if (g_display_beam)
-            {
-                const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.3};
-                handle = glGetUniformLocation(shader_id, "material_ambient");
-                glUniform4fv(handle, 1, &material_ambient[0]);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                lighting = 0;
-                handle = glGetUniformLocation(shader_id,"g_use_lighting");
-                glUniform1iv(handle, 1, &lighting);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-                g_xray_detector.displayBeam();
-            }
-
-            // Disable the shader
-            popShaderProgram();
-
-            // Restore the current transformation matrix
-            popModelViewMatrix();
-
-            // Restore the attributes
-            popEnableDisableState();
-
-            // Check the status of OpenGL and of the current FBO
-            checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
-	}
+    }
 	// Catch exception if any
 	catch (const std::exception& error)
 	{
@@ -1508,7 +1505,7 @@ void displayHelp()
             g_background_colour.getX(),
             g_background_colour.getY(),
             g_background_colour.getZ(),
-            1.0
+            0.0
     };
 
     GLfloat p_font_colour [] = {
@@ -1517,6 +1514,10 @@ void displayHelp()
             0.0,
             1.0
     };
+
+    pushEnableDisableState(GL_BLEND);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     int x_position(15);
     int offset(29);
@@ -1603,5 +1604,7 @@ void displayHelp()
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
+
+    popEnableDisableState();
 #endif
 }
