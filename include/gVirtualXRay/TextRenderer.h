@@ -132,23 +132,19 @@ public:
     virtual ~TextRenderer();
 
 
-    void initialise(const VEC3& aBackgroundColour = VEC3(0, 0, 0),
-            const VEC3& aFontColour = VEC3(1, 1, 1));
+    void initialise(unsigned int aFontSize = 16*38);
 
-    void initialize(const VEC3& aBackgroundColour = VEC3(0, 0, 0),
-            const VEC3& aFontColour = VEC3(1, 1, 1));
+    void initialize(unsigned int aFontSize = 16*38);
 
-    void initialise(const std::string aFontFile,
-            const VEC3& aBackgroundColour = VEC3(0, 0, 0),
-            const VEC3& aFontColour = VEC3(1, 1, 1));
+    void initialise(const std::string aFontFile, unsigned int aFontSize = 16*38);
 
+    void initialize(const std::string aFontFile, unsigned int aFontSize = 16*38);
 
-    void initialize(const std::string aFontFile,
-            const VEC3& aBackgroundColour = VEC3(0, 0, 0),
-            const VEC3& aFontColour = VEC3(1, 1, 1));
-
-
-    void renderText(const std::string& aText, float x, float y, Matrix4x4<GLfloat>& aProjectionMatrix);
+    void renderText(const std::string& aText,
+            float x, float y,
+            Matrix4x4<GLfloat>& aProjectionMatrix,
+            GLfloat* apBackgroundColour,
+            GLfloat* apFontColour);
 
 
     GLint getShaderID() const;
@@ -157,7 +153,7 @@ public:
 //******************************************************************************
 protected:
 
- void initialiseInternalStates();
+ void initialiseInternalStates(unsigned int aFontSize);
 
 
 #ifdef HAS_FREETYPE
@@ -181,10 +177,6 @@ protected:
 #endif
 
     bool m_initialised;
-
-
-    VEC3 m_background_colour;
-    VEC3 m_font_colour;
 };
 
 

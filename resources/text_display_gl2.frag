@@ -42,11 +42,21 @@ varying vec2 g_texture_coordinates;
 //	Uniform variables
 //******************************************************************************
 uniform sampler2D imageTexture;
+uniform vec4 backgroundColour;
+uniform vec4 fontColour;
 
 
 //-------------
 void main(void)
 //-------------
 {
-    gl_FragColor = vec4(texture2D(imageTexture, g_texture_coordinates.st).rgb, 1.0);
+    vec4 colour;
+    if (texture2D(imageTexture, g_texture_coordinates.st).r < 0.5)
+    {
+        gl_FragColor = backgroundColour;
+    }
+    else
+    {
+        gl_FragColor = fontColour;
+    }
 }

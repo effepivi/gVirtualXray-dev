@@ -49,11 +49,21 @@ out vec4 fragColor;
 //	Uniform variables
 //******************************************************************************
 uniform sampler2D imageTexture;
+uniform vec4 backgroundColour;
+uniform vec4 fontColour;
 
 
 //-------------
 void main(void)
 //-------------
 {
-    fragColor = vec4(texture(imageTexture, g_texture_coordinates.st).rgb, 1.0);
+    vec4 colour;
+    if (texture(imageTexture, g_texture_coordinates.st).r < 0.5)
+    {
+        fragColor = backgroundColour;
+    }
+    else
+    {
+        fragColor = fontColour;
+    }
 }

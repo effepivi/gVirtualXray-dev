@@ -80,9 +80,7 @@ namespace gVirtualXRay {
     //----------------------------------
     inline TextRenderer::TextRenderer():
     //----------------------------------
-            m_initialised(false),
-            m_background_colour(0, 0, 0),
-            m_font_colour(1, 1, 1)
+            m_initialised(false)
     //----------------------------------
     {
     }
@@ -98,22 +96,20 @@ namespace gVirtualXRay {
     }
 
 
-    //-----------------------------------------------------------------
-    inline void TextRenderer::initialize(const VEC3& aBackgroundColour,
-                                         const VEC3& aFontColour)
-    //-----------------------------------------------------------------
+    //----------------------------------------------------------
+    inline void TextRenderer::initialize(unsigned int aFontSize)
+    //----------------------------------------------------------
     {
-        initialise(aBackgroundColour, aFontColour);
+        initialise(aFontSize);
     }
 
 
-    //-----------------------------------------------------------------
+    //---------------------------------------------------------------
     inline void TextRenderer::initialize(const std::string aFontFile,
-                                         const VEC3& aBackgroundColour,
-                                         const VEC3& aFontColour)
-    //-----------------------------------------------------------------
+                                         unsigned int aFontSize)
+    //---------------------------------------------------------------
     {
-        initialise(aFontFile, aBackgroundColour, aFontColour);
+        initialise(aFontFile, aFontSize);
     }
 
 

@@ -59,16 +59,12 @@
 using namespace gVirtualXRay;
 
 
-//----------------------------------------------------------
-void TextRenderer::initialise(const VEC3& aBackgroundColour,
-                              const VEC3& aFontColour)
-//----------------------------------------------------------
+//---------------------------------------------------
+void TextRenderer::initialise(unsigned int aFontSize)
+//---------------------------------------------------
 {
     if (!m_initialised)
     {
-        m_background_colour = aBackgroundColour;
-        m_font_colour = aFontColour;
-
 #ifdef HAS_FREETYPE
         if (FT_Init_FreeType(&m_free_type))
         {
@@ -87,7 +83,7 @@ void TextRenderer::initialise(const VEC3& aBackgroundColour,
 
         delete [] p_file_data;
 
-        initialiseInternalStates();
+        initialiseInternalStates(aFontSize);
 
 #endif // HAS_FREETYPE
 
@@ -96,17 +92,13 @@ void TextRenderer::initialise(const VEC3& aBackgroundColour,
 }
 
 
-//----------------------------------------------------------
+//--------------------------------------------------------
 void TextRenderer::initialise(const std::string aFontFile,
-                              const VEC3& aBackgroundColour,
-                              const VEC3& aFontColour)
-//----------------------------------------------------------
+                              unsigned int aFontSize)
+//--------------------------------------------------------
 {
     if (!m_initialised)
     {
-        m_background_colour = aBackgroundColour;
-        m_font_colour = aFontColour;
-
 #ifdef HAS_FREETYPE
         if (FT_Init_FreeType(&m_free_type))
         {
@@ -118,7 +110,7 @@ void TextRenderer::initialise(const std::string aFontFile,
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
         }
 
-        initialiseInternalStates();
+        initialiseInternalStates(aFontSize);
 
 #endif // HAS_FREETYPE
 
@@ -128,8 +120,11 @@ void TextRenderer::initialise(const std::string aFontFile,
 
 
 //-----------------------------------------------------------------------
-void TextRenderer::renderText(const std::string& aText, float x, float y,
-                              Matrix4x4<GLfloat>& aProjectionMatrix)
+void TextRenderer::renderText(const std::string& aText,
+                              float x, float y,
+                              Matrix4x4<GLfloat>& aProjectionMatrix,
+                              GLfloat* apBackgroundColour,
+                              GLfloat* apFontColour)
 //-----------------------------------------------------------------------
 {
 #ifdef HAS_FREETYPE
@@ -150,6 +145,9 @@ void TextRenderer::renderText(const std::string& aText, float x, float y,
 
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(glGetUniformLocation(shader_id, "imageTexture"), 0);
+
+    glUniform4fv(glGetUniformLocation(shader_id, "backgroundColour"), 1, apBackgroundColour);
+    glUniform4fv(glGetUniformLocation(shader_id, "fontColour"), 1, apFontColour);
 
     // Process all the characters
     for (unsigned int i(0); i < aText.size(); ++i)
@@ -182,37 +180,33 @@ void TextRenderer::renderText(const std::string& aText, float x, float y,
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-                glPixelStorei(GL_PACK_ALIGNMENT, 4);
-                glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+                glPixelStorei(GL_PACK_ALIGNMENT, 1);
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
                 unsigned char* p_input_buffer(slot->bitmap.buffer);
-                float* p_output_buffer(new float[slot->bitmap.width * slot->bitmap.rows * 3]);
-                float* p_temp(p_output_buffer);
+                unsigned char* p_output_buffer(new unsigned char[slot->bitmap.width * slot->bitmap.rows]);
+                unsigned char* p_temp(p_output_buffer);
                 for (unsigned int j(0); j < slot->bitmap.width * slot->bitmap.rows; ++j, ++p_input_buffer)
                 {
                     if (*p_input_buffer == 0)
                     {
-                        *p_temp++ = m_background_colour.getX();
-                        *p_temp++ = m_background_colour.getY();
-                        *p_temp++ = m_background_colour.getZ();
+                        *p_temp++ = 0;
                     }
                     else
                     {
-                        *p_temp++ = m_font_colour.getX();
-                        *p_temp++ = m_font_colour.getY();
-                        *p_temp++ = m_font_colour.getZ();
+                        *p_temp++ = 255;
                     }
                 }
 
                 glTexImage2D(
                         GL_TEXTURE_2D,
                         0,
-                        GL_RGB,
+                        GL_RED,
                         slot->bitmap.width,
                         slot->bitmap.rows,
                         0,
-                        GL_RGB,
-                        GL_FLOAT,
+                        GL_RED,
+                        GL_UNSIGNED_BYTE,
                         p_output_buffer);
             }
         }
@@ -221,7 +215,7 @@ void TextRenderer::renderText(const std::string& aText, float x, float y,
 
         glBindTexture(GL_TEXTURE_2D, character.m_texture_id);
 
-        MATRIX4 model_view(g_current_modelview_matrix);
+        MATRIX4 model_view;
         model_view.translate(x, y - character.m_vy, 0);
         model_view.scale(character.m_width, character.m_height, 1);
 
@@ -242,15 +236,15 @@ void TextRenderer::renderText(const std::string& aText, float x, float y,
 }
 
 
-//-------------------------------------------
-void TextRenderer::initialiseInternalStates()
-//-------------------------------------------
+//-----------------------------------------------------------------
+void TextRenderer::initialiseInternalStates(unsigned int aFontSize)
+//-----------------------------------------------------------------
 {
     if (!m_initialised)
     {
         if (FT_Set_Char_Size(m_face, // handle to face object
                 0, // char_width in 1/64th of points
-                16*38, // char_height in 1/64th of points
+                aFontSize, // char_height in 1/64th of points
                 300, // horizontal device resolution
                 300 )) // vertical device resolution
         {
