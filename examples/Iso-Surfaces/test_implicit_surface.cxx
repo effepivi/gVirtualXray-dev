@@ -171,7 +171,7 @@ Shader g_display_shader;
 StereoHelper g_stereo_helper;
 
 bool g_is_xray_image_up_to_date(false);
-int g_rotation_mode(SCENE);
+int g_rotation_mode(NONE);
 bool g_display_wireframe(false);
 
 bool g_use_lighing(true);
@@ -206,8 +206,8 @@ bool g_display_help(true);
 TextRenderer g_font_rendered;
 #endif
 
-bool g_use_left_shift(false);
-bool g_use_right_shift(false);
+bool g_use_left_shift_key(false);
+bool g_use_right_shift_key(false);
 
 
 //******************************************************************************
@@ -695,26 +695,10 @@ void render()
 #ifdef HAS_FREETYPE
         if (g_display_help)
         {
-            // Enable the shader
-            pushShaderProgram();
-
-            pushEnableDisableState(GL_CULL_FACE);
-            pushEnableDisableState(GL_DEPTH_TEST);
-            pushEnableDisableState(GL_BLEND);
-
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_BLEND);
-
             displayHelp();
 
             // Disable the shader
             popShaderProgram();
-
-            // Restore the attributes
-            popEnableDisableState();
-            popEnableDisableState();
-            popEnableDisableState();
 
             // Check the status of OpenGL and of the current FBO
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -961,24 +945,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_selected_iso_surface = 7;
 			break;
 
-		case GLFW_KEY_T:
-			if (g_rotation_mode == SCENE)
-			{
-					std::cout << "Rotation: select the object." << std::endl;
-					g_rotation_mode = OBJECT;
-			}
-			else if (g_rotation_mode == OBJECT)
-			{
-				std::cout << "Rotation: select the detector." << std::endl;
-				g_rotation_mode = DETECTOR;
-			}
-			else if (g_rotation_mode == DETECTOR)
-			{
-				std::cout << "Rotation: select the scene." << std::endl;
-				g_rotation_mode = SCENE;
-			}
-			break;
-
         case GLFW_KEY_KP_ADD:
             g_zoom -= 1.0 * cm;
             framebufferSizeCallback(g_p_main_window_id, g_current_main_window_width, g_current_main_window_height);
@@ -986,7 +952,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_EQUAL:
 
-            if (g_use_left_shift || g_use_right_shift)
+            if (g_use_left_shift_key || g_use_right_shift_key)
             {
                 g_zoom -= 1.0 * cm;
                 framebufferSizeCallback(g_p_main_window_id, g_current_main_window_width, g_current_main_window_height);
@@ -1018,11 +984,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			break;
 
         case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = true;
+            g_use_left_shift_key = true;
             break;
 
         case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = true;
+            g_use_right_shift_key = true;
             break;
 
 		default:
@@ -1034,11 +1000,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         switch (key)
         {
         case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = false;
+            g_use_left_shift_key = false;
             break;
 
         case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = false;
+            g_use_right_shift_key = false;
             break;
         }
     }
@@ -1094,34 +1060,53 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 	if (g_button_state == GLFW_PRESS)
 	{
 		g_use_arc_ball = true;
+
+	    // Select the right transformation
+	    if (g_rotation_mode == NONE)
+	    {
+	        if (aModifierKey & GLFW_MOD_SHIFT)
+	        {
+	            g_rotation_mode = SCENE;
+	        }
+	        else if (aModifierKey & GLFW_MOD_CONTROL)
+	        {
+	            g_rotation_mode = OBJECT;
+	        }
+	        else if (aModifierKey & GLFW_MOD_ALT)
+	        {
+	            g_rotation_mode = DETECTOR;
+	        }
+	        else
+	        {
+	            switch (g_button)
+	            {
+	            case GLFW_MOUSE_BUTTON_LEFT:
+	                g_rotation_mode = SCENE;
+	                break;
+
+	            case GLFW_MOUSE_BUTTON_RIGHT:
+	                g_rotation_mode = OBJECT;
+	                break;
+
+	            case GLFW_MOUSE_BUTTON_MIDDLE:
+	                g_rotation_mode = DETECTOR;
+	                break;
+
+	            default:
+	                g_rotation_mode = SCENE;
+	                break;
+	            }
+	        }
+	    }
 	}
 	// Stop using the arc ball
 	else
 	{
 		g_use_arc_ball = false;
-	}
-
-	// Select the right transformation
-	switch (g_button)
-	{
-	case GLFW_MOUSE_BUTTON_LEFT:
-		g_rotation_mode = SCENE;
-		break;
-
-	case GLFW_MOUSE_BUTTON_RIGHT:
-		g_rotation_mode = OBJECT;
-		break;
-
-	case GLFW_MOUSE_BUTTON_MIDDLE:
-		g_rotation_mode = DETECTOR;
-		break;
-
-	default:
 		g_rotation_mode = NONE;
-		break;
 	}
 
-	double xpos(0);
+    double xpos(0);
 	double ypos(0);
 	glfwGetCursorPos (apWindow, &xpos, &ypos);
 
@@ -1155,33 +1140,30 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 	g_current_y_position = y;
 
 	// Update the rotation matrix if needed
-	switch (g_rotation_mode)
-	{
-	case SCENE:
-		// Compute the rotation
-		computeRotation(g_scene_rotation_matrix);
-		break;
+    switch (g_rotation_mode)
+    {
+    case SCENE:
+        computeRotation(g_scene_rotation_matrix);
+        break;
 
-	case OBJECT:
-		// Compute the rotation
-		computeRotation(g_sample_rotation_matrix);
+    case DETECTOR:
+        computeRotation(g_detector_rotation_matrix);
+        g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
 
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
+        // The X-ray image is not up-to-date
+        g_is_xray_image_up_to_date = false;
+        break;
 
-	case DETECTOR:
-		// Compute the rotation
-		computeRotation(g_detector_rotation_matrix);
-		g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
+    case OBJECT:
+        computeRotation(g_sample_rotation_matrix);
 
-		// The X-ray image is not up-to-date
-		g_is_xray_image_up_to_date = false;
-		break;
+        // The X-ray image is not up-to-date
+        g_is_xray_image_up_to_date = false;
+        break;
 
-	default:
-		break;
-	}
+    default:
+        break;
+    }
 }
 
 
@@ -1594,6 +1576,25 @@ void displayHelp()
             p_font_colour);
 
     g_font_rendered.renderText(std::string("\'0\' to \'7\': Change iso-surface function"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+
+    g_font_rendered.renderText(std::string("\'shift\' + mouse, scene"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+    g_font_rendered.renderText(std::string("\'ctrl\' + mouse, move object"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+    g_font_rendered.renderText(std::string("\'alt\' + mouse, move detector"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,

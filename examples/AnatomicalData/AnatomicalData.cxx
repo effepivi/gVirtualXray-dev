@@ -756,27 +756,7 @@ void draw()
 #ifdef HAS_FREETYPE
         if (g_display_help)
         {
-            // Enable the shader
-            pushShaderProgram();
-            GLint shader_id(g_font_rendered.getShaderID());
-
-            pushEnableDisableState(GL_CULL_FACE);
-            pushEnableDisableState(GL_DEPTH_TEST);
-            pushEnableDisableState(GL_BLEND);
-
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_BLEND);
-
             displayHelp();
-
-            // Disable the shader
-            popShaderProgram();
-
-            // Restore the attributes
-            popEnableDisableState();
-            popEnableDisableState();
-            popEnableDisableState();
 
             // Check the status of OpenGL and of the current FBO
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
