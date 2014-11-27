@@ -1230,11 +1230,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 		case GLFW_KEY_SPACE:
 		    g_run_tomography_acquisition = !g_run_tomography_acquisition;
-
-		    if (g_run_tomography_acquisition)
-		    {
-		        reset();
-		    }
 		    break;
 
 		case GLFW_KEY_B:

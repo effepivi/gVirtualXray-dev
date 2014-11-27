@@ -573,7 +573,7 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-    g_font_rendered.initialise();
+    g_font_rendered.initialise(16*27);
 
 #ifndef HAS_FREETYPE
     g_display_help = false;
@@ -1536,47 +1536,55 @@ void displayHelp()
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    int x_position(15);
+    int offset(29);
     g_font_rendered.renderText(std::string("Help"),
-                20,   50,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            20,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-                40, 100,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            40,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-                40, 150,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            40,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'p\': change patient"),
-                40, 200,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            40,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-                40, 250,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            40,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-                40, 300,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            40,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+    g_font_rendered.renderText(std::string("\'space bar\': change tomography mode"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-                40, 350,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+            40,   x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     popEnableDisableState();
 }
