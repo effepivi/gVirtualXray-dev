@@ -368,6 +368,7 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl2.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl3.frag
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/xray_display_gl3.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/correlation_CT_number_and_tissue_material.csv
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/mu_water.csv
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/element.csv
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl2.frag
