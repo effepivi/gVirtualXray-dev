@@ -218,7 +218,7 @@ void main(void)
     vec2 texel_value = texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).rg;
     
     // Get the L-buffer value
-	float intensity = texel_value.r;
+    gl_FragColor = vec4(-texel_value.r, 0.0, 0.0, 1.0);
     
     // The artefact filtering is enable
 	if (g_use_artefact_filtering)
@@ -227,11 +227,8 @@ void main(void)
 		if (!isValid(texel_value))
 		{
             // Filter the artefact
-			intensity = filter3x3(intensity);
+			gl_FragColor.r = -filter3x3(texel_value.r);
 		}
 	}
-	
-    // Save the pixel value
-	gl_FragColor.r = -intensity;
 }
 

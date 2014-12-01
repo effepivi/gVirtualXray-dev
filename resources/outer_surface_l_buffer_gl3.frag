@@ -48,7 +48,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out float fragColor;
+out vec4 fragColor;
 
 
 //******************************************************************************
@@ -225,7 +225,7 @@ void main(void)
     vec2 texel_value = texture(g_cumulated_l_buffer_texture, g_texture_coordinates.st).rg;
     
     // Get the L-buffer value
-	float intensity = texel_value.r;
+    fragColor = vec4(-texel_value.r, 0.0, 0.0, 1.0);
     
     // The artefact filtering is enable
 	if (g_use_artefact_filtering)
@@ -234,11 +234,8 @@ void main(void)
 		if (!isValid(texel_value))
 		{
             // Filter the artefact
-			intensity = filter3x3(intensity);
+			fragColor.r = -filter3x3(texel_value.r);
 		}
 	}
-	
-    // Save the pixel value
-	fragColor = -intensity;
 }
 
