@@ -1,3 +1,67 @@
+#
+#
+# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# http://www.fpvidal.net/
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the Bangor University nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+#
+#
+# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# http://www.fpvidal.net/
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the Bangor University nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 project(gVirtualXRay-STL-File)
 
 # Initialise some states by default ############################################
@@ -29,10 +93,6 @@ IF(glfw_FOUND)
     add_executable(welsh_dragon_glfw welsh_dragon_glfw.cxx )
     target_link_libraries(welsh_dragon_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(welsh_dragon_glfw BinarySTLFiles)
-
-    INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION demos/STL-File/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION demos/STL-File/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION demos/STL-File COMPONENT demos)
 ENDIF(glfw_FOUND)
 
 
@@ -40,16 +100,25 @@ IF(GLUT_FOUND)
     add_executable(welsh_dragon_glut welsh_dragon_glut.cxx )
     target_link_libraries(welsh_dragon_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(welsh_dragon_glut BinarySTLFiles)
-
-    INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION demos/STL-File/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION demos/STL-File/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION demos/STL-File COMPONENT demos)
 ENDIF(GLUT_FOUND)
 
 
-IF (APPLE)
+IF (NOT APPLE)
     IF(glfw_FOUND)
+        INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File COMPONENT demos)
+    ENDIF(glfw_FOUND)
+    
+    IF(GLUT_FOUND)
+        INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File COMPONENT demos)
+    ENDIF(GLUT_FOUND)
+ELSE (NOT APPLE)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
+    IF(glfw_FOUND)
         SET (MACOSX_RPATH 1)
         SET(STL-File-GLFW_SRCS
             ${CMAKE_CURRENT_SOURCE_DIR}/welsh_dragon_glfw.cxx
@@ -72,11 +141,11 @@ IF (APPLE)
         set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
         set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
 
-        SET(APPS "\${CMAKE_INSTALL_PREFIX}/STL-File-GLFW.app")
+        SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File-GLFW.app")
 
         INSTALL(TARGETS STL-File-GLFW 
-            BUNDLE DESTINATION . COMPONENT Runtime
-            RUNTIME DESTINATION bin COMPONENT Runtime
+            BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
+            RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
         )
 
         SET_SOURCE_FILES_PROPERTIES (
@@ -100,7 +169,6 @@ IF (APPLE)
     ENDIF(glfw_FOUND)
 
     IF(GLUT_FOUND)
-
         SET (MACOSX_RPATH 1)
         SET(STL-File-GLUT_SRCS
             ${CMAKE_CURRENT_SOURCE_DIR}/welsh_dragon_glut.cxx
@@ -123,11 +191,11 @@ IF (APPLE)
         set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
         set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
 
-        SET(APPS "\${CMAKE_INSTALL_PREFIX}/STL-File-GLUT.app")
+        SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File-GLUT.app")
 
         INSTALL(TARGETS STL-File-GLUT 
-            BUNDLE DESTINATION . COMPONENT Runtime
-            RUNTIME DESTINATION bin COMPONENT Runtime
+            BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos      COMPONENT Runtime
+            RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
         )
 
         SET_SOURCE_FILES_PROPERTIES (
@@ -150,7 +218,7 @@ IF (APPLE)
 
     ENDIF(GLUT_FOUND)
 
-ENDIF(APPLE)
+ENDIF(NOT APPLE)
 
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 

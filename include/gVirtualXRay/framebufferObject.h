@@ -42,6 +42,7 @@
 #ifndef UCDAVIS_FRAMEBUFFER_OBJECT_H
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
+// Added by Franck P. Vidal
 #if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #else

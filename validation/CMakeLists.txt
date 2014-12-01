@@ -1,3 +1,35 @@
+#
+#
+# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# http://www.fpvidal.net/
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the Bangor University nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 ################################################################################
 #
 #   @file       CMakeLists.txt
@@ -20,7 +52,7 @@
 #
 #   @section    Copyright
 #               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-#               http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+#               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
 #               BSD 3-Clause License
 #
 ################################################################################
@@ -97,50 +129,50 @@ CreateHeaderFiles("." "BinaryValidationFiles" "${RESOURCES_SOURCES}")
 IF(glfw_FOUND)
     ADD_EXECUTABLE (validation_01 src/validation_01.cxx)
     TARGET_LINK_LIBRARIES (validation_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS validation_01 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_01 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_02 src/validation_02.cxx)
     TARGET_LINK_LIBRARIES (validation_02 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS validation_02 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_02 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_03 src/validation_03.cxx)
     TARGET_LINK_LIBRARIES (validation_03 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_03 BinaryValidationFiles)
-    INSTALL(TARGETS validation_03 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_03 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_04 src/validation_04.cxx)
     TARGET_LINK_LIBRARIES (validation_04 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_04 BinaryValidationFiles)
-    INSTALL(TARGETS validation_04 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_04 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_05 src/validation_05.cxx)
     TARGET_LINK_LIBRARIES (validation_05 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_05 BinaryValidationFiles)
-    INSTALL(TARGETS validation_05 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_05 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_06 src/validation_06.cxx)
     TARGET_LINK_LIBRARIES (validation_06 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_06 BinaryValidationFiles)
-    INSTALL(TARGETS validation_06 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_06 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
     ADD_EXECUTABLE (validation_07 src/validation_07.cxx)
     TARGET_LINK_LIBRARIES (validation_07 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_07 BinaryValidationFiles)
-    INSTALL(TARGETS validation_07 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_07 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
 	IF (ITK_FOUND)
 	    ADD_EXECUTABLE (validation_08 src/validation_08.cxx)
 	    TARGET_LINK_LIBRARIES (validation_08 gVirtualXRay ${optionalLibs} ${requiredLibs})
 	    ADD_DEPENDENCIES(validation_08 BinaryValidationFiles)
-	    INSTALL(TARGETS validation_08 RUNTIME DESTINATION validation/bin COMPONENT validation)
+	    INSTALL(TARGETS validation_08 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 	ENDIF (ITK_FOUND)
 
     ADD_EXECUTABLE (validation_09 src/validation_09.cxx)
     TARGET_LINK_LIBRARIES (validation_09 gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(validation_09 BinaryValidationFiles)
-    INSTALL(TARGETS validation_09 RUNTIME DESTINATION validation/bin COMPONENT validation)
+    INSTALL(TARGETS validation_09 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
-    INSTALL(FILES data/cylinder_bin.stl DESTINATION validation/data COMPONENT validation)
+    INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
 
 
@@ -165,7 +197,7 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay/validation")
     
 SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt)
 
-INSTALL(FILES ../LICENSE.txt DESTINATION validation)
+INSTALL(FILES ../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation)
 
 SET (CPACK_COMPONENT_validation_DISPLAY_NAME "Demo programs")
 SET (CPACK_COMPONENT_validation_DESCRIPTION "All of the demos and example programs using gVirtualXRay")

@@ -1,3 +1,37 @@
+/*
+
+Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+http://www.fpvidal.net/
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
 /**
 ********************************************************************************
 *
@@ -191,12 +225,10 @@ const double g_initial_screen_projection_plane(10000.0 * cm); // Screen projecti
 #ifdef HAS_FREETYPE
 TextRenderer g_font_rendered;
 bool g_display_help(true);
-#else
-bool g_display_help(false);
 #endif
 
-bool g_use_left_shift(false);
-bool g_use_right_shift(false);
+bool g_use_left_shift_key(false);
+bool g_use_right_shift_key(false);
 
 
 //******************************************************************************
@@ -472,8 +504,6 @@ void initFreeType()
 #ifdef HAS_FREETYPE
     g_font_rendered.initialise(16*27);
     g_display_help = true;
-#else
-    g_display_help = false;
 #endif
 }
 
@@ -979,33 +1009,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			}
 			break;
 
-		case GLFW_KEY_T:
-			{
-				switch (g_rotation_mode)
-				{
-				case SCENE:
-					cout << "Rotation: select the object." << endl;
-					g_rotation_mode = OBJECT;
-					break;
-
-				case OBJECT:
-					cout << "Rotation: select the detector." << endl;
-					g_rotation_mode = DETECTOR;
-					break;
-
-				case DETECTOR:
-					cout << "Rotation: select the scene." << endl;
-					g_rotation_mode = SCENE;
-					break;
-
-				default:
-					cout << "Rotation: select the scene." << endl;
-					g_rotation_mode = SCENE;
-					break;
-				}
-			}
-			break;
-
 		case GLFW_KEY_W:
 			g_display_wireframe = !g_display_wireframe;
 			break;
@@ -1021,7 +1024,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_EQUAL:
 
-            if (g_use_left_shift || g_use_right_shift)
+            if (g_use_left_shift_key || g_use_right_shift_key)
             {
                 g_zoom -= 1.0 * cm;
                 framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
@@ -1035,11 +1038,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			break;
 
         case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = true;
+            g_use_left_shift_key = true;
             break;
 
         case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = true;
+            g_use_right_shift_key = true;
             break;
 
 		default:
@@ -1052,11 +1055,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         switch (key)
         {
         case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = false;
+            g_use_left_shift_key = false;
             break;
 
         case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = false;
+            g_use_right_shift_key = false;
             break;
         }
     }
@@ -1112,40 +1115,55 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 
 	cout << g_button << "\t" << g_button_state << endl;
 
-	// Select the right transformation
-	if (g_rotation_mode == NONE)
-	{
-		switch (g_button)
-		{
-		case GLFW_MOUSE_BUTTON_LEFT:
-			g_rotation_mode = SCENE;
-			break;
+    // Use the arc ball
+    if (g_button_state == GLFW_PRESS)
+    {
+        g_use_arc_ball = true;
 
-		case GLFW_MOUSE_BUTTON_RIGHT:
-			g_rotation_mode = OBJECT;
-			break;
+        // Select the right transformation
+        if (g_rotation_mode == NONE)
+        {
+            if (aModifierKey & GLFW_MOD_SHIFT)
+            {
+                g_rotation_mode = SCENE;
+            }
+            else if (aModifierKey & GLFW_MOD_CONTROL)
+            {
+                g_rotation_mode = OBJECT;
+            }
+            else if (aModifierKey & GLFW_MOD_ALT)
+            {
+                g_rotation_mode = DETECTOR;
+            }
+            else
+            {
+                switch (g_button)
+                {
+                case GLFW_MOUSE_BUTTON_LEFT:
+                    g_rotation_mode = SCENE;
+                    break;
 
-		case GLFW_MOUSE_BUTTON_MIDDLE:
-			g_rotation_mode = DETECTOR;
-			break;
+                case GLFW_MOUSE_BUTTON_RIGHT:
+                    g_rotation_mode = OBJECT;
+                    break;
 
-		default:
-			g_rotation_mode = SCENE;
-			break;
-		}
-	}
+                case GLFW_MOUSE_BUTTON_MIDDLE:
+                    g_rotation_mode = DETECTOR;
+                    break;
 
-	// Use the arc ball
-	if (g_button_state == GLFW_PRESS)
-	{
-		g_use_arc_ball = true;
-	}
-	// Stop using the arc ball
-	else
-	{
-		g_use_arc_ball = false;
-		g_rotation_mode = NONE;
-	}
+                default:
+                    g_rotation_mode = SCENE;
+                    break;
+                }
+            }
+        }
+    }
+    // Stop using the arc ball
+    else
+    {
+        g_use_arc_ball = false;
+        g_rotation_mode = NONE;
+    }
 
 	double xpos(0);
 	double ypos(0);

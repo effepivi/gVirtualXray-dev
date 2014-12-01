@@ -1,3 +1,41 @@
+/*
+
+Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+http://www.fpvidal.net/
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#define GVXR_ATOMIC_ELEMENT_H
+
+
 /**
 ********************************************************************************
 *
@@ -5,9 +43,11 @@
 *
 *   @brief      Class to manage elements in material.
 *
-*   @version    1.2
+*   @version    1.0
 *
 *   @date       13/10/2014
+*
+*   @todo       Merge the enrgy set and mass attenuation set using std::pair<double, double>
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -19,15 +59,11 @@
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Dec 2013, 2013, version 1.0,
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
 */
-
-
-#ifndef GVXR_ATOMIC_ELEMENT_H
-#define GVXR_ATOMIC_ELEMENT_H
 
 
 //******************************************************************************
@@ -285,7 +321,10 @@ private:
     double         m_density;               ///< The density of the element
     std::string    m_state;                 ///< The state of the element
 
+    /// The energy set
     std::vector<double> m_p_energy_set;
+
+    /// The mass attenuation coefficient set corresponding to the energy set
     std::vector<double> m_p_mass_attenuation_coefficient_set;
 };
 
