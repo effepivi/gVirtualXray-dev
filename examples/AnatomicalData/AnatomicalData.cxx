@@ -240,7 +240,6 @@ GLsizei g_main_window_width( 600);
 GLsizei g_main_window_height(600);
 GLFWwindow* g_p_main_window_id(0);
 GLfloat g_zoom(100.0 * cm);
-GLfloat g_eye_offset(2.0 * cm);
 
 int g_button(-1);
 int g_button_state(-1);
