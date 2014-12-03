@@ -1,5 +1,5 @@
-SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@")
-SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_LIBRARY_DIRS@")
+SET(gVirtualXRay_INCLUDE_DIRS @gVirtualXRay_INCLUDE_DIRS@)
+SET(gVirtualXRay_LIBRARY_DIRS @gVirtualXRay_LIBRARY_DIRS@)
 SET(gVirtualXRay_LIBRARIES "@gVirtualXRay_LIBRARIES@")
 
 # The gVirtualXRay version number
