@@ -502,6 +502,116 @@ void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
 }
 
 
+//------------------------------
+void PolygonMesh::writeSTLFile()
+//------------------------------
+{
+	if (m_polygon_type != GL_TRIANGLES)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot write a STL file, mesh is not made of triangles.");
+	}
+
+	if (!getTriangleNumber())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot write a STL file, there is no triangle to save.");
+	}
+
+	if (!m_filename.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot write a STL file, not file name provided.");
+	}
+
+	// Open the file in writing more
+    std::ofstream output_stream(m_filename.c_str(), std::ios::out | std::ios::binary);
+
+	// The file is not open
+	if (!output_stream.is_open())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot open the STL file in writing mode");
+	}
+
+	// The header is made of 80 bytes
+	char temp(0);
+	for (unsigned int i(0); i < 80; ++i)
+	{
+		output_stream.write(&temp, 1);
+	}
+
+	// The number of triangles
+	int triangle_number(getTriangleNumber());
+	output_stream.write((char*) &triangle_number, sizeof(triangle_number));
+
+	// Read the data
+	float* p_vertex_set((float*) m_p_vertex_set);
+
+	// Use an index
+	if (getIndexNumber())
+	{
+		for (unsigned int i(0); i < getFaceNumber(); i++)
+		{
+			int id0(getIndex(i * 3 + 0));
+			int id1(getIndex(i * 3 + 1));
+			int id2(getIndex(i * 3 + 2));
+
+			VEC3 v0(getVertex(id0));
+			VEC3 v1(getVertex(id1));
+			VEC3 v2(getVertex(id2));
+
+			VEC3 n0(getVertexNormal(id0));
+			VEC3 n1(getVertexNormal(id1));
+			VEC3 n2(getVertexNormal(id2));
+			VEC3 normal(n0 + n1 + n2);
+			normal.normalise();
+
+			float temp[3];
+			temp[0] = normal.getX();
+			temp[1] = normal.getY();
+			temp[2] = normal.getZ();
+			output_stream.write((char*) temp, sizeof(float) * 3);
+
+			temp[0] = v0.getX();
+			temp[1] = v0.getY();
+			temp[2] = v0.getZ();
+			output_stream.write((char*) temp, sizeof(float) * 3);
+
+			temp[0] = v1.getX();
+			temp[1] = v1.getY();
+			temp[2] = v1.getZ();
+			output_stream.write((char*) temp, sizeof(float) * 3);
+
+			temp[0] = v2.getX();
+			temp[1] = v2.getY();
+			temp[2] = v2.getZ();
+			output_stream.write((char*) temp, sizeof(float) * 3);
+
+			// Write data
+			char dummy(0);
+			output_stream.write(&dummy, 1);
+			output_stream.write(&dummy, 1);
+		}
+	}
+	// Do not use an index
+	else
+	{
+		for (unsigned int i(0); i < getFaceNumber(); i++)
+		{
+			// Write normals
+			output_stream.write((char*) &m_p_face_normal_set[9 * i], sizeof(float) * 3);
+
+			// Write vertices
+			output_stream.write((char*) &p_vertex_set[9 * i], sizeof(float) * 3 * 3);
+
+			// Write data
+			output_stream.write(&temp, 1);
+			output_stream.write(&temp, 1);
+		}
+	}
+
+	// Close the STL file
+	output_stream.close();
+}
+
+
 //--------------------------------------
 void PolygonMesh::computeNormalVectors()
 //--------------------------------------
