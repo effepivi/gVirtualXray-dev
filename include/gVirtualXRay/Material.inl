@@ -90,10 +90,36 @@ inline Material::Material():
 }
 
 
+//--------------------------------------------------
+inline Material::Material(const Material& aMaterial)
+//--------------------------------------------------
+{
+	*this = aMaterial;
+}
+
+
 //--------------------------
 inline Material::~Material()
 //--------------------------
 {
+}
+
+
+//-------------------------------------------------------------
+inline Material& Material::operator=(const Material& aMaterial)
+//-------------------------------------------------------------
+{
+	// Ambient colour
+	memcpy(m_p_ambient_colour, aMaterial.m_p_ambient_colour, sizeof(m_p_ambient_colour));
+
+	// Diffuse colour
+	memcpy(m_p_diffuse_colour, aMaterial.m_p_diffuse_colour, sizeof(m_p_diffuse_colour));
+
+	// Specular colour
+	memcpy(m_p_specular_colour, aMaterial.m_p_specular_colour, sizeof(m_p_specular_colour));
+
+	// Shininess
+	m_shininess = aMaterial.m_shininess;
 }
 
 
