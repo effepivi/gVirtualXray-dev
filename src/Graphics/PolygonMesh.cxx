@@ -64,7 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <map>
 #include <fstream>
-
+#include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -131,20 +131,26 @@ PolygonMesh::PolygonMesh():
 }
 
 
-//--------------------------------------------------------------------
+//------------------------------------------------------------------------
 PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
-//--------------------------------------------------------------------
-    m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
-    m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
-    m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
-    m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
-    m_number_of_indices(aPolygonMesh.m_number_of_indices),
-    m_number_of_vertices(aPolygonMesh.m_number_of_vertices),
-    m_index_data_type(aPolygonMesh.m_index_data_type),
-    m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
-    m_polygon_type(aPolygonMesh.m_polygon_type),
-    m_external_data_flag(aPolygonMesh.m_external_data_flag)
-//--------------------------------------------------------------------
+//------------------------------------------------------------------------
+		m_filename(aPolygonMesh.m_filename),
+		m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
+		m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
+		m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
+		m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
+		m_min_corner(aPolygonMesh.m_min_corner),
+		m_max_corner(aPolygonMesh.m_max_corner),
+		m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
+		m_p_vertex_normal_set(aPolygonMesh.m_p_vertex_normal_set),
+		m_number_of_indices(aPolygonMesh.m_number_of_indices),
+		m_number_of_vertices(aPolygonMesh.m_number_of_vertices),
+		m_index_data_type(aPolygonMesh.m_index_data_type),
+		m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
+		m_polygon_type(aPolygonMesh.m_polygon_type),
+		m_external_data_flag(aPolygonMesh.m_external_data_flag),
+		m_material(aPolygonMesh.m_material)
+//------------------------------------------------------------------------
 {
     if (aPolygonMesh.m_p_vertex_set)
     {
@@ -730,12 +736,6 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
 //------------------------------------------------------------------
 {
     m_filename                = aPolygonMesh.m_filename;
-
-
-    /// Vertex buffer object
-    //boost::scoped_ptr<VBO> m_vbo;
-
-
     m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
     m_hounsfield_value        = aPolygonMesh.m_hounsfield_value;
     m_attenuation_coefficient = aPolygonMesh.m_attenuation_coefficient;
@@ -749,6 +749,8 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
     m_index_data_type         = aPolygonMesh.m_index_data_type;
     m_vertex_data_type        = aPolygonMesh.m_vertex_data_type;
     m_polygon_type            = aPolygonMesh.m_polygon_type;
+	m_external_data_flag      = aPolygonMesh.m_external_data_flag;
+	m_material                = aPolygonMesh.m_material;
 
     copyVertexSet(aPolygonMesh.m_p_vertex_set);
     copyIndexSet(aPolygonMesh.m_p_index_set);
@@ -1593,6 +1595,212 @@ void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 }
 
 
+//-----------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<float>* aVertexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//-----------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			0,
+			0,
+			GL_NONE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<double>* aVertexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			0,
+			0,
+			GL_NONE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<float>* aVertexArray,
+								  const std::vector<unsigned int>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_INT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<double>* aVertexArray,
+								  const std::vector<unsigned int>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_INT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//--------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<float>* aVertexArray,
+								  const std::vector<unsigned short>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//--------------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_SHORT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//--------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<double>* aVertexArray,
+								  const std::vector<unsigned short>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//--------------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_SHORT,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//-------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<float>* aVertexArray,
+								  const std::vector<unsigned char>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//-------------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_FLOAT,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_BYTE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//-------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const std::vector<double>* aVertexArray,
+								  const std::vector<unsigned char>* anIndexArray,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//-------------------------------------------------------------------------------
+{
+	setInternalData(aTypeOfPrimitive,
+			&((*aVertexArray)[0]),
+			aVertexArray->size() / 3,
+			GL_DOUBLE,
+			&((*anIndexArray)[0]),
+			anIndexArray->size(),
+			GL_UNSIGNED_BYTE,
+			aCreateVBOFlag,
+			aTypeOfVBO);
+}
+
+
+//---------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+								  const void* aVertexArray,
+								  unsigned int aNumberOfVertices,
+								  int aVertexDataType,
+								  const void* anIndexArray,
+								  unsigned int aNumberOfIndices,
+								  int anIndexDataType,
+								  bool aCreateVBOFlag,
+								  int aTypeOfVBO)
+//---------------------------------------------------------------
+{
+	reset();
+
+	m_external_data_flag = false;
+	m_polygon_type       = aTypeOfPrimitive;
+	m_number_of_vertices = aNumberOfVertices;
+	m_vertex_data_type   = aVertexDataType;
+	copyVertexSet(aVertexArray);
+
+	// There are index data
+	if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
+	{
+		m_number_of_indices = aNumberOfIndices;
+		m_index_data_type   = anIndexDataType;
+		copyIndexSet(anIndexArray);
+	}
+	else
+	{
+		m_p_index_set       = 0;
+		m_number_of_indices = 0;
+		m_index_data_type   = GL_NONE;
+	}
+
+	// Compute the bounding box
+	computeBoundingBox();
+
+	// Compute the normal vectors
+	computeNormalVectors();
+
+	// Update the VBO
+	if (aCreateVBOFlag)
+	{
+		updateVBO(aTypeOfVBO, m_polygon_type);
+	}
+}
+
+
 //-----------------------------------
 void PolygonMesh::destroyVertexData()
 //-----------------------------------
@@ -1798,59 +2006,111 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 }
 
 
-//------------------------------------------------
-void PolygonMesh::copyVertexSet(void* apVertexSet)
-//------------------------------------------------
+//------------------------------------------------------
+void PolygonMesh::copyVertexSet(const void* apVertexSet)
+//------------------------------------------------------
 {
-    unsigned int size_to_copy(m_number_of_vertices * 3);
+	// Store the number of vertices
+	unsigned int temp(m_number_of_vertices);
 
-    switch (m_vertex_data_type)
-    {
-    case GL_FLOAT:
-        size_to_copy *= sizeof(GLfloat);
-        break;
+	// Destroy data if needed
+	destroyVertexData();
 
-    case GL_DOUBLE:
-        size_to_copy *= sizeof(GLdouble);
-        break;
+	// Restore the number of vertices
+	m_number_of_vertices = temp;
 
-    default:
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-    }
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_vertex_set = const_cast<void*>(apVertexSet);
+	}
+	// The data is not manage externally
+	else
+	{
+		unsigned int size_to_copy(m_number_of_vertices * 3);
+
+		switch (m_vertex_data_type)
+		{
+		case GL_FLOAT:
+			m_p_vertex_set = new GLfloat[size_to_copy];
+			size_to_copy *= sizeof(GLfloat);
+			break;
+
+		case GL_DOUBLE:
+			m_p_vertex_set = new GLdouble[size_to_copy];
+			size_to_copy *= sizeof(GLdouble);
+			break;
+
+		default:
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+		}
+
+		// Copy data if needed
+		if (size_to_copy)
+		{
+			memcpy (m_p_vertex_set, apVertexSet, size_to_copy);
+		}
+	}
 }
 
 
-//----------------------------------------------
-void PolygonMesh::copyIndexSet(void* apIndexSet)
-//----------------------------------------------
+//----------------------------------------------------
+void PolygonMesh::copyIndexSet(const void* apIndexSet)
+//----------------------------------------------------
 {
-    unsigned int size_to_copy(m_number_of_indices);
+	// Store the number of indices
+	unsigned int temp(m_number_of_indices);
 
-    switch (m_vertex_data_type)
-    {
-    case GL_UNSIGNED_INT:
-        size_to_copy *= sizeof(GLuint);
-        break;
+	// Destroy data if needed
+	destroyIndexData();
 
-    case GL_UNSIGNED_SHORT:
-        size_to_copy *= sizeof(GLushort);
-        break;
+	// Restore the number of indices
+	m_number_of_indices = temp;
 
-    case GL_UNSIGNED_BYTE:
-        size_to_copy *= sizeof(GLubyte);
-        break;
+	// The data is manage externally
+	if (m_external_data_flag)
+	{
+		m_p_index_set  = const_cast<void*>(apIndexSet);
+	}
+	// The data is not manage externally
+	else
+	{
+		unsigned int size_to_copy(m_number_of_indices);
 
-    default:
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-    }
+		switch (m_polygon_type)
+		{
+		case GL_TRIANGLES:
+			break;
 
-    switch (m_polygon_type)
-    {
-    case GL_TRIANGLES:
-        size_to_copy *= 3;
-        break;
+		default:
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+		}
 
-    default:
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-    }
+		switch (m_index_data_type)
+		{
+		case GL_UNSIGNED_INT:
+			m_p_index_set = new GLuint[size_to_copy];
+			size_to_copy *= sizeof(GLuint);
+			break;
+
+		case GL_UNSIGNED_SHORT:
+			m_p_index_set = new GLushort[size_to_copy];
+			size_to_copy *= sizeof(GLushort);
+			break;
+
+		case GL_UNSIGNED_BYTE:
+			m_p_index_set = new GLubyte[size_to_copy];
+			size_to_copy *= sizeof(GLubyte);
+			break;
+
+		default:
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+		}
+
+		// Copy data if needed
+		if (size_to_copy)
+		{
+			memcpy (m_p_index_set, apIndexSet, size_to_copy);
+		}
+	}
 }

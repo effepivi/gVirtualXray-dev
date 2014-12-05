@@ -520,6 +520,7 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned int>* anIndexArray,
@@ -537,6 +538,7 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned int>* anIndexArray,
@@ -554,6 +556,7 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned short>* anIndexArray,
@@ -571,6 +574,7 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned short>* anIndexArray,
@@ -588,6 +592,7 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(int aTypeOfPrimitive,
 			const std::vector<float>* aVertexArray,
 			const std::vector<unsigned char>* anIndexArray,
@@ -605,7 +610,174 @@ public:
 	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
 	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
 	*/
+	//--------------------------------------------------------------------------
 	void setExternalData(int aTypeOfPrimitive,
+			const std::vector<double>* aVertexArray,
+			const std::vector<unsigned char>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param aNumberOfVertices:	number of vertices
+	*	@param aVertexDataType:		data type of the vertex data; valid values are GL_FLOAT, GL_DOUBLE and GL_NONE
+	*	@param anIndexArray:		array containing the index data
+	*	@param aNumberOfIndices:	number of indices
+	*	@param anIndexDataType:		data type of the index data; valid values are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, GL_UNSIGNED_BYTE and GL_NONE
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const void* aVertexArray,
+			unsigned int aNumberOfVertices,
+			int aVertexDataType,
+			const void* anIndexArray,
+			unsigned int aNumberOfIndices,
+			int anIndexDataType,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<float>* aVertexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<double>* aVertexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<float>* aVertexArray,
+			const std::vector<unsigned int>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<double>* aVertexArray,
+			const std::vector<unsigned int>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<float>* aVertexArray,
+			const std::vector<unsigned short>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<double>* aVertexArray,
+			const std::vector<unsigned short>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
+			const std::vector<float>* aVertexArray,
+			const std::vector<unsigned char>* anIndexArray,
+			bool aCreateVBOFlag,
+			int aTypeOfVBO);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the polygon mesh using external data. The class instance will
+	///	manage the memory.
+	/**
+	*	@param aTypeOfPrimitive: 	type of primitive; valid values are GL_TRIANGLES
+	*	@param aVertexArray:		array containing the vertex data
+	*	@param anIndexArray:		array containing the index data
+	*	@param aCreateVBOFlag: 		flag set to true to create a VBO, set to false to not set a VBO
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*/
+	//--------------------------------------------------------------------------
+	void setInternalData(int aTypeOfPrimitive,
 			const std::vector<double>* aVertexArray,
 			const std::vector<unsigned char>* anIndexArray,
 			bool aCreateVBOFlag,
@@ -618,6 +790,7 @@ public:
 	/**
 	*	@param aScale:	scaling factor
 	*/
+	//--------------------------------------------------------------------------
 	void applyScale(const RATIONAL_NUMBER& aScale);
 
 
@@ -700,13 +873,13 @@ protected:
     //--------------------------------------------------------------------------
     /// Copy a vertex set.
     //--------------------------------------------------------------------------
-    void copyVertexSet(void* apVertexSet);
+    void copyVertexSet(const void* apVertexSet);
 
 
     //--------------------------------------------------------------------------
     /// Copy an index set.
     //--------------------------------------------------------------------------
-    void copyIndexSet(void* apIndexSet);
+    void copyIndexSet(const void* apIndexSet);
 
 
 	/// Name of the file that contains the polygon mesh
