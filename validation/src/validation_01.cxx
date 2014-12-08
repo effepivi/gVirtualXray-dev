@@ -161,15 +161,22 @@ int main(int argc, char** argv)
 
         double energy(0);
 
-        test_stream     << "Energy in MeV\t" <<
-                "water_xcom\t" <<
-                "water_HU\t" <<
-                "soft_tissue_xcom\t" <<
-                "soft_tissue_HU\t" <<
-                "bone_xcom\t" <<
-                "bone_HU\t" <<
-                "lung_xcom\t" <<
-                "lung_HU" <<
+        test_stream     << "\"Energy in MeV\"\t" <<
+                "\"water_xcom\"\t" <<
+                "\"water_HU (linear)\"\t" <<
+                "\"water_HU (log)\"\t" <<
+                "\"bone_xcom\"\t" <<
+                "\"bone_HU (linear)\"\t" <<
+                "\"bone_HU (log)\"\t" <<
+                "\"brain_xcom\"\t" <<
+                "\"brain_HU (linear)\"\t" <<
+                "\"brain_HU (log)\"\t" <<
+                "\"gas_xcom\"\t" <<
+                "\"gas_HU (linear)\"\t" <<
+                "\"gas_HU (log)\"\t" <<
+                "\"soft_tissue_xcom\"\t" <<
+                "\"soft_tissue_HU (linear)\"\t" <<
+                "\"soft_tissue_HU (log)\"" <<
                 std::endl;
 
         energy = 1.00E-003 * MeV;
@@ -274,45 +281,60 @@ void printAttenuationCoeffiecient(double& anEnergy,
     double mu_rho_soft_tissue_xcom(0);
     double mu_rho_water_xcom(0);
 
-    double mu_bone_mu_water(0);
-    double mu_brain_mu_water(0);
-    double mu_gas_mu_water(0);
-    double mu_soft_tissue_mu_water(0);
-    double mu_water_mu_water(0);
+    double linear_mu_bone_mu_water(0);
+    double log_mu_bone_mu_water(0);
+    double linear_mu_brain_mu_water(0);
+    double log_mu_brain_mu_water(0);
+    double linear_mu_gas_mu_water(0);
+    double log_mu_gas_mu_water(0);
+    double linear_mu_soft_tissue_mu_water(0);
+    double log_mu_soft_tissue_mu_water(0);
+    double linear_mu_water_mu_water(0);
+    double log_mu_water_mu_water(0);
 
     for (anEnergy; anEnergy <= aThreshold; anEnergy += anOffset)
     {
         anOutput     << anEnergy / MeV;
 
         mu_rho_water_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_water, anEnergy);
-        mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(anEnergy);
+        linear_mu_water_mu_water = g_xray_renderer.getMuWaterLinearInterpolation(anEnergy);
+        log_mu_water_mu_water = g_xray_renderer.getMuWaterLogLinearInterpolation(anEnergy);
 
         anOutput     << "\t" << mu_rho_water_xcom                           / (cm2/g);
-        anOutput     << "\t" << (mu_water_mu_water / rho_water)             / (cm2/g);
+        anOutput     << "\t" << (linear_mu_water_mu_water / rho_water)             / (cm2/g);
+        anOutput     << "\t" << (log_mu_water_mu_water    / rho_water)             / (cm2/g);
 
         mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, anEnergy);
-        mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, mu_water_mu_water);
+        linear_mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, linear_mu_water_mu_water);
+        log_mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, log_mu_water_mu_water);
 
         anOutput     << "\t" << mu_rho_bone_xcom                            / (cm2/g);
-        anOutput     << "\t" << (mu_bone_mu_water / rho_bone)               / (cm2/g);
+        anOutput     << "\t" << (linear_mu_bone_mu_water / rho_bone)               / (cm2/g);
+        anOutput     << "\t" << (log_mu_bone_mu_water / rho_bone)               / (cm2/g);
 
         mu_rho_brain_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_brain, anEnergy);
-        mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain, mu_water_mu_water);
+        linear_mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain, linear_mu_water_mu_water);
+        log_mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain, log_mu_water_mu_water);
 
         anOutput     << "\t" << mu_rho_brain_xcom                            / (cm2/g);
-        anOutput     << "\t" << (mu_brain_mu_water / rho_bone)               / (cm2/g);
+        anOutput     << "\t" << (linear_mu_brain_mu_water / rho_bone)               / (cm2/g);
+        anOutput     << "\t" << (log_mu_brain_mu_water / rho_bone)               / (cm2/g);
 
         mu_rho_gas_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_gas, anEnergy);
-        mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, mu_water_mu_water);
+        linear_mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, linear_mu_water_mu_water);
+        log_mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, log_mu_water_mu_water);
 
         anOutput     << "\t" << mu_rho_gas_xcom                            / (cm2/g);
-        anOutput     << "\t" << (mu_gas_mu_water / rho_bone)               / (cm2/g);
+        anOutput     << "\t" << (linear_mu_gas_mu_water / rho_bone)               / (cm2/g);
+        anOutput     << "\t" << (log_mu_gas_mu_water / rho_bone)               / (cm2/g);
 
         mu_rho_soft_tissue_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, anEnergy);
-        mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, mu_water_mu_water);
+        linear_mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, linear_mu_water_mu_water);
+        log_mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_soft_tissue, log_mu_water_mu_water);
 
         anOutput     << "\t" << mu_rho_soft_tissue_xcom                     / (cm2/g);
-        anOutput     << "\t" << (mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
+        anOutput     << "\t" << (linear_mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
+        anOutput     << "\t" << (log_mu_soft_tissue_mu_water / rho_soft_tissue) / (cm2/g);
 
         anOutput     << std::endl;
     }
