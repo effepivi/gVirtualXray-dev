@@ -108,16 +108,22 @@ void TextRenderer::initialise(unsigned int aFontSize)
         }
 
         int file_size(0);
-        char* p_file_data(0);
+        static FT_Byte* gvxr_p_font_file_data(0);
 
-        file_size = inflate(g_FreeSans_ttf, sizeof(g_FreeSans_ttf), &p_file_data);
+        file_size = inflate(g_FreeSans_ttf, sizeof(g_FreeSans_ttf), (char**) &gvxr_p_font_file_data);
 
-        if(FT_New_Memory_Face(m_free_type, reinterpret_cast<FT_Byte*>(p_file_data), file_size, 0, &m_face))
+        FT_Error error(FT_New_Memory_Face(m_free_type, (FT_Byte*) gvxr_p_font_file_data, file_size, 0, &m_face));
+        if (error == FT_Err_Unknown_File_Format)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font: unknown file format.");
+        }
+        else if (error)
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
         }
 
-        delete [] p_file_data;
+        delete [] gvxr_p_font_file_data;
+        gvxr_p_font_file_data = 0;
 
         initialiseInternalStates(aFontSize);
 
