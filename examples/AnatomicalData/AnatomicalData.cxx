@@ -276,8 +276,11 @@ unsigned int g_angle_number(180);
 RATIONAL_NUMBER g_angle_step(1);
 RATIONAL_NUMBER g_first_angle(0);
 RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
-unsigned int g_next_angle_to_process(0);
-unsigned int g_current_angle(0);
+float g_next_angle_to_process(0);
+float g_current_angle(0);
+float g_angle_offset(1);
+float g_simulation_total_time(0);
+unsigned int g_number_of_rotations(0);
 AcquisitionType g_acquisition_type(ROTATE_SOURCE_DETECTOR);
 VEC3 g_rotation_axis(g_initial_detector_up_vector);
 VEC3 g_rotation_centre(0, 0, 0);
@@ -719,8 +722,6 @@ void draw()
 
                     g_P4_rotation_matrix *= P4_rotation_matrix;
                     g_P5_rotation_matrix *= P5_rotation_matrix;
-
-
                 }
                 break;
 
@@ -752,10 +753,10 @@ void draw()
 
         // Update the current angle
         g_current_angle = g_next_angle_to_process;
-        ++g_next_angle_to_process;
+        g_next_angle_to_process += g_angle_offset;
 
         // Stop the acquisition
-        if (g_next_angle_to_process == g_angle_number)
+        if (g_next_angle_to_process > g_angle_number)
         {
             if (g_swap_patient)
             {
@@ -1480,7 +1481,9 @@ void updateXRayImage()
 	// The X-ray image is not up-to-date
 	if (!g_is_xray_image_up_to_date)
 	{
-		// Compute the X-Ray image
+		float start_time(glfwGetTime());
+
+        // Compute the X-Ray image
 	    if (g_current_patient == P4)
 	    {
 	        g_xray_renderer.computeImage(g_P4_rotation_matrix);
@@ -1491,12 +1494,20 @@ void updateXRayImage()
 	    }
 
 		// Normalise the X-ray image
-		if (g_current_angle == 0)
+		if (fabs(g_current_angle) < EPSILON)
 		{
 			g_xray_renderer.normalise();
 		}
 
-		// The X-ray image is up-to-date
+		g_simulation_total_time += glfwGetTime() - start_time;
+        ++g_number_of_rotations;
+
+        // Update the rotation angle
+        if (g_number_of_rotations)
+        {
+        	g_angle_step = (g_simulation_total_time / float(g_number_of_rotations)) * float(g_angle_number) / 10.0;
+        }
+        // The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;
 	}
 }
