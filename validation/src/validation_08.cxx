@@ -585,7 +585,7 @@ void createPhantom()
 			}
 		}
 	}
-	g_polygon_mesh.setExternalData(GL_TRIANGLES,
+	g_polygon_mesh.setInternalData(GL_TRIANGLES,
 			&g_p_vertex_data[0],
 			g_p_vertex_data.size() / 3,
 			GL_FLOAT,
@@ -595,11 +595,10 @@ void createPhantom()
 			true,
 			GL_STATIC_DRAW);
 
-
 	typedef itk::MeshFileWriter< MeshType > MeshWriterType;
 	MeshWriterType::Pointer writer(MeshWriterType::New());
 	writer->SetFileTypeAsBINARY ();
-	writer->SetFileName(PREFIX"/sinogram.mhd");
+	writer->SetFileName(PREFIX"/step_wedge.stl");
 	writer->SetInput(p_iso_surface_extracter->GetOutput());
 	try
 	{
@@ -607,8 +606,8 @@ void createPhantom()
 	}
 	catch( itk::ExceptionObject & error )
 	{
-		std::cerr << "Cannot save the polygon mesh in STL file: \"" << PREFIX"/sinogram.mhd" << "\"" << std::endl;
-		std::cerr << "Error: " << error << std::endl;
+		g_polygon_mesh.setFileName(PREFIX"/step_wedge.stl");
+		g_polygon_mesh.writeSTLFile();
 	}
 }
 
