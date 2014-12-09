@@ -179,10 +179,11 @@ CubeMesh g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
-XRayRenderer g_xray_renderer;
+XRayRenderer g_xray_half_precision_renderer;
+XRayRenderer g_xray_full_precision_renderer;
 
-RATIONAL_NUMBER g_literature_result(0.0);
-RATIONAL_NUMBER g_expected_result(0.0);
+double g_literature_result(0.0);
+double g_expected_result(0.0);
 
 
 //******************************************************************************
@@ -274,8 +275,10 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
-		g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
-		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+		g_xray_half_precision_renderer.addInnerSurface(&g_inside_polygon_data);
+		g_xray_half_precision_renderer.addOuterSurface(&g_outside_polygon_data);
+		g_xray_full_precision_renderer.addInnerSurface(&g_inside_polygon_data);
+		g_xray_full_precision_renderer.addOuterSurface(&g_outside_polygon_data);
 
 		// Set the projection matrix
 		GLint width(0);
@@ -283,17 +286,41 @@ int main(int argc, char** argv)
 		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 
 		// Compute the X-ray image
-	    g_xray_renderer.computeImage(g_sample_rotation_matrix);
-	    RATIONAL_NUMBER* energy_fluence(g_xray_renderer.getEnergyFluence());
-	    RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
+		g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
+		g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
 
-	    RATIONAL_NUMBER simulated_result(central_pixel);
-	    std::cout << "On GPU, the energy (in MeV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-	    std::cout << "\t\t           = " << std::scientific << simulated_result / MeV << " MeV" << std::endl << std::endl;
+	    std::cout.precision(3);
+		{
+			RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence());
+			double central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
-	    std::cout << "The absolute error is: |I_expected - I_reference| MeV" << std::endl;
-	    std::cout << "                     : |" << std::scientific << simulated_result / MeV << " - " << g_literature_result / MeV << "| MeV" << std::endl;
-	    std::cout << "                     : " << std::fixed << std::abs(simulated_result - g_literature_result) / MeV << " MeV" << std::endl;
+			double simulated_result(central_pixel);
+			std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+			std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+
+			std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
+			std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+			std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+
+			std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+			std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+		}
+
+		{
+			RATIONAL_NUMBER* energy_fluence(g_xray_full_precision_renderer.getEnergyFluence());
+			double central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
+
+			double simulated_result(central_pixel);
+			std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+			std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+
+			std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+			std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+			std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+
+			std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+			std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+		}
 	}
 	// Catch exception if any
 	catch (const std::exception& error)
@@ -392,9 +419,9 @@ void loadSTLFile()
 	}
 
 	// HU values
-    RATIONAL_NUMBER HU_water(0.0);
-    RATIONAL_NUMBER HU_bone(1329.885683);
-    RATIONAL_NUMBER HU_soft_tissue(51.714752);
+    double HU_water(0.0);
+    double HU_bone(1329.885683);
+    double HU_soft_tissue(51.714752);
 
 	// Set geometry
 	g_inside_polygon_data.setFilename(stl_filename.data());
@@ -416,87 +443,89 @@ void loadSTLFile()
     double total_energy(0);
     for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
     {
-        std::cout << g_xray_beam.getEnergyChannel(i).getPhotonNumber() << " photons of " <<  g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV (i.e. " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / MeV << " MeV). " << std::endl;
+        std::cout << g_xray_beam.getEnergyChannel(i).getPhotonNumber() << " photons of " <<  g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV (i.e. " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV). " << std::endl;
         total_energy += g_xray_beam.getEnergyChannel(i).getPhotonNumber() * g_xray_beam.getEnergyChannel(i).getPhotonEnergy();
     }
     std::cout << std::endl;
 
-    std::cout << "Total input energy = " << total_energy / MeV << std::endl << std::endl;
+    std::cout << "Total input energy = " << total_energy / keV << std::endl << std::endl;
 
     std::cout << "From the literature, we know:" << std::endl;
-    std::cout.precision(3);
+    std::cout.precision(4);
     std::cout <<
-            "HU = "     << std::fixed << HU_bone << "\t" <<
-            "rho = "    << std::scientific << (g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
-            "energy = " << 1.000E-01 << " MeV,\t" <<
+            "HU = "     << std::fixed      << HU_bone << "\t" <<
+            "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << 1.000E-01 * MeV / keV<< " keV,\t" <<
             "mu/rho = " << std::scientific << 1.855E-01 << " cm2/g,\t" <<
-            "mu = "     << std::scientific << (g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01 << " cm-1" << std::endl;
+            "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01 << " cm-1" << std::endl;
 
     std::cout <<
-            "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
-            "rho = "    << std::scientific << (g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
-            "energy = " << 1.000E-01 << " MeV,\t" <<
+            "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
+            "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << 1.000E-01 * MeV / keV << " keV,\t" <<
             "mu/rho = " << std::scientific << 1.693E-01 << " cm2/g,\t" <<
-            "mu = "     << std::scientific << (g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01 << " cm-1" << std::endl << std::endl;
+            "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01 << " cm-1" << std::endl << std::endl;
 
     std::cout <<
-            "HU = "     << std::fixed << HU_bone << "\t" <<
-            "rho = "    << std::scientific << (g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
-            "energy = " << 2.000E-01 << " MeV,\t" <<
+            "HU = "     << std::fixed      << HU_bone << "\t" <<
+            "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << 2.000E-01 * MeV / keV << " keV,\t" <<
             "mu/rho = " << std::scientific << 1.309E-01 << " cm2/g,\t" <<
-            "mu = "     << std::scientific << (g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01 << " cm-1" << std::endl;
+            "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01 << " cm-1" << std::endl;
 
     std::cout <<
-            "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
-            "rho = "    << std::scientific << (g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
-            "energy = " << 2.000E-01 << " MeV,\t" <<
+            "HU =   "     << std::fixed    << HU_soft_tissue << "\t" <<
+            "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << 2.000E-01 * MeV / keV << " keV,\t" <<
             "mu/rho = " << std::scientific << 1.358E-01 << " cm2/g,\t" <<
-            "mu = "     << std::scientific << (g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01 << " cm-1" << std::endl << std::endl;
+            "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01 << " cm-1" << std::endl << std::endl;
 
     std::cout <<
-            "HU = "     << std::fixed << HU_bone << "\t" <<
-            "rho = "    << std::scientific << (g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
-            "energy = " << 3.000E-01 << " MeV,\t" <<
+            "HU = "     << std::fixed      << HU_bone << "\t" <<
+            "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << 3.000E-01 * MeV / keV << " keV,\t" <<
             "mu/rho = " << std::scientific << 1.113E-01 << " cm2/g,\t" <<
-            "mu = "     << std::scientific << (g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01 << " cm-1" << std::endl;
+            "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01 << " cm-1" << std::endl;
 
     std::cout <<
-            "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
-            "rho = "    << std::scientific << (g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
-            "energy = " << 3.000E-01 << " MeV,\t" <<
+            "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
+            "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << 3.000E-01 * MeV / keV << " keV,\t" <<
             "mu/rho = " << std::scientific << 1.175E-01 << " cm2/g,\t" <<
-            "mu = "     << std::scientific << (g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01 << " cm-1" << std::endl << std::endl;
+            "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01 << " cm-1" << std::endl << std::endl;
 
     //g_literature_result = g_incident_energy * exp(-(4.280e-01 * 2 + 1.932e-01 * 1));
 
     g_literature_result = 0.0;
-    g_literature_result += (g_number_of_photon_in_energy_channel_0 * g_incident_energy_0) * exp(-(((g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01) * 2.0 + ((g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01) * 1.0));
-    g_literature_result += (g_number_of_photon_in_energy_channel_1 * g_incident_energy_1) * exp(-(((g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01) * 2.0 + ((g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01) * 1.0));
-    g_literature_result += (g_number_of_photon_in_energy_channel_2 * g_incident_energy_2) * exp(-(((g_xray_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01) * 2.0 + ((g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01) * 1.0));
+    g_literature_result += (g_number_of_photon_in_energy_channel_0 * g_incident_energy_0) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01) * 1.0));
+    g_literature_result += (g_number_of_photon_in_energy_channel_1 * g_incident_energy_1) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01) * 1.0));
+    g_literature_result += (g_number_of_photon_in_energy_channel_2 * g_incident_energy_2) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01) * 1.0));
 
-    std::cout << "The energy (in MeV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
+    std::cout.precision(3);
+    std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
     std::cout << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
-//    std::cout << "\t\t            = " << std::fixed << g_incident_energy / MeV << " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
-  //  std::cout << "\t\t            = " << g_incident_energy / MeV << " * exp(-(4.280e-01 * 2 + 1.932e-01 * 1))" << std::endl;
-    std::cout << "\t\t            = " << std::scientific << g_literature_result / MeV << " MeV" << std::endl << std::endl;
+//    std::cout << "\t\t            = " << std::fixed << g_incident_energy / keV << " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
+  //  std::cout << "\t\t            = " << g_incident_energy / keV << " * exp(-(4.280e-01 * 2 + 1.932e-01 * 1))" << std::endl;
+    std::cout << "\t\t            = " << std::scientific << g_literature_result / keV << " keV" << std::endl << std::endl;
 
     std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
 
+    std::cout.precision(4);
     for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
     {
         std::cout <<
-                "HU = "     << std::fixed << HU_bone << "\t" <<
-                "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_bone)  / (g/cm3) << " g/cm3,\t" <<
-                "energy = " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / MeV << " MeV,\t" <<
-                "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
-                "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl;
+                "HU = "     << std::fixed      << HU_bone << "\t" <<
+                "rho = "    << std::scientific << g_xray_half_precision_renderer.getDensityFromHU(HU_bone)  / (g/cm3) << " g/cm3,\t" <<
+                "energy = " << std::fixed      << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV,\t" <<
+                "mu/rho = " << std::scientific << g_xray_half_precision_renderer.getMassAttenuationFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
+                "mu = "     << std::scientific << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl;
 
         std::cout <<
-                "HU =   "     << std::fixed << HU_soft_tissue << "\t" <<
-                "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
-                "energy = " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / MeV << " MeV,\t" <<
-                "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
-                "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl << std::endl;
+                "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
+                "rho = "    << std::scientific << g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
+                "energy = " << std::fixed      << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV,\t" <<
+                "mu/rho = " << std::scientific << g_xray_half_precision_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
+                "mu = "     << std::scientific << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl << std::endl;
     }
 
     g_expected_result = 0.0;
@@ -505,18 +534,25 @@ void loadSTLFile()
         double photon_number(g_xray_beam.getEnergyChannel(i).getPhotonNumber());
         double incident_energy(g_xray_beam.getEnergyChannel(i).getPhotonEnergy());
 
-        g_expected_result += (photon_number * incident_energy) * exp(-(g_xray_renderer.getMuFromHU(HU_bone, incident_energy) / (1.0 / cm) * 2 + g_xray_renderer.getMuFromHU(HU_soft_tissue, incident_energy) / (1.0 / cm) * 1));
+        g_expected_result += (photon_number * incident_energy) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, incident_energy) / (1.0 / cm) * 2 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, incident_energy) / (1.0 / cm) * 1));
     }
 
-    std::cout << "The energy (in MeV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
+    std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
     std::cout << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
-    //std::cout << "\t\t           = " << std::fixed << g_incident_energy / MeV << " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
-    //std::cout << "\t\t           = " << std::fixed << g_incident_energy / MeV << " * exp(-(" << std::scientific << g_xray_renderer.getMuFromHU(HU_bone, g_incident_energy) / (1.0 / cm) << " * 2 + " << g_xray_renderer.getMuFromHU(HU_soft_tissue, g_incident_energy) / (1.0 / cm) << " * 1))" << std::endl;
-    std::cout << "\t\t           = " << std::scientific << g_expected_result / MeV << " MeV" << std::endl << std::endl;
+    //std::cout << "\t\t           = " << std::fixed << g_incident_energy / keV << " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
+    //std::cout << "\t\t           = " << std::fixed << g_incident_energy / keV << " * exp(-(" << std::scientific << g_xray_renderer.getMuFromHU(HU_bone, g_incident_energy) / (1.0 / cm) << " * 2 + " << g_xray_renderer.getMuFromHU(HU_soft_tissue, g_incident_energy) / (1.0 / cm) << " * 1))" << std::endl;
+    std::cout << "\t\tI_expected = " << "(" << std::fixed << g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(0).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
+    std::cout << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(1).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
+    std::cout << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(2).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 1))" << std::endl;
+    std::cout.precision(3);
+    std::cout << "\t\tI_expected = " << (g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(0).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
+    std::cout << "\t\t             " << (g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(1).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
+    std::cout << "\t\t             " << (g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(2).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 1.0))         << std::endl;
+    std::cout << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result / keV << " keV" << std::endl << std::endl;
 
-    std::cout << "The absolute error is: |I_expected - I_reference| MeV" << std::endl;
-    std::cout << "                     : |" << std::scientific << g_expected_result / MeV << " - " << g_literature_result / MeV << "| MeV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / MeV << " MeV" << std::endl << std::endl;
+    std::cout << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
+    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << g_literature_result / keV << "| keV" << std::endl;
+    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / keV << " keV" << std::endl << std::endl;
 
     g_inside_polygon_data.splitFaces(false);
 	g_inside_polygon_data.splitFaces(false);
@@ -564,7 +600,12 @@ void loadXRaySimulator()
 //----------------------
 {
 	// Initialise the X-ray renderer
-    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+    g_xray_half_precision_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam);
+
+    g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
             GL_RGB32F,
             &g_xray_detector,
             &g_xray_beam);
