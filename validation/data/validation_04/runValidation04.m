@@ -66,7 +66,8 @@ angle_span                = first_angle:angle_offset:((number_of_angles - 1) * a
 % Load the data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-sinogram = loadVolume("sinogram.raw", "float32", width_in_number_of_pixels, number_of_angles, 1);
+sinogram    = loadVolume(      "sinogram.raw", "float32", width_in_number_of_pixels, number_of_angles, 1);
+projections = loadVolume("projection_set.raw", "float32", width_in_number_of_pixels, number_of_angles, 1);
 
 
 
@@ -97,3 +98,35 @@ mean(mean(sub_matrix_soft_tissue))
 
 sub_matrix_bone = ct_volume_in_mu_80keV(95:95+9,95:95+9);
 mean(mean(sub_matrix_bone))
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Save images
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Projections
+figure;
+imagesc(projections(: , :, int32(size(projections, 3) / 2))');
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("projection_set.png","-dpng"); 
+
+% Sinogram
+figure;
+imagesc(sinogram(: , :, int32(size(sinogram, 3) / 2))');
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("sinogram_80keV.png","-dpng"); 
+
+% Reconstructed slice
+figure;
+imagesc(ct_volume_in_mu_80keV(: , :, int32(size(ct_volume_in_mu_80keV, 3) / 2))');
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("ct_volume_in_mu_80keV.png","-dpng"); 
+
