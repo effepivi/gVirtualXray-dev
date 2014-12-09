@@ -87,8 +87,8 @@ ct_volume_in_HU = loadVolume("phantom.raw", "int16", volume_size(1), volume_size
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mu_water = 1.844E-01;
-%ct_volume_in_mu_80keV = (1.0 + ct_volume_in_HU / 1000.0) * mu_water;
-%writeVolume("phantom_in_mu_80keV.raw", "float32", ct_volume_in_mu_80keV);
+ct_volume_in_mu_80keV = (1.0 + ct_volume_in_HU / 1000.0) * mu_water;
+writeVolume("phantom_in_mu_80keV.raw", "float32", ct_volume_in_mu_80keV);
 
 
 
@@ -97,8 +97,8 @@ mu_water = 1.844E-01;
 % Build corresponding sinogram
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%sinogram_80keV = buildSinogram(6, ct_volume_in_mu_80keV, angle_span);
-%writeVolume("phantom_sinogram.raw", "float32", sinogram_80keV);
+sinogram_80keV = buildSinogram(number_of_processes, ct_volume_in_mu_80keV, angle_span);
+writeVolume("phantom_sinogram.raw", "float32", sinogram_80keV);
 
 
 
@@ -107,8 +107,8 @@ mu_water = 1.844E-01;
 % Build corresponding projections
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%projections_80keV = buildProjectionsFromSinogram(sinogram_80keV);
-%writeVolume("phantom_projections.raw", "float32", projections_80keV);
+projections_80keV = buildProjectionsFromSinogram(sinogram_80keV);
+writeVolume("phantom_projections.raw", "float32", projections_80keV);
 
 
 
@@ -167,6 +167,18 @@ max(max(max(sinogram_error)))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Projection error
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+projection_error = abs(projections_80keV - simulation_projections);
+writeVolume("projection_error.raw", "float32", projection_error);
+mean(mean(mean(projection_error)))
+min(min(min(projection_error)))
+max(max(max(projection_error)))
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Reconstruction error
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -175,4 +187,133 @@ writeVolume("reconstruction_error.raw", "float32", reconstruction_error);
 mean(mean(mean(reconstruction_error)))
 min(min(min(reconstruction_error)))
 max(max(max(reconstruction_error)))
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Extract profiles
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+reference_sinogram_profile = sinogram_80keV(      : , int32(size     (sinogram_80keV, 2) / 2), int32(size(     sinogram_80keV, 3) / 2) );
+test_sinogram_profile      = simulation_sinogram( : , int32(size(simulation_sinogram, 2) / 2), int32(size(simulation_sinogram, 3) / 2) );
+
+save -ascii reference_sinogram_profile.txt reference_sinogram_profile;
+save -ascii      test_sinogram_profile.txt      test_sinogram_profile;
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Save images
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Input data
+figure;
+climits = [-1000, 1000];
+imagesc(ct_volume_in_HU(: , :, int32(size(ct_volume_in_HU, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("phantom_in_HU.png","-dpng"); 
+
+figure;
+imagesc(ct_volume_in_mu_80keV(: , :, int32(size(ct_volume_in_mu_80keV, 3) / 2))');
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("ct_volume_in_mu_80keV.png","-dpng"); 
+
+% Sinograms
+climits_80keV      = [min(min(min(     sinogram_80keV))), max(max(max(     sinogram_80keV)))];
+climits_simulation = [min(min(min(simulation_sinogram))), max(max(max(simulation_sinogram)))];
+climits = [min(climits_80keV(1), climits_simulation(1)), max(climits_80keV(2), climits_simulation(2))];
+
+figure;
+imagesc(sinogram_80keV(: , :, int32(size(sinogram_80keV, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("sinogram_80keV.png","-dpng"); 
+
+figure;
+imagesc(simulation_sinogram(: , :, int32(size(simulation_sinogram, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("simulation_sinogram.png","-dpng"); 
+
+figure;
+imagesc(sinogram_error(: , :, int32(size(sinogram_error, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("sinogram_error.png","-dpng"); 
+
+% Projections
+figure;
+imagesc(projections_80keV(: , :, int32(size(projections_80keV, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("projections_80keV.png","-dpng"); 
+
+figure;
+imagesc(simulation_projections(: , :, int32(size(simulation_projections, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("simulation_projections.png","-dpng"); 
+
+figure;
+imagesc(projection_error(: , :, int32(size(projection_error, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("projection_error.png","-dpng"); 
+
+% Reconstructions
+climits_80keV      = [min(min(min(           reconstructed_ct_volume))), max(max(max(           reconstructed_ct_volume)))];
+climits_simulation = [min(min(min(simulation_reconstructed_ct_volume))), max(max(max(simulation_reconstructed_ct_volume)))];
+climits = [min(climits_80keV(1), climits_simulation(1)), max(climits_80keV(2), climits_simulation(2))];
+
+figure;
+imagesc(reconstructed_ct_volume(: , :, int32(size(reconstructed_ct_volume, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("reconstructed_ct_volume.png","-dpng"); 
+
+figure;
+imagesc(simulation_reconstructed_ct_volume(: , :, int32(size(simulation_reconstructed_ct_volume, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("simulation_reconstructed_ct_volume.png","-dpng"); 
+
+figure;
+imagesc(reconstruction_error(: , :, int32(size(reconstruction_error, 3) / 2))', climits);
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("reconstruction_error.png","-dpng"); 
+
+% Normalised cross-correlation
+slice1 = sinogram_80keV(     : , :, int32(size(     sinogram_80keV, 3) / 2));
+slice2 = simulation_sinogram(: , :, int32(size(simulation_sinogram, 3) / 2));
+
+mean1 = mean(mean(slice1));
+mean2 = mean(mean(slice2));
+
+standard_deviation1 = std2(slice1);
+standard_deviation2 = std2(slice2);
+
+normalised_cross_correlation = ((slice1 - mean1) .* (slice2 - mean2) / (standard_deviation1 * standard_deviation2));
+sum(sum(normalised_cross_correlation)) / (size(slice1, 1) * size(slice1, 2))
+figure;
+imagesc(reconstruction_error(: , :, int32(size(reconstruction_error, 3) / 2))' / (size(slice1, 1) * size(slice1, 2)));
+colormap("gray");
+colorbar;
+daspect( [ 1 1 1 ] );
+print("reconstruction_error.png","-dpng"); 
 
