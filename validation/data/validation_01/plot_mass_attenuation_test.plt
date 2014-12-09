@@ -55,7 +55,7 @@ plot    "tissue.csv"                             using 1:2  t "Reference"       
 
 
 
-set xrange [1.00E-03:2.00E+01]
+set xrange [1.00E-03:1.00E+02]
 set yrange [1.00E-02:1.00E+04]
 
 set output "test_water.eps"
