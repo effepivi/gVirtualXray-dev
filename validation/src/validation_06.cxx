@@ -275,6 +275,15 @@ int main(int argc, char** argv)
 		std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
 		std::cout << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
         std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
+		std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
+		std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
+
+        RATIONAL_NUMBER tangent(((g_resolution * g_number_of_pixels.getX()) / 2.0) /
+            ((g_detector_position - g_source_position).length()));
+
+        RATIONAL_NUMBER angle_in_radians(2.0 * std::atan(tangent));
+        RATIONAL_NUMBER angle_in_degrees(180.0 * angle_in_radians / M_PI);
+		std::cout << "Field of view: "   << angle_in_degrees << " degrees" << std::endl;
 
         // Compute the projection set
         g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), 1, 0);

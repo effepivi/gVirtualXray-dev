@@ -166,8 +166,9 @@ GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
 Vec2ui g_number_of_pixels(600 / g_scaling_factor, 600 / g_scaling_factor);
 VEC3 g_source_position(   0.5 * cm, 0.5 * cm, -15.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
-VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
+VEC3 g_detector_up_vector(0.0, -1.0,   0.0);
 
+PolygonMesh g_inside_polygon_data;
 CubeMesh g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
@@ -264,6 +265,7 @@ int main(int argc, char** argv)
 
 		// Add the geometry to the X-ray renderer
 		loadSTLFile();
+		g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
 		g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
 
 		// Set the projection matrix
@@ -391,9 +393,19 @@ void loadSTLFile()
 	}
 
 	// HU values
+    RATIONAL_NUMBER HU_water(0.0);
+    RATIONAL_NUMBER HU_bone(1329.885683);
     RATIONAL_NUMBER HU_soft_tissue(51.714752);
 
 	// Set geometry
+	g_inside_polygon_data.setFilename(stl_filename.data());
+	g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+	g_inside_polygon_data.mergeVertices();
+    g_inside_polygon_data.setHounsfieldValue(HU_bone);
+
+	//g_outside_polygon_data.setFilename(stl_filename_1.data());
+	//g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+	//g_outside_polygon_data.mergeVertices(true);
     g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
@@ -417,6 +429,10 @@ void loadSTLFile()
             "rho = "    << std::scientific << g_xray_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
             "mu/rho = " << std::scientific << g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_incident_energy)  / (cm2/g) << " cm2/g,\t" <<
             "mu = "     << std::scientific << g_xray_renderer.getMuFromHU(HU_soft_tissue, g_incident_energy) / (1.0 / cm) << " cm-1" << std::endl << std::endl;
+
+    g_inside_polygon_data.splitFaces(false);
+	g_inside_polygon_data.splitFaces(false);
+	g_inside_polygon_data.splitFaces(false);
 
     g_outside_polygon_data.splitFaces(false);
     g_outside_polygon_data.splitFaces(false);

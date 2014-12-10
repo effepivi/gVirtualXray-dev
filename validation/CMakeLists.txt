@@ -172,6 +172,11 @@ IF(glfw_FOUND)
     ADD_DEPENDENCIES(validation_09 BinaryValidationFiles)
     INSTALL(TARGETS validation_09 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
 
+    ADD_EXECUTABLE (validation_10 src/validation_10.cxx)
+    TARGET_LINK_LIBRARIES (validation_10 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(validation_10 BinaryValidationFiles)
+    INSTALL(TARGETS validation_10 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+
     INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
 ENDIF(glfw_FOUND)
 
