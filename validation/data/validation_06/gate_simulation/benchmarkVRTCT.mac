@@ -1,13 +1,13 @@
 ############################
 # VISUALIZATION PARAMETERS #
 ############################
-#/control/execute visu.mac
+#/control/execute ../gate_simulation/visu.mac
 /vis/disable
 
 #########################
 # SET MATERIAL DATABASE #
 #########################
-/gate/geometry/setMaterialDatabase GateMaterials.db
+/gate/geometry/setMaterialDatabase ../gate_simulation/GateMaterials.db
 
 #########
 # WORLD #
@@ -23,29 +23,29 @@
 # size of pixels : 0.5x0.5x1.0 mm3    #
 # pixels are made up of silicon       #
 #######################################
-/control/execute CTScanner.mac
+/control/execute ../gate_simulation/CTScanner.mac
 
 ###################################
 # phantom :                       #
 #  * 1 soft tissue box            #
 #  * 1 bone cylinder              #
 ###################################
-/control/execute phantom.mac
+/control/execute ../gate_simulation/phantom.mac
 
 ###########
 # PHYSICS #
 ###########
-/control/execute physics.mac
+/control/execute ../gate_simulation/physics.mac
 
 #############
 # DIGITIZER #
 #############
-/control/execute digitizer.mac
+/control/execute ../gate_simulation/digitizer.mac
 
 ##############
 # SOURCE GPS #
 ##############
-/control/execute source.mac
+/control/execute ../gate_simulation/source.mac
 
 ##########
 # OUTPUT #
@@ -55,7 +55,7 @@
 #############
 # VERBOSITY #
 #############
-/control/execute verbose.mac
+/control/execute ../gate_simulation/verbose.mac
 
 ##################
 # INITIALIZATION #
@@ -65,6 +65,7 @@
 ###############
 # ACQUISITION #
 ###############
-/control/execute acquisition.mac
+/control/execute ../gate_simulation/acquisition.mac
 
 exit
+

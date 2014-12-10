@@ -1,12 +1,18 @@
-
-NB_RUN=50
+TEST_NUMBER=0
+NB_RUN=10
 
 rm -rf run_*
 rm -f benchmarkVRTCT_*.dat
 rm -f benchmarkVRTCT.root
 rm -f timing.dat
 
-for (( i = 0; i < $NB_RUN; i++ ))
+
+FIRST=`echo "$TEST_NUMBER * $NB_RUN" |bc`
+LAST=$(expr $FIRST + $NB_RUN)
+
+
+
+for (( i = $FIRST; i < $LAST; i++ ))
 do
     # Create first seed
     SEED1=`echo $[ 1 + $[ RANDOM % 100000000 ]]`
@@ -35,10 +41,10 @@ do
     echo >> timing.dat
     echo >> timing.dat
 
-    mkdir run_$i
-    cp benchmarkVRTCT_*.dat run_$i
-    cp benchmarkVRTCT*.root run_$i
-    mv output.mac run_$i
+    mkdir ../gate_simulation/run_$i
+    cp benchmarkVRTCT_*.dat ../gate_simulation/run_$i
+    cp benchmarkVRTCT*.root ../gate_simulation/run_$i
+    mv output.mac ../gate_simulation/run_$i
 done
 
 xclock
