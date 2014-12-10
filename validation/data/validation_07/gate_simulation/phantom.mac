@@ -1,0 +1,27 @@
+###################
+# Soft Tissue Box #
+###################
+/gate/world/daughters/name softTissueBox
+/gate/world/daughters/insert box
+/gate/softTissueBox/geometry/setXLength 3. cm
+/gate/softTissueBox/geometry/setYLength 3. cm
+/gate/softTissueBox/geometry/setZLength 3. cm
+/gate/softTissueBox/setMaterial ValidationSoftTissue
+/gate/softTissueBox/vis/forceWireframe
+/gate/softTissueBox/vis/setColor red
+
+
+#################
+# Bone Cylinder #
+#################
+/gate/softTissueBox/daughters/name boneCylinder
+/gate/softTissueBox/daughters/insert cylinder
+/gate/boneCylinder/geometry/setRmin 0. mm
+/gate/boneCylinder/geometry/setRmax 1. cm
+/gate/boneCylinder/geometry/setHeight 3. cm
+/gate/boneCylinder/placement/setRotationAxis 1 0 0
+/gate/boneCylinder/placement/setRotationAngle 90. deg
+/gate/boneCylinder/setMaterial ValidationBone
+/gate/boneCylinder/vis/forceWireframe
+/gate/boneCylinder/vis/setColor cyan
+

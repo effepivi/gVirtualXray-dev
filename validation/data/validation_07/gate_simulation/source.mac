@@ -1,0 +1,19 @@
+/gate/source/addSource xraygun
+/gate/source/verbose 0
+/gate/source/xraygun/setActivity 35000. becquerel
+/gate/source/xraygun/gps/verbose 0
+/gate/source/xraygun/gps/particle gamma
+/gate/source/xraygun/gps/energytype Mono
+/gate/source/xraygun/gps/monoenergy 80. keV 
+
+/gate/source/xraygun/gps/type Volume
+/gate/source/xraygun/gps/shape Para
+
+/gate/source/xraygun/gps/halfx 0.25 cm
+/gate/source/xraygun/gps/halfy 0.25 cm
+/gate/source/xraygun/gps/halfz 0.25 cm
+
+/gate/source/xraygun/gps/direction 0 0 1
+/gate/source/xraygun/gps/centre 0. 0. -10.0 cm
+/gate/source/xraygun/gps/angtype iso
+/gate/source/list
