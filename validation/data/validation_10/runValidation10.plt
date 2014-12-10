@@ -5,6 +5,19 @@ set term post eps enhanced color "Helvetica" 32 size 9in,7in
 set grid
 
 
+
+set output "polychromatic_beam.eps"
+
+set ylabel "Number of photons"
+set xlabel "Energy in keV"
+
+plot \
+    "beam_spectrum.csv" using ($1 * 1000):2 notitle w l lc rgb "#000000" lt -1 lw 2
+
+
+
+
+
 set ylabel "Normalised Energy"
 set xlabel "Pixel Index"
 
@@ -12,6 +25,6 @@ set key top center box
 
 set output "test_profile.eps"
 plot \
-	"gate_profile.txt" t "Gate"         w p lw 2, \
-	"gpu_profile.txt"  t "gVirtualXRay" w l lc rgb "#2222E9" lt -1 lw 2
+    "gate_profile.txt" t "Gate"         w p lw 2, \
+    "gpu_profile.txt"  t "gVirtualXRay" w l lc rgb "#2222E9" lt -1 lw 2
 

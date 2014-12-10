@@ -35,6 +35,7 @@ gnuplot < runValidation10.plt
 
 fig2eps --nogv scene.fig
 
-convert test_profile.eps     test_profile.png
-convert scene.eps            scene.png
+convert polychromatic_beam.eps polychromatic_beam.png
+convert test_profile.eps       test_profile.png
+convert scene.eps              scene.png
 
