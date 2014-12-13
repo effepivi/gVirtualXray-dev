@@ -74,15 +74,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
-    //----------------------------------------------------------
-    inline TextRenderer::Character::Character(GLuint aTextureID,
+    //----------------------------------------------------------------
+    inline TextRenderer::Character::Character(unsigned int aTextureID,
                                               int aWidth,
                                               int aHeight,
                                               float aVX,
                                               float aVY,
                                               float aXOffset,
                                               float aYOffset):
-            //----------------------------------------------------------
+    //----------------------------------------------------------------
             m_texture_id(aTextureID),
             m_width(aWidth),
             m_height(aHeight),
@@ -90,7 +90,7 @@ namespace gVirtualXRay {
             m_vy(aVY),
             m_x_offset(aXOffset),
             m_y_offset(aYOffset)
-    //----------------------------------------------------------
+    //----------------------------------------------------------------
     {
     }
 

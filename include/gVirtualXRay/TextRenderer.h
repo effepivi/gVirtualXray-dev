@@ -70,18 +70,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <boost/scoped_ptr.hpp>
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#else
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#endif
-#endif
-
 #ifdef HAS_FREETYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -142,7 +130,7 @@ private:
         *   @param aYOffset   the vertical offset (default value: 0)
         */
         //----------------------------------------------------------------------
-        Character(GLuint aTextureID = 0,
+        Character(unsigned int aTextureID = 0,
                 int aWidth = 0,
                 int aHeight = 0,
                 float aVX = 0,
@@ -157,7 +145,7 @@ private:
         virtual ~Character();
 
 
-        GLuint m_texture_id;    ///< The ID of the texture
+        unsigned int m_texture_id;    ///< The ID of the texture
         int m_width;            ///< The width of the bitmap
         int m_height;           ///< The height of the bitmap
         float m_vx;             ///< The horizontal alignment parameter
