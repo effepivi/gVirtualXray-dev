@@ -536,6 +536,32 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         {
             for (unsigned i(0); i < m_p_detector->getNumberOfPixels().getX(); ++i, ++p_input_data)
             {
+                if (fabs(*p_input_data) <= 0.00001)
+                {
+                    std::cout << "WARNING, was: " << *p_input_data;
+
+                    *p_input_data = 0;
+                    unsigned int count(0);
+                    for (unsigned temp_j(j - 1); temp_j <= j + 1; ++temp_j)
+                    {
+                        for (unsigned temp_i(i - 1); temp_i <= i + 1; ++temp_i)
+                        {
+                            if (temp_i >= 0 && temp_j >= 0 && temp_i < m_p_detector->getNumberOfPixels().getX() && temp_j < m_p_detector->getNumberOfPixels().getY())
+                            {
+                                if (m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i] >= 0.00001)
+                                {
+                                    *p_input_data += m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i];
+                                    ++count;
+                                }
+                            }
+                        }
+                    }
+                    if (count)
+                    {
+                        *p_input_data /= count;
+                        std::cout << ", now: " << *p_input_data << std::endl;
+                    }
+                }
                 *p_input_data = scaling_factor * log(total_input_energy / *p_input_data);
             }
         }
