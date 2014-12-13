@@ -139,7 +139,7 @@ class XRayRenderer
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
-protected:
+public:
 	typedef RATIONAL_NUMBER PixelType; ///< Pixel type
 
 #ifdef HAS_ITK
@@ -564,6 +564,13 @@ public:
 
 
     void printSinogram(const char* aFileName);
+
+
+#ifdef HAS_ITK
+    const ImageType::Pointer& getSinogram() const;
+    ImageType::Pointer& getSinogram();
+    RATIONAL_NUMBER* getSinogramRawData() const;
+#endif
 
 
     void computeProjectionSet(MATRIX4& aModellingTransformationMatrix,

@@ -346,4 +346,40 @@ inline RATIONAL_NUMBER XRayRenderer::getMaxPixelValue() const
 }
 
 
+
+#ifdef HAS_ITK
+//------------------------------------------------------------------------------
+inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram() const
+//------------------------------------------------------------------------------
+{
+    return (m_p_sinogram_image);
+}
+
+
+//------------------------------------------------------------------
+inline XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram()
+//------------------------------------------------------------------
+{
+    return (m_p_sinogram_image);
+}
+
+
+//--------------------------------------------------------------
+inline RATIONAL_NUMBER* XRayRenderer::getSinogramRawData() const
+//--------------------------------------------------------------
+{
+    if (m_p_sinogram_image.IsNull())
+    {
+        return (0);
+    }
+    else
+    {
+        return (m_p_sinogram_image->GetBufferPointer());
+    }
+}
+#endif
+
+
+
+
 } // namespace gVirtualXRay
