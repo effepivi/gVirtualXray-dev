@@ -128,6 +128,64 @@ inline void XRayRenderer::removeOuterSurface()
 }
 
 
+//--------------------------------------------------------------
+inline void XRayRenderer::printFBO(unsigned int aFBOID,
+                                   const std::string& aFileName)
+//--------------------------------------------------------------
+{
+	printFBO(aFBOID, aFileName.data());
+}
+
+
+//--------------------------------------------------------------------
+inline void XRayRenderer::print2DTexture(unsigned int aTextureID,
+                                         const std::string& aFileName)
+//--------------------------------------------------------------------
+{
+	print2DTexture(aTextureID, aFileName.data());
+}
+
+
+//------------------------------------------------------------------
+inline void XRayRenderer::printLBuffer(const std::string& aFileName)
+//------------------------------------------------------------------
+{
+	printLBuffer(aFileName.data());
+}
+
+
+//---------------------------------------------------------------------------
+inline void XRayRenderer::printCumulatedLBuffer(const std::string& aFileName)
+//---------------------------------------------------------------------------
+{
+	printCumulatedLBuffer(aFileName.data());
+}
+
+
+//-------------------------------------------------------------------
+inline void XRayRenderer::printSumMuxDx(const std::string& aFileName)
+//-------------------------------------------------------------------
+{
+	printSumMuxDx(aFileName.data());
+}
+
+
+//------------------------------------------------------------------------
+inline void XRayRenderer::printEnergyFluence(const std::string& aFileName)
+//------------------------------------------------------------------------
+{
+	printEnergyFluence(aFileName.data());
+}
+
+
+//--------------------------------------------------------------------
+inline void XRayRenderer::printXRayImage(const std::string& aFileName)
+//--------------------------------------------------------------------
+{
+	printXRayImage(aFileName.data());
+}
+
+
 //-----------------------------------------------------------------------
 inline void XRayRenderer::printMuWaterTable(std::ostream& anOutputStream)
 //-----------------------------------------------------------------------

@@ -68,6 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Include
 //******************************************************************************
 #include <vector>
+#include <string>
 #include <boost/scoped_ptr.hpp>
 
 #ifdef HAS_ITK
@@ -268,6 +269,16 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Save a FBO into a file.
+	/**
+	*	@param aFBOID:	the ID of the FBO
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printFBO(unsigned int aFBOID, const std::string& aFileName);
+
+
+	//--------------------------------------------------------------------------
 	///	Save a texture into a file.
 	/**
 	*	@param aTextureID:	the ID of the texture
@@ -275,6 +286,16 @@ public:
 	*/
 	//--------------------------------------------------------------------------
 	void print2DTexture(unsigned int aTextureID, const char* aFileName);
+
+
+	//--------------------------------------------------------------------------
+	///	Save a texture into a file.
+	/**
+	*	@param aTextureID:	the ID of the texture
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void print2DTexture(unsigned int aTextureID, const std::string& aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -287,12 +308,30 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Save the current L-buffer into a file.
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printLBuffer(const std::string& aFileName);
+
+
+	//--------------------------------------------------------------------------
 	///	Save the current cumulated L-buffer into a file.
 	/**
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
 	void printCumulatedLBuffer(const char* aFileName);
+
+
+	//--------------------------------------------------------------------------
+	///	Save the current cumulated L-buffer into a file.
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printCumulatedLBuffer(const std::string& aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -305,6 +344,15 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Save the current Mux Dx into a file.
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printSumMuxDx(const std::string& aFileName);
+
+
+	//--------------------------------------------------------------------------
 	///	Save the current energy fluence into a file (same as printXRayImage()).
 	/**
 	*	@param aFileName:	the file name
@@ -314,12 +362,30 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Save the current energy fluence into a file (same as printXRayImage()).
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printEnergyFluence(const std::string& aFileName);
+
+
+	//--------------------------------------------------------------------------
 	///	Save the current energy fluence into a file (same as printEnergyFluence()).
 	/**
 	*	@param aFileName:	the file name
 	*/
 	//--------------------------------------------------------------------------
 	void printXRayImage(const char* aFileName);
+
+
+	//--------------------------------------------------------------------------
+	///	Save the current energy fluence into a file (same as printEnergyFluence()).
+	/**
+	*	@param aFileName:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void printXRayImage(const std::string& aFileName);
 
 
 	//--------------------------------------------------------------------------
