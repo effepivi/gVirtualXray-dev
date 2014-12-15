@@ -184,12 +184,39 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Set the name of the file that contains the polygon mesh.
+	/**
+	*	@param aFilename:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void setFileName(const char* aFilename);
+
+
+	//--------------------------------------------------------------------------
+	///	Set the name of the file that contains the polygon mesh.
+	/**
+	*	@param aFilename:	the file name
+	*/
+	//--------------------------------------------------------------------------
+	void setFileName(const std::string& aFilename);
+
+
+	//--------------------------------------------------------------------------
 	///	Accessor on the name of the file that contains the polygon mesh.
 	/**
 	*	@return the file name
 	*/
 	//--------------------------------------------------------------------------
 	const std::string& getFilename() const;
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the name of the file that contains the polygon mesh.
+	/**
+	*	@return the file name
+	*/
+	//--------------------------------------------------------------------------
+	const std::string& getFileName() const;
 
 
 	//--------------------------------------------------------------------------

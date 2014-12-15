@@ -104,8 +104,35 @@ inline void PolygonMesh::setFilename(const std::string& aFilename)
 }
 
 
+//---------------------------------------------------------
+inline void PolygonMesh::setFileName(const char* aFilename)
+//---------------------------------------------------------
+{
+	// Store the name of the file that contains the polygon mesh
+	m_filename = aFilename;
+}
+
+
+//----------------------------------------------------------------
+inline void PolygonMesh::setFileName(const std::string& aFilename)
+//----------------------------------------------------------------
+{
+	// Store the name of the file that contains the polygon mesh
+	m_filename = aFilename;
+}
+
+
 //--------------------------------------------------------
 inline const std::string& PolygonMesh::getFilename() const
+//--------------------------------------------------------
+{
+	// Return the name of the file that contains the polygon mesh
+	return (m_filename);
+}
+
+
+//--------------------------------------------------------
+inline const std::string& PolygonMesh::getFileName() const
 //--------------------------------------------------------
 {
 	// Return the name of the file that contains the polygon mesh
