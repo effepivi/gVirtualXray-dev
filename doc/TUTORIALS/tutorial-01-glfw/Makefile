@@ -63,7 +63,7 @@ $(DOC).php : pass2
 	$(RM) $(DOC).htoc
 	$(RM) $(DOC).image.out
 	$(RM) $(DOC).image.tex
-	$(RM) cube_01.eps cube_02.eps screenshot.eps
+	#$(RM) cube_01.eps cube_02.eps screenshot.eps
 
 %.eps : %.png
 	convert $< $@

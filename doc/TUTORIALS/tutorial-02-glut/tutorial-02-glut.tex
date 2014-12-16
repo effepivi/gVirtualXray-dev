@@ -141,11 +141,10 @@
 The complete source code of this tutorial is available in 
 Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
 at 
-\verb+example/src/tutorial_02_glut.cxx+. 
+\verb+tutorials/tutorial_02_glut/tutorial_02_glut.cxx+. 
 It can be downloaded here: 
 \url{
-https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/src/
-  tutorial_02_glut.cxx}.
+https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/tutorial_02_glut/tutorial_02_glut.cxx}.
 It improves the 1st tutorial in two ways:
 \begin{enumerate}
 	\item Loading the shader program from a file compressed with the Z library.
@@ -217,8 +216,8 @@ OpenGL core profile headers and ii) the header files that need to be included to
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=31, lastline=66, caption=Header inclusion., 
-label=lst:header]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=65, lastline=100, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -269,8 +268,8 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 
 
 \begin{center}
-\lstinputlisting[firstline=76, lastline=123, caption=Global variables., 
-label=lst:global variables]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=110,lastline=157, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -296,8 +295,8 @@ One function has been added to load shaders from compressed files and five funct
 Listing~\ref{lst:function declarations} shows the declaration of all the functions. 
 
 \begin{center}
-\lstinputlisting[firstline=126, lastline=143, caption=Function declarations., 
-label=lst:function declarations]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=160, lastline=177, caption=Function declarations., 
+label=lst:function declarations]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -337,8 +336,8 @@ They are used to make sure the decompression has been successful.
 \end{itemize}
 Listing~\ref{lst:Initialise Shaders} shows how to perform all these steps.
 \begin{center}
-\lstinputlisting[firstline=238, lastline=268, caption=Shader initialisation., 
-label=lst:Initialise Shaders]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=272, lastline=302, caption=Shader initialisation., 
+label=lst:Initialise Shaders]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -354,8 +353,8 @@ In \verb+void initGLUT()+, the callback is registered as follows:
 \verb+glutMouseFunc(mouseButtonCallback)+.
 
 \begin{center}
-\lstinputlisting[firstline=495, lastline=551, caption=Callback for mouse button events., 
-label=lst:mouseButtonCallback]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=529, lastline=585, caption=Callback for mouse button events., 
+label=lst:mouseButtonCallback]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -370,8 +369,8 @@ In \verb+void initGLUT()+, the callback is registered as follows:
 \verb+glutMotionFunc(cursorPosCallback)+.
 
 \begin{center}
-\lstinputlisting[firstline=554, lastline=565, caption=Callback for cursor position events., 
-label=lst:cursorPosCallback]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=588, lastline=599, caption=Callback for cursor position events., 
+label=lst:cursorPosCallback]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -385,8 +384,8 @@ label=lst:cursorPosCallback]{../../../tutorials/src/tutorial_02_glut.cxx}
 
 \begin{center}
 \lstinputlisting[label=lst:getArcballVector,
-    firstline=568, lastline=589, 
-    caption=Conversion from screen coordinates to arc ball vector.]{../../../tutorials/src/tutorial_02_glut.cxx}
+    firstline=602, lastline=623, 
+    caption=Conversion from screen coordinates to arc ball vector.]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -399,8 +398,8 @@ Listing~\ref{lst:radian2degree} shows how to perform this simple conversion.
 
 \begin{center}
 \lstinputlisting[label=lst:radian2degree,
-    firstline=592, lastline=597,
-    caption=Convert an angle value from radian to degree.]{../../../tutorials/src/tutorial_02_glut.cxx}
+    firstline=626, lastline=631,
+    caption=Convert an angle value from radian to degree.]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 
@@ -412,8 +411,8 @@ If the arcball rotation is currently in used, if the cursor's position has chang
 (see Listing~\ref{lst:computeRotation}). 
 
 \begin{center}
-\lstinputlisting[firstline=600, lastline=628, caption=Compute the arcball rotation., 
-label=lst:computeRotation]{../../../tutorials/src/tutorial_02_glut.cxx}
+\lstinputlisting[firstline=634, lastline=662, caption=Compute the arcball rotation., 
+label=lst:computeRotation]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 	
@@ -443,7 +442,7 @@ In the next tutorial:
 
 \begin{center}
   \lstinputlisting[caption=All the source code of this tutorial., 
-  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_02_glut.cxx}
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/tutorial_02_glut/tutorial_02_glut.cxx}
 \end{center}
 
 % 

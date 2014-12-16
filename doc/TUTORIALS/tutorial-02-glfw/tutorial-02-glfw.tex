@@ -141,11 +141,10 @@
 The complete source code of this tutorial is available in 
 Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
 at 
-\verb+example/src/tutorial_02_glfw.cxx+. 
+\verb+example/tutorial_02_glfw/tutorial_02_glfw.cxx+. 
 It can be downloaded here: 
 \url{
-https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/src/
-  tutorial_02_glfw.cxx}.
+https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}.
 It improves the 1st tutorial in two ways:
 \begin{enumerate}
 	\item Loading the shader program from a file compressed with the Z library.
@@ -217,8 +216,8 @@ OpenGL core profile headers and ii) the header files that need to be included to
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=31, lastline=71, caption=Header inclusion., 
-label=lst:header]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=65, lastline=105, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -269,8 +268,8 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 
 
 \begin{center}
-\lstinputlisting[firstline=81, lastline=128, caption=Global variables., 
-label=lst:global variables]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=115, lastline=162, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -296,8 +295,8 @@ One function has been added to load shaders from compressed files and five funct
 Listing~\ref{lst:function declarations} shows the declaration of all the functions. 
 
 \begin{center}
-\lstinputlisting[firstline=131, lastline=150, caption=Function declarations., 
-label=lst:function declarations]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=165, lastline=184, caption=Function declarations., 
+label=lst:function declarations]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -337,8 +336,8 @@ They are used to make sure the decompression has been successful.
 \end{itemize}
 Listing~\ref{lst:Initialise Shaders} shows how to perform all these steps.
 \begin{center}
-\lstinputlisting[firstline=277, lastline=315, caption=Shader initialisation., 
-label=lst:Initialise Shaders]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=311, lastline=349, caption=Shader initialisation., 
+label=lst:Initialise Shaders]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -355,8 +354,8 @@ In \verb+void initGLFW()+, the callback is registered as follows:
 
 
 \begin{center}
-\lstinputlisting[firstline=535, lastline=565, caption=Callback for mouse button events., 
-label=lst:mouseButtonCallback]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=569, lastline=599, caption=Callback for mouse button events., 
+label=lst:mouseButtonCallback]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -371,8 +370,8 @@ In \verb+void initGLFW()+, the callback is registered as follows:
 \verb+glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback)+.
 
 \begin{center}
-\lstinputlisting[firstline=568, lastline=576, caption=Callback for cursor position events., 
-label=lst:cursorPosCallback]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=602, lastline=610, caption=Callback for cursor position events., 
+label=lst:cursorPosCallback]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -386,8 +385,8 @@ label=lst:cursorPosCallback]{../../../tutorials/src/tutorial_02_glfw.cxx}
 
 \begin{center}
 \lstinputlisting[label=lst:getArcballVector,
-    firstline=604, lastline=625, 
-    caption=Conversion from screen coordinates to arc ball vector.]{../../../tutorials/src/tutorial_02_glfw.cxx}
+    firstline=638, lastline=659, 
+    caption=Conversion from screen coordinates to arc ball vector.]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -400,8 +399,8 @@ Listing~\ref{lst:radian2degree} shows how to perform this simple conversion.
 
 \begin{center}
 \lstinputlisting[label=lst:radian2degree,
-    firstline=628, lastline=633,
-    caption=Convert an angle value from radian to degree.]{../../../tutorials/src/tutorial_02_glfw.cxx}
+    firstline=662, lastline=667,
+    caption=Convert an angle value from radian to degree.]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 
@@ -413,8 +412,8 @@ If the arcball rotation is currently in used, if the cursor's position has chang
 (see Listing~\ref{lst:computeRotation}). 
 
 \begin{center}
-\lstinputlisting[firstline=636, lastline=664, caption=Compute the arcball rotation., 
-label=lst:computeRotation]{../../../tutorials/src/tutorial_02_glfw.cxx}
+\lstinputlisting[firstline=670, lastline=698, caption=Compute the arcball rotation., 
+label=lst:computeRotation]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 	
@@ -444,7 +443,7 @@ In the next tutorial:
 
 \begin{center}
   \lstinputlisting[caption=All the source code of this tutorial., 
-  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_02_glfw.cxx}
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/tutorial_02_glfw/tutorial_02_glfw.cxx}
 \end{center}
 
 % 

@@ -138,11 +138,10 @@
 The complete source code of this tutorial is available in 
 Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
 at 
-\verb+example/src/tutorial_01_glut.cxx+. 
+\verb+example/tutorial_01_glut/tutorial_01_glut.cxx+. 
 It can be downloaded here: 
 \url{
-https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/src/
-  tutorial_01_glut.cxx}.
+https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/tutorial_01_glut/tutorial_01_glut.cxx}. 
 It shows how to create a window with GLUT\,\footnote{\url{http://www.pengl.org/resources/libraries/glut//}} 
 and attach an OpenGL context to it. 
 Two cubes are displayed (see Figure~\ref{fig:scene}). 
@@ -244,8 +243,8 @@ three-dimensional (3D) triangle meshes.
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=28, lastline=58, caption=Header inclusion., 
-label=lst:header]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=62, lastline=92, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -261,8 +260,8 @@ Listing~\ref{lst:name space} shows the name spaces that can be selected:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=61, lastline=65, caption=Name spaces., 
-label=lst:name space]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=95, lastline=99, caption=Name spaces., 
+label=lst:name space]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -315,8 +314,8 @@ Listing~\ref{lst:global variables} shows the global variables that are used:
 
 
 \begin{center}
-\lstinputlisting[firstline=68, lastline=120, caption=Global variables., 
-label=lst:global variables]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=102, lastline=154, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -356,8 +355,8 @@ that have to be declared in a basic GLUT program:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=123, lastline=135, caption=Function declarations., 
-label=lst:function declarations]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=157, lastline=169, caption=Function declarations., 
+label=lst:function declarations]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -376,8 +375,8 @@ nime main steps:
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=189, lastline=214, caption=Initialise GLUT., 
-label=lst:Initialise GLUT]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=223, lastline=248, caption=Initialise GLUT., 
+label=lst:Initialise GLUT]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -388,8 +387,8 @@ label=lst:Initialise GLUT]{../../../tutorials/src/tutorial_01_glut.cxx}
 Listing~\ref{lst:Initialise GLEW} shows how to initialise GLEW.
 
 \begin{center}
-\lstinputlisting[firstline=217, lastline=229, caption=Initialise GLEW., 
-label=lst:Initialise GLEW]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=251, lastline=263, caption=Initialise GLEW., 
+label=lst:Initialise GLEW]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -401,8 +400,8 @@ Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states
 (Z-buffer, and background colour) and check OpenGL's error status. 
 
 \begin{center}
-\lstinputlisting[firstline=232, lastline=245, caption=Initialise OpenGL., 
-label=lst:Initialise OpenGL]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=266, lastline=279, caption=Initialise OpenGL., 
+label=lst:Initialise OpenGL]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -764,8 +763,8 @@ created instantly if
 
 \begin{center}
 \lstinputlisting[label=lst:Load_Objects,
-    firstline=248, lastline=276, 
-    caption=Create 3D objects.]{../../../tutorials/src/tutorial_01_glut.cxx}
+    firstline=282, lastline=310, 
+    caption=Create 3D objects.]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -856,8 +855,8 @@ to~30 are taking care of in Listing~\ref{lst:Display_Scene}.
 
 \begin{center}
 \lstinputlisting[label=lst:Display_Scene,
-    firstline=279, lastline=361,
-    caption=display the 3D scene.]{../../../tutorials/src/tutorial_01_glut.cxx}
+    firstline=313, lastline=395,
+    caption=display the 3D scene.]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -873,8 +872,8 @@ matrix defined by angle in degrees (\verb+1.0+ in this example) and a rotation
 axis (\verb+VEC3(1.0, 0.0, 0.0)+).
 
 \begin{center}
-\lstinputlisting[firstline=364, lastline=374, caption=Idle callback., 
-label=lst:Idle callback]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=399, lastline=408, caption=Idle callback., 
+label=lst:Idle callback]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 	
@@ -887,8 +886,8 @@ If the window exists, then it is destroyed.
 Finally, the GLUT application is terminated. 
 
 \begin{center}
-\lstinputlisting[firstline=377, lastline=388, caption=Quit callback., 
-label=lst:Quit callback]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=411, lastline=422, caption=Quit callback., 
+label=lst:Quit callback]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -915,9 +914,9 @@ performed (see Listing~\ref{lst:frame buffer callback}).
 \end{itemize}
 
 \begin{center}
-\lstinputlisting[firstline=391, lastline=424, caption=Change of frame buffer 
+\lstinputlisting[firstline=425, lastline=458, caption=Change of frame buffer 
 size callback., 
-label=lst:frame buffer callback]{../../../tutorials/src/tutorial_01_glut.cxx}
+label=lst:frame buffer callback]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -929,8 +928,8 @@ Listing~\ref{lst:Keyboard Callback} shows a typical GLUT keyboard callback.
 Here the window is closed when the user presses \verb+Q+ or \verb+Esc+.
 
 \begin{center}
-\lstinputlisting[firstline=427, lastline=446, caption=Keyboard callback., 
-label=lst:Keyboard Callback]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=461, lastline=480, caption=Keyboard callback., 
+label=lst:Keyboard Callback]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -944,8 +943,8 @@ To update the modelling-viewing matrix, the Frame Buffer Size Callback is
 called.
 
 \begin{center}
-\lstinputlisting[firstline=448, lastline=477, caption=Scroll button callback., 
-label=lst:Scroll button callback]{../../../tutorials/src/tutorial_01_glut.cxx}
+\lstinputlisting[firstline=482, lastline=511, caption=Scroll button callback., 
+label=lst:Scroll button callback]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 
@@ -980,7 +979,7 @@ In the next tutorial:
 
 \begin{center}
   \lstinputlisting[caption=All the source code of this tutorial., 
-  label=lst:Program Source Code,numbers=none]{../../../tutorials/src/tutorial_01_glut.cxx}
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/tutorial_01_glut/tutorial_01_glut.cxx}
 \end{center}
 
 % 
