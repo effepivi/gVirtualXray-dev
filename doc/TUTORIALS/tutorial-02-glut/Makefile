@@ -17,12 +17,22 @@ all:$(DOC).pdf $(DOC).html
 	$(RM) $(DOC).lol
 	$(RM) $(DOC).toc
 
-%.html : %.tex
+%.html : %.tex screenshot.eps
 	hevea -fix $<
 	$(RM) $(DOC).haux
 	$(RM) $(DOC).htoc
 	$(RM) $(DOC).image.out
 	$(RM) $(DOC).image.tex
+	$(RM) screenshot.eps
+
+%.eps : %.png
+	convert $< $@
+
+%.eps : %.fig
+	fig2eps --nogv $<
+
+%.pdf : %.fig
+	fig2pdf --nogv $<
 
 clean:
 	$(RM) $(DOC).pdf
