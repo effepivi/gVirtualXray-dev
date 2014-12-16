@@ -61,31 +61,9 @@ voxel_size = [1.0 1.0 1.0];
 number_of_tests_per_runs = 10;
 number_of_runs = 6;
 
-gate_simulation_image = zeros(volume_size);
 
-for run_id = [0:number_of_runs-1]
-    for test_id = [run_id*number_of_tests_per_runs:run_id*number_of_tests_per_runs+number_of_tests_per_runs-1]
-	    directory_name = "gate_simulation_";
-	    
-	    if run_id < 10
-	        directory_name = strcat(directory_name, '0');
-	    end
-        directory_name = strcat(directory_name, int2str(run_id));
-	    
-    	file_name = strcat(directory_name, "/run_");
-		file_name = strcat(file_name, int2str(test_id));
-		file_name = strcat(file_name, "/benchmarkVRTCT_000.dat");
-		
-		% Check if the file exists
-		if  exist (file_name, "file")
-	   	    gate_simulation_image += loadVolume(file_name, "float32", volume_size(1), volume_size(2), volume_size(3));
-	   	    file_name
-		end
-	end
-end
-
+gate_simulation_image = loadVolume("gate_simulation/gate_simulation_direct_photons.raw", "float32", volume_size(1), volume_size(2), volume_size(3));
 writeVolume("gate_simulation.raw", "float32", gate_simulation_image);
-
 
 mean_gate = mean(mean(gate_simulation_image));
 std_gate  = std2(gate_simulation_image);

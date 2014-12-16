@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
 					{
 					
 						// Select only directly transmitted photons
-						if (EMIN <= energy && energy <= EMAX)
+						if (!rayleighPhantom && !comptonPhantom)
 						{
 							p_direct_photon_image[pixel_y_position * COLUMN + pixel_x_position] += energy;
 				
@@ -152,7 +152,8 @@ int main(int argc, char* argv[])
 						else
 						{
 							p_scattered_photon_image[pixel_y_position * COLUMN + pixel_x_position] += energy;
-				
+							
+							cout << energy << "\t" << rayleighPhantom << "\t" << comptonPhantom << endl;
 							++scattering_photon;
 							scattering_photon_total_energy += energy;
 						}
