@@ -446,8 +446,8 @@ void idleCallback()
 //-----------------
 {
     // Rotate the objects
-    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
-    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+    g_object_1_rotation_matrix.rotate(.01, VEC3(1.0, 0.0, 0.0));
+    g_object_2_rotation_matrix.rotate(.02, VEC3(0.0, 1.0, 0.0));
 
 	// Redisplay the scene
 	glutPostRedisplay();
