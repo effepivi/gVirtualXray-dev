@@ -264,7 +264,7 @@
 /gate/source/xraygun/gps/histpoint  0.0398  0
 /gate/source/xraygun/gps/histpoint  0.0399  0
 /gate/source/xraygun/gps/histpoint  0.0400  0 
-#/gate/source/xraygun/gps/arbint Lin
+/gate/source/xraygun/gps/arbint Lin
 #/gate/source/xraygun/gps/type Plane
 #/gate/source/xraygun/gps/shape Rectangle
 /gate/source/xraygun/gps/type Point
@@ -276,4 +276,3 @@
 /gate/source/xraygun/gps/centre 0. 0. -10.0 cm
 /gate/source/xraygun/gps/angtype iso
 /gate/source/list
-
