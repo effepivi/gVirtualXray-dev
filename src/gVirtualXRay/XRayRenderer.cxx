@@ -536,11 +536,12 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         {
             for (unsigned i(0); i < m_p_detector->getNumberOfPixels().getX(); ++i, ++p_input_data)
             {
-                if (fabs(*p_input_data) <= 0.00001)
+            	RATIONAL_NUMBER voxel_value(*p_input_data);
+                /*if (fabs(*p_input_data) <= 0.00001)
                 {
-                    std::cout << "WARNING, was: " << *p_input_data;
+                    std::cout << "WARNING, was: " << voxel_value;
 
-                    *p_input_data = 0;
+                    voxel_value = 0;
                     unsigned int count(0);
                     for (unsigned temp_j(j - 1); temp_j <= j + 1; ++temp_j)
                     {
@@ -550,7 +551,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                             {
                                 if (m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i] >= 0.00001)
                                 {
-                                    *p_input_data += m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i];
+                                    voxel_value += m_p_temp_raw_data[temp_j * m_p_detector->getNumberOfPixels().getX() + temp_i];
                                     ++count;
                                 }
                             }
@@ -558,11 +559,20 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                     }
                     if (count)
                     {
-                        *p_input_data /= count;
-                        std::cout << ", now: " << *p_input_data << std::endl;
+                        voxel_value /= count;
+                        std::cout << ", now: " << voxel_value << std::endl;
                     }
+                }*/
+                *p_input_data = scaling_factor * log(total_input_energy / voxel_value);
+
+                /*if (isnan(*p_input_data))
+                {
+                    std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
                 }
-                *p_input_data = scaling_factor * log(total_input_energy / *p_input_data);
+                if (isinf(*p_input_data))
+                {
+                	std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
+                }*/
             }
         }
 
@@ -2921,10 +2931,18 @@ void XRayRenderer::normalise()
 		if (m_max_value_in_simulated_xray_image < pixel_value) m_max_value_in_simulated_xray_image = pixel_value;
 	}
 
-	// Make sure the min value is not negative (in which case it is an artefact due to the dot product sign)
-	if (m_min_value_in_simulated_xray_image < 0)
+	// If there is no object, make a white image
+	if (m_min_value_in_simulated_xray_image == m_max_value_in_simulated_xray_image)
 	{
-		m_min_value_in_simulated_xray_image = 0;
+		m_min_value_in_simulated_xray_image = 0.0;
+	}
+	else
+	{
+		// Make sure the min value is not negative (in which case it is an artefact due to the dot product sign)
+		if (m_min_value_in_simulated_xray_image < 0)
+		{
+			m_min_value_in_simulated_xray_image = 0;
+		}
 	}
 }
 
