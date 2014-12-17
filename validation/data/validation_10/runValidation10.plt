@@ -8,12 +8,10 @@ set grid
 
 set output "polychromatic_beam.eps"
 
-set ylabel "Number of photons"
+set ylabel "Relative number of photons"
 set xlabel "Energy in keV"
 
-plot \
-    "beam_spectrum.csv" using ($1 * 1000):2 notitle w l lc rgb "#000000" lt -1 lw 2
-
+plot "beam_spectrum.csv" using ($1 * 1000):($2 / 2750000000) notitle w l lc rgb "#000000" lt -1 lw 2
 
 
 
