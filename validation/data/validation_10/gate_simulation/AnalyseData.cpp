@@ -15,6 +15,7 @@
 #include "TH2F.h"
 #include "TStyle.h"
 #include "TPad.h"
+#include "TKey.h"
 
 using namespace std;
 
@@ -92,7 +93,7 @@ int main(int argc, char* argv[])
 		Double_t last_pixel_x_position(  COLUMN_BOUND);
 		Double_t last_pixel_y_position(  ROW_BOUND);
 
-		for (unsigned int run_id(0); run_id <= 100; ++run_id)
+		for (unsigned int run_id(0); run_id <= 0; ++run_id)
 		{
 			// Store the root file name in 'fileName' variable
 			stringstream FILENAME;
@@ -102,70 +103,83 @@ int main(int argc, char* argv[])
 			p_input_file = new TFile( FILENAME.str().data() );
 			if( p_input_file->IsOpen() )
 			{
-				// Take the single tree, where is the position, the energy and the runID
-				TTree* singlesTree = (TTree*)p_input_file->Get( "Singles" );
-				if (!singlesTree)
-				{
-					throw "Cannot get Singles";
-				}
-		
-				// Global Position in X, Y and Z
-				Float_t globalPosX, globalPosY, globalPosZ, energy;
-				Int_t runID, pixelID, rayleighPhantom, comptonPhantom;
-				singlesTree->SetBranchAddress( "globalPosX", &globalPosX );
-				singlesTree->SetBranchAddress( "globalPosY", &globalPosY );
-				singlesTree->SetBranchAddress( "globalPosZ", &globalPosZ );
-				singlesTree->SetBranchAddress( "energy", &energy );
-				singlesTree->SetBranchAddress( "runID", &runID );
-				singlesTree->SetBranchAddress( "pixelID", &pixelID );
-				singlesTree->SetBranchAddress( "RayleighPhantom", &rayleighPhantom );
-				singlesTree->SetBranchAddress( "comptonPhantom", &comptonPhantom );
 
-				// Number of entries in the single tree
-				Int_t entriesSingleTree = (Int_t)singlesTree->GetEntries();
 
-				// Number of generated photons during the benchmarkCT simulation
-				gateTree = (TTree*)p_input_file->Get( "Gate" );
+                TIter nextkey(p_input_file->GetListOfKeys());
+                TKey *key;
+                while (key = (TKey*)nextkey())
+                {
+                    //std::cout << key->GetName() << std::endl;
 
-				// Sort the photons
-				for( Int_t i = 0; i != entriesSingleTree; ++i )
-				{
-					singlesTree->GetEntry( i );
+                    if (!strcmp(key->GetName(), "Singles"))
+                    {
+				        // Take the single tree, where is the position, the energy and the runID
+        				TTree* singlesTree = (TTree*) key->ReadObj();
+		        		if (!singlesTree)
+				        {
+        					throw "Cannot get Singles";
+		        		}
+                        
+        				// Global Position in X, Y and Z
+		        		Float_t globalPosX, globalPosY, globalPosZ, energy;
+				        Int_t runID, pixelID, rayleighPhantom, comptonPhantom;
+        				singlesTree->SetBranchAddress( "globalPosX", &globalPosX );
+		        		singlesTree->SetBranchAddress( "globalPosY", &globalPosY );
+				        singlesTree->SetBranchAddress( "globalPosZ", &globalPosZ );
+        				singlesTree->SetBranchAddress( "energy", &energy );
+		        		singlesTree->SetBranchAddress( "runID", &runID );
+				        singlesTree->SetBranchAddress( "pixelID", &pixelID );
+        				singlesTree->SetBranchAddress( "RayleighPhantom", &rayleighPhantom );
+		        		singlesTree->SetBranchAddress( "comptonPhantom", &comptonPhantom );
 
-					// Convert the photon position into pixel position
-					int pixel_x_position(((globalPosX - first_pixel_x_position) / (last_pixel_x_position - first_pixel_x_position)) * COLUMN);
-					int pixel_y_position(((globalPosY - first_pixel_y_position) / (last_pixel_y_position - first_pixel_y_position)) * ROW);
+        				// Number of entries in the single tree
+		        		Int_t entriesSingleTree = (Int_t)singlesTree->GetEntries();
 
-					// The photon is in the detector
-					if (0 <= pixel_x_position && pixel_x_position < COLUMN && 0 <= pixel_y_position && pixel_y_position < ROW)
-					{
+				        // Number of generated photons during the benchmarkCT simulation
+        				gateTree = (TTree*)p_input_file->Get( "Gate" );
+
+                        //std::cout << entriesSingleTree << std::endl;
+				        // Sort the photons
+        				for( Int_t i = 0; i != entriesSingleTree; ++i )
+		        		{
+				        	singlesTree->GetEntry( i );
+
+        					// Convert the photon position into pixel position
+		        			int pixel_x_position(((globalPosX - first_pixel_x_position) / (last_pixel_x_position - first_pixel_x_position)) * COLUMN);
+				        	int pixel_y_position(((globalPosY - first_pixel_y_position) / (last_pixel_y_position - first_pixel_y_position)) * ROW);
+
+        					// The photon is in the detector
+		        			if (0 <= pixel_x_position && pixel_x_position < COLUMN && 0 <= pixel_y_position && pixel_y_position < ROW)
+				        	{
 					
-						// Select only directly transmitted photons
-						if (!rayleighPhantom && !comptonPhantom)
-						{
-							p_direct_photon_image[pixel_y_position * COLUMN + pixel_x_position] += energy;
+						        // Select only directly transmitted photons
+        						if (!rayleighPhantom && !comptonPhantom)
+		        				{
+				        			p_direct_photon_image[pixel_y_position * COLUMN + pixel_x_position] += energy;
 				
-							//cout << energy << "\t" << rayleighPhantom << "\t" << comptonPhantom << endl;
-							++direct_photon;
-							direct_photon_total_energy += energy;
-						}
-						else
-						{
-							p_scattered_photon_image[pixel_y_position * COLUMN + pixel_x_position] += energy;
-							
-							cout << energy << "\t" << rayleighPhantom << "\t" << comptonPhantom << endl;
-							++scattering_photon;
-							scattering_photon_total_energy += energy;
-						}
+						        	//cout << energy << "\t" << rayleighPhantom << "\t" << comptonPhantom << endl;
+        							++direct_photon;
+		        					direct_photon_total_energy += energy;
+				        		}
+						        else
+        						{
+		        					p_scattered_photon_image[pixel_y_position * COLUMN + pixel_x_position] += energy;
+			    			
+        							cout << energy << "\t" << rayleighPhantom << "\t" << comptonPhantom << endl;
+		        					++scattering_photon;
+				        			scattering_photon_total_energy += energy;
+						        }
 					
-						++total_photon_number;
-						total_energy += energy;
-					}
-					else
-					{
-						cout << "Photon outside the detector" << endl;
-					}
-				}
+        						++total_photon_number;
+		        				total_energy += energy;
+				        	}
+        					else
+		        			{
+				        		cout << "Photon outside the detector" << endl;
+        					}
+                        }
+                    }
+                }
 			}
 
 			if (p_input_file)
