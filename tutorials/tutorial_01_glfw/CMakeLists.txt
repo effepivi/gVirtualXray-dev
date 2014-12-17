@@ -95,6 +95,9 @@ ENDIF(glfw_FOUND)
 add_executable(tutorial_01_glfw tutorial_01_glfw.cxx buildCube.cxx)
 target_link_libraries(tutorial_01_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/TUTORIALS/tutorial-01-glfw/tutorial-01-glfw.pdf 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials 
+    COMPONENT tutorials)
 INSTALL(TARGETS tutorial_01_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 

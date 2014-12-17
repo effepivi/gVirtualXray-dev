@@ -75,6 +75,9 @@ ENDIF(GLUT_FOUND)
 add_executable(tutorial_01_glut tutorial_01_glut.cxx buildCube.cxx)
 target_link_libraries(tutorial_01_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/TUTORIALS/tutorial-01-glut/tutorial-01-glut.pdf 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/doc 
+    COMPONENT tutorials)
 INSTALL(TARGETS tutorial_01_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 
