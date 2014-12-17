@@ -226,7 +226,10 @@ void PolygonMesh::display()
 	// Display the polygon mesh using a VBO
 	if (m_vbo->isReady())
 	{
-		m_vbo->display();
+		if (m_number_of_vertices)
+		{
+			m_vbo->display();
+		}
 	}
 	// Do not use the VBO
 	else
