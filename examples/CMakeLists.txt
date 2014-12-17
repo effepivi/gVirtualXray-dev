@@ -96,7 +96,7 @@
 
 project(gVirtualXRay-demos)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../build/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
 find_package(gVirtualXRay REQUIRED)
 

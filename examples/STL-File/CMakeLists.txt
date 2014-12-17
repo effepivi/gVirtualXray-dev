@@ -66,7 +66,7 @@ project(gVirtualXRay-STL-File)
 
 # Initialise some states by default ############################################
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../build/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################

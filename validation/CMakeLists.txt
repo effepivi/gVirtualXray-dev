@@ -30,40 +30,12 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-################################################################################
-#
-#   @file       CMakeLists.txt
-#
-#   @brief      Configuration file to generate Makefiles, 
-#               Project/Solution files for MS VC++, Xcode projects, etc.
-#               using the CMake tool. (see http://www.cmake.org/)
-#
-#   @version    1.0
-#
-#   @date       01/12/2013
-#
-#   @author     Dr Franck P. Vidal
-#
-#   @section    License
-#               BSD 3-Clause License.
-#
-#               For details on use and redistribution please refer
-#               to http://opensource.org/licenses/BSD-3-Clause
-#
-#   @section    Copyright
-#               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-#               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-#               BSD 3-Clause License
-#
-################################################################################
-
-
 # Project name #################################################################
 project (validation)
 
 
 # Initialise some states by default ############################################
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../build/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/config.cmake)
 
 

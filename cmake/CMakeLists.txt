@@ -30,38 +30,10 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-################################################################################
-#
-#	@file		CMakeLists.txt
-#
-#	@brief		Configuration file to generate Makefiles, 
-#			Project/Solution files for MS VC++, Xcode projects, etc.
-#			 using the CMake tool. (see http://www.cmake.org/)
-#
-#	@version	1.0
-#
-#	@date		15/12/2013
-#
-#	@author		Dr Franck P. Vidal
-#
-#	@section	License
-#				BSD 3-Clause License.
-#
-#				For details on use and redistribution please refer
-#				to http://opensource.org/licenses/BSD-3-Clause
-#
-#	@section	Copyright
-#				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-#				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-#				BSD 3-Clause License
-#
-################################################################################
-
-
 # Project name #################################################################
 PROJECT(gVirtualXRay)
 
-INCLUDE(${CMAKE_SOURCE_DIR}/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 
 # Initialise some states by default ############################################
 set(BUILD_SHARED_LIBS OFF)
@@ -87,7 +59,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 # Make include files in paths like /usr/local/include have preference before
@@ -105,8 +77,8 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 SET(optionalLibs)
 SET(requiredLibs)
 
-SET (gVirtualXRay_BASE_DIR ${PROJECT_SOURCE_DIR})
-SET (gVirtualXRay_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 
 
@@ -114,7 +86,7 @@ SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 SET (CXX_SOURCES
 	# gVirtualXRay
 	../src/gVirtualXRay/XRayDetector.cxx
-    	../src/gVirtualXRay/XRayRenderer.cxx
+    ../src/gVirtualXRay/XRayRenderer.cxx
 
 	# Graphics
 	../src/Graphics/CubeMesh.cxx
@@ -164,7 +136,7 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/ImplicitSurface.h
    	../include/gVirtualXRay/ImplicitSurface.inl
 	../include/gVirtualXRay/Material.h
-        ../include/gVirtualXRay/Material.inl
+    ../include/gVirtualXRay/Material.inl
 	../include/gVirtualXRay/OpenGL2VBO.h
 	../include/gVirtualXRay/OpenGL2VBO.inl
 	../include/gVirtualXRay/OpenGL3VBO.h
@@ -216,7 +188,7 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/Units.h
 	../include/gVirtualXRay/Utilities.h
 )
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 
 # Add source to the project ####################################################
@@ -237,9 +209,9 @@ ENDIF(WIN32)
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
-INCLUDE_DIRECTORIES(../include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 IF (NOT APPLE)
-    INCLUDE_DIRECTORIES(../include/OpenGL4)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include/OpenGL4)
 ENDIF(NOT APPLE)
 #INCLUDE_DIRECTORIES(/usr/local/include)
 
@@ -383,13 +355,13 @@ ENDIF(NOT XCOM_PATH)
 IF (XCOM_PATH)
     SET (HAS_XCOM ON)
     configure_file (
-        "${PROJECT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
         "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-    )
+    }})
 ELSE (XCOM_PATH)
     SET (HAS_XCOM OFF)
     configure_file (
-        "${PROJECT_SOURCE_DIR}/gVirtualXRayConfigNoXCOM.h.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigNoXCOM.h.in"
         "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
     )
 ENDIF (XCOM_PATH)
@@ -436,7 +408,7 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl3.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/FreeSans.ttf
 )
-CreateHeaderFiles(".." "BinaryLibFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
 IF (XCOM_PATH)
@@ -461,7 +433,7 @@ IF (XCOM_PATH)
         ${XCOM_PATH}/MDATX3.050
     )
 
-	CreateHeaderFiles(".." "XCOMLibFiles" "${XCOM_SOURCES}")
+	CreateHeaderFiles("." "XCOMLibFiles" "${XCOM_SOURCES}")
 ENDIF (XCOM_PATH)
 
 
@@ -484,8 +456,8 @@ SET (gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/${PROJECT_NAME}-${gVirtualXRay_
 SET (gVirtualXRay_USE_FILE "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/UsegVirtualXRay.cmake")
 SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/")
 SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/lib")
-CONFIGURE_FILE (${PROJECT_SOURCE_DIR}/../cmake/gVirtualXRayConfig.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
-CONFIGURE_FILE (${PROJECT_SOURCE_DIR}/../cmake/UsegVirtualXRay.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake @ONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfig.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/UsegVirtualXRay.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake @ONLY)
 INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR})
 INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake    DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR})
 INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake    DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}")
@@ -494,12 +466,12 @@ INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake    DES
 IF(WIN32)
 	FIND_PACKAGE(Doxygen) 
 	IF (DOXYGEN_FOUND)
-		ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ../doc/Doxyfile) 
+		ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
 	ELSE (DOXYGEN_FOUND)
     	MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
 	ENDIF (DOXYGEN_FOUND)
 ELSE(WIN32)
-	ADD_CUSTOM_TARGET(html-doc doxygen ../doc/Doxyfile) 
+	ADD_CUSTOM_TARGET(html-doc doxygen ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
 ENDIF(WIN32)
 
 
@@ -508,7 +480,7 @@ option(BUILD_EXAMPLES "Build examples." ON)
 IF (BUILD_EXAMPLES)
    	MESSAGE(STATUS "Build examples.")
 
-	add_subdirectory(../examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
 ELSE (BUILD_EXAMPLES)
    	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
@@ -519,7 +491,7 @@ option(BUILD_VALIDATION "Build validation tests." ON)
 IF (BUILD_VALIDATION)
    	MESSAGE(STATUS "Build validation tests.")
 
-	add_subdirectory(../validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
 ELSE (BUILD_VALIDATION)
    	MESSAGE("Do not build validation tests.")
 ENDIF (BUILD_VALIDATION)
@@ -530,26 +502,31 @@ option(BUILD_TUTORIALS "Build tutorials." ON)
 IF (BUILD_TUTORIALS)
    	MESSAGE(STATUS "Build tutorials.")
 
-	add_subdirectory(../tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
 ELSE (BUILD_TUTORIALS)
    	MESSAGE("Do not build tutorials.")
 ENDIF (BUILD_TUTORIALS)
 
-INSTALL (TARGETS gVirtualXRay   ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/lib                  COMPONENT libraries)
-INSTALL (FILES   ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/gVirtualXRay COMPONENT headers)
-INSTALL (FILES ../LICENSE.txt           DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library)
-INSTALL (FILES ../LICENSE.txt           DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
+INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/lib                  COMPONENT libraries)
+INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/gVirtualXRay COMPONENT headers)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library     COMPONENT libraries)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 
 
 SET (CPACK_PACKAGE_FILE_NAME gVirtualXRay)
-SET (CPACK_PACKAGE_ICON ../doc/logo.ico)
+SET (CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/doc/logo.ico)
 
 IF (APPLE)
 	SET (CPACK_BUNDLE_NAME gVirtualXRay)
-	SET (CPACK_BUNDLE_ICON ../examples/build/DragonDemo.icns)
+	SET (CPACK_BUNDLE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/examples/build/DragonDemo.icns)
 	#SET (CPACK_BUNDLE_PLIST - path to a file that will become the bundle plist.
 	#SET (CPACK_BUNDLE_STARTUP_COMMAND - path to a file that will be executed when the user opens the bundle. Could be a shell-script or a binary. 
 ENDIF(APPLE)
+
+LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../cmake     cmake)
+LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../include   include)
+LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../src       src)
+LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../resources resources)
 
 SET (CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
 SET (CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")

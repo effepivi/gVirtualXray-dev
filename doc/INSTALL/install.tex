@@ -31,7 +31,7 @@
 
 \title{gVirtualXRay -- Installation Guide}
 \author{Dr Franck P. Vidal}
-\date{18\textsuperscript{th} March 2014}
+\date{17\textsuperscript{th} December 2014}
 
 \begin{document}
  \sloppy
@@ -76,19 +76,22 @@ To build the library, you will need:
 
  \item \href{http://www.zlib.net/}{\includegraphics[width=2cm]{Zlib_3D_green}}~\cite{zlib}\\
  The Zlib is used to decompress the data at run-time (the data compressed using \Gls{Gzip}).
-\end{itemize}
+
+  \item \href{http://www.boost.org/}{\includegraphics[width=2cm]{Boost}}~\cite{boost}\\
+ It is only needed for its implementation of pointers (\verb+boost::scoped_ptr+).
+
+  \item \href{http://www.freetype.org/}{FreeType2}~\cite{freetype}\\
+ It is used to display text.
+ \end{itemize}
 
 
-\subsection{Examples and Demos}
+\subsection{Demos and tutorials}
 
-To build the examples and demos, you will need:
+To build the demos and tutorials, you will need:
 \begin{itemize}
- \item \href{http://www.boost.org/}{\includegraphics[width=2cm]{Boost}}~\cite{boost}\\
- It is only needed on the Mac OS X platform. 
- It is mainly used to identify the path of the program when Bundles are used.
-
- \item An implementation of \href{http://www.opengl.org/resources/libraries/glut/}{The \Gls{GLUT}}~\cite{glut} (only \href{http://www.fltk.org/}{\includegraphics[width=2cm]{Fltk_shadow}}~\cite{fltk} or \href{http://freeglut.sourceforge.net/}{\includegraphics[width=2cm]{Freeglut_logo}}~\cite{freeglut} have been tested)\\
- It is used to create the OpenGL's window of the demos.
+ \item An implementation of \href{http://www.opengl.org/resources/libraries/glut/}{The \Gls{GLUT}}~\cite{glut} (only \href{http://www.fltk.org/}{\includegraphics[width=2cm]{Fltk_shadow}}~\cite{fltk} and \href{http://freeglut.sourceforge.net/}{\includegraphics[width=2cm]{Freeglut_logo}}~\cite{freeglut}'s implementations have been tested). \\
+ They are used to create the OpenGL's windows.
+ \item \href{http://www.glfw.org/}{GLFW}~\cite{glfw} is also used to create windows. \Gls{GLUT} does not support OpenGL 3.x or above, GLFW does. \\
 \end{itemize}
 
 \begin{table}[tbhp]
@@ -112,12 +115,6 @@ To build the examples and demos, you will need:
 				\hline
 				Boost & Library & Mac OS X & Required & \url{http://www.boost.org/}\\
 				\hline
-				\Acrshort{GLUT} & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.opengl.org/resources/libraries/glut/}\\
-				\hline
-				\Acrshort{FLTK} & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.fltk.org/}\\
-				\hline
-				freeglut & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeglut.sourceforge.net/}\\
-				\hline
 			\end{tabular}
 		\end{small}
 	\end{center}
@@ -136,15 +133,19 @@ The list of optional tools and libraries to build gVirtualXRay is summarised in 
 
  \item\href{http://www.doxygen.org/}{\includegraphics[width=2cm]{Doxygen}}~\cite{doxygen}\\
 It is used to create the automatic documentation of the main library from the header files.
+
+ \item\href{http://physics.nist.gov/PhysRefData/Xcom/Text/download.html}{XCOM: Photon Cross Sections Database}~\cite{XCOM}\\
+It is used to generate accurate mass attenuation coefficients.
+
 \end{itemize}
 
-\subsection{Examples and Demos}
-
-
-\begin{itemize}
- \item \href{http://freeimage.sourceforge.net/}{FreeImage}~\cite{freeimage}\\
- It is used to stored screenshots.
-\end{itemize}
+% \subsection{Examples and Demos}
+% 
+% 
+% \begin{itemize}
+%  \item \href{http://freeimage.sourceforge.net/}{FreeImage}~\cite{freeimage}\\
+%  It is used to stored screenshots.
+% \end{itemize}
 
 
 \begin{table}[tbhp]
@@ -160,8 +161,20 @@ It is used to create the automatic documentation of the main library from the he
 				\hline
 				Doxygen & Development tool & Linux, Mac OS X \& Windows & Optional & \url{http://www.doxygen.org/}\\
 				\hline
-				FreeImage & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeimage.sourceforge.net/}\\
+				FreeType2 & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.freetype.org/}\\
 				\hline
+				XCOM & Database & Linux, Mac OS X \& Windows & Optional & \url{http://physics.nist.gov/PhysRefData/Xcom/Text/download.html}\\
+				\hline
+				\Acrshort{GLUT} & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.opengl.org/resources/libraries/glut/}\\
+				\hline
+				\Acrshort{FLTK} & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.fltk.org/}\\
+				\hline
+				freeglut & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeglut.sourceforge.net/}\\
+				\hline
+				GLFW & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.glfw.org/}\\
+				\hline
+% 				FreeImage & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeimage.sourceforge.net/}\\
+% 				\hline
 			\end{tabular}
 		\end{small}
 	\end{center}
@@ -171,7 +184,7 @@ It is used to create the automatic documentation of the main library from the he
 \newpage
 \section{Compilation From the Source}
 
-\subsection{Using \Acrshort{SVN}}
+\subsection{Using SVN}
 Get the latest release from the \Gls{SVN} server:
 \begin{verbatim}
    $ svn checkout svn://svn.code.sf.net/p/gvirtualxray/code/trunk gvirtualxray-code
@@ -199,7 +212,7 @@ On Mac OS X platforms, to generate XCode project, type:
    $ cmake -G "Xcode" -DCMAKE_BUILD_TYPE=RELEASE ../build
 \end{verbatim}
 
-\subsection{Setting up the Project Using the \Acrshort{GUI}}
+\subsection{Setting up the Project Using the GUI}
 On all the platforms (inc.~Windows), use the \gls{GUI} to have more options (e.g.~select different generators such as Visual C++, set variables). Then follow the instructions provided by the \Gls{GUI}:
 \begin{center}
 	\begin{longtable}{|p{0.9\linewidth}|}
@@ -265,6 +278,11 @@ Here is a list of the variables that may be useful to set:
 		\item \verb|ZLIB_LIBRARY|
 	\end{itemize}
 	
+	\item Boost:
+	\begin{itemize}
+		\item \verb|Boost_DIR|
+	\end{itemize}
+
 	\item If you use FreeGLUT:
 	\begin{itemize}
 		\item \verb|GLUT_INCLUDE_DIR|
@@ -282,17 +300,34 @@ Here is a list of the variables that may be useful to set:
 		\item \verb|FLTK_MATH_LIBRARY|
 	\end{itemize}
 
+	\item If you use GLFW:
+	\begin{itemize}
+		\item \verb|glfw_DIR|
+	\end{itemize}
+
 	\item If you use \Gls{ITK}:
 	\begin{itemize}
 		\item \verb|ITK_DIR|
 		\item And maybe \verb|VTK_DIR| if \Gls{ITK} was compiled with \Gls{VTK} support
 	\end{itemize}
-
-	\item If you use FreeImage:
+	
+	\item If you use XCOM:
 	\begin{itemize}
-		\item \verb|FREEIMAGE_INCLUDE_DIR|
-		\item \verb|FREEIMAGE_LIBRARY|
+		\item \verb|XCOM_PATH|
 	\end{itemize}
+
+	\item If you use FreeType:
+	\begin{itemize}
+		\item \verb|FREETYPE_INCLUDE_DIR_freetype2|
+		\item \verb|FREETYPE_INCLUDE_DIR_ft2build|
+		\item \verb|FREETYPE_LIBRARY|
+	\end{itemize}
+
+% 	\item If you use FreeImage:
+% 	\begin{itemize}
+% 		\item \verb|FREEIMAGE_INCLUDE_DIR|
+% 		\item \verb|FREEIMAGE_LIBRARY|
+% 	\end{itemize}
 
 \end{itemize}
 
@@ -304,6 +339,7 @@ Successful compilation and installation have been tested on:
 \begin{itemize}
  \item Linux openSUSE 12.3 (x86\_64) using the native compiler (g++ 4.7.2).
  \item Linux openSUSE 12.3 (x86\_64) using the Windows cross compiler (mingw32-g++ 4.8.1) provided by \Gls{MXE}.
+ \item Linux openSUSE 13.2 (x86\_64) using the native compiler (g++ 4.8.3).
  \item Windows 8.1 (x86\_64) using Visual C++ 2010 in 32 bits.
  \item Windows 7 (x86) using Visual C++ 2013 in 32 bits.
  \item Mac OS X 10.8 (x86\_64) using the native compiler (LLVM 4.2) in 64 bits.

@@ -65,7 +65,7 @@
 project(gVirtualXRay-Iso-Surfaces)
 
 # Initialise some states by default ############################################
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../build/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################

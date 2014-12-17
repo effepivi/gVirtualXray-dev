@@ -32,7 +32,7 @@
 
 project(gVirtualXRay-tutorials)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../build/version.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
 add_subdirectory(tutorial_00_glfw)
 add_subdirectory(tutorial_00_glut)
