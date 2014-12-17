@@ -104,7 +104,8 @@ target_link_libraries(demo-simple-back-projection ${gVirtualXRay_LIBRARY} ${opti
 ADD_DEPENDENCIES(welsh_dragon_glut BinarySimpleBackProjectionFiles)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS demo-simple-back-projection RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/SimpleBackProjection COMPONENT demos)
+    INSTALL(TARGETS demo-simple-back-projection RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/SimpleBackProjection/bin COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/SimpleBackProjection/data COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/SimpleBackProjection COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
@@ -114,7 +115,7 @@ ELSE (NOT APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/SimpleBackProjection.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
     )
 
     ADD_EXECUTABLE (SimpleBackProjection MACOSX_BUNDLE ${SimpleBackProjection_SRCS})
@@ -139,6 +140,7 @@ ELSE (NOT APPLE)
     )
 
     SET_SOURCE_FILES_PROPERTIES (
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         PROPERTIES
         MACOSX_PACKAGE_LOCATION data

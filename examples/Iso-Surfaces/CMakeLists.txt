@@ -93,7 +93,8 @@ target_link_libraries(test_implicit_surface ${gVirtualXRay_LIBRARY} ${optionalLi
 ADD_DEPENDENCIES(welsh_dragon_glut BinaryIsoSurfaceFiles)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces/  COMPONENT demos)
+    INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces/bin  COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces/data COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
@@ -103,6 +104,7 @@ ELSE (NOT APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/test_implicit_surface.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
     )
 
     ADD_EXECUTABLE (Iso-Surfaces MACOSX_BUNDLE ${Iso-Surfaces_SRCS})
@@ -127,6 +129,7 @@ ELSE (NOT APPLE)
     )
 
     SET_SOURCE_FILES_PROPERTIES (
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         PROPERTIES
         MACOSX_PACKAGE_LOCATION data

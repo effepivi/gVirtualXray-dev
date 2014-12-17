@@ -573,7 +573,7 @@ void initFreeType()
 //-----------------
 {
 #ifdef HAS_FREETYPE
-    g_font_rendered.initialise(16*27);
+    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
     g_display_help = true;
 #endif
 }

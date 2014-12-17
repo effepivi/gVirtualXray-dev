@@ -143,6 +143,12 @@ using namespace gVirtualXRay;
 
 
 //******************************************************************************
+//	Defines
+//******************************************************************************
+#define PREFIX ".."
+
+
+//******************************************************************************
 //	Constant variables
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
@@ -220,7 +226,7 @@ bool g_use_fullscreen(true);
 bool g_make_threshold_bigger(true);
 
 float g_threshold(0.5);
-int g_selected_iso_surface(0);
+int g_selected_iso_surface(4);
 
 RATIONAL_NUMBER g_scaling_factor(0.25);
 Vec3ui g_number_of_voxel(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
@@ -558,7 +564,7 @@ void initFreeType()
 //-----------------
 {
 #ifdef HAS_FREETYPE
-    g_font_rendered.initialise(16*27);
+    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
     g_display_help = true;
 #endif
 }
@@ -712,9 +718,6 @@ void render()
             g_xray_detector.displayBeam();
         }
 
-        // Disable the shader
-        popShaderProgram();
-
         // Restore the current transformation matrix
         popModelViewMatrix();
 
@@ -730,15 +733,15 @@ void render()
         {
             displayHelp();
 
-            // Disable the shader
-            popShaderProgram();
-
             // Check the status of OpenGL and of the current FBO
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
 #endif
-    }
+
+        // Disable the shader
+        popShaderProgram();
+	}
 	// Catch exception if any
 	catch (const std::exception& error)
 	{

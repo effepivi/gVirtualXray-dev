@@ -107,12 +107,14 @@ IF (NOT APPLE)
     IF(glfw_FOUND)
         INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File COMPONENT demos)
     ENDIF(glfw_FOUND)
     
     IF(GLUT_FOUND)
         INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File COMPONENT demos)
     ENDIF(GLUT_FOUND)
 ELSE (NOT APPLE)
@@ -125,6 +127,7 @@ ELSE (NOT APPLE)
             ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
             ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
             ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
         )
 
         ADD_EXECUTABLE (STL-File-GLFW MACOSX_BUNDLE ${STL-File-GLFW_SRCS})
@@ -151,6 +154,7 @@ ELSE (NOT APPLE)
         SET_SOURCE_FILES_PROPERTIES (
             ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
             ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
             PROPERTIES
             MACOSX_PACKAGE_LOCATION data
         )
@@ -175,6 +179,7 @@ ELSE (NOT APPLE)
             ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
             ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
             ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
         )
 
         ADD_EXECUTABLE (STL-File-GLUT MACOSX_BUNDLE ${STL-File-GLUT_SRCS})
@@ -201,6 +206,7 @@ ELSE (NOT APPLE)
         SET_SOURCE_FILES_PROPERTIES (
             ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
             ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
             PROPERTIES
             MACOSX_PACKAGE_LOCATION data
         )

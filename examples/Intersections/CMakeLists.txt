@@ -95,6 +95,7 @@ ADD_DEPENDENCIES(welsh_dragon_glut BinaryIntersectionsFiles)
 IF (NOT APPLE)
     INSTALL(TARGETS demo-intersections RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections/bin  COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections/data COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
@@ -105,6 +106,7 @@ ELSE (NOT APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
     )
 
     ADD_EXECUTABLE (Intersections MACOSX_BUNDLE ${Intersections_SRCS})
@@ -131,6 +133,7 @@ ELSE (NOT APPLE)
     SET_SOURCE_FILES_PROPERTIES (
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl
+        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
         PROPERTIES
         MACOSX_PACKAGE_LOCATION data
     )
