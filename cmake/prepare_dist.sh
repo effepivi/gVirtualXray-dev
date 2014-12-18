@@ -14,7 +14,7 @@ mkdir ../doc/dist_doc1
 mkdir ../doc/dist_doc2
 
 cd ../doc/latex;     make&&cp refman.pdf  ../dist_doc1/gVirtualXRay-programmer-guide.pdf;
-cd ../INSTALL;   ./run.sh&&cp install.pdf ../dist_doc1/README.pdf;
+cd ../INSTALL;   ./run.sh&&cp install.pdf ../dist_doc1/gVirtualXRay-install.pdf;
 cd ..;
                            cp ../LICENSE.txt dist_doc1/;
                            cp Doxyfile       dist_doc2/;
