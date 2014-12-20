@@ -434,9 +434,40 @@ inline RATIONAL_NUMBER* XRayRenderer::getSinogramRawData() const
         return (m_p_sinogram_image->GetBufferPointer());
     }
 }
+
+
+//-----------------------------------------------------------------------------------
+inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getProjectionSet() const
+//-----------------------------------------------------------------------------------
+{
+    return (m_p_projection_set);
+}
+
+
+//-----------------------------------------------------------------------
+inline XRayRenderer::ImageType::Pointer& XRayRenderer::getProjectionSet()
+//-----------------------------------------------------------------------
+{
+    return (m_p_projection_set);
+}
+
+
+//-------------------------------------------------------------------
+inline RATIONAL_NUMBER* XRayRenderer::getProjectionSetRawData() const
+//-------------------------------------------------------------------
+{
+    if (m_p_projection_set.IsNull())
+    {
+        return (0);
+    }
+    else
+    {
+        return (m_p_projection_set->GetBufferPointer());
+    }
+}
+
+
 #endif
-
-
 
 
 } // namespace gVirtualXRay

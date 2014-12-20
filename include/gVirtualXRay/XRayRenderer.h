@@ -647,6 +647,13 @@ public:
     void printProjectionSet(const char* aFileName);
 
 
+#ifdef HAS_ITK
+    const ImageType::Pointer& getProjectionSet() const;
+    ImageType::Pointer& getProjectionSet();
+    RATIONAL_NUMBER* getProjectionSetRawData() const;
+#endif
+
+
 //******************************************************************************
 protected:
 	//--------------------------------------------------------------------------
