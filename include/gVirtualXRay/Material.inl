@@ -119,6 +119,9 @@ inline Material& Material::operator=(const Material& aMaterial)
 
 	// Shininess
 	m_shininess = aMaterial.m_shininess;
+
+	// Return the instance
+	return (*this);
 }
 
 
