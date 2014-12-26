@@ -514,6 +514,21 @@ ELSE (BUILD_TUTORIALS)
    	MESSAGE("Do not build tutorials.")
 ENDIF (BUILD_TUTORIALS)
 
+
+# Unit tests ###################################################################
+option(BUILD_TESTS "Build unit tests." OFF)
+IF (BUILD_TESTS)
+	enable_testing ()
+   	
+	MESSAGE(STATUS "Build unit tests.")
+
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
+ELSE (BUILD_TESTS)
+   	MESSAGE("Do not build unit tests.")
+ENDIF (BUILD_TESTS)
+
+
+# Installation #################################################################
 INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/lib                  COMPONENT libraries)
 INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/gVirtualXRay COMPONENT headers)
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library     COMPONENT libraries)
