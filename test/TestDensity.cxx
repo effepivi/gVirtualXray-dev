@@ -65,24 +65,87 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BOOST_TEST_MODULE TestDensity
 #include <boost/test/unit_test.hpp>
 
+#include <GL/glew.h>
+
+    #ifdef __APPLE__
+#include <OpenGL/GL.h>
+#else
+#include <GL/gl.h>
+#endif
+
+#ifndef GVXR_XRAY_RENDERER_H
+#include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef GVXR_XRAY_INVALID_INTERNAL_FORMAT_EXCEPTION_H
+#include "gVirtualXRay/InvalidInternalFormalException.h"
+#endif
+
+#ifndef GVXR_XRAY_NO_DETECTOR_EXCEPTION_H
+#include "gVirtualXRay/NoDetectorException.h"
+#endif
+
+#ifndef GVXR_XRAY_NO_BEAM_EXCEPTION_H
+#include "gVirtualXRay/NoBeamException.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
 //******************************************************************************
-//using namespace gVirtualXRay;
+using namespace gVirtualXRay;
 //using namespace std;
 
 
-//******************************************************************************
-//  Global variables
-//******************************************************************************
-
-
-//******************************************************************************
-//  Function declaration
-//******************************************************************************
-BOOST_AUTO_TEST_CASE(PassTest)
+BOOST_AUTO_TEST_CASE(InvalidInternalFormal)
 {
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+    XRayDetector g_xray_detector;
+    XRayBeam g_xray_beam;
+    
+    BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,
+        GL_RGB,
+        &g_xray_detector,
+        &g_xray_beam), InvalidInternalFormalException);
+}
+
+
+BOOST_AUTO_TEST_CASE(NoDetector)
+{
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+    XRayBeam g_xray_beam;
+    
+    BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,
+        GL_RGB16F,
+        0,
+        &g_xray_beam), NoDetectorException);
+}
+
+
+BOOST_AUTO_TEST_CASE(NoBeam)
+{
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+    XRayDetector g_xray_detector;
+    BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            0), NoBeamException);
+}
+
+
+BOOST_AUTO_TEST_CASE(AtomicNumber)
+{
+   /* XRayRenderer g_xray_renderer;
+
+	// Initialise the X-ray renderer
+    g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            0,
+            0);
+*/
     BOOST_CHECK_EQUAL(4, 2 * 2);
 }
 

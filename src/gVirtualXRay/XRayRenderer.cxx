@@ -103,6 +103,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifndef GVXR_XRAY_INVALID_INTERNAL_FORMAT_EXCEPTION_H
+#include "gVirtualXRay/InvalidInternalFormalException.h"
+#endif
+
+#ifndef GVXR_XRAY_NO_DETECTOR_EXCEPTION_H
+#include "gVirtualXRay/NoDetectorException.h"
+#endif
+
+#ifndef GVXR_XRAY_NO_BEAM_EXCEPTION_H
+#include "gVirtualXRay/NoBeamException.h"
+#endif
+
 #ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
@@ -118,6 +130,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GVXR_ATOMIC_ELEMENT_H
 #include "AtomicElement.h"
 #endif
+
 
 #include "gVirtualXRay/framebufferObject.h"
 
@@ -247,19 +260,19 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     if (anInternalTextureFormat != GL_RGB16F &&
             anInternalTextureFormat != GL_RGB32F)
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid texture format, it has to be GL_RGB16F or GL_RGB32F.");
+        throw InvalidInternalFormalException(__FILE__, __FUNCTION__, __LINE__);
     }
 
     // There is no detector
 	if (!apDetector)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no detector.");
+		throw NoDetectorException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// There is no beam
 	if (!apBeamSpectrum)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no beam spectrum.");
+		throw NoBeamException(__FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// Check the detector size

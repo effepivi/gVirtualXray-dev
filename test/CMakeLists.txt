@@ -56,8 +56,31 @@ ELSE(Boost_FOUND)
 	MESSAGE(FATAL_ERROR "Boost not found.")
 ENDIF(Boost_FOUND)
 
+
+# GLEW #########################################################################
+FIND_PACKAGE(GLEW REQUIRED)
+IF(GLEW_FOUND)
+    ADD_DEFINITIONS(-DHAS_GLEW)    
+    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+    LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
+ELSE(GLEW_FOUND)
+    MESSAGE(FATAL_ERROR "GLEW not found.")
+ENDIF(GLEW_FOUND)
+
+
+# ITK #########################################################################
+FIND_PACKAGE (ITK)
+IF (ITK_FOUND)
+	ADD_DEFINITIONS(-DHAS_ITK)
+	INCLUDE( ${ITK_USE_FILE} )
+	set (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
+ELSE(ITK_FOUND)
+    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
+ENDIF(ITK_FOUND)
+
+
 add_executable(TestDensity TestDensity.cxx)
 target_link_libraries (TestDensity ${requiredLibs})
 
 add_test (test TestDensity)
-
