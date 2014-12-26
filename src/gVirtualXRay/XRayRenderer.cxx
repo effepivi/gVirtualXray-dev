@@ -115,6 +115,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/NoBeamException.h"
 #endif
 
+#ifndef GVXR_XRAY_INVALID_IMAGE_SIZE_EXCEPTION_H
+#include "gVirtualXRay/InvalidImageSizeException.h"
+#endif
+
 #ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
@@ -276,13 +280,9 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	}
 
 	// Check the detector size
-	if (!apDetector->getNumberOfPixels().getX())
+	if (!apDetector->getNumberOfPixels().getX() || !apDetector->getNumberOfPixels().getY())
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The width of the detector is null.");
-	}
-	if (!apDetector->getNumberOfPixels().getY())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The height of the detector is null.");
+		throw InvalidImageSizeException(apDetector->getNumberOfPixels().getX(), apDetector->getNumberOfPixels().getY(), __FILE__, __FUNCTION__, __LINE__);
 	}
 
 	// Reset the X-ray detector

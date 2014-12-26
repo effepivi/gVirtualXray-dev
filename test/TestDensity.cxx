@@ -81,6 +81,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
+#ifndef GVXR_XRAY_INVALID_IMAGE_SIZE_EXCEPTION_H
+#include "gVirtualXRay/InvalidImageSizeException.h"
+#endif
+
 #ifndef GVXR_XRAY_NO_DETECTOR_EXCEPTION_H
 #include "gVirtualXRay/NoDetectorException.h"
 #endif
@@ -111,6 +115,20 @@ BOOST_AUTO_TEST_CASE(InvalidInternalFormal)
 }
 
 
+BOOST_AUTO_TEST_CASE(InvalidaImageSize)
+{
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+    XRayDetector g_xray_detector;
+    XRayBeam g_xray_beam;
+
+    BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,
+            GL_RGB16F,
+            &g_xray_detector,
+            &g_xray_beam), InvalidImageSizeException);
+}
+
+
 BOOST_AUTO_TEST_CASE(NoDetector)
 {
     // Initialise the X-ray renderer
@@ -134,6 +152,9 @@ BOOST_AUTO_TEST_CASE(NoBeam)
             &g_xray_detector,
             0), NoBeamException);
 }
+
+
+
 
 
 BOOST_AUTO_TEST_CASE(AtomicNumber)
