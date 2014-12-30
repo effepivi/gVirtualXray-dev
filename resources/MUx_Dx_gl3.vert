@@ -57,7 +57,6 @@ smooth out vec3 g_texture_coordinates;
 //******************************************************************************
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
-uniform mat3 g_normal_matrix;
 
 
 //-------------

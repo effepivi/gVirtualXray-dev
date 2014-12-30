@@ -393,6 +393,10 @@ ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 
 SET (RESOURCES_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/clean_l_buffer_gl2.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/clean_l_buffer_gl2.vert
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/clean_l_buffer_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/clean_l_buffer_gl3.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl2.frag
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl2.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/cumulated_l_buffer_gl3.frag

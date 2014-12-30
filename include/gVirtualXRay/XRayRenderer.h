@@ -112,9 +112,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Definitions
 //******************************************************************************
 #define XRAY_DETECTOR_PBO_NUMBER        2	///< The total number of PBOs
-#define XRAY_DETECTOR_2D_TEXTURE_NUMBER 3	///< The total number of 2D textures
+#define XRAY_DETECTOR_2D_TEXTURE_NUMBER 4	///< The total number of 2D textures
 #define XRAY_DETECTOR_3D_TEXTURE_NUMBER 1	///< The total number of 3D textures
-#define XRAY_DETECTOR_SHADER_NUMBER     6	///< The total number of program shaders
+#define XRAY_DETECTOR_SHADER_NUMBER     7	///< The total number of program shaders
 
 
 //******************************************************************************
@@ -849,6 +849,12 @@ protected:
 	///	Compute the energy fluence.
 	//--------------------------------------------------------------------------
 	void computeIntegratedEnergy();
+
+
+    //--------------------------------------------------------------------------
+    /// Clean the L-buffer.
+    //--------------------------------------------------------------------------
+    void cleanLBuffer();
 
 
 	//--------------------------------------------------------------------------
