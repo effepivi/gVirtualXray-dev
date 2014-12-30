@@ -896,8 +896,17 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			g_xray_renderer.printLBuffer(PREFIX"/data/inside_lbuffer.mhd");
 
 			g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
-			g_xray_renderer.printLBuffer(PREFIX"/data/outside_lbuffer.mhd");
-			break;
+			g_xray_renderer.printLBuffer(PREFIX"/data/outside_lbuffer2.mhd");
+
+            g_xray_renderer.removeInnerSurfaces();
+            g_xray_renderer.removeOuterSurface();
+	        g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+
+            g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
+            g_xray_renderer.printLBuffer(PREFIX"/data/outside_lbuffer1.mhd");
+            
+            g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
+            break;
 
 		case GLFW_KEY_C:
 			g_xray_renderer.computeImage(g_sample_rotation_matrix);
