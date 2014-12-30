@@ -62,6 +62,6 @@ void main(void)
 //-------------
 {
     // Get the L-buffer value
-	fragColor = -texture(g_cumulated_l_buffer_texture, g_texture_coordinates.st).r;
+	fragColor = vec4(-texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).r, 0.0, 0.0, 1.0);
 }
 

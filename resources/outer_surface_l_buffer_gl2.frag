@@ -55,6 +55,6 @@ void main(void)
 //-------------
 {
     // Get the L-buffer value
-	gl_FragColor.r = -texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).r;
+	gl_FragColor = vec4(-texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).r, 0.0, 0.0, 1.0);
 }
 

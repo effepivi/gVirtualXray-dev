@@ -88,4 +88,3 @@ void main(void)
 	// Save the fragment value
 	fragColor = vec4(intensity, intensity, intensity, 1.0);
 }
-

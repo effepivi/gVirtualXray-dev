@@ -59,5 +59,5 @@ void main(void)
 	float intensity = texture2D(g_l_buffer_texture, g_texture_coordinates.st).r;
     
     // Compute L-buffer * g_attenuation_coefficient
-	gl_FragColor.r = intensity * g_attenuation_coefficient;
+	gl_FragColor = vec4(intensity * g_attenuation_coefficient, 0.0, 0.0, 1.0);
 }

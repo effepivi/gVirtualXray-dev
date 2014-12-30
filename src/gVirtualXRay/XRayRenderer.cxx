@@ -227,7 +227,7 @@ XRayRenderer::XRayRenderer():
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
-		m_use_L_buffer_artefact_filtering(false),
+		m_use_L_buffer_artefact_filtering(true),
 		m_L_buffer_empty(false),
 		m_energy_fluence_empty(false)
 //-------------------------------------------------------------------------------------------------
@@ -1195,6 +1195,30 @@ void XRayRenderer::initShaders()
 	}
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].setLabels("cumulated_l_buffer.vert", "cumulated_l_buffer.frag");
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
+
+    // Clean L-buffer
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl3_vert, sizeof(g_clean_l_buffer_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl3_frag, sizeof(g_clean_l_buffer_gl3_frag), &p_fragment_shader);
+    }
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl2_vert, sizeof(g_clean_l_buffer_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl2_frag, sizeof(g_clean_l_buffer_gl2_frag), &p_fragment_shader);
+    }
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].setLabels("clean_l_buffer.vert", "clean_l_buffer.frag");
+    m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
     if (useOpenGL3_2OrAbove())
@@ -2987,5 +3011,100 @@ void XRayRenderer::updateVBO()
 void XRayRenderer::cleanLBuffer()
 //-------------------------------
 {
+    // Save the current FBO
+    pushFBO();
 
+    // Store the texturing flags
+    pushTexture2D();
+
+    switch (m_computing_mode)
+    {
+    case OPENGL:
+        {
+            // Bind frame buffer object
+            m_p_fbo_set[XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID]->Bind();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Store the transformation matrices
+            pushProjectionMatrix();
+            pushModelViewMatrix();
+
+            // Display a textured square
+            loadIdentityProjectionMatrix();
+            loadOrthoProjectionMatrix(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+
+            loadIdentityModelViewMatrix();
+
+            // Enable the shader
+            pushShaderProgram();
+            m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].enable();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Values to pass to the shader
+            GLint program_handle(0);
+            glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+
+            GLint saved_texture;
+            glGetIntegerv(GL_ACTIVE_TEXTURE, &saved_texture);
+
+            GLint handle(glGetUniformLocation(program_handle, "g_l_buffer_texture"));
+            glUniform1i(handle, saved_texture - GL_TEXTURE0);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_x_offset");
+            glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getX());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_y_offset");
+            glUniform1f(handle, 1.0 / m_p_detector->getNumberOfPixels().getY());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_projection_matrix");
+            glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
+            glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Rebind textures
+            glActiveTexture(saved_texture);
+            glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Display the textured square
+            m_detector_temporary_geometry->display();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Restore the transformation matrices
+            popProjectionMatrix();
+            popModelViewMatrix();
+
+            // Restore the shader program
+            popShaderProgram();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            // Wait for all OpenGL execution to be completed
+            glFinish();
+        }
+        break;
+
+    case CUDA:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "CUDA is not supported.");
+        break;
+
+    case OPENCL:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenCL is not supported.");
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
+        break;
+    }
+
+    // Restore the FBO
+    popFBO();
+
+    // Restore the texturing flags
+    popTexture();
 }

@@ -71,6 +71,6 @@ void main(void)
 	}
 
     // Save the fragment value
-	gl_FragColor.rgb = vec3(intensity, intensity, intensity);
+	gl_FragColor = vec4(intensity, intensity, intensity, 1.0);
 }
 

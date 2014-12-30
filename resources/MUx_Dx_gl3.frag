@@ -65,5 +65,5 @@ void main(void)
 	float intensity = texture(g_l_buffer_texture, g_texture_coordinates.st).r;
     
     // Compute L-buffer * g_attenuation_coefficient
-	fragColor = intensity * g_attenuation_coefficient;
+	fragColor = vec4(intensity * g_attenuation_coefficient, 0.0, 0.0, 1.0);
 }
