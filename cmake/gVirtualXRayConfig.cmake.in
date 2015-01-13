@@ -1,3 +1,5 @@
+get_filename_component(gVirtualXRay_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
 SET(gVirtualXRay_INCLUDE_DIRS @gVirtualXRay_INCLUDE_DIRS@)
 SET(gVirtualXRay_LIBRARY_DIRS @gVirtualXRay_LIBRARY_DIRS@)
 SET(gVirtualXRay_LIBRARIES @gVirtualXRay_LIBRARIES@)
@@ -9,4 +11,8 @@ SET(gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@")
 
 # The location of the UsegVirtualXRay.cmake file.
 SET(gVirtualXRay_USE_FILE "@gVirtualXRay_USE_FILE@")
+
+# The location of the UseITK.cmake file.
+set(gVirtualXRay_USE_FILE "${gVirtualXRay_INSTALL_PREFIX}/UsegVirtualXRay.cmake")
+set(USE_gVirtualXRay_FILE "${gVirtualXRay_USE_FILE}")
 
