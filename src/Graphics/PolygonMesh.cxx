@@ -755,6 +755,12 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
 	m_external_data_flag      = aPolygonMesh.m_external_data_flag;
 	m_material                = aPolygonMesh.m_material;
 
+    // Delete the VBO if needed
+    if (!m_vbo.get())
+    {
+        m_vbo.reset(0);
+    }
+
     copyVertexSet(aPolygonMesh.m_p_vertex_set);
     copyIndexSet(aPolygonMesh.m_p_index_set);
 
