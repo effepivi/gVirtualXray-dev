@@ -99,7 +99,7 @@ inline VBO::~VBO()
 inline bool VBO::isReady() const
 //-----------------------------
 {
-	return (m_id_set[0] ? true : false);
+	return ((m_number_of_vertices && m_id_set[0]) ? true : false);
 }
 
 
