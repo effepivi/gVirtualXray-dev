@@ -500,6 +500,38 @@ namespace gVirtualXRay {
     }
 
 
+    //-------------------------------------------------
+    inline void XRayRenderer::enableArtefactFiltering()
+    //-------------------------------------------------
+    {
+        m_use_L_buffer_artefact_filtering = true;
+    }
+
+
+    //-------------------------------------------------
+    inline void XRayRenderer::enableArtifactFiltering()
+    //-------------------------------------------------
+    {
+        m_use_L_buffer_artefact_filtering = true;
+    }
+
+
+    //--------------------------------------------------
+    inline void XRayRenderer::disableArtefactFiltering()
+    //--------------------------------------------------
+    {
+        m_use_L_buffer_artefact_filtering = false;
+    }
+
+
+    //--------------------------------------------------
+    inline void XRayRenderer::disableArtifactFiltering()
+    //--------------------------------------------------
+    {
+        m_use_L_buffer_artefact_filtering = false;
+    }
+
+
 #endif
 
 
