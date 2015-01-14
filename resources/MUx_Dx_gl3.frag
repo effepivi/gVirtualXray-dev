@@ -55,6 +55,7 @@ out float fragColor;
 //   Uniform variables
 //******************************************************************************
 uniform sampler2D g_l_buffer_texture;
+uniform float     g_attenuation_coefficient;
 
 
 //-------------
