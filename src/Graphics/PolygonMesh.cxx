@@ -656,20 +656,23 @@ void PolygonMesh::computeNormalVectors()
 			VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
 
 			// Normalise the vector
-			normal.normalize();
+			if ((std::abs(normal.getX()) > EPSILON) && (std::abs(normal.getY()) > EPSILON) && (std::abs(normal.getZ()) > EPSILON))
+			{
+                normal.normalize();
 
-			// Add the new normal
-			m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
-			m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
-			m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
+                // Add the new normal
+                m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
+                m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
+                m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
 
-			m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
-			m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
-			m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
+                m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
+                m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
+                m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
 
-			m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
-			m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
-			m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
+                m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
+                m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
+                m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
+			}
 		}
 
 		normaliseNormals();
