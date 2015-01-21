@@ -656,7 +656,11 @@ void PolygonMesh::computeNormalVectors()
 			VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
 
 			// Normalise the vector
-			if ((std::abs(normal.getX()) > EPSILON) && (std::abs(normal.getY()) > EPSILON) && (std::abs(normal.getZ()) > EPSILON))
+			if (!(
+			        (std::abs(normal.getX()) <= EPSILON) &&
+			        (std::abs(normal.getY()) <= EPSILON) &&
+			        (std::abs(normal.getZ()) <= EPSILON)
+			     ))
 			{
                 normal.normalize();
 
