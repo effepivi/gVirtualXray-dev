@@ -42,7 +42,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out float fragColor;
+out vec3 fragColor;
 
 
 //******************************************************************************
@@ -281,5 +281,6 @@ void main(void)
 		intensity = filter3x3(intensity);
 	}
 
-	fragColor = vec4(intensity, 0.0, 0.0, 1.0);
+	fragColor = vec3(intensity, 0.0, 0.0);
 }
+

@@ -48,7 +48,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragColor;
+out vec3 fragColor;
 
 
 //******************************************************************************
@@ -62,6 +62,6 @@ void main(void)
 //-------------
 {
     // Get the L-buffer value
-	fragColor = vec4(-texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).r, 0.0, 0.0, 1.0);
+	fragColor = vec3(-texture2D(g_cumulated_l_buffer_texture, g_texture_coordinates.st).r, 0.0, 0.0);
 }
 

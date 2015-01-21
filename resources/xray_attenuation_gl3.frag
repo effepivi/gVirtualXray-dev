@@ -48,7 +48,7 @@ smooth in vec3 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragColor;
+out vec3 fragColor;
 
 
 //******************************************************************************
@@ -78,6 +78,6 @@ void main(void)
 	}
 
     // Save the fragment value
-	fragColor = vec4(intensity, intensity, intensity, 1.0);
+	fragColor = vec3(intensity, intensity, intensity);
 }
 
