@@ -125,14 +125,18 @@ void checkFBOErrorStatus(const char* aFileName,
 						 int aLineNumber)
 //-------------------------------------------------
 {
-	// Get the OpenGL error code
-	GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    // The function is registered
+    if (glCheckFramebufferStatus)
+    {
+        // Get the OpenGL error code
+        GLenum error_code(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 
-	// There was an error
-	if (error_code != GL_FRAMEBUFFER_COMPLETE)
-	{
-		throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
-	}
+        // There was an error
+        if (error_code != GL_FRAMEBUFFER_COMPLETE)
+        {
+            throw FBOException(aFileName, aFunctionName, aLineNumber, error_code);
+        }
+    }
 }
 
 
