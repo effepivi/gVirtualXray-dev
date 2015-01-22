@@ -2744,8 +2744,12 @@ void XRayRenderer::normalise()
 			++i)
 	{
 		PixelType pixel_value(m_p_temp_raw_data[i]);
-		if (m_min_value_in_simulated_xray_image > pixel_value) m_min_value_in_simulated_xray_image = pixel_value;
-		if (m_max_value_in_simulated_xray_image < pixel_value) m_max_value_in_simulated_xray_image = pixel_value;
+
+		if (!std::isinf(pixel_value) && !std::isnan(pixel_value))
+		{
+		    if (m_min_value_in_simulated_xray_image > pixel_value) m_min_value_in_simulated_xray_image = pixel_value;
+		    if (m_max_value_in_simulated_xray_image < pixel_value) m_max_value_in_simulated_xray_image = pixel_value;
+		}
 	}
 
 	// If there is no object, make a white image
