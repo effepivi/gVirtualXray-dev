@@ -2808,8 +2808,16 @@ void XRayRenderer::display(bool useLogScale)
         }
         else
         {
-            shift_filter = -log(m_min_value_in_simulated_xray_image);
-            scale_filter = 1.0 / (log(m_max_value_in_simulated_xray_image) - log(m_min_value_in_simulated_xray_image));
+            if (m_min_value_in_simulated_xray_image >= EPSILON)
+            {
+                shift_filter = -log(m_min_value_in_simulated_xray_image);
+                scale_filter = 1.0 / (log(m_max_value_in_simulated_xray_image) - log(m_min_value_in_simulated_xray_image));
+            }
+            else
+            {
+                shift_filter = -log(EPSILON);
+                scale_filter = 1.0 / (log(m_max_value_in_simulated_xray_image) - log(EPSILON));
+            }
         }
     }
 
