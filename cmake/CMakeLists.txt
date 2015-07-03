@@ -532,6 +532,17 @@ ELSE (BUILD_TESTS)
 ENDIF (BUILD_TESTS)
 
 
+# Validation tests #############################################################
+option(BUILD_VALIDATION "Build validation tests." OFF)
+IF (BUILD_VALIDATION)
+   	MESSAGE(STATUS "Build validation tests.")
+
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
+ELSE (BUILD_VALIDATION)
+   	MESSAGE("Do not build validation tests.")
+ENDIF (BUILD_VALIDATION)
+
+
 # Installation #################################################################
 INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/lib                  COMPONENT libraries)
 INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/gVirtualXRay COMPONENT headers)
