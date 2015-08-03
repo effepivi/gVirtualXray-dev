@@ -225,6 +225,15 @@ public:
             GLfloat* apBackgroundColour,
             GLfloat* apFontColour);
 
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the initialisation flag.
+    /**
+    *   @return true if the text renderer is initialised, false if it is not
+    */
+    //--------------------------------------------------------------------------
+    bool isInitialised() const;
+
 
 //******************************************************************************
 protected:

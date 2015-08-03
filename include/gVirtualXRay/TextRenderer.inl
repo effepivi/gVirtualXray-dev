@@ -141,4 +141,12 @@ namespace gVirtualXRay {
     }
 
 
+    //---------------------------------------------
+    inline bool TextRenderer::isInitialised() const
+    //---------------------------------------------
+    {
+        return (m_initialised);
+    }
+
+
 } // namespace gVirtualXRay
