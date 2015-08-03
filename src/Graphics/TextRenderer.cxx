@@ -160,7 +160,10 @@ void TextRenderer::initialise(const std::string aFontFile,
 
         if (FT_New_Face(m_free_type, aFontFile.data(), 0, &m_face))
         {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Could not open the font.");
+        	std::stringstream error_message;
+        	error_message << "Could not open the font in file \"" << aFontFile << "\".";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
 
         initialiseInternalStates(aFontSize);
