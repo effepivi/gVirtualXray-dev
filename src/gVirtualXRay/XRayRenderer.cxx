@@ -879,8 +879,8 @@ void XRayRenderer::reset()
 	// Reset values
 	m_p_detector = 0;
 	m_p_xray_beam = 0;
-	m_p_inner_surface_set.clear();
-	m_p_outer_surface = 0;
+	removeInnerSurfaces();
+	removeOuterSurface();
 	m_computing_mode = OPENGL;
 	m_mu_water_set.clear();
 	m_p_fbo_set.clear();
