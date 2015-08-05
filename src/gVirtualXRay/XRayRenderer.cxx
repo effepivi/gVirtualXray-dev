@@ -1961,13 +1961,15 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID) const
     case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
         glBindTexture(GL_TEXTURE_2D, texture_id);
         glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
         break;
 
     case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
         glBindTexture(GL_TEXTURE_2D, texture_id);
         glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
         break;
 
 	case XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID:
@@ -2152,7 +2154,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         // Clean the L-Buffer
         if (m_use_L_buffer_artefact_filtering)
         {
-            cleanLBuffer();
+        	RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
+            cleanLBuffer(0.8 * bbox_diagonal);
         }
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
@@ -3019,9 +3022,9 @@ void XRayRenderer::updateVBO()
 }
 
 
-//-------------------------------
-void XRayRenderer::cleanLBuffer()
-//-------------------------------
+//---------------------------------------------------------------------
+void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
+//---------------------------------------------------------------------
 {
     // Save the current FBO
     pushFBO();
@@ -3077,6 +3080,10 @@ void XRayRenderer::cleanLBuffer()
 
             handle = glGetUniformLocation(program_handle, "g_modelview_matrix");
             glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(program_handle, "g_cutoff");
+            glUniform1f(handle, aCutoffDistance);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Rebind textures

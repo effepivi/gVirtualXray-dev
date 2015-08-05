@@ -44,7 +44,7 @@ varying vec3 g_texture_coordinates;
 #define KERNEL_SIZE_3x3  8
 #define KERNEL_SIZE_5x5 16
 #define KERNEL_SIZE_7x7 24
-#define EPSILON         0.01
+#define EPSILON         0.5
 
 
 //******************************************************************************
@@ -53,6 +53,7 @@ varying vec3 g_texture_coordinates;
 uniform sampler2D g_l_buffer_texture;
 uniform float     g_x_offset;
 uniform float     g_y_offset;
+uniform float     g_cutoff;
 
 
 //******************************************************************************
@@ -64,22 +65,22 @@ vec2 g_offset_7x7[KERNEL_SIZE_7x7];
 
 
 //-----------------------------
-bool isValid(vec2 lBufferValue)
+bool isValid(vec3 lBufferValue)
 //-----------------------------
 {
     // Return true if lBufferValue is zero, false if it is smaller or greater than zero
     // Care is given to handle floating point numbers' inacuracy
-    return (abs(lBufferValue.g) < EPSILON && lBufferValue.r >= 0.0);
+    return ((abs(lBufferValue.g) < EPSILON) && (0.0 <= lBufferValue.r) && (lBufferValue.r <= g_cutoff));
 }
 
 
-//-----------------------------------
-float filter7x7(float anInitialValue)
-//-----------------------------------
+//---------------------------------
+vec3 filter7x7(vec3 anInitialValue)
+//---------------------------------
 {
     int i = 0;
     float count = 0.0;
-    float value = 0.0;
+    vec3 value = vec3(0.0, 0.0, 0.0);
 
     // Process all the texels of the neighbourhood
     for (i = 0; i < KERNEL_SIZE_7x7; ++i)
@@ -88,13 +89,13 @@ float filter7x7(float anInitialValue)
         vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_7x7[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
+		vec3 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rgb;
 
     	// The L-buffer value is valid
         if (isValid(l_buffer_value))
         {
         	// Update the cumulated value
-        	value += l_buffer_value.r;
+        	value += l_buffer_value;
         
             // Update the counter
         	count += 1.0;
@@ -113,13 +114,13 @@ float filter7x7(float anInitialValue)
 }
 
 
-//-----------------------------------
-float filter5x5(float anInitialValue)
-//-----------------------------------
+//---------------------------------
+vec3 filter5x5(vec3 anInitialValue)
+//---------------------------------
 {
 	int i = 0;
 	float count = 0.0;
-	float value = 0.0;
+    vec3 value = vec3(0.0, 0.0, 0.0);
     
     // Process all the texels of the neighbourhood
 	for (i = 0; i < KERNEL_SIZE_5x5; ++i)
@@ -128,13 +129,13 @@ float filter5x5(float anInitialValue)
 		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_5x5[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
+		vec3 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rgg;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
 		{
         	// Update the cumulated value
-			value += l_buffer_value.r;
+			value += l_buffer_value;
         
             // Update the counter
 			count += 1.0;
@@ -158,13 +159,13 @@ float filter5x5(float anInitialValue)
 }
 
 
-//-----------------------------------
-float filter3x3(float anInitialValue)
-//-----------------------------------
+//---------------------------------
+vec3 filter3x3(vec3 anInitialValue)
+//---------------------------------
 {
 	int i = 0;
 	float count = 0.0;
-	float value = 0.0;
+    vec3 value = vec3(0.0, 0.0, 0.0);
     
     // Process all the texels of the neighbourhood
 	for (i = 0; i < KERNEL_SIZE_3x3; ++i)
@@ -173,13 +174,13 @@ float filter3x3(float anInitialValue)
 		vec2 tex_coord = vec2(g_texture_coordinates.st + g_offset_3x3[i]);
 
         // Get the L-buffer value
-		vec2 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rg;
+		vec3 l_buffer_value = texture2D(g_l_buffer_texture, tex_coord).rgb;
     
     	// The L-buffer value is valid
 		if (isValid(l_buffer_value))
 		{
         	// Update the cumulated value
-        	value += l_buffer_value.r;
+        	value += l_buffer_value;
         
             // Update the counter
         	count += 1.0;
@@ -262,18 +263,15 @@ void main(void)
 	g_offset_7x7[23] = vec2( 3.0 * g_x_offset,  2.0 * g_y_offset);
 
     // Get the texel value
-    vec2 texel_value = texture2D(g_l_buffer_texture, g_texture_coordinates.st).rg;
-    
-    // Get the L-buffer value
-	float intensity = texel_value.r;
+    vec3 texel_value = texture2D(g_l_buffer_texture, g_texture_coordinates.st).rgb;
     
    	// The texel value is not valid
 	if (!isValid(texel_value))
 	{
         // Filter the artefact
-		intensity = filter3x3(intensity);
+		texel_value = filter3x3(texel_value);
 	}
 
-   	gl_FragColor = vec4(intensity, 0.0, 0.0, 1.0);
+   	gl_FragColor = vec4(texel_value, 1.0);
 }
 
