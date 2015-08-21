@@ -77,7 +77,7 @@ bool isValid(vec3 lBufferValue)
 {
     // Return true if lBufferValue is zero, false if it is smaller or greater than zero
     // Care is given to handle floating point numbers' inacuracy
-    return ((abs(lBufferValue.g) < EPSILON) && (0.0 <= abs(lBufferValue.r)) && (lBufferValue.r <= g_cutoff));
+    return ((abs(lBufferValue.g) < EPSILON) && (0.0 <= lBufferValue.r) && (lBufferValue.r <= g_cutoff));
 }
 
 
