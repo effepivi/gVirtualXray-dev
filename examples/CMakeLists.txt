@@ -41,6 +41,7 @@ add_subdirectory(GUI-FLTK)
 add_subdirectory(Iso-Surfaces)
 add_subdirectory(Intersections)
 add_subdirectory(SimpleBackProjection)
+add_subdirectory(Tomography)
 add_subdirectory(AnatomicalData)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
