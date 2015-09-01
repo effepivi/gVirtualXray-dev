@@ -313,9 +313,13 @@ unsigned int PolygonMesh::getFaceNumber() const
 
 	switch (m_polygon_type)
 	{
-	case GL_TRIANGLES:
-		number_vertex_per_face = 3;
-		break;
+		case GL_TRIANGLES:
+			number_vertex_per_face = 3;
+			break;
+
+		case GL_LINES:
+			number_vertex_per_face = 2;
+			break;
 
 	default:
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid polygon type.");
@@ -352,6 +356,19 @@ unsigned int PolygonMesh::getTriangleNumber() const
 		{
 			// There are 3 vertices per triangle
 			return (m_number_of_vertices / 3);
+		}
+
+	case GL_LINES:
+		// Return the number of faces
+		if (m_p_index_set && m_number_of_indices)
+		{
+			// There are 2 indices per line
+			return (m_number_of_indices / 2);
+		}
+		else
+		{
+			// There are 2 vertices per line
+			return (m_number_of_vertices / 2);
 		}
 
 	default:
@@ -628,115 +645,120 @@ void PolygonMesh::computeNormalVectors()
 	m_p_face_normal_set.clear();
 	m_p_vertex_normal_set.clear();
 
-	// There is an index
-	if (m_number_of_indices)
+	switch (m_polygon_type)
 	{
-		if (m_number_of_indices % 3 != 0)
+		case GL_TRIANGLES:
+		// There is an index
+		if (m_number_of_indices)
 		{
-			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		// Allocate the memory
-		m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
-
-		// Process every triangle
-		for (unsigned int i(0); i < m_number_of_indices; i += 3)
-		{
-			// Get the vertex IDs
-			int id_0(getIndex(i + 0));
-			int id_1(getIndex(i + 1));
-			int id_2(getIndex(i + 2));
-
-			// Get the vertices
-			VEC3 vec_A(getVertex(id_0));
-			VEC3 vec_B(getVertex(id_1));
-			VEC3 vec_C(getVertex(id_2));
-
-			// Compute the normal for the triangle
-			VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
-
-			// Normalise the vector
-			if (!(
-			        (std::abs(normal.getX()) <= EPSILON) &&
-			        (std::abs(normal.getY()) <= EPSILON) &&
-			        (std::abs(normal.getZ()) <= EPSILON)
-			     ))
+			if (m_number_of_indices % 3 != 0)
 			{
-                normal.normalize();
+				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+			}
 
-                // Add the new normal
-                m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
-                m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
-                m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
+			// Allocate the memory
+			m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
 
-                m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
-                m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
-                m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
+			// Process every triangle
+			for (unsigned int i(0); i < m_number_of_indices; i += 3)
+			{
+				// Get the vertex IDs
+				int id_0(getIndex(i + 0));
+				int id_1(getIndex(i + 1));
+				int id_2(getIndex(i + 2));
 
-                m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
-                m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
-                m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
+				// Get the vertices
+				VEC3 vec_A(getVertex(id_0));
+				VEC3 vec_B(getVertex(id_1));
+				VEC3 vec_C(getVertex(id_2));
+
+				// Compute the normal for the triangle
+				VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+
+				// Normalise the vector
+				if (!(
+						(std::abs(normal.getX()) <= EPSILON) &&
+						(std::abs(normal.getY()) <= EPSILON) &&
+						(std::abs(normal.getZ()) <= EPSILON)
+					 ))
+				{
+					normal.normalize();
+
+					// Add the new normal
+					m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
+					m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
+					m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
+
+					m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
+					m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
+					m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
+
+					m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
+					m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
+					m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
+				}
+			}
+
+			normaliseNormals();
+		}
+		// There is not any index
+		else
+		{
+			if (m_number_of_vertices % 3 != 0)
+			{
+				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+			}
+
+			// Allocate the memory
+			m_p_face_normal_set.resize(m_number_of_vertices * 3, 0.0);
+			m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
+
+			// Process every triangle
+			for (unsigned int i(0); i < m_number_of_vertices; i += 3)
+			{
+				// Get the vertex IDs
+				int id_0(i + 0);
+				int id_1(i + 1);
+				int id_2(i + 2);
+
+				// Get the vertices
+				VEC3 vec_A(getVertex(id_0));
+				VEC3 vec_B(getVertex(id_1));
+				VEC3 vec_C(getVertex(id_2));
+
+				// Compute the normal for the triangle
+				VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+
+				// Normalise the vector
+				normal.normalize();
+
+				// Add the new normal
+				m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
+				m_p_face_normal_set[id_0 * 3 + 1] = normal.getY();
+				m_p_face_normal_set[id_0 * 3 + 2] = normal.getZ();
+
+				m_p_face_normal_set[id_1 * 3 + 0] = normal.getX();
+				m_p_face_normal_set[id_1 * 3 + 1] = normal.getY();
+				m_p_face_normal_set[id_1 * 3 + 2] = normal.getZ();
+
+				m_p_face_normal_set[id_2 * 3 + 0] = normal.getX();
+				m_p_face_normal_set[id_2 * 3 + 1] = normal.getY();
+				m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();
+
+				m_p_vertex_normal_set[id_0 * 3 + 0] = normal.getX();
+				m_p_vertex_normal_set[id_0 * 3 + 1] = normal.getY();
+				m_p_vertex_normal_set[id_0 * 3 + 2] = normal.getZ();
+
+				m_p_vertex_normal_set[id_1 * 3 + 0] = normal.getX();
+				m_p_vertex_normal_set[id_1 * 3 + 1] = normal.getY();
+				m_p_vertex_normal_set[id_1 * 3 + 2] = normal.getZ();
+
+				m_p_vertex_normal_set[id_2 * 3 + 0] = normal.getX();
+				m_p_vertex_normal_set[id_2 * 3 + 1] = normal.getY();
+				m_p_vertex_normal_set[id_2 * 3 + 2] = normal.getZ();
 			}
 		}
-
-		normaliseNormals();
-	}
-	// There is not any index
-	else
-	{
-		if (m_number_of_vertices % 3 != 0)
-		{
-			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-		// Allocate the memory
-		m_p_face_normal_set.resize(m_number_of_vertices * 3, 0.0);
-		m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
-
-		// Process every triangle
-		for (unsigned int i(0); i < m_number_of_vertices; i += 3)
-		{
-			// Get the vertex IDs
-			int id_0(i + 0);
-			int id_1(i + 1);
-			int id_2(i + 2);
-
-			// Get the vertices
-			VEC3 vec_A(getVertex(id_0));
-			VEC3 vec_B(getVertex(id_1));
-			VEC3 vec_C(getVertex(id_2));
-
-			// Compute the normal for the triangle
-			VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
-
-			// Normalise the vector
-			normal.normalize();
-
-			// Add the new normal
-			m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
-			m_p_face_normal_set[id_0 * 3 + 1] = normal.getY();
-			m_p_face_normal_set[id_0 * 3 + 2] = normal.getZ();
-
-			m_p_face_normal_set[id_1 * 3 + 0] = normal.getX();
-			m_p_face_normal_set[id_1 * 3 + 1] = normal.getY();
-			m_p_face_normal_set[id_1 * 3 + 2] = normal.getZ();
-
-			m_p_face_normal_set[id_2 * 3 + 0] = normal.getX();
-			m_p_face_normal_set[id_2 * 3 + 1] = normal.getY();
-			m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();
-
-			m_p_vertex_normal_set[id_0 * 3 + 0] = normal.getX();
-			m_p_vertex_normal_set[id_0 * 3 + 1] = normal.getY();
-			m_p_vertex_normal_set[id_0 * 3 + 2] = normal.getZ();
-
-			m_p_vertex_normal_set[id_1 * 3 + 0] = normal.getX();
-			m_p_vertex_normal_set[id_1 * 3 + 1] = normal.getY();
-			m_p_vertex_normal_set[id_1 * 3 + 2] = normal.getZ();
-
-			m_p_vertex_normal_set[id_2 * 3 + 0] = normal.getX();
-			m_p_vertex_normal_set[id_2 * 3 + 1] = normal.getY();
-			m_p_vertex_normal_set[id_2 * 3 + 2] = normal.getZ();
-		}
+		break;
 	}
 }
 
@@ -2095,8 +2117,11 @@ void PolygonMesh::copyIndexSet(const void* apIndexSet)
 
 		switch (m_polygon_type)
 		{
-		case GL_TRIANGLES:
-			break;
+			case GL_TRIANGLES:
+				break;
+
+			case GL_LINES:
+				break;
 
 		default:
 			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
