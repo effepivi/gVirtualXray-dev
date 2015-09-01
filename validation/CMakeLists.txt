@@ -98,7 +98,7 @@ CreateHeaderFiles("." "BinaryValidationFiles" "${RESOURCES_SOURCES}")
 
 
 # Create the main programs #####################################################
-IF(glfw_FOUND)
+IF(glfw3_FOUND)
     ADD_EXECUTABLE (validation_01 src/validation_01.cxx)
     TARGET_LINK_LIBRARIES (validation_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
     INSTALL(TARGETS validation_01 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
@@ -178,7 +178,7 @@ IF(glfw_FOUND)
 	INSTALL(FILES data/validation_10/beam_spectrum.csv DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_10 COMPONENT validation)
 
     INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
-ENDIF(glfw_FOUND)
+ENDIF(glfw3_FOUND)
 
 
 

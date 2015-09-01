@@ -62,11 +62,11 @@ ENDIF(OPENGL_FOUND)
 
 
 # GLFW ########################################################################
-FIND_PACKAGE(glfw)
-IF(glfw_FOUND)
-    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-    LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
-    SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
+FIND_PACKAGE(glfw3)
+IF(glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
+    SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY} ${GLFW3_LIBRARIES})
 
     IF (APPLE)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -81,14 +81,14 @@ IF(glfw_FOUND)
         FIND_PACKAGE (X11 REQUIRED)
         iF (X11_FOUND)
             INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB})
+            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
         ELSE (X11_FOUND)
             MESSAGE(FATAL_ERROR "X11 not found.")
         ENDIF (X11_FOUND)
     ENDIF(UNIX)
-ELSE(glfw_FOUND)
+ELSE(glfw3_FOUND)
     MESSAGE(FATAL_ERROR "GLFW not found.")
-ENDIF(glfw_FOUND)
+ENDIF(glfw3_FOUND)
 
 
 # Create the main program ######################################################

@@ -50,9 +50,9 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw_FOUND)
+IF(NOT glfw3_FOUND)
     MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw_FOUND)
+ENDIF(NOT glfw3_FOUND)
 
 
 # Create the main program ######################################################
