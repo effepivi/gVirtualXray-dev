@@ -279,6 +279,7 @@ bool g_run_tomography_acquisition(true);
 
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
+bool g_display_skin(true);
 
 
 //******************************************************************************
@@ -1170,32 +1171,35 @@ void render()
 			}
 		}
 
-		if (g_display_wireframe)
+		if (g_display_skin)
 		{
-		    g_p_polygon_mesh_set.back().displayWireFrame();
-		}
-		else
-		{
-			// Store the enable/disable state
-			pushEnableDisableState(GL_DEPTH_TEST);
-			pushEnableDisableState(GL_BLEND);
-			pushEnableDisableState(GL_CULL_FACE);
+			if (g_display_wireframe)
+			{
+				g_p_polygon_mesh_set.back().displayWireFrame();
+			}
+			else
+			{
+				// Store the enable/disable state
+				pushEnableDisableState(GL_DEPTH_TEST);
+				pushEnableDisableState(GL_BLEND);
+				pushEnableDisableState(GL_CULL_FACE);
 
-			//glEnable(GL_DEPTH_TEST);
-			//glDepthMask(GL_FALSE);
-			glEnable(GL_BLEND);
-	        //glDisable(GL_CULL_FACE);
-	       // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    	glBlendFunc (GL_ONE, GL_ONE);
+				//glEnable(GL_DEPTH_TEST);
+				//glDepthMask(GL_FALSE);
+				glEnable(GL_BLEND);
+				//glDisable(GL_CULL_FACE);
+			   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glBlendFunc (GL_ONE, GL_ONE);
 
-		    g_p_polygon_mesh_set.back().display();
+				g_p_polygon_mesh_set.back().display();
 
-			//glDepthMask(GL_TRUE);
+				//glDepthMask(GL_TRUE);
 
-			// Restore the enable/disable state
-			popEnableDisableState();
-			popEnableDisableState();
-			popEnableDisableState();
+				// Restore the enable/disable state
+				popEnableDisableState();
+				popEnableDisableState();
+				popEnableDisableState();
+			}
 		}
 
         // Restore the current transformation matrix
@@ -1421,6 +1425,18 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         case GLFW_KEY_RIGHT_SHIFT:
             g_use_right_shift = true;
             break;
+
+		case GLFW_KEY_S:
+			if (g_display_skin)
+			{
+				takeScreenshot("screenshot_with_skin.tga");
+			}
+			else
+			{
+				takeScreenshot("screenshot_without_skin.tga");
+			}
+			g_display_skin = !g_display_skin;
+			break;
 
         default:
             break;
