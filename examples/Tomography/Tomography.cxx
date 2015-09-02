@@ -77,7 +77,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <itkMacro.h>
 #include <itkImage.h>
-//#include <itkImageFileWriter.h>
+#include <itkImageFileWriter.h>
 
 #include <itkBinaryMask3DMeshSource.h>
 #include <itkBinaryThresholdImageFilter.h>
@@ -255,9 +255,13 @@ VEC3 g_rotation_centre(0, 0, 0);
 GLuint g_projection_texture_id(0);
 GLuint g_sinogram_texture_id(0);
 GLuint g_tomography_texture_id(0);
-float* g_p_projection_data(0);
-float* g_p_sinogram_data(0);
-float* g_p_tomography_data(0);
+
+typedef itk::Image<float, 2> ProjectionImageType;
+
+ProjectionImageType::Pointer g_p_projection_data(ProjectionImageType::New());
+ProjectionImageType::Pointer g_p_sinogram_data(ProjectionImageType::New());
+ProjectionImageType::Pointer g_p_tomography_data(ProjectionImageType::New());
+float g_pixel_width(0);
 float g_min_projection(0);
 float g_max_projection(0);
 float g_min_sinogram(0);
@@ -601,6 +605,24 @@ int main(int argc, char** argv)
 
 	        		takeScreenshot(filename.str());
 	        	}
+
+	        	if (g_current_angle == (g_angle_number - 1))
+	        	{
+	        		typedef itk::ImageFileWriter <ProjectionImageType> VolumeWriterType;
+
+	        		VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
+	        		p_writer->SetInput(g_p_sinogram_data);
+	        		p_writer->SetFileName("sinogram.mhd");
+	        		p_writer->Update();
+
+	        		p_writer->SetInput(g_p_projection_data);
+	        		p_writer->SetFileName("projection.mhd");
+	        		p_writer->Update();
+
+	        		p_writer->SetInput(g_p_tomography_data);
+	        		p_writer->SetFileName("simple_back_projection.mhd");
+	        		p_writer->Update();
+	        	}
 	        }
 
 	        // Poll for and process events
@@ -635,14 +657,14 @@ void createPhantom()
 //------------------
 {
 	typedef itk::Image<short, 3> ImageType;
-	//typedef itk::ImageFileWriter <ImageType> VolumeWriterType;
+	typedef itk::ImageFileWriter <ImageType> VolumeWriterType;
 
 	ImageType::Pointer p_phantom(ImageType::New());
-/*
+
 	VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
 	p_writer->SetInput(p_phantom);
-	p_writer->SetFileName(PREFIX"/phantom.mhd");
-*/
+	p_writer->SetFileName("phantom.mhd");
+
 	float scale(1.0);
 	ImageType::SizeType	size;
 	size[0] = 256 * scale;
@@ -661,12 +683,12 @@ void createPhantom()
 	p_phantom->SetRegions(region);
 	p_phantom->Allocate();
 
+	g_pixel_width = 0.75 / scale;
 	double spacing[3];
-	spacing[0] = 0.75 / scale;
-	spacing[1] = 0.75 / scale;
-	spacing[2] = 0.75 / scale;
+	spacing[0] = g_pixel_width;
+	spacing[1] = g_pixel_width;
+	spacing[2] = g_pixel_width;
 	p_phantom->SetSpacing(spacing);
-
 	double origin[3];
 	origin[0] = 0;
 	origin[1] = 0;
@@ -830,6 +852,8 @@ void createPhantom()
 				GL_STATIC_DRAW);
 	}
 
+	p_writer->Update();
+
 /*	typedef itk::MeshFileWriter< MeshType > MeshWriterType;
 	MeshWriterType::Pointer writer(MeshWriterType::New());
 	writer->SetFileTypeAsBINARY ();
@@ -877,24 +901,6 @@ void quit()
         {
             glDeleteTextures(1, &g_tomography_texture_id);
             g_tomography_texture_id = 0;
-        }
-
-        if (g_p_projection_data)
-        {
-            delete [] g_p_projection_data;
-            g_p_projection_data = 0;
-        }
-
-        if (g_p_sinogram_data)
-        {
-            delete [] g_p_sinogram_data;
-            g_p_sinogram_data = 0;
-        }
-
-        if (g_p_tomography_data)
-        {
-            delete [] g_p_tomography_data;
-            g_p_tomography_data = 0;
         }
 
         glfwDestroyWindow(g_p_main_window_id);
@@ -1843,15 +1849,15 @@ void draw()
 }
 
 
-//------------------------------------
+//-------------------------------------------------------
 void createTexture(GLuint& aTextureID,
-                   unsigned int aWidth,
-                   unsigned int aHeight,
-                   float** apImage)
-//------------------------------------
+				   unsigned int aImageWidth,
+				   unsigned int aImageHeight,
+				   float aPixelWidth,
+				   float aPixelHeight,
+				   ProjectionImageType::Pointer& anImage)
+//-------------------------------------------------------
 {
-    unsigned int number_of_pixels(aWidth * aHeight);
-
     glActiveTexture(GL_TEXTURE0);
 
     if (aTextureID)
@@ -1860,17 +1866,32 @@ void createTexture(GLuint& aTextureID,
         aTextureID = 0;
     }
 
-    if (*apImage)
-    {
-        delete [] *apImage;
-        *apImage = 0;
-    }
+    ProjectionImageType::SizeType	size;
+	size[0] = aImageWidth;
+	size[1] = aImageHeight;
 
-    *apImage = new float[number_of_pixels];
-    for (unsigned int i(0); i < number_of_pixels; ++i)
-    {
-        (*apImage)[i] = 0;
-    }
+	ProjectionImageType::IndexType start;
+	start[0] = 0;
+	start[1] = 0;
+
+	ProjectionImageType::RegionType region;
+	region.SetSize(size);
+	region.SetIndex(start);
+
+	anImage->SetRegions(region);
+	anImage->Allocate();
+
+	double spacing[2];
+	spacing[0] = aPixelWidth;
+	spacing[1] = aPixelHeight;
+	anImage->SetSpacing(spacing);
+
+	double origin[2];
+	origin[0] = 0;
+	origin[1] = 0;
+	anImage->SetOrigin(origin);
+
+	anImage->FillBuffer(0);
 
     glGenTextures(1, &aTextureID);
 
@@ -1886,7 +1907,7 @@ void createTexture(GLuint& aTextureID,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, aWidth, aHeight, 0, GL_RED, GL_FLOAT, *apImage);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, aImageWidth, aImageHeight, 0, GL_RED, GL_FLOAT, anImage->GetBufferPointer());
 
     popTexture();
 
@@ -1898,7 +1919,7 @@ void createTexture(GLuint& aTextureID,
 void createProjection()
 //---------------------
 {
-    createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, &g_p_projection_data);
+    createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_projection_data);
     g_min_projection = 0;
     g_max_projection = 0;
 
@@ -1975,7 +1996,7 @@ void createProjection()
 void createSinogram()
 //-------------------
 {
-    createTexture(g_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, &g_p_sinogram_data);
+    createTexture(g_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_sinogram_data);
     g_min_sinogram = 0;
     g_max_sinogram = 0;
 }
@@ -1985,7 +2006,7 @@ void createSinogram()
 void createTomography()
 //---------------------
 {
-    createTexture(g_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), &g_p_tomography_data);
+    createTexture(g_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_pixel_width, g_pixel_width, g_p_tomography_data);
     g_min_tomography = 0;
     g_max_tomography = 0;
 
@@ -2061,7 +2082,7 @@ void updateProjection()
 //---------------------
 {
     RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
+    float* p_output_image(g_p_projection_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
 
     float value;
 
@@ -2091,7 +2112,7 @@ void updateProjection()
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
     popTexture();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -2102,7 +2123,7 @@ void updateSinogram()
 //-------------------
 {
     RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+    float* p_output_image(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
 
     float total_input_energy(g_xray_beam.getTotalEnergy());
     float scaling_factor(
@@ -2137,7 +2158,7 @@ void updateSinogram()
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
@@ -2148,7 +2169,7 @@ void updateTomography()
 //---------------------
 {
     // Get the current projection from the sinogram
-    float* p_current_projection(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+    float* p_current_projection(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
     float current_angle(g_angle_step * g_current_angle);
 
     float width(g_resolution.getX() * g_number_of_pixels.getX());
@@ -2189,28 +2210,28 @@ void updateTomography()
         		(last_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
 
     	// Backproject the pixel
-    	drawLine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_p_tomography_data, intensity / width);
+    	drawLine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_p_tomography_data->GetBufferPointer(), intensity / width);
     }
 
     unsigned int number_of_pixels(g_number_of_pixels.getX() * g_number_of_pixels.getX());
-    g_min_tomography = g_max_tomography = g_p_tomography_data[0];
+    g_min_tomography = g_max_tomography = g_p_tomography_data->GetBufferPointer()[0];
     for (unsigned int i(1); i < number_of_pixels; ++i)
     {
-        if (g_min_tomography > g_p_tomography_data[i])
+        if (g_min_tomography > g_p_tomography_data->GetBufferPointer()[i])
         {
-        	g_min_tomography = g_p_tomography_data[i];
+        	g_min_tomography = g_p_tomography_data->GetBufferPointer()[i];
         }
 
-        if (g_max_tomography < g_p_tomography_data[i])
+        if (g_max_tomography < g_p_tomography_data->GetBufferPointer()[i])
         {
-        	g_max_tomography = g_p_tomography_data[i];
+        	g_max_tomography = g_p_tomography_data->GetBufferPointer()[i];
         }
     }
 
     // Update the texture
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data->GetBufferPointer());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
@@ -2316,14 +2337,14 @@ void reset()
     unsigned int number_of_pixels(g_number_of_pixels.getX() * g_angle_number);
     for (unsigned int i(0); i < number_of_pixels; ++i)
     {
-        g_p_projection_data[i] = 0;
-        g_p_sinogram_data[i] = 0;
+        g_p_projection_data->GetBufferPointer()[i] = 0;
+        g_p_sinogram_data->GetBufferPointer()[i] = 0;
     }
 
     number_of_pixels = g_number_of_pixels.getX() * g_number_of_pixels.getX();
     for (unsigned int i(0); i < number_of_pixels; ++i)
     {
-        g_p_tomography_data[i] = 0;
+        g_p_tomography_data->GetBufferPointer()[i] = 0;
     }
 
     g_min_projection = 0;
