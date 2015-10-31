@@ -40,9 +40,7 @@ set(BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-IF(WIN32)
-	cmake_minimum_required(VERSION 2.6.0)
-ENDIF(WIN32)
+cmake_minimum_required(VERSION 2.6.0)
 
 IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0003 NEW)

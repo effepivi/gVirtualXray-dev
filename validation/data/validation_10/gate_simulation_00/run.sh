@@ -1,10 +1,10 @@
-TEST_NUMBER=0
+TEST_NUMBER=12
 NB_RUN=10
 
 rm -rf run_*
 rm -f benchmarkVRTCT_*.dat
 rm -f benchmarkVRTCT.root
-rm -f timing.dat
+rm -f timing2.dat
 
 
 FIRST=`echo "$TEST_NUMBER * $NB_RUN" |bc`
@@ -26,20 +26,20 @@ do
     echo "/gate/output/imageCT/setStartSeed $SEED2" >> output.mac
 
     echo Start Run $i
-    echo "********************************************************************************" >> timing.dat
-    echo Start >> timing.dat
-    echo Run $i >> timing.dat
-    date >> timing.dat
+    echo "********************************************************************************" >> timing2.dat
+    echo Start >> timing2.dat
+    echo Run $i >> timing2.dat
+    date >> timing2.dat
 
     /usr/local/share/gate_v6.2/bin/Gate < ../gate_simulation/benchmarkVRTCT.mac 2>/dev/null >/dev/null
-    date >> timing.dat
-    echo Stop >> timing.dat
-    echo "********************************************************************************" >> timing.dat
-    echo >> timing.dat
-    echo >> timing.dat
-    echo >> timing.dat
-    echo >> timing.dat
-    echo >> timing.dat
+    date >> timing2.dat
+    echo Stop >> timing2.dat
+    echo "********************************************************************************" >> timing2.dat
+    echo >> timing2.dat
+    echo >> timing2.dat
+    echo >> timing2.dat
+    echo >> timing2.dat
+    echo >> timing2.dat
 
     mkdir ../gate_simulation/run_$i
     mv benchmarkVRTCT*.root ../gate_simulation/run_$i

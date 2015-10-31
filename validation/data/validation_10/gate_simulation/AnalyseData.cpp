@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 		Double_t last_pixel_x_position(  COLUMN_BOUND);
 		Double_t last_pixel_y_position(  ROW_BOUND);
 
-		for (unsigned int run_id(0); run_id <= 0; ++run_id)
+		for (unsigned int run_id(60); run_id <= 200; ++run_id)
 		{
 			// Store the root file name in 'fileName' variable
 			stringstream FILENAME;

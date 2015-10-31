@@ -31,6 +31,7 @@
 
 
 project(gVirtualXRay-VisualArts)
+cmake_minimum_required(VERSION 2.6)
 
 # Initialise some states by default ############################################
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug|Release|RelWithDebInfo|MinSizeRel")
@@ -39,7 +40,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
-CreateHeaderFiles("." "BinarySTLFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinaryVisualArtsFiles" "${RESOURCES_SOURCES}")
 
 
 # Headers of the project #######################################################
@@ -57,19 +58,19 @@ ENDIF(NOT glfw_FOUND AND NOT GLUT_FOUND)
 
 
 # Create the main programs #####################################################
-IF(glfw_FOUND)
+IF(glfw3_FOUND)
     add_executable(VisualArts VisualArts.cxx )
     target_link_libraries(VisualArts ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(VisualArts BinaryVisualArts)
-ENDIF(glfw_FOUND)
+ENDIF(glfw3_FOUND)
 
 
 IF (NOT APPLE)
     IF(glfw_FOUND)
-        INSTALL(TARGETS VisualArts RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
-        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
-        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
-        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File COMPONENT demos)
+        INSTALL(TARGETS VisualArts RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/VisualArts-File/bin  COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/VisualArts-File/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/VisualArts-File/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/VisualArts-File COMPONENT demos)
     ENDIF(glfw_FOUND)
     
 ELSE (NOT APPLE)
@@ -89,7 +90,7 @@ ELSE (NOT APPLE)
         TARGET_LINK_LIBRARIES (VisualArts gVirtualXRay ${optionalLibs} ${requiredLibs})
         ADD_DEPENDENCIES(VisualArts BinaryGUIFLTKFiles)
 
-        set(MACOSX_BUNDLE_BUNDLE_NAME STL-File)
+        set(MACOSX_BUNDLE_BUNDLE_NAME VisualArts-File)
         set(MACOSX_BUNDLE_GUI_IDENTIFIER "VisualArts")
         SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)

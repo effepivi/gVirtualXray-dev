@@ -31,6 +31,7 @@
 
 
 project(gVirtualXRay-demos)
+cmake_minimum_required(VERSION 2.6)
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
