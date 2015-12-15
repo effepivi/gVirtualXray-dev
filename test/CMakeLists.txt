@@ -85,6 +85,3 @@ target_link_libraries (TestDensity ${requiredLibs})
 
 add_test (test TestDensity)
 
-add_executable(CMIG_iplot CMIG_iplot.cxx)
-target_link_libraries (CMIG_iplot ${requiredLibs})
-

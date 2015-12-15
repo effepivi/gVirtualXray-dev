@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <GL/glew.h>
 
-    #ifdef __APPLE__
+#ifdef __APPLE__
 #include <OpenGL/GL.h>
 #else
 #include <GL/gl.h>
