@@ -2865,8 +2865,15 @@ RATIONAL_NUMBER XRayRenderer::getMuWaterLinearInterpolation(const RATIONAL_NUMBE
 	// The table of mu water is empty
 	if (m_mu_water_set.size() == 0)
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The mu water table is empty.");
+        // Load the table
+        loadMuWater();
 	}
+
+    // The table of mu water is empty
+    if (m_mu_water_set.size() == 0)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The mu water table is empty.");
+    }
 
 	// Get an interpolated value
 	RATIONAL_NUMBER mu_water(0);
