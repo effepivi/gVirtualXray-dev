@@ -283,7 +283,7 @@ FIND_PACKAGE(ITK)
 IF(ITK_FOUND)
 	SET (HAS_ITK ON)
 	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE(${USE_ITK_FILE})
+        INCLUDE(${ITK_USE_FILE})
 	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
 
 	IF(ITKVtkGlue_LOADED)
@@ -370,17 +370,15 @@ ENDIF(NOT XCOM_PATH)
 # to the source code
 IF (XCOM_PATH)
     SET (HAS_XCOM ON)
-    configure_file (
-        "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
-        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-    }})
 ELSE (XCOM_PATH)
     SET (HAS_XCOM OFF)
-    configure_file (
-        "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigNoXCOM.h.in"
-        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-    )
 ENDIF (XCOM_PATH)
+
+
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
+    "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
+)
 
 
 # Create the library ###########################################################

@@ -44,7 +44,7 @@ add_subdirectory(Intersections)
 add_subdirectory(SimpleBackProjection)
 add_subdirectory(Tomography)
 add_subdirectory(AnatomicalData)
-add_subdirectory(VisualArts)
+#add_subdirectory(VisualArts)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
