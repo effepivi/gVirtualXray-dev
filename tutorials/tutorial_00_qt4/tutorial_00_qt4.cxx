@@ -63,8 +63,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-//#include <GLFW/glfw3.h> // Create an OpenGL context
-#include <GL/gl.h>
+#include <QtGui>
+#include <QGLWidget> 
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -86,21 +86,38 @@ GLsizei g_window_width(640);
 // Keep track of the window height
 GLsizei g_window_height(480);
 
-// GLFW window ID
-//GLFWwindow* g_p_window_id(0);
+
+//******************************************************************************
+//  Class declaration
+//******************************************************************************
+class GLWidget;
 
 
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGLFW();
-void initGL();
-void displayCallback();
-void idleCallback();
+void initQt(GLWidget& aWindow);
 void quitCallback();
-//void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-//void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void errorCallback(int error, const char* description);
+
+
+//******************************************************************************
+//  Class definition
+//******************************************************************************
+class GLWidget: public QGLWidget
+{
+public:
+    GLWidget(QWidget *parent = 0);
+    ~GLWidget();
+
+    QSize minimumSizeHint() const;
+    QSize sizeHint() const;
+    
+protected:
+    void initializeGL();
+    void paintGL();
+    void resizeGL(int width, int height);
+    void keyPressEvent(QKeyEvent * event);
+};
 
 
 //-----------------------------
@@ -115,30 +132,13 @@ int main(int argc, char** argv)
 
     try
     {
-        // Initialise GLFW
-        initGLFW();
-
-        // Initialise OpenGL
-        initGL();
-
-        // Set the projection matrix
-        //framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
+        // Initialise Qt and OpenGL
+        QApplication application(argc, argv);
+        GLWidget window;
+        initQt(window);
 
         // Launch the event loop
-        //while (!glfwWindowShouldClose(g_p_window_id))
-        {
-            // Render here
-            displayCallback();
-
-            // Swap front and back buffers
-            //glfwSwapBuffers(g_p_window_id);
-
-            // Poll for and process events
-            //glfwPollEvents();
-
-            // Idle callback
-            idleCallback();
-        }
+        return_code = application.exec();
     }
     // Catch exception if any
     catch (const exception& error)
@@ -147,7 +147,7 @@ int main(int argc, char** argv)
         return_code = EXIT_FAILURE;
     }
 
-    // Close the window and shut GLFW if needed
+    // Clean up
     quitCallback();
 
     // Return an exit code
@@ -155,84 +155,74 @@ int main(int argc, char** argv)
 }
 
 
-//-------------
-void initGLFW()
-//-------------
+//---------------------------
+void initQt(GLWidget& aWindow)
+//---------------------------
 {
-    // Set an error callback
-    //glfwSetErrorCallback(errorCallback);
+    // Initialize Qt
+    // and create a windowed mode window and its OpenGL context
 
-    // Initialize GLFW
-    //if (!glfwInit())
-    {
-        throw ("ERROR: cannot initialise GLFW.");
-    }
-
-    // Create a windowed mode window and its OpenGL context
-    //g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-    //        "gVirtualXRay -- Tutorial 00", NULL, NULL);
-
-    // The window has not been created
-    //if (!g_p_window_id)
-    {
-        throw ("ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-    }
-
+    aWindow.resize(g_window_width, g_window_height);
+    aWindow.show();
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 00"));
+    
     // Make the window's context current
-    //glfwMakeContextCurrent(g_p_window_id);
-
-    // Register GLFW callbacks
-    //glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
-    //glfwSetKeyCallback(g_p_window_id, keyCallback);
+    aWindow.makeCurrent();
 }
 
 
-//-----------
-void initGL()
-//-----------
+//----------------------------------
+GLWidget::GLWidget(QWidget *parent):
+//----------------------------------
+    QGLWidget(parent)
+//----------------------------------
+{
+}
+
+
+//-------------------
+GLWidget::~GLWidget()
+//-------------------
+{}
+
+
+//-------------------------------------
+QSize GLWidget::minimumSizeHint() const
+//-------------------------------------
+{
+    return QSize(50, 50);
+}
+
+
+//------------------------------
+QSize GLWidget::sizeHint() const
+//------------------------------
+{
+    return QSize(g_window_width, g_window_height);
+}
+   
+
+//---------------------------
+void GLWidget::initializeGL()
+//---------------------------
 {
     // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    qglClearColor(QColor(255.0 * 0.5, 255.0 * 0.5, 255.0 * 0.5, 255.0 * 1.0));
 }
 
 
-//--------------------
-void displayCallback()
-//--------------------
+//----------------------
+void GLWidget::paintGL()
+//----------------------
 {
     // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
-//-----------------
-void idleCallback()
-//-----------------
-{
-    // Do nothing
-}
-
-
-//-----------------
-void quitCallback()
-//-----------------
-{
-    // The window exists
-    /*if (g_p_window_id)
-    {
-        // Close the window
-        glfwDestroyWindow(g_p_window_id);
-        g_p_window_id = 0;
-
-        // Cleanup GLFW
-        glfwTerminate();
-    }*/
-}
-
-/*
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//--------------------------------------------
+void GLWidget::resizeGL(int width, int height)
+//--------------------------------------------
 {
     // Avoid a division by zero
     if (height == 0)
@@ -255,32 +245,29 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//-------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent * event)
+//-------------------------------------------
 {
-    if (action == GLFW_PRESS)
+    switch(event->key())
     {
-        switch(key)
-        {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
-
-        default:
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+            close();
             break;
-        }
+
+    default:
+    std::cout << event->key() << std::endl;
+        break;
     }
 }
-*/
 
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
+
+//-----------------
+void quitCallback()
+//-----------------
 {
-    // Throw an error
-    throw (description);
+    // Do nothing
 }
 

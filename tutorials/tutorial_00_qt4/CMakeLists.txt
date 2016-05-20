@@ -62,11 +62,11 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt4 #########################################################################
-FIND_PACKAGE(Qt4 REQUIRED QtGui)
+FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
 IF(Qt4_FOUND)
     SET(CMAKE_AUTOMOC ON)
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-    SET(optionalLibs ${optionalLibs} Qt4::QtGui)
+    SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
 
     # Create the main program ######################################################
     add_executable(tutorial_00_qt4 tutorial_00_qt4.cxx )
