@@ -36,12 +36,23 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
 add_subdirectory(tutorial_00_glfw)
 add_subdirectory(tutorial_00_glut)
+add_subdirectory(tutorial_00_qt4)
+#add_subdirectory(tutorial_00_qt5)
+
 add_subdirectory(tutorial_01_glfw)
 add_subdirectory(tutorial_01_glut)
+#add_subdirectory(tutorial_01_qt4)
+#add_subdirectory(tutorial_01_qt5)
+
 add_subdirectory(tutorial_02_glfw)
 add_subdirectory(tutorial_02_glut)
+#add_subdirectory(tutorial_02_qt4)
+#add_subdirectory(tutorial_02_qt5)
+
 add_subdirectory(tutorial_03_glfw)
 add_subdirectory(tutorial_03_glut)
+#add_subdirectory(tutorial_03_qt4)
+#add_subdirectory(tutorial_03_qt5)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 
