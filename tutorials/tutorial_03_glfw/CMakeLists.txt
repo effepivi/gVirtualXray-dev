@@ -101,16 +101,18 @@ IF(glfw_FOUND)
             MESSAGE(FATAL_ERROR "X11 not found.")
         ENDIF (X11_FOUND)
     ENDIF(UNIX)
+
+    # Create the main program ######################################################
+    add_executable(tutorial_03_glfw tutorial_03_glfw.cxx buildCube.cxx)
+    target_link_libraries(tutorial_03_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+
+    INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
+    
 ELSE(glfw_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW not found.")
+    MESSAGE(WARNING "GLFW not found.")
 ENDIF(glfw_FOUND)
 
 
-# Create the main program ######################################################
-add_executable(tutorial_03_glfw tutorial_03_glfw.cxx buildCube.cxx)
-target_link_libraries(tutorial_03_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-
-INSTALL(TARGETS tutorial_03_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 
 
