@@ -4,8 +4,8 @@
 #  GZIP_TOOL, where to find gizp
 #  GZIP_FOUND, If false, do not try to use GLEW.
 
-SET(GZIP_NAMES ${GZIP_NAMES} gzip gzip.exe)
-FIND_PROGRAM(GZIP_TOOL NAMES ${GZIP_NAMES} PATHS /bin /usr/bin /usr/local/bin)
+SET(GZIP_NAMES ${GZIP_NAMES} gzip gzip.exe gzip124.exe)
+FIND_PROGRAM(GZIP_TOOL NAMES ${GZIP_NAMES} PATHS /bin /usr/bin /usr/local/bin ${PROJECT_BINARY_DIR})
 
 # handle the QUIETLY and REQUIRED arguments and set GLEW_FOUND to TRUE if 
 # all listed variables are TRUE
