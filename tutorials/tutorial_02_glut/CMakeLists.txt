@@ -89,6 +89,7 @@ ENDIF(GLUT_FOUND)
 # Create the main program ######################################################
 add_executable(tutorial_02_glut tutorial_02_glut.cxx buildCube.cxx)
 target_link_libraries(tutorial_02_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(tutorial_02_glut Binarytutorial_02_glutFiles)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/TUTORIALS/tutorial-02-glut/tutorial-02-glut.pdf 
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials
