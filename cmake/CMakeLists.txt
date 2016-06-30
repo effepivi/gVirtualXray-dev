@@ -220,7 +220,17 @@ ENDIF(NOT APPLE)
 # GZIP ########################################################################
 FIND_PACKAGE(GZIP REQUIRED)
 IF(NOT GZIP_FOUND)
-	MESSAGE(FATAL_ERROR "GZIP not found.")
+    IF(WIN32)
+        DOWNLOAD(ftp://ftp.gnome.org/mirror/debian-archive/tools/gzip124.exe ${PROJECT_BINARY_DIR}/gzip.exe)
+
+        FIND_PACKAGE(GZIP REQUIRED)
+        IF(NOT GZIP_FOUND)
+    	    MESSAGE(FATAL_ERROR "GZIP not found. You can find it on gzip's website at: http://www.gzip.org/")
+        ENDIF(NOT GZIP_FOUND)
+
+    ELSE (WIN32)
+    	MESSAGE(FATAL_ERROR "GZIP not found.")
+    ENDIF(WIN32)
 ENDIF(NOT GZIP_FOUND)
 
 
@@ -249,7 +259,7 @@ IF(GLEW_FOUND)
     SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ELSE(GLEW_FOUND)
     SET(HAS_GLEW OFF)
-    MESSAGE(FATAL_ERROR "GLEW not found.")
+    MESSAGE(FATAL_ERROR "GLEW not found. You can find it on GLEW's website at: http://glew.sourceforge.net/")
 ENDIF(GLEW_FOUND)
 
 
@@ -318,7 +328,7 @@ IF(ZLIB_FOUND)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
     SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
 ELSE(ZLIB_FOUND)
-    MESSAGE("ZLIB not found.")
+    MESSAGE("ZLIB not found. You can find it on zlib's website at: http://www.zlib.net/")
 ENDIF(ZLIB_FOUND)
 
 
@@ -350,7 +360,7 @@ IF(FREETYPE_FOUND)
 
 ELSE(FREETYPE_FOUND)
     SET (HAS_FREETYPE OFF)
-    MESSAGE(WARNING "Freetype not found.")
+    MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
 ENDIF(FREETYPE_FOUND)
 
 
