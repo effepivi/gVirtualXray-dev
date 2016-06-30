@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
