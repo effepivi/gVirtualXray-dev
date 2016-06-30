@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Include
 //******************************************************************************
 #include <map>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #ifdef HAS_FREETYPE
 #include <ft2build.h>
@@ -262,7 +262,7 @@ protected:
 
 
     /// The VBO used to display the characters
-    boost::scoped_ptr<VBO> m_text_vbo;
+    std::unique_ptr<VBO> m_text_vbo;
 
 
     /// The shader used to display the text

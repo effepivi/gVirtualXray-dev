@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <vector>
 #include <string>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #ifdef HAS_ITK
 #include <itkImage.h>
@@ -982,7 +982,7 @@ protected:
 
 
 	/// The VBO used to display a rectangle corresponding to the detector
-	boost::scoped_ptr<VBO> m_detector_temporary_geometry;
+	std::unique_ptr<VBO> m_detector_temporary_geometry;
 
 
     /// Set of elements

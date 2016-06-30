@@ -71,7 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <string>
 #include <vector>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #ifndef GVXR_VBO_H
 #include "gVirtualXRay/VBO.h"
@@ -913,7 +913,7 @@ protected:
 
 
 	/// Vertex buffer object
-	boost::scoped_ptr<VBO> m_vbo;
+	std::unique_ptr<VBO> m_vbo;
 
 
 	/// Flag about the use of the Hounsfield value or attenuation coefficient

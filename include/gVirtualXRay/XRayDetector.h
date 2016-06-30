@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -508,23 +508,23 @@ protected:
 
 
 	/// The triangle mesh corresponding to the detector
-	boost::scoped_ptr<VBO> m_detector_geometry;
+	std::unique_ptr<VBO> m_detector_geometry;
 
 
 	/// The triangle mesh corresponding to the parallel beam
-	boost::scoped_ptr<VBO> m_parallel_beam;
+	std::unique_ptr<VBO> m_parallel_beam;
 
 
 	/// The triangle mesh corresponding to the cone beam
-	boost::scoped_ptr<VBO> m_cone_beam;
+	std::unique_ptr<VBO> m_cone_beam;
 
 
 	/// The triangle mesh corresponding to the parallel beam highlight
-	boost::scoped_ptr<VBO> m_parallel_beam_highlight;
+	std::unique_ptr<VBO> m_parallel_beam_highlight;
 
 
 	/// The triangle mesh corresponding to the cone beam highlight
-	boost::scoped_ptr<VBO> m_cone_beam_highlight;
+	std::unique_ptr<VBO> m_cone_beam_highlight;
 
 
 	/// Polygon mesh of the source
