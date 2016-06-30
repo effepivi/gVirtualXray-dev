@@ -47,7 +47,7 @@ add_subdirectory(tutorial_01_qt5)
 add_subdirectory(tutorial_02_glfw)
 add_subdirectory(tutorial_02_glut)
 add_subdirectory(tutorial_02_qt4)
-#add_subdirectory(tutorial_02_qt5)
+add_subdirectory(tutorial_02_qt5)
 
 add_subdirectory(tutorial_03_glfw)
 add_subdirectory(tutorial_03_glut)
