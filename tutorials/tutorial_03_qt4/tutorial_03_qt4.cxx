@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       tutorial_03_glfw.cxx
+*   @file       tutorial_03_qt4.cxx
 *
 *   @brief      Improve the second tutorial by:
 *               - Adding a better shader program to display the 3D scene with Phong shading.
@@ -44,7 +44,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       27/05/2014
+*   @date       30/06/2016
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -66,10 +66,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef _WIN32
-#include <GL/glew.h> // Fix undefined references on Windows
-#endif
-
 // Ensure we are using opengl's core profile only
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -77,11 +73,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
+#include <GL/glew.h>
 
-#include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
+#include <QtGui>
+#include <QGLWidget>
 
 #include <iostream>   // Print error messages in the console
+#include <sstream>    // Generate error messages
 #include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
 
@@ -106,8 +104,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "buildCube.h" // Create the triangle mesh of a cube
 
-#include "tutorial_03_gl3.frag.h" // Fragment shader for OpenGL 3.x
-#include "tutorial_03_gl3.vert.h" // Vertex shader for OpenGL 3.x
+#include "tutorial_03_gl3.frag.h" // Fragment shader for OpenGL 2.x
+#include "tutorial_03_gl3.vert.h" // Vertex shader for OpenGL 2.x
 
 
 //******************************************************************************
@@ -131,9 +129,6 @@ GLsizei g_window_width(640);
 
 // Keep track of the window height
 GLsizei g_window_height(480);
-
-// GLFW window ID
-GLFWwindow* g_p_window_id(0);
 
 // Shader program used to display the 3D scene
 Shader g_display_shader;
@@ -175,9 +170,16 @@ bool g_wireframe(false);
 
 
 //******************************************************************************
+//  Class declaration
+//******************************************************************************
+class GLWidget;
+
+
+//******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGLFW();
+void initQt(GLWidget& aWindow);
+void initGLUT(int argc, char** argv);
 void initGLEW();
 void initGL();
 void initShader();
@@ -185,12 +187,10 @@ void load3DObjects();
 void displayCallback();
 void idleCallback();
 void quitCallback();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void errorCallback(int error, const char* description);
+void framebufferSizeCallback(int aWidth, int aHeight);
+void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
+void mouseButtonCallback(int aButton, int aState, int aXPosition, int aYPosition);
+void cursorPosCallback(int aXPosition, int aYPosition);
 VEC3 getArcballVector(int x, int y);
 float radian2degree(float anAngle);
 void computeRotation(MATRIX4& aRotationMatrix);
@@ -199,6 +199,31 @@ void setSource();
 void setBeam();
 void setScannedObjects();
 void setSimulator();
+
+
+//******************************************************************************
+//  Class definition
+//******************************************************************************
+class GLWidget: public QGLWidget
+{
+public:
+    GLWidget(QWidget *parent = 0);
+    ~GLWidget();
+
+    QSize minimumSizeHint() const;
+    QSize sizeHint() const;
+    
+protected:
+    void initializeGL();
+    void paintGL();
+    void animate();
+    void resizeGL(int width, int height);
+    void keyPressEvent(QKeyEvent * event);
+    void mouseMoveEvent(QMouseEvent *eventMove);
+    void mousePressEvent(QMouseEvent *eventPress);
+    void mouseReleaseEvent(QMouseEvent *releaseEvent);
+    void wheelEvent(QWheelEvent *wheelEvent);
+};
 
 
 //-----------------------------
@@ -213,54 +238,13 @@ int main(int argc, char** argv)
 
     try
     {
-        // Initialise GLFW
-        initGLFW();
-
-        // Initialise GLEW
-        initGLEW();
-
-        // Initialise OpenGL
-        initGL();
-
-        // Initialise the shader from files compressed using the Z library
-        initShader();
-
-        // Initialise the geometry of the 3D objects
-        load3DObjects();
-
-        // Initialise the position and shape of the X-ray detector
-        setDetector();
-
-        // Initialise the position and shape of the X-ray source
-        setSource();
-
-        // Initialise the spectrum of the X-ray beam
-        setBeam();
-
-        // Initialise the geometry of the scanned object
-        setScannedObjects();
-
-        // Initialise the X-ray simulation
-        setSimulator();
-
-        // Set the projection matrix
-        framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
+        // Initialise Qt and OpenGL
+        QApplication application(argc, argv);
+        GLWidget window;
+        initQt(window);
 
         // Launch the event loop
-        while (!glfwWindowShouldClose(g_p_window_id))
-        {
-            // Render here
-            displayCallback();
-
-            // Swap front and back buffers
-            glfwSwapBuffers(g_p_window_id);
-
-            // Poll for and process events
-            glfwPollEvents();
-
-            // Idle callback
-            idleCallback();
-        }
+        return_code = application.exec();
     }
     // Catch exception if any
     catch (const exception& error)
@@ -269,7 +253,7 @@ int main(int argc, char** argv)
         return_code = EXIT_FAILURE;
     }
 
-    // Close the window and shut GLFW if needed
+    // Clean up
     quitCallback();
 
     // Return an exit code
@@ -277,151 +261,89 @@ int main(int argc, char** argv)
 }
 
 
-//-------------
-void initGLFW()
-//-------------
+//---------------------------
+void initQt(GLWidget& aWindow)
+//---------------------------
 {
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
+    // Initialize Qt
+    // and create a windowed mode window and its OpenGL context
 
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot initialise GLFW.");
-    }
-
-    // Enable OpenGL 3.2 if possible
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 02", NULL, NULL);
-
-    // The window has not been created
-    if (!g_p_window_id)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-    }
-
+    aWindow.resize(g_window_width, g_window_height);
+    aWindow.show();
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
+    
     // Make the window's context current
-    glfwMakeContextCurrent(g_p_window_id);
-
-    // Register GLFW callbacks
-    glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
-    glfwSetKeyCallback(g_p_window_id, keyCallback);
-    glfwSetMouseButtonCallback(g_p_window_id, mouseButtonCallback);
-    glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback);
-    glfwSetScrollCallback(g_p_window_id, scrollCallback);
+    aWindow.makeCurrent();
 }
 
 
-//-------------
-void initGLEW()
-//-------------
+//----------------------------------
+GLWidget::GLWidget(QWidget *parent):
+//----------------------------------
+    QGLWidget(parent)
+//----------------------------------
 {
-#ifdef _WIN32
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
 }
 
 
-//---------------
-void initShader()
-//---------------
+//-------------------
+GLWidget::~GLWidget()
+//-------------------
+{}
+
+
+//-------------------------------------
+QSize GLWidget::minimumSizeHint() const
+//-------------------------------------
 {
-    // Initialise the shaders
-    char* p_vertex_shader(0);
-    char* p_fragment_shader(0);
-
-    int z_lib_return_code_vertex(0);
-    int z_lib_return_code_fragment(0);
-
-    std::string vertex_shader;
-    std::string fragment_shader;
-
-    // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_03_gl3_vert, sizeof(g_tutorial_03_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_03_gl3_frag, sizeof(g_tutorial_03_gl3_frag), &p_fragment_shader);
-
-    vertex_shader   = p_vertex_shader;
-    fragment_shader = p_fragment_shader;
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
-
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-    }
-    g_display_shader.setLabels("display.vert", "display.frag");
-    g_display_shader.loadSource(vertex_shader, fragment_shader);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    return QSize(50, 50);
 }
 
 
-//-----------
-void initGL()
-//-----------
+//------------------------------
+QSize GLWidget::sizeHint() const
+//------------------------------
 {
-    // Enable the Z-buffer
-    glEnable(GL_DEPTH_TEST);
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-
-    // Check if any OpenGL error has occurred.
-    // If any has, an exception is thrown
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    return QSize(g_window_width, g_window_height);
 }
+   
 
-
-//------------------
-void load3DObjects()
-//------------------
+//---------------------------
+void GLWidget::initializeGL()
+//---------------------------
 {
-    // Create the cube
-    VEC3 cube_centre(0, 0, 0);
-    RATIONAL_NUMBER length_1( 5.0 * cm);
-    RATIONAL_NUMBER length_2(10.0 * cm);
-    buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
-    buildCube(length_2, cube_centre, g_p_vertex_set_2);
+    // Initialise GLEW
+    initGLEW();
 
-    // Rotate the sample
-    g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
-    g_sample_rotation_matrix.rotate( 30, VEC3(0, 0, 1));
-    g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+    // Initialise OpenGL
+    initGL();
 
-    // Set geometry
-    g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
-            &g_p_vertex_set_1,
-            &g_p_index_set_1,
-            true,
-            GL_STATIC_DRAW);
+    // Initialise the shader from files compressed using the Z library
+    initShader();
 
-    g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
-            &g_p_vertex_set_2,
-            true,
-            GL_STATIC_DRAW);
+    // Initialise the geometry of the 3D objects
+    load3DObjects();
+
+    // Initialise the position and shape of the X-ray detector
+    setDetector();
+
+    // Initialise the position and shape of the X-ray source
+    setSource();
+
+    // Initialise the spectrum of the X-ray beam
+    setBeam();
+
+    // Initialise the geometry of the scanned object
+    setScannedObjects();
+
+    // Initialise the X-ray simulation
+    setSimulator();
 }
 
 
-//--------------------
-void displayCallback()
-//--------------------
+//----------------------
+void GLWidget::paintGL()
+//----------------------
 {
     // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -539,12 +461,14 @@ void displayCallback()
     // Check the status of OpenGL and of the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    animate();
 }
 
 
-//-----------------
-void idleCallback()
-//-----------------
+//----------------------
+void GLWidget::animate()
+//---------------------
 {
     // Rotate the objects
     g_sample_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
@@ -557,29 +481,14 @@ void idleCallback()
         // Normalise the X-ray image
         g_xray_simulator.normalise();
     }
+
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
 
 
-//-----------------
-void quitCallback()
-//-----------------
-{
-    // The window exists
-    if (g_p_window_id)
-    {
-        // Close the window
-        glfwDestroyWindow(g_p_window_id);
-        g_p_window_id = 0;
-
-        // Cleanup GLFW
-        glfwTerminate();
-    }
-}
-
-
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//--------------------------------------------
+void GLWidget::resizeGL(int width, int height)
+//--------------------------------------------
 {
     // Avoid a division by zero
     if (height == 0)
@@ -610,88 +519,177 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//-------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent * event)
+//-------------------------------------------
 {
-    if (action == GLFW_PRESS)
+    switch(event->key())
     {
-        switch(key)
-        {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+        close();
+        break;
 
-        case GLFW_KEY_W:
-            g_wireframe = !g_wireframe;
-            break;
+    case Qt::Key_W:
+        g_wireframe = !g_wireframe;
+        break;
 
-        default:
-            break;
-        }
+    default:
+    std::cout << event->key() << std::endl;
+        break;
     }
 }
 
 
-//--------------------------------------------
-void mouseButtonCallback(GLFWwindow* apWindow,
-                         int aButton,
-                         int aButtonState,
-                         int aModifierKey)
-//--------------------------------------------
+//---------------------------------------------------
+void GLWidget::mouseMoveEvent(QMouseEvent *eventMove)
+//---------------------------------------------------
 {
-    g_button = aButton;
-    g_button_state = aButtonState;
-
-    // Use the arc ball
-    if (g_button_state == GLFW_PRESS)
-    {
-        g_use_arc_ball = true;
-    }
-    // Stop using the arc ball
-    else
-    {
-        g_use_arc_ball = false;
-    }
-
-    double xpos(0);
-    double ypos(0);
-    glfwGetCursorPos (apWindow, &xpos, &ypos);
-
-    g_last_x_position = xpos;
-    g_last_y_position = ypos;
-
-    g_current_x_position = xpos;
-    g_current_y_position = ypos;
-}
-
-
-//--------------------------------------------------------------
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
-//--------------------------------------------------------------
-{
-    g_current_x_position = x;
-    g_current_y_position = y;
+    g_current_x_position = eventMove->x();
+    g_current_y_position = eventMove->y();
 
     computeRotation(g_scene_rotation_matrix);
 }
 
 
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
+//-----------------------------------------------------
+void GLWidget::mousePressEvent(QMouseEvent *eventPress)
+//-----------------------------------------------------
+{
+    g_use_arc_ball = true;
+
+    g_last_x_position = eventPress->x();
+    g_last_y_position = eventPress->y();
+
+    g_current_x_position = eventPress->x();
+    g_current_y_position = eventPress->y();
+}
+
+
+//---------------------------------------------------------
+void GLWidget::mouseReleaseEvent(QMouseEvent *releaseEvent)
+//---------------------------------------------------------
+{
+    g_use_arc_ball = false;
+}
+
+
+//------------------------------------------------
+void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
+//------------------------------------------------
 {
     // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
+    if (fabs(wheelEvent->delta()) > EPSILON)
     {
         // Change the zoom
-        g_zoom += 5 * yoffset * cm;
+        g_zoom += 0.1 * wheelEvent->delta() * cm;
 
         // Update the projection matrix
-        framebufferSizeCallback(apWindow, g_window_width, g_window_height);
+        resizeGL(g_window_width, g_window_height);
     }
+}
+
+
+//-------------
+void initGLEW()
+//-------------
+{
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        std::stringstream error_message;
+        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+    }
+}
+
+
+//---------------
+void initShader()
+//---------------
+{
+    // Initialise the shaders
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
+
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
+    // L-buffer
+    z_lib_return_code_vertex   = inflate(g_tutorial_03_gl3_vert, sizeof(g_tutorial_03_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_tutorial_03_gl3_frag, sizeof(g_tutorial_03_gl3_frag), &p_fragment_shader);
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    g_display_shader.setLabels("display.vert", "display.frag");
+    g_display_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//-----------
+void initGL()
+//-----------
+{
+    // Enable the Z-buffer
+    glEnable(GL_DEPTH_TEST);
+
+    // Set the background colour
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+
+    // Check if any OpenGL error has occurred.
+    // If any has, an exception is thrown
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//------------------
+void load3DObjects()
+//------------------
+{
+    // Create the cube
+    VEC3 cube_centre(0, 0, 0);
+    RATIONAL_NUMBER length_1( 5.0 * cm);
+    RATIONAL_NUMBER length_2(10.0 * cm);
+    buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
+    buildCube(length_2, cube_centre, g_p_vertex_set_2);
+
+    // Rotate the sample
+    g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+    g_sample_rotation_matrix.rotate( 30, VEC3(0, 0, 1));
+    g_sample_rotation_matrix.rotate( 30, VEC3(0, 1, 0));
+
+    // Set geometry
+    g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
+            &g_p_vertex_set_1,
+            &g_p_index_set_1,
+            true,
+            GL_STATIC_DRAW);
+
+    g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
+            &g_p_vertex_set_2,
+            true,
+            GL_STATIC_DRAW);
+}
+
+
+//-----------------
+void quitCallback()
+//-----------------
+{
+    // Do nothing
 }
 
 
@@ -728,9 +726,9 @@ VEC3 getArcballVector(int x, int y)
 }
 
 
-//--------------------------------
-float radian2degree(float anAngle)
-//--------------------------------
+//---------------------------------------
+inline float radian2degree(float anAngle)
+//---------------------------------------
 {
     return (180.0 * anAngle / gVirtualXRay::PI);
 }
@@ -750,11 +748,11 @@ void computeRotation(MATRIX4& aRotationMatrix)
             float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
 
             VEC3 axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
+            axis_in_camera_coord.normalize();
 
             MATRIX4 camera2object(aRotationMatrix.getInverse());
             VEC3 axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
+            axis_in_object_coord.normalize();
 
             MATRIX4 rotation_matrix;
             rotation_matrix.rotate(angle, axis_in_object_coord);
@@ -765,6 +763,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
         }
     }
 }
+
 
 //----------------
 void setDetector()
