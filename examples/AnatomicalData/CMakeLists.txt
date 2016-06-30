@@ -50,6 +50,37 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
 
 
+# ITK ##########################################################################
+FIND_PACKAGE(ITK)
+IF(ITK_FOUND)
+	SET (HAS_ITK ON)
+	ADD_DEFINITIONS(-DHAS_ITK)
+        INCLUDE(${ITK_USE_FILE})
+	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+
+#	IF(ITKVtkGlue_LOADED)
+#		FIND_PACKAGE(VTK REQUIRED)
+#		IF(VTK_FOUND)
+#			SET (HAS_VTK ON)
+#			ADD_DEFINITIONS(-DHAS_VTK)
+#			INCLUDE(${VTK_USE_FILE})
+#			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+#			SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${VTK_LIBRARY_DIRS})
+#			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+#		ELSE(VTK_FOUND)
+#			SET (HAS_VTK OFF)
+#			MESSAGE(WARNING "VTK not found.")
+#		ENDIF(VTK_FOUND)
+#	ELSE(ITKVtkGlue_LOADED)
+#		SET (HAS_VTK OFF)
+#	ENDIF(ITKVtkGlue_LOADED)
+ELSE(ITK_FOUND)
+	MESSAGE(WARNING "ITK not found.")
+	SET (HAS_ITK OFF)
+ENDIF(ITK_FOUND)
+
+
+IF(ITK_FOUND)
 # Check if GLFW is enable #####################################################
 IF(NOT glfw3_FOUND)
     MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
@@ -119,3 +150,6 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF(ITK_FOUND)
+
+
