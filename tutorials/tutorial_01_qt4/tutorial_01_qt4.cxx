@@ -35,13 +35,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       tutorial_01_glfw.cxx
+*   @file       tutorial_01_qt4.cxx
 *
-*   @brief      Creating a Window and an OpenGL Core Profile 3.2 Context Using GLFW.
+*   @brief      Creating a Window and an OpenGL Core Profile 3.2 Context Using Qt.
 *
 *   @version    1.0
 *
-*   @date       06/05/2014
+*   @date       30/06/2016
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -63,11 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-// Fix undefined references on Windows
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#endif
-
 // Ensure we are using opengl's core profile only
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -75,9 +70,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
+#include <GL/glew.h>
 
-#include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
+#include <QtGui>
+#include <QGLWidget>
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -115,8 +111,6 @@ GLsizei g_window_width(640);
 // Keep track of the window height
 GLsizei g_window_height(480);
 
-// GLFW window ID
-GLFWwindow* g_p_window_id(0);
 
 // Shader program used to display the 3D scene
 Shader g_display_shader;
@@ -166,19 +160,45 @@ void main(void)\n \
 
 
 //******************************************************************************
+//  Class declaration
+//******************************************************************************
+class GLWidget;
+
+
+//******************************************************************************
 //  Function declaration
 //******************************************************************************
+void initQt(GLWidget& aWindow);
 void initGLFW();
 void initGLEW();
 void initGL();
 void load3DObjects();
-void displayCallback();
-void idleCallback();
 void quitCallback();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+///void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+///void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
+///void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void errorCallback(int error, const char* description);
+
+
+//******************************************************************************
+//  Class definition
+//******************************************************************************
+class GLWidget: public QGLWidget
+{
+public:
+    GLWidget(QWidget *parent = 0);
+    ~GLWidget();
+
+    QSize minimumSizeHint() const;
+    QSize sizeHint() const;
+    
+protected:
+    void initializeGL();
+    void paintGL();
+    void animate();
+    void resizeGL(int width, int height);
+    void keyPressEvent(QKeyEvent * event);
+};
 
 
 //-----------------------------
@@ -193,42 +213,13 @@ int main(int argc, char** argv)
 
     try
     {
-        // Initialise GLFW
-        initGLFW();
-
-        // Initialise GLEW
-        initGLEW();
-
-        // Initialise OpenGL
-        initGL();
-
-        // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
-        g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
-
-        // Load the source code of the shaders onto the GPU
-        g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
-
-        // Initialise the geometry of the 3D objects
-        load3DObjects();
-
-        // Set the projection matrix
-        framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
+        // Initialise Qt and OpenGL
+        QApplication application(argc, argv);
+        GLWidget window;
+        initQt(window);
 
         // Launch the event loop
-        while (!glfwWindowShouldClose(g_p_window_id))
-        {
-            // Render here
-            displayCallback();
-
-            // Swap front and back buffers
-            glfwSwapBuffers(g_p_window_id);
-
-            // Poll for and process events
-            glfwPollEvents();
-
-            // Idle callback
-            idleCallback();
-        }
+        return_code = application.exec();
     }
     // Catch exception if any
     catch (const exception& error)
@@ -237,7 +228,7 @@ int main(int argc, char** argv)
         return_code = EXIT_FAILURE;
     }
 
-    // Close the window and shut GLFW if needed
+    // Clean up
     quitCallback();
 
     // Return an exit code
@@ -245,117 +236,80 @@ int main(int argc, char** argv)
 }
 
 
-//-------------
-void initGLFW()
-//-------------
+//---------------------------
+void initQt(GLWidget& aWindow)
+//---------------------------
 {
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
+    // Initialize Qt
+    // and create a windowed mode window and its OpenGL context
 
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot initialise GLFW.");
-    }
-
-    // Enable OpenGL 3.2 if possible
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 01", NULL, NULL);
-
-    // The window has not been created
-    if (!g_p_window_id)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-    }
-
+    aWindow.resize(g_window_width, g_window_height);
+    aWindow.show();
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
+    
     // Make the window's context current
-    glfwMakeContextCurrent(g_p_window_id);
-
-    // Register GLFW callbacks
-    glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
-    glfwSetKeyCallback(g_p_window_id, keyCallback);
-    glfwSetScrollCallback(g_p_window_id, scrollCallback);
+    aWindow.makeCurrent();
 }
 
 
-//-------------
-void initGLEW()
-//-------------
+//----------------------------------
+GLWidget::GLWidget(QWidget *parent):
+//----------------------------------
+    QGLWidget(parent)
+//----------------------------------
 {
-#ifdef _WIN32
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
 }
 
 
-//-----------
-void initGL()
-//-----------
+//-------------------
+GLWidget::~GLWidget()
+//-------------------
+{}
+
+
+//-------------------------------------
+QSize GLWidget::minimumSizeHint() const
+//-------------------------------------
 {
-    // Enable the Z-buffer
-    glEnable(GL_DEPTH_TEST);
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-
-    // Check if any OpenGL error has occurred.
-    // If any has, an exception is thrown
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    return QSize(50, 50);
 }
 
 
-//------------------
-void load3DObjects()
-//------------------
+//------------------------------
+QSize GLWidget::sizeHint() const
+//------------------------------
 {
-    // Centre of the cubes
-    VEC3 cube_centre(0, 0, 0);
+    return QSize(g_window_width, g_window_height);
+}
+   
 
-    // Size of the cubes
-    RATIONAL_NUMBER length_1( 5.0 * cm);
-    RATIONAL_NUMBER length_2(10.0 * cm);
+//---------------------------
+void GLWidget::initializeGL()
+//---------------------------
+{
+    // Initialise GLFW
+    //initGLFW();
 
-    // Create the cube using vertex data and index data
-    buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
+    // Initialise GLEW
+    initGLEW();
 
-    // Create the cube using vertex data only
-    buildCube(length_2, cube_centre, g_p_vertex_set_2);
+    // Initialise OpenGL
+    initGL();
 
-    // Set geometry (using VAOs and VBOs)
-    g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
-            &g_p_vertex_set_1,
-            &g_p_index_set_1,
-            true,
-            GL_STATIC_DRAW);
+    // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
+    g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
-    g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
-            &g_p_vertex_set_2,
-            true,
-            GL_STATIC_DRAW);
+    // Load the source code of the shaders onto the GPU
+    g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
+
+    // Initialise the geometry of the 3D objects
+    load3DObjects();
 }
 
 
-//--------------------
-void displayCallback()
-//--------------------
+//----------------------
+void GLWidget::paintGL()
+//----------------------
 {
     // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -432,39 +386,26 @@ void displayCallback()
     // Check the status of OpenGL and of the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    animate();
 }
 
 
-//-----------------
-void idleCallback()
-//-----------------
+//----------------------
+void GLWidget::animate()
+//---------------------
 {
     // Rotate the objects
     g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
     g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
 
 
-//-----------------
-void quitCallback()
-//-----------------
-{
-    // The window exists
-    if (g_p_window_id)
-    {
-        // Close the window
-        glfwDestroyWindow(g_p_window_id);
-        g_p_window_id = 0;
-
-        // Cleanup GLFW
-        glfwTerminate();
-    }
-}
-
-
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
+//--------------------------------------------
+void GLWidget::resizeGL(int width, int height)
+//--------------------------------------------
 {
     // Avoid a division by zero
     if (height == 0)
@@ -492,51 +433,95 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, g_zoom,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
+
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//-------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent * event)
+//-------------------------------------------
 {
-    if (action == GLFW_PRESS)
+    switch(event->key())
     {
-        switch(key)
-        {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
-
-        default:
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+            close();
             break;
-        }
+
+    default:
+    std::cout << event->key() << std::endl;
+        break;
     }
 }
 
 
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
+//-------------
+void initGLEW()
+//-------------
 {
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
     {
-        // Change the zoom
-        g_zoom += 5 * yoffset * cm;
+        std::stringstream error_message;
+        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
 
-        // Update the projection matrix
-        framebufferSizeCallback(apWindow, g_window_width, g_window_height);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 }
 
 
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
+//-----------
+void initGL()
+//-----------
 {
-    // Throw an error
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, description);
+    // Enable the Z-buffer
+    glEnable(GL_DEPTH_TEST);
+
+    // Set the background colour
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+
+    // Check if any OpenGL error has occurred.
+    // If any has, an exception is thrown
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//------------------
+void load3DObjects()
+//------------------
+{
+    // Centre of the cubes
+    VEC3 cube_centre(0, 0, 0);
+
+    // Size of the cubes
+    RATIONAL_NUMBER length_1( 5.0 * cm);
+    RATIONAL_NUMBER length_2(10.0 * cm);
+
+    // Create the cube using vertex data and index data
+    buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
+
+    // Create the cube using vertex data only
+    buildCube(length_2, cube_centre, g_p_vertex_set_2);
+
+    // Set geometry (using VAOs and VBOs)
+    g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
+            &g_p_vertex_set_1,
+            &g_p_index_set_1,
+            true,
+            GL_STATIC_DRAW);
+
+    g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
+            &g_p_vertex_set_2,
+            true,
+            GL_STATIC_DRAW);
+}
+
+
+//-----------------
+void quitCallback()
+//-----------------
+{
+    // Do nothing
 }
 
