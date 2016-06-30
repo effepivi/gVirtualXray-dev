@@ -40,7 +40,10 @@ set(BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 2.6.0)
+cmake_minimum_required(VERSION 3.1.0)
+
+# Use C++ 11
+set (CMAKE_CXX_STANDARD 11)
 
 IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0003 NEW)
@@ -251,17 +254,17 @@ ENDIF(GLEW_FOUND)
 
 
 # BOOST #######################################################################
-FIND_PACKAGE(Boost QUIET REQUIRED)
-if(Boost_FOUND)
-	SET( Boost_USE_STATIC_LIBS OFF )
-	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
-	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-	SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
-	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
-ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
-ENDIF(Boost_FOUND)
+#FIND_PACKAGE(Boost QUIET REQUIRED)
+#if(Boost_FOUND)
+#	SET( Boost_USE_STATIC_LIBS OFF )
+#	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+#	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
+#	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+#	SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
+#	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+#ELSE(Boost_FOUND)
+#	MESSAGE(FATAL_ERROR "Boost not found.")
+#ENDIF(Boost_FOUND)
 
 
 # FreeImage ####################################################################
@@ -274,38 +277,38 @@ ENDIF(Boost_FOUND)
 #	SET(optionalLibs ${optionalLibs} ${FREEIMAGE_LIBRARY})
 #ELSE(FREEIMAGE_FOUND)
 #	MESSAGE("FREEIMAGE not found.")
-	SET(HAS_FREEIMAGE OFF)
+#	SET(HAS_FREEIMAGE OFF)
 #ENDIF(FREEIMAGE_FOUND)
 
 
 # ITK ##########################################################################
-FIND_PACKAGE(ITK)
-IF(ITK_FOUND)
-	SET (HAS_ITK ON)
-	ADD_DEFINITIONS(-DHAS_ITK)
-        INCLUDE(${ITK_USE_FILE})
-	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+#FIND_PACKAGE(ITK)
+#IF(ITK_FOUND)
+#	SET (HAS_ITK ON)
+#	ADD_DEFINITIONS(-DHAS_ITK)
+#        INCLUDE(${ITK_USE_FILE})
+#	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
 
-	IF(ITKVtkGlue_LOADED)
-		FIND_PACKAGE(VTK REQUIRED)
-		IF(VTK_FOUND)
-			SET (HAS_VTK ON)
-			ADD_DEFINITIONS(-DHAS_VTK)
-			INCLUDE(${VTK_USE_FILE})
-			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
-			SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${VTK_LIBRARY_DIRS})
-			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-		ELSE(VTK_FOUND)
-			SET (HAS_VTK OFF)
-			MESSAGE(WARNING "VTK not found.")
-		ENDIF(VTK_FOUND)
-	ELSE(ITKVtkGlue_LOADED)
-		SET (HAS_VTK OFF)
-	ENDIF(ITKVtkGlue_LOADED)
-ELSE(ITK_FOUND)
-	MESSAGE(WARNING "ITK not found.")
-	SET (HAS_ITK OFF)
-ENDIF(ITK_FOUND)
+#	IF(ITKVtkGlue_LOADED)
+#		FIND_PACKAGE(VTK REQUIRED)
+#		IF(VTK_FOUND)
+#			SET (HAS_VTK ON)
+#			ADD_DEFINITIONS(-DHAS_VTK)
+#			INCLUDE(${VTK_USE_FILE})
+#			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+#			SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${VTK_LIBRARY_DIRS})
+#			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+#		ELSE(VTK_FOUND)
+#			SET (HAS_VTK OFF)
+#			MESSAGE(WARNING "VTK not found.")
+#		ENDIF(VTK_FOUND)
+#	ELSE(ITKVtkGlue_LOADED)
+#		SET (HAS_VTK OFF)
+#	ENDIF(ITKVtkGlue_LOADED)
+#ELSE(ITK_FOUND)
+#	MESSAGE(WARNING "ITK not found.")
+#	SET (HAS_ITK OFF)
+#ENDIF(ITK_FOUND)
 
 
 # ZLIB #########################################################################
@@ -494,7 +497,7 @@ ENDIF(WIN32)
 
 
 # Examples #####################################################################
-option(BUILD_EXAMPLES "Build examples." ON)
+option(BUILD_EXAMPLES "Build examples." OFF)
 IF (BUILD_EXAMPLES)
    	MESSAGE(STATUS "Build examples.")
 
@@ -505,7 +508,7 @@ ENDIF (BUILD_EXAMPLES)
 
 
 # Tutorials ####################################################################
-option(BUILD_TUTORIALS "Build tutorials." ON)
+option(BUILD_TUTORIALS "Build tutorials." OFF)
 IF (BUILD_TUTORIALS)
    	MESSAGE(STATUS "Build tutorials.")
 
