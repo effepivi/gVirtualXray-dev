@@ -37,7 +37,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 add_subdirectory(tutorial_00_glfw)
 add_subdirectory(tutorial_00_glut)
 add_subdirectory(tutorial_00_qt4)
-#add_subdirectory(tutorial_00_qt5)
+add_subdirectory(tutorial_00_qt5)
 
 add_subdirectory(tutorial_01_glfw)
 add_subdirectory(tutorial_01_glut)
