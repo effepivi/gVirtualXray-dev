@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       tutorial_02_glfw.cxx
+*   @file       tutorial_02_qt4.cxx
 *
 *   @brief      Improve the first tutorial by:
 *               - Loading the shader program from a file compressed with the Z library.
@@ -43,7 +43,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       27/05/2014
+*   @date       30/06/2016
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -65,10 +65,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h> // Fix undefined references on Windows
-#endif
-
 // Ensure we are using opengl's core profile only
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -76,9 +72,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
+#include <GL/glew.h>
 
-#include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
+#include <QtGui>
+#include <QGLWidget>
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -127,9 +124,6 @@ GLsizei g_window_width(640);
 // Keep track of the window height
 GLsizei g_window_height(480);
 
-// GLFW window ID
-GLFWwindow* g_p_window_id(0);
-
 // Shader program used to display the 3D scene
 Shader g_display_shader;
 
@@ -163,8 +157,15 @@ GLint g_current_y_position(0); // Current x position of the cursor
 
 
 //******************************************************************************
+//  Class declaration
+//******************************************************************************
+class GLWidget;
+
+
+//******************************************************************************
 //  Function declaration
 //******************************************************************************
+void initQt(GLWidget& aWindow);
 void initGLFW();
 void initGLEW();
 void initGL();
@@ -173,15 +174,40 @@ void load3DObjects();
 void displayCallback();
 void idleCallback();
 void quitCallback();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+//void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+//void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
+//void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
+//void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
+//void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void errorCallback(int error, const char* description);
 VEC3 getArcballVector(int x, int y);
 float radian2degree(float anAngle);
 void computeRotation(MATRIX4& aRotationMatrix);
+
+
+//******************************************************************************
+//  Class definition
+//******************************************************************************
+class GLWidget: public QGLWidget
+{
+public:
+    GLWidget(QWidget *parent = 0);
+    ~GLWidget();
+
+    QSize minimumSizeHint() const;
+    QSize sizeHint() const;
+    
+protected:
+    void initializeGL();
+    void paintGL();
+    void animate();
+    void resizeGL(int width, int height);
+    void keyPressEvent(QKeyEvent * event);
+    void mouseMoveEvent(QMouseEvent *eventMove);
+    void mousePressEvent(QMouseEvent *eventPress);
+    void mouseReleaseEvent(QMouseEvent *releaseEvent);
+    void wheelEvent(QWheelEvent *wheelEvent);
+};
 
 
 //-----------------------------
@@ -196,39 +222,13 @@ int main(int argc, char** argv)
 
     try
     {
-        // Initialise GLFW
-        initGLFW();
-
-        // Initialise GLEW
-        initGLEW();
-
-        // Initialise OpenGL
-        initGL();
-
-        // Initialise the shader from files compressed using the Z library
-        initShader();
-
-        // Initialise the geometry of the 3D objects
-        load3DObjects();
-
-        // Set the projection matrix
-        framebufferSizeCallback(g_p_window_id, g_window_width, g_window_height);
+        // Initialise Qt and OpenGL
+        QApplication application(argc, argv);
+        GLWidget window;
+        initQt(window);
 
         // Launch the event loop
-        while (!glfwWindowShouldClose(g_p_window_id))
-        {
-            // Render here
-            displayCallback();
-
-            // Swap front and back buffers
-            glfwSwapBuffers(g_p_window_id);
-
-            // Poll for and process events
-            glfwPollEvents();
-
-            // Idle callback
-            idleCallback();
-        }
+        return_code = application.exec();
     }
     // Catch exception if any
     catch (const exception& error)
@@ -237,7 +237,7 @@ int main(int argc, char** argv)
         return_code = EXIT_FAILURE;
     }
 
-    // Close the window and shut GLFW if needed
+    // Clean up
     quitCallback();
 
     // Return an exit code
@@ -245,49 +245,272 @@ int main(int argc, char** argv)
 }
 
 
-//-------------
-void initGLFW()
-//-------------
+//---------------------------
+void initQt(GLWidget& aWindow)
+//---------------------------
 {
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
+    // Initialize Qt
+    // and create a windowed mode window and its OpenGL context
 
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot initialise GLFW.");
-    }
-
-    // Enable OpenGL 3.2 if possible
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 02", NULL, NULL);
-
-    // The window has not been created
-    if (!g_p_window_id)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-    }
-
+    aWindow.resize(g_window_width, g_window_height);
+    aWindow.show();
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
+    
     // Make the window's context current
-    glfwMakeContextCurrent(g_p_window_id);
+    aWindow.makeCurrent();
+}
 
-    // Register GLFW callbacks
-    glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
-    glfwSetKeyCallback(g_p_window_id, keyCallback);
-    glfwSetMouseButtonCallback(g_p_window_id, mouseButtonCallback);
-    glfwSetCursorPosCallback(g_p_window_id, cursorPosCallback);
-    glfwSetScrollCallback(g_p_window_id, scrollCallback);
+
+//----------------------------------
+GLWidget::GLWidget(QWidget *parent):
+//----------------------------------
+    QGLWidget(parent)
+//----------------------------------
+{
+}
+
+
+//-------------------
+GLWidget::~GLWidget()
+//-------------------
+{}
+
+
+//-------------------------------------
+QSize GLWidget::minimumSizeHint() const
+//-------------------------------------
+{
+    return QSize(50, 50);
+}
+
+
+//------------------------------
+QSize GLWidget::sizeHint() const
+//------------------------------
+{
+    return QSize(g_window_width, g_window_height);
+}
+   
+
+//---------------------------
+void GLWidget::initializeGL()
+//---------------------------
+{
+    // Initialise GLEW
+    initGLEW();
+
+    // Initialise OpenGL
+    initGL();
+
+    // Initialise the shader from files compressed using the Z library
+    initShader();
+
+    // Initialise the geometry of the 3D objects
+    load3DObjects();
+}
+
+
+//----------------------
+void GLWidget::paintGL()
+//----------------------
+{
+    // Clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Add the current shader to the shader stack
+    pushShaderProgram();
+
+    // Enable the shader
+    g_display_shader.enable();
+    GLint shader_id(g_display_shader.getProgramHandle());
+
+    // Check the status of OpenGL and of the current FBO
+    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // A handle for shader resources
+    GLuint handle(0);
+
+    // Upload the projection matrix
+    handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Upload the modelview matrix
+    handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Store the current transformation matrices
+    pushModelViewMatrix();
+    pushProjectionMatrix();
+
+    // Rotate the 3D scene
+    g_current_modelview_matrix *= g_scene_rotation_matrix;
+
+    // Store the current transformation matrices
+    pushModelViewMatrix();
+
+    // Translate the 1st object
+    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
+            VEC3(8.0 * cm, 0.0, 0.0));
+
+    // Rotate the 1st object
+    g_current_modelview_matrix *= g_object_1_rotation_matrix;
+
+    // Apply the change to the shader program
+    applyModelViewMatrix();
+
+    // Display the 1st object
+    g_polygon_mesh_1.display();
+
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+    popProjectionMatrix();
+
+    // Store the current transformation matrices
+    pushModelViewMatrix();
+    pushProjectionMatrix();
+
+    // Translate the 2nd object
+    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
+            VEC3(-8.0 * cm, 0.0, 0.0));
+
+    // Rotate the 2nd object
+    g_current_modelview_matrix *= g_object_2_rotation_matrix;
+
+    // Apply the change to the shader program
+    applyModelViewMatrix();
+
+    // Display the 2nd object
+    g_polygon_mesh_2.display();
+
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+    popModelViewMatrix();
+    popProjectionMatrix();
+
+    // Disable the shader and restore the previous shader from the stack
+    popShaderProgram();
+
+    // Check the status of OpenGL and of the current FBO
+    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    animate();
+}
+
+
+//----------------------
+void GLWidget::animate()
+//---------------------
+{
+    // Rotate the objects
+    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
+    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+}
+
+
+//--------------------------------------------
+void GLWidget::resizeGL(int width, int height)
+//--------------------------------------------
+{
+    // Avoid a division by zero
+    if (height == 0)
+    {
+        // Prevent divide by 0
+        height = 1;
+    }
+
+    int x(0), y(0), w(width), h(height);
+
+    // Store the width and height of the window
+    g_window_width = width;
+    g_window_height = height;
+
+    // Compute the aspect ratio of the size of the window
+    double screen_aspect_ratio(double(g_window_width) / double(g_window_height));
+
+    // Update the viewport
+    glViewport(x, y, w, h);
+
+    // Set up the projection matrix (g_current_projection_matrix)
+    loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 0.1 * cm, 5000.0 * cm);
+
+    // Set up the modelling-viewing matrix (g_current_modelview_matrix)
+    loadLookAtModelViewMatrix(0.0 * cm, 0.0 * cm, g_zoom,
+            0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0);
+}
+
+
+//-------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent * event)
+//-------------------------------------------
+{
+    switch(event->key())
+    {
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+            close();
+            break;
+
+    default:
+    std::cout << event->key() << std::endl;
+        break;
+    }
+}
+
+
+//---------------------------------------------------
+void GLWidget::mouseMoveEvent(QMouseEvent *eventMove)
+//---------------------------------------------------
+{
+    g_current_x_position = eventMove->x();
+    g_current_y_position = eventMove->y();
+
+    computeRotation(g_scene_rotation_matrix);
+}
+
+
+//-----------------------------------------------------
+void GLWidget::mousePressEvent(QMouseEvent *eventPress)
+//-----------------------------------------------------
+{
+    g_use_arc_ball = true;
+
+    g_last_x_position = eventPress->x();
+    g_last_y_position = eventPress->y();
+
+    g_current_x_position = eventPress->x();
+    g_current_y_position = eventPress->y();
+}
+
+
+//---------------------------------------------------------
+void GLWidget::mouseReleaseEvent(QMouseEvent *releaseEvent)
+//---------------------------------------------------------
+{
+    g_use_arc_ball = false;
+}
+
+
+//------------------------------------------------
+void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
+//------------------------------------------------
+{
+    // Scrolling along the Y-axis
+    if (fabs(wheelEvent->delta()) > EPSILON)
+    {
+        // Change the zoom
+        g_zoom += 0.1 * wheelEvent->delta() * cm;
+
+        // Update the projection matrix
+        resizeGL(g_window_width, g_window_height);
+    }
 }
 
 
@@ -295,16 +518,14 @@ void initGLFW()
 void initGLEW()
 //-------------
 {
-#ifdef _WIN32
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        std::stringstream error_message;
+        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
+    }
 }
 
 
@@ -396,233 +617,11 @@ void load3DObjects()
 }
 
 
-//--------------------
-void displayCallback()
-//--------------------
-{
-    // Clear the buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Add the current shader to the shader stack
-    pushShaderProgram();
-
-    // Enable the shader
-    g_display_shader.enable();
-    GLint shader_id(g_display_shader.getProgramHandle());
-
-    // Check the status of OpenGL and of the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // A handle for shader resources
-    GLuint handle(0);
-
-    // Upload the projection matrix
-    handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Upload the modelview matrix
-    handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-    glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Store the current transformation matrices
-    pushModelViewMatrix();
-    pushProjectionMatrix();
-
-    // Rotate the 3D scene
-    g_current_modelview_matrix *= g_scene_rotation_matrix;
-
-    // Store the current transformation matrices
-    pushModelViewMatrix();
-
-    // Translate the 1st object
-    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
-            VEC3(8.0 * cm, 0.0, 0.0));
-
-    // Rotate the 1st object
-    g_current_modelview_matrix *= g_object_1_rotation_matrix;
-
-    // Apply the change to the shader program
-    applyModelViewMatrix();
-
-    // Display the 1st object
-    g_polygon_mesh_1.display();
-
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-    popProjectionMatrix();
-
-    // Store the current transformation matrices
-    pushModelViewMatrix();
-    pushProjectionMatrix();
-
-    // Translate the 2nd object
-    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
-            VEC3(-8.0 * cm, 0.0, 0.0));
-
-    // Rotate the 2nd object
-    g_current_modelview_matrix *= g_object_2_rotation_matrix;
-
-    // Apply the change to the shader program
-    applyModelViewMatrix();
-
-    // Display the 2nd object
-    g_polygon_mesh_2.display();
-
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-    popModelViewMatrix();
-    popProjectionMatrix();
-
-    // Disable the shader and restore the previous shader from the stack
-    popShaderProgram();
-
-    // Check the status of OpenGL and of the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-
-//-----------------
-void idleCallback()
-//-----------------
-{
-    // Rotate the objects
-    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
-    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
-}
-
-
 //-----------------
 void quitCallback()
 //-----------------
 {
-    // The window exists
-    if (g_p_window_id)
-    {
-        // Close the window
-        glfwDestroyWindow(g_p_window_id);
-        g_p_window_id = 0;
-
-        // Cleanup GLFW
-        glfwTerminate();
-    }
-}
-
-
-//-----------------------------------------------------------------------
-void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
-//-----------------------------------------------------------------------
-{
-    // Avoid a division by zero
-    if (height == 0)
-    {
-        // Prevent divide by 0
-        height = 1;
-    }
-
-    int x(0), y(0), w(width), h(height);
-
-    // Store the width and height of the window
-    g_window_width = width;
-    g_window_height = height;
-
-    // Compute the aspect ratio of the size of the window
-    double screen_aspect_ratio(double(g_window_width) / double(g_window_height));
-
-    // Update the viewport
-    glViewport(x, y, w, h);
-
-    // Set up the projection matrix (g_current_projection_matrix)
-    loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 0.1 * cm, 5000.0 * cm);
-
-    // Set up the modelling-viewing matrix (g_current_modelview_matrix)
-    loadLookAtModelViewMatrix(0.0 * cm, 0.0 * cm, g_zoom,
-            0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0);
-}
-
-
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
-{
-    if (action == GLFW_PRESS)
-    {
-        switch(key)
-        {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
-
-        default:
-            break;
-        }
-    }
-}
-
-
-//--------------------------------------------
-void mouseButtonCallback(GLFWwindow* apWindow,
-                         int aButton,
-                         int aButtonState,
-                         int aModifierKey)
-//--------------------------------------------
-{
-    g_button = aButton;
-    g_button_state = aButtonState;
-
-    // Use the arc ball
-    if (g_button_state == GLFW_PRESS)
-    {
-        g_use_arc_ball = true;
-    }
-    // Stop using the arc ball
-    else
-    {
-        g_use_arc_ball = false;
-    }
-
-    double xpos(0);
-    double ypos(0);
-    glfwGetCursorPos (apWindow, &xpos, &ypos);
-
-    g_last_x_position = xpos;
-    g_last_y_position = ypos;
-
-    g_current_x_position = xpos;
-    g_current_y_position = ypos;
-}
-
-
-//--------------------------------------------------------------
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
-//--------------------------------------------------------------
-{
-    g_current_x_position = x;
-    g_current_y_position = y;
-
-    computeRotation(g_scene_rotation_matrix);
-}
-
-
-//-----------------------------------------------------------------------
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
-//-----------------------------------------------------------------------
-{
-    // Scrolling along the Y-axis
-    if (fabs(yoffset) > EPSILON)
-    {
-        // Change the zoom
-        g_zoom += 5 * yoffset * cm;
-
-        // Update the projection matrix
-        framebufferSizeCallback(apWindow, g_window_width, g_window_height);
-    }
+    // Do nothing
 }
 
 

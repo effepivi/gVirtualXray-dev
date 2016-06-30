@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -30,7 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-project(gVirtualXRay-tutorial_02_glfw)
+project(gVirtualXRay-tutorial_02_qt4)
 
 
 # Create the RESOURCES ###########################################################
@@ -41,7 +41,7 @@ SET (RESOURCES_SOURCES
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../CreateHeaderFiles.cmake)
 
-CreateHeaderFiles("." "Binarytutorial_02_glfwFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "Binarytutorial_02_qt4Files" "${RESOURCES_SOURCES}")
 
 
 # Headers of the project #######################################################
@@ -76,44 +76,20 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-# GLFW ########################################################################
-FIND_PACKAGE(glfw3)
-IF(glfw3_FOUND)
-    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
-    LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
-    SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY} ${GLFW3_LIBRARIES})
+# Qt4 #########################################################################
+FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
+IF(Qt4_FOUND)
+    SET(CMAKE_AUTOMOC ON)
+    SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+    SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
 
-    IF (APPLE)
-        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-        FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-        FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-        FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
+    # Create the main program ######################################################
+    add_executable(tutorial_02_qt4 tutorial_02_qt4.cxx buildCube.cxx)
+    target_link_libraries(tutorial_02_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(tutorial_02_qt4 Binarytutorial_02_qt4Files)
 
-        SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-    ENDIF(APPLE)
-
-    IF (UNIX)
-        FIND_PACKAGE (X11 REQUIRED)
-        iF (X11_FOUND)
-            INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
-        ELSE (X11_FOUND)
-            MESSAGE(FATAL_ERROR "X11 not found.")
-        ENDIF (X11_FOUND)
-    ENDIF(UNIX)
-ELSE(glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW not found.")
-ENDIF(glfw3_FOUND)
-
-
-# Create the main program ######################################################
-add_executable(tutorial_02_glfw tutorial_02_glfw.cxx buildCube.cxx)
-target_link_libraries(tutorial_02_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/TUTORIALS/tutorial-02-glfw/tutorial-02-glfw.pdf 
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials
-    COMPONENT tutorials)
-INSTALL(TARGETS tutorial_02_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
-
-
+    INSTALL(TARGETS tutorial_02_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
+ELSE(Qt4_FOUND)
+    MESSAGE(WARNING "Qt4 not found.")
+ENDIF(Qt4_FOUND)
