@@ -340,60 +340,53 @@ ELSE(USE_SYSTEM_ZLIB)
   build_zlib( zlib ${PROJECT_BINARY_DIR} )
 ENDIF(USE_SYSTEM_ZLIB)
 
-#FIND_PACKAGE(ZLIB)
-#IF(NOT ZLIB_FOUND)
-#	IF(WIN32)
-#		file(DOWNLOAD http://zlib.net/zlib128-dll.zip ${PROJECT_BINARY_DIR}/zlib128-dll.zip)
-
-#        FIND_PACKAGE(ZLIB REQUIRED)
-#        IF(NOT ZLIB_FOUND)
-#    	    MESSAGE(FATAL_ERROR "ZLIB not found. You can find it on zlib's website at: http://www.zlib.net/")
-#        ENDIF(NOT ZLIB_FOUND)
-#    ELSE (WIN32)
-#		MESSAGE(FATAL_ERROR "ZLIB not found")
-#    ENDIF(WIN32)
-
-#ELSE(NOT ZLIB_FOUND)
-#	INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
-    SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARY} ${ZLIB_LIBRARIES})
-
-#MESSAGE(FATAL_ERROR  ${ZLIB_LIBRARY})
-#MESSAGE(FATAL_ERROR  ${ZLIB_LIBRARIES})
-
-#ENDIF(NOT ZLIB_FOUND)
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
+SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARY} ${ZLIB_LIBRARIES})
 
 
 # FREETYPE ####################################################################
-FIND_PACKAGE(Freetype)
-IF(FREETYPE_FOUND)
+
+OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
+
+IF (USE_SYSTEM_FREETYPE)
+    FIND_PACKAGE(FREETYPE)
+
+    IF(FREETYPE_FOUND)
+        SET (HAS_FREETYPE ON)
+        ADD_DEFINITIONS(-DHAS_FREETYPE)
+        INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
+
+        #FIND_PACKAGE(PNG)
+        #IF (PNG_FOUND)
+        #    ADD_DEFINITIONS(${PNG_DEFINITIONS})
+        #    INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIRS})
+        #    SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
+        #ELSE (PNG_FOUND)
+        #    MESSAGE(WARNING "PNG not found.")
+        #ENDIF (PNG_FOUND)
+
+        #FIND_PACKAGE(BZip2)
+        #IF (BZIP2_FOUND)
+        #    INCLUDE_DIRECTORIES(${BZIP2_INCLUDE_DIR})
+        #    SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
+        #ELSE (BZIP2_FOUND)
+        #    MESSAGE(WARNING "BZip2 not found.")
+        #ENDIF (BZIP2_FOUND)
+
+    ELSE(FREETYPE_FOUND)
+        SET (HAS_FREETYPE OFF)
+        MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
+    ENDIF(FREETYPE_FOUND)
+
+ELSE (USE_SYSTEM_FREETYPE)
+    INCLUDE(BuildFreeType)
+    build_freetype( freetype ${PROJECT_BINARY_DIR} )
     SET (HAS_FREETYPE ON)
-    ADD_DEFINITIONS(-DHAS_FREETYPE)
-    INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
-    SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+ENDIF (USE_SYSTEM_FREETYPE)
 
-    FIND_PACKAGE(PNG)
-    IF (PNG_FOUND)
-        ADD_DEFINITIONS(${PNG_DEFINITIONS})
-        INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIRS})
-        SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
-    ELSE (PNG_FOUND)
-        MESSAGE(WARNING "PNG not found.")
-    ENDIF (PNG_FOUND)
-
-    #FIND_PACKAGE(BZip2)
-    #IF (BZIP2_FOUND)
-    #    INCLUDE_DIRECTORIES(${BZIP2_INCLUDE_DIR})
-    #    SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
-    #ELSE (BZIP2_FOUND)
-    #    MESSAGE(WARNING "BZip2 not found.")
-    #ENDIF (BZIP2_FOUND)
-
-ELSE(FREETYPE_FOUND)
-    SET (HAS_FREETYPE OFF)
-    MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
-ENDIF(FREETYPE_FOUND)
+INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
 
 
 # XCOM Database ################################################################
