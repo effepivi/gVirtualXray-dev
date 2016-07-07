@@ -337,7 +337,7 @@ IF(USE_SYSTEM_ZLIB)
   FIND_PACKAGE( ZLIB   REQUIRED )
 ELSE(USE_SYSTEM_ZLIB)
   INCLUDE(BuildZLIB)
-  build_zlib( /zlib ${PROJECT_BINARY_DIR} )
+  build_zlib( zlib ${PROJECT_BINARY_DIR} )
 ENDIF(USE_SYSTEM_ZLIB)
 
 #FIND_PACKAGE(ZLIB)
@@ -355,8 +355,12 @@ ENDIF(USE_SYSTEM_ZLIB)
 
 #ELSE(NOT ZLIB_FOUND)
 #	INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-#    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} #${ZLIB_INCLUDE_DIRS})
-#    SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
+    SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARY} ${ZLIB_LIBRARIES})
+
+#MESSAGE(FATAL_ERROR  ${ZLIB_LIBRARY})
+#MESSAGE(FATAL_ERROR  ${ZLIB_LIBRARIES})
+
 #ENDIF(NOT ZLIB_FOUND)
 
 
@@ -437,6 +441,15 @@ ENDIF (XCOM_PATH)
 
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
+
+IF (NOT USE_SYSTEM_ZLIB)
+    ADD_DEPENDENCIES(gVirtualXRay   ZLIB)
+ENDIF (NOT USE_SYSTEM_ZLIB)
+
+IF (NOT USE_SYSTEM_XCOM)
+    ADD_DEPENDENCIES(gVirtualXRay   XCOM)
+ENDIF (NOT USE_SYSTEM_XCOM)
+
 
 
 # Create the RESOURCES ###########################################################
