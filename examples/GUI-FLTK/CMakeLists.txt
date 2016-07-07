@@ -51,14 +51,31 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
 
 
 # FLTK ########################################################################
-FIND_PACKAGE(FLTK)
-if(FLTK_FOUND)
-        ADD_DEFINITIONS(-DHAS_FLTK)
-        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
-        SET(optionalLibs ${optionalLibs} ${FLTK_LIBRARIES})
-ELSE(FLTK_FOUND)
-        MESSAGE(FATAL_ERROR "FLTK not found.")
-ENDIF(FLTK_FOUND)
+
+# for superbuild
+SET(USE_SUPERBUILD ON)
+INCLUDE(ExternalProject)
+INCLUDE(ConfigureExternalProjects)
+OPTION(USE_SYSTEM_FLTK       "Use System FLTK"       OFF)
+
+IF(USE_SYSTEM_FLTK)
+    FIND_PACKAGE( FLTK   REQUIRED )
+ELSE(USE_SYSTEM_FLTK)
+    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+
+    INCLUDE(BuildFLTK)
+    build_fltk( fltk ${PROJECT_BINARY_DIR} )
+
+    #MESSAGE(FATAL_ERROR "${FLTK_LIBRARIES}")
+    #include(${PROJECT_BINARY_DIR}/fltk-build/UseFLTK.cmake)
+    #MESSAGE(FATAL_ERROR "${FLTK_PLATFORM_DEPENDENT_LIBS}")
+
+ENDIF(USE_SYSTEM_FLTK)
+
+
+
+INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} ${FLTK_INCLUDE_DIRS})
+SET(optionalLibs ${optionalLibs} ${FLTK_LIBRARIES})
 
 
 # BOOST #######################################################################
@@ -74,21 +91,26 @@ ENDIF(Boost_FOUND)
 
 
 # Create the GUI files with Fluid ##############################################
-IF (FLTK_FOUND)
-    SET (FLUID_OUTPUT_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_command(OUTPUT ${FLUID_OUTPUT_FILES}
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
-        COMMAND ${FLTK_FLUID_EXECUTABLE}
-        ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
-        COMMENT "Build the GUI using Fluid"
-    )
+SET (FLUID_OUTPUT_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(OUTPUT ${FLUID_OUTPUT_FILES}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
+    COMMAND ${FLTK_FLUID_EXECUTABLE}
+    ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
+    COMMENT "Build the GUI using Fluid"
+)
 
-    ADD_CUSTOM_TARGET(FluidFiles ALL echo DEPENDS ${FLUID_OUTPUT_FILES})
+ADD_CUSTOM_TARGET(FluidFiles ALL echo DEPENDS ${FLUID_OUTPUT_FILES})
+#ADD_DEPENDENCIES(gui.h   FluidFiles)
+#ADD_DEPENDENCIES(gui.cxx FluidFiles)
+#
+IF (NOT USE_SYSTEM_FLTK)
+    ADD_DEPENDENCIES(FluidFiles fltk)
+ENDIF(NOT USE_SYSTEM_FLTK)
 
-    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h)
-    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
-ENDIF (FLTK_FOUND)
+
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h)
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
 
 
 # Create the main program ######################################################
@@ -159,3 +181,4 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+

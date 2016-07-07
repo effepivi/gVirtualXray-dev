@@ -51,9 +51,6 @@ ENDIF(OPENGL_FOUND)
 # GLFW ########################################################################
 FIND_PACKAGE(glfw3)
 IF(glfw3_FOUND)
-    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
-
     LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
     
