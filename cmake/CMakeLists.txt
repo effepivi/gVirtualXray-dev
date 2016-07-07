@@ -74,6 +74,12 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 #ENDIF(NOT WIN32)
 
 
+# for superbuild
+SET(USE_SUPERBUILD ON)
+INCLUDE(ExternalProject)
+INCLUDE(ConfigureExternalProjects)
+
+
 # Libraries ####################################################################
 SET(optionalLibs)
 SET(requiredLibs)
@@ -249,10 +255,19 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-FIND_PACKAGE(GLEW)
-IF(GLEW_FOUND)
-    ADD_DEFINITIONS(-DGLEW_STATIC)
+# GLEW ########################################################################
+OPTION(USE_SYSTEM_GLEW       "Use System GLEW"       OFF)
+ADD_DEFINITIONS(-DGLEW_STATIC)
 
+IF(USE_SYSTEM_GLEW)
+  FIND_PACKAGE(GLEW)
+ELSE(USE_SYSTEM_GLEW)
+  INCLUDE(BuildGLEW)
+  build_glew( glew ${PROJECT_BINARY_DIR} )
+ENDIF(USE_SYSTEM_GLEW)
+
+
+IF(GLEW_FOUND)
     SET(HAS_GLEW ON)
     ADD_DEFINITIONS(-DHAS_GLEW)
     
@@ -261,24 +276,7 @@ IF(GLEW_FOUND)
     LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
     SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
-ELSE(GLEW_FOUND)
-    SET(HAS_GLEW OFF)
-    MESSAGE(WARNING "GLEW not found. You can find it on GLEW's website at: http://glew.sourceforge.net/")
 ENDIF(GLEW_FOUND)
-
-
-# BOOST #######################################################################
-#FIND_PACKAGE(Boost QUIET REQUIRED)
-#if(Boost_FOUND)
-#	SET( Boost_USE_STATIC_LIBS OFF )
-#	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-#	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
-#	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-#	SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
-#	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
-#ELSE(Boost_FOUND)
-#	MESSAGE(FATAL_ERROR "Boost not found.")
-#ENDIF(Boost_FOUND)
 
 
 # FreeImage ####################################################################
@@ -327,10 +325,6 @@ ENDIF(GLEW_FOUND)
 
 # ZLIB #########################################################################
 
-# for superbuild
-SET(USE_SUPERBUILD ON)
-INCLUDE(ExternalProject)
-INCLUDE(ConfigureExternalProjects)
 OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
 
 IF(USE_SYSTEM_ZLIB)
@@ -389,6 +383,46 @@ SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${FREETYPE_INCLUDE_D
 SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
 
 
+
+# ITK ##########################################################################
+#OPTION(USE_SYSTEM_ITK       "Use System ITK"       OFF)
+
+#IF (USE_SYSTEM_ITK)
+#    FIND_PACKAGE(ITK)
+#    IF(ITK_FOUND)
+#	    SET (HAS_ITK ON)
+#    	ADD_DEFINITIONS(-DHAS_ITK)
+#        INCLUDE(${ITK_USE_FILE})
+
+    #	IF(ITKVtkGlue_LOADED)
+    #		FIND_PACKAGE(VTK REQUIRED)
+    #		IF(VTK_FOUND)
+    #			SET (HAS_VTK ON)
+    #			ADD_DEFINITIONS(-DHAS_VTK)
+    #			INCLUDE(${VTK_USE_FILE})
+    #			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+    #			SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${VTK_LIBRARY_DIRS})
+    #			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
+    #		ELSE(VTK_FOUND)
+    #			SET (HAS_VTK OFF)
+    #			MESSAGE(WARNING "VTK not found.")
+    #		ENDIF(VTK_FOUND)
+    #	ELSE(ITKVtkGlue_LOADED)
+    #		SET (HAS_VTK OFF)
+    #	ENDIF(ITKVtkGlue_LOADED)
+#    ELSE(ITK_FOUND)
+#    	MESSAGE(WARNING "ITK not found.")
+#	    SET (HAS_ITK OFF)
+#    ENDIF(ITK_FOUND)
+#ELSE (USE_SYSTEM_ITK)
+#    INCLUDE(BuildITK)
+#    build_itk( ITK ${PROJECT_BINARY_DIR} )
+#    SET (HAS_ITK ON)
+#ENDIF (USE_SYSTEM_ITK)
+#SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ITK_INCLUDE_DIRS})
+
+
 # XCOM Database ################################################################
 
 # XCOM: Photon Cross Sections Database
@@ -442,6 +476,10 @@ ENDIF (NOT USE_SYSTEM_ZLIB)
 IF (NOT USE_SYSTEM_XCOM)
     ADD_DEPENDENCIES(gVirtualXRay   XCOM)
 ENDIF (NOT USE_SYSTEM_XCOM)
+
+IF (NOT USE_SYSTEM_GLEW)
+    ADD_DEPENDENCIES(gVirtualXRay   buildGLEW)
+ENDIF (NOT USE_SYSTEM_GLEW)
 
 
 
