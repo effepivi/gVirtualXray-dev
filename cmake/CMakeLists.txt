@@ -400,11 +400,18 @@ ENDIF(FREETYPE_FOUND)
 
 # http://physics.nist.gov/PhysRefData/Xcom/Text/download.html
 
+OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
 
-find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
-IF (NOT XCOM_PATH)
-	MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
-ENDIF(NOT XCOM_PATH)
+IF(USE_SYSTEM_XCOM)
+    find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
+    IF (NOT XCOM_PATH)
+	    MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
+    ENDIF(NOT XCOM_PATH)
+
+ELSE(USE_SYSTEM_XCOM)
+  INCLUDE(BuildXCOM)
+  build_xcom( ${PROJECT_BINARY_DIR} )
+ENDIF(USE_SYSTEM_XCOM)
 
 
 # configure a header file to pass some of the CMake settings
