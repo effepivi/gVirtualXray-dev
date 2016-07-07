@@ -411,15 +411,21 @@ ENDIF(NOT XCOM_PATH)
 # to the source code
 IF (XCOM_PATH)
     SET (HAS_XCOM ON)
+
+    configure_file (
+        "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
+        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
+    )
 ELSE (XCOM_PATH)
     SET (HAS_XCOM OFF)
+
+    configure_file (
+        "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigNoXCOM.h.in"
+        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
+    )
 ENDIF (XCOM_PATH)
 
 
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"
-    "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-)
 
 
 # Create the library ###########################################################
