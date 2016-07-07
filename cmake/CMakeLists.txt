@@ -218,10 +218,14 @@ ENDIF(NOT APPLE)
 
 
 # GZIP ########################################################################
-FIND_PACKAGE(GZIP REQUIRED)
+FIND_PACKAGE(GZIP)
 IF(NOT GZIP_FOUND)
     IF(WIN32)
-        DOWNLOAD(ftp://ftp.gnome.org/mirror/debian-archive/tools/gzip124.exe ${PROJECT_BINARY_DIR}/gzip.exe)
+        file(DOWNLOAD http://www.gzip.org/gzip124xN.exe ${PROJECT_BINARY_DIR}/gzip124xN.exe)
+		
+		# Execute gzip124xN.exe to extract gzip.exe
+		execute_process(COMMAND ${PROJECT_BINARY_DIR}/gzip124xN.exe WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+
 
         FIND_PACKAGE(GZIP REQUIRED)
         IF(NOT GZIP_FOUND)
@@ -245,7 +249,7 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-FIND_PACKAGE(GLEW REQUIRED)
+FIND_PACKAGE(GLEW)
 IF(GLEW_FOUND)
     ADD_DEFINITIONS(-DGLEW_STATIC)
 
@@ -259,7 +263,7 @@ IF(GLEW_FOUND)
     SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ELSE(GLEW_FOUND)
     SET(HAS_GLEW OFF)
-    MESSAGE(FATAL_ERROR "GLEW not found. You can find it on GLEW's website at: http://glew.sourceforge.net/")
+    MESSAGE(WARNING "GLEW not found. You can find it on GLEW's website at: http://glew.sourceforge.net/")
 ENDIF(GLEW_FOUND)
 
 
@@ -322,14 +326,38 @@ ENDIF(GLEW_FOUND)
 
 
 # ZLIB #########################################################################
-FIND_PACKAGE(ZLIB REQUIRED)
-IF(ZLIB_FOUND)
-    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
-    SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
-ELSE(ZLIB_FOUND)
-    MESSAGE("ZLIB not found. You can find it on zlib's website at: http://www.zlib.net/")
-ENDIF(ZLIB_FOUND)
+
+# for superbuild
+SET(USE_SUPERBUILD ON)
+INCLUDE(ExternalProject)
+INCLUDE(ConfigureExternalProjects)
+OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
+
+IF(USE_SYSTEM_ZLIB)
+  FIND_PACKAGE( ZLIB   REQUIRED )
+ELSE(USE_SYSTEM_ZLIB)
+  INCLUDE(BuildZLIB)
+  build_zlib( /zlib ${PROJECT_BINARY_DIR} )
+ENDIF(USE_SYSTEM_ZLIB)
+
+#FIND_PACKAGE(ZLIB)
+#IF(NOT ZLIB_FOUND)
+#	IF(WIN32)
+#		file(DOWNLOAD http://zlib.net/zlib128-dll.zip ${PROJECT_BINARY_DIR}/zlib128-dll.zip)
+
+#        FIND_PACKAGE(ZLIB REQUIRED)
+#        IF(NOT ZLIB_FOUND)
+#    	    MESSAGE(FATAL_ERROR "ZLIB not found. You can find it on zlib's website at: http://www.zlib.net/")
+#        ENDIF(NOT ZLIB_FOUND)
+#    ELSE (WIN32)
+#		MESSAGE(FATAL_ERROR "ZLIB not found")
+#    ENDIF(WIN32)
+
+#ELSE(NOT ZLIB_FOUND)
+#	INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+#    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} #${ZLIB_INCLUDE_DIRS})
+#    SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARIES})
+#ENDIF(NOT ZLIB_FOUND)
 
 
 # FREETYPE ####################################################################
