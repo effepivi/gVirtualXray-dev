@@ -484,26 +484,19 @@ CreateHeaderFiles("." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
 IF (XCOM_PATH)
-    SET (XCOM_SOURCES
-        ${XCOM_PATH}/MDATX3.001
-        ${XCOM_PATH}/MDATX3.006
-        ${XCOM_PATH}/MDATX3.007
-        ${XCOM_PATH}/MDATX3.008
-        ${XCOM_PATH}/MDATX3.011
-        ${XCOM_PATH}/MDATX3.012
-        ${XCOM_PATH}/MDATX3.015
-        ${XCOM_PATH}/MDATX3.016
-        ${XCOM_PATH}/MDATX3.017
-        ${XCOM_PATH}/MDATX3.018
-        ${XCOM_PATH}/MDATX3.019
-        ${XCOM_PATH}/MDATX3.020
-        ${XCOM_PATH}/MDATX3.026
-        ${XCOM_PATH}/MDATX3.022
-        ${XCOM_PATH}/MDATX3.029
-        ${XCOM_PATH}/MDATX3.030
-        ${XCOM_PATH}/MDATX3.047
-        ${XCOM_PATH}/MDATX3.050
-    )
+    foreach(xcom_file RANGE 1 100)
+
+        if (${xcom_file} LESS 10)
+            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
+        else ()
+            if (${xcom_file} LESS 100)
+                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
+            else ()
+                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
+            endif ()
+        endif ()
+
+    endforeach(xcom_file)
 
 	CreateHeaderFiles("." "XCOMLibFiles" "${XCOM_SOURCES}")
 ENDIF (XCOM_PATH)
