@@ -38,7 +38,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 find_package(gVirtualXRay REQUIRED)
 
 add_subdirectory(STL-File)
-add_subdirectory(GUI-FLTK)
+#add_subdirectory(GUI-FLTK)
 #GLFW add_subdirectory(Iso-Surfaces)
 #GLFW add_subdirectory(Intersections)
 #ITK  add_subdirectory(SimpleBackProjection)

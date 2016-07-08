@@ -37,7 +37,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinaryGUIFLTKFiles" "${RESOURCES_SOURCES}")
 
 
@@ -47,7 +47,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
 # FLTK ########################################################################

@@ -468,6 +468,7 @@ ENDIF (XCOM_PATH)
 
 
 
+
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
@@ -487,6 +488,25 @@ ENDIF (NOT USE_SYSTEM_GLEW)
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
+
+IF (XCOM_PATH)
+    foreach(xcom_file RANGE 1 100)
+
+        if (${xcom_file} LESS 10)
+            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
+        else ()
+            if (${xcom_file} LESS 100)
+                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
+            else ()
+                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
+            endif ()
+        endif ()
+
+    endforeach(xcom_file)
+
+	CreateHeaderFiles("." "XCOMLibFiles" "${XCOM_SOURCES}")
+    ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
+ENDIF (XCOM_PATH)
 
 SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/clean_l_buffer_gl2.frag
@@ -527,25 +547,6 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/FreeSans.ttf
 )
 CreateHeaderFiles("." "BinaryLibFiles" "${RESOURCES_SOURCES}")
-
-
-IF (XCOM_PATH)
-    foreach(xcom_file RANGE 1 100)
-
-        if (${xcom_file} LESS 10)
-            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
-        else ()
-            if (${xcom_file} LESS 100)
-                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
-            else ()
-                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
-            endif ()
-        endif ()
-
-    endforeach(xcom_file)
-
-	CreateHeaderFiles("." "XCOMLibFiles" "${XCOM_SOURCES}")
-ENDIF (XCOM_PATH)
 
 
 # Linkage of the target ########################################################

@@ -70,7 +70,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinarySTLFiles" "${RESOURCES_SOURCES}")
 
 
@@ -79,21 +79,21 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
 # Check if GLUT or GLFW are available #########################################
-IF(NOT glfw_FOUND AND NOT GLUT_FOUND)
+IF(NOT GLFW_FOUND AND NOT GLUT_FOUND)
     MESSAGE(FATAL_ERROR "GLFW and GLUT were not found. The demo cannot be built.")
-ENDIF(NOT glfw_FOUND AND NOT GLUT_FOUND)
+ENDIF(NOT GLFW_FOUND AND NOT GLUT_FOUND)
 
 
 # Create the main programs #####################################################
-IF(glfw_FOUND)
-    add_executable(welsh_dragon_glfw welsh_dragon_glfw.cxx )
-    target_link_libraries(welsh_dragon_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(welsh_dragon_glfw BinarySTLFiles)
-ENDIF(glfw_FOUND)
+IF(GLFW_FOUND)
+    add_executable(welsh_dragon_GLFW welsh_dragon_GLFW.cxx )
+    target_link_libraries(welsh_dragon_GLFW ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(welsh_dragon_GLFW BinarySTLFiles)
+ENDIF(GLFW_FOUND)
 
 
 IF(GLUT_FOUND)
@@ -104,12 +104,12 @@ ENDIF(GLUT_FOUND)
 
 
 IF (NOT APPLE)
-    IF(glfw_FOUND)
-        INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
+    IF(GLFW_FOUND)
+        INSTALL(TARGETS welsh_dragon_GLFW RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/data COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File COMPONENT demos)
-    ENDIF(glfw_FOUND)
+    ENDIF(GLFW_FOUND)
     
     IF(GLUT_FOUND)
         INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File/bin  COMPONENT demos)
@@ -120,10 +120,10 @@ IF (NOT APPLE)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
-    IF(glfw_FOUND)
+    IF(GLFW_FOUND)
         SET (MACOSX_RPATH 1)
         SET(STL-File-GLFW_SRCS
-            ${CMAKE_CURRENT_SOURCE_DIR}/welsh_dragon_glfw.cxx
+            ${CMAKE_CURRENT_SOURCE_DIR}/welsh_dragon_GLFW.cxx
             ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
             ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
             ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
@@ -170,7 +170,7 @@ ELSE (NOT APPLE)
 
         set(CPACK_BINARY_DRAGNDROP ON)
 
-    ENDIF(glfw_FOUND)
+    ENDIF(GLFW_FOUND)
 
     IF(GLUT_FOUND)
         SET (MACOSX_RPATH 1)

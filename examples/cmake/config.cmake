@@ -29,6 +29,10 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# for superbuild
+SET(USE_SUPERBUILD ON)
+INCLUDE(ExternalProject)
+INCLUDE(ConfigureExternalProjects)
 
 # Fix linkage problem with windows and cross-compilation #######################
 IF (WIN32)
@@ -49,36 +53,40 @@ ENDIF(OPENGL_FOUND)
 
 
 # GLFW ########################################################################
-FIND_PACKAGE(glfw3)
-IF(glfw3_FOUND)
-    LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
-    LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
-    
-    SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
-    SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY} ${GLFW3_LIBRARIES})
 
-    IF (APPLE)
-        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-        FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-        FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-        FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
+IF(NOT GLFW_FOUND)
+	OPTION(USE_SYSTEM_GLFW       "Use System GLFW "       OFF)
 
-        SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-    ENDIF(APPLE)
+	IF(USE_SYSTEM_GLFW)
+		FIND_PACKAGE( GLFW   REQUIRED )
+	ELSE(USE_SYSTEM_GLFW)
+		INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/BuildGLFW.cmake)
+		build_GLFW( GLFW ${PROJECT_BINARY_DIR} )
+	ENDIF(USE_SYSTEM_GLFW)
 
-    IF (UNIX)
-        FIND_PACKAGE (X11 REQUIRED)
-        iF (X11_FOUND)
-            INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
-        ELSE (X11_FOUND)
-            MESSAGE(FATAL_ERROR "X11 not found.")
-        ENDIF (X11_FOUND)
-    ENDIF(UNIX)
-ELSE(glfw3_FOUND)
-    MESSAGE(WARNING "GLFW not found.")
-ENDIF(glfw3_FOUND)
+	#LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
+    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
+	SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
+	
+	IF (APPLE)
+		FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+		FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+		FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
+		FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
 
+		SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
+	ENDIF(APPLE)
+
+	IF (UNIX)
+		FIND_PACKAGE (X11 REQUIRED)
+		iF (X11_FOUND)
+			INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+			SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+		ELSE (X11_FOUND)
+			MESSAGE(FATAL_ERROR "X11 not found.")
+		ENDIF (X11_FOUND)
+	ENDIF(UNIX)
+ENDIF(NOT GLFW_FOUND)
 
 # GLUT ########################################################################
 FIND_PACKAGE(GLUT)
