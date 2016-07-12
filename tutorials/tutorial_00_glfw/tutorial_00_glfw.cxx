@@ -63,6 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <GLFW/glfw3.h> // Create an OpenGL context
 
 #include <iostream>   // Print error messages in the console

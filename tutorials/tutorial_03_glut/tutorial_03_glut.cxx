@@ -66,6 +66,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <GL/glew.h>  // Handle shaders
 
 // Create an OpenGL context and attach a window to it
