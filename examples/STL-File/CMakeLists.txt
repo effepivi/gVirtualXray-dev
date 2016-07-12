@@ -84,7 +84,7 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 # Check if GLUT or GLFW are available #########################################
 IF(NOT GLFW_FOUND AND NOT GLUT_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW and GLUT were not found. The demo cannot be built.")
+    MESSAGE(WARNING "GLFW and GLUT were not found. The demo cannot be built.")
 ENDIF(NOT GLFW_FOUND AND NOT GLUT_FOUND)
 
 
@@ -229,3 +229,4 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+
