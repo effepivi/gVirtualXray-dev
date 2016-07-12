@@ -60,16 +60,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_UTILITIES_H
-#include "gVirtualXRay/Utilities.h"
-#endif
-
-
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <zlib.h>
 #include <string.h>
+
+#ifndef GVXR_UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
 
 
 //------------------------------------------------------------------

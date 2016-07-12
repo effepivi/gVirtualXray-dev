@@ -63,6 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif

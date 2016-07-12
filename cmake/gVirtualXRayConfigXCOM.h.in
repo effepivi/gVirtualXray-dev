@@ -42,8 +42,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define gVirtualXRay_XCOM_PATH "@XCOM_PATH@"
 
-#if _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 #define _USE_MATH_DEFINES
-#endif // _WIN32
+#endif
 
 #endif // GVXR_CONFIG_H

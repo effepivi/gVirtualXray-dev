@@ -43,6 +43,10 @@
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
 // Added by Franck P. Vidal
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #else

@@ -67,6 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif

@@ -65,8 +65,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(WIN32) || defined(WIN64)
-#define _USE_MATH_DEFINES
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <cmath>

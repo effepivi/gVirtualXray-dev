@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cfloat>
-#include <math.h>
+#include <cmath>
 #include <cstring>
 
 #if defined(_WIN32) || defined(_WIN64)
