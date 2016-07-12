@@ -482,10 +482,6 @@ int main(int argc, char** argv)
 	    }
 	}
 	// Catch exception if any
-	catch(itk::ExceptionObject& error)
-	{
-		std::cerr << error << std::endl;
-	}
     catch (const std::exception& error)
     {
         std::cerr << error.what() << std::endl;
