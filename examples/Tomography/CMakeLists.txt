@@ -55,20 +55,10 @@ IF(NOT glfw3_FOUND)
 ENDIF(NOT glfw3_FOUND)
 
 
-# ITK #########################################################################
-FIND_PACKAGE (ITK)
-IF (ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE( ${ITK_USE_FILE} )
-	set (optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-    MESSAGE(FATAL_ERROR "ITK not found. The demo cannot be built.")
-ENDIF(ITK_FOUND)
-
-
 # Create the main program ######################################################
 add_executable(demo-tomography Tomography.cxx)
 target_link_libraries(demo-tomography ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(demo-tomography BinaryTomographyFiles)
 
 IF (NOT APPLE)
     INSTALL(TARGETS demo-tomography RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Tomography/bin COMPONENT demos)

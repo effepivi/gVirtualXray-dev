@@ -69,6 +69,7 @@ ENDIF(ITK_FOUND)
 # Create the main program ######################################################
 add_executable(demo-simple-back-projection SimpleBackProjection.cxx)
 target_link_libraries(demo-simple-back-projection ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(demo-simple-back-projection BinarySimpleBackProjectionFiles)
 
 IF (NOT APPLE)
     INSTALL(TARGETS demo-simple-back-projection RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/SimpleBackProjection/bin COMPONENT demos)

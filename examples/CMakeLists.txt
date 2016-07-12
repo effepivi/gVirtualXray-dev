@@ -37,13 +37,28 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
 find_package(gVirtualXRay REQUIRED)
 
+OPTION (USE_ITK  "Build the demos that make use of the InsightToolkit (ITK)" OFF)
+OPTION (USE_FLTK "Build the demos that make use of the Fast Light Toolkit (FLTK)" OFF)
+OPTION (USE_GLUT "Build the demos that make use of the OpenGL Utility Toolkit (GLUT)" OFF)
+OPTION (USE_GLFW "Build the demos that make use of GLFW" ON)
+
 add_subdirectory(STL-File)
-#add_subdirectory(GUI-FLTK)
-#GLFW add_subdirectory(Iso-Surfaces)
-#GLFW add_subdirectory(Intersections)
-#ITK  add_subdirectory(SimpleBackProjection)
-#ITK  add_subdirectory(Tomography)
-#ITK  add_subdirectory(AnatomicalData)
+
+IF (USE_FLTK)
+    add_subdirectory(GUI-FLTK)
+ENDIF(USE_FLTK)
+
+IF (USE_ITK)
+    add_subdirectory(SimpleBackProjection)
+    add_subdirectory(Tomography)
+    add_subdirectory(AnatomicalData)
+    add_subdirectory(Iso-Surfaces)
+ENDIF(USE_ITK)
+
+#IF (USE_GLFW)
+#    add_subdirectory(Intersections)
+#ENDIF (USE_GLFW)
+
 #add_subdirectory(VisualArts)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
