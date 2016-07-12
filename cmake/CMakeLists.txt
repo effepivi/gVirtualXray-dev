@@ -91,7 +91,7 @@ SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 IF (UNIX)
 	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 ELSE(UNIX)
-	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/gVirtualXRay.lib)
+	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/Release/gVirtualXRay.lib)
 ENDIF(UNIX)
 
 
