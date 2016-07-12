@@ -39,7 +39,7 @@ SET(FREETYPE_DIR         ${staging_prefix}/${install_prefix}-install)
 SET(FREETYPE_FOUND ON)
 
 IF (UNIX)
-	SET(FREETYPE_LIBRARIES    ${PROJECT_BINARY_DIR}/${staging_prefix}/${install_prefix}-install/lib/libfreetype.a )
+	SET(FREETYPE_LIBRARIES    ${staging_prefix}/${install_prefix}-install/lib/libfreetype.a )
 ELSE (UNIX)
 	if (${CMAKE_CFG_INTDIR} STREQUAL "$(Configuration)")
 		SET(FREETYPE_LIBRARIES    ${staging_prefix}/${install_prefix}-install/lib/freetyped.lib)
