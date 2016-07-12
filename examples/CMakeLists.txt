@@ -41,6 +41,8 @@ OPTION (USE_ITK  "Build the demos that make use of the InsightToolkit (ITK)" OFF
 OPTION (USE_FLTK "Build the demos that make use of the Fast Light Toolkit (FLTK)" OFF)
 OPTION (USE_GLUT "Build the demos that make use of the OpenGL Utility Toolkit (GLUT)" OFF)
 OPTION (USE_GLFW "Build the demos that make use of GLFW" ON)
+OPTION (USE_QT4  "Build the demos that make use of Qt4" ON)
+OPTION (USE_QT5  "Build the demos that make use of Qt5" OFF)
 
 
 
@@ -85,6 +87,15 @@ IF (USE_GLFW)
 		ADD_DEPENDENCIES(demo-anatomical-data-glfw GLFW)
 	endif ()
 ENDIF (USE_GLFW)
+
+IF (USE_QT4)
+    add_subdirectory(AnatomicalData-qt4)
+ENDIF (USE_QT4)
+
+IF (USE_QT5)
+    add_subdirectory(AnatomicalData-qt5)
+ENDIF (USE_QT5)
+
 
 #add_subdirectory(VisualArts)
 
