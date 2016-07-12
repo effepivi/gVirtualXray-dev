@@ -145,6 +145,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
+#include <algorithm>
+
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
