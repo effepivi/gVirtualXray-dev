@@ -78,11 +78,11 @@ ENDIF(USE_ITK)
 
 IF (USE_GLFW)
 #    add_subdirectory(Intersections)
-    add_subdirectory(AnatomicalData)
+    add_subdirectory(AnatomicalData-glfw)
 	
 	IF(NOT USE_SYSTEM_GLFW)
 		ADD_DEPENDENCIES(welsh_dragon_glfw GLFW)
-		ADD_DEPENDENCIES(demo-anatomical-data GLFW)
+		ADD_DEPENDENCIES(demo-anatomical-data-glfw GLFW)
 	endif ()
 ENDIF (USE_GLFW)
 

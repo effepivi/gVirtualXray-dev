@@ -30,7 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-project(gVirtualXRay-AnatomicalData)
+project(gVirtualXRay-AnatomicalData-glfw)
 
 # Initialise some states by default ############################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
@@ -38,7 +38,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
-CreateHeaderFiles("." "BinaryAnatomicalDataFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinaryAnatomicalDataGlfwFiles" "${RESOURCES_SOURCES}")
 
 
 # Headers of the project #######################################################
@@ -57,31 +57,31 @@ ENDIF(NOT GLFW_FOUND)
 
 
 # Create the main program ######################################################
-add_executable(demo-anatomical-data AnatomicalData.cxx)
-target_link_libraries(demo-anatomical-data ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(demo-anatomical-data BinaryAnatomicalDataFiles)
+add_executable(demo-anatomical-data-glfw AnatomicalData-glfw.cxx)
+target_link_libraries(demo-anatomical-data-glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(demo-anatomical-data-glfw BinaryAnatomicalDataGlfwFiles)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS demo-anatomical-data RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData/bin COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData COMPONENT demos)
+    INSTALL(TARGETS demo-anatomical-data-glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-glfw/bin COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-glfw/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-glfw COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
     
     SET (MACOSX_RPATH 1)
-    SET(AnatomicalData_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData.cxx
+    SET(AnatomicalData-glfw_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData-glfw.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
     )
 
-    ADD_EXECUTABLE (AnatomicalData MACOSX_BUNDLE ${AnatomicalData_SRCS})
-    TARGET_LINK_LIBRARIES (AnatomicalData gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(AnatomicalData BinaryAnatomicalDataFiles)
+    ADD_EXECUTABLE (AnatomicalData-glfw MACOSX_BUNDLE ${AnatomicalData-glfw_SRCS})
+    TARGET_LINK_LIBRARIES (AnatomicalData-glfw gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(AnatomicalData-glfw BinaryAnatomicalDataGlfwFiles)
 
-    set(MACOSX_BUNDLE_BUNDLE_NAME AnatomicalData)
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "AnatomicalData")
+    set(MACOSX_BUNDLE_BUNDLE_NAME AnatomicalData-glfw)
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "AnatomicalData-glfw")
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
     set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
@@ -90,9 +90,9 @@ ELSE (NOT APPLE)
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
     set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
 
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData.app")
+    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-glfw.app")
 
-    INSTALL(TARGETS AnatomicalData 
+    INSTALL(TARGETS AnatomicalData-glfw 
         BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
         RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
     )
