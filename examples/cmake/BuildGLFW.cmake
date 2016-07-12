@@ -41,7 +41,7 @@ if(NOT TARGET GLFW)
 	)
 
 	SET(GLFW_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
-	SET(GLFW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib )
+	SET(GLFW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
 	SET(GLFW_DIR         ${staging_prefix}/${install_prefix}-install)
 	SET(GLFW_FOUND ON)
 
