@@ -69,8 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <GL/glew.h>
-
+#include <algorithm>
 #include <cstdlib>
 #include <sstream>
 #include <streambuf>

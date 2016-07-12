@@ -45,10 +45,11 @@ cmake_minimum_required(VERSION 3.1.0)
 # Use C++ 11
 set (CMAKE_CXX_STANDARD 11)
 
-IF(COMMAND cmake_policy)
+#IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0003 NEW)
+       cmake_policy(SET CMP0011 NEW)
        cmake_policy(SET CMP0013 NEW)
-ENDIF(COMMAND cmake_policy)
+#ENDIF(COMMAND cmake_policy)
 
 
 # Set a default build type if none was specified
@@ -86,7 +87,12 @@ SET(requiredLibs)
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
+
+IF (UNIX)
+	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
+ELSE(UNIX)
+	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/gVirtualXRay.lib)
+ENDIF(UNIX)
 
 
 # Library source code ##########################################################
@@ -379,6 +385,7 @@ ELSE (USE_SYSTEM_FREETYPE)
     build_freetype( freetype ${PROJECT_BINARY_DIR} )
     SET (HAS_FREETYPE ON)
 ENDIF (USE_SYSTEM_FREETYPE)
+
 
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})

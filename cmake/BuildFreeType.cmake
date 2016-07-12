@@ -25,17 +25,29 @@ ExternalProject_Add(FREETYPE
   LIST_SEPARATOR :::  
   CMAKE_GENERATOR ${CMAKE_GEN}
   CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-      -DBUILD_SHARED_LIBS:BOOL=OFF
+#      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+      -DCMAKE_CFG_INTDIR=Release
+      -DCMAKE_BUILD_TYPE:STRING=Release
+	  -DBUILD_SHARED_LIBS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 )
 
 SET(FREETYPE_INCLUDE_DIRS ${staging_prefix}/${install_prefix}-install/include  ${staging_prefix}/${install_prefix}-install/include/freetype2)
-SET(FREETYPE_LIBRARIES    ${staging_prefix}/${install_prefix}-install/lib/libfreetype.a )
 SET(FREETYPE_DIR         ${staging_prefix}/${install_prefix}-install)
 SET(FREETYPE_FOUND ON)
+
+IF (UNIX)
+	SET(FREETYPE_LIBRARIES    ${PROJECT_BINARY_DIR}/${staging_prefix}/${install_prefix}-install/lib/libfreetype.a )
+ELSE (UNIX)
+	if (${CMAKE_CFG_INTDIR} STREQUAL "$(Configuration)")
+		SET(FREETYPE_LIBRARIES    ${staging_prefix}/${install_prefix}-install/lib/freetyped.lib)
+	else ()
+		SET(FREETYPE_LIBRARIES    ${staging_prefix}/${install_prefix}-install/lib/freetype.lib)
+	endif()
+	
+ENDIF (UNIX)
 
 endmacro(build_freetype)
 

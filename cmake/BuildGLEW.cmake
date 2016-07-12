@@ -38,7 +38,8 @@ ExternalProject_Add(buildGLEW
   LIST_SEPARATOR :::  
   CMAKE_GENERATOR ${CMAKE_GEN}
   CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+#      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+      -DCMAKE_BUILD_TYPE:STRING=Release
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DBUILD_UTILS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
@@ -49,9 +50,17 @@ ExternalProject_Add(buildGLEW
 ADD_DEPENDENCIES(buildGLEW getGLEW)
 
 SET(GLEW_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include  ${staging_prefix}/${install_prefix}-install/include)
-SET(GLEW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libGLEW.a )
 SET(GLEW_DIR         ${staging_prefix}/${install_prefix}-install)
 SET(GLEW_FOUND ON)
 
+IF (UNIX)
+	SET(GLEW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libGLEW.a )
+ELSE(UNIX)
+	if (${CMAKE_CFG_INTDIR} STREQUAL "$(Configuration)")
+		SET(GLEW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglew32d.lib )
+	else()
+		SET(GLEW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglew32.lib )
+	endif()
+ENDIF(UNIX)
 endmacro(build_glew)
 

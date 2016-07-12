@@ -37,7 +37,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinaryAnatomicalDataFiles" "${RESOURCES_SOURCES}")
 
 
@@ -47,13 +47,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw3_FOUND)
+IF(NOT GLFW_FOUND)
     MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw3_FOUND)
+ENDIF(NOT GLFW_FOUND)
 
 
 # Create the main program ######################################################

@@ -41,9 +41,18 @@ ExternalProject_Add(ZLIB
 )
 
 SET(ZLIB_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
-SET(ZLIB_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libz.a )
 SET(ZLIB_DIR         ${staging_prefix}/${install_prefix}-install)
 SET(ZLIB_FOUND ON)
+
+IF (UNIX)
+	SET(ZLIB_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libz.a )
+ELSE(UNIX)
+	if (${CMAKE_CFG_INTDIR} STREQUAL "$(Configuration)")
+		SET(ZLIB_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/zlibstaticd.lib )
+	else ()
+		SET(ZLIB_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/zlibstatic.lib )
+	endif ()
+ENDIF(UNIX)
 
 #configure_file(${CMAKE_SOURCE_DIR}/ZLIB-config.cmake.install.in ${staging_prefix}/${install_prefix}/share/cmake/ZLIB/ZLIBConfig.cmake @ONLY )
 

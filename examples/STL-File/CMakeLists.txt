@@ -90,6 +90,7 @@ ENDIF(NOT GLFW_FOUND AND NOT GLUT_FOUND)
 
 # Create the main programs #####################################################
 IF(GLFW_FOUND)
+	#MESSAGE(FATAL_ERROR " ${GLFW_INCLUDE_DIR}")
     add_executable(welsh_dragon_glfw welsh_dragon_glfw.cxx )
     target_link_libraries(welsh_dragon_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(welsh_dragon_glfw BinarySTLFiles)

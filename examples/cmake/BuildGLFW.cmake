@@ -28,7 +28,8 @@ if(NOT TARGET GLFW)
 		LIST_SEPARATOR :::  
 		CMAKE_GENERATOR ${CMAKE_GEN}
 		CMAKE_ARGS
-		-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+#		-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+		-DCMAKE_BUILD_TYPE:STRING=Release
 		-DBUILD_SHARED_LIBS:BOOL=OFF
 		#-DCMAKE_SKIP_RPATH:BOOL=ON
 		-DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
@@ -41,9 +42,14 @@ if(NOT TARGET GLFW)
 	)
 
 	SET(GLFW_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
-	SET(GLFW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
 	SET(GLFW_DIR         ${staging_prefix}/${install_prefix}-install)
 	SET(GLFW_FOUND ON)
+
+IF (UNIX)
+	SET(GLFW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
+ELSE (UNIX)
+	SET(GLFW_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib )
+ENDIF (UNIX)
 
 	#configure_file(${CMAKE_SOURCE_DIR}/GLFW3-config.cmake.install.in ${staging_prefix}/${install_prefix}/share/cmake/GLFW/GLFWConfig.cmake @ONLY )
 

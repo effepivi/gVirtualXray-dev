@@ -42,6 +42,28 @@ OPTION (USE_FLTK "Build the demos that make use of the Fast Light Toolkit (FLTK)
 OPTION (USE_GLUT "Build the demos that make use of the OpenGL Utility Toolkit (GLUT)" OFF)
 OPTION (USE_GLFW "Build the demos that make use of GLFW" ON)
 
+
+
+
+
+
+# GLFW ########################################################################
+
+IF (USE_GLFW)
+    #IF(NOT GLFW_FOUND)
+	    OPTION(USE_SYSTEM_GLFW       "Use System GLFW "       OFF)
+
+    	IF(USE_SYSTEM_GLFW)
+	    	FIND_PACKAGE( GLFW   REQUIRED )
+    	ELSE(USE_SYSTEM_GLFW)
+	    	INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildGLFW.cmake)
+		    build_GLFW( GLFW ${PROJECT_BINARY_DIR} )
+    	ENDIF(USE_SYSTEM_GLFW)
+
+    #ENDIF(NOT GLFW_FOUND)
+ENDIF(USE_GLFW)
+
+
 add_subdirectory(STL-File)
 
 IF (USE_FLTK)
@@ -51,13 +73,18 @@ ENDIF(USE_FLTK)
 IF (USE_ITK)
     add_subdirectory(SimpleBackProjection)
     add_subdirectory(Tomography)
-    add_subdirectory(AnatomicalData)
     add_subdirectory(Iso-Surfaces)
 ENDIF(USE_ITK)
 
-#IF (USE_GLFW)
+IF (USE_GLFW)
 #    add_subdirectory(Intersections)
-#ENDIF (USE_GLFW)
+    add_subdirectory(AnatomicalData)
+	
+	IF(NOT USE_SYSTEM_GLFW)
+		ADD_DEPENDENCIES(welsh_dragon_glfw GLFW)
+		ADD_DEPENDENCIES(demo-anatomical-data GLFW)
+	endif ()
+ENDIF (USE_GLFW)
 
 #add_subdirectory(VisualArts)
 
