@@ -143,7 +143,7 @@ private:
     /// New type defining a patient
    typedef enum
     {
-        //// Patient 4
+        /// Patient 4
         P4,
 
         /// Patient 5

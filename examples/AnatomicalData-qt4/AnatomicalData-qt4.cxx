@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <QtGui>
+#include <ctime>
 
 #ifndef GVXR_GL_WIDGET_H
 #include "GLWidget.h"
