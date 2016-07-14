@@ -50,14 +50,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
-# Check if GLFW is enable #####################################################
-IF(NOT GLFW_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT GLFW_FOUND)
+# Check if Qt4 is enable #######################################################
+IF(NOT Qt4_FOUND)
+    MESSAGE(FATAL_ERROR "Qt4 was not found. The demo cannot be built.")
+ENDIF(NOT Qt4_FOUND)
 
 
 # Create the main program ######################################################
-add_executable(demo-anatomical-data-qt4 AnatomicalData-qt4.cxx)
+add_executable(demo-anatomical-data-qt4 AnatomicalData-qt4.cxx GLWidget.h GLWidget.cxx)
 target_link_libraries(demo-anatomical-data-qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-anatomical-data-qt4 BinaryAnatomicalDataQt4Files)
 
@@ -71,6 +71,8 @@ ELSE (NOT APPLE)
     SET (MACOSX_RPATH 1)
     SET(AnatomicalData-qt4_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData-qt4.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf

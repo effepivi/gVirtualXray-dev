@@ -99,3 +99,16 @@ IF (USE_GLUT)
     ENDIF(GLUT_FOUND)
 ENDIF(USE_GLUT)
 
+
+# Qt4 #########################################################################
+IF (USE_QT4)
+    FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
+    IF(Qt4_FOUND)
+        SET(CMAKE_AUTOMOC ON)
+        SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+        SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
+    ELSE(Qt4_FOUND)
+        MESSAGE(WARNING "Qt4 not found.")
+    ENDIF(Qt4_FOUND)
+ENDIF (USE_QT4)
+
