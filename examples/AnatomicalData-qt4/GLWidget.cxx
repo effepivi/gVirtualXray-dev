@@ -469,14 +469,12 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
         break;
 
     case Qt::Key_Plus:
-    //case GLFW_KEY_KP_ADD:
         m_zoom += 1.0 * cm;
         resizeGL(width(), height());
         std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
         break;
 
     case Qt::Key_Minus:
-    //case GLFW_KEY_KP_SUBTRACT:
         m_zoom -= 1.0 * cm;
         resizeGL(width(), height());
         std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;

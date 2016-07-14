@@ -97,14 +97,6 @@ inline QSize GLWidget::minimumSizeHint() const
 }
 
 
-//-----------------------------
-inline void GLWidget::animate()
-//-----------------------------
-{
-    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
-}
-
-
 //---------------------------------------------------
 inline void GLWidget::resizeGL(int width, int height)
 //---------------------------------------------------
@@ -178,6 +170,14 @@ inline void GLWidget::mouseMoveEvent(QMouseEvent *eventMove)
 {
     // Update the rotation matrix
     computeRotation(m_scene_rotation_matrix, eventMove->x(), eventMove->y());
+}
+
+
+//-----------------------------
+inline void GLWidget::animate()
+//-----------------------------
+{
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
 
 

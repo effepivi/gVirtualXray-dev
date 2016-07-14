@@ -185,19 +185,13 @@ private:
     //--------------------------------------------------------------------------
     /// Initialise OpenGL
     //--------------------------------------------------------------------------
-    void initializeGL();
+    virtual void initializeGL();
 
 
     //--------------------------------------------------------------------------
     /// Display the 3D scene using OpenGL
     //--------------------------------------------------------------------------
-    void paintGL();
-
-
-    //--------------------------------------------------------------------------
-    /// Post an event to create the animation
-    //--------------------------------------------------------------------------
-    void animate();
+    virtual void paintGL();
 
 
     //--------------------------------------------------------------------------
@@ -207,7 +201,7 @@ private:
     *   @param aHeight: the height of the widget in number of pixels
     */
     //--------------------------------------------------------------------------
-    void resizeGL(int aWidth, int aHeight);
+    virtual void resizeGL(int aWidth, int aHeight);
 
 
     //--------------------------------------------------------------------------
@@ -216,7 +210,7 @@ private:
     *   @param anEvent: The Qt event
     */
     //--------------------------------------------------------------------------
-    void keyPressEvent(QKeyEvent* anEvent);
+    virtual void keyPressEvent(QKeyEvent* anEvent);
 
 
     //--------------------------------------------------------------------------
@@ -225,7 +219,7 @@ private:
     *   @param anEvent: The Qt event
     */
     //--------------------------------------------------------------------------
-    void mousePressEvent(QMouseEvent* anEvent);
+    virtual void mousePressEvent(QMouseEvent* anEvent);
 
 
     //--------------------------------------------------------------------------
@@ -234,7 +228,7 @@ private:
     *   @param anEvent: The Qt event
     */
     //--------------------------------------------------------------------------
-    void mouseReleaseEvent(QMouseEvent* anEvent);
+    virtual void mouseReleaseEvent(QMouseEvent* anEvent);
 
 
     //--------------------------------------------------------------------------
@@ -243,7 +237,13 @@ private:
     *   @param anEvent: The Qt event
     */
     //--------------------------------------------------------------------------
-    void wheelEvent(QWheelEvent* anEvent);
+    virtual void wheelEvent(QWheelEvent* anEvent);
+
+
+    //--------------------------------------------------------------------------
+    /// Post an event to create the animation
+    //--------------------------------------------------------------------------
+    void animate();
 
 
     //--------------------------------------------------------------------------
@@ -252,7 +252,7 @@ private:
     *   @param anEvent: The Qt event
     */
     //--------------------------------------------------------------------------
-    void mouseMoveEvent(QMouseEvent* anEvent);
+    virtual void mouseMoveEvent(QMouseEvent* anEvent);
 
 
     //--------------------------------------------------------------------------
@@ -352,7 +352,12 @@ private:
 
     //--------------------------------------------------------------------------
     /// Decompress STL data from the RAM using the ZLib
-    here!!
+    /*
+    *   @param aMeshID: the ID of the polygon mesh to load
+    *   @param aPatientID:  the ID of the patient corresponding to aMeshID
+    *   @param apData:  the uncompressed polygon mesh data
+    *   @param aSize:   the size of the uncompressed polygon mesh data (in number of bytes)
+    */
     //--------------------------------------------------------------------------
     void decompressMesh(unsigned int aMeshID,
                         PatientID aPatientID,
@@ -362,12 +367,22 @@ private:
 
     //--------------------------------------------------------------------------
     /// Get an arcball vector depending on the mouse movement
+    /*
+    *   @param x:   the new mouse position along the X-axis
+    *   @param y:   the new mouse position along the Y-axis
+    *   @return the corresponding arcball vector
+    */
     //--------------------------------------------------------------------------
     Vec3<GLfloat> getArcballVector(int x, int y);
 
 
     //--------------------------------------------------------------------------
     /// Update the rotation matrix depending on the mouse movement
+    /*
+    *   @param aRotationMatrix: the rotation matrix (input/output)
+    *   @param aXmousePosition: the new mouse position along the X-axis
+    *   @param aYmousePosition: the new mouse position along the Y-axis
+    */
     //--------------------------------------------------------------------------
     void computeRotation(MATRIX4& aRotationMatrix,
             int aXmousePosition,
