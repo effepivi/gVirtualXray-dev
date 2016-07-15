@@ -45,6 +45,11 @@ cmake_minimum_required(VERSION 3.1.0)
 # Use C++ 11
 set (CMAKE_CXX_STANDARD 11)
 
+IF (APPLE)
+	set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
+ENDIF(APPLE)
+
+
 #IF(COMMAND cmake_policy)
        cmake_policy(SET CMP0003 NEW)
        cmake_policy(SET CMP0011 NEW)
