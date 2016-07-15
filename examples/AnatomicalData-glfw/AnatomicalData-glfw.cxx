@@ -88,6 +88,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 
 
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#include "gVirtualXRay/AtomicElement.h"
+#endif
+
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
 #endif
@@ -118,10 +122,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
-#endif
-
-#ifndef GVXR_ATOMIC_ELEMENT_H
-#include "gVirtualXRay/AtomicElement.h"
 #endif
 
 #ifndef GVXR_XRAY_RENDERER_H
@@ -1458,7 +1458,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+			float angle(g_rotation_speed * radian2degree(acos((std::min)(1.0, va.dotProduct(vb)))));
 
 			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
 			//axis_in_camera_coord.normalize();

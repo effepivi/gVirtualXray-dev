@@ -1237,7 +1237,7 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
             Vec3<GLfloat> va(getArcballVector(m_last_x_position,    m_last_y_position));
             Vec3<GLfloat> vb(getArcballVector(aXmousePosition, aYmousePosition));
 
-            float angle(g_rotation_speed * radian2degree(std::acos(std::min(1.0, va.dotProduct(vb)))));
+            float angle(g_rotation_speed * radian2degree(acos((std::min)(1.0, va.dotProduct(vb)))));
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
             //axis_in_camera_coord.normalize();

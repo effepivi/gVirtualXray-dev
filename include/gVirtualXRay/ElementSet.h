@@ -74,6 +74,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <string>
 
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#include "gVirtualXRay/AtomicElement.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -84,7 +88,6 @@ namespace gVirtualXRay {
 //******************************************************************************
 //  Class declaration
 //******************************************************************************
-class AtomicElement;
 class ElementSet;
 
 
