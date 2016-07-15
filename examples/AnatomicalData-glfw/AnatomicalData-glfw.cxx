@@ -120,6 +120,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#include "gVirtualXRay/AtomicElement.h"
+#endif
+
 #ifndef GVXR_XRAY_RENDERER_H
 #include "gVirtualXRay/XRayRenderer.h"
 #endif

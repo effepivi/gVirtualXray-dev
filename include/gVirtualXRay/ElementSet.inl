@@ -106,92 +106,11 @@ inline void ElementSet::clearMemory()
 }
 
 
-//----------------------------------------------------------------
-inline void ElementSet::addElement(const AtomicElement& anElement)
-//----------------------------------------------------------------
-{
-    m_element_set.insert(std::pair<unsigned short, AtomicElement>(anElement.getAtomicNumber(), anElement));
-}
-
-
 //-------------------------------------------------------
 inline unsigned int ElementSet::getElementSetSize() const
 //-------------------------------------------------------
 {
     return (m_element_set.size());
-}
-
-//-------------------------------------------------------------------------
-inline AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber)
-//-------------------------------------------------------------------------
-{
-    std::map<unsigned short, AtomicElement>::iterator element_ite(m_element_set.find(anAtomicNumber));
-
-    // Element found
-    if (element_ite != m_element_set.end())
-    {
-        return (element_ite->second);
-    }
-    // Element not found in the list
-    else
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: Element (atomic number: " << anAtomicNumber << ") not found.";
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-}
-
-
-//------------------------------------------------------------------------
-inline float ElementSet::getMolarMass(unsigned short anAtomicNumber) const
-//------------------------------------------------------------------------
-{
-    return (getElement(anAtomicNumber).getMolarMass());
-}
-
-
-//----------------------------------------------------------------------
-inline float ElementSet::getDensity(unsigned short anAtomicNumber) const
-//----------------------------------------------------------------------
-{
-    return (getElement(anAtomicNumber).getDensity());
-}
-
-
-//-------------------------------------------------------------------------------------
-inline const AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber) const
-//-------------------------------------------------------------------------------------
-{
-    std::map<unsigned short, AtomicElement>::const_iterator element_ite(m_element_set.find(anAtomicNumber));
-
-    // Element found
-    if (element_ite != m_element_set.end())
-    {
-        return (element_ite->second);
-    }
-    // Element not found in the list
-    else
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: Element (atomic number: " << anAtomicNumber << ") not found.";
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-}
-
-
-//----------------------------------------------------------------
-inline std::ostream & operator << (std::ostream& anOutputSream,
-                                   const ElementSet& anElementSet)
-//----------------------------------------------------------------
-{
-	for (std::map<unsigned short, AtomicElement>::const_iterator ite(anElementSet.m_element_set.begin());
-		ite != anElementSet.m_element_set.end();
-		++ite)
-	{
-		anOutputSream << ite->second << std::endl;
-	}
-	
-	return (anOutputSream);
 }
 
 

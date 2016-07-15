@@ -116,9 +116,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef GVXR_ATOMIC_ELEMENT_H
-#include "AtomicElement.h"
+#include "gVirtualXRay/AtomicElement.h"
 #endif
 
+#include "gVirtualXRay/framebufferObject.h"
 
 #include "MUx_Dx_gl2.frag.h"
 #include "MUx_Dx_gl2.vert.h"
@@ -1341,6 +1342,26 @@ void XRayRenderer::createFBOs()
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported computing mode.");
 		break;
 	}
+}
+
+
+//-----------------------------
+void XRayRenderer::deleteFBOs()
+//-----------------------------
+{
+    // Delete the FBOs
+    for (std::vector<FramebufferObject*>::iterator ite(m_p_fbo_set.begin());
+            ite != m_p_fbo_set.end();
+            ++ite)
+    {
+        if (*ite)
+        {
+            delete *ite;
+            *ite = 0;
+        }
+    }
+
+    m_p_fbo_set.clear();
 }
 
 

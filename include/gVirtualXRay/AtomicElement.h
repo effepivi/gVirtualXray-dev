@@ -83,9 +83,44 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+
+//******************************************************************************
+//  Class declaration
+//******************************************************************************
+class AtomicElement;
+
+
+
+//******************************************************************************
+//  Function declarations
+//******************************************************************************
+
+//------------------------------------------------------------------------------
+/// operator <<
+/*
+*   @param anOutputSream:   the stream in which an element is going to be printed
+*   @param anElement:   the element to send into the stream
+*   @return the output stream
+*/
+//------------------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& anOutputSream,
+        const gVirtualXRay::AtomicElement& anElement);
+
+
+//------------------------------------------------------------------------------
+/// operator >>
+/*
+*   @param anInputSream:   the stream from which an element is going to be read
+*   @param anElement:   the element to read from the stream
+*   @return the input stream
+*/
+//------------------------------------------------------------------------------
+std::istream& operator>>(std::istream& anInputSream,
+        gVirtualXRay::AtomicElement& anElement);
 
 
 //==============================================================================
@@ -290,32 +325,13 @@ public:
 
 
 	//---------------------------------------------------------------------------
-	///	operator <<
-	/*
-	*	@param anOutputSream:	the output stream
-	*	@param anElement:	the element to output
-	*	@return the output stream
-	*/
+	///	Load the attenuation coefficient from the XCOM database
 	//---------------------------------------------------------------------------
-	friend std::ostream & operator << (std::ostream& anOutputSream,
-			const AtomicElement& anElement);
-
-
-	//---------------------------------------------------------------------------
-	///	operator >>
-	/*
-	*	@param anInputSream:	the input stream
-	*	@param anElement:	the element to read
-	*	@return the input stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::istream & operator >> (std::istream& anInputSream,
-			AtomicElement& anElement);
+    void loadDataFromXCOM();
 
 
 //*****************************************************************************
-private:
-    void loadDataFromXCOM();
+protected:
 
     std::string    m_name;                  ///< The name of the element
     std::string    m_symbol;                ///< The symbol of the element

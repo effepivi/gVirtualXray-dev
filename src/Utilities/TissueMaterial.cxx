@@ -77,6 +77,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+#ifndef GVXR_UNITS_H
+#include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#include "gVirtualXRay/AtomicElement.h"
+#endif
+
+#ifndef GVXR_ELEMENT_SET_H
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
+#ifndef GVXR_CONSTANT_VALUES_H
+#include "gVirtualXRay/ConstantValues.h"
+#endif
+
+#ifndef GVXR_EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
+
 //******************************************************************************
 //	namespace
 //******************************************************************************
@@ -87,3 +108,126 @@ using namespace gVirtualXRay;
 //  Static member
 //******************************************************************************
 ElementSet* TissueMaterial::m_p_element_set = 0;
+
+
+//---------------------------------------
+void TissueMaterial::normaliseWeightSet()
+//---------------------------------------
+{
+    double sum(0);
+
+    for (int i(0); i < NUMBER_OF_ELEMENTS_PER_MATERIAL; ++i)
+    {
+        sum += m_p_weight_set[i];
+    }
+
+    if (sum > EPSILON)
+    {
+        for (int i(0); i < NUMBER_OF_ELEMENTS_PER_MATERIAL; ++i)
+        {
+            m_p_weight_set[i] /= sum;
+        }
+    }
+    m_molar_mass = computeMolarMass();
+}
+
+
+//---------------------------------------
+double TissueMaterial::computeMolarMass()
+//---------------------------------------
+{
+    if (!m_p_element_set)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element set has been registered.");
+    }
+
+    m_molar_mass =
+            m_p_weight_set[ 0] * m_p_element_set->getElement(Z_H).getMolarMass() +
+            m_p_weight_set[ 1] * m_p_element_set->getElement(Z_C).getMolarMass() +
+            m_p_weight_set[ 2] * m_p_element_set->getElement(Z_N).getMolarMass() +
+            m_p_weight_set[ 3] * m_p_element_set->getElement(Z_O).getMolarMass() +
+            m_p_weight_set[ 4] * m_p_element_set->getElement(Z_Na).getMolarMass() +
+            m_p_weight_set[ 5] * m_p_element_set->getElement(Z_Mg).getMolarMass() +
+            m_p_weight_set[ 6] * m_p_element_set->getElement(Z_P).getMolarMass() +
+            m_p_weight_set[ 7] * m_p_element_set->getElement(Z_S).getMolarMass() +
+            m_p_weight_set[ 8] * m_p_element_set->getElement(Z_Cl).getMolarMass() +
+            m_p_weight_set[ 9] * m_p_element_set->getElement(Z_Ar).getMolarMass() +
+            m_p_weight_set[10] * m_p_element_set->getElement(Z_K).getMolarMass() +
+            m_p_weight_set[11] * m_p_element_set->getElement(Z_Ca).getMolarMass() +
+            m_p_weight_set[12] * m_p_element_set->getElement(Z_Ti).getMolarMass() +
+            m_p_weight_set[13] * m_p_element_set->getElement(Z_Cu).getMolarMass() +
+            m_p_weight_set[14] * m_p_element_set->getElement(Z_Zn).getMolarMass() +
+            m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getMolarMass() +
+            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMolarMass();
+
+    return (m_molar_mass);
+}
+
+
+//-------------------------------------------------------
+double TissueMaterial::getDensity(short aHounsfieldValue)
+//-------------------------------------------------------
+{
+    double density(0);
+
+    if (aHounsfieldValue <= -1000)
+    {
+        density = 1.21e-3;
+    }
+    else if (-1000 <= aHounsfieldValue && aHounsfieldValue < -98)
+    {
+        // interpolate mass densities of air (1.21e-3 g/cm3) and adipose tissue 3 (0.93 g/cm3)
+        density = 1.21e-3 + (aHounsfieldValue - -1000) * (0.93 - 1.21e-3) / (-98 - -1000);
+    }
+    else if (-98 <= aHounsfieldValue && aHounsfieldValue <= 14)
+    {
+        // Use of Eq. 21 in W Schneider et al 2000
+        density = 1.018 + 0.893e-3 * aHounsfieldValue;
+    }
+    else if (14 < aHounsfieldValue && aHounsfieldValue < 23)
+    {
+        density = 1.03;
+    }
+    else if (23 <= aHounsfieldValue && aHounsfieldValue <= 100)
+    {
+        // Use of Eq. 23 in W Schneider et al 2000
+        density = 1.003 + 1.169e-3 * aHounsfieldValue;
+    }
+    else if (100 <= aHounsfieldValue)
+    {
+        // Use of Eq. 19 in W Schneider et al 2000
+        density = 1.017 + 0.592e-3 * aHounsfieldValue;
+    }
+
+    return (density * (g / cm3));
+}
+
+
+//-------------------------------------------------------------------------------------------
+double TissueMaterial::getMassAttenuationTotal(short aHounsfieldValue, double anEnergy) const
+//-------------------------------------------------------------------------------------------
+{
+    if (!m_p_element_set)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element set has been registered.");
+    }
+
+    return (m_p_weight_set[ 0] * m_p_element_set->getElement(Z_H).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 1] * m_p_element_set->getElement(Z_C).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 2] * m_p_element_set->getElement(Z_N).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 3] * m_p_element_set->getElement(Z_O).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 4] * m_p_element_set->getElement(Z_Na).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[ 5] * m_p_element_set->getElement(Z_Mg).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[ 6] * m_p_element_set->getElement(Z_P).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 7] * m_p_element_set->getElement(Z_S).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 8] * m_p_element_set->getElement(Z_Cl).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[ 9] * m_p_element_set->getElement(Z_Ar).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[10] * m_p_element_set->getElement(Z_K).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[11] * m_p_element_set->getElement(Z_Ca).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[12] * m_p_element_set->getElement(Z_Ti).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[13] * m_p_element_set->getElement(Z_Cu).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[14] * m_p_element_set->getElement(Z_Zn).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMassAttenuationTotal(anEnergy)
+    );
+}

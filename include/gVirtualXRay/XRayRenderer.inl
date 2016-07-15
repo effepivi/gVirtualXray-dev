@@ -76,8 +76,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#include "gVirtualXRay/framebufferObject.h"
-
 
 //******************************************************************************
 //  define
@@ -533,26 +531,6 @@ namespace gVirtualXRay {
 
 
 #endif
-
-
-    //------------------------------------
-    inline void XRayRenderer::deleteFBOs()
-    //------------------------------------
-    {
-        // Delete the FBOs
-        for (std::vector<FramebufferObject*>::iterator ite(m_p_fbo_set.begin());
-                ite != m_p_fbo_set.end();
-                ++ite)
-        {
-            if (*ite)
-            {
-                delete *ite;
-                *ite = 0;
-            }
-        }
-
-        m_p_fbo_set.clear();
-    }
 
 
     //------------------------------------------------------------

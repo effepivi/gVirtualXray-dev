@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,14 +35,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalData.cxx
+*	@file		AnatomicalData-qt4.cxx
 *
 *	@brief      Demo to illustrate the tomography acquisition and reconstruction
-*	             processesusing anatomical data.
+*	             processes using anatomical data and Qt4.
 *
 *	@version	1.0
 *
-*	@date		11/11/2014
+*	@date		13/07/2016
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *	@section	Copyright
 *				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*				http://www.fpvidal.net/, Jul 2016, 2016, version 1.0,
 *				BSD 3-Clause License
 *
 ********************************************************************************

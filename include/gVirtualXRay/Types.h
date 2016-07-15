@@ -97,17 +97,6 @@ namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	defines
-//******************************************************************************
-/// Biggest value that can be stored with a real number
-#define RATIONAL_NUMBER_MAX   FLT_MAX
-
-
-/// Smallest value that can be stored with a real number
-#define EPSILON               0.0000001
-
-
-//******************************************************************************
 //	type declaration
 //******************************************************************************
 /// Type of data used to store sinograms

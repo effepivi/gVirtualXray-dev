@@ -74,15 +74,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <string>
 
-#ifndef GVXR_ATOMIC_ELEMENT_H
-#include "AtomicElement.h"
-#endif
-
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+
+//******************************************************************************
+//  Class declaration
+//******************************************************************************
+class AtomicElement;
+class ElementSet;
+
+
+//******************************************************************************
+//  Function declarations
+//******************************************************************************
+
+//---------------------------------------------------------------------------
+/// operator <<
+/*
+*   @param anOutputSream:   the output stream
+*   @param anElement:   the element to output
+*   @return the output stream
+*/
+//---------------------------------------------------------------------------
+std::ostream & operator << (std::ostream& anOutputSream,
+        const gVirtualXRay::ElementSet& anElementSet);
 
 
 //==============================================================================
@@ -202,16 +221,22 @@ public:
 	unsigned int getElementSetSize() const;
 
 
-	//---------------------------------------------------------------------------
-	///	operator <<
-	/*
-	*	@param anOutputSream:	the output stream
-	*	@param anElement:	the element to output
-	*	@return the output stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::ostream & operator << (std::ostream& anOutputSream,
-			const ElementSet& anElementSet);
+    //---------------------------------------------------------------------------
+    /// Accessor on the begin const_iterator of m_element_set.
+    /*
+    *   @return the begin const_iterator of m_element_set
+    */
+    //---------------------------------------------------------------------------
+    std::map<unsigned short, AtomicElement>::const_iterator begin() const;
+
+
+    //---------------------------------------------------------------------------
+    /// Accessor on the end const_iterator of m_element_set.
+    /*
+    *   @return the end const_iterator of m_element_set
+    */
+    //---------------------------------------------------------------------------
+    std::map<unsigned short, AtomicElement>::const_iterator end() const;
 
 
 //*****************************************************************************

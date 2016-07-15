@@ -59,19 +59,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************************************************************
 */
 
-//******************************************************************************
-//	Include
-//******************************************************************************
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
-#ifndef GVXR_UNITS_H
-#include "gVirtualXRay/Units.h"
-#endif
-
-
-//******************************************************************************
 //  Defines
 //******************************************************************************
 #define PREFIX ".."
@@ -83,42 +70,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
-//--------------------------
-inline GLWidget::~GLWidget()
-//--------------------------
-{}
-
-
 //--------------------------------------------
 inline QSize GLWidget::minimumSizeHint() const
 //--------------------------------------------
 {
     return QSize(50, 50);
-}
-
-
-//---------------------------------------------------
-inline void GLWidget::resizeGL(int width, int height)
-//---------------------------------------------------
-{
-    // Avoid a division by zero
-    if (height == 0)
-    {
-        // Prevent divide by 0
-        height = 1;
-    }
-
-    int x(0), y(0), w(width), h(height);
-
-    // Update the viewport
-    glViewport(x, y, w, h);
-
-    m_text_2D_projection_matrix = buildOrthoProjectionMatrix(0,
-            width,
-            height,
-            0,
-            -1.0,
-            1.0);
 }
 
 
@@ -144,26 +100,6 @@ inline void GLWidget::mouseReleaseEvent(QMouseEvent *releaseEvent)
 }
 
 
-//-------------------------------------------------------
-inline void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
-//-------------------------------------------------------
-{
-    // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
-    {
-        // Stop using the arc ball
-        m_use_arc_ball = false;
-
-        // Change the zoom
-        m_zoom += 0.1 * wheelEvent->delta() * cm;
-
-        // Update the projection matrix
-        resizeGL(width(), height());
-    }
-
-}
-
-
 //----------------------------------------------------------
 inline void GLWidget::mouseMoveEvent(QMouseEvent *eventMove)
 //----------------------------------------------------------
@@ -178,48 +114,6 @@ inline void GLWidget::animate()
 //-----------------------------
 {
     QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
-}
-
-
-//------------------------------
-inline void GLWidget::initGLEW()
-//------------------------------
-{
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-
-    do
-    {
-    } while (glGetError() != GL_NO_ERROR);
-}
-
-
-//----------------------------------
-inline void GLWidget::initFreeType()
-//----------------------------------
-{
-#ifdef HAS_FREETYPE
-    m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    m_display_help = true;
-#endif
-}
-
-
-//---------------------------------------
-inline void GLWidget::loadXRaySimulator()
-//---------------------------------------
-{
-    // Initialise the X-ray renderer
-    m_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F,
-            &m_xray_detector,
-            &m_xray_beam);
 }
 
 

@@ -73,12 +73,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <cstdlib>
 
-#ifndef GVXR_CONSTANT_VALUES_H
-#include "gVirtualXRay/ConstantValues.h"
-#endif
-
 #ifndef GVXR_ATOMIC_ELEMENT_H
 #include "gVirtualXRay/AtomicElement.h"
+#endif
+
+#ifndef GVXR_CONSTANT_VALUES_H
+#include "gVirtualXRay/ConstantValues.h"
 #endif
 
 #ifndef GVXR_EXCEPTION_H
@@ -87,6 +87,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
+#endif
+
+#ifndef GVXR_UNITS_H
+#include "gVirtualXRay/Units.h"
 #endif
 
 #ifdef gVirtualXRay_XCOM_PATH
@@ -428,4 +432,56 @@ void AtomicElement::loadDataFromXCOM()
             }
         }
     }
+}
+
+
+//-----------------------------------------------------------------
+std::ostream& gVirtualXRay::operator<<(std::ostream& anOutputSream,
+                                       const AtomicElement& anElement)
+//-----------------------------------------------------------------
+{
+    anOutputSream << "Element: "                 << anElement.getName() << "(" << anElement.getSymbol() << ")" << std::endl;
+    anOutputSream << "\tatomic number (Z): "     << anElement.getAtomicNumber()           << std::endl;
+    anOutputSream << "\tmolar mass (in g/mol): " << anElement.getMolarMass() / (g / mole) << std::endl;
+    anOutputSream << "\tdensity (in g/cm3): "    << anElement.getDensity() / (g/cm3)      << std::endl;
+    anOutputSream << "\tstate: "                 << anElement.getState()                  << std::endl;
+
+    return (anOutputSream);
+}
+
+
+//----------------------------------------------------------------
+std::istream& gVirtualXRay::operator>>(std::istream& anInputSream,
+                                       AtomicElement& anElement)
+//----------------------------------------------------------------
+{
+    std::string temp_string;
+    unsigned short temp_short;
+    double temp_float;
+
+    anInputSream >> temp_string;
+    anElement.setName(temp_string);
+
+    anInputSream >> temp_string;
+    anElement.setSymbol(temp_string);
+
+    anInputSream >> temp_short;
+    anElement.setAtomicNumber(temp_short);
+
+    anInputSream >> temp_float;
+    temp_float *= g / mole;
+    anElement.setMolarMass(temp_float);
+
+    anInputSream >> temp_float;
+    temp_float *= g / cm3;
+    anElement.setDensity(temp_float);
+
+    anInputSream >> temp_string;
+    anElement.setState(temp_string);
+
+
+    // Load the data from the XCOM database if possible
+    anElement.loadDataFromXCOM();
+
+    return (anInputSream);
 }

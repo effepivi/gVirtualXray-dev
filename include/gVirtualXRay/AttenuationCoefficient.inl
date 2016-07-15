@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <iostream>
 
-#ifndef GVXR_UNITS_H
-#include "gVirtualXRay/Units.h"
-#endif
-
 
 //******************************************************************************
 //	namespace

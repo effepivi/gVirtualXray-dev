@@ -62,15 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <math.h>
-
-#ifndef GVXR_EXCEPTION_H
-#include "gVirtualXRay/Exception.h"
-#endif
-
-#ifndef GVXR_UNITS_H
-#include "gVirtualXRay/Units.h"
-#endif
+#include <cmath>
 
 
 //******************************************************************************
@@ -290,43 +282,6 @@ inline AtomicElement& AtomicElement::operator=(const AtomicElement& anElement)
 	m_state = anElement.m_state;
 
 	return (*this);
-}
-
-
-//----------------------------------------------------------------
-inline std::ostream & operator << (std::ostream& anOutputSream,
-                                   const AtomicElement& anElement)
-//----------------------------------------------------------------
-{
-	anOutputSream << "Element: "                 << anElement.m_name << "(" << anElement.m_symbol << ")" << std::endl;
-	anOutputSream << "\tatomic number (Z): "     << anElement.m_atomic_number           << std::endl;
-	anOutputSream << "\tmolar mass (in g/mol): " << anElement.m_molar_mass / (g / mole) << std::endl;
-	anOutputSream << "\tdensity (in g/cm3): "    << anElement.m_density / (g/cm3)       << std::endl;
-	anOutputSream << "\tstate: "                 << anElement.m_state                   << std::endl;
-	
-	return (anOutputSream);
-}
-
-
-//------------------------------------------------------------
-inline std::istream & operator >> (std::istream& anInputSream,
-                                   AtomicElement& anElement)
-//------------------------------------------------------------
-{
-	anInputSream >> anElement.m_name;
-	anInputSream >> anElement.m_symbol;
-	anInputSream >> anElement.m_atomic_number;
-	anInputSream >> anElement.m_molar_mass;
-	anInputSream >> anElement.m_density;
-	anInputSream >> anElement.m_state;
-	
-	anElement.m_molar_mass *= g / mole;
-	anElement.m_density    *= g / cm3;
-
-    // Load the data from the XCOM database if possible
-	anElement.loadDataFromXCOM();
-
-	return (anInputSream);
 }
 
 

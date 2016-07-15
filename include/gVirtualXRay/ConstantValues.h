@@ -78,6 +78,17 @@ namespace gVirtualXRay {
 
 
 //******************************************************************************
+//  defines
+//******************************************************************************
+/// Biggest value that can be stored with a real number
+#define RATIONAL_NUMBER_MAX   FLT_MAX
+
+
+/// Smallest value that can be stored with a real number
+#define EPSILON               0.0000001
+
+
+//******************************************************************************
 //	Constant declarations
 //******************************************************************************
 const double PI = 3.14159265358979323846; ///< Pi

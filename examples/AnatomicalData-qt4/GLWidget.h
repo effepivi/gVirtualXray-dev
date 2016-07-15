@@ -76,28 +76,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QGLWidget>
 
-#ifndef GVXR_POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
 #ifndef GVXR_VEC3_H
 #include "gVirtualXRay/Vec3.h"
-#endif
-
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
 #endif
 
 #ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_SHADER_H
-#include "gVirtualXRay/Shader.h"
+#ifndef GVXR_TYPES_H
+#include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
-#include "gVirtualXRay/TextRenderer.h"
+#ifndef GVXR_ATOMIC_ELEMENT_H
+#include "gVirtualXRay/AtomicElement.h"
 #endif
 
 #ifndef GVXR_XRAY_BEAM_H
@@ -112,11 +104,25 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef GVXR_SHADER_H
+#include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef GVXR_TEXT_RENDERER_H
+#include "gVirtualXRay/TextRenderer.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+
+//******************************************************************************
+//  Class declaration
+//******************************************************************************
+class PolygonMesh;
 
 
 //==============================================================================
