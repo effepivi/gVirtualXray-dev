@@ -40,7 +40,7 @@ find_package(gVirtualXRay REQUIRED)
 OPTION (USE_ITK  "Build the demos that make use of the InsightToolkit (ITK)" OFF)
 OPTION (USE_FLTK "Build the demos that make use of the Fast Light Toolkit (FLTK)" OFF)
 OPTION (USE_GLUT "Build the demos that make use of the OpenGL Utility Toolkit (GLUT)" OFF)
-OPTION (USE_GLFW "Build the demos that make use of GLFW" ON)
+OPTION (USE_GLFW "Build the demos that make use of GLFW" OFF)
 OPTION (USE_QT4  "Build the demos that make use of Qt4" ON)
 OPTION (USE_QT5  "Build the demos that make use of Qt5" OFF)
 
@@ -89,7 +89,7 @@ IF (USE_GLFW)
 ENDIF (USE_GLFW)
 
 IF (USE_QT4)
-    add_subdirectory(AnatomicalData-qt4)
+	add_subdirectory(AnatomicalData-qt4-moreRealistic)
 ENDIF (USE_QT4)
 
 IF (USE_QT5)
