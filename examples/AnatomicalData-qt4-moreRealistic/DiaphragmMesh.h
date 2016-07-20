@@ -1,0 +1,51 @@
+#ifndef DIAPHRAGM_MESH_H
+#define DIAPHRAGM_MESH_H
+
+/**
+********************************************************************************
+*
+*	@file		DiaphragmMesh.h
+*
+*	@brief      Class to handle a polygon mesh for a diaphragm.
+*
+*	@version	1.0
+*
+*	@date		18/07/2016
+*
+*	@author		Andréas Meuleman
+*
+********************************************************************************
+*/
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+
+#ifndef SOFT_TISSUE_MESH_H
+#include "SoftTissueMesh.h"
+#endif
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
+namespace gVirtualXRay {
+
+
+//==============================================================================
+/**
+*   @class  DiaphragmMesh
+*   @brief  DiaphragmMesh is a class to handle a polygon mesh for a diaphragm.
+*/
+//==============================================================================
+class DiaphragmMesh: public SoftTissueMesh
+//------------------------------------------------------------------------------
+{
+//******************************************************************************
+public:
+	DiaphragmMesh();
+	virtual ~DiaphragmMesh();
+};
+
+} // namespace gVirtualXRay
+
+#endif // DIAPHRAGM_MESH_H

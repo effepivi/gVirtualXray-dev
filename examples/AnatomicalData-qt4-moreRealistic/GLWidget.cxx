@@ -115,6 +115,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "AnatomicalMesh.h"
 #endif
 
+
+#include "BoneMesh.h"
+
+#include "DiaphragmMesh.h"
+
+#include "LiverMesh.h"
+
+#include "LungsMesh.h"
+
+#include "SkinMesh.h"
+
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
 
@@ -225,8 +236,8 @@ GLWidget::GLWidget(QWidget *parent):
 
     m_display_beam(true),
 
-    m_p_P4_polygon_mesh_set(6),
-    m_p_P5_polygon_mesh_set(6),
+    m_p_P4_polygon_mesh_set(),
+    m_p_P5_polygon_mesh_set(),
     m_current_patient(P4),
 
     m_display_wireframe(false),
@@ -243,8 +254,24 @@ GLWidget::GLWidget(QWidget *parent):
     #endif
 
     m_swap_patient(false)
+
 //----------------------------------
 {
+	//Initialize the polygon meshes
+	m_p_P4_polygon_mesh_set.push_back(*(new SkinMesh()));
+	m_p_P4_polygon_mesh_set.push_back(*(new LiverMesh()));
+	m_p_P4_polygon_mesh_set.push_back(*(new LungsMesh()));
+	m_p_P4_polygon_mesh_set.push_back(*(new DiaphragmMesh()));
+	m_p_P4_polygon_mesh_set.push_back(*(new BoneMesh()));
+	m_p_P4_polygon_mesh_set.push_back(*(new BoneMesh()));
+
+	m_p_P5_polygon_mesh_set.push_back(*(new SkinMesh()));
+	m_p_P5_polygon_mesh_set.push_back(*(new LiverMesh()));
+	m_p_P5_polygon_mesh_set.push_back(*(new LungsMesh()));
+	m_p_P5_polygon_mesh_set.push_back(*(new DiaphragmMesh()));
+	m_p_P5_polygon_mesh_set.push_back(*(new BoneMesh()));
+	m_p_P5_polygon_mesh_set.push_back(*(new BoneMesh()));
+
     // Initialize Qt
     // and create a windowed mode window and its OpenGL context
 
@@ -669,90 +696,70 @@ void GLWidget::loadXRaySimulator()
 void GLWidget::loadPatient(PatientID aPatientID)
 //----------------------------------------------
 {
-    std::vector<AnatomicalMesh>* p_mesh_set(0);
-    double const* p_HU_set(0);
+	std::vector<AnatomicalMesh>* p_mesh_set(0);
+	    double const* p_HU_set(0);
 
-    switch (aPatientID)
-    {
-        case P4:
-            p_mesh_set = &m_p_P4_polygon_mesh_set;
-            p_HU_set = g_p_P4_HU_set;
-            break;
+	    switch (aPatientID)
+	    {
+	        case P4:
+	            p_mesh_set = &m_p_P4_polygon_mesh_set;
+	            p_HU_set = g_p_P4_HU_set;
+	            break;
 
-        case P5:
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
-            p_HU_set = g_p_P5_HU_set;
-            break;
+	        case P5:
+	            p_mesh_set = &m_p_P5_polygon_mesh_set;
+	            p_HU_set = g_p_P5_HU_set;
+	            break;
 
-        default:
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
-            p_HU_set = g_p_P5_HU_set;
-    }
+	        default:
+	            p_mesh_set = &m_p_P5_polygon_mesh_set;
+	            p_HU_set = g_p_P5_HU_set;
+	    }
 
-    // Set geometry
-    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
-    {
-        char* p_data(0);
-        unsigned int data_size(0);
-        decompressMesh(i, aPatientID, p_data, data_size);
+	    // Set geometry
+	    for (unsigned int i(0); i < (*p_mesh_set).size(); ++i)
+	    {
+	        char* p_data(0);
+	        unsigned int data_size(0);
+	        decompressMesh(i, aPatientID, p_data, data_size);
 
-        (*p_mesh_set)[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+	        (*p_mesh_set)[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
 
-        // Delete data
-        if (p_data)
-        {
-            delete [] p_data;
-            p_data = 0;
-        }
+	        // Delete data
+	        if (p_data)
+	        {
+	            delete [] p_data;
+	            p_data = 0;
+	        }
 
-        //g_p_polygon_mesh_set[i].mergeVertices();
-        (*p_mesh_set)[i].setHounsfieldValue(p_HU_set[i]);
+	        //g_p_polygon_mesh_set[i].mergeVertices();
+	        (*p_mesh_set)[i].setHounsfieldValue(p_HU_set[i]);
+	    }
 
-        float red((float(rand()) / (RAND_MAX)) + 1);
-        float green((float(rand()) / (RAND_MAX)) + 1);
-        float blue((float(rand()) / (RAND_MAX)) + 1);
-        float alpha(1.0);
+	    // Compute the translation vector
+	    switch (aPatientID)
+	    {
+	        case P4:
+	            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+	            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
+	            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
+	            break;
 
-        if (i == SKIN_ID)
-        {
-            alpha = 0.25;
-        }
+	        case P5:
+	            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+	            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
+	            break;
 
-        VEC3 base_colour(red, green, blue);
-        base_colour.normalise();
-
-        (*p_mesh_set)[i].getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-        (*p_mesh_set)[i].getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-        (*p_mesh_set)[i].getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
-        (*p_mesh_set)[i].getMaterial().setShininess(50);
-    }
-
-    // Compute the translation vector
-    switch (aPatientID)
-    {
-        case P4:
-            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
-            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
-            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
-            break;
-
-        case P5:
-            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
-            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
-            break;
-
-        default:
-            break;
-    }
+	        default:
+	            break;
+	    }
 }
-
 
 //----------------------------------------------------
 void GLWidget::usePatient(const PatientID& aPatientID)
 //----------------------------------------------------
 {
     std::vector<AnatomicalMesh>* p_mesh_set(0);
-
     switch (aPatientID)
     {
         case P4:
@@ -848,8 +855,8 @@ void GLWidget::render()
         GLint shader_id(m_display_shader.getProgramHandle());
 
         // Define the light colours here
-        GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-        GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+        GLfloat light_global_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+        GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
         GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
@@ -1008,7 +1015,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
                               GLint aShaderID)
 //----------------------------------------------------------------
 {
-    for (unsigned int i(1); i < apMeshSet.size(); ++i)
+    for (int i(apMeshSet.size()-1); i >=0; --i)
     {
         // Get the material
         Material& material(apMeshSet[i].getMaterial());
@@ -1036,25 +1043,25 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
         }
         else
         {
-            apMeshSet[i].display();
+        	if(i==0)
+     	    {
+        		pushEnableDisableState(GL_BLEND);
+        		glDisable(GL_CULL_FACE);
+
+        		glEnable(GL_BLEND);
+        		glBlendFunc(GL_ONE, GL_ONE);
+
+        		apMeshSet[i].display();
+
+        		glEnable(GL_CULL_FACE);
+        		glCullFace(GL_BACK);
+        		popEnableDisableState();
+    	    }
+        	else
+        	{
+                apMeshSet[i].display();
+        	}
         }
-    }
-
-    // Display the skin with transparency
-    if (!m_display_wireframe)
-    {
-        pushEnableDisableState(GL_BLEND);
-
-        glEnable (GL_BLEND);
-        glBlendFunc (GL_ONE, GL_ONE);
-
-        apMeshSet[SKIN_ID].display();
-
-        popEnableDisableState();
-    }
-    else
-    {
-        apMeshSet[SKIN_ID].displayWireFrame();
     }
 }
 

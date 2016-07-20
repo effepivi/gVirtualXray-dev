@@ -1,13 +1,12 @@
-#ifndef ANATOMICAL_GL_WIDGET_H
-#define ANATOMICAL_GL_WIDGET_H
-
+#ifndef LUNGS_MESH_H
+#define LUNGS_MESH_H
 
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalGLWidget.h
+*	@file		LungsMesh.h
 *
-*	@brief      Class to handle an anatomical rendering using OpenGL.
+*	@brief      Class to handle a polygon mesh for lungs.
 *
 *	@version	1.0
 *
@@ -18,48 +17,35 @@
 ********************************************************************************
 */
 
-
 //******************************************************************************
 //	Include
 //******************************************************************************
 
-#ifndef GVXR_GL_WIDGET_H
-#include "GLWidget.h"
+#ifndef SOFT_TISSUE_MESH_H
+#include "SoftTissueMesh.h"
 #endif
 
 //******************************************************************************
 //  namespace
 //******************************************************************************
-namespace gVirtualXRay{
+namespace gVirtualXRay {
+
 
 //==============================================================================
 /**
-*   @class  AnatomicalGLWidget
-*   @brief  AnatomicalGLWidget is a class to handle a AnatomicalMesh rendering
-*   		in an OpenGL window
+*   @class  LungsMesh
+*   @brief  LungsMesh is a class to handle a polygon mesh for a lung.
 */
 //==============================================================================
-class AnatomicalGLWidget: public GLWidget
+class LungsMesh: public SoftTissueMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
 public:
-	AnatomicalGLWidget(QWidget *parent = 0);
-	virtual ~AnatomicalGLWidget();
-
-private:
-    /*virtual void initializeGL();
-
-
-	virtual void loadPatient(PatientID aPatientID);
-
-
-	virtual void render();
-
-
-	virtual void displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
-	                        GLint aShaderID);*/
-
+	LungsMesh();
+	virtual ~LungsMesh();
 };
-} //namespace gVirtualXRay
-#endif //ANATOMICAL_GL_WIDGET_H
+
+} // namespace gVirtualXRay
+
+#endif // LUNGS_MESH_H

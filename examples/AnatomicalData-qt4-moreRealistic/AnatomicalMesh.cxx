@@ -34,8 +34,7 @@ AnatomicalMesh::AnatomicalMesh():
 		PolygonMesh()
 //----------------------------------------
 {
-	// TODO Auto-generated constructor stub
-
+	getMaterial().setSpecularColour(1.,1.,1.,1.);
 }
 
 //----------------------------------------

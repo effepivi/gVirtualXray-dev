@@ -252,7 +252,7 @@ protected:
     //--------------------------------------------------------------------------
     /// Post an event to create the animation
     //--------------------------------------------------------------------------
-    void animate();
+    virtual void animate();
 
 
     //--------------------------------------------------------------------------
@@ -267,43 +267,43 @@ protected:
     //--------------------------------------------------------------------------
     /// Initialise GLEW
     //--------------------------------------------------------------------------
-    void initGLEW();
+    virtual void initGLEW();
 
 
     //--------------------------------------------------------------------------
     /// Initialise OpenGL
     //--------------------------------------------------------------------------
-    void initGL();
+    virtual void initGL();
 
 
     //--------------------------------------------------------------------------
     /// Initialise Freetype
     //--------------------------------------------------------------------------
-    void initFreeType();
+    virtual void initFreeType();
 
 
     //--------------------------------------------------------------------------
     /// Set the properties of the X-ray detector
     //--------------------------------------------------------------------------
-    void loadDetector();
+    virtual void loadDetector();
 
 
     //--------------------------------------------------------------------------
     /// Set the properties of the X-ray source
     //--------------------------------------------------------------------------
-    void loadSource();
+    virtual void loadSource();
 
 
     //--------------------------------------------------------------------------
     /// Set the properties of the X-ray simulation
     //--------------------------------------------------------------------------
-    void loadXRaySimulator();
+    virtual void loadXRaySimulator();
 
 
     //--------------------------------------------------------------------------
     /// Load STL files (patient geometrical data)
     //--------------------------------------------------------------------------
-    void loadSTLFiles();
+    virtual void loadSTLFiles();
 
 
     //--------------------------------------------------------------------------
@@ -321,19 +321,19 @@ protected:
     *   @param aPatientID:  ID of the patient to use
     */
     //--------------------------------------------------------------------------
-    void usePatient(const PatientID& aPatientID);
+    virtual void usePatient(const PatientID& aPatientID);
 
 
     //--------------------------------------------------------------------------
     /// Reset the rotation angle and the acquisition type to their default values
     //--------------------------------------------------------------------------
-    void reset();
+    virtual void reset();
 
 
     //--------------------------------------------------------------------------
     /// Compute an up-to-date X-ray image
     //--------------------------------------------------------------------------
-    void updateXRayImage();
+    virtual void updateXRayImage();
 
 
     //--------------------------------------------------------------------------
@@ -356,7 +356,7 @@ protected:
     //--------------------------------------------------------------------------
     /// Display a help message
     //--------------------------------------------------------------------------
-    void displayHelp();
+    virtual void displayHelp();
 
 
     //--------------------------------------------------------------------------
@@ -368,7 +368,7 @@ protected:
     *   @param aSize:   the size of the uncompressed polygon mesh data (in number of bytes)
     */
     //--------------------------------------------------------------------------
-    void decompressMesh(unsigned int aMeshID,
+    virtual void decompressMesh(unsigned int aMeshID,
                         PatientID aPatientID,
                         char*& apData,
                         unsigned int& aSize);
@@ -382,7 +382,7 @@ protected:
     *   @return the corresponding arcball vector
     */
     //--------------------------------------------------------------------------
-    Vec3<GLfloat> getArcballVector(int x, int y);
+    virtual Vec3<GLfloat> getArcballVector(int x, int y);
 
 
     //--------------------------------------------------------------------------
@@ -393,7 +393,7 @@ protected:
     *   @param aYmousePosition: the new mouse position along the Y-axis
     */
     //--------------------------------------------------------------------------
-    void computeRotation(MATRIX4& aRotationMatrix,
+    virtual void computeRotation(MATRIX4& aRotationMatrix,
             int aXmousePosition,
             int aYmousePosition);
 

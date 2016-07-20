@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef SOFT_TISSUE_MESH_H
-#include "SoftTissueMesh.h"
+#ifndef ANATOMICAL_MESH_H
+#include "AnatomicalMesh.h"
 #endif
 
 //******************************************************************************
@@ -37,7 +37,7 @@ namespace gVirtualXRay {
 *   @brief  SkinMesh is a class to handle a polygon mesh for Skin.
 */
 //==============================================================================
-class SkinMesh: public SoftTissueMesh
+class SkinMesh: public AnatomicalMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
