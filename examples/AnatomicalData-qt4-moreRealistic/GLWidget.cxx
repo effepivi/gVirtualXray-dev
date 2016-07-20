@@ -91,10 +91,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GLWidget.h"
 #endif
 
-#ifndef GVXR_POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
 #ifndef GVXR_UNITS_H
 #include "gVirtualXRay/Units.h"
 #endif
@@ -115,6 +111,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef ANATOMICAL_MESH_H
+#include "AnatomicalMesh.h"
+#endif
 
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
@@ -670,7 +669,7 @@ void GLWidget::loadXRaySimulator()
 void GLWidget::loadPatient(PatientID aPatientID)
 //----------------------------------------------
 {
-    std::vector<PolygonMesh>* p_mesh_set(0);
+    std::vector<AnatomicalMesh>* p_mesh_set(0);
     double const* p_HU_set(0);
 
     switch (aPatientID)
@@ -752,7 +751,7 @@ void GLWidget::loadPatient(PatientID aPatientID)
 void GLWidget::usePatient(const PatientID& aPatientID)
 //----------------------------------------------------
 {
-    std::vector<PolygonMesh>* p_mesh_set(0);
+    std::vector<AnatomicalMesh>* p_mesh_set(0);
 
     switch (aPatientID)
     {
@@ -870,9 +869,11 @@ void GLWidget::render()
         glUniform4fv(handle, 1, &light_specular[0]);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        VEC3 light_position(0, 0, m_zoom);
-        handle = glGetUniformLocation(shader_id, "light_position");
-        glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
+
+        VEC3 light_direction(-1, 3, 1);
+        light_direction.normalize();
+        handle = glGetUniformLocation(shader_id, "light_direction");
+        glUniform3f(handle, light_direction.getX(), light_direction.getY(), light_direction.getZ());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the status of OpenGL and of the current FBO
@@ -1003,7 +1004,7 @@ void GLWidget::render()
 
 
 //----------------------------------------------------------------
-void GLWidget::displayPatient(std::vector<PolygonMesh>& apMeshSet,
+void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
                               GLint aShaderID)
 //----------------------------------------------------------------
 {

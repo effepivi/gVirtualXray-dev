@@ -67,11 +67,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
-
+#include <QtGui>
 #include <vector>
 
 #include <QGLWidget>
@@ -112,6 +111,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
+#ifndef ANATOMICAL_MESH_H
+#include "AnatomicalMesh.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -122,7 +125,7 @@ namespace gVirtualXRay {
 //******************************************************************************
 //  Class declaration
 //******************************************************************************
-class PolygonMesh;
+class GLWidget;
 
 
 //==============================================================================
@@ -135,7 +138,7 @@ class GLWidget: public QGLWidget
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
-private:
+protected:
     /// New type defining the type of CT acquisition
     typedef enum
     {
@@ -175,7 +178,7 @@ public:
 
 
 //*****************************************************************************
-private:
+protected:
     //--------------------------------------------------------------------------
     /// Set the minimum window size
     //--------------------------------------------------------------------------
@@ -309,7 +312,7 @@ private:
     *   @param aPatientID:  ID of the patient to use
     */
     //--------------------------------------------------------------------------
-    void loadPatient(PatientID aPatientID);
+    virtual void loadPatient(PatientID aPatientID);
 
 
     //--------------------------------------------------------------------------
@@ -336,7 +339,7 @@ private:
     //--------------------------------------------------------------------------
     /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
-    void render();
+    virtual void render();
 
 
     //--------------------------------------------------------------------------
@@ -346,7 +349,7 @@ private:
     *   @param aShaderID:   The GLSL shader used to display apMeshSet
     */
     //--------------------------------------------------------------------------
-    void displayPatient(std::vector<PolygonMesh>& apMeshSet,
+    virtual void displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
                         GLint aShaderID);
 
 
@@ -441,10 +444,10 @@ private:
     Shader m_display_shader;
 
     /// Set of polygon meshes for Patient 4
-    std::vector<PolygonMesh> m_p_P4_polygon_mesh_set;
+    std::vector<AnatomicalMesh> m_p_P4_polygon_mesh_set;
 
     /// Set of polygon meshes for Patient 5
-    std::vector<PolygonMesh> m_p_P5_polygon_mesh_set;
+    std::vector<AnatomicalMesh> m_p_P5_polygon_mesh_set;
 
     /// Flag that keeps track of which patient is currently in use
     GLWidget::PatientID m_current_patient;

@@ -1,0 +1,45 @@
+/**
+********************************************************************************
+*
+*	@file		AnatomicalMesh.h
+*
+*	@brief      Class to handle a polygon mesh for tissue.
+*
+*	@version	1.0
+*
+*	@date		18/07/2016
+*
+*	@author		Andréas Meuleman
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+
+#ifndef ANATOMICAL_MESH_H
+#include "AnatomicalMesh.h"
+#endif
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
+namespace gVirtualXRay{
+
+
+AnatomicalMesh::AnatomicalMesh(): PolygonMesh() {
+	// TODO Auto-generated constructor stub
+
+}
+
+AnatomicalMesh::~AnatomicalMesh() {
+	// TODO Auto-generated destructor stub
+}
+
+
+
+
+
+} // namespace gVirtualXRay

@@ -68,12 +68,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <QtGui>
 #include <ctime>
+
+/*#ifndef ANATOMICAL_GL_WIDGET_H
+#include <AnatomicalGLWidget.h>
+#endif*/
 
 #ifndef GVXR_GL_WIDGET_H
 #include "GLWidget.h"
 #endif
+
 
 #ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"

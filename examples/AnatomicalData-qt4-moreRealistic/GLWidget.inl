@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-
+ 
 /**
 ********************************************************************************
 *
@@ -57,7 +57,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *				BSD 3-Clause License
 *
 ********************************************************************************
-*/
+*/ 
 
 //  Defines
 //******************************************************************************
