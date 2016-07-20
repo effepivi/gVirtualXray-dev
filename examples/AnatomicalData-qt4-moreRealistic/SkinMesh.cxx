@@ -24,7 +24,7 @@ SkinMesh::SkinMesh():
 		AnatomicalMesh()
 //----------------------------------------
 {
-	getMaterial().setShininess(1);
+	getMaterial().setShininess(5);
 	getMaterial().setSpecularColour(0.1,0.1,0.1,0.05);
 	getMaterial().setDiffuseColour(0.3,0.3,0.3,0.05);
 	getMaterial().setAmbientColour(0.3,0.3,0.3,0.05);

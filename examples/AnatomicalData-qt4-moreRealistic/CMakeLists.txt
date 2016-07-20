@@ -87,7 +87,6 @@ ENDIF(NOT Qt4_FOUND)
 add_executable(demo-anatomical-data-qt4-more-realistic 
 	AnatomicalData-qt4-moreRealistic.cxx  
 	GLWidget.h GLWidget.cxx 
-	AnatomicalGLWidget.h 	AnatomicalGLWidget.cxx 
 	
 	AnatomicalMesh.h AnatomicalMesh.cxx 
 	SoftTissueMesh.h SoftTissueMesh.cxx 
@@ -115,8 +114,6 @@ ELSE (NOT APPLE)
         
 	${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalGLWidget.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalGLWidget.cxx
 
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.cxx

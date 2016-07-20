@@ -258,19 +258,19 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
 {
 	//Initialize the polygon meshes
-	m_p_P4_polygon_mesh_set.push_back(*(new SkinMesh()));
-	m_p_P4_polygon_mesh_set.push_back(*(new LiverMesh()));
-	m_p_P4_polygon_mesh_set.push_back(*(new LungsMesh()));
-	m_p_P4_polygon_mesh_set.push_back(*(new DiaphragmMesh()));
-	m_p_P4_polygon_mesh_set.push_back(*(new BoneMesh()));
-	m_p_P4_polygon_mesh_set.push_back(*(new BoneMesh()));
+	m_p_P4_polygon_mesh_set.push_back((new SkinMesh()));
+	m_p_P4_polygon_mesh_set.push_back((new LiverMesh()));
+	m_p_P4_polygon_mesh_set.push_back((new LungsMesh()));
+	m_p_P4_polygon_mesh_set.push_back((new DiaphragmMesh()));
+	m_p_P4_polygon_mesh_set.push_back((new BoneMesh()));
+	m_p_P4_polygon_mesh_set.push_back((new BoneMesh()));
 
-	m_p_P5_polygon_mesh_set.push_back(*(new SkinMesh()));
-	m_p_P5_polygon_mesh_set.push_back(*(new LiverMesh()));
-	m_p_P5_polygon_mesh_set.push_back(*(new LungsMesh()));
-	m_p_P5_polygon_mesh_set.push_back(*(new DiaphragmMesh()));
-	m_p_P5_polygon_mesh_set.push_back(*(new BoneMesh()));
-	m_p_P5_polygon_mesh_set.push_back(*(new BoneMesh()));
+	m_p_P5_polygon_mesh_set.push_back((new SkinMesh()));
+	m_p_P5_polygon_mesh_set.push_back((new LiverMesh()));
+	m_p_P5_polygon_mesh_set.push_back((new LungsMesh()));
+	m_p_P5_polygon_mesh_set.push_back((new DiaphragmMesh()));
+	m_p_P5_polygon_mesh_set.push_back((new BoneMesh()));
+	m_p_P5_polygon_mesh_set.push_back((new BoneMesh()));
 
     // Initialize Qt
     // and create a windowed mode window and its OpenGL context
@@ -696,7 +696,7 @@ void GLWidget::loadXRaySimulator()
 void GLWidget::loadPatient(PatientID aPatientID)
 //----------------------------------------------
 {
-	std::vector<AnatomicalMesh>* p_mesh_set(0);
+	std::vector<AnatomicalMesh*>* p_mesh_set(0);
 	    double const* p_HU_set(0);
 
 	    switch (aPatientID)
@@ -717,13 +717,13 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	    }
 
 	    // Set geometry
-	    for (unsigned int i(0); i < (*p_mesh_set).size(); ++i)
+	    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
 	    {
 	        char* p_data(0);
 	        unsigned int data_size(0);
 	        decompressMesh(i, aPatientID, p_data, data_size);
 
-	        (*p_mesh_set)[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+	        (*p_mesh_set)[i]->loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
 
 	        // Delete data
 	        if (p_data)
@@ -733,20 +733,20 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	        }
 
 	        //g_p_polygon_mesh_set[i].mergeVertices();
-	        (*p_mesh_set)[i].setHounsfieldValue(p_HU_set[i]);
+	        (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
 	    }
 
 	    // Compute the translation vector
 	    switch (aPatientID)
 	    {
 	        case P4:
-	            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+	            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
 	            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
 	            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
 	            break;
 
 	        case P5:
-	            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+	            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
 	            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
 	            break;
 
@@ -759,7 +759,7 @@ void GLWidget::loadPatient(PatientID aPatientID)
 void GLWidget::usePatient(const PatientID& aPatientID)
 //----------------------------------------------------
 {
-    std::vector<AnatomicalMesh>* p_mesh_set(0);
+    std::vector<AnatomicalMesh*>* p_mesh_set(0);
     switch (aPatientID)
     {
         case P4:
@@ -786,7 +786,7 @@ void GLWidget::usePatient(const PatientID& aPatientID)
     m_xray_renderer.removeOuterSurface();
     for (unsigned int i(0); i < p_mesh_set->size(); ++i)
     {
-        m_xray_renderer.addInnerSurface(&((*p_mesh_set)[i]));
+        m_xray_renderer.addInnerSurface(((*p_mesh_set)[i]));
     }
 
     // Reset the simulation state
@@ -1011,14 +1011,14 @@ void GLWidget::render()
 
 
 //----------------------------------------------------------------
-void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
+void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
                               GLint aShaderID)
 //----------------------------------------------------------------
 {
     for (int i(apMeshSet.size()-1); i >=0; --i)
     {
         // Get the material
-        Material& material(apMeshSet[i].getMaterial());
+        Material& material(apMeshSet[i]->getMaterial());
 
         // Define colours inshader
         GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
@@ -1039,11 +1039,11 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
 
         if (m_display_wireframe)
         {
-            apMeshSet[i].displayWireFrame();
+            apMeshSet[i]->displayWireFrame();
         }
         else
         {
-        	if(i==0)
+        	if(apMeshSet[i]->isTransparent())
      	    {
         		pushEnableDisableState(GL_BLEND);
         		glDisable(GL_CULL_FACE);
@@ -1051,7 +1051,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
         		glEnable(GL_BLEND);
         		glBlendFunc(GL_ONE, GL_ONE);
 
-        		apMeshSet[i].display();
+        		apMeshSet[i]->display();
 
         		glEnable(GL_CULL_FACE);
         		glCullFace(GL_BACK);
@@ -1059,7 +1059,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
     	    }
         	else
         	{
-                apMeshSet[i].display();
+                apMeshSet[i]->display();
         	}
         }
     }

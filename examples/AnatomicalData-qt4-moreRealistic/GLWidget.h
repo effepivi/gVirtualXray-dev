@@ -349,7 +349,7 @@ protected:
     *   @param aShaderID:   The GLSL shader used to display apMeshSet
     */
     //--------------------------------------------------------------------------
-    virtual void displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
+    virtual void displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
                         GLint aShaderID);
 
 
@@ -444,10 +444,10 @@ protected:
     Shader m_display_shader;
 
     /// Set of polygon meshes for Patient 4
-    std::vector<AnatomicalMesh> m_p_P4_polygon_mesh_set;
+    std::vector<AnatomicalMesh*> m_p_P4_polygon_mesh_set;
 
     /// Set of polygon meshes for Patient 5
-    std::vector<AnatomicalMesh> m_p_P5_polygon_mesh_set;
+    std::vector<AnatomicalMesh*> m_p_P5_polygon_mesh_set;
 
     /// Flag that keeps track of which patient is currently in use
     GLWidget::PatientID m_current_patient;
