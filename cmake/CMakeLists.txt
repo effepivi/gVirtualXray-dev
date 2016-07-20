@@ -600,7 +600,7 @@ ENDIF(WIN32)
 
 
 # Examples #####################################################################
-option(BUILD_EXAMPLES "Build examples." OFF)
+option(BUILD_EXAMPLES "Build examples." On)
 IF (BUILD_EXAMPLES)
    	MESSAGE(STATUS "Build examples.")
 

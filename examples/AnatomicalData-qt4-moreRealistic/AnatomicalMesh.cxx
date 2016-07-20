@@ -28,17 +28,29 @@
 //******************************************************************************
 namespace gVirtualXRay{
 
-
-AnatomicalMesh::AnatomicalMesh(): PolygonMesh() {
+//----------------------------------------
+AnatomicalMesh::AnatomicalMesh():
+//----------------------------------------
+		PolygonMesh()
+//----------------------------------------
+{
 	// TODO Auto-generated constructor stub
 
 }
 
-AnatomicalMesh::~AnatomicalMesh() {
+//----------------------------------------
+AnatomicalMesh::~AnatomicalMesh()
+//----------------------------------------
+{
 	// TODO Auto-generated destructor stub
 }
 
-
+//----------------------------------------
+bool AnatomicalMesh::isTransparent()
+//----------------------------------------
+{
+	return false;
+}
 
 
 

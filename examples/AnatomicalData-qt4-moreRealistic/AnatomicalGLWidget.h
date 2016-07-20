@@ -48,7 +48,7 @@ public:
 	virtual ~AnatomicalGLWidget();
 
 private:
-    virtual void initializeGL();
+    /*virtual void initializeGL();
 
 
 	virtual void loadPatient(PatientID aPatientID);
@@ -57,9 +57,8 @@ private:
 	virtual void render();
 
 
-
 	virtual void displayPatient(std::vector<AnatomicalMesh>& apMeshSet,
-	                        GLint aShaderID);
+	                        GLint aShaderID);*/
 
 };
 } //namespace gVirtualXRay

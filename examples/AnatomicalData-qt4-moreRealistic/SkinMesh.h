@@ -6,7 +6,7 @@
 *
 *	@file		SkinMesh.h
 *
-*	@brief      Class to handle a polygon mesh for skin.
+*	@brief      Class to handle a polygon mesh for Skin.
 *
 *	@version	1.0
 *
@@ -17,33 +17,38 @@
 ********************************************************************************
 */
 
-
 //******************************************************************************
 //	Include
 //******************************************************************************
 
-#ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#ifndef SOFT_TISSUE_MESH_H
+#include "SoftTissueMesh.h"
 #endif
 
+//******************************************************************************
+//  namespace
+//******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
 *   @class  SkinMesh
-*   @brief  SkinMesh is a class to handle a polygon mesh for skin.
+*   @brief  SkinMesh is a class to handle a polygon mesh for Skin.
 */
 //==============================================================================
-class SkinMesh: public AnatomicalMesh
+class SkinMesh: public SoftTissueMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
+
 public:
 
 	SkinMesh();
 
 	virtual ~SkinMesh();
+
+	virtual bool isTransparent();
 };
 
 } // namespace gVirtualXRay

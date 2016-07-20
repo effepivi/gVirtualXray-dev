@@ -84,8 +84,22 @@ ENDIF(NOT Qt4_FOUND)
 
 
 # Create the main program ######################################################
-add_executable(demo-anatomical-data-qt4-more-realistic AnatomicalData-qt4-moreRealistic.cxx AnatomicalGLWidget.h AnatomicalGLWidget.cxx AnatomicalMesh.h AnatomicalMesh.cxx GLWidget.h GLWidget.cxx)
+add_executable(demo-anatomical-data-qt4-more-realistic 
+	AnatomicalData-qt4-moreRealistic.cxx  
+	GLWidget.h GLWidget.cxx 
+	AnatomicalGLWidget.h 	AnatomicalGLWidget.cxx 
+	
+	AnatomicalMesh.h AnatomicalMesh.cxx 
+	SoftTissueMesh.h SoftTissueMesh.cxx 
+	
+	BoneMesh.h BoneMesh.cxx 
+	DiaphragmMesh.h DiaphragmMesh.cxx 
+	LiverMesh.h LiverMesh.cxx 
+	LungsMesh.h LungsMesh.cxx 
+	SkinMesh.h SkinMesh.cxx)
+
 target_link_libraries(demo-anatomical-data-qt4-more-realistic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+
 ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic BinaryAnatomicalDataQt4Files)
 
 IF (NOT APPLE)
@@ -98,12 +112,28 @@ ELSE (NOT APPLE)
     SET (MACOSX_RPATH 1)
     SET(AnatomicalData-qt4-moreRealistic_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData-qt4-moreRealistic.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.h
+        
+	${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalGLWidget.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalGLWidget.cxx
+
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.cxx
+	${CMAKE_CURRENT_SOURCE_DIR}/SoftTissueMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/SoftTissueMesh.cxx
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/DiaphragmMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/DiaphragmMesh.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/LiverMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/LiverMesh.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/LungsMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/LungsMesh.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/SkinMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/SkinMesh.cxx
+
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf

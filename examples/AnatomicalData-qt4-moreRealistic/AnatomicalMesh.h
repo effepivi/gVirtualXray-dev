@@ -50,6 +50,8 @@ public:
 
 	virtual ~AnatomicalMesh();
 
+	virtual bool isTransparent();
+
 
 //******************************************************************************
 private:
