@@ -80,7 +80,7 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 
 # Enable all compiler warnings #################################################
 #IF(NOT WIN32)
-#	SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -Wall")
+#	SET(gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-Wall")
 #ENDIF(NOT WIN32)
 
 
@@ -273,7 +273,7 @@ ENDIF(OPENGL_FOUND)
 
 # GLEW ########################################################################
 OPTION(USE_SYSTEM_GLEW       "Use System GLEW"       OFF)
-SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -DGLEW_STATIC")
+SET(gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
 
 IF(USE_SYSTEM_GLEW)
   FIND_PACKAGE(GLEW REQUIRED)
@@ -285,7 +285,7 @@ ENDIF(USE_SYSTEM_GLEW)
 
 IF(GLEW_FOUND)
     SET(HAS_GLEW ON)
-    SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -DHAS_GLEW")
+    SET(gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLEW_INCLUDE_DIR}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
     SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
@@ -325,7 +325,7 @@ ENDIF (USE_SYSTEM_FREETYPE)
 
 
 IF (FREETYPE_FOUND)
-    SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -DHAS_FREETYPE")
+    SET(gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
     SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
 ENDIF (FREETYPE_FOUND)
@@ -374,6 +374,8 @@ ENDIF(USE_SYSTEM_XCOM)
 # to the source code
 IF (XCOM_PATH)
     SET (HAS_XCOM ON)
+
+    SET(gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_XCOM")
 
     configure_file (
         "${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfigXCOM.h.in"

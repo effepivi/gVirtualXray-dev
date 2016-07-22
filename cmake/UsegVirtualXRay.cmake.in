@@ -3,70 +3,27 @@
 # included directly, but rather through the gVirtualXRay_USE_FILE setting
 # obtained from gVirtualXRayConfig.cmake.
 
-# Use C++ 11
-set (CMAKE_CXX_STANDARD 11)
 
-IF (APPLE)
-	set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
-ENDIF(APPLE)
+# Use shared library
+SET(BUILD_SHARED_LIBS "${gVirtualXRay_BUILD_SHARED_LIBS}")
 
 
-# Find OpenGL (required)
-FIND_PACKAGE(OpenGL REQUIRED)
-
-# Find GLEW (required)
-FIND_PACKAGE(GLEW REQUIRED)
-
-# Find Boost (required)
-#FIND_PACKAGE(Boost QUIET REQUIRED)
-
-# Find Zlib (required)
-FIND_PACKAGE(ZLIB REQUIRED)
-
-# Find GLEW
-SET(HAS_GLEW @HAS_GLEW@)
-IF (HAS_GLEW)
-    ADD_DEFINITIONS(-DHAS_GLEW)
-ENDIF (HAS_GLEW)
-
-# Find FreeImage
-#SET(HAS_FREEIMAGE @HAS_FREEIMAGE@)
-#IF (HAS_FREEIMAGE)
-#    ADD_DEFINITIONS(-DHAS_FREEIMAGE)
-#ENDIF (HAS_FREEIMAGE)
-
-# Find ITK
-#SET(HAS_ITK @HAS_ITK@)
-#IF (HAS_ITK)
-#    FIND_PACKAGE(ITK REQUIRED)
-#    INCLUDE(${ITK_USE_FILE})
-#    ADD_DEFINITIONS(-DHAS_ITK)
-#ENDIF (HAS_ITK)
-
-# Find VTK
-#SET(HAS_VTK @HAS_VTK@)
-#IF (HAS_VTK)
-#    FIND_PACKAGE(VTK REQUIRED)
-#    INCLUDE(${VTK_USE_FILE})
-#    ADD_DEFINITIONS(-DHAS_VTK)
-#ENDIF (HAS_VTK)
-
-# Find FreeType
-SET(HAS_FREETYPE @HAS_FREETYPE@)
-IF (HAS_FREETYPE)
-    ADD_DEFINITIONS(-DHAS_FREETYPE)
-ENDIF (HAS_FREETYPE)
-
-# Find XCOM
-SET(HAS_XCOM @HAS_XCOM@)
-IF (HAS_XCOM)
-    ADD_DEFINITIONS(-DHAS_XCOM)
-ENDIF (HAS_XCOM)
+# C++ version
+set (CMAKE_CXX_STANDARD "${gVirtualXRay_CMAKE_CXX_STANDARD}")
 
 
-# Add include directories needed to use gVirtualXRay.
-INCLUDE_DIRECTORIES(BEFORE ${gVirtualXRay_INCLUDE_DIRS})
+# C++ flags
+SET(CMAKE_CXX_FLAGS "${gVirtualXRay_CMAKE_CXX_FLAGS}")
 
-# Add link directories needed to use gVirtualXRay.
-LINK_DIRECTORIES(${gVirtualXRay_LIBRARY_DIRS})
 
+# Add preprocessor definitions
+ADD_DEFINITIONS("${gVirtualXRay_ADD_DEFINITIONS")
+
+
+# Add include directories needed to use gVirtualXRay
+include_directories(BEFORE ${gVirtualXRay_INCLUDE_DIR})
+include_directories(BEFORE ${gVirtualXRay_INCLUDE_DIRS})
+
+
+# Add link directories needed to use gVirtualXRay
+link_directories(${gVirtualXRay_LIBRARY_DIRS})
