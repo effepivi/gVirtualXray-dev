@@ -35,29 +35,29 @@
 
 
 # The version number
-SET(gVirtualXRay_VERSION_MAJOR @gVirtualXRay_VERSION_MAJOR@)
-SET(gVirtualXRay_VERSION_MINOR @gVirtualXRay_VERSION_MINOR@)
-SET(gVirtualXRay_VERSION_PATCH @gVirtualXRay_VERSION_PATCH@)
+SET(gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@")
+SET(gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@")
+SET(gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@")
 
 
 # The project name
-SET(gVirtualXRay_PROJECT_NAME @PROJECT_NAME@)
+SET(gVirtualXRay_PROJECT_NAME "@PROJECT_NAME@")
 
 
 # The email address
-SET(gVirtualXRay_EMAIL @EMAIL@)
+SET(gVirtualXRay_EMAIL "@EMAIL@")
 
 
 # The mainwebsite
-SET(gVirtualXRay_MAIN_WEBSITE @MAIN_WEBSITE@)
+SET(gVirtualXRay_MAIN_WEBSITE "@MAIN_WEBSITE@")
 
 
 # The main package name
-SET(gVirtualXRay_MAIN_PACKAGE_NAME @MAIN_PACKAGE_NAME@)
+SET(gVirtualXRay_MAIN_PACKAGE_NAME "@MAIN_PACKAGE_NAME@")
 
 
 # The main package version
-SET(gVirtualXRay_MAIN_PROJECT_VERSION @MAIN_PROJECT_VERSION@)
+SET(gVirtualXRay_MAIN_PROJECT_VERSION "@MAIN_PROJECT_VERSION@")
 
 
 # The install directory
@@ -69,11 +69,11 @@ SET(gVirtualXRay_COPYRIGHT_STRING "@COPYRIGHT_STRING@")
 
 
 # Use shared library
-SET(gVirtualXRay_BUILD_SHARED_LIBS @BUILD_SHARED_LIBS@)
+SET(gVirtualXRay_BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@")
 
 
 # C++ version
-SET(gVirtualXRay_CMAKE_CXX_STANDARD @CMAKE_CXX_STANDARD@)
+SET(gVirtualXRay_CMAKE_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
 
 
 # C++ flags
@@ -90,7 +90,7 @@ SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@")
 
 
 # gVirtualXRay library
-SET(gVirtualXRay_LIBRARY @gVirtualXRay_LIBRARY@)
+SET(gVirtualXRay_LIBRARY "@gVirtualXRay_LIBRARY@")
 SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_LIBRARY_DIRS@")
 SET(gVirtualXRay_LIBRARIES "@gVirtualXRay_LIBRARIES@")
 
@@ -100,28 +100,28 @@ SET(gVirtualXRay_ADD_DEFINITIONS "@gVirtualXRay_ADD_DEFINITIONS@")
 
 
 # Gzip tool
-SET(gVirtualXRay_GZIP_TOOL @GZIP_TOOL@)
+SET(gVirtualXRay_GZIP_TOOL "@GZIP_TOOL@")
 
 
 # GLEW
-SET(gVirtualXRay_USE_SYSTEM_GLEW @USE_SYSTEM_GLEW@)
+SET(gVirtualXRay_USE_SYSTEM_GLEW "@USE_SYSTEM_GLEW@")
 
 
 # ZLIB
-SET(gVirtualXRay_USE_SYSTEM_ZLIB @USE_SYSTEM_ZLIB@)
+SET(gVirtualXRay_USE_SYSTEM_ZLIB "@USE_SYSTEM_ZLIB@")
 
 
 # FreeType
-SET(gVirtualXRay_USE_SYSTEM_FREETYPE @USE_SYSTEM_FREETYPE@)
+SET(gVirtualXRay_USE_SYSTEM_FREETYPE "@USE_SYSTEM_FREETYPE@")
 
 
 # LibTiff
-SET(gVirtualXRay_USE_SYSTEM_LIBTIFF @USE_SYSTEM_LIBTIFF@)
+SET(gVirtualXRay_USE_SYSTEM_LIBTIFF "@USE_SYSTEM_LIBTIFF@")
 
 
 # NIST's XCOM database
-SET(gVirtualXRay_HAS_XCOM @HAS_XCOM@)
-SET(gVirtualXRay_USE_SYSTEM_XCOM @USE_SYSTEM_XCOM@)
+SET(gVirtualXRay_HAS_XCOM "@HAS_XCOM@")
+SET(gVirtualXRay_USE_SYSTEM_XCOM "@USE_SYSTEM_XCOM@")
 SET(gVirtualXRay_XCOM_PATH "@XCOM_PATH@")
 
 
