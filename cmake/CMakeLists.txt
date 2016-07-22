@@ -40,7 +40,7 @@ set(BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 # Use C++ 11
 set (CMAKE_CXX_STANDARD 11)
@@ -51,16 +51,20 @@ ENDIF(APPLE)
 
 
 #IF(COMMAND cmake_policy)
-       cmake_policy(SET CMP0003 NEW)
-       cmake_policy(SET CMP0011 NEW)
-       cmake_policy(SET CMP0013 NEW)
+    cmake_policy(SET CMP0003 NEW)
+    cmake_policy(SET CMP0011 NEW)
+    cmake_policy(SET CMP0013 NEW)
 #ENDIF(COMMAND cmake_policy)
 
+IF (APPLE)
+    cmake_policy(SET CMP0042 NEW)
+ENDIF (APPLE)
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
@@ -76,7 +80,7 @@ SET(CMAKE_FIND_FRAMEWORK "LAST")
 
 # Enable all compiler warnings #################################################
 #IF(NOT WIN32)
-#	add_definitions( -Wall )
+#	SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -Wall")
 #ENDIF(NOT WIN32)
 
 
@@ -206,7 +210,6 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/Units.h
 	../include/gVirtualXRay/Utilities.h
 )
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 
 # Add source to the project ####################################################
@@ -226,12 +229,14 @@ ENDIF(WIN32)
 
 
 # Headers of the project #######################################################
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include)
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PROJECT_BINARY_DIR}")
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+
 IF (NOT APPLE)
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include/OpenGL4)
-ENDIF(NOT APPLE)
-#INCLUDE_DIRECTORIES(/usr/local/include)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/../include/OpenGL4")
+ENDIF (NOT APPLE)
+
+#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
 
 
 # GZIP ########################################################################
@@ -258,8 +263,8 @@ ENDIF(NOT GZIP_FOUND)
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenGL REQUIRED)
 IF(OPENGL_FOUND)
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLU_INCLUDE_PATH}")
     SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
 ELSE(OPENGL_FOUND)
     MESSAGE(FATAL_ERROR "OpenGL not found.")
@@ -268,10 +273,10 @@ ENDIF(OPENGL_FOUND)
 
 # GLEW ########################################################################
 OPTION(USE_SYSTEM_GLEW       "Use System GLEW"       OFF)
-ADD_DEFINITIONS(-DGLEW_STATIC)
+SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -DGLEW_STATIC")
 
 IF(USE_SYSTEM_GLEW)
-  FIND_PACKAGE(GLEW)
+  FIND_PACKAGE(GLEW REQUIRED)
 ELSE(USE_SYSTEM_GLEW)
   INCLUDE(BuildGLEW)
   build_glew( glew ${PROJECT_BINARY_DIR} )
@@ -280,58 +285,11 @@ ENDIF(USE_SYSTEM_GLEW)
 
 IF(GLEW_FOUND)
     SET(HAS_GLEW ON)
-    ADD_DEFINITIONS(-DHAS_GLEW)
-    
-    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${GLEW_INCLUDE_DIR})
-    LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
+    SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -DHAS_GLEW")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLEW_INCLUDE_DIR}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
     SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ENDIF(GLEW_FOUND)
-
-
-# FreeImage ####################################################################
-#FIND_PACKAGE(FreeImage)
-#IF(FREEIMAGE_FOUND)
-#	SET(HAS_FREEIMAGE ON)
-#	ADD_DEFINITIONS(-DHAS_FREEIMAGE)
-#	INCLUDE_DIRECTORIES(${FREEIMAGE_INCLUDE_DIR})
-#	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${FREEIMAGE_INCLUDE_DIR})
-#	SET(optionalLibs ${optionalLibs} ${FREEIMAGE_LIBRARY})
-#ELSE(FREEIMAGE_FOUND)
-#	MESSAGE("FREEIMAGE not found.")
-#	SET(HAS_FREEIMAGE OFF)
-#ENDIF(FREEIMAGE_FOUND)
-
-
-# ITK ##########################################################################
-#FIND_PACKAGE(ITK)
-#IF(ITK_FOUND)
-#	SET (HAS_ITK ON)
-#	ADD_DEFINITIONS(-DHAS_ITK)
-#        INCLUDE(${ITK_USE_FILE})
-#	SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-
-#	IF(ITKVtkGlue_LOADED)
-#		FIND_PACKAGE(VTK REQUIRED)
-#		IF(VTK_FOUND)
-#			SET (HAS_VTK ON)
-#			ADD_DEFINITIONS(-DHAS_VTK)
-#			INCLUDE(${VTK_USE_FILE})
-#			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
-#			SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${VTK_LIBRARY_DIRS})
-#			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-#		ELSE(VTK_FOUND)
-#			SET (HAS_VTK OFF)
-#			MESSAGE(WARNING "VTK not found.")
-#		ENDIF(VTK_FOUND)
-#	ELSE(ITKVtkGlue_LOADED)
-#		SET (HAS_VTK OFF)
-#	ENDIF(ITKVtkGlue_LOADED)
-#ELSE(ITK_FOUND)
-#	MESSAGE(WARNING "ITK not found.")
-#	SET (HAS_ITK OFF)
-#ENDIF(ITK_FOUND)
 
 
 # ZLIB #########################################################################
@@ -339,15 +297,13 @@ ENDIF(GLEW_FOUND)
 OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
 
 IF(USE_SYSTEM_ZLIB)
-  FIND_PACKAGE( zlib   REQUIRED )
+    FIND_PACKAGE( zlib   REQUIRED )
 ELSE(USE_SYSTEM_ZLIB)
-  INCLUDE(BuildZLIB)
-  build_zlib( zlib ${PROJECT_BINARY_DIR} )
+    INCLUDE(BuildZLIB)
+    build_zlib( zlib ${PROJECT_BINARY_DIR} )
 ENDIF(USE_SYSTEM_ZLIB)
 
-INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIR})
-LINK_DIRECTORIES(${ZLIB_LIBRARY_DIR})
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}")
 SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
 SET(requiredLibs ${requiredLibs} ${ZLIB_LIBRARY})
 
@@ -358,83 +314,38 @@ OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 IF (USE_SYSTEM_FREETYPE)
     FIND_PACKAGE(FREETYPE)
 
-    IF(FREETYPE_FOUND)
-        SET (HAS_FREETYPE ON)
-        ADD_DEFINITIONS(-DHAS_FREETYPE)
-        INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
-
-        #FIND_PACKAGE(PNG)
-        #IF (PNG_FOUND)
-        #    ADD_DEFINITIONS(${PNG_DEFINITIONS})
-        #    INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIRS})
-        #    SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
-        #ELSE (PNG_FOUND)
-        #    MESSAGE(WARNING "PNG not found.")
-        #ENDIF (PNG_FOUND)
-
-        #FIND_PACKAGE(BZip2)
-        #IF (BZIP2_FOUND)
-        #    INCLUDE_DIRECTORIES(${BZIP2_INCLUDE_DIR})
-        #    SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
-        #ELSE (BZIP2_FOUND)
-        #    MESSAGE(WARNING "BZip2 not found.")
-        #ENDIF (BZIP2_FOUND)
-
-    ELSE(FREETYPE_FOUND)
-        SET (HAS_FREETYPE OFF)
+    IF (NOT FREETYPE_FOUND)
         MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
-    ENDIF(FREETYPE_FOUND)
+    ENDIF(NOT FREETYPE_FOUND)
 
 ELSE (USE_SYSTEM_FREETYPE)
     INCLUDE(BuildFreeType)
     build_freetype( freetype ${PROJECT_BINARY_DIR} )
-    SET (HAS_FREETYPE ON)
 ENDIF (USE_SYSTEM_FREETYPE)
 
 
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
-SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+IF (FREETYPE_FOUND)
+    SET(gVirtualXRay_ADD_DEFINITIONS "${gVirtualXRay_ADD_DEFINITIONS} -DHAS_FREETYPE")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
+    SET(optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+ENDIF (FREETYPE_FOUND)
 
 
 
-# ITK ##########################################################################
-#OPTION(USE_SYSTEM_ITK       "Use System ITK"       OFF)
 
-#IF (USE_SYSTEM_ITK)
-#    FIND_PACKAGE(ITK)
-#    IF(ITK_FOUND)
-#	    SET (HAS_ITK ON)
-#    	ADD_DEFINITIONS(-DHAS_ITK)
-#        INCLUDE(${ITK_USE_FILE})
+# TIFF #########################################################################
 
-    #	IF(ITKVtkGlue_LOADED)
-    #		FIND_PACKAGE(VTK REQUIRED)
-    #		IF(VTK_FOUND)
-    #			SET (HAS_VTK ON)
-    #			ADD_DEFINITIONS(-DHAS_VTK)
-    #			INCLUDE(${VTK_USE_FILE})
-    #			LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
-    #			SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${VTK_LIBRARY_DIRS})
-    #			SET(optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-    #		ELSE(VTK_FOUND)
-    #			SET (HAS_VTK OFF)
-    #			MESSAGE(WARNING "VTK not found.")
-    #		ENDIF(VTK_FOUND)
-    #	ELSE(ITKVtkGlue_LOADED)
-    #		SET (HAS_VTK OFF)
-    #	ENDIF(ITKVtkGlue_LOADED)
-#    ELSE(ITK_FOUND)
-#    	MESSAGE(WARNING "ITK not found.")
-#	    SET (HAS_ITK OFF)
-#    ENDIF(ITK_FOUND)
-#ELSE (USE_SYSTEM_ITK)
-#    INCLUDE(BuildITK)
-#    build_itk( ITK ${PROJECT_BINARY_DIR} )
-#    SET (HAS_ITK ON)
-#ENDIF (USE_SYSTEM_ITK)
-#SET(optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${ITK_INCLUDE_DIRS})
+OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff "       OFF)
+
+IF(USE_SYSTEM_LIBTIFF)
+    FIND_PACKAGE( TIFF   REQUIRED )
+ELSE(USE_SYSTEM_LIBTIFF)
+    INCLUDE(BuildLibTIFF)
+    build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
+ENDIF(USE_SYSTEM_LIBTIFF)
+
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
+SET(requiredLibs ${requiredLibs} ${TIFF_LIBRARIES})
 
 
 # XCOM Database ################################################################
@@ -450,12 +361,12 @@ OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
 IF(USE_SYSTEM_XCOM)
     find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
     IF (NOT XCOM_PATH)
-	    MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
+        MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
     ENDIF(NOT XCOM_PATH)
 
 ELSE(USE_SYSTEM_XCOM)
-  INCLUDE(BuildXCOM)
-  build_xcom( ${PROJECT_BINARY_DIR} )
+    INCLUDE(BuildXCOM)
+    build_xcom( ${PROJECT_BINARY_DIR} )
 ENDIF(USE_SYSTEM_XCOM)
 
 
@@ -478,23 +389,23 @@ ELSE (XCOM_PATH)
 ENDIF (XCOM_PATH)
 
 
+# Add preprocessor definitions
+ADD_DEFINITIONS(${gVirtualXRay_ADD_DEFINITIONS})
+INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIRS})
 
+
+# Add library paths
+LINK_DIRECTORIES(${gVirtualXRay_LIBRARY_DIRS})
 
 
 # Create the library ###########################################################
 ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
-IF (NOT USE_SYSTEM_ZLIB)
-    ADD_DEPENDENCIES(gVirtualXRay   ZLIB)
-ENDIF (NOT USE_SYSTEM_ZLIB)
 
-IF (NOT USE_SYSTEM_XCOM)
-    ADD_DEPENDENCIES(gVirtualXRay   XCOM)
-ENDIF (NOT USE_SYSTEM_XCOM)
-
-IF (NOT USE_SYSTEM_GLEW)
-    ADD_DEPENDENCIES(gVirtualXRay   buildGLEW)
-ENDIF (NOT USE_SYSTEM_GLEW)
+# Linkage of the target ########################################################
+set_target_properties(gVirtualXRay PROPERTIES LINK_SEARCH_START_STATIC ON)
+SET (gVirtualXRay_LIBRARIES "${requiredLibs} ${optionalLibs} gVirtualXRay")
+TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
 
@@ -561,12 +472,6 @@ SET (RESOURCES_SOURCES
 CreateHeaderFiles("." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
-# Linkage of the target ########################################################
-set_target_properties(gVirtualXRay PROPERTIES LINK_SEARCH_START_STATIC ON)
-TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
-SET (gVirtualXRay_LIBRARIES ${requiredLibs} ${optionalLibs} gVirtualXRay)
-
-
 # Make sure the source is generated before the executable builds.
 ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
@@ -574,11 +479,31 @@ IF (XCOM_PATH)
     ADD_DEPENDENCIES(gVirtualXRay XCOMLibFiles)
 ENDIF(XCOM_PATH)
 
+IF (NOT USE_SYSTEM_ZLIB)
+    ADD_DEPENDENCIES(gVirtualXRay ZLIB)
+ENDIF (NOT USE_SYSTEM_ZLIB)
+
+IF (NOT USE_SYSTEM_XCOM)
+    ADD_DEPENDENCIES(XCOMLibFiles XCOM)
+ENDIF (NOT USE_SYSTEM_XCOM)
+
+IF (NOT USE_SYSTEM_GLEW)
+    ADD_DEPENDENCIES(gVirtualXRay buildGLEW)
+ENDIF (NOT USE_SYSTEM_GLEW)
+
+IF (NOT USE_SYSTEM_FREETYPE)
+    ADD_DEPENDENCIES(gVirtualXRay FREETYPE)
+ENDIF (NOT USE_SYSTEM_FREETYPE)
+
+IF (NOT USE_SYSTEM_LIBTIFF)
+    ADD_DEPENDENCIES(gVirtualXRay LibTIFF)
+ENDIF (NOT USE_SYSTEM_LIBTIFF)
+
 
 # Generate gVirtualXRayConfig.cmake for the install tree #######################
 SET (gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/${PROJECT_NAME}-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
 SET (gVirtualXRay_USE_FILE "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/UsegVirtualXRay.cmake")
-SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/")
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/include/")
 SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/library/lib")
 CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfig.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/UsegVirtualXRay.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake @ONLY)
@@ -586,21 +511,22 @@ INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake DES
 INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake    DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR})
 INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake    DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}")
 
+
 # Doxygen documentation ########################################################
 IF(WIN32)
-	FIND_PACKAGE(Doxygen) 
-	IF (DOXYGEN_FOUND)
-		ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
-	ELSE (DOXYGEN_FOUND)
-    	MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
-	ENDIF (DOXYGEN_FOUND)
+    FIND_PACKAGE(Doxygen) 
+    IF (DOXYGEN_FOUND)
+        ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
+    ELSE (DOXYGEN_FOUND)
+        MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
+    ENDIF (DOXYGEN_FOUND)
 ELSE(WIN32)
-	ADD_CUSTOM_TARGET(html-doc doxygen ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
+    ADD_CUSTOM_TARGET(html-doc doxygen ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
 ENDIF(WIN32)
 
 
 # Examples #####################################################################
-option(BUILD_EXAMPLES "Build examples." On)
+option(BUILD_EXAMPLES "Build examples." OFF)
 IF (BUILD_EXAMPLES)
    	MESSAGE(STATUS "Build examples.")
 

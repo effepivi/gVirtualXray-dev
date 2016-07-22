@@ -1,18 +1,130 @@
-get_filename_component(gVirtualXRay_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
+#
+#
+# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# http://www.fpvidal.net/
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the Bangor University nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SET(gVirtualXRay_INCLUDE_DIRS @gVirtualXRay_INCLUDE_DIRS@)
-SET(gVirtualXRay_LIBRARY_DIRS @gVirtualXRay_LIBRARY_DIRS@)
-SET(gVirtualXRay_LIBRARIES @gVirtualXRay_LIBRARIES@)
 
-# The gVirtualXRay version number
-SET(gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@")
-SET(gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@")
-SET(gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@")
+# Get the install prefix
+#get_filename_component(gVirtualXRay_INSTALL_PREFIX "@CMAKE_CURRENT_LIST_FILE@" PATH)
 
-# The location of the UsegVirtualXRay.cmake file.
+
+# The version number
+SET(gVirtualXRay_VERSION_MAJOR @gVirtualXRay_VERSION_MAJOR@)
+SET(gVirtualXRay_VERSION_MINOR @gVirtualXRay_VERSION_MINOR@)
+SET(gVirtualXRay_VERSION_PATCH @gVirtualXRay_VERSION_PATCH@)
+
+
+# The project name
+SET(gVirtualXRay_PROJECT_NAME @PROJECT_NAME@)
+
+
+# The email address
+SET(gVirtualXRay_EMAIL @EMAIL@)
+
+
+# The mainwebsite
+SET(gVirtualXRay_MAIN_WEBSITE @MAIN_WEBSITE@)
+
+
+# The main package name
+SET(gVirtualXRay_MAIN_PACKAGE_NAME @MAIN_PACKAGE_NAME@)
+
+
+# The main package version
+SET(gVirtualXRay_MAIN_PROJECT_VERSION @MAIN_PROJECT_VERSION@)
+
+
+# The install directory
+SET(gVirtualXRay_INSTALL_DIR "@INSTALL_DIR@")
+
+
+# The copyright string
+SET(gVirtualXRay_COPYRIGHT_STRING "@COPYRIGHT_STRING@")
+
+
+# Use shared library
+SET(gVirtualXRay_BUILD_SHARED_LIBS @BUILD_SHARED_LIBS@)
+
+
+# C++ version
+SET(gVirtualXRay_CMAKE_CXX_STANDARD @CMAKE_CXX_STANDARD@)
+
+
+# C++ flags
+SET(gVirtualXRay_CMAKE_CXX_FLAGS "@CMAKE_CXX_FLAGS@")
+
+
+# Base directory
+SET(gVirtualXRay_BASE_DIR "@gVirtualXRay_BASE_DIR@")
+
+
+# Include directory
+SET(gVirtualXRay_INCLUDE_DIR "@gVirtualXRay_INCLUDE_DIR@")
+SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@")
+
+
+# gVirtualXRay library
+SET(gVirtualXRay_LIBRARY @gVirtualXRay_LIBRARY@)
+SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_LIBRARY_DIRS@")
+SET(gVirtualXRay_LIBRARIES "@gVirtualXRay_LIBRARIES@")
+
+
+# Preprocessor definitions
+SET(gVirtualXRay_ADD_DEFINITIONS "@gVirtualXRay_ADD_DEFINITIONS@")
+
+
+# Gzip tool
+SET(gVirtualXRay_GZIP_TOOL @GZIP_TOOL@)
+
+
+# GLEW
+SET(gVirtualXRay_USE_SYSTEM_GLEW @USE_SYSTEM_GLEW@)
+
+
+# ZLIB
+SET(gVirtualXRay_USE_SYSTEM_ZLIB @USE_SYSTEM_ZLIB@)
+
+
+# FreeType
+SET(gVirtualXRay_USE_SYSTEM_FREETYPE @USE_SYSTEM_FREETYPE@)
+
+
+# LibTiff
+SET(gVirtualXRay_USE_SYSTEM_LIBTIFF @USE_SYSTEM_LIBTIFF@)
+
+
+# NIST's XCOM database
+SET(gVirtualXRay_HAS_XCOM @HAS_XCOM@)
+SET(gVirtualXRay_USE_SYSTEM_XCOM @USE_SYSTEM_XCOM@)
+SET(gVirtualXRay_XCOM_PATH "@XCOM_PATH@")
+
+
+# Use file
+SET(USE_gVirtualXRay_FILE "@gVirtualXRay_USE_FILE@")
 SET(gVirtualXRay_USE_FILE "@gVirtualXRay_USE_FILE@")
-
-# The location of the UseITK.cmake file.
-set(gVirtualXRay_USE_FILE "${gVirtualXRay_INSTALL_PREFIX}/UsegVirtualXRay.cmake")
-set(USE_gVirtualXRay_FILE "${gVirtualXRay_USE_FILE}")
-
