@@ -52,13 +52,16 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 # FLTK ########################################################################
 
-FIND_PACKAGE( FLTK   REQUIRED )
-if(FLTK_FOUND)
+IF (USE_SYSTEM_FLTK)
+    FIND_PACKAGE( FLTK   REQUIRED )
+ENDIF (USE_SYSTEM_FLTK)
+
+IF (FLTK_FOUND)
     INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} ${FLTK_INCLUDE_DIRS})
     SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
-ELSE(FLTK_FOUND)
-    MESSAGE(FATAL_ERROR "Boost not found.")
-ENDIF(FLTK_FOUND)
+ELSE (FLTK_FOUND)
+    MESSAGE(FATAL_ERROR "FLTK not found.")
+ENDIF (FLTK_FOUND)
 
 
 # BOOST #######################################################################

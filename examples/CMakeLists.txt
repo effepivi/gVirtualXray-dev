@@ -32,8 +32,6 @@
 
 project(gVirtualXRay-demos)
 
-MESSAGE(WARNING "${gVirtualXRay_INSTALL_PREFIX}")
-
 if(NOT gVirtualXRay_BINARY_DIR)
     find_package(gVirtualXRay REQUIRED)
     include(${gVirtualXRay_USE_FILE})

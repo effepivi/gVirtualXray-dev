@@ -29,6 +29,7 @@ ExternalProject_Add(fltk
   CMAKE_ARGS
       -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
       -DBUILD_SHARED_LIBS:BOOL=OFF
+      -DOPTION_BUILD_EXAMPLES:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -48,7 +49,8 @@ ExternalProject_Add(fltk
 
 SET (FLTK_FLUID_EXECUTABLE ${staging_prefix}/${install_prefix}-build/bin/fluid)
 SET (FLTK_INCLUDE_DIR ${staging_prefix}/${install_prefix})
-set(FLTK_INCLUDE_DIRS ${staging_prefix}/${install_prefix}-build ${FLTK_INCLUDE_DIR})
+set (FLTK_INCLUDE_DIRS ${staging_prefix}/${install_prefix}-build ${FLTK_INCLUDE_DIR})
+SET (FLTK_FOUND ON)
 
 IF (UNIX)
     IF (NOT APPLE)
@@ -56,14 +58,14 @@ IF (UNIX)
 
         SET (FLTK_PLATFORM_DEPENDENT_LIBS 
             #pthread
-            #dl 
+            dl 
             #SM
             #ICE
-            #X11
+            X11
             Xext
-            #Xinerama
+            Xinerama
             Xfixes
-            #Xcursor
+            Xcursor
             Xft
             fontconfig
             #m
