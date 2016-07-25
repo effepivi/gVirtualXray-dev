@@ -132,6 +132,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
 
+#include "depth_map_gl3.frag.h"
+#include "depth_map_gl3.vert.h"
+
 #include "P4_skin.stl.h"
 #include "P4_liver.stl.h"
 #include "P4_lung.stl.h"
@@ -249,28 +252,23 @@ GLWidget::GLWidget(QWidget *parent):
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
+	m_shadowMap(),
+
+	#undef HAS_FREETYPE
+
     #ifdef HAS_FREETYPE
     m_display_help(true),
     #endif
 
-    m_swap_patient(false)
+    m_swap_patient(false),
+
+	m_light_direction(-1, 3, 1)
 
 //----------------------------------
 {
 	//Initialize the polygon meshes
-	m_p_P4_polygon_mesh_set.push_back((new SkinMesh()));
-	m_p_P4_polygon_mesh_set.push_back((new LiverMesh()));
-	m_p_P4_polygon_mesh_set.push_back((new LungsMesh()));
-	m_p_P4_polygon_mesh_set.push_back((new DiaphragmMesh()));
-	m_p_P4_polygon_mesh_set.push_back((new BoneMesh()));
-	m_p_P4_polygon_mesh_set.push_back((new BoneMesh()));
-
-	m_p_P5_polygon_mesh_set.push_back((new SkinMesh()));
-	m_p_P5_polygon_mesh_set.push_back((new LiverMesh()));
-	m_p_P5_polygon_mesh_set.push_back((new LungsMesh()));
-	m_p_P5_polygon_mesh_set.push_back((new DiaphragmMesh()));
-	m_p_P5_polygon_mesh_set.push_back((new BoneMesh()));
-	m_p_P5_polygon_mesh_set.push_back((new BoneMesh()));
+	initializePatient(m_p_P4_polygon_mesh_set);
+	initializePatient(m_p_P5_polygon_mesh_set);
 
     // Initialize Qt
     // and create a windowed mode window and its OpenGL context
@@ -329,6 +327,12 @@ void GLWidget::initializeGL()
 
     // Add the geometry to the X-ray renderer
     loadSTLFiles();
+
+    //initialize the buffers
+    m_shadowMap.initialize();
+
+    //set the dirextion of the light
+    m_light_direction.normalize();
 
     // Set the patient
     usePatient(m_current_patient);
@@ -592,6 +596,7 @@ void GLWidget::initGL()
     std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
     std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
     std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
+
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Enable the Z-buffer
@@ -605,7 +610,7 @@ void GLWidget::initGL()
     glEnable(GL_MULTISAMPLE);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    // Initialise the shaders
+	//load the shaders
     char* p_vertex_shader(0);
     char* p_fragment_shader(0);
 
@@ -616,17 +621,9 @@ void GLWidget::initGL()
     std::string fragment_shader;
 
     // Display shader
-    // Display shader
-    if (useOpenGL3_2OrAbove())
-    {
-        z_lib_return_code_vertex   = inflate(g_display_realistic_gl3_vert, sizeof(g_display_realistic_gl3_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_realistic_gl3_frag, sizeof(g_display_realistic_gl3_frag), &p_fragment_shader);
-    }
-    else
-    {
-        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
-    }
+    z_lib_return_code_vertex   = inflate(g_display_realistic_gl3_vert, sizeof(g_display_realistic_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_display_realistic_gl3_frag, sizeof(g_display_realistic_gl3_frag), &p_fragment_shader);
+
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -635,10 +632,28 @@ void GLWidget::initGL()
 
     if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
     m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    //depth shader
+    z_lib_return_code_vertex   = inflate(g_depth_map_gl3_vert, sizeof(g_depth_map_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_depth_map_gl3_frag, sizeof(g_depth_map_gl3_frag), &p_fragment_shader);
+
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_depthShader.setLabels("depth.vert", "depth.frag");
+    m_depthShader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
@@ -837,8 +852,13 @@ void GLWidget::render()
 {
     try
     {
+    	renderToShadowMap();
+
+    	//Restore the view point
+    	glViewport(0, 0, width(), height());
+
         // Handle for shader variables
-        GLuint handle(0);
+    	GLuint handle(0);
 
         // Enable back face culling
         pushEnableDisableState(GL_CULL_FACE);
@@ -876,11 +896,8 @@ void GLWidget::render()
         glUniform4fv(handle, 1, &light_specular[0]);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-
-        VEC3 light_direction(-1, 3, 1);
-        light_direction.normalize();
         handle = glGetUniformLocation(shader_id, "light_direction");
-        glUniform3f(handle, light_direction.getX(), light_direction.getY(), light_direction.getZ());
+        glUniform3f(handle, m_light_direction.getX(), m_light_direction.getY(), m_light_direction.getZ());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the status of OpenGL and of the current FBO
@@ -892,6 +909,18 @@ void GLWidget::render()
 
         // Rotate the sample
         g_current_modelview_matrix *= m_scene_rotation_matrix;
+
+        //Bind the shadow map texture in texture unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_shadowMap.getMapTexture());
+
+        handle = glGetUniformLocation(shader_id, "shadowMap");
+        glUniform1i(handle,0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "g_shadowMapMatrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadowMatrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
         glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
@@ -1001,6 +1030,7 @@ void GLWidget::render()
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     }
     // Catch exception if any
     catch (const std::exception& error)
@@ -1015,12 +1045,12 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
                               GLint aShaderID)
 //----------------------------------------------------------------
 {
-    for (int i(apMeshSet.size()-1); i >=0; --i)
-    {
+	for(int i(apMeshSet.size()-1); i>=0; --i)
+	{
         // Get the material
         Material& material(apMeshSet[i]->getMaterial());
 
-        // Define colours inshader
+        // Define colours in shader
         GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
         glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -1045,16 +1075,16 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
         {
         	if(apMeshSet[i]->isTransparent())
      	    {
+        		pushEnableDisableState(GL_CULL_FACE);
         		pushEnableDisableState(GL_BLEND);
-        		glDisable(GL_CULL_FACE);
 
+        		glDisable(GL_CULL_FACE);
         		glEnable(GL_BLEND);
         		glBlendFunc(GL_ONE, GL_ONE);
 
         		apMeshSet[i]->display();
 
-        		glEnable(GL_CULL_FACE);
-        		glCullFace(GL_BACK);
+        		popEnableDisableState();
         		popEnableDisableState();
     	    }
         	else
@@ -1263,3 +1293,80 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
         }
     }
 }
+
+//------------------------------------------------------
+void GLWidget::initializePatient(std::vector<AnatomicalMesh*>& apMeshSet)
+//------------------------------------------------------
+{
+	apMeshSet.push_back((new SkinMesh()));
+	apMeshSet.push_back((new LiverMesh()));
+	apMeshSet.push_back((new LungsMesh()));
+	apMeshSet.push_back((new DiaphragmMesh()));
+	apMeshSet.push_back((new BoneMesh()));
+	apMeshSet.push_back((new BoneMesh()));
+}
+
+//------------------------------------------------------
+void GLWidget::renderToShadowMap()
+//------------------------------------------------------
+{
+	//set the  matrix from the light's point of view to create the shadow map
+	Matrix4x4<GLfloat> shadowProjectionMatrix(buildOrthoProjectionMatrix(-500.f, 500.f, -500.f, 500.f, -500.f, 500.f));
+
+	Matrix4x4<GLfloat> shadowViewMatrix(buildLookAtModelViewMatrix(
+			m_light_direction,
+			VEC3(0.f, 0.f, 0.f),
+			VEC3(0.f, 1.f, 0.f)
+		));
+
+	//create the shadow map
+	if (m_current_patient == P4)
+	{
+		shadowViewMatrix *= m_scene_rotation_matrix*m_P4_rotation_matrix;
+		m_shadowMatrix=shadowProjectionMatrix*shadowViewMatrix;
+		m_shadowMap.render(m_p_P4_polygon_mesh_set, m_shadowMatrix, m_depthShader);
+	}
+	else
+	{
+		shadowViewMatrix *= m_scene_rotation_matrix*m_P5_rotation_matrix;
+		m_shadowMatrix=shadowProjectionMatrix*shadowViewMatrix;
+		m_shadowMap.render(m_p_P5_polygon_mesh_set, m_shadowMatrix, m_depthShader);
+	}
+}
+
+
+#if 0
+//------------------------------------------------------
+void GLWidget::loadShader(const void *srcVert, const void *srcFrag, std::string const& name, Shader& shader)
+//------------------------------------------------------
+{
+	// Initialise the shaders
+	char* p_vertex_shader(0);
+	char* p_fragment_shader(0);
+
+	int z_lib_return_code_vertex(0);
+	int z_lib_return_code_fragment(0);
+
+	std::string vertex_shader;
+	std::string fragment_shader;
+
+	// Display shader
+
+	z_lib_return_code_vertex   = inflate(srcVert, sizeof(srcVert),   &p_vertex_shader);
+	z_lib_return_code_fragment = inflate(srcFrag, sizeof(srcFrag), &p_fragment_shader);
+
+
+	vertex_shader   = p_vertex_shader;
+	fragment_shader = p_fragment_shader;
+	delete [] p_vertex_shader;     p_vertex_shader = 0;
+	delete [] p_fragment_shader; p_fragment_shader = 0;
+
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+	}
+	shader.setLabels(name+".vert", name+".frag");
+	shader.loadSource(vertex_shader, fragment_shader);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+#endif //0

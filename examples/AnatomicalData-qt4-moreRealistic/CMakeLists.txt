@@ -51,6 +51,8 @@ SET (RESOURCES_SOURCES
     ../shaders/display_gui.vert
     shaders/display_realistic_gl3.frag
     shaders/display_realistic_gl3.vert
+    shaders/depth_map_gl3.frag
+    shaders/depth_map_gl3.vert
 )
 CreateHeaderFiles("." "BinaryAnatomicalDataQt4MoreRealisticFiles" "${RESOURCES_SOURCES}")
 
@@ -95,7 +97,9 @@ add_executable(demo-anatomical-data-qt4-more-realistic
 	DiaphragmMesh.h DiaphragmMesh.cxx 
 	LiverMesh.h LiverMesh.cxx 
 	LungsMesh.h LungsMesh.cxx 
-	SkinMesh.h SkinMesh.cxx)
+	SkinMesh.h SkinMesh.cxx
+
+	DepthMap.h DepthMap.cxx)
 
 target_link_libraries(demo-anatomical-data-qt4-more-realistic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
@@ -130,6 +134,9 @@ ELSE (NOT APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/LungsMesh.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/SkinMesh.h
         ${CMAKE_CURRENT_SOURCE_DIR}/SkinMesh.cxx
+
+	${CMAKE_CURRENT_SOURCE_DIR}/DepthMap.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/DepthMap.cxx
 
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt

@@ -70,6 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
+
 #include <QtGui>
 #include <vector>
 
@@ -111,10 +112,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
-#ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#ifndef DEPTH_MAP_H
+#include "DepthMap.h"
 #endif
-
 
 //******************************************************************************
 //  namespace
@@ -397,6 +397,15 @@ protected:
             int aXmousePosition,
             int aYmousePosition);
 
+    //--------------------------------------------------------------------------
+    /// initialize the set of anatomical mesh.
+    /*
+    *   @param @param apMeshSet:   The set of polygon meshes to initialize
+    */
+    //--------------------------------------------------------------------------
+    void initializePatient(std::vector<AnatomicalMesh*>& apMeshSet);
+
+    void renderToShadowMap();
 
     /// The zooming factor
     GLfloat m_zoom;
@@ -425,6 +434,9 @@ protected:
     /// Transformation matrix used to rotate Patient 5
     Matrix4x4<GLfloat> m_P5_rotation_matrix;
 
+    /// projection and transformation matrix used to create the shadow map
+    Matrix4x4<GLfloat> m_shadowMatrix;
+
     /// Translation vector used to centre Patient 4
     VEC3 m_P4_translation_vector;
 
@@ -442,6 +454,10 @@ protected:
 
     /// GLSL shader
     Shader m_display_shader;
+    Shader m_depthShader;
+
+    ///object containing buffers to create the shadow map
+    DepthMap m_shadowMap;
 
     /// Set of polygon meshes for Patient 4
     std::vector<AnatomicalMesh*> m_p_P4_polygon_mesh_set;
@@ -483,6 +499,9 @@ protected:
 
     /// Flag set to true if the patients have to be swapped at the next iteration, false otherwise
     bool m_swap_patient;
+
+    ///the light direction (from the vertex to the camera
+    VEC3 m_light_direction;
 };
 
 

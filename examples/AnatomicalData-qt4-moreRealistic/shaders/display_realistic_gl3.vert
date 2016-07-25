@@ -80,28 +80,30 @@ in vec3 in_Normal;
 smooth out vec3 g_texture_coordinates;
 smooth out vec3 g_normal;
 smooth out vec3 g_view_direction;
-smooth out vec4 g_object_position;
-
+smooth out vec4 g_shadowCoord;
 
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
+uniform mat4 g_shadowMapMatrix;
 uniform mat3 g_normal_matrix;
-uniform vec4 light_world_direction;
 
 //-------------
 void main(void)
 //-------------
 {
-	g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);
-	g_normal = g_normal_matrix * in_Normal;
-	g_view_direction = normalize(g_modelview_matrix * g_object_position).xyz;
+	vec4 g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);
 	
+	g_normal = g_normal_matrix * in_Normal;
+	g_view_direction = normalize(g_object_position).xyz;
 	
     g_texture_coordinates = in_TexCoord;
 
+	//coordinates of the vertex for the shadow map
+	g_shadowCoord = g_shadowMapMatrix * vec4(in_Vertex, 1.0);
+	
 	gl_Position = g_projection_matrix * g_object_position;
 }
 
