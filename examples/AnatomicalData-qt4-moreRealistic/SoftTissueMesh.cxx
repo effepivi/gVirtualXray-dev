@@ -35,4 +35,19 @@ SoftTissueMesh::~SoftTissueMesh()
 	// TODO Auto-generated destructor stub
 }
 
+//----------------------------------------------
+bool SoftTissueMesh::isSoftTissue() const
+//----------------------------------------------
+{
+	return true;
+}
+
+//----------------------------------------------
+void SoftTissueMesh::display()
+//----------------------------------------------
+{
+	AnatomicalMesh::display();
+}
+
 } // namespace gVirtualXRay
+

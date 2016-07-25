@@ -45,12 +45,24 @@ AnatomicalMesh::~AnatomicalMesh()
 }
 
 //----------------------------------------
-bool AnatomicalMesh::isTransparent()
+bool AnatomicalMesh::isTransparent() const
 //----------------------------------------
 {
 	return false;
 }
 
+//----------------------------------------
+bool AnatomicalMesh::isSoftTissue() const
+//----------------------------------------
+{
+	return false;
+}
 
+//----------------------------------------------
+void AnatomicalMesh::display()
+//----------------------------------------------
+{
+	PolygonMesh::display();
+}
 
 } // namespace gVirtualXRay

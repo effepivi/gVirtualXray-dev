@@ -38,7 +38,7 @@ SkinMesh::~SkinMesh()
 }
 
 //----------------------------------------
-bool SkinMesh::isTransparent()
+bool SkinMesh::isTransparent() const
 //----------------------------------------
 {
 	return true;

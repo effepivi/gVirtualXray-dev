@@ -400,11 +400,14 @@ protected:
     //--------------------------------------------------------------------------
     /// initialize the set of anatomical mesh.
     /*
-    *   @param @param apMeshSet:   The set of polygon meshes to initialize
+    *   @param apMeshSet: The set of polygon meshes to initialize
     */
     //--------------------------------------------------------------------------
     void initializePatient(std::vector<AnatomicalMesh*>& apMeshSet);
 
+    //--------------------------------------------------------------------------
+    /// render the patient to the shadow map.
+    //--------------------------------------------------------------------------
     void renderToShadowMap();
 
     /// The zooming factor
