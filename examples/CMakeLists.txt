@@ -31,11 +31,17 @@
 
 
 project(gVirtualXRay-demos)
-cmake_minimum_required(VERSION 2.6)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
+MESSAGE(WARNING "${gVirtualXRay_INSTALL_PREFIX}")
 
-find_package(gVirtualXRay REQUIRED)
+if(NOT gVirtualXRay_BINARY_DIR)
+    find_package(gVirtualXRay REQUIRED)
+    include(${gVirtualXRay_USE_FILE})
+else()
+    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR})
+    find_package(gVirtualXRay REQUIRED)
+endif()
+
 
 OPTION (USE_ITK  "Build the demos that make use of the InsightToolkit (ITK)" OFF)
 OPTION (USE_FLTK "Build the demos that make use of the Fast Light Toolkit (FLTK)" OFF)
@@ -43,10 +49,6 @@ OPTION (USE_GLUT "Build the demos that make use of the OpenGL Utility Toolkit (G
 OPTION (USE_GLFW "Build the demos that make use of GLFW" OFF)
 OPTION (USE_QT4  "Build the demos that make use of Qt4" ON)
 OPTION (USE_QT5  "Build the demos that make use of Qt5" OFF)
-
-
-
-
 
 
 # GLFW ########################################################################

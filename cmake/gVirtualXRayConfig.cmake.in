@@ -30,8 +30,13 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-# Get the install prefix
-#get_filename_component(gVirtualXRay_INSTALL_PREFIX "@CMAKE_CURRENT_LIST_FILE@" PATH)
+#-----------------------------------------------------------------------------
+#
+# gVirtualXRayConfig.cmake - gVirtualXRay CMake configuration file for external projects.
+#
+# This file is configured by gVirtualXRay and used by the UsegVirtualXRay.cmake module
+# to load gVirtualXRay's settings for an external project.
+@gVirtualXRay_CONFIG_CODE@
 
 
 # The version number
@@ -60,20 +65,20 @@ SET(gVirtualXRay_MAIN_PACKAGE_NAME "@MAIN_PACKAGE_NAME@")
 SET(gVirtualXRay_MAIN_PROJECT_VERSION "@MAIN_PROJECT_VERSION@")
 
 
-# The install directory
-SET(gVirtualXRay_INSTALL_DIR "@INSTALL_DIR@")
-
-
 # The copyright string
 SET(gVirtualXRay_COPYRIGHT_STRING "@COPYRIGHT_STRING@")
 
 
-# Use shared library
-SET(gVirtualXRay_BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@")
+# Whether gVirtualXRay was built with shared libraries.
+SET(gVirtualXRay_BUILD_SHARED "@gVirtualXRay_BUILD_SHARED_LIBS@")
 
 
 # C++ version
 SET(gVirtualXRay_CMAKE_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
+
+
+# C flags
+SET(gVirtualXRay_CMAKE_C_FLAGS "@CMAKE_C_FLAGS@")
 
 
 # C++ flags
@@ -85,14 +90,14 @@ SET(gVirtualXRay_BASE_DIR "@gVirtualXRay_BASE_DIR@")
 
 
 # Include directory
-SET(gVirtualXRay_INCLUDE_DIR "@gVirtualXRay_INCLUDE_DIR@")
-SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@")
+SET(gVirtualXRay_INCLUDE_DIR  "@gVirtualXRay_INSTALL_PREFIX@/include")
+SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@" "@gVirtualXRay_INSTALL_PREFIX@/third_party/include")
 
 
 # gVirtualXRay library
-SET(gVirtualXRay_LIBRARY "@gVirtualXRay_LIBRARY@")
-SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_LIBRARY_DIRS@")
-SET(gVirtualXRay_LIBRARIES "@gVirtualXRay_LIBRARIES@")
+SET(gVirtualXRay_LIBRARY      "@gVirtualXRay_LIBRARY@")
+SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_INSTALL_PREFIX@/lib" "@gVirtualXRay_INSTALL_PREFIX@/lib64" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib64" "@gVirtualXRay_LIBRARY_DIRS@")
+SET(gVirtualXRay_LIBRARIES    "@gVirtualXRay_LIBRARIES@")
 
 
 # Preprocessor definitions
@@ -105,18 +110,39 @@ SET(gVirtualXRay_GZIP_TOOL "@GZIP_TOOL@")
 
 # GLEW
 SET(gVirtualXRay_USE_SYSTEM_GLEW "@USE_SYSTEM_GLEW@")
+IF (gVirtualXRay_USE_SYSTEM_GLEW)
+    FIND_PACKAGE (GLEW REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${GLEW_INCLUDE_DIR}"
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${GLEW_LIBRARY}")
+ENDIF()
 
 
 # ZLIB
 SET(gVirtualXRay_USE_SYSTEM_ZLIB "@USE_SYSTEM_ZLIB@")
+IF (gVirtualXRay_USE_SYSTEM_ZLIB)
+    FIND_PACKAGE (ZLIB REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${ZLIB_INCLUDE_DIR}"
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${ZLIB_LIBRARY}")
+ENDIF()
 
 
 # FreeType
 SET(gVirtualXRay_USE_SYSTEM_FREETYPE "@USE_SYSTEM_FREETYPE@")
+IF (gVirtualXRay_USE_SYSTEM_FREETYPE)
+    FIND_PACKAGE (FREETYPE REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${FREETYPE_INCLUDE_DIRS}"
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${FREETYPE_LIBRARIES}")
+ENDIF()
 
 
 # LibTiff
 SET(gVirtualXRay_USE_SYSTEM_LIBTIFF "@USE_SYSTEM_LIBTIFF@")
+IF (gVirtualXRay_USE_SYSTEM_LIBTIFF)
+    FIND_PACKAGE (TIFF REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${TIFF_INCLUDE_DIR} "${TIFF_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS}" "${TIFF_LIBRARY_DIR}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${TIFF_LIBRARIES}")
+ENDIF()
 
 
 # NIST's XCOM database
@@ -125,6 +151,6 @@ SET(gVirtualXRay_USE_SYSTEM_XCOM "@USE_SYSTEM_XCOM@")
 SET(gVirtualXRay_XCOM_PATH "@XCOM_PATH@")
 
 
-# Use file
-SET(USE_gVirtualXRay_FILE "@gVirtualXRay_USE_FILE@")
+# The location of the UsegVirtualXRay.cmake file.
 SET(gVirtualXRay_USE_FILE "@gVirtualXRay_USE_FILE@")
+

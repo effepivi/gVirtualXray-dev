@@ -309,7 +309,6 @@ ENDIF (GLEW_FOUND)
 
 
 # ZLIB #########################################################################
-
 OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
 
 IF (USE_SYSTEM_ZLIB)
@@ -324,7 +323,6 @@ SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
 SET (requiredLibs ${requiredLibs} ${ZLIB_LIBRARY})
 
 # FREETYPE ####################################################################
-
 OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 
 IF (USE_SYSTEM_FREETYPE)
@@ -344,9 +342,26 @@ IF (FREETYPE_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
     SET (optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+
+    FIND_PACKAGE(PNG)
+    IF (PNG_FOUND)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PNG_INCLUDE_DIRS}")
+        SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
+    ENDIF (PNG_FOUND)
+
+    FIND_PACKAGE(BZip2)
+    IF (BZIP2_FOUND)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${BZIP2_INCLUDE_DIR}")
+        SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
+    ENDIF (BZIP2_FOUND)
+
+    #FIND_PACKAGE(HARFBUZZ)
+    #IF (HARFBUZZ_FOUND)
+    #    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${HARFBUZZ_INCLUDE_DIRS}")
+    #    SET(optionalLibs ${optionalLibs} ${HARFBUZZ_LIBRARIES})
+    #ENDIF (HARFBUZZ_FOUND)
+
 ENDIF (FREETYPE_FOUND)
-
-
 
 
 # TIFF #########################################################################
@@ -518,34 +533,28 @@ IF (NOT USE_SYSTEM_LIBTIFF)
 ENDIF (NOT USE_SYSTEM_LIBTIFF)
 
 
-# Generate gVirtualXRayConfig.cmake for the install tree #######################
-SET (gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/${PROJECT_NAME}-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include/")
-SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib")
-#SET (gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake")
-SET (gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/UsegVirtualXRay.cmake")
-
-
 # Installation variables #######################################################
-IF (NOT gVirtualXRay_INSTALL_RUNTIME_DIR)
-    SET (gVirtualXRay_INSTALL_RUNTIME_DIR bin)
-ENDIF (NOT gVirtualXRay_INSTALL_RUNTIME_DIR)
-
-IF (NOT gVirtualXRay_INSTALL_LIB_DIR)
-    SET (gVirtualXRay_INSTALL_LIB_DIR lib)
-ENDIF (NOT gVirtualXRay_INSTALL_LIB_DIR)
-
-IF (NOT gVirtualXRay_INSTALL_ARCHIVE_DIR)
-    SET (gVirtualXRay_INSTALL_ARCHIVE_DIR lib)
-ENDIF (NOT gVirtualXRay_INSTALL_ARCHIVE_DIR)
-
-IF (NOT gVirtualXRay_INSTALL_INCLUDE_DIR)
-    SET (gVirtualXRay_INSTALL_INCLUDE_DIR include/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
-ENDIF (NOT gVirtualXRay_INSTALL_INCLUDE_DIR)
-
-IF (NOT gVirtualXRay_INSTALL_PACKAGE_DIR)
-    SET (gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
-ENDIF (NOT gVirtualXRay_INSTALL_PACKAGE_DIR)
+if(NOT gVirtualXRay_INSTALL_RUNTIME_DIR)
+  set(gVirtualXRay_INSTALL_RUNTIME_DIR bin)
+endif()
+if(NOT gVirtualXRay_INSTALL_LIBRARY_DIR)
+    set(gVirtualXRay_INSTALL_LIBRARY_DIR lib)
+endif()
+if(NOT gVirtualXRay_INSTALL_ARCHIVE_DIR)
+    set(gVirtualXRay_INSTALL_ARCHIVE_DIR lib)
+endif()
+if(NOT gVirtualXRay_INSTALL_INCLUDE_DIR)
+    set(gVirtualXRay_INSTALL_INCLUDE_DIR include/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
+endif()
+if(NOT gVirtualXRay_INSTALL_DATA_DIR)
+    set(gVirtualXRay_INSTALL_DATA_DIR share/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
+endif()
+if(NOT gVirtualXRay_INSTALL_DOC_DIR)
+    set(gVirtualXRay_INSTALL_DOC_DIR share/doc/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
+endif()
+if(NOT gVirtualXRay_INSTALL_PACKAGE_DIR)
+    set(gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
+endif()
 
 
 # Installation #################################################################
@@ -554,40 +563,23 @@ INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INST
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 
 
-# Installation code
-IF (NOT gVirtualXRay_INSTALL_NO_DEVELOPMENT)
-  # Generate gVirtualXRayConfig.cmake for the install tree.
-  SET (gVirtualXRay_USE_FILE "${CMAKE_INSTALL_PREFIX}/${gVirtualXRay_INSTALL_PACKAGE_DIR}/UsegVirtualXRay.cmake")
-  SET (gVirtualXRay_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/${gVirtualXRay_INSTALL_INCLUDE_DIR}")
-  SET (gVirtualXRay_LIBRARY_DIRS "${CMAKE_INSTALL_PREFIX}/${gVirtualXRay_INSTALL_LIB_DIR}")
+# Generate gVirtualXRayConfig.cmake for the build tree.
+set(gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/UsegVirtualXRay.cmake")
+configure_file(gVirtualXRayConfig.cmake.in gVirtualXRayConfig.cmake @ONLY)
 
-CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/gVirtualXRayConfig.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
+install(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
+    UsegVirtualXRay.cmake
+    DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR}
+    COMPONENT Development)
 
-
-MESSAGE(WARNING "Make sure the path in gVirtualXRayConfig.cmake is related to the installation path!")
-
-
-  
-CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/UsegVirtualXRay.cmake.in ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake @ONLY)
-INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR})
-INSTALL(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/UsegVirtualXRay.cmake    DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR})
+# Generate gVirtualXRayConfig.cmake for the install tree #######################
+#SET (gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/${PROJECT_NAME}-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
+#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include/")
+#SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib")
+#SET (gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake")
+#SET (gVirtualXRay_USE_FILE "UsegVirtualXRay.cmake")
 
 
-# Include .h and .txx files
-  #FILE(GLOB __files1 "${PROJECT_SOURCE_DIR}/code/*.h")
-  #FILE(GLOB __files2 "${PROJECT_SOURCE_DIR}/code/*.txx")
-  #INSTALL(FILES ${__files1} ${__files2} ${gVirtualXRay_BINARY_DIR}/gVirtualXRayConfiguration.h
-  #  DESTINATION ${gVirtualXRay_INSTALL_INCLUDE_DIR}
-  #  COMPONENT Development)
-ENDIF(NOT gVirtualXRay_INSTALL_NO_DEVELOPMENT)
-
-IF(NOT gVirtualXRay_INSTALL_NO_LIBRARIES)
-  INSTALL(TARGETS gVirtualXRay
-    RUNTIME DESTINATION ${gVirtualXRay_INSTALL_RUNTIME_DIR} COMPONENT Runtime
-    LIBRARY DESTINATION ${gVirtualXRay_INSTALL_LIB_DIR} COMPONENT RuntimeLibraries
-    ARCHIVE DESTINATION ${gVirtualXRay_INSTALL_ARCHIVE_DIR} COMPONENT Development)
-
-ENDIF(NOT gVirtualXRay_INSTALL_NO_LIBRARIES)
 
 
 
@@ -599,17 +591,6 @@ OPTION(BUILD_DOXYGEN "Build Doxygen Documentation" OFF)
 IF(BUILD_DOXYGEN)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
 ENDIF(BUILD_DOXYGEN)
-
-#IF (WIN32)
-#    FIND_PACKAGE(Doxygen) 
-#    IF (DOXYGEN_FOUND)
-#        ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
-#    ELSE (DOXYGEN_FOUND)
-#        MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
-#    ENDIF (DOXYGEN_FOUND)
-#ELSE(WIN32)
-#    ADD_CUSTOM_TARGET(html-doc doxygen ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
-#ENDIF (WIN32)
 
 
 # Examples #####################################################################
