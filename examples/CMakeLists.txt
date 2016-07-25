@@ -91,7 +91,8 @@ IF (USE_GLFW)
 ENDIF (USE_GLFW)
 
 IF (USE_QT4)
-	add_subdirectory(AnatomicalData-qt4-moreRealistic)
+    add_subdirectory(AnatomicalData-qt4)
+    add_subdirectory(AnatomicalData-qt4-moreRealistic)
 ENDIF (USE_QT4)
 
 IF (USE_QT5)

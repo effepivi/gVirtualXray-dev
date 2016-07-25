@@ -52,7 +52,7 @@ SET (RESOURCES_SOURCES
     shaders/display_realistic_gl3.frag
     shaders/display_realistic_gl3.vert
 )
-CreateHeaderFiles("." "BinaryAnatomicalDataQt4Files" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinaryAnatomicalDataQt4MoreRealisticFiles" "${RESOURCES_SOURCES}")
 
 
 # Headers of the project #######################################################
@@ -99,7 +99,7 @@ add_executable(demo-anatomical-data-qt4-more-realistic
 
 target_link_libraries(demo-anatomical-data-qt4-more-realistic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic BinaryAnatomicalDataQt4Files)
+ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic BinaryAnatomicalDataQt4MoreRealisticFiles)
 
 IF (NOT APPLE)
     INSTALL(TARGETS demo-anatomical-data-qt4-more-realistic RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-qt4-moreRealistic/bin COMPONENT demos)
@@ -138,7 +138,7 @@ ELSE (NOT APPLE)
 
     ADD_EXECUTABLE (AnatomicalData-qt4-moreRealistic MACOSX_BUNDLE ${AnatomicalData-qt4-moreRealistic_SRCS})
     TARGET_LINK_LIBRARIES (AnatomicalData-qt4-moreRealistic gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(AnatomicalData-qt4-moreRealistic BinaryAnatomicalDataQt4Files)
+    ADD_DEPENDENCIES(AnatomicalData-qt4-moreRealistic BinaryAnatomicalDataQt4MoreRealisticFiles)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME AnatomicalData-qt4-moreRealistic)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "AnatomicalData-qt4-moreRealistic")

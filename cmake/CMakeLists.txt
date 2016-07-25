@@ -565,7 +565,7 @@ INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_IN
 
 # Generate gVirtualXRayConfig.cmake for the build tree.
 set(gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/UsegVirtualXRay.cmake")
-configure_file(gVirtualXRayConfig.cmake.in gVirtualXRayConfig.cmake @ONLY)
+configure_file(gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
 install(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
     UsegVirtualXRay.cmake
