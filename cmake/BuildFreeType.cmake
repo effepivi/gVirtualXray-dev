@@ -50,5 +50,10 @@ ELSE (UNIX)
 	
 ENDIF (UNIX)
 
+# copy libraries into install tree
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+
+
 endmacro(build_freetype)
 
