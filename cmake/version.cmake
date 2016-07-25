@@ -35,6 +35,7 @@ SET (gVirtualXRay_VERSION_MINOR 0)
 SET (gVirtualXRay_VERSION_PATCH 0)
 
 SET (PROJECT_NAME         "gVirtualXRay")
+SET (PROJECT_DESCRIPTION  "Virtual X-Ray Imaging Library on GPU")
 SET (EMAIL                "franck.p.vidal@fpvidal.net")
 SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
 SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")

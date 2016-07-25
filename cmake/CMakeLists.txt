@@ -50,6 +50,13 @@ IF (APPLE)
 ENDIF (APPLE)
 
 
+# Flag required for shared libraries
+IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+
+
 #IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
     cmake_policy(SET CMP0011 NEW)
@@ -59,6 +66,11 @@ ENDIF (APPLE)
 IF (APPLE)
     cmake_policy(SET CMP0042 NEW)
 ENDIF (APPLE)
+
+
+# Support for the CTest dashboard testing system
+INCLUDE(CTest)
+
 
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -83,6 +95,10 @@ SET (CMAKE_FIND_FRAMEWORK "LAST")
 #	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-Wall")
 #ENDIF (NOT WIN32)
 
+# For testing
+IF(BUILD_TESTING)
+  ENABLE_TESTING()
+ENDIF(BUILD_TESTING)
 
 # for superbuild
 SET (USE_SUPERBUILD ON)
@@ -579,16 +595,21 @@ ENDIF(NOT gVirtualXRay_INSTALL_NO_LIBRARIES)
 
 
 # Doxygen documentation ########################################################
-IF (WIN32)
-    FIND_PACKAGE(Doxygen) 
-    IF (DOXYGEN_FOUND)
-        ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
-    ELSE (DOXYGEN_FOUND)
-        MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
-    ENDIF (DOXYGEN_FOUND)
-ELSE(WIN32)
-    ADD_CUSTOM_TARGET(html-doc doxygen ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
-ENDIF (WIN32)
+OPTION(BUILD_DOXYGEN "Build Doxygen Documentation" OFF)
+IF(BUILD_DOXYGEN)
+    ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
+ENDIF(BUILD_DOXYGEN)
+
+#IF (WIN32)
+#    FIND_PACKAGE(Doxygen) 
+#    IF (DOXYGEN_FOUND)
+#        ADD_CUSTOM_TARGET(html-doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
+#    ELSE (DOXYGEN_FOUND)
+#        MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
+#    ENDIF (DOXYGEN_FOUND)
+#ELSE(WIN32)
+#    ADD_CUSTOM_TARGET(html-doc doxygen ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile) 
+#ENDIF (WIN32)
 
 
 # Examples #####################################################################

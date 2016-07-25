@@ -13,6 +13,7 @@ set (CMAKE_CXX_STANDARD "${gVirtualXRay_CMAKE_CXX_STANDARD}")
 
 
 # C++ flags
+SET(CMAKE_C_FLAGS   "${gVirtualXRay_CMAKE_C_FLAGS}")
 SET(CMAKE_CXX_FLAGS "${gVirtualXRay_CMAKE_CXX_FLAGS}")
 
 
