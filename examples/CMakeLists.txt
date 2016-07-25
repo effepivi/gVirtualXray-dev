@@ -48,25 +48,9 @@ OPTION (USE_GLFW "Build the demos that make use of GLFW" OFF)
 OPTION (USE_QT4  "Build the demos that make use of Qt4" ON)
 OPTION (USE_QT5  "Build the demos that make use of Qt5" OFF)
 
-
-# GLFW ########################################################################
-
-IF (USE_GLFW)
-    #IF(NOT GLFW_FOUND)
-	    OPTION(USE_SYSTEM_GLFW       "Use System GLFW "       OFF)
-
-    	IF(USE_SYSTEM_GLFW)
-	    	FIND_PACKAGE( GLFW   REQUIRED )
-    	ELSE(USE_SYSTEM_GLFW)
-	    	INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildGLFW.cmake)
-		    build_GLFW( GLFW ${PROJECT_BINARY_DIR} )
-    	ENDIF(USE_SYSTEM_GLFW)
-
-    #ENDIF(NOT GLFW_FOUND)
-ENDIF(USE_GLFW)
-
-
-add_subdirectory(STL-File)
+IF (USE_GLUT)
+    add_subdirectory(STL-File-glut)
+ENDIF (USE_GLUT)
 
 IF (USE_FLTK)
     add_subdirectory(GUI-FLTK)
@@ -81,11 +65,7 @@ ENDIF(USE_ITK)
 IF (USE_GLFW)
 #    add_subdirectory(Intersections)
     add_subdirectory(AnatomicalData-glfw)
-	
-	IF(NOT USE_SYSTEM_GLFW)
-		ADD_DEPENDENCIES(welsh_dragon_glfw GLFW)
-		ADD_DEPENDENCIES(demo-anatomical-data-glfw GLFW)
-	endif ()
+    add_subdirectory(STL-File-glfw)
 ENDIF (USE_GLFW)
 
 IF (USE_QT4)

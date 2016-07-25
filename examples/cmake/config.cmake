@@ -34,11 +34,6 @@
 cmake_policy(SET CMP0011 NEW)
 
 
-# for superbuild
-SET(USE_SUPERBUILD ON)
-INCLUDE(ExternalProject)
-INCLUDE(ConfigureExternalProjects)
-
 # Fix linkage problem with windows and cross-compilation #######################
 IF (WIN32)
     ADD_DEFINITIONS(-DGLEW_STATIC)
@@ -90,12 +85,9 @@ ENDIF(USE_GLFW)
 
 # GLUT ########################################################################
 IF (USE_GLUT)
-    FIND_PACKAGE(GLUT)
     IF(GLUT_FOUND)
         INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
         SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
-    ELSE(GLUT_FOUND)
-        MESSAGE(WARNING "GLUT not found.")
     ENDIF(GLUT_FOUND)
 ENDIF(USE_GLUT)
 
