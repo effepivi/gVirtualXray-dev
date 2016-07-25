@@ -18,7 +18,7 @@ SET(CMAKE_CXX_FLAGS "${gVirtualXRay_CMAKE_CXX_FLAGS}")
 
 
 # Add preprocessor definitions
-ADD_DEFINITIONS("${gVirtualXRay_ADD_DEFINITIONS")
+ADD_DEFINITIONS("${gVirtualXRay_ADD_DEFINITIONS}")
 
 
 # Add include directories needed to use gVirtualXRay
