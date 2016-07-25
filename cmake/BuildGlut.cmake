@@ -41,12 +41,38 @@ ExternalProject_Add(FreeGlut
 
 SET(GLUT_INCLUDE_DIR  ${staging_prefix}/${install_prefix}-install/include)
 
+
 IF (UNIX)
-    SET(GLUT_LIBRARIES  ${staging_prefix}/${install_prefix}-install/lib64/libglut.a)
-ELSE (UNIX)
-    SET(GLUT_LIBRARIES  ${staging_prefix}/${install_prefix}-install/lib64/glut32.lib)
-ENDIF (UNIX)    
- 
+    IF (NOT APPLE)
+        FIND_PACKAGE (X11 REQUIRED)
+
+        SET (GLUT_PLATFORM_DEPENDENT_LIBS 
+            #pthread
+            dl 
+            #SM
+            #ICE
+            X11
+            Xext
+            Xinerama
+            Xfixes
+            Xcursor
+            Xft
+            fontconfig
+            #m
+            Xxf86vm
+            Xi
+            #Xrender
+            Xrandr
+        )
+
+    ENDIF (NOT APPLE)
+ENDIF (UNIX)
+
+SET (GLUT_LIBRARIES 
+    ${staging_prefix}/${install_prefix}-install/lib64/libglut.a
+    ${GLUT_PLATFORM_DEPENDENT_LIBS}
+)
+
 set (GLUT_LIBRARY      ${GLUT_LIBRARIES})
 set (GLUT_INCLUDE_PATH ${GLUT_INCLUDE_DIR})
 SET(GLUT_FOUND ON)

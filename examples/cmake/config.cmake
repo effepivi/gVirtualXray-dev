@@ -43,64 +43,64 @@ ENDIF (WIN32)
 
 
 # OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED)
-IF(OPENGL_FOUND)
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
-    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
-ELSE(OPENGL_FOUND)
-    MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF(OPENGL_FOUND)
+#FIND_PACKAGE(OpenGL REQUIRED)
+#IF(OPENGL_FOUND)
+#    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR} ${GLU_INCLUDE_PATH})
+#    SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+#ELSE(OPENGL_FOUND)
+#    MESSAGE(FATAL_ERROR "OpenGL not found.")
+#ENDIF(OPENGL_FOUND)
 
 
 # GLFW ########################################################################
 
-IF (USE_GLFW)
-    IF(GLFW_FOUND)
-
-		#LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
-		INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-		SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
-	
-    	IF (APPLE)
-	    	FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-		    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-    		FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-	    	FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
-
-		    SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-    	ENDIF(APPLE)
-
-	    IF (UNIX)
-		    FIND_PACKAGE (X11 REQUIRED)
-    		iF (X11_FOUND)
-	    		INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-		    	SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
-	    	ELSE (X11_FOUND)
-		    	MESSAGE(FATAL_ERROR "X11 not found.")
-    		ENDIF (X11_FOUND)
-	    ENDIF(UNIX)
-    ENDIF(GLFW_FOUND)
-ENDIF(USE_GLFW)
-
-
-# GLUT ########################################################################
-IF (USE_GLUT)
-    IF(GLUT_FOUND)
-        INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-        SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
-    ENDIF(GLUT_FOUND)
-ENDIF(USE_GLUT)
+#IF (USE_GLFW)
+#    IF(GLFW_FOUND)
+#
+#		#LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
+#		INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
+#		SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
+#	
+#    	IF (APPLE)
+#	    	FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+#		    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+#    		FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
+#	    	FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
+#
+#		    SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
+#   	ENDIF(APPLE)
+##
+#	    IF (UNIX)
+#		    FIND_PACKAGE (X11 REQUIRED)
+#    		iF (X11_FOUND)
+#	    		INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+#		    	SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+##	    	ELSE (X11_FOUND)
+#		    	MESSAGE(FATAL_ERROR "X11 not found.")
+#    		ENDIF (X11_FOUND)
+#	    ENDIF(UNIX)
+##    ENDIF(GLFW_FOUND)
+#ENDIF(USE_GLFW)
+#
+#
+## GLUT ########################################################################
+#IF (USE_GLUT)
+#    IF(GLUT_FOUND)
+#        INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+#       SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
+##    ENDIF(GLUT_FOUND)
+#ENDIF(USE_GLUT)
 
 
 # Qt4 #########################################################################
-IF (USE_QT4)
-    FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
-    IF(Qt4_FOUND)
-        SET(CMAKE_AUTOMOC ON)
-        SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-        SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
-    ELSE(Qt4_FOUND)
-        MESSAGE(WARNING "Qt4 not found.")
-    ENDIF(Qt4_FOUND)
-ENDIF (USE_QT4)
+#IF (USE_QT4)
+    #    FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
+    #    IF(Qt4_FOUND)
+        #        SET(CMAKE_AUTOMOC ON)
+        #        SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+        #        SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
+        #    ELSE#(Qt4_FOUND)
+        #MESSAGE(WARNING "Qt4 not found.")
+        #ENDIF(Qt4_FOUND)
+    #ENDIF (USE_QT4)
 

@@ -47,7 +47,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
 
 
 # Check if GLFW is enable #####################################################

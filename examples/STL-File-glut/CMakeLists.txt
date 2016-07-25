@@ -45,10 +45,6 @@ CreateHeaderFiles("." "BinaryStlGlutFiles" "${RESOURCES_SOURCES}")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
-# Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
-
-
 # Check if GLUT is enable #####################################################
 IF (USE_SYSTEM_GLUT)
     FIND_PACKAGE( GLUT   REQUIRED )
@@ -56,7 +52,7 @@ ENDIF (USE_SYSTEM_GLUT)
 
 IF (GLUT_FOUND)
     INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-    SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARY})
+    SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARIES})
 ELSE (GLUT_FOUND)
     MESSAGE(FATAL_ERROR "GLUT not found.")
 ENDIF (GLUT_FOUND)
