@@ -30,14 +30,11 @@ ExternalProject_Add(ZLIB
   CMAKE_ARGS
       -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
       -DBUILD_SHARED_LIBS:BOOL=OFF
-      #-DCMAKE_SKIP_RPATH:BOOL=ON
       -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      #-DCMAKE_SKIP_RPATH:BOOL=OFF
-      #-DCMAKE_SKIP_INSTALL_RPATH:BOOL=OFF
-      #-DCMAKE_INSTALL_RPATH:PATH=${install_prefix}/lib${LIB_SUFFIX}
-  #INSTALL_COMMAND $(MAKE) install DESTDIR=${staging_prefix}/${install_prefix}-install
+      -DCMAKE_BUILD_TYPE=${configuration}
+      -DCMAKE_CONFIGURATION_TYPES=${configuration}
 )
 
 SET(ZLIB_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
@@ -54,8 +51,9 @@ ELSE(UNIX)
 	#endif ()
 ENDIF(UNIX)
 
-#configure_file(${CMAKE_SOURCE_DIR}/ZLIB-config.cmake.install.in ${staging_prefix}/${install_prefix}/share/cmake/ZLIB/ZLIBConfig.cmake @ONLY )
-
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development)
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development)
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development)
 
 
 endmacro(build_zlib)

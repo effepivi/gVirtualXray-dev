@@ -42,7 +42,7 @@ SET (XCOM_VERSION_MINOR  0)
 SET(XCOM_PATH ${staging_prefix}/XCOM)
 
 # copy libraries into install tree
-install(DIRECTORY ${staging_prefix}/XCOM     DESTINATION ${INSTALL_DIR}/third_party     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${staging_prefix}/XCOM     DESTINATION ${INSTALL_DIR}/third_party/XCOM     COMPONENT Development)
 
 endmacro(build_xcom)
 

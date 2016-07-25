@@ -52,28 +52,13 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 # FLTK ########################################################################
 
-# for superbuild
-SET(USE_SUPERBUILD ON)
-INCLUDE(ExternalProject)
-INCLUDE(ConfigureExternalProjects)
-OPTION(USE_SYSTEM_FLTK       "Use System FLTK"       OFF)
-
-IF(USE_SYSTEM_FLTK)
-    FIND_PACKAGE( FLTK   REQUIRED )
-ELSE(USE_SYSTEM_FLTK)
-    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-
-    INCLUDE(BuildFLTK)
-    build_fltk( fltk ${PROJECT_BINARY_DIR} )
-
-    #MESSAGE(FATAL_ERROR "${FLTK_LIBRARIES}")
-    #include(${PROJECT_BINARY_DIR}/fltk-build/UseFLTK.cmake)
-    #MESSAGE(FATAL_ERROR "${FLTK_PLATFORM_DEPENDENT_LIBS}")
-
-ENDIF(USE_SYSTEM_FLTK)
-
-INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} ${FLTK_INCLUDE_DIRS})
-SET(optionalLibs ${optionalLibs} ${FLTK_LIBRARIES})
+FIND_PACKAGE( FLTK   REQUIRED )
+if(FLTK_FOUND)
+    INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} ${FLTK_INCLUDE_DIRS})
+    SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+ELSE(FLTK_FOUND)
+    MESSAGE(FATAL_ERROR "Boost not found.")
+ENDIF(FLTK_FOUND)
 
 
 # BOOST #######################################################################

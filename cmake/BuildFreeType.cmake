@@ -25,14 +25,14 @@ ExternalProject_Add(FREETYPE
   LIST_SEPARATOR :::  
   CMAKE_GENERATOR ${CMAKE_GEN}
   CMAKE_ARGS
-#      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-      -DCMAKE_CFG_INTDIR=Release
-      -DCMAKE_BUILD_TYPE:STRING=Release
+      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DWITH_HarfBuzz:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_BUILD_TYPE=${configuration}
+      -DCMAKE_CONFIGURATION_TYPES=${configuration}
 )
 
 SET(FREETYPE_INCLUDE_DIRS ${staging_prefix}/${install_prefix}-install/include  ${staging_prefix}/${install_prefix}-install/include/freetype2)
@@ -51,8 +51,8 @@ ELSE (UNIX)
 ENDIF (UNIX)
 
 # copy libraries into install tree
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development)
+install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development)
 
 
 endmacro(build_freetype)

@@ -596,9 +596,20 @@ ENDIF(BUILD_DOXYGEN)
 # Examples #####################################################################
 option(BUILD_EXAMPLES "Build examples." OFF)
 IF (BUILD_EXAMPLES)
-   	MESSAGE(STATUS "Build examples.")
+    MESSAGE(STATUS "Build examples.")
 
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
+    IF (USE_FLTK)
+        OPTION(USE_SYSTEM_FLTK       "Use System FLTK"       OFF)
+        IF (NOT USE_SYSTEM_FLTK)
+            SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+            INCLUDE(BuildFLTK)
+            build_fltk( fltk ${PROJECT_BINARY_DIR} )
+            ADD_DEPENDENCIES(gVirtualXRay fltk)
+        ENDIF (NOT USE_SYSTEM_FLTK)
+    ENDIF (USE_FLTK)
+
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
+
 ELSE (BUILD_EXAMPLES)
    	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
