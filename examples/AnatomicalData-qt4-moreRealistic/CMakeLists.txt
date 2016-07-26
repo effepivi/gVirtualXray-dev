@@ -94,9 +94,9 @@ target_link_libraries(demo-anatomical-data-qt4-more-realistic ${gVirtualXRay_LIB
 ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic BinaryAnatomicalDataQt4MoreRealisticFiles)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS demo-anatomical-data-qt4-more-realistic RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-qt4-moreRealistic/bin COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-qt4-moreRealistic/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/AnatomicalData-qt4-moreRealistic COMPONENT demos)
+    INSTALL(TARGETS demo-anatomical-data-qt4-more-realistic RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
     
