@@ -46,13 +46,20 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw3_FOUND)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( GLFW   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (GLFW_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW_LIBRARY})
+ELSE (GLFW_FOUND)
+    MESSAGE(FATAL_ERROR "GLFW not found.")
+ENDIF (GLFW_FOUND)
 
 
 # Create the main program ######################################################

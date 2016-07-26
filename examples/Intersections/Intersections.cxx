@@ -63,20 +63,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <GL/glew.h>
-
 #include <boost/scoped_ptr.hpp>
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
 

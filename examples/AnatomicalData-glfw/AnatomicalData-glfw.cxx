@@ -64,6 +64,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -74,12 +77,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <streambuf>
 #include <ctime>
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
 

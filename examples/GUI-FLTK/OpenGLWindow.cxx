@@ -63,6 +63,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -74,8 +77,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 #include <cmath>
-
-#include <GL/glew.h>
 
 #include <FL/gl.h>
 #include <FL/Fl.H>
