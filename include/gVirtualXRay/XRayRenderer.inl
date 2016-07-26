@@ -436,6 +436,7 @@ namespace gVirtualXRay {
 
 
 #ifdef HAS_ITK
+
     //------------------------------------------------------------------------------
     inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram() const
     //------------------------------------------------------------------------------
@@ -453,7 +454,7 @@ namespace gVirtualXRay {
 
 
     //--------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getSinogramRawData() const
+    inline const PixelType* XRayRenderer::getSinogramRawData() const
     //--------------------------------------------------------------
     {
         if (m_p_sinogram_image.IsNull())
@@ -484,7 +485,7 @@ namespace gVirtualXRay {
 
 
     //-------------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getProjectionSetRawData() const
+    inline const PixelType* XRayRenderer::getProjectionSetRawData() const
     //-------------------------------------------------------------------
     {
         if (m_p_projection_set.IsNull())
@@ -496,6 +497,57 @@ namespace gVirtualXRay {
             return (m_p_projection_set->GetBufferPointer());
         }
     }
+
+#else // HAS_ITK
+
+    //---------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getSinogram() const
+    //---------------------------------------------------------------------
+    {
+        return (m_p_sinogram_image);
+    }
+
+
+    //---------------------------------------------------------
+    inline XRayRenderer::PixelType* XRayRenderer::getSinogram()
+    //---------------------------------------------------------
+    {
+        return (m_p_sinogram_image);
+    }
+
+
+    //----------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getSinogramRawData() const
+    //----------------------------------------------------------------------------
+    {
+        return (m_p_sinogram_image);
+    }
+
+
+    //--------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSet() const
+    //--------------------------------------------------------------------------
+    {
+        return (m_p_projection_set);
+    }
+
+
+    //--------------------------------------------------------------
+    inline XRayRenderer::PixelType* XRayRenderer::getProjectionSet()
+    //--------------------------------------------------------------
+    {
+        return (m_p_projection_set);
+    }
+
+
+    //---------------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSetRawData() const
+    //---------------------------------------------------------------------------------
+    {
+        return (m_p_projection_set);
+    }
+
+#endif // HAS_ITK
 
 
     //-------------------------------------------------
@@ -528,9 +580,6 @@ namespace gVirtualXRay {
     {
         m_use_L_buffer_artefact_filtering = false;
     }
-
-
-#endif
 
 
     //------------------------------------------------------------

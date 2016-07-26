@@ -212,7 +212,14 @@ XRayRenderer::XRayRenderer():
 		m_p_energy_fluence_image(ImageType::New()),
         m_p_sinogram_image(ImageType::New()),
         m_p_projection_set(ImageType::New()),
-#endif // HAS_ITK
+#else // HAS_ITK
+        m_p_l_buffer_image(0),
+        m_p_cumulated_lbuffer_image(0),
+        m_p_sum_mux_dx_image(0),
+        m_p_energy_fluence_image(0),
+        m_p_sinogram_image(0),
+        m_p_projection_set(0),
+#endif
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
@@ -387,6 +394,22 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	m_p_cumulated_lbuffer_image->SetSpacing(pixel_size);
 	m_p_sum_mux_dx_image->SetSpacing(pixel_size);
 	m_p_energy_fluence_image->SetSpacing(pixel_size);
+#else // HAS_ITK
+
+    if (m_p_l_buffer_image) delete [] m_p_l_buffer_image;
+    if (m_p_cumulated_lbuffer_image) delete [] m_p_cumulated_lbuffer_image;
+    if (m_p_sum_mux_dx_image) delete [] m_p_sum_mux_dx_image;
+    if (m_p_energy_fluence_image) delete [] m_p_energy_fluence_image;
+
+    m_p_l_buffer_image          = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3];
+    m_p_cumulated_lbuffer_image = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3];
+    m_p_sum_mux_dx_image        = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber()];
+    m_p_energy_fluence_image    = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 1];
+
+    if (!m_p_l_buffer_image || !m_p_cumulated_lbuffer_image || !m_p_sum_mux_dx_image || !m_p_energy_fluence_image)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
 #endif // HAS_ITK
 
 	// Create the VBO
@@ -416,6 +439,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                                    RATIONAL_NUMBER anAngleOffset)
 //-------------------------------------------------------------------------
 {
+    if (anAngleOffset == 0)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
+    }
+
 #ifdef HAS_ITK
     // Compute the size of a pixel
     ImageType::SpacingType pixel_size;
@@ -444,11 +472,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     sinogram_size[1] = aNumberOfAngle;
     sinogram_size[2] = m_p_detector->getNumberOfPixels().getY();
 
-    if (sinogram_size[2] <= 0)
-    {
-        sinogram_size[2] = 1;
-    }
-
     ImageType::RegionType sinogram_region;
     sinogram_region.SetSize(sinogram_size);
     sinogram_region.SetIndex(start);
@@ -460,6 +483,20 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
 
     // Set the pixel size
     m_p_sinogram_image->SetSpacing(pixel_size);
+#else // HAS_ITK
+
+    // Release the meory if needed
+    if (m_p_sinogram_image) delete [] m_p_sinogram_image;
+
+    // Allocate the memory
+    m_p_sinogram_image = new PixelType [m_p_detector->getNumberOfPixels().getX() *
+                                        aNumberOfAngle *
+                                        m_p_detector->getNumberOfPixels().getY()];
+
+    // Out of memory
+    if (!m_p_sinogram_image) throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+
+#endif // HAS_ITK
 
     // Compute the translation vector
     VEC3 translation_vector(-aRotationCenter);
@@ -488,7 +525,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
         // Get the destination pointer
+#ifdef HAS_ITK
         PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
+#else // HAS_ITK
+        PixelType* p_pixel_set(m_p_sinogram_image);
+#endif // HAS_ITK
 
         // Convert the data into a sinogram
         PixelType* p_input_data(m_p_temp_raw_data);
@@ -553,7 +594,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
             memcpy(p_pixel_set + offset, m_p_temp_raw_data + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
         }
     }
-#endif // HAS_ITK
 }
 
 
@@ -564,6 +604,11 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
                                         RATIONAL_NUMBER anAngleOffset)
 //------------------------------------------------------------------------------
 {
+    if (anAngleOffset == 0)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
+    }
+
 #ifdef HAS_ITK
     // Compute the size of a pixel
     ImageType::SpacingType pixel_size;
@@ -592,11 +637,6 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     projection_set_size[1] = m_p_detector->getNumberOfPixels().getY();
     projection_set_size[2] = aNumberOfAngle;
 
-    if (projection_set_size[2] <= 0)
-    {
-        projection_set_size[2] = 1;
-    }
-
     ImageType::RegionType projection_set_region;
     projection_set_region.SetSize(projection_set_size);
     projection_set_region.SetIndex(start);
@@ -608,6 +648,20 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
 
     // Set the pixel size
     m_p_projection_set->SetSpacing(pixel_size);
+#else // HAS_ITK
+
+    // Release the meory if needed
+    if (m_p_projection_set) delete [] m_p_projection_set;
+
+    // Allocate the memory
+    m_p_projection_set = new PixelType [m_p_detector->getNumberOfPixels().getX() *
+                                        m_p_detector->getNumberOfPixels().getY() *
+                                        aNumberOfAngle];
+
+    // Out of memory
+    if (!m_p_projection_set) throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+
+#endif
 
     // Compute the translation vector
     VEC3 translation_vector(-aRotationCenter);
@@ -636,12 +690,15 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
         // Get the destination pointer
+#ifdef HAS_ITK
         PixelType* p_pixel_set(m_p_projection_set->GetBufferPointer());
+#else // HAS_ITK
+        PixelType* p_pixel_set(m_p_projection_set);
+#endif // HAS_ITK
 
         // Copy the data
         memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
     }
-#endif // HAS_ITK
 }
 
 
@@ -876,11 +933,37 @@ void XRayRenderer::reset()
 	m_L_buffer_empty = false;
 	m_energy_fluence_empty = false;
 
-	if (m_p_temp_raw_data)
-	{
-		delete [] m_p_temp_raw_data;
-		m_p_temp_raw_data = 0;
-	}
+    if (m_p_temp_raw_data)
+    {
+        delete [] m_p_temp_raw_data;
+        m_p_temp_raw_data = 0;
+    }
+
+#ifndef HAS_ITK
+    if (m_p_l_buffer_image)
+    {
+        delete [] m_p_l_buffer_image;
+        m_p_l_buffer_image = 0;
+    }
+
+    if (m_p_cumulated_lbuffer_image)
+    {
+        delete [] m_p_cumulated_lbuffer_image;
+        m_p_cumulated_lbuffer_image = 0;
+    }
+
+    if (m_p_sum_mux_dx_image)
+    {
+        delete [] m_p_sum_mux_dx_image;
+        m_p_sum_mux_dx_image = 0;
+    }
+
+    if (m_p_energy_fluence_image)
+    {
+        delete [] m_p_energy_fluence_image;
+        m_p_energy_fluence_image = 0;
+    }
+#endif // HAS_ITK
 }
 
 
@@ -1724,11 +1807,12 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 	// Get the image
 	getFBO(aFBOID);
 
-#ifdef HAS_ITK
 	// The filename is not empty
 	if (aFileName)
 	{
-		// Create the file writer
+#ifdef HAS_ITK
+
+	    // Create the file writer
 		typedef itk::ImageFileWriter<ImageType> ImageWriter;
 		ImageWriter::Pointer p_writer(ImageWriter::New());
 
@@ -1786,8 +1870,13 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 
 		// Write the data into a file
 		p_writer->Update();
-	}
+
+#else // HAS_ITK
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+
 #endif // HAS_ITK
+	}
 }
 
 
@@ -1799,10 +1888,11 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 	// Get the image
 	get2DTexture(aTextureID);
 
-#ifdef HAS_ITK
 	// The filename is not empty
 	if (aFileName)
 	{
+#ifdef HAS_ITK
+
 		// Create the file writer
 		typedef itk::ImageFileWriter<ImageType> ImageWriter;
 		ImageWriter::Pointer p_writer(ImageWriter::New());
@@ -1861,8 +1951,13 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 
 		// Write the data into a file
 		p_writer->Update();
-	}
+
+#else // HAS_ITK
+
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+
 #endif // HAS_ITK
+	}
 }
 
 

@@ -76,7 +76,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef HAS_ITK
 #include <itkImage.h>
-#include <itkRGBPixel.h>
 #endif
 
 #ifndef GVXR_POLYGON_MESH_H
@@ -636,10 +635,19 @@ public:
 
 
 #ifdef HAS_ITK
+
     const ImageType::Pointer& getSinogram() const;
     ImageType::Pointer& getSinogram();
-    RATIONAL_NUMBER* getSinogramRawData() const;
-#endif
+
+#else // HAS_ITK
+
+    const PixelType* getSinogram() const;
+    PixelType* getSinogram();
+
+#endif // HAS_ITK
+
+
+    const PixelType* getSinogramRawData() const;
 
 
     void computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
@@ -652,10 +660,18 @@ public:
 
 
 #ifdef HAS_ITK
+
     const ImageType::Pointer& getProjectionSet() const;
     ImageType::Pointer& getProjectionSet();
-    RATIONAL_NUMBER* getProjectionSetRawData() const;
-#endif
+
+#else // HAS_ITK
+
+    const PixelType* getProjectionSet() const;
+    PixelType* getProjectionSet();
+
+#endif // HAS_ITK
+
+    const PixelType* getProjectionSetRawData() const;
 
 
     //--------------------------------------------------------------------------
@@ -958,6 +974,30 @@ protected:
 
     /// Projection set
     ImageType::Pointer m_p_projection_set;
+
+#else // HAS_ITK
+    /// L-buffer
+    PixelType* m_p_l_buffer_image;
+
+
+    /// Cumulated L-buffer for all the inner surfaces
+    PixelType* m_p_cumulated_lbuffer_image;
+
+
+    /// Sum(Mu_x * d_x)
+    PixelType* m_p_sum_mux_dx_image;
+
+
+    /// Energy fluence
+    PixelType* m_p_energy_fluence_image;
+
+
+    /// Sinogram
+    PixelType* m_p_sinogram_image;
+
+
+    /// Projection set
+    PixelType* m_p_projection_set;
 #endif // HAS_ITK
 
 
