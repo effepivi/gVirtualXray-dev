@@ -64,23 +64,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
+#ifdef HAS_GLEW
+#include <GL/glew.h>
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <cmath>
 #include <iomanip>
 #include <memory>
+#include <cstdlib>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h>
-
-#include <stdlib.h>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"

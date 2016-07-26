@@ -63,14 +63,14 @@ ENDIF(gVirtualXRay_FOUND)
 
 
 # ITK #########################################################################
-FIND_PACKAGE (ITK)
-IF (ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE( ${ITK_USE_FILE} )
-	set (optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
-ENDIF(ITK_FOUND)
+#FIND_PACKAGE (ITK)
+#IF (ITK_FOUND)
+#	ADD_DEFINITIONS(-DHAS_ITK)
+#	INCLUDE( ${ITK_USE_FILE} )
+#	set (optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
+#ELSE(ITK_FOUND)
+#    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
+#ENDIF(ITK_FOUND)
 
 
 # VTK #########################################################################
@@ -171,13 +171,14 @@ IF(glfw3_FOUND)
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_09"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-    ADD_EXECUTABLE (validation_10 src/validation_10.cxx)
-    TARGET_LINK_LIBRARIES (validation_10 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_10 BinaryValidationFiles)
-    INSTALL(TARGETS validation_10 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(FILES data/validation_10/beam_spectrum.csv DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_10 COMPONENT validation)
-
-    INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
+	IF (ITK_FOUND)
+        ADD_EXECUTABLE (validation_10 src/validation_10.cxx)
+        TARGET_LINK_LIBRARIES (validation_10 gVirtualXRay ${optionalLibs} ${requiredLibs})
+        ADD_DEPENDENCIES(validation_10 BinaryValidationFiles)
+        INSTALL(TARGETS validation_10 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+	    INSTALL(FILES data/validation_10/beam_spectrum.csv DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_10 COMPONENT validation)
+        INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
+	ENDIF (ITK_FOUND)
 ENDIF(glfw3_FOUND)
 
 

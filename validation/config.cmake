@@ -49,8 +49,11 @@ ENDIF(OPENGL_FOUND)
 
 
 # GLFW ########################################################################
-FIND_PACKAGE(glfw3)
-IF(glfw3_FOUND)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
     SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY} ${GLFW3_LIBRARIES})
@@ -68,21 +71,26 @@ IF(glfw3_FOUND)
         FIND_PACKAGE (X11 REQUIRED)
         iF (X11_FOUND)
             INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+            SET(optionalLibs ${optionalLibs} pthread ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
         ELSE (X11_FOUND)
             MESSAGE(FATAL_ERROR "X11 not found.")
         ENDIF (X11_FOUND)
     ENDIF(UNIX)
-ELSE(glfw3_FOUND)
-    MESSAGE(WARNING "GLFW not found.")
-ENDIF(glfw3_FOUND)
+
+ELSE (glfw3_FOUND)
+    MESSAGE(FATAL_ERROR "GLFW not found.")
+ENDIF (glfw3_FOUND)
 
 
 # GLUT ########################################################################
-FIND_PACKAGE(GLUT)
-IF(GLUT_FOUND)
+IF (USE_SYSTEM_GLUT)
+    FIND_PACKAGE( GLUT   REQUIRED )
+ENDIF (USE_SYSTEM_GLUT)
+
+IF (GLUT_FOUND)
     INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
     SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
-ELSE(GLUT_FOUND)
-    MESSAGE(WARNING "GLUT not found.")
-ENDIF(GLUT_FOUND)
+ELSE (GLUT_FOUND)
+    MESSAGE(FATAL_ERROR "GLUT not found.")
+ENDIF (GLUT_FOUND)
+
