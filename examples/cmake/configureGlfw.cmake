@@ -45,11 +45,11 @@ ENDIF (WIN32)
 # GLFW ########################################################################
 
 IF (USE_GLFW)
-    IF(GLFW_FOUND)
+    IF(glfw3_FOUND)
 
-		#LINK_DIRECTORIES(${GLFW_LIBRARY_DIR})
-		INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-		SET(optionalLibs ${optionalLibs} ${GLFW_LIBRARY} ${GLFW_LIBRARIES})
+		#LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
+		INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+		SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY} ${GLFW3_LIBRARIES})
 	
     	IF (APPLE)
 	    	FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -69,6 +69,6 @@ IF (USE_GLFW)
 		    	MESSAGE(FATAL_ERROR "X11 not found.")
     		ENDIF (X11_FOUND)
 	    ENDIF(UNIX)
-    ENDIF(GLFW_FOUND)
+    ENDIF(glfw3_FOUND)
 ENDIF(USE_GLFW)
 

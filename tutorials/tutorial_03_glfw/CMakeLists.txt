@@ -77,7 +77,10 @@ ENDIF(OPENGL_FOUND)
 
 
 # GLFW ########################################################################
-FIND_PACKAGE(glfw3)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
 IF(glfw3_FOUND)
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})

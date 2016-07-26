@@ -52,15 +52,15 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
 
 # Check if GLFW is enable #####################################################
 IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE( GLFW   REQUIRED )
+    FIND_PACKAGE( glfw3   REQUIRED )
 ENDIF (USE_SYSTEM_GLFW)
 
-IF (GLFW_FOUND)
-    INCLUDE_DIRECTORIES(${GLFW_INCLUDE_DIR})
-    SET(requiredLibs ${requiredLibs} ${GLFW_LIBRARY})
-ELSE (GLFW_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW not found.")
-ENDIF (GLFW_FOUND)
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(FATAL_ERROR "GLFW3 not found.")
+ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################
