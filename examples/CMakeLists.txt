@@ -32,6 +32,8 @@
 
 project(gVirtualXRay-demos)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+
 if(NOT gVirtualXRay_BINARY_DIR)
     find_package(gVirtualXRay REQUIRED)
     include(${gVirtualXRay_USE_FILE})
@@ -69,7 +71,7 @@ IF (USE_GLFW)
 ENDIF (USE_GLFW)
 
 IF (USE_QT4)
-    add_subdirectory(AnatomicalData-qt4)
+    #add_subdirectory(AnatomicalData-qt4)
     add_subdirectory(AnatomicalData-qt4-moreRealistic)
 ENDIF (USE_QT4)
 
