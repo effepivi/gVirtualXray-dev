@@ -71,13 +71,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <boost/scoped_ptr.hpp>
+#include <cstdlib>
+#include <memory>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h>
-
-#include <stdlib.h>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -202,7 +201,7 @@ const VEC3 g_background_colour(0.5, 0.5, 0.5);
 PolygonMesh g_inside_polygon_data;
 //CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
 CubeMesh g_outside_polygon_data(3.0 * cm);
-boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
+std::unique_ptr<VBO> g_intersection_box_detector_vbo;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;

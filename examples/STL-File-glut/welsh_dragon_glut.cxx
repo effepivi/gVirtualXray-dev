@@ -71,18 +71,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #include <stdlib.h>
 #include <ctime>
 
 #ifdef HAS_BUNDLE
 #include <boost/filesystem.hpp>
 #endif
+
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"

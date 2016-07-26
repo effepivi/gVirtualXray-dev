@@ -69,26 +69,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#endif
-
 #include <cmath>
 #include <iomanip>
-
-#include <boost/scoped_ptr.hpp>
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
+#include <cstdlib>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h>
-
-#include <stdlib.h>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"

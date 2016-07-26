@@ -64,15 +64,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <GL/glew.h>
 
-#include <boost/scoped_ptr.hpp>
-
+#include <memory>
 #include <cstdlib>
 #include <sstream>
 #include <string>
@@ -232,8 +229,8 @@ VEC3 g_translation_vector;
 std::vector<float> g_p_HU_set;
 
 std::vector<PolygonMesh> g_p_polygon_mesh_set;
-boost::scoped_ptr<VBO> g_sinogram_rectangle;
-boost::scoped_ptr<VBO> g_tomography_rectangle;
+std::unique_ptr<VBO> g_sinogram_rectangle;
+std::unique_ptr<VBO> g_tomography_rectangle;
 
 PolygonMesh g_rotation_axis_geometry;
 

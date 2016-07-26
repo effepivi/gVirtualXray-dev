@@ -69,13 +69,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <GL/glew.h>
-
-#include <boost/scoped_ptr.hpp>
-
+#include <memory>
 #include <cstdlib>
 #include <sstream>
 #include <ctime>
+//#include <stdlib.h>
 
 #include <itkMacro.h>
 #include <itkImage.h>
@@ -97,8 +95,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h>
-
-#include <stdlib.h>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -230,8 +226,8 @@ std::vector<float> g_p_vertex_data;
 std::vector<unsigned int> g_p_index_data;
 
 PolygonMesh g_polygon_mesh;
-boost::scoped_ptr<VBO> g_sinogram_rectangle;
-boost::scoped_ptr<VBO> g_tomography_rectangle;
+std::unique_ptr<VBO> g_sinogram_rectangle;
+std::unique_ptr<VBO> g_tomography_rectangle;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;

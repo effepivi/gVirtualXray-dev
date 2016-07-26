@@ -74,14 +74,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cmath>
 #include <iomanip>
-
-#include <boost/scoped_ptr.hpp>
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
+#include <memory>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
@@ -171,7 +164,7 @@ VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
 PolygonMesh g_inside_polygon_data;
 CubeMesh g_outside_polygon_data(3.0 * cm);
-boost::scoped_ptr<VBO> g_intersection_box_detector_vbo;
+std::unique_ptr<VBO> g_intersection_box_detector_vbo;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;

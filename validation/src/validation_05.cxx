@@ -74,14 +74,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cmath>
 #include <iomanip>
-
-#include <boost/scoped_ptr.hpp>
-
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
+#include <memory>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 

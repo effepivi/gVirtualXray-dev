@@ -67,12 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#endif
-
-#include <boost/scoped_ptr.hpp>
-
+#include <memory>
 #include <cstdlib>
 #include <sstream>
 #include <ctime>

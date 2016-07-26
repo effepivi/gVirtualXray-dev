@@ -67,27 +67,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
-/*
-#if defined(_WIN32) || defined(_WIN64) || defined(__APPLE__)
-#include <GL/glew.h>
-#endif
-*/
-/*#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif*/
-
-//#define GLFW_INCLUDE_GLCOREARB 1
-
-#include <GLFW/glfw3.h>
 
 #include <stdlib.h>
 #include <ctime>
+#include <algorithm>
 
 #ifdef HAS_BUNDLE
 #include <boost/filesystem.hpp>
 #endif
+
+#define GLFW_INCLUDE_GLCOREARB 1
+#include <GLFW/glfw3.h>
 
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -144,8 +134,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GVXR_TEXT_RENDERER_H
 #include "gVirtualXRay/TextRenderer.h"
 #endif
-
-#include <algorithm>
 
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
