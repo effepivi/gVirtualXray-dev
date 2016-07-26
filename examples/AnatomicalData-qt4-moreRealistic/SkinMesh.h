@@ -58,6 +58,11 @@ public:
 	/// return true if the mesh has to be displayed with transparency
 	//--------------------------------------------------------------------------
 	virtual bool isTransparent() const;
+
+	//--------------------------------------------------------------------------
+	/// return true if the mesh represent a soft tissue
+	//--------------------------------------------------------------------------
+	virtual bool isSoftTissue() const;
 };
 
 } // namespace gVirtualXRay

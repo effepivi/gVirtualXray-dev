@@ -44,4 +44,11 @@ bool SkinMesh::isTransparent() const
 	return true;
 }
 
+//----------------------------------------
+bool SkinMesh::isSoftTissue() const
+//----------------------------------------
+{
+	return true;
+}
+
 } // namespace gVirtualXRay

@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#ifndef INTERNALORGANMESH_H
+#include "InternalOrganMesh.h"
 #endif
 
 //******************************************************************************
@@ -37,7 +37,7 @@ namespace gVirtualXRay {
 *   @brief  SoftTissueMesh is a class to handle a polygon mesh for an internal organ.
 */
 //==============================================================================
-class SoftTissueMesh: public AnatomicalMesh
+class SoftTissueMesh: public InternalOrganMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************

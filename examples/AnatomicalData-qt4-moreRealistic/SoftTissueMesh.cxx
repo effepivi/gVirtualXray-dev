@@ -22,10 +22,10 @@ namespace gVirtualXRay {
 SoftTissueMesh::SoftTissueMesh()
 :
 //----------------------------------------------
-		AnatomicalMesh()
+		InternalOrganMesh()
 //----------------------------------------------
 {
-	getMaterial().setShininess(50);
+	getMaterial().setShininess(100);
 }
 
 //----------------------------------------------
@@ -46,7 +46,7 @@ bool SoftTissueMesh::isSoftTissue() const
 void SoftTissueMesh::display()
 //----------------------------------------------
 {
-	AnatomicalMesh::display();
+	InternalOrganMesh::display();
 }
 
 } // namespace gVirtualXRay

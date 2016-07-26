@@ -78,7 +78,8 @@ add_executable(demo-anatomical-data-qt4-more-realistic
 	AnatomicalData-qt4-moreRealistic.cxx  
 	GLWidget.h GLWidget.cxx 
 	
-	AnatomicalMesh.h AnatomicalMesh.cxx 
+	AnatomicalMesh.h AnatomicalMesh.cxx
+	InternalOrganMesh.h InternalOrganMesh.cxx 
 	SoftTissueMesh.h SoftTissueMesh.cxx 
 	
 	BoneMesh.h BoneMesh.cxx 
@@ -109,6 +110,8 @@ ELSE (NOT APPLE)
 
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.cxx
+	${CMAKE_CURRENT_SOURCE_DIR}/InternalOrganMesh.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/InternalOrganMesh.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/SoftTissueMesh.h
         ${CMAKE_CURRENT_SOURCE_DIR}/SoftTissueMesh.cxx
 

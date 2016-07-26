@@ -59,12 +59,12 @@ public:
 	//--------------------------------------------------------------------------
 	/// return true if the mesh has to be displayed with transparency
 	//--------------------------------------------------------------------------
-	virtual bool isTransparent() const;
+	virtual bool isTransparent() const = 0;
 
 	//--------------------------------------------------------------------------
 	/// return true if the mesh represent a soft tissue
 	//--------------------------------------------------------------------------
-	virtual bool isSoftTissue() const;
+	virtual bool isSoftTissue() const = 0;
 
 	//--------------------------------------------------------------------------
 	/// display the anatomical mesh using OpenGL

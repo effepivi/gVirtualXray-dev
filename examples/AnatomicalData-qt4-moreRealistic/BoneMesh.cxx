@@ -22,7 +22,7 @@ namespace gVirtualXRay {
 //----------------------------------------------
 BoneMesh::BoneMesh():
 //----------------------------------------------
-		AnatomicalMesh()
+		InternalOrganMesh()
 //----------------------------------------------
 {
 	getMaterial().setShininess(4);
@@ -31,8 +31,19 @@ BoneMesh::BoneMesh():
 	getMaterial().setAmbientColour(0.84,0.77,0.6,1.);
 }
 
-BoneMesh::~BoneMesh() {
+//----------------------------------------
+BoneMesh::~BoneMesh()
+//----------------------------------------
+{
 	// TODO Auto-generated destructor stub
 }
+
+//----------------------------------------
+bool BoneMesh::isSoftTissue() const
+//----------------------------------------
+{
+	return false;
+}
+
 
 } // namespace gVirtualXRay

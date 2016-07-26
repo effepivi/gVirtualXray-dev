@@ -44,20 +44,6 @@ AnatomicalMesh::~AnatomicalMesh()
 	// TODO Auto-generated destructor stub
 }
 
-//----------------------------------------
-bool AnatomicalMesh::isTransparent() const
-//----------------------------------------
-{
-	return false;
-}
-
-//----------------------------------------
-bool AnatomicalMesh::isSoftTissue() const
-//----------------------------------------
-{
-	return false;
-}
-
 //----------------------------------------------
 void AnatomicalMesh::display()
 //----------------------------------------------

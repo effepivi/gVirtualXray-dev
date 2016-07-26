@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#ifndef INTERNALORGANMESH_H
+#include "InternalOrganMesh.h"
 #endif
 
 //******************************************************************************
@@ -37,7 +37,7 @@ namespace gVirtualXRay {
 *   @brief  BoneMesh is a class to handle a polygon mesh for Bone.
 */
 //==============================================================================
-class BoneMesh: public AnatomicalMesh
+class BoneMesh: public InternalOrganMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -52,6 +52,10 @@ public:
 	//--------------------------------------------------------------------------
 	virtual ~BoneMesh();
 
+	//--------------------------------------------------------------------------
+	/// return true if the mesh represent a soft tissue
+	//--------------------------------------------------------------------------
+	virtual bool isSoftTissue() const;
 };
 
 } // namespace gVirtualXRay
