@@ -601,6 +601,8 @@ namespace gVirtualXRay {
             // Write the data into a file
             p_writer->Update();
         }
+#else // HAS_ITK
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
 #endif // HAS_ITK
     }
 
@@ -624,6 +626,8 @@ namespace gVirtualXRay {
             // Write the data into a file
             p_writer->Update();
         }
+#else // HAS_ITK
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
 #endif // HAS_ITK
     }
 

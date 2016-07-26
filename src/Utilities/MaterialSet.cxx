@@ -73,6 +73,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/MaterialSet.h"
 #endif
 
+#ifndef EXCEPTION_H
+#include "gVirtualXRay/Exception.h"
+#endif
+
 
 //******************************************************************************
 //	namespace

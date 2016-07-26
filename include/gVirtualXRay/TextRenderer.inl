@@ -60,14 +60,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
-//******************************************************************************
-#ifndef GVXR_OPENGL_UTILITIES_H
-#include "gVirtualXRay/OpenGLUtilities.h"
-#endif
-
-
-//******************************************************************************
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {

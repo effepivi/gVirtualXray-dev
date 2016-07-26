@@ -79,10 +79,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
 
 //******************************************************************************
 //	namespace
