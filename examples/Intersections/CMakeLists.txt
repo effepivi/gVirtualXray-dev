@@ -65,7 +65,7 @@ ENDIF (glfw3_FOUND)
 # Create the main program ######################################################
 add_executable(demo-intersections Intersections.cxx)
 target_link_libraries(demo-intersections ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(welsh_dragon_glut BinaryIntersectionsFiles)
+ADD_DEPENDENCIES(demo-intersections BinaryIntersectionsFiles)
 
 IF (NOT APPLE)
     INSTALL(TARGETS demo-intersections RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
