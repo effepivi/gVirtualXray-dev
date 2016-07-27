@@ -45,10 +45,29 @@ AnatomicalMesh::~AnatomicalMesh()
 }
 
 //----------------------------------------------
-void AnatomicalMesh::display()
+void AnatomicalMesh::defineShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
-	PolygonMesh::display();
+	// Get the material
+	Material& material(getMaterial());
+
+	// Define colours in shader
+	GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
+	glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(aShaderID, "material_diffuse");
+	glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(aShaderID, "material_specular");
+	glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(aShaderID, "material_shininess");
+	glUniform1f(handle, material.getShininess());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 }
 
 } // namespace gVirtualXRay

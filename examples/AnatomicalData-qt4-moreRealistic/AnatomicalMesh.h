@@ -67,9 +67,12 @@ public:
 	virtual bool isSoftTissue() const = 0;
 
 	//--------------------------------------------------------------------------
-	/// display the anatomical mesh using OpenGL
+	/// Link the attributes to their id in the shader
+    /*
+    *   @param aShaderID: The GLSL shader used to display the anatomical mesh
+    */
 	//-------------------------------------------------------------------------
-	virtual void display();
+	virtual void defineShaderInput(GLint aShaderID);
 
 //******************************************************************************
 private:

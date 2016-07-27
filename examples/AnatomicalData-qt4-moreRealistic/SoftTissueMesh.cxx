@@ -43,10 +43,10 @@ bool SoftTissueMesh::isSoftTissue() const
 }
 
 //----------------------------------------------
-void SoftTissueMesh::display()
+void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
-	InternalOrganMesh::display();
+	InternalOrganMesh::defineShaderInput(aShaderID);
 }
 
 } // namespace gVirtualXRay

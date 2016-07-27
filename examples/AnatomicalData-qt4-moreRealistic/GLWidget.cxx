@@ -1042,25 +1042,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
 {
 	for(int i(apMeshSet.size()-1); i>=0; --i)
 	{
-        // Get the material
-        Material& material(apMeshSet[i]->getMaterial());
-
-        // Define colours in shader
-        GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
-        glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(aShaderID, "material_diffuse");
-        glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(aShaderID, "material_specular");
-        glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(aShaderID, "material_shininess");
-        glUniform1f(handle, material.getShininess());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		apMeshSet[i]->defineShaderInput(aShaderID);
 
         if (m_display_wireframe)
         {
@@ -1306,7 +1288,7 @@ void GLWidget::renderToShadowMap()
 //------------------------------------------------------
 {
 	//set the  matrix from the light's point of view to create the shadow map
-	Matrix4x4<GLfloat> shadowProjectionMatrix(buildOrthoProjectionMatrix(-500.f, 500.f, -500.f, 500.f, -500.f, 500.f));
+	Matrix4x4<GLfloat> shadowProjectionMatrix(buildOrthoProjectionMatrix(-300.f, 300.f, -300.f, 300.f, -300.f, 300.f));
 
 	Matrix4x4<GLfloat> shadowViewMatrix(buildLookAtModelViewMatrix(
 			m_light_direction,

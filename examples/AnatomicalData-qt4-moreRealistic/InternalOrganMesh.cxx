@@ -49,10 +49,10 @@ bool InternalOrganMesh::isTransparent() const
 }
 
 //----------------------------------------------
-void InternalOrganMesh::display()
+void InternalOrganMesh::defineShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
-	AnatomicalMesh::display();
+	AnatomicalMesh::defineShaderInput(aShaderID);
 }
 
 } // namespace gVirtualXRay
