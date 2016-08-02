@@ -68,8 +68,8 @@ public:
 	//--------------------------------------------------------------------------
 	///render to the frame buffer, call initialize() if it has never been called before
 	/**
-	*  @param verticesData: the position of the vertices
-	*  @param matrix: the projection matrix
+	*  @param apMeshSet: the anatomical mesh set to be textured
+	*  @param projMatrix: the projection matrix
 	*  @param depthShader: glsl shader to create the depth map
 	*/
 	//--------------------------------------------------------------------------

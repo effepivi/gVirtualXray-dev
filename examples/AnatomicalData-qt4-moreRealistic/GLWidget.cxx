@@ -1011,6 +1011,9 @@ void GLWidget::render()
             m_xray_detector.displayBeam();
         }
 
+        //clean up the texture
+		glBindTexture(GL_TEXTURE_2D, 0);
+
         // Disable the shader
         popShaderProgram();
 
@@ -1275,12 +1278,12 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
 void GLWidget::initializePatient(std::vector<AnatomicalMesh*>& apMeshSet)
 //------------------------------------------------------
 {
-	apMeshSet.push_back((new SkinMesh()));
-	apMeshSet.push_back((new LiverMesh()));
-	apMeshSet.push_back((new LungsMesh()));
-	apMeshSet.push_back((new DiaphragmMesh()));
-	apMeshSet.push_back((new BoneMesh()));
-	apMeshSet.push_back((new BoneMesh()));
+	apMeshSet.push_back(new SkinMesh());
+	apMeshSet.push_back(new LiverMesh());
+	apMeshSet.push_back(new LungsMesh());
+	apMeshSet.push_back(new DiaphragmMesh());
+	apMeshSet.push_back(new BoneMesh());
+	apMeshSet.push_back(new BoneMesh());
 }
 
 //------------------------------------------------------

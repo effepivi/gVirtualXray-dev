@@ -30,11 +30,11 @@ namespace gVirtualXRay {
 
 //------------------------------------------------------------------------
 DepthMap::DepthMap() :
-	//------------------------------------------------------------------------
+//------------------------------------------------------------------------
 	m_isInitialized(false),
 	m_mapFrameBuffer(0),
 	m_mapTexture(0)
-	//------------------------------------------------------------------------
+//------------------------------------------------------------------------
 {
 }
 
@@ -54,8 +54,8 @@ void DepthMap::initialize()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, MAP_SIZE, MAP_SIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 
@@ -63,7 +63,7 @@ void DepthMap::initialize()
 	glGenFramebuffers(1, &m_mapFrameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_mapFrameBuffer);
 
-	//link the frame buffer and the texture buffer
+	//link the frame buffer and the texture
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_mapTexture, 0);
 
 	//Only depth

@@ -70,10 +70,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <ctime>
 
-/*#ifndef ANATOMICAL_GL_WIDGET_H
-#include <AnatomicalGLWidget.h>
-#endif*/
-
 #ifndef GVXR_GL_WIDGET_H
 #include "GLWidget.h"
 #endif

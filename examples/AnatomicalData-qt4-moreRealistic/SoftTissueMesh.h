@@ -25,6 +25,10 @@
 #include "InternalOrganMesh.h"
 #endif
 
+#ifndef GVXR_SHADER_H
+#include "gVirtualXRay/Shader.h"
+#endif
+
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -47,8 +51,6 @@ public:
     //--------------------------------------------------------------------------
 	SoftTissueMesh();
 
-
-
 	//--------------------------------------------------------------------------
 	/// Destructor
 	//--------------------------------------------------------------------------
@@ -60,6 +62,15 @@ public:
 	virtual bool isSoftTissue() const;
 
 	//--------------------------------------------------------------------------
+	///	Update the VBO.
+	/**
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
+	*/
+	//--------------------------------------------------------------------------
+	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
+
+	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader
     /*
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
@@ -67,6 +78,40 @@ public:
 	//-------------------------------------------------------------------------
 	virtual void defineShaderInput(GLint aShaderID);
 
+protected:
+
+	virtual void generateAll();
+
+	virtual void generateNoiseTexture();
+
+	virtual void generateBumpMapTexture();
+
+	//--------------------------------------------------------------------------
+	/// initialize the shaders and the buffers
+	//--------------------------------------------------------------------------
+	virtual void initialize();
+
+	virtual void initializeBuffer(GLuint aTexture, GLuint aFrameBuffer);
+
+	//size of the side of the buffer
+	static const int TEXTURE_SIZE = 16384;
+
+	//Coordinates for texture sampling
+	std::vector<VEC3> m_textCoord;
+
+	//Enable to know if the texture and the bump map are generated
+	bool m_textureIsGenerated;
+
+	GLuint m_noiseTexture,
+		m_noiseFrameBuffer,
+		m_bumpMapTexture,
+		m_bumpMapFrameBuffer,
+		m_colourTexture,
+		m_colourFrameBuffer;
+
+	Shader m_noiseShader,
+		m_bumpMapShader,
+		m_textureShader;
 };
 
 } // namespace gVirtualXRay
