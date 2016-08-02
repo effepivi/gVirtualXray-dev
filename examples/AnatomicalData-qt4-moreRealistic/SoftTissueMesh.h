@@ -39,6 +39,7 @@ namespace gVirtualXRay {
 /**
 *   @class  SoftTissueMesh
 *   @brief  SoftTissueMesh is a class to handle a polygon mesh for an internal organ.
+*   		It uses procedural texturing.
 */
 //==============================================================================
 class SoftTissueMesh: public InternalOrganMesh
@@ -80,37 +81,34 @@ public:
 
 protected:
 
-	virtual void generateAll();
+	virtual void generateTextures();
 
-	virtual void generateNoiseTexture();
+	virtual void defineBumpMapShaderInput();
 
-	virtual void generateBumpMapTexture();
+	virtual void defineColourShaderInput();
 
 	//--------------------------------------------------------------------------
-	/// initialize the shaders and the buffers
+	/// initialize the shaders, the noise and the buffers
 	//--------------------------------------------------------------------------
 	virtual void initialize();
 
 	virtual void initializeBuffer(GLuint aTexture, GLuint aFrameBuffer);
 
 	//size of the side of the buffer
-	static const int TEXTURE_SIZE = 16384;
+	static const int TEXTURE_SIZE = 8192;
 
 	//Coordinates for texture sampling
 	std::vector<VEC3> m_textCoord;
 
 	//Enable to know if the texture and the bump map are generated
-	bool m_textureIsGenerated;
+	bool m_texturesAreGenerated;
 
-	GLuint m_noiseTexture,
-		m_noiseFrameBuffer,
-		m_bumpMapTexture,
+	GLuint m_bumpMapTexture,
 		m_bumpMapFrameBuffer,
 		m_colourTexture,
 		m_colourFrameBuffer;
 
-	Shader m_noiseShader,
-		m_bumpMapShader,
+	Shader m_bumpMapShader,
 		m_textureShader;
 };
 

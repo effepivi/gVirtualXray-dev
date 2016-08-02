@@ -53,6 +53,10 @@ SET (RESOURCES_SOURCES
     shaders/display_realistic_gl3.vert
     shaders/depth_map_gl3.frag
     shaders/depth_map_gl3.vert
+    shaders/bump_map_generation_gl3.frag
+    shaders/bump_map_generation_gl3.vert
+    shaders/colour_texture_generation_gl3.frag
+    shaders/colour_texture_generation_gl3.vert
 )
 CreateHeaderFiles("." "BinaryAnatomicalDataQt4MoreRealisticFiles" "${RESOURCES_SOURCES}")
 

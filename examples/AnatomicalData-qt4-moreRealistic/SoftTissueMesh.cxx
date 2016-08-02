@@ -14,9 +14,28 @@
 ********************************************************************************
 */
 
-#include <SoftTissueMesh.h>
+
+
+//******************************************************************************
+//	Include
+//******************************************************************************
+
 #include <cassert>
 
+#include "SoftTissueMesh.h"
+
+#ifndef GVXR_UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
+
+#include "colour_texture_generation_gl3.vert.h"
+#include "colour_texture_generation_gl3.frag.h"
+#include "bump_map_generation_gl3.vert.h"
+#include "bump_map_generation_gl3.frag.h"
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
 namespace gVirtualXRay {
 
 //----------------------------------------------
@@ -24,9 +43,7 @@ SoftTissueMesh::SoftTissueMesh()
 :
 //----------------------------------------------
 		InternalOrganMesh(),
-		m_textureIsGenerated(false),
-		m_noiseTexture(0),
-		m_noiseFrameBuffer(0),
+		m_texturesAreGenerated(false),
 		m_bumpMapTexture(0),
 		m_bumpMapFrameBuffer(0),
 		m_colourTexture(0),
@@ -67,11 +84,10 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 
 		m_textCoord.resize(0);
 		//initialize the coordinate for sampling
-		unsigned int m=int(sqrt(float(m_number_of_vertices))/6)+1;
-		unsigned int n=int(sqrt(float(m_number_of_vertices))*10)+1;
+		unsigned int n=int(sqrt(float(m_number_of_vertices))/6)+1;
 
-		for (int i = 0; i < m; i++) {
-			for (int j = 0; j < m; j++) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
 				//extract four coordinates
 				VEC3 v1(0,float(i)/n, float(j)/n);
 				VEC3 v2(0,float(i + 1)/n, float(j)/n);
@@ -107,9 +123,9 @@ void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
 	//Initialize if necessery
-	if(!m_textureIsGenerated)
+	if(!m_texturesAreGenerated)
 	{
-		generateAll();
+		generateTextures();
 	}
 
 
@@ -121,7 +137,7 @@ void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 	glUniform1i(handle,1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	//Bind the texture unit 2
+	//Bind the colour texture in texture unit 2
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, m_colourTexture);
 
@@ -129,7 +145,7 @@ void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 	glUniform1i(handle,2);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-
+	//All soft tissue meshes uses texturing
 	GLint useTexture(1);
 	handle = glGetUniformLocation(aShaderID, "g_useTexture");
 	glUniform1iv(handle, 1, &useTexture);
@@ -140,23 +156,91 @@ void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 
 
 //----------------------------------------------
-void SoftTissueMesh::generateAll()
+void SoftTissueMesh::generateTextures()
 //----------------------------------------------
 {
 	initialize();
 
-	m_textureIsGenerated=true;
+	//render to the bump buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
+	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+
+	// Enable back face culling
+	pushEnableDisableState(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	// Enable the bump shader
+	pushShaderProgram();
+	m_bumpMapShader.enable();
+
+	defineBumpMapShaderInput();
+
+/*
+ * display();
+ */
+
+	// Disable the shader
+	popShaderProgram();
+
+	// Restore the attributes
+    popEnableDisableState();
+
+
+
+
+
+
+
+
+
+    //render to the colour buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
+	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+
+	// Enable back face culling
+	pushEnableDisableState(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	// Enable the bump shader
+	pushShaderProgram();
+	m_textureShader.enable();
+
+	defineColourShaderInput();
+
+	/*
+	 * display();
+	 */
+
+
+	// Disable the shader
+	popShaderProgram();
+
+	// Restore the attributes
+    popEnableDisableState();
+
+
+
+
+
+
+	// Cleanup for now
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	m_texturesAreGenerated=true;
 }
 
 //----------------------------------------------
-void SoftTissueMesh::generateNoiseTexture()
+void SoftTissueMesh::defineBumpMapShaderInput()
 //----------------------------------------------
 {
 
 }
 
 //----------------------------------------------
-void SoftTissueMesh::generateBumpMapTexture()
+void SoftTissueMesh::defineColourShaderInput()
 //----------------------------------------------
 {
 
@@ -167,7 +251,54 @@ void SoftTissueMesh::generateBumpMapTexture()
 void SoftTissueMesh::initialize()
 //----------------------------------------------
 {
+	//load the shaders
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
 
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
+    //bump map generation shader
+    z_lib_return_code_vertex   = inflate(g_bump_map_generation_gl3_vert, sizeof(g_bump_map_generation_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_bump_map_generation_gl3_frag, sizeof(g_bump_map_generation_gl3_frag), &p_fragment_shader);
+
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_bumpMapShader.setLabels("bump.vert", "bump.frag");
+    m_bumpMapShader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    z_lib_return_code_vertex   = inflate(g_colour_texture_generation_gl3_vert, sizeof(g_colour_texture_generation_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_colour_texture_generation_gl3_frag, sizeof(g_colour_texture_generation_gl3_frag), &p_fragment_shader);
+
+	//texture generation shader
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_textureShader.setLabels("colourTexture.vert", "colourTexture.frag");
+    m_textureShader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    //initialize the buffers for the bump map and the colour texture
+    initializeBuffer(m_bumpMapTexture, m_bumpMapFrameBuffer);
+    initializeBuffer(m_colourTexture, m_colourFrameBuffer);
 }
 
 //----------------------------------------------
