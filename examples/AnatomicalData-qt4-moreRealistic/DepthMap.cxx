@@ -18,7 +18,6 @@
 //******************************************************************************
 #include <iostream>
 #include <fstream>
-#include <cassert>
 #include <QtGui>
 
 #include "DepthMap.h"
@@ -70,7 +69,10 @@ void DepthMap::initialize()
 	glDrawBuffer(GL_NONE);
 
 	//check the creation of the buffer
-	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+	if(!(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE))
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the frame buffer.");
+	}
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

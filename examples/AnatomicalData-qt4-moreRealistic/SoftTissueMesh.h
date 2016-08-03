@@ -94,10 +94,10 @@ protected:
 	//--------------------------------------------------------------------------
 	virtual void initialize();
 
-	virtual void initializeBuffer(GLuint aTexture, GLuint aFrameBuffer);
+	virtual void initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer);
 
 	//size of the side of the buffer
-	static const int TEXTURE_SIZE = 8192;
+	static const int TEXTURE_SIZE = 1024;
 
 	//Coordinates for texture sampling
 	std::vector<VEC3> m_textCoord;

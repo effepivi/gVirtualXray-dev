@@ -20,8 +20,6 @@
 //	Include
 //******************************************************************************
 
-#include <cassert>
-
 #include "SoftTissueMesh.h"
 
 #ifndef GVXR_UTILITIES_H
@@ -215,9 +213,9 @@ void SoftTissueMesh::generateTextures()
 
 	defineColourShaderInput();
 
-	/*
-	 * display();
-	 */
+/*
+ * display();
+ */
 
 
 	// Disable the shader
@@ -305,13 +303,14 @@ void SoftTissueMesh::initialize()
     //initialize the buffers for the bump map and the colour texture
     initializeBuffer(m_bumpMapTexture, m_bumpMapFrameBuffer);
     initializeBuffer(m_colourTexture, m_colourFrameBuffer);
+
 }
 
 //----------------------------------------------
-void SoftTissueMesh::initializeBuffer(GLuint aTexture, GLuint aFrameBuffer)
+void SoftTissueMesh::initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer)
 //----------------------------------------------
 {
-	//Intialize the buffer for the depth map texture and enable the sampling in the fragment shader as a sampler2DShadow
+	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
@@ -323,18 +322,18 @@ void SoftTissueMesh::initializeBuffer(GLuint aTexture, GLuint aFrameBuffer)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-	//initalize the frame buffer for the shadow map
+	//initalize the frame buffer
 	glGenFramebuffers(1, &aFrameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, aFrameBuffer);
 
 	//link the frame buffer and the texture
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, aTexture, 0);
-
-	//Only depth
-	glDrawBuffer(GL_NONE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, aTexture, 0);
 
 	//check the creation of the buffer
-	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+	if(!(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE))
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the frame buffer.");
+	}
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
