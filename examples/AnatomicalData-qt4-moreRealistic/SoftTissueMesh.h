@@ -81,6 +81,8 @@ public:
 
 protected:
 
+	virtual void splitFaces();
+
 	virtual void generateTextures();
 
 	virtual void defineBumpMapShaderInput();

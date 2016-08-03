@@ -82,7 +82,7 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 		// Set the type of VBO
 		m_vbo->setBufferUsageHint(aTypeOfVBO);
 
-		m_textCoord.resize(0);
+		m_textCoord.reserve(m_number_of_vertices);
 		//initialize the coordinate for sampling
 		unsigned int n=int(sqrt(float(m_number_of_vertices))/6)+1;
 
@@ -154,6 +154,12 @@ void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 	AnatomicalMesh::defineShaderInput(aShaderID);
 }
 
+//----------------------------------------------
+void SoftTissueMesh::splitFaces()
+//----------------------------------------------
+{
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+}
 
 //----------------------------------------------
 void SoftTissueMesh::generateTextures()
