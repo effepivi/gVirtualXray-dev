@@ -308,7 +308,7 @@ ENDIF (GLEW_FOUND)
 OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
 
 IF (USE_SYSTEM_ZLIB)
-    FIND_PACKAGE( zlib   REQUIRED )
+    FIND_PACKAGE( ZLIB   REQUIRED )
 ELSE(USE_SYSTEM_ZLIB)
     INCLUDE(BuildZLIB)
     build_zlib( zlib ${PROJECT_BINARY_DIR} )
@@ -322,7 +322,7 @@ SET (requiredLibs ${requiredLibs} ${ZLIB_LIBRARY})
 OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 
 IF (USE_SYSTEM_FREETYPE)
-    FIND_PACKAGE(FREETYPE)
+    FIND_PACKAGE(Freetype)
 
     IF (NOT FREETYPE_FOUND)
         MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
