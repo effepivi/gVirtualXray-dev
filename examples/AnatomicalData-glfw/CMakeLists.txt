@@ -36,18 +36,18 @@ project(gVirtualXRay-AnatomicalData-glfw)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
-# Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
-CreateHeaderFiles("." "BinaryAnatomicalDataGlfwFiles" "${RESOURCES_SOURCES}")
-
-
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+
+
+# Create the RESOURCES ###########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
+CreateHeaderFiles("." "BinaryAnatomicalDataGlfwFiles" "${RESOURCES_SOURCES}")
 
 
 # Check if GLFW is enable #####################################################

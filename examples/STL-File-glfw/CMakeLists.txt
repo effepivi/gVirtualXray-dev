@@ -36,6 +36,10 @@ project(gVirtualXRay-STL-File-glfw)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
+# Configure the project ########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+
+
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinaryStlGlfwFiles" "${RESOURCES_SOURCES}")
@@ -43,10 +47,6 @@ CreateHeaderFiles("." "BinaryStlGlfwFiles" "${RESOURCES_SOURCES}")
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
-
-# Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
 
 
 # Check if GLFW is enable #####################################################

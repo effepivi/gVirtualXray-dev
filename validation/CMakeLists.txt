@@ -36,30 +36,35 @@ project (validation)
 
 # Initialise some states by default ############################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/config.cmake)
 
 
-# Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
-
-IF(COMMAND cmake_policy)
-       cmake_policy(SET CMP0011 NEW)
-ENDIF(COMMAND cmake_policy)
-
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+# Configure the project ########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
 
 
-# gVirtualXRay ################################################################
-find_package(gVirtualXRay REQUIRED)
-IF(gVirtualXRay_FOUND)
-    INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
-    LINK_DIRECTORIES(${gVirtualXRay_LIBRARY_DIR})
-    SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
-ELSE(gVirtualXRay_FOUND)
-    MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
-ENDIF(gVirtualXRay_FOUND)
+# Create the RESOURCES ###########################################################
+SET (RESOURCES_SOURCES
+    shaders/display_gl2.frag
+    shaders/display_gl2.vert
+    shaders/display_gl3.frag
+    shaders/display_gl3.vert
+)
+
+
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
+CreateHeaderFiles("." "BinaryValidationFiles" "${RESOURCES_SOURCES}")
+
+# Check if GLFW is enable #####################################################
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(FATAL_ERROR "GLFW3 not found.")
+ENDIF (glfw3_FOUND)
 
 
 # ITK #########################################################################
@@ -84,104 +89,88 @@ ENDIF(gVirtualXRay_FOUND)
 #ENDIF(VTK_FOUND)
 
 
-# Create the RESOURCES ###########################################################
-SET (RESOURCES_SOURCES
-    shaders/display_gl2.frag
-    shaders/display_gl2.vert
-    shaders/display_gl3.frag
-    shaders/display_gl3.vert
-)
-
-
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
-CreateHeaderFiles("." "BinaryValidationFiles" "${RESOURCES_SOURCES}")
-
 
 # Create the main programs #####################################################
-IF(glfw3_FOUND)
-    ADD_EXECUTABLE (validation_01 src/validation_01.cxx)
-    TARGET_LINK_LIBRARIES (validation_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS validation_01 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_01 src/validation_01.cxx)
+TARGET_LINK_LIBRARIES (validation_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
+INSTALL(TARGETS validation_01 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_01"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
     
-    ADD_EXECUTABLE (validation_02 src/validation_02.cxx)
-    TARGET_LINK_LIBRARIES (validation_02 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    INSTALL(TARGETS validation_02 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_02 src/validation_02.cxx)
+TARGET_LINK_LIBRARIES (validation_02 gVirtualXRay ${optionalLibs} ${requiredLibs})
+INSTALL(TARGETS validation_02 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_02"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
     
-    ADD_EXECUTABLE (validation_03 src/validation_03.cxx)
-    TARGET_LINK_LIBRARIES (validation_03 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_03 BinaryValidationFiles)
-    INSTALL(TARGETS validation_03 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_03 src/validation_03.cxx)
+TARGET_LINK_LIBRARIES (validation_03 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_03 BinaryValidationFiles)
+INSTALL(TARGETS validation_03 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_03"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-    ADD_EXECUTABLE (validation_04 src/validation_04.cxx)
-    TARGET_LINK_LIBRARIES (validation_04 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_04 BinaryValidationFiles)
-    INSTALL(TARGETS validation_04 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_04 src/validation_04.cxx)
+TARGET_LINK_LIBRARIES (validation_04 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_04 BinaryValidationFiles)
+INSTALL(TARGETS validation_04 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_04"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
     
-    ADD_EXECUTABLE (validation_05 src/validation_05.cxx)
-    TARGET_LINK_LIBRARIES (validation_05 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_05 BinaryValidationFiles)
-    INSTALL(TARGETS validation_05 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_05 src/validation_05.cxx)
+TARGET_LINK_LIBRARIES (validation_05 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_05 BinaryValidationFiles)
+INSTALL(TARGETS validation_05 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_05"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-    ADD_EXECUTABLE (validation_06 src/validation_06.cxx)
-    TARGET_LINK_LIBRARIES (validation_06 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_06 BinaryValidationFiles)
-    INSTALL(TARGETS validation_06 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_06 src/validation_06.cxx)
+TARGET_LINK_LIBRARIES (validation_06 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_06 BinaryValidationFiles)
+INSTALL(TARGETS validation_06 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_06"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-    ADD_EXECUTABLE (validation_07 src/validation_07.cxx)
-    TARGET_LINK_LIBRARIES (validation_07 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_07 BinaryValidationFiles)
-    INSTALL(TARGETS validation_07 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_07 src/validation_07.cxx)
+TARGET_LINK_LIBRARIES (validation_07 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_07 BinaryValidationFiles)
+INSTALL(TARGETS validation_07 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_07"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-	IF (ITK_FOUND)
-	    ADD_EXECUTABLE (validation_08 src/validation_08.cxx)
-	    TARGET_LINK_LIBRARIES (validation_08 gVirtualXRay ${optionalLibs} ${requiredLibs})
-	    ADD_DEPENDENCIES(validation_08 BinaryValidationFiles)
-	    INSTALL(TARGETS validation_08 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-		INSTALL(DIRECTORY 
+IF (ITK_FOUND)
+    ADD_EXECUTABLE (validation_08 src/validation_08.cxx)
+	TARGET_LINK_LIBRARIES (validation_08 gVirtualXRay ${optionalLibs} ${requiredLibs})
+	ADD_DEPENDENCIES(validation_08 BinaryValidationFiles)
+	INSTALL(TARGETS validation_08 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+	INSTALL(DIRECTORY 
 			DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_08"
 			DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
-	ENDIF (ITK_FOUND)
+ENDIF (ITK_FOUND)
 
-    ADD_EXECUTABLE (validation_09 src/validation_09.cxx)
-    TARGET_LINK_LIBRARIES (validation_09 gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(validation_09 BinaryValidationFiles)
-    INSTALL(TARGETS validation_09 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
+ADD_EXECUTABLE (validation_09 src/validation_09.cxx)
+TARGET_LINK_LIBRARIES (validation_09 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_09 BinaryValidationFiles)
+INSTALL(TARGETS validation_09 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_09"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-	IF (ITK_FOUND)
-        ADD_EXECUTABLE (validation_10 src/validation_10.cxx)
-        TARGET_LINK_LIBRARIES (validation_10 gVirtualXRay ${optionalLibs} ${requiredLibs})
-        ADD_DEPENDENCIES(validation_10 BinaryValidationFiles)
-        INSTALL(TARGETS validation_10 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	    INSTALL(FILES data/validation_10/beam_spectrum.csv DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_10 COMPONENT validation)
-        INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
-	ENDIF (ITK_FOUND)
-ENDIF(glfw3_FOUND)
-
-
+IF (ITK_FOUND)
+    ADD_EXECUTABLE (validation_10 src/validation_10.cxx)
+    TARGET_LINK_LIBRARIES (validation_10 gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(validation_10 BinaryValidationFiles)
+    INSTALL(TARGETS validation_10 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+    INSTALL(FILES data/validation_10/beam_spectrum.csv DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_10 COMPONENT validation)
+    INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
+ENDIF (ITK_FOUND)
 
 
 # Set the package name
