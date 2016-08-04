@@ -79,7 +79,7 @@ smooth in vec4 g_shadowCoord;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragcolour;
+out vec4 fragColour;
 
 
 //******************************************************************************
@@ -142,7 +142,7 @@ void main(void)
 	   	vec3 ambient;
 	    vec3 diffuse;
 	    
-	    if(1==0)
+	    if(g_useTexture==1)
 	    {
 	    	global_ambient =vec3(light_global_ambient*texture( colourTexture,g_texture_coordinates));
 	   		ambient        = vec3(light_ambient * texture( colourTexture, g_texture_coordinates ));
@@ -157,10 +157,10 @@ void main(void)
 
 	    vec3 specular       = vec3(material_specular * light_specular * pow(max(dot(g_view_direction, reflect(light_direction, normal_vector)), 0.), material_shininess));
 	
-    	fragcolour = visibility*vec4(global_ambient+ambient + diffuse + specular, 1.);
+    	fragColour = visibility*vec4(global_ambient+ambient + diffuse + specular, 1.);
     }
     else
     {
-        fragcolour = material_ambient;
+        fragColour = material_ambient;
     }
 }

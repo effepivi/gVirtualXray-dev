@@ -64,6 +64,12 @@ public:
 	 */
 	//-------------------------------------------------------------------------
 	virtual void defineShaderInput(GLint aShaderID);
+
+	//--------------------------------------------------------------------------
+	/// generates the texture and the bump map if needed
+	//--------------------------------------------------------------------------
+	virtual void generateTextures();
+
 };
 
 } // namespace gVirtualXRay

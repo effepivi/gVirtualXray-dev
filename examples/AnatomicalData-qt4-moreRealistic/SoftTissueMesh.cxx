@@ -19,6 +19,7 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
+#include <cstdlib>
 
 #include "SoftTissueMesh.h"
 
@@ -41,7 +42,6 @@ SoftTissueMesh::SoftTissueMesh()
 :
 //----------------------------------------------
 		InternalOrganMesh(),
-		m_texturesAreGenerated(false),
 		m_bumpMapTexture(0),
 		m_bumpMapFrameBuffer(0),
 		m_colourTexture(0),
@@ -120,11 +120,41 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
-	//Initialize if necessery
-	if(!m_texturesAreGenerated)
-	{
-		generateTextures();
-	}
+    /*//render to the colour buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+
+	// Clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Enable back face culling
+	pushEnableDisableState(GL_CULL_FACE);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+
+	// Enable the bump shader
+	pushShaderProgram();
+	m_textureShader.enable();
+
+	defineColourShaderInput();
+
+	display();
+
+	// Disable the shader
+	popShaderProgram();
+
+	// Restore the attributes
+    popEnableDisableState();
+
+	// Cleanup for now
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
+
+
+
+
 
 
 	//Bind the texture for bump mapping in texture unit 1
@@ -166,7 +196,7 @@ void SoftTissueMesh::generateTextures()
 	initialize();
 
 	//render to the bump buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
+	/*glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
 	// Enable back face culling
@@ -180,15 +210,15 @@ void SoftTissueMesh::generateTextures()
 
 	defineBumpMapShaderInput();
 
-/*
- * display();
- */
+
+ 	 display();
+
 
 	// Disable the shader
 	popShaderProgram();
 
 	// Restore the attributes
-    popEnableDisableState();
+    popEnableDisableState();*/
 
 
 
@@ -199,13 +229,20 @@ void SoftTissueMesh::generateTextures()
 
 
     //render to the colour buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_colourFrameBuffer);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+
+	// Clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
+	pushEnableDisableState(GL_DEPTH_TEST);
+
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+
 
 	// Enable the bump shader
 	pushShaderProgram();
@@ -213,15 +250,15 @@ void SoftTissueMesh::generateTextures()
 
 	defineColourShaderInput();
 
-/*
- * display();
- */
+	display();
+
 
 
 	// Disable the shader
 	popShaderProgram();
 
 	// Restore the attributes
+    popEnableDisableState();
     popEnableDisableState();
 
 
@@ -231,9 +268,6 @@ void SoftTissueMesh::generateTextures()
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	m_texturesAreGenerated=true;
 }
 
 //----------------------------------------------
@@ -247,6 +281,12 @@ void SoftTissueMesh::defineBumpMapShaderInput()
 void SoftTissueMesh::defineColourShaderInput()
 //----------------------------------------------
 {
+	GLint textureShaderID(m_textureShader.getProgramHandle());
+	GLuint handle(glGetUniformLocation(textureShaderID, "base_colour"));
+	glUniform4fv(handle, 1, &getMaterial().getDiffuseColour()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	//handle = glGetUniformLocation(textureShaderID, "gradientTab");
 
 }
 
@@ -303,7 +343,6 @@ void SoftTissueMesh::initialize()
     //initialize the buffers for the bump map and the colour texture
     initializeBuffer(m_bumpMapTexture, m_bumpMapFrameBuffer);
     initializeBuffer(m_colourTexture, m_colourFrameBuffer);
-
 }
 
 //----------------------------------------------
@@ -317,8 +356,7 @@ void SoftTissueMesh::initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer)
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
@@ -338,6 +376,29 @@ void SoftTissueMesh::initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer)
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+//----------------------------------------------
+std::vector<VEC3> SoftTissueMesh::gradientTabInit()
+//----------------------------------------------
+{
+	std::vector<VEC3> table;
+	float z, r, theta;
+
+	for(unsigned int i(0); i<m_number_of_vertices; i++)
+	{
+		z= 1 - 2*(float(rand()) / RAND_MAX);
+		r= sqrt(1-z*z);
+		theta=2 * M_PI * (float(rand()) / RAND_MAX);
+
+		table.push_back(VEC3(
+				r*cos(theta),
+				r*sin(theta),
+				z
+			));
+	}
+
+	return table;
 }
 
 } // namespace gVirtualXRay

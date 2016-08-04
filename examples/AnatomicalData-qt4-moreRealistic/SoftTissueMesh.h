@@ -79,31 +79,37 @@ public:
 	//-------------------------------------------------------------------------
 	virtual void defineShaderInput(GLint aShaderID);
 
+	//--------------------------------------------------------------------------
+	/// generates the texture if needed
+	//--------------------------------------------------------------------------
+	virtual void generateTextures();
+
+
 protected:
 
 	virtual void splitFaces();
-
-	virtual void generateTextures();
 
 	virtual void defineBumpMapShaderInput();
 
 	virtual void defineColourShaderInput();
 
 	//--------------------------------------------------------------------------
-	/// initialize the shaders, the noise and the buffers
+	/// initialize the shaders and the buffers
 	//--------------------------------------------------------------------------
 	virtual void initialize();
 
 	virtual void initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer);
 
+	//--------------------------------------------------------------------------
+	/// initialize tab for gnoise
+	//--------------------------------------------------------------------------
+	virtual std::vector<VEC3> gradientTabInit();
+
 	//size of the side of the buffer
-	static const int TEXTURE_SIZE = 1024;
+	static const int TEXTURE_SIZE = 2048;
 
 	//Coordinates for texture sampling
 	std::vector<VEC3> m_textCoord;
-
-	//Enable to know if the texture and the bump map are generated
-	bool m_texturesAreGenerated;
 
 	GLuint m_bumpMapTexture,
 		m_bumpMapFrameBuffer,

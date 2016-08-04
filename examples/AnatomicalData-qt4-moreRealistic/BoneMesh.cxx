@@ -57,4 +57,12 @@ void BoneMesh::defineShaderInput(GLint aShaderID)
 	AnatomicalMesh::defineShaderInput(aShaderID);
 }
 
+
+//----------------------------------------------
+void BoneMesh::generateTextures()
+//----------------------------------------------
+{
+	//Don't generate textures for bones
+}
+
 } // namespace gVirtualXRay

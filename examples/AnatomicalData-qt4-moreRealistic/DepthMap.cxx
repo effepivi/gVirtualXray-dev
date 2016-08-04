@@ -63,7 +63,7 @@ void DepthMap::initialize()
 	glBindFramebuffer(GL_FRAMEBUFFER, m_mapFrameBuffer);
 
 	//link the frame buffer and the texture
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_mapTexture, 0);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_mapTexture, 0);
 
 	//Only depth
 	glDrawBuffer(GL_NONE);
@@ -136,7 +136,6 @@ void DepthMap::render(std::vector<AnatomicalMesh*>& apMeshSet,
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 //------------------------------------------------------------------------

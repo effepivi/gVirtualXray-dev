@@ -64,5 +64,11 @@ void SkinMesh::defineShaderInput(GLint aShaderID)
 	AnatomicalMesh::defineShaderInput(aShaderID);
 }
 
+//----------------------------------------------
+void SkinMesh::generateTextures()
+//----------------------------------------------
+{
+	//Don't generate textures for skin
+}
 
 } // namespace gVirtualXRay
