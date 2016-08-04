@@ -83,14 +83,14 @@ ENDIF (glfw3_FOUND)
 
 
 # GLUT ########################################################################
-IF (USE_SYSTEM_GLUT)
-    FIND_PACKAGE( GLUT   REQUIRED )
-ENDIF (USE_SYSTEM_GLUT)
+#IF (USE_SYSTEM_GLUT)
+#    FIND_PACKAGE( GLUT   REQUIRED )
+#ENDIF (USE_SYSTEM_GLUT)
 
-IF (GLUT_FOUND)
-    INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-    SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
-ELSE (GLUT_FOUND)
-    MESSAGE(FATAL_ERROR "GLUT not found.")
-ENDIF (GLUT_FOUND)
+#IF (GLUT_FOUND)
+#    INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
+#    SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
+#ELSE (GLUT_FOUND)
+#    MESSAGE(FATAL_ERROR "GLUT not found.")
+#ENDIF (GLUT_FOUND)
 
