@@ -63,6 +63,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -461,7 +464,7 @@ void quit()
 void initGLEW()
 //-------------
 {
-#if defined(_WIN32) || defined(_WIN64) || defined(__APPLE__)
+#ifdef HAS_GLEW
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{
