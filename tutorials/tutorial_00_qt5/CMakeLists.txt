@@ -62,8 +62,8 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt5 #########################################################################
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Widgets)
+find_package(Qt5OpenGL)
 
 IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
     SET(CMAKE_AUTOMOC ON)
@@ -77,7 +77,7 @@ IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
     INSTALL(TARGETS tutorial_00_qt5 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 ELSE(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
-    MESSAGE(WARNING "Qt5 not found.")
+    MESSAGE(WARNING "Qt5 not found, ${PROJECT_NAME} will not be built.")
 ENDIF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
 

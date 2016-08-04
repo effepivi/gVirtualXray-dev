@@ -77,7 +77,7 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt4 #########################################################################
-FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
+FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
 IF(Qt4_FOUND)
     SET(CMAKE_AUTOMOC ON)
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -91,5 +91,5 @@ IF(Qt4_FOUND)
     INSTALL(TARGETS tutorial_03_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 ELSE(Qt4_FOUND)
-    MESSAGE(WARNING "Qt4 not found.")
+    MESSAGE(WARNING "Qt4 not found, ${PROJECT_NAME} will not be built.")
 ENDIF(Qt4_FOUND)

@@ -65,13 +65,17 @@ IF (UNIX)
             Xrandr
         )
 
+        SET (GLUT_LIBRARIES
+            ${staging_prefix}/${install_prefix}-install/lib64/libglut.a
+            ${GLUT_PLATFORM_DEPENDENT_LIBS}
+        )
+    ELSE (NOT APPLE)
+        SET (GLUT_LIBRARIES
+            ${staging_prefix}/${install_prefix}-install/lib/libglut.a
+            ${GLUT_PLATFORM_DEPENDENT_LIBS}
+        )
     ENDIF (NOT APPLE)
 ENDIF (UNIX)
-
-SET (GLUT_LIBRARIES 
-    ${staging_prefix}/${install_prefix}-install/lib64/libglut.a
-    ${GLUT_PLATFORM_DEPENDENT_LIBS}
-)
 
 set (GLUT_LIBRARY      ${GLUT_LIBRARIES})
 set (GLUT_INCLUDE_PATH ${GLUT_INCLUDE_DIR})

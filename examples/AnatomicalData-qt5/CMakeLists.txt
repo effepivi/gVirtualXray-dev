@@ -51,8 +51,8 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
 # Qt5 #########################################################################
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-FIND_PACKAGE(Qt5OpenGL REQUIRED)
+FIND_PACKAGE(Qt5Widgets)
+FIND_PACKAGE(Qt5OpenGL)
     
 IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
     SET(CMAKE_AUTOMOC ON)
