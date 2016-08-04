@@ -43,43 +43,17 @@ else()
 endif()
 
 
-OPTION (USE_ITK  "Build the demos that make use of the InsightToolkit (ITK)" OFF)
-OPTION (USE_FLTK "Build the demos that make use of the Fast Light Toolkit (FLTK)" ON)
-OPTION (USE_GLUT "Build the demos that make use of the OpenGL Utility Toolkit (GLUT)" ON)
-OPTION (USE_GLFW "Build the demos that make use of GLFW" ON)
-OPTION (USE_QT4  "Build the demos that make use of Qt4" ON)
-OPTION (USE_QT5  "Build the demos that make use of Qt5" ON)
-
-IF (USE_GLUT)
-    add_subdirectory(STL-File-glut)
-ENDIF (USE_GLUT)
-
-IF (USE_FLTK)
-    add_subdirectory(GUI-FLTK)
-ENDIF(USE_FLTK)
-
-IF (USE_ITK)
-    add_subdirectory(SimpleBackProjection)
-    add_subdirectory(Tomography)
-    add_subdirectory(Iso-Surfaces)
-ENDIF(USE_ITK)
-
-IF (USE_GLFW)
-    add_subdirectory(Intersections)
-    add_subdirectory(AnatomicalData-glfw)
-    add_subdirectory(STL-File-glfw)
-ENDIF (USE_GLFW)
-
-IF (USE_QT4)
-    add_subdirectory(AnatomicalData-qt4)
-    add_subdirectory(AnatomicalData-qt4-moreRealistic)
-ENDIF (USE_QT4)
-
-IF (USE_QT5)
-    add_subdirectory(AnatomicalData-qt5)
-ENDIF (USE_QT5)
-
-
+add_subdirectory(STL-File-glut)
+add_subdirectory(GUI-FLTK)
+#add_subdirectory(SimpleBackProjection)
+#add_subdirectory(Tomography)
+#add_subdirectory(Iso-Surfaces)
+add_subdirectory(Intersections)
+add_subdirectory(AnatomicalData-glfw)
+add_subdirectory(STL-File-glfw)
+add_subdirectory(AnatomicalData-qt4)
+add_subdirectory(AnatomicalData-qt4-moreRealistic)
+add_subdirectory(AnatomicalData-qt5)
 #add_subdirectory(VisualArts)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)

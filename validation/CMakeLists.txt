@@ -63,7 +63,7 @@ IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
 ELSE (glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW3 not found.")
+    MESSAGE(WARNING "GLFW3 not found, (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)
 
 
@@ -91,6 +91,7 @@ ENDIF (glfw3_FOUND)
 
 
 # Create the main programs #####################################################
+IF (glfw3_FOUND)
 ADD_EXECUTABLE (validation_01 src/validation_01.cxx)
 TARGET_LINK_LIBRARIES (validation_01 gVirtualXRay ${optionalLibs} ${requiredLibs})
 INSTALL(TARGETS validation_01 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
@@ -217,4 +218,5 @@ ENDIF (WIN32)
 IF (NOT CPack_CMake_INCLUDED)
     INCLUDE(CPack)
 ENDIF (NOT CPack_CMake_INCLUDED)
+ENDIF (glfw3_FOUND)
 

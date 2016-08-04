@@ -60,10 +60,11 @@ IF (FLTK_FOUND)
     INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} ${FLTK_INCLUDE_DIRS})
     SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
 ELSE (FLTK_FOUND)
-    MESSAGE(FATAL_ERROR "FLTK not found.")
+    MESSAGE(WARNING "FLTK not found, the demo (${PROJECT_NAME}) will be disable.")
 ENDIF (FLTK_FOUND)
 
 
+IF (FLTK_FOUND)
 # BOOST #######################################################################
 FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS filesystem system)
 if(Boost_FOUND)
@@ -169,4 +170,5 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF (FLTK_FOUND)
 

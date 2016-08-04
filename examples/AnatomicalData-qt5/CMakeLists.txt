@@ -51,28 +51,20 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
 # Qt5 #########################################################################
-IF (USE_QT5)
-    FIND_PACKAGE(Qt5Widgets REQUIRED)
-    FIND_PACKAGE(Qt5OpenGL REQUIRED)
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5OpenGL REQUIRED)
     
-    IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
-        SET(CMAKE_AUTOMOC ON)
-        SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-        SET(optionalLibs ${optionalLibs} Qt5::Widgets Qt5::OpenGL)
-
-    ELSE(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
-        MESSAGE(WARNING "Qt5 not found.")
-    ENDIF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
-ENDIF (USE_QT5)
-
-
-# Check if Qt5 is enable #######################################################
-IF(NOT (Qt5Widgets_FOUND AND Qt5OpenGL_FOUND))
-    MESSAGE(FATAL_ERROR "Qt5 was not found. The demo cannot be built.")
-ENDIF(NOT (Qt5Widgets_FOUND AND Qt5OpenGL_FOUND))
+IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+    SET(CMAKE_AUTOMOC ON)
+    SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+    SET(optionalLibs ${optionalLibs} Qt5::Widgets Qt5::OpenGL)
+ELSE(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+    MESSAGE(WARNING "Qt5 not found, the demo (${PROJECT_NAME}) will be disable.")
+ENDIF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
 
 # Create the main program ######################################################
+IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 add_executable(demo-anatomical-data-qt5 AnatomicalData-qt5.cxx GLWidget.h GLWidget.cxx)
 target_link_libraries(demo-anatomical-data-qt5 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-anatomical-data-qt5 BinaryAnatomicalDataQt5Files)
@@ -137,5 +129,6 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
 

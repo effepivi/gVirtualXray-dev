@@ -58,11 +58,12 @@ IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
 ELSE (glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW3 not found.")
+    MESSAGE(WARNING "GLFW3 not found, the demo (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################
+IF (glfw3_FOUND)
 add_executable(welsh_dragon_glfw welsh_dragon_glfw.cxx )
 target_link_libraries(welsh_dragon_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(welsh_dragon_glfw BinaryStlGlfwFiles)
@@ -130,4 +131,5 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF (glfw3_FOUND)
 

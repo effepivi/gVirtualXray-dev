@@ -54,76 +54,78 @@ IF (GLUT_FOUND)
     INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
     SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARIES})
 ELSE (GLUT_FOUND)
-    MESSAGE(FATAL_ERROR "GLUT not found.")
+    MESSAGE(WARNING "GLUT not found, the demo (${PROJECT_NAME}) will be disable.")
 ENDIF (GLUT_FOUND)
 
 
 # Create the main program ######################################################
-add_executable(welsh_dragon_glut welsh_dragon_glut.cxx )
-target_link_libraries(welsh_dragon_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(welsh_dragon_glut BinaryStlGlutFiles)
+IF (GLUT_FOUND)
+    add_executable(welsh_dragon_glut welsh_dragon_glut.cxx )
+    target_link_libraries(welsh_dragon_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(welsh_dragon_glut BinaryStlGlutFiles)
 
 
-IF (NOT APPLE)
-    INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
+    IF (NOT APPLE)
+        INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 ELSE (NOT APPLE)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
-    SET (MACOSX_RPATH 1)
-    SET(STL-File-GLUT_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/welsh_dragon_glut.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
-    )
+        SET (MACOSX_RPATH 1)
+        SET(STL-File-GLUT_SRCS
+            ${CMAKE_CURRENT_SOURCE_DIR}/welsh_dragon_glut.cxx
+            ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
+        )
 
-    ADD_EXECUTABLE (STL-File-GLUT MACOSX_BUNDLE ${STL-File-GLUT_SRCS})
-    TARGET_LINK_LIBRARIES (STL-File-GLUT gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(STL-File-GLUT BinaryStlGlutFiles)
+        ADD_EXECUTABLE (STL-File-GLUT MACOSX_BUNDLE ${STL-File-GLUT_SRCS})
+        TARGET_LINK_LIBRARIES (STL-File-GLUT gVirtualXRay ${optionalLibs} ${requiredLibs})
+        ADD_DEPENDENCIES(STL-File-GLUT BinaryStlGlutFiles)
 
-    set(MACOSX_BUNDLE_BUNDLE_NAME STL-File)
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "STL-File-GLUT")
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
-    set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MAIN_PROJECT_VERSION}")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
-    set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
+        set(MACOSX_BUNDLE_BUNDLE_NAME STL-File)
+        set(MACOSX_BUNDLE_GUI_IDENTIFIER "STL-File-GLUT")
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
+        set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
+        set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
+        set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MAIN_PROJECT_VERSION}")
+        set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
+        set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
 
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File-GLUT.app")
+        SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/STL-File-GLUT.app")
 
-    INSTALL(TARGETS STL-File-GLUT 
-        BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
-    )
+        INSTALL(TARGETS STL-File-GLUT 
+            BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
+            RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
+        )
 
-    SET_SOURCE_FILES_PROPERTIES (
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
-        PROPERTIES
-        MACOSX_PACKAGE_LOCATION data
-    )
+        SET_SOURCE_FILES_PROPERTIES (
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
+            PROPERTIES
+            MACOSX_PACKAGE_LOCATION data
+        )
 
-    # directories to look for dependencies
-    SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
+        # directories to look for dependencies
+        SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
 
-    SET (LIBRARIES ${requiredLibs} ${optionalLibs})
-    INSTALL(CODE "
-        include(BundleUtilities)
-        fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
-        " COMPONENT Runtime)
+        SET (LIBRARIES ${requiredLibs} ${optionalLibs})
+        INSTALL(CODE "
+            include(BundleUtilities)
+            fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
+            " COMPONENT Runtime)
+    
+        set(CPACK_BINARY_DRAGNDROP ON)
 
-    set(CPACK_BINARY_DRAGNDROP ON)
+    ENDIF(NOT APPLE)
 
-ENDIF(NOT APPLE)
+    SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
-SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
-
-include(CPack)
+    include(CPack)
+ENDIF (GLUT_FOUND)
 

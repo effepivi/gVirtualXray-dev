@@ -36,13 +36,13 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
 
 # gVirtualXRay #################################################################
-FIND_PACKAGE(gVirtualXRay REQUIRED)
-IF(gVirtualXRay_FOUND)
-    INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
-    SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
-ELSE(gVirtualXRay_FOUND)
-    MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
-ENDIF(gVirtualXRay_FOUND)
+if (NOT gVirtualXRay_BINARY_DIR)
+    find_package(gVirtualXRay REQUIRED)
+    include(${gVirtualXRay_USE_FILE})
+else (NOT gVirtualXRay_BINARY_DIR)
+    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
+    find_package(gVirtualXRay REQUIRED)
+endif (NOT gVirtualXRay_BINARY_DIR)
 
 
 # Boost ########################################################################
@@ -57,31 +57,8 @@ ELSE(Boost_FOUND)
 ENDIF(Boost_FOUND)
 
 
-# GLEW #########################################################################
-FIND_PACKAGE(GLEW REQUIRED)
-IF(GLEW_FOUND)
-    ADD_DEFINITIONS(-DHAS_GLEW)    
-    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-    LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
-    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
-ELSE(GLEW_FOUND)
-    MESSAGE(FATAL_ERROR "GLEW not found.")
-ENDIF(GLEW_FOUND)
-
-
-# ITK #########################################################################
-FIND_PACKAGE (ITK)
-IF (ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE( ${ITK_USE_FILE} )
-	set (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
-ENDIF(ITK_FOUND)
-
-
 add_executable(TestDensity TestDensity.cxx)
-target_link_libraries (TestDensity ${requiredLibs})
+target_link_libraries (TestDensity ${gVirtualXRay_LIBRARY} ${requiredLibs})
 
 add_test (test TestDensity)
 

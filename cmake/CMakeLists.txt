@@ -95,10 +95,6 @@ SET (CMAKE_FIND_FRAMEWORK "LAST")
 #	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-Wall")
 #ENDIF (NOT WIN32)
 
-# For testing
-IF(BUILD_TESTING)
-  ENABLE_TESTING()
-ENDIF(BUILD_TESTING)
 
 # for superbuild
 SET (USE_SUPERBUILD ON)
@@ -564,7 +560,7 @@ INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/${INST
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 
 
-# Generate gVirtualXRayConfig.cmake for the build tree.
+# Generate gVirtualXRayConfig.cmake ############################################
 set(gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/UsegVirtualXRay.cmake")
 configure_file(gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
@@ -573,74 +569,92 @@ install(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
     DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR}
     COMPONENT Development)
 
-# Generate gVirtualXRayConfig.cmake for the install tree #######################
-#SET (gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/${PROJECT_NAME}-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
-#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include/")
-#SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS} ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib")
-#SET (gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake")
-#SET (gVirtualXRay_USE_FILE "UsegVirtualXRay.cmake")
+
+# Options ######################################################################
+option(BUILD_EXAMPLES   "Build examples." ON)
+option(BUILD_TUTORIALS  "Build tutorials." ON)
+option(BUILD_VALIDATION "Build validation tests." ON)
 
 
+IF (BUILD_EXAMPLES OR BUILD_TUTORIALS OR BUILD_VALIDATION)
+
+    OPTION (USE_GLFW "Build the programs (demos, tutorials, and validation tests) that make use of GLFW" ON)
+    IF (USE_GLFW)
+        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
+    ENDIF (USE_GLFW)
+
+ENDIF ()
+
+IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
+
+    OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
+    IF (USE_FLTK)
+        OPTION(USE_SYSTEM_FLTK "Use System FLTK"       OFF)
+    ENDIF (USE_FLTK)
+
+    OPTION (USE_GLUT "Build the programs (demos, and tutorials) that make use of the OpenGL Utility Toolkit (GLUT)" ON)
+    IF (USE_GLUT)
+        OPTION(USE_SYSTEM_GLUT   "Use System GLUT"       OFF)
+    ENDIF (USE_GLUT)
+
+    OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
+    OPTION (USE_QT5  "Build the programs (demos, and tutorials) that make use of Qt5" OFF)
+ENDIF ()
 
 
+IF (USE_GLFW)
+    IF (NOT USE_SYSTEM_GLFW)
+        SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+        INCLUDE(BuildGlfw3)
+        build_glfw3( glfw3 ${PROJECT_BINARY_DIR} )
+        ADD_DEPENDENCIES(gVirtualXRay GLFW3)
+    ENDIF (NOT USE_SYSTEM_GLFW)
+ENDIF (USE_GLFW)
 
 
+IF (USE_GLUT)
+    IF (NOT USE_SYSTEM_GLUT)
+        SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+        INCLUDE(BuildGlut)
+        build_glut( glut ${PROJECT_BINARY_DIR} )
+        ADD_DEPENDENCIES(gVirtualXRay FreeGlut)
+    ENDIF (NOT USE_SYSTEM_GLUT)
+ENDIF (USE_GLUT)
+
+
+IF (USE_FLTK)
+    
+    IF (NOT USE_SYSTEM_FLTK)
+        SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+        INCLUDE(BuildFLTK)
+        build_fltk( fltk ${PROJECT_BINARY_DIR} )
+        ADD_DEPENDENCIES(gVirtualXRay fltk)
+    ENDIF (NOT USE_SYSTEM_FLTK)
+ENDIF (USE_FLTK)
 
 
 # Doxygen documentation ########################################################
-OPTION(BUILD_DOXYGEN "Build Doxygen Documentation" OFF)
-IF(BUILD_DOXYGEN)
+INCLUDE (${CMAKE_ROOT}/Modules/Documentation.cmake)
+IF(BUILD_DOCUMENTATION)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
-ENDIF(BUILD_DOXYGEN)
+    MESSAGE(STATUS "Build documentation.")
+ELSE (BUILD_DOCUMENTATION)
+   	MESSAGE("Do not build documentation.")
+ENDIF(BUILD_DOCUMENTATION)
 
 
 # Examples #####################################################################
-option(BUILD_EXAMPLES "Build examples." OFF)
 IF (BUILD_EXAMPLES)
     MESSAGE(STATUS "Build examples.")
-
-    IF (USE_FLTK)
-        OPTION(USE_SYSTEM_FLTK       "Use System FLTK"       OFF)
-        IF (NOT USE_SYSTEM_FLTK)
-            SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-            INCLUDE(BuildFLTK)
-            build_fltk( fltk ${PROJECT_BINARY_DIR} )
-            ADD_DEPENDENCIES(gVirtualXRay fltk)
-        ENDIF (NOT USE_SYSTEM_FLTK)
-    ENDIF (USE_FLTK)
-
-    IF (USE_GLUT)
-        OPTION(USE_SYSTEM_GLUT       "Use System GLUT"       OFF)
-        IF (NOT USE_SYSTEM_GLUT)
-            SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-            INCLUDE(BuildGlut)
-            build_glut( glut ${PROJECT_BINARY_DIR} )
-            ADD_DEPENDENCIES(gVirtualXRay FreeGlut)
-        ENDIF (NOT USE_SYSTEM_GLUT)
-    ENDIF (USE_GLUT)
-
-    IF (USE_GLFW)
-        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
-        IF (NOT USE_SYSTEM_GLFW)
-            SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-            INCLUDE(BuildGlfw3)
-            build_glfw3( glfw3 ${PROJECT_BINARY_DIR} )
-            ADD_DEPENDENCIES(gVirtualXRay GLFW3)
-        ENDIF (NOT USE_SYSTEM_GLFW)
-    ENDIF (USE_GLFW)
-
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
-
 ELSE (BUILD_EXAMPLES)
    	MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
 
 
 # Tutorials ####################################################################
-option(BUILD_TUTORIALS "Build tutorials." OFF)
 IF (BUILD_TUTORIALS)
    	MESSAGE(STATUS "Build tutorials.")
-
 	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
 ELSE (BUILD_TUTORIALS)
    	MESSAGE("Do not build tutorials.")
@@ -648,31 +662,25 @@ ENDIF (BUILD_TUTORIALS)
 
 
 # Unit tests ###################################################################
-option(BUILD_TESTS "Build unit tests." OFF)
-IF (BUILD_TESTS)
-	enable_testing ()
-   	
+IF(BUILD_TESTING)
+    ENABLE_TESTING()
 	MESSAGE(STATUS "Build unit tests.")
-
 	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
-ELSE (BUILD_TESTS)
+ELSE (BUILD_TESTING)
    	MESSAGE("Do not build unit tests.")
-ENDIF (BUILD_TESTS)
+ENDIF(BUILD_TESTING)
 
 
 # Validation tests #############################################################
-option(BUILD_VALIDATION "Build validation tests." OFF)
 IF (BUILD_VALIDATION)
    	MESSAGE(STATUS "Build validation tests.")
-
 	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
 ELSE (BUILD_VALIDATION)
    	MESSAGE("Do not build validation tests.")
 ENDIF (BUILD_VALIDATION)
 
 
-
-
+# Installation packs ###########################################################
 SET (CPACK_PACKAGE_FILE_NAME gVirtualXRay)
 SET (CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/doc/logo.ico)
 
@@ -690,12 +698,14 @@ LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../i
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../src       src)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../resources resources)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../examples  examples)
+LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../test      test)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../tutorials tutorials)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../doc/dist_doc1    .)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../doc/dist_doc2   doc)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html        doc/html)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../doc/TUTORIALS   doc/tutorials)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../doc/screenshots doc/screenshots)
+LIST( APPEND CPACK_SOURCE_INSTALLED_FILES       ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt      .)
 
 SET (CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
 SET (CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
