@@ -35,7 +35,6 @@ in vec3 in_Normal;
 
 //smooth out vec3 g_normal;
 smooth out vec3 g_object_position;
-smooth out vec2 tex;
 
 
 
@@ -53,8 +52,7 @@ void main(void)
 {
 	g_object_position = in_Vertex;
 	
-	tex=in_TexCoord;
-	
+
 	gl_Position = vec4(in_TexCoord*2-1,0,1);
 }
 

@@ -26,7 +26,6 @@
 //******************************************************************************
 //smooth in vec3 g_normal;
 smooth in vec3 g_object_position;
-smooth in vec2 tex;
 
 //******************************************************************************
 //	Output
@@ -37,7 +36,9 @@ out vec4 fragColour;
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
-uniform vec4 base_colour;
+uniform vec4 g_base_colour;
+uniform vec4 g_second_colour;
+uniform int g_use_second_colour;
 
 //******************************************************************************
 //	constant variables
@@ -45,6 +46,7 @@ uniform vec4 base_colour;
 //Frequence for fractal sum
 const float MINFREQ=0.1;
 const float MAXFREQ=5;
+
 
 
 
@@ -215,9 +217,17 @@ float snoiseFractal(vec3 m) {
 }
 
 
+
+
+
 float fracNoise(vec3 v)
 {
 	return 2*noise(v)-1;
+}
+
+float turbNoise(vec3 v)
+{
+	return 2*cnoise(v)-1;
 }
 
 float fractalSum(vec3 Q)
@@ -230,10 +240,35 @@ float fractalSum(vec3 Q)
 	return value*0.5+0.5;
 }
 
+float turbulence(vec3 Q)
+{
+	float value = 0;
+	for (float f=MINFREQ; f<MAXFREQ;f*2)
+	{
+		value += abs(turbNoise(Q*f))/f;
+		return value*0.5+0.5;
+	}
+}
+
 
 //-------------
 void main(void)
 //-------------
 {
-	fragColour=base_colour*fractalSum(g_object_position)*0.5;
+	vec4 second_colour;
+	float frac_sum_value = clamp(fractalSum(g_object_position),-1,3);
+	float turbulence_value;
+	
+	if(g_use_second_colour==1)
+	{
+		turbulence_value=clamp(turbulence(g_object_position),0,2);
+		second_colour=g_second_colour*(1-frac_sum_value);
+	}
+	else
+	{
+		turbulence_value=1;
+		second_colour=vec4(0,0,0,0);
+	}
+	
+	fragColour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value*0.5;
 }

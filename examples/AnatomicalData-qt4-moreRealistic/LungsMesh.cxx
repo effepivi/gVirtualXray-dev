@@ -36,4 +36,31 @@ LungsMesh::~LungsMesh()
 	// TODO Auto-generated destructor stub
 }
 
+//----------------------------------------------
+void LungsMesh::defineBumpMapShaderInput()
+//----------------------------------------------
+{
+	SoftTissueMesh::defineBumpMapShaderInput();
+}
+
+//----------------------------------------------
+void LungsMesh::defineColourShaderInput()
+//----------------------------------------------
+{
+	GLfloat second_colour[] = {0.4,0.03,0.03,1.};
+
+	GLint textureShaderID(m_textureShader.getProgramHandle());
+	GLuint handle(glGetUniformLocation(textureShaderID, "g_second_colour"));
+	glUniform4fv(handle, 1, &second_colour[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	int use_second_colour(1);
+	handle = glGetUniformLocation(textureShaderID, "g_use_second_colour");
+	glUniform1iv(handle, 1, &use_second_colour);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	SoftTissueMesh::defineColourShaderInput();
+}
+
+
 } // namespace gVirtualXRay

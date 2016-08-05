@@ -366,7 +366,7 @@ void SoftTissueMesh::defineColourShaderInput()
 //----------------------------------------------
 {
 	GLint textureShaderID(m_textureShader.getProgramHandle());
-	GLuint handle(glGetUniformLocation(textureShaderID, "base_colour"));
+	GLuint handle(glGetUniformLocation(textureShaderID, "g_base_colour"));
 	glUniform4fv(handle, 1, &getMaterial().getDiffuseColour()[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

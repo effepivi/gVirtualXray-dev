@@ -96,8 +96,14 @@ protected:
 
 	virtual void splitFaces();
 
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader bump map generation
+	//-------------------------------------------------------------------------
 	virtual void defineBumpMapShaderInput();
 
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader for colour texture generation
+	//-------------------------------------------------------------------------
 	virtual void defineColourShaderInput();
 
 
