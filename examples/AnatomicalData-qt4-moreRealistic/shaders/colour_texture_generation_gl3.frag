@@ -268,13 +268,13 @@ vec4 computeTendonColour()
 		return g_base_colour;
 	}
 	else 
-		if(dot_normal_vertical>0.9)
+		if(dot_normal_vertical>0.8)
 		{
-			return 0.7*vec4(1,1,1,1);
+			return g_second_colour;
 		}
 	else 
 	{
-		return 5*(g_base_colour*(0.9-dot_normal_vertical)+0.7*vec4(1,1,1,1)*(dot_normal_vertical-0.7));
+		return 10*(g_base_colour*(0.8-dot_normal_vertical)+g_second_colour*(dot_normal_vertical-0.7));
 	}
 }
 

@@ -56,7 +56,12 @@ void DiaphragmMesh::defineColourShaderInput()
 {
 	GLint shader_id(m_textureShader.getProgramHandle());
 
-	GLuint handle(glGetUniformLocation(shader_id, "matrix"));
+	GLfloat second_colour[] = {0.84,0.77,0.6,1.};
+	GLuint handle(glGetUniformLocation(shader_id, "g_second_colour"));
+	glUniform4fv(handle, 1, &second_colour[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "matrix");
 	glUniformMatrix4fv(handle, 1,  GL_FALSE, m_model_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
