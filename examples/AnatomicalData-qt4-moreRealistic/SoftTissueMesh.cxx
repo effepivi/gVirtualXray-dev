@@ -247,7 +247,7 @@ void SoftTissueMesh::generateTextures()
 //----------------------------------------------
 {
 	//render to the bump buffer
-	/*glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
 	// Enable back face culling
@@ -261,23 +261,13 @@ void SoftTissueMesh::generateTextures()
 
 	defineBumpMapShaderInput();
 
-
  	 display();
-
 
 	// Disable the shader
 	popShaderProgram();
 
 	// Restore the attributes
-    popEnableDisableState();*/
-
-
-
-
-
-
-
-
+    popEnableDisableState();
 
     //render to the colour buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_colourFrameBuffer);
@@ -302,8 +292,6 @@ void SoftTissueMesh::generateTextures()
 	defineColourShaderInput();
 
 	display();
-
-
 
 	// Disable the shader
 	popShaderProgram();
@@ -345,8 +333,8 @@ void SoftTissueMesh::generateTextures()
 		}
 	}
 
+	//Update the VBO
 	updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-
 }
 
 

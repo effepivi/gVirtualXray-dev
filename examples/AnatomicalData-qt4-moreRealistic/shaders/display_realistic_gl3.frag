@@ -106,6 +106,7 @@ uniform sampler2D colourTexture;
 //BIAS to reduce shadow acne
 const float MAX_BIAS=0.005;
 const float BIAS_RATE=0.005;
+const float STEP=0.00002;
 
 //-------------
 void main(void)
@@ -115,10 +116,10 @@ void main(void)
     {
    	 	vec3 normal_vector = g_normal;
     	
-    	if(0 == 1)
+    	if(g_useTexture == 1)
 	    {
-	    	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x*1.01, g_texture_coordinates.y)).rgb-texture( bumpMap, vec2(g_texture_coordinates.x*0.09, g_texture_coordinates.y)).rgb;
-	    	deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y*1.01)).rgb-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y*0.09)).rgb;
+	    	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
+	    	deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
     		normal_vector   = g_normal+deltaNormal;
     	}
   		normal_vector = normalize(normal_vector);
