@@ -247,22 +247,6 @@ void SoftTissueMesh::generateTextures()
 			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
 			VEC2 v4(float(i)/n, float(j + 1)/n);
 
-			/*//the first triangle
-			m_textCoord[getIndex(k)] = v1;
-			k++;
-			m_textCoord[getIndex(k)] = v2;
-			k++;
-			m_textCoord[getIndex(k)] = v3;
-			k++;
-
-			//the second triangle
-			m_textCoord[getIndex(k)] = v1;
-			k++;
-			m_textCoord[getIndex(k)] = v3;
-			k++;
-			m_textCoord[getIndex(k)] = v4;
-			k++;*/
-
 			m_textCoord[k]=(v1+VEC2(2*STEP,STEP));
 			k++;
 			m_textCoord[k]=(v2+VEC2(-STEP,STEP));
@@ -280,7 +264,7 @@ void SoftTissueMesh::generateTextures()
 		}
 	}
 
-	updateVBO(m_vbo->getBufferUsageHint(), m_polygon_type);
+	updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 
 }
 
@@ -368,22 +352,6 @@ void SoftTissueMesh::initialize()
 			VEC2 v2(float(i + 1)/n, float(j)/n);
 			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
 			VEC2 v4(float(i)/n, float(j + 1)/n);
-
-			/*//the first triangle
-			m_textCoord[getIndex(k)] = v1;
-			k++;
-			m_textCoord[getIndex(k)] = v2;
-			k++;
-			m_textCoord[getIndex(k)] = v3;
-			k++;
-
-			//the second triangle
-			m_textCoord[getIndex(k)] = v1;
-			k++;
-			m_textCoord[getIndex(k)] = v3;
-			k++;
-			m_textCoord[getIndex(k)] = v4;
-			k++;*/
 
 			m_textCoord.push_back(v1);
 			m_textCoord.push_back(v2);
