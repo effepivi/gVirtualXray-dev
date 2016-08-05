@@ -57,11 +57,13 @@ ELSE (GLUT_FOUND)
     MESSAGE(WARNING "GLUT not found, the demo (${PROJECT_NAME}) will be disable.")
 ENDIF (GLUT_FOUND)
 
+#MESSAGE(FATAL_ERROR "${GLUT_LIBRARIES}")
+
 
 # Create the main program ######################################################
 IF (GLUT_FOUND)
     add_executable(welsh_dragon_glut welsh_dragon_glut.cxx )
-    target_link_libraries(welsh_dragon_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    target_link_libraries(welsh_dragon_glut  ${requiredLibs} ${gVirtualXRay_LIBRARY} ${optionalLibs} )
     ADD_DEPENDENCIES(welsh_dragon_glut BinaryStlGlutFiles)
 
 

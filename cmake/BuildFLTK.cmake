@@ -43,9 +43,14 @@ ExternalProject_Add(fltk
 #  set( FLTK_PLATFORM_DEPENDENT_LIBS ${X11_LIBRARIES} ${FLTK_MATH_LIBRARY})
 #endif()
 
-#if(APPLE)
+if(APPLE)
+    FIND_LIBRARY(AGL_LIBRARY AGL)
+    FIND_LIBRARY(CARBON_LIBRARY Carbon)
+    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+    SET (FLTK_PLATFORM_DEPENDENT_LIBS ${FLTK_PLATFORM_DEPENDENT_LIBS} ${AGL_LIBRARY} ${CARBON_LIBRARY} ${COCOA_LIBRARY})
+
 #  set( FLTK_PLATFORM_DEPENDENT_LIBS  "-framework Carbon -framework Cocoa -framework ApplicationServices -lz")
-#endif()
+endif()
 
 SET (FLTK_FLUID_EXECUTABLE ${staging_prefix}/${install_prefix}-build/bin/fluid)
 SET (FLTK_INCLUDE_DIR ${staging_prefix}/${install_prefix})

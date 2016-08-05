@@ -30,7 +30,8 @@ ExternalProject_Add(FreeGlut
   CMAKE_ARGS
       -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
       -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DFREEGLUT_BUILD_DEMOS:BOOL=OFF
+      -DFREEGLUT_BUILD_DEMOS:BOOL=ON
+      -DFREEGLUT_BUILD_STATIC_LIBS:BOOL=ON
       -DFREEGLUT_BUILD_SHARED_LIBS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
@@ -43,26 +44,27 @@ SET(GLUT_INCLUDE_DIR  ${staging_prefix}/${install_prefix}-install/include)
 
 
 IF (UNIX)
+    FIND_PACKAGE (X11)
     IF (NOT APPLE)
-        FIND_PACKAGE (X11 REQUIRED)
 
         SET (GLUT_PLATFORM_DEPENDENT_LIBS 
             #pthread
             dl 
             #SM
             #ICE
-            X11
-            Xext
-            Xinerama
-            Xfixes
-            Xcursor
-            Xft
+            ${X11_LIBRARIES}
+            ${X11_X11_LIB}
+            ${X11_Xext_LIB}
+            ${X11_Xinerama_LIB}
+            ${X11_Xfixes_LIB}
+            ${X11_Xcursor_LIB}
+            ${X11_Xft_LIB}
             fontconfig
             #m
-            Xxf86vm
-            Xi
+            ${X11_Xxf86vm_LIB}
+            ${X11_Xi_LIB}
             #Xrender
-            Xrandr
+            ${X11_Xrandr_LIB}
         )
 
         SET (GLUT_LIBRARIES
@@ -70,6 +72,35 @@ IF (UNIX)
             ${GLUT_PLATFORM_DEPENDENT_LIBS}
         )
     ELSE (NOT APPLE)
+        FIND_LIBRARY(GL_LIBRARY GL)
+        FIND_LIBRARY(AGL_LIBRARY AGL)
+        FIND_LIBRARY(CARBON_LIBRARY Carbon)
+        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+
+        SET (GLUT_PLATFORM_DEPENDENT_LIBS 
+            ${GL_LIBRARY}
+            ${AGL_LIBRARY}
+            ${CARBON_LIBRARY}
+            ${COCOA_LIBRARY}
+            #pthread
+            dl 
+            #SM
+            #ICE
+            ${X11_LIBRARIES}
+            ${X11_X11_LIB}
+            ${X11_Xext_LIB}
+            ${X11_Xinerama_LIB}
+            ${X11_Xfixes_LIB}
+            ${X11_Xcursor_LIB}
+            ${X11_Xft_LIB}
+            fontconfig
+            m
+            ${X11_Xxf86vm_LIB}
+            ${X11_Xi_LIB}
+            #Xrender
+            ${X11_Xrandr_LIB}
+        )
+
         SET (GLUT_LIBRARIES
             ${staging_prefix}/${install_prefix}-install/lib/libglut.a
             ${GLUT_PLATFORM_DEPENDENT_LIBS}
