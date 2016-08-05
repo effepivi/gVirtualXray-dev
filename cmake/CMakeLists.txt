@@ -589,11 +589,7 @@ IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
 
     OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
     IF (USE_FLTK)
-        IF (NOT APPLE)
-            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       ON)
-        ELSE (NOT APPLE)
-            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       ON)
-        ENDIF (NOT APPLE)
+        OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
     ENDIF (USE_FLTK)
 
     OPTION (USE_GLUT "Build the programs (demos, and tutorials) that make use of the OpenGL Utility Toolkit (GLUT)" ON)
