@@ -63,7 +63,6 @@ protected:
 	//-------------------------------------------------------------------------
 	virtual void defineColourShaderInput();
 
-	Matrix4x4<GLfloat> m_model_matrix;
 };
 
 } // namespace gVirtualXRay
