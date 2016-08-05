@@ -106,7 +106,7 @@ protected:
 	virtual std::vector<VEC3> gradientTabInit();
 
 	//size of the side of the buffer
-	static const int TEXTURE_SIZE = 2048;
+	static const int TEXTURE_SIZE = 4096;
 
 	//Coordinates for texture sampling
 	std::vector<VEC2> m_textCoord;

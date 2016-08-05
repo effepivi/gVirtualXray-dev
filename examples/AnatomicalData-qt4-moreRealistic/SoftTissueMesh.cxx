@@ -49,7 +49,6 @@ SoftTissueMesh::SoftTissueMesh()
 //----------------------------------------------
 {
 	getMaterial().setShininess(100);
-	m_textCoord.reserve(m_number_of_vertices);
 }
 
 //----------------------------------------------
@@ -81,51 +80,11 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 		// Set the type of VBO
 		m_vbo->setBufferUsageHint(aTypeOfVBO);
 
-		m_textCoord.reserve(m_number_of_vertices);
-
-		//initialize the coordinates for sampling
-		unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
-		unsigned int k(0);
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				//extract four coordinates
-				VEC2 v1(float(i)/n, float(j)/n);
-				VEC2 v2(float(i + 1)/n, float(j)/n);
-				VEC2 v3(float(i + 1)/n, float(j + 1)/n);
-				VEC2 v4(float(i)/n, float(j + 1)/n);
-
-				/*//the first triangle
-				m_textCoord[getIndex(k)] = v1;
-				k++;
-				m_textCoord[getIndex(k)] = v2;
-				k++;
-				m_textCoord[getIndex(k)] = v3;
-				k++;
-
-				//the second triangle
-				m_textCoord[getIndex(k)] = v1;
-				k++;
-				m_textCoord[getIndex(k)] = v3;
-				k++;
-				m_textCoord[getIndex(k)] = v4;
-				k++;*/
-
-				m_textCoord.push_back(v1);
-				m_textCoord.push_back(v2);
-				m_textCoord.push_back(v3);
-
-				//the second triangle
-				m_textCoord.push_back(v1);
-				m_textCoord.push_back(v3);
-				m_textCoord.push_back(v4);
-			}
-		}
-
 		m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 				m_number_of_vertices, 2, GL_FLOAT, &m_textCoord[0]);
 	}
+
 	if (m_p_index_set && m_number_of_indices && m_index_data_type != GL_NONE)
 		{
 			m_vbo->setIndexData(m_number_of_indices, m_index_data_type, m_p_index_set);
@@ -274,6 +233,55 @@ void SoftTissueMesh::generateTextures()
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
+	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
+	unsigned int k(0);
+	const float STEP(0.00015);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			//extract four coordinates
+			VEC2 v1(float(i)/n, float(j)/n);
+			VEC2 v2(float(i + 1)/n, float(j)/n);
+			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
+			VEC2 v4(float(i)/n, float(j + 1)/n);
+
+			/*//the first triangle
+			m_textCoord[getIndex(k)] = v1;
+			k++;
+			m_textCoord[getIndex(k)] = v2;
+			k++;
+			m_textCoord[getIndex(k)] = v3;
+			k++;
+
+			//the second triangle
+			m_textCoord[getIndex(k)] = v1;
+			k++;
+			m_textCoord[getIndex(k)] = v3;
+			k++;
+			m_textCoord[getIndex(k)] = v4;
+			k++;*/
+
+			m_textCoord[k]=(v1+VEC2(2*STEP,STEP));
+			k++;
+			m_textCoord[k]=(v2+VEC2(-STEP,STEP));
+			k++;
+			m_textCoord[k]=(v3+VEC2(-STEP,-2*STEP));
+			k++;
+
+			//the second triangle
+			m_textCoord[k]=(v1+VEC2(STEP,2*STEP));
+			k++;
+			m_textCoord[k]=(v3+VEC2(-2*STEP,-STEP));
+			k++;
+			m_textCoord[k]=(v4+VEC2(STEP,-STEP));
+			k++;
+		}
+	}
+
+	updateVBO(m_vbo->getBufferUsageHint(), m_polygon_type);
+
 }
 
 //----------------------------------------------
@@ -349,6 +357,46 @@ void SoftTissueMesh::initialize()
     //initialize the buffers for the bump map and the colour texture
     initializeBuffer(m_bumpMapTexture, m_bumpMapFrameBuffer);
     initializeBuffer(m_colourTexture, m_colourFrameBuffer);
+
+	//initialize the coordinates for sampling
+	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			//extract four coordinates
+			VEC2 v1(float(i)/n, float(j)/n);
+			VEC2 v2(float(i + 1)/n, float(j)/n);
+			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
+			VEC2 v4(float(i)/n, float(j + 1)/n);
+
+			/*//the first triangle
+			m_textCoord[getIndex(k)] = v1;
+			k++;
+			m_textCoord[getIndex(k)] = v2;
+			k++;
+			m_textCoord[getIndex(k)] = v3;
+			k++;
+
+			//the second triangle
+			m_textCoord[getIndex(k)] = v1;
+			k++;
+			m_textCoord[getIndex(k)] = v3;
+			k++;
+			m_textCoord[getIndex(k)] = v4;
+			k++;*/
+
+			m_textCoord.push_back(v1);
+			m_textCoord.push_back(v2);
+			m_textCoord.push_back(v3);
+
+			//the second triangle
+			m_textCoord.push_back(v1);
+			m_textCoord.push_back(v3);
+			m_textCoord.push_back(v4);
+		}
+	}
+
+	updateVBO(m_vbo->getBufferUsageHint(), m_polygon_type);
 }
 
 //----------------------------------------------
@@ -361,8 +409,8 @@ void SoftTissueMesh::initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer)
 	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 

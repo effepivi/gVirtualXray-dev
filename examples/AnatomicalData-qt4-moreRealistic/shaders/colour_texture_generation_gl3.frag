@@ -216,5 +216,5 @@ float snoiseFractal(vec3 m) {
 void main(void)
 //-------------
 {
-	fragColour=base_colour*vec4(1,1,1,1)*noise(g_object_position);
+	fragColour=base_colour*noise(g_object_position);
 }
