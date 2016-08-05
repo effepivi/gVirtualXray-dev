@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Input
 //******************************************************************************
 in vec3 in_Vertex;
-in vec3 in_TexCoord;
+in vec2 in_TexCoord;
 in vec3 in_Normal;
 
 //******************************************************************************
@@ -99,7 +99,7 @@ void main(void)
 	g_normal = g_normal_matrix * in_Normal;
 	g_view_direction = normalize(g_object_position.xyz);
 	
-    g_texture_coordinates = in_TexCoord.yz;
+    g_texture_coordinates = in_TexCoord;
 
 	//coordinates of the vertex for the shadow map
 	g_shadowCoord = g_shadowMapMatrix * vec4(in_Vertex, 1.0);

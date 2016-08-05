@@ -742,7 +742,7 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	            p_data = 0;
 	        }
 
-	        (*p_mesh_set)[i]->mergeVertices();
+	        //(*p_mesh_set)[i]->mergeVertices();
 	        (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
 	        (*p_mesh_set)[i]->generateTextures();
 	    }

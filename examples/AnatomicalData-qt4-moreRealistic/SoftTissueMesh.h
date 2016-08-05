@@ -109,7 +109,7 @@ protected:
 	static const int TEXTURE_SIZE = 2048;
 
 	//Coordinates for texture sampling
-	std::vector<VEC3> m_textCoord;
+	std::vector<VEC2> m_textCoord;
 
 	GLuint m_bumpMapTexture,
 		m_bumpMapFrameBuffer,

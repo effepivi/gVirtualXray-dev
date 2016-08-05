@@ -26,7 +26,7 @@
 //	Input
 //******************************************************************************
 in vec3 in_Vertex;
-in vec3 in_TexCoord;
+in vec2 in_TexCoord;
 in vec3 in_Normal;
 
 //******************************************************************************
@@ -35,16 +35,7 @@ in vec3 in_Normal;
 
 //smooth out vec3 g_normal;
 smooth out vec3 g_object_position;
-
-//******************************************************************************
-//	Uniform variables
-//******************************************************************************
-uniform mat4 g_projection_matrix;
-uniform mat4 g_modelview_matrix;
-uniform mat4 g_shadowMapMatrix;
-uniform mat3 g_normal_matrix;
-
-
+smooth out vec2 tex;
 
 
 
@@ -62,6 +53,8 @@ void main(void)
 {
 	g_object_position = in_Vertex;
 	
-	gl_Position = vec4(in_TexCoord.yz*2-1,0,1);
+	tex=in_TexCoord;
+	
+	gl_Position = vec4(in_TexCoord*2-1,0,1);
 }
 

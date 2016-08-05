@@ -49,6 +49,7 @@ SoftTissueMesh::SoftTissueMesh()
 //----------------------------------------------
 {
 	getMaterial().setShininess(100);
+	m_textCoord.reserve(m_number_of_vertices);
 }
 
 //----------------------------------------------
@@ -81,18 +82,35 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 		m_vbo->setBufferUsageHint(aTypeOfVBO);
 
 		m_textCoord.reserve(m_number_of_vertices);
-		//initialize the coordinate for sampling
-		unsigned int n=int(sqrt(float(m_number_of_vertices))/6)+1;
+
+		//initialize the coordinates for sampling
+		unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
+		unsigned int k(0);
 
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				//extract four coordinates
-				VEC3 v1(0,float(i)/n, float(j)/n);
-				VEC3 v2(0,float(i + 1)/n, float(j)/n);
-				VEC3 v3(0,float(i + 1)/n, float(j + 1)/n);
-				VEC3 v4(0,float(i)/n, float(j + 1)/n);
+				VEC2 v1(float(i)/n, float(j)/n);
+				VEC2 v2(float(i + 1)/n, float(j)/n);
+				VEC2 v3(float(i + 1)/n, float(j + 1)/n);
+				VEC2 v4(float(i)/n, float(j + 1)/n);
 
-				//the first triangle
+				/*//the first triangle
+				m_textCoord[getIndex(k)] = v1;
+				k++;
+				m_textCoord[getIndex(k)] = v2;
+				k++;
+				m_textCoord[getIndex(k)] = v3;
+				k++;
+
+				//the second triangle
+				m_textCoord[getIndex(k)] = v1;
+				k++;
+				m_textCoord[getIndex(k)] = v3;
+				k++;
+				m_textCoord[getIndex(k)] = v4;
+				k++;*/
+
 				m_textCoord.push_back(v1);
 				m_textCoord.push_back(v2);
 				m_textCoord.push_back(v3);
@@ -106,23 +124,20 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 
 		m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
-				m_number_of_vertices, 3, GL_FLOAT, &m_textCoord[0]);
-
-
-		if (m_p_index_set && m_number_of_indices && m_index_data_type != GL_NONE)
+				m_number_of_vertices, 2, GL_FLOAT, &m_textCoord[0]);
+	}
+	if (m_p_index_set && m_number_of_indices && m_index_data_type != GL_NONE)
 		{
 			m_vbo->setIndexData(m_number_of_indices, m_index_data_type, m_p_index_set);
 		}
-	}
 }
 
 //----------------------------------------------
 void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
-    /*//render to the colour buffer
+   /* //render to the colour buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
 	// Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -146,11 +161,7 @@ void SoftTissueMesh::defineShaderInput(GLint aShaderID)
 	popShaderProgram();
 
 	// Restore the attributes
-    popEnableDisableState();
-
-	// Cleanup for now
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);*/
+    popEnableDisableState();*/
 
 
 
@@ -260,11 +271,6 @@ void SoftTissueMesh::generateTextures()
 	// Restore the attributes
     popEnableDisableState();
     popEnableDisableState();
-
-
-
-
-
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
