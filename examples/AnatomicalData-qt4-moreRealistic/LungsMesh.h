@@ -63,7 +63,6 @@ protected:
 	/// Link the attributes to their id in the shader for colour texture generation
 	//-------------------------------------------------------------------------
 	virtual void defineColourShaderInput();
-
 };
 
 } // namespace gVirtualXRay

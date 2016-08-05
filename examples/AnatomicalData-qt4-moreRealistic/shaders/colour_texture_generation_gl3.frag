@@ -24,8 +24,9 @@
 //******************************************************************************
 //	Input
 //******************************************************************************
-//smooth in vec3 g_normal;
+smooth in vec3 g_normal;
 smooth in vec3 g_object_position;
+smooth in vec3 g_texture_coordinates;
 
 //******************************************************************************
 //	Output
@@ -38,7 +39,10 @@ out vec4 fragColour;
 //******************************************************************************
 uniform vec4 g_base_colour;
 uniform vec4 g_second_colour;
+uniform int g_has_tendon;
 uniform int g_use_second_colour;
+uniform sampler2D bumpMap;
+
 
 //******************************************************************************
 //	constant variables
@@ -47,6 +51,7 @@ uniform int g_use_second_colour;
 const float MINFREQ=0.1;
 const float MAXFREQ=5;
 
+const float STEP=0.00002;
 
 
 
@@ -250,25 +255,56 @@ float turbulence(vec3 Q)
 	}
 }
 
+vec4 computeTendonColour()
+{
+	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
+	deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
+    vec3 normal_vector   = g_normal+deltaNormal;
+	
+	
+	float dot_normal_vertical = abs(dot(normal_vector , vec3(0,0,1)));
+	if(dot_normal_vertical<0.7)
+	{
+		return g_base_colour;
+	}
+	else 
+		if(dot_normal_vertical>0.9)
+		{
+			return 0.7*vec4(1,1,1,1);
+		}
+	else 
+	{
+		return 5*(g_base_colour*(0.9-dot_normal_vertical)+0.7*vec4(1,1,1,1)*(dot_normal_vertical-0.7));
+	}
+}
 
 //-------------
 void main(void)
 //-------------
 {
-	vec4 second_colour;
-	float frac_sum_value = clamp(fractalSum(g_object_position),-1,3);
-	float turbulence_value;
-	
-	if(g_use_second_colour==1)
+	if(g_has_tendon==1)
 	{
-		turbulence_value=clamp(turbulence(g_object_position),0,2);
-		second_colour=g_second_colour*(1-frac_sum_value);
+		
+		
+		fragColour=computeTendonColour();
 	}
 	else
 	{
-		turbulence_value=1;
-		second_colour=vec4(0,0,0,0);
-	}
+		vec4 second_colour;
+		float frac_sum_value = clamp(fractalSum(g_object_position),-1,3);
+		float turbulence_value;
 	
-	fragColour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value*0.5;
+		if(g_use_second_colour==1)
+		{
+			turbulence_value=clamp(turbulence(g_object_position),0,2);
+			second_colour=g_second_colour*(1-frac_sum_value);
+		}
+		else
+		{
+			turbulence_value=1;
+			second_colour=vec4(0,0,0,0);
+		}
+	
+		fragColour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value*0.5;	
+	}
 }

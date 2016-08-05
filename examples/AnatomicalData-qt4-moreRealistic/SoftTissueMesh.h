@@ -137,6 +137,9 @@ protected:
 
 	Shader m_bumpMapShader,
 		m_textureShader;
+
+	int m_use_second_colour,
+		m_has_tendon;
 };
 
 } // namespace gVirtualXRay

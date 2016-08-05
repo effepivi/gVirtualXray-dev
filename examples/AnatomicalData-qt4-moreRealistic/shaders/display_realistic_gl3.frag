@@ -106,6 +106,7 @@ uniform sampler2D colourTexture;
 //BIAS to reduce shadow acne
 const float MAX_BIAS=0.005;
 const float BIAS_RATE=0.005;
+
 const float STEP=0.00002;
 
 //-------------

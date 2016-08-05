@@ -47,7 +47,9 @@ SoftTissueMesh::SoftTissueMesh()
 		m_bumpMapTexture(0),
 		m_bumpMapFrameBuffer(0),
 		m_colourTexture(0),
-		m_colourFrameBuffer(0)
+		m_colourFrameBuffer(0),
+		m_use_second_colour(0),
+		m_has_tendon(0)
 //----------------------------------------------
 {
 	getMaterial().setShininess(100);
@@ -346,16 +348,28 @@ void SoftTissueMesh::generateTextures()
 void SoftTissueMesh::defineBumpMapShaderInput()
 //----------------------------------------------
 {
+	GLint shader_id(m_bumpMapShader.getProgramHandle());
 
+	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
+	glUniform1iv(handle, 1, &m_has_tendon);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------------------------------
 void SoftTissueMesh::defineColourShaderInput()
 //----------------------------------------------
 {
-	GLint textureShaderID(m_textureShader.getProgramHandle());
-	GLuint handle(glGetUniformLocation(textureShaderID, "g_base_colour"));
+	GLint shader_id(m_textureShader.getProgramHandle());
+	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
+	glUniform1iv(handle, 1, &m_has_tendon);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_base_colour");
 	glUniform4fv(handle, 1, &getMaterial().getDiffuseColour()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_use_second_colour");
+	glUniform1iv(handle, 1, &m_use_second_colour);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	//handle = glGetUniformLocation(textureShaderID, "gradientTab");

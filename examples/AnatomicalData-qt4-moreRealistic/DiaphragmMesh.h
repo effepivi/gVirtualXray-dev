@@ -51,6 +51,19 @@ public:
 	/// Destructor
 	//--------------------------------------------------------------------------
 	virtual ~DiaphragmMesh();
+
+protected:
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader bump map generation
+	//-------------------------------------------------------------------------
+	virtual void defineBumpMapShaderInput();
+
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader for colour texture generation
+	//-------------------------------------------------------------------------
+	virtual void defineColourShaderInput();
+
+	Matrix4x4<GLfloat> m_model_matrix;
 };
 
 } // namespace gVirtualXRay

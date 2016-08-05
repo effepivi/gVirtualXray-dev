@@ -33,9 +33,9 @@ in vec3 in_Normal;
 //	Output
 //******************************************************************************
 
-//smooth out vec3 g_normal;
+smooth out vec3 g_normal;
 smooth out vec3 g_object_position;
-
+smooth out vec2 g_texture_coordinates;
 
 
 
@@ -51,7 +51,8 @@ void main(void)
 //-------------
 {
 	g_object_position = in_Vertex;
-	
+	g_normal = in_Normal;
+	g_texture_coordinates = in_TexCoord;
 
 	gl_Position = vec4(in_TexCoord*2-1,0,1);
 }
