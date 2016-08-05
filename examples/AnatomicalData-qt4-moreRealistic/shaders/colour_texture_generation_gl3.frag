@@ -39,7 +39,12 @@ out vec4 fragColour;
 //******************************************************************************
 uniform vec4 base_colour;
 
-
+//******************************************************************************
+//	constant variables
+//******************************************************************************
+//Frequence for fractal sum
+const float MINFREQ=0.1;
+const float MAXFREQ=5;
 
 
 
@@ -210,11 +215,25 @@ float snoiseFractal(vec3 m) {
 }
 
 
+float fracNoise(vec3 v)
+{
+	return 2*noise(v)-1;
+}
+
+float fractalSum(vec3 Q)
+{
+	float value = 0;
+	for(float f=MINFREQ; f<MAXFREQ; f*=2)
+	{
+		value += fracNoise(Q*f)/f;	
+	}
+	return value*0.5+0.5;
+}
 
 
 //-------------
 void main(void)
 //-------------
 {
-	fragColour=base_colour*noise(g_object_position);
+	fragColour=base_colour*fractalSum(g_object_position)*0.5;
 }
