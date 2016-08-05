@@ -80,12 +80,19 @@ public:
 	virtual void defineShaderInput(GLint aShaderID);
 
 	//--------------------------------------------------------------------------
+	/// initialize the shaders, the buffers, the normal vectors and the textures
+	//--------------------------------------------------------------------------
+	virtual void initialize();
+
+
+
+protected:
+
+	//--------------------------------------------------------------------------
 	/// generates the texture if needed
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
 
-
-protected:
 
 	virtual void splitFaces();
 
@@ -93,17 +100,23 @@ protected:
 
 	virtual void defineColourShaderInput();
 
-	//--------------------------------------------------------------------------
-	/// initialize the shaders and the buffers
-	//--------------------------------------------------------------------------
-	virtual void initialize();
 
 	virtual void initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer);
+
+
+	//--------------------------------------------------------------------------
+	/// Compute a normal vector per vertex for a smoother display
+	//--------------------------------------------------------------------------
+	virtual void shareNormalVectors();
+
+
 
 	//--------------------------------------------------------------------------
 	/// initialize tab for gnoise
 	//--------------------------------------------------------------------------
 	virtual std::vector<VEC3> gradientTabInit();
+
+
 
 	//size of the side of the buffer
 	static const int TEXTURE_SIZE = 4096;

@@ -65,10 +65,11 @@ void SkinMesh::defineShaderInput(GLint aShaderID)
 }
 
 //----------------------------------------------
-void SkinMesh::generateTextures()
+void SkinMesh::initialize()
 //----------------------------------------------
 {
-	//Don't generate textures for skin
+	mergeVertices();
 }
+
 
 } // namespace gVirtualXRay

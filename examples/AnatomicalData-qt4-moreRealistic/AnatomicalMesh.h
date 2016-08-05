@@ -75,14 +75,9 @@ public:
 	virtual void defineShaderInput(GLint aShaderID);
 
 	//--------------------------------------------------------------------------
-	/// generates the texture and the bump map if needed
+	/// initialize the needful depending on the organ
 	//--------------------------------------------------------------------------
-	virtual void generateTextures() = 0;
-
-	//--------------------------------------------------------------------------
-	/// Compute a normal vector per vertex for a smoother display
-	//--------------------------------------------------------------------------
-	virtual void shareNormalVectors();
+	virtual void initialize() = 0;
 
 
 //******************************************************************************

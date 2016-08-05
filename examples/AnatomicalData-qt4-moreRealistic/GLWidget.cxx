@@ -743,8 +743,7 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	        }
 
 	        (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
-	        (*p_mesh_set)[i]->shareNormalVectors();
-	        (*p_mesh_set)[i]->generateTextures();
+	        (*p_mesh_set)[i]->initialize();
 	    }
 
 	    // Compute the translation vector

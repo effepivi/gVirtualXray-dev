@@ -59,10 +59,10 @@ void BoneMesh::defineShaderInput(GLint aShaderID)
 
 
 //----------------------------------------------
-void BoneMesh::generateTextures()
+void BoneMesh::initialize()
 //----------------------------------------------
 {
-	//Don't generate textures for bones
+	mergeVertices();
 }
 
 } // namespace gVirtualXRay
