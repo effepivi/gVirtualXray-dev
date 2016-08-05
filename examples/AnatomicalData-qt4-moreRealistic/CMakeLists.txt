@@ -67,17 +67,18 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 
 # Qt4 #########################################################################
-FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
+FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
 IF(Qt4_FOUND)
     SET(CMAKE_AUTOMOC ON)
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
     SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
 ELSE(Qt4_FOUND)
-    MESSAGE(FATAL_ERROR "Qt4 not found.")
+    MESSAGE(WARNING "Qt4 not found, the demo (${PROJECT_NAME}) will be disable.")
 ENDIF(Qt4_FOUND)
 
 
 # Create the main program ######################################################
+IF(Qt4_FOUND)
 add_executable(demo-anatomical-data-qt4-more-realistic 
 	AnatomicalData-qt4-moreRealistic.cxx  
 	GLWidget.h GLWidget.cxx 
@@ -181,3 +182,5 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF(Qt4_FOUND)
+
