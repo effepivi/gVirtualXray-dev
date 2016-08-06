@@ -26,7 +26,7 @@
 //******************************************************************************
 smooth in vec3 g_normal;
 smooth in vec3 g_object_position;
-smooth in vec3 g_texture_coordinates;
+smooth in vec2 g_texture_coordinates;
 
 //******************************************************************************
 //	Output

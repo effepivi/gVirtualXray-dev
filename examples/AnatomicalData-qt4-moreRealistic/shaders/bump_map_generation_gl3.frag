@@ -45,6 +45,9 @@ uniform int g_has_tendon;
 const float MINFREQ=0.1;
 const float MAXFREQ=5;
 
+//coefitient of the perturbation
+const float PERTURBATION_COEF = 0.001;
+
 
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
@@ -100,12 +103,12 @@ void main(void)
 		float perturbation = noise_value + fractalSum(g_object_position);
 	
 		//lower the perturbation
-		perturbation *= 0.1;
+		perturbation *= PERTURBATION_COEF;
 	
 		//angle of the point to the center
 		float theta = atan(g_object_position.y,g_object_position.x+length(g_object_position.xy));
 		
 		//Creates lines disturbed by fractal sum and noise
-		fragColor+=0.2*(1-(pow(abs(sin(200*theta+perturbation)),14)+0.5*pow(abs(sin(700*theta+perturbation)),10)))*(1-abs(dot(g_normal,vec3(0,0,1))));
+		fragColor+=0.2*(1-(pow(abs(sin(500*(theta+perturbation))),14)+0.6*pow(abs(sin(700*(theta+perturbation))),10))+0.4*pow(abs(sin(900*(theta+perturbation))),8))*(1-abs(dot(g_normal,vec3(0,0,1))));
 	}
 }
