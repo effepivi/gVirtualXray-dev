@@ -259,22 +259,25 @@ float turbulence(vec3 Q)
 vec4 computeTendonColour()
 {
 	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
-    vec3 normal_vector   = g_normal+deltaNormal;
-	
+	deltaNormal += texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
+    vec3 normal_vector   = normalize(g_normal+deltaNormal);
 	
 	float dot_normal_vertical = abs(dot(normal_vector , vec3(0,0,1)));
+	
 	if(dot_normal_vertical<0.7)
 	{
+		//if on the sides, it is muscle
 		return g_base_colour;
 	}
 	else 
 		if(dot_normal_vertical>0.8)
 		{
+			//if on top or at the bottom, it is tendon
 			return g_second_colour;
 		}
 	else 
 	{
+		//interpolate in between
 		return 10*(g_base_colour*(0.8-dot_normal_vertical)+g_second_colour*(dot_normal_vertical-0.7));
 	}
 }

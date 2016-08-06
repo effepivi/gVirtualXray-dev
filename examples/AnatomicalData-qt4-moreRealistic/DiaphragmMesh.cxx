@@ -56,7 +56,7 @@ void DiaphragmMesh::defineColourShaderInput()
 {
 	GLint shader_id(m_textureShader.getProgramHandle());
 
-	GLfloat second_colour[] = {0.84,0.77,0.6,1.};
+	GLfloat second_colour[] = {0.84,0.77,0.7,1.};
 	GLuint handle(glGetUniformLocation(shader_id, "g_second_colour"));
 	glUniform4fv(handle, 1, &second_colour[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

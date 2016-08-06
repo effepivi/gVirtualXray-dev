@@ -120,8 +120,8 @@ void main(void)
     	if(g_useTexture == 1)
 	    {
 	    	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	    	deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
-    		normal_vector   = g_normal+deltaNormal;
+	    	deltaNormal += texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
+    		normal_vector   = normalize(g_normal+deltaNormal);
     	}
   		normal_vector = normalize(normal_vector);
     
