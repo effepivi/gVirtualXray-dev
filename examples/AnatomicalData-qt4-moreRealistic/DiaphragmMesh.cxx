@@ -43,6 +43,10 @@ void DiaphragmMesh::defineBumpMapShaderInput()
 {
 	GLint shader_id(m_bumpMapShader.getProgramHandle());
 
+	GLuint handle(glGetUniformLocation(shader_id, "g_matrix"));
+    glUniformMatrix4fv(handle, 1, GL_FALSE, m_matrix.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	SoftTissueMesh::defineBumpMapShaderInput();
 }
 
@@ -68,5 +72,13 @@ void DiaphragmMesh::defineColourShaderInput()
 
 	SoftTissueMesh::defineColourShaderInput();
 }
+
+//----------------------------------------------
+void DiaphragmMesh::setMatrix(Matrix4x4<float> const& matrix)
+//----------------------------------------------
+{
+	m_matrix=matrix;
+}
+
 
 } // namespace gVirtualXRay

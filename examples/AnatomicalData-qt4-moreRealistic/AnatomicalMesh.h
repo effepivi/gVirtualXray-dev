@@ -27,6 +27,10 @@
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
+#ifndef GVXR_MATRIX4X4_H
+#include "gVirtualXRay/Matrix4x4.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -79,12 +83,15 @@ public:
 	//--------------------------------------------------------------------------
 	virtual void initialize() = 0;
 
+	//--------------------------------------------------------------------------
+	/// Set the matrix. Useful only for the diaphragm
+	//--------------------------------------------------------------------------
+	virtual void setMatrix(Matrix4x4<float> const& matrix) = 0;
+
+
 
 //******************************************************************************
-private:
-
-
-
+protected:
 
 };
 } //namespace gVirtualXRay

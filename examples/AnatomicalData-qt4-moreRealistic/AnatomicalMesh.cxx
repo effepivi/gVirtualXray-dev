@@ -69,5 +69,4 @@ void AnatomicalMesh::defineShaderInput(GLint aShaderID)
 
 }
 
-
 } // namespace gVirtualXRay

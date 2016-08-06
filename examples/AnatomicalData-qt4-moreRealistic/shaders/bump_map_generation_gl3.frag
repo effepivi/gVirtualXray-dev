@@ -36,10 +36,14 @@ out float fragColor;
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
+uniform int g_has_tendon;
 
 //******************************************************************************
 //	constant variables
 //******************************************************************************
+//Frequence for fractal sum
+const float MINFREQ=0.1;
+const float MAXFREQ=5;
 
 
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
@@ -68,10 +72,40 @@ float noise(vec3 p){
     return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
+float fracNoise(vec3 v)
+{
+	return 2*noise(v)-1;
+}
+
+float fractalSum(vec3 Q)
+{
+	float value = 0;
+	for(float f=MINFREQ; f<MAXFREQ; f*=2)
+	{
+		value += fracNoise(Q*f)/f;	
+	}
+	return value*0.5+0.5;
+}
 
 //-------------
 void main(void)
 //-------------
 {
-    fragColor = noise(g_object_position)*0.1;
+	float noise_value = noise(g_object_position);
+	fragColor = noise_value*0.1;
+	
+	if(g_has_tendon == 1)
+	{
+		//create perturbation using noise and fractal sum
+		float perturbation = noise_value + fractalSum(g_object_position);
+	
+		//lower the perturbation
+		perturbation *= 0.1;
+	
+		//angle of the point to the center
+		float theta = atan(g_object_position.y,g_object_position.x+length(g_object_position.xy));
+		
+		//Creates lines disturbed by fractal sum and noise
+		fragColor+=0.2*(1-(pow(abs(sin(200*theta+perturbation)),14)+0.5*pow(abs(sin(700*theta+perturbation)),10)))*(1-abs(dot(g_normal,vec3(0,0,1))));
+	}
 }

@@ -51,6 +51,7 @@ uniform sampler2D bumpMap;
 const float MINFREQ=0.1;
 const float MAXFREQ=5;
 
+//step for bump evaluation 
 const float STEP=0.00002;
 
 
@@ -230,11 +231,6 @@ float fracNoise(vec3 v)
 	return 2*noise(v)-1;
 }
 
-float turbNoise(vec3 v)
-{
-	return 2*cnoise(v)-1;
-}
-
 float fractalSum(vec3 Q)
 {
 	float value = 0;
@@ -243,6 +239,11 @@ float fractalSum(vec3 Q)
 		value += fracNoise(Q*f)/f;	
 	}
 	return value*0.5+0.5;
+}
+
+float turbNoise(vec3 v)
+{
+	return 2*cnoise(v)-1;
 }
 
 float turbulence(vec3 Q)

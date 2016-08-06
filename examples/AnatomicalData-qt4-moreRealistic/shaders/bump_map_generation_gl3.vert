@@ -33,9 +33,14 @@ in vec3 in_Normal;
 //	Output
 //******************************************************************************
 
-//smooth out vec3 g_normal;
+smooth out vec3 g_normal;
 smooth out vec3 g_object_position;
 
+//******************************************************************************
+//	Uniform variables
+//******************************************************************************
+uniform mat4 g_matrix;
+uniform int g_has_tendon;
 
 
 
@@ -49,10 +54,18 @@ smooth out vec3 g_object_position;
 //-------------
 void main(void)
 //-------------
-{
-	g_object_position = in_Vertex;
+{	
+	if(g_has_tendon == 1)
+	{
+		g_object_position = (g_matrix*vec4(in_Vertex,1)).xyz;
+	}
+	else
+	{
+		g_object_position = in_Vertex;
+	}
 	
-
+	g_normal = in_Normal;
+	
 	gl_Position = vec4(in_TexCoord*2-1,0,1);
 }
 
