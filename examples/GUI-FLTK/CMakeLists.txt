@@ -66,14 +66,15 @@ ENDIF (FLTK_FOUND)
 
 IF (FLTK_FOUND)
 # BOOST #######################################################################
-FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS filesystem system)
+FIND_PACKAGE(Boost QUIET COMPONENTS filesystem system)
 if(Boost_FOUND)
 	SET( Boost_USE_STATIC_LIBS OFF )
 	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+	ADD_DEFINITIONS(-DHAS_BOOST)
 ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
+	MESSAGE(WARNING "Boost not found, the use of Boost in (${PROJECT_NAME}) will be disable.")
 ENDIF(Boost_FOUND)
 
 

@@ -46,19 +46,21 @@ endif (NOT gVirtualXRay_BINARY_DIR)
 
 
 # Boost ########################################################################
-find_package (Boost COMPONENTS unit_test_framework REQUIRED)
+find_package (Boost COMPONENTS unit_test_framework)
 if(Boost_FOUND)
 	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 	add_definitions (-DBOOST_TEST_DYN_LINK)
 	LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
 	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
 ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
+    MESSAGE(WARNING "Boost not found, the unit test (${PROJECT_NAME}) will be disable.")
 ENDIF(Boost_FOUND)
 
 
-add_executable(TestDensity TestDensity.cxx)
-target_link_libraries (TestDensity ${gVirtualXRay_LIBRARY} ${requiredLibs})
+if(Boost_FOUND)
+    add_executable(TestDensity TestDensity.cxx)
+    target_link_libraries (TestDensity ${gVirtualXRay_LIBRARY} ${requiredLibs})
 
-add_test (test TestDensity)
+    add_test (test TestDensity)
+ENDIF(Boost_FOUND)
 
