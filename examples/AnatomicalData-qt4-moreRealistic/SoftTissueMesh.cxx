@@ -354,6 +354,15 @@ void SoftTissueMesh::defineBumpMapShaderInput()
 	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
 	glUniform1iv(handle, 1, &m_has_tendon);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_perm");
+	glUniform1iv(handle, TAB_SIZE,&initPermutation()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
+	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &initGradientTab()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 }
 
 //----------------------------------------------
