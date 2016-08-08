@@ -17,6 +17,7 @@ if(APPLE)
   )
 endif()
 
+SET (FLTK_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(fltk
   URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
@@ -27,14 +28,11 @@ ExternalProject_Add(fltk
   LIST_SEPARATOR :::  
   CMAKE_GENERATOR ${CMAKE_GEN}
   CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DOPTION_BUILD_EXAMPLES:BOOL=OFF
-      -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_BUILD_TYPE=${configuration}
-      -DCMAKE_CONFIGURATION_TYPES=${configuration}
+      -DCMAKE_INSTALL_PREFIX:PATH=${FLTK_INSTALL_DIR}
+      #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 )
 
 #if(UNIX)
@@ -52,9 +50,14 @@ if(APPLE)
 #  set( FLTK_PLATFORM_DEPENDENT_LIBS  "-framework Carbon -framework Cocoa -framework ApplicationServices -lz")
 endif()
 
-SET (FLTK_FLUID_EXECUTABLE ${staging_prefix}/${install_prefix}-build/bin/fluid)
+IF (WIN32)
+    SET (FLTK_FLUID_EXECUTABLE ${FLTK_INSTALL_DIR}/bin/fluid.exe)
+ELSE (WIN32)
+    SET (FLTK_FLUID_EXECUTABLE ${FLTK_INSTALL_DIR}/bin/fluid)
+ENDIF (WIN32)
+
 SET (FLTK_INCLUDE_DIR ${staging_prefix}/${install_prefix})
-set (FLTK_INCLUDE_DIRS ${staging_prefix}/${install_prefix}-build ${FLTK_INCLUDE_DIR})
+set (FLTK_INCLUDE_DIRS ${FLTK_INSTALL_DIR} ${FLTK_INCLUDE_DIR})
 SET (FLTK_FOUND ON)
 
 IF (UNIX)
@@ -77,25 +80,42 @@ IF (UNIX)
         )
 
     ENDIF (NOT APPLE)
+
+    SET (FLTK_LIBRARIES 
+        ${FLTK_INSTALL_DIR}/lib/libfltk.a
+        ${FLTK_INSTALL_DIR}/lib/libfltk_forms.a
+        ${FLTK_INSTALL_DIR}/lib/libfltk_gl.a
+        ${FLTK_INSTALL_DIR}/lib/libfltk_images.a
+        ${FLTK_PLATFORM_DEPENDENT_LIBS}
+    )
+ELSE ()
+    IF (WIN32)
+        SET (FLTK_LIBRARIES 
+            optimized ${FLTK_INSTALL_DIR}/lib/fltk.lib
+            debug     ${FLTK_INSTALL_DIR}/lib/fltkd.lib
+
+            optimized ${FLTK_INSTALL_DIR}/lib/fltk_forms.lib
+            debug     ${FLTK_INSTALL_DIR}/lib/fltk_formsd.lib
+
+            optimized ${FLTK_INSTALL_DIR}/lib/fltk_gl.lib
+            debug     ${FLTK_INSTALL_DIR}/lib/fltk_gld.lib
+
+            optimized ${FLTK_INSTALL_DIR}/lib/fltk_images.lib
+            debug     ${FLTK_INSTALL_DIR}/lib/fltk_imagesd.lib
+        )
+    ENDIF(WIN32)
 ENDIF (UNIX)
 
-SET (FLTK_LIBRARIES 
-    ${staging_prefix}/${install_prefix}-build/lib/libfltk.a
-    ${staging_prefix}/${install_prefix}-build/lib/libfltk_forms.a
-    ${staging_prefix}/${install_prefix}-build/lib/libfltk_gl.a
-    ${staging_prefix}/${install_prefix}-build/lib/libfltk_images.a
-    ${FLTK_PLATFORM_DEPENDENT_LIBS}
-)
 
 SET (FLTK_DIR ${staging_prefix}/${install_prefix})
 
 # copy libraries into install tree
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-install(DIRECTORY ${staging_prefix}/${install_prefix}-install/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${FLTK_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${FLTK_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${FLTK_INSTALL_DIR}/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${FLTK_INSTALL_DIR}/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${FLTK_INSTALL_DIR}/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${FLTK_INSTALL_DIR}/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
 
 endmacro(build_fltk)

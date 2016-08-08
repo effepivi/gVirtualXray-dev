@@ -17,23 +17,23 @@ if (NOT TARGET GLFW)
     endif()
 
 
-    ExternalProject_Add(GLFW3
+    ExternalProject_Add(glfw3
         URL  "https://github.com/GLFW/GLFW/releases/download/3.2/GLFW-3.2.zip"
         URL_MD5 "d51fa09602abce26a65096ce97b4831c"
         UPDATE_COMMAND ""
         SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+	BINARY_DIR  ${staging_prefix}/${install_prefix}-build
         INSTALL_DIR ${staging_prefix}/${install_prefix}-install
         LIST_SEPARATOR :::  
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DBUILD_SHARED_LIBS:BOOL=OFF
             -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
-            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-            -DCMAKE_BUILD_TYPE=${configuration}
-            -DCMAKE_CONFIGURATION_TYPES=${configuration}
+	    #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+	    #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+	    -DGLFW_BUILD_DOCS:BOOL=OFF
+	    -DGLFW_BUILD_EXAMPLES:BOOL=OFF
+	    -DGLFW_BUILD_TESTS:BOOL=OFF
     )
 
     SET(GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
@@ -46,7 +46,7 @@ if (NOT TARGET GLFW)
         SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib )
     ENDIF (UNIX)
 
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+        install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")

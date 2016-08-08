@@ -87,8 +87,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glu.h>
 #endif // __APPLE__
 
+#ifdef HAS_BOOST
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem.hpp>
+#endif
 
 #ifndef OPENGL_WINDOW_H
 #include "OpenGLWindow.h"
@@ -145,6 +147,7 @@ void OpenGLWindow::setExecutable(char *argv)
 {
     m_executable_path.clear();
 
+#ifdef HAS_BOOST
     namespace fs = boost::filesystem;
     fs::path p(argv);
     fs::path full_p = fs::complete(p);
@@ -152,6 +155,9 @@ void OpenGLWindow::setExecutable(char *argv)
     {
         m_executable_path = full_p.parent_path().string();
     }
+#else 
+	m_executable_path = ".";
+#endif
 
     std::cout << "Executable path:\t" << m_executable_path << std::endl;
 }

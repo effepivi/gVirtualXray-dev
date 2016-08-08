@@ -45,19 +45,25 @@ CreateHeaderFiles("." "BinaryStlGlutFiles" "${RESOURCES_SOURCES}")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
-# Check if GLUT is enable #####################################################
+# Fix linkage problem with windows and cross-compilation #######################
+IF (WIN32)
+    ADD_DEFINITIONS(-DGLEW_STATIC)
+    ADD_DEFINITIONS(-DFREEGLUT_STATIC)
+    SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
+ENDIF (WIN32)
+
+
+# GLUT ########################################################################
 IF (USE_SYSTEM_GLUT)
     FIND_PACKAGE( GLUT   REQUIRED )
 ENDIF (USE_SYSTEM_GLUT)
 
-IF (GLUT_FOUND)
+IF(GLUT_FOUND)
     INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
-    SET(requiredLibs ${requiredLibs} ${GLUT_LIBRARIES})
-ELSE (GLUT_FOUND)
-    MESSAGE(WARNING "GLUT not found, the demo (${PROJECT_NAME}) will be disable.")
-ENDIF (GLUT_FOUND)
-
-#MESSAGE(FATAL_ERROR "${GLUT_LIBRARIES}")
+    SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
+ELSE(GLUT_FOUND)
+    MESSAGE(WARNING "GLUT not found, the tutorial (${PROJECT_NAME}) will not be built.")
+ENDIF(GLUT_FOUND)
 
 
 # Create the main program ######################################################
@@ -66,6 +72,13 @@ IF (GLUT_FOUND)
     target_link_libraries(welsh_dragon_glut  ${requiredLibs} ${gVirtualXRay_LIBRARY} ${optionalLibs} )
     ADD_DEPENDENCIES(welsh_dragon_glut BinaryStlGlutFiles)
 
+	IF (WIN32)
+	    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/data/welsh-dragon-small.stl COPYONLY)
+	    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/data/arial.ttf COPYONLY)
+	ELSE (WIN32)
+	    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/welsh-dragon-small.stl COPYONLY)
+	    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+	ENDIF (WIN32)
 
     IF (NOT APPLE)
         INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)

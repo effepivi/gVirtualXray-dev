@@ -112,7 +112,10 @@ SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 IF (UNIX)
 	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 ELSE(UNIX)
-	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/Release/gVirtualXRay.lib)
+    IF (WIN32)
+	    SET (gVirtualXRay_LIBRARY optimized ${PROJECT_BINARY_DIR}/Release/gVirtualXRay.lib
+		                          debug     ${PROJECT_BINARY_DIR}/Debug/gVirtualXRay.lib)
+	ENDIF (WIN32)
 ENDIF (UNIX)
 
 
@@ -333,7 +336,6 @@ ELSE (USE_SYSTEM_FREETYPE)
     build_freetype( freetype ${PROJECT_BINARY_DIR} )
 ENDIF (USE_SYSTEM_FREETYPE)
 
-
 IF (FREETYPE_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
@@ -510,23 +512,23 @@ IF (XCOM_PATH)
 ENDIF (XCOM_PATH)
 
 IF (NOT USE_SYSTEM_ZLIB)
-    ADD_DEPENDENCIES(gVirtualXRay ZLIB)
+    ADD_DEPENDENCIES(gVirtualXRay zlib)
 ENDIF (NOT USE_SYSTEM_ZLIB)
 
 IF (NOT USE_SYSTEM_XCOM)
-    ADD_DEPENDENCIES(XCOMLibFiles XCOM)
+    ADD_DEPENDENCIES(XCOMLibFiles xcom)
 ENDIF (NOT USE_SYSTEM_XCOM)
 
 IF (NOT USE_SYSTEM_GLEW)
-    ADD_DEPENDENCIES(gVirtualXRay buildGLEW)
+    ADD_DEPENDENCIES(gVirtualXRay glew)
 ENDIF (NOT USE_SYSTEM_GLEW)
 
 IF (NOT USE_SYSTEM_FREETYPE)
-    ADD_DEPENDENCIES(gVirtualXRay FREETYPE)
+    ADD_DEPENDENCIES(gVirtualXRay freetype)
 ENDIF (NOT USE_SYSTEM_FREETYPE)
 
 IF (NOT USE_SYSTEM_LIBTIFF)
-    ADD_DEPENDENCIES(gVirtualXRay LibTIFF)
+    ADD_DEPENDENCIES(gVirtualXRay libtiff)
 ENDIF (NOT USE_SYSTEM_LIBTIFF)
 
 
@@ -576,6 +578,17 @@ option(BUILD_TUTORIALS  "Build tutorials." ON)
 option(BUILD_VALIDATION "Build validation tests." ON)
 
 
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    MESSAGE( "64 bits compiler detected" )
+    SET( EX_PLATFORM 64 )
+    SET( EX_PLATFORM_NAME "x64" )
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 ) 
+    MESSAGE( "32 bits compiler detected" )
+    SET( EX_PLATFORM 32 )
+    SET( EX_PLATFORM_NAME "x86" )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
+
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS OR BUILD_VALIDATION)
 
     OPTION (USE_GLFW "Build the programs (demos, tutorials, and validation tests) that make use of GLFW" ON)
@@ -583,10 +596,12 @@ IF (BUILD_EXAMPLES OR BUILD_TUTORIALS OR BUILD_VALIDATION)
         OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
     ENDIF (USE_GLFW)
 
+ELSE ()
+    SET (USE_GLFW OFF)
 ENDIF ()
 
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
-
+	
     OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
     IF (USE_FLTK)
         OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
@@ -603,6 +618,18 @@ IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
 
     OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" ON)
     OPTION (USE_QT5  "Build the programs (demos, and tutorials) that make use of Qt5" ON)
+
+    IF (WIN32)
+	    IF (EX_PLATFORM EQUAL 32)
+            OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
+	    ENDIF ()
+    ENDIF (WIN32)
+		    
+ELSE ()
+    SET (USE_FLTK OFF)
+    SET (USE_GLUT OFF)
+    SET (USE_QT4 OFF)
+    SET (USE_QT5 OFF)
 ENDIF ()
 
 
@@ -611,23 +638,20 @@ IF (USE_GLFW)
         SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
         INCLUDE(BuildGlfw3)
         build_glfw3( glfw3 ${PROJECT_BINARY_DIR} )
-        ADD_DEPENDENCIES(gVirtualXRay GLFW3)
+        ADD_DEPENDENCIES(gVirtualXRay glfw3)
     ENDIF (NOT USE_SYSTEM_GLFW)
 ENDIF (USE_GLFW)
-
 
 IF (USE_GLUT)
     IF (NOT USE_SYSTEM_GLUT)
         SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
         INCLUDE(BuildGlut)
         build_glut( glut ${PROJECT_BINARY_DIR} )
-        ADD_DEPENDENCIES(gVirtualXRay FreeGlut)
+	ADD_DEPENDENCIES(gVirtualXRay glut)
     ENDIF (NOT USE_SYSTEM_GLUT)
 ENDIF (USE_GLUT)
 
-
 IF (USE_FLTK)
-    
     IF (NOT USE_SYSTEM_FLTK)
         SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
         INCLUDE(BuildFLTK)

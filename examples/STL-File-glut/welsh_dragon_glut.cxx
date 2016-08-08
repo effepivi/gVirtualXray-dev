@@ -63,10 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -75,9 +71,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctime>
 
 #ifdef HAS_BUNDLE
+#ifdef HAS_BOOST
 #include <boost/filesystem.hpp>
 #endif
+#endif
 
+// Create an OpenGL context and attach a window to it
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -287,12 +286,6 @@ int main(int argc, char** argv)
         // Initialise GLEW
         initGLEW();
 
-        // Initialise OpenGL
-        initGL();
-
-        // Initialise FreeType
-        initFreeType();
-
  		// Is stereo enable
 		if (g_stereo_helper.enable())
 		{
@@ -310,14 +303,14 @@ int main(int argc, char** argv)
         // Check the GLSL version
         std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-     	// Initialise OpenGL
+		// Initialise OpenGL
 		initGL();
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        // Initialise FreeType
-        initFreeType();
-
-        // Check the current FBO
+		// Initialise FreeType
+		initFreeType();
+		
+		// Check the current FBO
 		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Set the stereo parameters
@@ -536,7 +529,7 @@ void initFreeType()
 //-----------------
 {
 #ifdef HAS_FREETYPE
-    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+	g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16 * 27);
     g_display_help = true;
 #endif
 }
@@ -1364,7 +1357,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
 #if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
 #else
 			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif

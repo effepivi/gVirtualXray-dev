@@ -20,7 +20,7 @@ SET (XCOM_VERSION_MINOR  0)
 #    )
 #ELSE (WIN32)
 #    IF (UNIX)
-        ExternalProject_Add(XCOM
+        ExternalProject_Add(xcom
             URL  "http://physics.nist.gov/PhysRefData/Xcom/XCOM.tar.gz"
             URL_MD5 "747a5be1bf38caad5b347b9d03ab3463"
             UPDATE_COMMAND ""

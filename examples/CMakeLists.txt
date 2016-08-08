@@ -38,7 +38,7 @@ if(NOT gVirtualXRay_BINARY_DIR)
     find_package(gVirtualXRay REQUIRED)
     include(${gVirtualXRay_USE_FILE})
 else()
-    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR})
+    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
     find_package(gVirtualXRay REQUIRED)
 endif()
 

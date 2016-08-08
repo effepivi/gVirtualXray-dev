@@ -62,7 +62,17 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt4 #########################################################################
-FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
+IF (WIN32)
+    # 64 bit version of VC++
+    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        MESSAGE (WARNING "There is no 64 bit version of Qt4 for MSVC++.")
+    else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
+    endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+else (WIN32)
+    FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
+endif (WIN32)
+
 IF(Qt4_FOUND)
     SET(CMAKE_AUTOMOC ON)
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)

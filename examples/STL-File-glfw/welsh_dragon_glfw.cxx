@@ -1371,7 +1371,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
 			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
 
 #if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
 #else
 			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif
