@@ -247,7 +247,7 @@ GLWidget::GLWidget(QWidget *parent):
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
-	m_shadowMap(),
+	m_shadow_map(),
 
 	#undef HAS_FREETYPE
 
@@ -324,7 +324,7 @@ void GLWidget::initializeGL()
     loadSTLFiles();
 
     //initialize the buffers
-    m_shadowMap.initialize();
+    m_shadow_map.initialize();
 
     //set the dirextion of the light
     m_light_direction.normalize();
@@ -647,8 +647,8 @@ void GLWidget::initGL()
     {
     	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
-    m_depthShader.setLabels("depth.vert", "depth.frag");
-    m_depthShader.loadSource(vertex_shader, fragment_shader);
+    m_depth_shader.setLabels("depth.vert", "depth.frag");
+    m_depth_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
@@ -752,12 +752,14 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
 	            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
 	            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
+	            //Set the rotation matrix to create the bump map of the diaphragm
 	            (*p_mesh_set)[DIAPH_ID]->setMatrix(m_P4_rotation_matrix);
 	            break;
 
 	        case P5:
 	            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
 	            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
+	            //Set the rotation matrix to create the bump map of the diaphragm
 	            (*p_mesh_set)[DIAPH_ID]->setMatrix(m_P5_rotation_matrix);
 	            break;
 
@@ -913,14 +915,14 @@ void GLWidget::render()
 
         //Bind the shadow map texture in texture unit 0
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_shadowMap.getMapTexture());
+        glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
 
-        handle = glGetUniformLocation(shader_id, "shadowMap");
+        handle = glGetUniformLocation(shader_id, "g_shadow_map");
         glUniform1i(handle,0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "g_shadowMapMatrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadowMatrix.get());
+        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadow_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
@@ -1051,7 +1053,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
 {
 	for(int i(apMeshSet.size()-1); i>=0; --i)
 	{
-		apMeshSet[i]->defineShaderInput(aShaderID);
+		apMeshSet[i]->defineDisplayShaderInput(aShaderID);
 
         if (m_display_wireframe)
         {
@@ -1309,14 +1311,14 @@ void GLWidget::renderToShadowMap()
 	if (m_current_patient == P4)
 	{
 		shadowViewMatrix *= m_scene_rotation_matrix*m_P4_rotation_matrix;
-		m_shadowMatrix=shadowProjectionMatrix*shadowViewMatrix;
-		m_shadowMap.render(m_p_P4_polygon_mesh_set, m_shadowMatrix, m_depthShader);
+		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+		m_shadow_map.render(m_p_P4_polygon_mesh_set, m_shadow_matrix, m_depth_shader);
 	}
 	else
 	{
 		shadowViewMatrix *= m_scene_rotation_matrix*m_P5_rotation_matrix;
-		m_shadowMatrix=shadowProjectionMatrix*shadowViewMatrix;
-		m_shadowMap.render(m_p_P5_polygon_mesh_set, m_shadowMatrix, m_depthShader);
+		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+		m_shadow_map.render(m_p_P5_polygon_mesh_set, m_shadow_matrix, m_depth_shader);
 	}
 }
 

@@ -438,7 +438,7 @@ private:
     Matrix4x4<GLfloat> m_P5_rotation_matrix;
 
     /// projection and transformation matrix used to create the shadow map
-    Matrix4x4<GLfloat> m_shadowMatrix;
+    Matrix4x4<GLfloat> m_shadow_matrix;
 
     /// Translation vector used to centre Patient 4
     VEC3 m_P4_translation_vector;
@@ -457,10 +457,10 @@ private:
 
     /// GLSL shader
     Shader m_display_shader;
-    Shader m_depthShader;
+    Shader m_depth_shader;
 
     ///object containing buffers to create the shadow map
-    DepthMap m_shadowMap;
+    DepthMap m_shadow_map;
 
     /// Set of polygon meshes for Patient 4
     std::vector<AnatomicalMesh*> m_p_P4_polygon_mesh_set;

@@ -45,7 +45,7 @@ smooth in vec3 g_object_position;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out float fragColor;
+out float frag_colour;
 
 
 //******************************************************************************
@@ -222,7 +222,7 @@ void main(void)
 //-------------
 {
 	float noise_value = noise(g_object_position)*0.5+0.5;
-	fragColor = noise_value*0.2;
+	frag_colour = noise_value*0.2;
 	
 	if(g_has_tendon == 1)
 	{
@@ -236,6 +236,6 @@ void main(void)
 		float theta = atan(g_object_position.y,g_object_position.x+length(g_object_position.xy));
 		
 		//Creates lines disturbed by fractal sum and noise
-		fragColor+=0.2*(1-(pow(abs(sin(500*(theta+perturbation))),14)+0.6*pow(abs(sin(700*(theta+perturbation))),10))+0.4*pow(abs(sin(900*(theta+perturbation))),8))*(1-abs(dot(g_normal,vec3(0,0,1))));
+		frag_colour+=0.2*(1-(pow(abs(sin(500*(theta+perturbation))),14)+0.6*pow(abs(sin(700*(theta+perturbation))),10))+0.4*pow(abs(sin(900*(theta+perturbation))),8))*(1-abs(dot(g_normal,vec3(0,0,1))));
 	}
 }

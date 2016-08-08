@@ -77,7 +77,7 @@ public:
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
     */
 	//-------------------------------------------------------------------------
-	virtual void defineShaderInput(GLint aShaderID);
+	virtual void defineDisplayShaderInput(GLint aShaderID);
 
 	//--------------------------------------------------------------------------
 	/// initialize the shaders, the buffers, the normal vectors and the textures
@@ -89,22 +89,30 @@ public:
 protected:
 
 	//--------------------------------------------------------------------------
-	/// generates the texture if needed
+	/// generates the textures
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
 
-
+	//--------------------------------------------------------------------------
+	/// Split each face into four faces.
+	//--------------------------------------------------------------------------
 	virtual void splitFaces();
 
-	//--------------------------------------------------------------------------
-	/// Link the attributes to their id in the shader bump map generation
 	//-------------------------------------------------------------------------
-	virtual void defineBumpMapShaderInput();
+	/// Link the attributes to their id in the shader bump map generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineBumpMapShaderInput(GLint shader_id);
 
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader for colour texture generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
 	//-------------------------------------------------------------------------
-	virtual void defineColourShaderInput();
+	virtual void defineColourTextureShaderInput(GLint shader_id);
 
 
 	virtual void initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer);
@@ -134,16 +142,21 @@ protected:
 	//Coordinates for texture sampling
 	std::vector<VEC2> m_textCoord;
 
-	GLuint m_bumpMapTexture,
-		m_bumpMapFrameBuffer,
-		m_colourTexture,
-		m_colourFrameBuffer;
+	//buffers for the bump map and the colour texture
+	GLuint m_bump_map_texture,
+		m_bump_map_frame_buffer,
+		m_colour_texture,
+		m_colour_texture_frame_buffer;
 
-	Shader m_bumpMapShader,
-		m_textureShader;
+	//GLSL shaders to create the bump map and the colour texture
+	Shader m_bump_map_shader,
+		m_colour_texture_shader;
 
-	int m_use_second_colour,
-		m_has_tendon;
+	//to know if the soft tissue texture generation uses two colours
+	GLint m_use_second_colour;
+
+	//to know if the soft tissue is a muscle with a tendon for texturing
+	GLint m_has_tendon;
 };
 
 } // namespace gVirtualXRay

@@ -22,13 +22,12 @@
 //******************************************************************************
 //	Output
 //******************************************************************************
-out float fragDepth;
+out float frag_depth;
 
 //-------------
 void main(void)
 //-------------
 {
-
 	//output: the distance of the fragment
-	fragDepth  = gl_FragCoord.z;
+	frag_depth  = gl_FragCoord.z;
 }

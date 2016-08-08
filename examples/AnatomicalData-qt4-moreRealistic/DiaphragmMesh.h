@@ -55,13 +55,19 @@ public:
 protected:
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader bump map generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
 	//-------------------------------------------------------------------------
-	virtual void defineBumpMapShaderInput();
+	virtual void defineBumpMapShaderInput(GLint shader_id);
 
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader for colour texture generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
 	//-------------------------------------------------------------------------
-	virtual void defineColourShaderInput();
+	virtual void defineColourTextureShaderInput(GLint shader_id);
 
 	//--------------------------------------------------------------------------
 	/// Set the matrix for the bump map

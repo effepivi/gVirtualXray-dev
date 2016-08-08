@@ -74,19 +74,19 @@ smooth in vec2 g_texture_coordinates;
 smooth in vec3 g_normal;
 smooth in vec3 g_view_direction;
 smooth in vec3 g_light_direction;
-smooth in vec4 g_shadowCoord;
+smooth in vec4 g_shadow_coord;
 
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragColour;
+out vec4 frag_colour;
 
 
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
 uniform int g_use_lighting;
-uniform int g_useTexture;
+uniform int g_use_texture;
 uniform vec3 light_direction;
 uniform vec4 light_global_ambient;
 uniform vec4 light_ambient;
@@ -96,9 +96,9 @@ uniform vec4 material_ambient;
 uniform vec4 material_diffuse;
 uniform vec4 material_specular;
 uniform float material_shininess;
-uniform sampler2DShadow shadowMap;
-uniform sampler2D bumpMap;
-uniform sampler2D colourTexture;
+uniform sampler2DShadow g_shadow_map;
+uniform sampler2D g_bump_map;
+uniform sampler2D g_colour_texture;
 
 //******************************************************************************
 //	constant variables
@@ -107,6 +107,7 @@ uniform sampler2D colourTexture;
 const float MAX_BIAS=0.005;
 const float BIAS_RATE=0.005;
 
+//step for bump evaluation 
 const float STEP=0.00002;
 
 //-------------
@@ -117,10 +118,11 @@ void main(void)
     {
    	 	vec3 normal_vector = g_normal;
     	
-    	if(g_useTexture == 1)
+    	if(g_use_texture == 1)
 	    {
-	    	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	    	deltaNormal += texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
+	    	//modify the normal vector using the bump map
+	    	vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
+	    	deltaNormal += texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
     		normal_vector   = normalize(g_normal+deltaNormal);
     	}
   		normal_vector = normalize(normal_vector);
@@ -130,25 +132,25 @@ void main(void)
     	
     	//shadow bias to reduce shadow acne
     	float bias = BIAS_RATE * tan(acos(cosLightNormal));
-		bias = clamp(bias, 0,MAX_BIAS)/g_shadowCoord.w;
+		bias = clamp(bias, 0,MAX_BIAS)/g_shadow_coord.w;
     
 		//change the shadow coordinates. They have to be in [0,1] for texture samlping
-		vec3 shadowChangedCoord = g_shadowCoord.xyz/g_shadowCoord.w;
-		shadowChangedCoord = shadowChangedCoord*0.5 + 0.5;
+		vec3 shadow_changed_coord = g_shadow_coord.xyz/g_shadow_coord.w;
+		shadow_changed_coord = shadow_changed_coord*0.5 + 0.5;
 		    
     	//visibility equals 0.3 if the fragment if in the shadow and 1 if not.
-    	float visibility = texture(shadowMap, vec3(shadowChangedCoord.xy, shadowChangedCoord.z-bias));
+    	float visibility = texture(g_shadow_map, vec3(shadow_changed_coord.xy, shadow_changed_coord.z-bias));
 		visibility = visibility*0.7+0.3;
 	        	
 	  	vec3 global_ambient;
 	   	vec3 ambient;
 	    vec3 diffuse;
 	    
-	    if(g_useTexture==1)
+	    if(g_use_texture==1)
 	    {
-	    	global_ambient =vec3(light_global_ambient*texture( colourTexture,g_texture_coordinates));
-	   		ambient        = vec3(light_ambient * texture( colourTexture, g_texture_coordinates ));
-	    	diffuse        =  vec3(texture( colourTexture, g_texture_coordinates)*light_diffuse)* cosLightNormal;
+	    	global_ambient =vec3(light_global_ambient*texture( g_colour_texture,g_texture_coordinates));
+	   		ambient        = vec3(light_ambient * texture( g_colour_texture, g_texture_coordinates ));
+	    	diffuse        =  vec3(texture( g_colour_texture, g_texture_coordinates)*light_diffuse)* cosLightNormal;
 	    }
 	    else
 	    {
@@ -159,10 +161,10 @@ void main(void)
 
 	    vec3 specular       = vec3(material_specular * light_specular * pow(max(dot(g_view_direction, reflect(light_direction, normal_vector)), 0.), material_shininess));
 	
-    	fragColour = visibility*vec4(global_ambient+ambient + diffuse + specular, 1.);
+    	frag_colour = visibility*vec4(global_ambient+ambient + diffuse + specular, 1.);
     }
     else
     {
-        fragColour = material_ambient;
+        frag_colour = material_ambient;
     }
 }

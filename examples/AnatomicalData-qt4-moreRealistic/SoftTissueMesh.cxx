@@ -45,15 +45,16 @@ SoftTissueMesh::SoftTissueMesh()
 :
 //----------------------------------------------
 		InternalOrganMesh(),
-		m_bumpMapTexture(0),
-		m_bumpMapFrameBuffer(0),
-		m_colourTexture(0),
-		m_colourFrameBuffer(0),
+		m_bump_map_texture(0),
+		m_bump_map_frame_buffer(0),
+		m_colour_texture(0),
+		m_colour_texture_frame_buffer(0),
 		m_use_second_colour(0),
 		m_has_tendon(0)
 //----------------------------------------------
 {
 	getMaterial().setShininess(100);
+	m_use_texture = 1;
 }
 
 //----------------------------------------------
@@ -97,64 +98,32 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 //----------------------------------------------
-void SoftTissueMesh::defineShaderInput(GLint aShaderID)
+void SoftTissueMesh::defineDisplayShaderInput(GLint aShaderID)
 //----------------------------------------------
 {
-   /* //render to the colour buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// Clear
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Enable back face culling
-	pushEnableDisableState(GL_CULL_FACE);
-
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-
-
-	// Enable the bump shader
-	pushShaderProgram();
-	m_textureShader.enable();
-
-	defineColourShaderInput();
-
-	display();
-
-	// Disable the shader
-	popShaderProgram();
-
-	// Restore the attributes
-    popEnableDisableState();*/
-
-
-
-
-
-
-	//Bind the texture for bump mapping in texture unit 1
+  	//Bind the texture for bump mapping in texture unit 1
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_bumpMapTexture);
+	glBindTexture(GL_TEXTURE_2D, m_bump_map_texture);
 
-	GLuint handle(glGetUniformLocation(aShaderID, "bumpMap"));
+	GLuint handle(glGetUniformLocation(aShaderID, "g_bump_map"));
 	glUniform1i(handle,1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	//Bind the colour texture in texture unit 2
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, m_colourTexture);
+	glBindTexture(GL_TEXTURE_2D, m_colour_texture);
 
-	handle=glGetUniformLocation(aShaderID, "colourTexture");
+	handle=glGetUniformLocation(aShaderID, "g_colour_texture");
 	glUniform1i(handle,2);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	//All soft tissue meshes uses texturing
 	GLint useTexture(1);
-	handle = glGetUniformLocation(aShaderID, "g_useTexture");
+	handle = glGetUniformLocation(aShaderID, "g_use_texture");
 	glUniform1iv(handle, 1, &useTexture);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	AnatomicalMesh::defineShaderInput(aShaderID);
+	AnatomicalMesh::defineDisplayShaderInput(aShaderID);
 }
 
 //----------------------------------------------
@@ -185,8 +154,8 @@ void SoftTissueMesh::initialize()
     {
     	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
-    m_bumpMapShader.setLabels("bump.vert", "bump.frag");
-    m_bumpMapShader.loadSource(vertex_shader, fragment_shader);
+    m_bump_map_shader.setLabels("bump.vert", "bump.frag");
+    m_bump_map_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     z_lib_return_code_vertex   = inflate(g_colour_texture_generation_gl3_vert, sizeof(g_colour_texture_generation_gl3_vert),   &p_vertex_shader);
@@ -202,13 +171,13 @@ void SoftTissueMesh::initialize()
     {
     	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
-    m_textureShader.setLabels("colourTexture.vert", "colourTexture.frag");
-    m_textureShader.loadSource(vertex_shader, fragment_shader);
+    m_colour_texture_shader.setLabels("colourTexture.vert", "colourTexture.frag");
+    m_colour_texture_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     //initialize the buffers for the bump map and the colour texture
-    initializeBuffer(m_bumpMapTexture, m_bumpMapFrameBuffer);
-    initializeBuffer(m_colourTexture, m_colourFrameBuffer);
+    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
+    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer);
 
 	//initialize the coordinates for sampling
 	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
@@ -250,7 +219,7 @@ void SoftTissueMesh::generateTextures()
 //----------------------------------------------
 {
 	//render to the bump buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bumpMapFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bump_map_frame_buffer);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
 	// Enable back face culling
@@ -260,9 +229,10 @@ void SoftTissueMesh::generateTextures()
 
 	// Enable the bump shader
 	pushShaderProgram();
-	m_bumpMapShader.enable();
+	m_bump_map_shader.enable();
 
-	defineBumpMapShaderInput();
+	GLint shader_id(m_bump_map_shader.getProgramHandle());
+	defineBumpMapShaderInput(shader_id);
 
  	 display();
 
@@ -273,7 +243,7 @@ void SoftTissueMesh::generateTextures()
     popEnableDisableState();
 
     //render to the colour buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_colourFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_colour_texture_frame_buffer);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
 	// Clear
@@ -290,9 +260,10 @@ void SoftTissueMesh::generateTextures()
 
 	// Enable the bump shader
 	pushShaderProgram();
-	m_textureShader.enable();
+	m_colour_texture_shader.enable();
 
-	defineColourShaderInput();
+	shader_id = m_colour_texture_shader.getProgramHandle();
+	defineColourTextureShaderInput(shader_id);
 
 	display();
 
@@ -340,17 +311,10 @@ void SoftTissueMesh::generateTextures()
 	updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 }
 
-
-
-
-
-
 //----------------------------------------------
-void SoftTissueMesh::defineBumpMapShaderInput()
+void SoftTissueMesh::defineBumpMapShaderInput(GLint shader_id)
 //----------------------------------------------
 {
-	GLint shader_id(m_bumpMapShader.getProgramHandle());
-
 	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
 	glUniform1iv(handle, 1, &m_has_tendon);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -362,14 +326,12 @@ void SoftTissueMesh::defineBumpMapShaderInput()
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
 	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &initGradientTab()[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
 }
 
 //----------------------------------------------
-void SoftTissueMesh::defineColourShaderInput()
+void SoftTissueMesh::defineColourTextureShaderInput(GLint shader_id)
 //----------------------------------------------
 {
-	GLint shader_id(m_textureShader.getProgramHandle());
 	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
 	glUniform1iv(handle, 1, &m_has_tendon);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -389,7 +351,6 @@ void SoftTissueMesh::defineColourShaderInput()
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
 	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &initGradientTab()[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
 }
 
 

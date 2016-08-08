@@ -52,11 +52,13 @@ namespace gVirtualXRay {
 class DepthMap {
 
 public:
-
+	//--------------------------------------------------------------------------
+	/// default constructor
+	//--------------------------------------------------------------------------
 	DepthMap();
 
 	//--------------------------------------------------------------------------
-	///
+	/// destructor
 	//--------------------------------------------------------------------------
 	~DepthMap();
 
@@ -86,9 +88,11 @@ private:
 	//No copy constructor
 	DepthMap(DepthMap const&);
 
-	static const int MAP_SIZE = 16384; //size of the side of the buffer
+	//size of the side of the buffer
+	static const int MAP_SIZE = 16384;
 
-	bool m_isInitialized;//to know if initialize() has been called
+	//to know if initialize() has been called
+	bool m_isInitialized;
 
 	//To create a buffer for the scene map
 	GLuint	m_mapFrameBuffer,

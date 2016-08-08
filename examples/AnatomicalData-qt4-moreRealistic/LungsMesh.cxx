@@ -38,24 +38,23 @@ LungsMesh::~LungsMesh()
 }
 
 //----------------------------------------------
-void LungsMesh::defineBumpMapShaderInput()
+void LungsMesh::defineBumpMapShaderInput(GLint shader_id)
 //----------------------------------------------
 {
-	SoftTissueMesh::defineBumpMapShaderInput();
+	SoftTissueMesh::defineBumpMapShaderInput(shader_id);
 }
 
 //----------------------------------------------
-void LungsMesh::defineColourShaderInput()
+void LungsMesh::defineColourTextureShaderInput(GLint shader_id)
 //----------------------------------------------
 {
 	GLfloat second_colour[] = {0.4,0.03,0.03,1.};
 
-	GLint shader_id(m_textureShader.getProgramHandle());
 	GLuint handle(glGetUniformLocation(shader_id, "g_second_colour"));
 	glUniform4fv(handle, 1, &second_colour[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	SoftTissueMesh::defineColourShaderInput();
+	SoftTissueMesh::defineColourTextureShaderInput(shader_id);
 }
 
 //----------------------------------------------

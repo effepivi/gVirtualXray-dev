@@ -45,7 +45,7 @@ smooth in vec2 g_texture_coordinates;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec4 fragColour;
+out vec4 frag_colour;
 
 //******************************************************************************
 //	Uniform variables
@@ -54,7 +54,7 @@ uniform vec4 g_base_colour;
 uniform vec4 g_second_colour;
 uniform int g_has_tendon;
 uniform int g_use_second_colour;
-uniform sampler2D bumpMap;
+uniform sampler2D g_bump_map;
 uniform int g_perm[TAB_SIZE];
 uniform vec3 g_gradient_tab[TAB_SIZE];
 
@@ -237,8 +237,9 @@ float turbulence(vec3 Q)
 vec4 computeTendonColour()
 //------------------------
 {
-	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	deltaNormal += texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
+	//modify the normal vector using the bump map
+	vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
+	deltaNormal += texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
     vec3 normal_vector   = normalize(g_normal+deltaNormal);
 	
 	float dot_normal_vertical = abs(dot(normal_vector , vec3(0,0,1)));
@@ -267,9 +268,7 @@ void main(void)
 {
 	if(g_has_tendon==1)
 	{
-		
-		
-		fragColour=computeTendonColour();
+		frag_colour=computeTendonColour();
 	}
 	else
 	{
@@ -287,7 +286,6 @@ void main(void)
 			turbulence_value=1;
 			second_colour=vec4(0,0,0,0);
 		}
-	
-		fragColour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value;
+		frag_colour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value;
 	}
 }

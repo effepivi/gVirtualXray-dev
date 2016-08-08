@@ -73,10 +73,10 @@ public:
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader
     /*
-    *   @param aShaderID: The GLSL shader used to display the anatomical mesh
+    *   @param shader_id: The GLSL shader used to display the anatomical mesh
     */
 	//-------------------------------------------------------------------------
-	virtual void defineShaderInput(GLint aShaderID);
+	virtual void defineDisplayShaderInput(GLint shader_id);
 
 	//--------------------------------------------------------------------------
 	/// initialize the needful depending on the organ
@@ -92,6 +92,8 @@ public:
 
 //******************************************************************************
 protected:
+	//1 if the mesh use texturing; default value is 0
+	GLint m_use_texture;
 
 };
 } //namespace gVirtualXRay

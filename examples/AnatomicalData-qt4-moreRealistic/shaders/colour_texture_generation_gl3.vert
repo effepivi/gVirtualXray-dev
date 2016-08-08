@@ -37,15 +37,6 @@ smooth out vec3 g_normal;
 smooth out vec3 g_object_position;
 smooth out vec2 g_texture_coordinates;
 
-
-
-
-
-
-
-
-
-
 //-------------
 void main(void)
 //-------------

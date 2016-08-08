@@ -38,24 +38,20 @@ DiaphragmMesh::~DiaphragmMesh()
 }
 
 //----------------------------------------------
-void DiaphragmMesh::defineBumpMapShaderInput()
+void DiaphragmMesh::defineBumpMapShaderInput(GLint shader_id)
 //----------------------------------------------
 {
-	GLint shader_id(m_bumpMapShader.getProgramHandle());
-
 	GLuint handle(glGetUniformLocation(shader_id, "g_matrix"));
     glUniformMatrix4fv(handle, 1, GL_FALSE, m_matrix.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	SoftTissueMesh::defineBumpMapShaderInput();
+	SoftTissueMesh::defineBumpMapShaderInput(shader_id);
 }
 
 //----------------------------------------------
-void DiaphragmMesh::defineColourShaderInput()
+void DiaphragmMesh::defineColourTextureShaderInput(GLint shader_id)
  //----------------------------------------------
 {
-	GLint shader_id(m_textureShader.getProgramHandle());
-
 	GLfloat second_colour[] = {0.73,0.67,0.6,1.};
 	GLuint handle(glGetUniformLocation(shader_id, "g_second_colour"));
 	glUniform4fv(handle, 1, &second_colour[0]);
@@ -64,13 +60,13 @@ void DiaphragmMesh::defineColourShaderInput()
 
 	//Bind the texture for bump mapping in texture unit 1
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_bumpMapTexture);
+	glBindTexture(GL_TEXTURE_2D, m_bump_map_texture);
 
-	handle = glGetUniformLocation(shader_id, "bumpMap");
+	handle = glGetUniformLocation(shader_id, "g_bump_map");
 	glUniform1i(handle,1);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	SoftTissueMesh::defineColourShaderInput();
+	SoftTissueMesh::defineColourTextureShaderInput(shader_id);
 }
 
 //----------------------------------------------

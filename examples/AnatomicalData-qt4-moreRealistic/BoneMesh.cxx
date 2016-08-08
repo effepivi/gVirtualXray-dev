@@ -46,19 +46,6 @@ bool BoneMesh::isSoftTissue() const
 }
 
 //----------------------------------------------
-void BoneMesh::defineShaderInput(GLint aShaderID)
-//----------------------------------------------
-{
-	GLint useTexture(0);
-	GLuint handle = glGetUniformLocation(aShaderID, "g_useTexture");
-	glUniform1iv(handle, 1, &useTexture);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	AnatomicalMesh::defineShaderInput(aShaderID);
-}
-
-
-//----------------------------------------------
 void BoneMesh::initialize()
 //----------------------------------------------
 {
