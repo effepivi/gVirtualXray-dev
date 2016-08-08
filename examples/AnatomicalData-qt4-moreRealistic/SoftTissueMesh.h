@@ -115,14 +115,18 @@ protected:
 	//--------------------------------------------------------------------------
 	virtual void shareNormalVectors();
 
-
+	//--------------------------------------------------------------------------
+	/// initialize gradient tab for gnoise
+	//--------------------------------------------------------------------------
+	virtual std::vector<VEC3> initGradientTab();
 
 	//--------------------------------------------------------------------------
-	/// initialize tab for gnoise
+	/// initialize permutation tab for all noises
 	//--------------------------------------------------------------------------
-	virtual std::vector<VEC3> gradientTabInit();
+	virtual std::vector<int> initPermutation();
 
-
+	//size of the arrays to initialize perlin's noise
+	const int TAB_SIZE = 256;
 
 	//size of the side of the buffer
 	static const int TEXTURE_SIZE = 4096;

@@ -21,6 +21,20 @@
 //******************************************************************************
 #version 150
 
+
+//******************************************************************************
+//	constant variables
+//******************************************************************************
+//size of the arrays to initialize perlin's noise
+const int TAB_SIZE = 256;
+
+//Frequence for fractal sum
+const float MINFREQ=0.03;
+const float MAXFREQ=1;
+
+//step for bump evaluation 
+const float STEP=0.00002;
+
 //******************************************************************************
 //	Input
 //******************************************************************************
@@ -33,7 +47,6 @@ smooth in vec2 g_texture_coordinates;
 //******************************************************************************
 out vec4 fragColour;
 
-
 //******************************************************************************
 //	Uniform variables
 //******************************************************************************
@@ -42,18 +55,8 @@ uniform vec4 g_second_colour;
 uniform int g_has_tendon;
 uniform int g_use_second_colour;
 uniform sampler2D bumpMap;
-
-
-//******************************************************************************
-//	constant variables
-//******************************************************************************
-//Frequence for fractal sum
-const float MINFREQ=0.1;
-const float MAXFREQ=5;
-
-//step for bump evaluation 
-const float STEP=0.00002;
-
+uniform int g_perm[TAB_SIZE];
+uniform vec3 g_gradient_tab[TAB_SIZE];
 
 
 
@@ -226,37 +229,204 @@ float snoiseFractal(vec3 m) {
 
 
 
-float fracNoise(vec3 v)
+
+
+
+
+
+//------------------------------------
+int index(int ix, int iy, int iz)
+//------------------------------------
 {
-	return 2*noise(v)-1;
+	return g_perm[ix+g_perm[iy+g_perm[iz]]];	
 }
 
+//------------------------------------
+float vlattice(int ix, int iy, int iz)
+//------------------------------------
+{
+	return g_gradient_tab[index(ix,iy,iz)].x;
+}
+
+//------------------------------------
+float spline(float x, float knot[4])
+//------------------------------------
+{
+	int span;
+	float c0, c1, c2, c3;
+	
+	x = clamp(x, 0, 1);
+	span = int(x);
+	
+	if(span >= 1)
+	{
+		span = 1;
+	}
+	x -= span;
+	
+	for(int i=0; i<4; i++)
+	{
+		knot[i] += span;
+	}
+	
+	c3 = -0.5*knot[0] + 1.5*knot[1] - 1.5*knot[2] + 0.5*knot[3];
+	c2 = knot[0] - 2.5*knot[1] - 2.*knot[2] - 0.5*knot[3];
+	c1 = -0.5*knot[0] + 0.5*knot[2];
+	c0 = knot[1];
+
+	return ((c3*x + c2)*x +c1)*x +c0;
+}
+
+//------------------------------------
+float vnoise(vec3 v)
+//------------------------------------
+{
+	float x = v.x;
+	float y = v.y;
+	float z = v.z;
+
+	int ix, iy, iz;
+	int i, j, k;
+	float fx, fy, fz;
+	float xknots[4], yknots[4], zknots[4];
+	
+	ix = int(floor(x));
+	fx = x - ix;
+	
+	iy = int(floor(y));
+	fy = y - iy;
+
+	iz = int(floor(z));
+	fz = z - iz;
+
+	for(k = -1; k <= 2; k++)
+	{
+		for(j = -1; j <= 2; j++)
+		{
+			for(i = -1; i <= 2; i++)
+			{
+				xknots[j+1] = spline(fy, xknots);
+			}
+			yknots[k+1] = spline(fy, yknots);
+		}
+		zknots[k+1] = spline(fz, zknots);
+	}
+	return spline(fz, zknots);
+}
+
+//------------------------------------
+float glattice(int ix, int iy, int iz, 
+		float fx, float fy, float fz)
+//------------------------------------
+{
+	int base_index = index(ix,iy,iz);
+	return g_gradient_tab[base_index].x*fx + g_gradient_tab[base_index].y*fy + g_gradient_tab[base_index].z*fz;
+}
+
+//------------------------------------
+float lerp(float t, float x0, float x1)
+//------------------------------------
+{
+	return (x0 + t*(x1-x0));
+}
+
+//------------------------------------
+float smoothStep(float x)
+//------------------------------------
+{
+		return (x*x*(3 - 2*x));
+}
+
+//------------------------------------
+float gnoise(vec3 v)
+//------------------------------------
+{
+	float x = v.x;
+	float y = v.y;
+	float z = v.z;
+	
+	int ix, iy, iz;
+	float fx0, fx1, fy0, fy1, fz0, fz1;
+	float wx, wy, wz;
+	float vx0, vx1, vy0, vy1, vz0, vz1;
+ 
+	ix = int(floor(x));
+	fx0 = x - ix;
+	fx1 = fx0 -1;
+	wx = smoothStep(fx0);
+	
+	iy = int(floor(y));
+	fy0 = y - iy;
+	fy1 = fy0 -1;
+	wy = smoothStep(fy0);
+	
+	iz = int(floor(z));
+	fz0 = z - iz;
+	fz1 = fz0 -1;
+	wz = smoothStep(fz0);
+	
+	vx0 = glattice(ix, iy, iz, fx0, fy0, fz0);
+	vx1 = glattice(ix+1, iy, iz, fx1, fy0, fz0);
+	vy0 = lerp(wx, vx0, vx1);	
+	vx0 = glattice(ix, iy+1, iz, fx0, fy1, fz0);
+	vx1 = glattice(ix+1, iy+1, iz, fx1, fy1, fz0);
+	vy1 = lerp(wx, vx0, vx1);
+	vz0 = lerp(wy, vy0, vy1);
+	vx0 = glattice(ix, iy, iz+1, fx0, fy0, fz1);
+	vx1 = glattice(ix+1, iy, iz+1, fx1, fy0, fz1);
+	vy0 = lerp(wx, vx0, vx1);
+	vx0 = glattice(ix, iy+1, iz+1, fx0, fy1, fz1);
+	vx1 = glattice(ix+1, iy+1, iz+1, fx1, fy1, fz1);
+	vy1 = lerp(wx, vx0, vx1);
+	vz1 = lerp(wy, vy0, vy1);
+	
+	return lerp(wz, vz0, vz1);
+}
+
+
+
+//------------------------
+float fracNoise(vec3 v)
+//------------------------
+{
+	//return 2*noise(v)-1;
+	return gnoise(v);
+}
+
+//------------------------
 float fractalSum(vec3 Q)
+//------------------------
 {
 	float value = 0;
 	for(float f=MINFREQ; f<MAXFREQ; f*=2)
 	{
 		value += fracNoise(Q*f)/f;	
 	}
-	return value*0.5+0.5;
+	return value*MINFREQ+0.5;
 }
 
+//------------------------
 float turbNoise(vec3 v)
+//------------------------
 {
-	return 2*cnoise(v)-1;
+	return 2*snoise(v)-1;
 }
 
+//------------------------
 float turbulence(vec3 Q)
+//------------------------
 {
 	float value = 0;
 	for (float f=MINFREQ; f<MAXFREQ;f*2)
 	{
 		value += abs(turbNoise(Q*f))/f;
-		return value*0.5+0.5;
+		return value*MINFREQ+0.5;
 	}
 }
 
+//------------------------
 vec4 computeTendonColour()
+//------------------------
 {
 	vec3 deltaNormal = texture( bumpMap, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( bumpMap, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
 	deltaNormal += texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( bumpMap, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
@@ -309,6 +479,7 @@ void main(void)
 			second_colour=vec4(0,0,0,0);
 		}
 	
-		fragColour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value*0.5;	
+		fragColour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value*0.5;
+		//fragColour = vec4(1,1,1,1)*gnoise(g_object_position*0.2);
 	}
 }

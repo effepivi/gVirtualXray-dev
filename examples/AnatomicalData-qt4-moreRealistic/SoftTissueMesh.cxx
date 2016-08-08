@@ -21,6 +21,7 @@
 //******************************************************************************
 #include <cstdlib>
 #include <map>
+#include <algorithm>
 
 
 #include "SoftTissueMesh.h"
@@ -372,7 +373,13 @@ void SoftTissueMesh::defineColourShaderInput()
 	glUniform1iv(handle, 1, &m_use_second_colour);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	//handle = glGetUniformLocation(textureShaderID, "gradientTab");
+	handle = glGetUniformLocation(shader_id, "g_perm");
+	glUniform1iv(handle, TAB_SIZE,&initPermutation()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
+	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &initGradientTab()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 }
 
@@ -524,26 +531,55 @@ void SoftTissueMesh::shareNormalVectors()
 
 
 //----------------------------------------------
-std::vector<VEC3> SoftTissueMesh::gradientTabInit()
+std::vector<VEC3> SoftTissueMesh::initGradientTab()
 //----------------------------------------------
 {
-	std::vector<VEC3> table;
+	std::vector<VEC3> tab;
 	float z, r, theta;
 
-	for(unsigned int i(0); i<m_number_of_vertices; i++)
+	for(unsigned int i(0); i<TAB_SIZE; i++)
 	{
 		z= 1 - 2*(float(rand()) / RAND_MAX);
 		r= sqrt(1-z*z);
 		theta=2 * M_PI * (float(rand()) / RAND_MAX);
 
-		table.push_back(VEC3(
+		tab.push_back(VEC3(
 				r*cos(theta),
 				r*sin(theta),
 				z
 			));
 	}
 
-	return table;
+	return tab;
+}
+
+//----------------------------------------------
+std::vector<int> SoftTissueMesh::initPermutation()
+//----------------------------------------------
+{
+	std::vector<int> tab;
+
+	for(unsigned int i(0); i<TAB_SIZE; i++)
+	{
+
+		//generate random number until we can add it to the array
+		bool nothing_added(true);
+		while(nothing_added)
+		{
+
+			//generate a random number between 0 and 255
+			int random_number(rand()%TAB_SIZE);
+
+			//if the random number isn't already in the array
+			if(std::find(tab.begin(), tab.end(), random_number) == tab.end())
+			{
+				//add it to the array
+				tab.push_back(random_number);
+				nothing_added = false;
+			}
+		}
+	}
+	return tab;
 }
 
 } // namespace gVirtualXRay

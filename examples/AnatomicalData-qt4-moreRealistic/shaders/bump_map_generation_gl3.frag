@@ -43,7 +43,7 @@ uniform int g_has_tendon;
 //******************************************************************************
 //Frequence for fractal sum
 const float MINFREQ=0.1;
-const float MAXFREQ=5;
+const float MAXFREQ=1;
 
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.001;
