@@ -217,7 +217,7 @@ void LungMesh::generateTextures()
 	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
 	unsigned int k(0);
-	const float STEP(0.00015);
+	const float STEP(0.0002);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			//extract four coordinates

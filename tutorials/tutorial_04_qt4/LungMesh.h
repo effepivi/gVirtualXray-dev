@@ -119,7 +119,7 @@ protected:
 	virtual std::vector<int> initPermutation();
 
 	//size of the arrays to initialize perlin's noise
-	const int TAB_SIZE = 256;
+	const static int TAB_SIZE = 256;
 
 	//size of the side of the buffer
 	static const int TEXTURE_SIZE = 4096;
