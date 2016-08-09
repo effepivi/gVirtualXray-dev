@@ -49,6 +49,16 @@ CreateHeaderFiles("." "BinaryStlGlfwFiles" "${RESOURCES_SOURCES}")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/data/welsh-dragon-small.stl COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/welsh-dragon-small.stl COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
+
+
 # Check if GLFW is enable #####################################################
 IF (USE_SYSTEM_GLFW)
     FIND_PACKAGE( glfw3   REQUIRED )

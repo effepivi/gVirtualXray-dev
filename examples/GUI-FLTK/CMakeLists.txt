@@ -46,6 +46,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/welsh-dragon-small.stl COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/welsh-dragon-small.stl COPYONLY)
+ENDIF (WIN32)
+
+
 # Configure the project ########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 

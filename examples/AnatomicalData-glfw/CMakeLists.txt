@@ -50,6 +50,13 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinaryAnatomicalDataGlfwFiles" "${RESOURCES_SOURCES}")
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
+
 # Check if GLFW is enable #####################################################
 IF (USE_SYSTEM_GLFW)
     FIND_PACKAGE( glfw3   REQUIRED )

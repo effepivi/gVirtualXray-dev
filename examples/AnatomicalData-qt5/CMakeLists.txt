@@ -46,6 +46,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
+
+
 # Configure the project ########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
