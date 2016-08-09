@@ -119,6 +119,10 @@ TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredL
 ADD_DEPENDENCIES(gVirtualXRay-gui BinaryGUIFLTKFiles)
 ADD_DEPENDENCIES(gVirtualXRay-gui FluidFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(gVirtualXRay-gui   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

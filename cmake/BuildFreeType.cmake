@@ -42,7 +42,14 @@ SET(FREETYPE_DIR         ${FREETYPE_INSTALL_DIR})
 SET(FREETYPE_FOUND ON)
 SET (FREETYPE_built_type "${CMAKE_CFG_INTDIR} ${Configuration} ${CMAKE_CONFIGURATION_TYPES}")
 IF (UNIX)
-    SET(FREETYPE_LIBRARIES    ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a )
+    IF (APPLE)
+        SET(FREETYPE_LIBRARIES    
+		optimized ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a 
+		debug     ${FREETYPE_INSTALL_DIR}/lib/libfreetyped.a
+        )
+    ELSE (APPLE)
+        SET(FREETYPE_LIBRARIES    ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a )
+    ENDIF (APPLE)
 ELSE (UNIX)
     if (WIN32)
         SET(FREETYPE_LIBRARIES    

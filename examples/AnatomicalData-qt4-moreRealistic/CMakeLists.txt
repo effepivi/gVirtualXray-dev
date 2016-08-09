@@ -112,6 +112,10 @@ add_executable(demo-anatomical-data-qt4-more-realistic
 
 	DepthMap.h DepthMap.cxx)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 target_link_libraries(demo-anatomical-data-qt4-more-realistic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
 ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic BinaryAnatomicalDataQt4MoreRealisticFiles)

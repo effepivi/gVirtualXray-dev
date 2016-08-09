@@ -40,21 +40,18 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
-
-# Use C++ 11
-set (CMAKE_CXX_STANDARD 11)
-
-IF (APPLE)
-	SET (CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
-ENDIF (APPLE)
+cmake_minimum_required(VERSION 2.8.0 FATAL_ERROR)
 
 
 # Flag required for shared libraries
-IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
-    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+IF (UNIX)
+    IF (NOT APPLE)
+        IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+            SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+            SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+        ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+    ENDIF (NOT APPLE)
+ENDIF (UNIX)
 
 
 #IF (COMMAND cmake_policy)
@@ -108,9 +105,15 @@ SET (requiredLibs)
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 IF (UNIX)
-	SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
+    IF (APPLE AND ${CMAKE_GENERATOR} STREQUAL "Xcode")
+        SET (gVirtualXRay_LIBRARY 
+             optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
+             debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
+        )
+    ELSE ()
+        SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
+    ENDIF ()
 ELSE(UNIX)
     IF (WIN32)
 	    SET (gVirtualXRay_LIBRARY optimized ${PROJECT_BINARY_DIR}/Release/gVirtualXRay.lib

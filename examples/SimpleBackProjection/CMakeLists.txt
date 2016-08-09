@@ -71,6 +71,10 @@ add_executable(demo-simple-back-projection SimpleBackProjection.cxx)
 target_link_libraries(demo-simple-back-projection ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-simple-back-projection BinarySimpleBackProjectionFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-simple-back-projection   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS demo-simple-back-projection RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

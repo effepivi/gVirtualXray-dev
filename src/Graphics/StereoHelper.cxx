@@ -67,14 +67,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#endif
-
 #ifndef GVXR_STEREO_HELPER_H
 #include "gVirtualXRay/StereoHelper.h"
 #endif

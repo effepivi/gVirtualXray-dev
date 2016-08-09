@@ -60,6 +60,10 @@ add_executable(demo-tomography Tomography.cxx)
 target_link_libraries(demo-tomography ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-tomography BinaryTomographyFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-tomography   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS demo-tomography RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

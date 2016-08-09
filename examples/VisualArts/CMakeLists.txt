@@ -62,6 +62,11 @@ IF(glfw3_FOUND)
     add_executable(VisualArts VisualArts.cxx )
     target_link_libraries(VisualArts ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(VisualArts BinaryVisualArts)
+
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(VisualArts   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 ENDIF(glfw3_FOUND)
 
 

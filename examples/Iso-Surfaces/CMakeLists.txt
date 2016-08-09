@@ -60,6 +60,10 @@ add_executable(test_implicit_surface test_implicit_surface.cxx)
 target_link_libraries(test_implicit_surface ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(test_implicit_surface BinaryIsoSurfaceFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(test_implicit_surface   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

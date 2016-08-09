@@ -70,13 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-
+#include <QObject>
 #include <QApplication>
 #include <QtGui>
 #include <QGLWidget>

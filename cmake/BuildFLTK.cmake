@@ -61,7 +61,23 @@ set (FLTK_INCLUDE_DIRS ${FLTK_INSTALL_DIR} ${FLTK_INCLUDE_DIR})
 SET (FLTK_FOUND ON)
 
 IF (UNIX)
-    IF (NOT APPLE)
+    IF (APPLE)
+        SET (FLTK_LIBRARIES 
+            optimized ${FLTK_INSTALL_DIR}/lib/libfltk.a
+            debug     ${FLTK_INSTALL_DIR}/lib/libfltkd.a
+
+            optimized ${FLTK_INSTALL_DIR}/lib/libfltk_forms.a
+            debug     ${FLTK_INSTALL_DIR}/lib/libfltk_formsd.a
+
+            optimized ${FLTK_INSTALL_DIR}/lib/libfltk_gl.a
+            debug     ${FLTK_INSTALL_DIR}/lib/libfltk_gld.a
+
+            optimized ${FLTK_INSTALL_DIR}/lib/libfltk_images.a
+            debug     ${FLTK_INSTALL_DIR}/lib/libfltk_imagesd.a
+
+            ${FLTK_PLATFORM_DEPENDENT_LIBS} 
+        )
+    ELSE (APPLE)
         FIND_PACKAGE (X11 REQUIRED)
 
         SET (FLTK_PLATFORM_DEPENDENT_LIBS 
@@ -79,16 +95,15 @@ IF (UNIX)
             #m
         )
 
-    ENDIF (NOT APPLE)
-
-    SET (FLTK_LIBRARIES 
-        ${FLTK_INSTALL_DIR}/lib/libfltk.a
-        ${FLTK_INSTALL_DIR}/lib/libfltk_forms.a
-        ${FLTK_INSTALL_DIR}/lib/libfltk_gl.a
-        ${FLTK_INSTALL_DIR}/lib/libfltk_images.a
-        ${FLTK_PLATFORM_DEPENDENT_LIBS}
-    )
-ELSE ()
+        SET (FLTK_LIBRARIES 
+            ${FLTK_INSTALL_DIR}/lib/libfltk.a
+            ${FLTK_INSTALL_DIR}/lib/libfltk_forms.a
+            ${FLTK_INSTALL_DIR}/lib/libfltk_gl.a
+            ${FLTK_INSTALL_DIR}/lib/libfltk_images.a
+            ${FLTK_PLATFORM_DEPENDENT_LIBS}
+        )
+    ENDIF (APPLE)
+ELSE (UNIX)
     IF (WIN32)
         SET (FLTK_LIBRARIES 
             optimized ${FLTK_INSTALL_DIR}/lib/fltk.lib

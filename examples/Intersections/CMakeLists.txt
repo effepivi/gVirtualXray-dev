@@ -78,6 +78,10 @@ add_executable(demo-intersections Intersections.cxx)
 target_link_libraries(demo-intersections ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-intersections BinaryIntersectionsFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-intersections   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS demo-intersections RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

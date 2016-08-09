@@ -70,17 +70,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifdef _WIN32
-#include <GL/glew.h> // Fix undefined references on Windows
-#endif
-
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-
 #define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
 
 #include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it

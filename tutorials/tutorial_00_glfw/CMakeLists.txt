@@ -97,8 +97,12 @@ IF(glfw3_FOUND)
     INSTALL(TARGETS tutorial_00_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 
+    IF (gVirtualXRay_BINARY_DIR)
+        ADD_DEPENDENCIES(tutorial_00_glfw   gVirtualXRay)
+    ENDIF (gVirtualXRay_BINARY_DIR)
+
 ELSE(glfw3_FOUND)
-    MESSAGE(WARNING "GLFW not found.")
+    MESSAGE(WARNING "GLFW not found, ${PROJECT_NAME} will not be built.")
 ENDIF(glfw3_FOUND)
 
 

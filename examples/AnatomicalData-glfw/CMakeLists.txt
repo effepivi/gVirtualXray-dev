@@ -76,6 +76,10 @@ add_executable(demo-anatomical-data-glfw AnatomicalData-glfw.cxx)
 target_link_libraries(demo-anatomical-data-glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-anatomical-data-glfw BinaryAnatomicalDataGlfwFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-anatomical-data-glfw   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS demo-anatomical-data-glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

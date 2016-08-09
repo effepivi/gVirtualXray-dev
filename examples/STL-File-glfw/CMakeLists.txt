@@ -78,6 +78,9 @@ add_executable(welsh_dragon_glfw welsh_dragon_glfw.cxx )
 target_link_libraries(welsh_dragon_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(welsh_dragon_glfw BinaryStlGlfwFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(welsh_dragon_glfw   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
 
 IF (NOT APPLE)
     INSTALL(TARGETS welsh_dragon_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)

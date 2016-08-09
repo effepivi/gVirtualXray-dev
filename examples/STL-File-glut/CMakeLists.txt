@@ -82,7 +82,11 @@ IF (GLUT_FOUND)
     target_link_libraries(welsh_dragon_glut  ${requiredLibs} ${gVirtualXRay_LIBRARY} ${optionalLibs} )
     ADD_DEPENDENCIES(welsh_dragon_glut BinaryStlGlutFiles)
 
-    IF (NOT APPLE)
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(welsh_dragon_glut   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
+IF (NOT APPLE)
         INSTALL(TARGETS welsh_dragon_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
         INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

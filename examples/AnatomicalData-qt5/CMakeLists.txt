@@ -77,6 +77,10 @@ add_executable(demo-anatomical-data-qt5 AnatomicalData-qt5.cxx GLWidget.h GLWidg
 target_link_libraries(demo-anatomical-data-qt5 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-anatomical-data-qt5 BinaryAnatomicalDataQt5Files)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-anatomical-data-qt5   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
     INSTALL(TARGETS demo-anatomical-data-qt5 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)

@@ -72,6 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <streambuf>
 #include <ctime>
 
+#include <QObject>
 #include <QtGui>
 #include <QGLWidget>
 
