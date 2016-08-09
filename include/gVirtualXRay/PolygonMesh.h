@@ -917,8 +917,11 @@ protected:
 
 
 	/// Vertex buffer object
+#if __cplusplus <= 199711L
+	std::auto_ptr<VBO> m_vbo;
+#else
 	std::unique_ptr<VBO> m_vbo;
-
+#endif
 
 	/// Flag about the use of the Hounsfield value or attenuation coefficient
 	bool m_use_hounsfield_value;

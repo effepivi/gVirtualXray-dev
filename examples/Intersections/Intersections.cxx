@@ -201,7 +201,12 @@ const VEC3 g_background_colour(0.5, 0.5, 0.5);
 PolygonMesh g_inside_polygon_data;
 //CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
 CubeMesh g_outside_polygon_data(3.0 * cm);
-std::unique_ptr<VBO> g_intersection_box_detector_vbo;
+
+#if __cplusplus <= 199711L
+	std::auto_ptr<VBO> g_intersection_box_detector_vbo;
+#else
+	std::unique_ptr<VBO> g_intersection_box_detector_vbo;
+#endif
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;

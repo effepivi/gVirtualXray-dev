@@ -266,7 +266,11 @@ protected:
 
 
     /// The VBO used to display the characters
-    std::unique_ptr<VBO> m_text_vbo;
+#if __cplusplus <= 199711L
+	std::auto_ptr<VBO> m_text_vbo;
+#else
+	std::unique_ptr<VBO> m_text_vbo;
+#endif
 
 
     /// The shader used to display the text
