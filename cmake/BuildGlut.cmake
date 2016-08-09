@@ -38,6 +38,7 @@ ExternalProject_Add(glut
       -DGLUT_BUILD_SHARED_LIBS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${GLUT_INSTALL_DIR}
       -DINSTALL_PDB:BOOL=OFF
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
       #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 )
@@ -47,11 +48,17 @@ SET(GLUT_INCLUDE_DIRS ${GLUT_INSTALL_DIR}/include)
 SET(GLUT_LIBRARY_DIR  ${GLUT_INSTALL_DIR}/lib)
 
 if (WIN32)
+    if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 	SET(GLUT_LIBRARIES
-        optimized ${GLUT_INSTALL_DIR}/lib/freeglut_static.lib
-        debug     ${GLUT_INSTALL_DIR}/lib/freeglut_staticd.lib
-    )
-endif (WIN32)
+            optimized ${GLUT_INSTALL_DIR}/lib/freeglut_static.lib
+            debug     ${GLUT_INSTALL_DIR}/lib/freeglut_staticd.lib
+        )
+    ELSE ()
+	SET(GLUT_LIBRARIES
+           ${GLUT_INSTALL_DIR}/lib/libfreeglut_static.a
+        )
+    ENDIF ()
+endif ()
 
 IF (UNIX)
 

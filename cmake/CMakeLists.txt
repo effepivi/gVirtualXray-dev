@@ -58,6 +58,7 @@ ENDIF (UNIX)
     cmake_policy(SET CMP0003 NEW)
     cmake_policy(SET CMP0011 NEW)
     cmake_policy(SET CMP0013 NEW)
+    cmake_policy(SET CMP0053 NEW)
 #ENDIF (COMMAND cmake_policy)
 
 IF (APPLE)
@@ -105,21 +106,20 @@ SET (requiredLibs)
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-IF (UNIX)
-    IF (APPLE AND ${CMAKE_GENERATOR} STREQUAL "Xcode")
-        SET (gVirtualXRay_LIBRARY 
-             optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
-             debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
-        )
-    ELSE ()
-        SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
-    ENDIF ()
-ELSE(UNIX)
-    IF (WIN32)
-	    SET (gVirtualXRay_LIBRARY optimized ${PROJECT_BINARY_DIR}/Release/gVirtualXRay.lib
-		                          debug     ${PROJECT_BINARY_DIR}/Debug/gVirtualXRay.lib)
-	ENDIF (WIN32)
-ENDIF (UNIX)
+
+SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
+IF (APPLE AND ${CMAKE_GENERATOR} STREQUAL "Xcode")
+    SET (gVirtualXRay_LIBRARY 
+         optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
+         debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
+    )
+ENDIF ()
+
+if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+    SET (gVirtualXRay_LIBRARY optimized ${PROJECT_BINARY_DIR}/Release/gVirtualXRay.lib
+                              debug     ${PROJECT_BINARY_DIR}/Debug/gVirtualXRay.lib
+    )
+ENDIF ()
 
 
 # Library source code ##########################################################
@@ -290,6 +290,7 @@ ENDIF (OPENGL_FOUND)
 
 
 # GLEW ########################################################################
+# Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
 OPTION(USE_SYSTEM_GLEW       "Use System GLEW"       OFF)
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
 
@@ -367,7 +368,11 @@ ENDIF (FREETYPE_FOUND)
 
 # TIFF #########################################################################
 
-OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff "       OFF)
+IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
+ELSE ()
+    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
+ENDIF ()
 
 IF (USE_SYSTEM_LIBTIFF)
     FIND_PACKAGE( TIFF   REQUIRED )

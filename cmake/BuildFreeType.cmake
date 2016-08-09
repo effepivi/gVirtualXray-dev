@@ -30,6 +30,7 @@ ExternalProject_Add(freetype
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DWITH_HarfBuzz:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${FREETYPE_INSTALL_DIR}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
       #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       #-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -41,23 +42,23 @@ SET(FREETYPE_INCLUDE_DIRS ${FREETYPE_INSTALL_DIR}/include  ${FREETYPE_INSTALL_DI
 SET(FREETYPE_DIR         ${FREETYPE_INSTALL_DIR})
 SET(FREETYPE_FOUND ON)
 SET (FREETYPE_built_type "${CMAKE_CFG_INTDIR} ${Configuration} ${CMAKE_CONFIGURATION_TYPES}")
-IF (UNIX)
-    IF (APPLE)
-        SET(FREETYPE_LIBRARIES    
-		optimized ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a 
-		debug     ${FREETYPE_INSTALL_DIR}/lib/libfreetyped.a
-        )
-    ELSE (APPLE)
-        SET(FREETYPE_LIBRARIES    ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a )
-    ENDIF (APPLE)
-ELSE (UNIX)
-    if (WIN32)
-        SET(FREETYPE_LIBRARIES    
-		optimized ${FREETYPE_INSTALL_DIR}/lib/freetype.lib 
-		debug     ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib
-        )
-    endif()
-ENDIF (UNIX)
+
+SET(FREETYPE_LIBRARIES    ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a )
+
+IF (APPLE)
+    SET(FREETYPE_LIBRARIES    
+        optimized ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a 
+        debug     ${FREETYPE_INSTALL_DIR}/lib/libfreetyped.a
+    )
+ENDIF (APPLE)
+
+if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+    SET(FREETYPE_LIBRARIES    
+        optimized ${FREETYPE_INSTALL_DIR}/lib/freetype.lib 
+        debug     ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib
+    )
+endif()
+
 
 # copy libraries into install tree
 install(DIRECTORY ${FREETYPE_INSTALL_DIR}/include/ DESTINATION ${FREETYPE_INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")

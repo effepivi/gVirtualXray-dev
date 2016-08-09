@@ -21,8 +21,8 @@ ExternalProject_Add(getGLEW
   URL_MD5 "7cbada3166d2aadfc4169c4283701066"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${GLEW_INSTALL_DIR}
+  #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+  #INSTALL_DIR ${GLEW_INSTALL_DIR}
   LIST_SEPARATOR :::  
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
@@ -45,6 +45,7 @@ ExternalProject_Add(glew
       -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
       -DCMAKE_C_FLAGS:STRING=-fPIC ${CMAKE_C_FLAGS}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
 )
 
 ADD_DEPENDENCIES(glew getGLEW)
@@ -62,14 +63,21 @@ IF (UNIX)
     ELSE (APPLE)
         SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a )
     ENDIF (APPLE)
-ELSE(UNIX)
-    if (WIN32)
-        SET(GLEW_LIBRARY    
+ENDIF (UNIX)
+
+if (WIN32)
+    if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+	SET(GLUT_LIBRARIES
 		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
 		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
         )
-    endif()
-ENDIF(UNIX)
+    ELSE ()
+	SET(GLUT_LIBRARIES
+           ${GLUT_INSTALL_DIR}/lib/libglew32.a
+        )
+    ENDIF ()
+endif (WIN32)
+
 
 # copy libraries into install tree
 install(DIRECTORY ${GLEW_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")

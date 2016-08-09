@@ -33,10 +33,12 @@
 project(gVirtualXRay-tutorial_00_qt5)
 
 
+# Set new policy #################################################################
+cmake_policy(SET CMP0020 NEW)
+
+
 # Fix linkage problem with windows and cross-compilation #######################
 IF (WIN32)
-    ADD_DEFINITIONS(-DGLEW_STATIC)
-    ADD_DEFINITIONS(-DFREEGLUT_STATIC)
     SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
 ENDIF (WIN32)
 

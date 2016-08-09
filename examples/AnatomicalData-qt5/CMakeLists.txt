@@ -32,6 +32,11 @@
 
 project(gVirtualXRay-AnatomicalData-qt5)
 
+
+# Set new policy #################################################################
+cmake_policy(SET CMP0020 NEW)
+
+
 # Initialise some states by default ############################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 

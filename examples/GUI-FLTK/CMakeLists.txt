@@ -72,6 +72,11 @@ ELSE (FLTK_FOUND)
 ENDIF (FLTK_FOUND)
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE( OpenGL   REQUIRED )
+SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+
+
 IF (FLTK_FOUND)
 # BOOST #######################################################################
 FIND_PACKAGE(Boost QUIET COMPONENTS filesystem system)

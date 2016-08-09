@@ -34,17 +34,20 @@ if (NOT TARGET GLFW)
 	    -DGLFW_BUILD_DOCS:BOOL=OFF
 	    -DGLFW_BUILD_EXAMPLES:BOOL=OFF
 	    -DGLFW_BUILD_TESTS:BOOL=OFF
+           -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
     )
 
     SET(GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
     SET(GLFW3_DIR         ${staging_prefix}/${install_prefix}-install)
     SET(glfw3_FOUND ON)
 
-    IF (UNIX)
-        SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
-    ELSE (UNIX)
-        SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib )
-    ENDIF (UNIX)
+    SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
+
+    IF (WIN32)
+        IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+            SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib )
+        ENDIF ()
+    ENDIF (WIN32)
 
         install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")

@@ -33,6 +33,10 @@
 project(gVirtualXRay-tutorial_03_qt5)
 
 
+# Set new policy #################################################################
+cmake_policy(SET CMP0020 NEW)
+
+
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES
     tutorial_03_gl3.frag
@@ -50,8 +54,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # Fix linkage problem with windows and cross-compilation #######################
 IF (WIN32)
-    ADD_DEFINITIONS(-DGLEW_STATIC)
-    ADD_DEFINITIONS(-DFREEGLUT_STATIC)
     SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
 ENDIF (WIN32)
 

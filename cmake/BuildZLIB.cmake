@@ -31,6 +31,7 @@ ExternalProject_Add(zlib
   CMAKE_ARGS
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_INSTALL_DIR}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
       #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 )
@@ -39,16 +40,19 @@ SET(ZLIB_INCLUDE_DIR ${ZLIB_INSTALL_DIR}/include )
 SET(ZLIB_DIR         ${ZLIB_INSTALL_DIR})
 SET(ZLIB_FOUND ON)
 
-IF (UNIX)
-	SET(ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libz.a )
-ELSE(UNIX)
-    if (WIN32)
-        SET(ZLIB_LIBRARY    
-		optimized ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib 
-		debug     ${ZLIB_INSTALL_DIR}/lib/zlibstaticd.lib
+SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libz.a )
+
+if (WIN32)
+    IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+        SET (ZLIB_LIBRARY    
+            optimized ${ZLIB_INSTALL_DIR}/lib/zlibstatic.lib 
+            debug     ${ZLIB_INSTALL_DIR}/lib/zlibstaticd.lib
         )
-    endif (WIN32)
-ENDIF(UNIX)
+    ELSE ()
+        SET (ZLIB_LIBRARY     ${ZLIB_INSTALL_DIR}/lib/libzlibstatic.a )
+    ENDIF ()
+endif (WIN32)
+
 
 install(DIRECTORY ${ZLIB_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
 install(DIRECTORY ${ZLIB_INSTALL_DIR}/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
