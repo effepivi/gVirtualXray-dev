@@ -46,15 +46,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _USE_MATH_DEFINES
 #endif
 
-#ifdef HAS_GLEW
+//#ifdef HAS_GLEW
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
-#else // HAS_GLEW
+//#else // HAS_GLEW
 
 #ifdef __APPLE__
 #ifndef GL3_PROTOTYPES
@@ -68,6 +68,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glcorearb.h>
 #endif // __APPLE__
 
-#endif // HAS_GLEW
+//#endif // HAS_GLEW
 
 #endif // GVXR_CONFIG_H
