@@ -66,5 +66,7 @@ add_subdirectory(tutorial_01_qt5)
 add_subdirectory(tutorial_02_qt5)
 add_subdirectory(tutorial_03_qt5)
 
+add_subdirectory(tutorial_04_qt4)
+
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 
