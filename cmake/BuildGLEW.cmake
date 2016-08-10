@@ -55,14 +55,7 @@ SET(GLEW_DIR         ${GLEW_INSTALL_DIR})
 SET(GLEW_FOUND ON)
 
 IF (UNIX)
-    IF (APPLE)
-        SET(GLEW_LIBRARY    
-		optimized ${GLEW_INSTALL_DIR}/lib/libGLEW.a
-		debug     ${GLEW_INSTALL_DIR}/lib/libGLEWd.a
-        )
-    ELSE (APPLE)
-        SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a )
-    ENDIF (APPLE)
+    SET(GLEW_LIBRARY     ${GLEW_INSTALL_DIR}/lib/libGLEW.a )
 ENDIF (UNIX)
 
 if (WIN32)

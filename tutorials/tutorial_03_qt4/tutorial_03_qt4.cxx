@@ -207,6 +207,7 @@ class GLWidget: public QGLWidget
 {
 public:
     GLWidget(QWidget *parent = 0);
+    GLWidget(QGLFormat& aGLFormat, QWidget *parent = 0);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
@@ -239,7 +240,14 @@ int main(int argc, char** argv)
     {
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
-        GLWidget window;
+
+        // Create a GL format to OpenGL 3.2 Core
+        QGLFormat gl_format;
+        gl_format.setVersion(3, 2);
+        gl_format.setProfile(QGLFormat::CoreProfile);
+
+        // Set the GL format of the QGLWidget
+        GLWidget window(gl_format);
         initQt(window);
 
         // Launch the event loop
@@ -269,7 +277,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 03"));
     
     // Make the window's context current
     aWindow.makeCurrent();
@@ -281,6 +289,15 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent)
 //----------------------------------
+{
+}
+
+
+//--------------------------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+//--------------------------------------------------------
+    QGLWidget(aGLFormat, parent)
+//--------------------------------------------------------
 {
 }
 

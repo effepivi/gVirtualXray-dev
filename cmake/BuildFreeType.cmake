@@ -45,13 +45,6 @@ SET (FREETYPE_built_type "${CMAKE_CFG_INTDIR} ${Configuration} ${CMAKE_CONFIGURA
 
 SET(FREETYPE_LIBRARIES    ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a )
 
-IF (APPLE)
-    SET(FREETYPE_LIBRARIES    
-        optimized ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a 
-        debug     ${FREETYPE_INSTALL_DIR}/lib/libfreetyped.a
-    )
-ENDIF (APPLE)
-
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     SET(FREETYPE_LIBRARIES    
         optimized ${FREETYPE_INSTALL_DIR}/lib/freetype.lib 

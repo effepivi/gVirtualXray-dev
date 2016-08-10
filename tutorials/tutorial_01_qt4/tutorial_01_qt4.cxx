@@ -73,6 +73,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QtGui>
 #include <QGLWidget>
+ #include <QGLFormat> // Select the right version of OpenGL
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -186,6 +187,7 @@ class GLWidget: public QGLWidget
 {
 public:
     GLWidget(QWidget *parent = 0);
+    GLWidget(QGLFormat& aGLFormat, QWidget *parent = 0);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
@@ -214,7 +216,14 @@ int main(int argc, char** argv)
     {
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
-        GLWidget window;
+
+        // Create a GL format to OpenGL 3.2 Core
+        QGLFormat gl_format(QGLFormat::defaultFormat());
+        gl_format.setVersion(3, 2);
+        gl_format.setProfile(QGLFormat::CoreProfile);
+
+        // Set the GL format of the QGLWidget
+        GLWidget window(gl_format);
         initQt(window);
 
         // Launch the event loop
@@ -256,6 +265,15 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent)
 //----------------------------------
+{
+}
+
+
+//--------------------------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+//--------------------------------------------------------
+    QGLWidget(aGLFormat, parent)
+//--------------------------------------------------------
 {
 }
 
