@@ -72,8 +72,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#include <cstdlib>
 
+#define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
 #ifndef GVXR_XRAY_RENDERER_H
