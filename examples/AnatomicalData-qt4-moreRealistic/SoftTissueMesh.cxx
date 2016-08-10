@@ -36,6 +36,15 @@
 #include "bump_map_generation_gl3.frag.h"
 
 //******************************************************************************
+//	constant variables
+//******************************************************************************
+//size of the arrays to initialize perlin's noise
+const int TAB_SIZE = 64;
+
+//size of the side of the buffer
+const int TEXTURE_SIZE = 2048;
+
+//******************************************************************************
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
@@ -190,6 +199,7 @@ void SoftTissueMesh::initialize()
 			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
 			VEC2 v4(float(i)/n, float(j + 1)/n);
 
+			//the first triangle
 			m_textCoord.push_back(v1);
 			m_textCoord.push_back(v2);
 			m_textCoord.push_back(v3);
@@ -281,28 +291,23 @@ void SoftTissueMesh::generateTextures()
 	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
 	unsigned int k(0);
-	const float STEP(0.00015);
+	const float STEP(0.0003);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			//extract four coordinates
-			VEC2 v1(float(i)/n, float(j)/n);
-			VEC2 v2(float(i + 1)/n, float(j)/n);
-			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
-			VEC2 v4(float(i)/n, float(j + 1)/n);
-
-			m_textCoord[k]=(v1+VEC2(2*STEP,STEP));
+			//the first triangle
+			m_textCoord[k]+=VEC2(2*STEP,STEP);
 			k++;
-			m_textCoord[k]=(v2+VEC2(-STEP,STEP));
+			m_textCoord[k]+=VEC2(-STEP,STEP);
 			k++;
-			m_textCoord[k]=(v3+VEC2(-STEP,-2*STEP));
+			m_textCoord[k]+=VEC2(-STEP,-2*STEP);
 			k++;
 
 			//the second triangle
-			m_textCoord[k]=(v1+VEC2(STEP,2*STEP));
+			m_textCoord[k]+=VEC2(STEP,2*STEP);
 			k++;
-			m_textCoord[k]=(v3+VEC2(-2*STEP,-STEP));
+			m_textCoord[k]+=VEC2(-2*STEP,-STEP);
 			k++;
-			m_textCoord[k]=(v4+VEC2(STEP,-STEP));
+			m_textCoord[k]+=VEC2(STEP,-STEP);
 			k++;
 		}
 	}

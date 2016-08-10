@@ -32,8 +32,11 @@ const float MAXFREQ=1;
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.005;
 
+//frequency of the lines on the muscle (if has tendon)
+const float LINE_FREQ = 50;
+
 //size of the arrays to initialize noises
-const int TAB_SIZE = 256;
+const int TAB_SIZE = 64;
 
 
 //******************************************************************************
@@ -236,6 +239,6 @@ void main(void)
 		float theta = atan(g_object_position.y,g_object_position.x+length(g_object_position.xy));
 		
 		//Creates lines disturbed by fractal sum and noise
-		frag_colour+=0.2*(1-(pow(abs(sin(500*(theta+perturbation))),14)+0.6*pow(abs(sin(700*(theta+perturbation))),10))+0.4*pow(abs(sin(900*(theta+perturbation))),8))*(1-abs(dot(g_normal,vec3(0,0,1))));
+		frag_colour+=0.2*(1-(pow(abs(sin(5*LINE_FREQ*(theta+perturbation))),14)+0.6*pow(abs(sin(7*LINE_FREQ*(theta+perturbation))),10))+0.4*pow(abs(sin(9*LINE_FREQ*(theta+perturbation))),8))*(1-abs(dot(g_normal,vec3(0,0,1))));
 	}
 }

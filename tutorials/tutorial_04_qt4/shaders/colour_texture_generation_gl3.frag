@@ -26,7 +26,7 @@
 //	constant variables
 //******************************************************************************
 //size of the arrays to initialize noises
-const int TAB_SIZE = 256;
+const int TAB_SIZE = 64;
 
 //Frequence for fractal sum and turbulence
 const float MINFREQ=0.03;

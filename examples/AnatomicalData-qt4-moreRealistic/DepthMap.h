@@ -88,9 +88,6 @@ private:
 	//No copy constructor
 	DepthMap(DepthMap const&);
 
-	//size of the side of the buffer
-	static const int MAP_SIZE = 16384;
-
 	//to know if initialize() has been called
 	bool m_isInitialized;
 
