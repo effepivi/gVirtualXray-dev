@@ -123,9 +123,6 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Constant variables
 //******************************************************************************
-const GLsizei g_default_window_width( 600);
-const GLsizei g_default_window_height(600);
-
 const GLfloat g_rotation_speed(2.0);
 
 const float g_scaling_factor(2);
@@ -207,15 +204,41 @@ GLWidget::GLWidget(QWidget *parent):
 
 //----------------------------------
 {
-    // Initialize Qt
-    // and create a windowed mode window and its OpenGL context
+}
 
-    resize(g_default_window_width, g_default_window_height);
-    show();
-    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 04 using Qt4"));
 
-    // Make the window's context current
-    makeCurrent();
+GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+    QGLWidget(aGLFormat, parent),
+
+
+    m_zoom(100.0 * cm),
+
+    m_use_arc_ball(false),
+    m_last_x_position(0),
+    m_last_y_position(0),
+
+    m_display_beam(true),
+
+    m_lung_mesh(),
+
+    m_display_wireframe(false),
+
+    m_angle_step(1),
+    m_next_angle_to_process(0),
+    m_current_angle(0),
+    m_simulation_total_time(0),
+    m_number_of_rotations(0),
+    m_acquisition_type(ROTATE_SOURCE_DETECTOR),
+
+	#undef HAS_FREETYPE
+
+    #ifdef HAS_FREETYPE
+    m_display_help(true),
+    #endif
+
+	m_light_direction(-1, 3, 1)
+
+{
 }
 
 
@@ -250,9 +273,6 @@ void GLWidget::initializeGL()
     // Initialise OpenGL
     initGL();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Initialise FreeType
     initFreeType();

@@ -86,6 +86,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
+//******************************************************************************
+//  Function declaration
+//******************************************************************************
+void initQt(GLWidget& aWindow);
+
+
 //-----------------------------
 int main(int argc, char** argv)
 //-----------------------------
@@ -100,8 +106,15 @@ int main(int argc, char** argv)
 
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
-        GLWidget window;
 
+        // Create a GL format to OpenGL 3.2 Core
+        QGLFormat gl_format;
+        gl_format.setVersion(3, 2);
+        gl_format.setProfile(QGLFormat::CoreProfile);
+
+        // Set the GL format of the QGLWidget
+        GLWidget window(gl_format);
+        initQt(window);
 
         // Launch the event loop
         return_code = application.exec();
@@ -126,6 +139,22 @@ int main(int argc, char** argv)
 
 	// Return an exit code
 	return (return_code);
+}
+
+
+//---------------------------
+void initQt(GLWidget& aWindow)
+//---------------------------
+{
+    // Initialize Qt
+    // and create a windowed mode window and its OpenGL context
+
+    aWindow.resize(g_default_window_width, g_default_window_height);
+    aWindow.show();
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 04 using Qt4"));
+    
+    // Make the window's context current
+    aWindow.makeCurrent();
 }
 
 

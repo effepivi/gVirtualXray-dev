@@ -43,6 +43,8 @@ SET (RESOURCES_SOURCES
     shaders/display_gl2.vert
     shaders/display_gl3.frag
     shaders/display_gl3.vert
+    shaders/colour_texture_generation_gl2.frag
+    shaders/colour_texture_generation_gl2.vert
     shaders/colour_texture_generation_gl3.frag
     shaders/colour_texture_generation_gl3.vert
 )

@@ -27,8 +27,13 @@
 
 
 #include "LungMesh.h"
+
+#include "colour_texture_generation_gl2.vert.h"
+#include "colour_texture_generation_gl2.frag.h"
+
 #include "colour_texture_generation_gl3.vert.h"
 #include "colour_texture_generation_gl3.frag.h"
+
 
 //******************************************************************************
 //	constant variables
@@ -132,8 +137,19 @@ void LungMesh::initialize()
     std::string vertex_shader;
     std::string fragment_shader;
 
-    z_lib_return_code_vertex   = inflate(g_colour_texture_generation_gl3_vert, sizeof(g_colour_texture_generation_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_colour_texture_generation_gl3_frag, sizeof(g_colour_texture_generation_gl3_frag), &p_fragment_shader);
+    // Decompress the shader using the ZLib
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_colour_texture_generation_gl3_vert, sizeof(g_colour_texture_generation_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_colour_texture_generation_gl3_frag, sizeof(g_colour_texture_generation_gl3_frag), &p_fragment_shader);
+    }
+    // Modern OpenGL 3.2 or above isnot supported
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_colour_texture_generation_gl2_vert, sizeof(g_colour_texture_generation_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_colour_texture_generation_gl2_frag, sizeof(g_colour_texture_generation_gl2_frag), &p_fragment_shader);
+    }
 
 	//texture generation shader
     vertex_shader   = p_vertex_shader;

@@ -123,9 +123,10 @@ namespace gVirtualXRay {
 
 
 //******************************************************************************
-//  Class declaration
+//  Constant variables
 //******************************************************************************
-class GLWidget;
+const GLsizei g_default_window_width( 600);
+const GLsizei g_default_window_height(600);
 
 
 //==============================================================================
@@ -159,6 +160,16 @@ public:
     */
     //--------------------------------------------------------------------------
     GLWidget(QWidget* apPparent = 0);
+
+
+    //--------------------------------------------------------------------------
+    /// Default Constructor
+    /*
+    *   @param aGLFormat:   the OpenGL context
+    *   @param apPparent:   the parent widget
+    */
+    //--------------------------------------------------------------------------
+    GLWidget(QGLFormat& aGLFormat, QWidget *apPparent = 0);
 
 
     //--------------------------------------------------------------------------
