@@ -67,7 +67,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <QObject>
 #include <QApplication>
 #include <QtGui>
 #include <QGLWidget> 
@@ -170,7 +169,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    //aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 00"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 00"));
     
     // Make the window's context current
     aWindow.makeCurrent();

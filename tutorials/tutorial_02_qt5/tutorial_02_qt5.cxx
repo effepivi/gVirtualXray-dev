@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <QObject>
+#include <QOpenGLFunctions_3_2_Core>
 #include <QApplication>
 #include <QtGui>
 #include <QGLWidget>
@@ -183,7 +183,7 @@ void computeRotation(MATRIX4& aRotationMatrix);
 //******************************************************************************
 //  Class definition
 //******************************************************************************
-class GLWidget: public QGLWidget
+class GLWidget: public QGLWidget, protected QOpenGLFunctions_3_2_Core
 {
 public:
     GLWidget(QWidget *parent = 0);
@@ -257,8 +257,8 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
-    
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 02"));
+
     // Make the window's context current
     aWindow.makeCurrent();
 }
@@ -308,11 +308,14 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
+	// Initialise OpeGL functions
+	initializeOpenGLFunctions();
+
     // Initialise OpenGL
     initGL();
 
     // Initialise the shader from files compressed using the Z library
-    initShader();
+    //initShader();
 
     // Initialise the geometry of the 3D objects
     load3DObjects();
@@ -512,7 +515,7 @@ void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 //------------------------------------------------
 {
     // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
+    if (std::abs(wheelEvent->delta()) > EPSILON)
     {
         // Change the zoom
         g_zoom += 0.1 * wheelEvent->delta() * cm;

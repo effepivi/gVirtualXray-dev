@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <QObject>
+#include <QOpenGLFunctions_3_2_Core>
 #include <QApplication>
 #include <QtGui>
 #include <QGLWidget>
@@ -178,7 +178,7 @@ void errorCallback(int error, const char* description);
 //******************************************************************************
 //  Class definition
 //******************************************************************************
-class GLWidget: public QGLWidget
+class GLWidget: public QGLWidget, protected QOpenGLFunctions_3_2_Core
 {
 public:
     GLWidget(QWidget *parent = 0);
@@ -216,7 +216,7 @@ int main(int argc, char** argv)
         QGLFormat gl_format(QGLFormat::defaultFormat());
         gl_format.setVersion(3, 2);
         gl_format.setProfile(QGLFormat::CoreProfile);
-
+		
         // Set the GL format of the QGLWidget
         GLWidget window(gl_format);
         initQt(window);
@@ -299,6 +299,9 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
+	// Iiotialise OpeGL functions
+	initializeOpenGLFunctions();
+
     // Initialise OpenGL
     initGL();
 
@@ -385,7 +388,7 @@ void GLWidget::paintGL()
     // Restore the current transformation matrix
     popModelViewMatrix();
     popProjectionMatrix();
-
+	
     // Disable the shader and restore the previous shader from the stack
     popShaderProgram();
 
@@ -439,7 +442,6 @@ void GLWidget::resizeGL(int width, int height)
     loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, g_zoom,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
-
 }
 
 

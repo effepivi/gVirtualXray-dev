@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <QObject>
+#include <QOpenGLFunctions_3_2_Core>
 #include <QApplication>
 #include <QtGui>
 #include <QGLWidget>
@@ -199,7 +199,7 @@ void setSimulator();
 //******************************************************************************
 //  Class definition
 //******************************************************************************
-class GLWidget: public QGLWidget
+class GLWidget : public QGLWidget, protected QOpenGLFunctions_3_2_Core
 {
 public:
     GLWidget(QWidget *parent = 0);
@@ -324,6 +324,9 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
+	// Iiotialise OpeGL functions
+	initializeOpenGLFunctions();
+
     // Initialise OpenGL
     initGL();
 
@@ -589,7 +592,7 @@ void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 //------------------------------------------------
 {
     // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
+    if (std::abs(wheelEvent->delta()) > EPSILON)
     {
         // Change the zoom
         g_zoom += 0.1 * wheelEvent->delta() * cm;

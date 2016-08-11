@@ -63,6 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h> // For advanced OpenGL functionalities
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -285,7 +289,7 @@ void initGLFW()
 void initGLEW()
 //-------------
 {
-#ifdef _WIN32
+#ifdef HAS_GLEW
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{

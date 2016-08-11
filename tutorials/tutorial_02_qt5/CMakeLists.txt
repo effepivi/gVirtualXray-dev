@@ -79,13 +79,14 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt5 #########################################################################
+find_package(Qt5Gui)
 find_package(Qt5Widgets)
 find_package(Qt5OpenGL)
 
-IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+IF(Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
     SET(CMAKE_AUTOMOC ON)
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-    SET(optionalLibs ${optionalLibs} Qt5::Widgets Qt5::OpenGL)
+    SET(optionalLibs ${optionalLibs} Qt5::Gui Qt5::Widgets Qt5::OpenGL)
 
     # Create the main program ######################################################
     add_executable(tutorial_02_qt5 tutorial_02_qt5.cxx buildCube.cxx)
