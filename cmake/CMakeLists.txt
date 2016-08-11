@@ -302,21 +302,9 @@ IF (NOT GZIP_FOUND)
 ENDIF (NOT GZIP_FOUND)
 
 
-# OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED)
-IF (OPENGL_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLU_INCLUDE_PATH}")
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
-ELSE(OPENGL_FOUND)
-    MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF (OPENGL_FOUND)
-
-
 # GLEW ########################################################################
 # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
 OPTION(USE_SYSTEM_GLEW       "Use System GLEW"       OFF)
-SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
 
 IF (USE_SYSTEM_GLEW)
   FIND_PACKAGE(GLEW REQUIRED)
@@ -328,11 +316,23 @@ ENDIF (USE_SYSTEM_GLEW)
 
 IF (GLEW_FOUND)
     SET (HAS_GLEW ON)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLEW_INCLUDE_DIR}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
     SET (requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
 ENDIF (GLEW_FOUND)
+
+
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED)
+IF (OPENGL_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLU_INCLUDE_PATH}")
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
+ELSE(OPENGL_FOUND)
+    MESSAGE(FATAL_ERROR "OpenGL not found.")
+ENDIF (OPENGL_FOUND)
 
 
 # ZLIB #########################################################################
@@ -402,12 +402,20 @@ IF (USE_SYSTEM_LIBTIFF)
     FIND_PACKAGE( TIFF   REQUIRED )
 ELSE(USE_SYSTEM_LIBTIFF)
     INCLUDE(BuildLibTIFF)
-    build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
+
+    # Missing file on MV VC++ 2010
+    IF (NOT MSVC10)
+        build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
+    ENDIF (NOT MSVC10)
+
 ENDIF (USE_SYSTEM_LIBTIFF)
 
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
-SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${TIFF_LIBRARY_DIR})
-SET (requiredLibs ${requiredLibs} ${TIFF_LIBRARIES})
+IF (TIFF_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${TIFF_LIBRARY_DIR})
+    SET (requiredLibs ${requiredLibs} ${TIFF_LIBRARIES})
+ENDIF (TIFF_FOUND)
 
 
 # XCOM Database ################################################################
