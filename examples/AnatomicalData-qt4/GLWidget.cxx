@@ -285,9 +285,6 @@ void GLWidget::initializeGL()
     initGL();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
     // Initialise FreeType
     initFreeType();
 
