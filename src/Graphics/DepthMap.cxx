@@ -18,9 +18,8 @@
 //******************************************************************************
 #include <iostream>
 #include <fstream>
-#include <QtGui>
 
-#include "DepthMap.h"
+#include "gVirtualXRay/DepthMap.h"
 
 //******************************************************************************
 //	constant variables

@@ -22,7 +22,7 @@
 //******************************************************************************
 
 #ifndef INTERNALORGANMESH_H
-#include "InternalOrganMesh.h"
+#include "gVirtualXRay/InternalOrganMesh.h"
 #endif
 
 #ifndef GVXR_SHADER_H

@@ -140,6 +140,18 @@ SET (CXX_SOURCES
 	../src/Graphics/StereoHelper.cxx
 	../src/Graphics/TextRenderer.cxx
 	../src/Graphics/VBO.cxx
+	
+	../src/Graphics/AnatomicalMesh.cxx
+	../src/Graphics/InternalOrganMesh.cxx 
+	../src/Graphics/SoftTissueMesh.cxx 
+	
+	../src/Graphics/BoneMesh.cxx 
+	../src/Graphics/DiaphragmMesh.cxx 
+	../src/Graphics/LiverMesh.cxx 
+	../src/Graphics/LungsMesh.cxx 
+	../src/Graphics/SkinMesh.cxx
+
+	../src/Graphics/DepthMap.cxx
 
     # Utilities
 	../src/Utilities/AtomicElement.cxx
@@ -194,6 +206,18 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/TextRenderer.h
 	../include/gVirtualXRay/TextRenderer.inl
 
+	../include/gVirtualXRay/AnatomicalMesh.h 
+	../include/gVirtualXRay/InternalOrganMesh.h
+	../include/gVirtualXRay/SoftTissueMesh.h
+	
+	../include/gVirtualXRay/BoneMesh.h 
+	../include/gVirtualXRay/DiaphragmMesh.h 
+	../include/gVirtualXRay/LiverMesh.h 
+	../include/gVirtualXRay/LungsMesh.h 
+	../include/gVirtualXRay/SkinMesh.h
+
+	../include/gVirtualXRay/DepthMap.h 
+	
 	# Math
 	../include/gVirtualXRay/Matrix4x4.h
 	../include/gVirtualXRay/Matrix4x4.inl
@@ -508,6 +532,16 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl3.frag
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl3.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/FreeSans.ttf
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/depth_map_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/depth_map_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/bump_map_generation_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/bump_map_generation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/colour_texture_generation_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/colour_texture_generation_gl3.vert
+
 )
 CreateHeaderFiles("." "BinaryLibFiles" "${RESOURCES_SOURCES}")
 

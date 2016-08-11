@@ -1,12 +1,12 @@
-#ifndef BONE_MESH_H
-#define BONE_MESH_H
+#ifndef DIAPHRAGM_MESH_H
+#define DIAPHRAGM_MESH_H
 
 /**
 ********************************************************************************
 *
-*	@file		BoneMesh.h
+*	@file		DiaphragmMesh.h
 *
-*	@brief      Class to handle a polygon mesh for Bone.
+*	@brief      Class to handle a polygon mesh for a diaphragm.
 *
 *	@version	1.0
 *
@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef INTERNALORGANMESH_H
-#include "InternalOrganMesh.h"
+#ifndef SOFT_TISSUE_MESH_H
+#include "gVirtualXRay/SoftTissueMesh.h"
 #endif
 
 //******************************************************************************
@@ -33,11 +33,11 @@ namespace gVirtualXRay {
 
 //==============================================================================
 /**
-*   @class  BoneMesh
-*   @brief  BoneMesh is a class to handle a polygon mesh for Bone.
+*   @class  DiaphragmMesh
+*   @brief  DiaphragmMesh is a class to handle a polygon mesh for a diaphragm.
 */
 //==============================================================================
-class BoneMesh: public InternalOrganMesh
+class DiaphragmMesh: public SoftTissueMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -45,30 +45,39 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	BoneMesh();
+	DiaphragmMesh();
 
 	//--------------------------------------------------------------------------
 	/// Destructor
 	//--------------------------------------------------------------------------
-	virtual ~BoneMesh();
+	virtual ~DiaphragmMesh();
+
+protected:
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader bump map generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineBumpMapShaderInput(GLint shader_id);
 
 	//--------------------------------------------------------------------------
-	/// return true if the mesh represent a soft tissue
-	//--------------------------------------------------------------------------
-	virtual bool isSoftTissue() const;
+	/// Link the attributes to their id in the shader for colour texture generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineColourTextureShaderInput(GLint shader_id);
 
 	//--------------------------------------------------------------------------
-	/// Merge the vertices for optimization and a smoother display
-	//--------------------------------------------------------------------------
-	virtual void initialize();
-
-	//--------------------------------------------------------------------------
-	/// Set the matrix. Useful only for the diaphragm
+	/// Set the matrix for the bump map
 	//--------------------------------------------------------------------------
 	virtual void setMatrix(Matrix4x4<float> const& matrix);
 
+	//matrix for the bump map (to know where the center is)
+	Matrix4x4<float> m_matrix;
 };
 
 } // namespace gVirtualXRay
 
-#endif // BONE_MESH_H
+#endif // DIAPHRAGM_MESH_H

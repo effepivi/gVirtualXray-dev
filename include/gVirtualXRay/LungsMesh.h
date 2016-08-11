@@ -1,12 +1,12 @@
-#ifndef INTERNALORGANMESH_H
-#define INTERNALORGANMESH_H
+#ifndef LUNGS_MESH_H
+#define LUNGS_MESH_H
 
 /**
 ********************************************************************************
 *
-*	@file		InternalOrganMesh.h
+*	@file		LungsMesh.h
 *
-*	@brief      Class to handle a polygon mesh for an internal organ.
+*	@brief      Class to handle a polygon mesh for lungs.
 *
 *	@version	1.0
 *
@@ -20,50 +20,61 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include <AnatomicalMesh.h>
+
+#ifndef SOFT_TISSUE_MESH_H
+#include "gVirtualXRay/SoftTissueMesh.h"
+#endif
 
 //******************************************************************************
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
+
 //==============================================================================
 /**
-*   @class  InternalOrganMesh
-*   @brief  InternalOrganMesh is a class to handle a polygon mesh for an internal organ.
+*   @class  LungsMesh
+*   @brief  LungsMesh is a class to handle a polygon mesh for a lung.
 */
 //==============================================================================
-class InternalOrganMesh: public AnatomicalMesh {
+class LungsMesh: public SoftTissueMesh
+//------------------------------------------------------------------------------
+{
+//******************************************************************************
 public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	InternalOrganMesh();
+	LungsMesh();
 
 	//--------------------------------------------------------------------------
 	/// Destructor
 	//--------------------------------------------------------------------------
-	virtual ~InternalOrganMesh();
+	virtual ~LungsMesh();
 
 	//--------------------------------------------------------------------------
-	/// return true if the mesh has to be displayed with transparency
+	/// Set the matrix. Useful only for the diaphragm
 	//--------------------------------------------------------------------------
-	virtual bool isTransparent() const;
+	virtual void setMatrix(Matrix4x4<float> const& matrix);
 
+protected:
 	//--------------------------------------------------------------------------
-	/// return true if the mesh represent a soft tissue
-	//--------------------------------------------------------------------------
-	virtual bool isSoftTissue() const = 0;
-
-	//--------------------------------------------------------------------------
-	/// Link the attributes to their id in the shader
+	/// Link the attributes to their id in the shader bump map generation
     /*
-    *   @param aShaderID: The GLSL shader used to display the anatomical mesh
+    *   @param shader_id: The GLSL shader
     */
 	//-------------------------------------------------------------------------
-	virtual void defineDisplayShaderInput(GLint shader_id);
+	virtual void defineBumpMapShaderInput(GLint shader_id);
+
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader for colour texture generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineColourTextureShaderInput(GLint shader_id);
 };
 
 } // namespace gVirtualXRay
 
-#endif // INTERNALORGANMESH_H
+#endif // LUNGS_MESH_H

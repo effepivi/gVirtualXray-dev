@@ -1,12 +1,12 @@
-#ifndef LUNGS_MESH_H
-#define LUNGS_MESH_H
+#ifndef BONE_MESH_H
+#define BONE_MESH_H
 
 /**
 ********************************************************************************
 *
-*	@file		LungsMesh.h
+*	@file		BoneMesh.h
 *
-*	@brief      Class to handle a polygon mesh for lungs.
+*	@brief      Class to handle a polygon mesh for Bone.
 *
 *	@version	1.0
 *
@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef SOFT_TISSUE_MESH_H
-#include "SoftTissueMesh.h"
+#ifndef INTERNALORGANMESH_H
+#include "gVirtualXRay/InternalOrganMesh.h"
 #endif
 
 //******************************************************************************
@@ -33,11 +33,11 @@ namespace gVirtualXRay {
 
 //==============================================================================
 /**
-*   @class  LungsMesh
-*   @brief  LungsMesh is a class to handle a polygon mesh for a lung.
+*   @class  BoneMesh
+*   @brief  BoneMesh is a class to handle a polygon mesh for Bone.
 */
 //==============================================================================
-class LungsMesh: public SoftTissueMesh
+class BoneMesh: public InternalOrganMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -45,36 +45,30 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	LungsMesh();
+	BoneMesh();
 
 	//--------------------------------------------------------------------------
 	/// Destructor
 	//--------------------------------------------------------------------------
-	virtual ~LungsMesh();
+	virtual ~BoneMesh();
+
+	//--------------------------------------------------------------------------
+	/// return true if the mesh represent a soft tissue
+	//--------------------------------------------------------------------------
+	virtual bool isSoftTissue() const;
+
+	//--------------------------------------------------------------------------
+	/// Merge the vertices for optimization and a smoother display
+	//--------------------------------------------------------------------------
+	virtual void initialize();
 
 	//--------------------------------------------------------------------------
 	/// Set the matrix. Useful only for the diaphragm
 	//--------------------------------------------------------------------------
 	virtual void setMatrix(Matrix4x4<float> const& matrix);
 
-protected:
-	//--------------------------------------------------------------------------
-	/// Link the attributes to their id in the shader bump map generation
-    /*
-    *   @param shader_id: The GLSL shader
-    */
-	//-------------------------------------------------------------------------
-	virtual void defineBumpMapShaderInput(GLint shader_id);
-
-	//--------------------------------------------------------------------------
-	/// Link the attributes to their id in the shader for colour texture generation
-    /*
-    *   @param shader_id: The GLSL shader
-    */
-	//-------------------------------------------------------------------------
-	virtual void defineColourTextureShaderInput(GLint shader_id);
 };
 
 } // namespace gVirtualXRay
 
-#endif // LUNGS_MESH_H
+#endif // BONE_MESH_H

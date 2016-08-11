@@ -1,7 +1,7 @@
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalMesh.h
+*	@file		AnatomicalMesh.cxx
 *
 *	@brief      Class to handle a polygon mesh for tissue.
 *
@@ -19,7 +19,7 @@
 //	Include
 //******************************************************************************
 #ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
 //******************************************************************************

@@ -1,12 +1,12 @@
-#ifndef SKIN_MESH_H
-#define SKIN_MESH_H
+#ifndef LIVER_MESH_H
+#define LIVER_MESH_H
 
 /**
 ********************************************************************************
 *
-*	@file		SkinMesh.h
+*	@file		LiverMesh.h
 *
-*	@brief      Class to handle a polygon mesh for Skin.
+*	@brief      Class to handle a polygon mesh for a liver.
 *
 *	@version	1.0
 *
@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#ifndef SOFT_TISSUE_MESH_H
+#include "gVirtualXRay/SoftTissueMesh.h"
 #endif
 
 //******************************************************************************
@@ -33,50 +33,31 @@ namespace gVirtualXRay {
 
 //==============================================================================
 /**
-*   @class  SkinMesh
-*   @brief  SkinMesh is a class to handle a polygon mesh for Skin.
+*   @class  LiverMesh
+*   @brief  LiverMesh is a class to handle a polygon mesh for a liver.
 */
 //==============================================================================
-class SkinMesh: public AnatomicalMesh
+class LiverMesh: public SoftTissueMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
-
 public:
-
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	SkinMesh();
+	LiverMesh();
 
 	//--------------------------------------------------------------------------
 	/// Destructor
 	//--------------------------------------------------------------------------
-	virtual ~SkinMesh();
-
-	//--------------------------------------------------------------------------
-	/// return true if the mesh has to be displayed with transparency
-	//--------------------------------------------------------------------------
-	virtual bool isTransparent() const;
-
-	//--------------------------------------------------------------------------
-	/// return true if the mesh represent a soft tissue
-	//--------------------------------------------------------------------------
-	virtual bool isSoftTissue() const;
-
-	//--------------------------------------------------------------------------
-	/// Merge the vertices for optimization and a smoother display
-	//--------------------------------------------------------------------------
-	virtual void initialize();
+	virtual ~LiverMesh();
 
 	//--------------------------------------------------------------------------
 	/// Set the matrix. Useful only for the diaphragm
 	//--------------------------------------------------------------------------
 	virtual void setMatrix(Matrix4x4<float> const& matrix);
-
-
 };
 
 } // namespace gVirtualXRay
 
-#endif // SKIN_MESH_H
+#endif // LIVER_MESH_H

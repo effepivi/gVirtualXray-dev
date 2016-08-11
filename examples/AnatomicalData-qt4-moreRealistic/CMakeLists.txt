@@ -49,14 +49,6 @@ SET (RESOURCES_SOURCES
     ../shaders/display_image_gl3.vert
     ../shaders/display_gui.frag
     ../shaders/display_gui.vert
-    shaders/display_realistic_gl3.frag
-    shaders/display_realistic_gl3.vert
-    shaders/depth_map_gl3.frag
-    shaders/depth_map_gl3.vert
-    shaders/bump_map_generation_gl3.frag
-    shaders/bump_map_generation_gl3.vert
-    shaders/colour_texture_generation_gl3.frag
-    shaders/colour_texture_generation_gl3.vert
 )
 CreateHeaderFiles("." "BinaryAnatomicalDataQt4MoreRealisticFiles" "${RESOURCES_SOURCES}")
 
@@ -98,19 +90,7 @@ ENDIF(Qt4_FOUND)
 IF(Qt4_FOUND)
 add_executable(demo-anatomical-data-qt4-more-realistic 
 	AnatomicalData-qt4-moreRealistic.cxx  
-	GLWidget.h GLWidget.cxx 
-	
-	AnatomicalMesh.h AnatomicalMesh.cxx
-	InternalOrganMesh.h InternalOrganMesh.cxx 
-	SoftTissueMesh.h SoftTissueMesh.cxx 
-	
-	BoneMesh.h BoneMesh.cxx 
-	DiaphragmMesh.h DiaphragmMesh.cxx 
-	LiverMesh.h LiverMesh.cxx 
-	LungsMesh.h LungsMesh.cxx 
-	SkinMesh.h SkinMesh.cxx
-
-	DepthMap.h DepthMap.cxx)
+	GLWidget.h GLWidget.cxx )
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(demo-anatomical-data-qt4-more-realistic   gVirtualXRay)
@@ -131,29 +111,8 @@ ELSE (NOT APPLE)
     SET(AnatomicalData-qt4-moreRealistic_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData-qt4-moreRealistic.cxx
         
-	${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.cxx
-
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalMesh.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/InternalOrganMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/InternalOrganMesh.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/SoftTissueMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/SoftTissueMesh.cxx
-
-        ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/DiaphragmMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/DiaphragmMesh.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/LiverMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/LiverMesh.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/LungsMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/LungsMesh.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/SkinMesh.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/SkinMesh.cxx
-
-	${CMAKE_CURRENT_SOURCE_DIR}/DepthMap.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/DepthMap.cxx
+		${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.h
+		${CMAKE_CURRENT_SOURCE_DIR}/GLWidget.cxx
 
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt

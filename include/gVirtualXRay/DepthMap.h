@@ -30,7 +30,7 @@
 #endif
 
 #ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
 #ifndef GVXR_SHADER_H

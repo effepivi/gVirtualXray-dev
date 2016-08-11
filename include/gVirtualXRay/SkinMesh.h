@@ -1,12 +1,12 @@
-#ifndef DIAPHRAGM_MESH_H
-#define DIAPHRAGM_MESH_H
+#ifndef SKIN_MESH_H
+#define SKIN_MESH_H
 
 /**
 ********************************************************************************
 *
-*	@file		DiaphragmMesh.h
+*	@file		SkinMesh.h
 *
-*	@brief      Class to handle a polygon mesh for a diaphragm.
+*	@brief      Class to handle a polygon mesh for Skin.
 *
 *	@version	1.0
 *
@@ -21,8 +21,8 @@
 //	Include
 //******************************************************************************
 
-#ifndef SOFT_TISSUE_MESH_H
-#include "SoftTissueMesh.h"
+#ifndef ANATOMICAL_MESH_H
+#include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
 //******************************************************************************
@@ -33,51 +33,50 @@ namespace gVirtualXRay {
 
 //==============================================================================
 /**
-*   @class  DiaphragmMesh
-*   @brief  DiaphragmMesh is a class to handle a polygon mesh for a diaphragm.
+*   @class  SkinMesh
+*   @brief  SkinMesh is a class to handle a polygon mesh for Skin.
 */
 //==============================================================================
-class DiaphragmMesh: public SoftTissueMesh
+class SkinMesh: public AnatomicalMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
+
 public:
+
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	DiaphragmMesh();
+	SkinMesh();
 
 	//--------------------------------------------------------------------------
 	/// Destructor
 	//--------------------------------------------------------------------------
-	virtual ~DiaphragmMesh();
-
-protected:
-	//--------------------------------------------------------------------------
-	/// Link the attributes to their id in the shader bump map generation
-    /*
-    *   @param shader_id: The GLSL shader
-    */
-	//-------------------------------------------------------------------------
-	virtual void defineBumpMapShaderInput(GLint shader_id);
+	virtual ~SkinMesh();
 
 	//--------------------------------------------------------------------------
-	/// Link the attributes to their id in the shader for colour texture generation
-    /*
-    *   @param shader_id: The GLSL shader
-    */
-	//-------------------------------------------------------------------------
-	virtual void defineColourTextureShaderInput(GLint shader_id);
+	/// return true if the mesh has to be displayed with transparency
+	//--------------------------------------------------------------------------
+	virtual bool isTransparent() const;
 
 	//--------------------------------------------------------------------------
-	/// Set the matrix for the bump map
+	/// return true if the mesh represent a soft tissue
+	//--------------------------------------------------------------------------
+	virtual bool isSoftTissue() const;
+
+	//--------------------------------------------------------------------------
+	/// Merge the vertices for optimization and a smoother display
+	//--------------------------------------------------------------------------
+	virtual void initialize();
+
+	//--------------------------------------------------------------------------
+	/// Set the matrix. Useful only for the diaphragm
 	//--------------------------------------------------------------------------
 	virtual void setMatrix(Matrix4x4<float> const& matrix);
 
-	//matrix for the bump map (to know where the center is)
-	Matrix4x4<float> m_matrix;
+
 };
 
 } // namespace gVirtualXRay
 
-#endif // DIAPHRAGM_MESH_H
+#endif // SKIN_MESH_H

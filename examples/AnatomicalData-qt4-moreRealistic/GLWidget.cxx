@@ -107,19 +107,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef ANATOMICAL_MESH_H
-#include "AnatomicalMesh.h"
+#include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
 
-#include "BoneMesh.h"
+#include "gVirtualXRay/BoneMesh.h"
 
-#include "DiaphragmMesh.h"
+#include "gVirtualXRay/DiaphragmMesh.h"
 
-#include "LiverMesh.h"
+#include "gVirtualXRay/LiverMesh.h"
 
-#include "LungsMesh.h"
+#include "gVirtualXRay/LungsMesh.h"
 
-#include "SkinMesh.h"
+#include "gVirtualXRay/SkinMesh.h"
 
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"

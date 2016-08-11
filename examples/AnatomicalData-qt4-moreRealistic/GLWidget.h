@@ -113,7 +113,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef DEPTH_MAP_H
-#include "DepthMap.h"
+#include "gVirtualXRay/DepthMap.h"
 #endif
 
 //******************************************************************************

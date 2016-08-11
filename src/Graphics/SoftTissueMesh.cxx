@@ -24,7 +24,7 @@
 #include <algorithm>
 
 
-#include "SoftTissueMesh.h"
+#include "gVirtualXRay/SoftTissueMesh.h"
 
 #ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
