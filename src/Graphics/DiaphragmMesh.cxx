@@ -30,8 +30,8 @@ DiaphragmMesh::DiaphragmMesh():
 		SoftTissueMesh()
 //----------------------------------------------
 {
-	getMaterial().setDiffuseColour(0.62,0.12,0.12,1.);
-	getMaterial().setAmbientColour(0.62,0.12,0.12,1.);
+	getMaterial().setDiffuseColour(0.58,0.2,0.15,1.);
+	getMaterial().setAmbientColour(0.58,0.22,0.17,1.);
 	m_has_tendon=1;
 }
 
@@ -57,7 +57,7 @@ void DiaphragmMesh::defineBumpMapShaderInput(GLint shader_id)
 void DiaphragmMesh::defineColourTextureShaderInput(GLint shader_id)
  //----------------------------------------------
 {
-	GLfloat second_colour[] = {0.73,0.67,0.6,1.};
+	GLfloat second_colour[] = {1.,0.73,0.6,1.};
 	GLuint handle(glGetUniformLocation(shader_id, "g_second_colour"));
 	glUniform4fv(handle, 1, &second_colour[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
