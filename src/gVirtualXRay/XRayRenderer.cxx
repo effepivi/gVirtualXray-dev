@@ -63,6 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -2852,7 +2856,11 @@ void XRayRenderer::normalise()
 	{
 		PixelType pixel_value(m_p_temp_raw_data[i]);
 
+#if defined(isinf) && defined(isnan)
+		if (!isinf(pixel_value) && !isnan(pixel_value))
+#else    
 		if (!std::isinf(pixel_value) && !std::isnan(pixel_value))
+#endif
 		{
 		    if (m_min_value_in_simulated_xray_image > pixel_value) m_min_value_in_simulated_xray_image = pixel_value;
 		    if (m_max_value_in_simulated_xray_image < pixel_value) m_max_value_in_simulated_xray_image = pixel_value;
