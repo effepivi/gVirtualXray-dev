@@ -98,6 +98,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "buildCube.h" // Create the triangle mesh of a cube
 
+#include "tutorial_02_gl2.frag.h" // Fragment shader for OpenGL 2.x
+#include "tutorial_02_gl2.vert.h" // Vertex shader for OpenGL 2.x
+
 #include "tutorial_02_gl3.frag.h" // Fragment shader for OpenGL 3.x
 #include "tutorial_02_gl3.vert.h" // Vertex shader for OpenGL 3.x
 
@@ -301,13 +304,19 @@ void initShader()
     std::string vertex_shader;
     std::string fragment_shader;
 
-    // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert,
-            sizeof(g_tutorial_02_gl3_vert),
-            &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag,
-            sizeof(g_tutorial_02_gl3_frag),
-            &p_fragment_shader);
+    // Decompress the shader using the ZLib
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert, sizeof(g_tutorial_02_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag, sizeof(g_tutorial_02_gl3_frag), &p_fragment_shader);
+    }
+    // Modern OpenGL 3.2 or above isnot supported
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_02_gl2_vert, sizeof(g_tutorial_02_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_02_gl2_frag, sizeof(g_tutorial_02_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;

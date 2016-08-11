@@ -39,6 +39,8 @@ cmake_policy(SET CMP0020 NEW)
 
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES
+    tutorial_03_gl2.frag
+    tutorial_03_gl2.vert
     tutorial_03_gl3.frag
     tutorial_03_gl3.vert
 )

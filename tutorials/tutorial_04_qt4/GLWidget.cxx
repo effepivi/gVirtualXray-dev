@@ -106,6 +106,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#include "display_gl2.frag.h"
+#include "display_gl2.vert.h"
+
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
@@ -209,7 +212,7 @@ GLWidget::GLWidget(QWidget *parent):
 
     resize(g_default_window_width, g_default_window_height);
     show();
-    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt4"));
+    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 04 using Qt4"));
 
     // Make the window's context current
     makeCurrent();
@@ -498,9 +501,20 @@ void GLWidget::initGL()
     std::string fragment_shader;
 
     // Display shader
-    z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
-
+    
+    // Decompress the shader using the ZLib
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+    }
+    // Modern OpenGL 3.2 or above isnot supported
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;

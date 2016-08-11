@@ -37,6 +37,8 @@ project(gVirtualXRay-tutorial_03_glut)
 SET (RESOURCES_SOURCES
     tutorial_03_gl2.frag
     tutorial_03_gl2.vert
+    tutorial_03_gl3.frag
+    tutorial_03_gl3.vert
 )
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../CreateHeaderFiles.cmake)

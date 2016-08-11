@@ -172,7 +172,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 00"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 00 using Qt4"));
     
     // Make the window's context current
     aWindow.makeCurrent();

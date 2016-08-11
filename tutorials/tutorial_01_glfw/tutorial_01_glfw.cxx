@@ -134,7 +134,31 @@ vector<float> g_p_vertex_set_2;
 RATIONAL_NUMBER g_zoom(50.0 * cm);
 
 // Vertex shader
-const GLchar* g_vertex_shader = "\
+const GLchar* g_vertex_shader_110 = "\
+\n#version 110\n \
+\n \
+uniform mat4 g_projection_matrix;\n \
+uniform mat4 g_modelview_matrix;\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);\n \
+}\n \
+";
+
+// Fragment shader
+const GLchar* g_fragment_shader_110 = "\
+\n#version 110\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+}\n \
+";
+
+
+// Vertex shader
+const GLchar* g_vertex_shader_150 = "\
 \n#version 150\n \
 \n \
 in vec3 in_Vertex;\n \
@@ -149,7 +173,7 @@ void main(void)\n \
 ";
 
 // Fragment shader
-const GLchar* g_fragment_shader = "\
+const GLchar* g_fragment_shader_150 = "\
 \n#version 150\n \
 precision highp float;\n \
 \n \
@@ -201,7 +225,16 @@ int main(int argc, char** argv)
         g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
         // Load the source code of the shaders onto the GPU
-        g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
+        // Modern OpenGL 3.2 or above is supported
+        if (useOpenGL3_2OrAbove())
+        {
+            g_display_shader.loadSource(g_vertex_shader_150, g_fragment_shader_150);
+        }
+        // Modern OpenGL 3.2 or above is not supported
+        else
+        {
+            g_display_shader.loadSource(g_vertex_shader_110, g_fragment_shader_110);
+        }
 
         // Initialise the geometry of the 3D objects
         load3DObjects();

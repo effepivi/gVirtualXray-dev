@@ -35,6 +35,8 @@ project(gVirtualXRay-tutorial_02_qt4)
 
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES
+    tutorial_02_gl2.frag
+    tutorial_02_gl2.vert
     tutorial_02_gl3.frag
     tutorial_02_gl3.vert
 )
