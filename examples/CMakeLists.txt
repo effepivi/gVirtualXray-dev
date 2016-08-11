@@ -42,18 +42,34 @@ else()
     find_package(gVirtualXRay REQUIRED)
 endif()
 
+IF (USE_FLTK)
+    add_subdirectory(GUI-FLTK)
+ENDIF ()
 
-add_subdirectory(STL-File-glut)
-add_subdirectory(GUI-FLTK)
+IF (USE_GLFW)
+    add_subdirectory(AnatomicalData-glfw)
+    add_subdirectory(STL-File-glfw)
+    add_subdirectory(Intersections)
+ENDIF ()
+
+IF (USE_GLUT)
+    add_subdirectory(STL-File-glut)
+ENDIF ()
+
+
+IF (USE_QT4)
+    add_subdirectory(AnatomicalData-qt4)
+    add_subdirectory(AnatomicalData-qt4-moreRealistic)
+ENDIF ()
+
+IF (USE_QT5)
+    add_subdirectory(AnatomicalData-qt5)
+ENDIF ()
+
+
 ##add_subdirectory(SimpleBackProjection)
 ##add_subdirectory(Tomography)
 ##add_subdirectory(Iso-Surfaces)
-add_subdirectory(Intersections)
-add_subdirectory(AnatomicalData-glfw)
-add_subdirectory(STL-File-glfw)
-add_subdirectory(AnatomicalData-qt4)
-add_subdirectory(AnatomicalData-qt4-moreRealistic)
-add_subdirectory(AnatomicalData-qt5)
 ##add_subdirectory(VisualArts)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)

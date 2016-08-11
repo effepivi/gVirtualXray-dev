@@ -248,7 +248,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01 using Qt5"));
     
     // Make the window's context current
     aWindow.makeCurrent();
@@ -299,9 +299,12 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
-	// Iiotialise OpeGL functions
+	// Initialise OpeGL functions
 	initializeOpenGLFunctions();
 
+	// Initialise GLEW if needed
+	initialiseGLEW();
+	
     // Initialise OpenGL
     initGL();
 

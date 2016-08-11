@@ -64,6 +64,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -171,7 +175,6 @@ RATIONAL_NUMBER g_expected_result(0.0);
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGLEW();
 void initGL();
 void loadSTLFile();
 void loadDetector();
@@ -219,7 +222,7 @@ int main(int argc, char** argv)
 	    glfwWindowHint(GLFW_SAMPLES, 4);
 
 	    // Create a windowed mode window and its OpenGL context
-	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+	    g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Validation 03", NULL, NULL);
 	   
         // Window cannot be created 
         if (!g_p_main_window_id)
@@ -228,7 +231,7 @@ int main(int argc, char** argv)
             glfwWindowHint(GLFW_STEREO, GL_FALSE);
 
             // Create the window
-	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+	        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Validation 03", NULL, NULL);
         }
         
         // Window cannot be created 
@@ -242,7 +245,7 @@ int main(int argc, char** argv)
 	    glfwMakeContextCurrent(g_p_main_window_id);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
 		initGL();
@@ -340,23 +343,6 @@ void quit()
         g_p_main_window_id = 0;
         glfwTerminate();
 	}
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-#if defined(_WIN32) || defined(_WIN64)
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
 }
 
 

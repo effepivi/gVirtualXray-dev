@@ -82,6 +82,87 @@ Tutorials using:
 - Qt4
 - Qt5
 
+
+
+
+VC++ 2010-64
+
+demo-anatomical-data-glfw
+
+demo-anatomical-data-qt5
+
+gVirtualXRay-gui
+
+tutorial_00_glfw
+tutorial_00_glut
+tutorial_00_qt5
+tutorial_01_glfw
+tutorial_01_glut
+tutorial_01_qt5
+tutorial_02_glfw
+tutorial_02_glut
+tutorial_02_qt5
+tutorial_03_glfw
+tutorial_03_glut
+tutorial_03_qt5
+
+validation_01
+validation_02
+validation_03
+validation_04
+validation_05
+validation_06
+validation_07
+validation_09
+welsh_dragon_glfw
+welsh_dragon_glut
+
+VC++ 2013-64
+
+demo-anatomical-data-glfw
+
+demo-anatomical-data-qt5
+
+gVirtualXRay-gui
+
+tutorial_00_glfw
+tutorial_00_glut
+tutorial_00_qt5
+tutorial_01_glfw
+tutorial_01_glut
+tutorial_01_qt5
+tutorial_02_glfw
+tutorial_02_glut
+tutorial_02_qt5
+tutorial_03_glfw
+tutorial_03_glut
+tutorial_03_qt5
+
+validation_01
+validation_02
+validation_03
+validation_04
+validation_05
+validation_06
+validation_07
+validation_09
+
+welsh_dragon_glfw
+welsh_dragon_glut
+
+
+
+VC++ 2010-32
+
+VC++ 2013-32
+ 
+
+
+
+
+
+
+
 Includes a small 3D library to create FBO, VBO, matrix stacks, viewing transformations, etc.
 
 

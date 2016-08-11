@@ -109,7 +109,6 @@ XRayRenderer g_xray_renderer;
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGLEW();
 void loadDetector();
 void loadSource();
 void loadXRaySimulator();
@@ -136,7 +135,7 @@ int main(int argc, char** argv)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
 	    // Create the window
-	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
+	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "gVirtualXRay -- Validation 02", 0, 0));
 	    if (!p_main_window_id)
 	    {
 	        glfwTerminate();
@@ -148,7 +147,7 @@ int main(int argc, char** argv)
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Load the data
 		loadDetector();
@@ -190,21 +189,6 @@ int main(int argc, char** argv)
 	}
 
 	return (EXIT_SUCCESS);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
 }
 
 

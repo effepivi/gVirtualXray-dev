@@ -248,7 +248,6 @@ TextRenderer g_font_rendered;
 //	Function declaration
 //******************************************************************************
 void initGLUT(int argc, char** argv);
-void initGLEW();
 void initGL();
 void initFreeType();
 void displayCallback();
@@ -288,7 +287,7 @@ int main(int argc, char** argv)
         initGLUT(argc, argv);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
  		// Is stereo enable
 		if (g_stereo_helper.enable())
@@ -409,21 +408,6 @@ void initGLUT(int argc, char** argv)
     glutSpecialFunc(specialKeyCallback);
     glutMouseFunc(mouseButtonCallback);
     glutMotionFunc(cursorPosCallback);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
 }
 
 

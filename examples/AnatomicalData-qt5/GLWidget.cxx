@@ -72,11 +72,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <streambuf>
 #include <ctime>
 
-#include <QObject>
+#include <QApplication>
 #include <QtGui>
 #include <QGLWidget>
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 
 
@@ -207,7 +207,6 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent),
 
-
     m_zoom(100.0 * cm),
 
     m_use_arc_ball(false),
@@ -241,7 +240,53 @@ GLWidget::GLWidget(QWidget *parent):
 
     resize(g_default_window_width, g_default_window_height);
     show();
-    //setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
+    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
+
+    // Make the window's context current
+    makeCurrent();
+}
+
+
+
+//-----------------------------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget* apPparent):
+//-----------------------------------------------------------
+    QGLWidget(aGLFormat, apPparent),
+
+    m_zoom(100.0 * cm),
+
+    m_use_arc_ball(false),
+    m_last_x_position(0),
+    m_last_y_position(0),
+
+    m_display_beam(true),
+
+    m_p_P4_polygon_mesh_set(6),
+    m_p_P5_polygon_mesh_set(6),
+    m_current_patient(P4),
+
+    m_display_wireframe(false),
+
+    m_angle_step(1),
+    m_next_angle_to_process(0),
+    m_current_angle(0),
+    m_simulation_total_time(0),
+    m_number_of_rotations(0),
+    m_acquisition_type(ROTATE_SOURCE_DETECTOR),
+
+    #ifdef HAS_FREETYPE
+    m_display_help(true),
+    #endif
+
+    m_swap_patient(false)
+//-----------------------------------------------------------
+{
+    // Initialize Qt
+    // and create a windowed mode window and its OpenGL context
+
+    resize(g_default_window_width, g_default_window_height);
+    show();
+    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
 
     // Make the window's context current
     makeCurrent();
@@ -260,7 +305,13 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
-    // Check the OpenGL version
+	// Initialise OpeGL functions
+	initializeOpenGLFunctions();
+
+	// Initialise GLEW if needed
+	initialiseGLEW();
+
+	// Check the OpenGL version
     std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
 
     // Check the GLSL version
@@ -1131,7 +1182,11 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
             Vec3<GLfloat> va(getArcballVector(m_last_x_position,    m_last_y_position));
             Vec3<GLfloat> vb(getArcballVector(aXmousePosition, aYmousePosition));
 
-            float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+#ifdef _WIN32
+			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+#else
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+#endif
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
             //axis_in_camera_coord.normalize();

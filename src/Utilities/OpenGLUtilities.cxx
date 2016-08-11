@@ -63,6 +63,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -92,6 +96,34 @@ std::vector<int> g_frame_buffer_object_stack;
 std::vector<std::pair<int, int> > g_texture_stack;
 std::vector<std::pair<int, bool> > g_enable_disable_state_stack;
 std::vector<int> g_shader_program_stack;
+
+
+//-------------------
+void initialiseGLEW()
+//-------------------
+{
+#ifdef HAS_GLEW
+	glewExperimental = GL_TRUE;
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
+	glGetError(); // Remove an error that occurs in Windows
+#endif
+}
+
+
+//-------------------
+void initializeGLEW()
+//-------------------
+{
+	initialiseGLEW();
+}
 
 
 //----------------------------------------------------

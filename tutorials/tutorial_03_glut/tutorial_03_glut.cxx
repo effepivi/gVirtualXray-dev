@@ -179,7 +179,6 @@ bool g_wireframe(false);
 //  Function declaration
 //******************************************************************************
 void initGLUT(int argc, char** argv);
-void initGLEW();
 void initGL();
 void initShader();
 void load3DObjects();
@@ -216,7 +215,7 @@ int main(int argc, char** argv)
         initGLUT(argc, argv);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -274,7 +273,7 @@ void initGLUT(int argc, char** argv)
 	// Create a windowed mode window and its OpenGL context
 	glutInitWindowSize(g_window_width, g_window_height);
 	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 03");
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 03 using Glut");
 
     // The window has not been created
     if (!g_window_id)
@@ -290,21 +289,6 @@ void initGLUT(int argc, char** argv)
     glutMouseFunc(mouseButtonCallback);
     glutMotionFunc(cursorPosCallback);
     glutIdleFunc(idleCallback);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
 }
 
 

@@ -75,6 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include <QGLWidget>
+#include <QOpenGLFunctions_3_2_Core>
 
 #ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
@@ -125,7 +126,7 @@ namespace gVirtualXRay {
 *   @brief  GLWidget is a class to manage a Qt4 widget that handles our OpenGL window.
 */
 //==============================================================================
-class GLWidget: public QGLWidget
+class GLWidget: public QGLWidget, protected QOpenGLFunctions_3_2_Core
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -160,6 +161,16 @@ public:
     */
     //--------------------------------------------------------------------------
     GLWidget(QWidget* apPparent = 0);
+
+
+    //--------------------------------------------------------------------------
+    /// Default Constructor
+    /*
+    *   @param aGLFormat:   the OpenGL format
+    *   @param apPparent:   the parent widget
+    */
+    //--------------------------------------------------------------------------
+    GLWidget(QGLFormat& aGLFormat, QWidget* apPparent = 0);
 
 
     //--------------------------------------------------------------------------

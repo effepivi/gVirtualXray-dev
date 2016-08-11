@@ -179,7 +179,6 @@ class GLWidget;
 //******************************************************************************
 void initQt(GLWidget& aWindow);
 void initGLUT(int argc, char** argv);
-void initGLEW();
 void initGL();
 void initShader();
 void load3DObjects();
@@ -329,7 +328,7 @@ void GLWidget::initializeGL()
 //---------------------------
 {
     // Initialise GLEW
-    initGLEW();
+    initialiseGLEW();
 
     // Initialise OpenGL
     initGL();
@@ -596,28 +595,13 @@ void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 //------------------------------------------------
 {
     // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
+    if (std::abs(wheelEvent->delta()) > EPSILON)
     {
         // Change the zoom
         g_zoom += 0.1 * wheelEvent->delta() * cm;
 
         // Update the projection matrix
         resizeGL(g_window_width, g_window_height);
-    }
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 }
 

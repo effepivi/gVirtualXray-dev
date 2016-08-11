@@ -257,7 +257,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 02"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 02 using Qt5"));
 
     // Make the window's context current
     aWindow.makeCurrent();
@@ -311,11 +311,14 @@ void GLWidget::initializeGL()
 	// Initialise OpeGL functions
 	initializeOpenGLFunctions();
 
-    // Initialise OpenGL
+	// Initialise GLEW if needed
+	initialiseGLEW();
+
+	// Initialise OpenGL
     initGL();
 
     // Initialise the shader from files compressed using the Z library
-    //initShader();
+    initShader();
 
     // Initialise the geometry of the 3D objects
     load3DObjects();

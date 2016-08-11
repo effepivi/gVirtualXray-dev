@@ -305,7 +305,6 @@ bool g_swap_patient(false);
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGLEW();
 void initGL();
 void initFreeType();
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
@@ -410,7 +409,7 @@ int main(int argc, char** argv)
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Create a windowed mode window and its OpenGL context
-        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Anatomical Data Demo -- GLFW3", NULL, NULL);
         
         // Window cannot be created 
         if (!g_p_main_window_id)
@@ -423,7 +422,7 @@ int main(int argc, char** argv)
         glfwMakeContextCurrent(g_p_main_window_id);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the OpenGL version
@@ -526,25 +525,6 @@ void quit()
         g_p_main_window_id = 0;
         glfwTerminate();
     }
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-
-    do
-    {
-    } while (glGetError() != GL_NO_ERROR);
 }
 
 

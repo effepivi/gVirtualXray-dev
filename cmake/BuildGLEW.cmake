@@ -60,13 +60,13 @@ ENDIF (UNIX)
 
 if (WIN32)
     if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-	SET(GLUT_LIBRARIES
+	    SET(GLEW_LIBRARY
 		optimized ${GLEW_INSTALL_DIR}/lib/libglew32.lib
 		debug     ${GLEW_INSTALL_DIR}/lib/libglew32d.lib
         )
     ELSE ()
-	SET(GLUT_LIBRARIES
-           ${GLUT_INSTALL_DIR}/lib/libglew32.a
+        SET(GLEW_LIBRARY
+           ${GLEW_INSTALL_DIR}/lib/libglew32.a
         )
     ENDIF ()
 endif (WIN32)

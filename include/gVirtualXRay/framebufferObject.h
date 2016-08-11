@@ -42,6 +42,10 @@
 #ifndef UCDAVIS_FRAMEBUFFER_OBJECT_H
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 // Added by Franck P. Vidal
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"

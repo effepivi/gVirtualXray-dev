@@ -238,7 +238,6 @@ bool g_use_right_shift_key(false);
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGLEW();
 void initGL();
 void initFreeType();
 void display();
@@ -312,7 +311,7 @@ int main(int argc, char** argv)
 	    glfwMakeContextCurrent(g_p_main_window_id);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
  		// Is stereo enable
 		if (g_stereo_helper.enable())
@@ -425,21 +424,6 @@ void quit()
 		glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-	}
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 }
 

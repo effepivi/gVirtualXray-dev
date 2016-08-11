@@ -83,6 +83,6 @@ IF(Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
         ADD_DEPENDENCIES(tutorial_01_qt5   gVirtualXRay)
     ENDIF (gVirtualXRay_BINARY_DIR)
 
-ELSE(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+ELSE()
     MESSAGE(WARNING "Qt5 not found, ${PROJECT_NAME} will not be built.")
-ENDIF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+ENDIF()

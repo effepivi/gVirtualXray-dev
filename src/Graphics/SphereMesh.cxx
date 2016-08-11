@@ -65,17 +65,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <cmath>
-
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/glcorearb.h>
-#endif
 
 #ifndef GVXR_SPHERE_MESH_H
 #include "gVirtualXRay/SphereMesh.h"

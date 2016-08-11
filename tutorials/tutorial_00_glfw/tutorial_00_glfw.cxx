@@ -173,7 +173,7 @@ void initGLFW()
 
     // Create a windowed mode window and its OpenGL context
     g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 00", NULL, NULL);
+            "gVirtualXRay -- Tutorial 00 using GLFW3", NULL, NULL);
 
     // The window has not been created
     if (!g_p_window_id)

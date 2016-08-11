@@ -63,8 +63,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GL_GLEXT_PROTOTYPES
 #define GL_GLEXT_PROTOTYPES 1
 #endif // GL_GLEXT_PROTOTYPES
+#ifndef HAS_GLEW
 #include <GL/glcorearb.h>
+#endif // HAS_GLEW
 #endif // __APPLE__
+
+#if (defined(_MSC_VER) && (_MSC_VER <= 1600))
+#define isnan(x) _isnan(x)
+#define isinf(x) (!_finite(x))
+#endif
+
 
 //#endif // HAS_GLEW
 

@@ -149,7 +149,7 @@ inline void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 //-------------------------------------------------------
 {
     // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
+    if (std::abs(wheelEvent->delta()) > EPSILON)
     {
         // Stop using the arc ball
         m_use_arc_ball = false;

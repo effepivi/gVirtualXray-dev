@@ -68,7 +68,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <QObject>
+#include <ctime>
+
 #include <QApplication>
 #include <QtGui>
 
@@ -101,8 +102,14 @@ int main(int argc, char** argv)
 
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
-        GLWidget window;
-
+        
+		// Create a GL format to OpenGL 3.2 Core
+        QGLFormat gl_format(QGLFormat::defaultFormat());
+        gl_format.setVersion(3, 2);
+        gl_format.setProfile(QGLFormat::CoreProfile);
+	
+        // Set the GL format of the QGLWidget
+        GLWidget window(gl_format);
 
         // Launch the event loop
         return_code = application.exec();
