@@ -72,11 +72,10 @@ public:
 	/**
 	*  @param apMeshSet: the anatomical mesh set to be textured
 	*  @param projMatrix: the projection matrix
-	*  @param depthShader: glsl shader to create the depth map
 	*/
 	//--------------------------------------------------------------------------
 	void render(std::vector<AnatomicalMesh*>& apMeshSet,
-			Matrix4x4<GLfloat> const& projMatrix, Shader& depthShader);
+			Matrix4x4<GLfloat> const& projMatrix);
 
 	//--------------------------------------------------------------------------
 	///Get the texture
@@ -90,6 +89,8 @@ private:
 
 	//to know if initialize() has been called
 	bool m_isInitialized;
+
+    Shader m_depth_shader;
 
 	//To create a buffer for the scene map
 	GLuint	m_mapFrameBuffer,

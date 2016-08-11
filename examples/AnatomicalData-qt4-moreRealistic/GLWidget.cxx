@@ -127,9 +127,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
 
-#include "depth_map_gl3.frag.h"
-#include "depth_map_gl3.vert.h"
-
 #include "P4_skin.stl.h"
 #include "P4_liver.stl.h"
 #include "P4_lung.stl.h"
@@ -631,24 +628,6 @@ void GLWidget::initGL()
     }
     m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    //depth shader
-    z_lib_return_code_vertex   = inflate(g_depth_map_gl3_vert, sizeof(g_depth_map_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_depth_map_gl3_frag, sizeof(g_depth_map_gl3_frag), &p_fragment_shader);
-
-
-    vertex_shader   = p_vertex_shader;
-    fragment_shader = p_fragment_shader;
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
-
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-    {
-    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-    }
-    m_depth_shader.setLabels("depth.vert", "depth.frag");
-    m_depth_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
@@ -1312,13 +1291,13 @@ void GLWidget::renderToShadowMap()
 	{
 		shadowViewMatrix *= m_scene_rotation_matrix*m_P4_rotation_matrix;
 		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
-		m_shadow_map.render(m_p_P4_polygon_mesh_set, m_shadow_matrix, m_depth_shader);
+		m_shadow_map.render(m_p_P4_polygon_mesh_set, m_shadow_matrix);
 	}
 	else
 	{
 		shadowViewMatrix *= m_scene_rotation_matrix*m_P5_rotation_matrix;
 		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
-		m_shadow_map.render(m_p_P5_polygon_mesh_set, m_shadow_matrix, m_depth_shader);
+		m_shadow_map.render(m_p_P5_polygon_mesh_set, m_shadow_matrix);
 	}
 }
 

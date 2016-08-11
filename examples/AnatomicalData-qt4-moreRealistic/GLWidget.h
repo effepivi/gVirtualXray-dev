@@ -457,7 +457,6 @@ private:
 
     /// GLSL shader
     Shader m_display_shader;
-    Shader m_depth_shader;
 
     ///object containing buffers to create the shadow map
     DepthMap m_shadow_map;

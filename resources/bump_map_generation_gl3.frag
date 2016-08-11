@@ -234,11 +234,16 @@ void main(void)
 	
 		//lower the perturbation
 		perturbation *= PERTURBATION_COEF;
-	
+		
 		//angle of the point to the center
 		float theta = atan(g_object_position.y,g_object_position.x+length(g_object_position.xy));
+ 
+		float horizontal = (abs(dot(g_normal,vec3(0,0,1))));
 		
 		//Creates lines disturbed by fractal sum and noise
-		frag_colour+=0.2*(1-(pow(abs(sin(5*LINE_FREQ*(theta+perturbation))),14)+0.6*pow(abs(sin(7*LINE_FREQ*(theta+perturbation))),10))+0.4*pow(abs(sin(9*LINE_FREQ*(theta+perturbation))),8))*(1-abs(dot(g_normal,vec3(0,0,1))));
+		frag_colour+=0.2*(1-horizontal)*
+			(1-(pow(abs(sin(5*LINE_FREQ*(theta+perturbation))),14)+
+			0.6*pow(abs(sin(7*LINE_FREQ*(theta+perturbation))),10))+
+			0.4*pow(abs(sin(9*LINE_FREQ*(theta+perturbation))),8));
 	}
 }

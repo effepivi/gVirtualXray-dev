@@ -19,13 +19,20 @@
 #include <iostream>
 #include <fstream>
 
+#ifndef GVXR_UTILITIES_H
+#include "gVirtualXRay/Utilities.h"
+#endif
+
 #include "gVirtualXRay/DepthMap.h"
+
+#include "depth_map_gl3.frag.h"
+#include "depth_map_gl3.vert.h"
 
 //******************************************************************************
 //	constant variables
 //******************************************************************************
 //size of the side of the buffer
-static const int MAP_SIZE = 8192;
+const int MAP_SIZE = 8192;
 
 //******************************************************************************
 //  namespace
@@ -83,12 +90,40 @@ void DepthMap::initialize()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	//load the shader
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
+
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
+    //depth shader
+    z_lib_return_code_vertex   = inflate(g_depth_map_gl3_vert, sizeof(g_depth_map_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_depth_map_gl3_frag, sizeof(g_depth_map_gl3_frag), &p_fragment_shader);
+
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_depth_shader.setLabels("depth.vert", "depth.frag");
+    m_depth_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	m_isInitialized = true;
 }
 
 //------------------------------------------------------------------------
 void DepthMap::render(std::vector<AnatomicalMesh*>& apMeshSet,
-		Matrix4x4<GLfloat> const& projMatrix, Shader& depthShader)
+		Matrix4x4<GLfloat> const& projMatrix)
 	//------------------------------------------------------------------------
 {
 	//Initialize if necessary
@@ -113,8 +148,8 @@ void DepthMap::render(std::vector<AnatomicalMesh*>& apMeshSet,
 
 	// Enable the shader
 	pushShaderProgram();
-	depthShader.enable();
-	GLint shader_id(depthShader.getProgramHandle());
+	m_depth_shader.enable();
+	GLint shader_id(m_depth_shader.getProgramHandle());
 
 	// Handle for shader variables
 	GLuint handle(0);
