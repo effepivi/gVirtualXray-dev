@@ -392,23 +392,23 @@ ENDIF (FREETYPE_FOUND)
 
 # TIFF #########################################################################
 
-IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
-ELSE ()
-    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
-ENDIF ()
+#IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+#    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
+#ELSE ()
+#    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
+#ENDIF ()
 
-IF (USE_SYSTEM_LIBTIFF)
-    FIND_PACKAGE( TIFF   REQUIRED )
-ELSE(USE_SYSTEM_LIBTIFF)
-    INCLUDE(BuildLibTIFF)
+#IF (USE_SYSTEM_LIBTIFF)
+#    FIND_PACKAGE( TIFF   REQUIRED )
+#ELSE(USE_SYSTEM_LIBTIFF)
+#    INCLUDE(BuildLibTIFF)
 
     # Missing file on MV VC++ 2010
-    IF (NOT MSVC10)
-        build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
-    ENDIF (NOT MSVC10)
+#    IF (NOT MSVC10)
+#        build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
+#    ENDIF (NOT MSVC10)
 
-ENDIF (USE_SYSTEM_LIBTIFF)
+#ENDIF (USE_SYSTEM_LIBTIFF)
 
 IF (TIFF_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF")
