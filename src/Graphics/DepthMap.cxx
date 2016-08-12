@@ -104,9 +104,19 @@ void DepthMap::initialize()
     std::string vertex_shader;
     std::string fragment_shader;
 
-    //depth shader
-    z_lib_return_code_vertex   = inflate(g_depth_map_gl3_vert, sizeof(g_depth_map_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_depth_map_gl3_frag, sizeof(g_depth_map_gl3_frag), &p_fragment_shader);
+    // Use OpenGL 3.x
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_depth_map_gl3_vert, sizeof(g_depth_map_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_depth_map_gl3_frag, sizeof(g_depth_map_gl3_frag), &p_fragment_shader);
+    }
+    // Fall back to OpenGL 2.x
+    else
+    {
+        throw "Not implemented";
+        //z_lib_return_code_vertex   = inflate(g_depth_map_gl2_vert, sizeof(g_depth_map_gl2_vert),   &p_vertex_shader);
+        //z_lib_return_code_fragment = inflate(g_depth_map_gl2_frag, sizeof(g_depth_map_gl2_frag), &p_fragment_shader);
+    }
 
 
     vertex_shader   = p_vertex_shader;
