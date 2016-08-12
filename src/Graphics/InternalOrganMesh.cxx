@@ -53,7 +53,7 @@ bool InternalOrganMesh::isTransparent() const
 }
 
 //----------------------------------------------
-void InternalOrganMesh::defineDisplayShaderInput(GLint shader_id)
+void InternalOrganMesh::defineDisplayShaderInput(int shader_id)
 //----------------------------------------------
 {
 	AnatomicalMesh::defineDisplayShaderInput(shader_id);

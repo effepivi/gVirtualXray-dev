@@ -23,6 +23,9 @@
 #include <map>
 #include <algorithm>
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
 
 #include "gVirtualXRay/SoftTissueMesh.h"
 
@@ -107,7 +110,7 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 //----------------------------------------------
-void SoftTissueMesh::defineDisplayShaderInput(GLint aShaderID)
+void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 //----------------------------------------------
 {
   	//Bind the texture for bump mapping in texture unit 1
@@ -317,7 +320,7 @@ void SoftTissueMesh::generateTextures()
 }
 
 //----------------------------------------------
-void SoftTissueMesh::defineBumpMapShaderInput(GLint shader_id)
+void SoftTissueMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
 	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
@@ -334,7 +337,7 @@ void SoftTissueMesh::defineBumpMapShaderInput(GLint shader_id)
 }
 
 //----------------------------------------------
-void SoftTissueMesh::defineColourTextureShaderInput(GLint shader_id)
+void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 //----------------------------------------------
 {
 	GLuint handle(glGetUniformLocation(shader_id, "g_has_tendon"));
@@ -360,7 +363,7 @@ void SoftTissueMesh::defineColourTextureShaderInput(GLint shader_id)
 
 
 //----------------------------------------------
-void SoftTissueMesh::initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer)
+void SoftTissueMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
 //----------------------------------------------
 {
 	//Intialize the buffer for the texture

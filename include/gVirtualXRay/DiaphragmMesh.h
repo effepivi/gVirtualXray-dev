@@ -59,7 +59,7 @@ protected:
     *   @param shader_id: The GLSL shader
     */
 	//-------------------------------------------------------------------------
-	virtual void defineBumpMapShaderInput(GLint shader_id);
+	virtual void defineBumpMapShaderInput(int shader_id);
 
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader for colour texture generation
@@ -67,7 +67,7 @@ protected:
     *   @param shader_id: The GLSL shader
     */
 	//-------------------------------------------------------------------------
-	virtual void defineColourTextureShaderInput(GLint shader_id);
+	virtual void defineColourTextureShaderInput(int shader_id);
 
 	//matrix for the bump map (to know where the center is)
 	Matrix4x4<float> m_matrix;

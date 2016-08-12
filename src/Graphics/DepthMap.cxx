@@ -19,6 +19,10 @@
 #include <iostream>
 #include <fstream>
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 #ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif

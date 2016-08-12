@@ -22,6 +22,11 @@
 #include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -45,7 +50,7 @@ AnatomicalMesh::~AnatomicalMesh()
 }
 
 //----------------------------------------------
-void AnatomicalMesh::defineDisplayShaderInput(GLint shader_id)
+void AnatomicalMesh::defineDisplayShaderInput(int shader_id)
 //----------------------------------------------
 {
 	// Get the material

@@ -19,6 +19,10 @@
 //******************************************************************************
 #include "gVirtualXRay/LungsMesh.h"
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -44,14 +48,14 @@ LungsMesh::~LungsMesh()
 }
 
 //----------------------------------------------
-void LungsMesh::defineBumpMapShaderInput(GLint shader_id)
+void LungsMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
 	SoftTissueMesh::defineBumpMapShaderInput(shader_id);
 }
 
 //----------------------------------------------
-void LungsMesh::defineColourTextureShaderInput(GLint shader_id)
+void LungsMesh::defineColourTextureShaderInput(int shader_id)
 //----------------------------------------------
 {
 	GLfloat second_colour[] = {0.4,0.03,0.03,1.};

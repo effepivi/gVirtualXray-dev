@@ -19,6 +19,11 @@
 //******************************************************************************
 #include "gVirtualXRay/DiaphragmMesh.h"
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -43,7 +48,7 @@ DiaphragmMesh::~DiaphragmMesh()
 }
 
 //----------------------------------------------
-void DiaphragmMesh::defineBumpMapShaderInput(GLint shader_id)
+void DiaphragmMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
 	VEC3 m_lung_translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
@@ -58,7 +63,7 @@ void DiaphragmMesh::defineBumpMapShaderInput(GLint shader_id)
 }
 
 //----------------------------------------------
-void DiaphragmMesh::defineColourTextureShaderInput(GLint shader_id)
+void DiaphragmMesh::defineColourTextureShaderInput(int shader_id)
  //----------------------------------------------
 {
 	GLfloat second_colour[] = {1.,0.73,0.6,1.};

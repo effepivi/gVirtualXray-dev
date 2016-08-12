@@ -80,7 +80,7 @@ public:
 	//--------------------------------------------------------------------------
 	///Get the texture
 	//--------------------------------------------------------------------------
-	GLuint getMapTexture() const;
+	unsigned int getMapTexture() const;
 
 	//******************************************************************************
 private:
@@ -93,7 +93,7 @@ private:
     Shader m_depth_shader;
 
 	//To create a buffer for the scene map
-	GLuint	m_mapFrameBuffer,
+	unsigned int	m_mapFrameBuffer,
 		m_mapTexture;
 };
 } // namespace gVirtualXRay

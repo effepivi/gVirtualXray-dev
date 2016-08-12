@@ -61,7 +61,7 @@ public:
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
     */
 	//-------------------------------------------------------------------------
-	virtual void defineDisplayShaderInput(GLint shader_id);
+	virtual void defineDisplayShaderInput(int shader_id);
 };
 
 } // namespace gVirtualXRay

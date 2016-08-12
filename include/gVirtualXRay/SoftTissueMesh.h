@@ -77,7 +77,7 @@ public:
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
     */
 	//-------------------------------------------------------------------------
-	virtual void defineDisplayShaderInput(GLint aShaderID);
+	virtual void defineDisplayShaderInput(int aShaderID);
 
 	//--------------------------------------------------------------------------
 	/// initialize the shaders, the buffers, the normal vectors and the textures
@@ -104,7 +104,7 @@ protected:
     *   @param shader_id: The GLSL shader
     */
 	//-------------------------------------------------------------------------
-	virtual void defineBumpMapShaderInput(GLint shader_id);
+	virtual void defineBumpMapShaderInput(int shader_id);
 
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader for colour texture generation
@@ -112,10 +112,10 @@ protected:
     *   @param shader_id: The GLSL shader
     */
 	//-------------------------------------------------------------------------
-	virtual void defineColourTextureShaderInput(GLint shader_id);
+	virtual void defineColourTextureShaderInput(int shader_id);
 
 
-	virtual void initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer);
+	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 
 
 	//--------------------------------------------------------------------------
@@ -137,7 +137,7 @@ protected:
 	std::vector<VEC2> m_textCoord;
 
 	//buffers for the bump map and the colour texture
-	GLuint m_bump_map_texture,
+	unsigned int m_bump_map_texture,
 		m_bump_map_frame_buffer,
 		m_colour_texture,
 		m_colour_texture_frame_buffer;
@@ -147,10 +147,10 @@ protected:
 		m_colour_texture_shader;
 
 	//to know if the soft tissue texture generation uses two colours
-	GLint m_use_second_colour;
+	int m_use_second_colour;
 
 	//to know if the soft tissue is a muscle with a tendon for texturing
-	GLint m_has_tendon;
+	int m_has_tendon;
 };
 
 } // namespace gVirtualXRay
