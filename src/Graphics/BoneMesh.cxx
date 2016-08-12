@@ -58,11 +58,4 @@ void BoneMesh::initialize()
 	mergeVertices();
 }
 
-//----------------------------------------------
-void BoneMesh::setMatrix(Matrix4x4<float> const& matrix)
-//----------------------------------------------
-{
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-}
-
 } // namespace gVirtualXRay

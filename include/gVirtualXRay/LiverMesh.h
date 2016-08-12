@@ -52,10 +52,6 @@ public:
 	//--------------------------------------------------------------------------
 	virtual ~LiverMesh();
 
-	//--------------------------------------------------------------------------
-	/// Set the matrix. Useful only for the diaphragm
-	//--------------------------------------------------------------------------
-	virtual void setMatrix(Matrix4x4<float> const& matrix);
 };
 
 } // namespace gVirtualXRay

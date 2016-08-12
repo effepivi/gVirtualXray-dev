@@ -41,12 +41,5 @@ LiverMesh::~LiverMesh()
 	// TODO Auto-generated destructor stub
 }
 
-//----------------------------------------------
-void LiverMesh::setMatrix(Matrix4x4<float> const& matrix)
-//----------------------------------------------
-{
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-}
-
 
 } // namespace gVirtualXRay

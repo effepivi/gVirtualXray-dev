@@ -46,6 +46,10 @@ DiaphragmMesh::~DiaphragmMesh()
 void DiaphragmMesh::defineBumpMapShaderInput(GLint shader_id)
 //----------------------------------------------
 {
+	VEC3 m_lung_translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
+	m_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
+	m_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_lung_translation_vector);
+
 	GLuint handle(glGetUniformLocation(shader_id, "g_matrix"));
     glUniformMatrix4fv(handle, 1, GL_FALSE, m_matrix.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -72,13 +76,6 @@ void DiaphragmMesh::defineColourTextureShaderInput(GLint shader_id)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	SoftTissueMesh::defineColourTextureShaderInput(shader_id);
-}
-
-//----------------------------------------------
-void DiaphragmMesh::setMatrix(Matrix4x4<float> const& matrix)
-//----------------------------------------------
-{
-	m_matrix=matrix;
 }
 
 

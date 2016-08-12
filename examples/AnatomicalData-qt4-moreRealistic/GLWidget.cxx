@@ -710,14 +710,12 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
 	            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
 	            //Set the rotation matrix to create the bump map of the diaphragm
-	            (*p_mesh_set)[DIAPH_ID]->setMatrix(m_P4_rotation_matrix);
 	            break;
 
 	        case P5:
 	            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
 	            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
 	            //Set the rotation matrix to create the bump map of the diaphragm
-	            (*p_mesh_set)[DIAPH_ID]->setMatrix(m_P5_rotation_matrix);
 	            break;
 
 	        default:

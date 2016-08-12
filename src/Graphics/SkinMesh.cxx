@@ -64,13 +64,5 @@ void SkinMesh::initialize()
 	mergeVertices();
 }
 
-//----------------------------------------------
-void SkinMesh::setMatrix(Matrix4x4<float> const& matrix)
-//----------------------------------------------
-{
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-}
-
-
 
 } // namespace gVirtualXRay

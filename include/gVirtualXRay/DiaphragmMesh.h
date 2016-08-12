@@ -69,11 +69,6 @@ protected:
 	//-------------------------------------------------------------------------
 	virtual void defineColourTextureShaderInput(GLint shader_id);
 
-	//--------------------------------------------------------------------------
-	/// Set the matrix for the bump map
-	//--------------------------------------------------------------------------
-	virtual void setMatrix(Matrix4x4<float> const& matrix);
-
 	//matrix for the bump map (to know where the center is)
 	Matrix4x4<float> m_matrix;
 };
