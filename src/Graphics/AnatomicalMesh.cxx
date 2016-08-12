@@ -18,12 +18,12 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef ANATOMICAL_MESH_H
-#include "gVirtualXRay/AnatomicalMesh.h"
-#endif
-
 #ifdef HAS_GLEW
 #include "GL/glew.h"
+#endif
+
+#ifndef ANATOMICAL_MESH_H
+#include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
 
