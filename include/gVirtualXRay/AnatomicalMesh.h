@@ -27,6 +27,10 @@
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 #ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif

@@ -63,7 +63,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Include
 //******************************************************************************
 #ifdef HAS_GLEW
-#include <GL/glew.h>
+#include "GL/glew.h"
 #endif
 
 #ifndef GVXR_CONFIG_H
