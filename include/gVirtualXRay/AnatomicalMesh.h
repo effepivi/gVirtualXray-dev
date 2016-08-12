@@ -27,10 +27,6 @@
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
 #ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
@@ -90,8 +86,8 @@ public:
 
 //******************************************************************************
 protected:
-	//1 if the mesh use texturing; default value is 0
-	GLint m_use_texture;
+	/// 1 if the mesh use texturing; default value is 0
+	int m_use_texture;
 
 };
 } //namespace gVirtualXRay
