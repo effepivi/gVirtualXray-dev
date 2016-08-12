@@ -234,40 +234,62 @@ float turbulence(vec3 Q)
 }
 
 //------------------------
+vec3 computeInterpoledNormalVector(vec3 first_vector, vec3 second_vector,float a,float b, float pos)
+//------------------------
+{
+	float h = b-a;
+	float first_rate = clamp(pos-a,0,h);
+	return (first_rate*first_vector+(h-first_rate)*second_vector)/h;
+}
+
+
+//------------------------
+vec4 computeMuscleColour()
+//------------------------
+{
+	float bump_value = texture(g_bump_map, g_texture_coordinates).r;
+	bump_value+=0.7;
+	bump_value*=bump_value;
+	
+	return bump_value * g_base_colour +
+		(1-bump_value) * g_second_colour;
+}
+
+
+//------------------------
 vec4 computeTendonColour()
 //------------------------
 {
-	//modify the normal vector using the bump map
-	vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-
-		texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	
-	deltaNormal += texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-
-		texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
-    
-    
-    vec3 normal_vector   = normalize(g_normal+2*deltaNormal);
+    vec3 normal_vector   = normalize(g_normal);
 	
 	float dot_normal_vertical = abs(dot(normal_vector , vec3(0,0,1)));
 	
-	if(dot_normal_vertical<0.2)
+	if(dot_normal_vertical>0.8)
 	{
-		//if on the sides, it is muscle
-		return g_base_colour;
+		//if on top or at the bottom, it is tendon
+		return g_second_colour;
 	}
-	else if(dot_normal_vertical>0.8)
-		{
-			//if on top or at the bottom, it is tendon
-			return g_second_colour;
-		}
 	else 
 	{
-		//interpolate in between
-		return (g_base_colour*(0.8-dot_normal_vertical)+g_second_colour*(dot_normal_vertical-0.2))/0.6;
-	}
-
-	/*return (g_base_colour*(1-dot_normal_vertical)+
-		g_second_colour*(dot_normal_vertical));*/
+		//modify the normal vector using the bump map
+		vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-
+			texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
 	
+		deltaNormal += texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-
+			texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
+	
+		vec3 bumped_normal_vector   = normalize(g_normal+deltaNormal);
+		
+		//linear interpolation of the normal vectors
+		float normal_rate = clamp(dot_normal_vertical-0.7,0,0.1);
+		vec3 interpoled_normal_vector = (normal_rate*normal_vector+(0.1-normal_rate)*bumped_normal_vector)*10;
+				
+		dot_normal_vertical = abs(dot(interpoled_normal_vector , vec3(0,0,1)));
+		
+		//if on the sides, it is muscle and interpolate in between
+		float tendon_rate = clamp(dot_normal_vertical - 0.7,0,0.1);
+		return 10*(computeMuscleColour()*(0.1-tendon_rate)+g_second_colour*tendon_rate);
+	}	
 }
 
 //-------------
