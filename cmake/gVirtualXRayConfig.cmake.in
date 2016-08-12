@@ -96,7 +96,8 @@ SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@" "@gVirtualXRay_INSTA
 
 # gVirtualXRay library
 SET(gVirtualXRay_LIBRARY      "@gVirtualXRay_LIBRARY@")
-SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_INSTALL_PREFIX@/lib" "@gVirtualXRay_INSTALL_PREFIX@/lib64" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib64" "@gVirtualXRay_LIBRARY_DIRS@")
+SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_INSTALL_PREFIX@"
+"@gVirtualXRay_INSTALL_PREFIX@/lib" "@gVirtualXRay_INSTALL_PREFIX@/lib64" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib64" "@gVirtualXRay_LIBRARY_DIRS@")
 SET(gVirtualXRay_LIBRARIES    "@gVirtualXRay_LIBRARIES@")
 
 

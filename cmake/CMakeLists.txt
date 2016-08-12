@@ -106,6 +106,7 @@ SET (requiredLibs)
 
 SET (gVirtualXRay_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+SET (gVirtualXRay_INSTALL_PREFIX ${PROJECT_BINARY_DIR})
 
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 IF (APPLE AND ${CMAKE_GENERATOR} STREQUAL "Xcode")
@@ -320,7 +321,7 @@ IF (GLEW_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLEW_INCLUDE_DIR}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
-    SET (requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
+    SET (requiredLibs "${requiredLibs}" "${GLEW_LIBRARY}")
 ENDIF (GLEW_FOUND)
 
 
@@ -347,7 +348,7 @@ ENDIF (USE_SYSTEM_ZLIB)
 
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}")
 SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
-SET (requiredLibs ${requiredLibs} ${ZLIB_LIBRARY})
+SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 
 # FREETYPE ####################################################################
 OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
@@ -367,7 +368,7 @@ ENDIF (USE_SYSTEM_FREETYPE)
 IF (FREETYPE_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
-    SET (optionalLibs ${optionalLibs} ${FREETYPE_LIBRARIES})
+    SET (optionalLibs "${optionalLibs}" "${FREETYPE_LIBRARIES}")
 
     FIND_PACKAGE(PNG)
     IF (PNG_FOUND)
@@ -414,7 +415,7 @@ IF (TIFF_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${TIFF_LIBRARY_DIR})
-    SET (requiredLibs ${requiredLibs} ${TIFF_LIBRARIES})
+    SET (requiredLibs "${requiredLibs}" "${TIFF_LIBRARIES}")
 ENDIF (TIFF_FOUND)
 
 
@@ -476,7 +477,7 @@ ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
 # Linkage of the target ########################################################
 set_target_properties(gVirtualXRay PROPERTIES LINK_SEARCH_START_STATIC ON)
-SET (gVirtualXRay_LIBRARIES "${requiredLibs} ${optionalLibs} gVirtualXRay")
+SET (gVirtualXRay_LIBRARIES ${requiredLibs} ${optionalLibs} gVirtualXRay)
 TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
