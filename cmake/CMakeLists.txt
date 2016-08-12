@@ -577,9 +577,9 @@ IF (NOT USE_SYSTEM_FREETYPE)
     ADD_DEPENDENCIES(gVirtualXRay freetype)
 ENDIF (NOT USE_SYSTEM_FREETYPE)
 
-IF (NOT USE_SYSTEM_LIBTIFF)
-    ADD_DEPENDENCIES(gVirtualXRay libtiff)
-ENDIF (NOT USE_SYSTEM_LIBTIFF)
+#IF (NOT USE_SYSTEM_LIBTIFF)
+#    ADD_DEPENDENCIES(gVirtualXRay libtiff)
+#ENDIF (NOT USE_SYSTEM_LIBTIFF)
 
 
 # Installation variables #######################################################
