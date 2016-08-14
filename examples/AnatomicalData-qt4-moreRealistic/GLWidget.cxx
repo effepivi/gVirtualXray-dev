@@ -277,7 +277,16 @@ GLWidget::GLWidget(QWidget *parent):
 //-------------------
 GLWidget::~GLWidget()
 //-------------------
-{}
+{
+	for(unsigned int i(0); i<m_p_P4_polygon_mesh_set.size(); i++)
+	{
+		delete m_p_P4_polygon_mesh_set[i];
+	}
+	for(unsigned int i(0); i<m_p_P5_polygon_mesh_set.size(); i++)
+	{
+		delete m_p_P5_polygon_mesh_set[i];
+	}
+}
 
 
 //------------------------------
@@ -700,6 +709,7 @@ void GLWidget::loadPatient(PatientID aPatientID)
 	        }
 
 	        (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
+	        (*p_mesh_set)[i]->initialize();
 	    }
 
 	    // Compute the translation vector
@@ -720,11 +730,6 @@ void GLWidget::loadPatient(PatientID aPatientID)
 
 	        default:
 	            break;
-	    }
-
-	    for(unsigned int i(0); i <p_mesh_set->size();i++)
-	    {
-	        (*p_mesh_set)[i]->initialize();
 	    }
 }
 
