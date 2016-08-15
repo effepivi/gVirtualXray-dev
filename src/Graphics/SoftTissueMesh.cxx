@@ -196,11 +196,20 @@ void SoftTissueMesh::initialize()
 	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
 	    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer);
 
+	    bool vbo_need_update(true);
+
 	    //delete indices, there are not compatible with this implementation of solid texturing.
-	    deleteIndices();
+		if(m_number_of_indices)
+		{
+			deleteIndices();
+			vbo_need_update = false;
+		}
+		shareNormalVectors();
 
 		//initialize the coordinates for sampling
 		unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
+
+		m_textCoord.reserve(n);
 
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -222,9 +231,10 @@ void SoftTissueMesh::initialize()
 			}
 		}
 
-		computeNormalVectors();
-
-		shareNormalVectors();
+		if(vbo_need_update)
+		{
+			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+		}
 
 		generateTextures();
 
@@ -235,8 +245,6 @@ void SoftTissueMesh::initialize()
 	if(m_number_of_indices)
 	{
 		deleteIndices();
-
-		computeNormalVectors();
 
 		shareNormalVectors();
 	}
@@ -270,7 +278,7 @@ void SoftTissueMesh::generateTextures()
 	GLint shader_id(m_bump_map_shader.getProgramHandle());
 	defineBumpMapShaderInput(shader_id);
 
- 	 display();
+ 	display();
 
 	// Disable the shader
 	popShaderProgram();
@@ -317,7 +325,7 @@ void SoftTissueMesh::generateTextures()
 	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
 	unsigned int k(0);
-	const float STEP(float(1)/TEXTURE_SIZE);
+	const float STEP(float(2)/TEXTURE_SIZE);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			//the first triangle
@@ -518,6 +526,8 @@ void SoftTissueMesh::shareNormalVectors()
 		m_p_vertex_normal_set[i*3+2] =  current_normal.getZ();
 	}
 
+	m_p_face_normal_set.clear();
+
 	normaliseNormals();
 }
 
@@ -605,6 +615,8 @@ void SoftTissueMesh::deleteIndices()
 				p_double_vertex_set[id] = p_new_vertex_set[id];
 			}
 		}
+
+		computeNormalVectors();
 	}
 }
 

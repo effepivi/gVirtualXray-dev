@@ -124,7 +124,7 @@ protected:
 	virtual void shareNormalVectors();
 
 	//--------------------------------------------------------------------------
-	/// delete the indices
+	/// delete the indices and calculate new normal vectors
 	//--------------------------------------------------------------------------
 	virtual void deleteIndices();
 
