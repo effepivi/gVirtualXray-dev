@@ -124,6 +124,11 @@ protected:
 	virtual void shareNormalVectors();
 
 	//--------------------------------------------------------------------------
+	/// delete the indices
+	//--------------------------------------------------------------------------
+	virtual void deleteIndices();
+
+	//--------------------------------------------------------------------------
 	/// initialize gradient tab for gnoise
 	//--------------------------------------------------------------------------
 	virtual std::vector<VEC3> initGradientTab();
@@ -151,6 +156,9 @@ protected:
 
 	//to know if the soft tissue is a muscle with a tendon for texturing
 	int m_has_tendon;
+
+	//to know if the textured has been initialized
+	bool m_need_initialize;
 };
 
 } // namespace gVirtualXRay

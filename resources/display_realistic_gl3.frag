@@ -104,8 +104,8 @@ uniform sampler2D g_colour_texture;
 //	constant variables
 //******************************************************************************
 //BIAS to reduce shadow acne
-const float MAX_BIAS=0.005;
-const float BIAS_RATE=0.005;
+const float MAX_BIAS=0.01;
+const float BIAS_RATE=0.01;
 
 //step for bump evaluation 
 const float STEP=0.00002;

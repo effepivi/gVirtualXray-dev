@@ -500,7 +500,7 @@ private:
     /// Flag set to true if the patients have to be swapped at the next iteration, false otherwise
     bool m_swap_patient;
 
-    ///the light direction (from the vertex to the camera
+    ///the light direction (from the vertex to the camera)
     VEC3 m_light_direction;
 };
 

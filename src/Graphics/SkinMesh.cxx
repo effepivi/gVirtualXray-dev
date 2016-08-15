@@ -61,7 +61,10 @@ bool SkinMesh::isSoftTissue() const
 void SkinMesh::initialize()
 //----------------------------------------------
 {
-	mergeVertices();
+	if(!m_external_data_flag && !m_p_index_set && !m_number_of_indices)
+	{
+		mergeVertices();
+	}
 }
 
 
