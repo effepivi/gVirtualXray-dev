@@ -51,12 +51,13 @@ DiaphragmMesh::~DiaphragmMesh()
 void DiaphragmMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
-	VEC3 m_lung_translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
-	m_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
-	m_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_lung_translation_vector);
+	//matrix for the bump map (to know where the center is)
+	VEC3 translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
+	Matrix4x4<GLfloat> matrix(Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0)));
+	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);
 
 	GLuint handle(glGetUniformLocation(shader_id, "g_matrix"));
-    glUniformMatrix4fv(handle, 1, GL_FALSE, m_matrix.get());
+    glUniformMatrix4fv(handle, 1, GL_FALSE, matrix.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	SoftTissueMesh::defineBumpMapShaderInput(shader_id);

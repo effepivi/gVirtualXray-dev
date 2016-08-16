@@ -68,9 +68,6 @@ protected:
     */
 	//-------------------------------------------------------------------------
 	virtual void defineColourTextureShaderInput(int shader_id);
-
-	//matrix for the bump map (to know where the center is)
-	Matrix4x4<float> m_matrix;
 };
 
 } // namespace gVirtualXRay

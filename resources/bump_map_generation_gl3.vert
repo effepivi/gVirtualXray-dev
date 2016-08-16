@@ -43,14 +43,6 @@ uniform mat4 g_matrix;
 uniform int g_has_tendon;
 
 
-
-
-
-
-
-
-
-
 //-------------
 void main(void)
 //-------------

@@ -308,7 +308,7 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 	glBindTexture(GL_TEXTURE_2D, aTexture);
 	if(has_colour)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
 	}
 	else
 	{

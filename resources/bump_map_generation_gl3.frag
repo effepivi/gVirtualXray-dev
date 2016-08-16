@@ -29,6 +29,10 @@
 const float MINFREQ=0.1;
 const float MAXFREQ=1;
 
+//position of the line
+const float LINE_POS = 0.5;
+const float LINE_SHARP = 20;
+
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.005;
 
@@ -56,6 +60,8 @@ out float frag_colour;
 //******************************************************************************
 uniform int g_has_tendon;
 uniform int g_is_lung;
+uniform float g_max_height;
+uniform float g_min_height;
 uniform int g_perm[TAB_SIZE];
 uniform vec3 g_gradient_tab[TAB_SIZE];
 
@@ -225,7 +231,7 @@ float fractalSum(vec3 Q)
 void main(void)
 //-------------
 {
-	float noise_value = noise(g_object_position*2)*0.5+0.5;
+	float noise_value = noise(g_object_position)*0.5+0.5;
 	frag_colour = noise_value*0.2;
 	
 	if(g_has_tendon == 1)
@@ -250,8 +256,13 @@ void main(void)
 	
 	if(g_is_lung == 1)
 	{
+		//The height is 0 where the line is
+		float height = abs(LINE_SHARP*(g_object_position.z - g_min_height)/(g_max_height - g_min_height)-LINE_SHARP*LINE_POS);
 	
+		//reduce bump from noise
 		frag_colour *= 0.2;
-		frag_colour += clamp(0.1,0.,1.);
+		
+		//add the line
+		frag_colour += clamp(height,0.,0.5)*0.5;
 	}
 }
