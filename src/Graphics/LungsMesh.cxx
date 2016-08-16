@@ -64,6 +64,17 @@ void LungsMesh::defineBumpMapShaderInput(int shader_id)
 	glUniform3fv(handle, 1, &max_corner[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+
+	//matrix for the bump map (to create the lines on the sides)
+	VEC3 translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
+	Matrix4x4<GLfloat> matrix(Matrix4x4<GLfloat>::buildTranslationMatrix(translation_vector));
+	matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(30,VEC3(1.,0.,0.));
+	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);
+
+	handle = glGetUniformLocation(shader_id, "g_matrix");
+	glUniformMatrix4fv(handle, 1, GL_FALSE, matrix.get());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	SoftTissueMesh::defineBumpMapShaderInput(shader_id);
 }
 

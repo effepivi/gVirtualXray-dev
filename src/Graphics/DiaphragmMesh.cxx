@@ -53,8 +53,7 @@ void DiaphragmMesh::defineBumpMapShaderInput(int shader_id)
 {
 	//matrix for the bump map (to know where the center is)
 	VEC3 translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
-	Matrix4x4<GLfloat> matrix(Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0)));
-	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);
+	Matrix4x4<GLfloat> matrix(Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector));
 
 	GLuint handle(glGetUniformLocation(shader_id, "g_matrix"));
     glUniformMatrix4fv(handle, 1, GL_FALSE, matrix.get());

@@ -30,8 +30,8 @@ const float MINFREQ=0.1;
 const float MAXFREQ=1;
 
 //position of the line
-const float LINE_POS = 0.35;
-const float LINE_SHARP = 50;
+const float LINE_POS = 0.3;
+const float LINE_SHARP = 60;
 
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.005;
@@ -60,6 +60,7 @@ out float frag_colour;
 //******************************************************************************
 uniform int g_has_tendon;
 uniform int g_is_lung;
+uniform mat4 g_matrix;
 uniform vec3 g_max_corner;
 uniform vec3 g_min_corner;
 uniform int g_perm[TAB_SIZE];
@@ -265,20 +266,36 @@ void main(void)
 		//change the global position
 		perturbation += g_gradient_tab[0].z*0.05;
 		
+		vec3 rotated_position=(g_matrix*vec4(g_object_position,1.)).xyz;
+				
 		float height;
-		//if the fragment is on the right, the lung has a line
+		
+		//if the fragment is on the right, the lung has a central line
 		if((g_object_position.x - g_min_corner.x)/(g_max_corner.x - g_min_corner.x)>0.55)
 		{
 			//The height is 0 where the line is
-			height = abs(LINE_SHARP*(g_object_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
-							LINE_SHARP*(LINE_POS+perturbation));
+			height = clamp(abs(LINE_SHARP*(g_object_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+							LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
+						
+			//add another change to the position of the line
+			perturbation += g_gradient_tab[0].y*0.05+0.25;
+					
+			//draw the line on the side
+			height *= clamp(abs(LINE_SHARP*(rotated_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+						LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
+			
 		}
-		//if not, it has no line
+		//if not, it has only a line on the side
 		else
 		{
-			height = 1.;
+			//add another change to the position of the line and draw it higher
+			perturbation -= g_gradient_tab[0].z*0.05-0.2;
+								
+			//draw the line on the side
+			height = abs(LINE_SHARP*(rotated_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+						LINE_SHARP*(LINE_POS+perturbation));
 		}
-			
+					
 		//reduce bump from noise
 		frag_colour *= 0.2;
 		
