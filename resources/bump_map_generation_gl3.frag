@@ -31,7 +31,7 @@ const float MAXFREQ=1;
 
 //position of the line
 const float LINE_POS = 0.5;
-const float LINE_SHARP = 20;
+const float LINE_SHARP = 50;
 
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.005;
@@ -256,13 +256,22 @@ void main(void)
 	
 	if(g_is_lung == 1)
 	{
+		//create perturbation using fractal sum
+		float perturbation = fractalSum(g_object_position);
+	
+		//lower the perturbation
+		perturbation *= PERTURBATION_COEF;
+		
 		//The height is 0 where the line is
-		float height = abs(LINE_SHARP*(g_object_position.z - g_min_height)/(g_max_height - g_min_height)-LINE_SHARP*LINE_POS);
+		float height = abs(LINE_SHARP*(g_object_position.z - g_min_height)/(g_max_height - g_min_height)-LINE_SHARP*(LINE_POS+perturbation+g_gradient_tab[0].z*0.05));
 	
 		//reduce bump from noise
 		frag_colour *= 0.2;
 		
 		//add the line
-		frag_colour += clamp(height,0.,0.5)*0.5;
+		frag_colour += clamp(height,0.,0.5);
+		
+		//square to make it sharper
+		frag_colour *= frag_colour;
 	}
 }
