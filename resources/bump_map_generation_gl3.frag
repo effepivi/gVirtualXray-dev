@@ -225,7 +225,7 @@ float fractalSum(vec3 Q)
 void main(void)
 //-------------
 {
-	float noise_value = noise(g_object_position)*0.5+0.5;
+	float noise_value = noise(g_object_position*2)*0.5+0.5;
 	frag_colour = noise_value*0.2;
 	
 	if(g_has_tendon == 1)
@@ -251,6 +251,7 @@ void main(void)
 	if(g_is_lung == 1)
 	{
 	
-		frag_colour += clamp(0.1,-0.2,0.8);
+		frag_colour *= 0.2;
+		frag_colour += clamp(0.1,0.,1.);
 	}
 }

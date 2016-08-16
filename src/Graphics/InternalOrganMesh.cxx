@@ -312,7 +312,7 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 	}
 	else
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RED, GL_FLOAT, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RED, GL_FLOAT, 0);
 	}
 
 	//Filtering
