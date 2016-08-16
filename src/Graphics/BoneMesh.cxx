@@ -33,8 +33,8 @@ BoneMesh::BoneMesh():
 {
 	getMaterial().setShininess(4);
 	getMaterial().setSpecularColour(0.2,0.2,0.2,1.);
-	getMaterial().setDiffuseColour(0.84,0.77,0.6,1.);
-	getMaterial().setAmbientColour(0.84,0.77,0.6,1.);
+	getMaterial().setDiffuseColour(0.84,0.74,0.6,1.);
+	getMaterial().setAmbientColour(0.84,0.74,0.6,1.);
 }
 
 //----------------------------------------

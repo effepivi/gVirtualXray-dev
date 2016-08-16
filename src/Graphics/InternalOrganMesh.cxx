@@ -55,6 +55,7 @@ InternalOrganMesh::InternalOrganMesh():
 		m_bump_map_texture(0),
 		m_bump_map_frame_buffer(0),
 		m_has_tendon(0),
+		m_is_lung(0),
 		m_need_initialize(true)
 //----------------------------------------
 {
@@ -154,7 +155,7 @@ void InternalOrganMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	    //initialize the buffers for the bump map
-	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
+	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer, false);
 
 	    bool vbo_need_update(true);
 
@@ -284,6 +285,10 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 	glUniform1iv(handle, 1, &m_has_tendon);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	handle = glGetUniformLocation(shader_id, "g_is_lung");
+	glUniform1iv(handle, 1, &m_is_lung);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	handle = glGetUniformLocation(shader_id, "g_perm");
 	glUniform1iv(handle, TAB_SIZE,&initPermutation()[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -295,13 +300,20 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 
 
 //----------------------------------------------
-void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
+void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer, bool has_colour)
 //----------------------------------------------
 {
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
+	if(has_colour)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
+	}
+	else
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RED, GL_FLOAT, 0);
+	}
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

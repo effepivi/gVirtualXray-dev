@@ -110,7 +110,7 @@ protected:
     *   @param aFrameBuffer: the framebuffer
     */
 	//-------------------------------------------------------------------------
-	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
+	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer, bool has_colour);
 
 	//--------------------------------------------------------------------------
 	/// Compute a normal vector per vertex for a smoother display
@@ -143,8 +143,11 @@ protected:
 	//GLSL shaders to create the bump map and the colour texture
 	Shader m_bump_map_shader;
 
-	//to know if the soft tissue is a muscle with a tendon for texturing
+	//to know if the soft tissue is a muscle with a tendon for texturing and bump mapping
 	int m_has_tendon;
+
+	//to know if the soft tissue is a lung with two colors and a line for texturing and bump mapping
+	int m_is_lung;
 
 	//to know if the textured has been initialized
 	bool m_need_initialize;

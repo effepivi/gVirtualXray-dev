@@ -53,7 +53,7 @@ out vec4 frag_colour;
 uniform vec4 g_base_colour;
 uniform vec4 g_second_colour;
 uniform int g_has_tendon;
-uniform int g_use_second_colour;
+uniform int g_is_lung;
 uniform sampler2D g_bump_map;
 uniform int g_perm[TAB_SIZE];
 uniform vec3 g_gradient_tab[TAB_SIZE];
@@ -306,7 +306,7 @@ void main(void)
 		float frac_sum_value = fractalSum(g_object_position);
 		float turbulence_value;
 	
-		if(g_use_second_colour==1)
+		if(g_is_lung==1)
 		{
 			turbulence_value=turbulence(g_object_position);
 			second_colour=g_second_colour*(1-frac_sum_value);

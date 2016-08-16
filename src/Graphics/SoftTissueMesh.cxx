@@ -52,8 +52,7 @@ SoftTissueMesh::SoftTissueMesh()
 //----------------------------------------------
 		InternalOrganMesh(),
 		m_colour_texture(0),
-		m_colour_texture_frame_buffer(0),
-		m_use_second_colour(0)
+		m_colour_texture_frame_buffer(0)
 //----------------------------------------------
 {
 	getMaterial().setShininess(100);
@@ -124,7 +123,7 @@ void SoftTissueMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	    //initialize the buffers for the bump map and the colour texture
-	    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer);
+	    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer, true);
 	}
 
     InternalOrganMesh::initialize();
@@ -189,8 +188,8 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 	glUniform4fv(handle, 1, &getMaterial().getDiffuseColour()[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(shader_id, "g_use_second_colour");
-	glUniform1iv(handle, 1, &m_use_second_colour);
+	handle = glGetUniformLocation(shader_id, "g_is_lung");
+	glUniform1iv(handle, 1, &m_is_lung);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_perm");

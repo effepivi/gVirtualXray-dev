@@ -55,6 +55,7 @@ out float frag_colour;
 //	Uniform variables
 //******************************************************************************
 uniform int g_has_tendon;
+uniform int g_is_lung;
 uniform int g_perm[TAB_SIZE];
 uniform vec3 g_gradient_tab[TAB_SIZE];
 
@@ -245,5 +246,11 @@ void main(void)
 			(1-(pow(abs(sin(5*LINE_FREQ*(theta+perturbation))),14)+
 			0.6*pow(abs(sin(7*LINE_FREQ*(theta+perturbation))),10))+
 			0.4*pow(abs(sin(9*LINE_FREQ*(theta+perturbation))),8));
+	}
+	
+	if(g_is_lung == 1)
+	{
+	
+		frag_colour += clamp(0.1,-0.2,0.8);
 	}
 }

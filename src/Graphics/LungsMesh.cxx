@@ -37,7 +37,7 @@ LungsMesh::LungsMesh():
 {
 	getMaterial().setDiffuseColour(0.7,0.28,0.28,1.);
 	getMaterial().setAmbientColour(0.7,0.28,0.28,1.);
-	m_use_second_colour=1;
+	m_is_lung=1;
 }
 
 

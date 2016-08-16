@@ -102,9 +102,6 @@ protected:
 
 	//GLSL shaders to create the colour texture
 	Shader m_colour_texture_shader;
-
-	//to know if the soft tissue texture generation uses two colours
-	int m_use_second_colour;
 };
 
 } // namespace gVirtualXRay
