@@ -36,7 +36,8 @@ namespace gVirtualXRay{
 AnatomicalMesh::AnatomicalMesh():
 //----------------------------------------
 		PolygonMesh(),
-		m_use_texture(0)
+		m_use_texture(0),
+		m_use_bump_map(0)
 //----------------------------------------
 {
 	getMaterial().setSpecularColour(1.,1.,1.,1.);
@@ -75,6 +76,10 @@ void AnatomicalMesh::defineDisplayShaderInput(int shader_id)
 
 	handle = glGetUniformLocation(shader_id, "g_use_texture");
 	glUniform1iv(handle, 1, &m_use_texture);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_use_bump_map");
+	glUniform1iv(handle, 1, &m_use_bump_map);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 

@@ -55,10 +55,7 @@ bool BoneMesh::isSoftTissue() const
 void BoneMesh::initialize()
 //----------------------------------------------
 {
-	if(!m_external_data_flag && !m_p_index_set && !m_number_of_indices)
-	{
-		mergeVertices();
-	}
+	InternalOrganMesh::initialize();
 }
 
 } // namespace gVirtualXRay

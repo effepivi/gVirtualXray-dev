@@ -957,11 +957,11 @@ void GLWidget::render()
         }
 
         // Display the source
-        m_xray_detector.displaySource();
+        //m_xray_detector.displaySource();
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true);
+        //m_xray_renderer.display(true);
 
         // Display the beam
         if (m_display_beam)
@@ -976,7 +976,7 @@ void GLWidget::render()
             glUniform1iv(handle, 1, &lighting);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            m_xray_detector.displayBeam();
+            //m_xray_detector.displayBeam();
         }
 
         //clean up the texture
@@ -1023,7 +1023,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
         {
         	if(apMeshSet[i]->isTransparent())
      	    {
-        		pushEnableDisableState(GL_CULL_FACE);
+        		/*pushEnableDisableState(GL_CULL_FACE);
         		pushEnableDisableState(GL_BLEND);
 
         		glDisable(GL_CULL_FACE);
@@ -1034,7 +1034,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
 
         		popEnableDisableState();
         		popEnableDisableState();
-    	    }
+    	    */}
         	else
         	{
                 apMeshSet[i]->display();

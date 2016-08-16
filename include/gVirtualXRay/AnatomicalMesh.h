@@ -89,6 +89,9 @@ protected:
 	/// 1 if the mesh use texturing; default value is 0
 	int m_use_texture;
 
+	/// 1 if the mesh use bump mapping; default value is 0
+	int m_use_bump_map;
+
 };
 } //namespace gVirtualXRay
 #endif //ANATOMICAL_MESH_H

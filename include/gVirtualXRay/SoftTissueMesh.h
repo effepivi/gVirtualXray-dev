@@ -25,10 +25,6 @@
 #include "gVirtualXRay/InternalOrganMesh.h"
 #endif
 
-#ifndef GVXR_SHADER_H
-#include "gVirtualXRay/Shader.h"
-#endif
-
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -63,15 +59,6 @@ public:
 	virtual bool isSoftTissue() const;
 
 	//--------------------------------------------------------------------------
-	///	Update the VBO.
-	/**
-	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
-	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
-	*/
-	//--------------------------------------------------------------------------
-	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
-
-	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader
     /*
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
@@ -93,11 +80,6 @@ protected:
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
 
-	//--------------------------------------------------------------------------
-	/// Split each face into four faces.
-	//--------------------------------------------------------------------------
-	virtual void splitFaces();
-
 	//-------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader bump map generation
     /*
@@ -114,51 +96,15 @@ protected:
 	//-------------------------------------------------------------------------
 	virtual void defineColourTextureShaderInput(int shader_id);
 
-
-	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
-
-
-	//--------------------------------------------------------------------------
-	/// Compute a normal vector per vertex for a smoother display
-	//--------------------------------------------------------------------------
-	virtual void shareNormalVectors();
-
-	//--------------------------------------------------------------------------
-	/// delete the indices and calculate new normal vectors
-	//--------------------------------------------------------------------------
-	virtual void deleteIndices();
-
-	//--------------------------------------------------------------------------
-	/// initialize gradient tab for gnoise
-	//--------------------------------------------------------------------------
-	virtual std::vector<VEC3> initGradientTab();
-
-	//--------------------------------------------------------------------------
-	/// initialize permutation tab for all noises
-	//--------------------------------------------------------------------------
-	virtual std::vector<int> initPermutation();
-
-	//Coordinates for texture sampling
-	std::vector<VEC2> m_textCoord;
-
-	//buffers for the bump map and the colour texture
-	unsigned int m_bump_map_texture,
-		m_bump_map_frame_buffer,
-		m_colour_texture,
+	//buffers for the colour texture
+	unsigned int m_colour_texture,
 		m_colour_texture_frame_buffer;
 
-	//GLSL shaders to create the bump map and the colour texture
-	Shader m_bump_map_shader,
-		m_colour_texture_shader;
+	//GLSL shaders to create the colour texture
+	Shader m_colour_texture_shader;
 
 	//to know if the soft tissue texture generation uses two colours
 	int m_use_second_colour;
-
-	//to know if the soft tissue is a muscle with a tendon for texturing
-	int m_has_tendon;
-
-	//to know if the textured has been initialized
-	bool m_need_initialize;
 };
 
 } // namespace gVirtualXRay

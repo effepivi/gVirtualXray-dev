@@ -86,6 +86,7 @@ out vec4 frag_colour;
 //	Uniform variables
 //******************************************************************************
 uniform int g_use_lighting;
+uniform int g_use_bump_map;
 uniform int g_use_texture;
 uniform vec3 light_direction;
 uniform vec4 light_global_ambient;
@@ -118,7 +119,7 @@ void main(void)
     {
    	 	vec3 normal_vector = g_normal;
     	
-    	if(g_use_texture == 1)
+    	if(g_use_bump_map == 1)
 	    {
 	    	//modify the normal vector using the bump map
 	    	vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
