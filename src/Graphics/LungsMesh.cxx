@@ -52,14 +52,16 @@ LungsMesh::~LungsMesh()
 void LungsMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
-	float max_height(m_max_corner.getZ());
-	GLuint handle(glGetUniformLocation(shader_id, "g_max_height"));
-	glUniform1fv(handle, 1, &max_height);
+	float min_corner[] = {m_min_corner.getX(), m_min_corner.getY(), m_min_corner.getZ()};
+
+	GLuint handle(glGetUniformLocation(shader_id, "g_min_corner"));
+	glUniform3fv(handle, 1, &min_corner[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	float min_height(m_min_corner.getZ());
-	handle = glGetUniformLocation(shader_id, "g_min_height");
-	glUniform1fv(handle, 1, &min_height);
+	float max_corner[] = {m_max_corner.getX(), m_max_corner.getY(), m_max_corner.getZ()};
+
+	handle = glGetUniformLocation(shader_id, "g_max_corner");
+	glUniform3fv(handle, 1, &max_corner[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	SoftTissueMesh::defineBumpMapShaderInput(shader_id);

@@ -30,7 +30,7 @@ const float MINFREQ=0.1;
 const float MAXFREQ=1;
 
 //position of the line
-const float LINE_POS = 0.5;
+const float LINE_POS = 0.35;
 const float LINE_SHARP = 50;
 
 //coefitient of the perturbation
@@ -60,8 +60,8 @@ out float frag_colour;
 //******************************************************************************
 uniform int g_has_tendon;
 uniform int g_is_lung;
-uniform float g_max_height;
-uniform float g_min_height;
+uniform vec3 g_max_corner;
+uniform vec3 g_min_corner;
 uniform int g_perm[TAB_SIZE];
 uniform vec3 g_gradient_tab[TAB_SIZE];
 
@@ -262,9 +262,23 @@ void main(void)
 		//lower the perturbation
 		perturbation *= PERTURBATION_COEF;
 		
-		//The height is 0 where the line is
-		float height = abs(LINE_SHARP*(g_object_position.z - g_min_height)/(g_max_height - g_min_height)-LINE_SHARP*(LINE_POS+perturbation+g_gradient_tab[0].z*0.05));
-	
+		//change the global position
+		perturbation += g_gradient_tab[0].z*0.05;
+		
+		float height;
+		//if the fragment is on the right, the lung has a line
+		if((g_object_position.x - g_min_corner.x)/(g_max_corner.x - g_min_corner.x)>0.55)
+		{
+			//The height is 0 where the line is
+			height = abs(LINE_SHARP*(g_object_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+							LINE_SHARP*(LINE_POS+perturbation));
+		}
+		//if not, it has no line
+		else
+		{
+			height = 1.;
+		}
+			
 		//reduce bump from noise
 		frag_colour *= 0.2;
 		
