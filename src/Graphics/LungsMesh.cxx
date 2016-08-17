@@ -52,10 +52,8 @@ LungsMesh::~LungsMesh()
 void LungsMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
-	float min_corner[] = {m_min_corner.getX(), m_min_corner.getY(), m_min_corner.getZ()};
-
 	GLuint handle(glGetUniformLocation(shader_id, "g_min_corner"));
-	glUniform3fv(handle, 1, &min_corner[0]);
+	glUniform3fv(handle, 1,(const GLfloat*) &m_min_corner);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	float max_corner[] = {m_max_corner.getX(), m_max_corner.getY(), m_max_corner.getZ()};

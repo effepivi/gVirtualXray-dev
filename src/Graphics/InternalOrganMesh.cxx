@@ -171,8 +171,8 @@ void InternalOrganMesh::initialize()
 		unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
 		m_textCoord.reserve(n);
 
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
+		for (unsigned int i(0); i < n; i++) {
+			for (unsigned int j(0); j < n; j++) {
 				//extract four coordinates
 				VEC2 v1(float(i)/n, float(j)/n);
 				VEC2 v2(float(i + 1)/n, float(j)/n);
@@ -196,30 +196,21 @@ void InternalOrganMesh::initialize()
 			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 		}
 
+		initGradientTab();
+		initPermutation();
 		generateTextures();
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		unsigned int k(0);
-		const float STEP(float(0.7)/TEXTURE_SIZE);
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				//the first triangle
-				m_textCoord[k]+=VEC2(2*STEP,STEP);
-				k++;
-				m_textCoord[k]+=VEC2(-STEP,STEP);
-				k++;
-				m_textCoord[k]+=VEC2(-STEP,-2*STEP);
-				k++;
+		addMargin(float(0.7)/TEXTURE_SIZE, n);
 
-				//the second triangle
-				m_textCoord[k]+=VEC2(STEP,2*STEP);
-				k++;
-				m_textCoord[k]+=VEC2(-2*STEP,-STEP);
-				k++;
-				m_textCoord[k]+=VEC2(STEP,-STEP);
-				k++;
-			}
-		}
+		//Update the VBO
+		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+
+		//Generate the texture again
+		generateTextures();
+
+		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
+		addMargin(float(0.3)/TEXTURE_SIZE, n);
 
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
@@ -289,11 +280,11 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_perm");
-	glUniform1iv(handle, TAB_SIZE,&initPermutation()[0]);
+	glUniform1iv(handle, TAB_SIZE,&m_permutation[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
-	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &initGradientTab()[0]);
+	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &m_gradient_tab[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
@@ -401,6 +392,33 @@ public:
 	unsigned int m_id;
 };
 
+//----------------------------------------------
+void InternalOrganMesh::addMargin(float margin, int n)
+//----------------------------------------------
+{
+	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
+	unsigned int k(0);
+	for (unsigned int i(0); i < n; i++) {
+		for (unsigned int j(0); j < n; j++) {
+			//the first triangle
+			m_textCoord[k]+=VEC2(2*margin,margin);
+			k++;
+			m_textCoord[k]+=VEC2(-margin,margin);
+			k++;
+			m_textCoord[k]+=VEC2(-margin,-2*margin);
+			k++;
+
+			//the second triangle
+			m_textCoord[k]+=VEC2(margin,2*margin);
+			k++;
+			m_textCoord[k]+=VEC2(-2*margin,-margin);
+			k++;
+			m_textCoord[k]+=VEC2(margin,-margin);
+			k++;
+		}
+	}
+
+}
 
 //----------------------------------------------
 void InternalOrganMesh::shareNormalVectors()
@@ -526,10 +544,9 @@ void InternalOrganMesh::deleteIndices()
 }
 
 //----------------------------------------------
-std::vector<VEC3> InternalOrganMesh::initGradientTab()
+void InternalOrganMesh::initGradientTab()
 //----------------------------------------------
 {
-	std::vector<VEC3> tab;
 	float z, r, theta;
 
 	for(unsigned int i(0); i<TAB_SIZE; i++)
@@ -538,22 +555,18 @@ std::vector<VEC3> InternalOrganMesh::initGradientTab()
 		r= sqrt(1-z*z);
 		theta=2 * M_PI * (float(rand()) / RAND_MAX);
 
-		tab.push_back(VEC3(
+		m_gradient_tab.push_back(VEC3(
 				r*cos(theta),
 				r*sin(theta),
 				z
 			));
 	}
-
-	return tab;
 }
 
 //----------------------------------------------
-std::vector<int> InternalOrganMesh::initPermutation()
+void InternalOrganMesh::initPermutation()
 //----------------------------------------------
 {
-	std::vector<int> tab;
-
 	for(unsigned int i(0); i<TAB_SIZE; i++)
 	{
 
@@ -566,15 +579,14 @@ std::vector<int> InternalOrganMesh::initPermutation()
 			int random_number(rand()%TAB_SIZE);
 
 			//if the random number isn't already in the array
-			if(std::find(tab.begin(), tab.end(), random_number) == tab.end())
+			if(std::find(m_permutation.begin(), m_permutation.end(), random_number) == m_permutation.end())
 			{
 				//add it to the array
-				tab.push_back(random_number);
+				m_permutation.push_back(random_number);
 				nothing_added = false;
 			}
 		}
 	}
-	return tab;
 }
 
 

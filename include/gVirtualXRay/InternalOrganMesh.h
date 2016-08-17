@@ -113,6 +113,15 @@ protected:
 	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 
 	//--------------------------------------------------------------------------
+	/// Add margin between triangles of the texture to avoid artifacts at the boundary of the polygons
+    /*
+    *   @param margin: a margin to add
+    *   @param n: number of triangles of the side of the texture
+    */
+	//--------------------------------------------------------------------------
+	virtual void addMargin(float margin, int n);
+
+	//--------------------------------------------------------------------------
 	/// Compute a normal vector per vertex for a smoother display
 	//--------------------------------------------------------------------------
 	virtual void shareNormalVectors();
@@ -125,13 +134,18 @@ protected:
 	//--------------------------------------------------------------------------
 	/// initialize gradient tab for gnoise
 	//--------------------------------------------------------------------------
-	virtual std::vector<VEC3> initGradientTab();
+	virtual void initGradientTab();
 
 	//--------------------------------------------------------------------------
 	/// initialize permutation tab for all noises
 	//--------------------------------------------------------------------------
-	virtual std::vector<int> initPermutation();
+	virtual void initPermutation();
 
+	//gradient tab for gnoise
+	std::vector<VEC3> m_gradient_tab;
+
+	//permutation tab for noises
+	std::vector<int> m_permutation;
 
 	//Coordinates for texture sampling
 	std::vector<VEC2> m_textCoord;

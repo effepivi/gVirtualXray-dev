@@ -140,9 +140,6 @@ void SoftTissueMesh::generateTextures()
 	glBindFramebuffer(GL_FRAMEBUFFER, m_colour_texture_frame_buffer);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
-	// Clear
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
 	pushEnableDisableState(GL_DEPTH_TEST);
@@ -193,11 +190,11 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_perm");
-	glUniform1iv(handle, TAB_SIZE,&initPermutation()[0]);
+	glUniform1iv(handle, TAB_SIZE,&m_permutation[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
-	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &initGradientTab()[0]);
+	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &m_gradient_tab[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 } // namespace gVirtualXRay
