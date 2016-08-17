@@ -364,7 +364,7 @@ void GLWidget::paintGL()
             0.0, 1.0, 0.0);
 
     // Rotation
-    if (m_current_angle != m_next_angle_to_process)
+   /* if (m_current_angle != m_next_angle_to_process)
     {
         switch (m_acquisition_type)
         {
@@ -430,7 +430,7 @@ void GLWidget::paintGL()
         }
 
         m_swap_patient = !m_swap_patient;
-    }
+    }*/
 
     // Update the X-ray image
     updateXRayImage();

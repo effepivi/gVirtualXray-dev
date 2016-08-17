@@ -31,13 +31,16 @@ const float MAXFREQ=1;
 
 //position of the line
 const float LINE_POS = 0.3;
-const float LINE_SHARP = 60;
+const float LINE_SHARP = 100;
 
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.005;
 
 //frequency of the lines on the muscle (if has tendon)
 const float LINE_FREQ = 50;
+
+//step for bump evaluation 
+const float STEP=0.02;
 
 //size of the arrays to initialize noises
 const int TAB_SIZE = 64;
@@ -52,7 +55,7 @@ smooth in vec3 g_object_position;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out float frag_colour;
+out vec3 frag_colour;
 
 
 //******************************************************************************
@@ -228,28 +231,29 @@ float fractalSum(vec3 Q)
 	return value*2*MINFREQ+0.5;
 }
 
-//-------------
-void main(void)
-//-------------
+//calculate the height of the bump
+//------------------------
+float computeBumpValue(vec3 object_position)
+//------------------------
 {
-	float noise_value = noise(g_object_position)*0.5+0.5;
-	frag_colour = noise_value*0.2;
+	float noise_value = noise(object_position)*0.5+0.5;
+	float bump_value = noise_value*0.2;
 	
 	if(g_has_tendon == 1)
 	{
 		//create perturbation using noise and fractal sum
-		float perturbation = noise_value + fractalSum(g_object_position);
+		float perturbation = noise_value + fractalSum(object_position);
 	
 		//lower the perturbation
 		perturbation *= PERTURBATION_COEF;
 		
 		//angle of the point to the center
-		float theta = atan(g_object_position.y,g_object_position.x+length(g_object_position.xy));
+		float theta = atan(object_position.y,object_position.x+length(object_position.xy));
  
 		float horizontal = (abs(dot(g_normal,vec3(0,0,1))));
 		
 		//Creates lines disturbed by fractal sum and noise
-		frag_colour+=0.2*(1-horizontal)*
+		bump_value+=0.2*(1-horizontal)*
 			(1-(pow(abs(sin(5*LINE_FREQ*(theta+perturbation))),14)+
 			0.6*pow(abs(sin(7*LINE_FREQ*(theta+perturbation))),10))+
 			0.4*pow(abs(sin(9*LINE_FREQ*(theta+perturbation))),8));
@@ -258,7 +262,7 @@ void main(void)
 	if(g_is_lung == 1)
 	{
 		//create perturbation using fractal sum
-		float perturbation = fractalSum(g_object_position);
+		float perturbation = fractalSum(object_position);
 	
 		//lower the perturbation
 		perturbation *= PERTURBATION_COEF;
@@ -266,15 +270,15 @@ void main(void)
 		//change the global position
 		perturbation += g_gradient_tab[0].z*0.05;
 		
-		vec3 rotated_position=(g_matrix*vec4(g_object_position,1.)).xyz;
+		vec3 rotated_position=(g_matrix*vec4(object_position,1.)).xyz;
 				
 		float height;
 		
 		//if the fragment is on the right, the lung has a central line
-		if((g_object_position.x - g_min_corner.x)/(g_max_corner.x - g_min_corner.x)>0.55)
+		if((object_position.x - g_min_corner.x)/(g_max_corner.x - g_min_corner.x)>0.55)
 		{
 			//The height is 0 where the line is
-			height = clamp(abs(LINE_SHARP*(g_object_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+			height = clamp(abs(LINE_SHARP*(object_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
 							LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
 						
 			//add another change to the position of the line
@@ -297,12 +301,31 @@ void main(void)
 		}
 					
 		//reduce bump from noise
-		frag_colour *= 0.2;
+		bump_value *= 0.2;
 		
 		//add the line
-		frag_colour += clamp(height,0.,0.5);
+		bump_value += clamp(height,0.,1.);
 		
 		//square to make it sharper
-		frag_colour *= frag_colour;
+		bump_value *= bump_value;
 	}
+	return bump_value;
+}
+
+
+//-------------
+void main(void)
+//-------------
+{
+	//modify the normal vector using the bump map
+	vec3 U = cross(g_normal,vec3(1,0,0));
+	vec3 V = cross(g_normal,U);
+	    	
+	vec3 deltaNormal = U*(computeBumpValue(g_object_position-STEP*U)
+	   			- computeBumpValue(g_object_position+STEP*U))/(2*STEP);
+	    	
+	deltaNormal += V*(computeBumpValue(g_object_position-STEP*V)
+	   			- computeBumpValue(g_object_position+STEP*V))/(2*STEP);
+	
+	frag_colour = deltaNormal;
 }

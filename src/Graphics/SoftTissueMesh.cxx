@@ -123,7 +123,7 @@ void SoftTissueMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	    //initialize the buffers for the bump map and the colour texture
-	    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer, true);
+	    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer);
 	}
 
     InternalOrganMesh::initialize();

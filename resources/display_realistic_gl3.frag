@@ -105,11 +105,8 @@ uniform sampler2D g_colour_texture;
 //	constant variables
 //******************************************************************************
 //BIAS to reduce shadow acne
-const float MAX_BIAS=0.01;
-const float BIAS_RATE=0.01;
-
-//step for bump evaluation 
-const float STEP=0.00002;
+const float MAX_BIAS=0.005;
+const float BIAS_RATE=0.005;
 
 //-------------
 void main(void)
@@ -121,10 +118,10 @@ void main(void)
     	
     	if(g_use_bump_map == 1)
 	    {
-	    	//modify the normal vector using the bump map
-	    	vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	    	deltaNormal += texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
-    		normal_vector   = normalize(g_normal+deltaNormal);
+	    	//modify the normal vector using the bump map   	
+	    	vec3 deltaNormal = texture( g_bump_map, g_texture_coordinates).rgb;
+	    	    		
+    		normal_vector += deltaNormal;
     	}
   		normal_vector = normalize(normal_vector);
     

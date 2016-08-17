@@ -155,7 +155,7 @@ void InternalOrganMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	    //initialize the buffers for the bump map
-	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer, false);
+	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
 
 	    bool vbo_need_update(true);
 
@@ -169,7 +169,6 @@ void InternalOrganMesh::initialize()
 
 		//initialize the coordinates for sampling
 		unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
-
 		m_textCoord.reserve(n);
 
 		for (int i = 0; i < n; i++) {
@@ -201,7 +200,7 @@ void InternalOrganMesh::initialize()
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		unsigned int k(0);
-		const float STEP(float(0.6)/TEXTURE_SIZE);
+		const float STEP(float(0.7)/TEXTURE_SIZE);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				//the first triangle
@@ -300,20 +299,13 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 
 
 //----------------------------------------------
-void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer, bool has_colour)
+void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
 //----------------------------------------------
 {
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
-	if(has_colour)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
-	}
-	else
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RED, GL_FLOAT, 0);
-	}
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

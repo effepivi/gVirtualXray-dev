@@ -110,7 +110,7 @@ protected:
     *   @param aFrameBuffer: the framebuffer
     */
 	//-------------------------------------------------------------------------
-	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer, bool has_colour);
+	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 
 	//--------------------------------------------------------------------------
 	/// Compute a normal vector per vertex for a smoother display

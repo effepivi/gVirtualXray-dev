@@ -247,8 +247,8 @@ vec3 computeInterpoledNormalVector(vec3 first_vector, vec3 second_vector,float a
 vec4 computeMuscleColour()
 //------------------------
 {
-	float bump_value = texture(g_bump_map, g_texture_coordinates).r;
-	bump_value+=0.7;
+	float bump_value = 1-clamp(length(texture(g_bump_map, g_texture_coordinates).rgb),0,1);
+	//bump_value+=0.7;
 	bump_value*=bump_value;
 	
 	return bump_value * g_base_colour +
