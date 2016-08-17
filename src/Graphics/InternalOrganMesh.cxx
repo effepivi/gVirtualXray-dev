@@ -201,7 +201,7 @@ void InternalOrganMesh::initialize()
 		generateTextures();
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		addMargin(float(0.7)/TEXTURE_SIZE, n);
+		addMargin(float(0.9)/TEXTURE_SIZE, n);
 
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
@@ -210,7 +210,7 @@ void InternalOrganMesh::initialize()
 		generateTextures();
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		addMargin(float(0.3)/TEXTURE_SIZE, n);
+		addMargin(float(0.2)/TEXTURE_SIZE, n);
 
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
@@ -299,8 +299,8 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 

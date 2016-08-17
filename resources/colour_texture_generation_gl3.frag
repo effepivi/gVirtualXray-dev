@@ -271,13 +271,9 @@ vec4 computeTendonColour()
 	}
 	else 
 	{
-		//modify the normal vector using the bump map
-		vec3 deltaNormal = texture( g_bump_map, vec2(g_texture_coordinates.x+STEP, g_texture_coordinates.y)).r*vec3(1,0,0)-
-			texture( g_bump_map, vec2(g_texture_coordinates.x-STEP, g_texture_coordinates.y)).r*vec3(-1,0,0);
-	
-		deltaNormal += texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y+STEP)).r*vec3(0,1,0)-
-			texture( g_bump_map, vec2(g_texture_coordinates.x, g_texture_coordinates.y-STEP)).r*vec3(0,-1,0);
-	
+    	//modify the normal vector using the bump map   	
+    	vec3 deltaNormal = texture( g_bump_map, g_texture_coordinates).rgb;
+	    	    		
 		vec3 bumped_normal_vector   = normalize(g_normal+deltaNormal);
 		
 		//linear interpolation of the normal vectors

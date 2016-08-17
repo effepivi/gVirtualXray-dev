@@ -31,7 +31,7 @@ const float MAXFREQ=1;
 
 //position of the line
 const float LINE_POS = 0.3;
-const float LINE_SHARP = 100;
+const float LINE_SHARP = 200;
 
 //coefitient of the perturbation
 const float PERTURBATION_COEF = 0.005;
@@ -237,7 +237,7 @@ float computeBumpValue(vec3 object_position)
 //------------------------
 {
 	float noise_value = noise(object_position)*0.5+0.5;
-	float bump_value = noise_value*0.2;
+	float bump_value = noise_value*0.3;
 	
 	if(g_has_tendon == 1)
 	{
@@ -301,13 +301,13 @@ float computeBumpValue(vec3 object_position)
 		}
 					
 		//reduce bump from noise
-		bump_value *= 0.2;
+		bump_value *= 0.5;
 		
 		//add the line
 		bump_value += clamp(height,0.,1.);
 		
 		//square to make it sharper
-		bump_value *= bump_value;
+		bump_value = 1-(1-bump_value)*(1-bump_value);
 	}
 	return bump_value;
 }
