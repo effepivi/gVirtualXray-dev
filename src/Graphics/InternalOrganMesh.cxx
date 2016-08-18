@@ -56,6 +56,7 @@ InternalOrganMesh::InternalOrganMesh():
 		m_bump_map_frame_buffer(0),
 		m_has_tendon(0),
 		m_is_lung(0),
+		m_has_thin_bumps(0),
 		m_need_initialize(true)
 //----------------------------------------
 {
@@ -277,6 +278,10 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 
 	handle = glGetUniformLocation(shader_id, "g_is_lung");
 	glUniform1iv(handle, 1, &m_is_lung);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_has_thin_bumps");
+	glUniform1iv(handle, 1, &m_has_thin_bumps);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_perm");

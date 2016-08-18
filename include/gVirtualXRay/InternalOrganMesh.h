@@ -157,11 +157,14 @@ protected:
 	//GLSL shaders to create the bump map and the colour texture
 	Shader m_bump_map_shader;
 
-	//to know if the soft tissue is a muscle with a tendon for texturing and bump mapping
+	//to know if the internal organ is a muscle with a tendon for texturing and bump mapping, 0 by default
 	int m_has_tendon;
 
-	//to know if the soft tissue is a lung with two colors and a line for texturing and bump mapping
+	//to know if the internal organ is a lung with two colors and a line for texturing and bump mapping, 0 by default
 	int m_is_lung;
+
+	//to know if the internal organ has thin bumps for bump mapping, 0 by default
+	int m_has_thin_bumps;
 
 	//to know if the textured has been initialized
 	bool m_need_initialize;

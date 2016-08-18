@@ -31,6 +31,7 @@ BoneMesh::BoneMesh():
 		InternalOrganMesh()
 //----------------------------------------------
 {
+	m_has_thin_bumps = 1;
 	getMaterial().setShininess(4);
 	getMaterial().setSpecularColour(0.2,0.2,0.2,1.);
 	getMaterial().setDiffuseColour(0.84,0.74,0.6,1.);

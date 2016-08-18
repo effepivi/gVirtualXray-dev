@@ -6,7 +6,7 @@
 *
 *	@file		BoneMesh.h
 *
-*	@brief      Class to handle a polygon mesh for Bone.
+*	@brief      Class to handle a polygon mesh for Bone with thin bumps.
 *
 *	@version	1.0
 *
@@ -34,7 +34,7 @@ namespace gVirtualXRay {
 //==============================================================================
 /**
 *   @class  BoneMesh
-*   @brief  BoneMesh is a class to handle a polygon mesh for Bone.
+*   @brief  BoneMesh is a class to handle a polygon mesh for Bone, with thin bumps.
 */
 //==============================================================================
 class BoneMesh: public InternalOrganMesh
