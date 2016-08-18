@@ -45,7 +45,7 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	LungsMesh();
+	LungsMesh(bool x_mirror = false, bool y_mirror = false, bool z_mirror = false );
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -68,6 +68,12 @@ protected:
     */
 	//-------------------------------------------------------------------------
 	virtual void defineColourTextureShaderInput(int shader_id);
+
+	//to know if the model is upside down to draw the lines
+	bool m_x_mirror,
+		m_y_mirror,
+		m_z_mirror;
+
 };
 
 } // namespace gVirtualXRay

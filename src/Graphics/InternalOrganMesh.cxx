@@ -210,7 +210,7 @@ void InternalOrganMesh::initialize()
 		generateTextures();
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		addMargin(float(0.2)/TEXTURE_SIZE, n);
+		addMargin(float(0.1)/TEXTURE_SIZE, n);
 
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());

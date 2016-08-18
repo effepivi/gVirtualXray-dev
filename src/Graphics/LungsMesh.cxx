@@ -30,13 +30,16 @@
 namespace gVirtualXRay {
 
 //----------------------------------------------
-LungsMesh::LungsMesh():
+LungsMesh::LungsMesh(bool x_mirror, bool y_mirror, bool z_mirror):
 //----------------------------------------------
-		SoftTissueMesh()
+		SoftTissueMesh(),
+		m_x_mirror(x_mirror),
+		m_y_mirror(y_mirror),
+		m_z_mirror(z_mirror)
 //----------------------------------------------
 {
-	getMaterial().setDiffuseColour(0.7,0.28,0.28,1.);
-	getMaterial().setAmbientColour(0.7,0.28,0.28,1.);
+	getMaterial().setDiffuseColour(1.,0.71,0.66,1.);
+	getMaterial().setAmbientColour(1.,0.71,0.66,1.);
 	m_is_lung=1;
 }
 
@@ -62,14 +65,41 @@ void LungsMesh::defineBumpMapShaderInput(int shader_id)
 	glUniform3fv(handle, 1, &max_corner[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	//matrix to rotate in case the model is upside down
+	Matrix4x4<GLfloat> rotation_matrix(Matrix4x4<GLfloat>::buildIdentityMatrix());
 
-	//matrix for the bump map (to create the lines on the sides)
+	if(m_x_mirror)
+	{
+		rotation_matrix *= 	rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(180,VEC3(0.,1.,0.));
+	}
+	if(m_y_mirror)
+	{
+		rotation_matrix *= 	rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(180,VEC3(0.,0.,1.));
+	}
+	if(m_z_mirror)
+	{
+		rotation_matrix *= 	rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(180,VEC3(1.,0.,0.));
+	}
+
+
+	//matrix for the bump map (to create the line on the right)
 	VEC3 translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
 	Matrix4x4<GLfloat> matrix(Matrix4x4<GLfloat>::buildTranslationMatrix(translation_vector));
-	matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(30,VEC3(1.,0.,0.));
+	matrix *= rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(10,VEC3(1.,0.,0.));
 	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);
 
-	handle = glGetUniformLocation(shader_id, "g_matrix");
+	handle = glGetUniformLocation(shader_id, "g_right_line_matrix");
+	glUniformMatrix4fv(handle, 1, GL_FALSE, matrix.get());
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+	//matrix for the bump map (to create the lines on the sides)
+	translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
+	matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(translation_vector);
+	matrix *= rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(30,VEC3(1.,0.,0.));
+	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);
+
+	handle = glGetUniformLocation(shader_id, "g_side_lines_matrix");
 	glUniformMatrix4fv(handle, 1, GL_FALSE, matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

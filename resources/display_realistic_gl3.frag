@@ -100,6 +100,7 @@ uniform float material_shininess;
 uniform sampler2DShadow g_shadow_map;
 uniform sampler2D g_bump_map;
 uniform sampler2D g_colour_texture;
+uniform mat3 g_normal_matrix;
 
 //******************************************************************************
 //	constant variables
@@ -123,7 +124,7 @@ void main(void)
 	    	    		
     		normal_vector += deltaNormal;
     	}
-  		normal_vector = normalize(normal_vector);
+  		normal_vector = normalize(g_normal_matrix*normal_vector);
     
     	//cosinus of the light direction and the normal vector
     	float cosLightNormal = max(0., dot(light_direction, normal_vector));

@@ -27,17 +27,17 @@
 //******************************************************************************
 //Frequence for fractal sum
 const float MINFREQ=0.1;
-const float MAXFREQ=1;
+const float MAXFREQ=1.;
 
 //position of the line
 const float LINE_POS = 0.3;
-const float LINE_SHARP = 200;
+const float LINE_SHARP = 200.;
 
 //coefitient of the perturbation
-const float PERTURBATION_COEF = 0.005;
+const float PERTURBATION_COEF = 0.003;
 
 //frequency of the lines on the muscle (if has tendon)
-const float LINE_FREQ = 50;
+const float LINE_FREQ = 50.;
 
 //step for bump evaluation 
 const float STEP=0.02;
@@ -64,6 +64,8 @@ out vec3 frag_colour;
 uniform int g_has_tendon;
 uniform int g_is_lung;
 uniform mat4 g_matrix;
+uniform mat4 g_right_line_matrix;
+uniform mat4 g_side_lines_matrix;
 uniform vec3 g_max_corner;
 uniform vec3 g_min_corner;
 uniform int g_perm[TAB_SIZE];
@@ -250,10 +252,13 @@ float computeBumpValue(vec3 object_position)
 		//angle of the point to the center
 		float theta = atan(object_position.y,object_position.x+length(object_position.xy));
  
-		float horizontal = (abs(dot(g_normal,vec3(0,0,1))));
+		float horizontal = clamp(abs(dot(g_normal,vec3(0,0,1))), 0., 1.);
+		
+		//reduce bump from noise
+		bump_value *= 0.2*horizontal*horizontal*horizontal;
 		
 		//Creates lines disturbed by fractal sum and noise
-		bump_value+=0.2*(1-horizontal)*
+		bump_value+=0.4*(1-horizontal)*
 			(1-(pow(abs(sin(5*LINE_FREQ*(theta+perturbation))),14)+
 			0.6*pow(abs(sin(7*LINE_FREQ*(theta+perturbation))),10))+
 			0.4*pow(abs(sin(9*LINE_FREQ*(theta+perturbation))),8));
@@ -270,22 +275,23 @@ float computeBumpValue(vec3 object_position)
 		//change the global position
 		perturbation += g_gradient_tab[0].z*0.05;
 		
-		vec3 rotated_position=(g_matrix*vec4(object_position,1.)).xyz;
+		vec3 rotated_for_right_line_position = (g_right_line_matrix*vec4(object_position,1.)).xyz;
+		vec3 rotated_for_side_lines_position = (g_side_lines_matrix*vec4(object_position,1.)).xyz;
 				
 		float height;
 		
 		//if the fragment is on the right, the lung has a central line
-		if((object_position.x - g_min_corner.x)/(g_max_corner.x - g_min_corner.x)>0.55)
+		if((object_position.x - g_min_corner.x)/(g_max_corner.x - g_min_corner.x)>0.5)
 		{
 			//The height is 0 where the line is
-			height = clamp(abs(LINE_SHARP*(object_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+			height = clamp(abs(LINE_SHARP*(rotated_for_right_line_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
 							LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
 						
 			//add another change to the position of the line
 			perturbation += g_gradient_tab[0].y*0.05+0.25;
 					
 			//draw the line on the side
-			height *= clamp(abs(LINE_SHARP*(rotated_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+			height *= clamp(abs(LINE_SHARP*(rotated_for_side_lines_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
 						LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
 			
 		}
@@ -296,12 +302,12 @@ float computeBumpValue(vec3 object_position)
 			perturbation -= g_gradient_tab[0].z*0.05-0.2;
 								
 			//draw the line on the side
-			height = abs(LINE_SHARP*(rotated_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+			height = abs(LINE_SHARP*(rotated_for_side_lines_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
 						LINE_SHARP*(LINE_POS+perturbation));
 		}
 					
 		//reduce bump from noise
-		bump_value *= 0.5;
+		bump_value *= 0.6;
 		
 		//add the line
 		bump_value += clamp(height,0.,1.);
@@ -317,15 +323,14 @@ float computeBumpValue(vec3 object_position)
 void main(void)
 //-------------
 {
-	//modify the normal vector using the bump map
 	vec3 U = cross(g_normal,vec3(1,0,0));
-	vec3 V = cross(g_normal,U);
+	vec3 V = cross(g_normal,vec3(0,1,0));
 	    	
 	vec3 deltaNormal = U*(computeBumpValue(g_object_position-STEP*U)
-	   			- computeBumpValue(g_object_position+STEP*U))/(2*STEP);
+	   			- computeBumpValue(g_object_position+STEP*U))/(STEP);
 	    	
 	deltaNormal += V*(computeBumpValue(g_object_position-STEP*V)
-	   			- computeBumpValue(g_object_position+STEP*V))/(2*STEP);
+	   			- computeBumpValue(g_object_position+STEP*V))/(STEP);
 	
 	frag_colour = deltaNormal;
 }

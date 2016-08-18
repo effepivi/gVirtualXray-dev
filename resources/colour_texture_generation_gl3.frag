@@ -298,20 +298,19 @@ void main(void)
 	}
 	else
 	{
-		vec4 second_colour;
-		float frac_sum_value = fractalSum(g_object_position);
-		float turbulence_value;
-	
 		if(g_is_lung==1)
 		{
-			turbulence_value=turbulence(g_object_position);
-			second_colour=g_second_colour*(1-frac_sum_value);
+			float noise_value = noise(g_object_position)*0.5+0.5;
+			
+			//lower the noise and make it sharper
+			noise_value*=pow(noise_value,4);	
+			
+			vec4 second_colour=g_second_colour*noise_value;
+			frag_colour=(g_base_colour*(1-noise_value)+second_colour)*(turbulence(g_object_position)*0.4+0.6);
 		}
 		else
 		{
-			turbulence_value=1;
-			second_colour=vec4(0,0,0,0);
+			frag_colour=(g_base_colour*fractalSum(g_object_position));
 		}
-		frag_colour=(g_base_colour*frac_sum_value+second_colour)*turbulence_value;
 	}
 }

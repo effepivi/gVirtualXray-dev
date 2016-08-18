@@ -401,7 +401,7 @@ private:
     *   @param apMeshSet: The set of polygon meshes to initialize
     */
     //--------------------------------------------------------------------------
-    void initializePatient(std::vector<AnatomicalMesh*>& apMeshSet);
+    void initializePatients();
 
     //--------------------------------------------------------------------------
     /// render the patient to the shadow map.

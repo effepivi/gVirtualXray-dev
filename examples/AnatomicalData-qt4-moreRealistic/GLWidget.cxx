@@ -259,8 +259,7 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
 {
 	//Initialize the polygon meshes
-	initializePatient(m_p_P4_polygon_mesh_set);
-	initializePatient(m_p_P5_polygon_mesh_set);
+	initializePatients();
 
     // Initialize Qt
     // and create a windowed mode window and its OpenGL context
@@ -1243,15 +1242,22 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
 }
 
 //------------------------------------------------------
-void GLWidget::initializePatient(std::vector<AnatomicalMesh*>& apMeshSet)
+void GLWidget::initializePatients()
 //------------------------------------------------------
 {
-	apMeshSet.push_back(new SkinMesh());
-	apMeshSet.push_back(new LiverMesh());
-	apMeshSet.push_back(new LungsMesh());
-	apMeshSet.push_back(new DiaphragmMesh());
-	apMeshSet.push_back(new BoneMesh());
-	apMeshSet.push_back(new BoneMesh());
+	m_p_P4_polygon_mesh_set.push_back(new SkinMesh());
+	m_p_P4_polygon_mesh_set.push_back(new LiverMesh());
+	m_p_P4_polygon_mesh_set.push_back(new LungsMesh());
+	m_p_P4_polygon_mesh_set.push_back(new DiaphragmMesh());
+	m_p_P4_polygon_mesh_set.push_back(new BoneMesh());
+	m_p_P4_polygon_mesh_set.push_back(new BoneMesh());
+
+	m_p_P5_polygon_mesh_set.push_back(new SkinMesh());
+	m_p_P5_polygon_mesh_set.push_back(new LiverMesh());
+	m_p_P5_polygon_mesh_set.push_back(new LungsMesh(false, false, true));
+	m_p_P5_polygon_mesh_set.push_back(new DiaphragmMesh());
+	m_p_P5_polygon_mesh_set.push_back(new BoneMesh());
+	m_p_P5_polygon_mesh_set.push_back(new BoneMesh());
 }
 
 //------------------------------------------------------

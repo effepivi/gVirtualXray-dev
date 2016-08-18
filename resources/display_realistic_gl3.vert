@@ -88,7 +88,6 @@ smooth out vec4 g_shadow_coord;
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
 uniform mat4 g_shadow_map_matrix;
-uniform mat3 g_normal_matrix;
 
 //-------------
 void main(void)
@@ -96,7 +95,7 @@ void main(void)
 {
 	vec4 g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);
 	
-	g_normal = g_normal_matrix * in_Normal;
+	g_normal = in_Normal;
 	g_view_direction = normalize(g_object_position.xyz);
 	
     g_texture_coordinates = in_TexCoord;
