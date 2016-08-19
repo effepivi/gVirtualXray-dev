@@ -113,12 +113,9 @@ protected:
 	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 
 	//--------------------------------------------------------------------------
-	/// Add margin between triangles of the texture to avoid artifacts at the boundary of the polygons
-    /*
-    *   @param margin: a margin to add
-    */
+	/// Initialize optimized texture coordinates
 	//--------------------------------------------------------------------------
-	virtual void addMargin(float margin);
+	virtual void initializeTextureCoordinates();
 
 	//--------------------------------------------------------------------------
 	/// Compute a normal vector per vertex for a smoother display

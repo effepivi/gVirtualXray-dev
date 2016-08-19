@@ -167,7 +167,7 @@ void InternalOrganMesh::initialize()
 			shareNormalVectors();
 
 			//initialize the coordinates for sampling
-			unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
+			unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
 			m_textCoord.reserve(m_number_of_vertices);
 
 			for (unsigned int i(0); i < n; i++) {
@@ -192,301 +192,7 @@ void InternalOrganMesh::initialize()
 		}
 		else
 		{
-			unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4)+1);
-
-			m_textCoord.resize(m_number_of_vertices);
-			m_margin_direction.resize(m_number_of_vertices);
-			std::vector<bool> has_texture_coordinates(m_number_of_vertices/3,false);
-			unsigned int k(0);
-			for (unsigned int i(0); i < n; i++) {
-				for (unsigned int j(0); j < n; j++) {
-					//extract four coordinates
-					VEC2 v1(float(i)/n, float(j)/n);
-					VEC2 v2(float(i + 1)/n, float(j)/n);
-					VEC2 v3(float(i + 1)/n, float(j + 1)/n);
-					VEC2 v4(float(i)/n, float(j + 1)/n);
-
-					while(k<m_number_of_vertices/3 && has_texture_coordinates[k])
-					{
-						k++;
-					}
-					if(k<m_number_of_vertices/3)
-					{
-						unsigned int first_triangle_indice(3 * k);
-						has_texture_coordinates[k] = true;
-						k++;
-
-						bool matching_face_not_found(true);
-						unsigned int matching_face_indice(first_triangle_indice+3);
-						VEC3 first_vertex(getVertex(first_triangle_indice));
-						VEC3 second_vertex(getVertex(first_triangle_indice+1));
-						VEC3 third_vertex(getVertex(first_triangle_indice+2));
-
-						while(matching_face_not_found && matching_face_indice < m_number_of_vertices)
-						{
-							VEC3 first_matching_vertex(getVertex(matching_face_indice));
-							VEC3 second_matching_vertex(getVertex(matching_face_indice+1));
-							VEC3 third_matching_vertex(getVertex(matching_face_indice+2));
-
-							if(!has_texture_coordinates[matching_face_indice/3])
-							{
-								if((third_matching_vertex==second_vertex)
-										&& (first_matching_vertex==first_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v3;
-										m_textCoord[first_triangle_indice+1] = v1;
-										m_textCoord[first_triangle_indice+2] = v2;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v3;
-										m_textCoord[matching_face_indice+1] = v4;
-										m_textCoord[matching_face_indice+2] = v1;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(1., 1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(-1., 1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(-1., -1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(1., -1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(1., 1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else if((first_matching_vertex==second_vertex)
-										&& (second_matching_vertex==first_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v3;
-										m_textCoord[first_triangle_indice+1] = v1;
-										m_textCoord[first_triangle_indice+2] = v2;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v1;
-										m_textCoord[matching_face_indice+1] = v3;
-										m_textCoord[matching_face_indice+2] = v4;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(1., 1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(-1., 1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(1., 1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(-1., -1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(1., -1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else if((second_matching_vertex == second_vertex)
-										&& (third_matching_vertex == first_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v3;
-										m_textCoord[first_triangle_indice+1] = v1;
-										m_textCoord[first_triangle_indice+2] = v2;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v4;
-										m_textCoord[matching_face_indice+1] = v1;
-										m_textCoord[matching_face_indice+2] = v3;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(1., 1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(-1., 1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(1., -1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(1., 1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(-1., -1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else
-
-									if((third_matching_vertex==third_vertex)
-										&& (first_matching_vertex==second_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v2;
-										m_textCoord[first_triangle_indice+1] = v3;
-										m_textCoord[first_triangle_indice+2] = v1;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v3;
-										m_textCoord[matching_face_indice+1] = v4;
-										m_textCoord[matching_face_indice+2] = v1;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(-1., -1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(1., 1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(-1., -1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(1., -1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(1., 1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else if((first_matching_vertex==third_vertex)
-										&& (second_matching_vertex==second_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v2;
-										m_textCoord[first_triangle_indice+1] = v3;
-										m_textCoord[first_triangle_indice+2] = v1;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v1;
-										m_textCoord[matching_face_indice+1] = v3;
-										m_textCoord[matching_face_indice+2] = v4;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(-1., -1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(1., 1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(1., 1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(-1., -1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(1., -1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else if((second_matching_vertex == third_vertex)
-										&& (third_matching_vertex == second_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v2;
-										m_textCoord[first_triangle_indice+1] = v3;
-										m_textCoord[first_triangle_indice+2] = v1;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v4;
-										m_textCoord[matching_face_indice+1] = v1;
-										m_textCoord[matching_face_indice+2] = v3;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(-1., -1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(1., 1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(1., -1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(1., 1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(-1., -1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else
-
-									if((third_matching_vertex==first_vertex)
-										&& (first_matching_vertex==third_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v1;
-										m_textCoord[first_triangle_indice+1] = v2;
-										m_textCoord[first_triangle_indice+2] = v3;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v3;
-										m_textCoord[matching_face_indice+1] = v4;
-										m_textCoord[matching_face_indice+2] = v1;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(-1., -1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(1., -1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(1., 1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else if((first_matching_vertex==first_vertex)
-										&& (second_matching_vertex==third_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v1;
-										m_textCoord[first_triangle_indice+1] = v2;
-										m_textCoord[first_triangle_indice+2] = v3;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v1;
-										m_textCoord[matching_face_indice+1] = v3;
-										m_textCoord[matching_face_indice+2] = v4;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(1., 1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(-1., -1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(1., -1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else if((second_matching_vertex == first_vertex)
-										&& (third_matching_vertex == third_vertex))
-									{
-										//the first triangle
-										m_textCoord[first_triangle_indice] = v1;
-										m_textCoord[first_triangle_indice+1] = v2;
-										m_textCoord[first_triangle_indice+2] = v3;
-
-										//the second triangle
-										m_textCoord[matching_face_indice] = v4;
-										m_textCoord[matching_face_indice+1] = v1;
-										m_textCoord[matching_face_indice+2] = v3;
-
-										//Set the margin direction
-										m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
-										m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
-										m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
-
-										m_margin_direction[matching_face_indice] = VEC2(1., -1.);
-										m_margin_direction[matching_face_indice+1] = VEC2(1., 1.);
-										m_margin_direction[matching_face_indice+2] = VEC2(-1., -1.);
-
-										matching_face_not_found = false;
-										has_texture_coordinates[matching_face_indice/3]=true;
-									}
-									else
-									{
-										matching_face_indice+=3;
-									}
-								}
-								else
-								{
-									matching_face_indice+=3;
-								}
-						}
-						//In case there is no matching triangle
-						if(matching_face_indice >= m_number_of_vertices)
-						{
-							//only one triangle
-							m_textCoord[first_triangle_indice] = v1;
-							m_textCoord[first_triangle_indice+1] = v2;
-							m_textCoord[first_triangle_indice+2] = v3;
-
-							//Set the margin direction
-							m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
-							m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
-							m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
-						}
-					}
-				}
-			}
-
-			std::cout<<"Optimize coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
+			initializeTextureCoordinates();
 
 			shareNormalVectors();
 
@@ -498,7 +204,10 @@ void InternalOrganMesh::initialize()
 		generateTextures();
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		addMargin(float(0.8)/TEXTURE_SIZE);
+		for(unsigned int i(0); i<m_number_of_vertices; i++)
+		{
+			m_textCoord[i]+=m_margin_direction[i]*float(0.8/TEXTURE_SIZE);
+		}
 
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
@@ -507,7 +216,10 @@ void InternalOrganMesh::initialize()
 		generateTextures();
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		addMargin(float(0.3)/TEXTURE_SIZE);
+		for(unsigned int i(0); i<m_number_of_vertices; i++)
+		{
+			m_textCoord[i]+=m_margin_direction[i]*float(0.3/TEXTURE_SIZE);
+		}
 
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
@@ -624,6 +336,308 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 }
 
 //----------------------------------------------
+void InternalOrganMesh::initializeTextureCoordinates()
+//----------------------------------------------
+{
+	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
+
+	m_textCoord.resize(m_number_of_vertices);
+	m_margin_direction.resize(m_number_of_vertices);
+	std::vector<bool> has_texture_coordinates(m_number_of_vertices/3,false);
+	unsigned int k(0);
+	for (unsigned int i(0); i < n; i++) {
+		for (unsigned int j(0); j < n; j++) {
+			//extract four coordinates
+			VEC2 v1(float(i)/n, float(j)/n);
+			VEC2 v2(float(i + 1)/n, float(j)/n);
+			VEC2 v3(float(i + 1)/n, float(j + 1)/n);
+			VEC2 v4(float(i)/n, float(j + 1)/n);
+
+			while(k<m_number_of_vertices/3 && has_texture_coordinates[k])
+			{
+				k++;
+			}
+			if(k<m_number_of_vertices/3)
+			{
+				unsigned int first_triangle_indice(3 * k);
+				has_texture_coordinates[k] = true;
+				k++;
+
+				bool matching_face_not_found(true);
+				unsigned int matching_face_indice(first_triangle_indice+3);
+				VEC3 first_vertex(getVertex(first_triangle_indice));
+				VEC3 second_vertex(getVertex(first_triangle_indice+1));
+				VEC3 third_vertex(getVertex(first_triangle_indice+2));
+
+				while(matching_face_not_found && matching_face_indice < m_number_of_vertices)
+				{
+					VEC3 first_matching_vertex(getVertex(matching_face_indice));
+					VEC3 second_matching_vertex(getVertex(matching_face_indice+1));
+					VEC3 third_matching_vertex(getVertex(matching_face_indice+2));
+
+					if(!has_texture_coordinates[matching_face_indice/3])
+					{
+						if((third_matching_vertex==second_vertex)
+								&& (first_matching_vertex==first_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v3;
+								m_textCoord[first_triangle_indice+1] = v1;
+								m_textCoord[first_triangle_indice+2] = v2;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v3;
+								m_textCoord[matching_face_indice+1] = v4;
+								m_textCoord[matching_face_indice+2] = v1;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(1., 1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(-1., 1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(-1., -1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(1., -1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(1., 1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else if((first_matching_vertex==second_vertex)
+								&& (second_matching_vertex==first_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v3;
+								m_textCoord[first_triangle_indice+1] = v1;
+								m_textCoord[first_triangle_indice+2] = v2;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v1;
+								m_textCoord[matching_face_indice+1] = v3;
+								m_textCoord[matching_face_indice+2] = v4;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(1., 1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(-1., 1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(1., 1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(-1., -1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(1., -1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else if((second_matching_vertex == second_vertex)
+								&& (third_matching_vertex == first_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v3;
+								m_textCoord[first_triangle_indice+1] = v1;
+								m_textCoord[first_triangle_indice+2] = v2;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v4;
+								m_textCoord[matching_face_indice+1] = v1;
+								m_textCoord[matching_face_indice+2] = v3;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(1., 1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(-1., 1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(1., -1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(1., 1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(-1., -1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else
+
+							if((third_matching_vertex==third_vertex)
+								&& (first_matching_vertex==second_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v2;
+								m_textCoord[first_triangle_indice+1] = v3;
+								m_textCoord[first_triangle_indice+2] = v1;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v3;
+								m_textCoord[matching_face_indice+1] = v4;
+								m_textCoord[matching_face_indice+2] = v1;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(-1., -1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(1., 1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(-1., -1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(1., -1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(1., 1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else if((first_matching_vertex==third_vertex)
+								&& (second_matching_vertex==second_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v2;
+								m_textCoord[first_triangle_indice+1] = v3;
+								m_textCoord[first_triangle_indice+2] = v1;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v1;
+								m_textCoord[matching_face_indice+1] = v3;
+								m_textCoord[matching_face_indice+2] = v4;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(-1., -1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(1., 1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(1., 1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(-1., -1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(1., -1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else if((second_matching_vertex == third_vertex)
+								&& (third_matching_vertex == second_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v2;
+								m_textCoord[first_triangle_indice+1] = v3;
+								m_textCoord[first_triangle_indice+2] = v1;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v4;
+								m_textCoord[matching_face_indice+1] = v1;
+								m_textCoord[matching_face_indice+2] = v3;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(-1., -1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(1., 1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(1., -1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(1., 1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(-1., -1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else
+
+							if((third_matching_vertex==first_vertex)
+								&& (first_matching_vertex==third_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v1;
+								m_textCoord[first_triangle_indice+1] = v2;
+								m_textCoord[first_triangle_indice+2] = v3;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v3;
+								m_textCoord[matching_face_indice+1] = v4;
+								m_textCoord[matching_face_indice+2] = v1;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(-1., -1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(1., -1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(1., 1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else if((first_matching_vertex==first_vertex)
+								&& (second_matching_vertex==third_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v1;
+								m_textCoord[first_triangle_indice+1] = v2;
+								m_textCoord[first_triangle_indice+2] = v3;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v1;
+								m_textCoord[matching_face_indice+1] = v3;
+								m_textCoord[matching_face_indice+2] = v4;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(1., 1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(-1., -1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(1., -1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else if((second_matching_vertex == first_vertex)
+								&& (third_matching_vertex == third_vertex))
+							{
+								//the first triangle
+								m_textCoord[first_triangle_indice] = v1;
+								m_textCoord[first_triangle_indice+1] = v2;
+								m_textCoord[first_triangle_indice+2] = v3;
+
+								//the second triangle
+								m_textCoord[matching_face_indice] = v4;
+								m_textCoord[matching_face_indice+1] = v1;
+								m_textCoord[matching_face_indice+2] = v3;
+
+								//Set the margin direction
+								m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
+								m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
+								m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
+
+								m_margin_direction[matching_face_indice] = VEC2(1., -1.);
+								m_margin_direction[matching_face_indice+1] = VEC2(1., 1.);
+								m_margin_direction[matching_face_indice+2] = VEC2(-1., -1.);
+
+								matching_face_not_found = false;
+								has_texture_coordinates[matching_face_indice/3]=true;
+							}
+							else
+							{
+								matching_face_indice+=3;
+							}
+						}
+						else
+						{
+							matching_face_indice+=3;
+						}
+				}
+				//In case there is no matching triangle
+				if(matching_face_indice >= m_number_of_vertices)
+				{
+					//only one triangle
+					m_textCoord[first_triangle_indice] = v1;
+					m_textCoord[first_triangle_indice+1] = v2;
+					m_textCoord[first_triangle_indice+2] = v3;
+
+					//Set the margin direction
+					m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
+					m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
+					m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
+				}
+			}
+		}
+	}
+
+	std::cout<<"Optimize coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
+}
+
+#if 0
+//----------------------------------------------
 void InternalOrganMesh::addMargin(float margin)
 //----------------------------------------------
 {
@@ -647,15 +661,9 @@ void InternalOrganMesh::addMargin(float margin)
 			m_textCoord[k]+=VEC2(margin,-margin);
 			k++;
 		}
-	}*/
-
-	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-	for(unsigned int i(0); i<m_number_of_vertices; i++)
-	{
-		m_textCoord[i]+=m_margin_direction[i]*margin;
 	}
-
-}
+}*/
+#endif
 
 struct VectorComparer
 {
