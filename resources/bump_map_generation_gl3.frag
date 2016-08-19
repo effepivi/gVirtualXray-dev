@@ -30,7 +30,7 @@ const float MINFREQ=0.1;
 const float MAXFREQ=1.;
 
 //position of the line
-const float LINE_POS = 0.3;
+const float LINE_POS = 0.35;
 const float LINE_SHARP = 200.;
 
 //coefitient of the perturbation
@@ -244,7 +244,7 @@ float computeBumpValue(vec3 object_position)
 	if(g_has_thin_bumps == 1)
 	{
 		noise_value = noise(object_position*2)*0.5+0.5;
-		noise_value *= 0.5;
+		noise_value *= 0.2;
 	}
 	else
 	{

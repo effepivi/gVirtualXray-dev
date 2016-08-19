@@ -116,10 +116,9 @@ protected:
 	/// Add margin between triangles of the texture to avoid artifacts at the boundary of the polygons
     /*
     *   @param margin: a margin to add
-    *   @param n: number of triangles of the side of the texture
     */
 	//--------------------------------------------------------------------------
-	virtual void addMargin(float margin, int n);
+	virtual void addMargin(float margin);
 
 	//--------------------------------------------------------------------------
 	/// Compute a normal vector per vertex for a smoother display
@@ -149,6 +148,9 @@ protected:
 
 	//Coordinates for texture sampling
 	std::vector<VEC2> m_textCoord;
+
+	//direction of the margin to add between triangles in the texture
+	std::vector<VEC2> m_margin_direction;
 
 	//buffers for the bump map
 	unsigned int m_bump_map_texture,

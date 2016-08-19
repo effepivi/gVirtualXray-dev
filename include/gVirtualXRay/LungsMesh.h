@@ -43,7 +43,12 @@ class LungsMesh: public SoftTissueMesh
 //******************************************************************************
 public:
     //--------------------------------------------------------------------------
-    /// Default Constructor
+    /// Constructor
+    /*
+    *   @param x_mirror: To know if the mesh is upside down for the x axis
+    *   @param y_mirror: To know if the mesh is upside down for the y axis
+    *   @param z_mirror: To know if the mesh is upside down for the z axis
+    */
     //--------------------------------------------------------------------------
 	LungsMesh(bool x_mirror = false, bool y_mirror = false, bool z_mirror = false );
 
