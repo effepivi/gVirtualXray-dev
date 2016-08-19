@@ -167,8 +167,11 @@ void InternalOrganMesh::initialize()
 			shareNormalVectors();
 
 			//initialize the coordinates for sampling
-			unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
+			initializeTextureCoordinates();
+
+			/*unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
 			m_textCoord.reserve(m_number_of_vertices);
+			m_margin_direction.reserve(m_number_of_vertices);
 
 			for (unsigned int i(0); i < n; i++) {
 				for (unsigned int j(0); j < n; j++) {
@@ -187,11 +190,20 @@ void InternalOrganMesh::initialize()
 					m_textCoord.push_back(v1);
 					m_textCoord.push_back(v3);
 					m_textCoord.push_back(v4);
+
+					m_margin_direction.push_back(VEC2(1., 1.));
+					m_margin_direction.push_back(VEC2(-1., 1.));
+					m_margin_direction.push_back(VEC2(-1., -1.));
+
+					m_margin_direction.push_back(VEC2(1., 1.));
+					m_margin_direction.push_back(VEC2(-1., -1.));
+					m_margin_direction.push_back(VEC2(1., -1.));
 				}
-			}
+			}*/
 		}
 		else
 		{
+			//initialize the coordinates for sampling
 			initializeTextureCoordinates();
 
 			shareNormalVectors();
@@ -339,6 +351,8 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 void InternalOrganMesh::initializeTextureCoordinates()
 //----------------------------------------------
 {
+	std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
+
 	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
 
 	m_textCoord.resize(m_number_of_vertices);
@@ -633,7 +647,6 @@ void InternalOrganMesh::initializeTextureCoordinates()
 		}
 	}
 
-	std::cout<<"Optimize coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 }
 
 #if 0
