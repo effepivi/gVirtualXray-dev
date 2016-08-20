@@ -123,33 +123,11 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //	Constant variables
 //******************************************************************************
-const GLfloat g_rotation_speed(2.0);
-
-const float g_scaling_factor(2);
-const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
-const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
-
-const float g_incident_energy(0.08 * MeV);
-
 const double g_initial_fovy(45);                              // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);                        // Near clipping plane
 const double g_initial_far(500.0 * cm);                       // Far clipping plane
 
-const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
-const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
-const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
-
-const double g_p_P5_HU_set [] =
-{
-        -36.6789,
-        33.267,
-        -803.976,
-        -19.3418,
-        323.115,
-        323.115,
-};
-
 
 //******************************************************************************
 //  Function declaration
@@ -175,30 +153,13 @@ GLWidget::GLWidget(QWidget *parent):
     QGLWidget(parent),
 
 
-    m_zoom(100.0 * cm),
-
-    m_use_arc_ball(false),
-    m_last_x_position(0),
-    m_last_y_position(0),
-
-    m_display_beam(true),
+    m_zoom(35.0 * cm),
 
     m_lung_mesh(),
 
-    m_display_wireframe(false),
-
-    m_angle_step(1),
-    m_next_angle_to_process(0),
     m_current_angle(0),
     m_simulation_total_time(0),
     m_number_of_rotations(0),
-    m_acquisition_type(ROTATE_SOURCE_DETECTOR),
-
-	#undef HAS_FREETYPE
-
-    #ifdef HAS_FREETYPE
-    m_display_help(true),
-    #endif
 
 	m_light_direction(-1, 3, 1)
 
@@ -211,30 +172,13 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
     QGLWidget(aGLFormat, parent),
 
 
-    m_zoom(100.0 * cm),
-
-    m_use_arc_ball(false),
-    m_last_x_position(0),
-    m_last_y_position(0),
-
-    m_display_beam(true),
+    m_zoom(35.0 * cm),
 
     m_lung_mesh(),
 
-    m_display_wireframe(false),
-
-    m_angle_step(1),
-    m_next_angle_to_process(0),
     m_current_angle(0),
     m_simulation_total_time(0),
-    m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
-
-	#undef HAS_FREETYPE
-
-    #ifdef HAS_FREETYPE
-    m_display_help(true),
-    #endif
 
 	m_light_direction(-1, 3, 1)
 
@@ -274,21 +218,11 @@ void GLWidget::initializeGL()
     initGL();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    // Initialise FreeType
-    initFreeType();
-
-    // Load the data
-    loadDetector();
-    loadSource();
-    loadXRaySimulator();
-
     // Add the geometry to the X-ray renderer
     loadSTLFiles();
 
     //set the direction of the light
     m_light_direction.normalize();
-
-    useLung();
 
     // Initialise the modelling matrix
     m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
@@ -318,66 +252,13 @@ void GLWidget::paintGL()
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
-    // Rotation
-    if (m_current_angle != m_next_angle_to_process)
-    {
-        switch (m_acquisition_type)
-        {
-        case ROTATE_SAMPLE:
-            {
-                Matrix4x4<GLfloat> lung_rotation_matrix;
-                lung_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_lung_translation_vector);
-                lung_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                lung_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_lung_translation_vector);
-
-                m_lung_rotation_matrix *= lung_rotation_matrix;
-            }
-            break;
-
-        case ROTATE_SOURCE_DETECTOR:
-            {
-                Matrix4x4<GLfloat> rotation_matrix;
-                rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(m_angle_step, g_initial_detector_up_vector);
-
-                VEC3 source_position(  rotation_matrix * m_xray_detector.getXraySourceCentre());
-                VEC3 detector_position(rotation_matrix * m_xray_detector.getDetectorPosition());
-
-                // Set the source position
-                m_xray_detector.setXrayPointSource(source_position);
-
-                // Use a parallel source
-                m_xray_detector.setParallelBeam();
-
-                // Set the detector position
-                m_xray_detector.setDetectorPosition(detector_position);
-            }
-            break;
-        }
-    }
-
     // Update the current angle
     m_current_angle = m_next_angle_to_process;
     m_next_angle_to_process += m_angle_step;
 
-    // Update the X-ray image
-    updateXRayImage();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
     // Draw the 3D scene
     render();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Draw the help message
-#ifdef HAS_FREETYPE
-    if (m_display_help)
-    {
-        displayHelp();
-
-        // Check the status of OpenGL and of the current FBO
-        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
-#endif
 
     // Restore the current transformation matrix
     popModelViewMatrix();
@@ -385,109 +266,7 @@ void GLWidget::paintGL()
 
     // Make sure all the OpenGL code is done
     glFinish();
-
-    animate();
 }
-
-
-//----------------------------------------------
-void GLWidget::resizeGL(int aWidth, int aHeight)
-//----------------------------------------------
-{
-    // Avoid a division by zero
-    if (aHeight == 0)
-    {
-        // Prevent divide by 0
-        aHeight = 1;
-    }
-
-    int x(0), y(0), w(aWidth), h(aHeight);
-
-    // Update the viewport
-    glViewport(x, y, w, h);
-
-    m_text_2D_projection_matrix = buildOrthoProjectionMatrix(0,
-            aWidth,
-            aHeight,
-            0,
-            -1.0,
-            1.0);
-}
-
-
-//---------------------------------------------
-void GLWidget::keyPressEvent(QKeyEvent * event)
-//---------------------------------------------
-{
-    switch(event->key())
-    {
-    // Close the program
-    case Qt::Key_Q:
-    case Qt::Key_Escape:
-        close();
-        break;
-
-    case Qt::Key_Space:
-        reset();
-        break;
-
-    case Qt::Key_B:
-        m_display_beam = !m_display_beam;
-        break;
-
-    case Qt::Key_N:
-        m_xray_renderer.useNegativeFilteringFlag(!m_xray_renderer.getNegativeFilteringFlag());
-        break;
-
-    case Qt::Key_W:
-        m_display_wireframe = !m_display_wireframe;
-        break;
-
-
-#ifdef HAS_FREETYPE
-    case Qt::Key_H:
-        m_display_help = !m_display_help;
-        break;
-#endif
-
-    case Qt::Key_Plus:
-        m_zoom += 1.0 * cm;
-        resizeGL(width(), height());
-        std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
-        break;
-
-    case Qt::Key_Minus:
-        m_zoom -= 1.0 * cm;
-        resizeGL(width(), height());
-        std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
-        break;
-
-    default:
-        std::cout << event->key() << std::endl;
-        break;
-    }
-}
-
-
-//------------------------------------------------
-void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
-//------------------------------------------------
-{
-    // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
-    {
-        // Stop using the arc ball
-        m_use_arc_ball = false;
-
-        // Change the zoom
-        m_zoom += 0.1 * wheelEvent->delta() * cm;
-
-        // Update the projection matrix
-        resizeGL(width(), height());
-    }
-
-}
-
 
 //---------------------
 void GLWidget::initGL()
@@ -551,55 +330,6 @@ void GLWidget::initGL()
 }
 
 
-//---------------------------
-void GLWidget::initFreeType()
-//---------------------------
-{
-#ifdef HAS_FREETYPE
-    m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    m_display_help = true;
-#endif
-}
-
-
-//---------------------------
-void GLWidget::loadDetector()
-//---------------------------
-{
-    m_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
-    m_xray_detector.setNumberOfPixels(g_number_of_pixels);
-    m_xray_detector.setDetectorPosition(g_initial_detector_position);
-    m_xray_detector.setUpVector(g_initial_detector_up_vector);
-}
-
-
-//-------------------------
-void GLWidget::loadSource()
-//-------------------------
-{
-    // Set the energy
-    m_xray_beam.initialise(g_incident_energy);
-
-    // Set the source position
-    m_xray_detector.setXrayPointSource(g_initial_source_position);
-
-    // Use a parallel source
-    m_xray_detector.setParallelBeam();
-}
-
-
-//--------------------------------
-void GLWidget::loadXRaySimulator()
-//--------------------------------
-{
-    // Initialise the X-ray renderer
-    m_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F,
-            &m_xray_detector,
-            &m_xray_beam);
-}
-
-
 //----------------------------------------------
 void GLWidget::loadLung()
 //----------------------------------------------
@@ -614,7 +344,6 @@ void GLWidget::loadLung()
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode using ZLib.");
     }
-
 
 	m_lung_mesh.loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
 
@@ -632,49 +361,6 @@ void GLWidget::loadLung()
 
 	m_lung_mesh.initialize();
 }
-
-//----------------------------------------------------
-void GLWidget::useLung()
-//----------------------------------------------------
-{
-    m_xray_renderer.removeInnerSurfaces();
-    m_xray_renderer.removeOuterSurface();
-    m_xray_renderer.addInnerSurface(&m_lung_mesh);
-
-    // Reset the simulation state
-    //reset();
-
-    m_next_angle_to_process = 0;
-    m_current_angle = 0;
-}
-
-
-//------------------------------
-void GLWidget::updateXRayImage()
-//------------------------------
-{
-    QDateTime start_time = QDateTime::currentDateTime();
-
-    // Compute the X-Ray image
-    m_xray_renderer.computeImage(m_lung_rotation_matrix);
-
-    // Normalise the X-ray image
-    if (fabs(m_current_angle) < EPSILON)
-    {
-        m_xray_renderer.normalise();
-    }
-
-    QDateTime stop_time = QDateTime::currentDateTime();
-    m_simulation_total_time += float(start_time.time().msecsTo(stop_time.time())) / 1000.0;
-    ++m_number_of_rotations;
-
-    // Update the rotation angle
-    if (m_number_of_rotations)
-    {
-        m_angle_step = (m_simulation_total_time / float(m_number_of_rotations)) * 180.0 / 10.0;
-    }
-}
-
 
 //---------------------
 void GLWidget::render()
@@ -768,14 +454,7 @@ void GLWidget::render()
         m_lung_mesh.defineDisplayShaderInput(shader_id);
 
         // Display the current patient
-    	if (m_display_wireframe)
-    	{
-    		m_lung_mesh.displayWireFrame();
-    	}
-    	else
-    	{
-    		m_lung_mesh.display();
-        }
+   		m_lung_mesh.display();
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -803,30 +482,6 @@ void GLWidget::render()
             glUniform1fv(handle, 1, &material_shininess);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-
-        // Display the source
-        m_xray_detector.displaySource();
-
-        // Display the X-Ray image
-        glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true);
-
-        // Display the beam
-        if (m_display_beam)
-        {
-            const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.1};
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            lighting = 0;
-            handle = glGetUniformLocation(shader_id,"g_use_lighting");
-            glUniform1iv(handle, 1, &lighting);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            m_xray_detector.displayBeam();
-        }
-
         //clean up the texture
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -850,116 +505,5 @@ void GLWidget::render()
     catch (const std::exception& error)
     {
         std::cerr << error.what() << std::endl;
-    }
-}
-
-
-//--------------------------
-void GLWidget::displayHelp()
-//--------------------------
-{
-#ifdef HAS_FREETYPE
-    GLfloat p_background_colour [] = {
-            g_background_colour.getX(),
-            g_background_colour.getY(),
-            g_background_colour.getZ(),
-            0.0
-    };
-
-    GLfloat p_font_colour [] = {
-            1.0,
-            1.0,
-            0.0,
-            1.0
-    };
-
-    pushEnableDisableState(GL_BLEND);
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    int x_position(15);
-    int offset(29);
-    m_font_rendered.renderText(std::string("Help"),
-            20,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'p\': change patient"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'space bar\': change tomography mode"),
-            40, x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    m_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    popEnableDisableState();
-#endif
-}
-
-
-//------------------------------------------------------
-void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
-                               int aXmousePosition,
-                               int aYmousePosition)
-//------------------------------------------------------
-{
-    if (m_use_arc_ball)
-    {
-        if (aXmousePosition != m_last_x_position || aYmousePosition != m_last_y_position)
-        {
-            Vec3<GLfloat> va(getArcballVector(m_last_x_position,    m_last_y_position));
-            Vec3<GLfloat> vb(getArcballVector(aXmousePosition, aYmousePosition));
-
-            float angle(g_rotation_speed * radian2degree(acos((std::min)(1.0, va.dotProduct(vb)))));
-
-            Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
-
-            Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-            Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
-
-            Matrix4x4<GLfloat> rotation_matrix;
-            rotation_matrix.rotate(angle, axis_in_object_coord);
-            aRotationMatrix = aRotationMatrix * rotation_matrix;
-
-            m_last_x_position = aXmousePosition;
-            m_last_y_position = aYmousePosition;
-        }
     }
 }

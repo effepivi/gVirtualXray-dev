@@ -203,97 +203,10 @@ private:
     //--------------------------------------------------------------------------
     virtual void paintGL();
 
-
-    //--------------------------------------------------------------------------
-    /// Set the viewport and projection matrix when the window is resized
-    /*
-    *   @param aWidth:  the width of the widget in number of pixels
-    *   @param aHeight: the height of the widget in number of pixels
-    */
-    //--------------------------------------------------------------------------
-    virtual void resizeGL(int aWidth, int aHeight);
-
-
-    //--------------------------------------------------------------------------
-    /// Callback when a keyboard key is pressed
-    /*
-    *   @param anEvent: The Qt event
-    */
-    //--------------------------------------------------------------------------
-    virtual void keyPressEvent(QKeyEvent* anEvent);
-
-
-    //--------------------------------------------------------------------------
-    /// Callback when a mouse button is pressed
-    /*
-    *   @param anEvent: The Qt event
-    */
-    //--------------------------------------------------------------------------
-    virtual void mousePressEvent(QMouseEvent* anEvent);
-
-
-    //--------------------------------------------------------------------------
-    /// Callback when a mouse button is released
-    /*
-    *   @param anEvent: The Qt event
-    */
-    //--------------------------------------------------------------------------
-    virtual void mouseReleaseEvent(QMouseEvent* anEvent);
-
-
-    //--------------------------------------------------------------------------
-    /// Callback when a mouse wheel is turned
-    /*
-    *   @param anEvent: The Qt event
-    */
-    //--------------------------------------------------------------------------
-    virtual void wheelEvent(QWheelEvent* anEvent);
-
-
-    //--------------------------------------------------------------------------
-    /// Post an event to create the animation
-    //--------------------------------------------------------------------------
-    virtual void animate();
-
-
-    //--------------------------------------------------------------------------
-    /// Callback when a mouse is moved
-    /*
-    *   @param anEvent: The Qt event
-    */
-    //--------------------------------------------------------------------------
-    virtual void mouseMoveEvent(QMouseEvent* anEvent);
-
-
     //--------------------------------------------------------------------------
     /// Initialise OpenGL
     //--------------------------------------------------------------------------
     virtual void initGL();
-
-
-    //--------------------------------------------------------------------------
-    /// Initialise Freetype
-    //--------------------------------------------------------------------------
-    virtual void initFreeType();
-
-
-    //--------------------------------------------------------------------------
-    /// Set the properties of the X-ray detector
-    //--------------------------------------------------------------------------
-    virtual void loadDetector();
-
-
-    //--------------------------------------------------------------------------
-    /// Set the properties of the X-ray source
-    //--------------------------------------------------------------------------
-    virtual void loadSource();
-
-
-    //--------------------------------------------------------------------------
-    /// Set the properties of the X-ray simulation
-    //--------------------------------------------------------------------------
-    virtual void loadXRaySimulator();
-
 
     //--------------------------------------------------------------------------
     /// Load STL files (lung geometrical data)
@@ -305,74 +218,15 @@ private:
     //--------------------------------------------------------------------------
     virtual void loadLung();
 
-    //--------------------------------------------------------------------------
-    /// Activate the lung
-    //--------------------------------------------------------------------------
-    virtual void useLung();
-
-    //--------------------------------------------------------------------------
-    /// Reset the rotation angle and the acquisition type to their default values
-    //--------------------------------------------------------------------------
-    virtual void reset();
-
-
-    //--------------------------------------------------------------------------
-    /// Compute an up-to-date X-ray image
-    //--------------------------------------------------------------------------
-    virtual void updateXRayImage();
-
 
     //--------------------------------------------------------------------------
     /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void render();
 
-    //--------------------------------------------------------------------------
-    /// Display a help message
-    //--------------------------------------------------------------------------
-    virtual void displayHelp();
-
-
-    //--------------------------------------------------------------------------
-    /// Get an arcball vector depending on the mouse movement
-    /*
-    *   @param x:   the new mouse position along the X-axis
-    *   @param y:   the new mouse position along the Y-axis
-    *   @return the corresponding arcball vector
-    */
-    //--------------------------------------------------------------------------
-    virtual Vec3<GLfloat> getArcballVector(int x, int y);
-
-
-    //--------------------------------------------------------------------------
-    /// Update the rotation matrix depending on the mouse movement
-    /*
-    *   @param aRotationMatrix: the rotation matrix (input/output)
-    *   @param aXmousePosition: the new mouse position along the X-axis
-    *   @param aYmousePosition: the new mouse position along the Y-axis
-    */
-    //--------------------------------------------------------------------------
-    virtual void computeRotation(MATRIX4& aRotationMatrix,
-            int aXmousePosition,
-            int aYmousePosition);
 
     /// The zooming factor
     GLfloat m_zoom;
-
-    /// Flag set to true when rotation using arcball is currently in use, false otherwise
-    bool m_use_arc_ball;
-
-    /// The last known position of the mouse pointer along the X-axis
-    GLint m_last_x_position;
-
-    /// The last known position of the mouse pointer along the Y-axis
-    GLint m_last_y_position;
-
-    /// Flag set to true when X-ray beam is displayed, false otherwise
-    bool m_display_beam;
-
-    /// Projection matrix used to display text
-    Matrix4x4<GLfloat> m_text_2D_projection_matrix;
 
     /// Transformation matrix used to rotate the 3D scene
     Matrix4x4<GLfloat> m_scene_rotation_matrix;
@@ -382,15 +236,6 @@ private:
 
     /// Translation vector used to centre the lung
     VEC3 m_lung_translation_vector;
-
-    /// X-ray beam
-    XRayBeam m_xray_beam;
-
-    /// X-ray detector
-    XRayDetector m_xray_detector;
-
-    /// X-ray renderer
-    XRayRenderer m_xray_renderer;
 
     /// GLSL shader
     Shader m_display_shader;
@@ -419,20 +264,9 @@ private:
     /// The current acquisition type
     GLWidget::AcquisitionType m_acquisition_type;
 
-#ifdef HAS_FREETYPE
-    /// Flag set to true when the help message is displayed, false otherwise
-    bool m_display_help;
-
-    /// The text renderer
-    TextRenderer m_font_rendered;
-#endif
-
     ///the light direction (from the vertex to the camera
     VEC3 m_light_direction;
-
 };
-
-
 
 } // namespace gVirtualXRay
 

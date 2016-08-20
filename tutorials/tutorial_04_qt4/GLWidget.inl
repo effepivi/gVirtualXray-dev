@@ -78,93 +78,12 @@ inline QSize GLWidget::minimumSizeHint() const
 }
 
 
-//------------------------------------------------------------
-inline void GLWidget::mousePressEvent(QMouseEvent *eventPress)
-//------------------------------------------------------------
-{
-    // Use the arc ball
-    m_use_arc_ball = true;
-
-    // Get the mouse position
-    m_last_x_position = eventPress->x();
-    m_last_y_position = eventPress->y();
-}
-
-
-//----------------------------------------------------------------
-inline void GLWidget::mouseReleaseEvent(QMouseEvent *releaseEvent)
-//----------------------------------------------------------------
-{
-    // Stop using the arc ball
-    m_use_arc_ball = false;
-}
-
-
-//----------------------------------------------------------
-inline void GLWidget::mouseMoveEvent(QMouseEvent *eventMove)
-//----------------------------------------------------------
-{
-    // Update the rotation matrix
-    computeRotation(m_scene_rotation_matrix, eventMove->x(), eventMove->y());
-}
-
-
-//-----------------------------
-inline void GLWidget::animate()
-//-----------------------------
-{
-    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
-}
-
-
 //----------------------------------
 inline void GLWidget::loadSTLFiles()
 //----------------------------------
 {
     std::cout << "Load liver" << std::endl;
     loadLung();
-}
-
-
-//---------------------------
-inline void GLWidget::reset()
-//---------------------------
-{
-    m_next_angle_to_process = 0;
-    m_current_angle = 0;
-
-    if (m_acquisition_type == ROTATE_SOURCE_DETECTOR)
-    {
-        m_acquisition_type = ROTATE_SAMPLE;
-    }
-    else
-    {
-        m_acquisition_type = ROTATE_SOURCE_DETECTOR;
-    }
-}
-
-
-//-----------------------------------------------------------
-inline Vec3<GLfloat> GLWidget::getArcballVector(int x, int y)
-//-----------------------------------------------------------
-{
-	Vec3<GLfloat> P(2.0 * float(x) / float(width()) - 1.0,
-			2.0 * float(y) / float(height()) - 1.0,
-			0);
-
-	P.setY(-P.getY());
-
-	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
-	if (OP_squared <= 1.0)
-	{
-		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-	}
-	else
-	{
-		P.normalise();  // nearest point
-	}
-
-	return (P);
 }
 
 

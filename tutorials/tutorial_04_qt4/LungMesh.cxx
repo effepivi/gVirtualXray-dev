@@ -25,6 +25,9 @@
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
 
 #include "LungMesh.h"
 
@@ -100,7 +103,7 @@ void LungMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 //----------------------------------------------
-void LungMesh::defineDisplayShaderInput(GLint shader_id)
+void LungMesh::defineDisplayShaderInput(int shader_id)
 //----------------------------------------------
 {
 	//Bind the colour texture in texture unit 0
@@ -275,7 +278,7 @@ void LungMesh::generateTextures()
 
 
 //----------------------------------------------
-void LungMesh::defineColourTextureShaderInput(GLint shader_id)
+void LungMesh::defineColourTextureShaderInput(int shader_id)
 //----------------------------------------------
 {
 	GLuint handle(glGetUniformLocation(shader_id, "g_base_colour"));
@@ -293,7 +296,7 @@ void LungMesh::defineColourTextureShaderInput(GLint shader_id)
 
 
 //----------------------------------------------
-void LungMesh::initializeBuffer(GLuint& aTexture, GLuint& aFrameBuffer)
+void LungMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
 //----------------------------------------------
 {
 	//Intialize the buffer for the texture

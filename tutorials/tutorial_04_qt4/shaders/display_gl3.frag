@@ -74,7 +74,6 @@ smooth in vec2 g_texture_coordinates;
 smooth in vec3 g_normal;
 smooth in vec3 g_view_direction;
 smooth in vec3 g_light_direction;
-smooth in vec4 g_shadow_coord;
 
 //******************************************************************************
 //	Output
@@ -101,11 +100,6 @@ uniform sampler2D g_colour_texture;
 //	constant variables
 //******************************************************************************
 //BIAS to reduce shadow acne
-const float MAX_BIAS=0.005;
-const float BIAS_RATE=0.005;
-
-//step for bump evaluation 
-const float STEP=0.00002;
 
 //-------------
 void main(void)
@@ -129,6 +123,6 @@ void main(void)
     }
     else
     {
-        frag_colour = material_ambient;
+	   	frag_colour = material_ambient ;
     }
 }
