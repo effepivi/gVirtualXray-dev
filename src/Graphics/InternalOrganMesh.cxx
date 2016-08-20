@@ -168,38 +168,6 @@ void InternalOrganMesh::initialize()
 
 			//initialize the coordinates for sampling
 			initializeTextureCoordinates();
-
-			/*unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
-			m_textCoord.reserve(m_number_of_vertices);
-			m_margin_direction.reserve(m_number_of_vertices);
-
-			for (unsigned int i(0); i < n; i++) {
-				for (unsigned int j(0); j < n; j++) {
-					//extract four coordinates
-					VEC2 v1(float(i)/n, float(j)/n);
-					VEC2 v2(float(i + 1)/n, float(j)/n);
-					VEC2 v3(float(i + 1)/n, float(j + 1)/n);
-					VEC2 v4(float(i)/n, float(j + 1)/n);
-
-					//the first triangle
-					m_textCoord.push_back(v1);
-					m_textCoord.push_back(v2);
-					m_textCoord.push_back(v3);
-
-					//the second triangle
-					m_textCoord.push_back(v1);
-					m_textCoord.push_back(v3);
-					m_textCoord.push_back(v4);
-
-					m_margin_direction.push_back(VEC2(1., 1.));
-					m_margin_direction.push_back(VEC2(-1., 1.));
-					m_margin_direction.push_back(VEC2(-1., -1.));
-
-					m_margin_direction.push_back(VEC2(1., 1.));
-					m_margin_direction.push_back(VEC2(-1., -1.));
-					m_margin_direction.push_back(VEC2(1., -1.));
-				}
-			}*/
 		}
 		else
 		{
@@ -353,7 +321,7 @@ void InternalOrganMesh::initializeTextureCoordinates()
 {
 	std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 
-	unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
+	unsigned int n(int(sqrt(float(m_number_of_vertices)/6.))+2);
 
 	m_textCoord.resize(m_number_of_vertices);
 	m_margin_direction.resize(m_number_of_vertices);
@@ -639,9 +607,9 @@ void InternalOrganMesh::initializeTextureCoordinates()
 					m_textCoord[first_triangle_indice+2] = v3;
 
 					//Set the margin direction
-					m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
+					m_margin_direction[first_triangle_indice] = VEC2(2., 1.);
 					m_margin_direction[first_triangle_indice+1] = VEC2(-1., 1.);
-					m_margin_direction[first_triangle_indice+2] = VEC2(-1., -1.);
+					m_margin_direction[first_triangle_indice+2] = VEC2(-1., -2.);
 				}
 			}
 		}
@@ -655,7 +623,7 @@ void InternalOrganMesh::addMargin(float margin)
 //----------------------------------------------
 {
 	//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-	/*unsigned int k(0);
+	unsigned int k(0);
 	for (unsigned int i(0); i < n; i++) {
 		for (unsigned int j(0); j < n; j++) {
 			//the first triangle
@@ -675,7 +643,40 @@ void InternalOrganMesh::addMargin(float margin)
 			k++;
 		}
 	}
+}
+
+/*unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
+m_textCoord.reserve(m_number_of_vertices);
+m_margin_direction.reserve(m_number_of_vertices);
+
+for (unsigned int i(0); i < n; i++) {
+	for (unsigned int j(0); j < n; j++) {
+		//extract four coordinates
+		VEC2 v1(float(i)/n, float(j)/n);
+		VEC2 v2(float(i + 1)/n, float(j)/n);
+		VEC2 v3(float(i + 1)/n, float(j + 1)/n);
+		VEC2 v4(float(i)/n, float(j + 1)/n);
+
+		//the first triangle
+		m_textCoord.push_back(v1);
+		m_textCoord.push_back(v2);
+		m_textCoord.push_back(v3);
+
+		//the second triangle
+		m_textCoord.push_back(v1);
+		m_textCoord.push_back(v3);
+		m_textCoord.push_back(v4);
+
+		m_margin_direction.push_back(VEC2(1., 1.));
+		m_margin_direction.push_back(VEC2(-1., 1.));
+		m_margin_direction.push_back(VEC2(-1., -1.));
+
+		m_margin_direction.push_back(VEC2(1., 1.));
+		m_margin_direction.push_back(VEC2(-1., -1.));
+		m_margin_direction.push_back(VEC2(1., -1.));
+	}
 }*/
+
 #endif
 
 struct VectorComparer

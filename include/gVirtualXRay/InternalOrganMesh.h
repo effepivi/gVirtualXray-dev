@@ -113,7 +113,8 @@ protected:
 	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 
 	//--------------------------------------------------------------------------
-	/// Initialize optimized texture coordinates
+	/// Initialize optimized texture coordinates by sharing an hypothenus in the texture
+	/// for two adjacent polygons.
 	//--------------------------------------------------------------------------
 	virtual void initializeTextureCoordinates();
 
