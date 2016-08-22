@@ -44,8 +44,13 @@ class DiaphragmMesh: public SoftTissueMesh
 public:
     //--------------------------------------------------------------------------
     /// Default Constructor
+    /*
+    *   @param texture_size: size of the side of the buffer (default: 2048)
+    *   @param optimize_threshold: To avoid computing optimized texture coordinates
+    *   	when the mesh is too big (defalut: 100 000)
+    */
     //--------------------------------------------------------------------------
-	DiaphragmMesh(int texture_size = 2048);
+	DiaphragmMesh(int texture_size = 2048, unsigned int optimize_threshold = 100000);
 
 	//--------------------------------------------------------------------------
 	/// Destructor

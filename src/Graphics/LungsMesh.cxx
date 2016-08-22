@@ -30,9 +30,9 @@
 namespace gVirtualXRay {
 
 //----------------------------------------------
-LungsMesh::LungsMesh(bool x_mirror, bool y_mirror, bool z_mirror, int texture_size):
+LungsMesh::LungsMesh(bool x_mirror, bool y_mirror, bool z_mirror, int texture_size, unsigned int optimize_threshold):
 //----------------------------------------------
-		SoftTissueMesh(texture_size),
+		SoftTissueMesh(texture_size, optimize_threshold),
 		m_x_mirror(x_mirror),
 		m_y_mirror(y_mirror),
 		m_z_mirror(z_mirror)

@@ -30,9 +30,9 @@
 namespace gVirtualXRay {
 
 //----------------------------------------------
-DiaphragmMesh::DiaphragmMesh(int texture_size):
+DiaphragmMesh::DiaphragmMesh(int texture_size, unsigned int optimize_threshold):
 //----------------------------------------------
-		SoftTissueMesh(texture_size)
+		SoftTissueMesh(texture_size, optimize_threshold)
 //----------------------------------------------
 {
 	getMaterial().setDiffuseColour(0.58,0.2,0.15,1.);

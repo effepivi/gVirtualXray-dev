@@ -25,9 +25,9 @@
 namespace gVirtualXRay {
 
 //----------------------------------------------
-LiverMesh::LiverMesh(int texture_size):
+LiverMesh::LiverMesh(int texture_size, unsigned int optimize_threshold):
 //----------------------------------------------
-		SoftTissueMesh(texture_size)
+		SoftTissueMesh(texture_size, optimize_threshold)
 //----------------------------------------------
 {
 	getMaterial().setDiffuseColour(0.3,0.03,0.03,1.);

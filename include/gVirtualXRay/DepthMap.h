@@ -29,9 +29,7 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef ANATOMICAL_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
-#endif
 
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
@@ -54,6 +52,9 @@ class DepthMap {
 public:
 	//--------------------------------------------------------------------------
 	/// default constructor
+    /*
+    *   @param texture_size: size of the side of the buffer (default: 8192)
+    */
 	//--------------------------------------------------------------------------
 	DepthMap(int map_size = 8192);
 

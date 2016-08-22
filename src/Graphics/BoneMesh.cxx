@@ -26,9 +26,9 @@
 namespace gVirtualXRay {
 
 //----------------------------------------------
-BoneMesh::BoneMesh(int texture_size):
+BoneMesh::BoneMesh(int texture_size, unsigned int optimize_threshold):
 //----------------------------------------------
-		InternalOrganMesh(texture_size)
+		InternalOrganMesh(texture_size, optimize_threshold)
 //----------------------------------------------
 {
 	m_has_thin_bumps = 1;
