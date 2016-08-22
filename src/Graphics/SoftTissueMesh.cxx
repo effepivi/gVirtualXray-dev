@@ -38,19 +38,16 @@
 //size of the arrays to initialize perlin's noise
 const int TAB_SIZE = 64;
 
-//size of the side of the buffer
-const int TEXTURE_SIZE = 2048;
-
 //******************************************************************************
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 //----------------------------------------------
-SoftTissueMesh::SoftTissueMesh()
+SoftTissueMesh::SoftTissueMesh(int texture_size)
 :
 //----------------------------------------------
-		InternalOrganMesh(),
+		InternalOrganMesh(texture_size),
 		m_colour_texture(0),
 		m_colour_texture_frame_buffer(0)
 //----------------------------------------------
@@ -138,7 +135,7 @@ void SoftTissueMesh::generateTextures()
 
     //render to the colour buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_colour_texture_frame_buffer);
-	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+	glViewport(0, 0, m_texture_size, m_texture_size);
 
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);

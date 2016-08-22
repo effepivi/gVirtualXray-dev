@@ -106,10 +106,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef ANATOMICAL_MESH_H
-#include "gVirtualXRay/AnatomicalMesh.h"
-#endif
-
 
 #include "gVirtualXRay/BoneMesh.h"
 
@@ -1278,13 +1274,33 @@ void GLWidget::renderToShadowMap()
 	{
 		shadowViewMatrix *= m_scene_rotation_matrix*m_P4_rotation_matrix;
 		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
-		m_shadow_map.render(m_p_P4_polygon_mesh_set, m_shadow_matrix);
+
+		std::vector<PolygonMesh*> polygon_mesh_set;
+
+		for(unsigned int i(0); i<m_p_P4_polygon_mesh_set.size(); i++)
+		{
+			if(!m_p_P4_polygon_mesh_set[i]->isTransparent())
+			{
+				polygon_mesh_set.push_back((m_p_P4_polygon_mesh_set[i]));
+			}
+		}
+		m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
 	}
 	else
 	{
 		shadowViewMatrix *= m_scene_rotation_matrix*m_P5_rotation_matrix;
 		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
-		m_shadow_map.render(m_p_P5_polygon_mesh_set, m_shadow_matrix);
+
+		std::vector<PolygonMesh*> polygon_mesh_set;
+
+		for(unsigned int i(0); i<m_p_P5_polygon_mesh_set.size(); i++)
+		{
+			if(!m_p_P5_polygon_mesh_set[i]->isTransparent())
+			{
+				polygon_mesh_set.push_back((m_p_P5_polygon_mesh_set[i]));
+			}
+		}
+		m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
 	}
 }
 

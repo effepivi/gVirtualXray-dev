@@ -120,6 +120,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/DepthMap.h"
 #endif
 
+#ifndef ANATOMICAL_MESH_H
+#include "gVirtualXRay/AnatomicalMesh.h"
+#endif
+
+
 //******************************************************************************
 //  namespace
 //******************************************************************************

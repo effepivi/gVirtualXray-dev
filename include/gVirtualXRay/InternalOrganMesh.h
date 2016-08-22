@@ -43,7 +43,7 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     //--------------------------------------------------------------------------
-	InternalOrganMesh();
+	InternalOrganMesh(int texture_size = 2048);
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -165,6 +165,9 @@ protected:
 
 	//to know if the internal organ has thin bumps for bump mapping, 0 by default
 	int m_has_thin_bumps;
+
+	//size of the side of the buffer
+	int m_texture_size;
 
 	//to know if the textured has been initialized
 	bool m_need_initialize;

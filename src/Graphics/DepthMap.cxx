@@ -32,11 +32,6 @@
 #include "depth_map_gl3.frag.h"
 #include "depth_map_gl3.vert.h"
 
-//******************************************************************************
-//	constant variables
-//******************************************************************************
-//size of the side of the buffer
-const int MAP_SIZE = 8192;
 
 //******************************************************************************
 //  namespace
@@ -44,11 +39,12 @@ const int MAP_SIZE = 8192;
 namespace gVirtualXRay {
 
 //------------------------------------------------------------------------
-DepthMap::DepthMap() :
+DepthMap::DepthMap(int map_size) :
 //------------------------------------------------------------------------
 	m_isInitialized(false),
 	m_mapFrameBuffer(0),
-	m_mapTexture(0)
+	m_mapTexture(0),
+	m_map_size(map_size)
 //------------------------------------------------------------------------
 {
 }
@@ -66,7 +62,7 @@ void DepthMap::initialize()
 	//Intialize the buffer for the depth map texture and enable the sampling in the fragment shader as a sampler2DShadow
 	glGenTextures(1, &m_mapTexture);
 	glBindTexture(GL_TEXTURE_2D, m_mapTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, MAP_SIZE, MAP_SIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, m_map_size, m_map_size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -136,7 +132,7 @@ void DepthMap::initialize()
 }
 
 //------------------------------------------------------------------------
-void DepthMap::render(std::vector<AnatomicalMesh*>& apMeshSet,
+void DepthMap::render(std::vector<PolygonMesh*>& apMeshSet,
 		Matrix4x4<GLfloat> const& projMatrix)
 	//------------------------------------------------------------------------
 {
@@ -147,7 +143,7 @@ void DepthMap::render(std::vector<AnatomicalMesh*>& apMeshSet,
 
 	//render to the map buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_mapFrameBuffer);
-	glViewport(0, 0, MAP_SIZE, MAP_SIZE);
+	glViewport(0, 0, m_map_size, m_map_size);
 
 	// Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -175,10 +171,7 @@ void DepthMap::render(std::vector<AnatomicalMesh*>& apMeshSet,
 
 	for (int i(0); i < apMeshSet.size(); ++i)
 	{
-		if(!(apMeshSet[i]->isTransparent()))
-		{
-			apMeshSet[i]->display();
-		}
+		apMeshSet[i]->display();
 	}
 
 	// Disable the shader

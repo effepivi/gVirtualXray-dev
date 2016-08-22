@@ -50,7 +50,7 @@ public:
     *   @param z_mirror: To know if the mesh is upside down for the z axis
     */
     //--------------------------------------------------------------------------
-	LungsMesh(bool x_mirror = false, bool y_mirror = false, bool z_mirror = false );
+	LungsMesh(bool x_mirror = false, bool y_mirror = false, bool z_mirror = false, int texture_size = 2048);
 
 	//--------------------------------------------------------------------------
 	/// Destructor

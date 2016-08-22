@@ -30,7 +30,7 @@
 #endif
 
 #ifndef ANATOMICAL_MESH_H
-#include "gVirtualXRay/AnatomicalMesh.h"
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef GVXR_SHADER_H
@@ -55,7 +55,7 @@ public:
 	//--------------------------------------------------------------------------
 	/// default constructor
 	//--------------------------------------------------------------------------
-	DepthMap();
+	DepthMap(int map_size = 8192);
 
 	//--------------------------------------------------------------------------
 	/// destructor
@@ -70,11 +70,11 @@ public:
 	//--------------------------------------------------------------------------
 	///render to the frame buffer, call initialize() if it has never been called before
 	/**
-	*  @param apMeshSet: the anatomical mesh set to be textured
+	*  @param apMeshSet: the Polygon mesh set to be textured
 	*  @param projMatrix: the projection matrix
 	*/
 	//--------------------------------------------------------------------------
-	void render(std::vector<AnatomicalMesh*>& apMeshSet,
+	void render(std::vector<PolygonMesh*>& apMeshSet,
 			Matrix4x4<GLfloat> const& projMatrix);
 
 	//--------------------------------------------------------------------------
@@ -95,6 +95,8 @@ private:
 	//To create a buffer for the scene map
 	unsigned int	m_mapFrameBuffer,
 		m_mapTexture;
+
+	int m_map_size;
 };
 } // namespace gVirtualXRay
 #endif //DepthMap_H

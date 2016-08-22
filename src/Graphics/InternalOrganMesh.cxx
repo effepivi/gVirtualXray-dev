@@ -40,16 +40,13 @@
 //size of the arrays to initialize perlin's noise
 const int TAB_SIZE = 64;
 
-//size of the side of the buffer
-const int TEXTURE_SIZE = 2048;
-
 //******************************************************************************
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 //----------------------------------------
-InternalOrganMesh::InternalOrganMesh():
+InternalOrganMesh::InternalOrganMesh(int texture_size):
 //----------------------------------------
 		AnatomicalMesh(),
 		m_bump_map_texture(0),
@@ -57,6 +54,7 @@ InternalOrganMesh::InternalOrganMesh():
 		m_has_tendon(0),
 		m_is_lung(0),
 		m_has_thin_bumps(0),
+		m_texture_size(texture_size),
 		m_need_initialize(true)
 //----------------------------------------
 {
@@ -186,7 +184,7 @@ void InternalOrganMesh::initialize()
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
 		{
-			m_textCoord[i]+=m_margin_direction[i]*float(0.8/TEXTURE_SIZE);
+			m_textCoord[i]+=m_margin_direction[i]*float(0.6/m_texture_size);
 		}
 
 		//Update the VBO
@@ -198,7 +196,7 @@ void InternalOrganMesh::initialize()
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
 		{
-			m_textCoord[i]+=m_margin_direction[i]*float(0.3/TEXTURE_SIZE);
+			m_textCoord[i]+=m_margin_direction[i]*float(0.2/m_texture_size);
 		}
 
 		//Update the VBO
@@ -230,7 +228,7 @@ void InternalOrganMesh::generateTextures()
 {
 	//render to the bump buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bump_map_frame_buffer);
-	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+	glViewport(0, 0, m_texture_size, m_texture_size);
 
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
@@ -289,7 +287,7 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGB, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, m_texture_size, m_texture_size, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
