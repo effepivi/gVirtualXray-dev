@@ -65,6 +65,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BOOST_TEST_MODULE TestDensity
 #include <boost/test/unit_test.hpp>
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
