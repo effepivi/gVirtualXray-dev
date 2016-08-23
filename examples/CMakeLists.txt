@@ -48,7 +48,7 @@ ENDIF ()
 
 IF (USE_GLFW)
     add_subdirectory(AnatomicalData-glfw)
-    add_subdirectory(AnatomicalData-glfw-moreRealistic)
+    #add_subdirectory(AnatomicalData-glfw-moreRealistic)
     add_subdirectory(STL-File-glfw)
     add_subdirectory(Intersections)
 ENDIF ()
