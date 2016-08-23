@@ -69,9 +69,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QtGui>
 #include <QGLWidget>
 
-#include <algorithm>
-
-
 #ifndef GVXR_GL_WIDGET_H
 #include "GLWidget.h"
 #endif
@@ -97,15 +94,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 //******************************************************************************
-//	Constant variables
-//******************************************************************************
-const double g_initial_fovy(45);                              // Field of view along the y-axis
-const double g_initial_near(5.0 * cm);                        // Near clipping plane
-const double g_initial_far(500.0 * cm);                       // Far clipping plane
-
-const VEC3 g_background_colour(0.5, 0.5, 0.5);
-
-//******************************************************************************
 //	Implementation
 //******************************************************************************
 
@@ -113,27 +101,23 @@ const VEC3 g_background_colour(0.5, 0.5, 0.5);
 GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent),
-
-
-    m_zoom(35.0 * cm),
-
-    m_lung_mesh(),
-
-    m_current_angle(0)
+	m_sphere_mesh(50, 50),
+	m_cube_mesh(),
+	m_light_direction(-1, 3, 1)
 //----------------------------------
 {
 }
 
 
+//----------------------------------
 GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+//----------------------------------
     QGLWidget(aGLFormat, parent),
+	m_sphere_mesh(50,50),
+	m_cube_mesh(),
+	m_light_direction(-1, 3, 1)
 
-
-    m_zoom(35.0 * cm),
-
-    m_lung_mesh(),
-
-    m_current_angle(0)
+//----------------------------------
 {
 }
 
@@ -141,13 +125,6 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
 GLWidget::~GLWidget()
 //-------------------
 {}
-
-//------------------------------
-QSize GLWidget::sizeHint() const
-//------------------------------
-{
-    return QSize(g_default_window_width, g_default_window_height);
-}
 
 //---------------------------
 void GLWidget::initializeGL()
@@ -174,8 +151,31 @@ void GLWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    //set the direction of the light
+    m_light_direction.normalize();
+
+    //set the meshes colours
+    Material* material(&(m_sphere_mesh.getMaterial()));
+    material->setAmbientColour(1.,0.,0.,1.);
+    material->setDiffuseColour(1.,0.,0.,1.);
+    material->setSpecularColour(1.,1.,1.,1.);
+
+    material = &(m_cube_mesh.getMaterial());
+    material->setAmbientColour(0.,0.,1.,1.);
+    material->setDiffuseColour(0.,0.,1.,1.);
+    material->setSpecularColour(1.,1.,1.,1.);
+
+    //set the translation matrixes of the meshes
+
+
+    //translate the cube
+    for(unsigned int i(0); i<m_cube_mesh.getVertexNumber(); i++)
+    {
+    	m_cube_mesh.setVertex(i,m_cube_mesh.getVertex(i)-VEC3(0,0,10));
+    }
+
     // Set the background colour
-    glClearColor(g_background_colour.getX(), g_background_colour.getY(), g_background_colour.getZ(), 1.0);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable(GL_MULTISAMPLE);
@@ -219,7 +219,6 @@ void GLWidget::initializeGL()
     m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Initialise the modelling matrix
     m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
@@ -242,9 +241,9 @@ void GLWidget::paintGL()
 
     double screen_aspect_ratio(double(width()) / double(height()));
 
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+    loadPerspectiveProjectionMatrix(45., screen_aspect_ratio, 1. * cm, 500. * cm);
 
-    loadLookAtModelViewMatrix(0.0, 0.0, m_zoom,
+    loadLookAtModelViewMatrix(0.0, 0.0, 5. * cm,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
@@ -260,12 +259,61 @@ void GLWidget::paintGL()
     glFinish();
 }
 
+//---------------------------
+void GLWidget::displayMesh(std::vector<PolygonMesh*> polygon_mesh_set, GLint aShaderID)
+//---------------------------
+{
+	for(unsigned int i(0); i<polygon_mesh_set.size(); i++)
+	{
+	    // Get the material
+	    Material& material(polygon_mesh_set[i]->getMaterial());
+
+	    // Define colours inshader
+	    GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
+	    glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_diffuse");
+	    glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_specular");
+	    glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_shininess");
+	    glUniform1f(handle, material.getShininess());
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    polygon_mesh_set[i]->display();
+	}
+}
+
 //---------------------
 void GLWidget::render()
 //---------------------
 {
     try
     {
+    	std::vector<PolygonMesh*> polygon_mesh_set;
+    	polygon_mesh_set.push_back(&m_sphere_mesh);
+    	polygon_mesh_set.push_back(&m_cube_mesh);
+
+    	//set the  matrix from the light's point of view to create the shadow map
+    	gVirtualXRay::Matrix4x4<GLfloat> shadowProjectionMatrix(gVirtualXRay::buildOrthoProjectionMatrix(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f));
+
+    	gVirtualXRay::Matrix4x4<GLfloat> shadowViewMatrix(gVirtualXRay::buildLookAtModelViewMatrix(
+    			m_light_direction,
+    			gVirtualXRay::VEC3(0.f, 0.f, 0.f),
+    			gVirtualXRay::VEC3(0.f, 1.f, 0.f)
+    		));
+
+    	shadowViewMatrix *= m_scene_rotation_matrix;
+    	gVirtualXRay::Matrix4x4<GLfloat> shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+
+    	//render to the shadow map
+        m_shadow_map.render(polygon_mesh_set, shadow_matrix);
+
     	//Restore the view point
     	glViewport(0, 0, width(), height());
 
@@ -293,6 +341,32 @@ void GLWidget::render()
         // Handle for shader variables
     	GLuint handle(0);
 
+        // Define the light colours here
+        GLfloat light_global_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+        GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+        GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+        GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+        handle = glGetUniformLocation(shader_id, "light_global_ambient");
+        glUniform4fv(handle, 1, &light_global_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_ambient");
+        glUniform4fv(handle, 1, &light_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_diffuse");
+        glUniform4fv(handle, 1, &light_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_specular");
+        glUniform4fv(handle, 1, &light_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_direction");
+        glUniform3f(handle, m_light_direction.getX(), m_light_direction.getY(), m_light_direction.getZ());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     	handle = glGetUniformLocation(shader_id, "g_projection_matrix");
         glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -301,31 +375,37 @@ void GLWidget::render()
         glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        //Don't use lighting
+        MATRIX4 normal_matrix(g_current_modelview_matrix);
+        handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+        glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        //use lighting
         GLint lighting;
-        lighting = 0;
+        lighting = 1;
         handle = glGetUniformLocation(shader_id,"g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        // Store the current transformation matrix
-        pushModelViewMatrix();
+        //Bind the shadow map texture in texture unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
 
-        // Set the modelview matrix
-        g_current_modelview_matrix *= m_lung_rotation_matrix;
+        handle = glGetUniformLocation(shader_id, "g_shadow_map");
+        glUniform1i(handle,0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, shadow_matrix.get());
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         applyModelViewMatrix();
 
-        m_lung_mesh.defineDisplayShaderInput(shader_id);
-
-        // Display the current patient
-   		m_lung_mesh.display();
+        // Display the polygon mesh set
+        displayMesh(polygon_mesh_set, shader_id);
 
         // Disable the shader
         popShaderProgram();
-
-        // Restore the current transformation matrix
-        popModelViewMatrix();
 
         // Restore the attributes
         popEnableDisableState();
@@ -335,7 +415,6 @@ void GLWidget::render()
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
     }
     // Catch exception if any
     catch (const std::exception& error)

@@ -62,10 +62,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include "GL/glew.h"
-#endif
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -324,7 +320,7 @@ void GLWidget::initializeGL()
     //initialize the buffers
     m_shadow_map.initialize();
 
-    //set the dirextion of the light
+    //set the direction of the light
     m_light_direction.normalize();
 
     // Set the patient

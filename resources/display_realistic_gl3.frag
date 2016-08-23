@@ -155,7 +155,7 @@ void main(void)
 	    {
 	    	global_ambient = vec3(light_global_ambient * material_ambient);
 	   		ambient        = vec3(material_ambient  * light_ambient);
-	    	diffuse        = vec3(material_diffuse  * light_diffuse)  * cosLightNormal;
+	    	diffuse        = vec3(material_diffuse  * light_diffuse) * cosLightNormal;
 	    }
 
 	    vec3 specular       = vec3(material_specular * light_specular * pow(max(dot(g_view_direction, reflect(light_direction, normal_vector)), 0.), material_shininess));

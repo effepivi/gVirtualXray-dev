@@ -69,9 +69,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QtGui>
 #include <QGLWidget>
 
-#include <algorithm>
-
-
 #ifndef GVXR_GL_WIDGET_H
 #include "GLWidget.h"
 #endif
@@ -99,15 +96,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 //******************************************************************************
-//	Constant variables
-//******************************************************************************
-const double g_initial_fovy(45);                              // Field of view along the y-axis
-const double g_initial_near(5.0 * cm);                        // Near clipping plane
-const double g_initial_far(500.0 * cm);                       // Far clipping plane
-
-const VEC3 g_background_colour(0.5, 0.5, 0.5);
-
-//******************************************************************************
 //	Implementation
 //******************************************************************************
 
@@ -115,27 +103,18 @@ const VEC3 g_background_colour(0.5, 0.5, 0.5);
 GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent),
-
-
-    m_zoom(35.0 * cm),
-
-    m_lung_mesh(),
-
-    m_current_angle(0)
+    m_lung_mesh()
 //----------------------------------
 {
 }
 
 
+//----------------------------------
 GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+//----------------------------------
     QGLWidget(aGLFormat, parent),
-
-
-    m_zoom(35.0 * cm),
-
-    m_lung_mesh(),
-
-    m_current_angle(0)
+    m_lung_mesh()
+//----------------------------------
 {
 }
 
@@ -143,13 +122,6 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
 GLWidget::~GLWidget()
 //-------------------
 {}
-
-//------------------------------
-QSize GLWidget::sizeHint() const
-//------------------------------
-{
-    return QSize(g_default_window_width, g_default_window_height);
-}
 
 //---------------------------
 void GLWidget::initializeGL()
@@ -177,7 +149,7 @@ void GLWidget::initializeGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    glClearColor(g_background_colour.getX(), g_background_colour.getY(), g_background_colour.getZ(), 1.0);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable(GL_MULTISAMPLE);
@@ -246,9 +218,9 @@ void GLWidget::paintGL()
 
     double screen_aspect_ratio(double(width()) / double(height()));
 
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+    loadPerspectiveProjectionMatrix(45., screen_aspect_ratio, 5. * cm, 500. * cm);
 
-    loadLookAtModelViewMatrix(0.0, 0.0, m_zoom,
+    loadLookAtModelViewMatrix(0.0, 0.0, 35. * cm,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
@@ -289,9 +261,9 @@ void GLWidget::loadSTLFile()
 	}
 
 	// Compute the translation vector
-	m_lung_translation_vector = m_lung_mesh.getMinCorner() + (m_lung_mesh.getMaxCorner() - m_lung_mesh.getMinCorner()) / 2.0;
+	VEC3 lung_translation_vector = m_lung_mesh.getMinCorner() + (m_lung_mesh.getMaxCorner() - m_lung_mesh.getMinCorner()) / 2.0;
 	m_lung_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
-	m_lung_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_lung_translation_vector);
+	m_lung_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-lung_translation_vector);
 
 	m_lung_mesh.initialize();
 }
@@ -344,9 +316,6 @@ void GLWidget::render()
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        // Store the current transformation matrix
-        pushModelViewMatrix();
-
         // Set the modelview matrix
         g_current_modelview_matrix *= m_lung_rotation_matrix;
 
@@ -360,9 +329,6 @@ void GLWidget::render()
         // Disable the shader
         popShaderProgram();
 
-        // Restore the current transformation matrix
-        popModelViewMatrix();
-
         // Restore the attributes
         popEnableDisableState();
         popEnableDisableState();
@@ -371,7 +337,6 @@ void GLWidget::render()
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
     }
     // Catch exception if any
     catch (const std::exception& error)

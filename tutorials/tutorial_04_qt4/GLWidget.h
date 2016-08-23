@@ -31,10 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-
 #ifndef GVXR_GL_WIDGET_H
 #define GVXR_GL_WIDGET_H
-
 
 /**
 ********************************************************************************
@@ -63,7 +61,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************************************************************
 */
 
-
 //******************************************************************************
 //	Include
 //******************************************************************************
@@ -89,8 +86,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gVirtualXRay/LungsMesh.h"
 
-
-
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -102,7 +97,6 @@ namespace gVirtualXRay {
 //******************************************************************************
 const GLsizei g_default_window_width( 600);
 const GLsizei g_default_window_height(600);
-
 
 //==============================================================================
 /**
@@ -125,7 +119,6 @@ public:
     //--------------------------------------------------------------------------
     GLWidget(QWidget* apPparent = 0);
 
-
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
@@ -135,26 +128,17 @@ public:
     //--------------------------------------------------------------------------
     GLWidget(QGLFormat& aGLFormat, QWidget *apPparent = 0);
 
-
     //--------------------------------------------------------------------------
     /// Destructor
     //--------------------------------------------------------------------------
     virtual ~GLWidget();
 
-
 //*****************************************************************************
 private:
-    //--------------------------------------------------------------------------
-    /// Set the default window size
-    //--------------------------------------------------------------------------
-    virtual QSize sizeHint() const;
-
-
     //--------------------------------------------------------------------------
     /// Initialise OpenGL
     //--------------------------------------------------------------------------
     virtual void initializeGL();
-
 
     //--------------------------------------------------------------------------
     /// Display the 3D scene using OpenGL
@@ -166,15 +150,10 @@ private:
     //--------------------------------------------------------------------------
     virtual void loadSTLFile();
 
-
     //--------------------------------------------------------------------------
     /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void render();
-
-
-    /// The zooming factor
-    GLfloat m_zoom;
 
     /// Transformation matrix used to rotate the 3D scene
     Matrix4x4<GLfloat> m_scene_rotation_matrix;
@@ -182,17 +161,11 @@ private:
     /// Transformation matrix used to rotate the lung
     Matrix4x4<GLfloat> m_lung_rotation_matrix;
 
-    /// Translation vector used to centre the lung
-    VEC3 m_lung_translation_vector;
-
     /// GLSL shader
     Shader m_display_shader;
 
     /// polygon mesh for the lung
     LungsMesh m_lung_mesh;
-
-    /// The current angle
-    float m_current_angle;
 };
 
 } // namespace gVirtualXRay
