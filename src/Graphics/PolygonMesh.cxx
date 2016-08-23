@@ -89,6 +89,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
+#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#include "gVirtualXRay/OutOfMemoryException.h"
+#endif
+
 
 //******************************************************************************
 //	Name space
@@ -793,6 +797,228 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
     copyIndexSet(aPolygonMesh.m_p_index_set);
 
     return (*this);
+}
+
+
+//-----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
+//-----------------------------------------------------------------------
+{
+    if (m_index_data_type != aPolygonMesh.m_index_data_type)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot combine the two polygon meshes, their index data types are different.");
+
+    }
+
+    if (m_vertex_data_type != aPolygonMesh.m_vertex_data_type)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot combine the two polygon meshes, their vertex data types are different.");
+
+    }
+
+    // Check the polygon types
+    if (m_polygon_type != aPolygonMesh.m_polygon_type)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot combine the two polygon meshes, their polygon types are different.");
+
+    }
+
+    // Create the new instance
+    PolygonMesh new_polygon_mesh;
+
+    // The data is held by the instance
+    new_polygon_mesh.m_external_data_flag;
+
+    // Allocate memory space for the face normal set
+    new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() + aPolygonMesh.m_p_face_normal_set.size());
+
+    // Add the face normal vectors of the fist polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(m_p_face_normal_set.begin());
+            ite != m_p_face_normal_set.end();
+            ++ite)
+    {
+        new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
+    }
+
+    // Add the face normal vectors of the second polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(aPolygonMesh.m_p_face_normal_set.begin());
+            ite != aPolygonMesh.m_p_face_normal_set.end();
+            ++ite)
+    {
+        new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
+    }
+
+    // Allocate memory space for the vertex normal set
+    new_polygon_mesh.m_p_vertex_normal_set.reserve(m_p_vertex_normal_set.size() + aPolygonMesh.m_p_vertex_normal_set.size());
+
+    // Add the vertex normal vectors of the fist polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(m_p_vertex_normal_set.begin());
+            ite != m_p_vertex_normal_set.end();
+            ++ite)
+    {
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(*ite);
+    }
+
+    // Add the vertex normal vectors of the second polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(aPolygonMesh.m_p_vertex_normal_set.begin());
+            ite != aPolygonMesh.m_p_vertex_normal_set.end();
+            ++ite)
+    {
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(*ite);
+    }
+
+    // Allocate memory to store the vertex data
+    new_polygon_mesh.m_number_of_vertices = m_number_of_vertices + aPolygonMesh.m_number_of_vertices;
+    switch (new_polygon_mesh.m_vertex_data_type)
+    {
+    case GL_FLOAT:
+        new_polygon_mesh.m_p_vertex_set = new GLfloat[new_polygon_mesh.m_number_of_vertices * 3];
+        break;
+
+    case GL_DOUBLE:
+        new_polygon_mesh.m_p_vertex_set = new GLdouble[new_polygon_mesh.m_number_of_vertices * 3];
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+    }
+
+    if (new_polygon_mesh.m_number_of_vertices && !new_polygon_mesh.m_p_vertex_set)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Copy the data
+    switch (new_polygon_mesh.m_vertex_data_type)
+    {
+    case GL_FLOAT:
+        std::memcpy(new_polygon_mesh.m_p_vertex_set,
+                m_p_vertex_set,
+                m_number_of_vertices * sizeof(GLfloat) * 3);
+
+        std::memcpy(new_polygon_mesh.m_p_vertex_set + m_number_of_vertices * sizeof(GLfloat) * 3,
+                aPolygonMesh.m_p_vertex_set,
+                aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
+        break;
+
+    case GL_DOUBLE:
+        std::memcpy(new_polygon_mesh.m_p_vertex_set,
+                m_p_vertex_set,
+                m_number_of_vertices * sizeof(GLdouble) * 3);
+
+        std::memcpy(new_polygon_mesh.m_p_vertex_set + m_number_of_vertices * sizeof(GLdouble) * 3,
+                aPolygonMesh.m_p_vertex_set,
+                aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
+        break;
+    }
+
+    // Allocate memory to store the index data
+    new_polygon_mesh.m_number_of_indices = m_number_of_indices + aPolygonMesh.m_number_of_indices;
+    switch (m_index_data_type)
+    {
+    case GL_UNSIGNED_INT:
+        new_polygon_mesh.m_p_index_set = new GLuint[new_polygon_mesh.m_number_of_indices];
+        break;
+
+    case GL_UNSIGNED_SHORT:
+        new_polygon_mesh.m_p_index_set = new GLushort[new_polygon_mesh.m_number_of_indices];
+        break;
+
+    case GL_UNSIGNED_BYTE:
+        new_polygon_mesh.m_p_index_set = new GLubyte[new_polygon_mesh.m_number_of_indices];
+        break;
+
+    default:
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+    }
+
+    // Copy the data
+    switch (new_polygon_mesh.m_index_data_type)
+    {
+    case GL_UNSIGNED_INT:
+        {
+            GLuint* p_temp1(reinterpret_cast<GLuint*>(new_polygon_mesh.m_p_index_set));
+            GLuint* p_temp2(reinterpret_cast<GLuint*>(aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLuint));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+            {
+                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+            }
+        }
+        break;
+
+    case GL_UNSIGNED_SHORT:
+        {
+            GLushort* p_temp1(reinterpret_cast<GLushort*>(new_polygon_mesh.m_p_index_set));
+            GLushort* p_temp2(reinterpret_cast<GLushort*>(aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLshort));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+            {
+                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+            }
+        }
+        break;
+
+    case GL_UNSIGNED_BYTE:
+        {
+            GLubyte* p_temp1(reinterpret_cast<GLubyte*>(new_polygon_mesh.m_p_index_set));
+            GLubyte* p_temp2(reinterpret_cast<GLubyte*>(aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLubyte));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+            {
+                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+            }
+        }
+        break;
+    }
+
+    // Update internal data
+    new_polygon_mesh.computeBoundingBox();
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//-----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
+//-----------------------------------------------------------------------
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+}
+
+
+//-------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator+=(const PolygonMesh& aPolygonMesh)
+//-------------------------------------------------------------------
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+}
+
+
+//-------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator-=(const PolygonMesh& aPolygonMesh)
+//-------------------------------------------------------------------
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
 }
 
 

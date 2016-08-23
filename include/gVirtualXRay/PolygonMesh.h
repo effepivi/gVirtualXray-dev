@@ -868,6 +868,46 @@ public:
     virtual PolygonMesh& operator=(const PolygonMesh& aPolygonMesh);
 
 
+    //--------------------------------------------------------------------------
+    /// operator+.
+    /**
+    *   @param aPolygonMesh:    the polygon mesh to add
+    *   @return the new PolygonMesh
+    */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh operator+(const PolygonMesh& aPolygonMesh) const;
+
+
+    //--------------------------------------------------------------------------
+    /// operator-.
+    /**
+    *   @param aPolygonMesh:    the polygon mesh to remove
+    *   @return the new PolygonMesh
+    */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh operator-(const PolygonMesh& aPolygonMesh) const;
+
+
+    //--------------------------------------------------------------------------
+    /// operator+=.
+    /**
+    *   @param aPolygonMesh:    the polygon mesh to add
+    *   @return the new PolygonMesh
+    */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh& operator+=(const PolygonMesh& aPolygonMesh);
+
+
+    //--------------------------------------------------------------------------
+    /// operator-=.
+    /**
+    *   @param aPolygonMesh:    the polygon mesh to remove
+    *   @return the new PolygonMesh
+    */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh& operator-=(const PolygonMesh& aPolygonMesh);
+
+
 //******************************************************************************
 protected:
 	//--------------------------------------------------------------------------
