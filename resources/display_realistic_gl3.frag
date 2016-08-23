@@ -164,6 +164,13 @@ void main(void)
     }
     else
     {
-        frag_colour = material_ambient;
+	    if(g_use_texture==1)
+	    {
+	    	frag_colour = texture( g_colour_texture,g_texture_coordinates);
+	    }
+	    else
+	    {
+	    	frag_colour = material_ambient;
+	    }
     }
 }

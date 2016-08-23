@@ -35,22 +35,6 @@ project(gVirtualXRay-tutorial-04-qt4)
 # Initialise some states by default ############################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
-
-# Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../CreateHeaderFiles.cmake)
-SET (RESOURCES_SOURCES
-    shaders/display_gl2.frag
-    shaders/display_gl2.vert
-    shaders/display_gl3.frag
-    shaders/display_gl3.vert
-    shaders/colour_texture_generation_gl2.frag
-    shaders/colour_texture_generation_gl2.vert
-    shaders/colour_texture_generation_gl3.frag
-    shaders/colour_texture_generation_gl3.vert
-)
-CreateHeaderFiles("." "BinaryTutorial04Qt4Files" "${RESOURCES_SOURCES}")
-
-
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/data)
@@ -80,9 +64,7 @@ ENDIF(Qt4_FOUND)
 IF(Qt4_FOUND)
 add_executable(tutorial_04_qt4
 	tutorial_04_qt4.cxx  
-	GLWidget.h GLWidget.cxx 
-
-	LungMesh.h LungMesh.cxx)
+	GLWidget.h GLWidget.cxx)
 
 target_link_libraries(tutorial_04_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 

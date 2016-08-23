@@ -72,6 +72,7 @@ IF (USE_QT4)
     add_subdirectory(tutorial_02_qt4)
     add_subdirectory(tutorial_03_qt4)
     add_subdirectory(tutorial_04_qt4)
+    add_subdirectory(tutorial_05_qt4)
 ENDIF ()
 
 IF (USE_QT5)

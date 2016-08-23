@@ -66,16 +66,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glew.h>
 #endif
 
-#ifndef GVXR_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
-#include <algorithm>
-#include <cstdlib>
-#include <sstream>
-#include <streambuf>
-#include <ctime>
-
 #include <QtGui>
 #include <QGLWidget>
 
@@ -90,14 +80,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_CUBE_MESH_H
-#include "gVirtualXRay/CubeMesh.h"
-#endif
-
-#ifndef GVXR_OPENGL_UTILITIES_H
-#include "gVirtualXRay/OpenGLUtilities.h"
-#endif
-
 #ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
 #endif
@@ -106,11 +88,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#include "display_gl2.frag.h"
-#include "display_gl2.vert.h"
-
-#include "display_gl3.frag.h"
-#include "display_gl3.vert.h"
+#include "display_realistic_gl3.frag.h"
+#include "display_realistic_gl3.vert.h"
 
 #include "P4_lung.stl.h"
 
@@ -118,7 +97,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-
 
 //******************************************************************************
 //	Constant variables
@@ -130,22 +108,8 @@ const double g_initial_far(500.0 * cm);                       // Far clipping pl
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
 //******************************************************************************
-//  Function declaration
-//******************************************************************************
-float radian2degree(float anAngle);
-
-
-//******************************************************************************
 //	Implementation
 //******************************************************************************
-
-//---------------------------------------
-inline float radian2degree(float anAngle)
-//---------------------------------------
-{
-    return (180.0 * anAngle / gVirtualXRay::PI);
-}
-
 
 //----------------------------------
 GLWidget::GLWidget(QWidget *parent):
@@ -157,12 +121,7 @@ GLWidget::GLWidget(QWidget *parent):
 
     m_lung_mesh(),
 
-    m_current_angle(0),
-    m_simulation_total_time(0),
-    m_number_of_rotations(0),
-
-	m_light_direction(-1, 3, 1)
-
+    m_current_angle(0)
 //----------------------------------
 {
 }
@@ -176,21 +135,14 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
 
     m_lung_mesh(),
 
-    m_current_angle(0),
-    m_simulation_total_time(0),
-    m_acquisition_type(ROTATE_SOURCE_DETECTOR),
-
-	m_light_direction(-1, 3, 1)
-
+    m_current_angle(0)
 {
 }
-
 
 //-------------------
 GLWidget::~GLWidget()
 //-------------------
 {}
-
 
 //------------------------------
 QSize GLWidget::sizeHint() const
@@ -198,7 +150,6 @@ QSize GLWidget::sizeHint() const
 {
     return QSize(g_default_window_width, g_default_window_height);
 }
-
 
 //---------------------------
 void GLWidget::initializeGL()
@@ -215,63 +166,6 @@ void GLWidget::initializeGL()
     std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Initialise OpenGL
-    initGL();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Add the geometry to the X-ray renderer
-    loadSTLFiles();
-
-    //set the direction of the light
-    m_light_direction.normalize();
-
-    // Initialise the modelling matrix
-    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
-    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix( 60.0, VEC3(1, 0, 0));
-}
-
-
-//----------------------
-void GLWidget::paintGL()
-//----------------------
-{
-    // Clear the buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Display the 3D elements
-    glViewport(0, 0, width(), height());
-
-    // Store the current transformation matrix
-    pushModelViewMatrix();
-    pushProjectionMatrix();
-
-    double screen_aspect_ratio(double(width()) / double(height()));
-
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-
-    loadLookAtModelViewMatrix(0.0, 0.0, m_zoom,
-            0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0);
-
-    // Update the current angle
-    m_current_angle = m_next_angle_to_process;
-    m_next_angle_to_process += m_angle_step;
-
-    // Draw the 3D scene
-    render();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-    popProjectionMatrix();
-
-    // Make sure all the OpenGL code is done
-    glFinish();
-}
-
-//---------------------
-void GLWidget::initGL()
-//---------------------
-{
     std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
     std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
     std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
@@ -305,14 +199,14 @@ void GLWidget::initGL()
     // Modern OpenGL 3.2 or above is supported
     if (useOpenGL3_2OrAbove())
     {
-        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(g_display_realistic_gl3_vert, sizeof(g_display_realistic_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_realistic_gl3_frag, sizeof(g_display_realistic_gl3_frag), &p_fragment_shader);
     }
     // Modern OpenGL 3.2 or above isnot supported
     else
     {
-        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+       /* z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);*/
     }
 
     vertex_shader   = p_vertex_shader;
@@ -327,11 +221,51 @@ void GLWidget::initGL()
     m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // load the geometry
+    loadSTLFile();
+
+    // Initialise the modelling matrix
+    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
+    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix( 60.0, VEC3(1, 0, 0));
 }
 
+//----------------------
+void GLWidget::paintGL()
+//----------------------
+{
+    // Clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Display the 3D elements
+    glViewport(0, 0, width(), height());
+
+    // Store the current transformation matrix
+    pushModelViewMatrix();
+    pushProjectionMatrix();
+
+    double screen_aspect_ratio(double(width()) / double(height()));
+
+    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+
+    loadLookAtModelViewMatrix(0.0, 0.0, m_zoom,
+            0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0);
+
+    // Draw the 3D scene
+    render();
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+    popProjectionMatrix();
+
+    // Make sure all the OpenGL code is done
+    glFinish();
+}
 
 //----------------------------------------------
-void GLWidget::loadLung()
+void GLWidget::loadSTLFile()
 //----------------------------------------------
 {
 	// Set geometry
@@ -371,9 +305,6 @@ void GLWidget::render()
     	//Restore the view point
     	glViewport(0, 0, width(), height());
 
-        // Handle for shader variables
-    	GLuint handle(0);
-
         // Enable back face culling
         pushEnableDisableState(GL_CULL_FACE);
         pushEnableDisableState(GL_DEPTH_TEST);
@@ -388,43 +319,17 @@ void GLWidget::render()
         m_display_shader.enable();
         GLint shader_id(m_display_shader.getProgramHandle());
 
-        // Define the light colours here
-        GLfloat light_global_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-        GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-        GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-        GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-
-        handle = glGetUniformLocation(shader_id, "light_global_ambient");
-        glUniform4fv(handle, 1, &light_global_ambient[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "light_ambient");
-        glUniform4fv(handle, 1, &light_ambient[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "light_diffuse");
-        glUniform4fv(handle, 1, &light_diffuse[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "light_specular");
-        glUniform4fv(handle, 1, &light_specular[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "light_direction");
-        glUniform3f(handle, m_light_direction.getX(), m_light_direction.getY(), m_light_direction.getZ());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        // Store the current transformation matrix
-        pushModelViewMatrix();
-
         // Rotate the sample
         g_current_modelview_matrix *= m_scene_rotation_matrix;
 
-        handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+        // Handle for shader variables
+    	GLuint handle(0);
+
+    	handle = glGetUniformLocation(shader_id, "g_projection_matrix");
         glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -432,13 +337,9 @@ void GLWidget::render()
         glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        MATRIX4 normal_matrix(g_current_modelview_matrix);
-        handle = glGetUniformLocation(shader_id, "g_normal_matrix");
-        glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
+        //Don't use lighting
         GLint lighting;
-        lighting = 1;
+        lighting = 0;
         handle = glGetUniformLocation(shader_id,"g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -455,35 +356,6 @@ void GLWidget::render()
 
         // Display the current patient
    		m_lung_mesh.display();
-
-        // Restore the current transformation matrix
-        popModelViewMatrix();
-
-        // Define colours
-        {
-            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
-
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
-        //clean up the texture
-		glBindTexture(GL_TEXTURE_2D, 0);
 
         // Disable the shader
         popShaderProgram();

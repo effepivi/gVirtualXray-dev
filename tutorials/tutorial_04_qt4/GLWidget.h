@@ -83,37 +83,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
-#ifndef GVXR_ATOMIC_ELEMENT_H
-#include "gVirtualXRay/AtomicElement.h"
-#endif
-
-#ifndef GVXR_XRAY_BEAM_H
-#include "gVirtualXRay/XRayBeam.h"
-#endif
-
-#ifndef GVXR_XRAY_DETECTOR_H
-#include "gVirtualXRay/XRayDetector.h"
-#endif
-
-#ifndef GVXR_XRAY_RENDERER_H
-#include "gVirtualXRay/XRayRenderer.h"
-#endif
-
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
-#include "gVirtualXRay/TextRenderer.h"
-#endif
+#include "gVirtualXRay/LungsMesh.h"
 
-#ifndef ANATOMICAL_MESH_H
-#include "LungMesh.h"
-#endif
 
 
 //******************************************************************************
@@ -139,17 +114,6 @@ class GLWidget: public QGLWidget
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
-private:
-    /// New type defining the type of CT acquisition
-    typedef enum
-    {
-        /// The sample is rotating, the couple X-ray source/detector is static
-        ROTATE_SAMPLE,
-
-        /// The sample is static, the couple X-ray source/detector is rotating
-        ROTATE_SOURCE_DETECTOR
-    } AcquisitionType;
-
 
 //******************************************************************************
 public:
@@ -181,12 +145,6 @@ public:
 //*****************************************************************************
 private:
     //--------------------------------------------------------------------------
-    /// Set the minimum window size
-    //--------------------------------------------------------------------------
-    virtual QSize minimumSizeHint() const;
-
-
-    //--------------------------------------------------------------------------
     /// Set the default window size
     //--------------------------------------------------------------------------
     virtual QSize sizeHint() const;
@@ -204,19 +162,9 @@ private:
     virtual void paintGL();
 
     //--------------------------------------------------------------------------
-    /// Initialise OpenGL
-    //--------------------------------------------------------------------------
-    virtual void initGL();
-
-    //--------------------------------------------------------------------------
     /// Load STL files (lung geometrical data)
     //--------------------------------------------------------------------------
-    virtual void loadSTLFiles();
-
-    //--------------------------------------------------------------------------
-    /// Activate the properties of the mesh (geometry and Hounsfield values)
-    //--------------------------------------------------------------------------
-    virtual void loadLung();
+    virtual void loadSTLFile();
 
 
     //--------------------------------------------------------------------------
@@ -241,38 +189,12 @@ private:
     Shader m_display_shader;
 
     /// polygon mesh for the lung
-    LungMesh m_lung_mesh;
-
-    /// Flag set to true when the meshes are displayed using wireframe, false otherwise
-    bool m_display_wireframe;
-
-    /// The angular step between two successive rotations
-    RATIONAL_NUMBER m_angle_step;
-
-    /// The next angle to use
-    float m_next_angle_to_process;
+    LungsMesh m_lung_mesh;
 
     /// The current angle
     float m_current_angle;
-
-    /// The total simulation time
-    float m_simulation_total_time;
-
-    /// The number of rotations that have been performed
-    unsigned int m_number_of_rotations;
-
-    /// The current acquisition type
-    GLWidget::AcquisitionType m_acquisition_type;
-
-    ///the light direction (from the vertex to the camera
-    VEC3 m_light_direction;
 };
 
 } // namespace gVirtualXRay
-
-
-//******************************************************************************
-#include "GLWidget.inl"
-
 
 #endif // GVXR_GL_WIDGET_H

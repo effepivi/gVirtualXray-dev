@@ -204,6 +204,9 @@ void InternalOrganMesh::initialize()
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 
 		m_need_initialize = false;
+
+		// Cleanup for now
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
     //delete indices, there are not compatible with this implementation of solid texturing.
@@ -250,9 +253,6 @@ void InternalOrganMesh::generateTextures()
 
 	// Restore the attributes
     popEnableDisableState();
-
-	// Cleanup for now
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 //----------------------------------------------
