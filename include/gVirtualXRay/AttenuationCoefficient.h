@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ATTENUATION_COEFFICIENT_H
-#define GVXR_ATTENUATION_COEFFICIENT_H
+#ifndef __AttenuationCoefficient_h
+#define __AttenuationCoefficient_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		AttenuationCoefficient.h
+*   @file       AttenuationCoefficient.h
 *
-*	@brief		Class to manage an attenuation coefficient
+*   @brief      Class to manage an attenuation coefficient
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		30/11/2013
+*   @date       30/11/2013
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -64,53 +64,53 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <iostream>
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	Class declaration
+//  Class declaration
 //******************************************************************************
-class	AttenuationCoefficient;
+class AttenuationCoefficient;
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
 
 
 //------------------------------------------------------------------------------
-///	operator>>
+/// operator>>
 /**
-*	@param is: the input stream
-*	@param obj: the record to load from the stream
-*	@return the input stream
+*   @param is: the input stream
+*   @param obj: the record to load from the stream
+*   @return the input stream
 */
 //------------------------------------------------------------------------------
 std::istream& operator>>(std::istream& is, AttenuationCoefficient& obj);
 
 
 //------------------------------------------------------------------------------
-///	operator<<
+/// operator<<
 /**
-*	@param os: the output stream
-*	@param obj: the record to store in the stream
-*	@return the output stream
+*   @param os: the output stream
+*   @param obj: the record to store in the stream
+*   @return the output stream
 */
 //------------------------------------------------------------------------------
 std::ostream& operator<<(std::ostream& os, const AttenuationCoefficient& obj);
@@ -118,8 +118,9 @@ std::ostream& operator<<(std::ostream& os, const AttenuationCoefficient& obj);
 
 //==============================================================================
 /**
-*	@class	AttenuationCoefficient
-*	@brief	AttenuationCoefficient is a class to handle an attenuation coefficient.
+*   @class  AttenuationCoefficient
+*   @brief  AttenuationCoefficient is a class to handle
+*           an attenuation coefficient.
 */
 //==============================================================================
 class AttenuationCoefficient
@@ -127,50 +128,54 @@ class AttenuationCoefficient
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	/**
-	*	@param anEnergy: the energy (default value: 0)
-	*	@param anAttenuationCoefficient: the attenuation coefficient (default value: 0)
-	*/
-	//--------------------------------------------------------------------------
-	AttenuationCoefficient(const RATIONAL_NUMBER& anEnergy = 0,
-			const RATIONAL_NUMBER& anAttenuationCoefficient = 0);
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    /**
+    *   @param anEnergy:                    the energy (default value: 0)
+    *   @param anAttenuationCoefficient:    the attenuation coefficient
+    *                                       (default value: 0)
+    */
+    //--------------------------------------------------------------------------
+    AttenuationCoefficient(const RATIONAL_NUMBER& anEnergy = 0,
+            const RATIONAL_NUMBER& anAttenuationCoefficient = 0);
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the energy.
-	/**
-	*	@return the energy
-	*/
-	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER getEnergy() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the energy.
+    /**
+    *   @return the energy
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getEnergy() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the attenuation coefficient.
-	/**
-	*	@return the attenuation coefficient
-	*/
-	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER getAttenuationCoefficient() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the attenuation coefficient.
+    /**
+    *   @return the attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getAttenuationCoefficient() const;
 
 
 //******************************************************************************
 protected:
-	/// Energy
-	RATIONAL_NUMBER m_energy;
+    /// Energy
+    RATIONAL_NUMBER m_energy;
 
 
-	/// Attenuation coefficient corresponding to m_energy
-	RATIONAL_NUMBER m_mu;
+    /// Attenuation coefficient corresponding to m_energy
+    RATIONAL_NUMBER m_mu;
 
 
-	//**************************************************************************
-	//	Friend operators
-	//**************************************************************************
-	friend std::istream& operator>>(std::istream &is, AttenuationCoefficient &obj);
-	friend std::ostream& operator<<(std::ostream &os, const AttenuationCoefficient &obj);
+    //**************************************************************************
+    //  Friend operators
+    //**************************************************************************
+    friend std::istream& operator>>(std::istream &is,
+            AttenuationCoefficient &obj);
+    
+    friend std::ostream& operator<<(std::ostream &os,
+            const AttenuationCoefficient &obj);
 };
 
 
@@ -181,5 +186,4 @@ protected:
 #include "AttenuationCoefficient.inl"
 
 
-#endif // GVXR_ATTENUATION_COEFFICIENT_H
-
+#endif // __AttenuationCoefficient_h

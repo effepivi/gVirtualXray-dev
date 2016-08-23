@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_CONSTANT_VALUES_H
-#define GVXR_CONSTANT_VALUES_H
+#ifndef __ConstantValues_h
+#define __ConstantValues_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		ConstantValues.h
+*   @file       ConstantValues.h
 *
-*	@brief		Constant values, such as the Z number of different atoms, etc.
+*   @brief      Constant values, such as the Z number of different atoms, etc.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/10/2014
+*   @date       13/10/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -64,15 +64,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
@@ -89,7 +89,7 @@ namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	Constant declarations
+//  Constant declarations
 //******************************************************************************
 const double PI = 3.14159265358979323846; ///< Pi
 const double PI_2 = PI / 2.0; ///< Pi divided by 2.0
@@ -118,4 +118,4 @@ const unsigned short Z_Sn = 50; ///< Tin atomic number
 } // namespace gVirtualXRay
 
 
-#endif // GVXR_CONSTANT_VALUES_H
+#endif // __ConstantValues_h
