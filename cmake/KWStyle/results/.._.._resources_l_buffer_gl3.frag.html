@@ -1,0 +1,716 @@
+<html>
+<HEAD>
+<META name="description" content="kitware.com">
+<META name="keywords" content="kwstyle,Kitware,Style,Checker,Dart">
+<META name="author" content="Kitware">
+<META name="revisit-after" content="2 days">
+<META name="robots" content="all">
+<title>KWStyle - results/.._.._resources_l_buffer_gl3.frag.html</title>
+</HEAD>
+<table width="100%" border="0">
+ <tr>
+   <td width="15%" height="2"><img src="images/logo.png"></td>
+   <td width="85%" height="2" bgcolor="#0099CC"> 
+     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - .._.._resources_l_buffer_gl3.frag</font></b></div>
+   </td>
+ </tr>
+</table>
+<table width="100%" border="0">
+ <tr> 
+   <td width="15%" height="30" >&nbsp;</td>
+   <td height="30" width="12%" bgcolor="#0099CC"> 
+     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>
+   </td>
+   <td width="10%" height="30" bgcolor="#0099CC" >
+ <div align="center"><a href="KWSDescription.html">Description</a></div>
+  </td>
+   <td width="63%" height="30"> 
+     <div align="left"><b></b></div>
+     <div align="right"></div>
+   </td>
+ </tr>
+</table>
+<hr size="1"><table width="100%" border="0" height="1">
+<tr>
+<td height="1">1</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">/**</font></font></td>
+</tr>
+<tr>
+<td height="1">2</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr>
+<td height="1">3</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">4</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@file		l_buffer_gl3.frag</font></font></td>
+</tr>
+<tr>
+<td height="1">5</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">6</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@brief		Fragment&nbsp;shader&nbsp;that&nbsp;computes&nbsp;a&nbsp;L-buffer.</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">7</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				see:&nbsp;N.&nbsp;Freud,&nbsp;P.&nbsp;Duvauchelle,&nbsp;J.&nbsp;M.&nbsp;Letang,&nbsp;D.&nbsp;Babot,</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">8</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				Fast&nbsp;and&nbsp;robust&nbsp;ray&nbsp;casting&nbsp;algorithms&nbsp;for&nbsp;virtual&nbsp;X-ray</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">9</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				imaging,&nbsp;Nuclear&nbsp;Instruments&nbsp;and&nbsp;Methods&nbsp;in&nbsp;Physics&nbsp;Research</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">10</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				Section&nbsp;B:&nbsp;Beam&nbsp;Interactions&nbsp;with&nbsp;Materials&nbsp;and&nbsp;Atoms&nbsp;248&nbsp;(1)</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">11</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				(2006)&nbsp;175-180.</font></font></td>
+</tr>
+<tr>
+<td height="1">12</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">13</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		F.&nbsp;P.&nbsp;Vidal,&nbsp;M.&nbsp;Garnier,&nbsp;N.&nbsp;Freud,&nbsp;J.&nbsp;M.&nbsp;Letang,&nbsp;and</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">14</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		N.&nbsp;W.&nbsp;John.&nbsp;Simulation&nbsp;of&nbsp;X-ray&nbsp;attenuation&nbsp;on&nbsp;the&nbsp;GPU.&nbsp;In</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">15</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		Proceedings&nbsp;of&nbsp;Theory&nbsp;and&nbsp;Practice&nbsp;of&nbsp;Computer&nbsp;Graphics&nbsp;2009,</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">16</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		pages&nbsp;25-32,&nbsp;Cardiff,&nbsp;UK,&nbsp;June&nbsp;2009.&nbsp;Eurographics&nbsp;Association.</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">17</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		Winner&nbsp;of&nbsp;Ken&nbsp;Brodlie&nbsp;Prize&nbsp;for&nbsp;Best&nbsp;Paper.</font></font></td>
+</tr>
+<tr>
+<td height="1">18</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">19</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@version	1.2</font></font></td>
+</tr>
+<tr>
+<td height="1">20</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">21</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@date		15/12/2013</font></font></td>
+</tr>
+<tr>
+<td height="1">22</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">23</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@author		Dr&nbsp;Franck&nbsp;P.&nbsp;Vidal</font></font></td>
+</tr>
+<tr>
+<td height="1">24</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">25</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@section	License</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">26</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				BSD&nbsp;3-Clause&nbsp;License.</font></font></td>
+</tr>
+<tr>
+<td height="1">27</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">28</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				For&nbsp;details&nbsp;on&nbsp;use&nbsp;and&nbsp;redistribution&nbsp;please&nbsp;refer</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">29</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				to&nbsp;http:<font color="#009933">//opensource.org/licenses/BSD-3-Clause<font></font></td>
+</tr>
+<tr>
+<td height="1">30</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">31</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@section	Copyright</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">32</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				(c)&nbsp;by&nbsp;Dr&nbsp;Franck&nbsp;P.&nbsp;Vidal&nbsp;(franck.p.vidal@fpvidal.net),</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">33</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				http:<font color="#009933">//www.fpvidal.net/,&nbsp;Dec&nbsp;2013,&nbsp;2013,&nbsp;version&nbsp;1.0,<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">34</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*				BSD&nbsp;3-Clause&nbsp;License</font></font></td>
+</tr>
+<tr>
+<td height="1">35</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">36</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr bgcolor="#FF3300">
+<td height="1">37</td>
+<td height="1">DEF</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">38</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">39</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">40</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">41</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	OpenGL&nbsp;3.2<font></font></td>
+</tr>
+<tr>
+<td height="1">42</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">43</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#version&nbsp;150</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">44</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">precision&nbsp;highp&nbsp;float;&nbsp;<font color="#009933">//&nbsp;Video&nbsp;card&nbsp;drivers&nbsp;require&nbsp;this&nbsp;line&nbsp;to&nbsp;function&nbsp;properly<font></font></td>
+</tr>
+<tr>
+<td height="1">45</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">46</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">47</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">48</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Input<font></font></td>
+</tr>
+<tr>
+<td height="1">49</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">50</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">smooth&nbsp;in&nbsp;vec3&nbsp;g_in_vertex;</font></td>
+</tr>
+<tr>
+<td height="1">51</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">smooth&nbsp;in&nbsp;vec3&nbsp;g_normal;</font></td>
+</tr>
+<tr>
+<td height="1">52</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">53</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">54</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">55</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Output<font></font></td>
+</tr>
+<tr>
+<td height="1">56</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">57</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">out&nbsp;vec3&nbsp;fragColor;</font></td>
+</tr>
+<tr>
+<td height="1">58</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">59</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">60</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">61</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Constants<font></font></td>
+</tr>
+<tr>
+<td height="1">62</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">63</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">const&nbsp;bool&nbsp;PERSPECTIVE_PROJECTION&nbsp;=&nbsp;false;</font></td>
+</tr>
+<tr>
+<td height="1">64</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">const&nbsp;bool&nbsp;PARALLEL_PROJECTION&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">65</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">const&nbsp;float&nbsp;EPSILON&nbsp;=&nbsp;0.00001;</font></td>
+</tr>
+<tr>
+<td height="1">66</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">67</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">68</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">69</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Uniform&nbsp;variables<font></font></td>
+</tr>
+<tr>
+<td height="1">70</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">71</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;vec4&nbsp;g_detector_plane;</font></td>
+</tr>
+<tr>
+<td height="1">72</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;float&nbsp;g_to_cm_scale;</font></td>
+</tr>
+<tr>
+<td height="1">73</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;mat4&nbsp;g_modelling_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">74</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;mat3&nbsp;g_normal_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">75</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;bool&nbsp;g_projection_type;&nbsp;<font color="#009933">//&nbsp;1&nbsp;for&nbsp;parallel&nbsp;beam<font></font></td>
+</tr>
+<tr>
+<td height="1">76</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;vec3&nbsp;g_ray_direction;</font></td>
+</tr>
+<tr>
+<td height="1">77</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;vec3&nbsp;g_source_position;</font></td>
+</tr>
+<tr>
+<td height="1">78</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">79</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">80</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------<font></font></td>
+</tr>
+<tr>
+<td height="1">81</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;main&nbsp;(void)</font></td>
+</tr>
+<tr>
+<td height="1">82</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------<font></font></td>
+</tr>
+<tr>
+<td height="1">83</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">84</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Transform&nbsp;normal&nbsp;vectors<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">85</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;normal&nbsp;=&nbsp;-normalize(g_normal_matrix&nbsp;*&nbsp;g_normal);</font></td>
+</tr>
+<tr>
+<td height="1">86</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">87</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Transform&nbsp;the&nbsp;vertex<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">88</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec4&nbsp;transformed_vertex&nbsp;=&nbsp;g_modelling_matrix&nbsp;*&nbsp;vec4(g_in_vertex,&nbsp;1.0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">89</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	transformed_vertex.xyz&nbsp;/=&nbsp;transformed_vertex.w;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">90</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	transformed_vertex.w&nbsp;=&nbsp;1.0;</font></td>
+</tr>
+<tr>
+<td height="1">91</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">92</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Get&nbsp;the&nbsp;viewing&nbsp;direction<font></font></td>
+</tr>
+<tr>
+<td height="1">93</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;vec3&nbsp;viewing_vector;</font></td>
+</tr>
+<tr>
+<td height="1">94</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">95</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Use&nbsp;parallel&nbsp;beam<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">96</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	if&nbsp;(g_projection_type&nbsp;==&nbsp;PARALLEL_PROJECTION)</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">97</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">98</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		viewing_vector&nbsp;=&nbsp;-g_ray_direction;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">99</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">100</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Use&nbsp;perspective&nbsp;projection<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">101</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	else</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">102</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">103</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		viewing_vector&nbsp;=&nbsp;-normalize(transformed_vertex.xyz&nbsp;-&nbsp;g_source_position);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">104</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">105</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">106</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Save&nbsp;the&nbsp;dot&nbsp;product<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">107</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;dot_product&nbsp;=&nbsp;dot(normal,&nbsp;viewing_vector);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">108</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;dot_product_sign&nbsp;=&nbsp;sign(dot_product);</font></td>
+</tr>
+<tr>
+<td height="1">109</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">110</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;The&nbsp;dot&nbsp;product&nbsp;value&nbsp;is&nbsp;too&nbsp;small<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">111</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	if&nbsp;(abs(dot_product)&nbsp;&lt;&nbsp;EPSILON)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">112</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr>
+<td height="1">113</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Alter&nbsp;the&nbsp;normal<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">114</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		normal.x&nbsp;+=&nbsp;0.1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">115</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		normal.y&nbsp;+=&nbsp;0.1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">116</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		normal&nbsp;=&nbsp;normalize(normal);</font></td>
+</tr>
+<tr>
+<td height="1">117</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">118</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Update&nbsp;the&nbsp;dot&nbsp;product<font></font></td>
+</tr>
+<tr>
+<td height="1">119</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dot_product&nbsp;=&nbsp;dot(normal,&nbsp;viewing_vector);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">120</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		dot_product_sign&nbsp;=&nbsp;sign(dot_product);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">121</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">122</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">123</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Get&nbsp;the&nbsp;distance&nbsp;between&nbsp;the&nbsp;source&nbsp;and&nbsp;the&nbsp;vertex<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">124</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;float&nbsp;distance_source_vertex&nbsp;=&nbsp;distance(transformed_vertex.xyz,&nbsp;g_source_position);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">125</td>
+<td height="1">LEN,TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//float&nbsp;distance_intersection_detector&nbsp;=&nbsp;(dot(transformed_vertex.xyz,&nbsp;g_detector_plane.xyz)&nbsp;+&nbsp;g_detector_plane.w)&nbsp;/&nbsp;dot(-viewing_vector,&nbsp;g_detector_plane.xyz);<font></font></td>
+</tr>
+<tr>
+<td height="1">126</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">127</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;value&nbsp;=&nbsp;dot_product_sign&nbsp;*&nbsp;distance_source_vertex&nbsp;*&nbsp;g_to_cm_scale;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">128</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	if&nbsp;(abs(distance_source_vertex)&nbsp;&lt;&nbsp;EPSILON)&nbsp;value&nbsp;=&nbsp;0.0;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">129</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">130</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;In&nbsp;the&nbsp;red&nbsp;channel:&nbsp;the&nbsp;L-buffer&nbsp;value<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">131</td>
+<td height="1">LEN,TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;In&nbsp;the&nbsp;green&nbsp;channel&nbsp;the&nbsp;sign&nbsp;of&nbsp;the&nbsp;dot&nbsp;product&nbsp;(useful&nbsp;to&nbsp;detect&nbsp;errors&nbsp;in&nbsp;the&nbsp;final&nbsp;L-buffer)<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">132</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;In&nbsp;the&nbsp;blue&nbsp;channel:&nbsp;0.0&nbsp;(unused)<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">133</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;In&nbsp;the&nbsp;alpha&nbsp;channel:&nbsp;1.0&nbsp;(unused)<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">134</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fragColor&nbsp;=&nbsp;vec3(value,&nbsp;dot_product_sign,&nbsp;distance_source_vertex);</font></td>
+</tr>
+<tr>
+<td height="1">135</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">136</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+</table>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Tuesday August,23 at 10:46:53PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+</td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>
