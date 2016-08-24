@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
-#define GVXR_OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef __OutOfBoundsException_h
+#define __OutOfBoundsException_h
 
 
 /**
@@ -116,4 +116,4 @@ public:
 #include "OutOfBoundsException.inl"
 
 
-#endif // OUT_OF_BOUNDS_EXCEPTION_H
+#endif // __OutOfBoundsException_h

@@ -20,7 +20,7 @@
 <LineLength>81</LineLength>
 
 <InternalVariables>
-  <regex>m_[A-Z]</regex>   <!-- Internal variables should match a particular regular expression -->
+  <regex>m_[a-z]</regex>   <!-- Internal variables should match a particular regular expression -->
   <alignment>0</alignment>
   <private>0</private>     <!-- Internal variables should be in the protected or private section -->
 </InternalVariables>
@@ -81,10 +81,10 @@
     <middle> *</middle>
     <end>*/<end>
     <emptyLineBeforeClass>true</emptyLineBeforeClass>
-    <checkWrongComment>true</checkWrongComment>  <!-- Comments in the files should be correct. -->
-                                                 <!-- Right now checking if two consecutive words are not the same. -->
-                                                 <!-- Spelling mistake.  -->
-    <checkMissingComment>true</checkMissingComment> <!-- Each class definition should have a comment starting with \class -->
+    <checkWrongComment>true</checkWrongComment>        <!-- Comments in the files should be correct. -->
+                                                       <!-- Right now checking if two consecutive words are not the same. -->
+                                                       <!-- Spelling mistake.  -->
+    <checkMissingComments>false</checkMissingComments> <!-- Each class definition should have a comment starting with \class -->
 </Comments>
 
 <!-- The number of successive empty lines should not be greater than a given number. -->
@@ -122,7 +122,7 @@
 <BadCharacters>true</BadCharacters>
 
 <MemberFunctions>
-    <regex>[A-Z]</regex> <!-- Check Regular Expression for Member Functions  -->
+    <regex>[a-z]</regex> <!-- Check Regular Expression for Member Functions  -->
     <length>100</length> <!-- Check the number of line of the current member function -->
 </MemberFunctions>
 

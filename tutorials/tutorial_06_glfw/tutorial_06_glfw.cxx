@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -37,11 +37,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       tutorial_01_glfw.cxx
 *
-*   @brief      Creating a Window and an OpenGL Core Profile 3.2 Context Using GLFW.
+*   @brief      Creating a window and an OpenGL Core Profile 3.2 context
+*               using GLFW. It also shows how to combine two polygon meshes into
+*               one.
 *
 *   @version    1.0
 *
-*   @date       06/05/2014
+*   @date       24/08/2016
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -67,11 +69,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glew.h> // For advanced OpenGL functionalities
 #endif
 
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
+// Tell GLFW to include the OpenGL core profile header
+#define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h> // Create an OpenGL context and attach a window to it
 
@@ -118,17 +121,18 @@ GLFWwindow* g_p_window_id(0);
 Shader g_display_shader;
 
 // 3D objects as VAOs and VBOs
-PolygonMesh g_polygon_mesh_1;
-PolygonMesh g_polygon_mesh_2;
+PolygonMesh g_cube_1;
+PolygonMesh g_cube_2;
+PolygonMesh g_final_polygon_mesh;
 
 // Transformation matrices
-MATRIX4 g_object_1_rotation_matrix;
-MATRIX4 g_object_2_rotation_matrix;
+MATRIX4 g_object_rotation_matrix;
 
 // Geometric data
 vector<double> g_p_vertex_set_1;
 vector<unsigned char> g_p_index_set_1;
-vector<float> g_p_vertex_set_2;
+vector<double> g_p_vertex_set_2;
+vector<unsigned char> g_p_index_set_2;
 
 // Control the zoom
 RATIONAL_NUMBER g_zoom(50.0 * cm);
@@ -142,7 +146,9 @@ uniform mat4 g_modelview_matrix;\n \
 \n \
 void main(void)\n \
 {\n \
-    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);\n \
+    gl_Position = g_projection_matrix * \n \
+        g_modelview_matrix * \n \
+        vec4(gl_Vertex.xyz, 1.0);\n \
 }\n \
 ";
 
@@ -168,7 +174,9 @@ uniform mat4 g_modelview_matrix;\n \
 \n \
 void main(void)\n \
 {\n \
-    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
+    gl_Position = g_projection_matrix * \n \
+        g_modelview_matrix * \n \
+        vec4(in_Vertex, 1.0);\n \
 }\n \
 ";
 
@@ -189,14 +197,27 @@ void main(void)\n \
 //  Function declaration
 //******************************************************************************
 void initGLFW();
+
 void initGL();
+
 void load3DObjects();
+
 void displayCallback();
+
 void idleCallback();
+
 void quitCallback();
+
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
+
+void keyCallback(GLFWwindow* apWindow,
+        int aKey,
+        int aScanCode,
+        int anAction,
+        int aModifierKey);
+
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+
 void errorCallback(int error, const char* description);
 
 
@@ -211,7 +232,7 @@ int main(int argc, char** argv)
     atexit(quitCallback);
 
     try
-    {
+        {
         // Initialise GLFW
         initGLFW();
 
@@ -221,20 +242,23 @@ int main(int argc, char** argv)
         // Initialise OpenGL
         initGL();
 
-        // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
+        // Give a text ID to the vertex and fragment shaders,
+        // it can be useful when debuging shaders
         g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
         // Load the source code of the shaders onto the GPU
         // Modern OpenGL 3.2 or above is supported
         if (useOpenGL3_2OrAbove())
-        {
-            g_display_shader.loadSource(g_vertex_shader_150, g_fragment_shader_150);
-        }
+            {
+            g_display_shader.loadSource(g_vertex_shader_150,
+                    g_fragment_shader_150);
+            }
         // Modern OpenGL 3.2 or above is not supported
         else
-        {
-            g_display_shader.loadSource(g_vertex_shader_110, g_fragment_shader_110);
-        }
+            {
+            g_display_shader.loadSource(g_vertex_shader_110,
+                    g_fragment_shader_110);
+            }
 
         // Initialise the geometry of the 3D objects
         load3DObjects();
@@ -244,7 +268,7 @@ int main(int argc, char** argv)
 
         // Launch the event loop
         while (!glfwWindowShouldClose(g_p_window_id))
-        {
+            {
             // Render here
             displayCallback();
 
@@ -256,14 +280,14 @@ int main(int argc, char** argv)
 
             // Idle callback
             idleCallback();
+            }
         }
-    }
     // Catch exception if any
     catch (const exception& error)
-    {
+        {
         cerr << error.what() << endl;
         return_code = EXIT_FAILURE;
-    }
+        }
 
     // Close the window and shut GLFW if needed
     quitCallback();
@@ -282,10 +306,10 @@ void initGLFW()
 
     // Initialize GLFW
     if (!glfwInit())
-    {
+        {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
                 "ERROR: cannot initialise GLFW.");
-    }
+        }
 
     // Enable OpenGL 3.2 if possible
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -302,10 +326,11 @@ void initGLFW()
 
     // The window has not been created
     if (!g_p_window_id)
-    {
+        {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-    }
+                "ERROR: cannot create a GLFW windowed mode window and "
+                "its OpenGL context.");
+        }
 
     // Make the window's context current
     glfwMakeContextCurrent(g_p_window_id);
@@ -338,29 +363,33 @@ void load3DObjects()
 //------------------
 {
     // Centre of the cubes
-    VEC3 cube_centre(0, 0, 0);
+    VEC3 cube_centre1(0, 0, 0);
+    VEC3 cube_centre2(-8.0 * cm, 0.0, 0.0);
 
     // Size of the cubes
     RATIONAL_NUMBER length_1( 5.0 * cm);
     RATIONAL_NUMBER length_2(10.0 * cm);
 
     // Create the cube using vertex data and index data
-    buildCube(length_1, cube_centre, g_p_vertex_set_1, g_p_index_set_1);
+    buildCube(length_1, cube_centre1, g_p_vertex_set_1, g_p_index_set_1);
 
     // Create the cube using vertex data only
-    buildCube(length_2, cube_centre, g_p_vertex_set_2);
+    buildCube(length_2, cube_centre2, g_p_vertex_set_2, g_p_index_set_2);
 
     // Set geometry (using VAOs and VBOs)
-    g_polygon_mesh_1.setExternalData(GL_TRIANGLES,
+    g_cube_1.setExternalData(GL_TRIANGLES,
             &g_p_vertex_set_1,
             &g_p_index_set_1,
             true,
             GL_STATIC_DRAW);
 
-    g_polygon_mesh_2.setExternalData(GL_TRIANGLES,
+    g_cube_2.setExternalData(GL_TRIANGLES,
             &g_p_vertex_set_2,
+            &g_p_index_set_2,
             true,
             GL_STATIC_DRAW);
+
+    g_final_polygon_mesh = g_cube_1 + g_cube_2;
 }
 
 
@@ -404,34 +433,13 @@ void displayCallback()
             VEC3(8.0 * cm, 0.0, 0.0));
 
     // Rotate the 1st object
-    g_current_modelview_matrix *= g_object_1_rotation_matrix;
+    g_current_modelview_matrix *= g_object_rotation_matrix;
 
     // Apply the change to the shader program
     applyModelViewMatrix();
 
     // Display the 1st object
-    g_polygon_mesh_1.display();
-
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-    popProjectionMatrix();
-
-    // Store the current transformation matrices
-    pushModelViewMatrix();
-    pushProjectionMatrix();
-
-    // Translate the 2nd object
-    g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(
-            VEC3(-8.0 * cm, 0.0, 0.0));
-
-    // Rotate the 2nd object
-    g_current_modelview_matrix *= g_object_2_rotation_matrix;
-
-    // Apply the change to the shader program
-    applyModelViewMatrix();
-
-    // Display the 2nd object
-    g_polygon_mesh_2.display();
+    g_final_polygon_mesh.display();
 
     // Restore the current transformation matrix
     popModelViewMatrix();
@@ -451,8 +459,7 @@ void idleCallback()
 //-----------------
 {
     // Rotate the objects
-    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
-    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+    g_object_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
 }
 
 
@@ -462,14 +469,14 @@ void quitCallback()
 {
     // The window exists
     if (g_p_window_id)
-    {
+        {
         // Close the window
         glfwDestroyWindow(g_p_window_id);
         g_p_window_id = 0;
 
         // Cleanup GLFW
         glfwTerminate();
-    }
+        }
 }
 
 
@@ -479,10 +486,10 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 {
     // Avoid a division by zero
     if (height == 0)
-    {
+        {
         // Prevent divide by 0
         height = 1;
-    }
+        }
 
     int x(0), y(0), w(width), h(height);
 
@@ -491,13 +498,17 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     g_window_height = height;
 
     // Compute the aspect ratio of the size of the window
-    double screen_aspect_ratio(double(g_window_width) / double(g_window_height));
+    double screen_aspect_ratio(double(g_window_width) /
+            double(g_window_height));
 
     // Update the viewport
     glViewport(x, y, w, h);
 
     // Set up the projection matrix (g_current_projection_matrix)
-    loadPerspectiveProjectionMatrix(45.0, screen_aspect_ratio, 0.1 * cm, 5000.0 * cm);
+    loadPerspectiveProjectionMatrix(45.0,
+            screen_aspect_ratio,
+            0.1 * cm,
+            5000.0 * cm);
 
     // Set up the modelling-viewing matrix (g_current_modelview_matrix)
     loadLookAtModelViewMatrix(50.0 * cm, 50.0 * cm, g_zoom,
@@ -506,24 +517,28 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//----------------------------------
+void keyCallback(GLFWwindow* window,
+                 int key,
+                 int scancode,
+                 int action,
+                 int mods)
+//----------------------------------
 {
     if (action == GLFW_PRESS)
-    {
-        switch(key)
         {
-        // Close the program
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
-                break;
+        switch(key)
+            {
+            // Close the program
+            case GLFW_KEY_Q:
+            case GLFW_KEY_ESCAPE:
+                    glfwSetWindowShouldClose(g_p_window_id, GL_TRUE);
+                    break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
-    }
 }
 
 
@@ -533,13 +548,13 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 {
     // Scrolling along the Y-axis
     if (fabs(yoffset) > EPSILON)
-    {
+        {
         // Change the zoom
         g_zoom += 5 * yoffset * cm;
 
         // Update the projection matrix
         framebufferSizeCallback(apWindow, g_window_width, g_window_height);
-    }
+        }
 }
 
 
@@ -550,4 +565,3 @@ void errorCallback(int error, const char* description)
     // Throw an error
     throw Exception(__FILE__, __FUNCTION__, __LINE__, description);
 }
-

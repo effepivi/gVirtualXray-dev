@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,106 +35,106 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		buildCube.h
+*   @file       buildCube.h
 *
-*	@brief		Generate the triangle mesh corresponding to a cube.
+*   @brief      Generate the triangle mesh corresponding to a cube.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		25/02/2014
+*   @date       25/02/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
-#ifndef GVXR_BUILD_CUBE_H
-#define GVXR_BUILD_CUBE_H
+#ifndef __buildCube_h
+#define __buildCube_h
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector>
 
-#ifndef GVXR_GVXR_TYPES_H
+#ifndef __Types_h
 #include <gVirtualXRay/Types.h>
 #endif
 
 
 //******************************************************************************
-//	function declaration
+//  function declaration
 //******************************************************************************
 
 
 //------------------------------------------------------------------------------
-///	Create a cube.
+/// Create a cube.
 /**
-*	@param 	aLenght:	the length of the cube
-*	@param 	aCentre:	the centre of the cube
-*	@param 	apVertexSet:	the vertices of the cube
+*   @param  aLenght:        the length of the cube
+*   @param  aCentre:        the centre of the cube
+*   @param  apVertexSet:    the vertices of the cube
 */
 //------------------------------------------------------------------------------
 void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
-		gVirtualXRay::VEC3 aCentre,
-		std::vector<double>& apVertexSet);
+        gVirtualXRay::VEC3 aCentre,
+        std::vector<double>& apVertexSet);
 
 
 //------------------------------------------------------------------------------
-///	Create a cube.
+/// Create a cube.
 /**
-*	@param 	aLenght:	the length of the cube
-*	@param 	aCentre:	the centre of the cube
-*	@param 	apVertexSet:	the vertices of the cube
+*   @param  aLenght:        the length of the cube
+*   @param  aCentre:        the centre of the cube
+*   @param  apVertexSet:    the vertices of the cube
 */
 //------------------------------------------------------------------------------
 void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
-		gVirtualXRay::VEC3 aCentre,
-		std::vector<double>& apVertexSet,
-		std::vector<unsigned char>& apIndexSet);
+        gVirtualXRay::VEC3 aCentre,
+        std::vector<double>& apVertexSet,
+        std::vector<unsigned char>& apIndexSet);
 
 
 //------------------------------------------------------------------------------
-///	Create a cube.
+/// Create a cube.
 /**
-*	@param 	aLenght:	the length of the cube
-*	@param 	aCentre:	the centre of the cube
-*	@param 	apVertexSet:	the vertices of the cube
+*   @param  aLenght:        the length of the cube
+*   @param  aCentre         the centre of the cube
+*   @param  apVertexSet:    the vertices of the cube
 */
 //------------------------------------------------------------------------------
 void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
-		gVirtualXRay::VEC3 aCentre,
-		std::vector<float>& apVertexSet);
+        gVirtualXRay::VEC3 aCentre,
+        std::vector<float>& apVertexSet);
 
 
 //------------------------------------------------------------------------------
-///	Create a cube.
+/// Create a cube.
 /**
-*	@param 	aLenght:	the length of the cube
-*	@param 	aCentre:	the centre of the cube
-*	@param 	apVertexSet:	the vertices of the cube
+*   @param  aLenght:        the length of the cube
+*   @param  aCentre:        the centre of the cube
+*   @param  apVertexSet:    the vertices of the cube
 */
 //------------------------------------------------------------------------------
 void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
-		gVirtualXRay::VEC3 aCentre,
-		std::vector<float>& apVertexSet,
-		std::vector<unsigned char>& apIndexSet);
+        gVirtualXRay::VEC3 aCentre,
+        std::vector<float>& apVertexSet,
+        std::vector<unsigned char>& apIndexSet);
 
 
-#endif // BUILD_CUBE_H
+#endif // __buildCube_h

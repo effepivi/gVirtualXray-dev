@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,722 +35,810 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		buildCube.cxx
+*   @file       buildCube.cxx
 *
-*	@brief		Generate the triangle mesh corresponding to a cube.
+*   @brief      Generate the triangle mesh corresponding to a cube.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		25/02/2014
+*   @date       25/02/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//    Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_BUILD_CUBE_H
+#ifndef __buildCube_h
 #include "buildCube.h"
 #endif
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //----------------------------------------------
 void buildCube(RATIONAL_NUMBER aLength,
-			   VEC3 aCentre,
-			   std::vector<double>& apVertexSet)
+               VEC3 aCentre,
+               std::vector<double>& apVertexSet)
 //----------------------------------------------
 {
-	// Clear the vertex set
-	apVertexSet.clear();
+    // Clear the vertex set
+    apVertexSet.clear();
 
-	// Cache the half length
-	RATIONAL_NUMBER half_length(aLength / 2.0);
+    // Cache the half length
+    RATIONAL_NUMBER half_length(aLength / 2.0);
 
-	// Find the 8 corners
+    // Find the 8 corners
 
-	// Top
-	VEC3 top_far_left(  aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_left( aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
-	VEC3 top_far_right( aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_right(aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
+    // Top
+    VEC3 top_far_left(aCentre.getX() - half_length,
+                      aCentre.getY() + half_length,
+                      aCentre.getZ() - half_length);
 
-	// Bottom
-	VEC3 bottom_far_left(  aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_left( aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
-	VEC3 bottom_far_right( aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_right(aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
+    VEC3 top_near_left(aCentre.getX() - half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() + half_length);
 
-	// Store the current vertex
-	VEC3 current_vertex;
+    VEC3 top_far_right(aCentre.getX() + half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() - half_length);
 
-	// Top face
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 top_near_right(aCentre.getX() + half_length,
+                        aCentre.getY() + half_length,
+                        aCentre.getZ() + half_length);
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Bottom
+    VEC3 bottom_far_left(aCentre.getX() - half_length,
+                         aCentre.getY() - half_length,
+                         aCentre.getZ() - half_length);
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 bottom_near_left(aCentre.getX() - half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() + half_length);
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 bottom_far_right(aCentre.getX() + half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() - half_length);
 
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 bottom_near_right(aCentre.getX() + half_length,
+                           aCentre.getY() - half_length,
+                           aCentre.getZ() + half_length);
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Store the current vertex
+    VEC3 current_vertex;
 
-	// Bottom face
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Top face
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Front face
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Bottom face
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Back face
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Front face
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Left face
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Back face
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Right face
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Left face
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    // Right face
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 }
 
 
 //---------------------------------------------------
 void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
-			   gVirtualXRay::VEC3 aCentre,
-			   std::vector<double>& apVertexSet,
-			   std::vector<unsigned char>& apIndexSet)
+               gVirtualXRay::VEC3 aCentre,
+               std::vector<double>& apVertexSet,
+               std::vector<unsigned char>& apIndexSet)
 //---------------------------------------------------
 {
-	// Clear the vertex set
-	apVertexSet.clear();
+    // Clear the vertex set
+    apVertexSet.clear();
 
-	// Clear the index set
-	apIndexSet.clear();
+    // Clear the index set
+    apIndexSet.clear();
 
-	// Cache the half length
-	RATIONAL_NUMBER half_length(aLength / 2.0);
+    // Cache the half length
+    RATIONAL_NUMBER half_length(aLength / 2.0);
 
-	// Find the 8 corners
+    // Find the 8 corners
 
-	// Top
-	VEC3 top_far_left(  aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_left( aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
-	VEC3 top_far_right( aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_right(aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
+    // Top
+    VEC3 top_far_left(aCentre.getX() - half_length,
+                      aCentre.getY() + half_length,
+                      aCentre.getZ() - half_length);
 
-	// Bottom
-	VEC3 bottom_far_left(  aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_left( aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
-	VEC3 bottom_far_right( aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_right(aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
+    VEC3 top_near_left(aCentre.getX() - half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() + half_length);
 
-	// Store vertices
-	apVertexSet.push_back(top_far_left.getX());
-	apVertexSet.push_back(top_far_left.getY());
-	apVertexSet.push_back(top_far_left.getZ());
+    VEC3 top_far_right(aCentre.getX() + half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() - half_length);
 
-	apVertexSet.push_back(top_near_left.getX());
-	apVertexSet.push_back(top_near_left.getY());
-	apVertexSet.push_back(top_near_left.getZ());
+    VEC3 top_near_right(aCentre.getX() + half_length,
+                        aCentre.getY() + half_length,
+                        aCentre.getZ() + half_length);
 
-	apVertexSet.push_back(top_far_right.getX());
-	apVertexSet.push_back(top_far_right.getY());
-	apVertexSet.push_back(top_far_right.getZ());
+    // Bottom
+    VEC3 bottom_far_left(aCentre.getX() - half_length,
+                         aCentre.getY() - half_length,
+                         aCentre.getZ() - half_length);
 
-	apVertexSet.push_back(top_near_right.getX());
-	apVertexSet.push_back(top_near_right.getY());
-	apVertexSet.push_back(top_near_right.getZ());
+    VEC3 bottom_near_left(aCentre.getX() - half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() + half_length);
 
-	apVertexSet.push_back(bottom_far_left.getX());
-	apVertexSet.push_back(bottom_far_left.getY());
-	apVertexSet.push_back(bottom_far_left.getZ());
+    VEC3 bottom_far_right(aCentre.getX() + half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() - half_length);
 
-	apVertexSet.push_back(bottom_near_left.getX());
-	apVertexSet.push_back(bottom_near_left.getY());
-	apVertexSet.push_back(bottom_near_left.getZ());
+    VEC3 bottom_near_right(aCentre.getX() + half_length,
+                           aCentre.getY() - half_length,
+                           aCentre.getZ() + half_length);
 
-	apVertexSet.push_back(bottom_far_right.getX());
-	apVertexSet.push_back(bottom_far_right.getY());
-	apVertexSet.push_back(bottom_far_right.getZ());
+    // Store vertices
+    apVertexSet.push_back(top_far_left.getX());
+    apVertexSet.push_back(top_far_left.getY());
+    apVertexSet.push_back(top_far_left.getZ());
 
-	apVertexSet.push_back(bottom_near_right.getX());
-	apVertexSet.push_back(bottom_near_right.getY());
-	apVertexSet.push_back(bottom_near_right.getZ());
+    apVertexSet.push_back(top_near_left.getX());
+    apVertexSet.push_back(top_near_left.getY());
+    apVertexSet.push_back(top_near_left.getZ());
 
-	// Store the current vertex
-	VEC3 current_vertex;
+    apVertexSet.push_back(top_far_right.getX());
+    apVertexSet.push_back(top_far_right.getY());
+    apVertexSet.push_back(top_far_right.getZ());
 
-	// Top face
-	apIndexSet.push_back(1);
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(0);
+    apVertexSet.push_back(top_near_right.getX());
+    apVertexSet.push_back(top_near_right.getY());
+    apVertexSet.push_back(top_near_right.getZ());
 
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(1);
-	apIndexSet.push_back(3);
+    apVertexSet.push_back(bottom_far_left.getX());
+    apVertexSet.push_back(bottom_far_left.getY());
+    apVertexSet.push_back(bottom_far_left.getZ());
 
-	// Bottom face
-	apIndexSet.push_back(6);
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(4);
+    apVertexSet.push_back(bottom_near_left.getX());
+    apVertexSet.push_back(bottom_near_left.getY());
+    apVertexSet.push_back(bottom_near_left.getZ());
 
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(6);
-	apIndexSet.push_back(7);
+    apVertexSet.push_back(bottom_far_right.getX());
+    apVertexSet.push_back(bottom_far_right.getY());
+    apVertexSet.push_back(bottom_far_right.getZ());
 
-	// Front face
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(3);
-	apIndexSet.push_back(1);
+    apVertexSet.push_back(bottom_near_right.getX());
+    apVertexSet.push_back(bottom_near_right.getY());
+    apVertexSet.push_back(bottom_near_right.getZ());
 
-	apIndexSet.push_back(3);
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(7);
+    // Store the current vertex
+    VEC3 current_vertex;
 
-	// Back face
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(4);
-	apIndexSet.push_back(0);
+    // Top face
+    apIndexSet.push_back(1);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(0);
 
-	apIndexSet.push_back(4);
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(6);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(1);
+    apIndexSet.push_back(3);
 
-	// Left face
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(0);
-	apIndexSet.push_back(4);
+    // Bottom face
+    apIndexSet.push_back(6);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(4);
 
-	apIndexSet.push_back(0);
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(1);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(6);
+    apIndexSet.push_back(7);
 
-	// Right face
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(7);
-	apIndexSet.push_back(6);
+    // Front face
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(3);
+    apIndexSet.push_back(1);
 
-	apIndexSet.push_back(7);
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(3);
+    apIndexSet.push_back(3);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(7);
+
+    // Back face
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(4);
+    apIndexSet.push_back(0);
+
+    apIndexSet.push_back(4);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(6);
+
+    // Left face
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(0);
+    apIndexSet.push_back(4);
+
+    apIndexSet.push_back(0);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(1);
+
+    // Right face
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(7);
+    apIndexSet.push_back(6);
+
+    apIndexSet.push_back(7);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(3);
 }
 
 
-//----------------------------------------------
+//---------------------------------------------
 void buildCube(RATIONAL_NUMBER aLength,
-			   VEC3 aCentre,
-			   std::vector<float>& apVertexSet)
-//----------------------------------------------
+               VEC3 aCentre,
+               std::vector<float>& apVertexSet)
+//---------------------------------------------
 {
-	// Clear the vertex set
-	apVertexSet.clear();
+    // Clear the vertex set
+    apVertexSet.clear();
 
-	// Cache the half length
-	RATIONAL_NUMBER half_length(aLength / 2.0);
+    // Cache the half length
+    RATIONAL_NUMBER half_length(aLength / 2.0);
 
-	// Find the 8 corners
+    // Find the 8 corners
 
-	// Top
-	VEC3 top_far_left(  aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_left( aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
-	VEC3 top_far_right( aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_right(aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
+    // Top
+    VEC3 top_far_left(aCentre.getX() - half_length,
+                      aCentre.getY() + half_length,
+                      aCentre.getZ() - half_length);
 
-	// Bottom
-	VEC3 bottom_far_left(  aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_left( aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
-	VEC3 bottom_far_right( aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_right(aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
+    VEC3 top_near_left(aCentre.getX() - half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() + half_length);
 
-	// Store the current vertex
-	VEC3 current_vertex;
+    VEC3 top_far_right(aCentre.getX() + half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() - half_length);
 
-	// Top face
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 top_near_right(aCentre.getX() + half_length,
+                        aCentre.getY() + half_length,
+                        aCentre.getZ() + half_length);
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Bottom
+    VEC3 bottom_far_left(aCentre.getX() - half_length,
+                         aCentre.getY() - half_length,
+                         aCentre.getZ() - half_length);
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 bottom_near_left(aCentre.getX() - half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() + half_length);
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 bottom_far_right(aCentre.getX() + half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() - half_length);
 
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    VEC3 bottom_near_right(aCentre.getX() + half_length,
+                           aCentre.getY() - half_length,
+                           aCentre.getZ() + half_length);
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Store the current vertex
+    VEC3 current_vertex;
 
-	// Bottom face
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Top face
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Front face
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Bottom face
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Back face
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Front face
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Left face
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Back face
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_left;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	// Right face
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    // Left face
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = bottom_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_far_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_far_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = bottom_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 
-	current_vertex = top_near_right;
-	apVertexSet.push_back(current_vertex.getX());
-	apVertexSet.push_back(current_vertex.getY());
-	apVertexSet.push_back(current_vertex.getZ());
+    current_vertex = top_near_left;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    // Right face
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = bottom_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = bottom_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = top_far_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
+
+    current_vertex = top_near_right;
+    apVertexSet.push_back(current_vertex.getX());
+    apVertexSet.push_back(current_vertex.getY());
+    apVertexSet.push_back(current_vertex.getZ());
 }
 
 
 //---------------------------------------------------
 void buildCube(gVirtualXRay::RATIONAL_NUMBER aLength,
-			   gVirtualXRay::VEC3 aCentre,
-			   std::vector<float>& apVertexSet,
-			   std::vector<unsigned char>& apIndexSet)
+               gVirtualXRay::VEC3 aCentre,
+               std::vector<float>& apVertexSet,
+               std::vector<unsigned char>& apIndexSet)
 //---------------------------------------------------
 {
-	// Clear the vertex set
-	apVertexSet.clear();
+    // Clear the vertex set
+    apVertexSet.clear();
 
-	// Clear the index set
-	apIndexSet.clear();
+    // Clear the index set
+    apIndexSet.clear();
 
-	// Cache the half length
-	RATIONAL_NUMBER half_length(aLength / 2.0);
+    // Cache the half length
+    RATIONAL_NUMBER half_length(aLength / 2.0);
 
-	// Find the 8 corners
+    // Find the 8 corners
 
-	// Top
-	VEC3 top_far_left(  aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_left( aCentre.getX() - half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
-	VEC3 top_far_right( aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() - half_length);
-	VEC3 top_near_right(aCentre.getX() + half_length, aCentre.getY() + half_length, aCentre.getZ() + half_length);
+    // Top
+    VEC3 top_far_left(aCentre.getX() - half_length,
+                      aCentre.getY() + half_length,
+                      aCentre.getZ() - half_length);
 
-	// Bottom
-	VEC3 bottom_far_left(  aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_left( aCentre.getX() - half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
-	VEC3 bottom_far_right( aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() - half_length);
-	VEC3 bottom_near_right(aCentre.getX() + half_length, aCentre.getY() - half_length, aCentre.getZ() + half_length);
+    VEC3 top_near_left(aCentre.getX() - half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() + half_length);
 
-	// Store vertices
-	apVertexSet.push_back(top_far_left.getX());
-	apVertexSet.push_back(top_far_left.getY());
-	apVertexSet.push_back(top_far_left.getZ());
+    VEC3 top_far_right(aCentre.getX() + half_length,
+                       aCentre.getY() + half_length,
+                       aCentre.getZ() - half_length);
 
-	apVertexSet.push_back(top_near_left.getX());
-	apVertexSet.push_back(top_near_left.getY());
-	apVertexSet.push_back(top_near_left.getZ());
+    VEC3 top_near_right(aCentre.getX() + half_length,
+                        aCentre.getY() + half_length,
+                        aCentre.getZ() + half_length);
 
-	apVertexSet.push_back(top_far_right.getX());
-	apVertexSet.push_back(top_far_right.getY());
-	apVertexSet.push_back(top_far_right.getZ());
+    // Bottom
+    VEC3 bottom_far_left(aCentre.getX() - half_length,
+                         aCentre.getY() - half_length,
+                         aCentre.getZ() - half_length);
 
-	apVertexSet.push_back(top_near_right.getX());
-	apVertexSet.push_back(top_near_right.getY());
-	apVertexSet.push_back(top_near_right.getZ());
+    VEC3 bottom_near_left(aCentre.getX() - half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() + half_length);
 
-	apVertexSet.push_back(bottom_far_left.getX());
-	apVertexSet.push_back(bottom_far_left.getY());
-	apVertexSet.push_back(bottom_far_left.getZ());
+    VEC3 bottom_far_right(aCentre.getX() + half_length,
+                          aCentre.getY() - half_length,
+                          aCentre.getZ() - half_length);
 
-	apVertexSet.push_back(bottom_near_left.getX());
-	apVertexSet.push_back(bottom_near_left.getY());
-	apVertexSet.push_back(bottom_near_left.getZ());
+    VEC3 bottom_near_right(aCentre.getX() + half_length,
+                           aCentre.getY() - half_length,
+                           aCentre.getZ() + half_length);
 
-	apVertexSet.push_back(bottom_far_right.getX());
-	apVertexSet.push_back(bottom_far_right.getY());
-	apVertexSet.push_back(bottom_far_right.getZ());
+    // Store vertices
+    apVertexSet.push_back(top_far_left.getX());
+    apVertexSet.push_back(top_far_left.getY());
+    apVertexSet.push_back(top_far_left.getZ());
 
-	apVertexSet.push_back(bottom_near_right.getX());
-	apVertexSet.push_back(bottom_near_right.getY());
-	apVertexSet.push_back(bottom_near_right.getZ());
+    apVertexSet.push_back(top_near_left.getX());
+    apVertexSet.push_back(top_near_left.getY());
+    apVertexSet.push_back(top_near_left.getZ());
 
-	// Store the current vertex
-	VEC3 current_vertex;
+    apVertexSet.push_back(top_far_right.getX());
+    apVertexSet.push_back(top_far_right.getY());
+    apVertexSet.push_back(top_far_right.getZ());
 
-	// Top face
-	apIndexSet.push_back(1);
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(0);
+    apVertexSet.push_back(top_near_right.getX());
+    apVertexSet.push_back(top_near_right.getY());
+    apVertexSet.push_back(top_near_right.getZ());
 
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(1);
-	apIndexSet.push_back(3);
+    apVertexSet.push_back(bottom_far_left.getX());
+    apVertexSet.push_back(bottom_far_left.getY());
+    apVertexSet.push_back(bottom_far_left.getZ());
 
-	// Bottom face
-	apIndexSet.push_back(6);
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(4);
+    apVertexSet.push_back(bottom_near_left.getX());
+    apVertexSet.push_back(bottom_near_left.getY());
+    apVertexSet.push_back(bottom_near_left.getZ());
 
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(6);
-	apIndexSet.push_back(7);
+    apVertexSet.push_back(bottom_far_right.getX());
+    apVertexSet.push_back(bottom_far_right.getY());
+    apVertexSet.push_back(bottom_far_right.getZ());
 
-	// Front face
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(3);
-	apIndexSet.push_back(1);
+    apVertexSet.push_back(bottom_near_right.getX());
+    apVertexSet.push_back(bottom_near_right.getY());
+    apVertexSet.push_back(bottom_near_right.getZ());
 
-	apIndexSet.push_back(3);
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(7);
+    // Store the current vertex
+    VEC3 current_vertex;
 
-	// Back face
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(4);
-	apIndexSet.push_back(0);
+    // Top face
+    apIndexSet.push_back(1);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(0);
 
-	apIndexSet.push_back(4);
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(6);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(1);
+    apIndexSet.push_back(3);
 
-	// Left face
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(0);
-	apIndexSet.push_back(4);
+    // Bottom face
+    apIndexSet.push_back(6);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(4);
 
-	apIndexSet.push_back(0);
-	apIndexSet.push_back(5);
-	apIndexSet.push_back(1);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(6);
+    apIndexSet.push_back(7);
 
-	// Right face
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(7);
-	apIndexSet.push_back(6);
+    // Front face
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(3);
+    apIndexSet.push_back(1);
 
-	apIndexSet.push_back(7);
-	apIndexSet.push_back(2);
-	apIndexSet.push_back(3);
+    apIndexSet.push_back(3);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(7);
+
+    // Back face
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(4);
+    apIndexSet.push_back(0);
+
+    apIndexSet.push_back(4);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(6);
+
+    // Left face
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(0);
+    apIndexSet.push_back(4);
+
+    apIndexSet.push_back(0);
+    apIndexSet.push_back(5);
+    apIndexSet.push_back(1);
+
+    // Right face
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(7);
+    apIndexSet.push_back(6);
+
+    apIndexSet.push_back(7);
+    apIndexSet.push_back(2);
+    apIndexSet.push_back(3);
 }
