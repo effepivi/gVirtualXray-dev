@@ -149,13 +149,13 @@ void DepthMap::render(std::vector<PolygonMesh*>& mesh_set,
 	// Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Enable back face culling
+	// Enable front face culling (to avoid shadow acne)
 	pushEnableDisableState(GL_CULL_FACE);
 	pushEnableDisableState(GL_DEPTH_TEST);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    glCullFace(GL_FRONT);
 
 	// Enable the shader
 	pushShaderProgram();

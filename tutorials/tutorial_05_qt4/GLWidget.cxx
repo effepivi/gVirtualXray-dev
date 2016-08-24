@@ -103,7 +103,7 @@ GLWidget::GLWidget(QWidget *parent):
     QGLWidget(parent),
 	m_blue_cube_mesh(0.5 * cm),
 	m_red_cube_mesh(1. * cm),
-	m_light_direction(-1, 3, 1)
+	m_light_direction(-1, 3, -0.5)
 //----------------------------------
 {
 }

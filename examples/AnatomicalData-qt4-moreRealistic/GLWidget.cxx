@@ -829,8 +829,8 @@ void GLWidget::render()
         GLint shader_id(m_display_shader.getProgramHandle());
 
         // Define the light colours here
-        GLfloat light_global_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-        GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+        GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+        GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
         GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 

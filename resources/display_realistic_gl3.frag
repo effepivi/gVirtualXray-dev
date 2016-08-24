@@ -102,13 +102,6 @@ uniform sampler2D g_bump_map;
 uniform sampler2D g_colour_texture;
 uniform mat3 g_normal_matrix;
 
-//******************************************************************************
-//	constant variables
-//******************************************************************************
-//BIAS to reduce shadow acne
-const float MAX_BIAS=0.005;
-const float BIAS_RATE=0.005;
-
 //-------------
 void main(void)
 //-------------
@@ -128,19 +121,14 @@ void main(void)
     
     	//cosinus of the light direction and the normal vector
     	float cosLightNormal = max(0., dot(light_direction, normal_vector));
-    	
-    	//shadow bias to reduce shadow acne
-    	float bias = BIAS_RATE * tan(acos(cosLightNormal));
-		bias = clamp(bias, 0,MAX_BIAS)/g_shadow_coord.w;
-    
+    	  
 		//change the shadow coordinates. They have to be in [0,1] for texture samlping
 		vec3 shadow_changed_coord = g_shadow_coord.xyz/g_shadow_coord.w;
 		shadow_changed_coord = shadow_changed_coord*0.5 + 0.5;
 		    
-    	//visibility equals 0.3 if the fragment if in the shadow and 1 if not.
-    	float visibility = texture(g_shadow_map, vec3(shadow_changed_coord.xy, shadow_changed_coord.z-bias));
+    	//visibility equals 0.3 if the fragment if in the shadow and 1 if not (if it is on the back of the face, it is in the shadow).
+       	float visibility = texture(g_shadow_map, vec3(shadow_changed_coord.xy, shadow_changed_coord.z))*cosLightNormal;
 		visibility = visibility*0.7+0.3;
-	    //visibility = 1.;
 	      
 	  	vec3 global_ambient;
 	   	vec3 ambient;
@@ -150,7 +138,7 @@ void main(void)
 	    {
 	    	global_ambient =vec3(light_global_ambient*texture( g_colour_texture,g_texture_coordinates));
 	   		ambient        = vec3(light_ambient * texture( g_colour_texture, g_texture_coordinates ));
-	    	diffuse        =  vec3(texture( g_colour_texture, g_texture_coordinates)*light_diffuse)* cosLightNormal;
+	    	diffuse        =  vec3(texture( g_colour_texture, g_texture_coordinates)*light_diffuse) * cosLightNormal;
 	    }
 	    else
 	    {
