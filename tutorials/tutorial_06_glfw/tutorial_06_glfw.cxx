@@ -120,19 +120,11 @@ GLFWwindow* g_p_window_id(0);
 // Shader program used to display the 3D scene
 Shader g_display_shader;
 
-// 3D objects as VAOs and VBOs
-PolygonMesh g_cube_1;
-PolygonMesh g_cube_2;
+// 3D object as VAO and VBO
 PolygonMesh g_final_polygon_mesh;
 
 // Transformation matrices
 MATRIX4 g_object_rotation_matrix;
-
-// Geometric data
-vector<double> g_p_vertex_set_1;
-vector<unsigned char> g_p_index_set_1;
-vector<double> g_p_vertex_set_2;
-vector<unsigned char> g_p_index_set_2;
 
 // Control the zoom
 RATIONAL_NUMBER g_zoom(50.0 * cm);
@@ -370,26 +362,37 @@ void load3DObjects()
     RATIONAL_NUMBER length_1( 5.0 * cm);
     RATIONAL_NUMBER length_2(10.0 * cm);
 
+    // Geometric data
+    vector<double> p_vertex_set_1;
+    vector<unsigned char> p_index_set_1;
+
+    vector<double> p_vertex_set_2;
+    vector<unsigned char> p_index_set_2;
+
     // Create the cube using vertex data and index data
-    buildCube(length_1, cube_centre1, g_p_vertex_set_1, g_p_index_set_1);
+    buildCube(length_1, cube_centre1, p_vertex_set_1, p_index_set_1);
 
     // Create the cube using vertex data only
-    buildCube(length_2, cube_centre2, g_p_vertex_set_2, g_p_index_set_2);
+    buildCube(length_2, cube_centre2, p_vertex_set_2, p_index_set_2);
+
+    // 3D objects as VAOs and VBOs
+    PolygonMesh cube_1;
+    PolygonMesh cube_2;
 
     // Set geometry (using VAOs and VBOs)
-    g_cube_1.setExternalData(GL_TRIANGLES,
-            &g_p_vertex_set_1,
-            &g_p_index_set_1,
+    cube_1.setExternalData(GL_TRIANGLES,
+            &p_vertex_set_1,
+            &p_index_set_1,
             true,
             GL_STATIC_DRAW);
 
-    g_cube_2.setExternalData(GL_TRIANGLES,
-            &g_p_vertex_set_2,
-            &g_p_index_set_2,
+    cube_2.setExternalData(GL_TRIANGLES,
+            &p_vertex_set_2,
+            &p_index_set_2,
             true,
             GL_STATIC_DRAW);
 
-    g_final_polygon_mesh = g_cube_1 + g_cube_2;
+    g_final_polygon_mesh = cube_1 + cube_2;
 }
 
 

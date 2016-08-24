@@ -18,8 +18,6 @@ FILES=`ls ../../include/gVirtualXRay/*.h \
           ../../validation/shaders/*.vert \
           ../../validation/shaders/*.frag `
 
-FILES=`ls ../../include/gVirtualXRay/PolygonMesh.* ../../src/Graphics/PolygonMesh.cxx ../../tutorials/tutorial_06_glfw/*.h  ../../tutorials/tutorial_06_glfw/*.inl ../../tutorials/tutorial_06_glfw/*.cxx`
-
 for i in $FILES
 do
     echo $i >>filelist.txt
