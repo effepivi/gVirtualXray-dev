@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,39 +35,39 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  ********************************************************************************
  *
- *	@file		display_gl2.vert
+ *  @file       display_gl2.vert
  *
- *	@brief		Vertex shader to display 3D objects with Phong shading.
+ *  @brief      Vertex shader to display 3D objects with Phong shading.
  *
- *	@version	1.0
+ *  @version    1.0
  *
- *	@date		31/12/2013
+ *  @date       31/12/2013
  *
- *	@author		Dr Franck P. Vidal
+ *  @author     Dr Franck P. Vidal
  *
- *	@section	License
- *				BSD 3-Clause License.
+ *  @section    License
+ *              BSD 3-Clause License.
  *
- *				For details on use and redistribution please refer
- *				to http://opensource.org/licenses/BSD-3-Clause
+ *              For details on use and redistribution please refer
+ *              to http://opensource.org/licenses/BSD-3-Clause
  *
- *	@section	Copyright
- *				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
- *				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
- *				BSD 3-Clause License
+ *  @section    Copyright
+ *              (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+ *              http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+ *              BSD 3-Clause License
  *
  ********************************************************************************
  */
 
 
 //******************************************************************************
-//	OpenGL 2.0
+//  OpenGL 2.0
 //******************************************************************************
 #version 110
 
 
 //******************************************************************************
-//	Varying variables
+//  Varying variables
 //******************************************************************************
 varying vec3 g_texture_coordinates;
 varying vec3 g_normal;
@@ -75,7 +75,7 @@ varying vec4 g_object_position;
 
 
 //******************************************************************************
-//	Uniform variables
+//  Uniform variables
 //******************************************************************************
 uniform mat4 g_projection_matrix;
 uniform mat4 g_modelview_matrix;
@@ -86,11 +86,11 @@ uniform mat3 g_normal_matrix;
 void main(void)
 //-------------
 {
-	g_object_position = g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);
-	g_normal = normalize(g_normal_matrix * gl_Normal);
-	
+    g_object_position = g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);
+    g_normal = normalize(g_normal_matrix * gl_Normal);
+
     g_texture_coordinates = gl_MultiTexCoord0.xyz;
 
     //gl_FrontColor = gl_Color;
-	gl_Position = g_projection_matrix * g_object_position;
+    gl_Position = g_projection_matrix * g_object_position;
 }
