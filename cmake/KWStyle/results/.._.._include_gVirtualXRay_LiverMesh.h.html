@@ -264,73 +264,98 @@
 <tr>
 <td height="1">47</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//--------------------------------------------------------------------------<font></font></td>
-</tr>
-<tr bgcolor="#FFCC33">
-<td height="1">48</td>
-<td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	LiverMesh();</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">/*</font></font></td>
 </tr>
 <tr>
-<td height="1">49</td>
+<td height="1">48</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;@param&nbsp;texture_size:&nbsp;size&nbsp;of&nbsp;the&nbsp;side&nbsp;of&nbsp;the&nbsp;buffer&nbsp;(default:&nbsp;2048)</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">49</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;@param&nbsp;optimize_threshold:&nbsp;To&nbsp;avoid&nbsp;computing&nbsp;optimized&nbsp;texture&nbsp;coordinates</font></font></td>
 </tr>
 <tr bgcolor="#FFCC33">
 <td height="1">50</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//--------------------------------------------------------------------------<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;	when&nbsp;the&nbsp;mesh&nbsp;is&nbsp;too&nbsp;big&nbsp;(default:&nbsp;100&nbsp;000)</font></font></td>
 </tr>
-<tr bgcolor="#FFCC33">
+<tr bgcolor="#FF99CC">
 <td height="1">51</td>
-<td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">///&nbsp;Destructor<font></font></td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*****/</font></font></font></td>
 </tr>
-<tr bgcolor="#FFCC33">
+<tr>
 <td height="1">52</td>
-<td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//--------------------------------------------------------------------------<font></font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//--------------------------------------------------------------------------<font></font></td>
 </tr>
 <tr bgcolor="#FFCC33">
 <td height="1">53</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	virtual&nbsp;~LiverMesh();</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	LiverMesh(int&nbsp;texture_size&nbsp;=&nbsp;2048,&nbsp;unsigned&nbsp;int&nbsp;optimize_threshold&nbsp;=&nbsp;100000);</font></td>
 </tr>
 <tr>
 <td height="1">54</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
-<tr bgcolor="#FF99CC">
+<tr bgcolor="#FFCC33">
 <td height="1">55</td>
-<td height="1">IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">};</font></td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//--------------------------------------------------------------------------<font></font></td>
 </tr>
-<tr>
+<tr bgcolor="#FFCC33">
 <td height="1">56</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">///&nbsp;Destructor<font></font></td>
 </tr>
-<tr bgcolor="#FF99CC">
+<tr bgcolor="#FFCC33">
 <td height="1">57</td>
-<td height="1">IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}&nbsp;<font color="#009933">//&nbsp;namespace&nbsp;gVirtualXRay<font></font></td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//--------------------------------------------------------------------------<font></font></td>
 </tr>
-<tr>
+<tr bgcolor="#FFCC33">
 <td height="1">58</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	virtual&nbsp;~LiverMesh();</font></td>
 </tr>
 <tr>
 <td height="1">59</td>
 <td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">60</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">};</font></td>
+</tr>
+<tr>
+<td height="1">61</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">62</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}&nbsp;<font color="#009933">//&nbsp;namespace&nbsp;gVirtualXRay<font></font></td>
+</tr>
+<tr>
+<td height="1">63</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">64</td>
+<td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">#endif&nbsp;<font color="#009933">//&nbsp;LIVER_MESH_H<font></font></td>
 </tr>
 <tr>
-<td height="1">60</td>
+<td height="1">65</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 </table>
-<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Tuesday August,23 at 10:46:52PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Wednesday August,24 at 03:21:50PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
 </td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>

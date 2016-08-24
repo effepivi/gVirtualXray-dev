@@ -369,12 +369,12 @@
 <tr>
 <td height="1">68</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_CONFIG_H</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifdef&nbsp;HAS_GLEW</font></td>
 </tr>
 <tr>
 <td height="1">69</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/gVirtualXRayConfig.h"</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;GL/glew.h&gt;</font></td>
 </tr>
 <tr>
 <td height="1">70</td>
@@ -389,12 +389,12 @@
 <tr>
 <td height="1">72</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_RENDERER_H</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_CONFIG_H</font></td>
 </tr>
 <tr>
 <td height="1">73</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/XRayRenderer.h"</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/gVirtualXRayConfig.h"</font></td>
 </tr>
 <tr>
 <td height="1">74</td>
@@ -409,12 +409,12 @@
 <tr>
 <td height="1">76</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_INVALID_INTERNAL_FORMAT_EXCEPTION_H</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_RENDERER_H</font></td>
 </tr>
 <tr>
 <td height="1">77</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/InvalidInternalFormalException.h"</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/XRayRenderer.h"</font></td>
 </tr>
 <tr>
 <td height="1">78</td>
@@ -429,12 +429,12 @@
 <tr>
 <td height="1">80</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_INVALID_IMAGE_SIZE_EXCEPTION_H</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_INVALID_INTERNAL_FORMAT_EXCEPTION_H</font></td>
 </tr>
 <tr>
 <td height="1">81</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/InvalidImageSizeException.h"</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/InvalidInternalFormalException.h"</font></td>
 </tr>
 <tr>
 <td height="1">82</td>
@@ -449,12 +449,12 @@
 <tr>
 <td height="1">84</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_NO_DETECTOR_EXCEPTION_H</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_INVALID_IMAGE_SIZE_EXCEPTION_H</font></td>
 </tr>
 <tr>
 <td height="1">85</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/NoDetectorException.h"</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/InvalidImageSizeException.h"</font></td>
 </tr>
 <tr>
 <td height="1">86</td>
@@ -469,12 +469,12 @@
 <tr>
 <td height="1">88</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_NO_BEAM_EXCEPTION_H</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_NO_DETECTOR_EXCEPTION_H</font></td>
 </tr>
 <tr>
 <td height="1">89</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/NoBeamException.h"</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/NoDetectorException.h"</font></td>
 </tr>
 <tr>
 <td height="1">90</td>
@@ -489,573 +489,593 @@
 <tr>
 <td height="1">92</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_XRAY_NO_BEAM_EXCEPTION_H</font></td>
 </tr>
 <tr>
 <td height="1">93</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/NoBeamException.h"</font></td>
 </tr>
 <tr>
 <td height="1">94</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Name&nbsp;space<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#endif</font></td>
 </tr>
 <tr>
 <td height="1">95</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">96</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">using&nbsp;namespace&nbsp;gVirtualXRay;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">97</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//using&nbsp;namespace&nbsp;std;<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
 </tr>
 <tr>
 <td height="1">98</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Name&nbsp;space<font></font></td>
 </tr>
 <tr>
 <td height="1">99</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
 </tr>
 <tr>
 <td height="1">100</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(InvalidInternalFormal)</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">using&nbsp;namespace&nbsp;gVirtualXRay;</font></td>
 </tr>
-<tr bgcolor="#99CCCC">
+<tr>
 <td height="1">101</td>
-<td height="1">FRG</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//using&nbsp;namespace&nbsp;std;<font></font></td>
 </tr>
 <tr>
 <td height="1">102</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">103</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">104</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayDetector&nbsp;g_xray_detector;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(InvalidInternalFormal)</font></td>
 </tr>
-<tr>
+<tr bgcolor="#99CCCC">
 <td height="1">105</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayBeam&nbsp;g_xray_beam;</font></td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr>
 <td height="1">106</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
 </tr>
 <tr>
 <td height="1">107</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
 </tr>
 <tr>
 <td height="1">108</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayDetector&nbsp;g_xray_detector;</font></td>
 </tr>
 <tr>
 <td height="1">109</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayBeam&nbsp;g_xray_beam;</font></td>
 </tr>
 <tr>
 <td height="1">110</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam),&nbsp;InvalidInternalFormalException);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
 </tr>
 <tr>
 <td height="1">111</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
 </tr>
 <tr>
 <td height="1">112</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB,</font></td>
 </tr>
 <tr>
 <td height="1">113</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
 </tr>
 <tr>
 <td height="1">114</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(InvalidaImageSize)</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam),&nbsp;InvalidInternalFormalException);</font></td>
 </tr>
-<tr bgcolor="#99CCCC">
+<tr>
 <td height="1">115</td>
-<td height="1">FRG</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
 <td height="1">116</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">117</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">118</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayDetector&nbsp;g_xray_detector;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(InvalidaImageSize)</font></td>
 </tr>
-<tr>
+<tr bgcolor="#99CCCC">
 <td height="1">119</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayBeam&nbsp;g_xray_beam;</font></td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr>
 <td height="1">120</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
 </tr>
 <tr>
 <td height="1">121</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
 </tr>
 <tr>
 <td height="1">122</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayDetector&nbsp;g_xray_detector;</font></td>
 </tr>
 <tr>
 <td height="1">123</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayBeam&nbsp;g_xray_beam;</font></td>
 </tr>
 <tr>
 <td height="1">124</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam),&nbsp;InvalidImageSizeException);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">125</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
 </tr>
 <tr>
 <td height="1">126</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
 </tr>
 <tr>
 <td height="1">127</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
 </tr>
 <tr>
 <td height="1">128</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(NoDetector)</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam),&nbsp;InvalidImageSizeException);</font></td>
 </tr>
-<tr bgcolor="#99CCCC">
+<tr>
 <td height="1">129</td>
-<td height="1">FRG</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
 <td height="1">130</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">131</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">132</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayBeam&nbsp;g_xray_beam;</font></td>
-</tr>
-<tr>
-<td height="1">133</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
-</tr>
-<tr>
-<td height="1">134</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
-</tr>
-<tr>
-<td height="1">135</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
-</tr>
-<tr>
-<td height="1">136</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,</font></td>
-</tr>
-<tr>
-<td height="1">137</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam),&nbsp;NoDetectorException);</font></td>
-</tr>
-<tr>
-<td height="1">138</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
-</tr>
-<tr>
-<td height="1">139</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">140</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">141</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(NoBeam)</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(NoDetector)</font></td>
 </tr>
 <tr bgcolor="#99CCCC">
-<td height="1">142</td>
+<td height="1">133</td>
 <td height="1">FRG</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr>
-<td height="1">143</td>
+<td height="1">134</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
 </tr>
 <tr>
-<td height="1">144</td>
+<td height="1">135</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
 </tr>
 <tr>
-<td height="1">145</td>
+<td height="1">136</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayDetector&nbsp;g_xray_detector;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayBeam&nbsp;g_xray_beam;</font></td>
 </tr>
 <tr>
-<td height="1">146</td>
+<td height="1">137</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">138</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
 </tr>
 <tr>
-<td height="1">147</td>
+<td height="1">139</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
 </tr>
 <tr>
-<td height="1">148</td>
+<td height="1">140</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,</font></td>
 </tr>
 <tr>
-<td height="1">149</td>
+<td height="1">141</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0),&nbsp;NoBeamException);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam),&nbsp;NoDetectorException);</font></td>
 </tr>
 <tr>
-<td height="1">150</td>
+<td height="1">142</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
-<td height="1">151</td>
+<td height="1">143</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
-<td height="1">152</td>
+<td height="1">144</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
-<tr bgcolor="#6666CC">
+<tr>
+<td height="1">145</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(NoBeam)</font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">146</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">147</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
+</tr>
+<tr>
+<td height="1">148</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></td>
+</tr>
+<tr>
+<td height="1">149</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;XRayDetector&nbsp;g_xray_detector;</font></td>
+</tr>
+<tr>
+<td height="1">150</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_THROW(g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></td>
+</tr>
+<tr>
+<td height="1">151</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
+</tr>
+<tr>
+<td height="1">152</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
+</tr>
+<tr>
 <td height="1">153</td>
-<td height="1">EML</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0),&nbsp;NoBeamException);</font></td>
 </tr>
-<tr bgcolor="#6666CC">
+<tr>
 <td height="1">154</td>
-<td height="1">EML</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
-<tr bgcolor="#6666CC">
+<tr>
 <td height="1">155</td>
-<td height="1">EML</td>
+<td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">156</td>
 <td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#6666CC">
+<td height="1">157</td>
+<td height="1">EML</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#6666CC">
+<td height="1">158</td>
+<td height="1">EML</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#6666CC">
+<td height="1">159</td>
+<td height="1">EML</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">160</td>
+<td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(AtomicNumber)</font></td>
 </tr>
 <tr bgcolor="#99CCCC">
-<td height="1">157</td>
+<td height="1">161</td>
 <td height="1">FRG</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
-<td height="1">158</td>
+<td height="1">162</td>
 <td height="1">IND</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">***<font color="#009933">/*&nbsp;XRayRenderer&nbsp;g_xray_renderer;</font></font></td>
 </tr>
 <tr>
-<td height="1">159</td>
+<td height="1">163</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
 </tr>
 <tr bgcolor="#FFCC33">
-<td height="1">160</td>
+<td height="1">164</td>
 <td height="1">TAB</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">	<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
 </tr>
 <tr>
-<td height="1">161</td>
+<td height="1">165</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_renderer.initialise(XRayRenderer::OPENGL,</font></font></td>
 </tr>
 <tr>
-<td height="1">162</td>
+<td height="1">166</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></font></td>
 </tr>
 <tr>
-<td height="1">163</td>
+<td height="1">167</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,</font></font></td>
 </tr>
 <tr>
-<td height="1">164</td>
+<td height="1">168</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0);</font></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
-<td height="1">165</td>
+<td height="1">169</td>
 <td height="1">IND</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
 </tr>
 <tr>
-<td height="1">166</td>
+<td height="1">170</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_EQUAL(4,&nbsp;2&nbsp;*&nbsp;2);</font></td>
-</tr>
-<tr>
-<td height="1">167</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
-</tr>
-<tr>
-<td height="1">168</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">169</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(FailTest)</font></td>
-</tr>
-<tr bgcolor="#99CCCC">
-<td height="1">170</td>
-<td height="1">FRG</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr>
 <td height="1">171</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_EQUAL(4,&nbsp;2&nbsp;*&nbsp;2);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
 <td height="1">172</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">173</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(FailTest)</font></td>
 </tr>
-<tr>
+<tr bgcolor="#99CCCC">
 <td height="1">174</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">int&nbsp;add(&nbsp;int&nbsp;i,&nbsp;int&nbsp;j&nbsp;)&nbsp;{&nbsp;return&nbsp;i+j;&nbsp;}</font></td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr>
 <td height="1">175</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_EQUAL(4,&nbsp;2&nbsp;*&nbsp;2);</font></td>
 </tr>
 <tr>
 <td height="1">176</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(&nbsp;my_test&nbsp;)</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
-<tr bgcolor="#99CCCC">
+<tr>
 <td height="1">177</td>
-<td height="1">FRG</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">178</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;seven&nbsp;ways&nbsp;to&nbsp;detect&nbsp;and&nbsp;report&nbsp;the&nbsp;same&nbsp;error:<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">int&nbsp;add(&nbsp;int&nbsp;i,&nbsp;int&nbsp;j&nbsp;)&nbsp;{&nbsp;return&nbsp;i+j;&nbsp;}</font></td>
 </tr>
 <tr>
 <td height="1">179</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;==&nbsp;4&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#1&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
 <td height="1">180</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">181</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_REQUIRE(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;==&nbsp;4&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#2&nbsp;throws&nbsp;on&nbsp;error<font></font></td>
-</tr>
-<tr>
-<td height="1">182</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">183</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;!=&nbsp;4&nbsp;)</font></td>
-</tr>
-<tr>
-<td height="1">184</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BOOST_ERROR(&nbsp;"Ouch..."&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#3&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
-</tr>
-<tr>
-<td height="1">185</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">186</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;!=&nbsp;4&nbsp;)</font></td>
-</tr>
-<tr>
-<td height="1">187</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BOOST_FAIL(&nbsp;"Ouch..."&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#4&nbsp;throws&nbsp;on&nbsp;error<font></font></td>
-</tr>
-<tr>
-<td height="1">188</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">189</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;!=&nbsp;4&nbsp;)&nbsp;throw&nbsp;"Ouch...";&nbsp;<font color="#009933">//&nbsp;#5&nbsp;throws&nbsp;on&nbsp;error<font></font></td>
-</tr>
-<tr>
-<td height="1">190</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">191</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_MESSAGE(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;==&nbsp;4,&nbsp;&nbsp;<font color="#009933">//&nbsp;#6&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
-</tr>
-<tr>
-<td height="1">192</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"add(..)&nbsp;result:&nbsp;"&nbsp;&lt;&lt;&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;);</font></td>
-</tr>
-<tr>
-<td height="1">193</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr bgcolor="#FFCC33">
-<td height="1">194</td>
-<td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_EQUAL(&nbsp;add(&nbsp;2,2&nbsp;),&nbsp;4&nbsp;);	&nbsp;&nbsp;<font color="#009933">//&nbsp;#7&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
-</tr>
-<tr>
-<td height="1">195</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
-</tr>
-<tr>
-<td height="1">196</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
-</tr>
-<tr>
-<td height="1">197</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(testMissingServer)</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(&nbsp;my_test&nbsp;)</font></td>
 </tr>
 <tr bgcolor="#99CCCC">
-<td height="1">198</td>
+<td height="1">181</td>
 <td height="1">FRG</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
 </tr>
 <tr>
-<td height="1">199</td>
+<td height="1">182</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;<font color="#009933">/*MyClient&nbsp;client;</font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;seven&nbsp;ways&nbsp;to&nbsp;detect&nbsp;and&nbsp;report&nbsp;the&nbsp;same&nbsp;error:<font></font></td>
 </tr>
 <tr>
-<td height="1">200</td>
+<td height="1">183</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;BOOST_CHECK_THROW(</font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;==&nbsp;4&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#1&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">184</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">185</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_REQUIRE(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;==&nbsp;4&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#2&nbsp;throws&nbsp;on&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">186</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">187</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;!=&nbsp;4&nbsp;)</font></td>
+</tr>
+<tr>
+<td height="1">188</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BOOST_ERROR(&nbsp;"Ouch..."&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#3&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">189</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">190</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;!=&nbsp;4&nbsp;)</font></td>
+</tr>
+<tr>
+<td height="1">191</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BOOST_FAIL(&nbsp;"Ouch..."&nbsp;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;#4&nbsp;throws&nbsp;on&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">192</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">193</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;!=&nbsp;4&nbsp;)&nbsp;throw&nbsp;"Ouch...";&nbsp;<font color="#009933">//&nbsp;#5&nbsp;throws&nbsp;on&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">194</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">195</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_MESSAGE(&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;==&nbsp;4,&nbsp;&nbsp;<font color="#009933">//&nbsp;#6&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">196</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"add(..)&nbsp;result:&nbsp;"&nbsp;&lt;&lt;&nbsp;add(&nbsp;2,2&nbsp;)&nbsp;);</font></td>
+</tr>
+<tr>
+<td height="1">197</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr bgcolor="#FFCC33">
-<td height="1">201</td>
-<td height="1">ESP</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;client.connect(someNonexistentServerIP,&nbsp;somePort),*</font></font></td>
+<td height="1">198</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;BOOST_CHECK_EQUAL(&nbsp;add(&nbsp;2,2&nbsp;),&nbsp;4&nbsp;);	&nbsp;&nbsp;<font color="#009933">//&nbsp;#7&nbsp;continues&nbsp;on&nbsp;error<font></font></td>
 </tr>
 <tr>
-<td height="1">202</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;boost::asio::error::Connection_refused</font></font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">203</td>
-<td height="1">IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">**);*/</font></font></font></td>
-</tr>
-<tr>
-<td height="1">204</td>
+<td height="1">199</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
+<td height="1">200</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">201</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">BOOST_AUTO_TEST_CASE(testMissingServer)</font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">202</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">203</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;<font color="#009933">/*MyClient&nbsp;client;</font></font></td>
+</tr>
+<tr>
+<td height="1">204</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;BOOST_CHECK_THROW(</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
 <td height="1">205</td>
+<td height="1">ESP</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;client.connect(someNonexistentServerIP,&nbsp;somePort),*</font></font></td>
+</tr>
+<tr>
+<td height="1">206</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">&nbsp;&nbsp;&nbsp;&nbsp;boost::asio::error::Connection_refused</font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">207</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">**);*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">208</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">209</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 </table>
-<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Tuesday August,23 at 10:46:53PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Wednesday August,24 at 03:21:51PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
 </td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>
