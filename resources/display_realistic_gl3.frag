@@ -140,7 +140,8 @@ void main(void)
     	//visibility equals 0.3 if the fragment if in the shadow and 1 if not.
     	float visibility = texture(g_shadow_map, vec3(shadow_changed_coord.xy, shadow_changed_coord.z-bias));
 		visibility = visibility*0.7+0.3;
-	        	
+	    //visibility = 1.;
+	      
 	  	vec3 global_ambient;
 	   	vec3 ambient;
 	    vec3 diffuse;

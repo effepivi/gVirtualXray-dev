@@ -41,9 +41,9 @@ namespace gVirtualXRay {
 //------------------------------------------------------------------------
 DepthMap::DepthMap(int map_size) :
 //------------------------------------------------------------------------
-	m_isInitialized(false),
-	m_mapFrameBuffer(0),
-	m_mapTexture(0),
+	m_is_initialized(false),
+	m_map_frame_buffer(0),
+	m_map_texture(0),
 	m_map_size(map_size)
 //------------------------------------------------------------------------
 {
@@ -60,8 +60,8 @@ void DepthMap::initialize()
 //------------------------------------------------------------------------
 {
 	//Intialize the buffer for the depth map texture and enable the sampling in the fragment shader as a sampler2DShadow
-	glGenTextures(1, &m_mapTexture);
-	glBindTexture(GL_TEXTURE_2D, m_mapTexture);
+	glGenTextures(1, &m_map_texture);
+	glBindTexture(GL_TEXTURE_2D, m_map_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, m_map_size, m_map_size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -71,11 +71,11 @@ void DepthMap::initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 
 	//initalize the frame buffer for the shadow map
-	glGenFramebuffers(1, &m_mapFrameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_mapFrameBuffer);
+	glGenFramebuffers(1, &m_map_frame_buffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_map_frame_buffer);
 
 	//link the frame buffer and the texture
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_mapTexture, 0);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_map_texture, 0);
 
 	//Only depth
 	glDrawBuffer(GL_NONE);
@@ -128,21 +128,22 @@ void DepthMap::initialize()
     m_depth_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	m_isInitialized = true;
+	m_is_initialized = true;
 }
 
 //------------------------------------------------------------------------
-void DepthMap::render(std::vector<PolygonMesh*>& apMeshSet,
-		Matrix4x4<GLfloat> const& projMatrix)
-	//------------------------------------------------------------------------
+void DepthMap::render(std::vector<PolygonMesh*>& mesh_set,
+		Matrix4x4<GLfloat> const& proj_matrix)
+//------------------------------------------------------------------------
 {
 	//Initialize if necessary
-	if (!m_isInitialized) {
+	if (!m_is_initialized)
+	{
 		initialize();
 	}
 
 	//render to the map buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_mapFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_map_frame_buffer);
 	glViewport(0, 0, m_map_size, m_map_size);
 
 	// Clear
@@ -166,12 +167,13 @@ void DepthMap::render(std::vector<PolygonMesh*>& apMeshSet,
 
 	//link the atribute to their IDs
 	handle = glGetUniformLocation(shader_id, "matrix");
-	glUniformMatrix4fv(handle, 1,  GL_FALSE, projMatrix.get());
+	glUniformMatrix4fv(handle, 1,  GL_FALSE, proj_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	for (int i(0); i < apMeshSet.size(); ++i)
+	//render
+	for (int i(0); i < mesh_set.size(); ++i)
 	{
-		apMeshSet[i]->display();
+		mesh_set[i]->display();
 	}
 
 	// Disable the shader
@@ -186,10 +188,76 @@ void DepthMap::render(std::vector<PolygonMesh*>& apMeshSet,
 }
 
 //------------------------------------------------------------------------
+void DepthMap::render(std::vector<PolygonMesh*>& mesh_set, Matrix4x4<float> const& proj_matrix,
+		std::vector< Matrix4x4<float> > const& model_matrix_set)
+//------------------------------------------------------------------------
+{
+	if(model_matrix_set.size() != mesh_set.size())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The sizes of the matrix set and the polygon mesh set are different.");
+	}
+
+	//Initialize if necessary
+	if (!m_is_initialized)
+	{
+		initialize();
+	}
+
+	//render to the map buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, m_map_frame_buffer);
+	glViewport(0, 0, m_map_size, m_map_size);
+
+	// Clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Enable back face culling
+	pushEnableDisableState(GL_CULL_FACE);
+	pushEnableDisableState(GL_DEPTH_TEST);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+	// Enable the shader
+	pushShaderProgram();
+	m_depth_shader.enable();
+	GLint shader_id(m_depth_shader.getProgramHandle());
+
+	// Handle for shader variables
+	GLuint handle(0);
+
+	//render
+	for (int i(0); i < mesh_set.size(); ++i)
+	{
+		//compute the matrix
+		Matrix4x4<float> matrix(proj_matrix * model_matrix_set[i]);
+
+		//link the atribute to their IDs
+		handle = glGetUniformLocation(shader_id, "matrix");
+		glUniformMatrix4fv(handle, 1,  GL_FALSE, proj_matrix.get());
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+		mesh_set[i]->display();
+	}
+
+	// Disable the shader
+	popShaderProgram();
+
+    // Restore the attributes
+    popEnableDisableState();
+    popEnableDisableState();
+
+	// Cleanup for now
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+}
+
+//------------------------------------------------------------------------
 GLuint DepthMap::getMapTexture() const
 //------------------------------------------------------------------------
 {
-	return m_mapTexture;
+	return m_map_texture;
 }
 
 

@@ -88,7 +88,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/DepthMap.h"
 #endif
 
-#include "gVirtualXRay/SphereMesh.h"
+#include "gVirtualXRay/CubeMesh.h"
 
 #include "gVirtualXRay/CubeMesh.h"
 
@@ -168,12 +168,15 @@ private:
     /// Transformation matrix used to rotate the 3D scene
     Matrix4x4<GLfloat> m_scene_rotation_matrix;
 
+    /// model matrix of the meshes
+    Matrix4x4<GLfloat> m_meshes_model_matrix;
+
     /// GLSL shader
     Shader m_display_shader;
 
     /// polygon meshes
-    SphereMesh m_sphere_mesh;
-    CubeMesh m_cube_mesh;
+    CubeMesh m_blue_cube_mesh;
+    CubeMesh m_red_cube_mesh;
 
     ///the light direction (from the vertex to the camera)
     VEC3 m_light_direction;

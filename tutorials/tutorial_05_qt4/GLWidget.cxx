@@ -101,8 +101,8 @@ using namespace gVirtualXRay;
 GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent),
-	m_sphere_mesh(50, 50),
-	m_cube_mesh(),
+	m_blue_cube_mesh(0.5 * cm),
+	m_red_cube_mesh(1. * cm),
 	m_light_direction(-1, 3, 1)
 //----------------------------------
 {
@@ -113,9 +113,9 @@ GLWidget::GLWidget(QWidget *parent):
 GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
 //----------------------------------
     QGLWidget(aGLFormat, parent),
-	m_sphere_mesh(50,50),
-	m_cube_mesh(),
-	m_light_direction(-1, 3, 1)
+	m_blue_cube_mesh(0.5 * cm),
+	m_red_cube_mesh(1. * cm),
+	m_light_direction(-1., 3, -0.5)
 
 //----------------------------------
 {
@@ -149,33 +149,6 @@ void GLWidget::initializeGL()
 
     // Enable the Z-buffer
     glEnable(GL_DEPTH_TEST);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    //set the direction of the light
-    m_light_direction.normalize();
-
-    //set the meshes colours
-    Material* material(&(m_sphere_mesh.getMaterial()));
-    material->setAmbientColour(1.,0.,0.,1.);
-    material->setDiffuseColour(1.,0.,0.,1.);
-    material->setSpecularColour(1.,1.,1.,1.);
-
-    material = &(m_cube_mesh.getMaterial());
-    material->setAmbientColour(0.,0.,1.,1.);
-    material->setDiffuseColour(0.,0.,1.,1.);
-    material->setSpecularColour(1.,1.,1.,1.);
-
-    //set the translation matrixes of the meshes
-
-
-    //translate the cube
-    for(unsigned int i(0); i<m_cube_mesh.getVertexNumber(); i++)
-    {
-    	m_cube_mesh.setVertex(i,m_cube_mesh.getVertex(i)-VEC3(0,0,10));
-    }
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable(GL_MULTISAMPLE);
@@ -216,6 +189,7 @@ void GLWidget::initializeGL()
     {
     	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
+
     m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -223,6 +197,46 @@ void GLWidget::initializeGL()
     // Initialise the modelling matrix
     m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
     m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix( 60.0, VEC3(1, 0, 0));
+    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix( 45.0, VEC3(0, 0, 1));
+
+    //set the direction of the light
+    m_light_direction.normalize();
+
+    //set the meshes colours
+    Material* material(&(m_blue_cube_mesh.getMaterial()));
+    material->setAmbientColour(0.,0.,1.,1.);
+    material->setDiffuseColour(0.,0.,1.,1.);
+    material->setSpecularColour(0.5,0.5,0.5,1.);
+
+    material = &(m_red_cube_mesh.getMaterial());
+    material->setAmbientColour(1.,0.,0.,1.);
+    material->setDiffuseColour(1.,0.,0.,1.);
+    material->setSpecularColour(0.5,0.5,0.5,1.);
+
+    m_blue_cube_mesh.getMaterial().setShininess(5.);
+    m_red_cube_mesh.getMaterial().setShininess(5.);
+
+    //set the translation matrixes of the meshes
+    m_meshes_model_matrix.loadIdentity();
+
+    m_blue_cube_mesh.translate(VEC3(-2.,-2.,7.));
+
+    //translate the cube
+    m_red_cube_mesh.translate(VEC3(0.,0.,-5.));
+
+    m_blue_cube_mesh.splitFaces();
+    m_blue_cube_mesh.splitFaces();
+    m_blue_cube_mesh.splitFaces();
+    m_blue_cube_mesh.splitFaces();
+
+    m_red_cube_mesh.splitFaces();
+    m_red_cube_mesh.splitFaces();
+    m_red_cube_mesh.splitFaces();
+    m_red_cube_mesh.splitFaces();
+
+    // Set the background colour
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------
@@ -296,8 +310,8 @@ void GLWidget::render()
     try
     {
     	std::vector<PolygonMesh*> polygon_mesh_set;
-    	polygon_mesh_set.push_back(&m_sphere_mesh);
-    	polygon_mesh_set.push_back(&m_cube_mesh);
+    	polygon_mesh_set.push_back(&m_blue_cube_mesh);
+    	polygon_mesh_set.push_back(&m_red_cube_mesh);
 
     	//set the  matrix from the light's point of view to create the shadow map
     	gVirtualXRay::Matrix4x4<GLfloat> shadowProjectionMatrix(gVirtualXRay::buildOrthoProjectionMatrix(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f));
@@ -308,7 +322,7 @@ void GLWidget::render()
     			gVirtualXRay::VEC3(0.f, 1.f, 0.f)
     		));
 
-    	shadowViewMatrix *= m_scene_rotation_matrix;
+    	shadowViewMatrix *= m_scene_rotation_matrix*m_meshes_model_matrix;
     	gVirtualXRay::Matrix4x4<GLfloat> shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
 
     	//render to the shadow map
@@ -336,14 +350,14 @@ void GLWidget::render()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Rotate the sample
-        g_current_modelview_matrix *= m_scene_rotation_matrix;
+        g_current_modelview_matrix *= m_scene_rotation_matrix*m_meshes_model_matrix;
 
         // Handle for shader variables
     	GLuint handle(0);
 
         // Define the light colours here
-        GLfloat light_global_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-        GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+        GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+        GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
         GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 

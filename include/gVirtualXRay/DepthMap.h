@@ -70,13 +70,26 @@ public:
 
 	//--------------------------------------------------------------------------
 	///render to the frame buffer, call initialize() if it has never been called before
+	///Use this overload in case there is one model matrixes for all the meshes
 	/**
-	*  @param apMeshSet: the Polygon mesh set to be textured
-	*  @param projMatrix: the projection matrix
+	*  @param mesh_set: the Polygon mesh set to be rendered
+	*  @param proj_matrix: the projection matrix
 	*/
 	//--------------------------------------------------------------------------
-	void render(std::vector<PolygonMesh*>& apMeshSet,
-			Matrix4x4<GLfloat> const& projMatrix);
+	void render(std::vector<PolygonMesh*>& mesh_set,
+			Matrix4x4<float> const& proj_matrix);
+
+	//--------------------------------------------------------------------------
+	///render to the frame buffer, call initialize() if it has never been called before
+	///Use this overload in case there are different model matrixes
+	/**
+	*  @param mesh_set: the Polygon mesh set to be rendered
+	*  @param proj_matrix: the projection matrix
+	*  @param model_matrix_set: the model matrix set
+	*/
+	//--------------------------------------------------------------------------
+	void render(std::vector<PolygonMesh*>& mesh_set,
+			Matrix4x4<float> const& proj_matrix, std::vector< Matrix4x4<float> > const& model_matrix_set);
 
 	//--------------------------------------------------------------------------
 	///Get the texture
@@ -89,13 +102,13 @@ private:
 	DepthMap(DepthMap const&);
 
 	//to know if initialize() has been called
-	bool m_isInitialized;
+	bool m_is_initialized;
 
     Shader m_depth_shader;
 
 	//To create a buffer for the scene map
-	unsigned int	m_mapFrameBuffer,
-		m_mapTexture;
+	unsigned int	m_map_frame_buffer,
+		m_map_texture;
 
 	int m_map_size;
 };
