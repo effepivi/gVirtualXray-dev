@@ -66,7 +66,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#include <string>
+
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -86,6 +88,13 @@ namespace gVirtualXRay {
 */
 //------------------------------------------------------------------------------
 int inflate(const void *src, int srcLen, char** apDst);
+
+
+bool isMHA(const char* aFileName);
+bool isMHD(const char* aFileName);
+bool isMHA(const std::string& aFileName);
+bool isMHD(const std::string& aFileName);
+
 
 
 } // namespace gVirtualXRay

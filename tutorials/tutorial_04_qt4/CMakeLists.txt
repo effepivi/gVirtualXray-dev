@@ -68,8 +68,6 @@ add_executable(tutorial_04_qt4
 
 target_link_libraries(tutorial_04_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-ADD_DEPENDENCIES(tutorial_04_qt4 BinaryTutorial04Qt4Files)
-
 INSTALL(TARGETS tutorial_04_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin COMPONENT tutorials)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 

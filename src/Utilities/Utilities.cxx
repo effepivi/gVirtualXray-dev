@@ -121,3 +121,9 @@ int gVirtualXRay::inflate(const void *src, int srcLen, char** apDst)
     inflateEnd(&strm);
     return (ret);
 }
+
+
+bool isMHA(const char* aFileName){return false;}
+bool isMHD(const char* aFileName){return false;}
+bool isMHA(const std::string& aFileName){return false;}
+bool isMHD(const std::string& aFileName){return false;}

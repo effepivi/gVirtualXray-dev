@@ -118,6 +118,13 @@ ENDIF (glfw3_FOUND)
 
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_04/../cylinder_bin.stl COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_04/../cylinder_bin.stl COPYONLY)
+ENDIF (WIN32)
+
 # Create the main programs #####################################################
 IF (glfw3_FOUND)
 ADD_EXECUTABLE (validation_01 src/validation_01.cxx)

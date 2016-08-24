@@ -602,7 +602,18 @@ namespace gVirtualXRay {
             p_writer->Update();
         }
 #else // HAS_ITK
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        if (isMHD(aFileName))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        }
+        else if (isMHA(aFileName))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        }
 #endif // HAS_ITK
     }
 
