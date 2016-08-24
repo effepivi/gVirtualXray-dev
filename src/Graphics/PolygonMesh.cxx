@@ -1041,7 +1041,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();;
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
                 }
             }
             break;
@@ -1062,7 +1062,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();;
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
                 }
             }
             break;
@@ -1283,7 +1283,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();;
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
                 }
             }
             break;
@@ -1304,7 +1304,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();;
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
                 }
             }
             break;
