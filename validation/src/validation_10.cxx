@@ -168,7 +168,6 @@ XRayRenderer g_xray_renderer;
 //******************************************************************************
 //	Function declaration
 //******************************************************************************
-void initGLEW();
 void initGL();
 void loadSTLFile();
 void loadDetector();
@@ -239,7 +238,7 @@ int main(int argc, char** argv)
 	    glfwMakeContextCurrent(g_p_main_window_id);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
 		initGL();
@@ -322,23 +321,6 @@ void quit()
         g_p_main_window_id = 0;
         glfwTerminate();
 	}
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-#if defined(_WIN32) || defined(_WIN64)
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
 }
 
 
