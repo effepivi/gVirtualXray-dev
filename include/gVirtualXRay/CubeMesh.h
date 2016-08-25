@@ -100,7 +100,7 @@ public:
 	//--------------------------------------------------------------------------
 	///	Default constructor.
     /*
-    *   @param aLength:   the length of a side of the cude (default value = 1 cm)
+    *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
 	//--------------------------------------------------------------------------
 	CubeMesh(float aLength = 1.0 * cm);
@@ -109,7 +109,7 @@ public:
 	//--------------------------------------------------------------------------
 	///	Create a new cube.
     /*
-    *   @param aLength:   the length of a side of the cude (default value = 1 cm)
+    *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
 	//--------------------------------------------------------------------------
 	void create(float aLength = 1.0 * cm);
