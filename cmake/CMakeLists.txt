@@ -395,6 +395,31 @@ IF (FREETYPE_FOUND)
 ENDIF (FREETYPE_FOUND)
 
 
+# GDCM #########################################################################
+
+IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       ON)
+ELSE ()
+    OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       OFF)
+ENDIF ()
+
+IF (USE_SYSTEM_GDCM)
+    FIND_PACKAGE( GDCM   REQUIRED )
+ELSE(USE_SYSTEM_GDCM)
+    INCLUDE(BuildGDCM)
+
+    build_gdcm( gdcm ${PROJECT_BINARY_DIR} )
+
+ENDIF (USE_SYSTEM_GDCM)
+
+IF (GDCM_FOUND)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GDCM")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GDCM_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GDCM_LIBRARY_DIR})
+    SET (requiredLibs "${requiredLibs}" "${GDCM_LIBRARIES}")
+ENDIF (GDCM_FOUND)
+
+
 # TIFF #########################################################################
 
 #IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
@@ -585,6 +610,10 @@ ENDIF (NOT USE_SYSTEM_FREETYPE)
 #IF (NOT USE_SYSTEM_LIBTIFF)
 #    ADD_DEPENDENCIES(gVirtualXRay libtiff)
 #ENDIF (NOT USE_SYSTEM_LIBTIFF)
+
+IF (NOT USE_SYSTEM_GDCM)
+    ADD_DEPENDENCIES(gVirtualXRay gdcm)
+ENDIF (NOT USE_SYSTEM_GDCM)
 
 
 # Installation variables #######################################################

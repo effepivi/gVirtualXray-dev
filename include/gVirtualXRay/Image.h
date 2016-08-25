@@ -317,6 +317,24 @@ public:
 
 
     //------------------------------------------------------------------------
+    /// Save the image in a DICOM file
+    /**
+    * @param aFileName: the name of the file to write
+    */
+    //------------------------------------------------------------------------
+    void saveDCM(const char* aFileName) const;
+
+
+    //------------------------------------------------------------------------
+    /// Save the image in a DICOM file
+    /**
+    * @param aFileName: the name of the file to write
+    */
+    //------------------------------------------------------------------------
+    void saveDCM(const std::string& aFileName) const;
+
+
+    //------------------------------------------------------------------------
     /// Operator Equal to
     /**
     * @param anImage: the image to compare with

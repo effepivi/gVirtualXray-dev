@@ -59,7 +59,7 @@ ENDIF(Boost_FOUND)
 
 if(Boost_FOUND)
     add_executable(TestDensity TestDensity.cxx)
-    target_link_libraries (TestDensity ${gVirtualXRay_LIBRARY} ${requiredLibs})
+    target_link_libraries(TestDensity ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(TestDensity   gVirtualXRay)

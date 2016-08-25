@@ -405,7 +405,7 @@ template<typename T> const T& Vec3<T>::operator[](unsigned int i) const
         }
     else
         {
-        OutOfBoundException(__FILE__, __FUNCTION__, __LINE__);
+        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
         }
 }
 

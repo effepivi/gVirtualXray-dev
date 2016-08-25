@@ -79,7 +79,7 @@ ENDIF(GLUT_FOUND)
 # Create the main program ######################################################
 IF (GLUT_FOUND)
     add_executable(welsh_dragon_glut welsh_dragon_glut.cxx )
-    target_link_libraries(welsh_dragon_glut  ${requiredLibs} ${gVirtualXRay_LIBRARY} ${optionalLibs} )
+    target_link_libraries(welsh_dragon_glut   ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(welsh_dragon_glut BinaryStlGlutFiles)
 
     if (gVirtualXRay_BINARY_DIR)

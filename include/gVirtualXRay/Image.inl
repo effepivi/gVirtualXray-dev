@@ -35,6 +35,27 @@
 #include <vector>
 #include <iostream>
 
+#ifdef HAS_GDCM
+#include <typeinfo>
+
+
+
+#include <gdcmGlobal.h>
+
+#include "gdcmImageReader.h"
+#include "gdcmSequenceOfFragments.h"
+#include "gdcmSystem.h"
+#include "gdcmImageWriter.h"
+
+#include <gdcmRescaler.h>
+
+#include <gdcmImage.h>
+#include <gdcmBitmap.h>
+#include <gdcmImageWriter.h>
+#include <gdcmPixelFormat.h>
+#include <gdcmPhotometricInterpretation.h>
+#endif
+
 #ifndef __ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
@@ -390,9 +411,7 @@ template<typename T> void Image<T>::save(const char* aFileName) const
     }
     else if (isDCM(aFileName))
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Saving DICOM files is not implemented, "
-                "please contact Dr FP Vidal.");
+        saveDCM(aFileName);
     }
     else if (isTIFF(aFileName))
     {
@@ -598,6 +617,124 @@ template<typename T> void Image<T>::saveASCII(const std::string& aFileName) cons
 template<typename T> void Image<T>::saveMHD(const char* aFileName) const
 {
     saveMHD(std::string(aFileName));
+}
+
+
+//----------------------------------------------------------------------
+template<typename T> void Image<T>::saveDCM(const char* aFileName) const
+//----------------------------------------------------------------------
+{
+#ifdef HAS_GDCM
+    if (m_number_of_slices == 1)
+    {
+
+        // Write the modified DataSet back to disk
+        gdcm::ImageWriter writer;
+        //writer.CheckFileMetaInformationOff(); // Do not attempt to reconstruct the file meta to preserve the file
+                                              // as close to the original as possible.
+
+        // Create the image (GDCM format)
+        gdcm::Image& gdcm_image(writer.GetImage());
+
+        // Set the size of the image
+        unsigned int dims[3] = {};
+        dims[0] = m_width;
+        dims[1] = m_height;
+
+        if (m_number_of_slices == 1)
+            {
+            gdcm_image.SetNumberOfDimensions(2);
+            }
+        /*else
+            {
+            dims[2] = m_number_of_slices;
+            gdcm_image.SetNumberOfDimensions(3);
+            }*/
+
+        gdcm_image.SetDimensions( dims );
+
+        T min_input_value(getMinValue());
+        T max_input_value(getMaxValue());
+        T difference_input(max_input_value - min_input_value);
+
+        unsigned short min_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT32).GetMin());
+        unsigned short max_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT32).GetMax());
+        unsigned short difference_output(max_output_value - min_output_value);
+
+        unsigned int* p_temp(new unsigned int[m_width * m_height * m_number_of_slices]);
+
+        for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+        {
+            p_temp[i] = min_output_value + difference_output * (double(m_p_image[i] - min_input_value) / double(difference_input));
+        }
+
+        gdcm::PixelFormat pixel_format(gdcm::PixelFormat::UINT32);
+        pixel_format.SetSamplesPerPixel(1);
+/*
+        gdcm::Rescaler pixel_format;
+        pixel_format.SetSlope (1.0 / difference_output);
+        pixel_format.SetIntercept (-min_output_value);
+        pixel_format.SetPixelFormat(gdcm::PixelFormat::UINT16);
+        pixel_format.SetTargetPixelType(gdcm::PixelFormat::FLOAT32);*/
+        //pixel_format.SetMinMaxForPixelType(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin(), ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax() );
+        //pixel_format.ComputePixelTypeFromMinMax();
+
+/*
+        gdcm::Rescaler rescaler;
+        rescaler.SetIntercept( 0 );
+        rescaler.SetSlope( 1.2 );
+        rescaler.SetPixelFormat( pixel_format );
+        gdcm::PixelFormat output_pixel_format = rescaler.ComputeInterceptSlopePixelType();
+*/
+
+
+        //gdcm_image.SetPixelFormat(pixel_format.ComputeInterceptSlopePixelType());
+        gdcm_image.SetPixelFormat(pixel_format);
+        gdcm::PhotometricInterpretation photometric_interpretation(gdcm::PhotometricInterpretation::MONOCHROME1);
+        gdcm_image.SetPhotometricInterpretation(photometric_interpretation);
+        gdcm_image.SetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
+
+
+
+        // Disable compression
+        gdcm_image.SetLossyFlag(false);
+
+
+        unsigned int len(m_width * m_height * m_number_of_slices * sizeof(unsigned int));
+        gdcm::DataElement pixel_data(gdcm::Tag(0x7fe0,0x0010));
+        pixel_data.SetByteValue((const char*)p_temp, uint32_t(len));
+        gdcm_image.SetDataElement(pixel_data);
+
+        // Set the file name
+        writer.SetFileName( aFileName );
+
+        // Save the data
+        if( !writer.Write() )
+            {
+            delete [] p_temp;
+
+            std::stringstream error_message;
+            error_message << "Could not write the DICOM file (" << aFileName << ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+            }
+        delete [] p_temp;
+    }
+
+#else
+
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Saving DICOM files is not implemented, "
+            "please contact Dr FP Vidal.");
+
+#endif
+}
+
+
+//-------------------------------------------------------
+template<typename T> void Image<T>::saveDCM(const std::string& aFileName) const
+//-------------------------------------------------------
+{
+    saveDCM(aFileName.data());
 }
 
 
