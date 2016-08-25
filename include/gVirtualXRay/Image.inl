@@ -657,19 +657,19 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
         T max_input_value(getMaxValue());
         T difference_input(max_input_value - min_input_value);
 
-        unsigned short min_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT32).GetMin());
-        unsigned short max_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT32).GetMax());
+        unsigned short min_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin());
+        unsigned short max_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax());
         unsigned short difference_output(max_output_value - min_output_value);
 
-        unsigned int* p_temp(new unsigned int[m_width * m_height * m_number_of_slices]);
+        unsigned short* p_temp(new unsigned short[m_width * m_height * m_number_of_slices]);
 
         for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
         {
             p_temp[i] = min_output_value + difference_output * (double(m_p_image[i] - min_input_value) / double(difference_input));
         }
 
-        gdcm::PixelFormat pixel_format(gdcm::PixelFormat::UINT32);
-        pixel_format.SetSamplesPerPixel(1);
+        gdcm::PixelFormat input_pixel_format(gdcm::PixelFormat::UINT16);
+        input_pixel_format.SetSamplesPerPixel(1);
 /*
         gdcm::Rescaler pixel_format;
         pixel_format.SetSlope (1.0 / difference_output);
@@ -679,18 +679,41 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
         //pixel_format.SetMinMaxForPixelType(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin(), ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax() );
         //pixel_format.ComputePixelTypeFromMinMax();
 
-/*
-        gdcm::Rescaler rescaler;
-        rescaler.SetIntercept( 0 );
-        rescaler.SetSlope( 1.2 );
-        rescaler.SetPixelFormat( pixel_format );
-        gdcm::PixelFormat output_pixel_format = rescaler.ComputeInterceptSlopePixelType();
-*/
+
+        input_pixel_format = gdcm::PixelFormat::FLOAT32;
+
+        // Store in a safe place the 'raw' pixeltype from vtk
+        gdcm::PixelFormat savepixeltype = input_pixel_format;
+
+
+
+        gdcm::Rescaler ir2;
+        ir2.SetIntercept( -min_output_value );
+        ir2.SetSlope( 1.0 / difference_output );
+
+
+        ir2.SetPixelFormat( input_pixel_format );
+
+        ir2.SetMinMaxForPixelType( ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin(),
+                ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax() * 1.0 / difference_output + -min_output_value);
+        //gdcm::PixelFormat::ScalarType outputpt = ir2.ComputeInterceptSlopePixelType();
+        gdcm::PixelFormat outputpt = ir2.ComputePixelTypeFromMinMax();
+        // override pixeltype with what is found by Rescaler
+        input_pixel_format = outputpt;
+
+        unsigned int input_length(m_width * m_height * m_number_of_slices * sizeof(T));
+        unsigned int output_length(m_width * m_height * m_number_of_slices * sizeof(unsigned short));
+
+        ir2.InverseRescale((char*)p_temp, (const char*) m_p_image, input_length);
+
+
+
+
 
 
         //gdcm_image.SetPixelFormat(pixel_format.ComputeInterceptSlopePixelType());
-        gdcm_image.SetPixelFormat(pixel_format);
-        gdcm::PhotometricInterpretation photometric_interpretation(gdcm::PhotometricInterpretation::MONOCHROME1);
+        gdcm_image.SetPixelFormat(input_pixel_format);
+        gdcm::PhotometricInterpretation photometric_interpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
         gdcm_image.SetPhotometricInterpretation(photometric_interpretation);
         gdcm_image.SetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
 
@@ -700,9 +723,8 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
         gdcm_image.SetLossyFlag(false);
 
 
-        unsigned int len(m_width * m_height * m_number_of_slices * sizeof(unsigned int));
         gdcm::DataElement pixel_data(gdcm::Tag(0x7fe0,0x0010));
-        pixel_data.SetByteValue((const char*)p_temp, uint32_t(len));
+        pixel_data.SetByteValue((const char*)p_temp, uint32_t(output_length));
         gdcm_image.SetDataElement(pixel_data);
 
         // Set the file name
