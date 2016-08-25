@@ -175,8 +175,8 @@ private:
     Shader m_display_shader;
 
     /// polygon meshes
-    CubeMesh m_blue_cube_mesh;
-    CubeMesh m_red_cube_mesh;
+    CubeMesh<GLfloat> m_blue_cube_mesh;
+    CubeMesh<GLfloat> m_red_cube_mesh;
 
     ///the light direction (from the vertex to the camera)
     VEC3 m_light_direction;

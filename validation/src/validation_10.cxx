@@ -158,7 +158,7 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
 PolygonMesh g_inside_polygon_data;
-CubeMesh g_outside_polygon_data(3.0 * cm);
+CubeMesh<GLdouble> g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;

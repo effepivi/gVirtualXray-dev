@@ -92,7 +92,7 @@ namespace gVirtualXRay {
 *	@brief	CubeMesh is a class to handle 3D meshes of cubes.
 */
 //==============================================================================
-class CubeMesh: public PolygonMesh
+template<typename T> class CubeMesh: public PolygonMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -103,7 +103,7 @@ public:
     *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
 	//--------------------------------------------------------------------------
-	CubeMesh(float aLength = 1.0 * cm);
+	CubeMesh(double aLength = 1.0 * cm);
 
 
 	//--------------------------------------------------------------------------
@@ -112,7 +112,7 @@ public:
     *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
 	//--------------------------------------------------------------------------
-	void create(float aLength = 1.0 * cm);
+	void create(double aLength = 1.0 * cm);
 };
 
 
