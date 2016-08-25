@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_XRAY_RENDERER_H
-#define GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
+#define __XRayRenderer_h
 
 
 /**
@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef HAS_ITK
 #include <itkImage.h>
+#endif
+
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
 #endif
 
 #ifndef GVXR_POLYGON_MESH_H
@@ -396,7 +400,7 @@ public:
 	*	@param aFBOID:	the ID of the FBO
 	*/
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getFBO(unsigned int aFBOID) const;
+	RATIONAL_NUMBER* getFBO(unsigned int aFBOID);
 
 
 	//--------------------------------------------------------------------------
@@ -405,37 +409,37 @@ public:
 	*	@param aTextureID:	the ID of the texture
 	*/
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* get2DTexture(unsigned int aTextureID) const;
+	RATIONAL_NUMBER* get2DTexture(unsigned int aTextureID);
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current L-buffer.
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getLBuffer() const;
+	RATIONAL_NUMBER* getLBuffer();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current cumulated L-buffer.
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getCumulatedLBuffer() const;
+	RATIONAL_NUMBER* getCumulatedLBuffer();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current Mux Dx.
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getSumMuxDx() const;
+	RATIONAL_NUMBER* getSumMuxDx();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current energy fluence (same as getXRayImage()).
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getEnergyFluence() const;
+	RATIONAL_NUMBER* getEnergyFluence();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current energy fluence (same as getEnergyFluence()).
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getXRayImage() const;
+	RATIONAL_NUMBER* getXRayImage();
 
 
 	//--------------------------------------------------------------------------
@@ -641,8 +645,8 @@ public:
 
 #else // HAS_ITK
 
-    const PixelType* getSinogram() const;
-    PixelType* getSinogram();
+    const Image<XRayRenderer::PixelType> getSinogram() const;
+    Image<XRayRenderer::PixelType> getSinogram();
 
 #endif // HAS_ITK
 
@@ -666,8 +670,8 @@ public:
 
 #else // HAS_ITK
 
-    const PixelType* getProjectionSet() const;
-    PixelType* getProjectionSet();
+    const Image<XRayRenderer::PixelType> getProjectionSet() const;
+    Image<XRayRenderer::PixelType> getProjectionSet();
 
 #endif // HAS_ITK
 
@@ -940,7 +944,7 @@ protected:
 
 
 	/// The raw data of the last FBO that was loaded in the main memory
-	PixelType* m_p_temp_raw_data;
+	Image<PixelType> m_temp_raw_data;
 
 
 	/// The table of water energy fluence coefficients
@@ -977,27 +981,27 @@ protected:
 
 #else // HAS_ITK
     /// L-buffer
-    PixelType* m_p_l_buffer_image;
+    Image<PixelType> m_l_buffer_image;
 
 
     /// Cumulated L-buffer for all the inner surfaces
-    PixelType* m_p_cumulated_lbuffer_image;
+    Image<PixelType> m_cumulated_lbuffer_image;
 
 
     /// Sum(Mu_x * d_x)
-    PixelType* m_p_sum_mux_dx_image;
+    Image<PixelType> m_sum_mux_dx_image;
 
 
     /// Energy fluence
-    PixelType* m_p_energy_fluence_image;
+    Image<PixelType> m_energy_fluence_image;
 
 
     /// Sinogram
-    PixelType* m_p_sinogram_image;
+    Image<PixelType> m_sinogram_image;
 
 
     /// Projection set
-    PixelType* m_p_projection_set;
+    Image<PixelType> m_projection_set;
 #endif // HAS_ITK
 
 
@@ -1049,4 +1053,4 @@ protected:
 #include "XRayRenderer.inl"
 
 
-#endif // XRAY_RENDERER_H
+#endif // __XRayRenderer_h

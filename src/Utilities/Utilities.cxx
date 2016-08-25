@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <zlib.h>
-#include <string.h>
+#include <iostream>
 
 #ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
@@ -136,91 +136,26 @@ int inflate(const void *src, int srcLen, char** apDst)
 }
 
 
-//--------------------------------
-bool isJPEG(const char* aFileName)
-//--------------------------------
+//-------------------------------------------------
+bool checkExtension(const std::string& aFileName,
+                    const std::string& anExtension)
+//-------------------------------------------------
 {
-    unsigned int file_name_size(std::strlen(aFileName));
+    unsigned int file_name_size(aFileName.size());
+    unsigned int extension_size(anExtension.size());
 
-    // There are enough letters in the file name to store x.jpg
-    if (file_name_size >= 5)
+    if (file_name_size < (extension_size + 2))
         {
-        // The extension is JPG
-        if (aFileName[file_name_size - 4] == '.' &&
-                (aFileName[file_name_size - 3] == 'j' ||
-                        aFileName[file_name_size - 3] == 'J') &&
-                (aFileName[file_name_size - 2] == 'p' ||
-                        aFileName[file_name_size - 2] == 'P') &&
-                (aFileName[file_name_size - 1] == 'g' ||
-                        aFileName[file_name_size - 1] == 'G'))
-            {
-            return (true);
-            }
+        return (false);
         }
 
-    // There are enough letters in the file name to store x.jpeg
-    if (file_name_size >= 6)
-        {
-        // The extension is JPEG
-        if (aFileName[file_name_size - 5] == '.' &&
-                (aFileName[file_name_size - 4] == 'j' ||
-                        aFileName[file_name_size - 4] == 'J') &&
-                (aFileName[file_name_size - 3] == 'p' ||
-                        aFileName[file_name_size - 3] == 'P') &&
-                (aFileName[file_name_size - 2] == 'e' ||
-                        aFileName[file_name_size - 2] == 'E') &&
-                (aFileName[file_name_size - 1] == 'g' ||
-                        aFileName[file_name_size - 1] == 'G'))
-            {
-            return (true);
-            }
-        }
+    std::string file_extension(aFileName.substr(file_name_size - extension_size - 1,
+            extension_size + 1));
 
-    return (false);
-}
+    std::string extension_plus_dot(".");
+    extension_plus_dot += anExtension;
 
-
-//--------------------------------
-bool isTIFF(const char* aFileName)
-//--------------------------------
-{
-    unsigned int file_name_size(std::strlen(aFileName));
-
-    // There are enough letters in the file name to store x.tif
-    if (file_name_size >= 5)
-        {
-        // The extension is TIF
-        if (aFileName[file_name_size - 4] == '.' &&
-                (aFileName[file_name_size - 3] == 't' ||
-                        aFileName[file_name_size - 3] == 'T') &&
-                (aFileName[file_name_size - 2] == 'i' ||
-                        aFileName[file_name_size - 2] == 'I') &&
-                (aFileName[file_name_size - 1] == 'f' ||
-                        aFileName[file_name_size - 1] == 'F'))
-            {
-            return (true);
-            }
-        }
-
-    // There are enough letters in the file name to store x.tiff
-    if (file_name_size >= 6)
-        {
-        // The extension is TIFF
-        if (aFileName[file_name_size - 5] == '.' &&
-                (aFileName[file_name_size - 4] == 't' ||
-                        aFileName[file_name_size - 4] == 'T') &&
-                (aFileName[file_name_size - 3] == 'i' ||
-                        aFileName[file_name_size - 3] == 'I') &&
-                (aFileName[file_name_size - 2] == 'f' ||
-                        aFileName[file_name_size - 2] == 'F') &&
-                (aFileName[file_name_size - 1] == 'f' ||
-                        aFileName[file_name_size - 1] == 'F'))
-            {
-            return (true);
-            }
-        }
-
-    return (false);
+    return (file_extension == extension_plus_dot);
 }
 
 

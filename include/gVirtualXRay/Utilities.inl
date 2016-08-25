@@ -71,105 +71,208 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
-//--------------------------------------
-inline bool isMHA(const char* aFileName)
-//--------------------------------------
-{
-    unsigned int file_name_size(std::strlen(aFileName));
-    if (file_name_size < 5)
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 4] != '.')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 3] != 'm' &&
-            aFileName[file_name_size - 3] != 'M')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 2] != 'h' &&
-            aFileName[file_name_size - 2] != 'H')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 1] != 'a' &&
-            aFileName[file_name_size - 1] != 'A')
-        {
-        return (false);
-        }
-
-    return (true);
-}
+    //---------------------------------------
+    inline bool isMAT(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "mat") ||
+                checkExtension(aFileName, "MAT"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
 
 
-//--------------------------------------
-inline bool isMHD(const char* aFileName)
-//--------------------------------------
-{
-    unsigned int file_name_size(std::strlen(aFileName));
-
-    if (file_name_size < 5)
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 4] != '.')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 3] != 'm' &&
-            aFileName[file_name_size - 3] != 'M')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 2] != 'h' &&
-            aFileName[file_name_size - 2] != 'H')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 1] != 'd' &&
-            aFileName[file_name_size - 1] != 'D')
-        {
-        return (false);
-        }
-
-    return (true);
-}
+    //---------------------------------------
+    inline bool isDAT(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "dat") ||
+                checkExtension(aFileName, "DAT"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
 
 
-//--------------------------------------
-inline bool isDCM(const char* aFileName)
-//--------------------------------------
-{
-    unsigned int file_name_size(std::strlen(aFileName));
+    //---------------------------------------
+    inline bool isTXT(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "txt") ||
+                checkExtension(aFileName, "TXT"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
 
-    if (file_name_size < 5)
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 4] != '.')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 3] != 'd' &&
-            aFileName[file_name_size - 3] != 'D')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 2] != 'c' &&
-            aFileName[file_name_size - 2] != 'C')
-        {
-        return (false);
-        }
-    else if (aFileName[file_name_size - 1] != 'm' &&
-            aFileName[file_name_size - 1] != 'M')
-        {
-        return (false);
-        }
 
-    return (true);
-}
+    //---------------------------------------
+    inline bool isPGM(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "pgm") ||
+                checkExtension(aFileName, "PGM"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------
+    inline bool isRAW(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "raw") ||
+                checkExtension(aFileName, "RAW"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------
+    inline bool isMHA(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "mha") ||
+                checkExtension(aFileName, "MHA"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------
+    inline bool isMHD(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "mhd") ||
+                checkExtension(aFileName, "MHD"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------
+    inline bool isDCM(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "dcm") ||
+                checkExtension(aFileName, "DCM"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------
+    inline bool isJPEG(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "jpg") ||
+                checkExtension(aFileName, "jpeg") ||
+                checkExtension(aFileName, "JPG") ||
+                checkExtension(aFileName, "JPEG"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------
+    inline bool isTIFF(const char* aFileName)
+    //---------------------------------------
+    {
+        if (checkExtension(aFileName, "tif") ||
+                checkExtension(aFileName, "tiff") ||
+                checkExtension(aFileName, "TIF") ||
+                checkExtension(aFileName, "TIFF"))
+            {
+            return (true);
+            }
+        else
+            {
+            return (false);
+            }
+    }
+
+
+    //---------------------------------------------
+    inline bool isMAT(const std::string& aFileName)
+    //---------------------------------------------
+    {
+        return (isMAT(aFileName.data()));
+    }
+
+
+    //---------------------------------------------
+    inline bool isDAT(const std::string& aFileName)
+    //---------------------------------------------
+    {
+        return (isDAT(aFileName.data()));
+    }
+
+
+    //---------------------------------------------
+    inline bool isTXT(const std::string& aFileName)
+    //---------------------------------------------
+    {
+        return (isTXT(aFileName.data()));
+    }
+
+
+    //---------------------------------------------
+    inline bool isPGM(const std::string& aFileName)
+    //---------------------------------------------
+    {
+        return (isPGM(aFileName.data()));
+    }
+
+
+    //---------------------------------------------
+    inline bool isRAW(const std::string& aFileName)
+    //---------------------------------------------
+    {
+        return (isRAW(aFileName.data()));
+    }
 
 
 //---------------------------------------------
@@ -209,6 +312,15 @@ inline bool isTIFF(const std::string& aFileName)
 //----------------------------------------------
 {
     return (isTIFF(aFileName.data()));
+}
+
+
+//-------------------------------------------------
+inline bool checkExtension(const char* aFileName,
+                           const char* anExtension)
+//-------------------------------------------------
+{
+    return (checkExtension(std::string(aFileName), std::string(anExtension)));
 }
 
 

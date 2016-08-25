@@ -132,6 +132,7 @@ SET (CXX_SOURCES
 	# Graphics
 	../src/Graphics/CubeMesh.cxx
 	../src/Graphics/framebufferObject.cpp
+	../src/Graphics/Image.cxx
 	../src/Graphics/ImplicitSurface.cxx
 	../src/Graphics/OpenGL2VBO.cxx
 	../src/Graphics/OpenGL3VBO.cxx
@@ -186,6 +187,8 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/CubeMesh.h
 	../include/gVirtualXRay/CubeMesh.inl
 	../include/gVirtualXRay/framebufferObject.h
+	../include/gVirtualXRay/Image.h
+   	../include/gVirtualXRay/Image.inl
 	../include/gVirtualXRay/ImplicitSurface.h
    	../include/gVirtualXRay/ImplicitSurface.inl
 	../include/gVirtualXRay/Material.h

@@ -208,7 +208,6 @@ XRayRenderer::XRayRenderer():
 		m_p_pbo_set(XRAY_DETECTOR_PBO_NUMBER, 0),
 		m_p_texture_name_set(XRAY_DETECTOR_2D_TEXTURE_NUMBER + XRAY_DETECTOR_3D_TEXTURE_NUMBER, 0),
 		m_shader_set(XRAY_DETECTOR_SHADER_NUMBER),
-		m_p_temp_raw_data(0),
 #ifdef HAS_ITK
 		m_p_l_buffer_image(ImageType::New()),
 		m_p_cumulated_lbuffer_image(ImageType::New()),
@@ -216,13 +215,6 @@ XRayRenderer::XRayRenderer():
 		m_p_energy_fluence_image(ImageType::New()),
         m_p_sinogram_image(ImageType::New()),
         m_p_projection_set(ImageType::New()),
-#else // HAS_ITK
-        m_p_l_buffer_image(0),
-        m_p_cumulated_lbuffer_image(0),
-        m_p_sum_mux_dx_image(0),
-        m_p_energy_fluence_image(0),
-        m_p_sinogram_image(0),
-        m_p_projection_set(0),
 #endif
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
@@ -342,16 +334,20 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 		break;
 	}
 
+	VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+	        m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
+	        1);
+
+    // Convert the size in mm
+    pixel_size[0] /= mm;
+    pixel_size[1] /= mm;
+
 #ifdef HAS_ITK
 	// Compute the size of a pixel
-	ImageType::SpacingType pixel_size;
-	pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
-	pixel_size[1] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
-	pixel_size[2] = 1;
-
-	// Convert the size in mm
-	pixel_size[0] /= mm;
-	pixel_size[1] /= mm;
+	ImageType::SpacingType itk_pixel_size;
+	itk_pixel_size[0] = pixel_size.getX();
+	itk_pixel_size[1] = pixel_size.getY();
+	itk_pixel_size[2] = pixel_size.getZ();
 
 	// Create a new image
 	ImageType::IndexType start;
@@ -394,26 +390,40 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	m_p_energy_fluence_image->Allocate();
 
 	// Set the pixel size
-	m_p_l_buffer_image->SetSpacing(pixel_size);
-	m_p_cumulated_lbuffer_image->SetSpacing(pixel_size);
-	m_p_sum_mux_dx_image->SetSpacing(pixel_size);
-	m_p_energy_fluence_image->SetSpacing(pixel_size);
+	m_p_l_buffer_image->SetSpacing(itk_pixel_size);
+	m_p_cumulated_lbuffer_image->SetSpacing(itk_pixel_size);
+	m_p_sum_mux_dx_image->SetSpacing(itk_pixel_size);
+	m_p_energy_fluence_image->SetSpacing(itk_pixel_size);
+
 #else // HAS_ITK
 
-    if (m_p_l_buffer_image) delete [] m_p_l_buffer_image;
-    if (m_p_cumulated_lbuffer_image) delete [] m_p_cumulated_lbuffer_image;
-    if (m_p_sum_mux_dx_image) delete [] m_p_sum_mux_dx_image;
-    if (m_p_energy_fluence_image) delete [] m_p_energy_fluence_image;
+    m_l_buffer_image          = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            3);
 
-    m_p_l_buffer_image          = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3];
-    m_p_cumulated_lbuffer_image = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3];
-    m_p_sum_mux_dx_image        = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber()];
-    m_p_energy_fluence_image    = new PixelType[m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 1];
+    m_cumulated_lbuffer_image          = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            3);
 
-    if (!m_p_l_buffer_image || !m_p_cumulated_lbuffer_image || !m_p_sum_mux_dx_image || !m_p_energy_fluence_image)
-    {
-        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-    }
+    m_sum_mux_dx_image          = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            m_p_xray_beam->getEnergyChannelNumber());
+
+    m_energy_fluence_image          = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            1);
+
+
+    // Set the pixel size
+    m_l_buffer_image.setSpacing(pixel_size);
+    m_cumulated_lbuffer_image.setSpacing(pixel_size);
+    m_sum_mux_dx_image.setSpacing(pixel_size);
+    m_energy_fluence_image.setSpacing(pixel_size);
+
 #endif // HAS_ITK
 
 	// Create the VBO
@@ -425,14 +435,10 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	{
 		depth = m_p_xray_beam->getEnergyChannelNumber();
 	}
-	m_p_temp_raw_data = new PixelType[m_p_detector->getNumberOfPixels().getX() *
-	                                  m_p_detector->getNumberOfPixels().getY() * depth];
-
-	// The memory is not allocated
-	if (!m_p_temp_raw_data)
-	{
-		throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-	}
+	m_temp_raw_data = Image<PixelType>(
+	        m_p_detector->getNumberOfPixels().getX(),
+	        m_p_detector->getNumberOfPixels().getY(),
+	        depth);
 }
 
 
@@ -448,14 +454,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
     }
 
-#ifdef HAS_ITK
-    // Compute the size of a pixel
-    ImageType::SpacingType pixel_size;
-    pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
-    pixel_size[1] = anAngleOffset;
-    pixel_size[2] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
+    VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+            anAngleOffset,
+            m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY());
 
-    if (std::abs(pixel_size[2]) < EPSILON)
+    if (std::abs(pixel_size.getZ()) < EPSILON)
     {
         pixel_size[2] = 1.0;
     }
@@ -464,6 +467,14 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     pixel_size[0] /= mm;
     pixel_size[1] /= 1.0;
     pixel_size[2] /= mm;
+
+    #ifdef HAS_ITK
+    // Compute the size of a pixel
+    ImageType::SpacingType itk_pixel_size;
+    itk_pixel_size[0] = pixel_size.getX();
+    itk_pixel_size[1] = pixel_size.getY();
+    itk_pixel_size[2] = pixel_size.getZ();
+
 
     // Create a new image
     ImageType::IndexType start;
@@ -486,19 +497,18 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     m_p_sinogram_image->Allocate();
 
     // Set the pixel size
-    m_p_sinogram_image->SetSpacing(pixel_size);
+    m_p_sinogram_image->SetSpacing(itk_pixel_size);
+
 #else // HAS_ITK
 
-    // Release the meory if needed
-    if (m_p_sinogram_image) delete [] m_p_sinogram_image;
-
     // Allocate the memory
-    m_p_sinogram_image = new PixelType [m_p_detector->getNumberOfPixels().getX() *
-                                        aNumberOfAngle *
-                                        m_p_detector->getNumberOfPixels().getY()];
+    m_sinogram_image = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            aNumberOfAngle,
+            m_p_detector->getNumberOfPixels().getY());
 
-    // Out of memory
-    if (!m_p_sinogram_image) throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    // Set the pixel size
+    m_sinogram_image.setSpacing(pixel_size);
 
 #endif // HAS_ITK
 
@@ -532,11 +542,11 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
 #ifdef HAS_ITK
         PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
 #else // HAS_ITK
-        PixelType* p_pixel_set(m_p_sinogram_image);
+        PixelType* p_pixel_set(m_sinogram_image.getRawData());
 #endif // HAS_ITK
 
         // Convert the data into a sinogram
-        PixelType* p_input_data(m_p_temp_raw_data);
+        PixelType* p_input_data(m_temp_raw_data.getRawData());
         RATIONAL_NUMBER total_input_energy(m_p_xray_beam->getTotalEnergy());
         RATIONAL_NUMBER scaling_factor(
                 RATIONAL_NUMBER(m_p_detector->getNumberOfPixels().getX()) / (m_p_detector->getSizeInUnitOfLength().getX() / cm)
@@ -595,7 +605,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                     angle * m_p_detector->getNumberOfPixels().getX());
 
             // Copy the data
-            memcpy(p_pixel_set + offset, m_p_temp_raw_data + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
+            memcpy(p_pixel_set + offset, m_temp_raw_data.getRawData() + j * m_p_detector->getNumberOfPixels().getX(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX());
         }
     }
 }
@@ -608,17 +618,14 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
                                         RATIONAL_NUMBER anAngleOffset)
 //------------------------------------------------------------------------------
 {
-    if (anAngleOffset == 0)
+    if (aNumberOfAngle == 0)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The number of projections is zero.");
     }
 
-#ifdef HAS_ITK
-    // Compute the size of a pixel
-    ImageType::SpacingType pixel_size;
-    pixel_size[0] = m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX();
-    pixel_size[1] = m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY();
-    pixel_size[2] = anAngleOffset;
+    VEC3 pixel_size(m_p_detector->getSizeInUnitOfLength().getX() / m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getSizeInUnitOfLength().getY() / m_p_detector->getNumberOfPixels().getY(),
+            anAngleOffset);
 
     if (std::abs(pixel_size[2]) < EPSILON)
     {
@@ -629,6 +636,13 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     pixel_size[0] /= mm;
     pixel_size[1] /= mm;
     pixel_size[2] /= 1.0;
+
+#ifdef HAS_ITK
+    // Compute the size of a pixel
+    ImageType::SpacingType itk_pixel_size;
+    itk_pixel_size[0] = pixel_size.getX();
+    itk_pixel_size[1] = pixel_size.getY();
+    itk_pixel_size[2] = pixel_size.getZ();
 
     // Create a new image
     ImageType::IndexType start;
@@ -651,19 +665,18 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     m_p_projection_set->Allocate();
 
     // Set the pixel size
-    m_p_projection_set->SetSpacing(pixel_size);
+    m_p_projection_set->SetSpacing(itk_pixel_size);
 #else // HAS_ITK
 
-    // Release the meory if needed
-    if (m_p_projection_set) delete [] m_p_projection_set;
-
     // Allocate the memory
-    m_p_projection_set = new PixelType [m_p_detector->getNumberOfPixels().getX() *
-                                        m_p_detector->getNumberOfPixels().getY() *
-                                        aNumberOfAngle];
+    m_projection_set = Image<PixelType>(
+            m_p_detector->getNumberOfPixels().getX(),
+            m_p_detector->getNumberOfPixels().getY(),
+            aNumberOfAngle);
 
-    // Out of memory
-    if (!m_p_projection_set) throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+
+    // Set the pixel size
+    m_projection_set.setSpacing(pixel_size);
 
 #endif
 
@@ -697,11 +710,11 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
 #ifdef HAS_ITK
         PixelType* p_pixel_set(m_p_projection_set->GetBufferPointer());
 #else // HAS_ITK
-        PixelType* p_pixel_set(m_p_projection_set);
+        PixelType* p_pixel_set(m_projection_set.getRawData());
 #endif // HAS_ITK
 
         // Copy the data
-        memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
     }
 }
 
@@ -936,38 +949,6 @@ void XRayRenderer::reset()
 	m_p_fbo_set.clear();
 	m_L_buffer_empty = false;
 	m_energy_fluence_empty = false;
-
-    if (m_p_temp_raw_data)
-    {
-        delete [] m_p_temp_raw_data;
-        m_p_temp_raw_data = 0;
-    }
-
-#ifndef HAS_ITK
-    if (m_p_l_buffer_image)
-    {
-        delete [] m_p_l_buffer_image;
-        m_p_l_buffer_image = 0;
-    }
-
-    if (m_p_cumulated_lbuffer_image)
-    {
-        delete [] m_p_cumulated_lbuffer_image;
-        m_p_cumulated_lbuffer_image = 0;
-    }
-
-    if (m_p_sum_mux_dx_image)
-    {
-        delete [] m_p_sum_mux_dx_image;
-        m_p_sum_mux_dx_image = 0;
-    }
-
-    if (m_p_energy_fluence_image)
-    {
-        delete [] m_p_energy_fluence_image;
-        m_p_energy_fluence_image = 0;
-    }
-#endif // HAS_ITK
 }
 
 
@@ -1829,35 +1810,35 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 		{
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
             p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
 
             p_writer->SetInput(m_p_l_buffer_image);
             break;
 
         case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
             p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
 
             p_writer->SetInput(m_p_l_buffer_image);
             break;
 
 		case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
 			p_pixel_set = m_p_sum_mux_dx_image->GetBufferPointer();
-			memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
+			memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
 
 			p_writer->SetInput(m_p_sum_mux_dx_image);
 			break;
 
         case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
             p_pixel_set = m_p_cumulated_lbuffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3) ;
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3) ;
 
             p_writer->SetInput(m_p_cumulated_lbuffer_image);
             break;
 
         case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
             p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY()) ;
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY()) ;
 
             p_writer->SetInput(m_p_energy_fluence_image);
             break;
@@ -1877,7 +1858,39 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 
 #else // HAS_ITK
 
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        switch (aFBOID)
+        {
+        case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
+            m_l_buffer_image = m_temp_raw_data.getRawData();
+            m_l_buffer_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
+            m_l_buffer_image = m_temp_raw_data.getRawData();
+            m_l_buffer_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
+            m_sum_mux_dx_image = m_temp_raw_data.getRawData();
+            m_sum_mux_dx_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+            m_cumulated_lbuffer_image = m_temp_raw_data.getRawData();
+            m_cumulated_lbuffer_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+            m_energy_fluence_image = m_temp_raw_data.getRawData();
+            m_energy_fluence_image.save(aFileName);
+            break;
+
+        default:
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+            }
+            break;
+        }
 
 #endif // HAS_ITK
 	}
@@ -1910,35 +1923,35 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 		{
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
             p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
 
             p_writer->SetInput(m_p_l_buffer_image);
             break;
 
         case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
             p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
 
             p_writer->SetInput(m_p_l_buffer_image);
             break;
 
 		case XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID:
 			p_pixel_set = m_p_sum_mux_dx_image->GetBufferPointer();
-			memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
+			memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
 
 			p_writer->SetInput(m_p_sum_mux_dx_image);
 			break;
 
         case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
             p_pixel_set = m_p_cumulated_lbuffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
 
             p_writer->SetInput(m_p_cumulated_lbuffer_image);
             break;
 
         case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
             p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_p_temp_raw_data, sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 
             p_writer->SetInput(m_p_energy_fluence_image);
             break;
@@ -1958,16 +1971,48 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 
 #else // HAS_ITK
 
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        switch (aTextureID)
+        {
+        case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
+            m_l_buffer_image = m_temp_raw_data.getRawData();
+            m_l_buffer_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
+            m_l_buffer_image = m_temp_raw_data.getRawData();
+            m_l_buffer_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
+            m_sum_mux_dx_image = m_temp_raw_data.getRawData();
+            m_sum_mux_dx_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
+            m_cumulated_lbuffer_image = m_temp_raw_data.getRawData();
+            m_cumulated_lbuffer_image.save(aFileName);
+            break;
+
+        case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
+            m_energy_fluence_image = m_temp_raw_data.getRawData();
+            m_energy_fluence_image.save(aFileName);
+            break;
+
+        default:
+            {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+            }
+            break;
+        }
 
 #endif // HAS_ITK
 	}
 }
 
 
-//--------------------------------------------------------------
-RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
-//--------------------------------------------------------------
+//--------------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
+//--------------------------------------------------------
 {
 	// The FBO does not exist
 	if (aFBOID >= m_p_fbo_set.size())
@@ -1985,9 +2030,9 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
 	        m_p_fbo_set[aFBOID]->Bind();
 
 	        // Read data from the FBO
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_p_temp_raw_data);
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_temp_raw_data.getRawData());
+	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 	        break;
 
 	    case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
@@ -1995,9 +2040,9 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
 	        m_p_fbo_set[aFBOID]->Bind();
 
 	        // Read data from the FBO
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_p_temp_raw_data);
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT,  m_temp_raw_data.getRawData());
+	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+	        glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 	        break;
 
 	case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
@@ -2017,7 +2062,7 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
 			m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_p_temp_raw_data + slice_number * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+			glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_temp_raw_data.getRawData() + slice_number * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 		}
 		break;
 
@@ -2027,9 +2072,9 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
 		m_p_fbo_set[aFBOID]->Bind();
 
 		// Read data from the FBO
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_p_temp_raw_data);
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_RED,  GL_FLOAT, m_temp_raw_data.getRawData());
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+		glReadPixels(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), GL_BLUE, GL_FLOAT,  m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
 		break;
 
 	default:
@@ -2045,13 +2090,13 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID) const
 	// Restore the current FBO
 	popFBO();
 
-	return (m_p_temp_raw_data);
+	return (m_temp_raw_data.getRawData());
 }
 
 
-//------------------------------------------------------------------------
-RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID) const
-//------------------------------------------------------------------------
+//------------------------------------------------------------------
+RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
+//------------------------------------------------------------------
 {
 	// The texture does not exist
 	if (aTextureID >= m_p_texture_name_set.size())
@@ -2068,27 +2113,27 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID) const
 	{
     case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
         glBindTexture(GL_TEXTURE_2D, texture_id);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_temp_raw_data.getRawData());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
         break;
 
     case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
         glBindTexture(GL_TEXTURE_2D, texture_id);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, m_p_temp_raw_data + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_p_temp_raw_data + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_temp_raw_data.getRawData());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, m_temp_raw_data.getRawData() + m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_BLUE, GL_FLOAT, m_temp_raw_data.getRawData() + 2 * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
         break;
 
 	case XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID:
 		glBindTexture(GL_TEXTURE_3D, texture_id);
-		glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
+		glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_FLOAT, m_temp_raw_data.getRawData());
 		break;
 
 	case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
 	case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
 		glBindTexture(GL_TEXTURE_2D, texture_id);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_p_temp_raw_data);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_temp_raw_data.getRawData());
 		break;
 
 	default:
@@ -2102,7 +2147,7 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID) const
 	popTexture();
 	popTexture();
 
-	return (m_p_temp_raw_data);
+	return (m_temp_raw_data.getRawData());
 }
 
 
@@ -2854,7 +2899,7 @@ void XRayRenderer::normalise()
 			i < m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY();
 			++i)
 	{
-		PixelType pixel_value(m_p_temp_raw_data[i]);
+		PixelType pixel_value(m_temp_raw_data.getRawData()[i]);
 
 #if defined(isinf) && defined(isnan)
 		if (!isinf(pixel_value) && !isnan(pixel_value))

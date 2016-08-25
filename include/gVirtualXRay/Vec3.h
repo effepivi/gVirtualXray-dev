@@ -397,6 +397,8 @@ public:
     bool operator!=(const Vec3& aVector) const;
 
 
+    T& operator[](unsigned int i);
+    const T& operator[](unsigned int i) const;
 //******************************************************************************
 protected:
     //**************************************************************************

@@ -504,19 +504,19 @@ namespace gVirtualXRay {
 
 #else // HAS_ITK
 
-    //---------------------------------------------------------------------
-    inline const XRayRenderer::PixelType* XRayRenderer::getSinogram() const
-    //---------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType> XRayRenderer::getSinogram() const
+    //---------------------------------------------------------------------------
     {
-        return (m_p_sinogram_image);
+        return (m_sinogram_image);
     }
 
 
-    //---------------------------------------------------------
-    inline XRayRenderer::PixelType* XRayRenderer::getSinogram()
-    //---------------------------------------------------------
+    //---------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType> XRayRenderer::getSinogram()
+    //---------------------------------------------------------------
     {
-        return (m_p_sinogram_image);
+        return (m_sinogram_image);
     }
 
 
@@ -524,23 +524,23 @@ namespace gVirtualXRay {
     inline const XRayRenderer::PixelType* XRayRenderer::getSinogramRawData() const
     //----------------------------------------------------------------------------
     {
-        return (m_p_sinogram_image);
+        return (m_sinogram_image.getRawData());
     }
 
 
-    //--------------------------------------------------------------------------
-    inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSet() const
-    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType> XRayRenderer::getProjectionSet() const
+    //--------------------------------------------------------------------------------
     {
-        return (m_p_projection_set);
+        return (m_projection_set);
     }
 
 
-    //--------------------------------------------------------------
-    inline XRayRenderer::PixelType* XRayRenderer::getProjectionSet()
-    //--------------------------------------------------------------
+    //--------------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType> XRayRenderer::getProjectionSet()
+    //--------------------------------------------------------------------
     {
-        return (m_p_projection_set);
+        return (m_projection_set);
     }
 
 
@@ -548,7 +548,7 @@ namespace gVirtualXRay {
     inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSetRawData() const
     //---------------------------------------------------------------------------------
     {
-        return (m_p_projection_set);
+        return (m_projection_set.getRawData());
     }
 
 #endif // HAS_ITK
@@ -606,42 +606,7 @@ namespace gVirtualXRay {
             p_writer->Update();
         }
 #else // HAS_ITK
-        if (isMHD(aFileName))
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Saving MHD files is not implemented, "
-                    "please contact Dr FP Vidal.");
-        }
-        else if (isMHA(aFileName))
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Saving MHA files is not implemented, "
-                    "please contact Dr FP Vidal.");
-        }
-        else if (isDCM(aFileName))
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Saving DICOM files is not implemented, "
-                    "please contact Dr FP Vidal.");
-        }
-        else if (isTIFF(aFileName))
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Saving TIFF files is not implemented, "
-                    "please contact Dr FP Vidal.");
-        }
-        else if (isJPEG(aFileName))
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Saving JPEG files is not implemented, "
-                    "please contact Dr FP Vidal.");
-        }
-        else
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "Unknown file format, to get it added to the library, "
-                    "please contact Dr FP Vidal.");
-        }
+        m_sinogram_image.save(aFileName);
 #endif // HAS_ITK
     }
 
@@ -666,7 +631,7 @@ namespace gVirtualXRay {
             p_writer->Update();
         }
 #else // HAS_ITK
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+        m_projection_set.save(aFileName);
 #endif // HAS_ITK
     }
 
@@ -800,9 +765,9 @@ namespace gVirtualXRay {
     }
 
 
-    //------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getLBuffer() const
-    //------------------------------------------------------
+    //------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getLBuffer()
+    //------------------------------------------------
     {
         if (m_use_L_buffer_artefact_filtering)
         {
@@ -817,36 +782,36 @@ namespace gVirtualXRay {
     }
 
 
-    //---------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getCumulatedLBuffer() const
-    //---------------------------------------------------------------
+    //---------------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getCumulatedLBuffer()
+    //---------------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID));
     }
 
 
-    //-------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getSumMuxDx() const
-    //-------------------------------------------------------
+    //-------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getSumMuxDx()
+    //-------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID));
     }
 
 
-    //------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getEnergyFluence() const
-    //------------------------------------------------------------
+    //------------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getEnergyFluence()
+    //------------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
     }
 
 
-    //--------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getXRayImage() const
-    //--------------------------------------------------------
+    //--------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getXRayImage()
+    //--------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));

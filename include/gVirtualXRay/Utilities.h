@@ -91,6 +91,56 @@ int inflate(const void *src, int srcLen, char** apDst);
 
 
 //------------------------------------------------------------------------------
+/// Check if the extension of a file name is MAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMAT(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDAT(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TXT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TXT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTXT(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is PGM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PGM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPGM(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is RAW.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is RAW; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isRAW(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
 /// Check if the extension of a file name is MHA.
 /**
 *   @param  aFileName:  the file name to check
@@ -141,6 +191,56 @@ bool isTIFF(const char* aFileName);
 
 
 //------------------------------------------------------------------------------
+/// Check if the extension of a file name is MAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMAT(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDAT(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TXT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TXT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTXT(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is PGM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PGM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPGM(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is RAW.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is RAW; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isRAW(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
 /// Check if the extension of a file name is MHA.
 /**
 *   @param  aFileName:  the file name to check
@@ -188,6 +288,10 @@ bool isJPEG(const std::string& aFileName);
 */
 //------------------------------------------------------------------------------
 bool isTIFF(const std::string& aFileName);
+
+
+bool checkExtension(const char* aFileName, const char* anExtension);
+bool checkExtension(const std::string& aFileName, const std::string& anExtension);
 
 
 } // namespace gVirtualXRay

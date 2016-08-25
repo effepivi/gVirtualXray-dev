@@ -67,6 +67,10 @@
 //******************************************************************************
 #include <cmath>
 
+#ifndef __OutOfBoundsException_h
+#include "gVirtualXRay/OutOfBoundsException.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -357,6 +361,52 @@ template<typename T> bool Vec3<T>::operator!=(const Vec3<T>& aVector) const
             std::abs(m_z - aVector.m_z) >= 0.0000001);
 
     return (return_value);
+}
+
+
+//---------------------------------------------------------
+template<typename T> T& Vec3<T>::operator[](unsigned int i)
+//---------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else if (i == 2)
+        {
+        return (m_z);
+        }
+    else
+        {
+        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------------------
+template<typename T> const T& Vec3<T>::operator[](unsigned int i) const
+//---------------------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else if (i == 2)
+        {
+        return (m_z);
+        }
+    else
+        {
+        OutOfBoundException(__FILE__, __FUNCTION__, __LINE__);
+        }
 }
 
 
