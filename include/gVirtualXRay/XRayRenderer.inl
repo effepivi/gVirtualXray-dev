@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+#ifndef __Utilities_h
+#include "gVirtualXRay/Utilities.h"
+#endif
+
 
 //******************************************************************************
 //  define
