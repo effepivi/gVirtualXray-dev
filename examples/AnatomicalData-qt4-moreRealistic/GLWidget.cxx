@@ -885,12 +885,13 @@ void GLWidget::render()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
+        normal_matrix = MATRIX4();
         handle = glGetUniformLocation(shader_id, "g_normal_matrix");
         glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         GLint lighting;
-        lighting = 0;
+        lighting = 1;
         handle = glGetUniformLocation(shader_id,"g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -1012,7 +1013,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
         }
         else
         {
-        	if(apMeshSet[i]->isTransparent()||!apMeshSet[i]->isSoftTissue())
+        	if(apMeshSet[i]->isTransparent())
      	    {
         		/*pushEnableDisableState(GL_CULL_FACE);
         		pushEnableDisableState(GL_BLEND);

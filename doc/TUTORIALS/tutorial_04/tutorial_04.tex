@@ -41,9 +41,9 @@ Andréas MEULEMAN
 
 \chapter{Introduction}
 
-	The complete source code of this tutorial is available in Appendix A and on the Subversion (SVN) repository at $tutorials/tutorial\_04\_qt4$. 
+	The complete source code of this tutorial is available on the Subversion (SVN) repository at $tutorials/tutorial\_04\_qt4$. 
 	
-	The AnatomicalMesh is a virtual class inheriting from PolygonMesh\footnote{Class diagram in annexe.}. It was made to hadle meshes for different tussies. Five classes are inheriting from AnatomicalMesh: $SkinMesh$, $LungsMesh$, $LiverMesh$, $DiaphragmMesh$ and $BoneMesh$. They are all implementing the following public functions: \\ 
+	$AnatomicalMesh$ is a virtual class inheriting from PolygonMesh\footnote{Class diagram in annexe.}. It was made to hadle meshes for different tussies. Five classes are inheriting from $AnatomicalMesh$: $SkinMesh$, $LungsMesh$, $LiverMesh$, $DiaphragmMesh$ and $BoneMesh$. They are all implementing the following public functions: \\ 
 
 \begin{lstlisting}
 	/// return true if the mesh has to be displayed with transparency
@@ -61,7 +61,7 @@ Andréas MEULEMAN
 \end{lstlisting}
 ~\\
 
-	$SkinMesh$ is transparent and the other classes generate suitable textures and normal maps. They are supposed to be used with the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$. 
+	$SkinMesh$ is transparent and the other classes generate suitable textures and normal maps. The are procedural generated using noise so that they are slightly different after each launch of the program. These classes are supposed to be used with the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$. 
 
 	To use these classes, we need to set the data (vertices position and normal vectors) as we do for any PolygonMesh and then, call $defineDisplayShaderInput(int$ $shader\_id)$ just before the polygonMesh's function $display()$. In this tutorial, we will display lungs without lighting.
 	
@@ -90,7 +90,7 @@ These are to use the shaders $display\_realistic\_gl3.vert$ and $display\_realis
 
 We have to include the header of the class we are going to use:
 \begin{lstlisting}
-#include "gVirtualXRay/$LungsMesh$.h"
+#include "gVirtualXRay/LungsMesh.h"
 \end{lstlisting}
 
 \chapter{Build the objects}

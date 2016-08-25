@@ -352,14 +352,14 @@ void GLWidget::render()
         // Rotate the sample
         g_current_modelview_matrix *= m_scene_rotation_matrix*m_meshes_model_matrix;
 
-        // Handle for shader variables
-    	GLuint handle(0);
-
         // Define the light colours here
         GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
         GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
         GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+        // Handle for shader variables
+    	GLuint handle(0);
 
         handle = glGetUniformLocation(shader_id, "light_global_ambient");
         glUniform4fv(handle, 1, &light_global_ambient[0]);
@@ -412,8 +412,6 @@ void GLWidget::render()
         handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
         glUniformMatrix4fv(handle, 1, GL_FALSE, shadow_matrix.get());
         gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        applyModelViewMatrix();
 
         // Display the polygon mesh set
         displayMesh(polygon_mesh_set, shader_id);
