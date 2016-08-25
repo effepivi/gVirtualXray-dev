@@ -262,6 +262,7 @@ void GLWidget::loadSTLFile()
 
 	// Compute the translation vector
 	VEC3 lung_translation_vector = m_lung_mesh.getMinCorner() + (m_lung_mesh.getMaxCorner() - m_lung_mesh.getMinCorner()) / 2.0;
+	// compute the lung model matrix
 	m_lung_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
 	m_lung_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-lung_translation_vector);
 
@@ -297,6 +298,7 @@ void GLWidget::render()
 
         // Rotate the sample
         g_current_modelview_matrix *= m_scene_rotation_matrix;
+        g_current_modelview_matrix *= m_lung_rotation_matrix;
 
         // Handle for shader variables
     	GLuint handle(0);
@@ -315,11 +317,6 @@ void GLWidget::render()
         handle = glGetUniformLocation(shader_id,"g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Set the modelview matrix
-        g_current_modelview_matrix *= m_lung_rotation_matrix;
-
-        applyModelViewMatrix();
 
         m_lung_mesh.defineDisplayShaderInput(shader_id);
 

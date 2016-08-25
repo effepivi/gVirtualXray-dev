@@ -890,7 +890,7 @@ void GLWidget::render()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         GLint lighting;
-        lighting = 1;
+        lighting = 0;
         handle = glGetUniformLocation(shader_id,"g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -1012,7 +1012,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
         }
         else
         {
-        	if(apMeshSet[i]->isTransparent())
+        	if(apMeshSet[i]->isTransparent()||!apMeshSet[i]->isSoftTissue())
      	    {
         		/*pushEnableDisableState(GL_CULL_FACE);
         		pushEnableDisableState(GL_BLEND);
