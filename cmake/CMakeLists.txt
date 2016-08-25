@@ -252,6 +252,7 @@ SET (HXX_SOURCES
 	../include/gVirtualXRay/Types.h
 	../include/gVirtualXRay/Units.h
 	../include/gVirtualXRay/Utilities.h
+	../include/gVirtualXRay/Utilities.inl
 )
 
 

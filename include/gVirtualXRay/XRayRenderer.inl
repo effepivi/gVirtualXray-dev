@@ -608,15 +608,39 @@ namespace gVirtualXRay {
 #else // HAS_ITK
         if (isMHD(aFileName))
         {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Saving MHD files is not implemented, "
+                    "please contact Dr FP Vidal.");
         }
         else if (isMHA(aFileName))
         {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Saving MHA files is not implemented, "
+                    "please contact Dr FP Vidal.");
+        }
+        else if (isDCM(aFileName))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Saving DICOM files is not implemented, "
+                    "please contact Dr FP Vidal.");
+        }
+        else if (isTIFF(aFileName))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Saving TIFF files is not implemented, "
+                    "please contact Dr FP Vidal.");
+        }
+        else if (isJPEG(aFileName))
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Saving JPEG files is not implemented, "
+                    "please contact Dr FP Vidal.");
         }
         else
         {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Unknown file format, to get it added to the library, "
+                    "please contact Dr FP Vidal.");
         }
 #endif // HAS_ITK
     }

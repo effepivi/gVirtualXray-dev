@@ -91,50 +91,110 @@ int inflate(const void *src, int srcLen, char** apDst);
 
 
 //------------------------------------------------------------------------------
-/// Check if the extension of a file name is mha.
+/// Check if the extension of a file name is MHA.
 /**
 *   @param  aFileName:  the file name to check
-*   @return true if the extension of aFileName is mha; false if it is not
+*   @return true if the extension of aFileName is MHA; false if it is not
 */
 //------------------------------------------------------------------------------
 bool isMHA(const char* aFileName);
 
 
 //------------------------------------------------------------------------------
-/// Check if the extension of a file name is mha.
+/// Check if the extension of a file name is MHD.
 /**
 *   @param  aFileName:  the file name to check
-*   @return true if the extension of aFileName is mha; false if it is not
+*   @return true if the extension of aFileName is MHD; false if it is not
 */
 //------------------------------------------------------------------------------
 bool isMHD(const char* aFileName);
 
 
 //------------------------------------------------------------------------------
-/// Check if the extension of a file name is mha.
+/// Check if the extension of a file name is DCM.
 /**
 *   @param  aFileName:  the file name to check
-*   @return true if the extension of aFileName is mha; false if it is not
+*   @return true if the extension of aFileName is DCM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDCM(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is JPEG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is JPEG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isJPEG(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TIFF.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TIFF; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTIFF(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MHA.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MHA; false if it is not
 */
 //------------------------------------------------------------------------------
 bool isMHA(const std::string& aFileName);
 
 
 //------------------------------------------------------------------------------
-/// Check if the extension of a file name is mha.
+/// Check if the extension of a file name is MHD.
 /**
 *   @param  aFileName:  the file name to check
-*   @return true if the extension of aFileName is mha; false if it is not
+*   @return true if the extension of aFileName is MHD; false if it is not
 */
 //------------------------------------------------------------------------------
 bool isMHD(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DCM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DCM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDCM(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is JPEG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is JPEG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isJPEG(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TIFF.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TIFF; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTIFF(const std::string& aFileName);
 
 
 } // namespace gVirtualXRay
 
 
 //******************************************************************************
-//#include "Utilities.inl"
+#include "Utilities.inl"
 
 
-#endif // UTILITIES_H
+#endif // __Utilities_h
