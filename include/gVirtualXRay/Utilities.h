@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_UTILITIES_H
-#define GVXR_UTILITIES_H
+#ifndef __Utilities_h
+#define __Utilities_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Utilities.h
+*   @file       Utilities.h
 *
-*	@brief		Some utility functions that do not fit anywhere else.
+*   @brief      Some utility functions that do not fit anywhere else.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		12/02/2014
+*   @date       12/02/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,7 +56,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -64,7 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #include <string>
 
@@ -74,27 +74,60 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //------------------------------------------------------------------------------
-///	Uncompress data using the Zlib.
+/// Uncompress data using the Zlib.
 /**
-*	@param 	src:	compressed data
-*	@param 	srcLen:	length of the uncompressed data
-*	@param 	apDst:	uncompressed data
+*   @param  src:    compressed data
+*   @param  srcLen: length of the uncompressed data
+*   @param  apDst:  uncompressed data
 */
 //------------------------------------------------------------------------------
 int inflate(const void *src, int srcLen, char** apDst);
 
 
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is mha.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is mha; false if it is not
+*/
+//------------------------------------------------------------------------------
 bool isMHA(const char* aFileName);
-bool isMHD(const char* aFileName);
-bool isMHA(const std::string& aFileName);
-bool isMHD(const std::string& aFileName);
 
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is mha.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is mha; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHD(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is mha.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is mha; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHA(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is mha.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is mha; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHD(const std::string& aFileName);
 
 
 } // namespace gVirtualXRay
