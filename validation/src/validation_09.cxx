@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,29 +35,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		validation_09.cxx
+*  @file        validation_09.cxx
 *
-*	@brief		Main test program to test a point source that is not
+*  @brief       Main test program to test a point source that is not
 *               orthogonally centered with respect to the detector.
 *               A similar experimental set up is used with a validated Monte
 *               Carlo simulation tool.
 *
-*	@version	1.0
+*  @version     1.0
 *
-*	@date		31/11/2014
+*  @date        31/11/2014
 *
-*	@author		Dr Franck P. Vidal
+*  @author      Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*  @section     License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*  @section     Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
