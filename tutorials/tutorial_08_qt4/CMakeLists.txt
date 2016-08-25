@@ -68,8 +68,6 @@ add_executable(tutorial_08_qt4
 
 target_link_libraries(tutorial_08_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-ADD_DEPENDENCIES(tutorial_08_qt4 BinaryTutorial08Qt4Files)
-
 INSTALL(TARGETS tutorial_08_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
