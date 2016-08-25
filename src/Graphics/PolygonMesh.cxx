@@ -950,25 +950,31 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
     switch (new_polygon_mesh.m_vertex_data_type)
         {
         case GL_FLOAT:
-            std::memcpy(new_polygon_mesh.m_p_vertex_set,
+            {
+            GLfloat* p_temp(static_cast<GLfloat*>(new_polygon_mesh.m_p_vertex_set));
+   
+            std::memcpy(p_temp,
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLfloat) * 3);
 
-            std::memcpy(new_polygon_mesh.m_p_vertex_set +
-                            m_number_of_vertices * sizeof(GLfloat) * 3,
+            std::memcpy(p_temp + m_number_of_vertices * 3,
                     aPolygonMesh.m_p_vertex_set,
                     aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
+            }
             break;
 
         case GL_DOUBLE:
-            std::memcpy(new_polygon_mesh.m_p_vertex_set,
+            {
+            GLdouble* p_temp(static_cast<GLdouble*>(new_polygon_mesh.m_p_vertex_set));
+
+            std::memcpy(p_temp,
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLdouble) * 3);
 
-            std::memcpy(new_polygon_mesh.m_p_vertex_set +
-                            m_number_of_vertices * sizeof(GLdouble) * 3,
+            std::memcpy(p_temp + m_number_of_vertices * 3,
                     aPolygonMesh.m_p_vertex_set,
                     aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
+            }
             break;
         }
 
@@ -1192,25 +1198,31 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
     switch (new_polygon_mesh.m_vertex_data_type)
         {
         case GL_FLOAT:
-            std::memcpy(new_polygon_mesh.m_p_vertex_set,
+            {
+            GLfloat* p_temp(static_cast<GLfloat*>(new_polygon_mesh.m_p_vertex_set));
+
+            std::memcpy(p_temp,
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLfloat) * 3);
 
-            std::memcpy(new_polygon_mesh.m_p_vertex_set +
-                            m_number_of_vertices * sizeof(GLfloat) * 3,
+            std::memcpy(p_temp + m_number_of_vertices * 3,
                     aPolygonMesh.m_p_vertex_set,
                     aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
+            }
             break;
 
         case GL_DOUBLE:
-            std::memcpy(new_polygon_mesh.m_p_vertex_set,
+            {
+            GLdouble* p_temp(static_cast<GLdouble*>(new_polygon_mesh.m_p_vertex_set));
+
+            std::memcpy(p_temp,
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLdouble) * 3);
 
-            std::memcpy(new_polygon_mesh.m_p_vertex_set +
-                            m_number_of_vertices * sizeof(GLdouble) * 3,
+            std::memcpy(p_temp + m_number_of_vertices * 3,
                     aPolygonMesh.m_p_vertex_set,
                     aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
+            }
             break;
         }
 
