@@ -150,7 +150,7 @@ protected:
 	std::vector<int> m_permutation;
 
 	//Coordinates for texture sampling
-	std::vector<VEC2> m_textCoord;
+	std::vector<VEC2> m_texture_coord;
 
 	//direction of the margin to add between triangles in the texture
 	std::vector<VEC2> m_margin_direction;
