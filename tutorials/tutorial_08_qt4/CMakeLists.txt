@@ -30,7 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-project(gVirtualXRay-tutorial-06-qt4)
+project(gVirtualXRay-tutorial-08-qt4)
 
 # Initialise some states by default ############################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
@@ -62,15 +62,15 @@ ENDIF(Qt4_FOUND)
 
 # Create the main program ######################################################
 IF(Qt4_FOUND)
-add_executable(tutorial_06_qt4
-	tutorial_06_qt4.cxx  
+add_executable(tutorial_08_qt4
+	tutorial_08_qt4.cxx  
 	GLWidget.h GLWidget.cxx)
 
-target_link_libraries(tutorial_06_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+target_link_libraries(tutorial_08_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-ADD_DEPENDENCIES(tutorial_06_qt4 BinaryTutorial06Qt4Files)
+ADD_DEPENDENCIES(tutorial_08_qt4 BinaryTutorial08Qt4Files)
 
-INSTALL(TARGETS tutorial_06_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
+INSTALL(TARGETS tutorial_08_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
