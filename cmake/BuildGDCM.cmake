@@ -41,9 +41,28 @@ SET(GDCM_INCLUDE_DIRS ${GDCM_INCLUDE_DIR})
 SET(GDCM_LIBRARY_DIR  ${GDCM_INSTALL_DIR}/lib)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    SET(GDCM_LIBRARIES    
-        optimized ${GDCM_INSTALL_DIR}/lib/gdcm.lib
-        debug     ${GDCM_INSTALL_DIR}/lib/gdcm.lib
+    SET(GDCM_LIBRARIES   
+        ${GDCM_INSTALL_DIR}/lib/gdcmCommon.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmDICT.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmDSED.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmexpat.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmgetopt.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmIOD.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmjpeg12.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmjpeg16.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmjpeg8.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmMEXD.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmMSFF.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmopenjpeg.lib
+        ${GDCM_INSTALL_DIR}/lib/gdcmzlib.lib
+        ${GDCM_INSTALL_DIR}/lib/socketxx.lib 
+        ${GDCM_INSTALL_DIR}/bin/gdcmCommon.lib
+        ${GDCM_INSTALL_DIR}/bin/gdcmDICT.lib
+        ${GDCM_INSTALL_DIR}/bin/gdcmDSED.lib
+        ${GDCM_INSTALL_DIR}/bin/gdcmIOD.lib
+        ${GDCM_INSTALL_DIR}/bin/gdcmMEXD.lib
+        ${GDCM_INSTALL_DIR}/bin/gdcmMSFF.lib
+	${GDCM_INSTALL_DIR}/lib/gdcmcharls.lib
     )
 else ()
     SET(GDCM_LIBRARIES 

@@ -473,8 +473,12 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
         output_file << m_width << " " << m_height * m_number_of_slices << std::endl;
 
         // The get the max value
-        output_file << std::min(255, std::max(0, int(getMaxValue()))) << std::endl;
-    
+#ifndef WIN32
+		output_file << std::min(255, std::max(0, int(getMaxValue()))) << std::endl;
+#else
+		output_file << min(255, max(0, int(getMaxValue()))) << std::endl;
+#endif
+
         // Process every line
         for (unsigned int k = 0; k < m_number_of_slices; ++k)
         {
@@ -485,9 +489,13 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
                 {
                     // Process the pixel
                     int pixel_value(m_p_image[k * m_width * m_height + j * m_width + i]);
-                    pixel_value = std::max(0, pixel_value);
+#ifndef _WIN32
+					pixel_value = std::max(0, pixel_value);
                     pixel_value = std::min(255, pixel_value);
-
+#else
+					pixel_value = max(0, pixel_value);
+					pixel_value = min(255, pixel_value);
+#endif
                     output_file << pixel_value;
 
                     // It is not the last pixel of the line
