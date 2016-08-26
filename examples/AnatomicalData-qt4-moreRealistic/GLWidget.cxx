@@ -885,7 +885,6 @@ void GLWidget::render()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
-        normal_matrix = MATRIX4();
         handle = glGetUniformLocation(shader_id, "g_normal_matrix");
         glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

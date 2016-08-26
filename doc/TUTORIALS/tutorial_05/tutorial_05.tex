@@ -155,32 +155,136 @@ In case we want the light direction to be fixed to the camera, we have to send t
 	
 \subsection{Build the shadow map matrix}
 
+We build the shadow map projection matrix for an orthogonal projection of everything within the coordinates $[-10, 10]$ of all the axis: 
+
+\begin{lstlisting}
+    	gVirtualXRay::Matrix4x4<GLfloat> shadowProjectionMatrix(gVirtualXRay::buildOrthoProjectionMatrix(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f));
+\end{lstlisting}
+
+The we create the shadow map view matrix using the light direction:
+\begin{lstlisting}
+    	gVirtualXRay::Matrix4x4<GLfloat> shadowViewMatrix(gVirtualXRay::buildLookAtModelViewMatrix(
+    			m_light_direction,
+    			gVirtualXRay::VEC3(0.f, 0.f, 0.f),
+    			gVirtualXRay::VEC3(0.f, 1.f, 0.f)
+    		));
+\end{lstlisting}
+
+We multiply the shadow view matrix by the scene model matrix:
+
+\begin{lstlisting}
+    	shadowViewMatrix *= m_scene_rotation_matrix;
+\end{lstlisting}
+
 \subsection{Render to the shadow map}
 
-\subsubsection{In case all the models share the same model matrix}
+First, we create the vector of polygon meshes containing all the meshes that will cast shadows on other objects:
 
-\subsubsection{In case the models have different model matrix}
+\begin{lstlisting}
+    	std::vector<PolygonMesh*> polygon_mesh_set;
+    	polygon_mesh_set.push_back(&m_blue_cube_mesh);
+    	polygon_mesh_set.push_back(&m_red_cube_mesh);
+\end{lstlisting}
+
+\subsubsection{In case all the polygon meshes share the same model matrix}
+
+We multiply the shadow model view matrix by the models projection matrix:
+
+\begin{lstlisting}
+    	shadowViewMatrix *= m_meshes_model_matrix;
+\end{lstlisting}
+
+We create the shadow MVP matrix by multiplying the projection and the model view matrix:
+
+\begin{lstlisting}
+    	gVirtualXRay::Matrix4x4<GLfloat> shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+\end{lstlisting}
+
+We use the overload of the $render$ function that doesn't use a different matrix per polygon mesh:
+
+\begin{lstlisting}
+    	//render to the shadow map
+        m_shadow_map.render(polygon_mesh_set, shadow_matrix);
+\end{lstlisting}
+
+\subsubsection{In case the polygon meshes have different model matrix}
+
+We don't multiply the shadow matrix by the model projection matrix and we build the vector of matrixes:
+
+\begin{lstlisting}
+	std::vector<Matrix4x4<float > > matrix_set;
+	matrix_set.push_back(m_blue_cube_model_matrix);
+	matrix_set.push_back(m_red_cube_model_matrix);
+\end{lstlisting}
+
+We use the overload of $render$ that uses a different matrix per polygon mesh:
+
+\begin{lstlisting}
+    	//render to the shadow map
+        m_shadow_map.render(polygon_mesh_set, shadow_matrix, matrix_set);
+\end{lstlisting}
+
+In that case, we obviously need to change the model view matrix and the normal matrix for all the polygon meshes before defining the display shader inputs.
 
 \subsection{use the shadow map}
 
-\chapter{Display the organ using OpenGL}
+We have to send the shadow matrix to the display shader:
+
+\begin{lstlisting}
+        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, shadow_matrix.get());
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+and the shadow map texture:
+
+\begin{lstlisting}
+        //Bind the shadow map texture in texture unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
+
+        handle = glGetUniformLocation(shader_id, "g_shadow_map");
+        glUniform1i(handle,0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+\chapter{Display the polygon meshes using OpenGL}
 
 Now we just have to define the shader's inputs of the polygon meshes to be rendered and to display them:
 
 \begin{lstlisting}
+	    // Get the material
+	    Material& material(m_blue_cube_mesh->getMaterial());
 
+	    // Define colours inshader
+	    GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
+	    glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_diffuse");
+	    glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_specular");
+	    glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_shininess");
+	    glUniform1f(handle, material.getShininess());
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	    
+	    m_blue_cube_mesh.display;
 \end{lstlisting}
+
+This must be done for all the meshes.
 
 \chapter{result}
 
-A shadow is cast from the blue cub to the red one:
+A shadow is cast from the blue cube to the red one:
 
+\newpage
+We can combine lighting with the classes inheriting from AnatomicalMesh to get a better rendering:
 
-
-\chapter{Annexe}
-
-The class diagram of the anatomical mesh classes:\\
-
-
-
+\includegraphics[scale = 0.6]{img/AllMeshesLighting.png}
+ 
 \end{document}
