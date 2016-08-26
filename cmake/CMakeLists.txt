@@ -397,20 +397,24 @@ ENDIF (FREETYPE_FOUND)
 
 # GDCM #########################################################################
 
-IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-    OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       ON)
-ELSE ()
-    OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       OFF)
-ENDIF ()
+OPTION (USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" ON)
+IF (USE_GDCM)
+    IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+        OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       ON)
+    ELSE ()
+        OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       OFF)
+   ENDIF ()
+ENDIF (USE_GDCM)
 
-IF (USE_SYSTEM_GDCM)
-    FIND_PACKAGE( GDCM   REQUIRED )
-ELSE(USE_SYSTEM_GDCM)
-    INCLUDE(BuildGDCM)
+IF (USE_GDCM)
+    IF (USE_SYSTEM_GDCM)
+        FIND_PACKAGE( GDCM   REQUIRED )
+    ELSE(USE_SYSTEM_GDCM)
+        INCLUDE(BuildGDCM)
 
-    build_gdcm( gdcm ${PROJECT_BINARY_DIR} )
-
-ENDIF (USE_SYSTEM_GDCM)
+        build_gdcm( gdcm ${PROJECT_BINARY_DIR} )
+    ENDIF (USE_SYSTEM_GDCM)
+ENDIF(USE_GDCM)
 
 IF (GDCM_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GDCM")
