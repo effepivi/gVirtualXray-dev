@@ -26,6 +26,10 @@
 //******************************************************************************
 #include <string>
 
+#ifdef HAS_GDCM
+#include <gdcmFile.h>
+#endif
+
 #ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
@@ -377,6 +381,24 @@ public:
 
 //******************************************************************************
 private:
+#ifdef HAS_GDCM
+    void addTag(double aValue,
+            unsigned int anAddress1,
+            unsigned int anAddress2,
+            gdcm::File& aFile) const;
+
+
+    void addTag(const char* aValue,
+            unsigned int anAddress1,
+            unsigned int anAddress2,
+            gdcm::File& aFile) const;
+
+
+    void addTag(const std::string& aValue,
+            unsigned int anAddress1,
+            unsigned int anAddress2,
+            gdcm::File& aFile) const;
+#endif
 
     /// Number of pixel along the horizontal axis
     unsigned int m_width;

@@ -650,9 +650,6 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
     double shift(min_input_value);
     double scale(double(max_input_value - min_input_value) / max_output_value);
 
-    //shift = 0;
-    //scale = 0.5;
-
     if (m_number_of_slices == 1)
     {
 
@@ -728,26 +725,43 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
 
 
         // Window / Level
-        gdcm::Tag window_width_tag(0x0028,0x1051);
-        gdcm::Tag window_center_tag(0x0028,0x1050);
+        addTag(difference_input,
+                0x0028, 0x1051,
+                writer.GetFile());
 
-        gdcm::File& gdcm_file(writer.GetFile());
-        gdcm::DataSet &data_set = gdcm_file.GetDataSet();
+        addTag(min_input_value + difference_input / 2.0,
+                0x0028,0x1050,
+                writer.GetFile());
 
-        gdcm::DataElement window_width_data_element = window_width_tag;
-        gdcm::DataElement window_center_data_element = window_center_tag;
+        // Study description
+        addTag("X-ray simulation",
+                0x0008,0x1030,
+                writer.GetFile());
 
-        std::stringstream window_width_message;
-        std::stringstream window_center_message;
+        // Patient
+        addTag("Patient",
+                0x0010,0x0010,
+                writer.GetFile());
 
-        window_width_message << difference_input;
-        window_center_message << min_input_value + difference_input / 2.0;
+        // Modality
+        addTag(aComment,
+                0x0008,0x0060,
+                writer.GetFile());
 
-        window_width_data_element.SetByteValue((const char*)window_width_message.str().data(), uint32_t(window_width_message.str().size()));
-        window_center_data_element.SetByteValue((const char*)window_center_message.str().data(), uint32_t(window_center_message.str().size()));
+        // Manufacturer
+        addTag("gVirtualXRay",
+                0x0008,0x0070,
+                writer.GetFile());
 
-        data_set.Insert(window_width_data_element);
-        data_set.Insert(window_center_data_element);
+        // InstitutionName
+        addTag("Bangor University",
+                0x0008,0x0080,
+                writer.GetFile());
+
+        // InstitutionAddress
+        addTag("http://gvirtualxray.sourceforge.net/",
+                0x0008,0x0081,
+                writer.GetFile());
 
         // Set pixel data
         gdcm::DataElement pixel_data(gdcm::Tag(0x7fe0,0x0010));
@@ -924,5 +938,50 @@ template<typename T> double Image<T>::computeNCC(const Image& anImage) const
     return (ncc / (m_width * m_height * standard_deviation_product));
 }
 
+
+#ifdef HAS_GDCM
+//-----------------------------------------------------------------
+template<typename T> void Image<T>::addTag(double aValue,
+                                           unsigned int anAddress1,
+                                           unsigned int anAddress2,
+                                           gdcm::File& aFile) const
+//-----------------------------------------------------------------
+{
+    std::stringstream message;
+    message << aValue;
+
+    addTag(message.str(), anAddress1, anAddress2, aFile);
+}
+
+
+//-----------------------------------------------------------------
+template<typename T> void Image<T>::addTag(const char* aValue,
+                                           unsigned int anAddress1,
+                                           unsigned int anAddress2,
+                                           gdcm::File& aFile) const
+//-----------------------------------------------------------------
+{
+    std::stringstream message;
+    message << aValue;
+
+    addTag(std::string(aValue), anAddress1, anAddress2, aFile);
+}
+
+
+//-------------------------------------------------------------------
+template<typename T> void Image<T>::addTag(const std::string& aValue,
+                                           unsigned int anAddress1,
+                                           unsigned int anAddress2,
+                                           gdcm::File& aFile) const
+//-------------------------------------------------------------------
+{
+    gdcm::DataElement data_element(gdcm::Tag(anAddress1, anAddress2));
+
+
+    data_element.SetByteValue((const char*)aValue.data(), uint32_t(aValue.size()));
+
+    aFile.GetDataSet().Insert(data_element);
+}
+#endif
 
 } // namespace gVirtualXRay

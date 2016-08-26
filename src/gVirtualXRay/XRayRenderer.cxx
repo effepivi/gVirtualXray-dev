@@ -1862,27 +1862,27 @@ void XRayRenderer::printFBO(GLuint aFBOID,
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
             m_l_buffer_image = m_temp_raw_data.getRawData();
-            m_l_buffer_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            m_l_buffer_image.save(aFileName, false, "L-buffer");
             break;
 
         case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
             m_l_buffer_image = m_temp_raw_data.getRawData();
-            m_l_buffer_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            m_l_buffer_image.save(aFileName, false, "Cleaned L-buffer");
             break;
 
         case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
             m_sum_mux_dx_image = m_temp_raw_data.getRawData();
-            m_sum_mux_dx_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            m_sum_mux_dx_image.save(aFileName, false, "Sigma(m_x*dx)");
             break;
 
         case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
             m_cumulated_lbuffer_image = m_temp_raw_data.getRawData();
-            m_cumulated_lbuffer_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            m_cumulated_lbuffer_image.save(aFileName, false, "Cumulative L-buffer");
             break;
 
         case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
             m_energy_fluence_image = m_temp_raw_data.getRawData();
-            m_energy_fluence_image.save(aFileName, true, "gVirtualXRay -- Energy fluence");
+            m_energy_fluence_image.save(aFileName, true, "Energy fluence");
             break;
 
         default:
