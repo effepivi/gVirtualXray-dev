@@ -117,7 +117,7 @@ void main(void)
 	    	    		
     		normal_vector += deltaNormal;
     	}
-  		normal_vector = normalize(0*g_normal_matrix*normal_vector);
+  		normal_vector = normalize(g_normal_matrix*normal_vector);
     
     	//cosinus of the light direction and the normal vector
     	float cosLightNormal = max(0., dot(light_direction, normal_vector));
