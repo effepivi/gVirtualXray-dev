@@ -383,9 +383,11 @@ template<typename T> Image<T> Image<T>::log() const
 }
 
 
-//-------------------------------------------------------------------
-template<typename T> void Image<T>::save(const char* aFileName) const
-//-------------------------------------------------------------------
+//------------------------------------------------------------------
+template<typename T> void Image<T>::save(const char* aFileName,
+                                         bool anInvertLUTFlag,
+                                         const char* aComment) const
+//------------------------------------------------------------------
 {
     if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
     {
@@ -411,7 +413,7 @@ template<typename T> void Image<T>::save(const char* aFileName) const
     }
     else if (isDCM(aFileName))
     {
-        saveDCM(aFileName);
+        saveDCM(aFileName, anInvertLUTFlag, aComment);
     }
     else if (isTIFF(aFileName))
     {
@@ -435,11 +437,13 @@ template<typename T> void Image<T>::save(const char* aFileName) const
 }
 
 
-//--------------------------------------------------------------------------
-template<typename T> void Image<T>::save(const std::string& aFileName) const
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::save(const std::string& aFileName,
+                                         bool anInvertLUTFlag,
+                                         const std::string& aComment) const
+//-------------------------------------------------------------------------
 {
-    save(aFileName.data());
+    save(aFileName.data(), anInvertLUTFlag, aComment.data());
 }
 
 
@@ -628,11 +632,27 @@ template<typename T> void Image<T>::saveMHD(const char* aFileName) const
 }
 
 
-//----------------------------------------------------------------------
-template<typename T> void Image<T>::saveDCM(const char* aFileName) const
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------
+template<typename T> void Image<T>::saveDCM(const char* aFileName,
+                                            bool anInvertLUTFlag,
+                                            const char* aComment) const
+//---------------------------------------------------------------------
 {
 #ifdef HAS_GDCM
+    T min_input_value(getMinValue());
+    T max_input_value(getMaxValue());
+    T difference_input(max_input_value - min_input_value);
+
+    unsigned short min_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin());
+    unsigned short max_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax());
+    unsigned short difference_output(max_output_value - min_output_value);
+
+    double shift(min_input_value);
+    double scale(double(max_input_value - min_input_value) / max_output_value);
+
+    //shift = 0;
+    //scale = 0.5;
+
     if (m_number_of_slices == 1)
     {
 
@@ -649,25 +669,26 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
         dims[0] = m_width;
         dims[1] = m_height;
 
+        double spacing[3] = {};
+        spacing[0] = m_spacing[0];
+        spacing[1] = m_spacing[1];
+
         if (m_number_of_slices == 1)
             {
             gdcm_image.SetNumberOfDimensions(2);
             }
-        /*else
+        else
             {
             dims[2] = m_number_of_slices;
             gdcm_image.SetNumberOfDimensions(3);
-            }*/
+
+            spacing[2] = 1;//m_spacing[2];
+            }
+
+        gdcm_image.SetSpacing (spacing);
 
         gdcm_image.SetDimensions( dims );
 
-        T min_input_value(getMinValue());
-        T max_input_value(getMaxValue());
-        T difference_input(max_input_value - min_input_value);
-
-        unsigned short min_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin());
-        unsigned short max_output_value(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax());
-        unsigned short difference_output(max_output_value - min_output_value);
 
         unsigned short* p_temp(new unsigned short[m_width * m_height * m_number_of_slices]);
 
@@ -676,52 +697,27 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
             p_temp[i] = min_output_value + difference_output * (double(m_p_image[i] - min_input_value) / double(difference_input));
         }
 
-        gdcm::PixelFormat input_pixel_format(gdcm::PixelFormat::UINT16);
-        input_pixel_format.SetSamplesPerPixel(1);
-/*
-        gdcm::Rescaler pixel_format;
-        pixel_format.SetSlope (1.0 / difference_output);
-        pixel_format.SetIntercept (-min_output_value);
-        pixel_format.SetPixelFormat(gdcm::PixelFormat::UINT16);
-        pixel_format.SetTargetPixelType(gdcm::PixelFormat::FLOAT32);*/
-        //pixel_format.SetMinMaxForPixelType(((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin(), ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax() );
-        //pixel_format.ComputePixelTypeFromMinMax();
-
-
-        input_pixel_format = gdcm::PixelFormat::FLOAT32;
-
-        // Store in a safe place the 'raw' pixeltype from vtk
-        gdcm::PixelFormat savepixeltype = input_pixel_format;
-
-
-
-        gdcm::Rescaler ir2;
-        ir2.SetIntercept( -min_output_value );
-        ir2.SetSlope( 1.0 / difference_output );
-
-
-        ir2.SetPixelFormat( input_pixel_format );
-
-        ir2.SetMinMaxForPixelType( ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMin(),
-                ((gdcm::PixelFormat)gdcm::PixelFormat::UINT16).GetMax() * 1.0 / difference_output + -min_output_value);
-        //gdcm::PixelFormat::ScalarType outputpt = ir2.ComputeInterceptSlopePixelType();
-        gdcm::PixelFormat outputpt = ir2.ComputePixelTypeFromMinMax();
-        // override pixeltype with what is found by Rescaler
-        input_pixel_format = outputpt;
-
         unsigned int input_length(m_width * m_height * m_number_of_slices * sizeof(T));
         unsigned int output_length(m_width * m_height * m_number_of_slices * sizeof(unsigned short));
 
-        ir2.InverseRescale((char*)p_temp, (const char*) m_p_image, input_length);
+        gdcm::PixelFormat input_pixel_format(gdcm::PixelFormat::UINT16);
+        input_pixel_format.SetSamplesPerPixel(1);
 
-
-
-
-
+        gdcm_image.SetSlope(scale);
+        gdcm_image.SetIntercept(shift);
 
         //gdcm_image.SetPixelFormat(pixel_format.ComputeInterceptSlopePixelType());
         gdcm_image.SetPixelFormat(input_pixel_format);
-        gdcm::PhotometricInterpretation photometric_interpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
+        gdcm::PhotometricInterpretation photometric_interpretation;
+
+        if (anInvertLUTFlag)
+            {
+            photometric_interpretation = gdcm::PhotometricInterpretation::MONOCHROME2;
+            }
+        else
+            {
+            photometric_interpretation = gdcm::PhotometricInterpretation::MONOCHROME1;
+            }
         gdcm_image.SetPhotometricInterpretation(photometric_interpretation);
         gdcm_image.SetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
 
@@ -731,6 +727,29 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
         gdcm_image.SetLossyFlag(false);
 
 
+        // Window / Level
+        gdcm::Tag window_width_tag(0x0028,0x1051);
+        gdcm::Tag window_center_tag(0x0028,0x1050);
+
+        gdcm::File& gdcm_file(writer.GetFile());
+        gdcm::DataSet &data_set = gdcm_file.GetDataSet();
+
+        gdcm::DataElement window_width_data_element = window_width_tag;
+        gdcm::DataElement window_center_data_element = window_center_tag;
+
+        std::stringstream window_width_message;
+        std::stringstream window_center_message;
+
+        window_width_message << difference_input;
+        window_center_message << min_input_value + difference_input / 2.0;
+
+        window_width_data_element.SetByteValue((const char*)window_width_message.str().data(), uint32_t(window_width_message.str().size()));
+        window_center_data_element.SetByteValue((const char*)window_center_message.str().data(), uint32_t(window_center_message.str().size()));
+
+        data_set.Insert(window_width_data_element);
+        data_set.Insert(window_center_data_element);
+
+        // Set pixel data
         gdcm::DataElement pixel_data(gdcm::Tag(0x7fe0,0x0010));
         pixel_data.SetByteValue((const char*)p_temp, uint32_t(output_length));
         gdcm_image.SetDataElement(pixel_data);
@@ -760,11 +779,13 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName) const
 }
 
 
-//-------------------------------------------------------
-template<typename T> void Image<T>::saveDCM(const std::string& aFileName) const
-//-------------------------------------------------------
+//----------------------------------------------------------------------------
+template<typename T> void Image<T>::saveDCM(const std::string& aFileName,
+                                            bool anInvertLUTFlag,
+                                            const std::string& aComment) const
+//----------------------------------------------------------------------------
 {
-    saveDCM(aFileName.data());
+    saveDCM(aFileName.data(), anInvertLUTFlag, aComment.data());
 }
 
 

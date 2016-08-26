@@ -214,7 +214,7 @@ public:
     * @param aFileName: the name of the file to write
     */
     //------------------------------------------------------------------------
-    void save(const char* aFileName) const;
+    void save(const char* aFileName, bool anInvertLUTFlag = false, const char* aComment = "") const;
 
 
     //------------------------------------------------------------------------
@@ -223,7 +223,9 @@ public:
     * @param aFileName: the name of the file to write
     */
     //------------------------------------------------------------------------
-    void save(const std::string& aFileName) const;
+    void save(const std::string& aFileName,
+            bool anInvertLUTFlag = false,
+            const std::string& aComment = "") const;
 
 
     //------------------------------------------------------------------------
@@ -322,7 +324,9 @@ public:
     * @param aFileName: the name of the file to write
     */
     //------------------------------------------------------------------------
-    void saveDCM(const char* aFileName) const;
+    void saveDCM(const char* aFileName,
+            bool anInvertLUTFlag = false,
+            const char* aComment = "") const;
 
 
     //------------------------------------------------------------------------
@@ -331,7 +335,9 @@ public:
     * @param aFileName: the name of the file to write
     */
     //------------------------------------------------------------------------
-    void saveDCM(const std::string& aFileName) const;
+    void saveDCM(const std::string& aFileName,
+            bool anInvertLUTFlag = false,
+            const std::string& aComment = "") const;
 
 
     //------------------------------------------------------------------------
