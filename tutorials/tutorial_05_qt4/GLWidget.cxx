@@ -216,12 +216,11 @@ void GLWidget::initializeGL()
     m_blue_cube_mesh.getMaterial().setShininess(5.);
     m_red_cube_mesh.getMaterial().setShininess(5.);
 
-    //set the translation matrixes of the meshes
+    //set the model matrix of the meshes
     m_meshes_model_matrix.loadIdentity();
 
+    //translate the cubes
     m_blue_cube_mesh.translate(VEC3(-2.,-2.,7.));
-
-    //translate the cube
     m_red_cube_mesh.translate(VEC3(0.,0.,-5.));
 
     m_blue_cube_mesh.splitFaces();

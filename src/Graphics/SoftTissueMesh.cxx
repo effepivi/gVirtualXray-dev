@@ -44,10 +44,11 @@ const int TAB_SIZE = 64;
 namespace gVirtualXRay {
 
 //----------------------------------------------
-SoftTissueMesh::SoftTissueMesh(int texture_size, unsigned int optimize_threshold)
+SoftTissueMesh::SoftTissueMesh(bool store_texture, bool optimize_texture_coordinates,
+		unsigned int texture_size)
 :
 //----------------------------------------------
-		InternalOrganMesh(texture_size, optimize_threshold),
+		InternalOrganMesh(store_texture, optimize_texture_coordinates, texture_size),
 		m_colour_texture(0),
 		m_colour_texture_frame_buffer(0)
 //----------------------------------------------

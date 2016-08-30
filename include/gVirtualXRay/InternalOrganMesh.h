@@ -44,11 +44,12 @@ public:
     /// Default Constructor
     /*
     *   @param texture_size: size of the side of the buffer (default: 2048)
-    *   @param optimize_threshold: To avoid computing optimized texture coordinates
-    *   	when the mesh is too big (defalut: 100 000)
+    *   @param store_texture: To know if the textures need to be stored (default: true)
+    *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
     */
     //--------------------------------------------------------------------------
-	InternalOrganMesh(int texture_size = 2048, unsigned int optimize_threshold = 100000);
+	InternalOrganMesh(bool store_texture = true, bool optimize_texture_coordinates = true,
+			unsigned int texture_size = 2048);
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -88,6 +89,13 @@ public:
 	//--------------------------------------------------------------------------
 	virtual void initialize();
 
+	//--------------------------------------------------------------------------
+	/// Set the generation texture coordinates
+    /*
+    *   @param generation_texture_coordinates: The coordinates used for texture generation
+    */
+	//-------------------------------------------------------------------------
+	void setGenerationTextureCoordinates(std::vector<VEC3> const& generation_texture_coordinates);
 
 protected:
 	//--------------------------------------------------------------------------
@@ -155,6 +163,9 @@ protected:
 	//direction of the margin to add between triangles in the texture
 	std::vector<VEC2> m_margin_direction;
 
+	///To generate the texture in the display shader in case the textures are not stored
+	std::vector<VEC3> m_generation_texture_coordinates;
+
 	//buffers for the bump map
 	unsigned int m_bump_map_texture,
 		m_bump_map_frame_buffer;
@@ -172,13 +183,19 @@ protected:
 	int m_has_thin_bumps;
 
 	//size of the side of the buffer
-	int m_texture_size;
+	unsigned int m_texture_size;
 
 	//to know if the textured has been initialized
 	bool m_need_initialize;
 
-	//To avoid computing optimized texture coordinates when the mesh is too big
-	unsigned int m_optimize_threshold;
+	//to know if the generation texture coordinates has been set
+	bool m_generation_texture_coord_are_set;
+
+	///To know if the textures need to be stored
+	bool m_store_texture;
+
+	///To know if the texture coordinates need to be optimized
+	bool m_optimize_texture_coordinates;
 };
 
 } // namespace gVirtualXRay

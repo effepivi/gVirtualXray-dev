@@ -47,11 +47,13 @@ public:
     /// Default Constructor
     /*
     *   @param texture_size: size of the side of the buffer (default: 2048)
-    *   @param optimize_threshold: To avoid computing optimized texture coordinates
-    *   	when the mesh is too big (default: 100 000)
+    *   @param texture_size: size of the side of the buffer (default: 2048)
+    *   @param store_texture: To know if the textures need to be stored (default: true)
+    *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
     */
     //--------------------------------------------------------------------------
-	SoftTissueMesh(int texture_size = 2048, unsigned int optimize_threshold = 100000);
+	SoftTissueMesh(bool store_texture = true, bool optimize_texture_coordinates = true,
+			unsigned int texture_size = 2048);
 
 	//--------------------------------------------------------------------------
 	/// Destructor

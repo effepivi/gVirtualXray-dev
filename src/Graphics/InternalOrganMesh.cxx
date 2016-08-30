@@ -49,7 +49,8 @@ const int TAB_SIZE = 64;
 namespace gVirtualXRay {
 
 //----------------------------------------
-InternalOrganMesh::InternalOrganMesh(int texture_size, unsigned int optimize_threshold):
+InternalOrganMesh::InternalOrganMesh(bool store_texture, bool optimize_texture_coordinates,
+		unsigned int texture_size):
 //----------------------------------------
 		AnatomicalMesh(),
 		m_bump_map_texture(0),
@@ -59,7 +60,9 @@ InternalOrganMesh::InternalOrganMesh(int texture_size, unsigned int optimize_thr
 		m_has_thin_bumps(0),
 		m_texture_size(texture_size),
 		m_need_initialize(true),
-		m_optimize_threshold(optimize_threshold)
+		m_generation_texture_coord_are_set(false),
+		m_store_texture(store_texture),
+		m_optimize_texture_coordinates(optimize_texture_coordinates)
 //----------------------------------------
 {
 	//internal organs use bump mapping
@@ -230,6 +233,15 @@ void InternalOrganMesh::splitFaces()
 }
 
 //----------------------------------------------
+void InternalOrganMesh::setGenerationTextureCoordinates(
+		std::vector<VEC3> const& generation_texture_coordinates)
+//----------------------------------------------
+{
+    m_generation_texture_coordinates = generation_texture_coordinates;
+    m_generation_texture_coord_are_set = true;
+}
+
+//----------------------------------------------
 void InternalOrganMesh::generateTextures()
 //----------------------------------------------
 {
@@ -323,7 +335,7 @@ void InternalOrganMesh::initializeTextureCoordinates()
 {
 	unsigned int n(int(sqrt(float(m_number_of_vertices)/6.))+2);
 
-	if(m_number_of_vertices<m_optimize_threshold)
+	if(m_optimize_texture_coordinates)
 	{
 		std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 
