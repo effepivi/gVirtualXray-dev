@@ -49,13 +49,11 @@ public:
     *   @param y_mirror: To know if the mesh is upside down for the y axis (default: false)
     *   @param z_mirror: To know if the mesh is upside down for the z axis (default: false)
     *   @param texture_size: size of the side of the buffer (default: 2048)
-    *   @param store_texture: To know if the textures need to be stored (default: true)
     *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
     */
     //--------------------------------------------------------------------------
 	LungsMesh(bool x_mirror = false, bool y_mirror = false, bool z_mirror = false,
-			bool store_texture = true, bool optimize_texture_coordinates = true,
-			unsigned int  texture_size = 2048);
+			bool optimize_texture_coordinates = true, unsigned int  texture_size = 2048);
 
 	//--------------------------------------------------------------------------
 	/// Destructor

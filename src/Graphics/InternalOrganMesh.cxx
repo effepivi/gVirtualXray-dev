@@ -49,7 +49,7 @@ const int TAB_SIZE = 64;
 namespace gVirtualXRay {
 
 //----------------------------------------
-InternalOrganMesh::InternalOrganMesh(bool store_texture, bool optimize_texture_coordinates,
+InternalOrganMesh::InternalOrganMesh(bool optimize_texture_coordinates,
 		unsigned int texture_size):
 //----------------------------------------
 		AnatomicalMesh(),
@@ -61,7 +61,6 @@ InternalOrganMesh::InternalOrganMesh(bool store_texture, bool optimize_texture_c
 		m_texture_size(texture_size),
 		m_need_initialize(true),
 		m_generation_texture_coord_are_set(false),
-		m_store_texture(store_texture),
 		m_optimize_texture_coordinates(optimize_texture_coordinates)
 //----------------------------------------
 {
@@ -102,6 +101,7 @@ void InternalOrganMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 				m_number_of_vertices, 2, GL_FLOAT, &m_texture_coord[0]);
 	}
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------------------------------
@@ -114,7 +114,7 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 		initialize();
 	}
 
-  	//Bind the texture for bump mapping in texture unit 1
+	//Bind the texture for bump mapping in texture unit 1
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_bump_map_texture);
 
@@ -230,15 +230,6 @@ void InternalOrganMesh::splitFaces()
 //----------------------------------------------
 {
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-}
-
-//----------------------------------------------
-void InternalOrganMesh::setGenerationTextureCoordinates(
-		std::vector<VEC3> const& generation_texture_coordinates)
-//----------------------------------------------
-{
-    m_generation_texture_coordinates = generation_texture_coordinates;
-    m_generation_texture_coord_are_set = true;
 }
 
 //----------------------------------------------

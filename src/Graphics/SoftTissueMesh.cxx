@@ -44,11 +44,11 @@ const int TAB_SIZE = 64;
 namespace gVirtualXRay {
 
 //----------------------------------------------
-SoftTissueMesh::SoftTissueMesh(bool store_texture, bool optimize_texture_coordinates,
+SoftTissueMesh::SoftTissueMesh(bool optimize_texture_coordinates,
 		unsigned int texture_size)
 :
 //----------------------------------------------
-		InternalOrganMesh(store_texture, optimize_texture_coordinates, texture_size),
+		InternalOrganMesh(optimize_texture_coordinates, texture_size),
 		m_colour_texture(0),
 		m_colour_texture_frame_buffer(0)
 //----------------------------------------------
@@ -76,6 +76,8 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 //----------------------------------------------
 {
 	InternalOrganMesh::defineDisplayShaderInput(aShaderID);
+
+	//use the stored texture
 
 	//Bind the colour texture in texture unit 2
 	glActiveTexture(GL_TEXTURE2);

@@ -29,7 +29,7 @@
 const int TAB_SIZE = 64;
 
 //Frequence for fractal sum and turbulence
-const float MINFREQ=0.03;
+const float MINFREQ=0.01;
 const float MAXFREQ=1;
 
 //step for bump evaluation 

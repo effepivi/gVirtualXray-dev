@@ -46,11 +46,10 @@ public:
     /// Default Constructor
     /*
     *   @param texture_size: size of the side of the buffer (default: 2048)
-    *   @param store_texture: To know if the textures need to be stored (default: true)
     *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
     */
     //--------------------------------------------------------------------------
-	DiaphragmMesh(bool store_texture = true, bool optimize_texture_coordinates = true,
+	DiaphragmMesh(bool optimize_texture_coordinates = true,
 			unsigned int texture_size = 2048);
 
 	//--------------------------------------------------------------------------
