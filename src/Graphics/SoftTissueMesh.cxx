@@ -50,7 +50,8 @@ SoftTissueMesh::SoftTissueMesh(bool optimize_texture_coordinates,
 //----------------------------------------------
 		InternalOrganMesh(optimize_texture_coordinates, texture_size),
 		m_colour_texture(0),
-		m_colour_texture_frame_buffer(0)
+		m_colour_texture_frame_buffer(0),
+		m_use_3D_colour_texture(0)
 //----------------------------------------------
 {
 	getMaterial().setShininess(100);
@@ -69,6 +70,35 @@ bool SoftTissueMesh::isSoftTissue() const
 //----------------------------------------------
 {
 	return true;
+}
+
+//----------------------------------------------
+void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
+//----------------------------------------------
+{
+	if (m_p_vertex_set && m_number_of_vertices)
+	{
+		// Create the VBO if needed
+		if (!m_vbo.get())
+		{
+			m_vbo.reset(createVBO());
+		}
+
+		// Set the type of VBO
+		m_vbo->setBufferUsageHint(aTypeOfVBO);
+
+		if(m_use_3D_colour_texture || m_use_3D_bump_map)
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "combining 3D and 2D texturing is not implemented.");
+		}
+		else
+		{
+			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
+					m_number_of_vertices, 2, GL_FLOAT, &m_2D_texture_coordinates[0]);
+		}
+	}
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------------------------------
@@ -96,6 +126,9 @@ void SoftTissueMesh::initialize()
 	if(m_need_initialize)
 	{
 		//load the shaders
+		load2DBumpShader();
+
+		//load the texture generation shader
 	    char* p_vertex_shader(0);
 	    char* p_fragment_shader(0);
 
@@ -122,11 +155,85 @@ void SoftTissueMesh::initialize()
 	    m_colour_texture_shader.loadSource(vertex_shader, fragment_shader);
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	    //initialize the buffers for the bump map and the colour texture
-	    initializeBuffer(m_colour_texture, m_colour_texture_frame_buffer);
+		//initialize the buffers for the bump map
+	    if(m_use_3D_bump_map)
+	    {
+	    	initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
+	    }
+	    else
+	    {
+	    	initialize2DBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
+	    }
+
+		//initialize the buffers for the colour texture
+	    if(m_use_3D_colour_texture)
+	    {
+	    	initialize3DBuffer(m_colour_texture, m_colour_texture_frame_buffer);
+	    }
+	    else
+	    {
+	    	initialize2DBuffer(m_colour_texture, m_colour_texture_frame_buffer);
+	    }
+
+	    //delete indices, there are not compatible with this implementation of solid texturing.
+		if(m_number_of_indices)
+		{
+			deleteIndices();
+			std::cout<<"The indices has been deleted" << std::endl;
+
+			shareNormalVectors();
+
+			//initialize the coordinates for sampling
+			initialize2DTextureCoordinates();
+		}
+		else
+		{
+			//initialize the coordinates for sampling
+			initialize2DTextureCoordinates();
+
+			shareNormalVectors();
+
+			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+		}
+
+		initGradientTab();
+		initPermutation();
+		generateTextures();
+
+		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
+		for(unsigned int i(0); i<m_number_of_vertices; i++)
+		{
+			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.6/m_texture_size);
+		}
+
+		//Update the VBO
+		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+
+		//Generate the texture again
+		generateTextures();
+
+		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
+		for(unsigned int i(0); i<m_number_of_vertices; i++)
+		{
+			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.2/m_texture_size);
+		}
+
+		//Update the VBO
+		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+
+		m_need_initialize = false;
+
+		// Cleanup for now
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-    InternalOrganMesh::initialize();
+    //delete indices, there are not compatible with this implementation of solid texturing.
+	if(m_number_of_indices)
+	{
+		deleteIndices();
+
+		shareNormalVectors();
+	}
 }
 
 //----------------------------------------------

@@ -79,7 +79,7 @@ public:
 
 
 	//--------------------------------------------------------------------------
-	/// Merge the vertices for optimization and a smoother display
+	/// Merge the vertices for optimization and a smoother display and create the bump map
 	//--------------------------------------------------------------------------
 	virtual void initialize();
 
@@ -89,16 +89,6 @@ protected:
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
 
-	//--------------------------------------------------------------------------
-	/// initialize a frame buffer and bind a texture to it
-    /*
-    *   @param aTexture: the texture to be generated
-    *   @param aFrameBuffer: the framebuffer
-    */
-	//-------------------------------------------------------------------------
-	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
-
-	std::vector<VEC3> m_3D_texture_coordinates;
 };
 
 } // namespace gVirtualXRay

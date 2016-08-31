@@ -66,16 +66,6 @@ public:
 	virtual bool isSoftTissue() const = 0;
 
 	//--------------------------------------------------------------------------
-	///	Update the VBO.
-	/**
-	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
-	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
-	*/
-	//--------------------------------------------------------------------------
-	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
-
-
-	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader
     /*
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
@@ -84,21 +74,21 @@ public:
 	virtual void defineDisplayShaderInput(int shader_id);
 
 	//--------------------------------------------------------------------------
-	/// initialize the shaders, the buffers, the normal vectors and the textures
-	/// if the texture is stored. Merge vertices for a smoother display if not.
+	/// initialise the shaders, the buffers, the normal vectors and the textures.
+	/// Merge vertices for a smoother display if only using 3D textures.
 	//--------------------------------------------------------------------------
-	virtual void initialize();
+	virtual void initialize() = 0;
+
+	//--------------------------------------------------------------------------
+	/// Split each face into four faces.
+	//--------------------------------------------------------------------------
+	virtual void splitFaces();
 
 protected:
 	//--------------------------------------------------------------------------
 	/// generates the textures
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
-
-	//--------------------------------------------------------------------------
-	/// Split each face into four faces.
-	//--------------------------------------------------------------------------
-	virtual void splitFaces();
 
 	//-------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader bump map generation
@@ -109,19 +99,43 @@ protected:
 	virtual void defineBumpMapShaderInput(int shader_id);
 
 	//--------------------------------------------------------------------------
-	/// initialize a frame buffer and bind a texture to it
+	/// initialize a 2D frame buffer and bind a texture to it
     /*
     *   @param aTexture: the texture to be generated
     *   @param aFrameBuffer: the framebuffer
     */
 	//-------------------------------------------------------------------------
-	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
+	virtual void initialize2DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 
 	//--------------------------------------------------------------------------
-	/// Initialize optimized texture coordinates by sharing an hypothenus in the texture
+	/// initialize a 3D frame buffer and bind a texture to its layer 0
+    /*
+    *   @param aTexture: the texture to be generated
+    *   @param aFrameBuffer: the framebuffer
+    */
+	//-------------------------------------------------------------------------
+	virtual void initialize3DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
+
+	//--------------------------------------------------------------------------
+	/// Load the shader to create the 2D bump map
+	//-------------------------------------------------------------------------
+	virtual void load2DBumpShader();
+
+	//--------------------------------------------------------------------------
+	/// Load the shader to create the 3D bump map
+	//-------------------------------------------------------------------------
+	virtual void load3DBumpShader();
+
+	//--------------------------------------------------------------------------
+	/// Initialise optimised texture coordinates by sharing an hypothenuse in the texture
 	/// for two adjacent polygons.
 	//--------------------------------------------------------------------------
-	virtual void initializeTextureCoordinates();
+	virtual void initialize2DTextureCoordinates();
+
+	//--------------------------------------------------------------------------
+	/// Initialise 3D texture coordinates
+	//--------------------------------------------------------------------------
+	virtual void initialize3DTextureCoordinates();
 
 	//--------------------------------------------------------------------------
 	/// Compute a normal vector per vertex for a smoother display
@@ -150,9 +164,11 @@ protected:
 	std::vector<int> m_permutation;
 
 	//Coordinates for texture sampling
-	std::vector<VEC2> m_texture_coord;
+	std::vector<VEC2> m_2D_texture_coordinates;
 
-	//direction of the margin to add between triangles in the texture
+	std::vector<VEC3> m_3D_texture_coordinates;
+
+	//direction of the margin to add between triangles in the 2D texture
 	std::vector<VEC2> m_margin_direction;
 
 	//buffers for the bump map

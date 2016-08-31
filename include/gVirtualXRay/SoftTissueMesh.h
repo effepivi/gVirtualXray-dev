@@ -64,6 +64,15 @@ public:
 	virtual bool isSoftTissue() const;
 
 	//--------------------------------------------------------------------------
+	///	Update the VBO.
+	/**
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
+	*/
+	//--------------------------------------------------------------------------
+	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
+
+	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader
     /*
     *   @param aShaderID: The GLSL shader used to display the anatomical mesh
@@ -104,6 +113,9 @@ protected:
 	//buffers for the colour texture
 	unsigned int m_colour_texture,
 		m_colour_texture_frame_buffer;
+
+	//to know if we use a 3D colour texture
+	int m_use_3D_colour_texture;
 
 	//GLSL shaders to create the colour texture
 	Shader m_colour_texture_shader;

@@ -248,7 +248,7 @@ float computeBumpValue(vec3 object_position)
 	}
 	else
 	{
-		noise_value = noise(object_position*0.5)*0.5+0.5;
+		noise_value = noise(object_position)*0.5+0.5;
 	}
 	
 	//lower the noise
@@ -320,10 +320,10 @@ float computeBumpValue(vec3 object_position)
 		}
 					
 		//reduce bump from noise
-		bump_value *= 1.;
+		bump_value *= 0.5;
 		
 		//add the line
-		bump_value += clamp(height,0.,1.);
+		bump_value += clamp(height,0.,0.8);
 		
 		//square to make it sharper
 		bump_value = 1-(1-bump_value)*(1-bump_value);

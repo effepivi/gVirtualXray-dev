@@ -37,6 +37,9 @@
 #include "bump_map_generation_gl3.vert.h"
 #include "bump_map_generation_gl3.frag.h"
 
+#include "3d_bump_map_generation_gl3.vert.h"
+#include "3d_bump_map_generation_gl3.frag.h"
+
 //******************************************************************************
 //	constant variables
 //******************************************************************************
@@ -84,28 +87,6 @@ bool InternalOrganMesh::isTransparent() const
 }
 
 //----------------------------------------------
-void InternalOrganMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
-//----------------------------------------------
-{
-	if (m_p_vertex_set && m_number_of_vertices)
-	{
-		// Create the VBO if needed
-		if (!m_vbo.get())
-		{
-			m_vbo.reset(createVBO());
-		}
-
-		// Set the type of VBO
-		m_vbo->setBufferUsageHint(aTypeOfVBO);
-
-		m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
-				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
-				m_number_of_vertices, 2, GL_FLOAT, &m_texture_coord[0]);
-	}
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-}
-
-//----------------------------------------------
 void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 //----------------------------------------------
 {
@@ -115,120 +96,33 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 		initialize();
 	}
 
-	//Bind the texture for bump mapping in texture unit 1
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_bump_map_texture);
-
-	GLuint handle(glGetUniformLocation(aShaderID, "g_bump_map"));
-	glUniform1i(handle,1);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	handle = glGetUniformLocation(aShaderID, "g_use_3D_bump_map");
+	GLuint handle(glGetUniformLocation(aShaderID, "g_use_3D_bump_map"));
 	glUniform1iv(handle, 1, &m_use_3D_bump_map);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+	if(m_use_3D_bump_map == 1)
+	{
+		//Bind the texture for bump mapping in texture unit 3
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_3D, m_bump_map_texture);
+
+		handle = glGetUniformLocation(aShaderID, "g_3D_bump_map");
+		glUniform1i(handle,3);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		//Bind the texture for bump mapping in texture unit 1
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, m_bump_map_texture);
+
+		handle = glGetUniformLocation(aShaderID, "g_bump_map");
+		glUniform1i(handle,1);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
 	AnatomicalMesh::defineDisplayShaderInput(aShaderID);
 }
-
-//----------------------------------------------
-void InternalOrganMesh::initialize()
-//----------------------------------------------
-{
-	//initialize if needed
-	if(m_need_initialize)
-	{
-		//load the shaders
-	    char* p_vertex_shader(0);
-	    char* p_fragment_shader(0);
-
-	    int z_lib_return_code_vertex(0);
-	    int z_lib_return_code_fragment(0);
-
-	    std::string vertex_shader;
-	    std::string fragment_shader;
-
-	    //bump map generation shader
-	    z_lib_return_code_vertex   = inflate(g_bump_map_generation_gl3_vert, sizeof(g_bump_map_generation_gl3_vert),   &p_vertex_shader);
-	    z_lib_return_code_fragment = inflate(g_bump_map_generation_gl3_frag, sizeof(g_bump_map_generation_gl3_frag), &p_fragment_shader);
-
-
-	    vertex_shader   = p_vertex_shader;
-	    fragment_shader = p_fragment_shader;
-	    delete [] p_vertex_shader;     p_vertex_shader = 0;
-	    delete [] p_fragment_shader; p_fragment_shader = 0;
-
-	    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-	    {
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-	    }
-	    m_bump_map_shader.setLabels("bump.vert", "bump.frag");
-	    m_bump_map_shader.loadSource(vertex_shader, fragment_shader);
-	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	    //initialize the buffers for the bump map
-	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
-
-	    //delete indices, there are not compatible with this implementation of solid texturing.
-		if(m_number_of_indices)
-		{
-			deleteIndices();
-			std::cout<<"The indices has been deleted" << std::endl;
-
-			shareNormalVectors();
-
-			//initialize the coordinates for sampling
-			initializeTextureCoordinates();
-		}
-		else
-		{
-			//initialize the coordinates for sampling
-			initializeTextureCoordinates();
-
-			shareNormalVectors();
-
-			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-		}
-
-		initGradientTab();
-		initPermutation();
-		generateTextures();
-
-		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		for(unsigned int i(0); i<m_number_of_vertices; i++)
-		{
-			m_texture_coord[i]+=m_margin_direction[i]*float(0.6/m_texture_size);
-		}
-
-		//Update the VBO
-		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-
-		//Generate the texture again
-		generateTextures();
-
-		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
-		for(unsigned int i(0); i<m_number_of_vertices; i++)
-		{
-			m_texture_coord[i]+=m_margin_direction[i]*float(0.2/m_texture_size);
-		}
-
-		//Update the VBO
-		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-
-		m_need_initialize = false;
-
-		// Cleanup for now
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-    //delete indices, there are not compatible with this implementation of solid texturing.
-	if(m_number_of_indices)
-	{
-		deleteIndices();
-
-		shareNormalVectors();
-	}
-}
-
 
 //----------------------------------------------
 void InternalOrganMesh::splitFaces()
@@ -293,7 +187,7 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 
 
 //----------------------------------------------
-void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
+void InternalOrganMesh::initialize2DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
 //----------------------------------------------
 {
 	//Intialize the buffer for the texture
@@ -326,7 +220,105 @@ void InternalOrganMesh::initializeBuffer(unsigned int& aTexture, unsigned int& a
 }
 
 //----------------------------------------------
-void InternalOrganMesh::initializeTextureCoordinates()
+void InternalOrganMesh::initialize3DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
+//----------------------------------------------
+{
+	//Intialize the buffer for the texture
+	glGenTextures(1, &aTexture);
+	glBindTexture(GL_TEXTURE_3D, aTexture);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_size, m_texture_size, m_texture_size, 0, GL_RED, GL_FLOAT, 0);
+
+	//Filtering
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	//initalize the frame buffer
+	glGenFramebuffers(1, &aFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, aFrameBuffer);
+
+	//link the frame buffer and the texture
+	glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, aTexture, 0, 0);
+
+	//check the creation of the buffer
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the frame buffer.");
+	}
+
+	// Cleanup for now
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_3D, 0);
+}
+
+//----------------------------------------------
+void InternalOrganMesh::load2DBumpShader()
+//----------------------------------------------
+{
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
+
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
+    //bump map generation shader
+    z_lib_return_code_vertex   = inflate(g_bump_map_generation_gl3_vert, sizeof(g_bump_map_generation_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_bump_map_generation_gl3_frag, sizeof(g_bump_map_generation_gl3_frag), &p_fragment_shader);
+
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_bump_map_shader.setLabels("bump.vert", "bump.frag");
+    m_bump_map_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+//----------------------------------------------
+void InternalOrganMesh::load3DBumpShader()
+//----------------------------------------------
+{
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
+
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
+    //bump map generation shader
+    z_lib_return_code_vertex   = inflate(g_3d_bump_map_generation_gl3_vert, sizeof(g_3d_bump_map_generation_gl3_vert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(g_3d_bump_map_generation_gl3_frag, sizeof(g_3d_bump_map_generation_gl3_frag), &p_fragment_shader);
+
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    m_bump_map_shader.setLabels("bump.vert", "bump.frag");
+    m_bump_map_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+//----------------------------------------------
+void InternalOrganMesh::initialize2DTextureCoordinates()
 //----------------------------------------------
 {
 	unsigned int n(int(sqrt(float(m_number_of_vertices)/6.))+2);
@@ -335,7 +327,7 @@ void InternalOrganMesh::initializeTextureCoordinates()
 	{
 		std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 
-		m_texture_coord.resize(m_number_of_vertices);
+		m_2D_texture_coordinates.resize(m_number_of_vertices);
 		m_margin_direction.resize(m_number_of_vertices);
 		std::vector<bool> has_texture_coordinates(m_number_of_vertices/3,false);
 		unsigned int k(0);
@@ -376,14 +368,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (first_matching_vertex==first_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v3;
-									m_texture_coord[first_triangle_indice+1] = v1;
-									m_texture_coord[first_triangle_indice+2] = v2;
+									m_2D_texture_coordinates[first_triangle_indice] = v3;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v1;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v2;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v3;
-									m_texture_coord[matching_face_indice+1] = v4;
-									m_texture_coord[matching_face_indice+2] = v1;
+									m_2D_texture_coordinates[matching_face_indice] = v3;
+									m_2D_texture_coordinates[matching_face_indice+1] = v4;
+									m_2D_texture_coordinates[matching_face_indice+2] = v1;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
@@ -401,14 +393,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (second_matching_vertex==first_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v3;
-									m_texture_coord[first_triangle_indice+1] = v1;
-									m_texture_coord[first_triangle_indice+2] = v2;
+									m_2D_texture_coordinates[first_triangle_indice] = v3;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v1;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v2;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v1;
-									m_texture_coord[matching_face_indice+1] = v3;
-									m_texture_coord[matching_face_indice+2] = v4;
+									m_2D_texture_coordinates[matching_face_indice] = v1;
+									m_2D_texture_coordinates[matching_face_indice+1] = v3;
+									m_2D_texture_coordinates[matching_face_indice+2] = v4;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
@@ -426,14 +418,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (third_matching_vertex == first_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v3;
-									m_texture_coord[first_triangle_indice+1] = v1;
-									m_texture_coord[first_triangle_indice+2] = v2;
+									m_2D_texture_coordinates[first_triangle_indice] = v3;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v1;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v2;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v4;
-									m_texture_coord[matching_face_indice+1] = v1;
-									m_texture_coord[matching_face_indice+2] = v3;
+									m_2D_texture_coordinates[matching_face_indice] = v4;
+									m_2D_texture_coordinates[matching_face_indice+1] = v1;
+									m_2D_texture_coordinates[matching_face_indice+2] = v3;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
@@ -453,14 +445,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (first_matching_vertex==second_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v2;
-									m_texture_coord[first_triangle_indice+1] = v3;
-									m_texture_coord[first_triangle_indice+2] = v1;
+									m_2D_texture_coordinates[first_triangle_indice] = v2;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v3;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v1;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v3;
-									m_texture_coord[matching_face_indice+1] = v4;
-									m_texture_coord[matching_face_indice+2] = v1;
+									m_2D_texture_coordinates[matching_face_indice] = v3;
+									m_2D_texture_coordinates[matching_face_indice+1] = v4;
+									m_2D_texture_coordinates[matching_face_indice+2] = v1;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
@@ -478,14 +470,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (second_matching_vertex==second_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v2;
-									m_texture_coord[first_triangle_indice+1] = v3;
-									m_texture_coord[first_triangle_indice+2] = v1;
+									m_2D_texture_coordinates[first_triangle_indice] = v2;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v3;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v1;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v1;
-									m_texture_coord[matching_face_indice+1] = v3;
-									m_texture_coord[matching_face_indice+2] = v4;
+									m_2D_texture_coordinates[matching_face_indice] = v1;
+									m_2D_texture_coordinates[matching_face_indice+1] = v3;
+									m_2D_texture_coordinates[matching_face_indice+2] = v4;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
@@ -503,14 +495,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (third_matching_vertex == second_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v2;
-									m_texture_coord[first_triangle_indice+1] = v3;
-									m_texture_coord[first_triangle_indice+2] = v1;
+									m_2D_texture_coordinates[first_triangle_indice] = v2;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v3;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v1;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v4;
-									m_texture_coord[matching_face_indice+1] = v1;
-									m_texture_coord[matching_face_indice+2] = v3;
+									m_2D_texture_coordinates[matching_face_indice] = v4;
+									m_2D_texture_coordinates[matching_face_indice+1] = v1;
+									m_2D_texture_coordinates[matching_face_indice+2] = v3;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
@@ -530,14 +522,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (first_matching_vertex==third_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v1;
-									m_texture_coord[first_triangle_indice+1] = v2;
-									m_texture_coord[first_triangle_indice+2] = v3;
+									m_2D_texture_coordinates[first_triangle_indice] = v1;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v2;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v3;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v3;
-									m_texture_coord[matching_face_indice+1] = v4;
-									m_texture_coord[matching_face_indice+2] = v1;
+									m_2D_texture_coordinates[matching_face_indice] = v3;
+									m_2D_texture_coordinates[matching_face_indice+1] = v4;
+									m_2D_texture_coordinates[matching_face_indice+2] = v1;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
@@ -555,14 +547,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (second_matching_vertex==third_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v1;
-									m_texture_coord[first_triangle_indice+1] = v2;
-									m_texture_coord[first_triangle_indice+2] = v3;
+									m_2D_texture_coordinates[first_triangle_indice] = v1;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v2;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v3;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v1;
-									m_texture_coord[matching_face_indice+1] = v3;
-									m_texture_coord[matching_face_indice+2] = v4;
+									m_2D_texture_coordinates[matching_face_indice] = v1;
+									m_2D_texture_coordinates[matching_face_indice+1] = v3;
+									m_2D_texture_coordinates[matching_face_indice+2] = v4;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
@@ -580,14 +572,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 									&& (third_matching_vertex == third_vertex))
 								{
 									//the first triangle
-									m_texture_coord[first_triangle_indice] = v1;
-									m_texture_coord[first_triangle_indice+1] = v2;
-									m_texture_coord[first_triangle_indice+2] = v3;
+									m_2D_texture_coordinates[first_triangle_indice] = v1;
+									m_2D_texture_coordinates[first_triangle_indice+1] = v2;
+									m_2D_texture_coordinates[first_triangle_indice+2] = v3;
 
 									//the second triangle
-									m_texture_coord[matching_face_indice] = v4;
-									m_texture_coord[matching_face_indice+1] = v1;
-									m_texture_coord[matching_face_indice+2] = v3;
+									m_2D_texture_coordinates[matching_face_indice] = v4;
+									m_2D_texture_coordinates[matching_face_indice+1] = v1;
+									m_2D_texture_coordinates[matching_face_indice+2] = v3;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
@@ -615,9 +607,9 @@ void InternalOrganMesh::initializeTextureCoordinates()
 					if(matching_face_indice >= m_number_of_vertices)
 					{
 						//only one triangle
-						m_texture_coord[first_triangle_indice] = v1;
-						m_texture_coord[first_triangle_indice+1] = v2;
-						m_texture_coord[first_triangle_indice+2] = v3;
+						m_2D_texture_coordinates[first_triangle_indice] = v1;
+						m_2D_texture_coordinates[first_triangle_indice+1] = v2;
+						m_2D_texture_coordinates[first_triangle_indice+2] = v3;
 
 						//Set the margin direction
 						m_margin_direction[first_triangle_indice] = VEC2(2., 1.);
@@ -632,7 +624,7 @@ void InternalOrganMesh::initializeTextureCoordinates()
 	{
 		std::cout<<"Don't optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 
-		m_texture_coord.reserve(m_number_of_vertices);
+		m_2D_texture_coordinates.reserve(m_number_of_vertices);
 		m_margin_direction.reserve(m_number_of_vertices);
 
 		for (unsigned int i(0); i < n; i++) {
@@ -644,14 +636,14 @@ void InternalOrganMesh::initializeTextureCoordinates()
 				VEC2 v4(float(i)/n, float(j + 1)/n);
 
 				//the first triangle
-				m_texture_coord.push_back(v1);
-				m_texture_coord.push_back(v2);
-				m_texture_coord.push_back(v3);
+				m_2D_texture_coordinates.push_back(v1);
+				m_2D_texture_coordinates.push_back(v2);
+				m_2D_texture_coordinates.push_back(v3);
 
 				//the second triangle
-				m_texture_coord.push_back(v1);
-				m_texture_coord.push_back(v3);
-				m_texture_coord.push_back(v4);
+				m_2D_texture_coordinates.push_back(v1);
+				m_2D_texture_coordinates.push_back(v3);
+				m_2D_texture_coordinates.push_back(v4);
 
 				m_margin_direction.push_back(VEC2(1., 1.));
 				m_margin_direction.push_back(VEC2(-1., 1.));
@@ -667,6 +659,19 @@ void InternalOrganMesh::initializeTextureCoordinates()
 
 }
 
+//----------------------------------------------
+void InternalOrganMesh::initialize3DTextureCoordinates()
+//----------------------------------------------
+{
+	// Initialize the texture coordinates using the vertices position
+    m_3D_texture_coordinates.reserve(m_number_of_vertices);
+
+	for(unsigned int i(0); i < m_number_of_vertices; i++)
+    {
+    	m_3D_texture_coordinates.push_back(getVertex(i));
+    }
+}
+
 #if 0
 //----------------------------------------------
 void InternalOrganMesh::addMargin(float margin)
@@ -677,26 +682,26 @@ void InternalOrganMesh::addMargin(float margin)
 	for (unsigned int i(0); i < n; i++) {
 		for (unsigned int j(0); j < n; j++) {
 			//the first triangle
-			m_texture_coord[k]+=VEC2(2*margin,margin);
+			m_2D_texture_coordinates[k]+=VEC2(2*margin,margin);
 			k++;
-			m_texture_coord[k]+=VEC2(-margin,margin);
+			m_2D_texture_coordinates[k]+=VEC2(-margin,margin);
 			k++;
-			m_texture_coord[k]+=VEC2(-margin,-2*margin);
+			m_2D_texture_coordinates[k]+=VEC2(-margin,-2*margin);
 			k++;
 
 			//the second triangle
-			m_texture_coord[k]+=VEC2(margin,2*margin);
+			m_2D_texture_coordinates[k]+=VEC2(margin,2*margin);
 			k++;
-			m_texture_coord[k]+=VEC2(-2*margin,-margin);
+			m_2D_texture_coordinates[k]+=VEC2(-2*margin,-margin);
 			k++;
-			m_texture_coord[k]+=VEC2(margin,-margin);
+			m_2D_texture_coordinates[k]+=VEC2(margin,-margin);
 			k++;
 		}
 	}
 }
 
 /*unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
-m_texture_coord.reserve(m_number_of_vertices);
+m_2D_texture_coordinates.reserve(m_number_of_vertices);
 m_margin_direction.reserve(m_number_of_vertices);
 
 for (unsigned int i(0); i < n; i++) {
@@ -708,14 +713,14 @@ for (unsigned int i(0); i < n; i++) {
 		VEC2 v4(float(i)/n, float(j + 1)/n);
 
 		//the first triangle
-		m_texture_coord.push_back(v1);
-		m_texture_coord.push_back(v2);
-		m_texture_coord.push_back(v3);
+		m_2D_texture_coordinates.push_back(v1);
+		m_2D_texture_coordinates.push_back(v2);
+		m_2D_texture_coordinates.push_back(v3);
 
 		//the second triangle
-		m_texture_coord.push_back(v1);
-		m_texture_coord.push_back(v3);
-		m_texture_coord.push_back(v4);
+		m_2D_texture_coordinates.push_back(v1);
+		m_2D_texture_coordinates.push_back(v3);
+		m_2D_texture_coordinates.push_back(v4);
 
 		m_margin_direction.push_back(VEC2(1., 1.));
 		m_margin_direction.push_back(VEC2(-1., 1.));
