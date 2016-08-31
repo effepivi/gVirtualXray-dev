@@ -225,7 +225,7 @@ bool isHomogeneous(float aValue1,
                    float aValue5)
 //-------------------------------
 {
-    float average = 0;
+    float average = 0.0;
     int counter = 0;
     
     if (aValue2 > 0.01)
@@ -257,7 +257,7 @@ bool isHomogeneous(float aValue1,
         return true;
     }
 
-    average /= counter;
+    average /= float(counter);
 
     if (abs(aValue1 - average) > 0.25 * average) return false;
     

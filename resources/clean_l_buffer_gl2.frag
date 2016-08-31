@@ -218,7 +218,7 @@ bool isHomogeneous(float aValue1,
                    float aValue5)
 //-------------------------------
 {
-    float average = 0;
+    float average = 0.0;
     int counter = 0;
     
     if (aValue2 > 0.01)
@@ -250,7 +250,7 @@ bool isHomogeneous(float aValue1,
         return true;
     }
 
-    average /= counter;
+    average /= float(counter);
 
     if (abs(aValue1 - average) > 0.25 * average) return false;
     
@@ -322,10 +322,10 @@ void main(void)
     // The texel value is not valid
     if (!isValid(texel_value) || 
         !isHomogeneous(texel_value.r, 
-         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[0]).r,
-         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[1]).r,
-         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[2]).r,
-         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[3]).r))
+         texture2D(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[0]).r,
+         texture2D(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[1]).r,
+         texture2D(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[2]).r,
+         texture2D(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[3]).r))
     {
         // Filter the artefact
         texel_value = filter3x3(texel_value);
