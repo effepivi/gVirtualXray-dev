@@ -61,7 +61,7 @@ Andréas MEULEMAN
 \end{lstlisting}
 ~\\
 
-	$SkinMesh$ is transparent and white by default.The other classes generate suitable textures and normal maps. The are procedural generated using noise so that they are slightly different after each launch of the program. These classes are supposed to be used with the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$. 
+	$SkinMesh$ is transparent and white by default.The other classes generate suitable textures and normal maps. They are procedural generated using noise so that they are slightly different after each launch of the program. These classes are supposed to be used with the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$. 
 
 	To use these classes, we need to set the data (vertices position and normal vectors) as we do for any PolygonMesh and then, call $defineDisplayShaderInput(int$ $shader\_id)$ just before the polygonMesh's function $display()$. In this tutorial, we will display lungs without lighting.
 	
@@ -95,12 +95,14 @@ We have to include the header of the class we are going to use:
 
 \chapter{Build the objects}
 
-	the constructor of all the classes inherating from $InternalOrganMesh$ ($LungsMesh$, $LiverMesh$, $DiaphragmMesh$ and $BoneMesh$) generate textures and have two parameters of type $unsigned$ $int$: $texture\_size$ and $optimize\_threshold$. 
+	the constructor of all the classes inherating from $InternalOrganMesh$ ($LungsMesh$, $LiverMesh$, $DiaphragmMesh$ and $BoneMesh$) have parameters to control the texture generation. 
 	
-	$texture\_size$ represent the size in pixels of the side of the textures used for this mesh. Its default value is 2048 but it can be modified depending on the graphic card's amount of vram.
-	 
-	If the number of vertices of the mesh is greater than $optimize\_threshold$, the texture coordinates will not be optimized. Optimize the texture coordinates enable a better rendering with the same performances, but it requires more precomputating. Its default value is 100 000. \\
+	$LungsMesh$, $LiverMesh$ and $DiaphragmMesh$ use 2D texturing. $texture\_2D\_size$ represent the size in pixels of the side of the 2D textures used for this mesh. Its default value is 2048 but it can be modified depending on the graphic card's amount of vram.
 	
+	Thes constructors have a $bool$ parameter $optimize_texture_coordinates$. If it is true, the 2D texture coordinates will be optimize before the rendering. Optimize the texture coordinates enable a better rendering with the same performances, but it requires more precomputating. Its default value is true. \\
+	
+	$BoneMesh$, $LiverMesh$ and $LungsMesh$ use 3D texturing, the $unsigned int$ parameter $texture\_3D\_size$ is the size of the side of the 3D texture. its default value is $32$ for the bones and 64 for the Liver and the Lungs. 3D textures have to be small since they use a lot of vram.
+		
 	The constructor of $LungsMesh$ has three other parameters of type $bool$: $x\_mirror$, $y\_mirror$ and $z\_mirror$. They enable to know if the mesh is upside down to draw the lines correctly. Their default value is false.
 
 	The constructor of $SkinMesh$ has no parameters.
