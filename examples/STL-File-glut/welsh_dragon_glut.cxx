@@ -517,7 +517,7 @@ void initFreeType()
 //-----------------
 {
 #ifdef HAS_FREETYPE
-	g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16 * 27);
+    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16 * 27);
     g_display_help = true;
 #endif
 }
@@ -796,6 +796,23 @@ void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
 {
     switch(aKey)
     {
+    case GLFW_KEY_A:
+        g_artefact_filtering = !g_artefact_filtering;
+        if (g_artefact_filtering)
+        {
+            std::cout << "Enable artefact correction" << std::endl;
+            g_xray_renderer.enableArtefactFiltering();
+        }
+        else
+        {
+            std::cout << "Disable artefact correction" << std::endl;
+            g_xray_renderer.disableArtefactFiltering();
+        }
+ 
+        // The X-ray image is not up-to-date
+        g_is_xray_image_up_to_date = false;
+        break;
+
 #ifdef HAS_FREETYPE
     case 'h':
         g_display_help = !g_display_help;
@@ -1424,6 +1441,12 @@ void displayHelp()
                 g_text_2D_projection_matrix,
                 p_background_colour,
                 p_font_colour);
+
+    g_font_rendered.renderText(std::string("\'a\': toggle artefact correction"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'s\': toggle stereo"),
             40, x_position += offset,

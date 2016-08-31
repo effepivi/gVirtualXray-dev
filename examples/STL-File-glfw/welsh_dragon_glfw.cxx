@@ -224,7 +224,7 @@ bool g_display_wireframe(false);
 
 bool g_use_lighing(true);
 bool g_display_detector(true);
-
+bool g_artefact_filtering(true);
 
 clock_t g_start(0);
 int g_image_computed(0);
@@ -832,10 +832,33 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		switch(key)
 		{
 #ifdef HAS_FREETYPE
-        case GLFW_KEY_H:
-            g_display_help = !g_display_help;
-            break;
+        	case GLFW_KEY_H:
+            		g_display_help = !g_display_help;
+            		break;
 #endif
+        	case GLFW_KEY_A:
+            		g_artefact_filtering = !g_artefact_filtering;
+            		if (g_artefact_filtering)
+            		{
+                		std::cout << "Enable artefact correction" << std::endl;
+                		g_xray_renderer.enableArtefactFiltering();
+            		}
+            		else
+            		{
+                		std::cout << "Disable artefact correction" << std::endl;
+                		g_xray_renderer.disableArtefactFiltering();
+            		}
+
+            		// The X-ray image is not up-to-date
+            		g_is_xray_image_up_to_date = false;
+            		break;
+
+        	case GLFW_KEY_Z:
+            		//g_xray_renderer.printLBuffer(PREFIX"/data/lbuffer.mhd");
+            		//g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
+            		//g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
+            		//g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
+            		break;
 
 		case GLFW_KEY_Q:
 		case GLFW_KEY_ESCAPE:
