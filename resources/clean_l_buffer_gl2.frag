@@ -210,6 +210,54 @@ vec3 filter3x3(vec3 anInitialValue)
 }
 
 
+//-------------------------------
+bool isHomogeneous(float aValue1,
+                   float aValue2,
+                   float aValue3,
+                   float aValue4,
+                   float aValue5)
+//-------------------------------
+{
+    float average = 0;
+    int counter = 0;
+    
+    if (aValue2 > 0.01)
+    {
+        average += aValue2;
+        ++counter;
+    }
+    
+    if (aValue3 > 0.01)
+    {
+        average += aValue3;
+        ++counter;
+    }
+    
+    if (aValue4 > 0.01)
+    {
+        average += aValue4;
+        ++counter;
+    }
+    
+    if (aValue5 > 0.01)
+    {
+        average += aValue5;
+        ++counter;
+    }
+    
+    if (counter == 0)
+    {
+        return true;
+    }
+
+    average /= counter;
+
+    if (abs(aValue1 - average) > 0.25 * average) return false;
+    
+    return true;
+}
+
+
 //-------------
 void main(void)
 //-------------
@@ -272,7 +320,12 @@ void main(void)
     vec3 texel_value = texture2D(g_l_buffer_texture, g_texture_coordinates.st).rgb;
     
     // The texel value is not valid
-    if (!isValid(texel_value))
+    if (!isValid(texel_value) || 
+        !isHomogeneous(texel_value.r, 
+         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[0]).r,
+         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[1]).r,
+         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[2]).r,
+         texture(g_l_buffer_texture, g_texture_coordinates.st + g_offset_3x3[3]).r))
     {
         // Filter the artefact
         texel_value = filter3x3(texel_value);
