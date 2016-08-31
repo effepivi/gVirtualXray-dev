@@ -53,7 +53,7 @@ namespace gVirtualXRay {
 
 //----------------------------------------
 InternalOrganMesh::InternalOrganMesh(bool optimize_texture_coordinates,
-		unsigned int texture_size):
+		unsigned int texture_2D_size, unsigned int texture_3D_size):
 //----------------------------------------
 		AnatomicalMesh(),
 		m_bump_map_texture(0),
@@ -62,7 +62,8 @@ InternalOrganMesh::InternalOrganMesh(bool optimize_texture_coordinates,
 		m_is_lung(0),
 		m_has_thin_bumps(0),
 		m_use_3D_bump_map(0),
-		m_texture_size(texture_size),
+		m_texture_2D_size(texture_2D_size),
+		m_texture_3D_size(texture_3D_size),
 		m_need_initialize(true),
 		m_generation_texture_coord_are_set(false),
 		m_optimize_texture_coordinates(optimize_texture_coordinates)
@@ -109,6 +110,12 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 		handle = glGetUniformLocation(aShaderID, "g_3D_bump_map");
 		glUniform1i(handle,3);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		float repeate_frequency(4.f/float(m_texture_3D_size));
+
+		handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
+		glUniform1fv(handle, 1,&repeate_frequency);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	else
 	{
@@ -137,7 +144,7 @@ void InternalOrganMesh::generateTextures()
 {
 	//render to the bump buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bump_map_frame_buffer);
-	glViewport(0, 0, m_texture_size, m_texture_size);
+	glViewport(0, 0, m_texture_2D_size, m_texture_2D_size);
 
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
@@ -183,6 +190,15 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
 	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &m_gradient_tab[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	if(m_use_3D_bump_map)
+	{
+		float bump_frequency(float(m_texture_3D_size)/4.f);
+
+		handle = glGetUniformLocation(shader_id, "g_bump_frequency");
+		glUniform1fv(handle, 1,&bump_frequency);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 }
 
 
@@ -193,7 +209,7 @@ void InternalOrganMesh::initialize2DBuffer(unsigned int& aTexture, unsigned int&
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, m_texture_size, m_texture_size, 0, GL_RGB, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, m_texture_2D_size, m_texture_2D_size, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -226,7 +242,7 @@ void InternalOrganMesh::initialize3DBuffer(unsigned int& aTexture, unsigned int&
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_3D, aTexture);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_size, m_texture_size, m_texture_size, 0, GL_RED, GL_FLOAT, 0);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_3D_size, m_texture_3D_size, m_texture_3D_size, 0, GL_RED, GL_FLOAT, 0);
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

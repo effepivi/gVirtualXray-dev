@@ -45,6 +45,7 @@ out float frag_colour;
 //******************************************************************************
 uniform int g_has_thin_bumps;
 uniform int g_perm[TAB_SIZE];
+uniform float g_bump_frequency;
 uniform vec3 g_gradient_tab[TAB_SIZE];
 
 //------------------------------------
@@ -202,10 +203,10 @@ void main(void)
 {	
 	if(g_has_thin_bumps == 1)
 	{
-		frag_colour = noise(g_object_position*8.)*0.01;
+		frag_colour = noise(g_object_position*g_bump_frequency*4.)*0.01;
 	}
 	else
 	{
-		frag_colour = noise(g_object_position)*0.02;
+		frag_colour = noise(g_object_position*g_bump_frequency)*0.01;
 	}
 }

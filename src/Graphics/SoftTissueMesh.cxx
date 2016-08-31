@@ -45,10 +45,10 @@ namespace gVirtualXRay {
 
 //----------------------------------------------
 SoftTissueMesh::SoftTissueMesh(bool optimize_texture_coordinates,
-		unsigned int texture_size)
+		unsigned int texture_2D_size)
 :
 //----------------------------------------------
-		InternalOrganMesh(optimize_texture_coordinates, texture_size),
+		InternalOrganMesh(optimize_texture_coordinates, texture_2D_size),
 		m_colour_texture(0),
 		m_colour_texture_frame_buffer(0),
 		m_use_3D_colour_texture(0)
@@ -120,6 +120,12 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 
 		handle = glGetUniformLocation(aShaderID, "g_3D_colour_texture");
 		glUniform1i(handle,4);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		float repeate_frequency(4.f/float(m_texture_3D_size));
+
+		handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
+		glUniform1fv(handle, 1,&repeate_frequency);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	else
@@ -220,7 +226,7 @@ void SoftTissueMesh::initialize()
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
 		{
-			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.6/m_texture_size);
+			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.6/m_texture_2D_size);
 		}
 
 		//Update the VBO
@@ -232,7 +238,7 @@ void SoftTissueMesh::initialize()
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
 		{
-			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.2/m_texture_size);
+			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.2/m_texture_2D_size);
 		}
 
 		//Update the VBO
@@ -262,7 +268,7 @@ void SoftTissueMesh::generateTextures()
 
     //render to the colour buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_colour_texture_frame_buffer);
-	glViewport(0, 0, m_texture_size, m_texture_size);
+	glViewport(0, 0, m_texture_2D_size, m_texture_2D_size);
 
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
@@ -319,6 +325,17 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
 	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &m_gradient_tab[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	float texture_frequency(1.);
+
+	if(m_use_3D_colour_texture)
+	{
+		float texture_frequency(float(m_texture_3D_size)/4.f);
+	}
+
+	handle = glGetUniformLocation(shader_id, "g_texture_frequency");
+	glUniform1fv(handle, 1,&texture_frequency);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 } // namespace gVirtualXRay

@@ -104,6 +104,7 @@ uniform vec4 material_ambient;
 uniform vec4 material_diffuse;
 uniform vec4 material_specular;
 uniform float material_shininess;
+uniform float g_repeate_frequency;
 uniform sampler2DShadow g_shadow_map;
 uniform sampler2D g_bump_map;
 uniform sampler2D g_colour_texture;
@@ -171,7 +172,7 @@ void main(void)
 				vec3 V = cross(g_normal,vec3(0,1,0));
 				vec3 W = cross(g_normal,vec3(0,0,1));
 	  				  				
-	  			vec3 texture_coord = g_texture_coordinates * 0.5;
+	  			vec3 texture_coord = g_texture_coordinates * g_repeate_frequency;
 				deltaNormal = U*(computeBumpValue(texture_coord-STEP*U)
 	   				- computeBumpValue(texture_coord+STEP*U))/(STEP);
 	    	

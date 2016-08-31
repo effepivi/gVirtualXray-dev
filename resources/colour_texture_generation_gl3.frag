@@ -54,6 +54,7 @@ uniform vec4 g_base_colour;
 uniform vec4 g_second_colour;
 uniform int g_has_tendon;
 uniform int g_is_lung;
+uniform float g_texture_frequency;
 uniform sampler2D g_bump_map;
 uniform int g_perm[TAB_SIZE];
 uniform vec3 g_gradient_tab[TAB_SIZE];
@@ -300,13 +301,14 @@ void main(void)
 	{
 		if(g_is_lung==1)
 		{
-			float noise_value = noise(g_object_position)*0.5+0.5;
+			vec3 object_position = g_object_position * g_texture_frequency;
+			float noise_value = noise(object_position)*0.5+0.5;
 			
 			//lower the noise and make it sharper
 			noise_value*=pow(noise_value,4);	
 			
 			vec4 second_colour=g_second_colour*noise_value;
-			frag_colour=(g_base_colour*(1-noise_value)+second_colour)*(turbulence(g_object_position)*0.4+0.6);
+			frag_colour=(g_base_colour*(1-noise_value)+second_colour)*(turbulence(object_position)*0.4+0.6);
 		}
 		else
 		{

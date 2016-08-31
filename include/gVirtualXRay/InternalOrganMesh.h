@@ -43,12 +43,13 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
-    *   @param texture_size: size of the side of the buffer (default: 1024)
+    *   @param texture_2D_size: size of the side of the buffer of the 2D texture (default: 1024)
+    *   @param texture_3D_size: size of the side of the buffer of the 3D texture (default: 64)
     *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
     */
     //--------------------------------------------------------------------------
 	InternalOrganMesh(bool optimize_texture_coordinates = true,
-			unsigned int texture_size = 1024);
+			unsigned int texture_2D_size = 1024, unsigned int texture_3D_size = 64);
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -190,7 +191,8 @@ protected:
 	int m_use_3D_bump_map;
 
 	//size of the side of the buffer
-	unsigned int m_texture_size;
+	unsigned int m_texture_2D_size,
+		m_texture_3D_size;
 
 	//to know if the textured has been initialized
 	bool m_need_initialize;

@@ -33,9 +33,9 @@
 namespace gVirtualXRay {
 
 //----------------------------------------------
-BoneMesh::BoneMesh(unsigned int texture_size):
+BoneMesh::BoneMesh(unsigned int texture_3D_size):
 //----------------------------------------------
-		InternalOrganMesh(false, texture_size)
+		InternalOrganMesh(false, 0, texture_3D_size)
 //----------------------------------------------
 {
 	m_has_thin_bumps = 1;
@@ -160,7 +160,7 @@ void BoneMesh::generateTextures()
 
 	//render to the bump buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bump_map_frame_buffer);
-	glViewport(0, 0, m_texture_size, m_texture_size);
+	glViewport(0, 0, m_texture_3D_size, m_texture_3D_size);
 
 	// Disable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
@@ -173,7 +173,7 @@ void BoneMesh::generateTextures()
 	GLint shader_id(m_bump_map_shader.getProgramHandle());
 	defineBumpMapShaderInput(shader_id);
 
-	for(unsigned int i(0); i < m_texture_size; i++)
+	for(unsigned int i(0); i < m_texture_3D_size; i++)
 	{
 		//link the frame buffer and the texture
 		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, m_bump_map_texture, 0, i);
@@ -186,7 +186,7 @@ void BoneMesh::generateTextures()
 
 		square_filler.display();
 
-		square_filler.translate(VEC3(0,0,1.f/m_texture_size));
+		square_filler.translate(VEC3(0,0,1.f/m_texture_3D_size));
 	}
 
 	// Disable the shader
