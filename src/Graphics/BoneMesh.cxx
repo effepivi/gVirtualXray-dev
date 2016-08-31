@@ -17,11 +17,11 @@
 //******************************************************************************
 //	Include
 //******************************************************************************
-#include "gVirtualXRay/BoneMesh.h"
-
 #ifdef HAS_GLEW
 #include "GL/glew.h"
 #endif
+
+#include "gVirtualXRay/BoneMesh.h"
 
 #ifndef GVXR_UTILITIES_H
 #include "gVirtualXRay/Utilities.h"
