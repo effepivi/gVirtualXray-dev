@@ -1324,7 +1324,10 @@ void updateXRayImage()
 		g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
 		// Normalise the X-ray image
-		g_xray_renderer.normalise();
+                if (!g_image_computed)
+                {
+                    g_xray_renderer.normalise();
+                }
 
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;
