@@ -124,9 +124,9 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 		glUniform1i(handle,4);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		float repeate_frequency(0.f/float(m_texture_3D_size));
+		float repeate_frequency(2.f/float(m_texture_3D_size));
 
-		handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
+		handle = glGetUniformLocation(aShaderID, "g_repeat_frequency");
 		glUniform1fv(handle, 1,&repeate_frequency);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
@@ -342,7 +342,7 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 
 	if(m_use_3D_colour_texture)
 	{
-		float texture_frequency(float(m_texture_3D_size)*4.f);
+		texture_frequency = float(m_texture_3D_size)/2.f;
 	}
 
 	handle = glGetUniformLocation(shader_id, "g_texture_frequency");

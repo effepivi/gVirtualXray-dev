@@ -105,7 +105,7 @@ uniform vec4 material_ambient;
 uniform vec4 material_diffuse;
 uniform vec4 material_specular;
 uniform float material_shininess;
-uniform float g_repeate_frequency;
+uniform float g_repeat_frequency;
 uniform sampler2DShadow g_shadow_map;
 uniform sampler2D g_bump_map;
 uniform sampler2D g_colour_texture;
@@ -143,8 +143,10 @@ vec4 computeTextureColour()
 	vec4 texture_colour;
 	if(g_use_3D_colour_texture == 1)
    	{
-		vec3 texture_coord = vec3(repeatCoordinate(g_3D_texture_coordinates.x), 
-			repeatCoordinate(g_3D_texture_coordinates.y), repeatCoordinate(g_3D_texture_coordinates.z));
+		vec3 texture_coord = g_3D_texture_coordinates * g_repeat_frequency;
+		
+		texture_coord = vec3(repeatCoordinate(texture_coord.x), 
+			repeatCoordinate(texture_coord.y), repeatCoordinate(texture_coord.z));
   		
   		texture_colour = texture(g_3D_colour_texture, texture_coord);
    	}
@@ -175,7 +177,7 @@ void main(void)
 				vec3 V = cross(g_normal,vec3(0,1,0));
 				vec3 W = cross(g_normal,vec3(0,0,1));
 	  				  				
-	  			vec3 texture_coord = g_3D_texture_coordinates * g_repeate_frequency;
+	  			vec3 texture_coord = g_3D_texture_coordinates * g_repeat_frequency;
 				deltaNormal = U*(computeBumpValue(texture_coord-STEP*U)
 	   				- computeBumpValue(texture_coord+STEP*U))/(STEP);
 	    	
@@ -190,7 +192,6 @@ void main(void)
     	    	deltaNormal = texture( g_bump_map, g_2D_texture_coordinates).rgb;
      		}
 	    	
-	    	    		
     		normal_vector += deltaNormal;
     	}
   		normal_vector = normalize(g_normal_matrix*normal_vector);
@@ -225,7 +226,7 @@ void main(void)
 	    	diffuse        = vec3(material_diffuse  * light_diffuse) * cosLightNormal;
 	    }
 
-	    vec3 specular       = vec3(material_specular * light_specular * pow(max(dot(g_view_direction, reflect(light_direction, normal_vector)), 0.), material_shininess));
+	    vec3 specular = vec3(material_specular * light_specular * pow(max(dot(g_view_direction, reflect(light_direction, normal_vector)), 0.), material_shininess));
 	
     	frag_colour = visibility*vec4(global_ambient+ambient + diffuse + specular, 1.);
     }

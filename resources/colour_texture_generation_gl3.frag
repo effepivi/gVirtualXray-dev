@@ -301,7 +301,7 @@ void main(void)
 	{
 		if(g_is_lung==1)
 		{
-			vec3 object_position = g_object_position * g_texture_frequency;
+			vec3 object_position = g_object_position * g_texture_frequency * 0.8;
 			float noise_value = noise(object_position)*0.5+0.5;
 			
 			//lower the noise and make it sharper

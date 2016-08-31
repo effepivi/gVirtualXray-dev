@@ -97,7 +97,7 @@ void BoneMesh::defineDisplayShaderInput(int aShaderID)
 {
 	float repeate_frequency(10.f/float(m_texture_3D_size));
 
-	GLuint handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
+	GLuint handle = glGetUniformLocation(aShaderID, "g_repeat_frequency");
 	glUniform1fv(handle, 1,&repeate_frequency);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

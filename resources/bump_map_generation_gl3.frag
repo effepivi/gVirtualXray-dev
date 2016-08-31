@@ -315,18 +315,17 @@ float computeBumpValue(vec3 object_position)
 			perturbation -= g_gradient_tab[0].z*0.05-0.2;
 								
 			//draw the line on the side
-			height = abs(LINE_SHARP*(rotated_for_side_lines_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
-						LINE_SHARP*(LINE_POS+perturbation));
+			height = clamp(abs(LINE_SHARP*(rotated_for_side_lines_position.z - g_min_corner.z)/(g_max_corner.z - g_min_corner.z)-
+						LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
 		}
-					
+		//square to make it sharper
+		height = 1-(1-height)*(1-height);
+
 		//reduce bump from noise
-		bump_value *= 0.8;
+		bump_value *= 0.2;
 		
 		//add the line
 		bump_value += clamp(height,0.,0.85);
-		
-		//square to make it sharper
-		bump_value = 1-(1-bump_value)*(1-bump_value);
 	}
 	return bump_value;
 }
