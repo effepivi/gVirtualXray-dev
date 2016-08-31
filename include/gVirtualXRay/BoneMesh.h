@@ -6,7 +6,7 @@
 *
 *	@file		BoneMesh.h
 *
-*	@brief      Class to handle a polygon mesh for Bone with thin bumps.
+*	@brief      Class to handle a polygon mesh for Bone with thin bumps stored using a 3D texture.
 *
 *	@version	1.0
 *
@@ -34,7 +34,8 @@ namespace gVirtualXRay {
 //==============================================================================
 /**
 *   @class  BoneMesh
-*   @brief  BoneMesh is a class to handle a polygon mesh for Bone, with thin bumps.
+*   @brief  BoneMesh is a class to handle a polygon mesh for Bone, with thin bumps
+*   stored using a 3D texture.
 */
 //==============================================================================
 class BoneMesh: public InternalOrganMesh
@@ -45,10 +46,10 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
-    *   @param texture_size: size of the side of the buffer (default: 32)
+    *   @param texture_3D_size: size of the side of the buffer of the 3D texture (default: 32)
     */
     //--------------------------------------------------------------------------
-	BoneMesh(unsigned int texture_size = 32);
+	BoneMesh(unsigned int texture_3D_size = 32);
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -89,6 +90,13 @@ protected:
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
 
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader for colour texture generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineColourTextureShaderInput(int shader_id);
 };
 
 } // namespace gVirtualXRay

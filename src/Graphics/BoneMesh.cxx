@@ -138,62 +138,15 @@ void BoneMesh::initialize()
 void BoneMesh::generateTextures()
 //----------------------------------------------
 {
-	PolygonMesh square_filler;
-	std::vector<VEC3 > vertex_data;
-
-	VEC3 v1(0, 0, 0);
-	VEC3 v2(1, 0, 0);
-	VEC3 v3(1, 1, 0);
-	VEC3 v4(0, 1, 0);
-
-	vertex_data.reserve(6);
-
-	vertex_data.push_back(v1);
-	vertex_data.push_back(v2);
-	vertex_data.push_back(v3);
-
-	vertex_data.push_back(v1);
-	vertex_data.push_back(v3);
-	vertex_data.push_back(v4);
-
-	square_filler.setInternalData(GL_TRIANGLES, (std::vector<float>*)(&vertex_data), false, GL_STATIC_DRAW);
-
-	//render to the bump buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bump_map_frame_buffer);
-	glViewport(0, 0, m_texture_3D_size, m_texture_3D_size);
-
-	// Disable back face culling
-	pushEnableDisableState(GL_CULL_FACE);
-	glDisable(GL_CULL_FACE);
-
-	// Enable the bump shader
-	pushShaderProgram();
-	m_bump_map_shader.enable();
-
-	GLint shader_id(m_bump_map_shader.getProgramHandle());
-	defineBumpMapShaderInput(shader_id);
-
-	for(unsigned int i(0); i < m_texture_3D_size; i++)
-	{
-		//link the frame buffer and the texture
-		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, m_bump_map_texture, 0, i);
-
-		//check the creation of the buffer
-		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the frame buffer.");
-		}
-
-		square_filler.display();
-
-		square_filler.translate(VEC3(0,0,1.f/m_texture_3D_size));
-	}
-
-	// Disable the shader
-	popShaderProgram();
-
-	// Restore the attributes
-    popEnableDisableState();
+	generate3DTexture(m_bump_map_shader, m_bump_map_frame_buffer, TO_CREATE_BUMP_MAP);
 }
+
+//----------------------------------------------
+void BoneMesh::defineColourTextureShaderInput(int shader_id)
+//----------------------------------------------
+{
+	//Do nothing for the bones
+}
+
 
 } // namespace gVirtualXRay

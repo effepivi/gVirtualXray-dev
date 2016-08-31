@@ -203,10 +203,10 @@ void main(void)
 {	
 	if(g_has_thin_bumps == 1)
 	{
-		frag_colour = noise(g_object_position*g_bump_frequency*4.)*0.01;
+		frag_colour = noise(g_object_position*g_bump_frequency*8.)*0.005;
 	}
 	else
 	{
-		frag_colour = noise(g_object_position*g_bump_frequency)*0.01;
+		frag_colour = noise(g_object_position*g_bump_frequency)*0.005;
 	}
 }

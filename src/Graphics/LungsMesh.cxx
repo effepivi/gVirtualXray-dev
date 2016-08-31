@@ -31,9 +31,9 @@ namespace gVirtualXRay {
 
 //----------------------------------------------
 LungsMesh::LungsMesh(bool x_mirror, bool y_mirror, bool z_mirror,
-		bool optimize_texture_coordinates, unsigned int texture_size):
+		bool optimize_texture_coordinates, unsigned int texture_2D_size, unsigned int texture_3D_size):
 //----------------------------------------------
-		SoftTissueMesh(optimize_texture_coordinates, texture_size),
+		SoftTissueMesh(optimize_texture_coordinates, texture_2D_size, texture_3D_size),
 		m_x_mirror(x_mirror),
 		m_y_mirror(y_mirror),
 		m_z_mirror(z_mirror)
@@ -42,6 +42,7 @@ LungsMesh::LungsMesh(bool x_mirror, bool y_mirror, bool z_mirror,
 	getMaterial().setDiffuseColour(1.,0.71,0.66,1.);
 	getMaterial().setAmbientColour(1.,0.71,0.66,1.);
 	m_is_lung=1;
+	m_use_3D_colour_texture = 0;
 }
 
 

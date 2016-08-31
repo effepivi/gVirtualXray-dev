@@ -31,9 +31,9 @@ namespace gVirtualXRay {
 
 //----------------------------------------------
 DiaphragmMesh::DiaphragmMesh(bool optimize_texture_coordinates,
-		unsigned int texture_size):
+		unsigned int texture_2D_size):
 //----------------------------------------------
-		SoftTissueMesh(optimize_texture_coordinates, texture_size)
+		SoftTissueMesh(optimize_texture_coordinates, texture_2D_size, 0)
 //----------------------------------------------
 {
 	getMaterial().setDiffuseColour(0.58,0.2,0.15,1.);

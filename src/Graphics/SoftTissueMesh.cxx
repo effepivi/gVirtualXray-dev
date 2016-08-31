@@ -45,10 +45,10 @@ namespace gVirtualXRay {
 
 //----------------------------------------------
 SoftTissueMesh::SoftTissueMesh(bool optimize_texture_coordinates,
-		unsigned int texture_2D_size)
+		unsigned int texture_2D_size, unsigned int texture_3D_size)
 :
 //----------------------------------------------
-		InternalOrganMesh(optimize_texture_coordinates, texture_2D_size),
+		InternalOrganMesh(optimize_texture_coordinates, texture_2D_size, texture_3D_size),
 		m_colour_texture(0),
 		m_colour_texture_frame_buffer(0),
 		m_use_3D_colour_texture(0)
@@ -263,37 +263,23 @@ void SoftTissueMesh::initialize()
 void SoftTissueMesh::generateTextures()
 //----------------------------------------------
 {
-	//generate the bump map
-    InternalOrganMesh::generateTextures();
+	if(m_use_3D_bump_map)
+	{
+		generate3DTexture(m_bump_map_shader, m_bump_map_frame_buffer, TO_CREATE_BUMP_MAP);
+	}
+	else
+	{
+		generate2DTexture(m_bump_map_shader, m_bump_map_frame_buffer, TO_CREATE_BUMP_MAP);
+	}
 
-    //render to the colour buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_colour_texture_frame_buffer);
-	glViewport(0, 0, m_texture_2D_size, m_texture_2D_size);
-
-	// Enable back face culling
-	pushEnableDisableState(GL_CULL_FACE);
-	pushEnableDisableState(GL_DEPTH_TEST);
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-
-
-	// Enable the bump shader
-	pushShaderProgram();
-	m_colour_texture_shader.enable();
-
-	GLint shader_id(m_colour_texture_shader.getProgramHandle());
-	defineColourTextureShaderInput(shader_id);
-
-	display();
-
-	// Disable the shader
-	popShaderProgram();
-
-	// Restore the attributes
-    popEnableDisableState();
-    popEnableDisableState();
+	if(m_use_3D_colour_texture)
+	{
+		generate3DTexture(m_colour_texture_shader, m_colour_texture_frame_buffer, TO_CREATE_COLOUR_TEXTURE);
+	}
+	else
+	{
+		generate2DTexture(m_colour_texture_shader, m_colour_texture_frame_buffer, TO_CREATE_COLOUR_TEXTURE);
+	}
 }
 
 //----------------------------------------------

@@ -86,10 +86,24 @@ public:
 	virtual void splitFaces();
 
 protected:
+	enum ToCreate{TO_CREATE_BUMP_MAP, TO_CREATE_COLOUR_TEXTURE};
+
 	//--------------------------------------------------------------------------
 	/// generates the textures
 	//--------------------------------------------------------------------------
-	virtual void generateTextures();
+	virtual void generateTextures() = 0;
+
+	//--------------------------------------------------------------------------
+	/// generates a 2D texture
+	//--------------------------------------------------------------------------
+	virtual void generate2DTexture(Shader const& shader, unsigned int& frame_buffer,
+			ToCreate to_create);
+
+	//--------------------------------------------------------------------------
+	/// generates a 3D texture
+	//--------------------------------------------------------------------------
+	virtual void generate3DTexture(Shader const& shader, unsigned int& frame_buffer,
+			ToCreate to_create);
 
 	//-------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader bump map generation
@@ -98,6 +112,14 @@ protected:
     */
 	//-------------------------------------------------------------------------
 	virtual void defineBumpMapShaderInput(int shader_id);
+
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader for colour texture generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineColourTextureShaderInput(int shader_id) = 0;
 
 	//--------------------------------------------------------------------------
 	/// initialize a 2D frame buffer and bind a texture to it
