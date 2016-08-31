@@ -159,7 +159,7 @@ protected:
 	unsigned int m_bump_map_texture,
 		m_bump_map_frame_buffer;
 
-	//GLSL shaders to create the bump map and the colour texture
+	//GLSL shader to create the bump map
 	Shader m_bump_map_shader;
 
 	//to know if the internal organ is a muscle with a tendon for texturing and bump mapping, 0 by default
@@ -170,6 +170,8 @@ protected:
 
 	//to know if the internal organ has thin bumps for bump mapping, 0 by default
 	int m_has_thin_bumps;
+
+	int m_use_3D_bump_map;
 
 	//size of the side of the buffer
 	unsigned int m_texture_size;

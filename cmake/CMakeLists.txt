@@ -581,6 +581,8 @@ SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/depth_map_gl3.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/bump_map_generation_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/bump_map_generation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/3d_bump_map_generation_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/3d_bump_map_generation_gl3.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/colour_texture_generation_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/colour_texture_generation_gl3.vert
 

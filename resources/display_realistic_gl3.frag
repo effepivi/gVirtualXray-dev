@@ -66,6 +66,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #version 150
 precision highp float; // Video card drivers require this line to function properly
 
+//******************************************************************************
+//	constant variables
+//******************************************************************************
+//step for bump evaluation 
+const float STEP=0.02;
 
 //******************************************************************************
 //	Input
@@ -74,6 +79,7 @@ smooth in vec2 g_texture_coordinates;
 smooth in vec3 g_normal;
 smooth in vec3 g_view_direction;
 smooth in vec3 g_light_direction;
+smooth in vec3 g_position;
 smooth in vec4 g_shadow_coord;
 
 //******************************************************************************
@@ -88,6 +94,7 @@ out vec4 frag_colour;
 uniform int g_use_lighting;
 uniform int g_use_bump_map;
 uniform int g_use_texture;
+uniform int g_use_3D_bump_map;
 uniform vec3 light_direction;
 uniform vec4 light_global_ambient;
 uniform vec4 light_ambient;
@@ -100,7 +107,29 @@ uniform float material_shininess;
 uniform sampler2DShadow g_shadow_map;
 uniform sampler2D g_bump_map;
 uniform sampler2D g_colour_texture;
+uniform sampler3D g_3D_bump_map;
+uniform sampler3D g_3D_colour_texture;
 uniform mat3 g_normal_matrix;
+
+//-----------------------------------
+float repeatCoordinate(float x)
+//-----------------------------------
+{
+	float res = x - floor(x);
+	if ((int(floor(x)) % 2) == 1)
+	{
+		res = 1 - res;
+	}
+	return res;
+}
+
+//-----------------------------------
+float computeBumpValue(vec3 position)
+//-----------------------------------
+{
+	position = vec3(repeatCoordinate(position.x), repeatCoordinate(position.y), repeatCoordinate(position.z));
+	return texture(g_3D_bump_map, position).r;
+}
 
 //-------------
 void main(void)
@@ -113,7 +142,28 @@ void main(void)
     	if(g_use_bump_map == 1)
 	    {
 	    	//modify the normal vector using the bump map   	
-	    	vec3 deltaNormal = texture( g_bump_map, g_texture_coordinates).rgb;
+	    	vec3 deltaNormal;
+	    	
+	     	if (g_use_3D_bump_map == 1)
+    		{
+    			vec3 U = cross(g_normal,vec3(1,0,0));
+				vec3 V = cross(g_normal,vec3(0,1,0));
+				vec3 W = cross(g_normal,vec3(0,0,1));
+	  				  				
+				deltaNormal = U*(computeBumpValue(g_position-STEP*U)
+	   				- computeBumpValue(g_position+STEP*U))/(STEP);
+	    	
+				deltaNormal += V*(computeBumpValue(g_position-STEP*V)
+	   				- computeBumpValue(g_position+STEP*V))/(STEP);
+	
+				deltaNormal += W*(computeBumpValue(g_position-STEP*W)
+	  				- computeBumpValue(g_position+STEP*W))/(STEP);
+       		}
+    		else
+    		{
+    	    	deltaNormal = texture( g_bump_map, g_texture_coordinates).rgb;
+     		}
+	    	
 	    	    		
     		normal_vector += deltaNormal;
     	}

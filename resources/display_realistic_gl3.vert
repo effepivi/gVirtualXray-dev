@@ -80,6 +80,7 @@ in vec3 in_Normal;
 smooth out vec2 g_texture_coordinates;
 smooth out vec3 g_normal;
 smooth out vec3 g_view_direction;
+smooth out vec3 g_position;
 smooth out vec4 g_shadow_coord;
 
 //******************************************************************************
@@ -95,6 +96,7 @@ void main(void)
 {
 	vec4 g_object_position = g_modelview_matrix * vec4(in_Vertex, 1.0);
 	
+	g_position = in_Vertex;
 	g_normal = in_Normal;
 	g_view_direction = normalize(g_object_position.xyz);
 	

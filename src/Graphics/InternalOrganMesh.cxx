@@ -58,6 +58,7 @@ InternalOrganMesh::InternalOrganMesh(bool optimize_texture_coordinates,
 		m_has_tendon(0),
 		m_is_lung(0),
 		m_has_thin_bumps(0),
+		m_use_3D_bump_map(0),
 		m_texture_size(texture_size),
 		m_need_initialize(true),
 		m_generation_texture_coord_are_set(false),
@@ -120,6 +121,10 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 
 	GLuint handle(glGetUniformLocation(aShaderID, "g_bump_map"));
 	glUniform1i(handle,1);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(aShaderID, "g_use_3D_bump_map");
+	glUniform1iv(handle, 1, &m_use_3D_bump_map);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	AnatomicalMesh::defineDisplayShaderInput(aShaderID);

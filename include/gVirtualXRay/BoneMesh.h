@@ -45,12 +45,10 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
-    *   @param texture_size: size of the side of the buffer (default: 2048)
-    *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
+    *   @param texture_size: size of the side of the buffer (default: 16)
     */
     //--------------------------------------------------------------------------
-	BoneMesh(bool optimize_texture_coordinates = true,
-			unsigned int texture_size = 2048);
+	BoneMesh(unsigned int texture_size = 16);
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -63,10 +61,42 @@ public:
 	virtual bool isSoftTissue() const;
 
 	//--------------------------------------------------------------------------
+	///	Update the VBO.
+	/**
+	*	@param aTypeOfVBO: 			VBO usage hint to set; valid values are GL_STATIC_DRAW, GL_DYNAMIC_DRAW and GL_STREAM_DRAW
+	*	@param aTypeOfPrimitive:	type of primitive; valid values are GL_TRIANGLES
+	*/
+	//--------------------------------------------------------------------------
+	virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
+
+	//--------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader
+    /*
+    *   @param aShaderID: The GLSL shader used to display the anatomical mesh
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineDisplayShaderInput(int shader_id);
+
+
+	//--------------------------------------------------------------------------
 	/// Merge the vertices for optimization and a smoother display
 	//--------------------------------------------------------------------------
 	virtual void initialize();
 
+protected:
+	//--------------------------------------------------------------------------
+	/// generates the textures
+	//--------------------------------------------------------------------------
+	virtual void generateTextures();
+
+	//--------------------------------------------------------------------------
+	/// initialize a frame buffer and bind a texture to it
+    /*
+    *   @param aTexture: the texture to be generated
+    *   @param aFrameBuffer: the framebuffer
+    */
+	//-------------------------------------------------------------------------
+	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
 };
 
 } // namespace gVirtualXRay
