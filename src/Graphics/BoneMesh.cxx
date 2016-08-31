@@ -79,7 +79,7 @@ void BoneMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 
 		m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
-				0, 0, GL_NONE, 0);
+				m_number_of_vertices, 3, GL_FLOAT, &m_3D_texture_coordinates[0]);
 
         if (m_p_index_set && m_number_of_indices &&
                 m_index_data_type != GL_NONE)
@@ -126,8 +126,6 @@ void BoneMesh::initialize()
 	//initialize if needed
 	if(m_need_initialize)
 	{
-		mergeVertices();
-
 		//load the shaders
 	    char* p_vertex_shader(0);
 	    char* p_fragment_shader(0);
@@ -159,6 +157,28 @@ void BoneMesh::initialize()
 	    //initialize the buffers for the bump map
 	    initializeBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
 
+		// Initialize the texture coordinates using the vertices position
+	    m_3D_texture_coordinates.reserve(m_number_of_vertices);
+
+		if(m_number_of_indices)
+		{
+			for(unsigned int i(0); i < m_number_of_vertices; i++)
+		    {
+		    	m_3D_texture_coordinates.push_back(getVertex(i));
+		    }
+		}
+		else
+		{
+			mergeVertices();
+
+			for(unsigned int i(0); i < m_number_of_vertices; i++)
+		    {
+		    	m_3D_texture_coordinates.push_back(getVertex(i));
+		    }
+
+			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+		}
+
 	    initGradientTab();
 		initPermutation();
 		generateTextures();
@@ -182,6 +202,8 @@ void BoneMesh::generateTextures()
 	VEC3 v3(1, 1, 0);
 	VEC3 v4(0, 1, 0);
 
+	vertex_data.reserve(6);
+
 	vertex_data.push_back(v1);
 	vertex_data.push_back(v2);
 	vertex_data.push_back(v3);
@@ -190,7 +212,7 @@ void BoneMesh::generateTextures()
 	vertex_data.push_back(v3);
 	vertex_data.push_back(v4);
 
-	square_filler.setInternalData(m_vbo->getPrimitiveType(), (std::vector<float>*)(&vertex_data), false, m_vbo->getBufferUsageHint());
+	square_filler.setInternalData(GL_TRIANGLES, (std::vector<float>*)(&vertex_data), false, GL_STATIC_DRAW);
 
 	//render to the bump buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bump_map_frame_buffer);

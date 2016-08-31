@@ -45,10 +45,10 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
-    *   @param texture_size: size of the side of the buffer (default: 16)
+    *   @param texture_size: size of the side of the buffer (default: 32)
     */
     //--------------------------------------------------------------------------
-	BoneMesh(unsigned int texture_size = 16);
+	BoneMesh(unsigned int texture_size = 32);
 
 	//--------------------------------------------------------------------------
 	/// Destructor
@@ -97,6 +97,8 @@ protected:
     */
 	//-------------------------------------------------------------------------
 	virtual void initializeBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
+
+	std::vector<VEC3> m_3D_texture_coordinates;
 };
 
 } // namespace gVirtualXRay

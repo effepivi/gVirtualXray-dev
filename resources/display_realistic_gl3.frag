@@ -75,11 +75,10 @@ const float STEP=0.02;
 //******************************************************************************
 //	Input
 //******************************************************************************
-smooth in vec2 g_texture_coordinates;
+smooth in vec3 g_texture_coordinates;
 smooth in vec3 g_normal;
 smooth in vec3 g_view_direction;
 smooth in vec3 g_light_direction;
-smooth in vec3 g_position;
 smooth in vec4 g_shadow_coord;
 
 //******************************************************************************
@@ -124,11 +123,11 @@ float repeatCoordinate(float x)
 }
 
 //-----------------------------------
-float computeBumpValue(vec3 position)
+float computeBumpValue(vec3 texture_coord)
 //-----------------------------------
 {
-	position = vec3(repeatCoordinate(position.x), repeatCoordinate(position.y), repeatCoordinate(position.z));
-	return texture(g_3D_bump_map, position).r;
+	texture_coord = vec3(repeatCoordinate(texture_coord.x), repeatCoordinate(texture_coord.y), repeatCoordinate(texture_coord.z));
+	return texture(g_3D_bump_map, texture_coord).r;
 }
 
 //-------------
@@ -150,18 +149,19 @@ void main(void)
 				vec3 V = cross(g_normal,vec3(0,1,0));
 				vec3 W = cross(g_normal,vec3(0,0,1));
 	  				  				
-				deltaNormal = U*(computeBumpValue(g_position-STEP*U)
-	   				- computeBumpValue(g_position+STEP*U))/(STEP);
+	  			vec3 texture_coord = g_texture_coordinates * 0.5;
+				deltaNormal = U*(computeBumpValue(texture_coord-STEP*U)
+	   				- computeBumpValue(texture_coord+STEP*U))/(STEP);
 	    	
-				deltaNormal += V*(computeBumpValue(g_position-STEP*V)
-	   				- computeBumpValue(g_position+STEP*V))/(STEP);
+				deltaNormal += V*(computeBumpValue(texture_coord-STEP*V)
+	   				- computeBumpValue(texture_coord+STEP*V))/(STEP);
 	
-				deltaNormal += W*(computeBumpValue(g_position-STEP*W)
-	  				- computeBumpValue(g_position+STEP*W))/(STEP);
+				deltaNormal += W*(computeBumpValue(texture_coord-STEP*W)
+	  				- computeBumpValue(texture_coord+STEP*W))/(STEP);
        		}
     		else
     		{
-    	    	deltaNormal = texture( g_bump_map, g_texture_coordinates).rgb;
+    	    	deltaNormal = texture( g_bump_map, g_texture_coordinates.xy).rgb;
      		}
 	    	
 	    	    		
@@ -186,9 +186,9 @@ void main(void)
 	    
 	    if(g_use_texture==1)
 	    {
-	    	global_ambient =vec3(light_global_ambient*texture( g_colour_texture,g_texture_coordinates));
-	   		ambient        = vec3(light_ambient * texture( g_colour_texture, g_texture_coordinates ));
-	    	diffuse        =  vec3(texture( g_colour_texture, g_texture_coordinates)*light_diffuse) * cosLightNormal;
+	    	global_ambient =vec3(light_global_ambient*texture( g_colour_texture,g_texture_coordinates.xy));
+	   		ambient        = vec3(light_ambient * texture( g_colour_texture, g_texture_coordinates.xy ));
+	    	diffuse        =  vec3(texture( g_colour_texture, g_texture_coordinates.xy)*light_diffuse) * cosLightNormal;
 	    }
 	    else
 	    {
@@ -205,7 +205,7 @@ void main(void)
     {
 	    if(g_use_texture==1)
 	    {
-	    	frag_colour = texture( g_colour_texture,g_texture_coordinates);
+	    	frag_colour = texture( g_colour_texture,g_texture_coordinates.xy);
 	    }
 	    else
 	    {

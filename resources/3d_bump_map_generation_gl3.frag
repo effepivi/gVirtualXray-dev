@@ -25,9 +25,6 @@
 //******************************************************************************
 //	constant variables
 //******************************************************************************
-//step for bump evaluation 
-const float STEP=0.02;
-
 //size of the arrays to initialize noises
 const int TAB_SIZE = 64;
 
@@ -205,7 +202,7 @@ void main(void)
 {	
 	if(g_has_thin_bumps == 1)
 	{
-		frag_colour = noise(g_object_position*4.)*0.02;
+		frag_colour = noise(g_object_position*8.)*0.01;
 	}
 	else
 	{
