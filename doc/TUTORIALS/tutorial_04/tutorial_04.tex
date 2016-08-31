@@ -61,7 +61,7 @@ Andréas MEULEMAN
 \end{lstlisting}
 ~\\
 
-	$SkinMesh$ is transparent and the other classes generate suitable textures and normal maps. The are procedural generated using noise so that they are slightly different after each launch of the program. These classes are supposed to be used with the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$. 
+	$SkinMesh$ is transparent and white by default.The other classes generate suitable textures and normal maps. The are procedural generated using noise so that they are slightly different after each launch of the program. These classes are supposed to be used with the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$. 
 
 	To use these classes, we need to set the data (vertices position and normal vectors) as we do for any PolygonMesh and then, call $defineDisplayShaderInput(int$ $shader\_id)$ just before the polygonMesh's function $display()$. In this tutorial, we will display lungs without lighting.
 	
@@ -102,6 +102,8 @@ We have to include the header of the class we are going to use:
 	If the number of vertices of the mesh is greater than $optimize\_threshold$, the texture coordinates will not be optimized. Optimize the texture coordinates enable a better rendering with the same performances, but it requires more precomputating. Its default value is 100 000. \\
 	
 	The constructor of $LungsMesh$ has three other parameters of type $bool$: $x\_mirror$, $y\_mirror$ and $z\_mirror$. They enable to know if the mesh is upside down to draw the lines correctly. Their default value is false.
+
+	The constructor of $SkinMesh$ has no parameters.
 
 \chapter{Load the data}
 
