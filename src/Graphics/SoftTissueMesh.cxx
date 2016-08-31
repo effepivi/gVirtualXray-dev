@@ -89,7 +89,10 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 
 		if(m_use_3D_colour_texture || m_use_3D_bump_map)
 		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "combining 3D and 2D texturing is not implemented.");
+			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
+					m_number_of_vertices, 2, GL_FLOAT, &m_2D_texture_coordinates[0],
+					m_number_of_vertices, 3, GL_FLOAT, &m_3D_texture_coordinates[0]);
 		}
 		else
 		{
@@ -117,12 +120,11 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_3D, m_colour_texture);
 
-
 		handle = glGetUniformLocation(aShaderID, "g_3D_colour_texture");
 		glUniform1i(handle,4);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		float repeate_frequency(4.f/float(m_texture_3D_size));
+		float repeate_frequency(0.f/float(m_texture_3D_size));
 
 		handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
 		glUniform1fv(handle, 1,&repeate_frequency);
@@ -181,7 +183,7 @@ void SoftTissueMesh::initialize()
 		//initialize the buffers for the bump map
 	    if(m_use_3D_bump_map)
 	    {
-	    	initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
+	    	initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer, false);
 	    }
 	    else
 	    {
@@ -191,7 +193,7 @@ void SoftTissueMesh::initialize()
 		//initialize the buffers for the colour texture
 	    if(m_use_3D_colour_texture)
 	    {
-	    	initialize3DBuffer(m_colour_texture, m_colour_texture_frame_buffer);
+	    	initialize3DBuffer(m_colour_texture, m_colour_texture_frame_buffer, true);
 	    }
 	    else
 	    {
@@ -208,11 +210,21 @@ void SoftTissueMesh::initialize()
 
 			//initialize the coordinates for sampling
 			initialize2DTextureCoordinates();
+
+			if(m_use_3D_colour_texture || m_use_3D_bump_map)
+			{
+				initialize3DTextureCoordinates();
+			}
 		}
 		else
 		{
 			//initialize the coordinates for sampling
 			initialize2DTextureCoordinates();
+
+			if(m_use_3D_colour_texture || m_use_3D_bump_map)
+			{
+				initialize3DTextureCoordinates();
+			}
 
 			shareNormalVectors();
 
@@ -265,7 +277,7 @@ void SoftTissueMesh::generateTextures()
 {
 	if(m_use_3D_bump_map)
 	{
-		generate3DTexture(m_bump_map_shader, m_bump_map_frame_buffer, TO_CREATE_BUMP_MAP);
+		generate3DTexture(m_bump_map_shader, m_bump_map_frame_buffer, m_bump_map_texture, TO_CREATE_BUMP_MAP);
 	}
 	else
 	{
@@ -274,7 +286,7 @@ void SoftTissueMesh::generateTextures()
 
 	if(m_use_3D_colour_texture)
 	{
-		generate3DTexture(m_colour_texture_shader, m_colour_texture_frame_buffer, TO_CREATE_COLOUR_TEXTURE);
+		generate3DTexture(m_colour_texture_shader, m_colour_texture_frame_buffer, m_colour_texture, TO_CREATE_COLOUR_TEXTURE);
 	}
 	else
 	{
@@ -286,6 +298,15 @@ void SoftTissueMesh::generateTextures()
 void SoftTissueMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
+	if(m_use_3D_bump_map)
+	{
+		float bump_frequency(float(m_texture_3D_size)*4.f);
+
+		GLuint handle = glGetUniformLocation(shader_id, "g_bump_frequency");
+		glUniform1fv(handle, 1,&bump_frequency);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
 	InternalOrganMesh::defineBumpMapShaderInput(shader_id);
 }
 
@@ -299,6 +320,10 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 
 	handle = glGetUniformLocation(shader_id, "g_base_colour");
 	glUniform4fv(handle, 1, &getMaterial().getDiffuseColour()[0]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	handle = glGetUniformLocation(shader_id, "g_use_3D_colour_texture");
+	glUniform1iv(handle, 1, &m_use_3D_colour_texture);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	handle = glGetUniformLocation(shader_id, "g_is_lung");
@@ -317,7 +342,7 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 
 	if(m_use_3D_colour_texture)
 	{
-		float texture_frequency(float(m_texture_3D_size)/4.f);
+		float texture_frequency(float(m_texture_3D_size)*4.f);
 	}
 
 	handle = glGetUniformLocation(shader_id, "g_texture_frequency");

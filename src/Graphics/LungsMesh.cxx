@@ -42,7 +42,7 @@ LungsMesh::LungsMesh(bool x_mirror, bool y_mirror, bool z_mirror,
 	getMaterial().setDiffuseColour(1.,0.71,0.66,1.);
 	getMaterial().setAmbientColour(1.,0.71,0.66,1.);
 	m_is_lung=1;
-	m_use_3D_colour_texture = 0;
+	m_use_3D_colour_texture = 1;
 }
 
 

@@ -128,12 +128,29 @@ public:
     *	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
     *	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
     *	@param apTextureCoordinates:			address of the first component of the first texture coordinate
+    *	@param aNumberOfTextureCoordinates:		number of additional data
+    *	@param aNumberOfCompontentsPerCoord:	the number of component per additional data
+    *	@param aCoordDataType:					the data type of additional data; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apTextureCoordinates:			address of the first component of the first additional data
     */
     //--------------------------------------------------------------------------
 	virtual void setVertexData(int aPrimitiveType,
-            const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* apVertices,
-            const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
-            const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates) = 0;
+            const unsigned int aNumberOfVertices,
+            unsigned int aNumberOfCompontentsPerVertex,
+            int aVertexDataType,
+            const void* apVertices,
+            const unsigned int aNumberOfNormals,
+            unsigned int aNumberOfCompontentsPerNormal,
+            int aNormalDataType,
+            const void* apNormals,
+            const unsigned int aNumberOfTextureCoordinates,
+            unsigned int aNumberOfCompontentsPerCoord,
+            int aCoordDataType,
+            const void* apTextureCoordinates,
+			const unsigned int aNumberOfAdditionalData = 0,
+			unsigned int aNumberOfCompontentsPerAdditionalData = 0,
+			int anAdditionalDataType = 0,
+			const void* apAdditionalData = 0) = 0;
 
 
     //--------------------------------------------------------------------------
@@ -209,7 +226,7 @@ public:
 //******************************************************************************
 protected:
 	/// ID of VBOs
-	unsigned int m_id_set[4];
+	unsigned int m_id_set[5];
 
 
 	/// Number of normal vectors
@@ -218,6 +235,14 @@ protected:
 
     /// Number of components per normal
     unsigned int m_number_of_compontents_per_normal;
+
+
+	/// Number of additional data
+	unsigned int m_number_of_additional_data;
+
+
+    /// Number of components per additional data
+    unsigned int m_number_of_compontents_per_additional_data;
 
 
     /// Number of texture coordinates
@@ -244,6 +269,10 @@ protected:
 	unsigned int m_normal_size;
 
 
+	/// Size in bytes of the array of additional data
+	unsigned int m_additional_data_size;
+
+
 	/// Size in bytes of the array of texture coordinates
 	unsigned int m_texture_coordinate_size;
 
@@ -258,6 +287,9 @@ protected:
 
 	/// Data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
 	int m_normal_data_type;
+
+	/// Data type of additional data; valid values are GL_FLOAT and GL_DOUBLE
+	int m_additional_data_type;
 
 
 	/// Data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE

@@ -77,6 +77,7 @@ void BoneMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 
 		m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
+				0, 0, GL_NONE, 0,
 				m_number_of_vertices, 3, GL_FLOAT, &m_3D_texture_coordinates[0]);
 
         if (m_p_index_set && m_number_of_indices &&
@@ -94,6 +95,12 @@ void BoneMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 void BoneMesh::defineDisplayShaderInput(int aShaderID)
 //----------------------------------------------
 {
+	float repeate_frequency(10.f/float(m_texture_3D_size));
+
+	GLuint handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
+	glUniform1fv(handle, 1,&repeate_frequency);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	InternalOrganMesh::defineDisplayShaderInput(aShaderID);
 }
 
@@ -108,7 +115,7 @@ void BoneMesh::initialize()
 		load3DBumpShader();
 
 	    //initialize the buffers for the bump map
-	    initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
+	    initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer, false);
 
 		if(m_number_of_indices)
 		{
@@ -138,7 +145,20 @@ void BoneMesh::initialize()
 void BoneMesh::generateTextures()
 //----------------------------------------------
 {
-	generate3DTexture(m_bump_map_shader, m_bump_map_frame_buffer, TO_CREATE_BUMP_MAP);
+	generate3DTexture(m_bump_map_shader, m_bump_map_frame_buffer, m_bump_map_texture, TO_CREATE_BUMP_MAP);
+}
+
+//----------------------------------------------
+void BoneMesh::defineBumpMapShaderInput(int shader_id)
+//----------------------------------------------
+{
+	float bump_frequency(float(m_texture_3D_size)/4.f);
+
+	GLuint handle = glGetUniformLocation(shader_id, "g_bump_frequency");
+	glUniform1fv(handle, 1,&bump_frequency);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	InternalOrganMesh::defineBumpMapShaderInput(shader_id);
 }
 
 //----------------------------------------------

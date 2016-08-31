@@ -90,6 +90,14 @@ protected:
 	//--------------------------------------------------------------------------
 	virtual void generateTextures();
 
+	//-------------------------------------------------------------------------
+	/// Link the attributes to their id in the shader bump map generation
+    /*
+    *   @param shader_id: The GLSL shader
+    */
+	//-------------------------------------------------------------------------
+	virtual void defineBumpMapShaderInput(int shader_id);
+
 	//--------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader for colour texture generation
     /*

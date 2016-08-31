@@ -126,6 +126,11 @@ public:
     *	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
     *	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
     *	@param apTextureCoordinates:			address of the first component of the first texture coordinate
+    *	@param aNumberOfTextureCoordinates:		number of additional data
+    *	@param aNumberOfCompontentsPerCoord:	the number of component per additional data
+    *	@param aCoordDataType:					the data type of additional data; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apTextureCoordinates:			address of the first component of the first additional data
+    *
     */
     //--------------------------------------------------------------------------
 	virtual void setVertexData(int aPrimitiveType,
@@ -140,7 +145,11 @@ public:
             const unsigned int aNumberOfTextureCoordinates,
             unsigned int aNumberOfCompontentsPerCoord,
             int aCoordDataType,
-            const void* apTextureCoordinates);
+            const void* apTextureCoordinates,
+			const unsigned int aNumberOfAdditionalData = 0,
+			unsigned int aNumberOfCompontentsPerAdditionalData = 0,
+			int anAdditionalDataType = 0,
+			const void* apAdditionalData = 0);
 
 
     //--------------------------------------------------------------------------

@@ -104,28 +104,46 @@ public:
 	virtual ~OpenGL2VBO();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the vertex data.
-	/**
-	*	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
-	*	@param aNumberOfVertices:				number of vertices
-	*	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
-	*	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apVertices:						address of the first component of the first vertex
-	*	@param aNumberOfNormals:				number of normal vectors
-	*	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
-	*	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apNormals:						address of the first component of the firth normal vector
-	*	@param aNumberOfTextureCoordinates:		number of texture coordinates
-	*	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
-	*	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apTextureCoordinates:			address of the first component of the first texture coordinate
-	*/
-	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    ///	Set the vertex data.
+    /**
+    *	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
+    *	@param aNumberOfVertices:				number of vertices
+    *	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
+    *	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apVertices:						address of the first component of the first vertex
+    *	@param aNumberOfNormals:				number of normal vectors
+    *	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
+    *	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apNormals:						address of the first component of the firth normal vector
+    *	@param aNumberOfTextureCoordinates:		number of texture coordinates
+    *	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
+    *	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
+    *	@param apTextureCoordinates:			address of the first component of the first texture coordinate
+    *	@param aNumberOfTextureCoordinates:		number of additional data (default: 0)
+    *	@param aNumberOfCompontentsPerCoord:	the number of component per additional data (default: 0)
+    *	@param aCoordDataType:					the data type of additional data; valid values are GL_FLOAT and GL_DOUBLE (default: 0)
+    *	@param apTextureCoordinates:			address of the first component of the first additional data (default: 0)
+    *
+    */
+    //--------------------------------------------------------------------------
 	virtual void setVertexData(int aPrimitiveType,
-			const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* apVertices,
-			const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
-			const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates);
+            const unsigned int aNumberOfVertices,
+            unsigned int aNumberOfCompontentsPerVertex,
+            int aVertexDataType,
+            const void* apVertices,
+            const unsigned int aNumberOfNormals,
+            unsigned int aNumberOfCompontentsPerNormal,
+            int aNormalDataType,
+            const void* apNormals,
+            const unsigned int aNumberOfTextureCoordinates,
+            unsigned int aNumberOfCompontentsPerCoord,
+            int aCoordDataType,
+            const void* apTextureCoordinates,
+			const unsigned int aNumberOfAdditionalData = 0,
+			unsigned int aNumberOfCompontentsPerAdditionalData = 0,
+			int anAdditionalDataType = 0,
+			const void* apAdditionalData = 0);
 
 
 	//--------------------------------------------------------------------------

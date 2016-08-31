@@ -75,7 +75,8 @@ const float STEP=0.02;
 //******************************************************************************
 //	Input
 //******************************************************************************
-smooth in vec3 g_texture_coordinates;
+smooth in vec2 g_2D_texture_coordinates;
+smooth in vec3 g_3D_texture_coordinates;
 smooth in vec3 g_normal;
 smooth in vec3 g_view_direction;
 smooth in vec3 g_light_direction;
@@ -142,12 +143,14 @@ vec4 computeTextureColour()
 	vec4 texture_colour;
 	if(g_use_3D_colour_texture == 1)
    	{
-		vec3 texture_coord = vec3(repeatCoordinate(g_texture_coordinates.x), repeatCoordinate(g_texture_coordinates.y), repeatCoordinate(g_texture_coordinates.z));
+		vec3 texture_coord = vec3(repeatCoordinate(g_3D_texture_coordinates.x), 
+			repeatCoordinate(g_3D_texture_coordinates.y), repeatCoordinate(g_3D_texture_coordinates.z));
+  		
   		texture_colour = texture(g_3D_colour_texture, texture_coord);
    	}
    	else
    	{
-   		texture_colour = texture( g_colour_texture, g_texture_coordinates.xy);
+   		texture_colour = texture( g_colour_texture, g_2D_texture_coordinates);
    	}
 
 	return texture_colour;
@@ -172,7 +175,7 @@ void main(void)
 				vec3 V = cross(g_normal,vec3(0,1,0));
 				vec3 W = cross(g_normal,vec3(0,0,1));
 	  				  				
-	  			vec3 texture_coord = g_texture_coordinates * g_repeate_frequency;
+	  			vec3 texture_coord = g_3D_texture_coordinates * g_repeate_frequency;
 				deltaNormal = U*(computeBumpValue(texture_coord-STEP*U)
 	   				- computeBumpValue(texture_coord+STEP*U))/(STEP);
 	    	
@@ -184,7 +187,7 @@ void main(void)
        		}
     		else
     		{
-    	    	deltaNormal = texture( g_bump_map, g_texture_coordinates.xy).rgb;
+    	    	deltaNormal = texture( g_bump_map, g_2D_texture_coordinates).rgb;
      		}
 	    	
 	    	    		
@@ -230,7 +233,7 @@ void main(void)
     {
 	    if(g_use_texture==1)
 	    {
-	    	frag_colour = texture( g_colour_texture,g_texture_coordinates.xy);
+	    	frag_colour = texture( g_colour_texture,g_2D_texture_coordinates);
 	    }
 	    else
 	    {

@@ -113,6 +113,7 @@ VBO::VBO():
     m_id_set[VERTEX_SET_ID]     = 0;
     m_id_set[TEXT_COORD_SET_ID] = 0;
     m_id_set[NORMAL_SET_ID]     = 0;
+    m_id_set[ADDITIONAL_DATA_ID]= 0;
     m_id_set[INDEX_SET_ID]      = 0;
 }
 
@@ -124,11 +125,13 @@ void VBO::destroy()
     if (m_id_set[VERTEX_SET_ID])     glDeleteBuffers(1, &m_id_set[VERTEX_SET_ID]);
     if (m_id_set[TEXT_COORD_SET_ID]) glDeleteBuffers(1, &m_id_set[TEXT_COORD_SET_ID]);
     if (m_id_set[NORMAL_SET_ID])     glDeleteBuffers(1, &m_id_set[NORMAL_SET_ID]);
+    if (m_id_set[ADDITIONAL_DATA_ID])     glDeleteBuffers(1, &m_id_set[ADDITIONAL_DATA_ID]);
     if (m_id_set[INDEX_SET_ID])      glDeleteBuffers(1, &m_id_set[INDEX_SET_ID]);
 
     m_id_set[VERTEX_SET_ID]     = 0;
     m_id_set[TEXT_COORD_SET_ID] = 0;
     m_id_set[NORMAL_SET_ID]     = 0;
+    m_id_set[ADDITIONAL_DATA_ID]= 0;
     m_id_set[INDEX_SET_ID]      = 0;
 
     reset();

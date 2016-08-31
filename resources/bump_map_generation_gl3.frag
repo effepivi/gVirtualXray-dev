@@ -243,7 +243,7 @@ float computeBumpValue(vec3 object_position)
 	
 	if(g_has_thin_bumps == 1)
 	{
-		noise_value = noise(object_position*2)*0.5+0.5;
+		noise_value = noise(object_position*2.)*0.5+0.5;
 		noise_value *= 0.2;
 	}
 	else
@@ -320,7 +320,7 @@ float computeBumpValue(vec3 object_position)
 		}
 					
 		//reduce bump from noise
-		bump_value *= 0.5;
+		bump_value *= 0.8;
 		
 		//add the line
 		bump_value += clamp(height,0.,0.85);

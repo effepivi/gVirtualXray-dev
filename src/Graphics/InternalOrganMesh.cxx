@@ -110,12 +110,6 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 		handle = glGetUniformLocation(aShaderID, "g_3D_bump_map");
 		glUniform1i(handle,3);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-		float repeate_frequency(4.f/float(m_texture_3D_size));
-
-		handle = glGetUniformLocation(aShaderID, "g_repeate_frequency");
-		glUniform1fv(handle, 1,&repeate_frequency);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	else
 	{
@@ -183,7 +177,7 @@ void InternalOrganMesh::generate2DTexture(Shader const& shader,
 
 //----------------------------------------------
 void InternalOrganMesh::generate3DTexture(Shader const& shader,
-		unsigned int& frame_buffer, ToCreate to_create)
+		unsigned int& frame_buffer, unsigned int& texture, ToCreate to_create)
 //----------------------------------------------
 {
 	PolygonMesh square_filler;
@@ -225,11 +219,9 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 	case TO_CREATE_BUMP_MAP:
 		defineBumpMapShaderInput(shader_id);
 		break;
-
 	case TO_CREATE_COLOUR_TEXTURE:
 		defineColourTextureShaderInput(shader_id);
 		break;
-
 	default:
 		defineBumpMapShaderInput(shader_id);
 	}
@@ -237,7 +229,7 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 	for(unsigned int i(0); i < m_texture_3D_size; i++)
 	{
 		//link the frame buffer and the texture
-		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, m_bump_map_texture, 0, i);
+		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, texture, 0, i);
 
 		//check the creation of the buffer
 		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -280,15 +272,6 @@ void InternalOrganMesh::defineBumpMapShaderInput(int shader_id)
 	handle = glGetUniformLocation(shader_id, "g_gradient_tab");
 	glUniform3fv(handle, TAB_SIZE,(const GLfloat*) &m_gradient_tab[0]);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-	if(m_use_3D_bump_map)
-	{
-		float bump_frequency(float(m_texture_3D_size)/4.f);
-
-		handle = glGetUniformLocation(shader_id, "g_bump_frequency");
-		glUniform1fv(handle, 1,&bump_frequency);
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-	}
 }
 
 
@@ -299,7 +282,7 @@ void InternalOrganMesh::initialize2DBuffer(unsigned int& aTexture, unsigned int&
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB16, m_texture_2D_size, m_texture_2D_size, 0, GL_RGB, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, m_texture_2D_size, m_texture_2D_size, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -326,13 +309,21 @@ void InternalOrganMesh::initialize2DBuffer(unsigned int& aTexture, unsigned int&
 }
 
 //----------------------------------------------
-void InternalOrganMesh::initialize3DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer)
+void InternalOrganMesh::initialize3DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer, bool has_colours)
 //----------------------------------------------
 {
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_3D, aTexture);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_3D_size, m_texture_3D_size, m_texture_3D_size, 0, GL_RED, GL_FLOAT, 0);
+
+	if(has_colours)
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16, m_texture_3D_size, m_texture_3D_size, m_texture_3D_size, 0, GL_RGB, GL_FLOAT, 0);
+	}
+	else
+	{
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_3D_size, m_texture_3D_size, m_texture_3D_size, 0, GL_RED, GL_FLOAT, 0);
+	}
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

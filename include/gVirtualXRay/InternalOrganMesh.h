@@ -102,8 +102,8 @@ protected:
 	//--------------------------------------------------------------------------
 	/// generates a 3D texture
 	//--------------------------------------------------------------------------
-	virtual void generate3DTexture(Shader const& shader, unsigned int& frame_buffer,
-			ToCreate to_create);
+	virtual void generate3DTexture(Shader const& shader,
+			unsigned int& frame_buffer, unsigned int& texture, ToCreate to_create);
 
 	//-------------------------------------------------------------------------
 	/// Link the attributes to their id in the shader bump map generation
@@ -137,7 +137,7 @@ protected:
     *   @param aFrameBuffer: the framebuffer
     */
 	//-------------------------------------------------------------------------
-	virtual void initialize3DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer);
+	virtual void initialize3DBuffer(unsigned int& aTexture, unsigned int& aFrameBuffer, bool has_colours);
 
 	//--------------------------------------------------------------------------
 	/// Load the shader to create the 2D bump map

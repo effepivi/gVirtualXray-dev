@@ -70,14 +70,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Input
 //******************************************************************************
 in vec3 in_Vertex;
-in vec3 in_TexCoord;
+in vec2 in_2DTexCoord;
 in vec3 in_Normal;
+in vec3 in_3DTexCoord;
 
 //******************************************************************************
 //	Output
 //******************************************************************************
 
-smooth out vec3 g_texture_coordinates;
+smooth out vec2 g_2D_texture_coordinates;
+smooth out vec3 g_3D_texture_coordinates;
 smooth out vec3 g_normal;
 smooth out vec3 g_view_direction;
 smooth out vec4 g_shadow_coord;
@@ -98,7 +100,8 @@ void main(void)
 	g_normal = in_Normal;
 	g_view_direction = normalize(g_object_position.xyz);
 	
-    g_texture_coordinates = in_TexCoord;
+    g_2D_texture_coordinates = in_2DTexCoord;
+    g_3D_texture_coordinates = in_3DTexCoord;
 
 	//coordinates of the vertex for the shadow map
 	g_shadow_coord = g_shadow_map_matrix * vec4(in_Vertex, 1.0);
