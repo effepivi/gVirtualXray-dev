@@ -120,7 +120,7 @@ IF(WIN32)
 ELSE(WIN32)
     ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx OpenGLWindow.cxx)
 ENDIF(WIN32)
-TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredLibs})
+TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${requiredLibs} ${optionalLibs})
 ADD_DEPENDENCIES(gVirtualXRay-gui BinaryGUIFLTKFiles)
 ADD_DEPENDENCIES(gVirtualXRay-gui FluidFiles)
 
