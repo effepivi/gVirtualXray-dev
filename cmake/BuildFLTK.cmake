@@ -19,6 +19,14 @@ endif()
 
 SET (FLTK_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
+SET (LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
+
+IF (UNIX)
+    IF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+        SET (LINKER_FLAGS ${LINKER_FLAGS} -ldl)
+    ENDIF()
+ENDIF()
+
 ExternalProject_Add(fltk
   URL  "http://fltk.org/pub/fltk/1.3.3/fltk-1.3.3-source.tar.gz"
   URL_MD5 "9ccdb0d19dc104b87179bd9fd10822e3"
@@ -33,6 +41,7 @@ ExternalProject_Add(fltk
       -DCMAKE_INSTALL_PREFIX:PATH=${FLTK_INSTALL_DIR}
       #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
 )
 
