@@ -100,7 +100,7 @@ void InternalOrganMesh::defineDisplayShaderInput(int aShaderID)
 	glUniform1iv(handle, 1, &m_use_3D_bump_map);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	if(m_use_3D_bump_map == 1)
+	if(m_use_3D_bump_map)
 	{
 		//Bind the texture for bump mapping in texture unit 3
 		glActiveTexture(GL_TEXTURE3);

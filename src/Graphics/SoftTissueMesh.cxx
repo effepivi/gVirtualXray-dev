@@ -107,15 +107,32 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 {
 	InternalOrganMesh::defineDisplayShaderInput(aShaderID);
 
-	//use the stored texture
-
-	//Bind the colour texture in texture unit 2
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, m_colour_texture);
-
-	GLuint handle(glGetUniformLocation(aShaderID, "g_colour_texture"));
-	glUniform1i(handle,2);
+	GLuint handle(glGetUniformLocation(aShaderID, "g_use_3D_colour_texture"));
+	glUniform1iv(handle, 1, &m_use_3D_colour_texture);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	if(m_use_3D_colour_texture)
+	{
+		//Bind the colour texture in texture unit 4
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_3D, m_colour_texture);
+
+
+		handle = glGetUniformLocation(aShaderID, "g_3D_colour_texture");
+		glUniform1i(handle,4);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		//Bind the colour texture in texture unit 2
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, m_colour_texture);
+
+
+		handle = glGetUniformLocation(aShaderID, "g_colour_texture");
+		glUniform1i(handle,2);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 }
 
 //----------------------------------------------

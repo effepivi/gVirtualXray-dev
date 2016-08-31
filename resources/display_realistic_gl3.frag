@@ -94,6 +94,7 @@ uniform int g_use_lighting;
 uniform int g_use_bump_map;
 uniform int g_use_texture;
 uniform int g_use_3D_bump_map;
+uniform int g_use_3D_colour_texture;
 uniform vec3 light_direction;
 uniform vec4 light_global_ambient;
 uniform vec4 light_ambient;
@@ -110,6 +111,7 @@ uniform sampler3D g_3D_bump_map;
 uniform sampler3D g_3D_colour_texture;
 uniform mat3 g_normal_matrix;
 
+//change the texture coordinates to repeate a 3D texture
 //-----------------------------------
 float repeatCoordinate(float x)
 //-----------------------------------
@@ -122,12 +124,32 @@ float repeatCoordinate(float x)
 	return res;
 }
 
+//calculate the bump value in the 3D bump map
 //-----------------------------------
 float computeBumpValue(vec3 texture_coord)
 //-----------------------------------
 {
 	texture_coord = vec3(repeatCoordinate(texture_coord.x), repeatCoordinate(texture_coord.y), repeatCoordinate(texture_coord.z));
 	return texture(g_3D_bump_map, texture_coord).r;
+}
+
+//calculate the texture colour
+//-----------------------------------
+vec4 computeTextureColour()
+//-----------------------------------
+{
+	vec4 texture_colour;
+	if(g_use_3D_colour_texture == 1)
+   	{
+		vec3 texture_coord = vec3(repeatCoordinate(g_texture_coordinates.x), repeatCoordinate(g_texture_coordinates.y), repeatCoordinate(g_texture_coordinates.z));
+  		texture_colour = texture(g_3D_colour_texture, texture_coord);
+   	}
+   	else
+   	{
+   		texture_colour = texture( g_colour_texture, g_texture_coordinates.xy);
+   	}
+
+	return texture_colour;
 }
 
 //-------------
@@ -186,9 +208,11 @@ void main(void)
 	    
 	    if(g_use_texture==1)
 	    {
-	    	global_ambient =vec3(light_global_ambient*texture( g_colour_texture,g_texture_coordinates.xy));
-	   		ambient        = vec3(light_ambient * texture( g_colour_texture, g_texture_coordinates.xy ));
-	    	diffuse        =  vec3(texture( g_colour_texture, g_texture_coordinates.xy)*light_diffuse) * cosLightNormal;
+	    	vec4 texture_colour = computeTextureColour();
+	    	
+	    	global_ambient =vec3(light_global_ambient*texture_colour);
+	   		ambient        = vec3(light_ambient * texture_colour);
+	    	diffuse        =  vec3(texture_colour*light_diffuse) * cosLightNormal;
 	    }
 	    else
 	    {

@@ -323,7 +323,7 @@ float computeBumpValue(vec3 object_position)
 		bump_value *= 0.5;
 		
 		//add the line
-		bump_value += clamp(height,0.,0.8);
+		bump_value += clamp(height,0.,0.85);
 		
 		//square to make it sharper
 		bump_value = 1-(1-bump_value)*(1-bump_value);
