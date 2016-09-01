@@ -204,7 +204,7 @@ void main(void)
 		shadow_changed_coord = shadow_changed_coord*0.5 + 0.5;
 		    
     	//visibility equals 0.3 if the fragment if in the shadow and 1 if not (if it is on the back of the face, it is in the shadow).
-       	float visibility = texture(g_shadow_map, vec3(shadow_changed_coord.xy, shadow_changed_coord.z))*clamp(cosLightNormal-0.1, 0., 1.);
+       	float visibility = texture(g_shadow_map, vec3(shadow_changed_coord))*clamp(cosLightNormal-0.1, 0., 1.);
 		visibility = visibility*0.7+0.4;
 	      
 	  	vec3 global_ambient;
@@ -234,7 +234,7 @@ void main(void)
     {
 	    if(g_use_texture==1)
 	    {
-	    	frag_colour = texture( g_colour_texture,g_2D_texture_coordinates);
+	    	frag_colour = computeTextureColour();
 	    }
 	    else
 	    {
