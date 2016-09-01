@@ -432,26 +432,22 @@ ENDIF (GDCM_FOUND)
 
 # TIFF #########################################################################
 
-#IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-#    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
-#ELSE ()
-#    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
-#ENDIF ()
+OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
 
-#IF (USE_SYSTEM_LIBTIFF)
-#    FIND_PACKAGE( TIFF   REQUIRED )
-#ELSE(USE_SYSTEM_LIBTIFF)
-#    INCLUDE(BuildLibTIFF)
+IF (USE_SYSTEM_LIBTIFF)
+    FIND_PACKAGE( TIFF   REQUIRED )
+ELSE(USE_SYSTEM_LIBTIFF)
+    INCLUDE(BuildLibTIFF)
 
     # Missing file on MV VC++ 2010
 #    IF (NOT MSVC10)
-#        build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
+        build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
 #    ENDIF (NOT MSVC10)
 
-#ENDIF (USE_SYSTEM_LIBTIFF)
+ENDIF (USE_SYSTEM_LIBTIFF)
 
 IF (TIFF_FOUND)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF" "-DHAS_TIFF")
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${TIFF_LIBRARY_DIR})
     SET (requiredLibs "${requiredLibs}" "${TIFF_LIBRARIES}")

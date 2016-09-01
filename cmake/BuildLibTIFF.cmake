@@ -40,13 +40,17 @@ SET(TIFF_INCLUDE_DIR  ${TIFF_INSTALL_DIR}/include)
 SET(TIFF_INCLUDE_DIRS ${TIFF_INSTALL_DIR}/include)
 SET(TIFF_LIBRARY_DIR  ${TIFF_INSTALL_DIR}/lib)
 
+SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib/libtiff.a)
+
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     SET(TIFF_LIBRARIES    
         optimized ${TIFF_INSTALL_DIR}/lib/tiff.lib
         debug     ${TIFF_INSTALL_DIR}/lib/tiffd.lib
     )
 else ()
-    SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib/libtiff.a)
+    IF (UNIX AND NOT APPLE)
+        SET(TIFF_LIBRARIES    ${TIFF_INSTALL_DIR}/lib64/libtiff.a)
+    ENDIF()
 endif ()
 
 SET (TIFF_LIBRARY ${TIFF_LIBRARIES})
