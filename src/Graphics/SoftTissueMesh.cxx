@@ -151,7 +151,14 @@ void SoftTissueMesh::initialize()
 	if(m_need_initialize)
 	{
 		//load the shaders
-		load2DBumpShader();
+		if(m_use_3D_bump_map)
+		{
+			load3DBumpShader();
+		}
+		else
+		{
+			load2DBumpShader();
+		}
 
 		//load the texture generation shader
 	    char* p_vertex_shader(0);
@@ -183,7 +190,7 @@ void SoftTissueMesh::initialize()
 		//initialize the buffers for the bump map
 	    if(m_use_3D_bump_map)
 	    {
-	    	initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer, false);
+		    initialize3DBuffer(m_bump_map_texture, m_bump_map_frame_buffer, false);
 	    }
 	    else
 	    {
@@ -300,7 +307,7 @@ void SoftTissueMesh::defineBumpMapShaderInput(int shader_id)
 {
 	if(m_use_3D_bump_map)
 	{
-		float bump_frequency(float(m_texture_3D_size)*4.f);
+		float bump_frequency(float(m_texture_3D_size)/2.f);
 
 		GLuint handle = glGetUniformLocation(shader_id, "g_bump_frequency");
 		glUniform1fv(handle, 1,&bump_frequency);

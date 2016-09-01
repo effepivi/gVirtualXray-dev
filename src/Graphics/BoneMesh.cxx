@@ -95,7 +95,7 @@ void BoneMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 void BoneMesh::defineDisplayShaderInput(int aShaderID)
 //----------------------------------------------
 {
-	float repeate_frequency(10.f/float(m_texture_3D_size));
+	float repeate_frequency(8.f/float(m_texture_3D_size));
 
 	GLuint handle = glGetUniformLocation(aShaderID, "g_repeat_frequency");
 	glUniform1fv(handle, 1,&repeate_frequency);
@@ -152,7 +152,7 @@ void BoneMesh::generateTextures()
 void BoneMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
-	float bump_frequency(float(m_texture_3D_size)/4.f);
+	float bump_frequency(m_texture_3D_size);
 
 	GLuint handle = glGetUniformLocation(shader_id, "g_bump_frequency");
 	glUniform1fv(handle, 1,&bump_frequency);

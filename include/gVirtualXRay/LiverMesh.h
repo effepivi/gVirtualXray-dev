@@ -47,13 +47,13 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
-    *   @param texture_2D_size: size of the side of the buffer of the 2D texture (default: 2048)
-    *   @param texture_3D_size: size of the side of the buffer of the 3D texture (default: 64)
+    *   @param texture_2D_size: size of the side of the buffer of the 2D texture (default: 512)
+    *   @param texture_3D_size: size of the side of the buffer of the 3D texture (default: 32)
     *   @param optimize_texture_coordinates: To know if the texture coordinates need to be optimized (default: true)
     */
     //--------------------------------------------------------------------------
 	LiverMesh(bool optimize_texture_coordinates = true,
-			unsigned int texture_2D_size = 2048, unsigned int texture_3D_size = 64);
+			unsigned int texture_2D_size = 2048, unsigned int texture_3D_size = 32);
 
 	//--------------------------------------------------------------------------
 	/// Destructor

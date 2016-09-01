@@ -322,7 +322,7 @@ float computeBumpValue(vec3 object_position)
 		height = 1-(1-height)*(1-height);
 
 		//reduce bump from noise
-		bump_value *= 0.2;
+		bump_value *= bump_value*0.5;
 		
 		//add the line
 		bump_value += clamp(height,0.,0.85);

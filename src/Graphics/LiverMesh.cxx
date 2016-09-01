@@ -33,6 +33,7 @@ LiverMesh::LiverMesh(bool optimize_texture_coordinates,
 {
 	getMaterial().setDiffuseColour(0.3,0.03,0.03,1.);
 	getMaterial().setAmbientColour(0.3,0.03,0.03,1.);
+	m_use_3D_bump_map = 1;
 }
 
 //----------------------------------------------
