@@ -38,8 +38,6 @@
 #ifdef HAS_GDCM
 #include <typeinfo>
 
-
-
 #include <gdcmGlobal.h>
 
 #include "gdcmImageReader.h"
@@ -54,6 +52,11 @@
 #include <gdcmImageWriter.h>
 #include <gdcmPixelFormat.h>
 #include <gdcmPhotometricInterpretation.h>
+#include <gdcmImageChangeTransferSyntax.h>
+#endif
+
+#ifdef HAS_TIFF
+#include <tiffio.h>
 #endif
 
 #ifndef __ConstantValues_h
@@ -66,6 +69,10 @@
 
 #ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
+#endif
+
+#ifndef __OutOfMemoryException_h
+#include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
 
@@ -100,7 +107,7 @@ template<typename T> Image<T>::Image(const Image& anImage):
     // Out of memory
     if (m_width && m_height && m_number_of_slices && !m_p_image)
     {
-        throw "Out of memory";
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
     
     // Copy the data
@@ -124,7 +131,7 @@ template<typename T> Image<T>::Image(const T* apData,
     // Out of memeory
     if (m_width && m_height && !m_p_image)
     {
-        throw "Out of memory";
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
 
     // Copy the data
@@ -148,7 +155,7 @@ template<typename T> Image<T>::Image(unsigned int aWidth,
     // Out of memeory
     if (m_width && m_height && m_number_of_slices && !m_p_image)
     {
-        throw "Out of memory";
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
 
     // Initialise the data
@@ -222,7 +229,7 @@ template<typename T> Image<T>& Image<T>::operator=(const Image<T>& anImage)
         // Out of memeory
         if (m_width && m_height && m_number_of_slices && !m_p_image)
         {
-            throw "Out of memory";
+            throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
         }
         
         // Copy the data
@@ -283,7 +290,7 @@ template<typename T> T Image<T>::getMinValue() const
     // The image is empty
     if (!m_p_image)
     {
-        throw "Empty image";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
     }
     
     return (*std::min_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
@@ -297,7 +304,7 @@ template<typename T> T Image<T>::getMaxValue() const
     // The image is empty
     if (!m_p_image)
     {
-        throw "Empty image";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
     }
     
     return (*std::max_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
@@ -417,9 +424,7 @@ template<typename T> void Image<T>::save(const char* aFileName,
     }
     else if (isTIFF(aFileName))
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Saving TIFF files is not implemented, "
-                "please contact Dr FP Vidal.");
+        saveTIFF(aFileName, anInvertLUTFlag);
     }
     else if (isJPEG(aFileName))
     {
@@ -462,26 +467,27 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
         error_message << "Cannot create the file \"" << aFileName << "\"";
     
         // Throw an error
-        throw (error_message.str());
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
     // The file is open
     else
     {
+        // Get the min/max/range values
+        T min_value(getMinValue());
+        T max_value(getMaxValue());
+        T range_value(max_value - min_value);
+
         // Set the image type
         output_file << "P2" << std::endl;
     
         // Print a comment
-        output_file << "# ICP3038 -- Assignment 1 -- 2015/2016" << std::endl;
+        output_file << "gVirtualXRay" << std::endl;
     
         // The image size
         output_file << m_width << " " << m_height * m_number_of_slices << std::endl;
 
         // The get the max value
-#ifndef WIN32
-		output_file << std::min(255, std::max(0, int(getMaxValue()))) << std::endl;
-#else
-		output_file << min(255, max(0, int(getMaxValue()))) << std::endl;
-#endif
+        output_file << "255" << std::endl;
 
         // Process every line
         for (unsigned int k = 0; k < m_number_of_slices; ++k)
@@ -492,7 +498,16 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
                 for (unsigned int i = 0; i < m_width; ++i)
                 {
                     // Process the pixel
-                    int pixel_value(m_p_image[k * m_width * m_height + j * m_width + i]);
+                    int pixel_value;
+                    if (typeid(T) == typeid(unsigned char))
+                    {
+                        pixel_value = m_p_image[k * m_width * m_height + j * m_width + i];
+                    }
+                    else
+                    {
+                        pixel_value = 255.0 * (m_p_image[k * m_width * m_height + j * m_width + i] - min_value) / range_value;
+                    }
+
 #ifndef _WIN32
 					pixel_value = std::max(0, pixel_value);
                     pixel_value = std::min(255, pixel_value);
@@ -542,7 +557,7 @@ template<typename T> void Image<T>::saveRaw(const char* aFileName) const
         error_message += aFileName;
         error_message += ") cannot be created";
 
-        throw error_message;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
     }
 
     // Write content to file
@@ -588,7 +603,7 @@ template<typename T> void Image<T>::saveASCII(const char* aFileName) const
         error_message += aFileName;
         error_message += ") cannot be created";
 
-        throw error_message;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
     }
 
     // Write content to file
@@ -780,9 +795,10 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
             {
             delete [] p_temp;
 
-            std::stringstream error_message;
-            error_message << "Could not write the DICOM file (" << aFileName << ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+            std::string error_message("Could not write the DICOM file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
             }
         delete [] p_temp;
     }
@@ -804,6 +820,35 @@ template<typename T> void Image<T>::saveDCM(const std::string& aFileName,
 //----------------------------------------------------------------------------
 {
     saveDCM(aFileName.data(), anInvertLUTFlag, aComment.data());
+}
+
+
+//----------------------------------------------------------------------
+template<typename T> void Image<T>::saveTIFF(const char* aFileName,
+                                             bool anInvertLUTFlag) const
+//----------------------------------------------------------------------
+{
+#ifdef HAS_TIFF
+
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Saving TIFF files is not implemented, "
+            "please contact Dr FP Vidal.");
+#else
+
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Saving TIFF files is not implemented, "
+            "please contact Dr FP Vidal.");
+
+#endif
+}
+
+
+//------------------------------------------------------------------------
+template<typename T> void Image<T>::saveTIFF(const std::string& aFileName,
+                                             bool anInvertLUTFlag) const
+//------------------------------------------------------------------------
+{
+    saveTIFF(aFileName.data(), anInvertLUTFlag);
 }
 
 
