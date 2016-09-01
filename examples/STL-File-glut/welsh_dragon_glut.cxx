@@ -230,6 +230,7 @@ bool g_display_wireframe(false);
 
 bool g_use_lighing(true);
 bool g_display_detector(true);
+bool g_artefact_filtering(true);
 
 
 clock_t g_start(0);
@@ -283,7 +284,7 @@ int main(int argc, char** argv)
 	    // Register the exit callback
 		atexit(quit);
 
-        // Initialise GLFW
+        // Initialise GLUT
         initGLUT(argc, argv);
 
         // Initialise GLEW
@@ -796,7 +797,7 @@ void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
 {
     switch(aKey)
     {
-    case GLFW_KEY_A:
+    case 'a':
         g_artefact_filtering = !g_artefact_filtering;
         if (g_artefact_filtering)
         {
