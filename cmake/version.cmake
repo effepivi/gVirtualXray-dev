@@ -31,7 +31,7 @@
 
 
 SET (gVirtualXRay_VERSION_MAJOR 1)
-SET (gVirtualXRay_VERSION_MINOR 0)
+SET (gVirtualXRay_VERSION_MINOR 1)
 SET (gVirtualXRay_VERSION_PATCH 0)
 
 SET (PROJECT_NAME         "gVirtualXRay")
