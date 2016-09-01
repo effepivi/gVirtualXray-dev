@@ -345,6 +345,26 @@ public:
 
 
     //------------------------------------------------------------------------
+    /// Save the image in a TIFF file
+    /**
+    * @param aFileName: the name of the file to write
+    */
+    //------------------------------------------------------------------------
+    void saveTIFF(const char* aFileName,
+            bool anInvertLUTFlag) const;
+
+
+    //------------------------------------------------------------------------
+    /// Save the image in a TIFF file
+    /**
+    * @param aFileName: the name of the file to write
+    */
+    //------------------------------------------------------------------------
+    void saveTIFF(const std::string& aFileNam,
+            bool anInvertLUTFlag) const;
+
+
+    //------------------------------------------------------------------------
     /// Operator Equal to
     /**
     * @param anImage: the image to compare with
