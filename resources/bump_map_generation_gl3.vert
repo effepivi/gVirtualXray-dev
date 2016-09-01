@@ -50,7 +50,7 @@ void main(void)
 	if(g_has_tendon == 1)
 	{
 		g_normal = mat3(g_matrix)*in_Normal;
-		g_object_position = (g_matrix*vec4(in_Vertex,1)).xyz;
+		g_object_position = (g_matrix*vec4(in_Vertex,1.)).xyz;
 	}
 	else
 	{
@@ -58,7 +58,7 @@ void main(void)
 		g_object_position = in_Vertex;
 	}
 		
-	gl_Position = vec4(in_TexCoord*2-1,0,1);
+	gl_Position = vec4(in_TexCoord*2.-1.,0.,1.);
 }
 
 

@@ -334,9 +334,9 @@ float computeBumpValue(vec3 object_position)
 void main(void)
 //-------------
 {
-	vec3 U = cross(g_normal,vec3(1,0,0));
-	vec3 V = cross(g_normal,vec3(0,1,0));
-	vec3 W = cross(g_normal,vec3(0,0,1));
+	vec3 U = cross(g_normal,vec3(1., 0., 0.));
+	vec3 V = cross(g_normal,vec3(0., 1., 0.));
+	vec3 W = cross(g_normal,vec3(0., 0., 1.));
 
 	vec3 deltaNormal = U*(computeBumpValue(g_object_position-STEP*U)
 			- computeBumpValue(g_object_position+STEP*U))/(STEP);

@@ -53,7 +53,7 @@ public:
     */
     //--------------------------------------------------------------------------
 	LiverMesh(bool optimize_texture_coordinates = true,
-			unsigned int texture_2D_size = 2048, unsigned int texture_3D_size = 32);
+			unsigned int texture_2D_size = 512, unsigned int texture_3D_size = 32);
 
 	//--------------------------------------------------------------------------
 	/// Destructor

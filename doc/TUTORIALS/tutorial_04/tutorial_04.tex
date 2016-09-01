@@ -97,11 +97,11 @@ We have to include the header of the class we are going to use:
 
 	the constructor of all the classes inherating from $InternalOrganMesh$ ($LungsMesh$, $LiverMesh$, $DiaphragmMesh$ and $BoneMesh$) have parameters to control the texture generation. 
 	
-	$LungsMesh$, $LiverMesh$ and $DiaphragmMesh$ use 2D texturing. $texture\_2D\_size$ represent the size in pixels of the side of the 2D textures used for this mesh. Its default value is 2048 but it can be modified depending on the graphic card's amount of vram.
+	$LungsMesh$, $LiverMesh$ and $DiaphragmMesh$ use 2D texturing. $texture\_2D\_size$ represent the size in pixels of the side of the 2D textures used for this mesh. Its default value is 2048 for the lungs and the diaphragm and 512 for the liver but it can be modified depending on the graphic card's amount of vram.
 	
-	Thes constructors have a $bool$ parameter $optimize_texture_coordinates$. If it is true, the 2D texture coordinates will be optimize before the rendering. Optimize the texture coordinates enable a better rendering with the same performances, but it requires more precomputating. Its default value is true. \\
+	These constructors have a $bool$ parameter $optimize_texture_coordinates$. If it is true, the 2D texture coordinates will be optimize before the rendering. Optimize the texture coordinates enable a better rendering with the same performances, but it requires more precomputating. Its default value is true. \\
 	
-	$BoneMesh$, $LiverMesh$ and $LungsMesh$ use 3D texturing, the $unsigned int$ parameter $texture\_3D\_size$ is the size of the side of the 3D texture. its default value is $32$ for the bones and 64 for the Liver and the Lungs. 3D textures have to be small since they use a lot of vram.
+	$BoneMesh$, $LiverMesh$ and $LungsMesh$ use 3D texturing, the $unsigned$ $int$ parameter $texture\_3D\_size$ of their constructors is the size of the side of the 3D texture. Its default value is $32$, 3D textures have to be small since they use a lot of vram.
 		
 	The constructor of $LungsMesh$ has three other parameters of type $bool$: $x\_mirror$, $y\_mirror$ and $z\_mirror$. They enable to know if the mesh is upside down to draw the lines correctly. Their default value is false.
 
