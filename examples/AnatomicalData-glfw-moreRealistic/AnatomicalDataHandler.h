@@ -32,20 +32,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ANATOMICAL_DATA_HANDLER_H
-#define GVXR_ANATOMICAL_DATA_HANDLER_H
+#ifndef GVXR_GL_WIDGET_H
+#define GVXR_GL_WIDGET_H
 
 
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalDataHandler.h
+*	@file		GLWidget.h
 *
-*	@brief      Handle anatomical data and its rendering using an OpenGL window.
+*	@brief      Qt4 widget to handle our OpenGL window.
 *
 *	@version	1.0
 *
-*	@date		12/08/2016
+*	@date		13/07/2016
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -113,17 +113,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/DepthMap.h"
 #endif
 
-//******************************************************************************
-//  namespace
-//******************************************************************************
-namespace gVirtualXRay {
+#ifndef ANATOMICAL_MESH_H
+#include "gVirtualXRay/AnatomicalMesh.h"
+#endif
 
 
 //==============================================================================
 /**
 *   @class  AnatomicalDataHandler
-*   @brief  AnatomicalDataHandler is a class to manage anatomical data and
-*           its rendering using an OpenGL window.
+*   @brief  AnatomicalDataHandler is a class to manage anatomical data.
 */
 //==============================================================================
 class AnatomicalDataHandler
@@ -160,7 +158,8 @@ public:
     *   @param apPparent:   the parent widget
     */
     //--------------------------------------------------------------------------
-    AnatomicalDataHandler();
+    AnatomicalDataHandler(unsigned int aWidth = 480,
+            unsigned int aHeight = 480);
 
 
     //--------------------------------------------------------------------------
@@ -169,23 +168,44 @@ public:
     virtual ~AnatomicalDataHandler();
 
 
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+    
+    
     //--------------------------------------------------------------------------
-    /// Initialisation
+    /// Initialise OpenGL
     //--------------------------------------------------------------------------
-    virtual void initialise();
+    virtual void initializeGL();
+
+
 
 
     //--------------------------------------------------------------------------
-    /// Initialisation
+    /// Activate a patient
+    /*
+    *   @param aPatientID:  ID of the patient to use
+    */
     //--------------------------------------------------------------------------
-    virtual void initialize();
+    virtual void usePatient(const PatientID& aPatientID);
 
 
     //--------------------------------------------------------------------------
-    /// Display the 3D scene using OpenGL
+    /// initialize the set of anatomical mesh.
+    /*
+    *   @param apMeshSet: The set of polygon meshes to initialize
+    */
     //--------------------------------------------------------------------------
-    virtual void paintGL();
+    void initializePatients();
+    
 
+    //--------------------------------------------------------------------------
+    /// Render the 3D scene using OpenGL
+    //--------------------------------------------------------------------------
+    virtual void draw();
+
+
+    void resizeGL(int aWidth, int aHeight);
+    
 
 //*****************************************************************************
 private:
@@ -235,12 +255,9 @@ private:
 
 
     //--------------------------------------------------------------------------
-    /// Activate a patient
-    /*
-    *   @param aPatientID:  ID of the patient to use
-    */
+    /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
-    virtual void usePatient(const PatientID& aPatientID);
+    virtual void render();
 
 
     //--------------------------------------------------------------------------
@@ -256,19 +273,13 @@ private:
 
 
     //--------------------------------------------------------------------------
-    /// Render the 3D scene using OpenGL
-    //--------------------------------------------------------------------------
-    virtual void render();
-
-
-    //--------------------------------------------------------------------------
     /// Display a patient using OpenGL
     /*
     *   @param apMeshSet:   The set of polygon meshes to display
     *   @param aShaderID:   The GLSL shader used to display apMeshSet
     */
     //--------------------------------------------------------------------------
-    virtual void displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
+    virtual void displayPatient(std::vector<gVirtualXRay::AnatomicalMesh*>& apMeshSet,
                         GLint aShaderID);
 
 
@@ -294,65 +305,95 @@ private:
 
 
     //--------------------------------------------------------------------------
-    /// initialize the set of anatomical mesh.
+    /// Get an arcball vector depending on the mouse movement
     /*
-    *   @param apMeshSet: The set of polygon meshes to initialize
+    *   @param x:   the new mouse position along the X-axis
+    *   @param y:   the new mouse position along the Y-axis
+    *   @return the corresponding arcball vector
     */
     //--------------------------------------------------------------------------
-    void initializePatient(std::vector<AnatomicalMesh*>& apMeshSet);
+    virtual gVirtualXRay::Vec3<GLfloat> getArcballVector(int x, int y);
+
+
+    //--------------------------------------------------------------------------
+    /// Update the rotation matrix depending on the mouse movement
+    /*
+    *   @param aRotationMatrix: the rotation matrix (input/output)
+    *   @param aXmousePosition: the new mouse position along the X-axis
+    *   @param aYmousePosition: the new mouse position along the Y-axis
+    */
+    //--------------------------------------------------------------------------
+    virtual void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix,
+            int aXmousePosition,
+            int aYmousePosition);
 
     //--------------------------------------------------------------------------
     /// render the patient to the shadow map.
     //--------------------------------------------------------------------------
     void renderToShadowMap();
 
+    /// Window width
+    int m_width;
+
+    /// Window height
+    int m_height;
+    
     /// The zooming factor
     GLfloat m_zoom;
+
+    /// Flag set to true when rotation using arcball is currently in use, false otherwise
+    bool m_use_arc_ball;
+
+    /// The last known position of the mouse pointer along the X-axis
+    GLint m_last_x_position;
+
+    /// The last known position of the mouse pointer along the Y-axis
+    GLint m_last_y_position;
 
     /// Flag set to true when X-ray beam is displayed, false otherwise
     bool m_display_beam;
 
     /// Projection matrix used to display text
-    Matrix4x4<GLfloat> m_text_2D_projection_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_text_2D_projection_matrix;
 
     /// Transformation matrix used to rotate the 3D scene
-    Matrix4x4<GLfloat> m_scene_rotation_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_scene_rotation_matrix;
 
     /// Transformation matrix used to rotate Patient 4
-    Matrix4x4<GLfloat> m_P4_rotation_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_P4_rotation_matrix;
 
     /// Transformation matrix used to rotate Patient 5
-    Matrix4x4<GLfloat> m_P5_rotation_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_P5_rotation_matrix;
 
     /// projection and transformation matrix used to create the shadow map
-    Matrix4x4<GLfloat> m_shadow_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_shadow_matrix;
 
     /// Translation vector used to centre Patient 4
-    VEC3 m_P4_translation_vector;
+    gVirtualXRay::VEC3 m_P4_translation_vector;
 
     /// Translation vector used to centre Patient 5
-    VEC3 m_P5_translation_vector;
+    gVirtualXRay::VEC3 m_P5_translation_vector;
 
     /// X-ray beam
-    XRayBeam m_xray_beam;
+    gVirtualXRay::XRayBeam m_xray_beam;
 
     /// X-ray detector
-    XRayDetector m_xray_detector;
+    gVirtualXRay::XRayDetector m_xray_detector;
 
     /// X-ray renderer
-    XRayRenderer m_xray_renderer;
+    gVirtualXRay::XRayRenderer m_xray_renderer;
 
     /// GLSL shader
-    Shader m_display_shader;
+    gVirtualXRay::Shader m_display_shader;
 
     ///object containing buffers to create the shadow map
-    DepthMap m_shadow_map;
+    gVirtualXRay::DepthMap m_shadow_map;
 
     /// Set of polygon meshes for Patient 4
-    std::vector<AnatomicalMesh*> m_p_P4_polygon_mesh_set;
+    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_P4_polygon_mesh_set;
 
     /// Set of polygon meshes for Patient 5
-    std::vector<AnatomicalMesh*> m_p_P5_polygon_mesh_set;
+    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_P5_polygon_mesh_set;
 
     /// Flag that keeps track of which patient is currently in use
     AnatomicalDataHandler::PatientID m_current_patient;
@@ -361,7 +402,7 @@ private:
     bool m_display_wireframe;
 
     /// The angular step between two successive rotations
-    RATIONAL_NUMBER m_angle_step;
+    gVirtualXRay::RATIONAL_NUMBER m_angle_step;
 
     /// The next angle to use
     float m_next_angle_to_process;
@@ -383,22 +424,19 @@ private:
     bool m_display_help;
 
     /// The text renderer
-    TextRenderer m_font_rendered;
+    gVirtualXRay::TextRenderer m_font_rendered;
 #endif
 
     /// Flag set to true if the patients have to be swapped at the next iteration, false otherwise
     bool m_swap_patient;
 
-    ///the light direction (from the vertex to the camera
-    VEC3 m_light_direction;
+    ///the light direction (from the vertex to the camera)
+    gVirtualXRay::VEC3 m_light_direction;
 };
-
-
-} // namespace gVirtualXRay
 
 
 //******************************************************************************
 #include "AnatomicalDataHandler.inl"
 
 
-#endif // GVXR_ANATOMICAL_DATA_HANDLER_H
+#endif // GVXR_GL_WIDGET_H

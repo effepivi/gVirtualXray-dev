@@ -72,7 +72,11 @@ ENDIF (glfw3_FOUND)
 
 # Create the main program ######################################################
 IF (glfw3_FOUND)
-add_executable(demo-anatomical-data-glfw-moreRealistic AnatomicalData-glfw-moreRealistic.cxx AnatomicalDataHandler.h AnatomicalDataHandler.inl AnatomicalDataHandler.cxx)
+add_executable(demo-anatomical-data-glfw-moreRealistic
+    AnatomicalData-glfw-moreRealistic.cxx
+    AnatomicalDataHandler.h
+    AnatomicalDataHandler.inl
+    AnatomicalDataHandler.cxx)
 target_link_libraries(demo-anatomical-data-glfw-moreRealistic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-anatomical-data-glfw-moreRealistic BinaryAnatomicalDataGlfwMoreRealisticFiles)
 
@@ -92,7 +96,7 @@ ELSE (NOT APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalData-glfw-moreRealistic.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.inl
-        ${CMAKE_CURRENT_SOURCE_DIR}/ AnatomicalDataHandler.cxx
+        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf

@@ -35,13 +35,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalDataHandler.inl
+*	@file		GLWidget.inl
 *
-*	@brief      Handle anatomical data and its rendering using an OpenGL window.
+*	@brief      Qt4 widget to handle our OpenGL window.
 *
 *	@version	1.0
 *
-*	@date		12/08/2016
+*	@date		13/07/2016
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -57,26 +57,80 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *				BSD 3-Clause License
 *
 ********************************************************************************
-*/
+*/ 
 
-
+//  Defines
 //******************************************************************************
-//  namespace
-//******************************************************************************
-namespace gVirtualXRay {
+#define PREFIX ".."
 
 
-//---------------------------------------------
-inline void AnatomicalDataHandler::initialize()
-//---------------------------------------------
+//---------------------------------------------------------
+inline unsigned int AnatomicalDataHandler::getWidth() const
+//---------------------------------------------------------
 {
-	initialise();
+    return (m_width);
 }
 
 
-//-----------------------------------------------
+//----------------------------------------------------------
+inline unsigned int AnatomicalDataHandler::getHeight() const
+//----------------------------------------------------------
+{
+    return (m_height);
+}
+
+
+/*
+//--------------------------------------------
+inline QSize AnatomicalDataHandler::minimumSizeHint() const
+//--------------------------------------------
+{
+    return QSize(50, 50);
+}
+
+
+//------------------------------------------------------------
+inline void AnatomicalDataHandler::mousePressEvent(QMouseEvent *eventPress)
+//------------------------------------------------------------
+{
+    // Use the arc ball
+    m_use_arc_ball = true;
+
+    // Get the mouse position
+    m_last_x_position = eventPress->x();
+    m_last_y_position = eventPress->y();
+}
+
+
+//----------------------------------------------------------------
+inline void AnatomicalDataHandler::mouseReleaseEvent(QMouseEvent *releaseEvent)
+//----------------------------------------------------------------
+{
+    // Stop using the arc ball
+    m_use_arc_ball = false;
+}
+
+
+//----------------------------------------------------------
+inline void AnatomicalDataHandler::mouseMoveEvent(QMouseEvent *eventMove)
+//----------------------------------------------------------
+{
+    // Update the rotation matrix
+    computeRotation(m_scene_rotation_matrix, eventMove->x(), eventMove->y());
+}
+
+
+//-----------------------------
+inline void AnatomicalDataHandler::animate()
+//-----------------------------
+{
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+}
+*/
+
+//----------------------------------
 inline void AnatomicalDataHandler::loadSTLFiles()
-//-----------------------------------------------
+//----------------------------------
 {
     std::cout << "Load P4" << std::endl;
     loadPatient(P4);
@@ -85,9 +139,9 @@ inline void AnatomicalDataHandler::loadSTLFiles()
 }
 
 
-//----------------------------------------
+//---------------------------
 inline void AnatomicalDataHandler::reset()
-//----------------------------------------
+//---------------------------
 {
     m_next_angle_to_process = 0;
     m_current_angle = 0;
@@ -103,4 +157,25 @@ inline void AnatomicalDataHandler::reset()
 }
 
 
-} // namespace gVirtualXRay
+//-----------------------------------------------------------
+inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x, int y)
+//-----------------------------------------------------------
+{
+	gVirtualXRay::Vec3<GLfloat> P(2.0 * float(x) / float(m_width) - 1.0,
+			2.0 * float(y) / float(m_height) - 1.0,
+			0);
+
+	P.setY(-P.getY());
+
+	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+	if (OP_squared <= 1.0)
+	{
+		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+	}
+	else
+	{
+		P.normalise();  // nearest point
+	}
+
+	return (P);
+}
