@@ -46,7 +46,7 @@
 #include "gdcmSequenceOfFragments.h"
 #include "gdcmSystem.h"
 #include "gdcmImageWriter.h"
-
+#include "gdcmPixmapWriter.h"
 #include <gdcmRescaler.h>
 
 #include <gdcmImage.h>
@@ -762,6 +762,10 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
         addTag("http://gvirtualxray.sourceforge.net/",
                 0x0008,0x0081,
                 writer.GetFile());
+
+        // DICOM fields for X-rays:
+        // See http://dicomlookup.com/lookup.asp?sw=Ttable&q=C.8-27
+
 
         // Set pixel data
         gdcm::DataElement pixel_data(gdcm::Tag(0x7fe0,0x0010));
