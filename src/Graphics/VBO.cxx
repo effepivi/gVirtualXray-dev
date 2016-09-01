@@ -93,16 +93,20 @@ VBO::VBO():
 //----------------------------------------------
         m_number_of_normals(0),
         m_number_of_compontents_per_normal(0),
+        m_number_of_additional_data(0),
+        m_number_of_compontents_per_additional_data(0),
         m_number_of_texture_coordinates(0),
         m_number_of_compontents_per_texture_coord(0),
         m_number_of_vertices(0),
         m_number_of_compontents_per_vertex(0),
         m_number_of_indices(0),
         m_normal_size(0),
+        m_additional_data_size(0),
         m_texture_coordinate_size(0),
         m_vertex_size(0),
         m_index_size(0),
         m_normal_data_type(GL_NONE),
+        m_additional_data_type(GL_NONE),
         m_texture_coordinate_data_type(GL_NONE),
         m_vertex_data_type(GL_NONE),
         m_index_data_type(GL_NONE),
@@ -145,6 +149,9 @@ void VBO::reset()
     m_number_of_normals                       = 0;
     m_number_of_compontents_per_normal        = 0;
 
+    m_number_of_additional_data               = 0;
+    m_number_of_compontents_per_additional_data= 0;
+
     m_number_of_texture_coordinates           = 0;
     m_number_of_compontents_per_texture_coord = 0;
 
@@ -154,11 +161,13 @@ void VBO::reset()
     m_number_of_indices                       = 0;
 
     m_normal_size             = 0;
+    m_additional_data_size    = 0;
     m_texture_coordinate_size = 0;
     m_vertex_size             = 0;
     m_index_size              = 0;
 
     m_normal_data_type             = GL_NONE;
+    m_additional_data_type         = GL_NONE;
     m_texture_coordinate_data_type = GL_NONE;
     m_vertex_data_type             = GL_NONE;
     m_index_data_type              = GL_NONE;

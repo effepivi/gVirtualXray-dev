@@ -199,6 +199,12 @@ void OpenGL2VBO::setVertexData(int aPrimitiveType,
 	// Reset the internal data
 	reset();
 
+	//Set the type to GL_NONE if use the default value (0)
+	if(aVertexDataType == 0) aVertexDataType = GL_NONE;
+	if(aNormalDataType == 0) aNormalDataType = GL_NONE;
+	if(aCoordDataType == 0) aCoordDataType = GL_NONE;
+	if(anAdditionalDataType == 0) anAdditionalDataType = GL_NONE;
+
 	// Initialise class members
 	m_primitive_type = aPrimitiveType;
 	m_number_of_normals  = aNumberOfNormals;
