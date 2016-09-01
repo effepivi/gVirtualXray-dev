@@ -86,6 +86,7 @@ public:
 	virtual void splitFaces();
 
 protected:
+	///To know if a bump map or a colour texture has to be created
 	enum ToCreate{TO_CREATE_BUMP_MAP, TO_CREATE_COLOUR_TEXTURE};
 
 	//--------------------------------------------------------------------------
@@ -95,12 +96,23 @@ protected:
 
 	//--------------------------------------------------------------------------
 	/// generates a 2D texture
+    /*
+    *   @param shader: The GLSL shader
+    *   @param frame_buffer: The frame buffer the texture will be rendered to
+    *   @param to_create: To know if a bump map or a colour texture has to be created
+    */
 	//--------------------------------------------------------------------------
 	virtual void generate2DTexture(Shader const& shader, unsigned int& frame_buffer,
 			ToCreate to_create);
 
 	//--------------------------------------------------------------------------
 	/// generates a 3D texture
+    /*
+    *   @param shader: The GLSL shader
+    *   @param frame_buffer: The frame buffer the texture will be rendered to
+    *   @param texture: the texture storing the data
+    *   @param to_create: To know if a bump map or a colour texture has to be created
+    */
 	//--------------------------------------------------------------------------
 	virtual void generate3DTexture(Shader const& shader,
 			unsigned int& frame_buffer, unsigned int& texture, ToCreate to_create);
