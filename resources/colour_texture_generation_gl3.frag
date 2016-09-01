@@ -248,7 +248,7 @@ vec3 computeInterpoledNormalVector(vec3 first_vector, vec3 second_vector,float a
 vec4 computeMuscleColour()
 //------------------------
 {
-	float bump_value = 1-clamp(length(texture(g_bump_map, g_texture_coordinates).rgb),0,1);
+	float bump_value = 1-clamp(length(texture(g_bump_map, g_texture_coordinates).rgb*2.-1.),0,1);
 	//bump_value+=0.7;
 	bump_value*=bump_value;
 	
@@ -273,9 +273,9 @@ vec4 computeTendonColour()
 	else 
 	{
     	//modify the normal vector using the bump map   	
-    	vec3 deltaNormal = texture( g_bump_map, g_texture_coordinates).rgb;
+    	vec3 deltaNormal = texture(g_bump_map, g_texture_coordinates).rgb*2.-1.;
 	    	    		
-		vec3 bumped_normal_vector   = normalize(g_normal+deltaNormal);
+		vec3 bumped_normal_vector = normalize(g_normal+deltaNormal);
 		
 		//linear interpolation of the normal vectors
 		float normal_rate = clamp(dot_normal_vertical-0.7,0,0.1);

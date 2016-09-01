@@ -189,7 +189,7 @@ void main(void)
        		}
     		else
     		{
-    	    	deltaNormal = texture( g_bump_map, g_2D_texture_coordinates).rgb;
+    	    	deltaNormal = texture( g_bump_map, g_2D_texture_coordinates).rgb*2.-1.;
      		}
 	    	
     		normal_vector += deltaNormal;

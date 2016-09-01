@@ -252,7 +252,7 @@ float computeBumpValue(vec3 object_position)
 	}
 	
 	//lower the noise
-	float bump_value = noise_value*0.3;
+	float bump_value = noise_value*0.15;
 	
 	if(g_has_tendon == 1)
 	{
@@ -319,10 +319,9 @@ float computeBumpValue(vec3 object_position)
 						LINE_SHARP*(LINE_POS+perturbation)),0.,1.);
 		}
 		//square to make it sharper
-		height = 1-(1-height)*(1-height);
+		height = 1.-(1.-height)*(1.-height);
 
-		//reduce bump from noise
-		bump_value *= bump_value*0.5;
+		bump_value *= bump_value;
 		
 		//add the line
 		bump_value += clamp(height,0.,0.85);
@@ -338,15 +337,15 @@ void main(void)
 	vec3 U = cross(g_normal,vec3(1,0,0));
 	vec3 V = cross(g_normal,vec3(0,1,0));
 	vec3 W = cross(g_normal,vec3(0,0,1));
-	  	
+
 	vec3 deltaNormal = U*(computeBumpValue(g_object_position-STEP*U)
-	   			- computeBumpValue(g_object_position+STEP*U))/(STEP);
-	    	
+			- computeBumpValue(g_object_position+STEP*U))/(STEP);
+
 	deltaNormal += V*(computeBumpValue(g_object_position-STEP*V)
-	   			- computeBumpValue(g_object_position+STEP*V))/(STEP);
-	
+			- computeBumpValue(g_object_position+STEP*V))/(STEP);
+
 	deltaNormal += W*(computeBumpValue(g_object_position-STEP*W)
-	  			- computeBumpValue(g_object_position+STEP*W))/(STEP);
-	
-	frag_colour = deltaNormal;
+			- computeBumpValue(g_object_position+STEP*W))/(STEP);
+
+	frag_colour = deltaNormal*0.5+0.5;
 }

@@ -135,6 +135,7 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 		//Bind the colour texture in texture unit 2
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, m_colour_texture);
+		glBindTexture(GL_TEXTURE_2D, m_colour_texture);
 
 
 		handle = glGetUniformLocation(aShaderID, "g_colour_texture");
