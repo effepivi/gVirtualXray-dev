@@ -293,6 +293,7 @@ void AnatomicalDataHandler::initializeGL()
     loadXRaySimulator();
 
     // Add the geometry to the X-ray renderer
+    initializePatients();
     loadSTLFiles();
 
     //initialize the buffers
@@ -333,7 +334,7 @@ void AnatomicalDataHandler::draw()
             0.0, 1.0, 0.0);
 
     // Rotation
-   /* if (m_current_angle != m_next_angle_to_process)
+    if (m_current_angle != m_next_angle_to_process)
     {
         switch (m_acquisition_type)
         {
@@ -399,7 +400,7 @@ void AnatomicalDataHandler::draw()
         }
 
         m_swap_patient = !m_swap_patient;
-    }*/
+    }
 
     // Update the X-ray image
     updateXRayImage();
@@ -924,11 +925,11 @@ void AnatomicalDataHandler::render()
         }
 
         // Display the source
-        //m_xray_detector.displaySource();
+        m_xray_detector.displaySource();
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        //m_xray_renderer.display(true);
+        m_xray_renderer.display(true);
 
         // Display the beam
         if (m_display_beam)
@@ -943,7 +944,7 @@ void AnatomicalDataHandler::render()
             glUniform1iv(handle, 1, &lighting);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            //m_xray_detector.displayBeam();
+            m_xray_detector.displayBeam();
         }
 
         //clean up the texture
