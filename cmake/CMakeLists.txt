@@ -109,11 +109,17 @@ SET (gVirtualXRay_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 SET (gVirtualXRay_INSTALL_PREFIX ${PROJECT_BINARY_DIR})
 
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
-IF (APPLE AND ${CMAKE_GENERATOR} STREQUAL "Xcode")
-    SET (gVirtualXRay_LIBRARY 
-         optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
-         debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
-    )
+
+IF (APPLE)
+
+    SET (requiredLibs ${requiredLibs} "-framework CoreFoundation")
+
+    IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+        SET (gVirtualXRay_LIBRARY 
+            optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
+            debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
+        )
+    ENDIF ()
 ENDIF ()
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
@@ -519,21 +525,47 @@ TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 
 IF (XCOM_PATH)
-    foreach(xcom_file RANGE 1 100)
+    #foreach(xcom_file RANGE 1 100)
 
-        if (${xcom_file} LESS 10)
-            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
-        else ()
-            if (${xcom_file} LESS 100)
-                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
-            else ()
-                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
-            endif ()
-        endif ()
+    #    if (${xcom_file} LESS 10)
+    #        SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
+    #    else ()
+    #        if (${xcom_file} LESS 100)
+    #            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
+    #        else ()
+    #            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
+    #        endif ()
+    #    endif ()
 
-    endforeach(xcom_file)
+    #endforeach(xcom_file)
 
-	CreateHeaderFiles("." "XCOMLibFiles" "${XCOM_SOURCES}")
+    SET (XCOM_SOURCES 
+        ${XCOM_PATH}/MDATX3.001
+        ${XCOM_PATH}/MDATX3.006
+        ${XCOM_PATH}/MDATX3.007
+        ${XCOM_PATH}/MDATX3.008
+
+        ${XCOM_PATH}/MDATX3.011
+        ${XCOM_PATH}/MDATX3.012
+        ${XCOM_PATH}/MDATX3.015
+        ${XCOM_PATH}/MDATX3.016
+        ${XCOM_PATH}/MDATX3.017
+        ${XCOM_PATH}/MDATX3.018
+        ${XCOM_PATH}/MDATX3.019
+
+        ${XCOM_PATH}/MDATX3.020
+        ${XCOM_PATH}/MDATX3.026
+        ${XCOM_PATH}/MDATX3.022
+        ${XCOM_PATH}/MDATX3.029
+
+        ${XCOM_PATH}/MDATX3.030
+
+        ${XCOM_PATH}/MDATX3.047
+
+        ${XCOM_PATH}/MDATX3.050
+    )
+
+    CreateHeaderFiles("." "XCOMLibFiles" "${XCOM_SOURCES}")
     ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
 ENDIF (XCOM_PATH)
 
