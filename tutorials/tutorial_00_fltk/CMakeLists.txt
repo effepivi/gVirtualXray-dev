@@ -71,25 +71,6 @@ IF(FLTK_FOUND)
     LINK_DIRECTORIES(${FLTK_LIBRARY_DIR})
     SET(optionalLibs ${optionalLibs} ${FLTK_LIBRARY} ${FLTK_LIBRARIES})
 
-    #IF (APPLE)
-    #    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-    #    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-    #    FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-    #    FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
-
-    #    SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-    #ENDIF(APPLE)
-
-    #IF (UNIX)
-    #    FIND_PACKAGE (X11 REQUIRED)
-    #    iF (X11_FOUND)
-    #        INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-    #        SET(optionalLibs ${optionalLibs} dl pthread ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
-    #    ELSE (X11_FOUND)
-    #        MESSAGE(FATAL_ERROR "X11 not found.")
-    #    ENDIF (X11_FOUND)
-    #ENDIF(UNIX)
-
     # Create the main program ######################################################
     add_executable(tutorial_00_fltk tutorial_00_fltk.cxx )
     target_link_libraries(tutorial_00_fltk ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})

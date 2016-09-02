@@ -43,7 +43,7 @@ endif()
 
 IF (USE_FLTK)
     add_subdirectory(tutorial_00_fltk)
-    #add_subdirectory(tutorial_01_fltk)
+    add_subdirectory(tutorial_01_fltk)
     #add_subdirectory(tutorial_02_fltk)
     #add_subdirectory(tutorial_03_fltk)
     #add_subdirectory(tutorial_04_fltk)

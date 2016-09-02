@@ -194,13 +194,9 @@ class GLWidget;
 //  Function declaration
 //******************************************************************************
 void initQt(GLWidget& aWindow);
-void initGLFW();
 void initGL();
 void load3DObjects();
 void quitCallback();
-///void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-///void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-///void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void errorCallback(int error, const char* description);
 
 
