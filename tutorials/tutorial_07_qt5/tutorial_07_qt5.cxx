@@ -69,51 +69,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
-#ifndef __gVirtualXRayConfig_h
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
-#include <QOpenGLFunctions_3_2_Core>
-#include <QApplication>
-#include <QtGui>
-#include <QGLWidget>
-
 #include <iostream>   // Print error messages in the console
-#include <sstream>    // Generate error messages
-#include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
-
-// Define new types, e.g.~RATIONAL_NUMBER, VEC2, VEC3 and MATRIX4 to name a few
-#include "gVirtualXRay/Types.h"
-
-// Define units such as metre, kilometre, electronvolt, gram, kilogram, etc.
-#include "gVirtualXRay/Units.h"
-
-// Some utility functions about OpenGL, e.g. matrix stacks,
-// how to set the projection matrix, etc.
-#include "gVirtualXRay/OpenGLUtilities.h"
-
-#include "gVirtualXRay/PolygonMesh.h"  // Handle 3D triangle meshes
-#include "gVirtualXRay/Shader.h"       // Handle GLSL programs
-
-#include "gVirtualXRay/Utilities.h" // Handle decompression using the Z library
-
-#include "gVirtualXRay/XRayBeam.h"     // Manage X-Ray beams
-#include "gVirtualXRay/XRayDetector.h" // Handle virtual X-Ray detectors
-#include "gVirtualXRay/XRayRenderer.h" // Compute X-Ray images on the GPU
-
-#include "buildCube.h" // Create the triangle mesh of a cube
-
-#include "tutorial_07_gl2.frag.h" // Fragment shader for OpenGL 2.x
-#include "tutorial_07_gl2.vert.h" // Vertex shader for OpenGL 2.x
-
-#include "tutorial_07_gl3.frag.h" // Fragment shader for OpenGL 3.x
-#include "tutorial_07_gl3.vert.h" // Vertex shader for OpenGL 3.x
-
 
 #ifndef __GLWidget_h_
 #include "GLWidget.h"
@@ -123,14 +80,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Name space
 //******************************************************************************
-using namespace gVirtualXRay;
 using namespace std;
-
-
-//******************************************************************************
-//  Constant variables
-//******************************************************************************
-const GLfloat g_rotation_speed(2.0);
 
 
 //******************************************************************************
@@ -146,36 +96,9 @@ GLsizei g_window_height(480);
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-/*void initQt(GLWidget& aWindow);
-
-void initGLUT(int argc, char** argv);
-
-
-
-void displayCallback();
-
-void idleCallback();
+void initQt(GLWidget& aWindow);
 
 void quitCallback();
-
-void framebufferSizeCallback(int aWidth, int aHeight);
-
-void keyCallback(unsigned char aKey, int aXPosition, int aYPosition);
-
-void mouseButtonCallback(int aButton,
-        int aState,
-        int aXPosition,
-        int aYPosition);
-
-void cursorPosCallback(int aXPosition, int aYPosition);
-
-VEC3 getArcballVector(int x, int y);
-
-float radian2degree(float anAngle);
-
-void computeRotation(MATRIX4& aRotationMatrix);
-*/
-
 
 
 //-----------------------------
@@ -230,13 +153,11 @@ void initQt(GLWidget& aWindow)
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
     aWindow.setWindowTitle(QApplication::translate("toplevel",
-            "gVirtualXRay -- Tutorial 07 using Qt4"));
+            "gVirtualXRay -- Tutorial 07 using Qt5"));
     
     // Make the window's context current
     aWindow.makeCurrent();
 }
-
-
 
 
 //-----------------
@@ -245,15 +166,4 @@ void quitCallback()
 {
     // Do nothing
 }
-
-
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
-{
-    // Throw an error
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, description);
-}
-
-
 

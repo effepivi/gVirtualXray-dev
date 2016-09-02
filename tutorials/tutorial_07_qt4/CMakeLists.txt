@@ -96,7 +96,13 @@ IF(Qt4_FOUND)
     SET(optionalLibs ${optionalLibs} Qt4::QtGui Qt4::QtOpenGL)
 
     # Create the main program ######################################################
-    add_executable(tutorial_07_qt4 tutorial_07_qt4.cxx buildCube.cxx)
+    add_executable(tutorial_07_qt4
+        tutorial_07_qt4.cxx
+        GLWidget.h
+        GLWidget.cxx
+        buildCube.h
+        buildCube.cxx
+    )
     target_link_libraries(tutorial_07_qt4 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(tutorial_07_qt4 Binarytutorial_07_qt4Files)
 

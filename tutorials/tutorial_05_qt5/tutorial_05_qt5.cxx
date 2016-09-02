@@ -74,7 +74,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GLWidget.h"
 #endif
 
-
 #ifndef GVXR_EXCEPTION_H
 #include "gVirtualXRay/Exception.h"
 #endif
@@ -151,7 +150,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_default_window_width, g_default_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 04 using Qt4"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 05 using Qt5"));
     
     // Make the window's context current
     aWindow.makeCurrent();

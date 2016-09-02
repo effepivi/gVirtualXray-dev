@@ -108,7 +108,7 @@ int main(int argc, char** argv)
         QApplication application(argc, argv);
 
         // Create a GL format to OpenGL 3.2 Core
-        QGLFormat gl_format;
+        QGLFormat gl_format(QGLFormat::defaultFormat());
         gl_format.setVersion(3, 2);
         gl_format.setProfile(QGLFormat::CoreProfile);
 
@@ -118,7 +118,6 @@ int main(int argc, char** argv)
 
         // Launch the event loop
         return_code = application.exec();
-
 	}
 	// Catch exception if any
     catch (const std::exception& error)
@@ -151,7 +150,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_default_window_width, g_default_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 04 using Qt4"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 04 using Qt5"));
     
     // Make the window's context current
     aWindow.makeCurrent();

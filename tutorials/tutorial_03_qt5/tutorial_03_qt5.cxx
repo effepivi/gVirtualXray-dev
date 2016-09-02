@@ -327,7 +327,7 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
-	// Iiotialise OpeGL functions
+	// Initialise OpenGL functions
 	initializeOpenGLFunctions();
 
 	// Initialise GLEW if needed

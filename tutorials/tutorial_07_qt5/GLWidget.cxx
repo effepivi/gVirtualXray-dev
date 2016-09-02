@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       tutorial_07_qt4.cxx
+*   @file       tutorial_07_qt5.cxx
 *
 *   @brief      Improve the second tutorial by:
 *               - Adding a better shader program to display
@@ -125,6 +125,7 @@ using namespace std;
 //******************************************************************************
 //  Constant variables
 //******************************************************************************
+const GLfloat g_rotation_speed(2.0);
 
 
 //******************************************************************************
@@ -188,6 +189,8 @@ void setScannedObjects();
 
 void setSimulator();
 
+void computeRotation(MATRIX4& aRotationMatrix);
+
 
 //----------------------------------
 GLWidget::GLWidget(QWidget *parent):
@@ -233,6 +236,9 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
+    // Initialise OpenGL functions
+    initializeOpenGLFunctions();
+
     // Initialise GLEW
     initialiseGLEW();
 

@@ -95,26 +95,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 using namespace gVirtualXRay;
 
+
 //******************************************************************************
 //	Implementation
 //******************************************************************************
 
+
 //----------------------------------
 GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
-    QGLWidget(parent),
-    m_lung_mesh()
+    QGLWidget(parent)
 //----------------------------------
 {
 }
 
 
-//----------------------------------
-GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
-//----------------------------------
-    QGLWidget(aGLFormat, parent),
-    m_lung_mesh()
-//----------------------------------
+//--------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat,
+                   QWidget *parent):
+//--------------------------------------
+    QGLWidget(aGLFormat, parent)
+//--------------------------------------
 {
 }
 
@@ -202,6 +203,26 @@ void GLWidget::initializeGL()
     m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix( 60.0, VEC3(1, 0, 0));
 }
 
+
+//----------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent* apEvent)
+//----------------------------------------------
+{
+    switch(apEvent->key())
+    {
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+        close();
+        break;
+
+    default:
+    std::cout << apEvent->key() << std::endl;
+        break;
+    }
+}
+
+
 //----------------------
 void GLWidget::paintGL()
 //----------------------
@@ -236,9 +257,10 @@ void GLWidget::paintGL()
     glFinish();
 }
 
-//----------------------------------------------
+
+//--------------------------
 void GLWidget::loadSTLFile()
-//----------------------------------------------
+//--------------------------
 {
 	// Set geometry
 	char* p_data(0);

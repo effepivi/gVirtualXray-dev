@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *	@file		GLWidget.cxx
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*	@brief      Qt5 widget to handle our OpenGL window.
 *
 *	@version	1.0
 *
@@ -59,13 +59,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************************************************************
 */
 
+
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
+#include <QOpenGLFunctions_3_2_Core>
+#include <QApplication>
 #include <QtGui>
 #include <QGLWidget>
 
@@ -90,14 +89,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "P4_lung.stl.h"
 
+
 //******************************************************************************
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
+
 //******************************************************************************
 //	Implementation
 //******************************************************************************
+
 
 //----------------------------------
 GLWidget::GLWidget(QWidget *parent):
@@ -119,15 +121,20 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
 {
 }
 
+
 //-------------------
 GLWidget::~GLWidget()
 //-------------------
 {}
 
+
 //---------------------------
 void GLWidget::initializeGL()
 //---------------------------
 {
+    // Initialise OpenGL functions
+    initializeOpenGLFunctions();
+
     // Initialise GLEW
     initialiseGLEW();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -207,6 +214,26 @@ void GLWidget::initializeGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
+
+//----------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent* apEvent)
+//----------------------------------------------
+{
+    switch(apEvent->key())
+    {
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+        close();
+        break;
+
+    default:
+    std::cout << apEvent->key() << std::endl;
+        break;
+    }
+}
+
+
 //----------------------
 void GLWidget::paintGL()
 //----------------------
@@ -241,6 +268,7 @@ void GLWidget::paintGL()
     glFinish();
 }
 
+
 //----------------------------------------------
 void GLWidget::loadSTLFile()
 //----------------------------------------------
@@ -272,6 +300,7 @@ void GLWidget::loadSTLFile()
 
 	m_lung_mesh.initialize();
 }
+
 
 //---------------------
 void GLWidget::render()

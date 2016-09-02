@@ -59,6 +59,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************************************************************
 */
 
+
 //******************************************************************************
 //	Include
 //******************************************************************************
@@ -88,14 +89,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
 
+
 //******************************************************************************
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
+
 //******************************************************************************
 //	Implementation
 //******************************************************************************
+
 
 //----------------------------------
 GLWidget::GLWidget(QWidget *parent):
@@ -109,22 +113,24 @@ GLWidget::GLWidget(QWidget *parent):
 }
 
 
-//----------------------------------
-GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
-//----------------------------------
+//--------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat,
+                   QWidget *parent):
+//--------------------------------------
     QGLWidget(aGLFormat, parent),
-	m_blue_cube_mesh(0.5 * cm),
-	m_red_cube_mesh(1. * cm),
-	m_light_direction(-1., 3, -0.5)
-
-//----------------------------------
+    m_blue_cube_mesh(0.5 * cm),
+    m_red_cube_mesh(1. * cm),
+    m_light_direction(-1., 3, -0.5)
+//--------------------------------------
 {
 }
+
 
 //-------------------
 GLWidget::~GLWidget()
 //-------------------
 {}
+
 
 //---------------------------
 void GLWidget::initializeGL()
@@ -238,6 +244,26 @@ void GLWidget::initializeGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
+
+//----------------------------------------------
+void GLWidget::keyPressEvent(QKeyEvent* apEvent)
+//----------------------------------------------
+{
+    switch(apEvent->key())
+    {
+    // Close the program
+    case Qt::Key_Q:
+    case Qt::Key_Escape:
+        close();
+        break;
+
+    default:
+    std::cout << apEvent->key() << std::endl;
+        break;
+    }
+}
+
+
 //----------------------
 void GLWidget::paintGL()
 //----------------------
@@ -272,6 +298,7 @@ void GLWidget::paintGL()
     glFinish();
 }
 
+
 //---------------------------
 void GLWidget::displayMesh(std::vector<PolygonMesh*> polygon_mesh_set, GLint aShaderID)
 //---------------------------
@@ -301,6 +328,7 @@ void GLWidget::displayMesh(std::vector<PolygonMesh*> polygon_mesh_set, GLint aSh
 	    polygon_mesh_set[i]->display();
 	}
 }
+
 
 //---------------------
 void GLWidget::render()

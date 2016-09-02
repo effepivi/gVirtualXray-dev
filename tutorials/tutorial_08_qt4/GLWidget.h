@@ -61,6 +61,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************************************************************
 */
 
+
 //******************************************************************************
 //	Include
 //******************************************************************************
@@ -90,6 +91,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gVirtualXRay/LungsMesh.h"
 
+
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -102,6 +104,7 @@ namespace gVirtualXRay {
 const GLsizei g_default_window_width( 600);
 const GLsizei g_default_window_height(600);
 
+
 //==============================================================================
 /**
 *   @class  GLWidget
@@ -112,8 +115,6 @@ class GLWidget: public QGLWidget
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
-
-//******************************************************************************
 public:
     //--------------------------------------------------------------------------
     /// Default Constructor
@@ -122,6 +123,7 @@ public:
     */
     //--------------------------------------------------------------------------
     GLWidget(QWidget* apPparent = 0);
+
 
     //--------------------------------------------------------------------------
     /// Default Constructor
@@ -132,10 +134,12 @@ public:
     //--------------------------------------------------------------------------
     GLWidget(QGLFormat& aGLFormat, QWidget *apPparent = 0);
 
+
     //--------------------------------------------------------------------------
     /// Destructor
     //--------------------------------------------------------------------------
     virtual ~GLWidget();
+
 
 //*****************************************************************************
 private:
@@ -144,35 +148,53 @@ private:
     //--------------------------------------------------------------------------
     virtual void initializeGL();
 
+
+    //--------------------------------------------------------------------------
+    /// Callback used when a key is pressed
+    /*
+    *   @param apEvent:   the event that generated the call
+    */
+    //--------------------------------------------------------------------------
+    virtual void keyPressEvent(QKeyEvent* apEvent);
+
+
     //--------------------------------------------------------------------------
     /// Display the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void paintGL();
+
 
     //--------------------------------------------------------------------------
     /// Load STL files (lung geometrical data)
     //--------------------------------------------------------------------------
     virtual void loadSTLFile();
 
+
     //--------------------------------------------------------------------------
     /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void render();
 
+
     /// Transformation matrix used to rotate the 3D scene
     Matrix4x4<GLfloat> m_scene_rotation_matrix;
+
 
     /// model matrix of the lung
     Matrix4x4<GLfloat> m_lung_rotation_matrix;
 
+
     /// GLSL shader
     Shader m_display_shader;
+
 
     /// polygon mesh for the lung
     LungsMesh m_lung_mesh;
 
+
     ///the light direction (from the vertex to the camera)
     VEC3 m_light_direction;
+
 
     ///object containing buffers to create the shadow map
     DepthMap m_shadow_map;

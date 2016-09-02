@@ -90,7 +90,13 @@ IF(Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
     SET(optionalLibs ${optionalLibs} Qt5::Gui Qt5::Widgets Qt5::OpenGL)
 
     # Create the main program ######################################################
-    add_executable(tutorial_07_qt5 tutorial_07_qt5.cxx GLWidget.h GLWidget.cxx buildCube.cxx)
+    add_executable(tutorial_07_qt5
+        tutorial_07_qt5.cxx
+        GLWidget.h
+        GLWidget.cxx
+        buildCube.h
+        buildCube.cxx
+    )
     target_link_libraries(tutorial_07_qt5 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(tutorial_07_qt5 Binarytutorial_07_qt5Files)
 

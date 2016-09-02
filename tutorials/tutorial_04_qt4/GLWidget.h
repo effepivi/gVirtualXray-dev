@@ -119,6 +119,7 @@ public:
     //--------------------------------------------------------------------------
     GLWidget(QWidget* apPparent = 0);
 
+
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
@@ -128,10 +129,12 @@ public:
     //--------------------------------------------------------------------------
     GLWidget(QGLFormat& aGLFormat, QWidget *apPparent = 0);
 
+
     //--------------------------------------------------------------------------
     /// Destructor
     //--------------------------------------------------------------------------
     virtual ~GLWidget();
+
 
 //*****************************************************************************
 private:
@@ -140,29 +143,45 @@ private:
     //--------------------------------------------------------------------------
     virtual void initializeGL();
 
+
+    //--------------------------------------------------------------------------
+    /// Callback used when a key is pressed
+    /*
+    *   @param apEvent:   the event that generated the call
+    */
+    //--------------------------------------------------------------------------
+    virtual void keyPressEvent(QKeyEvent* apEvent);
+
+
     //--------------------------------------------------------------------------
     /// Display the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void paintGL();
+
 
     //--------------------------------------------------------------------------
     /// Load STL files (lung geometrical data)
     //--------------------------------------------------------------------------
     virtual void loadSTLFile();
 
+
     //--------------------------------------------------------------------------
     /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void render();
 
+
     /// Transformation matrix used to rotate the 3D scene
     Matrix4x4<GLfloat> m_scene_rotation_matrix;
+
 
     /// Transformation matrix used to rotate the lung
     Matrix4x4<GLfloat> m_lung_rotation_matrix;
 
+
     /// GLSL shader
     Shader m_display_shader;
+
 
     /// polygon mesh for the lung
     LungsMesh m_lung_mesh;
