@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       tutorial_00_glfw.cxx
 *
-*   @brief      Creating a Window using GLFW.
+*   @brief      Creating a Window using Qt4.
 *
 *   @version    1.0
 *
