@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       tutorial_00_fltk.cxx
+*   @file       tutorial_01_fltk.cxx
 *
 *   @brief      Creating a Window using FLTK.
 *
@@ -205,7 +205,7 @@ public:
 protected:
     void initializeGL();
     virtual void draw();
-    void animate();
+    static void animate(void* apWidget);
     virtual void resize(int width, int height);
     virtual int handle(int event);
 
@@ -227,6 +227,7 @@ int main(int argc, char** argv)
     {
         // Set the GLWidget
         GLWidget window(g_window_width, g_window_height, "gVirtualXRay -- Tutorial 01 using FLTK");
+        window.resizable(&window);
 
         // Launch the event loop
         window.show();
@@ -254,7 +255,8 @@ GLWidget::GLWidget(int W, int H, const char* L):
         m_is_first_time(true)
 //----------------------------------------------
 {
-    mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE);
+    mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
+    Fl::add_idle(animate, this);
 }
 
 
@@ -265,7 +267,8 @@ GLWidget::GLWidget(int X, int Y, int W, int H, const char* L):
         m_is_first_time(true)
 //------------------------------------------------------------
 {
-    mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE);
+    mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
+    Fl::add_idle(animate, this);
 }
 
 
@@ -321,6 +324,7 @@ void GLWidget::draw()
     {
         resize(w(), h());
     }
+    
     // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -396,21 +400,22 @@ void GLWidget::draw()
     // Check the status of OpenGL and of the current FBO
     checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    animate();
-   // Fl::check();
 }
 
 
-//----------------------
-void GLWidget::animate()
-//---------------------
+//------------------------------------
+void GLWidget::animate(void* apWidget)
+//------------------------------------
 {
-    // Rotate the objects
-    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
-    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
+    if (apWidget)
+    {
+        // Rotate the objects
+        g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
+        g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
 
-    damage();
+        GLWidget* p_widget(static_cast<GLWidget*>(apWidget));
+        p_widget->redraw();
+    }
 }
 
 
@@ -445,7 +450,7 @@ void GLWidget::resize(int width, int height)
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
-    damage();
+    redraw();
 }
 
 

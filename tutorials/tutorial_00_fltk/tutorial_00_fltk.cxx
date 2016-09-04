@@ -141,6 +141,7 @@ int main(int argc, char** argv)
                 g_window_width,
                 g_window_height,
                 "gVirtualXRay -- Tutorial 00 using FLTK");
+        window.resizable(&window);
 
         // Launch the event loop
         window.show();
@@ -168,6 +169,7 @@ GLWidget::GLWidget(int X, int Y, int W, int H, const char *L):
         m_is_first_time(true)
 //------------------------------------------------------------
 {
+    mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
 }
 
 

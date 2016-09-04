@@ -461,7 +461,7 @@ void displayCallback()
 void idleCallback()
 //-----------------
 {
-    // Rotate the objects
+    // Rotate the object
     g_object_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
 }
 
