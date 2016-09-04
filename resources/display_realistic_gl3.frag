@@ -121,7 +121,7 @@ float repeatCoordinate(float x)
 	float res = x - floor(x);
 	if ((int(floor(x)) % 2) == 1)
 	{
-		res = 1 - res;
+		res = 1.0 - res;
 	}
 	return res;
 }

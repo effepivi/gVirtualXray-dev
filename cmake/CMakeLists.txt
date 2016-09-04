@@ -603,7 +603,9 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/text_display_gl3.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/../resources/FreeSans.ttf
 	
-	${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl3.frag
+	${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/display_realistic_gl3.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/depth_map_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/../resources/depth_map_gl3.vert
