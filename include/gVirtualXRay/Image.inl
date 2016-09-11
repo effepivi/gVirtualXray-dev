@@ -32,6 +32,7 @@
 #include <algorithm> // Header file for min/max/fill
 #include <cmath> // Header file for abs
 #include <numeric> // Header file for accumulate
+#include <limits> // Numeric limits per types
 #include <vector>
 #include <iostream>
 
@@ -56,6 +57,7 @@
 #endif
 
 #ifdef HAS_TIFF
+#include <tiff.h>
 #include <tiffio.h>
 #endif
 
@@ -830,9 +832,298 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
 {
 #ifdef HAS_TIFF
 
-    throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "Saving TIFF files is not implemented, "
-            "please contact Dr FP Vidal.");
+    unsigned char* p_ubyte_data(0);
+    unsigned short* p_ushort_data(0);
+    unsigned int number_of_pixels(m_width * m_height * m_number_of_slices);
+
+    double min_value(getMinValue());
+    double max_value(getMaxValue());
+    double value_range(max_value - min_value);
+
+    // Open the file
+    TIFF* p_file = TIFFOpen(aFileName, "w");
+
+    // The file is not open
+    if (!p_file)
+        {
+        std::string error_message("The file (");
+        error_message += aFileName;
+        error_message += ") cannot be created";
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the file header
+    
+    // Set the image width
+    TIFF_UINT32_T image_width(m_width);
+
+    if (TIFFSetField(p_file, TIFFTAG_IMAGEWIDTH, image_width) != 1)
+        {
+            std::string error_message("Could not set the image width in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+        
+    // Set the image height
+    TIFF_UINT32_T image_height(m_height);
+
+    if (TIFFSetField(p_file, TIFFTAG_IMAGELENGTH, m_height) != 1)
+        {
+            std::string error_message("Could not set the image height in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the number of bits per pixel
+    TIFF_UINT16_T number_of_bits_per_pixel(0);
+
+    if (typeid(T) == typeid(unsigned char))
+        {
+        number_of_bits_per_pixel = 8;
+        p_ubyte_data = new unsigned char[number_of_pixels];
+        memcpy(p_ubyte_data, m_p_image, sizeof(unsigned char) * number_of_pixels);
+        }
+    else
+        {
+        number_of_bits_per_pixel = 16;
+        p_ushort_data = new unsigned short[number_of_pixels];
+        
+        for (unsigned int i(0); i < number_of_pixels; ++i)
+            {
+            double temp(std::numeric_limits<unsigned short>::min() + std::numeric_limits<unsigned short>::max() * (double(m_p_image[i] - min_value) / value_range));
+            if (temp < 0.0)
+                {
+                p_ushort_data[i] = std::numeric_limits<unsigned short>::min();
+                }
+            else if (temp > std::numeric_limits<unsigned short>::max())
+                {
+                p_ushort_data[i] = std::numeric_limits<unsigned short>::max();
+                }
+            else
+                {
+                p_ushort_data[i] = temp;
+                }
+            }
+        }
+
+    if (TIFFSetField(p_file, TIFFTAG_BITSPERSAMPLE, number_of_bits_per_pixel) != 1)
+        {
+            std::string error_message("Could not set the number of bits per pixel in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the compression
+    TIFF_UINT16_T compression(COMPRESSION_LZW);
+
+    if (TIFFSetField(p_file, TIFFTAG_COMPRESSION, compression) != 1)
+        {
+            std::string error_message("Could not set the compression in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the photometric interpretation
+    TIFF_UINT16_T photometric_interpretation;
+        if (anInvertLUTFlag)
+            {
+            photometric_interpretation = PHOTOMETRIC_MINISWHITE;
+            }
+        else
+            {
+            photometric_interpretation = PHOTOMETRIC_MINISBLACK;
+            }
+  
+    if (TIFFSetField(p_file, TIFFTAG_PHOTOMETRIC, photometric_interpretation) != 1)
+        {
+            std::string error_message("Could not set the photometric interpretation in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the orientation
+    TIFF_UINT16_T orientation(ORIENTATION_TOPLEFT);
+
+    if (TIFFSetField(p_file, TIFFTAG_ORIENTATION, orientation) != 1)
+        {
+            std::string error_message("Could not set the orientation in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the number of samples per pixel
+    TIFF_UINT16_T number_of_samples_per_pixel(1);
+
+    if (TIFFSetField(p_file, TIFFTAG_SAMPLESPERPIXEL, number_of_samples_per_pixel) != 1)
+        {
+            std::string error_message("Could not set the number of samples per pixel in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the min sample value
+    if (TIFFSetField(p_file, TIFFTAG_MINSAMPLEVALUE, min_value) != 1)
+        {
+            std::string error_message("Could not set the min sample value in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the max sample value
+    if (TIFFSetField(p_file, TIFFTAG_MAXSAMPLEVALUE, max_value) != 1)
+        {
+            std::string error_message("Could not set the max sample value in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the planar configuration
+    TIFF_UINT16_T planar_configuration(PLANARCONFIG_CONTIG);
+
+    if (TIFFSetField(p_file, TIFFTAG_PLANARCONFIG, planar_configuration) != 1)
+        {
+            std::string error_message("Could not set the planar configuration in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    std::string software;
+    software += "gVirtualXRay-";
+    software += gVirtualXRay_VERSION_MAJOR;
+    software += ".";
+    software += gVirtualXRay_VERSION_MINOR;
+    software += ".";
+    software += gVirtualXRay_VERSION_PATCH;
+
+    if (TIFFSetField(p_file, TIFFTAG_COPYRIGHT, software.data()) != 1)
+        {
+            std::string error_message("Could not set the software value in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Set the format of a sample
+    TIFF_UINT16_T format_of_a_sample;
+
+    if (typeid(T) == typeid(unsigned char) || typeid(T) == typeid(unsigned short))
+        {
+        format_of_a_sample = SAMPLEFORMAT_UINT;
+        }
+    else if (typeid(T) == typeid(char) || typeid(T) == typeid(short))
+        {
+        format_of_a_sample = SAMPLEFORMAT_INT;
+        }
+    else if (typeid(T) == typeid(float))
+        {
+        format_of_a_sample = SAMPLEFORMAT_IEEEFP;
+        }
+    else
+        {
+            std::string error_message("Could not set the format of a sample in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    if (TIFFSetField(p_file, TIFFTAG_SAMPLEFORMAT, format_of_a_sample) != 1)
+        {
+            std::string error_message("Could not set the compression in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Length in memory of one row of pixel in the image
+    tsize_t number_of_bytes_per_line(number_of_samples_per_pixel * m_width);
+
+    // We set the strip size of the file to be size of one row of pixels
+    TIFFSetField(p_file, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(p_file, m_width * number_of_samples_per_pixel));
+
+    // Write the image data, line by line
+    if (m_number_of_slices == 1)
+        {
+        for (unsigned int j(0); j < m_height; ++j)
+            {
+            int error_code(0);
+            
+            if (p_ubyte_data)
+                {
+                error_code = TIFFWriteScanline(p_file, p_ubyte_data + m_width * j, j, 0);
+                }
+            else if (p_ushort_data)
+                {
+                error_code = TIFFWriteScanline(p_file, p_ushort_data + m_width * j, j, 0);
+                }
+
+            if (error_code != 1)
+                {
+                // Close the file
+                TIFFClose(p_file);
+                
+                // Release the memory if necessary
+                if (p_ubyte_data)
+                    {
+                    delete [] p_ubyte_data;
+                    p_ubyte_data = 0;
+                    }
+                
+                if (p_ushort_data)
+                    {
+                    delete [] p_ushort_data;
+                    p_ushort_data = 0;
+                    }
+                
+                // Generate an error
+                std::stringstream error_message;
+                error_message << "Could not write the pixel data (Line " << j << ") in the TIFF file (";
+                error_message << aFileName;
+                error_message << ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+                }
+            }
+        }
+    else
+        {
+            std::string error_message("Could not write several slices in the TIFF file (");
+            error_message += aFileName;
+            error_message += ")";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+/*
+
+       TIFFTAG_COLORMAP                3      uint16*            1<<BitsPerSample arrays
+                   1      uint16             -
+ */
+
+    // Release the memory if necessary
+    if (p_ubyte_data)
+        {
+        delete [] p_ubyte_data;
+        p_ubyte_data = 0;
+        }
+    
+    if (p_ushort_data)
+        {
+        delete [] p_ushort_data;
+        p_ushort_data = 0;
+        }
+    
+    // Close the file
+    TIFFClose(p_file);
+
 #else
 
     throw Exception(__FILE__, __FUNCTION__, __LINE__,
