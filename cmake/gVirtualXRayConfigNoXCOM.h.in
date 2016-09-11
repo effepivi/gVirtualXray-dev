@@ -36,9 +36,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GVXR_CONFIG_H
 
 // the configured options and settings for gVirtualXRay
-#define gVirtualXRay_VERSION_MAJOR @gVirtualXRay_VERSION_MAJOR@
-#define gVirtualXRay_VERSION_MINOR @gVirtualXRay_VERSION_MINOR@
-#define gVirtualXRay_VERSION_PATCH @gVirtualXRay_VERSION_PATCH@
+#define gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@"
+#define gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@"
+#define gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _USE_MATH_DEFINES
