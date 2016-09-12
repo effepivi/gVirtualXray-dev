@@ -1,0 +1,5 @@
+IF (USE_GLFW)
+    ADD_SUBDIRECTORY (MonoEnergy)
+    ADD_SUBDIRECTORY (Sinogram)
+ENDIF ()
+

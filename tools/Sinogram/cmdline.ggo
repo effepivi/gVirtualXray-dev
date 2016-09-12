@@ -1,0 +1,20 @@
+version "1.1.0"
+package "gVirtualXRay"
+purpose "Command line tool to compute a sinogram using a monochromatic beam."
+description "See http://gvirtualxray.sourceforge.net/"
+versiontext "(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), http://www.fpvidal.net/, Sept 2016, 2016, version 1.1, BSD 3-Clause License"
+
+# Options
+
+option "energy"      e "Energy (in keV)" float required
+option "source"      s "Source position (in cm), takes exactly 3 float values separated by commas"   multiple(3) required float
+option "detector"    d "Detector position (in cm), takes exactly 3 float values separated by commas" multiple(3) required float
+option "up"          u "Detector up vector, takes exactly 3 float values separated by commas" multiple(3) required float
+option "pixels"      p "Number of pixels in the detector, takes exactly 2 int values separated by commas"   multiple(2) required int
+option "resolution"  r "Pixel size (in cm)"   required float
+option "output"      o "Name of the output file" string required
+option "geometries"  g "Details about the scanned objects (filenale.stl,HU)" multiple(2-) required string
+option "axis"        a "Position of the rotation axis (in cm), takes exactly 3 float values separated by commas" multiple(3) optional float default="0.0"
+option "start_angle"       - "Start angle (in degrees)" optional float default="0.0"
+option "offset_angle"      - "Angle (in degrees) between two successive projections" optional float default="1.0"
+option "projection_number" - "Number of projections" optional int default="180"
