@@ -285,9 +285,9 @@ template<typename T> const VEC3& Image<T>::getSpacing() const
 }
 
 
-//------------------------------
+//--------------------------------------------------
 template<typename T> T Image<T>::getMinValue() const
-//------------------------------
+//--------------------------------------------------
 {
     // The image is empty
     if (!m_p_image)
@@ -299,9 +299,9 @@ template<typename T> T Image<T>::getMinValue() const
 }
 
 
-//------------------------------
+//--------------------------------------------------
 template<typename T> T Image<T>::getMaxValue() const
-//------------------------------
+//--------------------------------------------------
 {
     // The image is empty
     if (!m_p_image)
@@ -310,6 +310,34 @@ template<typename T> T Image<T>::getMaxValue() const
     }
     
     return (*std::max_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
+}
+
+
+//-----------------------------------------------------------------------
+template<typename T> T Image<T>::getMinValue(unsigned int aSliceID) const
+//-----------------------------------------------------------------------
+{
+    // The image is empty
+    if (!m_p_image)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
+    }
+    
+    return (*std::min_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
+}
+
+
+//-----------------------------------------------------------------------
+template<typename T> T Image<T>::getMaxValue(unsigned int aSliceID) const
+//-----------------------------------------------------------------------
+{
+    // The image is empty
+    if (!m_p_image)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
+    }
+    
+    return (*std::max_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
 }
 
 
@@ -832,13 +860,29 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
 {
 #ifdef HAS_TIFF
 
-    unsigned char* p_ubyte_data(0);
-    unsigned short* p_ushort_data(0);
-    unsigned int number_of_pixels(m_width * m_height * m_number_of_slices);
+    float* p_float_data(0);
+    unsigned int number_of_pixels(m_width * m_height);
 
-    double min_value(getMinValue());
-    double max_value(getMaxValue());
-    double value_range(max_value - min_value);
+
+    TIFF_UINT16_T number_of_bits_per_pixel(0);
+
+    if (typeid(T) == typeid(char) || typeid(T) == typeid(unsigned char))
+        {
+        number_of_bits_per_pixel = 8;
+        }
+    else if (typeid(T) == typeid(short) || typeid(T) == typeid(unsigned short))
+        {
+        number_of_bits_per_pixel = 16;
+        }
+    else if (typeid(T) == typeid(float))
+        {
+        number_of_bits_per_pixel = 32;
+        }
+    else
+        {
+        number_of_bits_per_pixel = 32;
+        p_float_data = new float[number_of_pixels];
+        }
 
     // Open the file
     TIFF* p_file = TIFFOpen(aFileName, "w");
@@ -853,150 +897,147 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
         }
 
-    // Set the file header
-    
-    // Set the image width
-    TIFF_UINT32_T image_width(m_width);
-
-    if (TIFFSetField(p_file, TIFFTAG_IMAGEWIDTH, image_width) != 1)
+    // Write all the slices
+    for (unsigned int k(0); k < m_number_of_slices; k++)
         {
-            std::string error_message("Could not set the image width in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-        
-    // Set the image height
-    TIFF_UINT32_T image_height(m_height);
+        // Get the min/max/range values
+        T min_value(getMinValue(k));
+        T max_value(getMaxValue(k));
+        T value_range(max_value - min_value);
 
-    if (TIFFSetField(p_file, TIFFTAG_IMAGELENGTH, m_height) != 1)
-        {
-            std::string error_message("Could not set the image height in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-    // Set the number of bits per pixel
-    TIFF_UINT16_T number_of_bits_per_pixel(0);
-
-    if (typeid(T) == typeid(unsigned char))
-        {
-        number_of_bits_per_pixel = 8;
-        p_ubyte_data = new unsigned char[number_of_pixels];
-        memcpy(p_ubyte_data, m_p_image, sizeof(unsigned char) * number_of_pixels);
-        }
-    else
-        {
-        number_of_bits_per_pixel = 16;
-        p_ushort_data = new unsigned short[number_of_pixels];
-        
-        for (unsigned int i(0); i < number_of_pixels; ++i)
+        // Convert the image if necessary
+        if (p_float_data)
             {
-            double temp(std::numeric_limits<unsigned short>::min() + std::numeric_limits<unsigned short>::max() * (double(m_p_image[i] - min_value) / value_range));
-            if (temp < 0.0)
+            for (unsigned int i(0); i < number_of_pixels; ++i)
                 {
-                p_ushort_data[i] = std::numeric_limits<unsigned short>::min();
+                float temp(double(m_p_image[k * m_width * m_height + i] - min_value) / value_range);
+                p_float_data[i] = temp;
                 }
-            else if (temp > std::numeric_limits<unsigned short>::max())
+            }
+
+        // Create a new directory
+        if (m_number_of_slices > 1)
+            {
+            if (TIFFWriteDirectory(p_file) != 1)
                 {
-                p_ushort_data[i] = std::numeric_limits<unsigned short>::max();
+                    std::string error_message("Could not write the new directory in the TIFF file (");
+                    error_message += aFileName;
+                    error_message += ")";
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                }
+            }
+
+        // Set the image width
+        TIFF_UINT32_T image_width(m_width);
+
+        if (TIFFSetField(p_file, TIFFTAG_IMAGEWIDTH, image_width) != 1)
+            {
+                std::string error_message("Could not set the image width in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+            
+        // Set the image height
+        TIFF_UINT32_T image_height(m_height);
+
+        if (TIFFSetField(p_file, TIFFTAG_IMAGELENGTH, m_height) != 1)
+            {
+                std::string error_message("Could not set the image height in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+
+        // Set the number of bits per pixel
+        if (TIFFSetField(p_file, TIFFTAG_BITSPERSAMPLE, number_of_bits_per_pixel) != 1)
+            {
+                std::string error_message("Could not set the number of bits per pixel in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+
+        // Set the compression
+        TIFF_UINT16_T compression(COMPRESSION_LZW);
+
+        if (TIFFSetField(p_file, TIFFTAG_COMPRESSION, compression) != 1)
+            {
+                std::string error_message("Could not set the compression in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+
+        // Set the photometric interpretation
+        TIFF_UINT16_T photometric_interpretation;
+            if (anInvertLUTFlag)
+                {
+                photometric_interpretation = PHOTOMETRIC_MINISWHITE;
                 }
             else
                 {
-                p_ushort_data[i] = temp;
+                photometric_interpretation = PHOTOMETRIC_MINISBLACK;
                 }
-            }
-        }
-
-    if (TIFFSetField(p_file, TIFFTAG_BITSPERSAMPLE, number_of_bits_per_pixel) != 1)
-        {
-            std::string error_message("Could not set the number of bits per pixel in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-    // Set the compression
-    TIFF_UINT16_T compression(COMPRESSION_LZW);
-
-    if (TIFFSetField(p_file, TIFFTAG_COMPRESSION, compression) != 1)
-        {
-            std::string error_message("Could not set the compression in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-    // Set the photometric interpretation
-    TIFF_UINT16_T photometric_interpretation;
-        if (anInvertLUTFlag)
+      
+        if (TIFFSetField(p_file, TIFFTAG_PHOTOMETRIC, photometric_interpretation) != 1)
             {
-            photometric_interpretation = PHOTOMETRIC_MINISWHITE;
+                std::string error_message("Could not set the photometric interpretation in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
             }
-        else
+
+        // Set the orientation
+        TIFF_UINT16_T orientation(ORIENTATION_TOPLEFT);
+
+        if (TIFFSetField(p_file, TIFFTAG_ORIENTATION, orientation) != 1)
             {
-            photometric_interpretation = PHOTOMETRIC_MINISBLACK;
+                std::string error_message("Could not set the orientation in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
             }
-  
-    if (TIFFSetField(p_file, TIFFTAG_PHOTOMETRIC, photometric_interpretation) != 1)
-        {
-            std::string error_message("Could not set the photometric interpretation in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
 
-    // Set the orientation
-    TIFF_UINT16_T orientation(ORIENTATION_TOPLEFT);
+        // Set the number of samples per pixel
+        TIFF_UINT16_T number_of_samples_per_pixel(1);
 
-    if (TIFFSetField(p_file, TIFFTAG_ORIENTATION, orientation) != 1)
-        {
-            std::string error_message("Could not set the orientation in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
+        if (TIFFSetField(p_file, TIFFTAG_SAMPLESPERPIXEL, number_of_samples_per_pixel) != 1)
+            {
+                std::string error_message("Could not set the number of samples per pixel in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
 
-    // Set the number of samples per pixel
-    TIFF_UINT16_T number_of_samples_per_pixel(1);
+        // Set the min sample value
+        if (TIFFSetField(p_file, TIFFTAG_MINSAMPLEVALUE, min_value) != 1)
+            {
+                std::string error_message("Could not set the min sample value in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
 
-    if (TIFFSetField(p_file, TIFFTAG_SAMPLESPERPIXEL, number_of_samples_per_pixel) != 1)
-        {
-            std::string error_message("Could not set the number of samples per pixel in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
+        // Set the max sample value
+        if (TIFFSetField(p_file, TIFFTAG_MAXSAMPLEVALUE, max_value) != 1)
+            {
+                std::string error_message("Could not set the max sample value in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
 
-    // Set the min sample value
-    if (TIFFSetField(p_file, TIFFTAG_MINSAMPLEVALUE, min_value) != 1)
-        {
-            std::string error_message("Could not set the min sample value in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
+        // Set the planar configuration
+        TIFF_UINT16_T planar_configuration(PLANARCONFIG_CONTIG);
 
-    // Set the max sample value
-    if (TIFFSetField(p_file, TIFFTAG_MAXSAMPLEVALUE, max_value) != 1)
-        {
-            std::string error_message("Could not set the max sample value in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-    // Set the planar configuration
-    TIFF_UINT16_T planar_configuration(PLANARCONFIG_CONTIG);
-
-    if (TIFFSetField(p_file, TIFFTAG_PLANARCONFIG, planar_configuration) != 1)
-        {
-            std::string error_message("Could not set the planar configuration in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
+        if (TIFFSetField(p_file, TIFFTAG_PLANARCONFIG, planar_configuration) != 1)
+            {
+                std::string error_message("Could not set the planar configuration in the TIFF file (");
+                error_message += aFileName;
+                error_message += ")";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
 
     std::string software;
     software += "gVirtualXRay-";
@@ -1025,16 +1066,9 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
         {
         format_of_a_sample = SAMPLEFORMAT_INT;
         }
-    else if (typeid(T) == typeid(float))
-        {
-        format_of_a_sample = SAMPLEFORMAT_IEEEFP;
-        }
     else
         {
-            std::string error_message("Could not set the format of a sample in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        format_of_a_sample = SAMPLEFORMAT_IEEEFP;
         }
 
     if (TIFFSetField(p_file, TIFFTAG_SAMPLEFORMAT, format_of_a_sample) != 1)
@@ -1051,20 +1085,18 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
     // We set the strip size of the file to be size of one row of pixels
     TIFFSetField(p_file, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(p_file, m_width * number_of_samples_per_pixel));
 
-    // Write the image data, line by line
-    if (m_number_of_slices == 1)
-        {
+
+        // Write the image data, line by line
+        int error_code(0);
         for (unsigned int j(0); j < m_height; ++j)
             {
-            int error_code(0);
-            
-            if (p_ubyte_data)
+            if (p_float_data)
                 {
-                error_code = TIFFWriteScanline(p_file, p_ubyte_data + m_width * j, j, 0);
+                error_code = TIFFWriteScanline(p_file, p_float_data + m_width * j, j, 0);
                 }
-            else if (p_ushort_data)
+            else
                 {
-                error_code = TIFFWriteScanline(p_file, p_ushort_data + m_width * j, j, 0);
+                error_code = TIFFWriteScanline(p_file, m_p_image + m_width * m_height * k + m_width * j, j, 0);
                 }
 
             if (error_code != 1)
@@ -1073,16 +1105,10 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 TIFFClose(p_file);
                 
                 // Release the memory if necessary
-                if (p_ubyte_data)
+                if (p_float_data)
                     {
-                    delete [] p_ubyte_data;
-                    p_ubyte_data = 0;
-                    }
-                
-                if (p_ushort_data)
-                    {
-                    delete [] p_ushort_data;
-                    p_ushort_data = 0;
+                    delete [] p_float_data;
+                    p_float_data = 0;
                     }
                 
                 // Generate an error
@@ -1093,32 +1119,25 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
                 }
             }
+            
+        // Flush the data in the TIFF file
+        if (m_number_of_slices > 1)
+            {
+            if (TIFFFlush(p_file) != 1)
+                {
+                    std::string error_message("Could not flush the data in the TIFF file (");
+                    error_message += aFileName;
+                    error_message += ")";
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                }
+            }
         }
-    else
-        {
-            std::string error_message("Could not write several slices in the TIFF file (");
-            error_message += aFileName;
-            error_message += ")";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-/*
-
-       TIFFTAG_COLORMAP                3      uint16*            1<<BitsPerSample arrays
-                   1      uint16             -
- */
 
     // Release the memory if necessary
-    if (p_ubyte_data)
+    if (p_float_data)
         {
-        delete [] p_ubyte_data;
-        p_ubyte_data = 0;
-        }
-    
-    if (p_ushort_data)
-        {
-        delete [] p_ushort_data;
-        p_ushort_data = 0;
+        delete [] p_float_data;
+        p_float_data = 0;
         }
     
     // Close the file

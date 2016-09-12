@@ -190,6 +190,26 @@ public:
     
 
     //------------------------------------------------------------------------
+    /// Compute the minimum pixel value in a given slice
+    /**
+    * @param aSliceID: the slice ID
+    * @return the minimum pixel
+    */
+    //------------------------------------------------------------------------
+    T getMinValue(unsigned int aSliceID) const;
+    
+
+    //------------------------------------------------------------------------
+    /// Compute the maximum pixel value in a given slice
+    /**
+    * @param aSliceID: the slice ID
+    * @return the maximum pixel
+    */
+    //------------------------------------------------------------------------
+    T getMaxValue(unsigned int aSliceID) const;
+    
+
+    //------------------------------------------------------------------------
     /// Add aShiftValue to every pixel, then multiply every pixel
     /// by aScaleValue
     /**
