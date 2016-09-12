@@ -201,7 +201,7 @@ void loadSTLFile(const std::string& aFileName, double aHUValue, double aUnit)
     
 	polygon_mesh.setFilename(aFileName.data());
 	polygon_mesh.loadSTLFile(false, false, true, true, aUnit, GL_STATIC_DRAW);
-	polygon_mesh.loadSTLFile(true, false, true, true, aUnit, GL_STATIC_DRAW);
+//	polygon_mesh.loadSTLFile(true, false, true, true, aUnit, GL_STATIC_DRAW);
 	polygon_mesh.setHounsfieldValue(aHUValue);
 
     g_p_polygon_data_set.push_back(polygon_mesh);
@@ -269,17 +269,16 @@ void updateXRayImage()
     MATRIX4 transformation_matrix;
     
     // Translate the sample
-//    transformation_matrix.translate(-g_rotation_axis_position);
+    transformation_matrix.translate(g_rotation_axis_position);
 
     // Rotate the sample
-//    transformation_matrix.rotate(g_first_angle, g_detector_up_vector);
+    transformation_matrix.rotate(g_first_angle, g_detector_up_vector);
 
     // Translate the sample
-//    transformation_matrix.translate(g_rotation_axis_position);
+    transformation_matrix.translate(-g_rotation_axis_position);
 
     g_xray_renderer.computeSinogram(transformation_matrix,
-    //g_xray_renderer.computeProjectionSet(transformation_matrix,
-            g_rotation_angle,
+            g_rotation_axis_position,
             g_number_of_projections,
             g_rotation_angle);
 }
@@ -348,9 +347,9 @@ int main(int argc, char** argv)
         
         if (ai.axis_given)
             {
-            g_rotation_axis_position[0] = ai.axis_arg[0];
-            g_rotation_axis_position[1] = ai.axis_arg[1];
-            g_rotation_axis_position[2] = ai.axis_arg[2];
+            g_rotation_axis_position[0] = ai.axis_arg[0] * cm;
+            g_rotation_axis_position[1] = ai.axis_arg[1] * cm;
+            g_rotation_axis_position[2] = ai.axis_arg[2] * cm;
             }
     
         g_first_angle = ai.start_angle_arg;
@@ -381,7 +380,7 @@ int main(int argc, char** argv)
 
 		// Create the window title
 		std::stringstream window_title;
-		window_title << "gVirtualXRay -- Command Line Tool -- Monochromatic";
+		window_title << "gVirtualXRay -- Command Line Tool -- Sinogram";
 
 	    // Create a windowed mode window and its OpenGL context
 	    g_p_window = glfwCreateWindow(600, 600, window_title.str().data(), NULL, NULL);
@@ -484,7 +483,6 @@ int main(int argc, char** argv)
         double start = glfwGetTime();
         updateXRayImage();
         g_xray_renderer.printSinogram(output_file_name);
-        //g_xray_renderer.printProjectionSet(output_file_name);
         double end = glfwGetTime();
         double duration(end - start);
         std::cout << "Computing time:                 " << duration << "sec, " << double(g_number_of_projections) / duration  << "FPS" << std::endl;
