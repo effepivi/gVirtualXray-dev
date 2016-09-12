@@ -457,7 +457,7 @@ int main(int argc, char** argv)
                 }
 
             std::cout << "Output file name:              " << output_file_name        << std::endl;
-            std::cout << "Mesh:           :" << stl_file_name << "in " << unit_as_string << " and HU " << HU_value << std::endl;
+            std::cout << "Mesh:           :" << stl_file_name << " in " << unit_as_string << " and HU " << HU_value << std::endl;
             
             loadSTLFile(stl_file_name, HU_value, unit);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
