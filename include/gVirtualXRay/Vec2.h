@@ -331,6 +331,14 @@ public:
 	const Vec2 operator-() const;
 
 
+
+    T& operator()(unsigned int i);
+    const T& operator()(unsigned int i) const;
+
+    T& operator[](unsigned int i);
+    const T& operator[](unsigned int i) const;
+
+
 //******************************************************************************
 protected:
 	//**************************************************************************
