@@ -611,6 +611,14 @@ namespace gVirtualXRay {
     }
 
 
+    //-------------------------------------------------------------------
+    inline void XRayRenderer::printSinogram(const std::string& aFileName)
+    //-------------------------------------------------------------------
+    {
+        printSinogram(aFileName.data());
+    }
+    
+
     //-----------------------------------------------------------------
     inline void XRayRenderer::printProjectionSet(const char* aFileName)
     //-----------------------------------------------------------------
@@ -635,6 +643,14 @@ namespace gVirtualXRay {
 #endif // HAS_ITK
     }
 
+
+    //------------------------------------------------------------------------
+    inline void XRayRenderer::printProjectionSet(const std::string& aFileName)
+    //------------------------------------------------------------------------
+    {
+        printProjectionSet(aFileName.data());
+    }
+    
 
     //--------------------------------------------
     inline void XRayRenderer::resetEnergyFluence()

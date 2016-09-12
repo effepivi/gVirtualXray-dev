@@ -636,6 +636,7 @@ public:
 
 
     void printSinogram(const char* aFileName);
+    void printSinogram(const std::string& aFileName);
 
 
 #ifdef HAS_ITK
@@ -661,6 +662,7 @@ public:
 
 
     void printProjectionSet(const char* aFileName);
+    void printProjectionSet(const std::string& aFileName);
 
 
 #ifdef HAS_ITK
