@@ -150,6 +150,8 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_max_corner(aPolygonMesh.m_max_corner),
         m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
         m_p_vertex_normal_set(aPolygonMesh.m_p_vertex_normal_set),
+        m_p_vertex_set(0),
+        m_p_index_set(0),
         m_number_of_indices(aPolygonMesh.m_number_of_indices),
         m_number_of_vertices(aPolygonMesh.m_number_of_vertices),
         m_index_data_type(aPolygonMesh.m_index_data_type),
@@ -163,18 +165,10 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         {
         copyVertexSet(aPolygonMesh.m_p_vertex_set);
         }
-    else
-        {
-        m_p_vertex_set = 0;
-        }
 
     if (aPolygonMesh.m_p_index_set)
         {
         copyIndexSet(aPolygonMesh.m_p_index_set);
-        }
-    else
-        {
-        m_p_index_set = 0;
         }
 }
 
