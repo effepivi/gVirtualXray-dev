@@ -30,7 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-PROJECT (gVirtualXRay-CommandLineTools)
+PROJECT (gvxrMonoEnergy)
 
 # Initialise some states by default ############################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
@@ -53,7 +53,7 @@ IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES (${GLFW3_INCLUDE_DIR})
     SET (requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
 ELSE (glfw3_FOUND)
-    MESSAGE (WARNING "GLFW3 not found, the demo (${PROJECT_NAME}) will be disable.")
+    MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)
 
 
@@ -63,11 +63,11 @@ IF (glfw3_FOUND)
     TARGET_LINK_LIBRARIES (gvxrMonoEnergy ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
     IF (gVirtualXRay_BINARY_DIR)
-         ADD_DEPENDENCIES (welsh_dragon_glfw   gVirtualXRay)
+         ADD_DEPENDENCIES (gvxrMonoEnergy   gVirtualXRay)
     ENDIF (gVirtualXRay_BINARY_DIR)
 
-    INSTALL (TARGETS gvxrMonoEnergy RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ COMPONENT demos)
+    INSTALL (TARGETS gvxrMonoEnergy RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT tools)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tools/ COMPONENT tools)
 
     SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 

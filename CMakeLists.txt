@@ -791,6 +791,10 @@ ELSE (BUILD_DOCUMENTATION)
 ENDIF(BUILD_DOCUMENTATION)
 
 
+# Tools ########################################################################
+ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/tools ${CMAKE_CURRENT_BINARY_DIR}/tools_bin)
+
+
 # Examples #####################################################################
 IF (BUILD_EXAMPLES)
     MESSAGE(STATUS "Build examples.")
