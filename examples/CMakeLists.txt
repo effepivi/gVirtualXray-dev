@@ -51,6 +51,7 @@ IF (USE_GLFW)
     add_subdirectory(AnatomicalData-glfw-moreRealistic)
     add_subdirectory(STL-File-glfw)
     add_subdirectory(Intersections)
+    ADD_SUBDIRECTORY(CommandLineTools)
 ENDIF ()
 
 IF (USE_GLUT)
