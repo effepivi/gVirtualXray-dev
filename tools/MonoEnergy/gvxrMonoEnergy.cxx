@@ -141,22 +141,8 @@ using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Defines
-//******************************************************************************
-#define PREFIX ".."
-
-
-//******************************************************************************
 //	Global variables
 //******************************************************************************
-#ifdef TOTO
-GLsizei g_current_main_window_width(600);
-GLsizei g_current_main_window_height(600);
-GLsizei g_original_main_window_width(g_current_main_window_width);
-GLsizei g_original_main_window_height(g_current_main_window_height);
-GLFWwindow* g_p_main_window_id(0);
-#endif
-
 GLFWwindow* g_p_window(0);
 
 GLfloat g_incident_energy(0.0);
@@ -173,11 +159,6 @@ std::vector<PolygonMesh> g_p_polygon_data_set;
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_renderer;
-
-clock_t g_start(0);
-int g_image_computed(0);
-double g_number_of_seconds(0);
-double g_fps(0);
 
 
 //******************************************************************************
@@ -218,14 +199,7 @@ void loadSTLFile(const std::string& aFileName, double aHUValue, double aUnit)
 	polygon_mesh.setHounsfieldValue(aHUValue);
 
     g_p_polygon_data_set.push_back(polygon_mesh);
-    
     g_xray_renderer.addInnerSurface(&(g_p_polygon_data_set.back()));
-    
-    std::cout <<
-    
-    (2.37482 - -4.47065) / 2.0 + -4.47065 << "  " << 
-    (-59.4256 - -74.9368) / 2.0 + -74.9368 << "  " <<
-    (36.0343 - 23.5909) / 2.0 + 23.5909 << "  " << std::endl;
 }
 
 
@@ -372,17 +346,6 @@ int main(int argc, char** argv)
             {
             output_file_name = ai.output_arg;
             }
-    
-/*
-
-        if (ai.long_option_given) {
-            std::cout << ai.long_option_arg << std::endl;
-        }
-
-        std::cout << ai.default_value_arg << std::endl;
-        std::cout << ai.console_flag << std::endl;
-*/
-
 
 	    // Set an error callback
 	    glfwSetErrorCallback(errorCallback);
@@ -501,11 +464,12 @@ int main(int argc, char** argv)
             }
     
 		// Update the X-ray image
-		updateXRayImage();
-
-        // Save the data
         std::cout << "Output file name:              " << output_file_name        << std::endl;
+        double start = glfwGetTime();
+        updateXRayImage();
         g_xray_renderer.printEnergyFluence(output_file_name);
+        double end = glfwGetTime();
+        std::cout << "Computing time in sec:         " << end - start << std::endl;
         }
 	// Catch exception if any
 	catch (const std::exception& error)
