@@ -192,6 +192,8 @@ SET (HXX_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.h
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.inl
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/framebufferObject.h
+	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.inl
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.h
    	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.inl
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.h
@@ -310,6 +312,16 @@ IF (NOT GZIP_FOUND)
     	MESSAGE(FATAL_ERROR "GZIP not found.")
     ENDIF (WIN32)
 ENDIF (NOT GZIP_FOUND)
+
+
+# FFTW3 #######################################################################
+FIND_LIBRARY(FFTW3_LIBRARIES NAMES fftw3 libfftw3 libfftw3_omp)
+IF (FFTW3_LIBRARIES)
+    SET (requiredLibs ${requiredLibs} ${FFTW3_LIBRARIES})
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FFTW")
+ELSE ()
+    MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
+ENDIF ()
 
 
 # GLEW ########################################################################
