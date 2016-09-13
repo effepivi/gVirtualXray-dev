@@ -103,7 +103,7 @@ public:
     *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
 	//--------------------------------------------------------------------------
-	CubeMesh(double aLength = 1.0 * cm);
+	CubeMesh(double aLength = 1.0 * cm, int anIndexDataType = 0);
 
 
 	//--------------------------------------------------------------------------
@@ -112,7 +112,7 @@ public:
     *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
 	//--------------------------------------------------------------------------
-	void create(double aLength = 1.0 * cm);
+	void create(double aLength = 1.0 * cm, int anIndexDataType = 0);
 };
 
 

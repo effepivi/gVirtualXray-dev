@@ -67,19 +67,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace gVirtualXRay {
 
 
-//---------------------------------------------------------
-template<typename T> CubeMesh<T>::CubeMesh(double aLength):
-//---------------------------------------------------------
+//-------------------------------------------------------------
+template<typename T> CubeMesh<T>::CubeMesh(double aLength,
+                                           int anIndexDataType):
+//-------------------------------------------------------------
 		PolygonMesh()
-//---------------------------------------------------------
+//-------------------------------------------------------------
 {
-	create(aLength);
+	create(aLength, anIndexDataType);
 }
 
 
-//-----------------------------------------------------------
-template<typename T> void CubeMesh<T>::create(double aLength)
-//-----------------------------------------------------------
+//----------------------------------------------------------------
+template<typename T> void CubeMesh<T>::create(double aLength,
+                                              int anIndexDataType)
+//----------------------------------------------------------------
 {
     // Reset the mesh
     reset();
@@ -136,70 +138,117 @@ template<typename T> void CubeMesh<T>::create(double aLength)
     p_vertex_set.push_back(bottom_near_right.getY());
     p_vertex_set.push_back(bottom_near_right.getZ());
 
-    // Store the current vertex
-    VEC3 current_vertex;
+    // Indices
+    std::vector<GLubyte> p_ubyte_index_set;
 
-    // Top face
-    std::vector<GLubyte> p_index_set;
+    p_ubyte_index_set.push_back(1);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(0);
 
-    p_index_set.push_back(1);
-    p_index_set.push_back(2);
-    p_index_set.push_back(0);
-
-    p_index_set.push_back(2);
-    p_index_set.push_back(1);
-    p_index_set.push_back(3);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(1);
+    p_ubyte_index_set.push_back(3);
 
     // Bottom face
-    p_index_set.push_back(6);
-    p_index_set.push_back(5);
-    p_index_set.push_back(4);
+    p_ubyte_index_set.push_back(6);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(4);
 
-    p_index_set.push_back(5);
-    p_index_set.push_back(6);
-    p_index_set.push_back(7);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(6);
+    p_ubyte_index_set.push_back(7);
 
     // Front face
-    p_index_set.push_back(5);
-    p_index_set.push_back(3);
-    p_index_set.push_back(1);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(3);
+    p_ubyte_index_set.push_back(1);
 
-    p_index_set.push_back(3);
-    p_index_set.push_back(5);
-    p_index_set.push_back(7);
+    p_ubyte_index_set.push_back(3);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(7);
 
     // Back face
-    p_index_set.push_back(2);
-    p_index_set.push_back(4);
-    p_index_set.push_back(0);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(4);
+    p_ubyte_index_set.push_back(0);
 
-    p_index_set.push_back(4);
-    p_index_set.push_back(2);
-    p_index_set.push_back(6);
+    p_ubyte_index_set.push_back(4);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(6);
 
     // Left face
-    p_index_set.push_back(5);
-    p_index_set.push_back(0);
-    p_index_set.push_back(4);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(0);
+    p_ubyte_index_set.push_back(4);
 
-    p_index_set.push_back(0);
-    p_index_set.push_back(5);
-    p_index_set.push_back(1);
+    p_ubyte_index_set.push_back(0);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(1);
 
     // Right face
-    p_index_set.push_back(2);
-    p_index_set.push_back(7);
-    p_index_set.push_back(6);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(7);
+    p_ubyte_index_set.push_back(6);
 
-    p_index_set.push_back(7);
-    p_index_set.push_back(2);
-    p_index_set.push_back(3);
+    p_ubyte_index_set.push_back(7);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(3);
 
-    setInternalData(GL_TRIANGLES,
-            &p_vertex_set,
-            &p_index_set,
-            false,
-            GL_STATIC_DRAW);
+    switch (anIndexDataType)
+        {
+        case GL_UNSIGNED_INT:
+            {
+                std::vector<GLuint> p_uint_index_set;
+
+                for (std::vector<GLubyte>::const_iterator ite(p_ubyte_index_set.begin());
+                        ite != p_ubyte_index_set.end();
+                        ++ite)
+                {
+                    p_uint_index_set.push_back(*ite);
+                }
+
+                setInternalData(GL_TRIANGLES,
+                        &p_vertex_set,
+                        &p_uint_index_set,
+                        false,
+                        GL_STATIC_DRAW);
+            }
+            break;
+
+        case GL_UNSIGNED_SHORT:
+            {
+                std::vector<GLushort> p_ushort_index_set;
+
+                for (std::vector<GLubyte>::const_iterator ite(p_ubyte_index_set.begin());
+                        ite != p_ubyte_index_set.end();
+                        ++ite)
+                {
+                    p_ushort_index_set.push_back(*ite);
+                }
+
+                setInternalData(GL_TRIANGLES,
+                        &p_vertex_set,
+                        &p_ushort_index_set,
+                        false,
+                        GL_STATIC_DRAW);
+            }
+            break;
+
+        case 0:
+        case GL_UNSIGNED_BYTE:
+            {
+                setInternalData(GL_TRIANGLES,
+                        &p_vertex_set,
+                        &p_ubyte_index_set,
+                        false,
+                        GL_STATIC_DRAW);
+            }
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
 }
 
 } // namespace gVirtualXRay
