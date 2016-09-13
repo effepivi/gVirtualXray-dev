@@ -52,6 +52,7 @@ IF (USE_GLFW)
     ADD_SUBDIRECTORY (STL-File-glfw)
     ADD_SUBDIRECTORY (Intersections)
     ADD_SUBDIRECTORY (IterativeTomographyReconstruction)
+    ADD_SUBDIRECTORY (FilteredBackProjection)
 ENDIF ()
 
 IF (USE_GLUT)
