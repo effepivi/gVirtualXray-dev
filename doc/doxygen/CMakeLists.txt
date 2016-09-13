@@ -33,16 +33,16 @@
 FIND_PACKAGE(LATEX)
 IF (LATEX_FOUND)
     FILE(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/doc/latex)
-    FILE(COPY ${PROJECT_SOURCE_DIR}/../doc/latex/xtab.sty    DESTINATION ${PROJECT_BINARY_DIR}/doc/latex)
-    FILE(COPY ${PROJECT_SOURCE_DIR}/../doc/latex/sectsty.sty DESTINATION ${PROJECT_BINARY_DIR}/doc/latex)
-    FILE(COPY ${PROJECT_SOURCE_DIR}/../doc/latex/tocloft.sty DESTINATION ${PROJECT_BINARY_DIR}/doc/latex)
+    FILE(COPY ${PROJECT_SOURCE_DIR}/doc/latex/xtab.sty    DESTINATION ${PROJECT_BINARY_DIR}/doc/latex)
+    FILE(COPY ${PROJECT_SOURCE_DIR}/doc/latex/sectsty.sty DESTINATION ${PROJECT_BINARY_DIR}/doc/latex)
+    FILE(COPY ${PROJECT_SOURCE_DIR}/doc/latex/tocloft.sty DESTINATION ${PROJECT_BINARY_DIR}/doc/latex)
 ENDIF (LATEX_FOUND)
 
 
 FIND_PACKAGE(Doxygen)
 
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../doc/doxygen/doxygen.config.in
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/doxygen/doxygen.config.in
                  ${PROJECT_BINARY_DIR}/doc/doxygen/doxygen.config)
 
 ADD_CUSTOM_TARGET(Documentation 
