@@ -30,49 +30,50 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-project(gVirtualXRay-demos)
+PROJECT (gVirtualXRay-demos)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
-if(NOT gVirtualXRay_BINARY_DIR)
-    find_package(gVirtualXRay REQUIRED)
-    include(${gVirtualXRay_USE_FILE})
-else()
-    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
-    find_package(gVirtualXRay REQUIRED)
-endif()
+IF (NOT gVirtualXRay_BINARY_DIR)
+    FIND_PACKAGE (gVirtualXRay REQUIRED)
+    INCLUDE (${gVirtualXRay_USE_FILE})
+ELSE ()
+    SET (gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
+    FIND_PACKAGE (gVirtualXRay REQUIRED)
+ENDIF ()
 
 IF (USE_FLTK)
-    add_subdirectory(GUI-FLTK)
+    ADD_SUBDIRECTORY (GUI-FLTK)
 ENDIF ()
 
 IF (USE_GLFW)
-    add_subdirectory(AnatomicalData-glfw)
-    add_subdirectory(AnatomicalData-glfw-moreRealistic)
-    add_subdirectory(STL-File-glfw)
-    add_subdirectory(Intersections)
+    ADD_SUBDIRECTORY (AnatomicalData-glfw)
+    ADD_SUBDIRECTORY (AnatomicalData-glfw-moreRealistic)
+    ADD_SUBDIRECTORY (STL-File-glfw)
+    ADD_SUBDIRECTORY (Intersections)
+    ADD_SUBDIRECTORY (IterativeTomographyReconstruction)
 ENDIF ()
 
 IF (USE_GLUT)
-    add_subdirectory(STL-File-glut)
+    ADD_SUBDIRECTORY (STL-File-glut)
 ENDIF ()
 
 
 IF (USE_QT4)
-    add_subdirectory(AnatomicalData-qt4)
-    add_subdirectory(AnatomicalData-qt4-moreRealistic)
+    ADD_SUBDIRECTORY (AnatomicalData-qt4)
+    ADD_SUBDIRECTORY (AnatomicalData-qt4-moreRealistic)
 ENDIF ()
 
 IF (USE_QT5)
-    add_subdirectory(AnatomicalData-qt5)
-    #add_subdirectory(AnatomicalData-qt5-moreRealistic)
+    ADD_SUBDIRECTORY (AnatomicalData-qt5)
+    #ADD_SUBDIRECTORY (AnatomicalData-qt5-moreRealistic)
 ENDIF ()
 
 
-##add_subdirectory(SimpleBackProjection)
-##add_subdirectory(Tomography)
-##add_subdirectory(Iso-Surfaces)
-##add_subdirectory(VisualArts)
+##ADD_SUBDIRECTORY (SimpleBackProjection)
+##ADD_SUBDIRECTORY (Tomography)
+##ADD_SUBDIRECTORY (Iso-Surfaces)
+##ADD_SUBDIRECTORY (VisualArts)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
