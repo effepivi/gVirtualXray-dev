@@ -1340,6 +1340,60 @@ PolygonMesh& PolygonMesh::operator-=(const PolygonMesh& aPolygonMesh)
 }
 
 
+//----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator+(const VEC3& aTranslationVector) const
+//----------------------------------------------------------------------
+{
+    // Copy the current instance into a new polygon mesh
+    PolygonMesh new_polygon_mesh(*this);
+
+    // Translate all the vertices
+    new_polygon_mesh.translate(aTranslationVector);
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator-(const VEC3& aTranslationVector) const
+//----------------------------------------------------------------------
+{
+    // Copy the current instance into a new polygon mesh
+    PolygonMesh new_polygon_mesh(*this);
+
+    // Translate all the vertices
+    new_polygon_mesh.translate(-aTranslationVector);
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator+=(const VEC3& aTranslationVector)
+//------------------------------------------------------------------
+{
+    // Translate all the vertices
+    translate(aTranslationVector);
+
+    // Return the current instance
+    return (*this);
+}
+
+
+//------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
+//------------------------------------------------------------------
+{
+    // Translate all the vertices
+    translate(-aTranslationVector);
+
+    // Return the current instance
+    return (*this);
+}
+
+
 //----------------------------------
 void PolygonMesh::normaliseNormals()
 //----------------------------------

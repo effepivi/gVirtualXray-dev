@@ -1006,6 +1006,46 @@ public:
     virtual PolygonMesh& operator-=(const PolygonMesh& aPolygonMesh);
 
 
+    //--------------------------------------------------------------------------
+    /// operator+.
+    /**
+     *  @param aTranslationVector:    the translation vector
+     *  @return the new PolygonMesh
+     */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh operator+(const VEC3& aTranslationVector) const;
+
+
+    //--------------------------------------------------------------------------
+    /// operator-.
+    /**
+     *  @param aTranslationVector:    the translation vector
+     *  @return the new PolygonMesh
+     */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh operator-(const VEC3& aTranslationVector) const;
+
+
+    //--------------------------------------------------------------------------
+    /// operator+=.
+    /**
+     *  @param aTranslationVector:    the translation vector
+     *  @return the new PolygonMesh
+     */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh& operator+=(const VEC3& aTranslationVector);
+
+
+    //--------------------------------------------------------------------------
+    /// operator-=.
+    /**
+     *  @param aTranslationVector:    the translation vector
+     *  @return the new PolygonMesh
+     */
+    //--------------------------------------------------------------------------
+    virtual PolygonMesh& operator-=(const VEC3& aTranslationVector);
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
