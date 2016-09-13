@@ -136,7 +136,6 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayRenderer.cxx
 
 	# Graphics
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/CubeMesh.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/framebufferObject.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Image.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImplicitSurface.cxx
@@ -699,11 +698,11 @@ option(BUILD_VALIDATION "Build validation tests." ON)
 
 
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    MESSAGE( "64 bits compiler detected" )
+    #MESSAGE( "64 bits compiler detected" )
     SET( EX_PLATFORM 64 )
     SET( EX_PLATFORM_NAME "x64" )
 else( CMAKE_SIZEOF_VOID_P EQUAL 8 ) 
-    MESSAGE( "32 bits compiler detected" )
+    #MESSAGE( "32 bits compiler detected" )
     SET( EX_PLATFORM 32 )
     SET( EX_PLATFORM_NAME "x86" )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
