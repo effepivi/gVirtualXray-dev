@@ -73,6 +73,10 @@
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef __OutOfBoundsException_h
+#include "gVirtualXRay/OutOfBoundsException.h"
+#endif
+
 #ifndef __OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
@@ -174,6 +178,136 @@ template<typename T> Image<T>::~Image()
 }
 
 
+//-----------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::getROI(unsigned int i,
+                                               unsigned int j,
+                                               unsigned int k,
+                                               unsigned int aWidth,
+                                               unsigned int aHeight,
+                                               unsigned int aDepth) const
+//-----------------------------------------------------------------------
+{
+    // Create a black image
+    Image roi(aWidth, aHeight, aDepth);
+
+    // Process every slice of the ROI
+    for (unsigned z(0); z < aDepth; ++z)
+    {
+        // Process every row of the ROI
+        for (unsigned y(0); y < aHeight; ++y)
+        {
+            // Process every column of the ROI
+            for (unsigned x(0); x < aWidth; ++x)
+            {
+                unsigned int index_i(x + i);
+                unsigned int index_j(y +j);
+                unsigned int index_k(z +k);
+
+                // The pixel index is not valid
+                if ((index_i >= m_width) ||
+                        (index_j >= m_height) ||
+                        (index_k >= m_number_of_slices))
+                {
+                    throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+                }
+
+                // Get the pixel intensity from the current instance
+                float intensity(getPixel(index_i, index_j, index_k));
+
+                // Set the pixel of the ROI
+                roi.setPixel(x, y, z, intensity);
+            }
+        }
+    }
+
+    return (roi);
+}
+
+
+//----------------------------------------------------------
+template<typename T> void Image<T>::setPixel(unsigned int i,
+                                             unsigned int j,
+                                             unsigned int k,
+                                             T aValue)
+//----------------------------------------------------------
+{
+    // The pixel index is not valid
+    if ((i >= m_width) ||
+            (j >= m_height) ||
+            (k >= m_number_of_slices))
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    m_p_image[k * m_width * m_height + j * m_width + i] = aValue;
+}
+
+
+//--------------------------------------------------------
+template<typename T> T& Image<T>::getPixel(unsigned int i,
+                                           unsigned int j,
+                                           unsigned int k)
+//--------------------------------------------------------
+{
+    // The pixel index is not valid
+    if ((i >= m_width) ||
+            (j >= m_height) ||
+            (k >= m_number_of_slices))
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    return (m_p_image[k * m_width * m_height + j * m_width + i]);
+}
+
+
+//--------------------------------------------------------------------
+template<typename T> const T& Image<T>::getPixel(unsigned int i,
+                                                 unsigned int j,
+                                                 unsigned int k) const
+//--------------------------------------------------------------------
+{
+    // The pixel index is not valid
+    if ((i >= m_width) ||
+            (j >= m_height) ||
+            (k >= m_number_of_slices))
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    return (m_p_image[k * m_width * m_height + j * m_width + i]);
+}
+
+
+/*
+template<typename T> T& Image<T>::operator[](unsigned anIndex)
+{}
+
+
+template<typename T> const T& Image<T>::operator[](unsigned anIndex) const
+{}
+*/
+
+//----------------------------------------------------------
+template<typename T> T& Image<T>::operator()(unsigned int i,
+                                             unsigned int j,
+                                             unsigned int k)
+//----------------------------------------------------------
+{
+    return (getPixel(i, j, k));
+}
+
+
+//----------------------------------------------------------------------
+template<typename T> const T& Image<T>::operator()(unsigned int i,
+                                                   unsigned int j,
+                                                   unsigned int k) const
+//----------------------------------------------------------------------
+{
+    return (getPixel(i, j, k));
+}
+
+
 //-------------------
 template<typename T> void Image<T>::destroy()
 //-------------------
@@ -266,6 +400,14 @@ template<typename T> unsigned int Image<T>::getHeight() const
 //-----------------------------------
 {
     return (m_height);
+}
+
+
+//----------------------------------------------------------
+template<typename T> unsigned int Image<T>::getDepth() const
+//----------------------------------------------------------
+{
+    return (m_number_of_slices);
 }
 
 
@@ -1296,6 +1438,41 @@ template<typename T> double Image<T>::computeNCC(const Image& anImage) const
     
     return (ncc / (m_width * m_height * standard_deviation_product));
 }
+
+
+
+template<typename T> FFT<T> Image<T>::getFFT() const
+{
+    return (FFT<T>::computeFFT(*this));
+}
+
+
+template<typename T> Image<T> Image<T>::transpose() const
+{
+    Image temp(m_height, m_width, m_number_of_slices);
+
+    for (unsigned int k(0); k < m_number_of_slices; ++k)
+    {
+        for (unsigned int j(0); j < m_height; ++j)
+        {
+            for (unsigned int i(0); i < m_width; ++i)
+            {
+                temp(j, i, k) = getPixel(i, j, k);
+            }
+        }
+    }
+
+    return (temp);
+}
+
+
+
+
+
+
+
+
+
 
 
 #ifdef HAS_GDCM

@@ -41,6 +41,12 @@
 namespace gVirtualXRay {
 
 
+//******************************************************************************
+//  Class declaration
+//******************************************************************************
+template<typename T> class FFT;
+
+
 //==============================================================================
 /**
 *   @class  Image
@@ -104,6 +110,61 @@ public:
     
     
     //------------------------------------------------------------------------
+    /// Compute a region of interest (ROI).
+    /**
+    * @param i: the position of the first pixel of the ROI along the horizontal axis
+    * @param j: the position of the first pixel of the ROI along the vertical axis
+    * @param k: the position of the first pixel of the ROI along the depth axis
+    * @param aWidth: the width of the ROI (in number of pixels)
+    * @param aHeight: the height of the ROI (in number of pixels)
+    * @param aDepth: the depth of the ROI (in number of pixels)
+    * @return the ROI
+    */
+    //------------------------------------------------------------------------
+    Image getROI(unsigned int i,
+            unsigned int j,
+            unsigned int k,
+            unsigned int aWidth,
+            unsigned int aHeight,
+            unsigned int aDepth) const;
+
+
+    //------------------------------------------------------------------------
+    /// Set a pixel.
+    /**
+    * @param i: the position of the pixel along the horizontal axis
+    * @param j: the position of the pixel along the vertical axis
+    * @param aValue: the new pixel value
+    */
+    //------------------------------------------------------------------------
+    void setPixel(unsigned int i, unsigned int j, unsigned int k, T aValue);
+
+
+    //------------------------------------------------------------------------
+    /// Accessor on a pixel value.
+    /**
+    * @param i: the position of the pixel along the horizontal axis
+    * @param j: the position of the pixel along the vertical axis
+    * @return the pixel value
+    */
+    //------------------------------------------------------------------------
+    T& getPixel(unsigned int i, unsigned int j, unsigned int k = 0);
+    const T& getPixel(unsigned int i, unsigned int j, unsigned int k = 0) const;
+
+
+    //float& operator[](unsigned anIndex);
+
+
+    //const float& operator[](unsigned anIndex) const;
+
+
+    T& operator()(unsigned int i, unsigned int j, unsigned int k);
+
+
+    const T& operator()(unsigned int i, unsigned int j, unsigned int k) const;
+
+
+    //------------------------------------------------------------------------
     /// Assignment operator (also called copy operator).
     /**
     * @param anImage: the image to copy
@@ -164,6 +225,15 @@ public:
     //------------------------------------------------------------------------
     unsigned int getHeight() const;
     
+
+    //------------------------------------------------------------------------
+    /// Number of pixels along the Z axis
+    /**
+    * @return the depth
+    */
+    //------------------------------------------------------------------------
+    unsigned int getDepth() const;
+
 
     void setSpacing(const VEC3& aPixelSize);
 
@@ -418,6 +488,11 @@ public:
     double computeSAE(const Image& anImage) const;
     double computeNCC(const Image& anImage) const;
     
+
+    FFT<T> getFFT() const;
+
+    Image transpose() const;
+
 
 //******************************************************************************
 private:
