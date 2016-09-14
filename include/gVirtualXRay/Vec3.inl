@@ -382,7 +382,7 @@ template<typename T> T& Vec3<T>::operator()(unsigned int i)
         }
     else
         {
-        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
         }
 }
 
@@ -405,7 +405,7 @@ template<typename T> const T& Vec3<T>::operator()(unsigned int i) const
         }
     else
         {
-        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
         }
 }
 
@@ -428,7 +428,7 @@ template<typename T> T& Vec3<T>::operator[](unsigned int i)
         }
     else
         {
-        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
         }
 }
 
@@ -451,7 +451,7 @@ template<typename T> const T& Vec3<T>::operator[](unsigned int i) const
         }
     else
         {
-        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
         }
 }
 
