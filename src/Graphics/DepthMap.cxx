@@ -29,6 +29,9 @@
 
 #include "gVirtualXRay/DepthMap.h"
 
+#include "depth_map_gl2.frag.h"
+#include "depth_map_gl2.vert.h"
+
 #include "depth_map_gl3.frag.h"
 #include "depth_map_gl3.vert.h"
 
@@ -105,15 +108,15 @@ void DepthMap::initialize()
     {
         z_lib_return_code_vertex   = inflate(g_depth_map_gl3_vert, sizeof(g_depth_map_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_depth_map_gl3_frag, sizeof(g_depth_map_gl3_frag), &p_fragment_shader);
+        m_depth_shader.setLabels("depth_map_gl3.vert", "depth_map_gl3.frag");
     }
     // Fall back to OpenGL 2.x
     else
     {
-        throw "Not implemented";
-        //z_lib_return_code_vertex   = inflate(g_depth_map_gl2_vert, sizeof(g_depth_map_gl2_vert),   &p_vertex_shader);
-        //z_lib_return_code_fragment = inflate(g_depth_map_gl2_frag, sizeof(g_depth_map_gl2_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(g_depth_map_gl2_vert, sizeof(g_depth_map_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_depth_map_gl2_frag, sizeof(g_depth_map_gl2_frag), &p_fragment_shader);
+        m_depth_shader.setLabels("depth_map_gl2.vert", "depth_map_gl2.frag");
     }
-
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -124,7 +127,6 @@ void DepthMap::initialize()
     {
     	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
-    m_depth_shader.setLabels("depth.vert", "depth.frag");
     m_depth_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
