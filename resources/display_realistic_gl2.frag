@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  ********************************************************************************
  *
- *	@file		display_gl3.frag
+ *	@file		display_realistic_gl2.frag
  *
  *	@brief		Fragment shader to display 3D objects with Phong shading.
  *
@@ -71,6 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //step for bump evaluation 
 const float STEP=0.02;
+const float EPSILON = 1.0e-5;
 
 
 //******************************************************************************
@@ -116,7 +117,7 @@ float repeatCoordinate(float x)
 //-----------------------------------
 {
 	float res = x - floor(x);
-	if ((int(floor(x)) % 2) == 1)
+	if (abs(mod(floor(x), 2.0) - 1.0) < EPSILON)
 	{
 		res = 1.0 - res;
 	}
@@ -203,7 +204,7 @@ void main(void)
 		shadow_changed_coord = shadow_changed_coord*0.5 + 0.5;
 		    
     	//visibility equals 0.3 if the fragment if in the shadow and 1 if not (if it is on the back of the face, it is in the shadow).
-       	float visibility = texture2D(g_shadow_map, vec3(shadow_changed_coord))*clamp(cosLightNormal-0.1, 0., 1.);
+       	float visibility = shadow2D(g_shadow_map, vec3(shadow_changed_coord)).r * clamp(cosLightNormal - 0.1, 0., 1.);
 		visibility = visibility*0.7+0.4;
 	      
 	  	vec3 global_ambient;
@@ -227,7 +228,7 @@ void main(void)
 
 	    vec3 specular = vec3(material_specular * light_specular * pow(max(dot(g_view_direction, reflect(light_direction, normal_vector)), 0.), material_shininess));
 	
-    	frag_colour = visibility*vec4(global_ambient+ambient + diffuse + specular, 1.);
+    	gl_FragColor = visibility * vec4(global_ambient+ambient + diffuse + specular, 1.);
     }
     else
     {

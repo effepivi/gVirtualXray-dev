@@ -227,7 +227,7 @@ float turbulence(vec3 Q)
 //------------------------
 {
 	float value = 0;
-	for (float f=MINFREQ; f<MAXFREQ;f*2)
+	for (float f=MINFREQ; f<MAXFREQ;f*=2)
 	{
 		value += abs(noise(Q*f))/f;
 		return value*2*MINFREQ+0.5;
