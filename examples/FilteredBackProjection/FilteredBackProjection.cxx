@@ -413,6 +413,40 @@ int main(int argc, char** argv)
 {
 	try
 	{
+
+        double first_angle(0);
+        double angle_step(1);
+        double last_angle(180);
+
+        Image<float> phantom;
+        Image<float> sinogram;
+	    std::string aPhantom("hot_rodes");
+	    std::string prefix("../data/");
+
+        std::cout << "Phantom:\t" << aPhantom << std::endl;
+        phantom.loadASCII("../data/phantom-hot_rodes.mat");
+        std::cout << "\t\t\tmin:\t" << phantom.getMinValue() << "\tmax:\t" << phantom.getMaxValue() << "\taverage:\t" << phantom.getAverage() << std::endl;
+
+        std::cout << "\t\tsinogram" << std::endl;
+        sinogram.loadASCII(prefix + "sinogram-" + aPhantom + ".mat");
+        (sinogram.normalized() * 255).savePGM(prefix + "sinogram-" + aPhantom + ".pgm");
+        std::cout << "\t\t\tmin:\t" << sinogram.getMinValue() << "\tmax:\t" << sinogram.getMaxValue() << "\taverage:\t" << sinogram.getAverage() << std::endl;
+
+/*        std::cout << "\t\tSBP" << std::endl;
+        SBP = sinogram.simpleBackProjection(aFirstAngle, anAngleStep, aLastAngle, prefix + "SBP-" + aPhantom + "-angles").transpose();
+        SBP.saveASCII(prefix + "SBP-" + aPhantom + ".mat");
+        (SBP.normalized() * 255).savePGM(prefix + "SBP-" + aPhantom + ".pgm");
+        std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
+
+        std::cout << "\t\tFBP" << std::endl;
+        FBP = sinogram.filteredBackProjection(aFirstAngle, anAngleStep, aLastAngle, "hamming", 1.0, prefix + "FBP-" + aPhantom + "-angles").transpose();
+        FBP.saveASCII(prefix + "FBP-" + aPhantom + ".mat");
+        (FBP.normalized() * 255).savePGM(prefix + "FBP-" + aPhantom + ".pgm");
+        std::cout << "\t\t\tmin:\t" << FBP.getMinValue() << "\tmax:\t" << FBP.getMaxValue() << "\taverage:\t" << FBP.getAverage() << std::endl;
+        */
+
+        return (0);
+
 	    // Initialize random seed
 	    srand(time(0));
 
