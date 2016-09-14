@@ -24,7 +24,6 @@
 //******************************************************************************
 #include <string>
 
-
 #ifndef __Image_h
 #include "gVirtualXRay/Image.h"
 #endif

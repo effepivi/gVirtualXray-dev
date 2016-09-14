@@ -1724,7 +1724,7 @@ template<typename T> Image<T> Image<T>::operator/(const Image<T>& anImage) const
 
                 if (std::abs(pixel_value) < EPSILON)
                 {
-                    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
+                    //throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
                 }
                 else
                 {
@@ -1955,6 +1955,225 @@ template<typename T> Image<T> Image<T>::operator!() const
 
     // Return the result
     return (temp);
+}
+
+
+//------------------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::setCanvasSize(unsigned int aNewWidth,
+                                                      unsigned int aNewHeight,
+                                                      unsigned int aNewNumberOfSlices) const
+//------------------------------------------------------------------------------------------
+{
+    Image<T> temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
+
+    int x_offset((int(aNewWidth)  - int(m_width))  / 2);
+    int y_offset((int(aNewHeight) - int(m_height)) / 2);
+    int z_offset((int(aNewNumberOfSlices) - int(m_number_of_slices)) / 2);
+
+    for (int k(0); k < m_number_of_slices; ++k)
+    {
+        for (int j(0); j < m_height; ++j)
+        {
+            for (int i(0); i < m_width; ++i)
+            {
+                if (i + x_offset >= 0 && i + x_offset < aNewWidth &&
+                    j + y_offset >= 0 && j + y_offset < aNewHeight &&
+                    k + z_offset >= 0 && k + z_offset < aNewNumberOfSlices)
+                {
+                    temp(i + x_offset, j + y_offset, k + z_offset) = getPixel(i, j, k);
+                }
+            }
+        }
+    }
+
+    return (temp);
+}
+
+
+//-----------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
+                                               unsigned int aNewHeight,
+                                               unsigned int aNewNumberOfSlices) const
+//-----------------------------------------------------------------------------------
+{
+    if (aNewNumberOfSlices != m_number_of_slices)
+    {
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+    }
+
+    Image temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
+
+    for (unsigned k(0); k < aNewNumberOfSlices; ++k)
+    {
+        for (unsigned j(0); j < aNewHeight; ++j)
+        {
+            for (unsigned i(0); i < aNewWidth; ++i)
+            {
+            
+                double x = double(i) * (m_width  - 1) / (aNewWidth  - 1);
+                double y = double(j) * (m_height - 1) / (aNewHeight - 1);
+            
+                int x1 = floor(x);
+                int y1 = floor(y);
+            
+                if (x1 < 0) x1 = 0;
+                if (y1 < 0) y1 = 0;
+
+                int x2 = x1 + 1.0;
+                int y2 = y1 + 1.0;
+
+                if (x2 >= m_width)
+                {
+                    x2 = m_width  - 1;
+                }
+
+                if (y2 >= m_height)
+                {
+                    y2 = m_height - 1;
+                }
+
+                double c11 = getPixel(x1, y1, k);
+                double c12 = getPixel(x1, y2, k);
+                double c22 = getPixel(x2, y2, k);
+                double c21 = getPixel(x2, y1, k);
+
+                double cx1 = c11;
+                double cx2 = c12;
+                if (x1 != x2)
+                {
+                    cx1 += (c21 - c11) * (x - x1) / (x2 - x1);
+                    cx2 += (c22 - c12) * (x - x1) / (x2 - x1);
+                }
+
+                double cy  = cx1;
+                if (y1 != y2)
+                {
+                    cy += (cx2 - cx1) * (y - y1) / (y2 - y1);
+                }
+        
+                temp(i, j, k) = cy;
+            
+               // temp(i, j) = getPixel(i * m_width / aNewWidth, j * m_height / aNewHeight);
+            }
+        }
+    }
+
+    return (temp);
+}
+
+
+//--------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::rotate(float anAngleInDegrees) const
+//--------------------------------------------------------------------------
+{
+    Image<T> temp(m_width, m_height, m_number_of_slices);
+
+    float angle_in_radian(anAngleInDegrees * M_PI / 180);
+    
+    //double center_x(0.5 * (m_width + 1) /*- 1*/);
+    //double center_y(0.5 * (m_height + 1) /*- 1*/);
+    
+    for (int k(0); k < m_number_of_slices; ++k)
+    {
+        for (unsigned j(0); j < m_height; ++j)
+        {
+            for (unsigned i(0); i < m_width; ++i)
+            {
+                double translated_i(-0.5 + double(i - 0) / double(m_width - 1));
+                //double translated_i(i);
+                //translated_i -= center_x;
+            
+                double translated_j(-0.5 + double(j - 0) / double(m_height - 1));
+                //double translated_j(j);
+                //translated_j -= center_y;
+            
+                double x(translated_i * std::cos(angle_in_radian) + translated_j * std::sin(angle_in_radian));
+                double y(translated_j * std::cos(angle_in_radian) - translated_i * std::sin(angle_in_radian));
+
+                x += 0.5;// * m_width;
+                y += 0.5;// * m_height;
+
+                x *= m_width - 1;
+                y *= m_height - 1;
+                
+                int x1 = floor(x);
+                int y1 = floor(y);
+            
+                //if (x1 < 0) x1 = 0;
+                //if (y1 < 0) y1 = 0;
+
+                int x2 = x1 + 1.0;
+                int y2 = y1 + 1.0;
+
+                //if (x2 >= m_width)  x2 = m_width  - 1;
+                //if (y2 >= m_height) y2 = m_height - 1;
+
+                if (x1 >= 0 && x1 < m_width &&
+                    x2 >= 0 && x2 < m_width &&
+                    y1 >= 0 && y1 < m_height &&
+                    y2 >= 0 && y2 < m_height)
+                {
+                    double c11 = getPixel(x1, y1);
+                    double c12 = getPixel(x1, y2);
+                    double c22 = getPixel(x2, y2);
+                    double c21 = getPixel(x2, y1);
+
+                    double cx1 = c11 + (c21 - c11) * (x - x1) / (x2 - x1);
+                    double cx2 = c12 + (c22 - c12) * (x - x1) / (x2 - x1);
+                
+                    double cy  = cx1 + (cx2 - cx1) * (y - y1) / (y2 - y1);
+                
+                    temp(i, j, k) = cy;
+                }
+            }
+        }
+    }
+
+    return (temp);
+}
+
+
+//--------------------------------------------------------------------------------
+template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
+                                                          double anAngleStep,
+                                                          double aLastAngle) const
+//--------------------------------------------------------------------------------
+{
+    unsigned int square_width(4 + std::max(m_width, m_height));
+    square_width *= square_width;
+    
+    unsigned int sinogram_width(floor(std::sqrt(2.0 * square_width)));
+    
+    
+    //unsigned int sinogram_width(floor(double(std::max(m_width, m_height)) / 2.0 * (2.0 * std::sqrt(2.0))));
+    unsigned int sinogram_height(1);
+    if (std::abs(anAngleStep) > EPSILON && std::abs(aLastAngle - aFirstAngle) > EPSILON)
+    {
+        sinogram_height += floor((aLastAngle - aFirstAngle) / anAngleStep);
+    }
+    
+    double scaling_factor(double(sinogram_width) / double(m_width));
+    
+    Sinogram<T> sinogram(sinogram_width, sinogram_height, m_number_of_slices);
+    
+    Image<T> padded_image(setCanvasSize(sinogram_width, scaling_factor * m_height, m_number_of_slices));
+    
+    double angle(aFirstAngle);
+    for (unsigned int angle_id(0); angle_id < sinogram_height; ++angle_id, angle += anAngleStep)
+    {
+        Image<T> rotated_image(padded_image.rotate(angle));
+    
+        for (int j(0); j < rotated_image.m_height; ++j)
+        {
+            for (int i(0); i < rotated_image.m_width; ++i)
+            {
+                for (unsigned int k(0); k < m_number_of_slices; ++k)
+                sinogram(i, angle_id, k) += rotated_image(i, j, k);
+            }
+        }
+    }
+
+    return (sinogram);
 }
 
 

@@ -152,6 +152,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/FFT.h"
 #endif
 
+#ifndef __Sinogram_h
+#include "gVirtualXRay/Sinogram.h"
+#endif
+
 #ifndef __CubeeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
@@ -167,8 +171,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "display_image_gl3.frag.h"
 #include "display_image_gl3.vert.h"
-
-#include "buildCube.h"
 
 
 //******************************************************************************
@@ -413,13 +415,19 @@ int main(int argc, char** argv)
 {
 	try
 	{
-
         double first_angle(0);
         double angle_step(1);
         double last_angle(180);
 
         Image<float> phantom;
-        Image<float> sinogram;
+        Sinogram<float> sinogram;
+        Image<float> SBP;
+        Image<float> FBP;
+        Image<float> ART_reconstruction;
+        Image<float> MART_reconstruction;
+        Image<float> SIRT_reconstruction;
+
+
 	    std::string aPhantom("hot_rodes");
 	    std::string prefix("../data/");
 
@@ -428,22 +436,37 @@ int main(int argc, char** argv)
         std::cout << "\t\t\tmin:\t" << phantom.getMinValue() << "\tmax:\t" << phantom.getMaxValue() << "\taverage:\t" << phantom.getAverage() << std::endl;
 
         std::cout << "\t\tsinogram" << std::endl;
-        sinogram.loadASCII(prefix + "sinogram-" + aPhantom + ".mat");
+        sinogram = phantom.radonTransform(first_angle, angle_step, last_angle);
         (sinogram.normalized() * 255).savePGM(prefix + "sinogram-" + aPhantom + ".pgm");
         std::cout << "\t\t\tmin:\t" << sinogram.getMinValue() << "\tmax:\t" << sinogram.getMaxValue() << "\taverage:\t" << sinogram.getAverage() << std::endl;
-
-/*        std::cout << "\t\tSBP" << std::endl;
-        SBP = sinogram.simpleBackProjection(aFirstAngle, anAngleStep, aLastAngle, prefix + "SBP-" + aPhantom + "-angles").transpose();
+/*
+        std::cout << "\t\tSBP" << std::endl;
+        SBP = sinogram.simpleBackProjection(first_angle, angle_step, last_angle, prefix + "SBP-" + aPhantom + "-angles").transpose();
         SBP.saveASCII(prefix + "SBP-" + aPhantom + ".mat");
         (SBP.normalized() * 255).savePGM(prefix + "SBP-" + aPhantom + ".pgm");
         std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
 
         std::cout << "\t\tFBP" << std::endl;
-        FBP = sinogram.filteredBackProjection(aFirstAngle, anAngleStep, aLastAngle, "hamming", 1.0, prefix + "FBP-" + aPhantom + "-angles").transpose();
+        FBP = sinogram.filteredBackProjection(first_angle, angle_step, last_angle, "hamming", 1.0, prefix + "FBP-" + aPhantom + "-angles").transpose();
         FBP.saveASCII(prefix + "FBP-" + aPhantom + ".mat");
         (FBP.normalized() * 255).savePGM(prefix + "FBP-" + aPhantom + ".pgm");
         std::cout << "\t\t\tmin:\t" << FBP.getMinValue() << "\tmax:\t" << FBP.getMaxValue() << "\taverage:\t" << FBP.getAverage() << std::endl;
-        */
+    
+        std::cout << "\t\tART" << std::endl;
+        ART_reconstruction = sinogram.ART(first_angle, angle_step, last_angle, 5, prefix + "ART-" + aPhantom + "-iterations");
+        ART_reconstruction.saveASCII(prefix + "ART-" + aPhantom + ".mat");
+        (ART_reconstruction.normalized() * 255).savePGM(prefix + "ART-" + aPhantom + ".pgm");
+*/
+        std::cout << "\t\tMART" << std::endl;
+        MART_reconstruction = sinogram.MART(first_angle, angle_step, last_angle, 5, prefix + "MART-" + aPhantom + "-iterations");
+        MART_reconstruction.saveASCII(prefix + "MART-" + aPhantom + ".mat");
+        (MART_reconstruction.normalized() * 255).savePGM(prefix + "MART-" + aPhantom + ".pgm");
+
+        std::cout << "\t\tSIRT" << std::endl;
+        SIRT_reconstruction = sinogram.SIRT(first_angle, angle_step, last_angle, 5, prefix + "SIRT-" + aPhantom + "-iterations");
+        SIRT_reconstruction.saveASCII(prefix + "SIRT-" + aPhantom + ".mat");
+        (SIRT_reconstruction.normalized() * 255).savePGM(prefix + "SIRT-" + aPhantom + ".pgm");
+
 
         return (0);
 

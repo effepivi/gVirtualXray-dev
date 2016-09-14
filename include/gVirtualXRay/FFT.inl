@@ -26,6 +26,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <cmath>
+
 #ifdef HAS_FFTW
 #include <fftw3.h>
 #endif
@@ -310,7 +312,7 @@ template<typename T> FFT<T> FFT<T>::rhoFilter(const std::string& aFilterType, fl
     {
         for (unsigned int i(0); i < p_filter.size(); ++i)
         {
-            double distance(std::abs(half_size - i));
+            double distance(std::abs(double(half_size - i)));
             distance /= half_size;
             distance = aScalingFactor * (1.0 - distance);
 

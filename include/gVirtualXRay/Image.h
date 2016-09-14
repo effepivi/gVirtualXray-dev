@@ -45,6 +45,7 @@ namespace gVirtualXRay {
 //  Class declaration
 //******************************************************************************
 template<typename T> class FFT;
+template<typename T> class Sinogram;
 
 
 //==============================================================================
@@ -664,11 +665,17 @@ public:
 
     FFT<T> getFFT() const;
 
-    Image transpose() const;
+    Image<T> transpose() const;
+
+
+    Image<T> resize(unsigned int aNewWidth, unsigned int aNewHeightunsigned, unsigned int aNewNumberOfSlices) const;
+    Image<T> rotate(float anAngleInDegrees) const;
+    Image<T> setCanvasSize(unsigned int aNewWidth, unsigned int aNewHeight, unsigned int aNewNumberOfSlices) const;
+    Sinogram<T> radonTransform(double aFirstAngle, double anAngleStep, double aLastAngle) const;
 
 
 //******************************************************************************
-private:
+public:
 #ifdef HAS_GDCM
     void addTag(double aValue,
             unsigned int anAddress1,
