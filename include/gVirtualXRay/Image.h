@@ -152,10 +152,10 @@ public:
     const T& getPixel(unsigned int i, unsigned int j, unsigned int k = 0) const;
 
 
-    //float& operator[](unsigned anIndex);
+    T& operator[](unsigned anIndex);
 
 
-    //const float& operator[](unsigned anIndex) const;
+    const T& operator[](unsigned anIndex) const;
 
 
     T& operator()(unsigned int i, unsigned int j, unsigned int k);
@@ -171,7 +171,7 @@ public:
     * @return the updated version of the current image
     */
     //------------------------------------------------------------------------
-    Image& operator=(const Image<T>& anImage);
+    Image<T>& operator=(const Image<T>& anImage);
     
     
     //------------------------------------------------------------------------
@@ -181,7 +181,7 @@ public:
     * @return the updated version of the current image
     */
     //------------------------------------------------------------------------
-    Image& operator=(const T* apImage);
+    Image<T>& operator=(const T* apImage);
 
 
     //------------------------------------------------------------------------
@@ -302,6 +302,10 @@ public:
     Image normalized() const;
     
     
+    void loadASCII(const char* aFileName);
+    void loadASCII(const std::string& aFileName);
+
+
     //------------------------------------------------------------------------
     /// Save the image in a file
     /**
@@ -462,7 +466,7 @@ public:
     *         false if they are different
     */
     //------------------------------------------------------------------------
-    bool operator==(const Image& anImage) const;
+    bool operator==(const Image<T>& anImage) const;
 
 
     //------------------------------------------------------------------------
@@ -473,7 +477,176 @@ public:
     *         false if they are similar
     */
     //------------------------------------------------------------------------
-    bool operator!=(const Image& anImage) const;
+    bool operator!=(const Image<T>& anImage) const;
+
+
+    //------------------------------------------------------------------------
+    /// Addition operator. Add anImage
+    /**
+    * @param anImage: the image to add
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator+(const Image<T>& anImage) const;
+
+
+    //------------------------------------------------------------------------
+    /// Subtraction operator. Add anImage
+    /**
+    * @param anImage: the image to subtract
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator-(const Image<T>& anImage) const;
+
+
+    //------------------------------------------------------------------------
+    /// Multiplication operator. Add anImage
+    /**
+    * @param anImage: the image to add
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator*(const Image<T>& anImage) const;
+
+
+    //------------------------------------------------------------------------
+    /// Division operator. Add anImage
+    /**
+    * @param anImage: the image to subtract
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator/(const Image<T>& anImage) const;
+
+
+    //------------------------------------------------------------------------
+    /// Addition assignment operator. Add anImage
+    /**
+    * @param anImage: the image to add
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator+=(const Image<T>& anImage);
+
+
+    //------------------------------------------------------------------------
+    /// Subraction assignment operator. Add anImage
+    /**
+    * @param anImage: the image to subtract
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator-=(const Image<T>& anImage);
+
+
+    //------------------------------------------------------------------------
+    /// Multiplication assignment operator. Add anImage
+    /**
+    * @param anImage: the image to add
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator*=(const Image<T>& anImage);
+
+
+    //------------------------------------------------------------------------
+    /// Division assignment operator. Add anImage
+    /**
+    * @param anImage: the image to subtract
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator/=(const Image<T>& anImage);
+
+
+    //------------------------------------------------------------------------
+    /// Addition operator. Add aValue to every pixel of the image
+    /**
+    * @param aValue: the value to add
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator+(T aValue) const;
+
+
+    //------------------------------------------------------------------------
+    /// Subtraction operator. Subtract aValue to every pixel of the image
+    /**
+    * @param aValue: the value to subtract
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator-(T aValue) const;
+
+
+    //------------------------------------------------------------------------
+    /// Multiplication operator. Multiply every pixel of the image by aValue
+    /**
+    * @param aValue: the value for the multiplication
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator*(T aValue) const;
+
+
+    //------------------------------------------------------------------------
+    /// Division operator. Divide every pixel of the image by aValue
+    /**
+    * @param aValue: the value for the division
+    * @return the resulting image
+    */
+    //------------------------------------------------------------------------
+    Image operator/(T aValue) const;
+
+
+    //------------------------------------------------------------------------
+    /// Addition operator. Add aValue to every pixel of the image
+    /**
+    * @param aValue: the value to add
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator+=(T aValue);
+
+
+    //------------------------------------------------------------------------
+    /// Subtraction operator. Subtract aValue to every pixel of the image
+    /**
+    * @param aValue: the value to subtract
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator-=(T aValue);
+
+
+    //------------------------------------------------------------------------
+    /// Multiplication operator. Multiply every pixel of the image by aValue
+    /**
+    * @param aValue: the value for the multiplication
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator*=(T aValue);
+
+
+    //------------------------------------------------------------------------
+    /// Division operator. Divide every pixel of the image by aValue
+    /**
+    * @param aValue: the value for the division
+    * @return the updated version of the current image
+    */
+    //------------------------------------------------------------------------
+    Image<T>& operator/=(T aValue);
+
+
+    //------------------------------------------------------------------------
+    /// Negation operator. Compute the negative of the current image.
+    /**
+    * @return the negative image
+    */
+    //------------------------------------------------------------------------
+    Image operator!() const;
 
 
     Image<T> abs() const;
@@ -485,8 +658,8 @@ public:
     double getAverage() const;
     double getVariance() const;
     double getStandardDeviation() const;
-    double computeSAE(const Image& anImage) const;
-    double computeNCC(const Image& anImage) const;
+    double computeSAE(const Image<T>& anImage) const;
+    double computeNCC(const Image<T>& anImage) const;
     
 
     FFT<T> getFFT() const;

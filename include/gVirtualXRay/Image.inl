@@ -101,7 +101,7 @@ template<typename T> Image<T>::Image():
 
 
 //----------------------------------------------
-template<typename T> Image<T>::Image(const Image& anImage):
+template<typename T> Image<T>::Image(const Image<T>& anImage):
 //----------------------------------------------
         m_width(anImage.m_width),
         m_height(anImage.m_height),
@@ -178,6 +178,82 @@ template<typename T> Image<T>::~Image()
 }
 
 
+//------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const char* aFileName)
+//------------------------------------------------------------------
+{
+    // Open the file
+    std::ifstream input_file (aFileName);
+
+    // The file is not open
+    if (!input_file.is_open())
+    {
+        std::string error_message("The file (");
+        error_message += aFileName;
+        error_message += ") does not exist";
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+    }
+
+    // Load the data into a vector
+    std::vector<T> p_data;
+    std::string line;
+    int number_of_rows(0);
+    int number_of_columns(0);
+
+    // Read evely line
+    while (std::getline(input_file, line))
+    {
+        if (line.size())
+        {
+            if (line[0] != '#')
+            {
+                number_of_columns = 0;
+                double intensity;
+                std::stringstream line_parser;
+                line_parser << line;
+                while (line_parser >> intensity)
+                {
+                    p_data.push_back(intensity);
+                    ++number_of_columns;
+                }
+                ++number_of_rows;
+            }
+        }
+    }
+
+    // Wrong number of pixels
+    if (number_of_rows * number_of_columns != p_data.size())
+    {
+        std::string error_message("The file (");
+        error_message += aFileName;
+        error_message += ") is invalid";
+
+        throw error_message;
+    }
+
+    // Release the memory
+    destroy();
+
+    // Allocate memory for file content
+    m_width = number_of_columns;
+    m_height = number_of_rows;
+    m_number_of_slices = 1;
+    m_p_image = new T[m_width * m_height];
+
+    // Copy the data
+    std::copy(p_data.begin(), p_data.end(), m_p_image);
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const std::string& aFileName)
+//-------------------------------------------------------------------------
+{
+    loadASCII(aFileName.data());
+}
+
+
 //-----------------------------------------------------------------------
 template<typename T> Image<T> Image<T>::getROI(unsigned int i,
                                                unsigned int j,
@@ -188,7 +264,7 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
 //-----------------------------------------------------------------------
 {
     // Create a black image
-    Image roi(aWidth, aHeight, aDepth);
+    Image<T> roi(aWidth, aHeight, aDepth);
 
     // Process every slice of the ROI
     for (unsigned z(0); z < aDepth; ++z)
@@ -212,7 +288,7 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
                 }
 
                 // Get the pixel intensity from the current instance
-                float intensity(getPixel(index_i, index_j, index_k));
+                T intensity(getPixel(index_i, index_j, index_k));
 
                 // Set the pixel of the ROI
                 roi.setPixel(x, y, z, intensity);
@@ -279,14 +355,31 @@ template<typename T> const T& Image<T>::getPixel(unsigned int i,
 }
 
 
-/*
+//------------------------------------------------------------
 template<typename T> T& Image<T>::operator[](unsigned anIndex)
-{}
+//------------------------------------------------------------
+{
+    if (anIndex >= m_width * m_height * m_number_of_slices)
+    {
+    throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+return (m_p_image[anIndex]);
+}
 
 
+//------------------------------------------------------------------------
 template<typename T> const T& Image<T>::operator[](unsigned anIndex) const
-{}
-*/
+//------------------------------------------------------------------------
+{
+    if (anIndex >= m_width * m_height * m_number_of_slices)
+    {
+    throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    return (m_p_image[anIndex]);
+}
+
 
 //----------------------------------------------------------
 template<typename T> T& Image<T>::operator()(unsigned int i,
@@ -308,9 +401,9 @@ template<typename T> const T& Image<T>::operator()(unsigned int i,
 }
 
 
-//-------------------
+//-------------------------------------------
 template<typename T> void Image<T>::destroy()
-//-------------------
+//-------------------------------------------
 {
     // Memory has been dynamically allocated
     if (m_p_image)
@@ -539,7 +632,7 @@ template<typename T> Image<T> Image<T>::log() const
 {
     Image<T> temp(*this);
 
-    float offset(0.0);
+    double offset(0.0);
 
     if (std::abs(getMinValue()) < EPSILON)
     {
@@ -548,7 +641,7 @@ template<typename T> Image<T> Image<T>::log() const
 
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
     {
-        float pixel(m_p_image[i]);
+        double pixel(m_p_image[i]);
 
         if (std::abs(pixel) < EPSILON)
         {
@@ -1305,7 +1398,7 @@ template<typename T> void Image<T>::saveTIFF(const std::string& aFileName,
 
 
 //------------------------------------------------
-template<typename T> bool Image<T>::operator==(const Image& anImage) const
+template<typename T> bool Image<T>::operator==(const Image<T>& anImage) const
 //------------------------------------------------
 {
     if (m_width != anImage.m_width)
@@ -1323,8 +1416,8 @@ template<typename T> bool Image<T>::operator==(const Image& anImage) const
         return (false);
     }
 
-    float const * p_data1(m_p_image);
-    float const * p_data2(anImage.m_p_image);
+    T const * p_data1(m_p_image);
+    T const * p_data2(anImage.m_p_image);
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
     {
         if (std::abs(*p_data1++ - *p_data2++) > EPSILON)
@@ -1338,7 +1431,7 @@ template<typename T> bool Image<T>::operator==(const Image& anImage) const
 
 
 //------------------------------------------------
-template<typename T> bool Image<T>::operator!=(const Image& anImage) const
+template<typename T> bool Image<T>::operator!=(const Image<T>& anImage) const
 //------------------------------------------------
 {
     return (!(operator==(anImage)));
@@ -1374,7 +1467,7 @@ template<typename T> double Image<T>::getVariance() const
     double variance(0.0);
     double average(getAverage());
     
-    float* p_temp(m_p_image);
+    T* p_temp(m_p_image);
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
     {
         variance += std::pow(*p_temp++ - average, 2);
@@ -1393,7 +1486,7 @@ template<typename T> double Image<T>::getStandardDeviation() const
 
 
 //--------------------------------------------
-template<typename T> double Image<T>::computeSAE(const Image& anImage) const
+template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
 //--------------------------------------------
 {
     if (m_width != anImage.m_width || m_height != anImage.m_height || m_number_of_slices != anImage.m_number_of_slices)
@@ -1401,8 +1494,8 @@ template<typename T> double Image<T>::computeSAE(const Image& anImage) const
         throw "The images have different sizes";
     }
     
-    float* p_temp1(m_p_image);
-    float* p_temp2(anImage.m_p_image);
+    T* p_temp1(m_p_image);
+    T* p_temp2(anImage.m_p_image);
     
     double sae(0.0);
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
@@ -1415,7 +1508,7 @@ template<typename T> double Image<T>::computeSAE(const Image& anImage) const
 
 
 //--------------------------------------------
-template<typename T> double Image<T>::computeNCC(const Image& anImage) const
+template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
 //--------------------------------------------
 {
     if (m_width != anImage.m_width || m_height != anImage.m_height || m_number_of_slices != anImage.m_number_of_slices)
@@ -1423,8 +1516,8 @@ template<typename T> double Image<T>::computeNCC(const Image& anImage) const
         throw "The images have different sizes";
     }
     
-    float* p_temp1(m_p_image);
-    float* p_temp2(anImage.m_p_image);
+    T* p_temp1(m_p_image);
+    T* p_temp2(anImage.m_p_image);
     
     double average1(getAverage());
     double average2(anImage.getAverage());
@@ -1449,7 +1542,7 @@ template<typename T> FFT<T> Image<T>::getFFT() const
 
 template<typename T> Image<T> Image<T>::transpose() const
 {
-    Image temp(m_height, m_width, m_number_of_slices);
+    Image<T> temp(m_height, m_width, m_number_of_slices);
 
     for (unsigned int k(0); k < m_number_of_slices; ++k)
     {
@@ -1519,5 +1612,350 @@ template<typename T> void Image<T>::addTag(const std::string& aValue,
     aFile.GetDataSet().Insert(data_element);
 }
 #endif
+
+
+//------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator+(const Image<T>& anImage) const
+//------------------------------------------------------------------------------
+{
+    // Deal with images of different sizes
+    unsigned int min_width( std::min(m_width,  anImage.m_width));
+    unsigned int min_height(std::min(m_height, anImage.m_height));
+    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+
+    // Copy the instance into a temporary variable
+    Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+
+    // Copy the data
+    for (unsigned int k(0); k < min_depth; ++k)
+    {
+        for (unsigned int j(0); j < min_height; ++j)
+        {
+            for (unsigned int i(0); i < min_width; ++i)
+            {
+                temp(i, j, k) += anImage(i, j, k);
+            }
+        }
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator-(const Image<T>& anImage) const
+//------------------------------------------------------------------------------
+{
+    // Deal with images of different sizes
+    unsigned int min_width( std::min(m_width,  anImage.m_width));
+    unsigned int min_height(std::min(m_height, anImage.m_height));
+    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+
+    // Copy the instance into a temporary variable
+    Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+
+    // Copy the data
+    for (unsigned int k(0); k < min_depth; ++k)
+    {
+        for (unsigned int j(0); j < min_height; ++j)
+        {
+            for (unsigned int i(0); i < min_width; ++i)
+            {
+                temp(i, j, k) -= anImage(i, j, k);
+            }
+        }
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator*(const Image<T>& anImage) const
+//------------------------------------------------------------------------------
+{
+    // Deal with images of different sizes
+    unsigned int min_width( std::min(m_width,  anImage.m_width));
+    unsigned int min_height(std::min(m_height, anImage.m_height));
+    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+
+    // Copy the instance into a temporary variable
+    Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+
+    // Copy the data
+    for (unsigned int k(0); k < min_depth; ++k)
+    {
+        for (unsigned int j(0); j < min_height; ++j)
+        {
+            for (unsigned int i(0); i < min_width; ++i)
+            {
+                temp(i, j, k) *= anImage(i, j, k);
+            }
+        }
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator/(const Image<T>& anImage) const
+//------------------------------------------------------------------------------
+{
+    // Deal with images of different sizes
+    unsigned int min_width( std::min(m_width,  anImage.m_width));
+    unsigned int min_height(std::min(m_height, anImage.m_height));
+    unsigned int min_depth( std::min(m_number_of_slices,  anImage.m_number_of_slices));
+
+    // Copy the instance into a temporary variable
+    Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
+
+    // Copy the data
+    for (unsigned int k(0); k < min_depth; ++k)
+    {
+        for (unsigned int j(0); j < min_height; ++j)
+        {
+            for (unsigned int i(0); i < min_width; ++i)
+            {
+                double pixel_value(anImage(i, j, k));
+
+                if (std::abs(pixel_value) < EPSILON)
+                {
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
+                }
+                else
+                {
+                    temp(i, j, k) /= pixel_value;
+                }
+            }
+        }
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//--------------------------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator+=(const Image<T>& anImage)
+//--------------------------------------------------------------------------
+{
+    // Re-use operator+
+    *this = *this + anImage;
+
+    // Return the result
+    return (*this);
+}
+
+
+//--------------------------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator-=(const Image<T>& anImage)
+//--------------------------------------------------------------------------
+{
+    // Re-use operator-
+    *this = *this - anImage;
+
+    // Return the result
+    return (*this);
+}
+
+
+//--------------------------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator*=(const Image<T>& anImage)
+//--------------------------------------------------------------------------
+{
+    // Re-use operator*
+    *this = *this * anImage;
+
+    // Return the result
+    return (*this);
+}
+
+
+//--------------------------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator/=(const Image<T>& anImage)
+//--------------------------------------------------------------------------
+{
+    // Re-use operator/
+    *this = *this / anImage;
+
+    // Return the result
+    return (*this);
+}
+
+
+//---------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator+(T aValue) const
+//---------------------------------------------------------------
+{
+    // Copy the instance into a temporary variable
+    Image<T> temp(*this);
+
+    T* p_temp(temp.m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ += aValue;
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//---------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator-(T aValue) const
+//---------------------------------------------------------------
+{
+    // Copy the instance into a temporary variable
+    Image<T> temp(*this);
+
+    T* p_temp(temp.m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ -= aValue;
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//---------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator*(T aValue) const
+//---------------------------------------------------------------
+{
+    // Copy the instance into a temporary variable
+    Image<T> temp(*this);
+
+    T* p_temp(temp.m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ *= aValue;
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//---------------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator/(T aValue) const
+//---------------------------------------------------------------
+{
+    // Division by zero
+    if (std::abs(aValue) < EPSILON)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
+    }
+
+    // Copy the instance into a temporary variable
+    Image<T> temp(*this);
+
+    T* p_temp(temp.m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ /= aValue;
+    }
+
+    // Return the result
+    return (temp);
+}
+
+
+//-----------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator+=(T aValue)
+//-----------------------------------------------------------
+{
+    T* p_temp(m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ += aValue;
+    }
+
+    // Return the result
+    return (*this);
+}
+
+
+//-----------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator-=(T aValue)
+//-----------------------------------------------------------
+{
+    T* p_temp(m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ -= aValue;
+    }
+
+    // Return the result
+    return (*this);
+}
+
+
+//-----------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator*=(T aValue)
+//-----------------------------------------------------------
+{
+    T* p_temp(m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ *= aValue;
+    }
+
+    // Return the result
+    return (*this);
+}
+
+
+//-----------------------------------------------------------
+template<typename T> Image<T>& Image<T>::operator/=(T aValue)
+//-----------------------------------------------------------
+{
+    // Division by zero
+    if (std::abs(aValue) < EPSILON)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
+    }
+
+    T* p_temp(m_p_image);
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        *p_temp++ /= aValue;
+    }
+
+    // Return the result
+    return (*this);
+}
+
+
+//-------------------------------------------------------
+template<typename T> Image<T> Image<T>::operator!() const
+//-------------------------------------------------------
+{
+    // Copy the instance into a temporary variable
+    Image<T> temp(*this);
+
+    T min_value(getMinValue());
+    T max_value(getMaxValue());
+    T range(max_value - min_value);
+
+    T* p_temp(temp.m_p_image);
+
+    // Process every pixel
+    for (unsigned int i(0);
+            i < m_width * m_height * m_number_of_slices;
+            ++i, ++p_temp)
+    {
+        // Take care to preserve the dynamic of the image
+        *p_temp = min_value + range * (1.0 - (*p_temp - min_value) / range);
+    }
+
+    // Return the result
+    return (temp);
+}
+
 
 } // namespace gVirtualXRay
