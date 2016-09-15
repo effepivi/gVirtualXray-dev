@@ -131,13 +131,18 @@ void OpenGL3VBO::display() const
 		if (!m_number_of_indices)
 		{
 			glDrawArrays(m_primitive_type, 0, m_number_of_vertices);
+
+		    // Check the OpenGL error status
+		    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 		else
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
 			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, 0);
+
+		    // Check the OpenGL error status
+		    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Unbind the VAO
 		glBindVertexArray(0);

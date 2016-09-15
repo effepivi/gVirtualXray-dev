@@ -219,7 +219,10 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 	pushShaderProgram();
 	shader.enable();
 
-	GLint shader_id(shader.getProgramHandle());
+    // Check the OpenGL error status
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    GLint shader_id(shader.getProgramHandle());
 
 	switch(to_create)
 	{
@@ -249,11 +252,17 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 		square_filler.translate(VEC3(0,0,1.f/m_texture_3D_size));
 	}
 
+	// Check the OpenGL error status
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 	// Disable the shader
 	popShaderProgram();
 
 	// Restore the attributes
     popEnableDisableState();
+
+    // Check the OpenGL error status
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------------------------------

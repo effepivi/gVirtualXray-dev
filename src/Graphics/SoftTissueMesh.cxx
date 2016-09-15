@@ -165,6 +165,9 @@ void SoftTissueMesh::initialize()
 			load2DBumpShader();
 		}
 
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		//load the texture generation shader
 	    char* p_vertex_shader(0);
 	    char* p_fragment_shader(0);
@@ -213,6 +216,9 @@ void SoftTissueMesh::initialize()
 	    	initialize2DBuffer(m_bump_map_texture, m_bump_map_frame_buffer);
 	    }
 
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		//initialize the buffers for the colour texture
 	    if(m_use_3D_colour_texture)
 	    {
@@ -222,6 +228,9 @@ void SoftTissueMesh::initialize()
 	    {
 	    	initialize2DBuffer(m_colour_texture, m_colour_texture_frame_buffer);
 	    }
+
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	    //delete indices, there are not compatible with this implementation of solid texturing.
 		if(m_number_of_indices)
@@ -254,9 +263,15 @@ void SoftTissueMesh::initialize()
 			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 		}
 
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		initGradientTab();
 		initPermutation();
 		generateTextures();
+
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
@@ -264,11 +279,20 @@ void SoftTissueMesh::initialize()
 			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.6/m_texture_2D_size);
 		}
 
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
 
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		//Generate the texture again
 		generateTextures();
+
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
@@ -276,13 +300,22 @@ void SoftTissueMesh::initialize()
 			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.2/m_texture_2D_size);
 		}
 
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
 		//Update the VBO
 		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		m_need_initialize = false;
 
 		// Cleanup for now
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
     //delete indices, there are not compatible with this implementation of solid texturing.
@@ -291,7 +324,13 @@ void SoftTissueMesh::initialize()
 		deleteIndices();
 
 		shareNormalVectors();
+
+	    // Check the OpenGL error status
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
+
+    // Check the OpenGL error status
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //----------------------------------------------
