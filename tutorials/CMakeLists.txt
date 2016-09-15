@@ -41,6 +41,12 @@ else()
 endif()
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (NOT WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/run.sh ${CMAKE_CURRENT_BINARY_DIR}/run.sh COPYONLY)
+ENDIF (NOT WIN32)
+
+
 IF (USE_FLTK)
     add_subdirectory(tutorial_00_fltk)
     add_subdirectory(tutorial_01_fltk)
