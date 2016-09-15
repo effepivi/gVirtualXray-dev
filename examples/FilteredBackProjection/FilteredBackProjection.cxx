@@ -72,6 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 #include <sstream>
+#include <iomanip>
 #include <string>
 #include <ctime>
 #include <cmath>
@@ -209,8 +210,8 @@ typedef enum AcquisitionTypeTag
 //******************************************************************************
 //	Global variables
 //******************************************************************************
-GLsizei g_main_window_width( 1200);
-GLsizei g_main_window_height(600);
+GLsizei g_main_window_width( 512);
+GLsizei g_main_window_height(512);
 GLFWwindow* g_p_main_window_id(0);
 GLfloat g_zoom(60.0 * cm);
 GLfloat g_eye_offset(2.0 * cm);
@@ -256,8 +257,8 @@ bool g_is_xray_image_up_to_date(false);
 bool g_update_projection_and_sinogram(false);
 bool g_display_wireframe(false);
 
-unsigned int g_angle_number(360 / 16);
-RATIONAL_NUMBER g_angle_step(0.5 * 16);
+unsigned int g_angle_number(360 / 1);
+RATIONAL_NUMBER g_angle_step(0.5 * 1);
 RATIONAL_NUMBER g_first_angle(0);
 RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
 unsigned int g_next_angle_to_process(0);
@@ -289,7 +290,7 @@ VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 #ifdef HAS_FREETYPE
 bool g_display_help(true);
 TextRenderer g_font_rendered;
-bool g_run_tomography_acquisition(true);
+bool g_run_tomography_acquisition(false);
 #else
 bool g_run_tomography_acquisition(true);
 #endif
@@ -297,6 +298,7 @@ bool g_run_tomography_acquisition(true);
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
 bool g_display_skin(true);
+bool g_take_screenshot(true);
 
 
 //******************************************************************************
@@ -401,64 +403,6 @@ int main(int argc, char** argv)
 {
 	try
 	{
-/*        double first_angle(0);
-        double angle_step(1);
-        double last_angle(180);
-
-        Image<float> phantom;
-        Sinogram<float> sinogram;
-        Image<float> SBP;
-        Image<float> FBP;
-        Image<float> ART_reconstruction;
-        Image<float> MART_reconstruction;
-        Image<float> SIRT_reconstruction;
-
-
-	    std::string aPhantom("hot_rodes");
-	    std::string prefix("../data/");
-
-        std::cout << "Phantom:\t" << aPhantom << std::endl;
-        phantom.loadASCII("../data/phantom-hot_rodes.mat");
-        std::cout << "\t\t\tmin:\t" << phantom.getMinValue() << "\tmax:\t" << phantom.getMaxValue() << "\taverage:\t" << phantom.getAverage() << std::endl;
-
-        std::cout << "\t\tsinogram" << std::endl;
-        sinogram = phantom.radonTransform(first_angle, angle_step, last_angle);
-        (sinogram.normalized() * 255).savePGM(prefix + "sinogram-" + aPhantom + ".pgm");
-        std::cout << "\t\t\tmin:\t" << sinogram.getMinValue() << "\tmax:\t" << sinogram.getMaxValue() << "\taverage:\t" << sinogram.getAverage() << std::endl;
-*/
-
-
-/*
-        std::cout << "\t\tSBP" << std::endl;
-        SBP = sinogram.simpleBackProjection(first_angle, angle_step, last_angle, prefix + "SBP-" + aPhantom + "-angles").transpose();
-        SBP.saveASCII(prefix + "SBP-" + aPhantom + ".mat");
-        (SBP.normalized() * 255).savePGM(prefix + "SBP-" + aPhantom + ".pgm");
-        std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
-
-        std::cout << "\t\tFBP" << std::endl;
-        FBP = sinogram.filteredBackProjection(first_angle, angle_step, last_angle, "hamming", 1.0, prefix + "FBP-" + aPhantom + "-angles").transpose();
-        FBP.saveASCII(prefix + "FBP-" + aPhantom + ".mat");
-        (FBP.normalized() * 255).savePGM(prefix + "FBP-" + aPhantom + ".pgm");
-        std::cout << "\t\t\tmin:\t" << FBP.getMinValue() << "\tmax:\t" << FBP.getMaxValue() << "\taverage:\t" << FBP.getAverage() << std::endl;
-    
-        std::cout << "\t\tART" << std::endl;
-        ART_reconstruction = sinogram.ART(first_angle, angle_step, last_angle, 5, prefix + "ART-" + aPhantom + "-iterations");
-        ART_reconstruction.saveASCII(prefix + "ART-" + aPhantom + ".mat");
-        (ART_reconstruction.normalized() * 255).savePGM(prefix + "ART-" + aPhantom + ".pgm");
-*/
-/*        std::cout << "\t\tMART" << std::endl;
-        MART_reconstruction = sinogram.MART(first_angle, angle_step, last_angle, 5, prefix + "MART-" + aPhantom + "-iterations");
-        MART_reconstruction.saveASCII(prefix + "MART-" + aPhantom + ".mat");
-        (MART_reconstruction.normalized() * 255).savePGM(prefix + "MART-" + aPhantom + ".pgm");
-
-        std::cout << "\t\tSIRT" << std::endl;
-        SIRT_reconstruction = sinogram.SIRT(first_angle, angle_step, last_angle, 5, prefix + "SIRT-" + aPhantom + "-iterations");
-        SIRT_reconstruction.saveASCII(prefix + "SIRT-" + aPhantom + ".mat");
-        (SIRT_reconstruction.normalized() * 255).savePGM(prefix + "SIRT-" + aPhantom + ".pgm");
-
-
-        return (0);*/
-
 	    // Initialize random seed
 	    srand(time(0));
 
@@ -523,11 +467,6 @@ int main(int argc, char** argv)
 	    // Create the phantom
 	    createPhantom();
 
-		// Display the mu coefficients
-		//std::cout << "Linear attenuation coefficient at:\t" << g_incident_energy / keV << " keV (" << g_incident_energy / MeV << "MeV)" << std::endl;
-		//std::cout << "Mu(HU(0):     \t" << g_xray_renderer.getMuFromHU(0, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
-		//std::cout << "Mu(HU(-1000): \t" << g_xray_renderer.getMuFromHU(-1000, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
-
 		// Load the data
 		loadDetector();
 		loadSource();
@@ -548,21 +487,6 @@ int main(int argc, char** argv)
 		GLint height(0);
 		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 		framebufferSizeCallback(g_p_main_window_id, width, height);
-
-        //std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-        //std::cout << "Angular span: [" << g_first_angle << ", " << g_first_angle + g_angle_step * (g_angle_number - 1) << "] degrees" << std::endl;
-
-        // Compute the sinogram
-        //g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
-
-        // Save the sinogram
-        //g_xray_renderer.printSinogram(PREFIX"/simulation_sinogram.mhd");
-
-        // Compute the projection set
-        //g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
-
-        // Save the projection set
-        //g_xray_renderer.printProjectionSet(PREFIX"/simulation_projection_set.mhd");
 
 		createProjection();
         createSinogram();
@@ -668,72 +592,22 @@ int main(int argc, char** argv)
             // Swap front and back buffers
 	        glfwSwapBuffers(g_p_main_window_id);
 /*
-	        if (g_current_angle % )
+	        if (updated_image || g_take_screenshot)
 	        {
-	        	unsigned int g_angle_number(360);
-	        	RATIONAL_NUMBER g_angle_step(0.5);
-	        	RATIONAL_NUMBER g_first_angle(0);
-	        	RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
-	        	unsigned int g_next_angle_to_process(0);
-	        	unsigned int g_current_angle(0);
-
-	        }
-	        */
-
-	        //if (updated_image)
-	        {
-	        	if (g_first_angle == g_current_angle || g_current_angle == (g_angle_number - 1) || !(g_current_angle % 60))
+	        	//if (g_first_angle == g_current_angle || g_current_angle == (g_angle_number - 1) || !(g_current_angle % 60))
 	        	{
-	        		std::cout << g_current_angle << std::endl;
+	        		//std::cout << g_current_angle << std::endl;
 
 	        		std::stringstream filename;
-	        		filename << "screenshot_" << g_current_angle << ".tga";
+	                static unsigned int screenshot_counter(0);
+	                filename << "tga/screenshot_" << std::setfill('0') << std::setw(5) << ++screenshot_counter << ".tga";
 
 	        		takeScreenshot(filename.str());
 	        	}
 
-	        	if (g_current_angle == (g_angle_number - 1))
-	        	{
-                    g_raw_sinogram_data.save("raw_sinogram.mhd");
-                    g_filtered_sinogram_data.save("filtered_sinogram.mhd");
-                    g_projection_data.save("projection.mhd");
-                    g_raw_tomography_data.save("simple_back_projection.mhd");
-                    g_filtered_tomography_data.save("filtered_back_projection.mhd");
-
-/*
-                    std::string prefix("../data/");
-                    std::string phantom("gpu_simulation");
-
-                    std::cout << "\t\tSBP" << std::endl;
-                    ProjectionImageType SBP = g_filtered_sinogram_data.simpleBackProjection(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, prefix + "SBP-" + phantom + "-angles").transpose();
-                    SBP.save("filtered_sinogram2.mhd");
-                    (SBP.normalized() * 255).savePGM("filtered_sinogram2.pgm");
-                    std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
-
-
-
-                    std::cout << "\t\tSBP" << std::endl;
-                    SBP = g_raw_sinogram_data.simpleBackProjection(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, prefix + "SBP-" + phantom + "-angles").transpose();
-                    SBP.saveASCII(prefix + "SBP-" + phantom + ".mat");
-                    (SBP.normalized() * 255).savePGM(prefix + "SBP-" + phantom + ".pgm");
-                    std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
-
-                    std::cout << "\t\tFBP" << std::endl;
-                    ProjectionImageType FBP = g_raw_sinogram_data.filteredBackProjection(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, "hamming", 1.0, prefix + "FBP-" + phantom + "-angles").transpose();
-                    FBP.saveASCII(prefix + "FBP-" + phantom + ".mat");
-                    (FBP.normalized() * 255).savePGM(prefix + "FBP-" + phantom + ".pgm");
-                    std::cout << "\t\t\tmin:\t" << FBP.getMinValue() << "\tmax:\t" << FBP.getMaxValue() << "\taverage:\t" << FBP.getAverage() << std::endl;
-*/
-                    exit(0);
-
-                    /*
-                    std::cout << "\t\tART" << std::endl;
-                    ProjectionImageType ART_reconstruction = g_raw_sinogram_data.ART(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, 5, prefix + "ART-" + phantom + "-iterations");
-                    ART_reconstruction.saveASCII(prefix + "ART-" + phantom + ".mat");
-                    (ART_reconstruction.normalized() * 255).savePGM(prefix + "ART-" + phantom + ".pgm");*/
-	        	}
+	        	g_take_screenshot = false;
 	        }
-
+*/
 	        // Poll for and process events
 	        glfwPollEvents();
 	    }
@@ -1087,37 +961,6 @@ void render()
 			}
 		}
 
-		/*if (g_display_skin)
-		{
-			if (g_display_wireframe)
-			{
-				g_p_polygon_mesh_set.back().displayWireFrame();
-			}
-			else
-			{
-				// Store the enable/disable state
-				pushEnableDisableState(GL_DEPTH_TEST);
-				pushEnableDisableState(GL_BLEND);
-				pushEnableDisableState(GL_CULL_FACE);
-
-				//glEnable(GL_DEPTH_TEST);
-				//glDepthMask(GL_FALSE);
-				glEnable(GL_BLEND);
-				//glDisable(GL_CULL_FACE);
-			   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glBlendFunc (GL_ONE, GL_ONE);
-
-				g_p_polygon_mesh_set.back().display();
-
-				//glDepthMask(GL_TRUE);
-
-				// Restore the enable/disable state
-				popEnableDisableState();
-				popEnableDisableState();
-				popEnableDisableState();
-			}
-		}*/
-
         // Restore the current transformation matrix
         popModelViewMatrix();
 
@@ -1377,6 +1220,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             break;
         }
     }
+
+	g_take_screenshot = true;
 }
 
 
@@ -1477,6 +1322,8 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 
 	g_current_x_position = xpos;
 	g_current_y_position = ypos;
+
+	g_take_screenshot = true;
 }
 
 
@@ -1489,6 +1336,8 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 
 	// Update the rotation matrix if needed
 	computeRotation(g_scene_rotation_matrix);
+
+	g_take_screenshot = true;
 }
 
 
@@ -1503,6 +1352,8 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 		g_zoom += yoffset * cm;
 		framebufferSizeCallback(apWindow, g_main_window_width, g_main_window_height);
 	}
+
+    g_take_screenshot = true;
 }
 
 
@@ -2049,53 +1900,32 @@ void updateTomography(const Sinogram<float>& aSinogram,
                       GLuint aTextureID)
 //----------------------------------------------------------
 {
-    aTomographySlice = aSinogram.simpleBackProjection(g_first_angle, g_angle_step, g_first_angle + g_angle_step * g_current_angle, 0).transpose();
+    Image<float> sinogram(aSinogram.getROI(0, g_current_angle, 0, aSinogram.getWidth(), 1, aSinogram.getDepth()));
+    sinogram = sinogram.resize(sinogram.getWidth() * 2, 1, aSinogram.getDepth());
+    unsigned int image_width(2 * floor (sinogram.getWidth() / (2.0 * std::sqrt(2.0))));
 
-    // Get the current projection from the sinogram
-/*    float* p_current_projection(aSinogram.getRawData() + g_current_angle * g_number_of_pixels.getX());
-    float current_angle(g_angle_step * g_current_angle);
+    Image<float> back_projection(sinogram.m_width, sinogram.m_width, sinogram.m_number_of_slices);
 
-    float width(g_resolution.getX() * g_number_of_pixels.getX());
-    float half_width(width / 2.0);
-
-    // Get the position of the first point in the projection
-    VEC3 rotation_axis(0, 0, 1);
-    MATRIX4 rotation_matrix(MATRIX4::buildRotationMatrix(current_angle, rotation_axis));
-    VEC3 first_projection_point_position(-half_width + g_resolution.getX() / 2.0, 0, 0);
-    first_projection_point_position = rotation_matrix * first_projection_point_position;
-
-    // Get the position of the last point in the projection
-    VEC3 last_projection_point_position(half_width - g_resolution.getX() / 2.0, 0, 0);
-    last_projection_point_position = rotation_matrix * last_projection_point_position;
-
-    // Get the normal vector
-    VEC3 direction((last_projection_point_position - first_projection_point_position).normal());
-    VEC3 normal(direction ^ VEC3(0, 0, 1));
-
-    // Process every pixel of the projection
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
+    for (int k(0); k < back_projection.m_number_of_slices; ++k)
     {
-    	// Get the pixel color
-    	float intensity(*p_current_projection++);
-
-    	// Get the pixel position
-    	VEC3 pixel_position(first_projection_point_position + direction * (float(i) * g_resolution.getX()));
-
-    	VEC3 first_projection_sample_position(pixel_position + normal * half_width);
-    	VEC3 last_projection_sample_position( pixel_position - normal * half_width);
-
-    	// Get the first end point
-        Vec2i first_projection_sample_id((first_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
-        		(first_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
-
-        // Get the second end point
-        Vec2i last_projection_sample_id((last_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
-        		(last_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
-
-    	// Backproject the pixel
-    	drawLine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), aTomographySlice.getRawData(), intensity / width);
+        for (int j(0); j < back_projection.m_height; ++j)
+        {
+            for (int i(0); i < back_projection.m_width; ++i)
+            {
+                back_projection(i, j, k) += sinogram.getPixel(i, 0, k);
+            }
+        }
     }
-*/
+
+    back_projection = back_projection.rotate(-(g_first_angle + g_angle_step * g_current_angle)) / back_projection.m_height;
+
+    back_projection = back_projection.setCanvasSize(image_width, image_width, back_projection.m_number_of_slices);
+    back_projection *= M_PI / ( back_projection.m_height);
+
+    back_projection = back_projection.resize(aSinogram.getWidth(), aSinogram.getWidth(), back_projection.m_number_of_slices);
+
+    aTomographySlice += back_projection;
+
     // Update the texture
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, aTextureID);
