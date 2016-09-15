@@ -1840,33 +1840,23 @@ void createTomography()
 void updateProjection()
 //---------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_projection_data.getRawData() + g_current_angle * g_number_of_pixels.getX());
+    ProjectionImageType input_image(g_xray_renderer.getEnergyFluence());
 
-    float value;
+    float* p_output_image(g_projection_data.getRawData() + g_current_angle * g_number_of_pixels.getX());
+    memcpy(&g_projection_data.getPixel(0, g_current_angle, 0),
+            g_xray_renderer.getEnergyFluence().getRawData(),
+            sizeof(float) * g_number_of_pixels.getX()
+    );
 
     if (g_current_angle == 0)
     {
-    	value = *p_input_image;
-        g_min_projection = *p_input_image;
-        g_max_projection = *p_input_image;
+        g_min_projection = g_xray_renderer.getEnergyFluence().getMinValue();
+        g_max_projection = g_xray_renderer.getEnergyFluence().getMaxValue();
     }
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
+    else
     {
-    	value = *p_input_image++;
-
-        if (g_min_projection > value)
-        {
-            g_min_projection = value;
-        }
-
-        if (g_max_projection < value)
-        {
-            g_max_projection = value;
-        }
-
-        *p_output_image++ = value;
+        g_min_projection = std::min(g_min_projection, g_xray_renderer.getEnergyFluence().getMinValue());
+        g_max_projection = std::max(g_max_projection, g_xray_renderer.getEnergyFluence().getMaxValue());
     }
 
     pushTexture2D();
@@ -1881,7 +1871,7 @@ void updateProjection()
 void updateSinogram()
 //-------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
+/*    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
     float* p_output_image(g_sinogram_data.getRawData() + g_current_angle * g_number_of_pixels.getX());
 
     float total_input_energy(g_xray_beam.getTotalEnergy());
@@ -1919,7 +1909,7 @@ void updateSinogram()
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_sinogram_data.getRawData() + g_current_angle * g_number_of_pixels.getX());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    popTexture();
+    popTexture();*/
 }
 
 

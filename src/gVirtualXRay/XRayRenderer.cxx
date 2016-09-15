@@ -583,15 +583,15 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                         std::cout << ", now: " << voxel_value << std::endl;
                     }
                 }*/
-                *p_input_data = scaling_factor * log(total_input_energy / voxel_value);
+                *p_input_data = scaling_factor * std::log(total_input_energy / voxel_value);
 
                 /*if (isnan(*p_input_data))
                 {
-                    std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
+                    std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * std::log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
                 }
                 if (isinf(*p_input_data))
                 {
-                	std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
+                	std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * std::log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
                 }*/
             }
         }
@@ -2970,13 +2970,13 @@ void XRayRenderer::display(bool useLogScale)
         {
             if (m_min_value_in_simulated_xray_image >= EPSILON)
             {
-                shift_filter = -log(m_min_value_in_simulated_xray_image);
-                scale_filter = 1.0 / (log(m_max_value_in_simulated_xray_image) - log(m_min_value_in_simulated_xray_image));
+                shift_filter = -std::log(m_min_value_in_simulated_xray_image);
+                scale_filter = 1.0 / (std::log(m_max_value_in_simulated_xray_image) - std::log(m_min_value_in_simulated_xray_image));
             }
             else
             {
-                shift_filter = -log(EPSILON);
-                scale_filter = 1.0 / (log(m_max_value_in_simulated_xray_image) - log(EPSILON));
+                shift_filter = -std::log(EPSILON);
+                scale_filter = 1.0 / (std::log(m_max_value_in_simulated_xray_image) - std::log(EPSILON));
             }
         }
     }
@@ -3101,7 +3101,7 @@ RATIONAL_NUMBER XRayRenderer::getMuWaterLogLinearInterpolation(const RATIONAL_NU
 			if (ite->getEnergy() >= anIncidentEnergy)
 			{
 				// Get the interpolated value
-				mu_water = exp(log((ite - 1)->getAttenuationCoefficient()) + (log(ite->getAttenuationCoefficient()) - log((ite - 1)->getAttenuationCoefficient())) * ((anIncidentEnergy - (ite - 1)->getEnergy()) / (ite->getEnergy() - (ite - 1)->getEnergy())));
+				mu_water = exp(std::log((ite - 1)->getAttenuationCoefficient()) + (std::log(ite->getAttenuationCoefficient()) - std::log((ite - 1)->getAttenuationCoefficient())) * ((anIncidentEnergy - (ite - 1)->getEnergy()) / (ite->getEnergy() - (ite - 1)->getEnergy())));
 
 				// Return mu value
 				return (mu_water);

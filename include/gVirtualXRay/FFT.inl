@@ -27,6 +27,7 @@
 //  Include
 //******************************************************************************
 #include <cmath>
+#include <complex>
 
 #ifdef HAS_FFTW
 #include <fftw3.h>

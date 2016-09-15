@@ -44,8 +44,17 @@ namespace gVirtualXRay {
 //******************************************************************************
 //  Class declaration
 //******************************************************************************
+template<typename T> class Image;
 template<typename T> class FFT;
 template<typename T> class Sinogram;
+
+
+//******************************************************************************
+//  Function declaration
+//******************************************************************************
+template<typename T> Image<T> operator*(const T& aValue, const Image<T>& anImage);
+template<typename T> Image<T> operator/(const T& aValue, const Image<T>& anImage);
+template<typename T> Image<T> log(const Image<T>& anImage);
 
 
 //==============================================================================
@@ -663,7 +672,7 @@ public:
     double computeNCC(const Image<T>& anImage) const;
     
 
-    FFT<T> getFFT() const;
+    gVirtualXRay::FFT<T> getFFT() const;
 
     Image<T> transpose() const;
 
@@ -671,7 +680,7 @@ public:
     Image<T> resize(unsigned int aNewWidth, unsigned int aNewHeightunsigned, unsigned int aNewNumberOfSlices) const;
     Image<T> rotate(float anAngleInDegrees) const;
     Image<T> setCanvasSize(unsigned int aNewWidth, unsigned int aNewHeight, unsigned int aNewNumberOfSlices) const;
-    Sinogram<T> radonTransform(double aFirstAngle, double anAngleStep, double aLastAngle) const;
+    gVirtualXRay::Sinogram<T> radonTransform(double aFirstAngle, double anAngleStep, double aLastAngle) const;
 
 
 //******************************************************************************

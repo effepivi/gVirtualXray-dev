@@ -305,7 +305,9 @@ template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAng
     Image<T> reconstruction(sinogram.m_width, sinogram.m_width, sinogram.m_number_of_slices);
 
     double angle(aFirstAngle);
-    for (unsigned int angle_id(0); angle_id < this->m_height; ++angle_id, angle += anAngleStep)
+    for (unsigned int angle_id(0);
+            angle_id < this->m_height && (angle < aLastAngle || std::abs(angle - aLastAngle) < EPSILON);
+            ++angle_id, angle += anAngleStep)
     {
         if (angle_id == 130)
         {
@@ -377,13 +379,13 @@ template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstA
 	}
 
 	// Store the results
-    Sinogram<T> filtered_sinogram(this->m_width, this->m_height);
+    Sinogram<T> filtered_sinogram(this->m_width, this->m_height, this->m_number_of_slices);
 
     for (unsigned int k(0); k < this->m_number_of_slices; ++k)
     {
         for (unsigned int j(0); j < this->m_height; ++j)
         {
-            for (unsigned int i(0); i < this->m_height; ++i)
+            for (unsigned int i(0); i < this->m_width; ++i)
             {
                 filtered_sinogram(i, j, k) = p_ifft_set[j](i, 0, k);
             }

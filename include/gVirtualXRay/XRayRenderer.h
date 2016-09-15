@@ -82,6 +82,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Image.h"
 #endif
 
+#ifndef __Sinogram_h
+#include "gVirtualXRay/Sinogram.h"
+#endif
+
 #ifndef GVXR_POLYGON_MESH_H
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -415,31 +419,31 @@ public:
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current L-buffer.
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getLBuffer();
+	//RATIONAL_NUMBER* getLBuffer();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current cumulated L-buffer.
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getCumulatedLBuffer();
+	//RATIONAL_NUMBER* getCumulatedLBuffer();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current Mux Dx.
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getSumMuxDx();
+	//RATIONAL_NUMBER* getSumMuxDx();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current energy fluence (same as getXRayImage()).
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getEnergyFluence();
+	//RATIONAL_NUMBER* getEnergyFluence();
 
 
 	//--------------------------------------------------------------------------
 	///	Accessor on the raw data from the current energy fluence (same as getEnergyFluence()).
 	//--------------------------------------------------------------------------
-	RATIONAL_NUMBER* getXRayImage();
+	//RATIONAL_NUMBER* getXRayImage();
 
 
 	//--------------------------------------------------------------------------
@@ -646,8 +650,8 @@ public:
 
 #else // HAS_ITK
 
-    const Image<XRayRenderer::PixelType> getSinogram() const;
-    Image<XRayRenderer::PixelType> getSinogram();
+    const Image<XRayRenderer::PixelType>& getSinogram() const;
+    Image<XRayRenderer::PixelType>& getSinogram();
 
 #endif // HAS_ITK
 
@@ -672,12 +676,27 @@ public:
 
 #else // HAS_ITK
 
-    const Image<XRayRenderer::PixelType> getProjectionSet() const;
-    Image<XRayRenderer::PixelType> getProjectionSet();
+    const Image<XRayRenderer::PixelType>& getProjectionSet() const;
+    Image<XRayRenderer::PixelType>& getProjectionSet();
 
 #endif // HAS_ITK
 
-    const PixelType* getProjectionSetRawData() const;
+    const PixelType* getProjectionSetRawData();
+
+
+#ifdef HAS_ITK
+
+    const ImageType::Pointer& getEnergyFluence();
+    ImageType::Pointer& getEnergyFluence();
+
+#else // HAS_ITK
+
+    const Image<XRayRenderer::PixelType>& getEnergyFluence() const;
+    Image<XRayRenderer::PixelType>& getEnergyFluence();
+
+#endif // HAS_ITK
+
+    const PixelType* getEnergyFluenceRawData();
 
 
     //--------------------------------------------------------------------------
@@ -999,7 +1018,7 @@ protected:
 
 
     /// Sinogram
-    Image<PixelType> m_sinogram_image;
+    Sinogram<PixelType> m_sinogram_image;
 
 
     /// Projection set

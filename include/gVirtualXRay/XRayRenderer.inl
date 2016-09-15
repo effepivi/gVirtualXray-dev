@@ -502,10 +502,50 @@ namespace gVirtualXRay {
         }
     }
 
+
+    //-----------------------------------------------------------------------------
+    inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getEnergyFluence()
+    //-----------------------------------------------------------------------------
+    {
+        memcpy(getEnergyFluenceRawData(),
+                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
+                sizeof(RATIONAL_NUMBER) * m_p_energy_fluence_image.getWidth() * m_p_energy_fluence_image.getHeight());
+
+        return (m_p_energy_fluence_image);
+    }
+
+
+    //-----------------------------------------------------------------------
+    inline XRayRenderer::ImageType::Pointer& XRayRenderer::getEnergyFluence()
+    //-----------------------------------------------------------------------
+    {
+        memcpy(getEnergyFluenceRawData(),
+                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
+                sizeof(RATIONAL_NUMBER) * m_p_energy_fluence_image.getWidth() * m_p_energy_fluence_image.getHeight());
+
+        return (m_p_energy_fluence_image);
+    }
+
+
+    //-------------------------------------------------------------
+    inline const PixelType* XRayRenderer::getEnergyFluenceRawData()
+    //-------------------------------------------------------------
+    {
+        if (m_p_energy_fluence_image.IsNull())
+        {
+            return (0);
+        }
+        else
+        {
+            return (m_p_energy_fluence_image->GetBufferPointer());
+        }
+    }
+
+
 #else // HAS_ITK
 
     //---------------------------------------------------------------------------
-    inline const Image<XRayRenderer::PixelType> XRayRenderer::getSinogram() const
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram() const
     //---------------------------------------------------------------------------
     {
         return (m_sinogram_image);
@@ -513,7 +553,7 @@ namespace gVirtualXRay {
 
 
     //---------------------------------------------------------------
-    inline Image<XRayRenderer::PixelType> XRayRenderer::getSinogram()
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram()
     //---------------------------------------------------------------
     {
         return (m_sinogram_image);
@@ -529,7 +569,7 @@ namespace gVirtualXRay {
 
 
     //--------------------------------------------------------------------------------
-    inline const Image<XRayRenderer::PixelType> XRayRenderer::getProjectionSet() const
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getProjectionSet() const
     //--------------------------------------------------------------------------------
     {
         return (m_projection_set);
@@ -537,18 +577,56 @@ namespace gVirtualXRay {
 
 
     //--------------------------------------------------------------------
-    inline Image<XRayRenderer::PixelType> XRayRenderer::getProjectionSet()
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getProjectionSet()
     //--------------------------------------------------------------------
     {
         return (m_projection_set);
     }
 
 
-    //---------------------------------------------------------------------------------
-    inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSetRawData() const
-    //---------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSetRawData()
     {
         return (m_projection_set.getRawData());
+    }
+
+
+    //---------------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence() const
+    //---------------------------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(const_cast<RATIONAL_NUMBER*>(m_energy_fluence_image.getRawData()));
+        RATIONAL_NUMBER* p_source(const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
+
+        memcpy(p_target,
+                p_source,
+                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        return (m_energy_fluence_image);
+    }
+
+
+    //--------------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence()
+    //--------------------------------------------------------------------
+    {
+        memcpy(m_energy_fluence_image.getRawData(),
+                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
+                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        return (m_energy_fluence_image);
+    }
+
+
+    //---------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getEnergyFluenceRawData()
+    //---------------------------------------------------------------------------
+    {
+        memcpy(m_energy_fluence_image.getRawData(),
+                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
+                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        return (m_energy_fluence_image.getRawData());
     }
 
 #endif // HAS_ITK
@@ -780,7 +858,7 @@ namespace gVirtualXRay {
         printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName);
     }
 
-
+/*
     //------------------------------------------------
     inline RATIONAL_NUMBER* XRayRenderer::getLBuffer()
     //------------------------------------------------
@@ -832,7 +910,7 @@ namespace gVirtualXRay {
         //return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
     }
-
+*/
 
     //----------------------------------------
     inline void XRayRenderer::displayLBuffer()

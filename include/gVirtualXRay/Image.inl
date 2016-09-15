@@ -1724,7 +1724,7 @@ template<typename T> Image<T> Image<T>::operator/(const Image<T>& anImage) const
 
                 if (std::abs(pixel_value) < EPSILON)
                 {
-                    //throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
                 }
                 else
                 {
@@ -2174,6 +2174,46 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
     }
 
     return (sinogram);
+}
+
+
+//--------------------------------------------------------------
+template<typename T> Image<T> operator*(const T& aValue,
+                                        const Image<T>& anImage)
+//--------------------------------------------------------------
+{
+    return (anImage * aValue);
+}
+
+
+//--------------------------------------------------------------
+template<typename T> Image<T> operator/(const T& aValue,
+                                        const Image<T>& anImage)
+//--------------------------------------------------------------
+{
+    Image<T> temp_image(anImage);
+
+    unsigned int number_of_voxels(temp_image.m_width * temp_image.m_height * temp_image.m_number_of_slices);
+    T* p_temp(temp_image.m_p_image);
+    for (unsigned int i(0); i < number_of_voxels; ++i, ++p_temp)
+    {
+        if (std::abs(*p_temp) < EPSILON)
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
+        }
+
+        *p_temp = aValue / *p_temp;
+    }
+
+    return (temp_image);
+}
+
+
+//--------------------------------------------------------
+template<typename T> Image<T> log(const Image<T>& anImage)
+//--------------------------------------------------------
+{
+    return (anImage.log());
 }
 
 

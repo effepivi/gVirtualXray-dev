@@ -77,9 +77,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <cfloat>
 
-#include <fftw3.h>
-#include <complex>
-
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
 #else
@@ -192,7 +189,7 @@ const GLfloat g_rotation_speed(2.0);
 
 const float g_incident_energy(0.08 * MeV);
 const VEC2 g_resolution(0.75 * mm, 5.0 * mm);
-const Vec2ui g_number_of_pixels(256, 1);
+const Vec2ui g_number_of_pixels(257, 1);
 
 const double g_initial_fovy(45);                              // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);                        // Near clipping plane
@@ -259,8 +256,8 @@ bool g_is_xray_image_up_to_date(false);
 bool g_update_projection_and_sinogram(false);
 bool g_display_wireframe(false);
 
-unsigned int g_angle_number(360);
-RATIONAL_NUMBER g_angle_step(0.5);
+unsigned int g_angle_number(360 / 16);
+RATIONAL_NUMBER g_angle_step(0.5 * 16);
 RATIONAL_NUMBER g_first_angle(0);
 RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
 unsigned int g_next_angle_to_process(0);
@@ -274,25 +271,16 @@ GLuint g_filtered_sinogram_texture_id(0);
 GLuint g_raw_tomography_texture_id(0);
 GLuint g_filtered_tomography_texture_id(0);
 
-typedef Image<float> ProjectionImageType;
+typedef Image<float>    ProjectionImageType;
+typedef Sinogram<float> SinogramType;
 
 ProjectionImageType g_projection_data;
-ProjectionImageType g_raw_sinogram_data;
-ProjectionImageType g_filtered_sinogram_data;
+Sinogram<float> g_raw_sinogram_data;
+Sinogram<float> g_filtered_sinogram_data;
 ProjectionImageType g_raw_tomography_data;
 ProjectionImageType g_filtered_tomography_data;
 
 float g_pixel_width(0);
-float g_min_projection(0);
-float g_max_projection(0);
-float g_min_raw_sinogram(0);
-float g_max_raw_sinogram(0);
-float g_min_filtered_sinogram(0);
-float g_max_filtered_sinogram(0);
-float g_min_raw_tomography(0);
-float g_max_raw_tomography(0);
-float g_min_filtered_tomography(0);
-float g_max_filtered_tomography(0);
 
 VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
@@ -301,7 +289,7 @@ VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 #ifdef HAS_FREETYPE
 bool g_display_help(true);
 TextRenderer g_font_rendered;
-bool g_run_tomography_acquisition(false);
+bool g_run_tomography_acquisition(true);
 #else
 bool g_run_tomography_acquisition(true);
 #endif
@@ -340,11 +328,9 @@ void createTomography();
 void updateProjection();
 void updateRawSinogram();
 void updateFilteredSinogram();
-void updateTomography(ProjectionImageType& aSinogram,
+void updateTomography(const Sinogram<float>& aSinogram,
         ProjectionImageType& aTomographySlice,
-        GLuint aTextureID,
-        GLfloat& aMinTomography,
-        GLfloat& aMaxTomography);
+        GLuint aTextureID);
 void displayProjection();
 void displayRawSinogram();
 void displayFilteredSinogram();
@@ -415,7 +401,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-        double first_angle(0);
+/*        double first_angle(0);
         double angle_step(1);
         double last_angle(180);
 
@@ -439,6 +425,9 @@ int main(int argc, char** argv)
         sinogram = phantom.radonTransform(first_angle, angle_step, last_angle);
         (sinogram.normalized() * 255).savePGM(prefix + "sinogram-" + aPhantom + ".pgm");
         std::cout << "\t\t\tmin:\t" << sinogram.getMinValue() << "\tmax:\t" << sinogram.getMaxValue() << "\taverage:\t" << sinogram.getAverage() << std::endl;
+*/
+
+
 /*
         std::cout << "\t\tSBP" << std::endl;
         SBP = sinogram.simpleBackProjection(first_angle, angle_step, last_angle, prefix + "SBP-" + aPhantom + "-angles").transpose();
@@ -457,7 +446,7 @@ int main(int argc, char** argv)
         ART_reconstruction.saveASCII(prefix + "ART-" + aPhantom + ".mat");
         (ART_reconstruction.normalized() * 255).savePGM(prefix + "ART-" + aPhantom + ".pgm");
 */
-        std::cout << "\t\tMART" << std::endl;
+/*        std::cout << "\t\tMART" << std::endl;
         MART_reconstruction = sinogram.MART(first_angle, angle_step, last_angle, 5, prefix + "MART-" + aPhantom + "-iterations");
         MART_reconstruction.saveASCII(prefix + "MART-" + aPhantom + ".mat");
         (MART_reconstruction.normalized() * 255).savePGM(prefix + "MART-" + aPhantom + ".pgm");
@@ -468,7 +457,7 @@ int main(int argc, char** argv)
         (SIRT_reconstruction.normalized() * 255).savePGM(prefix + "SIRT-" + aPhantom + ".pgm");
 
 
-        return (0);
+        return (0);*/
 
 	    // Initialize random seed
 	    srand(time(0));
@@ -661,16 +650,12 @@ int main(int argc, char** argv)
 
                 updateTomography(g_raw_sinogram_data,
                         g_raw_tomography_data,
-                        g_raw_tomography_texture_id,
-                        g_min_raw_tomography,
-                        g_max_raw_tomography);
+                        g_raw_tomography_texture_id);
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
                 updateTomography(g_filtered_sinogram_data,
                         g_filtered_tomography_data,
-                        g_filtered_tomography_texture_id,
-                        g_min_filtered_tomography,
-                        g_max_filtered_tomography);
+                        g_filtered_tomography_texture_id);
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
                 g_update_projection_and_sinogram = false;
@@ -695,7 +680,7 @@ int main(int argc, char** argv)
 	        }
 	        */
 
-	        if (updated_image)
+	        //if (updated_image)
 	        {
 	        	if (g_first_angle == g_current_angle || g_current_angle == (g_angle_number - 1) || !(g_current_angle % 60))
 	        	{
@@ -714,6 +699,38 @@ int main(int argc, char** argv)
                     g_projection_data.save("projection.mhd");
                     g_raw_tomography_data.save("simple_back_projection.mhd");
                     g_filtered_tomography_data.save("filtered_back_projection.mhd");
+
+/*
+                    std::string prefix("../data/");
+                    std::string phantom("gpu_simulation");
+
+                    std::cout << "\t\tSBP" << std::endl;
+                    ProjectionImageType SBP = g_filtered_sinogram_data.simpleBackProjection(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, prefix + "SBP-" + phantom + "-angles").transpose();
+                    SBP.save("filtered_sinogram2.mhd");
+                    (SBP.normalized() * 255).savePGM("filtered_sinogram2.pgm");
+                    std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
+
+
+
+                    std::cout << "\t\tSBP" << std::endl;
+                    SBP = g_raw_sinogram_data.simpleBackProjection(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, prefix + "SBP-" + phantom + "-angles").transpose();
+                    SBP.saveASCII(prefix + "SBP-" + phantom + ".mat");
+                    (SBP.normalized() * 255).savePGM(prefix + "SBP-" + phantom + ".pgm");
+                    std::cout << "\t\t\tmin:\t" << SBP.getMinValue() << "\tmax:\t" << SBP.getMaxValue() << "\taverage:\t" << SBP.getAverage() << std::endl;
+
+                    std::cout << "\t\tFBP" << std::endl;
+                    ProjectionImageType FBP = g_raw_sinogram_data.filteredBackProjection(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, "hamming", 1.0, prefix + "FBP-" + phantom + "-angles").transpose();
+                    FBP.saveASCII(prefix + "FBP-" + phantom + ".mat");
+                    (FBP.normalized() * 255).savePGM(prefix + "FBP-" + phantom + ".pgm");
+                    std::cout << "\t\t\tmin:\t" << FBP.getMinValue() << "\tmax:\t" << FBP.getMaxValue() << "\taverage:\t" << FBP.getAverage() << std::endl;
+*/
+                    exit(0);
+
+                    /*
+                    std::cout << "\t\tART" << std::endl;
+                    ProjectionImageType ART_reconstruction = g_raw_sinogram_data.ART(g_first_angle, g_angle_step, g_first_angle + g_current_angle * g_angle_step, 5, prefix + "ART-" + phantom + "-iterations");
+                    ART_reconstruction.saveASCII(prefix + "ART-" + phantom + ".mat");
+                    (ART_reconstruction.normalized() * 255).savePGM(prefix + "ART-" + phantom + ".pgm");*/
 	        	}
 	        }
 
@@ -1795,8 +1812,6 @@ void createProjection()
 //---------------------
 {
     createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_projection_data);
-    g_min_projection = 0;
-    g_max_projection = 0;
 
     float x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
@@ -1875,12 +1890,6 @@ void createSinogram()
 {
     createTexture(g_raw_sinogram_texture_id,      g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_raw_sinogram_data);
     createTexture(g_filtered_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_filtered_sinogram_data);
-
-    g_min_raw_sinogram = 0;
-    g_max_raw_sinogram = 0;
-
-    g_min_filtered_sinogram = 0;
-    g_max_filtered_sinogram = 0;
 }
 
 
@@ -1890,12 +1899,6 @@ void createTomography()
 {
     createTexture(g_raw_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_pixel_width, g_pixel_width, g_raw_tomography_data);
     createTexture(g_filtered_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_pixel_width, g_pixel_width, g_filtered_tomography_data);
-
-    g_min_raw_tomography = 0;
-    g_max_raw_tomography = 0;
-
-    g_min_filtered_tomography = 0;
-    g_max_filtered_tomography = 0;
 
     std::vector<GLfloat> p_vertices;
     p_vertices.push_back(0);
@@ -1968,34 +1971,10 @@ void createTomography()
 void updateProjection()
 //---------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_projection_data.getRawData() + g_current_angle * g_number_of_pixels.getX());
-
-    float value;
-
-    if (g_current_angle == 0)
-    {
-    	value = *p_input_image;
-        g_min_projection = *p_input_image;
-        g_max_projection = *p_input_image;
-    }
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-    	value = *p_input_image++;
-
-        if (g_min_projection > value)
-        {
-            g_min_projection = value;
-        }
-
-        if (g_max_projection < value)
-        {
-            g_max_projection = value;
-        }
-
-        *p_output_image++ = value;
-    }
+    memcpy(&g_projection_data.getPixel(0, g_current_angle, 0),
+            g_xray_renderer.getEnergyFluence().getRawData(),
+            sizeof(float) * g_number_of_pixels.getX()
+    );
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
@@ -2009,39 +1988,17 @@ void updateProjection()
 void updateRawSinogram()
 //----------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_raw_sinogram_data.getRawData() + g_current_angle * g_number_of_pixels.getX());
-
     float total_input_energy(g_xray_beam.getTotalEnergy());
     float scaling_factor(
             float(g_number_of_pixels.getX()) / ((g_resolution.getX() * g_number_of_pixels.getX()) / cm)
     );
 
-    float value;
+    // Convert the projection into a sinogram
+    Sinogram<float> raw_sinogram(scaling_factor * (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
 
-    if (g_current_angle == 0)
-    {
-        value = scaling_factor * log(total_input_energy / *p_input_image);
-        g_min_raw_sinogram = value;
-        g_max_raw_sinogram = value;
-    }
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-        value = scaling_factor * log(total_input_energy / *p_input_image++);
-
-        if (g_min_raw_sinogram > value)
-        {
-            g_min_raw_sinogram = value;
-        }
-
-        if (g_max_raw_sinogram < value)
-        {
-            g_max_raw_sinogram = value;
-        }
-
-        *p_output_image++ = value;
-    }
+    memcpy(&(g_raw_sinogram_data(0, g_current_angle,0)),
+            raw_sinogram.getRawData(),
+            sizeof(float) * g_number_of_pixels.getX());
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_raw_sinogram_texture_id);
@@ -2055,54 +2012,28 @@ void updateRawSinogram()
 void updateFilteredSinogram()
 //---------------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-
     float total_input_energy(g_xray_beam.getTotalEnergy());
     float scaling_factor(
             float(g_number_of_pixels.getX()) / ((g_resolution.getX() * g_number_of_pixels.getX()) / cm)
     );
 
-    float value;
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-        value = scaling_factor * log(total_input_energy / p_input_image[i]);
-        g_filtered_sinogram_data(i, g_current_angle, 0) = value;
-    }
+    // Convert the projection into a sinogram
+    Sinogram<float> raw_sinogram(scaling_factor * (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
+    raw_sinogram.saveASCII("raw_line.mat");
 
     // Compute the FFTs
-    FFT<float> projection_fft(g_filtered_sinogram_data.getROI(0, g_current_angle, 0, g_number_of_pixels.getX(), 1, 1).getFFT());
+    FFT<float> sinogram_fft(raw_sinogram.getFFT());
 
     // Compute the ramp filter
-    projection_fft.rhoFilter("ramp", 0.014);
+    sinogram_fft = sinogram_fft.rhoFilter("hamming", 1.0);
 
     // Compute the iFFTs
-    ProjectionImageType filtered_projection(projection_fft.getInverseFFT());
+    ProjectionImageType filtered_projection(sinogram_fft.getInverseFFT());
+    filtered_projection.saveASCII("filtered_line.mat");
 
-    // Store the results
-    value = filtered_projection(0, 0, 0);
-
-    if (g_current_angle == 0)
-    {
-        g_min_filtered_sinogram = value;
-        g_max_filtered_sinogram = value;
-    }
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-        value = filtered_projection(i, 0, 0);
-        g_filtered_sinogram_data(i, g_current_angle, 0) = value;
-
-        if (g_min_filtered_sinogram > value)
-        {
-            g_min_filtered_sinogram = value;
-        }
-
-        if (g_max_filtered_sinogram < value)
-        {
-            g_max_filtered_sinogram = value;
-        }
-    }
+    memcpy(&(g_filtered_sinogram_data(0, g_current_angle,0)),
+            filtered_projection.getRawData(),
+            sizeof(float) * g_number_of_pixels.getX());
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_filtered_sinogram_texture_id);
@@ -2113,15 +2044,15 @@ void updateFilteredSinogram()
 
 
 //----------------------------------------------------------
-void updateTomography(ProjectionImageType& aSinogram,
+void updateTomography(const Sinogram<float>& aSinogram,
                       ProjectionImageType& aTomographySlice,
-                      GLuint aTextureID,
-                      GLfloat& aMinTomography,
-                      GLfloat& aMaxTomography)
+                      GLuint aTextureID)
 //----------------------------------------------------------
 {
+    aTomographySlice = aSinogram.simpleBackProjection(g_first_angle, g_angle_step, g_first_angle + g_angle_step * g_current_angle, 0).transpose();
+
     // Get the current projection from the sinogram
-    float* p_current_projection(aSinogram.getRawData() + g_current_angle * g_number_of_pixels.getX());
+/*    float* p_current_projection(aSinogram.getRawData() + g_current_angle * g_number_of_pixels.getX());
     float current_angle(g_angle_step * g_current_angle);
 
     float width(g_resolution.getX() * g_number_of_pixels.getX());
@@ -2164,26 +2095,11 @@ void updateTomography(ProjectionImageType& aSinogram,
     	// Backproject the pixel
     	drawLine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), aTomographySlice.getRawData(), intensity / width);
     }
-
-    unsigned int number_of_pixels(g_number_of_pixels.getX() * g_number_of_pixels.getX());
-    aMinTomography = aMaxTomography = aTomographySlice.getRawData()[0];
-    for (unsigned int i(1); i < number_of_pixels; ++i)
-    {
-        if (aMinTomography > aTomographySlice.getRawData()[i])
-        {
-            aMinTomography = aTomographySlice.getRawData()[i];
-        }
-
-        if (aMaxTomography < aTomographySlice.getRawData()[i])
-        {
-        	aMaxTomography = aTomographySlice.getRawData()[i];
-        }
-    }
-
+*/
     // Update the texture
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, aTextureID);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, aTomographySlice.getRawData());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, aTomographySlice.getWidth(), aTomographySlice.getHeight(), GL_RED, GL_FLOAT, aTomographySlice.getRawData());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
@@ -2193,6 +2109,9 @@ void updateTomography(ProjectionImageType& aSinogram,
 void displayProjection()
 //----------------------
 {
+    float min_value(g_projection_data.getMinValue());
+    float max_value(g_projection_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     MATRIX4 model_view;
@@ -2204,14 +2123,14 @@ void displayProjection()
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_projection);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_projection != g_min_projection)
+    if (max_value != min_value)
     {
-        scale = 1.0 / (g_max_projection - g_min_projection);
+        scale = 1.0 / (max_value - min_value);
     }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2224,6 +2143,9 @@ void displayProjection()
 void displayRawSinogram()
 //-----------------------
 {
+    float min_value(g_raw_sinogram_data.getMinValue());
+    float max_value(g_raw_sinogram_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
@@ -2235,14 +2157,14 @@ void displayRawSinogram()
     glBindTexture(GL_TEXTURE_2D, g_raw_sinogram_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_raw_sinogram);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_raw_sinogram != g_min_raw_sinogram)
+    if (max_value != min_value)
     {
-        scale = 1.0 / (g_max_raw_sinogram - g_min_raw_sinogram);
+        scale = 1.0 / (max_value - min_value);
     }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2255,6 +2177,9 @@ void displayRawSinogram()
 void displayFilteredSinogram()
 //----------------------------
 {
+    float min_value(g_filtered_sinogram_data.getMinValue());
+    float max_value(g_filtered_sinogram_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     double x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
@@ -2267,14 +2192,14 @@ void displayFilteredSinogram()
     glBindTexture(GL_TEXTURE_2D, g_filtered_sinogram_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_filtered_sinogram);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_filtered_sinogram != g_min_filtered_sinogram)
+    if (max_value != min_value)
     {
-        scale = 1.0 / (g_max_filtered_sinogram - g_min_filtered_sinogram);
+        scale = 1.0 / (max_value - min_value);
     }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2287,6 +2212,9 @@ void displayFilteredSinogram()
 void displayRawTomography()
 //-------------------------
 {
+    float min_value(g_raw_tomography_data.getMinValue());
+    float max_value(g_raw_tomography_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
@@ -2298,14 +2226,14 @@ void displayRawTomography()
     glBindTexture(GL_TEXTURE_2D, g_raw_tomography_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_raw_tomography);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_raw_tomography != g_min_raw_tomography)
+    if (max_value != min_value)
     {
-        scale = 1.0 / (g_max_raw_tomography - g_min_raw_tomography);
+        scale = 1.0 / (max_value - min_value);
     }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2318,6 +2246,9 @@ void displayRawTomography()
 void displayFilteredTomography()
 //------------------------------
 {
+    float min_value(g_filtered_tomography_data.getMinValue());
+    float max_value(g_filtered_tomography_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     double x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
@@ -2330,14 +2261,14 @@ void displayFilteredTomography()
     glBindTexture(GL_TEXTURE_2D, g_filtered_tomography_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_filtered_tomography);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_filtered_tomography != g_min_filtered_tomography)
+    if (max_value != min_value)
     {
-        scale = 1.0 / (g_max_filtered_tomography - g_min_filtered_tomography);
+        scale = 1.0 / (max_value - min_value);
     }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2364,17 +2295,6 @@ void reset()
         g_raw_tomography_data.getRawData()[i] = 0;
         g_filtered_tomography_data.getRawData()[i] = 0;
     }
-
-    g_min_projection = 0;
-    g_max_projection = 0;
-    g_min_raw_sinogram = 0;
-    g_max_raw_sinogram = 0;
-    g_min_filtered_sinogram = 0;
-    g_max_filtered_sinogram = 0;
-    g_min_raw_tomography = 0;
-    g_max_raw_tomography = 0;
-    g_min_filtered_tomography = 0;
-    g_max_filtered_tomography = 0;
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);

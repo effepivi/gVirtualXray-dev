@@ -209,7 +209,7 @@ inline double AtomicElement::getMassAttenuationTotal(double anEnergy)
             max_mass_attenuation_coefficient = m_p_mass_attenuation_coefficient_set[i];
         }
 
-        return (exp(log(min_mass_attenuation_coefficient) + (log(max_mass_attenuation_coefficient) - log(min_mass_attenuation_coefficient)) * ((((anEnergy - min_energy)) / ((max_energy - min_energy))))));
+        return (exp(std::log(min_mass_attenuation_coefficient) + (std::log(max_mass_attenuation_coefficient) - std::log(min_mass_attenuation_coefficient)) * ((((anEnergy - min_energy)) / ((max_energy - min_energy))))));
     }
 }
 
