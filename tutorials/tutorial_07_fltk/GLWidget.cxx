@@ -459,6 +459,7 @@ int GLWidget::handle(int event)
         default:
             break;
         }
+        break;
         
     case FL_PUSH:
         g_use_arc_ball = true;

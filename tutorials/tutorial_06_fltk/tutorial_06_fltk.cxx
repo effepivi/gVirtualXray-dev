@@ -447,6 +447,7 @@ int GLWidget::handle(int event)
         default:
             break;
         }
+        break;
 
     default:
         break;
