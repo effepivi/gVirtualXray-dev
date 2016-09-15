@@ -183,12 +183,14 @@ void GLWidget::initializeGL()
     {
         z_lib_return_code_vertex   = inflate(g_display_realistic_gl3_vert, sizeof(g_display_realistic_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_display_realistic_gl3_frag, sizeof(g_display_realistic_gl3_frag), &p_fragment_shader);
+        m_display_shader.setLabels("display_realistic_gl3.vert", "display_realistic_gl3.frag");
     }
     // Modern OpenGL 3.2 or above is not supported
     else
     {
         z_lib_return_code_vertex   = inflate(g_display_realistic_gl2_vert, sizeof(g_display_realistic_gl2_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_display_realistic_gl2_frag, sizeof(g_display_realistic_gl2_frag), &p_fragment_shader);
+        m_display_shader.setLabels("display_realistic_gl2.vert", "display_realistic_gl2.frag");
     }
 
     vertex_shader   = p_vertex_shader;
@@ -200,7 +202,6 @@ void GLWidget::initializeGL()
     {
     	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
-    m_display_shader.setLabels("display_realistic.vert", "display_realistic.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
