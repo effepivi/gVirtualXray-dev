@@ -371,6 +371,43 @@ SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}
 SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
 SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 
+
+# FFTW3 ########################################################################
+OPTION(USE_FFTW3       "Use FFTW3"       ON)
+
+IF (USE_FFTW3)
+    OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       OFF)
+
+    IF (USE_SYSTEM_FFTW3)
+
+        FIND_LIBRARY(FFTW3_LIBRARIES NAMES fftw3 libfftw3 libfftw3_omp)
+
+    ELSE(USE_SYSTEM_FFTW3)
+
+	IF (UNIX)
+            INCLUDE(BuildFFTW3)
+            build_fftw3( fftw3 ${PROJECT_BINARY_DIR} )
+        ELSE (UNIX)
+            MESSAGE (WARNING "Building FFTW3 on windows automatically is not supported. Either disable the Fast Fourier Transform, or build it by hand.")
+        ENDIF (UNIX)
+
+    ENDIF (USE_SYSTEM_FFTW3)
+
+    IF (FFTW3_LIBRARIES)
+        SET (requiredLibs ${requiredLibs} ${FFTW3_LIBRARIES})
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FFTW")
+
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FFTW3_INCLUDE_DIR}")
+        SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${FFTW3_LIBRARY_DIR})
+        SET (requiredLibs "${requiredLibs}" "${FFTW3_LIBRARY}")
+
+    ELSE ()
+        MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
+    ENDIF ()
+
+ENDIF (USE_FFTW3)
+
+
 # FREETYPE ####################################################################
 OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 
