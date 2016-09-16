@@ -287,7 +287,7 @@ int main(int argc, char** argv)
 
         std::cout.precision(3);
         {
-            RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence());
+            RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence().getRawData());
             double central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
             double simulated_result(central_pixel);
@@ -303,7 +303,7 @@ int main(int argc, char** argv)
         }
 
         {
-            RATIONAL_NUMBER* energy_fluence(g_xray_full_precision_renderer.getEnergyFluence());
+            RATIONAL_NUMBER* energy_fluence(g_xray_full_precision_renderer.getEnergyFluence().getRawData());
             double central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
             double simulated_result(central_pixel);

@@ -275,7 +275,7 @@ int main(int argc, char** argv)
         g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
 
         {
-            RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence());
+            RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence().getRawData());
             RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
             RATIONAL_NUMBER simulated_result(central_pixel);
@@ -291,7 +291,7 @@ int main(int argc, char** argv)
         }
 
         {
-            RATIONAL_NUMBER* energy_fluence(g_xray_full_precision_renderer.getEnergyFluence());
+            RATIONAL_NUMBER* energy_fluence(g_xray_full_precision_renderer.getEnergyFluence().getRawData());
             RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
             RATIONAL_NUMBER simulated_result(central_pixel);
