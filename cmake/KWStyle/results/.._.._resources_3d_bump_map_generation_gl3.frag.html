@@ -1,0 +1,1096 @@
+<html>
+<HEAD>
+<META name="description" content="kitware.com">
+<META name="keywords" content="kwstyle,Kitware,Style,Checker,Dart">
+<META name="author" content="Kitware">
+<META name="revisit-after" content="2 days">
+<META name="robots" content="all">
+<title>KWStyle - results/.._.._resources_3d_bump_map_generation_gl3.frag.html</title>
+</HEAD>
+<table width="100%" border="0">
+ <tr>
+   <td width="15%" height="2"><img src="images/logo.png"></td>
+   <td width="85%" height="2" bgcolor="#0099CC"> 
+     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - .._.._resources_3d_bump_map_generation_gl3.frag</font></b></div>
+   </td>
+ </tr>
+</table>
+<table width="100%" border="0">
+ <tr> 
+   <td width="15%" height="30" >&nbsp;</td>
+   <td height="30" width="12%" bgcolor="#0099CC"> 
+     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>
+   </td>
+   <td width="10%" height="30" bgcolor="#0099CC" >
+ <div align="center"><a href="KWSDescription.html">Description</a></div>
+  </td>
+   <td width="63%" height="30"> 
+     <div align="left"><b></b></div>
+     <div align="right"></div>
+   </td>
+ </tr>
+</table>
+<hr size="1"><table width="100%" border="0" height="1">
+<tr>
+<td height="1">1</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">/**</font></font></td>
+</tr>
+<tr>
+<td height="1">2</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr>
+<td height="1">3</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">4</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@file		bump_map_generation_gl3.frag</font></font></td>
+</tr>
+<tr>
+<td height="1">5</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">6</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@brief&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fragment&nbsp;shader&nbsp;to&nbsp;create&nbsp;a&nbsp;bump&nbsp;map.</font></font></td>
+</tr>
+<tr>
+<td height="1">7</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">8</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@version	1.0</font></font></td>
+</tr>
+<tr>
+<td height="1">9</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">10</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@date		01/08/2016</font></font></td>
+</tr>
+<tr>
+<td height="1">11</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr bgcolor="#CCCCFF">
+<td height="1">12</td>
+<td height="1">TAB,BCH</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*	@author		Andréas&nbsp;Meuleman</font></font></td>
+</tr>
+<tr>
+<td height="1">13</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">14</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr bgcolor="#FF3300">
+<td height="1">15</td>
+<td height="1">DEF</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">16</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">17</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#6666CC">
+<td height="1">18</td>
+<td height="1">EML</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">19</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">20</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	OpenGL&nbsp;3.2<font></font></td>
+</tr>
+<tr>
+<td height="1">21</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">22</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#version&nbsp;150</font></td>
+</tr>
+<tr>
+<td height="1">23</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">24</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">25</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">26</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	constant&nbsp;variables<font></font></td>
+</tr>
+<tr>
+<td height="1">27</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">28</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//size&nbsp;of&nbsp;the&nbsp;arrays&nbsp;to&nbsp;initialize&nbsp;noises<font></font></td>
+</tr>
+<tr>
+<td height="1">29</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">const&nbsp;int&nbsp;TAB_SIZE&nbsp;=&nbsp;64;</font></td>
+</tr>
+<tr>
+<td height="1">30</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">31</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">32</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">33</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Input<font></font></td>
+</tr>
+<tr>
+<td height="1">34</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">35</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">smooth&nbsp;in&nbsp;vec3&nbsp;g_object_position;</font></td>
+</tr>
+<tr>
+<td height="1">36</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">37</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">38</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Output<font></font></td>
+</tr>
+<tr>
+<td height="1">39</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">40</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">out&nbsp;float&nbsp;frag_colour;</font></td>
+</tr>
+<tr>
+<td height="1">41</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">42</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">43</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">44</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//	Uniform&nbsp;variables<font></font></td>
+</tr>
+<tr>
+<td height="1">45</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">46</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;int&nbsp;g_has_thin_bumps;</font></td>
+</tr>
+<tr>
+<td height="1">47</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;int&nbsp;g_perm[TAB_SIZE];</font></td>
+</tr>
+<tr>
+<td height="1">48</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;float&nbsp;g_bump_frequency;</font></td>
+</tr>
+<tr>
+<td height="1">49</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;vec3&nbsp;g_gradient_tab[TAB_SIZE];</font></td>
+</tr>
+<tr>
+<td height="1">50</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">51</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">52</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">int&nbsp;index(int&nbsp;ix,&nbsp;int&nbsp;iy,&nbsp;int&nbsp;iz)</font></td>
+</tr>
+<tr>
+<td height="1">53</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">54</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">55</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;g_perm[(ix+g_perm[(iy+g_perm[iz%TAB_SIZE])%TAB_SIZE])%TAB_SIZE];	</font></td>
+</tr>
+<tr>
+<td height="1">56</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">57</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">58</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">59</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;spline(float&nbsp;x,&nbsp;float&nbsp;knots[4])</font></td>
+</tr>
+<tr>
+<td height="1">60</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">61</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">62</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec4&nbsp;v_knots&nbsp;=&nbsp;vec4(knots[0],&nbsp;knots[1],&nbsp;knots[2],&nbsp;knots[3]);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">63</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">					</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">64</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	mat4&nbsp;matrix&nbsp;=&nbsp;mat4(-0.5,&nbsp;1.,&nbsp;-0.5,&nbsp;0.,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">65</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">					1.5,&nbsp;-2.5,&nbsp;0.,&nbsp;1.,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">66</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">					-1.5,&nbsp;2.,&nbsp;0.5,&nbsp;0.,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">67</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">					0.5,&nbsp;-0.5,&nbsp;0.,&nbsp;0.);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">68</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">					</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">69</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec4&nbsp;c&nbsp;=&nbsp;matrix*v_knots;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">70</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">71</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	x&nbsp;=&nbsp;clamp(x,&nbsp;0,&nbsp;1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">72</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">73</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;((c.x*x&nbsp;+&nbsp;c.y)*x&nbsp;+c.z)*x&nbsp;+c.w;</font></td>
+</tr>
+<tr>
+<td height="1">74</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">75</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">76</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">77</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">78</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;vlattice(int&nbsp;ix,&nbsp;int&nbsp;iy,&nbsp;int&nbsp;iz)</font></td>
+</tr>
+<tr>
+<td height="1">79</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">80</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">81</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;g_gradient_tab[index(ix,iy,iz)].z;</font></td>
+</tr>
+<tr>
+<td height="1">82</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">83</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">84</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//Value&nbsp;noise<font></font></td>
+</tr>
+<tr>
+<td height="1">85</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">86</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;vnoise(vec3&nbsp;v)</font></td>
+</tr>
+<tr>
+<td height="1">87</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">88</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">89</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;x&nbsp;=&nbsp;v.x;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">90</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;y&nbsp;=&nbsp;v.y;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">91</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;z&nbsp;=&nbsp;v.z;</font></td>
+</tr>
+<tr>
+<td height="1">92</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">93</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	int&nbsp;ix,&nbsp;iy,&nbsp;iz;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">94</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	int&nbsp;i,&nbsp;j,&nbsp;k;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">95</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;fx,&nbsp;fy,&nbsp;fz;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">96</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;xknots[4],&nbsp;yknots[4],&nbsp;zknots[4];</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">97</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">98</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	ix&nbsp;=&nbsp;int(floor(x));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">99</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fx&nbsp;=&nbsp;x&nbsp;-&nbsp;ix;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">100</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">101</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	iy&nbsp;=&nbsp;int(floor(y));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">102</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fy&nbsp;=&nbsp;y&nbsp;-&nbsp;iy;</font></td>
+</tr>
+<tr>
+<td height="1">103</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">104</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	iz&nbsp;=&nbsp;int(floor(z));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">105</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fz&nbsp;=&nbsp;z&nbsp;-&nbsp;iz;</font></td>
+</tr>
+<tr>
+<td height="1">106</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">107</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	for(k&nbsp;=&nbsp;-1;&nbsp;k&nbsp;&lt;=&nbsp;2;&nbsp;k++)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">108</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">109</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		for(j&nbsp;=&nbsp;-1;&nbsp;j&nbsp;&lt;=&nbsp;2;&nbsp;j++)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">110</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">111</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			for(i&nbsp;=&nbsp;-1;&nbsp;i&nbsp;&lt;=&nbsp;2;&nbsp;i++)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">112</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">113</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">				xknots[i+1]&nbsp;=&nbsp;vlattice(ix+i,&nbsp;iy+j,&nbsp;iz+k);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">114</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			}</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">115</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			yknots[j+1]&nbsp;=&nbsp;spline(fx,&nbsp;xknots);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">116</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		}</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">117</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		zknots[k+1]&nbsp;=&nbsp;spline(fy,&nbsp;yknots);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">118</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">119</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;spline(fz,&nbsp;zknots)*0.5+0.5;</font></td>
+</tr>
+<tr>
+<td height="1">120</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">121</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">122</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">123</td>
+<td height="1">ESP</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;glattice(int&nbsp;ix,&nbsp;int&nbsp;iy,&nbsp;int&nbsp;iz,*</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">124</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		float&nbsp;fx,&nbsp;float&nbsp;fy,&nbsp;float&nbsp;fz)</font></td>
+</tr>
+<tr>
+<td height="1">125</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">126</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">127</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	int&nbsp;base_index&nbsp;=&nbsp;index(ix,iy,iz);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">128</td>
+<td height="1">LEN,TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;g_gradient_tab[base_index].x*fx&nbsp;+&nbsp;g_gradient_tab[base_index].y*fy&nbsp;+&nbsp;g_gradient_tab[base_index].z*fz;</font></td>
+</tr>
+<tr>
+<td height="1">129</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">130</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">131</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">132</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;lerp(float&nbsp;t,&nbsp;float&nbsp;x0,&nbsp;float&nbsp;x1)</font></td>
+</tr>
+<tr>
+<td height="1">133</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">134</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">135</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;(x0&nbsp;+&nbsp;t*(x1-x0));</font></td>
+</tr>
+<tr>
+<td height="1">136</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">137</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">138</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">139</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;smoothStep(float&nbsp;x)</font></td>
+</tr>
+<tr>
+<td height="1">140</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">141</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">142</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		return&nbsp;(x*x*(3&nbsp;-&nbsp;2*x));</font></td>
+</tr>
+<tr>
+<td height="1">143</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">144</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">145</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//gradient&nbsp;noise&nbsp;using&nbsp;Perlin's&nbsp;method<font></font></td>
+</tr>
+<tr>
+<td height="1">146</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">147</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;gnoise(vec3&nbsp;v)</font></td>
+</tr>
+<tr>
+<td height="1">148</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">149</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">150</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;x&nbsp;=&nbsp;v.x;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">151</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;y&nbsp;=&nbsp;v.y;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">152</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;z&nbsp;=&nbsp;v.z;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">153</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">154</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	int&nbsp;ix,&nbsp;iy,&nbsp;iz;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">155</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;fx0,&nbsp;fx1,&nbsp;fy0,&nbsp;fy1,&nbsp;fz0,&nbsp;fz1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">156</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;wx,&nbsp;wy,&nbsp;wz;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">157</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;vx0,&nbsp;vx1,&nbsp;vy0,&nbsp;vy1,&nbsp;vz0,&nbsp;vz1;</font></td>
+</tr>
+<tr>
+<td height="1">158</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">159</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	ix&nbsp;=&nbsp;int(floor(x));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">160</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fx0&nbsp;=&nbsp;x&nbsp;-&nbsp;ix;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">161</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fx1&nbsp;=&nbsp;fx0&nbsp;-1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">162</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	wx&nbsp;=&nbsp;smoothStep(fx0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">163</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">164</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	iy&nbsp;=&nbsp;int(floor(y));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">165</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fy0&nbsp;=&nbsp;y&nbsp;-&nbsp;iy;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">166</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fy1&nbsp;=&nbsp;fy0&nbsp;-1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">167</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	wy&nbsp;=&nbsp;smoothStep(fy0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">168</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">169</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	iz&nbsp;=&nbsp;int(floor(z));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">170</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fz0&nbsp;=&nbsp;z&nbsp;-&nbsp;iz;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">171</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	fz1&nbsp;=&nbsp;fz0&nbsp;-1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">172</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	wz&nbsp;=&nbsp;smoothStep(fz0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">173</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">174</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx0&nbsp;=&nbsp;glattice(ix,&nbsp;iy,&nbsp;iz,&nbsp;fx0,&nbsp;fy0,&nbsp;fz0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">175</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx1&nbsp;=&nbsp;glattice(ix+1,&nbsp;iy,&nbsp;iz,&nbsp;fx1,&nbsp;fy0,&nbsp;fz0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">176</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vy0&nbsp;=&nbsp;lerp(wx,&nbsp;vx0,&nbsp;vx1);	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">177</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx0&nbsp;=&nbsp;glattice(ix,&nbsp;iy+1,&nbsp;iz,&nbsp;fx0,&nbsp;fy1,&nbsp;fz0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">178</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx1&nbsp;=&nbsp;glattice(ix+1,&nbsp;iy+1,&nbsp;iz,&nbsp;fx1,&nbsp;fy1,&nbsp;fz0);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">179</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vy1&nbsp;=&nbsp;lerp(wx,&nbsp;vx0,&nbsp;vx1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">180</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vz0&nbsp;=&nbsp;lerp(wy,&nbsp;vy0,&nbsp;vy1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">181</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx0&nbsp;=&nbsp;glattice(ix,&nbsp;iy,&nbsp;iz+1,&nbsp;fx0,&nbsp;fy0,&nbsp;fz1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">182</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx1&nbsp;=&nbsp;glattice(ix+1,&nbsp;iy,&nbsp;iz+1,&nbsp;fx1,&nbsp;fy0,&nbsp;fz1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">183</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vy0&nbsp;=&nbsp;lerp(wx,&nbsp;vx0,&nbsp;vx1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">184</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx0&nbsp;=&nbsp;glattice(ix,&nbsp;iy+1,&nbsp;iz+1,&nbsp;fx0,&nbsp;fy1,&nbsp;fz1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">185</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vx1&nbsp;=&nbsp;glattice(ix+1,&nbsp;iy+1,&nbsp;iz+1,&nbsp;fx1,&nbsp;fy1,&nbsp;fz1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">186</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vy1&nbsp;=&nbsp;lerp(wx,&nbsp;vx0,&nbsp;vx1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">187</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vz1&nbsp;=&nbsp;lerp(wy,&nbsp;vy0,&nbsp;vy1);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">188</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">189</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;lerp(wz,&nbsp;vz0,&nbsp;vz1);</font></td>
+</tr>
+<tr>
+<td height="1">190</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">191</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">192</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//combine&nbsp;value&nbsp;noise&nbsp;and&nbsp;gradient&nbsp;noise<font></font></td>
+</tr>
+<tr>
+<td height="1">193</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">194</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;noise(vec3&nbsp;v)</font></td>
+</tr>
+<tr>
+<td height="1">195</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">196</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">197</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;(gnoise(v)&nbsp;+&nbsp;vnoise(v))*0.5;</font></td>
+</tr>
+<tr>
+<td height="1">198</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">199</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">200</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------<font></font></td>
+</tr>
+<tr>
+<td height="1">201</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;main(void)</font></td>
+</tr>
+<tr>
+<td height="1">202</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">203</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{	</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">204</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	frag_colour&nbsp;=&nbsp;noise(g_object_position*g_bump_frequency*2)*0.1;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">205</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	frag_colour&nbsp;*=&nbsp;frag_colour;</font></td>
+</tr>
+<tr>
+<td height="1">206</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">207</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	if(g_has_thin_bumps&nbsp;==&nbsp;1)</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">208</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">209</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		frag_colour&nbsp;=&nbsp;1&nbsp;-&nbsp;frag_colour;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">210</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">211</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">212</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+</table>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Friday September,16 at 04:25:11PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+</td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>
