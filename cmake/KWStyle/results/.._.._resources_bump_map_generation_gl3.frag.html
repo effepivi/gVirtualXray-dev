@@ -1259,7 +1259,7 @@
 <tr bgcolor="#FFCC33">
 <td height="1">246</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		noise_value&nbsp;=&nbsp;noise(object_position*2)*0.5+0.5;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		noise_value&nbsp;=&nbsp;noise(object_position*2.)*0.5+0.5;</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
 <td height="1">247</td>
@@ -1284,7 +1284,7 @@
 <tr bgcolor="#FFCC33">
 <td height="1">251</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		noise_value&nbsp;=&nbsp;noise(object_position*0.5)*0.5+0.5;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		noise_value&nbsp;=&nbsp;noise(object_position)*0.5+0.5;</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
 <td height="1">252</td>
@@ -1304,7 +1304,7 @@
 <tr bgcolor="#FFCC33">
 <td height="1">255</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;bump_value&nbsp;=&nbsp;noise_value*0.3;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	float&nbsp;bump_value&nbsp;=&nbsp;noise_value*0.15;</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
 <td height="1">256</td>
@@ -1619,12 +1619,12 @@
 <tr bgcolor="#FFCC33">
 <td height="1">318</td>
 <td height="1">LEN,TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">			height&nbsp;=&nbsp;abs(LINE_SHARP*(rotated_for_side_lines_position.z&nbsp;-&nbsp;g_min_corner.z)/(g_max_corner.z&nbsp;-&nbsp;g_min_corner.z)-</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			height&nbsp;=&nbsp;clamp(abs(LINE_SHARP*(rotated_for_side_lines_position.z&nbsp;-&nbsp;g_min_corner.z)/(g_max_corner.z&nbsp;-&nbsp;g_min_corner.z)-</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
 <td height="1">319</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">						LINE_SHARP*(LINE_POS+perturbation));</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">						LINE_SHARP*(LINE_POS+perturbation)),0.,1.);</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">320</td>
@@ -1634,72 +1634,72 @@
 <tr bgcolor="#FF99CC">
 <td height="1">321</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">					</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		<font color="#009933">//square&nbsp;to&nbsp;make&nbsp;it&nbsp;sharper<font></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">322</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		<font color="#009933">//reduce&nbsp;bump&nbsp;from&nbsp;noise<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		height&nbsp;=&nbsp;1.-(1.-height)*(1.-height);</font></td>
 </tr>
-<tr bgcolor="#FF99CC">
+<tr>
 <td height="1">323</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		bump_value&nbsp;*=&nbsp;0.8;</font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">324</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		bump_value&nbsp;*=&nbsp;bump_value;</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">325</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		<font color="#009933">//add&nbsp;the&nbsp;line<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">326</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		bump_value&nbsp;+=&nbsp;clamp(height,0.,1.);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		<font color="#009933">//add&nbsp;the&nbsp;line<font></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">327</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		bump_value&nbsp;+=&nbsp;clamp(height,0.,0.85);</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">328</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		<font color="#009933">//square&nbsp;to&nbsp;make&nbsp;it&nbsp;sharper<font></font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">329</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">		bump_value&nbsp;=&nbsp;1-(1-bump_value)*(1-bump_value);</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">330</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">331</td>
-<td height="1">TAB,IND</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">	return&nbsp;bump_value;</font></td>
 </tr>
 <tr>
-<td height="1">332</td>
+<td height="1">330</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
-<td height="1">333</td>
+<td height="1">331</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr>
-<td height="1">334</td>
+<td height="1">332</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">333</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------<font></font></td>
+</tr>
+<tr>
+<td height="1">334</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;main(void)</font></td>
 </tr>
 <tr>
 <td height="1">335</td>
@@ -1709,98 +1709,88 @@
 <tr>
 <td height="1">336</td>
 <td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;main(void)</font></td>
-</tr>
-<tr>
-<td height="1">337</td>
-<td height="1"></td>
-<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------<font></font></td>
-</tr>
-<tr>
-<td height="1">338</td>
-<td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">337</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;U&nbsp;=&nbsp;cross(g_normal,vec3(1.,&nbsp;0.,&nbsp;0.));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">338</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;V&nbsp;=&nbsp;cross(g_normal,vec3(0.,&nbsp;1.,&nbsp;0.));</font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">339</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;U&nbsp;=&nbsp;cross(g_normal,vec3(1,0,0));</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;W&nbsp;=&nbsp;cross(g_normal,vec3(0.,&nbsp;0.,&nbsp;1.));</font></td>
 </tr>
-<tr bgcolor="#FF99CC">
+<tr>
 <td height="1">340</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;V&nbsp;=&nbsp;cross(g_normal,vec3(0,1,0));</font></td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
 <td height="1">341</td>
 <td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;W&nbsp;=&nbsp;cross(g_normal,vec3(0,0,1));</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">342</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	&nbsp;&nbsp;	</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">343</td>
-<td height="1">TAB,IND</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">	vec3&nbsp;deltaNormal&nbsp;=&nbsp;U*(computeBumpValue(g_object_position-STEP*U)</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
-<td height="1">344</td>
+<td height="1">342</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	&nbsp;&nbsp;&nbsp;			-&nbsp;computeBumpValue(g_object_position+STEP*U))/(STEP);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			-&nbsp;computeBumpValue(g_object_position+STEP*U))/(STEP);</font></td>
+</tr>
+<tr>
+<td height="1">343</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
-<td height="1">345</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	&nbsp;&nbsp;&nbsp;&nbsp;	</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">346</td>
+<td height="1">344</td>
 <td height="1">TAB,IND</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">	deltaNormal&nbsp;+=&nbsp;V*(computeBumpValue(g_object_position-STEP*V)</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
-<td height="1">347</td>
+<td height="1">345</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	&nbsp;&nbsp;&nbsp;			-&nbsp;computeBumpValue(g_object_position+STEP*V))/(STEP);</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			-&nbsp;computeBumpValue(g_object_position+STEP*V))/(STEP);</font></td>
+</tr>
+<tr>
+<td height="1">346</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 <tr bgcolor="#FF99CC">
-<td height="1">348</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">349</td>
+<td height="1">347</td>
 <td height="1">TAB,IND</td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">	deltaNormal&nbsp;+=&nbsp;W*(computeBumpValue(g_object_position-STEP*W)</font></td>
 </tr>
 <tr bgcolor="#FFCC33">
-<td height="1">350</td>
+<td height="1">348</td>
 <td height="1">TAB</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	&nbsp;&nbsp;			-&nbsp;computeBumpValue(g_object_position+STEP*W))/(STEP);</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">351</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	</font></td>
-</tr>
-<tr bgcolor="#FF99CC">
-<td height="1">352</td>
-<td height="1">TAB,IND</td>
-<td height="1"><font face="Courier New, Courier, mono" size="2">	frag_colour&nbsp;=&nbsp;deltaNormal;</font></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			-&nbsp;computeBumpValue(g_object_position+STEP*W))/(STEP);</font></td>
 </tr>
 <tr>
-<td height="1">353</td>
+<td height="1">349</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">350</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	frag_colour&nbsp;=&nbsp;deltaNormal*0.5+0.5;</font></td>
+</tr>
+<tr>
+<td height="1">351</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
 </tr>
 <tr>
-<td height="1">354</td>
+<td height="1">352</td>
 <td height="1"></td>
 <td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
 </tr>
 </table>
-<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Wednesday August,24 at 03:21:50PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Friday September,16 at 04:25:11PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
 </td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>
