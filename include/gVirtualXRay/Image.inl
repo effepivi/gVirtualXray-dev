@@ -2193,8 +2193,8 @@ template<typename T> Image<T> operator/(const T& aValue,
 {
     Image<T> temp_image(anImage);
 
-    unsigned int number_of_voxels(temp_image.m_width * temp_image.m_height * temp_image.m_number_of_slices);
-    T* p_temp(temp_image.m_p_image);
+    unsigned int number_of_voxels(temp_image.getWidth() * temp_image.getHeight() * temp_image.getDepth());
+    T* p_temp(temp_image.getRawData());
     for (unsigned int i(0); i < number_of_voxels; ++i, ++p_temp)
     {
         if (std::abs(*p_temp) < EPSILON)

@@ -684,7 +684,7 @@ public:
 
 
 //******************************************************************************
-public:
+private:
 #ifdef HAS_GDCM
     void addTag(double aValue,
             unsigned int anAddress1,
@@ -704,6 +704,9 @@ public:
             gdcm::File& aFile) const;
 #endif
 
+
+//******************************************************************************
+protected:
     /// Number of pixel along the horizontal axis
     unsigned int m_width;
 

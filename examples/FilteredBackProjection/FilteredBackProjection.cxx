@@ -1904,25 +1904,25 @@ void updateTomography(const Sinogram<float>& aSinogram,
     sinogram = sinogram.resize(sinogram.getWidth() * 2, 1, aSinogram.getDepth());
     unsigned int image_width(2 * floor (sinogram.getWidth() / (2.0 * std::sqrt(2.0))));
 
-    Image<float> back_projection(sinogram.m_width, sinogram.m_width, sinogram.m_number_of_slices);
+    Image<float> back_projection(sinogram.getWidth(), sinogram.getWidth(), sinogram.getDepth());
 
-    for (int k(0); k < back_projection.m_number_of_slices; ++k)
+    for (int k(0); k < back_projection.getDepth(); ++k)
     {
-        for (int j(0); j < back_projection.m_height; ++j)
+        for (int j(0); j < back_projection.getHeight(); ++j)
         {
-            for (int i(0); i < back_projection.m_width; ++i)
+            for (int i(0); i < back_projection.getWidth(); ++i)
             {
                 back_projection(i, j, k) += sinogram.getPixel(i, 0, k);
             }
         }
     }
 
-    back_projection = back_projection.rotate(-(g_first_angle + g_angle_step * g_current_angle)) / back_projection.m_height;
+    back_projection = back_projection.rotate(-(g_first_angle + g_angle_step * g_current_angle)) / back_projection.getHeight();
 
-    back_projection = back_projection.setCanvasSize(image_width, image_width, back_projection.m_number_of_slices);
-    back_projection *= M_PI / ( back_projection.m_height);
+    back_projection = back_projection.setCanvasSize(image_width, image_width, back_projection.getDepth());
+    back_projection *= M_PI / ( back_projection.getHeight());
 
-    back_projection = back_projection.resize(aSinogram.getWidth(), aSinogram.getWidth(), back_projection.m_number_of_slices);
+    back_projection = back_projection.resize(aSinogram.getWidth(), aSinogram.getWidth(), back_projection.getDepth());
 
     aTomographySlice += back_projection;
 
