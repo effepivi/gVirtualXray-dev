@@ -82,20 +82,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <itkQuadEdgeMesh.h>
 #include <itkMeshFileWriter.h>
 #include <itkQuadEdgeMeshDecimationCriteria.h>
-/*
-#ifdef HAS_VTK
-#include <itkImageToVTKImageFilter.h>
-
-#include <vtkVersion.h>
-#include <vtkImageViewer.h>
-#include <vtkImageMapper3D.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkSmartPointer.h>
-#include <vtkImageActor.h>
-#include <vtkInteractorStyleImage.h>
-#include <vtkRenderer.h>
-#endif
-*/
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
@@ -162,7 +148,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PREFIX "../data/validation_08"
 
 
-
 //******************************************************************************
 //  Name space
 //******************************************************************************
@@ -186,9 +171,9 @@ const VEC3 g_source_position(   0.0,  10.0 * cm, 0.0);
 const VEC3 g_detector_position( 0.0, -10.0 * cm, 0.0);
 const VEC3 g_detector_up_vector(0.0, 0.0, 1.0);
 
-const double g_initial_fovy(45);                              // Field of view along the y-axis
-const double g_initial_near(5.0 * cm);                        // Near clipping plane
-const double g_initial_far(500.0 * cm);                       // Far clipping plane
+const double g_initial_fovy(45);        // Field of view along the y-axis
+const double g_initial_near(5.0 * cm);  // Near clipping plane
+const double g_initial_far(500.0 * cm); // Far clipping plane
 
 const unsigned int g_angle_number(360);
 const RATIONAL_NUMBER g_angle_step(0.5);
@@ -237,22 +222,46 @@ bool g_display_outside_polygon(true);
 //  Function declaration
 //******************************************************************************
 void createPhantom();
+
 void initGL();
+
 void display();
+
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
+
+void keyCallback(GLFWwindow* apWindow,
+    int aKey,
+    int aScanCode,
+    int anAction,
+    int aModifierKey);
+
+void mouseButtonCallback(GLFWwindow* apWindow,
+    int aButton,
+    int aButtonState,
+    int aModifierKey);
+
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
+
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+
 void quit();
+
 void loadSTLFile();
+
 void loadDetector();
+
 void loadSource();
+
 void loadXRaySimulator();
+
 Vec3<GLfloat> getArcballVector(int x, int y);
+
 void computeRotation(MATRIX4& aRotationMatrix);
+
 void updateXRayImage();
+
 void errorCallback(int error, const char* description);
+
 void draw();
 
 
@@ -261,7 +270,7 @@ int main(int argc, char** argv)
 //-----------------------------
 {
     try
-    {
+        {
         // Initialize random seed
         srand(time(0));
 
@@ -273,40 +282,33 @@ int main(int argc, char** argv)
 
         // Initialize GLFW
         if (!glfwInit())
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-        }
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Enable quad-buffering if possible
-        glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
         // Enable anti-aliasing
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Create a windowed mode window and its OpenGL context
-        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-       
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-        {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
+        g_p_main_window_id = glfwCreateWindow(g_main_window_width,
+            g_main_window_height,
+            "gVirtualXRay -- Validation 08",
+            0,
+            0);
 
-            // Create the window
-            g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
-        }
-        
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
-        {
+            {
             glfwTerminate();
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+            }
 
         // Make the window's context current
         glfwMakeContextCurrent(g_p_main_window_id);
@@ -318,7 +320,8 @@ int main(int argc, char** argv)
         std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
 
         // Check the GLSL version
-        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+        std::cout << "GLSL:\t" <<
+            glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         // Initialise OpenGL
         initGL();
@@ -328,7 +331,8 @@ int main(int argc, char** argv)
 
         // Initialize GLFL callback
         glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-        glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
+        glfwSetFramebufferSizeCallback(g_p_main_window_id,
+            framebufferSizeCallback);
         glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
         glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
         glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
@@ -360,23 +364,33 @@ int main(int argc, char** argv)
         framebufferSizeCallback(g_p_main_window_id, width, height);
 
         std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-        std::cout << "Angular span: [" << 0 << ", " << g_angle_step * (g_angle_number - 1) << "] degrees" << std::endl;
+        std::cout << "Angular span: [0, " <<
+            g_angle_step * (g_angle_number - 1) <<
+            "] degrees" << std::endl;
 
         // Compute the sinogram
-        g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
+        g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
+            VEC3(),
+            g_angle_number,
+            g_angle_step);
 
         // Save the sinogram
         g_xray_renderer.printSinogram(PREFIX"/simulation_sinogram.mhd");
 
         // Compute the projection set
-        g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
+        g_xray_renderer.computeProjectionSet(
+            g_sample_rotation_matrix,
+            VEC3(),
+            g_angle_number,
+            g_angle_step);
 
         // Save the projection set
-        g_xray_renderer.printProjectionSet(PREFIX"/simulation_projection_set.mhd");
+        g_xray_renderer.printProjectionSet(
+             PREFIX"/simulation_projection_set.mhd");
 
         // Launch the event loop
         while (!glfwWindowShouldClose(g_p_main_window_id))
-        {
+            {
             // Render here
             display();
 
@@ -385,25 +399,25 @@ int main(int argc, char** argv)
 
             // Poll for and process events
             glfwPollEvents();
+            }
         }
-    }
     // Catch exception if any
     catch(itk::ExceptionObject& error)
-    {
+        {
         std::cerr << error << std::endl;
-    }
+        }
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
 
     // Close the window and shut GLFW
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 
     // Return an exit code
     return (EXIT_SUCCESS);
@@ -414,7 +428,7 @@ int main(int argc, char** argv)
 void createPhantom()
 //------------------
 {
-    typedef itk::Image<short, 3> ImageType;
+    typedef itk::Image<short, 3>             ImageType;
     typedef itk::ImageFileWriter <ImageType> VolumeWriterType;
 
     ImageType::Pointer p_phantom(ImageType::New());
@@ -464,44 +478,50 @@ void createPhantom()
     unsigned int step_height(((size[0] - (size[0] / 2) / 2)) / step_number);
 
     for(unsigned int s = start_slice; s < start_slice + slice_size; s++)
-    {
-        for (unsigned int step(0); step < step_number; ++step)
         {
+        for (unsigned int step(0); step < step_number; ++step)
+            {
             unsigned int row_size(size[1] / 2);
             unsigned int start_row((size[1]-row_size) / 4);
             start_row += step * step_height;
 
-            for(unsigned int r = start_row ; r < start_row + step_height; r++)
-            {
+            for (unsigned int r(start_row);
+                r < (start_row + step_height);
+                ++r)
+                {
                 unsigned int column_size(size[0] / 2);
                 unsigned int start_column((size[0]-column_size) / 4);
 
                 unsigned int step_width(step_height * (1 + step));
-                for(unsigned int c = start_column; c < start_column + step_width; c++)
-                {
+                for (unsigned int c(start_column);
+                    c < (start_column + step_width);
+                    ++c)
+                    {
                     ImageType::IndexType pixelIndex;
                     pixelIndex[0] = r;
                     pixelIndex[1] = c;
                     pixelIndex[2] = s;
 
                     p_phantom->SetPixel(pixelIndex, 0);
+                    }
                 }
             }
         }
-    }
     p_writer->Update();
 
-
-
-    typedef unsigned char OutputVoxelDataType;
+    typedef unsigned char                      OutputVoxelDataType;
     typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
-    typedef itk::QuadEdgeMesh<float, 3> MeshType;
+    typedef itk::QuadEdgeMesh<float, 3>        MeshType;
 
-    typedef itk::BinaryThresholdImageFilter<ImageType, OutputVolumeType> BinaryThresholdType;
-    typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
+    typedef itk::BinaryThresholdImageFilter<ImageType, OutputVolumeType>
+                                               BinaryThresholdType;
+
+    typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType>
+                                               IsoSurfaceExtracterType;
 
     BinaryThresholdType::Pointer p_threshold_filter(BinaryThresholdType::New());
-    IsoSurfaceExtracterType::Pointer p_iso_surface_extracter(IsoSurfaceExtracterType::New());
+    IsoSurfaceExtracterType::Pointer p_iso_surface_extracter(
+        IsoSurfaceExtracterType::New());
 
     // Create the binary mask
     p_threshold_filter->SetInput(p_phantom);
@@ -528,7 +548,7 @@ void createPhantom()
     g_p_vertex_data.clear();
     g_p_index_data.clear();
     if (p_mesh->GetNumberOfCells() && p_mesh->GetNumberOfPoints())
-    {
+        {
         g_p_vertex_data.resize(p_mesh->GetNumberOfPoints() * 3, 0);
         g_p_index_data.resize(p_mesh->GetNumberOfCells() * 3, 0);
 
@@ -539,7 +559,7 @@ void createPhantom()
         for(MeshType::PointsContainer::Iterator ite(p_itk_point_set->Begin());
             ite != p_itk_point_set->End();
             ++ite)
-        {
+            {
             // Get the point index from the point container iterator
             int idx = ite.Index();
 
@@ -550,15 +570,15 @@ void createPhantom()
             g_p_vertex_data[idx * 3 + 0] = p[0];
             g_p_vertex_data[idx * 3 + 1] = p[1];
             g_p_vertex_data[idx * 3 + 2] = p[2];
-        }
+            }
 
-        typedef MeshType::CellType    CellType;
-        typedef CellType::PointIdIterator    PointIdIterator;
+        typedef MeshType::CellType          CellType;
+        typedef CellType::PointIdIterator   PointIdIterator;
 
         for(MeshType::CellsContainer::Iterator ite(p_itk_cell_set->Begin());
             ite != p_itk_cell_set->End();
             ++ite)
-        {
+            {
             // Get the cell index from the point container iterator
             int idx = ite.Index();
 
@@ -570,12 +590,13 @@ void createPhantom()
             for (PointIdIterator ite_point_idx(p_cell->PointIdsBegin());
                 ite_point_idx != p_cell->PointIdsEnd();
                 ++ite_point_idx, ++i)
-            {
+                {
                 unsigned int point_id = *ite_point_idx;
                 g_p_index_data[idx * 3 + i] = point_id;
+                }
             }
         }
-    }
+
     g_polygon_mesh.setInternalData(GL_TRIANGLES,
             &g_p_vertex_data[0],
             g_p_vertex_data.size() / 3,
@@ -592,14 +613,14 @@ void createPhantom()
     writer->SetFileName(PREFIX"/step_wedge.stl");
     writer->SetInput(p_iso_surface_extracter->GetOutput());
     try
-    {
+        {
         writer->Update();
-    }
+        }
     catch( itk::ExceptionObject & error )
-    {
+        {
         g_polygon_mesh.setFileName(PREFIX"/step_wedge.stl");
         g_polygon_mesh.writeSTLFile();
-    }
+        }
 }
 
 
@@ -616,11 +637,11 @@ void quit()
 //---------
 {
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 }
 
 
@@ -631,12 +652,13 @@ void initGLEW()
 #if defined(_WIN32) || defined(_WIN64)
     GLenum err = glewInit();
     if (GLEW_OK != err)
-    {
+        {
         std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+        error_message << "ERROR: cannot initialise GLEW:\t" <<
+            glewGetErrorString(err);
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
+        }
 #endif
 }
 
@@ -645,9 +667,15 @@ void initGLEW()
 void initGL()
 //-----------
 {
-    std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
-    std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
-    std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
+    std::cout << "OpenGL renderer:   " <<
+        glGetString(GL_RENDERER)   << std::endl;
+
+    std::cout << "OpenGL version:    " <<
+        glGetString(GL_VERSION)    << std::endl;
+
+    std::cout << "OpenGL vender:     " <<
+        glGetString(GL_VENDOR)     << std::endl;
+        
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Enable the Z-buffer
@@ -673,25 +701,42 @@ void initGL()
 
     // Display shader
     if (useOpenGL3_2OrAbove())
-    {
-        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
-    }
+        {
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert,
+            sizeof(g_display_gl3_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag,
+            sizeof(g_display_gl3_frag),
+            &p_fragment_shader);
+        }
     else
-    {
-        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
-    }
+        {
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert,
+            sizeof(g_display_gl2_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag,
+            sizeof(g_display_gl2_frag),
+            &p_fragment_shader);
+        }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-    }
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
+    
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            !vertex_shader.size() || !fragment_shader.size())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot decode the shader using ZLib.");
+        }
+        
     g_display_shader.setLabels("display.vert", "display.frag");
     g_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -703,7 +748,7 @@ void render()
 //-----------
 {
     try
-    {
+        {
         // Handle for shader variables
         GLuint handle(0);
 
@@ -745,7 +790,11 @@ void render()
 
         VEC3 light_position(0, 0, g_zoom);
         handle = glGetUniformLocation(shader_id, "light_position");
-        glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
+        glUniform4f(handle,
+            light_position.getX(),
+            light_position.getY(),
+            light_position.getZ(),
+            1.0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the status of OpenGL and of the current FBO
@@ -759,11 +808,17 @@ void render()
         g_current_modelview_matrix *= g_scene_rotation_matrix;
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        glUniformMatrix4fv(handle,
+            1,
+            GL_FALSE,
+            g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        glUniformMatrix4fv(handle,
+            1,
+            GL_FALSE,
+            g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
@@ -804,40 +859,38 @@ void render()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         if (g_display_wireframe)
-        {
+            {
             g_polygon_mesh.displayWireFrame();
-        }
+            }
         else
-        {
+            {
             g_polygon_mesh.display();
-        }
+            }
 
         // Restore the current transformation matrix
         popModelViewMatrix();
 
         // Define colours
-        {
-            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
+        const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+        const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+        const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+        const GLfloat material_shininess = 50.2;
 
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, &material_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_diffuse");
+        glUniform4fv(handle, 1, &material_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_specular");
+        glUniform4fv(handle, 1, &material_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
+        handle = glGetUniformLocation(shader_id, "material_shininess");
+        glUniform1fv(handle, 1, &material_shininess);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Display the source
         g_xray_detector.displaySource();
@@ -848,7 +901,7 @@ void render()
 
         // Display the beam
         if (g_display_beam)
-        {
+            {
             const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.1};
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -860,7 +913,7 @@ void render()
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             g_xray_detector.displayBeam();
-        }
+            }
 
         // Disable the shader
         popShaderProgram();
@@ -876,12 +929,12 @@ void render()
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
+        }
     // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
 }
 
 
@@ -909,144 +962,158 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 //-------------------------------------------------------------------------------
 {
     if (action == GLFW_PRESS)
-    {
-        switch (key)
         {
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-            glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-            break;
-
-        case GLFW_KEY_B:
-            g_display_beam = !g_display_beam;
-            break;
-
-        case GLFW_KEY_N:
-            g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
-            break;
-
-        case GLFW_KEY_1:
-            // This is a point source
-            if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
+        switch (key)
             {
-                // Use a parallel source
-                g_xray_detector.setParallelBeam();
-            }
-            // This is a cubic source
-            else
-            {
-                g_xray_detector.setPointSource();
-            }
+            case GLFW_KEY_Q:
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+                break;
 
-            // The X-ray image is not up-to-date
-            g_is_xray_image_up_to_date = false;
-            break;
+            case GLFW_KEY_B:
+                g_display_beam = !g_display_beam;
+                break;
 
-        case GLFW_KEY_2:
-            // This is not a line source
-            if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
-            {
-                g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 5.0*mm);
-            }
-            // This is a cubic source
-            else
-            {
-                g_xray_detector.setPointSource();
-            }
+            case GLFW_KEY_N:
+                g_xray_renderer.useNegativeFilteringFlag(
+                    !g_xray_renderer.getNegativeFilteringFlag());
+                break;
 
-            // The X-ray image is not up-to-date
-            g_is_xray_image_up_to_date = false;
-            break;
+            case GLFW_KEY_1:
+                // This is a point source
+                if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
+                    {
+                    // Use a parallel source
+                    g_xray_detector.setParallelBeam();
+                    }
+                // This is a cubic source
+                else
+                    {
+                    g_xray_detector.setPointSource();
+                    }
 
-        case GLFW_KEY_3:
-            {
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_2:
+                // This is not a line source
+                if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
+                    {
+                    g_xray_detector.setLineSource(
+                        g_xray_detector.getXraySourceCentre(),
+                        VEC3(1, 0, 0),
+                        16,
+                        5.0 * mm);
+                    }
+                // This is a cubic source
+                else
+                    {
+                    g_xray_detector.setPointSource();
+                    }
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_3:
                 // This is not a square source
                 if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
-                {
-                    g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 4, 5.0*mm);
-                }
+                    {
+                    g_xray_detector.setSquareSource(
+                        g_xray_detector.getXraySourceCentre(),
+                        4,
+                        5.0 * mm);
+                    }
                 // This is a cubic source
                 else
-                {
+                    {
                     g_xray_detector.setPointSource();
-                }
+                    }
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
+                break;
 
-        case GLFW_KEY_4:
-            {
+            case GLFW_KEY_4:
                 // This is not a cubic source
                 if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
-                {
-                    g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 3, 5.0*mm);
-                }
+                    {
+                    g_xray_detector.setCubicSource(
+                        g_xray_detector.getXraySourceCentre(),
+                        3,
+                        5.0 * mm);
+                    }
                 // This is a cubic source
                 else
-                {
+                    {
                     g_xray_detector.setPointSource();
-                }
+                    }
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
+                break;
 
-        case GLFW_KEY_T:
-            {
+            case GLFW_KEY_T:
                 switch (g_rotation_mode)
-                {
-                case SCENE:
-                    std::cout << "Rotation: select the object." << std::endl;
-                    g_rotation_mode = OBJECT;
-                    break;
+                    {
+                    case SCENE:
+                        std::cout << "Rotation: select the object." << std::endl;
+                        g_rotation_mode = OBJECT;
+                        break;
 
-                case OBJECT:
-                    std::cout << "Rotation: select the detector." << std::endl;
-                    g_rotation_mode = DETECTOR;
-                    break;
+                    case OBJECT:
+                        std::cout << "Rotation: select the detector." <<
+                            std::endl;
+                        g_rotation_mode = DETECTOR;
+                        break;
 
-                case DETECTOR:
-                    std::cout << "Rotation: select the scene." << std::endl;
-                    g_rotation_mode = SCENE;
-                    break;
+                    case DETECTOR:
+                        std::cout << "Rotation: select the scene." << std::endl;
+                        g_rotation_mode = SCENE;
+                        break;
 
-                default:
-                    std::cout << "Rotation: select the scene." << std::endl;
-                    g_rotation_mode = SCENE;
-                    break;
-                }
+                    default:
+                        std::cout << "Rotation: select the scene." << std::endl;
+                        g_rotation_mode = SCENE;
+                        break;
+                    }
+                break;
+
+            case GLFW_KEY_W:
+                g_display_wireframe = !g_display_wireframe;
+                break;
+
+            case GLFW_KEY_V:
+                g_display_outside_polygon = !g_display_outside_polygon;
+                break;
+
+            case GLFW_KEY_KP_ADD:
+                g_zoom += 1.0 * cm;
+                
+                framebufferSizeCallback(g_p_main_window_id,
+                    g_main_window_width,
+                    g_main_window_height);
+
+                std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
+                break;
+
+            case GLFW_KEY_MINUS:
+            case GLFW_KEY_KP_SUBTRACT:
+                g_zoom -= 1.0 * cm;
+                
+                framebufferSizeCallback(g_p_main_window_id,
+                    g_main_window_width,
+                    g_main_window_height);
+
+                std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
+                break;
+
+            default:
+                std::cout << "Key: " << key << std::endl;
+                break;
             }
-            break;
-
-        case GLFW_KEY_W:
-            g_display_wireframe = !g_display_wireframe;
-            break;
-
-        case GLFW_KEY_V:
-            g_display_outside_polygon = !g_display_outside_polygon;
-            break;
-
-        case GLFW_KEY_KP_ADD:
-            g_zoom += 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
-            break;
-
-        case GLFW_KEY_MINUS:
-        case GLFW_KEY_KP_SUBTRACT:
-            g_zoom -= 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            std::cout << "Zoom in cm)" << g_zoom / cm << std::endl;
-            break;
-
-        default:
-            std::cout << "Key: " << key << std::endl;
-            break;
         }
-    }
 }
 
 
@@ -1057,21 +1124,21 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     glViewport(0, 0, width, height);
 
     if (height == 0)
-    {
+        {
         // Prevent divide by 0
         height = 1;
-    }
+        }
 
     g_main_window_width = width;
     g_main_window_height = height;
 
-    double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
+    double screen_aspect_ratio(
+        double(g_main_window_width) / double(g_main_window_height));
 
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-    /*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
-            -height / 2.0, height / 2.0,
-            0.01, g_initial_far);
-     */
+    loadPerspectiveProjectionMatrix(g_initial_fovy,
+        screen_aspect_ratio,
+        g_initial_near,
+        g_initial_far);
 
     loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
             0.0, 0.0, 0.0,
@@ -1091,38 +1158,38 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 
     // Select the right transformation
     if (g_rotation_mode == NONE)
-    {
-        switch (g_button)
         {
-        case GLFW_MOUSE_BUTTON_LEFT:
-            g_rotation_mode = SCENE;
-            break;
+        switch (g_button)
+            {
+            case GLFW_MOUSE_BUTTON_LEFT:
+                g_rotation_mode = SCENE;
+                break;
 
-        case GLFW_MOUSE_BUTTON_RIGHT:
-            g_rotation_mode = OBJECT;
-            break;
+            case GLFW_MOUSE_BUTTON_RIGHT:
+                g_rotation_mode = OBJECT;
+                break;
 
-        case GLFW_MOUSE_BUTTON_MIDDLE:
-            g_rotation_mode = DETECTOR;
-            break;
+            case GLFW_MOUSE_BUTTON_MIDDLE:
+                g_rotation_mode = DETECTOR;
+                break;
 
-        default:
-            g_rotation_mode = SCENE;
-            break;
+            default:
+                g_rotation_mode = SCENE;
+                break;
+            }
         }
-    }
 
     // Use the arc ball
     if (g_button_state == GLFW_PRESS)
-    {
+        {
         g_use_arc_ball = true;
-    }
+        }
     // Stop using the arc ball
     else
-    {
+        {
         g_use_arc_ball = false;
         g_rotation_mode = NONE;
-    }
+        }
 
     double xpos(0);
     double ypos(0);
@@ -1145,29 +1212,29 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 
     // Update the rotation matrix if needed
     switch (g_rotation_mode)
-    {
-    case SCENE:
-        computeRotation(g_scene_rotation_matrix);
-        break;
+        {
+        case SCENE:
+            computeRotation(g_scene_rotation_matrix);
+            break;
 
-    case DETECTOR:
-        computeRotation(g_detector_rotation_matrix);
-        g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
+        case DETECTOR:
+            computeRotation(g_detector_rotation_matrix);
+            g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
 
-        // The X-ray image is not up-to-date
-        g_is_xray_image_up_to_date = false;
-        break;
+            // The X-ray image is not up-to-date
+            g_is_xray_image_up_to_date = false;
+            break;
 
-    case OBJECT:
-        computeRotation(g_sample_rotation_matrix);
+        case OBJECT:
+            computeRotation(g_sample_rotation_matrix);
 
-        // The X-ray image is not up-to-date
-        g_is_xray_image_up_to_date = false;
-        break;
+            // The X-ray image is not up-to-date
+            g_is_xray_image_up_to_date = false;
+            break;
 
-    default:
-        break;
-    }
+        default:
+            break;
+        }
 }
 
 
@@ -1177,11 +1244,13 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 {
     // Scrolling along the Y-axis
     if (fabs(yoffset) > EPSILON)
-    {
+        {
         g_use_arc_ball = false;
         g_zoom += yoffset * cm;
-        framebufferSizeCallback(apWindow, g_main_window_width, g_main_window_height);
-    }
+        framebufferSizeCallback(apWindow,
+            g_main_window_width,
+            g_main_window_height);
+        }
 }
 
 
@@ -1200,14 +1269,29 @@ void loadSTLFile()
     VEC3 base_colour(red, green, blue);
     base_colour.normalise();
 
-    g_polygon_mesh.getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-    g_polygon_mesh.getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-    g_polygon_mesh.getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
+    g_polygon_mesh.getMaterial().setAmbientColour(base_colour.getX() * 0.19225,
+        base_colour.getY() * 0.19225,
+        base_colour.getZ() * 0.19225,
+        alpha);
+
+    g_polygon_mesh.getMaterial().setDiffuseColour(base_colour.getX() * 0.50754,
+        base_colour.getY() * 0.50754,
+        base_colour.getZ() * 0.50754,
+        alpha);
+
+    g_polygon_mesh.getMaterial().setSpecularColour(base_colour.getX() * 0.50827,
+        base_colour.getY() * 0.50827,
+        base_colour.getZ() * 0.50827,
+        alpha);
+    
     g_polygon_mesh.getMaterial().setShininess(50);
 
     // Compute the translation vector
-    VEC3 translation_vector(g_polygon_mesh.getMinCorner() + (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0);
-    g_sample_rotation_matrix = MATRIX4::buildTranslationMatrix(-translation_vector);
+    VEC3 translation_vector(g_polygon_mesh.getMinCorner() +
+        (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0);
+
+    g_sample_rotation_matrix =
+        MATRIX4::buildTranslationMatrix(-translation_vector);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1252,9 +1336,9 @@ void loadXRaySimulator()
 {
     // Initialise the X-ray renderer
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F,
-            &g_xray_detector,
-            &g_xray_beam);
+        GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1266,20 +1350,20 @@ Vec3<GLfloat> getArcballVector(int x, int y)
 //------------------------------------------
 {
     Vec3<GLfloat> P(2.0 * float(x) / float(g_main_window_width) - 1.0,
-            2.0 * float(y) / float(g_main_window_height) - 1.0,
-            0);
+        2.0 * float(y) / float(g_main_window_height) - 1.0,
+        0);
 
     P.setY(-P.getY());
 
     float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
     if (OP_squared <= 1.0)
-    {
+        {
         P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-    }
+        }
     else
-    {
+        {
         P.normalise();  // nearest point
-    }
+        }
 
     return (P);
 }
@@ -1298,20 +1382,24 @@ void computeRotation(MATRIX4& aRotationMatrix)
 //--------------------------------------------
 {
     if (g_use_arc_ball)
-    {
-        if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
         {
-            Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
-            Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
+        if (g_current_x_position != g_last_x_position ||
+                g_current_y_position != g_last_y_position)
+            {
+            Vec3<GLfloat> va(getArcballVector(g_last_x_position,
+                g_last_y_position));
 
-            float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+            Vec3<GLfloat> vb(getArcballVector(g_current_x_position,
+                g_current_y_position));
+
+            float angle(g_rotation_speed *
+                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
 
             Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-            Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
+            Vec3<GLfloat> axis_in_object_coord = camera2object *
+                axis_in_camera_coord;
 
             Matrix4x4<GLfloat> rotation_matrix;
             rotation_matrix.rotate(angle, axis_in_object_coord);
@@ -1319,8 +1407,8 @@ void computeRotation(MATRIX4& aRotationMatrix)
 
             g_last_x_position = g_current_x_position;
             g_last_y_position = g_current_y_position;
+            }
         }
-    }
 }
 
 
@@ -1330,7 +1418,7 @@ void updateXRayImage()
 {
     // The X-ray image is not up-to-date
     if (!g_is_xray_image_up_to_date)
-    {
+        {
         // Compute the X-Ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
@@ -1339,7 +1427,7 @@ void updateXRayImage()
 
         // The X-ray image is up-to-date
         g_is_xray_image_up_to_date = true;
-    }
+        }
 }
 
 

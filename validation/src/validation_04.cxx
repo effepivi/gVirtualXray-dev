@@ -144,7 +144,6 @@ using namespace gVirtualXRay;
 #define PREFIX "../data/validation_04"
 
 
-
 //******************************************************************************
 //  Global variables
 //******************************************************************************
@@ -195,57 +194,50 @@ int main(int argc, char** argv)
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
-    {
+        {
         g_number_of_pixels.setX(g_number_of_pixels.getX() + 1);
-    }
+        }
 
     // Make sure the detector has an odd number of rows
     if ((g_number_of_pixels.getY() % 2) == 0)
-    {
+        {
         g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
-    }
+        }
 
     try
-    {
+        {
         // Set an error callback
         glfwSetErrorCallback(errorCallback);
 
         // Initialize GLFW
         if (!glfwInit())
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-        }
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Enable quad-buffering if possible
-        glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
         // Enable anti-aliasing
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Create a windowed mode window and its OpenGL context
-        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Validation 04", NULL, NULL);
+        g_p_main_window_id = glfwCreateWindow(g_main_window_width,
+            g_main_window_height,
+            "gVirtualXRay -- Validation 04",
+            0,
+            0);
        
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
-        {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-            g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Validation 04", NULL, NULL);
-        }
-        
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-        {
+            {
             glfwTerminate();
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+            }
 
         // Make the window's context current
         glfwMakeContextCurrent(g_p_main_window_id);
@@ -275,38 +267,60 @@ int main(int argc, char** argv)
         glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 
         // Output the detector properties
-        std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
-        std::cout << std::fixed << "Pixel size:" << g_resolution / mm << "x" << g_resolution / mm << " mm2" << std::endl;
-        std::cout << "Detector size: " << g_resolution / cm * g_number_of_pixels.getX() << "x" << g_resolution / cm * g_number_of_pixels.getY() << " cm2" << std::endl;
+        std::cout << "Detector size: " <<
+            g_number_of_pixels.getX() <<
+            "x" <<
+            g_number_of_pixels.getY() <<
+            " pixels" << std::endl;
+
+        std::cout << std::fixed << "Pixel size:" <<
+            g_resolution / mm <<
+            "x" <<
+            g_resolution / mm <<
+            " mm2" << std::endl;
+
+        std::cout << "Detector size: " <<
+            g_resolution / cm * g_number_of_pixels.getX() <<
+            "x" <<
+            g_resolution / cm * g_number_of_pixels.getY() <<
+            " cm2" << std::endl;
 
         std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-        std::cout << "Angular span: [" << 0 << ", " << g_angle_step * (g_angle_number - 1) << "] degrees" << std::endl;
+        std::cout << "Angular span: [0, " <<
+            g_angle_step * (g_angle_number - 1) <<
+            "] degrees" << std::endl;
 
         // Compute the sinogram
-        g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
+        g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
+            VEC3(),
+            g_angle_number,
+            g_angle_step);
 
         // Save the sinogram
         g_xray_renderer.printSinogram(PREFIX"/sinogram.mhd");
 
         // Compute the projection set
-        g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
+        g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
+            VEC3(),
+            g_angle_number,
+            g_angle_step);
 
         // Save the projection set
         g_xray_renderer.printProjectionSet(PREFIX"/projection_set.mhd");
-    }
+        }
     // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
 
     // Close the window and shut GLFW
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 
     // Return an exit code
     return (EXIT_SUCCESS);
@@ -326,11 +340,11 @@ void quit()
 //---------
 {
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 }
 
 
@@ -364,14 +378,14 @@ void loadSTLFile()
 
     // The file is not in the same directory as the executable
     if (!p_file_descriptor)
-    {
+        {
         // Use the prefix
         stl_filename = std::string(PREFIX) + "/../" + stl_filename;
-    }
+        }
     else
-    {
+        {
         fclose(p_file_descriptor);
-    }
+        }
 
     // HU values
     RATIONAL_NUMBER HU_water(0.0);
@@ -380,13 +394,15 @@ void loadSTLFile()
 
     // Set geometry
     g_inside_polygon_data.setFilename(stl_filename.data());
-    g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+    g_inside_polygon_data.loadSTLFile(true,
+        true,
+        true,
+        true,
+        cm,
+        GL_STATIC_DRAW);
     g_inside_polygon_data.mergeVertices();
     g_inside_polygon_data.setHounsfieldValue(HU_bone);
 
-    //g_outside_polygon_data.setFilename(stl_filename_1.data());
-    //g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-    //g_outside_polygon_data.mergeVertices(true);
     g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
@@ -477,7 +493,7 @@ void loadXRaySimulator()
 {
     // Initialise the X-ray renderer
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB32F,
-            &g_xray_detector,
-            &g_xray_beam);
+        GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
 }

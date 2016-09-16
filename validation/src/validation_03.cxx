@@ -189,57 +189,50 @@ int main(int argc, char** argv)
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
-    {
+        {
         g_number_of_pixels.setX(g_number_of_pixels.getX() + 1);
-    }
+        }
 
     // Make sure the detector has an odd number of rows
     if ((g_number_of_pixels.getY() % 2) == 0)
-    {
+        {
         g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
     }
 
     try
-    {
+        {
         // Set an error callback
         glfwSetErrorCallback(errorCallback);
 
         // Initialize GLFW
         if (!glfwInit())
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-        }
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Enable quad-buffering if possible
-        glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
         // Enable anti-aliasing
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Create a windowed mode window and its OpenGL context
-        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Validation 03", NULL, NULL);
+        g_p_main_window_id = glfwCreateWindow(g_main_window_width,
+            g_main_window_height,
+            "gVirtualXRay -- Validation 03",
+            0,
+            0);
        
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
-        {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-            g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "gVirtualXRay -- Validation 03", NULL, NULL);
-        }
-        
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-        {
+            {
             glfwTerminate();
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+            }
 
         // Make the window's context current
         glfwMakeContextCurrent(g_p_main_window_id);
@@ -274,51 +267,51 @@ int main(int argc, char** argv)
         g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
         g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
 
-        {
-            RATIONAL_NUMBER* energy_fluence(g_xray_half_precision_renderer.getEnergyFluence().getRawData());
-            RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
+        RATIONAL_NUMBER* energy_fluence(
+            g_xray_half_precision_renderer.getEnergyFluence().getRawData());
 
-            RATIONAL_NUMBER simulated_result(central_pixel);
-            std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-            std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+        RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
-            std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
-            std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-            std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+        RATIONAL_NUMBER simulated_result(central_pixel);
+        std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+        std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
-            std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-            std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+        std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
+        std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+        std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+
+        std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+        std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
+
+        energy_fluence =
+                g_xray_full_precision_renderer.getEnergyFluence().getRawData();
+
+        central_pixel = energy_fluence[g_number_of_pixels.getX() / 2];
+
+        simulated_result = central_pixel;
+        std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+        std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+
+        std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
+        std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
+        std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+
+        std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+        std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
         }
-
-        {
-            RATIONAL_NUMBER* energy_fluence(g_xray_full_precision_renderer.getEnergyFluence().getRawData());
-            RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
-
-            RATIONAL_NUMBER simulated_result(central_pixel);
-            std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-            std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
-
-            std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
-            std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-            std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
-
-            std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-            std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
-        }
-    }
     // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
 
     // Close the window and shut GLFW
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 
     // Return an exit code
     return (EXIT_SUCCESS);
@@ -338,11 +331,11 @@ void quit()
 //---------
 {
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 }
 
 
@@ -376,14 +369,14 @@ void loadSTLFile()
 
     // The file is not in the same directory as the executable
     if (!p_file_descriptor)
-    {
+        {
         // Use the prefix
         stl_filename = std::string(PREFIX) + "/../" + stl_filename;
-    }
+        }
     else
-    {
+        {
         fclose(p_file_descriptor);
-    }
+        }
 
     // HU values
     RATIONAL_NUMBER HU_water(0.0);
@@ -392,13 +385,15 @@ void loadSTLFile()
 
     // Set geometry
     g_inside_polygon_data.setFilename(stl_filename.data());
-    g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
+    g_inside_polygon_data.loadSTLFile(true,
+        true,
+        true,
+        true,
+        cm,
+        GL_STATIC_DRAW);
     g_inside_polygon_data.mergeVertices();
     g_inside_polygon_data.setHounsfieldValue(HU_bone);
 
-    //g_outside_polygon_data.setFilename(stl_filename_1.data());
-    //g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-    //g_outside_polygon_data.mergeVertices(true);
     g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
@@ -507,12 +502,12 @@ void loadXRaySimulator()
 {
     // Initialise the X-ray renderer
     g_xray_half_precision_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F,
-            &g_xray_detector,
-            &g_xray_beam);
+        GL_RGB16F,
+        &g_xray_detector,
+        &g_xray_beam);
 
     g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB32F,
-            &g_xray_detector,
-            &g_xray_beam);
+        GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
 }

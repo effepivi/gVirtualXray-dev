@@ -113,9 +113,9 @@ void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
-void printAttenuationCoeffiecient(double& anEnergy, 
-        double aThreshold, 
-        double anOffset, 
+void printAttenuationCoeffiecient(double& anEnergy,
+        double aThreshold,
+        double anOffset,
         std::ostream& anOutput);
 
 //-----------------------------
@@ -130,7 +130,7 @@ int main(int argc, char** argv)
         // Initialize GLFW
         if (!glfwInit())
             {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, 
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
                     "ERROR: cannot initialise GLFW.");
             }
 
@@ -140,9 +140,9 @@ int main(int argc, char** argv)
 
         // Create the window
         GLFWwindow* p_main_window_id(glfwCreateWindow(64,
-                64, 
-                "gVirtualXRay -- Validation 01", 
-                0, 
+                64,
+                "gVirtualXRay -- Validation 01",
+                0,
                 0));
         
         if (!p_main_window_id)
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
         loadSource();
         loadXRaySimulator();
 
-        // Print the energy in MeV and 
+        // Print the energy in MeV and
         // the attenuation coefficient of water in cm2/g
         std::ofstream test_stream(
                 PREFIX"/test_mass_attenuation_coefficients.csv");
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
             error_message << "ERROR: cannot open file:\t" <<
                     PREFIX"/test_mass_attenuation_coefficients.csv";
 
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, 
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
                     error_message.str());
             }
 
@@ -299,102 +299,89 @@ void printAttenuationCoeffiecient(double& anEnergy,
     double log_mu_water_mu_water(0);
 
     for (anEnergy; anEnergy <= aThreshold; anEnergy += anOffset)
-    {
-        anOutput     << anEnergy / MeV;
+        {
+        anOutput << anEnergy / MeV;
 
-        mu_rho_water_xcom = 
+        mu_rho_water_xcom =
                 g_xray_renderer.getMassAttenuationFromHU(HU_water, anEnergy);
         
-        linear_mu_water_mu_water = 
+        linear_mu_water_mu_water =
                 g_xray_renderer.getMuWaterLinearInterpolation(anEnergy);
         
-        log_mu_water_mu_water = 
+        log_mu_water_mu_water =
                 g_xray_renderer.getMuWaterLogLinearInterpolation(anEnergy);
 
-        anOutput     << "\t" << mu_rho_water_xcom   
-                / (cm2/g);
+        anOutput << "\t" << mu_rho_water_xcom / (cm2/g);
         
-        anOutput     << "\t" << (linear_mu_water_mu_water / rho_water)
-                / (cm2/g);
+        anOutput << "\t" << (linear_mu_water_mu_water / rho_water) / (cm2/g);
         
-        anOutput     << "\t" << (log_mu_water_mu_water    / rho_water)      
-                / (cm2/g);
+        anOutput << "\t" << (log_mu_water_mu_water    / rho_water) / (cm2/g);
 
-        mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone, 
-                anEnergy);
+        mu_rho_bone_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_bone,
+            anEnergy);
         
         linear_mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone,
-                linear_mu_water_mu_water);
+            linear_mu_water_mu_water);
         
-        log_mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone, 
-                log_mu_water_mu_water);
+        log_mu_bone_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_bone,
+            log_mu_water_mu_water);
 
-        anOutput     << "\t" << mu_rho_bone_xcom                  
-                / (cm2/g);
+        anOutput << "\t" << mu_rho_bone_xcom / (cm2/g);
         
-        anOutput     << "\t" << (linear_mu_bone_mu_water / rho_bone)    
-                / (cm2/g);
+        anOutput << "\t" << (linear_mu_bone_mu_water / rho_bone) / (cm2/g);
         
-        anOutput     << "\t" << (log_mu_bone_mu_water / rho_bone)      
-                / (cm2/g);
+        anOutput << "\t" << (log_mu_bone_mu_water / rho_bone) / (cm2/g);
 
-        mu_rho_brain_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_brain, 
-                anEnergy);
+        mu_rho_brain_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_brain,
+            anEnergy);
         
-        linear_mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain,
-                linear_mu_water_mu_water);
+        linear_mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(
+            HU_brain, linear_mu_water_mu_water);
         
         log_mu_brain_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_brain,
-                log_mu_water_mu_water);
+            log_mu_water_mu_water);
         
 
-        anOutput     << "\t" << mu_rho_brain_xcom                 
-                / (cm2/g);
+        anOutput << "\t" << mu_rho_brain_xcom / (cm2/g);
         
-        anOutput     << "\t" << (linear_mu_brain_mu_water / rho_bone)   
-                / (cm2/g);
+        anOutput << "\t" << (linear_mu_brain_mu_water / rho_bone) / (cm2/g);
         
-        anOutput     << "\t" << (log_mu_brain_mu_water / rho_bone)       
-                / (cm2/g);
+        anOutput << "\t" << (log_mu_brain_mu_water / rho_bone) / (cm2/g);
 
         mu_rho_gas_xcom = g_xray_renderer.getMassAttenuationFromHU(HU_gas,
-                anEnergy);
+            anEnergy);
         
-        linear_mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, 
-                linear_mu_water_mu_water);
+        linear_mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas,
+            linear_mu_water_mu_water);
         
-        log_mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas, 
-                log_mu_water_mu_water);
+        log_mu_gas_mu_water = g_xray_renderer.getMuFromHUAndMuWater(HU_gas,
+            log_mu_water_mu_water);
 
-        anOutput     << "\t" << mu_rho_gas_xcom                       
-                / (cm2/g);
+        anOutput << "\t" << mu_rho_gas_xcom / (cm2/g);
         
-        anOutput     << "\t" << (linear_mu_gas_mu_water / rho_bone)    
-                / (cm2/g);
+        anOutput << "\t" << (linear_mu_gas_mu_water / rho_bone) / (cm2/g);
         
-        anOutput     << "\t" << (log_mu_gas_mu_water / rho_bone)       
-                / (cm2/g);
+        anOutput << "\t" << (log_mu_gas_mu_water / rho_bone) / (cm2/g);
 
-        mu_rho_soft_tissue_xcom = 
-                g_xray_renderer.getMassAttenuationFromHU(
-                        HU_soft_tissue, anEnergy);
+        mu_rho_soft_tissue_xcom =
+            g_xray_renderer.getMassAttenuationFromHU(
+                HU_soft_tissue, anEnergy);
         
-        linear_mu_soft_tissue_mu_water = 
-                g_xray_renderer.getMuFromHUAndMuWater(
-                        HU_soft_tissue, linear_mu_water_mu_water);
+        linear_mu_soft_tissue_mu_water =
+            g_xray_renderer.getMuFromHUAndMuWater(
+                HU_soft_tissue, linear_mu_water_mu_water);
         
         log_mu_soft_tissue_mu_water = g_xray_renderer.getMuFromHUAndMuWater(
-                HU_soft_tissue, log_mu_water_mu_water);
+            HU_soft_tissue, log_mu_water_mu_water);
 
-        anOutput     << "\t" << mu_rho_soft_tissue_xcom    
-                / (cm2/g);
+        anOutput << "\t" << mu_rho_soft_tissue_xcom / (cm2/g);
         
-        anOutput     << "\t" << (linear_mu_soft_tissue_mu_water / 
-                rho_soft_tissue) / (cm2/g);
+        anOutput << "\t" << (linear_mu_soft_tissue_mu_water / rho_soft_tissue) /
+            (cm2/g);
         
-        anOutput     << "\t" << (log_mu_soft_tissue_mu_water / 
-                rho_soft_tissue) / (cm2/g);
+        anOutput << "\t" << (log_mu_soft_tissue_mu_water / rho_soft_tissue) /
+            (cm2/g);
 
-        anOutput     << std::endl;
-    }
+        anOutput << std::endl;
+        }
 }

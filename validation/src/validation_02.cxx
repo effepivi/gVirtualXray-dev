@@ -113,34 +113,45 @@ void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
-void printAttenuationCoeffiecient(double& anEnergy, double aThreshold, double anOffset, std::ostream& anOutput);
+void printAttenuationCoeffiecient(double& anEnergy,
+    double aThreshold,
+    double anOffset,
+    std::ostream& anOutput);
+
 
 //-----------------------------
 int main(int argc, char** argv)
 //-----------------------------
 {
     try
-    {
+        {
         // Set an error callback
         glfwSetErrorCallback(errorCallback);
 
         // Initialize GLFW
         if (!glfwInit())
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-        }
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
 
         // Enable OpenGL 2.1 if possible
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
         // Create the window
-        GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "gVirtualXRay -- Validation 02", 0, 0));
+        GLFWwindow* p_main_window_id(glfwCreateWindow(64,
+            64,
+            "gVirtualXRay -- Validation 02",
+            0,
+            0));
+
         if (!p_main_window_id)
-        {
+            {
             glfwTerminate();
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+            }
 
         // Make the window's context current
         glfwMakeContextCurrent(p_main_window_id);
@@ -158,35 +169,38 @@ int main(int argc, char** argv)
         std::ofstream test_stream(PREFIX"/test_density.csv");
 
         if (!test_stream.is_open())
-        {
+            {
             std::stringstream error_message;
-            error_message << "ERROR: cannot open file:\t" << PREFIX"//test_density.csv";
+            error_message << "ERROR: cannot open file:\t" <<
+                PREFIX"//test_density.csv";
 
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                error_message.str());
+            }
 
         test_stream     << "HU\t" <<
                 "density (in g/cm3)" <<
                 std::endl;
 
         for (short HU(-1000); HU <= 1600; ++HU)
-        {
-            test_stream << HU << "\t" << g_xray_renderer.getDensityFromHU(HU) / (g/cm3) << std::endl;
-        }
+            {
+            test_stream << HU << "\t" <<
+                g_xray_renderer.getDensityFromHU(HU) / (g/cm3) << std::endl;
+            }
 
         // Close the window and shut GLFW
         if (p_main_window_id)
-        {
+            {
             glfwDestroyWindow(p_main_window_id);
             p_main_window_id = 0;
             glfwTerminate();
+            }
         }
-    }
     // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
 
     return (EXIT_SUCCESS);
 }
