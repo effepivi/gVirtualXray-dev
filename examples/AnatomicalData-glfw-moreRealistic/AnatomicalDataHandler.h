@@ -32,88 +32,88 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_GL_WIDGET_H
-#define GVXR_GL_WIDGET_H
+#ifndef __AnatomicalDataHandler_h
+#define __AnatomicalDataHandler_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		GLWidget.h
+*   @file       AnatomicalDataHandler.h
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Class to manage the anatomical data corresponding a patient.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//      Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector>
 
-#ifndef GVXR_VEC3_H
+#ifndef __Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_ATOMIC_ELEMENT_H
+#ifndef __AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
+#ifndef __TextRenderer_h
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
-#ifndef DEPTH_MAP_H
+#ifndef __DepthMap_h
 #include "gVirtualXRay/DepthMap.h"
 #endif
 
-#ifndef ANATOMICAL_MESH_H
+#ifndef __AnatomicalMesh_h
 #include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
@@ -178,8 +178,6 @@ public:
     virtual void initializeGL();
 
 
-
-
     //--------------------------------------------------------------------------
     /// Activate a patient
     /*
@@ -204,6 +202,13 @@ public:
     virtual void draw();
 
 
+    //--------------------------------------------------------------------------
+    /// Function used to resize the viewport and reset the projection matrix
+    /*
+    *   @param aWidth: The width of the OpenGL window
+    *   @param aHeight: The height of the OpenGL window
+    */
+    //--------------------------------------------------------------------------
     void resizeGL(int aWidth, int aHeight);
     
 
@@ -279,8 +284,9 @@ private:
     *   @param aShaderID:   The GLSL shader used to display apMeshSet
     */
     //--------------------------------------------------------------------------
-    virtual void displayPatient(std::vector<gVirtualXRay::AnatomicalMesh*>& apMeshSet,
-                        GLint aShaderID);
+    virtual void displayPatient(
+            std::vector<gVirtualXRay::AnatomicalMesh*>& apMeshSet,
+            GLint aShaderID);
 
 
     //--------------------------------------------------------------------------
@@ -295,13 +301,14 @@ private:
     *   @param aMeshID: the ID of the polygon mesh to load
     *   @param aPatientID:  the ID of the patient corresponding to aMeshID
     *   @param apData:  the uncompressed polygon mesh data
-    *   @param aSize:   the size of the uncompressed polygon mesh data (in number of bytes)
+    *   @param aSize:   the size of the uncompressed polygon mesh data
+    *                   (in number of bytes)
     */
     //--------------------------------------------------------------------------
     virtual void decompressMesh(unsigned int aMeshID,
-                        PatientID aPatientID,
-                        char*& apData,
-                        unsigned int& aSize);
+            PatientID aPatientID,
+            char*& apData,
+            unsigned int& aSize);
 
 
     //--------------------------------------------------------------------------
@@ -341,7 +348,8 @@ private:
     /// The zooming factor
     GLfloat m_zoom;
 
-    /// Flag set to true when rotation using arcball is currently in use, false otherwise
+    /// Flag set to true when rotation using arcball is currently in use,
+    /// false otherwise
     bool m_use_arc_ball;
 
     /// The last known position of the mouse pointer along the X-axis
@@ -360,19 +368,19 @@ private:
     gVirtualXRay::Matrix4x4<GLfloat> m_scene_rotation_matrix;
 
     /// Transformation matrix used to rotate Patient 4
-    gVirtualXRay::Matrix4x4<GLfloat> m_P4_rotation_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_p4_rotation_matrix;
 
     /// Transformation matrix used to rotate Patient 5
-    gVirtualXRay::Matrix4x4<GLfloat> m_P5_rotation_matrix;
+    gVirtualXRay::Matrix4x4<GLfloat> m_p5_rotation_matrix;
 
     /// projection and transformation matrix used to create the shadow map
     gVirtualXRay::Matrix4x4<GLfloat> m_shadow_matrix;
 
     /// Translation vector used to centre Patient 4
-    gVirtualXRay::VEC3 m_P4_translation_vector;
+    gVirtualXRay::VEC3 m_p4_translation_vector;
 
     /// Translation vector used to centre Patient 5
-    gVirtualXRay::VEC3 m_P5_translation_vector;
+    gVirtualXRay::VEC3 m_p5_translation_vector;
 
     /// X-ray beam
     gVirtualXRay::XRayBeam m_xray_beam;
@@ -390,15 +398,16 @@ private:
     gVirtualXRay::DepthMap m_shadow_map;
 
     /// Set of polygon meshes for Patient 4
-    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_P4_polygon_mesh_set;
+    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_p4_polygon_mesh_set;
 
     /// Set of polygon meshes for Patient 5
-    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_P5_polygon_mesh_set;
+    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_p5_polygon_mesh_set;
 
     /// Flag that keeps track of which patient is currently in use
     AnatomicalDataHandler::PatientID m_current_patient;
 
-    /// Flag set to true when the meshes are displayed using wireframe, false otherwise
+    /// Flag set to true when the meshes are displayed using wireframe,
+    /// false otherwise
     bool m_display_wireframe;
 
     /// The angular step between two successive rotations
@@ -427,7 +436,8 @@ private:
     gVirtualXRay::TextRenderer m_font_rendered;
 #endif
 
-    /// Flag set to true if the patients have to be swapped at the next iteration, false otherwise
+    /// Flag set to true if the patients have to be swapped at the next
+    /// iteration, false otherwise
     bool m_swap_patient;
 
     ///the light direction (from the vertex to the camera)
@@ -439,4 +449,4 @@ private:
 #include "AnatomicalDataHandler.inl"
 
 
-#endif // GVXR_GL_WIDGET_H
+#endif // __AnatomicalDataHandler_h

@@ -35,34 +35,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalData-glfw-moreRealistic.cxx
+*   @file       AnatomicalData-glfw-moreRealistic.cxx
 *
-*	@brief      Demo to illustrate the tomography acquisition and reconstruction
-*	             processesusing anatomical data.
+*   @brief      Demo to illustrate the tomography acquisition and reconstruction
+*               processesusing anatomical data.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		01/09/2016
+*   @date       01/09/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -89,53 +89,51 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Global variables
+//  Global variables
 //******************************************************************************
 GLFWwindow* g_p_main_window_id(0);
 AnatomicalDataHandler g_anatomical_data(600, 600);
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
-/*void initGL();
-void initFreeType();*/
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
+
+void keyCallback(GLFWwindow* apWindow,
+    int aKey,
+    int aScanCode,
+    int anAction,
+    int aModifierKey);
+
+void mouseButtonCallback(GLFWwindow* apWindow,
+    int aButton,
+    int aButtonState,
+    int aModifierKey);
+
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);/*
-void draw();
-void render();*/
-void quit();/*
-void loadSTLFile();
-void loadDetector();
-void loadSource();
-void loadXRaySimulator();
-Vec3<GLfloat> getArcballVector(int x, int y);
-void computeRotation(MATRIX4& aRotationMatrix);
-void updateXRayImage();*/
-void errorCallback(int error, const char* description);/*
-void reset();
-void displayHelp();
-void usePatient(const PatientID& aPatientID);
-*/
+
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+
+void quit();
+
+void errorCallback(int error, const char* description);
 
 
 //-----------------------------
 int main(int argc, char** argv)
 //-----------------------------
 {
-	try
-	{
-	    // Initialize random seed
-	    srand(time(0));
+    try
+        {
+        // Initialize random seed
+        srand(time(0));
 
         // Set an error callback
         glfwSetErrorCallback(errorCallback);
@@ -145,9 +143,9 @@ int main(int argc, char** argv)
 
         // Initialize GLFW
         if (!glfwInit())
-        {
+            {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-        }
+            }
 
         // Enable OpenGL 3.2 if possible
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -161,14 +159,17 @@ int main(int argc, char** argv)
         // Create a windowed mode window and its OpenGL context
         g_p_main_window_id = glfwCreateWindow(g_anatomical_data.getWidth(),
             g_anatomical_data.getHeight(),
-            "gVirtualXRay -- Anatomical Data Demo -- GLFW3", NULL, NULL);
+            "gVirtualXRay -- Anatomical Data Demo -- GLFW3",
+            0,
+            0);
         
         // Window cannot be created 
         if (!g_p_main_window_id)
-        {
+            {
             glfwTerminate();
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+            }
 
         // Make the window's context current
         glfwMakeContextCurrent(g_p_main_window_id);
@@ -184,61 +185,61 @@ int main(int argc, char** argv)
         std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         // Initialise OpenGL
-		g_anatomical_data.initializeGL();
-	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        g_anatomical_data.initializeGL();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Check the current FBO
-		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        // Check the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Initialize GLFL callback
-		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
-		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
-		glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
-		glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
+        // Initialize GLFL callback
+        glfwSetKeyCallback(g_p_main_window_id, keyCallback);
+        glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
+        glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
+        glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
+        glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
 
-		// Set the projection matrix
-		GLint width(0);
-		GLint height(0);
-		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
-		framebufferSizeCallback(g_p_main_window_id, width, height);
+        // Set the projection matrix
+        GLint width(0);
+        GLint height(0);
+        glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+        framebufferSizeCallback(g_p_main_window_id, width, height);
 
-		// Launch the event loop
-	    while (!glfwWindowShouldClose(g_p_main_window_id))
-	    {
-	        g_anatomical_data.draw();
+        // Launch the event loop
+        while (!glfwWindowShouldClose(g_p_main_window_id))
+            {
+            g_anatomical_data.draw();
 
             // Swap front and back buffers
-	        glfwSwapBuffers(g_p_main_window_id);
+            glfwSwapBuffers(g_p_main_window_id);
 
-	        // Poll for and process events
-	        glfwPollEvents();
-	    }
-	}
-	// Catch exception if any
+            // Poll for and process events
+            glfwPollEvents();
+            }
+        }
+    // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
     catch (const std::string& error)
-    {
+        {
         std::cerr << error << std::endl;
-    }
+        }
     catch (const char* error)
-    {
+        {
         std::cerr << error << std::endl;
-    }
+        }
 
-	// Close the window and shut GLFW
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-		g_p_main_window_id = 0;
-		glfwTerminate();
-	}
+    // Close the window and shut GLFW
+    if (g_p_main_window_id)
+        {
+        glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        glfwTerminate();
+        }
 
-	// Return an exit code
-	return (EXIT_SUCCESS);
+    // Return an exit code
+    return (EXIT_SUCCESS);
 }
 
 
@@ -250,22 +251,41 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight)
 }
 
 
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey)
+//------------------------------------
+void keyCallback(GLFWwindow* apWindow,
+                 int aKey,
+                 int aScanCode,
+                 int anAction,
+                 int aModifierKey)
+//------------------------------------
 {
 }
 
 
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey)
+//--------------------------------------------
+void mouseButtonCallback(GLFWwindow* apWindow,
+                         int aButton,
+                         int aButtonState,
+                         int aModifierKey)
+//--------------------------------------------
 {
 }
 
 
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
+//------------------------------------------
+void cursorPosCallback(GLFWwindow* apWindow,
+                       double x,
+                       double y)
+//------------------------------------------
 {
 }
 
 
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//---------------------------------------
+void scrollCallback(GLFWwindow* apWindow,
+                    double xoffset,
+                    double yoffset)
+//---------------------------------------
 {
 }
 
@@ -276,7 +296,7 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
-	std::cerr << "GLFW error: " << description << std::endl;
+    std::cerr << "GLFW error: " << description << std::endl;
 }
 
 
@@ -285,9 +305,9 @@ void quit()
 //---------
 {
     if (g_p_main_window_id)
-    {
+        {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 }

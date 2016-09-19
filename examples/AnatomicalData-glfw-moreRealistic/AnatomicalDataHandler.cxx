@@ -35,34 +35,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalDataHandler.cxx
+*   @file       AnatomicalDataHandler.cxx
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Class to manage the anatomical data corresponding a patient.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
+
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -77,39 +78,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <GLFW/glfw3.h>
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-
+#ifndef __BoneMesh_h
 #include "gVirtualXRay/BoneMesh.h"
+#endif
 
+#ifndef __DiaphragmMesh_h
 #include "gVirtualXRay/DiaphragmMesh.h"
+#endif
 
+#ifndef __LiverMesh_h
 #include "gVirtualXRay/LiverMesh.h"
+#endif
 
+#ifndef __LungsMesh_h
 #include "gVirtualXRay/LungsMesh.h"
+#endif
 
+#ifndef __SkinMesh_h
 #include "gVirtualXRay/SkinMesh.h"
+#endif
 
-
-#ifndef GVXR_GL_WIDGET_H
+#ifndef __AnatomicalDataHandler_h
 #include "AnatomicalDataHandler.h"
 #endif
 
@@ -135,13 +144,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Constant variables
+//  Constant variables
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
@@ -195,7 +204,7 @@ float radian2degree(float anAngle);
 
 
 //******************************************************************************
-//	Implementation
+//  Implementation
 //******************************************************************************
 
 //---------------------------------------
@@ -221,8 +230,8 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 
     m_display_beam(true),
 
-    m_p_P4_polygon_mesh_set(),
-    m_p_P5_polygon_mesh_set(),
+    m_p_p4_polygon_mesh_set(),
+    m_p_p5_polygon_mesh_set(),
     m_current_patient(P4),
 
     m_display_wireframe(false),
@@ -234,9 +243,9 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
-	m_shadow_map(),
+    m_shadow_map(),
 
-	#undef HAS_FREETYPE
+    #undef HAS_FREETYPE
 
     #ifdef HAS_FREETYPE
     m_display_help(true),
@@ -244,7 +253,7 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 
     m_swap_patient(false),
 
-	m_light_direction(-1, 3, 1)
+    m_light_direction(-1, 3, 1)
 
 //----------------------------------
 {
@@ -255,14 +264,14 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 AnatomicalDataHandler::~AnatomicalDataHandler()
 //-------------------
 {
-	for(unsigned int i(0); i<m_p_P4_polygon_mesh_set.size(); i++)
-	{
-		delete m_p_P4_polygon_mesh_set[i];
-	}
-	for(unsigned int i(0); i<m_p_P5_polygon_mesh_set.size(); i++)
-	{
-		delete m_p_P5_polygon_mesh_set[i];
-	}
+    for(unsigned int i(0); i<m_p_p4_polygon_mesh_set.size(); i++)
+    {
+        delete m_p_p4_polygon_mesh_set[i];
+    }
+    for(unsigned int i(0); i<m_p_p5_polygon_mesh_set.size(); i++)
+    {
+        delete m_p_p5_polygon_mesh_set[i];
+    }
 }
 
 
@@ -341,17 +350,17 @@ void AnatomicalDataHandler::draw()
         case ROTATE_SAMPLE:
             {
                 Matrix4x4<GLfloat> P4_rotation_matrix;
-                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_P4_translation_vector);
+                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_p4_translation_vector);
                 P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
+                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p4_translation_vector);
 
                 Matrix4x4<GLfloat> P5_rotation_matrix;
-                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_P5_translation_vector);
+                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_p5_translation_vector);
                 P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
+                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p5_translation_vector);
 
-                m_P4_rotation_matrix *= P4_rotation_matrix;
-                m_P5_rotation_matrix *= P5_rotation_matrix;
+                m_p4_rotation_matrix *= P4_rotation_matrix;
+                m_p5_rotation_matrix *= P5_rotation_matrix;
             }
             break;
 
@@ -558,7 +567,7 @@ void AnatomicalDataHandler::initGL()
     glEnable(GL_MULTISAMPLE);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	//load the shaders
+    //load the shaders
     char* p_vertex_shader(0);
     char* p_fragment_shader(0);
 
@@ -580,7 +589,7 @@ void AnatomicalDataHandler::initGL()
 
     if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
     {
-    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
     }
     m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
@@ -641,65 +650,65 @@ void AnatomicalDataHandler::loadXRaySimulator()
 void AnatomicalDataHandler::loadPatient(PatientID aPatientID)
 //----------------------------------------------
 {
-	std::vector<AnatomicalMesh*>* p_mesh_set(0);
-	    double const* p_HU_set(0);
+    std::vector<AnatomicalMesh*>* p_mesh_set(0);
+        double const* p_HU_set(0);
 
-	    switch (aPatientID)
-	    {
-	        case P4:
-	            p_mesh_set = &m_p_P4_polygon_mesh_set;
-	            p_HU_set = g_p_P4_HU_set;
-	            break;
+        switch (aPatientID)
+        {
+            case P4:
+                p_mesh_set = &m_p_p4_polygon_mesh_set;
+                p_HU_set = g_p_P4_HU_set;
+                break;
 
-	        case P5:
-	            p_mesh_set = &m_p_P5_polygon_mesh_set;
-	            p_HU_set = g_p_P5_HU_set;
-	            break;
+            case P5:
+                p_mesh_set = &m_p_p5_polygon_mesh_set;
+                p_HU_set = g_p_P5_HU_set;
+                break;
 
-	        default:
-	            p_mesh_set = &m_p_P5_polygon_mesh_set;
-	            p_HU_set = g_p_P5_HU_set;
-	    }
+            default:
+                p_mesh_set = &m_p_p5_polygon_mesh_set;
+                p_HU_set = g_p_P5_HU_set;
+        }
 
-	    // Set geometry
-	    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
-	    {
-	        char* p_data(0);
-	        unsigned int data_size(0);
-	        decompressMesh(i, aPatientID, p_data, data_size);
+        // Set geometry
+        for (unsigned int i(0); i < p_mesh_set->size(); ++i)
+        {
+            char* p_data(0);
+            unsigned int data_size(0);
+            decompressMesh(i, aPatientID, p_data, data_size);
 
-	        (*p_mesh_set)[i]->loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+            (*p_mesh_set)[i]->loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
 
-	        // Delete data
-	        if (p_data)
-	        {
-	            delete [] p_data;
-	            p_data = 0;
-	        }
+            // Delete data
+            if (p_data)
+            {
+                delete [] p_data;
+                p_data = 0;
+            }
 
-	        (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
-	        (*p_mesh_set)[i]->initialize();
-	    }
+            (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
+            (*p_mesh_set)[i]->initialize();
+        }
 
-	    // Compute the translation vector
-	    switch (aPatientID)
-	    {
-	        case P4:
-	            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
-	            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
-	            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
-	            //Set the rotation matrix to create the bump map of the diaphragm
-	            break;
+        // Compute the translation vector
+        switch (aPatientID)
+        {
+            case P4:
+                m_p4_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
+                m_p4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
+                m_p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p4_translation_vector);
+                //Set the rotation matrix to create the bump map of the diaphragm
+                break;
 
-	        case P5:
-	            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
-	            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
-	            //Set the rotation matrix to create the bump map of the diaphragm
-	            break;
+            case P5:
+                m_p5_translation_vector = (*p_mesh_set)[SKIN_ID]->getMinCorner() + ((*p_mesh_set)[SKIN_ID]->getMaxCorner() - (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
+                m_p5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p5_translation_vector);
+                //Set the rotation matrix to create the bump map of the diaphragm
+                break;
 
-	        default:
-	            break;
-	    }
+            default:
+                break;
+        }
 }
 
 //----------------------------------------------------
@@ -711,17 +720,17 @@ void AnatomicalDataHandler::usePatient(const PatientID& aPatientID)
     {
         case P4:
             m_current_patient = P4;
-            p_mesh_set = &m_p_P4_polygon_mesh_set;
+            p_mesh_set = &m_p_p4_polygon_mesh_set;
             break;
 
         case P5:
             m_current_patient = P5;
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
+            p_mesh_set = &m_p_p5_polygon_mesh_set;
             break;
 
         default:
             m_current_patient = P5;
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
+            p_mesh_set = &m_p_p5_polygon_mesh_set;
     }
 
     if (!p_mesh_set->size())
@@ -753,11 +762,11 @@ void AnatomicalDataHandler::updateXRayImage()
     // Compute the X-Ray image
     if (m_current_patient == P4)
     {
-        m_xray_renderer.computeImage(m_P4_rotation_matrix);
+        m_xray_renderer.computeImage(m_p4_rotation_matrix);
     }
     else
     {
-        m_xray_renderer.computeImage(m_P5_rotation_matrix);
+        m_xray_renderer.computeImage(m_p5_rotation_matrix);
     }
 
     // Normalise the X-ray image
@@ -783,13 +792,13 @@ void AnatomicalDataHandler::render()
 {
     try
     {
-    	renderToShadowMap();
+        renderToShadowMap();
 
-    	//Restore the view point
-    	glViewport(0, 0, m_width, m_height);
+        //Restore the view point
+        glViewport(0, 0, m_width, m_height);
 
         // Handle for shader variables
-    	GLuint handle(0);
+        GLuint handle(0);
 
         // Enable back face culling
         pushEnableDisableState(GL_CULL_FACE);
@@ -878,11 +887,11 @@ void AnatomicalDataHandler::render()
         // Set the modelview matrix
         if (m_current_patient == P4)
         {
-            g_current_modelview_matrix *= m_P4_rotation_matrix;
+            g_current_modelview_matrix *= m_p4_rotation_matrix;
         }
         else
         {
-            g_current_modelview_matrix *= m_P5_rotation_matrix;
+            g_current_modelview_matrix *= m_p5_rotation_matrix;
         }
 
         applyModelViewMatrix();
@@ -890,11 +899,11 @@ void AnatomicalDataHandler::render()
         // Display the current patient
         if (m_current_patient == P4)
         {
-            displayPatient(m_p_P4_polygon_mesh_set, shader_id);
+            displayPatient(m_p_p4_polygon_mesh_set, shader_id);
         }
         else
         {
-            displayPatient(m_p_P5_polygon_mesh_set, shader_id);
+            displayPatient(m_p_p5_polygon_mesh_set, shader_id);
         }
 
         // Restore the current transformation matrix
@@ -948,7 +957,7 @@ void AnatomicalDataHandler::render()
         }
 
         //clean up the texture
-		glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         // Disable the shader
         popShaderProgram();
@@ -979,9 +988,9 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
                               GLint aShaderID)
 //----------------------------------------------------------------
 {
-	for(int i(apMeshSet.size()-1); i>=0; --i)
-	{
-		apMeshSet[i]->defineDisplayShaderInput(aShaderID);
+    for(int i(apMeshSet.size()-1); i>=0; --i)
+    {
+        apMeshSet[i]->defineDisplayShaderInput(aShaderID);
 
         if (m_display_wireframe)
         {
@@ -989,24 +998,24 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
         }
         else
         {
-        	if(apMeshSet[i]->isTransparent())
-     	    {
-        		/*pushEnableDisableState(GL_CULL_FACE);
-        		pushEnableDisableState(GL_BLEND);
+            if(apMeshSet[i]->isTransparent())
+             {
+                /*pushEnableDisableState(GL_CULL_FACE);
+                pushEnableDisableState(GL_BLEND);
 
-        		glDisable(GL_CULL_FACE);
-        		glEnable(GL_BLEND);
-        		glBlendFunc(GL_ONE, GL_ONE);
+                glDisable(GL_CULL_FACE);
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_ONE, GL_ONE);
 
-        		apMeshSet[i]->display();
-
-        		popEnableDisableState();
-        		popEnableDisableState();
-    	    */}
-        	else
-        	{
                 apMeshSet[i]->display();
-        	}
+
+                popEnableDisableState();
+                popEnableDisableState();
+            */}
+            else
+            {
+                apMeshSet[i]->display();
+            }
         }
     }
 }
@@ -1214,67 +1223,67 @@ void AnatomicalDataHandler::computeRotation(MATRIX4& aRotationMatrix,
 void AnatomicalDataHandler::initializePatients()
 //------------------------------------------------------
 {
-	m_p_P4_polygon_mesh_set.push_back(new SkinMesh());
-	m_p_P4_polygon_mesh_set.push_back(new LiverMesh());
-	m_p_P4_polygon_mesh_set.push_back(new LungsMesh());
-	m_p_P4_polygon_mesh_set.push_back(new DiaphragmMesh());
-	m_p_P4_polygon_mesh_set.push_back(new BoneMesh());
-	m_p_P4_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_p4_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_p4_polygon_mesh_set.push_back(new LiverMesh());
+    m_p_p4_polygon_mesh_set.push_back(new LungsMesh());
+    m_p_p4_polygon_mesh_set.push_back(new DiaphragmMesh());
+    m_p_p4_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_p4_polygon_mesh_set.push_back(new BoneMesh());
 
-	m_p_P5_polygon_mesh_set.push_back(new SkinMesh());
-	m_p_P5_polygon_mesh_set.push_back(new LiverMesh());
-	m_p_P5_polygon_mesh_set.push_back(new LungsMesh(false, false, true));
-	m_p_P5_polygon_mesh_set.push_back(new DiaphragmMesh());
-	m_p_P5_polygon_mesh_set.push_back(new BoneMesh());
-	m_p_P5_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_p5_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_p5_polygon_mesh_set.push_back(new LiverMesh());
+    m_p_p5_polygon_mesh_set.push_back(new LungsMesh(false, false, true));
+    m_p_p5_polygon_mesh_set.push_back(new DiaphragmMesh());
+    m_p_p5_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_p5_polygon_mesh_set.push_back(new BoneMesh());
 }
 
 //------------------------------------------------------
 void AnatomicalDataHandler::renderToShadowMap()
 //------------------------------------------------------
 {
-	//set the  matrix from the light's point of view to create the shadow map
-	Matrix4x4<GLfloat> shadowProjectionMatrix(buildOrthoProjectionMatrix(-300.f, 300.f, -300.f, 300.f, -300.f, 300.f));
+    //set the  matrix from the light's point of view to create the shadow map
+    Matrix4x4<GLfloat> shadowProjectionMatrix(buildOrthoProjectionMatrix(-300.f, 300.f, -300.f, 300.f, -300.f, 300.f));
 
-	Matrix4x4<GLfloat> shadowViewMatrix(buildLookAtModelViewMatrix(
-			m_light_direction,
-			VEC3(0.f, 0.f, 0.f),
-			VEC3(0.f, 1.f, 0.f)
-		));
+    Matrix4x4<GLfloat> shadowViewMatrix(buildLookAtModelViewMatrix(
+            m_light_direction,
+            VEC3(0.f, 0.f, 0.f),
+            VEC3(0.f, 1.f, 0.f)
+        ));
 
-	//create the shadow map
-	if (m_current_patient == P4)
-	{
-		shadowViewMatrix *= m_scene_rotation_matrix*m_P4_rotation_matrix;
-		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+    //create the shadow map
+    if (m_current_patient == P4)
+    {
+        shadowViewMatrix *= m_scene_rotation_matrix*m_p4_rotation_matrix;
+        m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
 
-		std::vector<PolygonMesh*> polygon_mesh_set;
+        std::vector<PolygonMesh*> polygon_mesh_set;
 
-		for(unsigned int i(0); i<m_p_P4_polygon_mesh_set.size(); i++)
-		{
-			if(!m_p_P4_polygon_mesh_set[i]->isTransparent())
-			{
-				polygon_mesh_set.push_back((m_p_P4_polygon_mesh_set[i]));
-			}
-		}
-		m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
-	}
-	else
-	{
-		shadowViewMatrix *= m_scene_rotation_matrix*m_P5_rotation_matrix;
-		m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+        for(unsigned int i(0); i<m_p_p4_polygon_mesh_set.size(); i++)
+        {
+            if(!m_p_p4_polygon_mesh_set[i]->isTransparent())
+            {
+                polygon_mesh_set.push_back((m_p_p4_polygon_mesh_set[i]));
+            }
+        }
+        m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
+    }
+    else
+    {
+        shadowViewMatrix *= m_scene_rotation_matrix*m_p5_rotation_matrix;
+        m_shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
 
-		std::vector<PolygonMesh*> polygon_mesh_set;
+        std::vector<PolygonMesh*> polygon_mesh_set;
 
-		for(unsigned int i(0); i<m_p_P5_polygon_mesh_set.size(); i++)
-		{
-			if(!m_p_P5_polygon_mesh_set[i]->isTransparent())
-			{
-				polygon_mesh_set.push_back((m_p_P5_polygon_mesh_set[i]));
-			}
-		}
-		m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
-	}
+        for(unsigned int i(0); i<m_p_p5_polygon_mesh_set.size(); i++)
+        {
+            if(!m_p_p5_polygon_mesh_set[i]->isTransparent())
+            {
+                polygon_mesh_set.push_back((m_p_p5_polygon_mesh_set[i]));
+            }
+        }
+        m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
+    }
 }
 
 
@@ -1283,33 +1292,33 @@ void AnatomicalDataHandler::renderToShadowMap()
 void AnatomicalDataHandler::loadShader(const void *srcVert, const void *srcFrag, std::string const& name, Shader& shader)
 //------------------------------------------------------
 {
-	// Initialise the shaders
-	char* p_vertex_shader(0);
-	char* p_fragment_shader(0);
+    // Initialise the shaders
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
 
-	int z_lib_return_code_vertex(0);
-	int z_lib_return_code_fragment(0);
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
 
-	std::string vertex_shader;
-	std::string fragment_shader;
+    std::string vertex_shader;
+    std::string fragment_shader;
 
-	// Display shader
+    // Display shader
 
-	z_lib_return_code_vertex   = inflate(srcVert, sizeof(srcVert),   &p_vertex_shader);
-	z_lib_return_code_fragment = inflate(srcFrag, sizeof(srcFrag), &p_fragment_shader);
+    z_lib_return_code_vertex   = inflate(srcVert, sizeof(srcVert),   &p_vertex_shader);
+    z_lib_return_code_fragment = inflate(srcFrag, sizeof(srcFrag), &p_fragment_shader);
 
 
-	vertex_shader   = p_vertex_shader;
-	fragment_shader = p_fragment_shader;
-	delete [] p_vertex_shader;     p_vertex_shader = 0;
-	delete [] p_fragment_shader; p_fragment_shader = 0;
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+    delete [] p_vertex_shader;     p_vertex_shader = 0;
+    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-	}
-	shader.setLabels(name+".vert", name+".frag");
-	shader.loadSource(vertex_shader, fragment_shader);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+    }
+    shader.setLabels(name+".vert", name+".frag");
+    shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 #endif //0

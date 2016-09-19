@@ -35,33 +35,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		GLWidget.inl
+*   @file       AnatomicalDataHandler.inl
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Class to manage the anatomical data corresponding a patient.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
-*/ 
+*/
 
-//  Defines
+
 //******************************************************************************
-#define PREFIX ".."
+//      Include
+//******************************************************************************
+#include <iostream>
 
 
 //---------------------------------------------------------
@@ -80,60 +82,13 @@ inline unsigned int AnatomicalDataHandler::getHeight() const
 }
 
 
-/*
-//--------------------------------------------
-inline QSize AnatomicalDataHandler::minimumSizeHint() const
-//--------------------------------------------
-{
-    return QSize(50, 50);
-}
-
-
-//------------------------------------------------------------
-inline void AnatomicalDataHandler::mousePressEvent(QMouseEvent *eventPress)
-//------------------------------------------------------------
-{
-    // Use the arc ball
-    m_use_arc_ball = true;
-
-    // Get the mouse position
-    m_last_x_position = eventPress->x();
-    m_last_y_position = eventPress->y();
-}
-
-
-//----------------------------------------------------------------
-inline void AnatomicalDataHandler::mouseReleaseEvent(QMouseEvent *releaseEvent)
-//----------------------------------------------------------------
-{
-    // Stop using the arc ball
-    m_use_arc_ball = false;
-}
-
-
-//----------------------------------------------------------
-inline void AnatomicalDataHandler::mouseMoveEvent(QMouseEvent *eventMove)
-//----------------------------------------------------------
-{
-    // Update the rotation matrix
-    computeRotation(m_scene_rotation_matrix, eventMove->x(), eventMove->y());
-}
-
-
-//-----------------------------
-inline void AnatomicalDataHandler::animate()
-//-----------------------------
-{
-    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
-}
-*/
-
-//----------------------------------
+//-----------------------------------------------
 inline void AnatomicalDataHandler::loadSTLFiles()
-//----------------------------------
+//-----------------------------------------------
 {
     std::cout << "Load P4" << std::endl;
     loadPatient(P4);
+    
     std::cout << "Load P5" << std::endl;
     loadPatient(P5);
 }
@@ -147,35 +102,36 @@ inline void AnatomicalDataHandler::reset()
     m_current_angle = 0;
 
     if (m_acquisition_type == ROTATE_SOURCE_DETECTOR)
-    {
+        {
         m_acquisition_type = ROTATE_SAMPLE;
-    }
+        }
     else
-    {
+        {
         m_acquisition_type = ROTATE_SOURCE_DETECTOR;
-    }
+        }
 }
 
 
-//-----------------------------------------------------------
-inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x, int y)
-//-----------------------------------------------------------
+//-------------------------------------------------------------------------------
+inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x,
+                                                                           int y)
+//-------------------------------------------------------------------------------
 {
-	gVirtualXRay::Vec3<GLfloat> P(2.0 * float(x) / float(m_width) - 1.0,
-			2.0 * float(y) / float(m_height) - 1.0,
-			0);
+    gVirtualXRay::Vec3<GLfloat> P(2.0 * float(x) / float(m_width) - 1.0,
+        2.0 * float(y) / float(m_height) - 1.0,
+        0);
 
-	P.setY(-P.getY());
+    P.setY(-P.getY());
 
-	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
-	if (OP_squared <= 1.0)
-	{
-		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-	}
-	else
-	{
-		P.normalise();  // nearest point
-	}
+    float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+    if (OP_squared <= 1.0)
+        {
+        P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+        }
+    else
+        {
+        P.normalise();  // nearest point
+        }
 
-	return (P);
+    return (P);
 }
