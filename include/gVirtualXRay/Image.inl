@@ -36,9 +36,9 @@
 #include <vector>
 #include <iostream>
 
-#ifdef HAS_GDCM
 #include <typeinfo>
 
+#ifdef HAS_GDCM
 #include <gdcmGlobal.h>
 
 #include "gdcmImageReader.h"
