@@ -114,19 +114,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
 
-#include "p4_skin.stl.h"
-#include "p4_liver.stl.h"
-#include "p4_lung.stl.h"
-#include "p4_diaph.stl.h"
-#include "p4_spine.stl.h"
-#include "p4_ribs.stl.h"
+#include "P4_skin.stl.h"
+#include "P4_liver.stl.h"
+#include "P4_lung.stl.h"
+#include "P4_diaph.stl.h"
+#include "P4_spine.stl.h"
+#include "P4_ribs.stl.h"
 
-#include "p5_skin.stl.h"
-#include "p5_liver.stl.h"
-#include "p5_lung.stl.h"
-#include "p5_diaph.stl.h"
-#include "p5_spine.stl.h"
-#include "p5_ribs.stl.h"
+#include "P5_skin.stl.h"
+#include "P5_liver.stl.h"
+#include "P5_lung.stl.h"
+#include "P5_diaph.stl.h"
+#include "P5_spine.stl.h"
+#include "P5_ribs.stl.h"
 
 
 //******************************************************************************
