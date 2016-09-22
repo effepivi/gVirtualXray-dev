@@ -144,7 +144,8 @@ int main(int argc, char** argv)
         // Initialize GLFW
         if (!glfwInit())
             {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
             }
 
         // Enable OpenGL 3.2 if possible
@@ -163,7 +164,7 @@ int main(int argc, char** argv)
             0,
             0);
         
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
             {
             glfwTerminate();
@@ -182,7 +183,8 @@ int main(int argc, char** argv)
         std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
 
         // Check the GLSL version
-        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+        std::cout << "GLSL:\t" <<
+            glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         // Initialise OpenGL
         g_anatomical_data.initializeGL();
@@ -193,7 +195,8 @@ int main(int argc, char** argv)
 
         // Initialize GLFL callback
         glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-        glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
+        glfwSetFramebufferSizeCallback(g_p_main_window_id,
+            framebufferSizeCallback);
         glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
         glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
         glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
@@ -288,8 +291,6 @@ void scrollCallback(GLFWwindow* apWindow,
 //---------------------------------------
 {
 }
-
-
 
 
 //----------------------------------------------------

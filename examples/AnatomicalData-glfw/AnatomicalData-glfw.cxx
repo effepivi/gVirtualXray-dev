@@ -609,7 +609,6 @@ void initGL()
     std::string fragment_shader;
 
     // Display shader
-    // Display shader
     if (useOpenGL3_2OrAbove())
         {
         z_lib_return_code_vertex   = inflate(g_display_gl3_vert,

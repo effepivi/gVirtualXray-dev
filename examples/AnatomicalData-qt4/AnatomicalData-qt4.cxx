@@ -35,34 +35,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		AnatomicalData-qt4.cxx
+*   @file       AnatomicalData-qt4.cxx
 *
-*	@brief      Demo to illustrate the tomography acquisition and reconstruction
-*	             processes using anatomical data and Qt4.
+*   @brief      Demo to illustrate the tomography acquisition and reconstruction
+*               processes using anatomical data and Qt4.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Jul 2016, 2016, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Jul 2016, 2016, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -81,7 +81,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
@@ -94,9 +94,9 @@ int main(int argc, char** argv)
     int return_code(EXIT_SUCCESS);
 
     try
-	{
-	    // Initialize random seed
-	    srand(time(0));
+        {
+        // Initialize random seed
+        srand(time(0));
 
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
@@ -106,28 +106,24 @@ int main(int argc, char** argv)
         // Launch the event loop
         return_code = application.exec();
 
-	}
-	// Catch exception if any
+        }
+    // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
         return_code = EXIT_FAILURE;
-    }
+        }
     catch (const std::string& error)
-    {
+        {
         std::cerr << error << std::endl;
         return_code = EXIT_FAILURE;
-    }
+        }
     catch (const char* error)
-    {
+        {
         std::cerr << error << std::endl;
         return_code = EXIT_FAILURE;
-    }
+        }
 
-	// Return an exit code
-	return (return_code);
+    // Return an exit code
+    return (return_code);
 }
-
-
-
-
