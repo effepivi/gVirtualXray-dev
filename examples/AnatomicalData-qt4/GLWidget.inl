@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       GLWidget.inl
 *
-*   @brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Qt5 widget to handle our OpenGL window.
 *
 *   @version    1.0
 *
@@ -59,6 +59,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************************************************************
 */
 
+
+//******************************************************************************
 //  Defines
 //******************************************************************************
 #define PREFIX ".."

@@ -35,34 +35,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		GLWidget.cxx
+*   @file       GLWidget.cxx
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Qt5 widget to handle our OpenGL window.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
+
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -76,27 +77,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QtGui>
 #include <QGLWidget>
 
-//#include <stdlib.h>
 
-
-
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -122,19 +120,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "P5_ribs.stl.h"
 
 
-#ifndef GVXR_GL_WIDGET_H
+#ifndef __GLWidget_h
 #include "GLWidget.h"
 #endif
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Constant variables
+//  Constant variables
 //******************************************************************************
 const GLsizei g_default_window_width( 600);
 const GLsizei g_default_window_height(600);
@@ -147,9 +145,9 @@ const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
 
 const float g_incident_energy(0.08 * MeV);
 
-const double g_initial_fovy(45);                              // Field of view along the y-axis
-const double g_initial_near(5.0 * cm);                        // Near clipping plane
-const double g_initial_far(500.0 * cm);                       // Far clipping plane
+const double g_initial_fovy(45);        // Field of view along the y-axis
+const double g_initial_near(5.0 * cm);  // Near clipping plane
+const double g_initial_far(500.0 * cm); // Far clipping plane
 
 const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
 const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
@@ -163,24 +161,24 @@ const unsigned char DIAPH_ID(3);
 const unsigned char SPINE_ID(4);
 const unsigned char RIBS_ID(5);
 
-const double g_p_P4_HU_set [] =
+const double g_p_p4_HU_set [] =
 {
-        -70.202,
-        36.9,
-        -687.297,
-        -41.284,
-        181.08,
-        181.08,
+    -70.202,
+    36.9,
+    -687.297,
+    -41.284,
+    181.08,
+    181.08,
 };
 
-const double g_p_P5_HU_set [] =
+const double g_p_p5_HU_set [] =
 {
-        -36.6789,
-        33.267,
-        -803.976,
-        -19.3418,
-        323.115,
-        323.115,
+    -36.6789,
+    33.267,
+    -803.976,
+    -19.3418,
+    323.115,
+    323.115,
 };
 
 
@@ -191,7 +189,7 @@ float radian2degree(float anAngle);
 
 
 //******************************************************************************
-//	Implementation
+//  Implementation
 //******************************************************************************
 
 //---------------------------------------
@@ -215,8 +213,8 @@ GLWidget::GLWidget(QWidget *parent):
 
     m_display_beam(true),
 
-    m_p_P4_polygon_mesh_set(6),
-    m_p_P5_polygon_mesh_set(6),
+    m_p_p4_polygon_mesh_set(6),
+    m_p_p5_polygon_mesh_set(6),
     m_current_patient(P4),
 
     m_display_wireframe(false),
@@ -228,9 +226,11 @@ GLWidget::GLWidget(QWidget *parent):
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
-    #ifdef HAS_FREETYPE
+#ifdef HAS_FREETYPE
     m_display_help(true),
-    #endif
+#else
+    m_display_help(false),
+#endif
 
     m_swap_patient(false)
 //----------------------------------
@@ -240,12 +240,12 @@ GLWidget::GLWidget(QWidget *parent):
 
     resize(g_default_window_width, g_default_window_height);
     show();
-    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
+    setWindowTitle(QApplication::translate(
+        "toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
 
     // Make the window's context current
     makeCurrent();
 }
-
 
 
 //-----------------------------------------------------------
@@ -261,8 +261,8 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget* apPparent):
 
     m_display_beam(true),
 
-    m_p_P4_polygon_mesh_set(6),
-    m_p_P5_polygon_mesh_set(6),
+    m_p_p4_polygon_mesh_set(6),
+    m_p_p5_polygon_mesh_set(6),
     m_current_patient(P4),
 
     m_display_wireframe(false),
@@ -274,9 +274,11 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget* apPparent):
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
-    #ifdef HAS_FREETYPE
+#ifdef HAS_FREETYPE
     m_display_help(true),
-    #endif
+#else
+    m_display_help(false),
+#endif
 
     m_swap_patient(false)
 //-----------------------------------------------------------
@@ -286,7 +288,8 @@ GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget* apPparent):
 
     resize(g_default_window_width, g_default_window_height);
     show();
-    setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
+    setWindowTitle(QApplication::translate(
+        "toplevel", "gVirtualXRay -- Anatomical Data Demo -- Qt5"));
 
     // Make the window's context current
     makeCurrent();
@@ -305,17 +308,19 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
-	// Initialise OpeGL functions
-	initializeOpenGLFunctions();
+    // Initialise OpeGL functions
+    initializeOpenGLFunctions();
 
-	// Initialise GLEW if needed
-	initialiseGLEW();
+    // Initialise GLEW if needed
+    initialiseGLEW();
 
-	// Check the OpenGL version
-    std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
+    // Check the OpenGL version
+    std::cout << "GL:\t" <<
+        glGetString(GL_VERSION) << std::endl;
 
     // Check the GLSL version
-    std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "GLSL:\t" <<
+        glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Initialise OpenGL
     initGL();
@@ -339,8 +344,11 @@ void GLWidget::initializeGL()
     usePatient(m_current_patient);
 
     // Initialise the modelling matrix
-    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
-    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix( 60.0, VEC3(1, 0, 0));
+    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+        180.0, VEC3(0, 0, 1));
+    
+    m_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+        60.0, VEC3(1, 0, 0));
 }
 
 
@@ -360,41 +368,63 @@ void GLWidget::paintGL()
 
     double screen_aspect_ratio(double(width()) / double(height()));
 
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+    loadPerspectiveProjectionMatrix(
+        g_initial_fovy,
+        screen_aspect_ratio,
+        g_initial_near,
+        g_initial_far);
 
-    loadLookAtModelViewMatrix(0.0, 0.0, m_zoom,
-            0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0);
+    loadLookAtModelViewMatrix(
+        0.0, 0.0, m_zoom,
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0);
 
     // Rotation
     if (m_current_angle != m_next_angle_to_process)
-    {
-        switch (m_acquisition_type)
         {
-        case ROTATE_SAMPLE:
+        switch (m_acquisition_type)
             {
+            case ROTATE_SAMPLE:
+                {
                 Matrix4x4<GLfloat> P4_rotation_matrix;
-                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_P4_translation_vector);
-                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
+                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    m_p4_translation_vector);
+                
+                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                    -m_angle_step,
+                    g_initial_detector_up_vector);
+                
+                P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    -m_p4_translation_vector);
 
                 Matrix4x4<GLfloat> P5_rotation_matrix;
-                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_P5_translation_vector);
-                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
+                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    m_p5_translation_vector);
+                
+                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                    -m_angle_step,
+                    g_initial_detector_up_vector);
+                
+                P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    -m_p5_translation_vector);
 
-                m_P4_rotation_matrix *= P4_rotation_matrix;
-                m_P5_rotation_matrix *= P5_rotation_matrix;
-            }
-            break;
+                m_p4_rotation_matrix *= P4_rotation_matrix;
+                m_p5_rotation_matrix *= P5_rotation_matrix;
+                }
+                break;
 
-        case ROTATE_SOURCE_DETECTOR:
-            {
+            case ROTATE_SOURCE_DETECTOR:
+                {
                 Matrix4x4<GLfloat> rotation_matrix;
-                rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(m_angle_step, g_initial_detector_up_vector);
+                rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                    m_angle_step,
+                    g_initial_detector_up_vector);
 
-                VEC3 source_position(  rotation_matrix * m_xray_detector.getXraySourceCentre());
-                VEC3 detector_position(rotation_matrix * m_xray_detector.getDetectorPosition());
+                VEC3 source_position(
+                    rotation_matrix * m_xray_detector.getXraySourceCentre());
+                
+                VEC3 detector_position(
+                    rotation_matrix * m_xray_detector.getDetectorPosition());
 
                 // Set the source position
                 m_xray_detector.setXrayPointSource(source_position);
@@ -404,10 +434,10 @@ void GLWidget::paintGL()
 
                 // Set the detector position
                 m_xray_detector.setDetectorPosition(detector_position);
+                }
+                break;
             }
-            break;
         }
-    }
 
     // Update the current angle
     m_current_angle = m_next_angle_to_process;
@@ -415,25 +445,25 @@ void GLWidget::paintGL()
 
     // Stop the acquisition
     if (m_next_angle_to_process > 180.0)
-    {
+        {
         if (m_swap_patient)
-        {
+            {
             if (m_current_patient == P4)
-            {
+                {
                 usePatient(P5);
-            }
+                }
             else
-            {
+                {
                 usePatient(P4);
+                }
             }
-        }
         else
-        {
+            {
             reset();
-        }
+            }
 
         m_swap_patient = !m_swap_patient;
-    }
+        }
 
     // Update the X-ray image
     updateXRayImage();
@@ -446,13 +476,13 @@ void GLWidget::paintGL()
     // Draw the help message
 #ifdef HAS_FREETYPE
     if (m_display_help)
-    {
+        {
         displayHelp();
 
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
+        }
 #endif
 
     // Restore the current transformation matrix
@@ -471,69 +501,74 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
 //---------------------------------------------
 {
     switch(event->key())
-    {
-    // Close the program
-    case Qt::Key_Q:
-    case Qt::Key_Escape:
-        close();
-        break;
+        {
+        // Close the program
+        case Qt::Key_Q:
+        case Qt::Key_Escape:
+            close();
+            break;
 
-    case Qt::Key_Space:
-        reset();
-        break;
+        case Qt::Key_Space:
+            reset();
+            break;
 
-    case Qt::Key_B:
-        m_display_beam = !m_display_beam;
-        break;
+        case Qt::Key_B:
+            m_display_beam = !m_display_beam;
+            break;
 
-    case Qt::Key_N:
-        m_xray_renderer.useNegativeFilteringFlag(!m_xray_renderer.getNegativeFilteringFlag());
-        break;
+        case Qt::Key_N:
+            m_xray_renderer.useNegativeFilteringFlag(
+                !m_xray_renderer.getNegativeFilteringFlag());
+            break;
 
-    case Qt::Key_W:
-        m_display_wireframe = !m_display_wireframe;
-        break;
+        case Qt::Key_W:
+            m_display_wireframe = !m_display_wireframe;
+            break;
 
 
 #ifdef HAS_FREETYPE
-    case Qt::Key_H:
-        m_display_help = !m_display_help;
-        break;
+        case Qt::Key_H:
+            m_display_help = !m_display_help;
+            break;
 #endif
 
-    case Qt::Key_P:
-        if (m_current_patient == P4) m_current_patient = P5;
-        else m_current_patient = P4;
-        usePatient(m_current_patient);
-        break;
+        case Qt::Key_P:
+            if (m_current_patient == P4) m_current_patient = P5;
+            else m_current_patient = P4;
+            usePatient(m_current_patient);
+            break;
 
-    case Qt::Key_Plus:
-        m_zoom += 1.0 * cm;
-        resizeGL(width(), height());
-        std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
-        break;
+        case Qt::Key_Plus:
+            m_zoom += 1.0 * cm;
+            resizeGL(width(), height());
+            std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
+            break;
 
-    case Qt::Key_Minus:
-        m_zoom -= 1.0 * cm;
-        resizeGL(width(), height());
-        std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
-        break;
+        case Qt::Key_Minus:
+            m_zoom -= 1.0 * cm;
+            resizeGL(width(), height());
+            std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
+            break;
 
-    default:
-        std::cout << event->key() << std::endl;
-        break;
-    }
+        default:
+            std::cout << event->key() << std::endl;
+            break;
+        }
 }
-
 
 
 //---------------------
 void GLWidget::initGL()
 //---------------------
 {
-    std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
-    std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
-    std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
+    std::cout << "OpenGL renderer:   " <<
+        glGetString(GL_RENDERER)   << std::endl;
+    
+    std::cout << "OpenGL version:    " <<
+        glGetString(GL_VERSION)    << std::endl;
+    
+    std::cout << "OpenGL vender:     " <<
+        glGetString(GL_VENDOR)     << std::endl;
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Enable the Z-buffer
@@ -541,7 +576,11 @@ void GLWidget::initGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    glClearColor(g_background_colour.getX(), g_background_colour.getY(), g_background_colour.getZ(), 1.0);
+    glClearColor(
+        g_background_colour.getX(),
+        g_background_colour.getY(),
+        g_background_colour.getZ(),
+        1.0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable(GL_MULTISAMPLE);
@@ -558,28 +597,50 @@ void GLWidget::initGL()
     std::string fragment_shader;
 
     // Display shader
-    // Display shader
     if (useOpenGL3_2OrAbove())
     {
-        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(
+            g_display_gl3_vert,
+            sizeof(g_display_gl3_vert),
+            &p_vertex_shader);
+    
+        z_lib_return_code_fragment = inflate(
+            g_display_gl3_frag,
+            sizeof(g_display_gl3_frag),
+            &p_fragment_shader);
+    
+        m_display_shader.setLabels("display_gl3.vert", "display_gl3.frag");
     }
     else
     {
-        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+        z_lib_return_code_vertex   = inflate(
+            g_display_gl2_vert,
+            sizeof(g_display_gl2_vert),
+            &p_vertex_shader);
+    
+        z_lib_return_code_fragment = inflate(
+            g_display_gl2_frag,
+            sizeof(g_display_gl2_frag),
+            &p_fragment_shader);
+    
+        m_display_shader.setLabels("display_gl2.vert", "display_gl2.frag");
     }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+    
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+        !vertex_shader.size() || !fragment_shader.size())
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot decode the shader using ZLib.");
     }
-    m_display_shader.setLabels("display.vert", "display.frag");
     m_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -619,40 +680,49 @@ void GLWidget::loadPatient(PatientID aPatientID)
     double const* p_HU_set(0);
 
     switch (aPatientID)
-    {
+        {
         case P4:
-            p_mesh_set = &m_p_P4_polygon_mesh_set;
-            p_HU_set = g_p_P4_HU_set;
+            p_mesh_set = &m_p_p4_polygon_mesh_set;
+            p_HU_set = g_p_p4_HU_set;
             break;
 
         case P5:
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
-            p_HU_set = g_p_P5_HU_set;
+            p_mesh_set = &m_p_p5_polygon_mesh_set;
+            p_HU_set = g_p_p5_HU_set;
             break;
 
         default:
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
-            p_HU_set = g_p_P5_HU_set;
-    }
+            p_mesh_set = &m_p_p5_polygon_mesh_set;
+            p_HU_set = g_p_p5_HU_set;
+        }
 
     // Set geometry
-    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
-    {
+    unsigned int i(0);
+    for (std::vector<PolygonMesh>::iterator ite(p_mesh_set->begin());
+            ite != p_mesh_set->end();
+            ++ite, ++i)
+        {
         char* p_data(0);
         unsigned int data_size(0);
         decompressMesh(i, aPatientID, p_data, data_size);
 
-        (*p_mesh_set)[i].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+        ite->loadSTLDataFromStream(
+            p_data,
+            false,
+            true,
+            false,
+            true,
+            mm,
+            GL_STATIC_DRAW);
 
         // Delete data
         if (p_data)
-        {
+            {
             delete [] p_data;
             p_data = 0;
-        }
+            }
 
-        //g_p_polygon_mesh_set[i].mergeVertices();
-        (*p_mesh_set)[i].setHounsfieldValue(p_HU_set[i]);
+        ite->setHounsfieldValue(p_HU_set[i]);
 
         float red((float(rand()) / (RAND_MAX)) + 1);
         float green((float(rand()) / (RAND_MAX)) + 1);
@@ -660,36 +730,61 @@ void GLWidget::loadPatient(PatientID aPatientID)
         float alpha(1.0);
 
         if (i == SKIN_ID)
-        {
+            {
             alpha = 0.25;
-        }
+            }
 
         VEC3 base_colour(red, green, blue);
         base_colour.normalise();
 
-        (*p_mesh_set)[i].getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-        (*p_mesh_set)[i].getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-        (*p_mesh_set)[i].getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
-        (*p_mesh_set)[i].getMaterial().setShininess(50);
-    }
+        ite->getMaterial().setAmbientColour(
+            base_colour.getX() * 0.19225,
+            base_colour.getY() * 0.19225,
+            base_colour.getZ() * 0.19225,
+            alpha);
+        
+        ite->getMaterial().setDiffuseColour(
+            base_colour.getX() * 0.50754,
+            base_colour.getY() * 0.50754,
+            base_colour.getZ() * 0.50754,
+            alpha);
+        
+        ite->getMaterial().setSpecularColour(
+            base_colour.getX() * 0.50827,
+            base_colour.getY() * 0.50827,
+            base_colour.getZ() * 0.50827,
+            alpha);
+        
+        ite->getMaterial().setShininess(50);
+        }
 
     // Compute the translation vector
     switch (aPatientID)
-    {
+        {
         case P4:
-            m_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
-            m_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
-            m_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P4_translation_vector);
+            m_p4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            
+            m_p4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
+                180, VEC3(1, 0, 0));
+            
+            m_p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                -m_p4_translation_vector);
             break;
 
         case P5:
-            m_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
-            m_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-m_P5_translation_vector);
+            m_p5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            
+            m_p5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(
+                -m_p5_translation_vector);
             break;
 
         default:
             break;
-    }
+        }
 }
 
 
@@ -700,37 +795,38 @@ void GLWidget::usePatient(const PatientID& aPatientID)
     std::vector<PolygonMesh>* p_mesh_set(0);
 
     switch (aPatientID)
-    {
+        {
         case P4:
             m_current_patient = P4;
-            p_mesh_set = &m_p_P4_polygon_mesh_set;
+            p_mesh_set = &m_p_p4_polygon_mesh_set;
             break;
 
         case P5:
             m_current_patient = P5;
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
+            p_mesh_set = &m_p_p5_polygon_mesh_set;
             break;
 
         default:
             m_current_patient = P5;
-            p_mesh_set = &m_p_P5_polygon_mesh_set;
-    }
+            p_mesh_set = &m_p_p5_polygon_mesh_set;
+        }
 
     if (!p_mesh_set->size())
-    {
-        throw "No anatomical data provided.";
-    }
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "No anatomical data provided.");
+        }
 
     m_xray_renderer.removeInnerSurfaces();
     m_xray_renderer.removeOuterSurface();
-    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
-    {
-        m_xray_renderer.addInnerSurface(&((*p_mesh_set)[i]));
-    }
+    for (std::vector<PolygonMesh>::const_iterator ite(p_mesh_set->begin());
+            ite != p_mesh_set->end();
+            ++ite)
+        {
+        m_xray_renderer.addInnerSurface(&(*ite));
+        }
 
     // Reset the simulation state
-    //reset();
-
     m_next_angle_to_process = 0;
     m_current_angle = 0;
 }
@@ -744,29 +840,32 @@ void GLWidget::updateXRayImage()
 
     // Compute the X-Ray image
     if (m_current_patient == P4)
-    {
-        m_xray_renderer.computeImage(m_P4_rotation_matrix);
-    }
+        {
+        m_xray_renderer.computeImage(m_p4_rotation_matrix);
+        }
     else
-    {
-        m_xray_renderer.computeImage(m_P5_rotation_matrix);
-    }
+        {
+        m_xray_renderer.computeImage(m_p5_rotation_matrix);
+        }
 
     // Normalise the X-ray image
     if (fabs(m_current_angle) < EPSILON)
-    {
+        {
         m_xray_renderer.normalise();
-    }
+        }
 
     QDateTime stop_time = QDateTime::currentDateTime();
-    m_simulation_total_time += float(start_time.time().msecsTo(stop_time.time())) / 1000.0;
+    m_simulation_total_time +=
+        float(start_time.time().msecsTo(stop_time.time())) / 1000.0;
+    
     ++m_number_of_rotations;
 
     // Update the rotation angle
     if (m_number_of_rotations)
-    {
-        m_angle_step = (m_simulation_total_time / float(m_number_of_rotations)) * 180.0 / 10.0;
-    }
+        {
+        m_angle_step = (m_simulation_total_time / float(m_number_of_rotations)) *
+            180.0 / 10.0;
+        }
 }
 
 
@@ -775,7 +874,7 @@ void GLWidget::render()
 //---------------------
 {
     try
-    {
+        {
         // Handle for shader variables
         GLuint handle(0);
 
@@ -817,7 +916,12 @@ void GLWidget::render()
 
         VEC3 light_position(0, 0, m_zoom);
         handle = glGetUniformLocation(shader_id, "light_position");
-        glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
+        glUniform4f(
+            handle,
+            light_position.getX(),
+            light_position.getY(),
+            light_position.getZ(),
+            1.0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the status of OpenGL and of the current FBO
@@ -831,11 +935,19 @@ void GLWidget::render()
         g_current_modelview_matrix *= m_scene_rotation_matrix;
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
@@ -854,52 +966,50 @@ void GLWidget::render()
 
         // Set the modelview matrix
         if (m_current_patient == P4)
-        {
-            g_current_modelview_matrix *= m_P4_rotation_matrix;
-        }
+            {
+            g_current_modelview_matrix *= m_p4_rotation_matrix;
+            }
         else
-        {
-            g_current_modelview_matrix *= m_P5_rotation_matrix;
-        }
+            {
+            g_current_modelview_matrix *= m_p5_rotation_matrix;
+            }
 
         applyModelViewMatrix();
 
         // Display the current patient
         if (m_current_patient == P4)
-        {
-            displayPatient(m_p_P4_polygon_mesh_set, shader_id);
-        }
+            {
+            displayPatient(m_p_p4_polygon_mesh_set, shader_id);
+            }
         else
-        {
-            displayPatient(m_p_P5_polygon_mesh_set, shader_id);
-        }
+            {
+            displayPatient(m_p_p5_polygon_mesh_set, shader_id);
+            }
 
         // Restore the current transformation matrix
         popModelViewMatrix();
 
         // Define colours
-        {
-            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
+        const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+        const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+        const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+        const GLfloat material_shininess = 50.2;
 
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, &material_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_diffuse");
+        glUniform4fv(handle, 1, &material_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_specular");
+        glUniform4fv(handle, 1, &material_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
+        handle = glGetUniformLocation(shader_id, "material_shininess");
+        glUniform1fv(handle, 1, &material_shininess);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Display the source
         m_xray_detector.displaySource();
@@ -910,7 +1020,7 @@ void GLWidget::render()
 
         // Display the beam
         if (m_display_beam)
-        {
+            {
             const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.1};
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -922,7 +1032,7 @@ void GLWidget::render()
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             m_xray_detector.displayBeam();
-        }
+            }
 
         // Disable the shader
         popShaderProgram();
@@ -938,12 +1048,12 @@ void GLWidget::render()
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    }
+        }
     // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
-    }
+        }
 }
 
 
@@ -953,7 +1063,7 @@ void GLWidget::displayPatient(std::vector<PolygonMesh>& apMeshSet,
 //----------------------------------------------------------------
 {
     for (unsigned int i(1); i < apMeshSet.size(); ++i)
-    {
+        {
         // Get the material
         Material& material(apMeshSet[i].getMaterial());
 
@@ -975,18 +1085,18 @@ void GLWidget::displayPatient(std::vector<PolygonMesh>& apMeshSet,
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         if (m_display_wireframe)
-        {
+            {
             apMeshSet[i].displayWireFrame();
-        }
+            }
         else
-        {
+            {
             apMeshSet[i].display();
+            }
         }
-    }
 
     // Display the skin with transparency
     if (!m_display_wireframe)
-    {
+        {
         pushEnableDisableState(GL_BLEND);
 
         glEnable (GL_BLEND);
@@ -995,11 +1105,11 @@ void GLWidget::displayPatient(std::vector<PolygonMesh>& apMeshSet,
         apMeshSet[SKIN_ID].display();
 
         popEnableDisableState();
-    }
+        }
     else
-    {
+        {
         apMeshSet[SKIN_ID].displayWireFrame();
-    }
+        }
 }
 
 
@@ -1009,17 +1119,17 @@ void GLWidget::displayHelp()
 {
 #ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
-            g_background_colour.getX(),
-            g_background_colour.getY(),
-            g_background_colour.getZ(),
-            0.0
+        g_background_colour.getX(),
+        g_background_colour.getY(),
+        g_background_colour.getZ(),
+        0.0
     };
 
     GLfloat p_font_colour [] = {
-            1.0,
-            1.0,
-            0.0,
-            1.0
+        1.0,
+        1.0,
+        0.0,
+        1.0
     };
 
     pushEnableDisableState(GL_BLEND);
@@ -1028,53 +1138,61 @@ void GLWidget::displayHelp()
 
     int x_position(15);
     int offset(29);
-    m_font_rendered.renderText(std::string("Help"),
-            20,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("Help"),
+        20,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'h\': display|hide help message"),
+        40,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'n\': toggle negative image"),
+        40,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'p\': change patient"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'p\': change patient"),
+        40,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'b\': display|hide X-ray beam"),
+        40,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'w\': wireframe|solid rendering"),
+        40,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'space bar\': change tomography mode"),
-            40, x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'space bar\': change tomography mode"),
+        40, x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    m_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-            40,   x_position += offset,
-            m_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    m_font_rendered.renderText(
+        std::string("\'q\', 'Esc': quit"),
+        40,   x_position += offset,
+        m_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
     popEnableDisableState();
 #endif
@@ -1090,82 +1208,83 @@ void GLWidget::decompressMesh(unsigned int aMeshID,
 {
     // Initialise the data
     if (apData)
-    {
+        {
         delete [] apData;
         apData = 0;
-    }
+        }
 
     aSize = 0;
 
     if (aPatientID == P4)
-    {
-        switch (aMeshID)
         {
-        case SKIN_ID:
-            aSize = inflate(g_P4_skin_stl, sizeof(g_P4_skin_stl), &apData);
-            break;
+        switch (aMeshID)
+            {
+            case SKIN_ID:
+                aSize = inflate(g_P4_skin_stl, sizeof(g_P4_skin_stl), &apData);
+                break;
 
-        case LIVER_ID:
-            aSize = inflate(g_P4_liver_stl, sizeof(g_P4_liver_stl), &apData);
-            break;
+            case LIVER_ID:
+                aSize = inflate(g_P4_liver_stl, sizeof(g_P4_liver_stl), &apData);
+                break;
 
-        case LUNG_ID:
-            aSize = inflate(g_P4_lung_stl, sizeof(g_P4_lung_stl), &apData);
-            break;
+            case LUNG_ID:
+                aSize = inflate(g_P4_lung_stl, sizeof(g_P4_lung_stl), &apData);
+                break;
 
-        case DIAPH_ID:
-            aSize = inflate(g_P4_diaph_stl, sizeof(g_P4_diaph_stl), &apData);
-            break;
+            case DIAPH_ID:
+                aSize = inflate(g_P4_diaph_stl, sizeof(g_P4_diaph_stl), &apData);
+                break;
 
-        case SPINE_ID:
-            aSize = inflate(g_P4_spine_stl, sizeof(g_P4_spine_stl), &apData);
-            break;
+            case SPINE_ID:
+                aSize = inflate(g_P4_spine_stl, sizeof(g_P4_spine_stl), &apData);
+                break;
 
-        case RIBS_ID:
-            aSize = inflate(g_P4_ribs_stl, sizeof(g_P4_ribs_stl), &apData);
-            break;
+            case RIBS_ID:
+                aSize = inflate(g_P4_ribs_stl, sizeof(g_P4_ribs_stl), &apData);
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
-    }
     else
-    {
-        switch (aMeshID)
         {
-        case SKIN_ID:
-            aSize = inflate(g_P5_skin_stl, sizeof(g_P5_skin_stl), &apData);
-            break;
+        switch (aMeshID)
+            {
+            case SKIN_ID:
+                aSize = inflate(g_P5_skin_stl, sizeof(g_P5_skin_stl), &apData);
+                break;
 
-        case LIVER_ID:
-            aSize = inflate(g_P5_liver_stl, sizeof(g_P5_liver_stl), &apData);
-            break;
+            case LIVER_ID:
+                aSize = inflate(g_P5_liver_stl, sizeof(g_P5_liver_stl), &apData);
+                break;
 
-        case LUNG_ID:
-            aSize = inflate(g_P5_lung_stl, sizeof(g_P5_lung_stl), &apData);
-            break;
+            case LUNG_ID:
+                aSize = inflate(g_P5_lung_stl, sizeof(g_P5_lung_stl), &apData);
+                break;
 
-        case DIAPH_ID:
-            aSize = inflate(g_P5_diaph_stl, sizeof(g_P5_diaph_stl), &apData);
-            break;
+            case DIAPH_ID:
+                aSize = inflate(g_P5_diaph_stl, sizeof(g_P5_diaph_stl), &apData);
+                break;
 
-        case SPINE_ID:
-            aSize = inflate(g_P5_spine_stl, sizeof(g_P5_spine_stl), &apData);
-            break;
+            case SPINE_ID:
+                aSize = inflate(g_P5_spine_stl, sizeof(g_P5_spine_stl), &apData);
+                break;
 
-        case RIBS_ID:
-            aSize = inflate(g_P5_ribs_stl, sizeof(g_P5_ribs_stl), &apData);
-            break;
+            case RIBS_ID:
+                aSize = inflate(g_P5_ribs_stl, sizeof(g_P5_ribs_stl), &apData);
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
-    }
 
     if (aSize <= 0)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-    }
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot decode the shader using ZLib.");
+        }
 }
 
 
@@ -1176,24 +1295,32 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
 //------------------------------------------------------
 {
     if (m_use_arc_ball)
-    {
-        if (aXmousePosition != m_last_x_position || aYmousePosition != m_last_y_position)
         {
-            Vec3<GLfloat> va(getArcballVector(m_last_x_position,    m_last_y_position));
-            Vec3<GLfloat> vb(getArcballVector(aXmousePosition, aYmousePosition));
+        if (aXmousePosition != m_last_x_position ||
+                aYmousePosition != m_last_y_position)
+            {
+            Vec3<GLfloat> va(getArcballVector(
+                m_last_x_position,
+                m_last_y_position));
+            
+            Vec3<GLfloat> vb(getArcballVector(
+                aXmousePosition,
+                aYmousePosition));
 
 #ifdef _WIN32
-			float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+            float angle(g_rotation_speed *
+                radian2degree(acos(min(1.0, va.dotProduct(vb)))));
 #else
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+            float angle(g_rotation_speed *
+                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 #endif
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
 
             Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-            Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
+            
+            Vec3<GLfloat> axis_in_object_coord =
+                camera2object * axis_in_camera_coord;
 
             Matrix4x4<GLfloat> rotation_matrix;
             rotation_matrix.rotate(angle, axis_in_object_coord);
@@ -1201,6 +1328,6 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
 
             m_last_x_position = aXmousePosition;
             m_last_y_position = aYmousePosition;
+            }
         }
-    }
 }

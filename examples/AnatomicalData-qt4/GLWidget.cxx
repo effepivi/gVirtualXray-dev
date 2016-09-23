@@ -35,9 +35,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       GLWidget.CXX
+*   @file       GLWidget.cxx
 *
-*   @brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Qt5 widget to handle our OpenGL window.
 *
 *   @version    1.0
 *
@@ -58,7 +58,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 ********************************************************************************
 */
-
 
 //******************************************************************************
 //  Include
@@ -341,14 +340,26 @@ void GLWidget::paintGL()
             case ROTATE_SAMPLE:
                 {
                 Matrix4x4<GLfloat> p4_rotation_matrix;
-                p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_p4_translation_vector);
-                p4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p4_translation_vector);
+                p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    m_p4_translation_vector);
+                
+                p4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                    -m_angle_step,
+                    g_initial_detector_up_vector);
+                
+                p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    -m_p4_translation_vector);
 
                 Matrix4x4<GLfloat> p5_rotation_matrix;
-                p5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_p5_translation_vector);
-                p5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                p5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p5_translation_vector);
+                p5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    m_p5_translation_vector);
+                
+                p5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                    -m_angle_step,
+                    g_initial_detector_up_vector);
+                
+                p5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                    -m_p5_translation_vector);
 
                 m_p4_rotation_matrix *= p4_rotation_matrix;
                 m_p5_rotation_matrix *= p5_rotation_matrix;
@@ -358,7 +369,8 @@ void GLWidget::paintGL()
             case ROTATE_SOURCE_DETECTOR:
                 {
                 Matrix4x4<GLfloat> rotation_matrix;
-                rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(m_angle_step,
+                rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                    m_angle_step,
                     g_initial_detector_up_vector);
 
                 VEC3 source_position(

@@ -62,7 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -83,7 +83,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
@@ -96,46 +96,41 @@ int main(int argc, char** argv)
     int return_code(EXIT_SUCCESS);
 
     try
-	{
-	    // Initialize random seed
-	    srand(time(0));
+        {
+        // Initialize random seed
+        srand(time(0));
 
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
         
-		// Create a GL format to OpenGL 3.2 Core
+        // Create a GL format to OpenGL 3.2 Core
         QGLFormat gl_format(QGLFormat::defaultFormat());
         gl_format.setVersion(3, 2);
         gl_format.setProfile(QGLFormat::CoreProfile);
-	
+    
         // Set the GL format of the QGLWidget
         GLWidget window(gl_format);
 
         // Launch the event loop
         return_code = application.exec();
-
-	}
-	// Catch exception if any
+        }
+    // Catch exception if any
     catch (const std::exception& error)
-    {
+        {
         std::cerr << error.what() << std::endl;
         return_code = EXIT_FAILURE;
-    }
+        }
     catch (const std::string& error)
-    {
+        {
         std::cerr << error << std::endl;
         return_code = EXIT_FAILURE;
-    }
+        }
     catch (const char* error)
-    {
+        {
         std::cerr << error << std::endl;
         return_code = EXIT_FAILURE;
-    }
+        }
 
-	// Return an exit code
-	return (return_code);
+    // Return an exit code
+    return (return_code);
 }
-
-
-
-

@@ -32,43 +32,42 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_GL_WIDGET_H
-#define GVXR_GL_WIDGET_H
+#ifndef __GLWidget_h
+#define __GLWidget_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		GLWidget.h
+*   @file       GLWidget.h
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Qt5 widget to handle our OpenGL window.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -77,40 +76,40 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QGLWidget>
 #include <QOpenGLFunctions_3_2_Core>
 
-#ifndef GVXR_POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
-#ifndef GVXR_VEC3_H
+#ifndef __Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_SHADER_H
-#include "gVirtualXRay/Shader.h"
+#ifndef __Types_h
+#include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
-#include "gVirtualXRay/TextRenderer.h"
+#ifndef __AtomicElement_h
+#include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
+#endif
+
+#ifndef __Shader_h
+#include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef __TextRenderer_h
+#include "gVirtualXRay/TextRenderer.h"
 #endif
 
 
@@ -123,7 +122,8 @@ namespace gVirtualXRay {
 //==============================================================================
 /**
 *   @class  GLWidget
-*   @brief  GLWidget is a class to manage a Qt4 widget that handles our OpenGL window.
+*   @brief  GLWidget is a class to manage a Qt4 widget that handles
+*           our OpenGL window.
 */
 //==============================================================================
 class GLWidget: public QGLWidget, protected QOpenGLFunctions_3_2_Core
@@ -321,7 +321,8 @@ private:
 
 
     //--------------------------------------------------------------------------
-    /// Reset the rotation angle and the acquisition type to their default values
+    /// Reset the rotation angle and the acquisition type
+    /// to their default values
     //--------------------------------------------------------------------------
     void reset();
 
@@ -361,7 +362,8 @@ private:
     *   @param aMeshID: the ID of the polygon mesh to load
     *   @param aPatientID:  the ID of the patient corresponding to aMeshID
     *   @param apData:  the uncompressed polygon mesh data
-    *   @param aSize:   the size of the uncompressed polygon mesh data (in number of bytes)
+    *   @param aSize:   the size of the uncompressed polygon mesh data
+    *                   (in number of bytes)
     */
     //--------------------------------------------------------------------------
     void decompressMesh(unsigned int aMeshID,
@@ -397,7 +399,8 @@ private:
     /// The zooming factor
     GLfloat m_zoom;
 
-    /// Flag set to true when rotation using arcball is currently in use, false otherwise
+    /// Flag set to true when rotation using arcball is currently in use,
+    /// false otherwise
     bool m_use_arc_ball;
 
     /// The last known position of the mouse pointer along the X-axis
@@ -416,16 +419,16 @@ private:
     Matrix4x4<GLfloat> m_scene_rotation_matrix;
 
     /// Transformation matrix used to rotate Patient 4
-    Matrix4x4<GLfloat> m_P4_rotation_matrix;
+    Matrix4x4<GLfloat> m_p4_rotation_matrix;
 
     /// Transformation matrix used to rotate Patient 5
-    Matrix4x4<GLfloat> m_P5_rotation_matrix;
+    Matrix4x4<GLfloat> m_p5_rotation_matrix;
 
     /// Translation vector used to centre Patient 4
-    VEC3 m_P4_translation_vector;
+    VEC3 m_p4_translation_vector;
 
     /// Translation vector used to centre Patient 5
-    VEC3 m_P5_translation_vector;
+    VEC3 m_p5_translation_vector;
 
     /// X-ray beam
     XRayBeam m_xray_beam;
@@ -440,15 +443,16 @@ private:
     Shader m_display_shader;
 
     /// Set of polygon meshes for Patient 4
-    std::vector<PolygonMesh> m_p_P4_polygon_mesh_set;
+    std::vector<PolygonMesh> m_p_p4_polygon_mesh_set;
 
     /// Set of polygon meshes for Patient 5
-    std::vector<PolygonMesh> m_p_P5_polygon_mesh_set;
+    std::vector<PolygonMesh> m_p_p5_polygon_mesh_set;
 
     /// Flag that keeps track of which patient is currently in use
     GLWidget::PatientID m_current_patient;
 
-    /// Flag set to true when the meshes are displayed using wireframe, false otherwise
+    /// Flag set to true when the meshes are displayed using wireframe,
+    /// false otherwise
     bool m_display_wireframe;
 
     /// The angular step between two successive rotations
@@ -477,7 +481,8 @@ private:
     TextRenderer m_font_rendered;
 #endif
 
-    /// Flag set to true if the patients have to be swapped at the next iteration, false otherwise
+    /// Flag set to true if the patients have to be swapped at
+    /// the next iteration, false otherwise
     bool m_swap_patient;
 };
 
@@ -489,4 +494,4 @@ private:
 #include "GLWidget.inl"
 
 
-#endif // GVXR_GL_WIDGET_H
+#endif // __GLWidget_h

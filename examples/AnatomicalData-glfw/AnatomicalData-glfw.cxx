@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -758,14 +758,26 @@ void draw()
                 case ROTATE_SAMPLE:
                     {
                     Matrix4x4<GLfloat> P4_rotation_matrix;
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P4_translation_vector);
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
+                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                        g_P4_translation_vector);
+                    
+                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                        -g_angle_step,
+                        g_rotation_axis);
+                    
+                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                        -g_P4_translation_vector);
 
                     Matrix4x4<GLfloat> P5_rotation_matrix;
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_P5_translation_vector);
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                        g_P5_translation_vector);
+                    
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                        -g_angle_step,
+                        g_rotation_axis);
+                    
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                        -g_P5_translation_vector);
 
                     g_P4_rotation_matrix *= P4_rotation_matrix;
                     g_P5_rotation_matrix *= P5_rotation_matrix;
@@ -775,9 +787,15 @@ void draw()
                 case ROTATE_SOURCE_DETECTOR:
                     {
                     Matrix4x4<GLfloat> rotation_matrix;
-                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
-                    rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
-                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
+                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                        g_rotation_centre);
+                    
+                    rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                        g_angle_step,
+                        g_rotation_axis);
+                    
+                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                        -g_rotation_centre);
 
                     g_source_position   = rotation_matrix * g_source_position;
                     g_detector_position = rotation_matrix * g_detector_position;
@@ -1404,9 +1422,24 @@ void loadPatient(PatientID aPatientID)
         VEC3 base_colour(red, green, blue);
         base_colour.normalise();
 
-        (*p_mesh_set)[i].getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-        (*p_mesh_set)[i].getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-        (*p_mesh_set)[i].getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
+        (*p_mesh_set)[i].getMaterial().setAmbientColour(
+            base_colour.getX() * 0.19225,
+            base_colour.getY() * 0.19225,
+            base_colour.getZ() * 0.19225,
+            alpha);
+        
+        (*p_mesh_set)[i].getMaterial().setDiffuseColour(
+            base_colour.getX() * 0.50754,
+            base_colour.getY() * 0.50754,
+            base_colour.getZ() * 0.50754,
+            alpha);
+        
+        (*p_mesh_set)[i].getMaterial().setSpecularColour(
+            base_colour.getX() * 0.50827,
+            base_colour.getY() * 0.50827,
+            base_colour.getZ() * 0.50827,
+            alpha);
+        
         (*p_mesh_set)[i].getMaterial().setShininess(50);
         }
 
@@ -1414,14 +1447,24 @@ void loadPatient(PatientID aPatientID)
     switch (aPatientID)
         {
         case P4:
-            g_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
-            g_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
-            g_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P4_translation_vector);
+            g_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            
+            g_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
+                180, VEC3(1, 0, 0));
+            
+            g_P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+                -g_P4_translation_vector);
             break;
 
         case P5:
-            g_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() + ((*p_mesh_set)[SKIN_ID].getMaxCorner() - (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
-            g_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_P5_translation_vector);
+            g_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            
+            g_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(
+                -g_P5_translation_vector);
             break;
 
         default:
@@ -1589,7 +1632,8 @@ void updateXRayImage()
         // Update the rotation angle
         if (g_number_of_rotations)
             {
-            g_angle_step = (g_simulation_total_time / float(g_number_of_rotations)) *
+            g_angle_step =
+                (g_simulation_total_time / float(g_number_of_rotations)) *
                 float(g_angle_number) / 10.0;
             }
         
@@ -1642,37 +1686,43 @@ void displayHelp()
 
     int x_position(15);
     int offset(29);
-    g_font_rendered.renderText(std::string("Help"),
+    g_font_rendered.renderText(
+        std::string("Help"),
         20,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,
         p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
+    g_font_rendered.renderText(
+        std::string("\'h\': display|hide help message"),
         40,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,
         p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
+    g_font_rendered.renderText(
+        std::string("\'n\': toggle negative image"),
         40,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,
         p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'p\': change patient"),
+    g_font_rendered.renderText(
+        std::string("\'p\': change patient"),
         40,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,
         p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
+    g_font_rendered.renderText(
+        std::string("\'b\': display|hide X-ray beam"),
         40,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,
         p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
+    g_font_rendered.renderText(
+        std::string("\'w\': wireframe|solid rendering"),
         40,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,
@@ -1685,7 +1735,8 @@ void displayHelp()
         p_background_colour,
         p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
+    g_font_rendered.renderText(
+        std::string("\'q\', 'Esc': quit"),
         40,   x_position += offset,
         g_text_2D_projection_matrix,
         p_background_colour,

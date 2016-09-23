@@ -182,24 +182,24 @@ const unsigned char DIAPH_ID(3);
 const unsigned char SPINE_ID(4);
 const unsigned char RIBS_ID(5);
 
-const double g_p_P4_HU_set [] =
+const double g_p_p4_HU_set [] =
 {
-        -70.202,
-        36.9,
-        -687.297,
-        -41.284,
-        181.08,
-        181.08,
+    -70.202,
+    36.9,
+    -687.297,
+    -41.284,
+    181.08,
+    181.08,
 };
 
-const double g_p_P5_HU_set [] =
+const double g_p_p5_HU_set [] =
 {
-        -36.6789,
-        33.267,
-        -803.976,
-        -19.3418,
-        323.115,
-        323.115,
+    -36.6789,
+    33.267,
+    -803.976,
+    -19.3418,
+    323.115,
+    323.115,
 };
 
 
@@ -633,17 +633,17 @@ void AnatomicalDataHandler::loadPatient(PatientID aPatientID)
         {
         case P4:
             p_mesh_set = &m_p_p4_polygon_mesh_set;
-            p_HU_set = g_p_P4_HU_set;
+            p_HU_set = g_p_p4_HU_set;
             break;
 
         case P5:
             p_mesh_set = &m_p_p5_polygon_mesh_set;
-            p_HU_set = g_p_P5_HU_set;
+            p_HU_set = g_p_p5_HU_set;
             break;
 
         default:
             p_mesh_set = &m_p_p5_polygon_mesh_set;
-            p_HU_set = g_p_P5_HU_set;
+            p_HU_set = g_p_p5_HU_set;
         }
 
     // Set geometry

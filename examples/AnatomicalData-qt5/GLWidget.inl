@@ -35,32 +35,32 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		GLWidget.inl
+*   @file       GLWidget.inl
 *
-*	@brief      Qt4 widget to handle our OpenGL window.
+*   @brief      Qt5 widget to handle our OpenGL window.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/07/2016
+*   @date       13/07/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifndef GVXR_TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -103,10 +103,10 @@ inline void GLWidget::resizeGL(int width, int height)
 {
     // Avoid a division by zero
     if (height == 0)
-    {
+        {
         // Prevent divide by 0
         height = 1;
-    }
+        }
 
     int x(0), y(0), w(width), h(height);
 
@@ -114,11 +114,11 @@ inline void GLWidget::resizeGL(int width, int height)
     glViewport(x, y, w, h);
 
     m_text_2D_projection_matrix = buildOrthoProjectionMatrix(0,
-            width,
-            height,
-            0,
-            -1.0,
-            1.0);
+        width,
+        height,
+        0,
+        -1.0,
+        1.0);
 }
 
 
@@ -150,7 +150,7 @@ inline void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 {
     // Scrolling along the Y-axis
     if (std::abs(wheelEvent->delta()) > EPSILON)
-    {
+        {
         // Stop using the arc ball
         m_use_arc_ball = false;
 
@@ -159,8 +159,7 @@ inline void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 
         // Update the projection matrix
         resizeGL(width(), height());
-    }
-
+        }
 }
 
 
@@ -198,9 +197,9 @@ inline void GLWidget::loadXRaySimulator()
 {
     // Initialise the X-ray renderer
     m_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F,
-            &m_xray_detector,
-            &m_xray_beam);
+        GL_RGB32F,
+        &m_xray_detector,
+        &m_xray_beam);
 }
 
 
@@ -223,13 +222,13 @@ inline void GLWidget::reset()
     m_current_angle = 0;
 
     if (m_acquisition_type == ROTATE_SOURCE_DETECTOR)
-    {
+        {
         m_acquisition_type = ROTATE_SAMPLE;
-    }
+        }
     else
-    {
+        {
         m_acquisition_type = ROTATE_SOURCE_DETECTOR;
-    }
+        }
 }
 
 
@@ -237,23 +236,23 @@ inline void GLWidget::reset()
 inline Vec3<GLfloat> GLWidget::getArcballVector(int x, int y)
 //-----------------------------------------------------------
 {
-	Vec3<GLfloat> P(2.0 * float(x) / float(width()) - 1.0,
-			2.0 * float(y) / float(height()) - 1.0,
-			0);
+    Vec3<GLfloat> P(2.0 * float(x) / float(width()) - 1.0,
+        2.0 * float(y) / float(height()) - 1.0,
+        0);
 
-	P.setY(-P.getY());
+    P.setY(-P.getY());
 
-	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
-	if (OP_squared <= 1.0)
-	{
-		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-	}
-	else
-	{
-		P.normalise();  // nearest point
-	}
+    float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+    if (OP_squared <= 1.0)
+        {
+        P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+        }
+    else
+        {
+        P.normalise();  // nearest point
+        }
 
-	return (P);
+    return (P);
 }
 
 
