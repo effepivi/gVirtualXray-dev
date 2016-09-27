@@ -123,12 +123,12 @@ public:
     //--------------------------------------------------------------------------
     /// Constructor.
     /**
-    *   @param  X:  position of the window along the horizontal axis
-    *   @param  Y:  position of the window along the vertical axis
-    *   @param  aWidth: width of the window
-    *   @param  aHeight:    height of the window
-    *   @param  apTitle:    title of the window
-    */
+     *  @param X:   position of the window along the horizontal axis
+     *  @param Y:   position of the window along the vertical axis
+     *  @param aWidth:  width of the window
+     *  @param aHeight: height of the window
+     *  @param apTitle: title of the window
+     */
     //--------------------------------------------------------------------------
     OpenGLWindow(int X, int Y, int aWidth, int aHeight, char* apTitle);
 
@@ -148,10 +148,10 @@ public:
     //--------------------------------------------------------------------------
     /// Event handler.
     /**
-    *   @param anEvent: the kind of event received
-    *   @return 0 if the event was not used or understood,
-    *           1 if the event was used and can be deleted
-    */
+     *  @param anEvent: the kind of event received
+     *  @return 0 if the event was not used or understood,
+     *          1 if the event was used and can be deleted
+     */
     //--------------------------------------------------------------------------
     virtual int handle(int anEvent);
 
@@ -159,8 +159,8 @@ public:
     //--------------------------------------------------------------------------
     /// Set the rotation angle.
     /**
-    *   @param anAngle: the new angle of rotation
-    */
+     *  @param anAngle: the new angle of rotation
+     */
     //--------------------------------------------------------------------------
     void setObjectRotationAngle(float anAngle);
 
@@ -168,8 +168,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the angle of rotation.
     /**
-    *   @return the angle of rotation
-    */
+     *  @return the angle of rotation
+     */
     //--------------------------------------------------------------------------
     //float getObjectRotationAngle() const;
 
@@ -177,8 +177,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the animation flag.
     /**
-    *   @return the animation flag
-    */
+     *  @return the animation flag
+     */
     //--------------------------------------------------------------------------
     float getAnimationFlag() const;
 
@@ -186,8 +186,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the increment value of the rotation angle.
     /**
-    *   @return the increment value
-    */
+     *  @return the increment value
+     */
     //--------------------------------------------------------------------------
     float getRotationIncrement() const;
 
@@ -246,11 +246,11 @@ private:
     //--------------------------------------------------------------------------
     /// Resize the window.
     /**
-    *   @param X:   the position of the window along the horizontal axis
-    *   @param Y:   the position of the window along the vertical axis
-    *   @param W:   the width of the window
-    *   @param H:   the height of the window
-    */
+     *  @param X:   the position of the window along the horizontal axis
+     *  @param Y:   the position of the window along the vertical axis
+     *  @param W:   the width of the window
+     *  @param H:   the height of the window
+     */
     //--------------------------------------------------------------------------
     virtual void resize(int X,int Y,int W,int H);
 
@@ -276,9 +276,9 @@ private:
     //--------------------------------------------------------------------------
     /// Set the X-ray renderer.
     /**
-    *   @param aFileName:   the file name of the 3D triangle mesh of
-    *                       the scanned object
-    */
+     *  @param aFileName:   the file name of the 3D triangle mesh of
+     *                      the scanned object
+     */
     //--------------------------------------------------------------------------
     void loadSTLFile(const std::string& aFileName);
 
@@ -292,9 +292,9 @@ private:
     //--------------------------------------------------------------------------
     /// Update the transformation matrices.
     /**
-    *   @param aWidth:  the width of the window
-    *   @param aHeight: the height of the window
-    */
+     *  @param aWidth:  the width of the window
+     *  @param aHeight: the height of the window
+     */
     //--------------------------------------------------------------------------
     void reshape(int aWidth,int aHeight);
 

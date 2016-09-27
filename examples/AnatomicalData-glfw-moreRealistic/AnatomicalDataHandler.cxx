@@ -365,14 +365,31 @@ void AnatomicalDataHandler::draw()
             case ROTATE_SAMPLE:
                 {
                     Matrix4x4<GLfloat> P4_rotation_matrix;
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_p4_translation_vector);
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p4_translation_vector);
+                    P4_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            m_p4_translation_vector);
+                
+                    P4_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildRotationMatrix(
+                            -m_angle_step,
+                            g_initial_detector_up_vector);
+                
+                    P4_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            -m_p4_translation_vector);
 
                     Matrix4x4<GLfloat> P5_rotation_matrix;
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( m_p5_translation_vector);
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-m_angle_step, g_initial_detector_up_vector);
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-m_p5_translation_vector);
+                    P5_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            m_p5_translation_vector);
+                
+                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+                        -m_angle_step,
+                        g_initial_detector_up_vector);
+                
+                    P5_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            -m_p5_translation_vector);
 
                     m_p4_rotation_matrix *= P4_rotation_matrix;
                     m_p5_rotation_matrix *= P5_rotation_matrix;

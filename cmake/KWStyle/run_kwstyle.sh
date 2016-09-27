@@ -8,6 +8,8 @@ FILES=`ls ../../include/gVirtualXRay/*.h \
           ../../examples/*/*.h \
           ../../examples/*/*.inl \
           ../../examples/*/*.cxx \
+          ../../examples/*/*.vert \
+          ../../examples/*/*.frag \
           ../../resources/*.vert \
           ../../resources/*.frag \
           ../../test/*.cxx \
@@ -16,7 +18,10 @@ FILES=`ls ../../include/gVirtualXRay/*.h \
           ../../tutorials/*/*.cxx \
           ../../validation/src/*.cxx \
           ../../validation/shaders/*.vert \
-          ../../validation/shaders/*.frag `
+        ../../validation/shaders/*.frag `
+
+FILES=`ls ../../examples/*/*.h ../../examples/*/*.inl ../../examples/*/*.cxx ../../examples/*/*.vert ../../examples/*/*.frag`
+
 
 for i in $FILES
 do

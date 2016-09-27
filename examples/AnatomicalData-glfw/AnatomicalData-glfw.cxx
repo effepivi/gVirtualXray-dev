@@ -758,26 +758,32 @@ void draw()
                 case ROTATE_SAMPLE:
                     {
                     Matrix4x4<GLfloat> P4_rotation_matrix;
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                        g_P4_translation_vector);
+                    P4_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            g_P4_translation_vector);
                     
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
-                        -g_angle_step,
-                        g_rotation_axis);
+                    P4_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildRotationMatrix(
+                            -g_angle_step,
+                            g_rotation_axis);
                     
-                    P4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                        -g_P4_translation_vector);
+                    P4_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            -g_P4_translation_vector);
 
                     Matrix4x4<GLfloat> P5_rotation_matrix;
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                        g_P5_translation_vector);
+                    P5_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            g_P5_translation_vector);
                     
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
-                        -g_angle_step,
-                        g_rotation_axis);
+                    P5_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildRotationMatrix(
+                            -g_angle_step,
+                            g_rotation_axis);
                     
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                        -g_P5_translation_vector);
+                    P5_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            -g_P5_translation_vector);
 
                     g_P4_rotation_matrix *= P4_rotation_matrix;
                     g_P5_rotation_matrix *= P5_rotation_matrix;
@@ -787,15 +793,18 @@ void draw()
                 case ROTATE_SOURCE_DETECTOR:
                     {
                     Matrix4x4<GLfloat> rotation_matrix;
-                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                        g_rotation_centre);
+                    rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            g_rotation_centre);
                     
-                    rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
-                        g_angle_step,
-                        g_rotation_axis);
+                    rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildRotationMatrix(
+                            g_angle_step,
+                            g_rotation_axis);
                     
-                    rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                        -g_rotation_centre);
+                    rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildTranslationMatrix(
+                            -g_rotation_centre);
 
                     g_source_position   = rotation_matrix * g_source_position;
                     g_detector_position = rotation_matrix * g_detector_position;
