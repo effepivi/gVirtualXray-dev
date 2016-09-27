@@ -483,7 +483,8 @@ int main(int argc, char** argv)
             {
             glfwTerminate();
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+                "ERROR: cannot create a GLFW windowed mode window and "
+                "its OpenGL context.");
             }
 
         // Make the window's context current
@@ -560,15 +561,18 @@ int main(int argc, char** argv)
                     case ROTATE_SAMPLE:
                         {
                         Matrix4x4<GLfloat> rotation_matrix;
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            g_translation_vector);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                g_translation_vector);
                         
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
-                            -g_angle_step,
-                            g_rotation_axis);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildRotationMatrix(
+                                -g_angle_step,
+                                g_rotation_axis);
                         
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            -g_translation_vector);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                -g_translation_vector);
 
                         g_sample_rotation_matrix *= rotation_matrix;
                         }
@@ -577,15 +581,18 @@ int main(int argc, char** argv)
                     case ROTATE_SOURCE_DETECTOR:
                         {
                         Matrix4x4<GLfloat> rotation_matrix;
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            g_rotation_centre);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                g_rotation_centre);
                         
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
-                            g_angle_step,
-                            g_rotation_axis);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildRotationMatrix(
+                                g_angle_step,
+                                g_rotation_axis);
                         
-                        rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            -g_rotation_centre);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                -g_rotation_centre);
 
                         g_source_position   =
                             rotation_matrix * g_source_position;

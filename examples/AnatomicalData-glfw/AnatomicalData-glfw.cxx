@@ -452,7 +452,8 @@ int main(int argc, char** argv)
             {
             glfwTerminate();
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+                "ERROR: cannot create a GLFW windowed mode window and "
+                "its OpenGL context.");
             }
 
         // Make the window's context current

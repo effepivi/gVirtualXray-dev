@@ -383,9 +383,10 @@ void AnatomicalDataHandler::draw()
                         Matrix4x4<GLfloat>::buildTranslationMatrix(
                             m_p5_translation_vector);
                 
-                    P5_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
-                        -m_angle_step,
-                        g_initial_detector_up_vector);
+                    P5_rotation_matrix *=
+                        Matrix4x4<GLfloat>::buildRotationMatrix(
+                            -m_angle_step,
+                            g_initial_detector_up_vector);
                 
                     P5_rotation_matrix *=
                         Matrix4x4<GLfloat>::buildTranslationMatrix(
