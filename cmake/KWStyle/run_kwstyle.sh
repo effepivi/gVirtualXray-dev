@@ -14,7 +14,6 @@ FILES=`ls ../../include/gVirtualXRay/*.h \
           ../../resources/*.frag \
           ../../test/*.cxx \
           ../../tutorials/*/*.h \
-          ../../tutorials/*/*.inl \
           ../../tutorials/*/*.cxx \
           ../../validation/src/*.cxx \
           ../../validation/shaders/*.vert \

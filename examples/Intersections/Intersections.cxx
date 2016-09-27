@@ -256,15 +256,15 @@ void display();
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 
 void keyCallback(GLFWwindow* apWindow,
-        int aKey,
-        int aScanCode,
-        int anAction,
-        int aModifierKey);
+    int aKey,
+    int aScanCode,
+    int anAction,
+    int aModifierKey);
 
 void mouseButtonCallback(GLFWwindow* apWindow,
-        int aButton,
-        int aButtonState,
-        int aModifierKey);
+    int aButton,
+    int aButtonState,
+    int aModifierKey);
 
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 
@@ -325,12 +325,12 @@ int main(int argc, char** argv)
 
         // Create a windowed mode window and its OpenGL context
         g_p_main_window_id = glfwCreateWindow(g_main_window_width,
-                g_main_window_height,
-                "gVirtualXRay demo -- Intersections",
-                NULL,
-                NULL);
+            g_main_window_height,
+            "gVirtualXRay demo -- Intersections",
+            0,
+            0);
 
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
             {
             // Disable quad-buffering
@@ -338,19 +338,19 @@ int main(int argc, char** argv)
 
             // Create the window
             g_p_main_window_id = glfwCreateWindow(g_main_window_width,
-                    g_main_window_height,
-                    "GPU X-Ray Demo",
-                    NULL,
-                    NULL);
+                g_main_window_height,
+                "GPU X-Ray Demo",
+                0,
+                0);
             }
         
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
             {
             glfwTerminate();
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "ERROR: cannot create a GLFW windowed mode window and "
-                    "its OpenGL context.");
+                "ERROR: cannot create a GLFW windowed mode window and "
+                "its OpenGL context.");
             }
 
         // Make the window's context current
@@ -375,8 +375,7 @@ int main(int argc, char** argv)
 
         // Check the GLSL version
         std::cout << "GLSL:\t" <<
-                glGetString(GL_SHADING_LANGUAGE_VERSION) <<
-                std::endl;
+            glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         // Initialise OpenGL
         initGL();
@@ -389,11 +388,11 @@ int main(int argc, char** argv)
 
         // Initialize GLFL callback
         glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-        glfwSetFramebufferSizeCallback(g_p_main_window_id,
-                framebufferSizeCallback);
         glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
         glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
         glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
+        glfwSetFramebufferSizeCallback(g_p_main_window_id,
+            framebufferSizeCallback);
 
         // Load the data
         loadDetector();
@@ -416,7 +415,8 @@ int main(int argc, char** argv)
         g_stereo_helper.setFieldOfViewY(g_initial_fovy);
         g_stereo_helper.setNear(g_initial_near);
         g_stereo_helper.setFar(g_initial_far);
-        g_stereo_helper.setScreenProjectionPlane(g_initial_screen_projection_plane);
+        g_stereo_helper.setScreenProjectionPlane(
+            g_initial_screen_projection_plane);
 
         // Set the projection matrix
         GLint width(0);
@@ -491,10 +491,11 @@ void initGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    glClearColor(g_background_colour.getX(),
-            g_background_colour.getY(),
-            g_background_colour.getZ(),
-            1.0);
+    glClearColor(
+        g_background_colour.getX(),
+        g_background_colour.getY(),
+        g_background_colour.getZ(),
+        1.0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable(GL_MULTISAMPLE);
@@ -514,38 +515,42 @@ void initGL()
     if (useOpenGL3_2OrAbove())
     {
         z_lib_return_code_vertex   = inflate(g_display_gl3_vert,
-                sizeof(g_display_gl3_vert),
-                &p_vertex_shader);
+            sizeof(g_display_gl3_vert),
+            &p_vertex_shader);
 
         z_lib_return_code_fragment = inflate(g_display_gl3_frag,
-                sizeof(g_display_gl3_frag),
-                &p_fragment_shader);
+            sizeof(g_display_gl3_frag),
+            &p_fragment_shader);
+        g_display_shader.setLabels("display_gl3.vert", "display_gl3.frag");
     }
     else
     {
         z_lib_return_code_vertex   = inflate(g_display_gl2_vert,
-                sizeof(g_display_gl2_vert),
-                &p_vertex_shader);
+            sizeof(g_display_gl2_vert),
+            &p_vertex_shader);
 
         z_lib_return_code_fragment = inflate(g_display_gl2_frag,
-                sizeof(g_display_gl2_frag),
-                &p_fragment_shader);
+            sizeof(g_display_gl2_frag),
+            &p_fragment_shader);
+        g_display_shader.setLabels("display_gl2.vert", "display_gl2.frag");
     }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
 
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
+
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
 
     if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
             !vertex_shader.size() || !fragment_shader.size())
-    {
+        {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot decode the shader using ZLib.");
-    }
+            "Cannot decode the shader using ZLib.");
+        }
 
-    g_display_shader.setLabels("display.vert", "display.frag");
     g_display_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -568,8 +573,8 @@ void render()
 {
     try
         {
+        // Display the 3D
 
-    // Display the 3D
         // Handle for shader variables
         GLuint handle(0);
 
@@ -607,35 +612,36 @@ void render()
 
         VEC3 light_position(0, 0, g_zoom);
         handle = glGetUniformLocation(shader_id, "light_position");
-        glUniform4f(handle,
-                light_position[0],
-                light_position[1],
-                light_position[2],
-                1.0);
+        glUniform4f(
+            handle,
+            light_position[0],
+            light_position[1],
+            light_position[2],
+            1.0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Define colours
         {
-            const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
-            const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
-            const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
-            const GLfloat material_shininess = 50.2;
+        const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
+        const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+        const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+        const GLfloat material_shininess = 50.2;
 
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, &material_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_diffuse");
+        glUniform4fv(handle, 1, &material_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_specular");
+        glUniform4fv(handle, 1, &material_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_shininess");
+        glUniform1fv(handle, 1, &material_shininess);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
 
         // Check the status of OpenGL and of the current FBO
@@ -649,17 +655,19 @@ void render()
         g_current_modelview_matrix *= g_scene_rotation_matrix;
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle,
-                1,
-                GL_FALSE,
-                g_current_projection_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-        glUniformMatrix4fv(handle,
-                1,
-                GL_FALSE,
-                g_current_modelview_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
@@ -680,7 +688,7 @@ void render()
         applyModelViewMatrix();
 
         if (g_display_wireframe)
-        {
+            {
             // Disable back face culling
             glDisable(GL_CULL_FACE);
 
@@ -689,37 +697,37 @@ void render()
 
             // Enable back face culling
             glEnable(GL_CULL_FACE);
-        }
+            }
         else
-        {
+            {
             g_outside_polygon_data.display();
-        }
+            }
 
         // Restore the current transformation matrix
         popModelViewMatrix();
 
         // Define colours
         {
-            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
+        const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+        const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+        const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+        const GLfloat material_shininess = 50.2;
 
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, &material_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_diffuse");
+        glUniform4fv(handle, 1, &material_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_specular");
+        glUniform4fv(handle, 1, &material_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_shininess");
+        glUniform1fv(handle, 1, &material_shininess);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
 
         // Display the source
@@ -830,9 +838,13 @@ void display()
 }
 
 
-//-------------------------------------------------------------------------------
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//-------------------------------------------------------------------------------
+//----------------------------------
+void keyCallback(GLFWwindow* window,
+                 int key,
+                 int scancode,
+                 int action,
+                 int mods)
+//----------------------------------
 {
     if (action == GLFW_PRESS)
         {
@@ -861,34 +873,40 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 break;
 
             case GLFW_KEY_O:
-                g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
-                std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
+                g_stereo_helper.setIntraocularDistance(
+                    g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
+
+                std::cout << "IOD in cm" <<
+                    g_stereo_helper.getIntraocularDistance() / cm << std::endl;
                 break;
 
             case GLFW_KEY_P:
-                g_stereo_helper.setIntraocularDistance(g_stereo_helper.getIntraocularDistance() - 5.0 * mm);
-                std::cout << "IOD in cm" << g_stereo_helper.getIntraocularDistance() / cm << std::endl;
+                g_stereo_helper.setIntraocularDistance(
+                    g_stereo_helper.getIntraocularDistance() - 5.0 * mm);
+
+                std::cout << "IOD in cm" <<
+                    g_stereo_helper.getIntraocularDistance() / cm << std::endl;
                 break;
 
             case GLFW_KEY_RIGHT:
                 {
-                    VEC3 translation(g_detector_position - g_source_position);
-                    translation.normalise();
-                    g_source_position -= translation * 1.5 * mm;
+                VEC3 translation(g_detector_position - g_source_position);
+                translation.normalise();
+                g_source_position -= translation * 1.5 * mm;
 
-                    // Set the source position
-                    g_xray_detector.setXrayPointSource(g_source_position);
+                // Set the source position
+                g_xray_detector.setXrayPointSource(g_source_position);
 
-                    // Update the intersections
-                    updateIntersectionSet();
+                // Update the intersections
+                updateIntersectionSet();
 
-                    // The X-ray image is not up-to-date
-                    g_is_xray_image_up_to_date = false;
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
                 }
                 break;
 
-        case GLFW_KEY_LEFT:
-            {
+            case GLFW_KEY_LEFT:
+                {
                 VEC3 translation(g_detector_position - g_source_position);
                 translation.normalise();
                 g_source_position += translation * 1.5 * mm;
@@ -901,11 +919,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
+                }
+                break;
 
-        case GLFW_KEY_UP:
-            {
+            case GLFW_KEY_UP:
+                {
                 VEC3 translation(g_detector_up_vector);
                 translation.normalise();
                 g_source_position += translation * 1.5 * mm;
@@ -918,11 +936,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
+                }
+                break;
 
-        case GLFW_KEY_DOWN:
-            {
+            case GLFW_KEY_DOWN:
+                {
                 VEC3 translation(g_detector_up_vector);
                 translation.normalise();
                 g_source_position -= translation * 1.5 * mm;
@@ -935,138 +953,163 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
-
-        case GLFW_KEY_B:
-            g_display_beam = !g_display_beam;
-            break;
-
-        case GLFW_KEY_X:
-            // Compute the sinogram
-            g_xray_renderer.computeSinogram(g_sample_rotation_matrix, 180, 1.0);
-
-            // Save the sinogram
-            g_xray_renderer.printSinogram(PREFIX"/data/sinogram.mhd");
-
-            // Compute the X-Ray image
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
-            break;
-
-        case GLFW_KEY_L:
-    //        g_xray_renderer.computeImage(g_sample_rotation_matrix);
-
-            g_xray_renderer.computeLBuffer(g_inside_polygon_data, VEC3(), g_sample_rotation_matrix);
-            g_xray_renderer.printLBuffer(PREFIX"/data/inside_lbuffer.mhd");
-
-            g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
-            g_xray_renderer.printLBuffer(PREFIX"/data/outside_lbuffer2.mhd");
-
-            g_xray_renderer.removeInnerSurfaces();
-            g_xray_renderer.removeOuterSurface();
-            g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
-
-            g_xray_renderer.computeLBuffer(g_outside_polygon_data, VEC3(), g_sample_rotation_matrix);
-            g_xray_renderer.printLBuffer(PREFIX"/data/outside_lbuffer1.mhd");
-            
-            g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
-            break;
-
-        case GLFW_KEY_C:
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
-            g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
-            break;
-
-        case GLFW_KEY_F:
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
-            g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
-            break;
-
-        case GLFW_KEY_M:
-            g_xray_renderer.computeImage(g_sample_rotation_matrix);
-            g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
-            break;
-
-        case GLFW_KEY_N:
-            g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
-            break;
-
-        case GLFW_KEY_A:
-            g_outside_polygon_data.splitFaces(true);
-
-            // Update the intersections
-            updateIntersectionSet();
-
-            // The X-ray image is not up-to-date
-            g_is_xray_image_up_to_date = false;
-            break;
-
-        case GLFW_KEY_1:
-            // This is a point source
-            if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
-            {
-                // Use a parallel source
-                g_xray_detector.setParallelBeam();
-            }
-            // This is a cubic source
-            else
-            {
-                g_xray_detector.setPointSource();
-            }
-
-            // Update the intersections
-            updateIntersectionSet();
-
-            // The X-ray image is not up-to-date
-            g_is_xray_image_up_to_date = false;
-            break;
-
-        case GLFW_KEY_2:
-            // This is not a line source
-            if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
-            {
-                g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 5.0*mm);
-            }
-            // This is a cubic source
-            else
-            {
-                g_xray_detector.setPointSource();
-            }
-
-            // Update the intersections
-            updateIntersectionSet();
-
-            // The X-ray image is not up-to-date
-            g_is_xray_image_up_to_date = false;
-            break;
-
-        case GLFW_KEY_3:
-            {
-                // This is not a square source
-                if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
-                {
-                    g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 4, 5.0*mm);
                 }
-                // This is a cubic source
-                else
-                {
-                    g_xray_detector.setPointSource();
-                }
+                break;
+
+            case GLFW_KEY_B:
+                g_display_beam = !g_display_beam;
+                break;
+
+            case GLFW_KEY_X:
+                // Compute the sinogram
+                g_xray_renderer.computeSinogram(
+                    g_sample_rotation_matrix,
+                    180,
+                    1.0);
+
+                // Save the sinogram
+                g_xray_renderer.printSinogram(PREFIX"/data/sinogram.mhd");
+
+                // Compute the X-Ray image
+                g_xray_renderer.computeImage(g_sample_rotation_matrix);
+                break;
+
+            case GLFW_KEY_L:
+                g_xray_renderer.computeLBuffer(
+                    g_inside_polygon_data,
+                    VEC3(),
+                    g_sample_rotation_matrix);
+
+                g_xray_renderer.printLBuffer(PREFIX"/data/inside_lbuffer.mhd");
+
+                g_xray_renderer.computeLBuffer(
+                    g_outside_polygon_data,
+                    VEC3(),
+                    g_sample_rotation_matrix);
+
+                g_xray_renderer.printLBuffer(
+                    PREFIX"/data/outside_lbuffer2.mhd");
+
+                g_xray_renderer.removeInnerSurfaces();
+                g_xray_renderer.removeOuterSurface();
+                g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+
+                g_xray_renderer.computeLBuffer(
+                    g_outside_polygon_data,
+                    VEC3(),
+                    g_sample_rotation_matrix);
+
+                g_xray_renderer.printLBuffer(
+                    PREFIX"/data/outside_lbuffer1.mhd");
+
+                g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
+                break;
+
+            case GLFW_KEY_C:
+                g_xray_renderer.computeImage(g_sample_rotation_matrix);
+                g_xray_renderer.printCumulatedLBuffer(
+                    PREFIX"/data/cumulated_lbuffer.mhd");
+                break;
+
+            case GLFW_KEY_F:
+                g_xray_renderer.computeImage(g_sample_rotation_matrix);
+                g_xray_renderer.printEnergyFluence(
+                    PREFIX"/data/energy_fluence.mhd");
+                break;
+
+            case GLFW_KEY_M:
+                g_xray_renderer.computeImage(g_sample_rotation_matrix);
+                g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
+                break;
+
+            case GLFW_KEY_N:
+                g_xray_renderer.useNegativeFilteringFlag(
+                    !g_xray_renderer.getNegativeFilteringFlag());
+                break;
+
+            case GLFW_KEY_A:
+                g_outside_polygon_data.splitFaces(true);
 
                 // Update the intersections
                 updateIntersectionSet();
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
+                break;
 
-        case GLFW_KEY_4:
-            {
+            case GLFW_KEY_1:
+                // This is a point source
+                if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
+                    {
+                    // Use a parallel source
+                    g_xray_detector.setParallelBeam();
+                    }
+                // This is a cubic source
+                else
+                    {
+                    g_xray_detector.setPointSource();
+                    }
+
+                // Update the intersections
+                updateIntersectionSet();
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_2:
+                // This is not a line source
+                if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
+                    {
+                    g_xray_detector.setLineSource(
+                        g_xray_detector.getXraySourceCentre(),
+                        VEC3(1, 0, 0),
+                        16,
+                        5.0 * mm);
+                    }
+                // This is a cubic source
+                else
+                    {
+                    g_xray_detector.setPointSource();
+                    }
+
+                // Update the intersections
+                updateIntersectionSet();
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_3:
+                // This is not a square source
+                if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
+                    {
+                    g_xray_detector.setSquareSource(
+                        g_xray_detector.getXraySourceCentre(),
+                        4,
+                        5.0 * mm);
+                    }
+                // This is a cubic source
+                else
+                    {
+                    g_xray_detector.setPointSource();
+                    }
+
+                // Update the intersections
+                updateIntersectionSet();
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_4:
                 // This is not a cubic source
                 if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
                 {
-                    g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 3, 5.0*mm);
+                    g_xray_detector.setCubicSource(
+                        g_xray_detector.getXraySourceCentre(),
+                        3,
+                        5.0 * mm);
                 }
                 // This is a cubic source
                 else
@@ -1079,63 +1122,70 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
-            }
-            break;
+                break;
 
-        case GLFW_KEY_W:
-            g_display_wireframe = !g_display_wireframe;
-            break;
+            case GLFW_KEY_W:
+                g_display_wireframe = !g_display_wireframe;
+                break;
 
-        case GLFW_KEY_V:
-            g_display_outside_polygon = !g_display_outside_polygon;
-            break;
+            case GLFW_KEY_V:
+                g_display_outside_polygon = !g_display_outside_polygon;
+                break;
 
-        case GLFW_KEY_KP_ADD:
-            g_zoom -= 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            break;
-
-        case GLFW_KEY_EQUAL:
-
-            if (g_use_left_shift_key || g_use_right_shift_key)
-            {
+            case GLFW_KEY_KP_ADD:
                 g_zoom -= 1.0 * cm;
-                framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
+                framebufferSizeCallback(
+                    g_p_main_window_id,
+                    g_main_window_width,
+                    g_main_window_height);
+                break;
+
+            case GLFW_KEY_EQUAL:
+                if (g_use_left_shift_key || g_use_right_shift_key)
+                    {
+                    g_zoom -= 1.0 * cm;
+                    framebufferSizeCallback(
+                        g_p_main_window_id,
+                        g_main_window_width,
+                        g_main_window_height);
+                    }
+                break;
+
+            case GLFW_KEY_MINUS:
+            case GLFW_KEY_KP_SUBTRACT:
+                g_zoom += 1.0 * cm;
+                framebufferSizeCallback(
+                    g_p_main_window_id,
+                    g_main_window_width,
+                    g_main_window_height);
+                break;
+
+            case GLFW_KEY_LEFT_SHIFT:
+                g_use_left_shift_key = true;
+                break;
+
+            case GLFW_KEY_RIGHT_SHIFT:
+                g_use_right_shift_key = true;
+                break;
+
+            default:
+                cout << "Key: " << key << endl;
+                break;
             }
-            break;
-
-        case GLFW_KEY_MINUS:
-        case GLFW_KEY_KP_SUBTRACT:
-            g_zoom += 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            break;
-
-        case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift_key = true;
-            break;
-
-        case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift_key = true;
-            break;
-
-        default:
-            cout << "Key: " << key << endl;
-            break;
         }
-    }
     else if (action == GLFW_RELEASE)
-    {
-        switch (key)
         {
-        case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift_key = false;
-            break;
+        switch (key)
+            {
+            case GLFW_KEY_LEFT_SHIFT:
+                g_use_left_shift_key = false;
+                break;
 
-        case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift_key = false;
-            break;
+            case GLFW_KEY_RIGHT_SHIFT:
+                g_use_right_shift_key = false;
+                break;
+            }
         }
-    }
 }
 
 
@@ -1146,22 +1196,25 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     glViewport(0, 0, width, height);
 
     if (height == 0)
-    {
+        {
         // Prevent divide by 0
         height = 1;
-    }
+        }
 
     g_main_window_width = width;
     g_main_window_height = height;
 
-    double screen_aspect_ratio(double(g_main_window_width) / double(g_main_window_height));
+    double screen_aspect_ratio(
+        double(g_main_window_width) /
+        double(g_main_window_height));
+
     g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-    /*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
-            -height / 2.0, height / 2.0,
-            0.01, g_initial_far);
-     */
+    loadPerspectiveProjectionMatrix(
+        g_initial_fovy,
+        screen_aspect_ratio,
+        g_initial_near,
+        g_initial_far);
 
     loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
             0.0, 0.0, 0.0,
@@ -1195,48 +1248,48 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 
         // Select the right transformation
         if (g_rotation_mode == NONE)
-        {
+            {
             if (aModifierKey & GLFW_MOD_SHIFT)
-            {
-                g_rotation_mode = SCENE;
-            }
-            else if (aModifierKey & GLFW_MOD_CONTROL)
-            {
-                g_rotation_mode = OBJECT;
-            }
-            else if (aModifierKey & GLFW_MOD_ALT)
-            {
-                g_rotation_mode = DETECTOR;
-            }
-            else
-            {
-                switch (g_button)
                 {
-                case GLFW_MOUSE_BUTTON_LEFT:
-                    g_rotation_mode = SCENE;
-                    break;
+                g_rotation_mode = SCENE;
+                }
+            else if (aModifierKey & GLFW_MOD_CONTROL)
+                {
+                g_rotation_mode = OBJECT;
+                }
+            else if (aModifierKey & GLFW_MOD_ALT)
+                {
+                g_rotation_mode = DETECTOR;
+                }
+            else
+                {
+                switch (g_button)
+                    {
+                    case GLFW_MOUSE_BUTTON_LEFT:
+                        g_rotation_mode = SCENE;
+                        break;
 
-                case GLFW_MOUSE_BUTTON_RIGHT:
-                    g_rotation_mode = OBJECT;
-                    break;
+                    case GLFW_MOUSE_BUTTON_RIGHT:
+                        g_rotation_mode = OBJECT;
+                        break;
 
-                case GLFW_MOUSE_BUTTON_MIDDLE:
-                    g_rotation_mode = DETECTOR;
-                    break;
+                    case GLFW_MOUSE_BUTTON_MIDDLE:
+                        g_rotation_mode = DETECTOR;
+                        break;
 
-                default:
-                    g_rotation_mode = SCENE;
-                    break;
+                    default:
+                        g_rotation_mode = SCENE;
+                        break;
+                    }
                 }
             }
         }
-    }
     // Stop using the arc ball
     else
-    {
+        {
         g_use_arc_ball = false;
         g_rotation_mode = NONE;
-    }
+        }
 
     double xpos(0);
     double ypos(0);
@@ -1259,36 +1312,36 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 
     // Update the rotation matrix if needed
     switch (g_rotation_mode)
-    {
-    case SCENE:
-        computeRotation(g_scene_rotation_matrix);
-        break;
+        {
+        case SCENE:
+            computeRotation(g_scene_rotation_matrix);
+            break;
 
-    case DETECTOR:
-        computeRotation(g_detector_rotation_matrix);
-        g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
+        case DETECTOR:
+            computeRotation(g_detector_rotation_matrix);
+            g_xray_detector.setRotationMatrix(g_detector_rotation_matrix);
 
-        // Update the intersections
-        updateIntersectionSet();
+            // Update the intersections
+            updateIntersectionSet();
 
 
-        // The X-ray image is not up-to-date
-        g_is_xray_image_up_to_date = false;
-        break;
+            // The X-ray image is not up-to-date
+            g_is_xray_image_up_to_date = false;
+            break;
 
-    case OBJECT:
-        computeRotation(g_sample_rotation_matrix);
+        case OBJECT:
+            computeRotation(g_sample_rotation_matrix);
 
-        // Update the intersections
-        updateIntersectionSet();
+            // Update the intersections
+            updateIntersectionSet();
 
-        // The X-ray image is not up-to-date
-        g_is_xray_image_up_to_date = false;
-        break;
+            // The X-ray image is not up-to-date
+            g_is_xray_image_up_to_date = false;
+            break;
 
-    default:
-        break;
-    }
+        default:
+            break;
+        }
 }
 
 
@@ -1298,11 +1351,14 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 {
     // Scrolling along the Y-axis
     if (fabs(yoffset) > EPSILON)
-    {
+        {
         g_use_arc_ball = false;
         g_zoom += yoffset * cm;
-        framebufferSizeCallback(apWindow, g_main_window_width, g_main_window_height);
-    }
+        framebufferSizeCallback(
+            apWindow,
+            g_main_window_width,
+            g_main_window_height);
+        }
 }
 
 
@@ -1311,43 +1367,32 @@ void loadSTLFile()
 //----------------
 {
     string stl_filename_0("cylinder_bin.stl");
-    //string stl_filename_1("cube_bin.stl");
 
     // Open the file
     FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
-    //FILE* p_file_descriptor_1(fopen(stl_filename_1.data(), "rb"));
 
     // The file is not in the same directory as the executable
     if (!p_file_descriptor_0)
-    {
+        {
         // Use the prefix
         stl_filename_0 = "../data/" + stl_filename_0;
-    }
+        }
     else
-    {
+        {
         fclose(p_file_descriptor_0);
-    }
-
-    // The file is not in the same directory as the executable
-    /*if (!p_file_descriptor_1)
-    {
-        // Use the prefix
-        stl_filename_1 = "../data/" + stl_filename_1;
-    }
-    else
-    {
-        fclose(p_file_descriptor_1);
-    }*/
+        }
 
     // Set geometry
     g_inside_polygon_data.setFilename(stl_filename_0.data());
-    g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-    //g_inside_polygon_data.mergeVertices();
-    g_inside_polygon_data.setHounsfieldValue(0.0);
+    g_inside_polygon_data.loadSTLFile(
+        true,
+        true,
+        true,
+        true,
+        cm,
+        GL_STATIC_DRAW);
 
-    //g_outside_polygon_data.setFilename(stl_filename_1.data());
-    //g_outside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-    //g_outside_polygon_data.mergeVertices(true);
+    g_inside_polygon_data.setHounsfieldValue(0.0);
     g_outside_polygon_data.setHounsfieldValue(500.0);
 
     g_inside_polygon_data.translate( VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
@@ -1378,7 +1423,6 @@ void loadSource()
 {
     // Set the energy
     g_xray_beam.initialise(g_incident_energy);
-    //g_xray_beam.initialise(PREFIX"/data/90kv_filtered_5mmCU_5mmAIR_5mmCU.txt", keV, 1);
 
     // Set the source position
     g_xray_detector.setXrayPointSource(g_source_position);
@@ -1397,9 +1441,9 @@ void loadXRaySimulator()
 {
     // Initialise the X-ray renderer
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB32F,
-            &g_xray_detector,
-            &g_xray_beam);
+        GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1411,20 +1455,20 @@ Vec3<GLfloat> getArcballVector(int x, int y)
 //------------------------------------------
 {
     Vec3<GLfloat> P(2.0 * float(x) / float(g_main_window_width) - 1.0,
-            2.0 * float(y) / float(g_main_window_height) - 1.0,
-            0);
+        2.0 * float(y) / float(g_main_window_height) - 1.0,
+        0);
 
     P.setY(-P.getY());
 
     float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
     if (OP_squared <= 1.0)
-    {
+        {
         P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-    }
+        }
     else
-    {
+        {
         P.normalise();  // nearest point
-    }
+        }
 
     return (P);
 }
@@ -1443,20 +1487,26 @@ void computeRotation(MATRIX4& aRotationMatrix)
 //--------------------------------------------
 {
     if (g_use_arc_ball)
-    {
-        if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
         {
-            Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
-            Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
+        if (g_current_x_position != g_last_x_position ||
+                g_current_y_position != g_last_y_position)
+            {
+            Vec3<GLfloat> va(getArcballVector(
+                g_last_x_position,
+                g_last_y_position));
 
-            float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+            Vec3<GLfloat> vb(getArcballVector(
+                g_current_x_position,
+                g_current_y_position));
+
+            float angle(g_rotation_speed *
+                radian2degree(acos(min(1.0, va.dotProduct(vb)))));
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
 
             Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-            Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
+            Vec3<GLfloat> axis_in_object_coord =
+                camera2object * axis_in_camera_coord;
 
             Matrix4x4<GLfloat> rotation_matrix;
             rotation_matrix.rotate(angle, axis_in_object_coord);
@@ -1464,8 +1514,8 @@ void computeRotation(MATRIX4& aRotationMatrix)
 
             g_last_x_position = g_current_x_position;
             g_last_y_position = g_current_y_position;
+            }
         }
-    }
 }
 
 
@@ -1475,7 +1525,7 @@ void updateXRayImage()
 {
     // The X-ray image is not up-to-date
     if (!g_is_xray_image_up_to_date)
-    {
+        {
         // Compute the X-Ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
@@ -1509,7 +1559,7 @@ void updateXRayImage()
 
         // The X-ray image is up-to-date
         g_is_xray_image_up_to_date = true;
-    }
+        }
 }
 
 
@@ -1545,11 +1595,13 @@ void updateIntersectionSet()
     unsigned int number_of_vertices(g_outside_polygon_data.getVertexNumber());
 
     // Compute the positions
-    std::vector<float> intersection_box_detector_vertex_set(number_of_vertices * 2 * 3); // X lines, two vertices per line, three components per vertex
+    // X lines, two vertices per line, three components per vertex
+    std::vector<float> intersection_box_detector_vertex_set(
+        number_of_vertices * 2 * 3);
 
     // Process every vertex of the box
     for (unsigned int i(0); i < number_of_vertices; ++i)
-    {
+        {
         // Get the vertex position
         VEC3 vertex_position(g_outside_polygon_data.getVertex(i));
 
@@ -1562,63 +1614,99 @@ void updateIntersectionSet()
         // Use parallel beam
         VEC3 viewing_vector;
         if (g_xray_detector.getSourceShape() == XRayDetector::PARALLEL)
-        {
-            VEC3 ray_direction((g_xray_detector.getDetectorPosition() - g_xray_detector.getXraySourceCentre()).normal());
+            {
+            VEC3 ray_direction((g_xray_detector.getDetectorPosition() -
+                g_xray_detector.getXraySourceCentre()).normal());
+
             viewing_vector = ray_direction;
-        }
+            }
         // Use perspective beam
         else
-        {
+            {
             viewing_vector = (vertex_position - g_source_position).normal();
-        }
+            }
 
         // Compute the distance between the ray and the detector
         // (using ray tracing between a ray and a plane)
 
         GLfloat p_float_4[4];
-        g_xray_detector.getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
+        g_xray_detector.getPlaneEquation(
+            p_float_4[0],
+            p_float_4[1],
+            p_float_4[2],
+            p_float_4[3]);
+
         VEC3 detector_plane(p_float_4[0], p_float_4[1], p_float_4[2]);
-        float distance_intersection_detector = (vertex_position.dotProduct(detector_plane) + p_float_4[3]) / -viewing_vector.dotProduct(detector_plane);
+
+        float distance_intersection_detector =
+            (vertex_position.dotProduct(detector_plane) + p_float_4[3]) /
+                -viewing_vector.dotProduct(detector_plane);
 
         // Find the intersection between the ray and the detector
-        intersection_position = vertex_position + distance_intersection_detector * viewing_vector;
+        intersection_position = vertex_position +
+            distance_intersection_detector * viewing_vector;
 
         // Parallel projection
         if (g_xray_detector.getSourceShape() == XRayDetector::PARALLEL)
-        {
+            {
             // Add the vertex position
-            intersection_box_detector_vertex_set.push_back(vertex_position.getX());
-            intersection_box_detector_vertex_set.push_back(vertex_position.getY());
-            intersection_box_detector_vertex_set.push_back(vertex_position.getZ());
-        }
+            intersection_box_detector_vertex_set.push_back(
+                vertex_position.getX());
+
+            intersection_box_detector_vertex_set.push_back(
+                vertex_position.getY());
+
+            intersection_box_detector_vertex_set.push_back(
+                vertex_position.getZ());
+            }
         // Perspective projection
         else
-        {
+            {
             // Add the source position
-            intersection_box_detector_vertex_set.push_back(g_source_position.getX());
-            intersection_box_detector_vertex_set.push_back(g_source_position.getY());
-            intersection_box_detector_vertex_set.push_back(g_source_position.getZ());
-        }
+            intersection_box_detector_vertex_set.push_back(
+                g_source_position.getX());
+
+            intersection_box_detector_vertex_set.push_back(
+                g_source_position.getY());
+
+            intersection_box_detector_vertex_set.push_back(
+                g_source_position.getZ());
+            }
 
         // Add the intersection position
-        intersection_box_detector_vertex_set.push_back(intersection_position.getX());
-        intersection_box_detector_vertex_set.push_back(intersection_position.getY());
-        intersection_box_detector_vertex_set.push_back(intersection_position.getZ());
-    }
+        intersection_box_detector_vertex_set.push_back(
+            intersection_position.getX());
+
+        intersection_box_detector_vertex_set.push_back(
+            intersection_position.getY());
+
+        intersection_box_detector_vertex_set.push_back(
+            intersection_position.getZ());
+        }
 
     // Create the VBO if needed
     if (!g_intersection_box_detector_vbo.get())
-    {
+        {
         g_intersection_box_detector_vbo.reset(createVBO());
-    }
+        }
 
     // Update the VBO
     g_intersection_box_detector_vbo->setBufferUsageHint(GL_STATIC_DRAW);
 
-    g_intersection_box_detector_vbo->setVertexData(GL_LINES,
-            intersection_box_detector_vertex_set.size() / 3, 3, GL_FLOAT, &intersection_box_detector_vertex_set[0],
-            0, 0, GL_NONE, 0,
-            0, 0, GL_NONE, 0);
+    g_intersection_box_detector_vbo->setVertexData(
+        GL_LINES,
+        intersection_box_detector_vertex_set.size() / 3,
+        3,
+        GL_FLOAT,
+        &intersection_box_detector_vertex_set[0],
+        0,
+        0,
+        GL_NONE,
+        0,
+        0,
+        0,
+        GL_NONE,
+        0);
 }
 
 
@@ -1628,17 +1716,17 @@ void displayHelp()
 {
 #ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
-            g_background_colour.getX(),
-            g_background_colour.getY(),
-            g_background_colour.getZ(),
-            0.0
+        g_background_colour.getX(),
+        g_background_colour.getY(),
+        g_background_colour.getZ(),
+        0.0
     };
 
     GLfloat p_font_colour [] = {
-            1.0,
-            1.0,
-            0.0,
-            1.0
+        1.0,
+        1.0,
+        0.0,
+        1.0
     };
 
     pushEnableDisableState(GL_BLEND);
@@ -1647,119 +1735,137 @@ void displayHelp()
 
     int x_position(15);
     int offset(29);
-    g_font_rendered.renderText(std::string("Help"),
-            20,   x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("Help"),
+        20,   x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-            40, x_position += offset,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'h\': display|hide help message"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
     g_font_rendered.renderText(std::string("\'s\': toggle stereo"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'o|p\': adjust inter-ocular distance"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'o|p\': adjust inter-ocular distance"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("Arrows: move the source"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("Arrows: move the source"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'b\': display|hide X-ray beam"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'w\': wireframe|solid rendering"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'n\': toggle negative image"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'x\': save sinogram"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'x\': save sinogram"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'l\': save L-buffers"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'l\': save L-buffers"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'c\': save cumulated L-buffer"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'c\': save cumulated L-buffer"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'f\': save energy fluence"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'f\': save energy fluence"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'1\': use point source|parallel beam"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'1\': use point source|parallel beam"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'2\': use point|line source"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'2\': use point|line source"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'3\': use point|square source"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'3\': use point|square source"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'4\': use point|cubic source"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'4\': use point|cubic source"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'+|-\': zoom in|out"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'+|-\': zoom in|out"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'a\': split faces (subdivision)"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'a\': split faces (subdivision)"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'q\', 'Esc': quit"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
     popEnableDisableState();
 #endif

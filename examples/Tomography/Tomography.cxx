@@ -976,13 +976,19 @@ void initGL()
 
 	vertex_shader   = p_vertex_shader;
 	fragment_shader = p_fragment_shader;
-	delete [] p_vertex_shader;     p_vertex_shader = 0;
-	delete [] p_fragment_shader; p_fragment_shader = 0;
 
-	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-	}
+	delete [] p_vertex_shader;
+	delete [] p_fragment_shader;
+
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+
+	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || 
+            !vertex_shader.size() || !fragment_shader.size())
+	    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, 
+            "Cannot decode the shader using ZLib.");
+	    }
 	g_display_shader.setLabels("display.vert", "display.frag");
 	g_display_shader.loadSource(vertex_shader, fragment_shader);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

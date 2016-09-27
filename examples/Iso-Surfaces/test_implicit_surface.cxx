@@ -505,25 +505,32 @@ void initGL()
     {
         z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
+	g_display_shader.setLabels("display_gl3.vert", "display_gl3.frag");
     }
     else
     {
         z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
+	g_display_shader.setLabels("display_gl2.vert", "display_gl2.frag");
     }
 
-	vertex_shader   = p_vertex_shader;
-	fragment_shader = p_fragment_shader;
-	delete [] p_vertex_shader;     p_vertex_shader = 0;
-	delete [] p_fragment_shader; p_fragment_shader = 0;
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
 
-	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-	}
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
 
-	g_display_shader.setLabels("display.vert", "display.frag");
-	g_display_shader.loadSource(vertex_shader, fragment_shader);
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            !vertex_shader.size() || !fragment_shader.size())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot decode the shader using ZLib.");
+        }
+
+    g_display_shader.loadSource(vertex_shader, fragment_shader);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Enable the shader
