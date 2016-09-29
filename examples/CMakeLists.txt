@@ -52,6 +52,7 @@ IF (USE_GLFW)
     ADD_SUBDIRECTORY (STL-File-glfw)
     ADD_SUBDIRECTORY (Intersections)
     ADD_SUBDIRECTORY (IterativeTomographyReconstruction)
+    ADD_SUBDIRECTORY (SimpleBackProjection)
     ADD_SUBDIRECTORY (FilteredBackProjection)
 ENDIF ()
 
@@ -71,7 +72,6 @@ IF (USE_QT5)
 ENDIF ()
 
 
-##ADD_SUBDIRECTORY (SimpleBackProjection)
 ##ADD_SUBDIRECTORY (Tomography)
 ##ADD_SUBDIRECTORY (Iso-Surfaces)
 ##ADD_SUBDIRECTORY (VisualArts)
