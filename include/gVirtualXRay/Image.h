@@ -47,6 +47,7 @@ namespace gVirtualXRay {
 template<typename T> class Image;
 template<typename T> class FFT;
 template<typename T> class Sinogram;
+class PolygonMesh;
 
 
 //******************************************************************************
@@ -161,6 +162,11 @@ public:
     T& getPixel(unsigned int i, unsigned int j, unsigned int k = 0);
     const T& getPixel(unsigned int i, unsigned int j, unsigned int k = 0) const;
 
+
+    T& getPixelValue(unsigned int i, unsigned int j, unsigned int k = 0);
+    const T& getPixelValue(unsigned int i, unsigned int j, unsigned int k = 0) const;
+
+    VEC3 getPixelPosition(unsigned int i, unsigned int j, unsigned int k = 0) const;
 
     T& operator[](unsigned anIndex);
 
@@ -683,6 +689,17 @@ public:
     gVirtualXRay::Sinogram<T> radonTransform(double aFirstAngle, double anAngleStep, double aLastAngle) const;
 
 
+    //------------------------------------------------------------------------
+    /// Apply the marching cubes algorithm to extract the polygon mesh
+    /// corresponding to aThresholdValue.
+    /**
+    * @param aThresholdValue:   the iso value
+    * @return the polygon mesh
+    */
+    //------------------------------------------------------------------------
+    PolygonMesh marchingCubes(const T& aThresholdValue) const;
+    
+    
 //******************************************************************************
 private:
 #ifdef HAS_GDCM
@@ -707,6 +724,13 @@ private:
 
 //******************************************************************************
 protected:
+    VEC3 VertexInterp(const T& aThresholdValue,
+            const VEC3& p0,
+            const VEC3& p1,
+            const T& v0,
+            const T& v1) const;
+
+
     /// Number of pixel along the horizontal axis
     unsigned int m_width;
 
