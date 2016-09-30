@@ -2558,11 +2558,11 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     GLvector asEdgeVertex[12];
     GLvector asEdgeNorm[12];
 
-    for (unsigned k(0); k < m_number_of_slices - 1; ++k)
+    for (int k(0); k < m_number_of_slices - 1; ++k)
         {
-        for (unsigned j(0); j < m_height - 1; ++j)
+        for (int j(0); j < m_height - 1; ++j)
             {
-            for (unsigned i(0); i < m_width - 1; ++i)
+            for (int i(0); i < m_width - 1; ++i)
                 {
                 VEC3 voxel_position(getPixelPosition(i, j, k));
 
@@ -2636,10 +2636,17 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                                 p_vertex_set.push_back(asEdgeVertex[iVertex].fX);
                                 p_vertex_set.push_back(asEdgeVertex[iVertex].fY);
                                 p_vertex_set.push_back(asEdgeVertex[iVertex].fZ);
-                                /*
-                                p_normal_vector_set.push_back();
-                                p_normal_vector_set.push_back();
-                                p_normal_vector_set.push_back();*/
+
+                                VEC3 normal(
+                                        getPixelValue(std::max(i - 1, 0), j, k) - getPixelValue(std::min(i + 1, int(m_width) - 1), j, k),
+                                        getPixelValue(i, std::max(j - 1, 0), k) - getPixelValue(i, std::min(j + 1, int(m_height) - 1), k),
+                                        getPixelValue(i, j, std::max(k - 1, 0)) - getPixelValue(i, j, std::min(k + 1, int(m_number_of_slices) - 1)));
+
+                                normal.normalise();
+
+                                p_normal_vector_set.push_back(normal.getX());
+                                p_normal_vector_set.push_back(normal.getY());
+                                p_normal_vector_set.push_back(normal.getZ());
                             }
                         }
                     }
@@ -2650,6 +2657,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     iso_surface.setInternalData(
             g_mesh_type,
             &p_vertex_set,
+            &p_normal_vector_set,
             false,
             g_vbo_type);
 

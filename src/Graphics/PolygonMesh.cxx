@@ -2408,6 +2408,38 @@ void PolygonMesh::setExternalData(int aTypeOfPrimitive,
 
 //-----------------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+        const std::vector<float>* aVertexArray,
+        const std::vector<float>* aNormalArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//-----------------------------------------------------------------------
+{
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+
+    if (aVertexArray->size() == aNormalArray->size())
+    {
+        m_p_vertex_normal_set = *aNormalArray;
+    }
+    else
+    {
+        m_p_face_normal_set = *aNormalArray;
+    }
+
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+}
+
+
+//-----------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                                   const std::vector<float>* aVertexArray,
                                   bool aCreateVBOFlag,
                                   int aTypeOfVBO)
@@ -2417,6 +2449,48 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             &((*aVertexArray)[0]),
             aVertexArray->size() / 3,
             GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+}
+
+
+//-----------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+        const std::vector<double>* aVertexArray,
+        const std::vector<double>* aNormalArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//-----------------------------------------------------------------------
+{
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+
+    if (aVertexArray->size() == aNormalArray->size())
+    {
+        for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                ite != aNormalArray->end();
+                ++ite)
+        {
+            m_p_vertex_normal_set.push_back(*ite);
+        }
+    }
+    else
+    {
+        for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                ite != aNormalArray->end();
+                ++ite)
+        {
+            m_p_face_normal_set.push_back(*ite);
+        }
+    }
+
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
             0,
             0,
             GL_NONE,

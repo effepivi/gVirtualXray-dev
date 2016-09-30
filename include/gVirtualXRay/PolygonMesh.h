@@ -753,6 +753,48 @@ public:
     //--------------------------------------------------------------------------
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<float>* aVertexArray,
+            const std::vector<float>* aNormalArray,
+            bool aCreateVBOFlag,
+            int aTypeOfVBO);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive;
+     *                              valid values are GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
+    void setInternalData(int aTypeOfPrimitive,
+            const std::vector<float>* aVertexArray,
+            bool aCreateVBOFlag,
+            int aTypeOfVBO);
+
+
+    //--------------------------------------------------------------------------
+    /// Set the polygon mesh using external data. The class instance will
+    /// manage the memory.
+    /**
+     *  @param aTypeOfPrimitive:    type of primitive;
+     *                              valid values are GL_TRIANGLES
+     *  @param aVertexArray:        array containing the vertex data
+     *  @param aCreateVBOFlag:      flag set to true to create a VBO,
+     *                              set to false to not set a VBO
+     *  @param aTypeOfVBO:          VBO usage hint to set; valid values are
+     *                              GL_STATIC_DRAW, GL_DYNAMIC_DRAW and
+     *                              GL_STREAM_DRAW
+     */
+    //--------------------------------------------------------------------------
+    void setInternalData(int aTypeOfPrimitive,
+            const std::vector<double>* aVertexArray,
+            const std::vector<double>* aNormalArray,
             bool aCreateVBOFlag,
             int aTypeOfVBO);
 
