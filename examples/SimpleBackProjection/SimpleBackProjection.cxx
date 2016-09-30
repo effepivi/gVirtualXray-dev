@@ -274,13 +274,10 @@ VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
 VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
 bool g_run_tomography_acquisition(false);
-#else
-bool g_run_tomography_acquisition(true);
-#endif
 
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
@@ -601,8 +598,9 @@ int main(int argc, char** argv)
 void createPhantom()
 //------------------
 {
-    Image<short> phantom(32, 32, 16, -1000);
-    phantom.setSpacing(VEC3(4, 4, 8));
+    unsigned int scaling(3);
+    Image<short> phantom(32 * scaling, 32 * scaling, 16 * scaling, -1000);
+    phantom.setSpacing(VEC3(4.0 / float(scaling), 4.0 / float(scaling), 8.0 / float(scaling)));
 
 	// Set pixels in a square to one value
 	unsigned int slice_size(phantom.getDepth() / 4);
@@ -637,7 +635,7 @@ void createPhantom()
     
     g_polygon_mesh = phantom.marchingCubes(-500);
     g_polygon_mesh.setHounsfieldValue(-500);
-    g_polygon_mesh.mergeVertices(true);
+    //g_polygon_mesh.mergeVertices(true);
     g_polygon_mesh.computeNormalVectors();
     g_polygon_mesh.useVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
 }
@@ -795,10 +793,20 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
-    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    g_display_help = true;
-#endif
+    try
+        {
+        g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        g_display_help = true;
+        g_has_freetype = true;
+        g_run_tomography_acquisition = false;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        g_display_help = false;
+        g_has_freetype = false;
+        g_run_tomography_acquisition = true;
+        }
 }
 
 
@@ -919,6 +927,16 @@ void render()
             g_polygon_mesh.display();
         }
 
+        glDisable(GL_CULL_FACE);
+        glLineWidth(3);
+
+        lighting = 0;
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        g_polygon_mesh.displayFaceNormal(100 * cm);
+
         // Restore the current transformation matrix
         popModelViewMatrix();
 
@@ -1034,7 +1052,6 @@ void render()
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-#ifdef HAS_FREETYPE
         if (g_display_help)
         {
             displayHelp();
@@ -1043,7 +1060,6 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-#endif
 	}
 	// Catch exception if any
 	catch (const std::exception& error)
@@ -1080,11 +1096,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	{
 		switch (key)
 		{
-#ifdef HAS_FREETYPE
         case GLFW_KEY_H:
-            g_display_help = !g_display_help;
+            if (g_has_freetype)
+                {
+                g_display_help = !g_display_help;
+                }
             break;
-#endif
 
 		case GLFW_KEY_Q:
 		case GLFW_KEY_ESCAPE:
@@ -2086,7 +2103,6 @@ void drawLine(const Vec2i& aVector0,
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
             g_background_colour.getX(),
             g_background_colour.getY(),
@@ -2159,6 +2175,4 @@ void displayHelp()
             p_font_colour);
 
     popEnableDisableState();
-
-#endif
 }

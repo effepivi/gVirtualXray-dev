@@ -67,15 +67,15 @@ void BoneMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 	if (m_p_vertex_set && m_number_of_vertices)
 	{
 		// Create the VBO if needed
-		if (!m_vbo.get())
+		if (!m_p_vbo.get())
 		{
-			m_vbo.reset(createVBO());
+		    m_p_vbo.reset(createVBO());
 		}
 
 		// Set the type of VBO
-		m_vbo->setBufferUsageHint(aTypeOfVBO);
+		m_p_vbo->setBufferUsageHint(aTypeOfVBO);
 
-		m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+		m_p_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 				getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 				0, 0, GL_NONE, 0,
 				m_number_of_vertices, 3, GL_FLOAT, &m_3D_texture_coordinates[0]);
@@ -83,7 +83,7 @@ void BoneMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
         if (m_p_index_set && m_number_of_indices &&
                 m_index_data_type != GL_NONE)
             {
-            m_vbo->setIndexData(m_number_of_indices,
+            m_p_vbo->setIndexData(m_number_of_indices,
                     m_index_data_type,
                     m_p_index_set);
             }
@@ -127,7 +127,7 @@ void BoneMesh::initialize()
 
 			initialize3DTextureCoordinates();
 
-			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+			updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
 		}
 
 	    initGradientTab();

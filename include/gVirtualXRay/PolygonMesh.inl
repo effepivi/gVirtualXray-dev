@@ -144,9 +144,9 @@ inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 //-------------------------------------------------------------------
 {
     // Create the VBO if needed
-    if (!m_vbo.get())
+    if (!m_p_vbo.get())
         {
-        m_vbo.reset(createVBO());
+        m_p_vbo.reset(createVBO());
         }
 
     // There is no data to store in a VBO
@@ -157,7 +157,7 @@ inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
         updateVBO(aTypeOfVBO, aTypeOfPrimitive);
         }
 
-    return (m_vbo->isReady());
+    return (m_p_vbo->isReady());
 }
 
 
@@ -357,15 +357,15 @@ inline void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScale)
         m_bounding_box_diagonal *= aScale;
 
         // Create the VBO if needed
-        if (!m_vbo.get())
+        if (!m_p_vbo.get())
         {
-            m_vbo.reset(createVBO());
+            m_p_vbo.reset(createVBO());
         }
 
         // Update the VBO
-        if (m_vbo->isReady())
+        if (m_p_vbo->isReady())
         {
-            updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
         }
     }
 }
@@ -387,15 +387,15 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
         m_max_corner += aTranslationVector;
 
         // Create the VBO if needed
-        if (!m_vbo.get())
+        if (!m_p_vbo.get())
             {
-            m_vbo.reset(createVBO());
+            m_p_vbo.reset(createVBO());
             }
 
         // Update the VBO
-        if (m_vbo->isReady())
+        if (m_p_vbo->isReady())
             {
-            updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
             }
         }
 }

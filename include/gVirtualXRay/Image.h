@@ -11,9 +11,10 @@
 *
 *   @version    1.0
 *
-*   @todo       Write here anything you did not implement.
+*   @todo       Fix problem in marchingCubes (normals?).
+*               See bug in demos (ImplicitSurface and SimpleBackProjection)
 *
-*   @date       11/11/2016
+*   @date       30/09/2016
 *
 *   @author     Franck Vidal
 *
@@ -697,7 +698,9 @@ public:
     * @return the polygon mesh
     */
     //------------------------------------------------------------------------
-    PolygonMesh marchingCubes(const T& aThresholdValue) const;
+    PolygonMesh marchingCubes(const T& aFirstThresholdValue,
+            const T& aSecondThresholdValue = 0,
+            bool aTwoThresholdFlag = false) const;
     
     
 //******************************************************************************
@@ -749,6 +752,9 @@ protected:
 
     /// The space between two successive pixels
     VEC3 m_spacing;
+
+    static unsigned int g_mesh_type;
+    static unsigned int g_vbo_type;
 };
 
 

@@ -205,8 +205,7 @@ VEC3 g_detector_position( 0.0, 0.0,  20.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-PolygonMesh g_polygon_data;
-std::vector<GLdouble> g_p_vertex_set;
+PolygonMesh* g_p_polygon_data;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -246,10 +245,9 @@ ImplicitSurface g_blobby_molecule_2;
 ImplicitSurface g_meta_ball_2;
 ImplicitSurface g_soft_object_2;
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
-#endif
 
 bool g_use_left_shift_key(false);
 bool g_use_right_shift_key(false);
@@ -451,7 +449,7 @@ int main(int argc, char** argv)
         loadImplicitSurface();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        g_xray_renderer.addInnerSurface(&g_polygon_data);
+        g_xray_renderer.addInnerSurface(g_p_polygon_data);
 
         // Rotate the sample
         g_sample_rotation_matrix.rotate( 180, VEC3(0, 1, 0));
@@ -636,10 +634,18 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
-    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    g_display_help = true;
-#endif
+    try
+        {
+        g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        g_display_help = true;
+        g_has_freetype = true;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        g_display_help = false;
+        g_has_freetype = false;
+        }
 }
 
 
@@ -729,11 +735,11 @@ void render()
         // Display the sample
         if (g_display_wireframe)
             {
-            g_polygon_data.displayWireFrame();
+            g_p_polygon_data->displayWireFrame();
             }
         else
             {
-            g_polygon_data.display();
+            g_p_polygon_data->display();
             }
 
         // Restore the current transformation matrix
@@ -801,7 +807,6 @@ void render()
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-#ifdef HAS_FREETYPE
         if (g_display_help)
             {
             displayHelp();
@@ -810,7 +815,6 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             }
-#endif
 
         // Disable the shader
         popShaderProgram();
@@ -915,11 +919,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         {
         switch(key)
             {
-#ifdef HAS_FREETYPE
             case GLFW_KEY_H:
-                g_display_help = !g_display_help;
+                if (g_has_freetype)
+                    {
+                    g_display_help = !g_display_help;
+                    }
                 break;
-#endif
 
             case GLFW_KEY_Q:
             case GLFW_KEY_ESCAPE:
@@ -1344,8 +1349,6 @@ void loadImplicitSurface()
     // Set geometry
     extractIsoSurface();
 
-    g_polygon_data.setHounsfieldValue(500.0);
-
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
 }
@@ -1560,12 +1563,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_sphere_1.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_sphere_1.getVertexData(),
-                    &g_sphere_1.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_sphere_1.getPolygonMesh();
             break;
 
         case 1:
@@ -1573,12 +1571,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_sphere_2.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_sphere_2.getVertexData(),
-                    &g_sphere_2.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_sphere_2.getPolygonMesh();
             break;
 
         // Blobby molecule
@@ -1587,12 +1580,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_blobby_molecule_1.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_blobby_molecule_1.getVertexData(),
-                    &g_blobby_molecule_1.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_blobby_molecule_1.getPolygonMesh();
             break;
 
         case 3:
@@ -1600,12 +1588,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_blobby_molecule_2.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_blobby_molecule_2.getVertexData(),
-                    &g_blobby_molecule_2.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_blobby_molecule_2.getPolygonMesh();
             break;
 
         // Meta ball
@@ -1614,12 +1597,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_meta_ball_1.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_meta_ball_1.getVertexData(),
-                    &g_meta_ball_1.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_meta_ball_1.getPolygonMesh();
             break;
 
         case 5:
@@ -1627,12 +1605,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_meta_ball_2.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_meta_ball_2.getVertexData(),
-                    &g_meta_ball_2.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_meta_ball_2.getPolygonMesh();
             break;
 
         // Soft object
@@ -1641,12 +1614,7 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_soft_object_1.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_soft_object_1.getVertexData(),
-                    &g_soft_object_1.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_soft_object_1.getPolygonMesh();
             break;
 
         case 7:
@@ -1654,20 +1622,18 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_soft_object_2.extractIsoSurface(g_threshold);
-            g_polygon_data.setExternalData(
-                    GL_TRIANGLES,
-                    &g_soft_object_2.getVertexData(),
-                    &g_soft_object_2.getIndexData(),
-                    true,
-                    GL_DYNAMIC_DRAW);
+            g_p_polygon_data = &g_soft_object_2.getPolygonMesh();
             break;
         }
 
     // Set geometry
-    g_polygon_data.applyScale(15);
+    g_p_polygon_data->moveToCentre();
+    g_p_polygon_data->applyScale(15);
 
     // Updat ethe VBO
-    g_polygon_data.updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
+    g_p_polygon_data->updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
+
+    g_p_polygon_data->setHounsfieldValue(500.0);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1678,7 +1644,6 @@ void extractIsoSurface()
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
             g_background_colour.getX(),
             g_background_colour.getY(),
@@ -1820,5 +1785,4 @@ void displayHelp()
             p_font_colour);
 
     popEnableDisableState();
-#endif
 }

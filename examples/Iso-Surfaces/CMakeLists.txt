@@ -36,23 +36,38 @@ project(gVirtualXRay-Iso-Surfaces)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
-# Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
-CreateHeaderFiles("." "BinaryIsoSurfaceFiles" "${RESOURCES_SOURCES}")
-
-
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+
+
+# Create the RESOURCES ###########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
+CreateHeaderFiles("." "BinaryIsoSurfaceFiles" "${RESOURCES_SOURCES}")
+
+
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw3_FOUND)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(WARNING "GLFW3 not found, the demo (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################

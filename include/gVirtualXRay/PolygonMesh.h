@@ -156,7 +156,7 @@ public:
      * @param aNormalSize: the size of the vectors (default value is 0.5 cm)
      */
     //--------------------------------------------------------------------------
-    void displayFaceNormal(RATIONAL_NUMBER aNormalSize = 0.5 * cm) const;
+    void displayFaceNormal(RATIONAL_NUMBER aNormalSize = 0.5 * cm);
 
 
     //--------------------------------------------------------------------------
@@ -165,7 +165,7 @@ public:
      * @param aNormalSize: the size of the vectors (default value is 0.5 cm)
      */
     //--------------------------------------------------------------------------
-    void displayVertexNormal(RATIONAL_NUMBER aNormalSize = 0.5 * cm) const;
+    void displayVertexNormal(RATIONAL_NUMBER aNormalSize = 0.5 * cm);
 
 
     //--------------------------------------------------------------------------
@@ -1096,9 +1096,13 @@ protected:
 
     /// Vertex buffer object
 #if __cplusplus <= 199711L
-    std::auto_ptr<VBO> m_vbo;
+    std::auto_ptr<VBO> m_p_vbo;
+    std::auto_ptr<VBO> m_p_face_normal_vbo;
+    std::auto_ptr<VBO> m_p_vertex_normal_vbo;
 #else
-    std::unique_ptr<VBO> m_vbo;
+    std::unique_ptr<VBO> m_p_vbo;
+    std::unique_ptr<VBO> m_p_face_normal_vbo;
+    std::unique_ptr<VBO> m_p_vertex_normal_vbo;
 #endif
 
     /// Flag about the use of the Hounsfield value or attenuation coefficient

@@ -83,24 +83,24 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 	if (m_p_vertex_set && m_number_of_vertices)
 	{
 		// Create the VBO if needed
-		if (!m_vbo.get())
+		if (!m_p_vbo.get())
 		{
-			m_vbo.reset(createVBO());
+		    m_p_vbo.reset(createVBO());
 		}
 
 		// Set the type of VBO
-		m_vbo->setBufferUsageHint(aTypeOfVBO);
+		m_p_vbo->setBufferUsageHint(aTypeOfVBO);
 
 		if(m_use_3D_colour_texture || m_use_3D_bump_map)
 		{
-			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+		    m_p_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 					m_number_of_vertices, 2, GL_FLOAT, &m_2D_texture_coordinates[0],
 					m_number_of_vertices, 3, GL_FLOAT, &m_3D_texture_coordinates[0]);
 		}
 		else
 		{
-			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
+		    m_p_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
 					m_number_of_vertices, 2, GL_FLOAT, &m_2D_texture_coordinates[0]);
 		}
@@ -260,7 +260,7 @@ void SoftTissueMesh::initialize()
 
 			shareNormalVectors();
 
-			updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+			updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
 		}
 
 	    // Check the OpenGL error status
@@ -283,7 +283,7 @@ void SoftTissueMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		//Update the VBO
-		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+		updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
 
 	    // Check the OpenGL error status
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -304,7 +304,7 @@ void SoftTissueMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		//Update the VBO
-		updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
+		updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
 
 	    // Check the OpenGL error status
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_IMPLICIT_SURFACE_H
-#define GVXR_IMPLICIT_SURFACE_H
+#ifndef __ImplicitSurface_h
+#define __ImplicitSurface_h
 
 
 /**
@@ -68,22 +68,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector>
 
-#ifdef HAS_ITK
-#include <itkImage.h>
-#include <itkBinaryMask3DMeshSource.h>
-#include <itkBinaryThresholdImageFilter.h>
-#include <itkMesh.h>
-#include <itkQuadEdgeMesh.h>
+#ifndef __Types_h
+#include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
 #endif
 
 
@@ -343,7 +339,7 @@ public:
 	*	@param aFileName:	the name of the file where to save the polygon data
 	*/
 	//--------------------------------------------------------------------------
-	void writePolygonMesh(const char* aFileName) const;
+	void writePolygonMesh(const char* aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -352,7 +348,7 @@ public:
 	*	@param aFileName:	the name of the file where to save the polygon data
 	*/
 	//--------------------------------------------------------------------------
-	void writePolygonMesh(const std::string& aFileName) const;
+	void writePolygonMesh(const std::string& aFileName);
 
 
 	//--------------------------------------------------------------------------
@@ -370,7 +366,7 @@ public:
 	*	@return the vertex data
 	*/
 	//--------------------------------------------------------------------------
-	const std::vector<RATIONAL_NUMBER>& getVertexData() const;
+	//const std::vector<RATIONAL_NUMBER>& getVertexData() const;
 
 
 	//--------------------------------------------------------------------------
@@ -379,7 +375,11 @@ public:
 	*	@return the index data
 	*/
 	//--------------------------------------------------------------------------
-	const std::vector<unsigned int>& getIndexData() const;
+	//const std::vector<unsigned int>& getIndexData() const;
+
+
+    PolygonMesh& getPolygonMesh();
+    const PolygonMesh& getPolygonMesh() const;
 
 
 //******************************************************************************
@@ -389,26 +389,12 @@ protected:
 	RATIONAL_NUMBER evaluateMetaBall(RATIONAL_NUMBER r, RATIONAL_NUMBER a, RATIONAL_NUMBER b) const;
 	RATIONAL_NUMBER evaluateSoftObject(RATIONAL_NUMBER r, RATIONAL_NUMBER a, RATIONAL_NUMBER b) const;
 
-#ifdef HAS_ITK
-	typedef RATIONAL_NUMBER InputVoxelDataType;
-	typedef unsigned char OutputVoxelDataType;
-	typedef itk::Image<InputVoxelDataType, 3> InputVolumeType;
-	typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
-	typedef itk::QuadEdgeMesh<float, 3> MeshType;
-
-	typedef itk::BinaryThresholdImageFilter<InputVolumeType, OutputVolumeType> BinaryThresholdType;
-	typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
-
-	InputVolumeType::Pointer m_p_volume;
-	BinaryThresholdType::Pointer m_p_threshold_filter;
-	IsoSurfaceExtracterType::Pointer m_p_iso_surface_extracter;
-#endif // HAS_ITK
+	Image<RATIONAL_NUMBER> m_volume;
+	PolygonMesh m_mesh_data;
+	VEC3 m_centre;
 
 	std::vector<std::pair<DensityFunctionParameterType, VEC3> > m_control_point_set;
 	std::vector<std::pair<DensityFunctionParameterType, std::pair<VEC3, VEC3> > > m_control_line_set;
-
-	std::vector<RATIONAL_NUMBER> m_p_vertex_data;
-	std::vector<unsigned int> m_p_index_data;
 };
 
 
@@ -419,4 +405,4 @@ protected:
 #include "ImplicitSurface.inl"
 
 
-#endif // IMPLICIT_SURFACE_H
+#endif // __ImplicitSurface_h

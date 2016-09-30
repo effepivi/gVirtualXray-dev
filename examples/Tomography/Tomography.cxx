@@ -64,10 +64,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
-
 
 #include <memory>
 #include <cstdlib>
@@ -76,17 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctime>
 #include <cmath>
 #include <cfloat>
-
-#include <itkMacro.h>
-#include <itkImage.h>
-#include <itkImageFileWriter.h>
-
-#include <itkBinaryMask3DMeshSource.h>
-#include <itkBinaryThresholdImageFilter.h>
-#include <itkMesh.h>
-#include <itkQuadEdgeMesh.h>
-//#include <itkMeshFileWriter.h>
-#include <itkQuadEdgeMeshDecimationCriteria.h>
+#include <exception>
 
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -100,56 +89,60 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
+#ifndef __TextRenderer_h
 #include "gVirtualXRay/TextRenderer.h"
+#endif
+
+#ifndef __Image_h
+#include "gVirtualXRay/Image.h"
 #endif
 
 #include "display_gl2.frag.h"
@@ -229,8 +222,14 @@ VEC3 g_translation_vector;
 std::vector<float> g_p_HU_set;
 
 std::vector<PolygonMesh> g_p_polygon_mesh_set;
+
+#if __cplusplus <= 199711L
+std::auto_ptr<VBO> g_sinogram_rectangle;
+std::auto_ptr<VBO> g_tomography_rectangle;
+#else
 std::unique_ptr<VBO> g_sinogram_rectangle;
 std::unique_ptr<VBO> g_tomography_rectangle;
+#endif
 
 PolygonMesh g_rotation_axis_geometry;
 
@@ -258,11 +257,10 @@ GLuint g_projection_texture_id(0);
 GLuint g_sinogram_texture_id(0);
 GLuint g_tomography_texture_id(0);
 
-typedef itk::Image<float, 2> ProjectionImageType;
+Image<float> g_p_projection_data;
+Image<float> g_p_sinogram_data;
+Image<float> g_p_tomography_data;
 
-ProjectionImageType::Pointer g_p_projection_data(ProjectionImageType::New());
-ProjectionImageType::Pointer g_p_sinogram_data(ProjectionImageType::New());
-ProjectionImageType::Pointer g_p_tomography_data(ProjectionImageType::New());
 float g_pixel_width(0);
 float g_min_projection(0);
 float g_max_projection(0);
@@ -275,13 +273,10 @@ VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
 VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
 bool g_run_tomography_acquisition(false);
-#else
-bool g_run_tomography_acquisition(true);
-#endif
 
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
@@ -482,13 +477,13 @@ int main(int argc, char** argv)
         //g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
 
         // Save the sinogram
-        //g_xray_renderer.printSinogram(PREFIX"/simulation_sinogram.mhd");
+        //g_xray_renderer.printSinogram(PREFIX"/simulation_sinogram.dcm");
 
         // Compute the projection set
         //g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
 
         // Save the projection set
-        //g_xray_renderer.printProjectionSet(PREFIX"/simulation_projection_set.mhd");
+        //g_xray_renderer.printProjectionSet(PREFIX"/simulation_projection_set.dcm");
 
 		createProjection();
         createSinogram();
@@ -610,31 +605,15 @@ int main(int argc, char** argv)
 
 	        	if (g_current_angle == (g_angle_number - 1))
 	        	{
-	        		typedef itk::ImageFileWriter <ProjectionImageType> VolumeWriterType;
-
-	        		VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
-	        		p_writer->SetInput(g_p_sinogram_data);
-	        		p_writer->SetFileName("sinogram.mhd");
-	        		p_writer->Update();
-
-	        		p_writer->SetInput(g_p_projection_data);
-	        		p_writer->SetFileName("projection.mhd");
-	        		p_writer->Update();
-
-	        		p_writer->SetInput(g_p_tomography_data);
-	        		p_writer->SetFileName("simple_back_projection.mhd");
-	        		p_writer->Update();
+                    g_p_sinogram_data.save("sinogram.dcm");
+                    g_p_projection_data.save("projection.dcm");
+                    g_p_tomography_data.save("simple_back_projection.dcm");
 	        	}
 	        }
 
 	        // Poll for and process events
 	        glfwPollEvents();
 	    }
-	}
-	// Catch exception if any
-	catch(itk::ExceptionObject& error)
-	{
-		std::cerr << error << std::endl;
 	}
 	catch (const std::exception& error)
 	{
@@ -658,96 +637,59 @@ int main(int argc, char** argv)
 void createPhantom()
 //------------------
 {
-	typedef itk::Image<short, 3> ImageType;
-	typedef itk::ImageFileWriter <ImageType> VolumeWriterType;
 
-	ImageType::Pointer p_phantom(ImageType::New());
+	float scale(1.0 /*/ 5.0*/);
+	unsigned int size(256 * scale);
 
-	VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
-	p_writer->SetInput(p_phantom);
-	p_writer->SetFileName("phantom.mhd");
-
-	float scale(1.0);
-	ImageType::SizeType	size;
-	size[0] = 256 * scale;
-	size[1] = 256 * scale;
-	size[2] = 256 * scale;
-
-	ImageType::IndexType start;
-	start[0] = 0;
-	start[1] = 0;
-	start[2] = 0;
-
-	ImageType::RegionType region;
-	region.SetSize(size);
-	region.SetIndex(start);
-
-	p_phantom->SetRegions(region);
-	p_phantom->Allocate();
+	Image<short> phantom(size, size, size, -1000);
 
 	g_pixel_width = 0.75 / scale;
-	double spacing[3];
-	spacing[0] = g_pixel_width;
-	spacing[1] = g_pixel_width;
-	spacing[2] = g_pixel_width;
-	p_phantom->SetSpacing(spacing);
-	double origin[3];
-	origin[0] = 0;
-	origin[1] = 0;
-	origin[2] = 0;
-	p_phantom->SetOrigin(origin);
+	phantom.setSpacing(VEC3(g_pixel_width, g_pixel_width, g_pixel_width));
 
-	p_phantom->FillBuffer(-1000);
+	float squared_radius_0(std::pow(g_pixel_width * size * 0.05,   2));
+	float squared_radius_1(std::pow(g_pixel_width * size * 0.025,  2));
+	float squared_radius_2(std::pow(g_pixel_width * size * 0.0125, 2));
+	float squared_radius_3(std::pow(g_pixel_width * size * 0.345,  2));
 
-	float squared_radius_0(std::pow(spacing[0] * size[0] * 0.05, 2));
-	float squared_radius_1(std::pow(spacing[0] * size[0] * 0.025, 2));
-	float squared_radius_2(std::pow(spacing[0] * size[0] * 0.0125, 2));
-	float squared_radius_3(std::pow(spacing[0] * size[0] * 0.345, 2));
+	float i_0(float(size) / 3.0);
+	float j_0(float(size) / 3.0);
+	float k_0(float(size) / 2.0);
 
-	float i_0(size[0] / 3.0);
-	float j_0(size[1] / 3.0);
-	float k_0(size[2] / 2.0);
-
-	float i_1(2.0 * size[0] / 3.0);
-	float j_1(2.0 * size[1] / 3.0);
-	float k_1(      size[2] / 2.0);
+	float i_1(2.0 * float(size) / 3.0);
+	float j_1(2.0 * float(size) / 3.0);
+	float k_1(      float(size) / 2.0);
 
 
-	float i_2(size[0] / 4.0);
-	float j_2(size[1] / 4.0);
-	float k_2(size[2] / 2.0);
+	float i_2(float(size) / 4.0);
+	float j_2(float(size) / 4.0);
+	float k_2(float(size) / 2.0);
 
-	float i_3(size[0] / 2.0);
-	float j_3(size[1] / 2.0);
-	float k_3(size[2] / 2.0);
+	float i_3(float(size) / 2.0);
+	float j_3(float(size) / 2.0);
+	float k_3(float(size) / 2.0);
 
 	#pragma omp parallel for collapse(3)
-	for(unsigned int k = 0; k < size[2]; k++)
+	for(unsigned int k = 0; k < size; k++)
 	{
-		for(unsigned int j = 0; j < size[1]; j++)
+		for(unsigned int j = 0; j < size; j++)
 		{
-			for(unsigned int i = 0; i < size[0]; i++)
+			for(unsigned int i = 0; i < size; i++)
 			{
-				ImageType::IndexType pixelIndex;
-				pixelIndex[0] = i;
-				pixelIndex[1] = j;
-				pixelIndex[2] = k;
-
-				if (std::pow(spacing[0] * (i_0 - i), 2) + std::pow(spacing[1] * (j_0 - j), 2) + std::pow(spacing[2] * (k_0 - k), 2) <= squared_radius_0)
+				if (std::pow(g_pixel_width * (i_0 - i), 2) + std::pow(g_pixel_width * (j_0 - j), 2) + std::pow(g_pixel_width * (k_0 - k), 2) <= squared_radius_0)
 				{
-					p_phantom->SetPixel(pixelIndex, -500);
+					phantom.setPixel(i, j, k, -500);
 				}
-				else if (std::pow(spacing[0] * (i_1 - i), 2) + std::pow(spacing[1] * (j_1 - j), 2) + std::pow(spacing[2] * (k_1 - k), 2) <= squared_radius_1)
+				else if (std::pow(g_pixel_width * (i_1 - i), 2) + std::pow(g_pixel_width * (j_1 - j), 2) + std::pow(g_pixel_width * (k_1 - k), 2) <= squared_radius_1)
 				{
-					p_phantom->SetPixel(pixelIndex, 0);
+					phantom.setPixel(i, j, k, 0);
 				}
-				else if (std::pow(spacing[0] * (i_2 - i), 2) + std::pow(spacing[1] * (j_2 - j), 2) + std::pow(spacing[2] * (k_2 - k), 2) <= squared_radius_2)
+				else if (std::pow(g_pixel_width * (i_2 - i), 2) + std::pow(g_pixel_width * (j_2 - j), 2) + std::pow(g_pixel_width * (k_2 - k), 2) <= squared_radius_2)
 				{
-					p_phantom->SetPixel(pixelIndex, 500);
+					phantom.setPixel(i, j, k, 500);
 				}
-				else if (std::pow(spacing[0] * (i_3 - i), 2) + std::pow(spacing[1] * (j_3 - j), 2) <= squared_radius_3 && std::pow(spacing[2] * (k_3 - k), 2) <= squared_radius_0 * 2.001)
+				else if (std::pow(g_pixel_width * (i_3 - i), 2) + std::pow(g_pixel_width * (j_3 - j), 2) <= squared_radius_3 && std::pow(g_pixel_width * (k_3 - k), 2) <= squared_radius_0 * 2.001)
 				{
-					p_phantom->SetPixel(pixelIndex, -800);
+					phantom.setPixel(i, j, k, -800);
 				}
 			}
 		}
@@ -764,102 +706,15 @@ void createPhantom()
 	unsigned int i(0);
 	for (std::vector<float>::const_iterator ite(g_p_HU_set.begin()); ite != g_p_HU_set.end(); ++ite, ++i)
 	{
-		typedef unsigned char OutputVoxelDataType;
-		typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
-		typedef itk::QuadEdgeMesh<float, 3> MeshType;
-
-		typedef itk::BinaryThresholdImageFilter<ImageType, OutputVolumeType> BinaryThresholdType;
-		typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
-
-		BinaryThresholdType::Pointer p_threshold_filter(BinaryThresholdType::New());
-		IsoSurfaceExtracterType::Pointer p_iso_surface_extracter(IsoSurfaceExtracterType::New());
-
-		// Create the binary mask
-		p_threshold_filter->SetInput(p_phantom);
-		p_threshold_filter->SetLowerThreshold(*ite - 1);
-		p_threshold_filter->SetUpperThreshold(*ite + 1);
-		p_threshold_filter->SetOutsideValue(0);
-		p_threshold_filter->SetInsideValue(1);
-		p_threshold_filter->Update();
-
-		// Extract the isosurface
-		p_iso_surface_extracter->SetInput(p_threshold_filter->GetOutput());
-		p_iso_surface_extracter->SetObjectValue(1);
-		p_iso_surface_extracter->Update();
-
-		// Get the polygon mesh
-		MeshType::Pointer p_mesh(p_iso_surface_extracter->GetOutput());
-
-		// There are triangles
-		std::vector<float> p_vertex_data;
-		std::vector<unsigned int> p_index_data;
-		if (p_mesh->GetNumberOfCells() && p_mesh->GetNumberOfPoints())
-		{
-			p_vertex_data.resize(p_mesh->GetNumberOfPoints() * 3, 0);
-			p_index_data.resize(p_mesh->GetNumberOfCells() * 3, 0);
-
-			MeshType::PointsContainer* p_itk_point_set = p_mesh->GetPoints();
-			MeshType::CellsContainer* p_itk_cell_set = p_mesh->GetCells();
-
-			// Copy points
-			for(MeshType::PointsContainer::Iterator ite(p_itk_point_set->Begin());
-				ite != p_itk_point_set->End();
-				++ite)
-			{
-				// Get the point index from the point container iterator
-				int idx = ite.Index();
-
-				// Get the point
-				MeshType::PointType p = ite.Value(); // access the point
-
-				// Copy the point
-				p_vertex_data[idx * 3 + 0] = p[0];
-				p_vertex_data[idx * 3 + 1] = p[1];
-				p_vertex_data[idx * 3 + 2] = p[2];
-			}
-
-			typedef MeshType::CellType	CellType;
-			typedef CellType::PointIdIterator	PointIdIterator;
-
-			for(MeshType::CellsContainer::Iterator ite(p_itk_cell_set->Begin());
-				ite != p_itk_cell_set->End();
-				++ite)
-			{
-				// Get the cell index from the point container iterator
-				int idx = ite.Index();
-
-				// Get the cell
-				CellType* p_cell = ite.Value();
-
-				// Copy point indices
-				int i(0);
-				for (PointIdIterator ite_point_idx(p_cell->PointIdsBegin());
-					ite_point_idx != p_cell->PointIdsEnd();
-					++ite_point_idx, ++i)
-				{
-					unsigned int point_id = *ite_point_idx;
-					p_index_data[idx * 3 + i] = point_id;
-				}
-			}
-		}
-
-		g_p_polygon_mesh_set[i].setInternalData(GL_TRIANGLES,
-				&p_vertex_data[0],
-				p_vertex_data.size() / 3,
-				GL_FLOAT,
-				&p_index_data[0],
-				p_index_data.size(),
-				GL_UNSIGNED_INT,
-				true,
-				GL_STATIC_DRAW);
+		g_p_polygon_mesh_set[i] = phantom.marchingCubes(*ite - 1, *ite + 1, true);
 	}
 
-	p_writer->Update();
+    phantom.save("phantom.dcm");
 
 /*	typedef itk::MeshFileWriter< MeshType > MeshWriterType;
 	MeshWriterType::Pointer writer(MeshWriterType::New());
 	writer->SetFileTypeAsBINARY ();
-	writer->SetFileName(PREFIX"/sinogram.mhd");
+	writer->SetFileName(PREFIX"/sinogram.dcm");
 	writer->SetInput(p_iso_surface_extracter->GetOutput());
 	try
 	{
@@ -867,7 +722,7 @@ void createPhantom()
 	}
 	catch( itk::ExceptionObject & error )
 	{
-		std::cerr << "Cannot save the polygon mesh in STL file: \"" << PREFIX"/sinogram.mhd" << "\"" << std::endl;
+		std::cerr << "Cannot save the polygon mesh in STL file: \"" << PREFIX"/sinogram.dcm" << "\"" << std::endl;
 		std::cerr << "Error: " << error << std::endl;
 	}*/
 }
@@ -916,18 +771,7 @@ void quit()
 void initGLEW()
 //-------------
 {
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-
-    do
-    {
-    } while (glGetError() != GL_NO_ERROR);
+    initialiseGLEW();
 }
 
 
@@ -1024,18 +868,20 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
 	try
 	{
 	    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
 	    g_display_help = true;
+	    g_has_freetype = true;
+	    g_run_tomography_acquisition = false;
 	}
 	catch (const std::exception& error)
 	{
-		std::cerr << error.what() << std::endl;
-	    g_display_help = false;
+		std::cerr << "WARNING:\t" << error.what() << std::endl;
+        g_display_help = false;
+        g_has_freetype = false;
+        g_run_tomography_acquisition = true;
 	}
-#endif
 }
 
 
@@ -1308,7 +1154,7 @@ void render()
 
         pushTexture2D();
 
-        displayProjection();
+        /*displayProjection();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         displaySinogram();
@@ -1316,7 +1162,7 @@ void render()
 
         displayTomography();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
+*/
         popTexture();
 
         // Disable the shader
@@ -1331,7 +1177,6 @@ void render()
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-#ifdef HAS_FREETYPE
         if (g_display_help)
         {
             displayHelp();
@@ -1340,7 +1185,6 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-#endif
 	}
 	// Catch exception if any
 	catch (const std::exception& error)
@@ -1377,11 +1221,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	{
 		switch (key)
 		{
-#ifdef HAS_FREETYPE
         case GLFW_KEY_H:
-            g_display_help = !g_display_help;
+            if (g_has_freetype)
+                {
+                g_display_help = !g_display_help;
+		        }
             break;
-#endif
 
 		case GLFW_KEY_Q:
 		case GLFW_KEY_ESCAPE:
@@ -1863,10 +1708,10 @@ void createTexture(GLuint& aTextureID,
 				   unsigned int aImageHeight,
 				   float aPixelWidth,
 				   float aPixelHeight,
-				   ProjectionImageType::Pointer& anImage)
+				   Image<float>& anImage)
 //-------------------------------------------------------
 {
-    glActiveTexture(GL_TEXTURE0);
+    /*glActiveTexture(GL_TEXTURE0);
 
     if (aTextureID)
     {
@@ -1919,7 +1764,7 @@ void createTexture(GLuint& aTextureID,
 
     popTexture();
 
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);*/
 }
 
 
@@ -1927,7 +1772,7 @@ void createTexture(GLuint& aTextureID,
 void createProjection()
 //---------------------
 {
-    createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_projection_data);
+    /*createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_projection_data);
     g_min_projection = 0;
     g_max_projection = 0;
 
@@ -1996,7 +1841,7 @@ void createProjection()
         0, 0, GL_NONE, 0,
         p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);*/
 }
 
 
@@ -2004,9 +1849,9 @@ void createProjection()
 void createSinogram()
 //-------------------
 {
-    createTexture(g_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_sinogram_data);
+    /*createTexture(g_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_sinogram_data);
     g_min_sinogram = 0;
-    g_max_sinogram = 0;
+    g_max_sinogram = 0;*/
 }
 
 
@@ -2014,7 +1859,7 @@ void createSinogram()
 void createTomography()
 //---------------------
 {
-    createTexture(g_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_pixel_width, g_pixel_width, g_p_tomography_data);
+    /*createTexture(g_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_pixel_width, g_pixel_width, g_p_tomography_data);
     g_min_tomography = 0;
     g_max_tomography = 0;
 
@@ -2081,7 +1926,7 @@ void createTomography()
         0, 0, GL_NONE, 0,
         p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
 
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);*/
 }
 
 
@@ -2089,7 +1934,7 @@ void createTomography()
 void updateProjection()
 //---------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
+    /*RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
     float* p_output_image(g_p_projection_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
 
     float value;
@@ -2122,7 +1967,7 @@ void updateProjection()
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
     popTexture();
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);*/
 }
 
 
@@ -2130,7 +1975,7 @@ void updateProjection()
 void updateSinogram()
 //-------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
+    /*RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
     float* p_output_image(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
 
     float total_input_energy(g_xray_beam.getTotalEnergy());
@@ -2168,7 +2013,7 @@ void updateSinogram()
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    popTexture();
+    popTexture();*/
 }
 
 
@@ -2177,7 +2022,7 @@ void updateTomography()
 //---------------------
 {
     // Get the current projection from the sinogram
-    float* p_current_projection(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
+ /*   float* p_current_projection(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
     float current_angle(g_angle_step * g_current_angle);
 
     float width(g_resolution.getX() * g_number_of_pixels.getX());
@@ -2240,7 +2085,7 @@ void updateTomography()
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data->GetBufferPointer());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);*/
     popTexture();
 }
 
@@ -2249,7 +2094,7 @@ void updateTomography()
 void displayProjection()
 //----------------------
 {
-    GLint shader_id(g_display_image_shader.getProgramHandle());
+   /* GLint shader_id(g_display_image_shader.getProgramHandle());
 
     MATRIX4 model_view;
     model_view.loadIdentity();
@@ -2272,7 +2117,7 @@ void displayProjection()
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    g_sinogram_rectangle->display();
+    g_sinogram_rectangle->display();*/
 }
 
 
@@ -2280,7 +2125,7 @@ void displayProjection()
 void displaySinogram()
 //--------------------
 {
-    GLint shader_id(g_display_image_shader.getProgramHandle());
+ /*   GLint shader_id(g_display_image_shader.getProgramHandle());
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
     MATRIX4 model_view(MATRIX4::buildTranslationMatrix(0, y * 1.05, 0));
@@ -2303,7 +2148,7 @@ void displaySinogram()
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    g_sinogram_rectangle->display();
+    g_sinogram_rectangle->display();*/
 }
 
 
@@ -2311,7 +2156,7 @@ void displaySinogram()
 void displayTomography()
 //----------------------
 {
-    GLint shader_id(g_display_image_shader.getProgramHandle());
+  /*  GLint shader_id(g_display_image_shader.getProgramHandle());
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
     MATRIX4 model_view(MATRIX4::buildTranslationMatrix(0, y * 2.1, 0));
@@ -2334,7 +2179,7 @@ void displayTomography()
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    g_tomography_rectangle->display();
+    g_tomography_rectangle->display();*/
 }
 
 
@@ -2342,7 +2187,7 @@ void displayTomography()
 void reset()
 //----------
 {
-    unsigned int number_of_pixels(g_number_of_pixels.getX() * g_angle_number);
+  /*  unsigned int number_of_pixels(g_number_of_pixels.getX() * g_angle_number);
     for (unsigned int i(0); i < number_of_pixels; ++i)
     {
         g_p_projection_data->GetBufferPointer()[i] = 0;
@@ -2378,12 +2223,12 @@ void reset()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 
-/*    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+//    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
 
-    g_source_position = g_initial_source_position;
-    g_detector_position = g_initial_detector_position;
-    g_detector_up_vector = g_initial_detector_up_vector;
-*/
+//    g_source_position = g_initial_source_position;
+//    g_detector_position = g_initial_detector_position;
+//    g_detector_up_vector = g_initial_detector_up_vector;
+
     g_next_angle_to_process = 0;
     g_current_angle = 0;
 
@@ -2394,7 +2239,7 @@ void reset()
     else
     {
     	g_acquisition_type = ROTATE_SOURCE_DETECTOR;
-    }
+    }*/
 }
 
 
@@ -2489,7 +2334,6 @@ void drawLine(const Vec2i& aVector0,
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
             g_background_colour.getX(),
             g_background_colour.getY(),
@@ -2512,51 +2356,56 @@ void displayHelp()
 
     int x_position(15);
     int offset(29);
-    g_font_rendered.renderText(std::string("Help"),
+    g_font_rendered.renderText(
+            std::string("Help"),
             20,   x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-            40, x_position += offset,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
-
-    g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
+    g_font_rendered.renderText(
+            std::string("\'h\': display|hide help message"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
+    g_font_rendered.renderText(
+            std::string("\'n\': toggle negative image"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
+    g_font_rendered.renderText(
+            std::string("\'b\': display|hide X-ray beam"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
-    g_font_rendered.renderText(std::string("space bar': start|stop tomography"),
+    g_font_rendered.renderText(
+            std::string("\'w\': wireframe|solid rendering"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
+    g_font_rendered.renderText(
+            std::string("space bar': start|stop tomography"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+    g_font_rendered.renderText(
+            std::string("\'q\', 'Esc': quit"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
     popEnableDisableState();
-
-#endif
 }
 
 

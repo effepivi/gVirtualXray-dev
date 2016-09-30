@@ -27,6 +27,14 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <fstream>
 
 #ifndef __Image_h
@@ -38,6 +46,25 @@
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
+
+
+template<> unsigned int Image<char>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<unsigned char>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<short>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<unsigned short>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<int>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<unsigned int>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<float>::g_mesh_type = GL_TRIANGLES;
+template<> unsigned int Image<double>::g_mesh_type = GL_TRIANGLES;
+
+template<> unsigned int Image<char>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<unsigned char>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<short>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<unsigned short>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<int>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<unsigned int>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<float>::g_vbo_type = GL_STATIC_DRAW;
+template<> unsigned int Image<double>::g_vbo_type = GL_STATIC_DRAW;
 
 
 template<> void Image<float>::saveMHD(const std::string& aFileName) const

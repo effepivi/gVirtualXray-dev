@@ -47,13 +47,14 @@ IF (USE_FLTK)
 ENDIF ()
 
 IF (USE_GLFW)
+    ADD_SUBDIRECTORY (Iso-Surfaces)
     ADD_SUBDIRECTORY (AnatomicalData-glfw)
     ADD_SUBDIRECTORY (AnatomicalData-glfw-moreRealistic)
     ADD_SUBDIRECTORY (STL-File-glfw)
     ADD_SUBDIRECTORY (Intersections)
-    ADD_SUBDIRECTORY (IterativeTomographyReconstruction)
     ADD_SUBDIRECTORY (SimpleBackProjection)
     ADD_SUBDIRECTORY (FilteredBackProjection)
+    ADD_SUBDIRECTORY (Tomography)
 ENDIF ()
 
 IF (USE_GLUT)
@@ -72,9 +73,8 @@ IF (USE_QT5)
 ENDIF ()
 
 
-##ADD_SUBDIRECTORY (Tomography)
-##ADD_SUBDIRECTORY (Iso-Surfaces)
-##ADD_SUBDIRECTORY (VisualArts)
+
+
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
