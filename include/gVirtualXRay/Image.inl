@@ -2327,8 +2327,8 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 //--------------------------------------------------------------------------------------
 {
     PolygonMesh iso_surface;
-    std::vector<double> p_vertex_set;
-    std::vector<double> p_normal_vector_set;
+    std::vector<float> p_vertex_set;
+    std::vector<float> p_normal_vector_set;
     
     struct GLvector
     {
