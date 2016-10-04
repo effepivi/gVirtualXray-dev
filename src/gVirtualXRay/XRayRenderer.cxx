@@ -2308,7 +2308,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         if (m_use_L_buffer_artefact_filtering)
         {
         	RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
-            cleanLBuffer(0.8 * bbox_diagonal);
+            cleanLBuffer(1.0 * bbox_diagonal);
         }
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
