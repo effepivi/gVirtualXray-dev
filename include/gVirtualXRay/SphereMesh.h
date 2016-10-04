@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_SPHERE_MESH_H
-#define GVXR_SPHERE_MESH_H
+#ifndef __SphereMesh_h
+#define __SphereMesh_h
 
 
 /**
@@ -68,18 +68,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <string>
 #include <vector>
 
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
@@ -135,4 +135,4 @@ public:
 #include "SphereMesh.inl"
 
 
-#endif // SPHERE_MESH_H
+#endif // __SphereMesh_h
