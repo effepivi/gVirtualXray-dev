@@ -942,7 +942,110 @@ template<typename T> void Image<T>::saveASCII(const std::string& aFileName) cons
 
 template<typename T> void Image<T>::saveMHD(const char* aFileName) const
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+    // Open the file which will contain the meta header
+    std::ofstream meta_header(aFileName);
+
+    // The file is not open
+    if (!meta_header.is_open())
+        {
+        std::string error_message;
+        error_message = "Cannot create the file (\"";
+        error_message += aFileName;
+        error_message += "\")";
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    meta_header << "ObjectType = Image" << std::endl;
+    if (m_number_of_slices == 1)
+        {
+        meta_header << "NDims = 2" << std::endl;
+        meta_header << "DimSize = " << m_width << " " << m_height << std::endl;
+        }
+    else
+        {
+        meta_header << "NDims = 3" << std::endl;
+        meta_header << "DimSize = " << m_width << " " << m_height << " " << m_number_of_slices << std::endl;
+        }
+
+    std::string data_stype_string;
+    if (typeid(T) == typeid(double))
+        {
+        data_stype_string = "MET_DOUBLE";
+        }
+    else if (typeid(T) == typeid(float))
+        {
+        data_stype_string = "MET_FLOAT";
+        }
+    else if (typeid(T) == typeid(char))
+        {
+        data_stype_string = "MET_CHAR";
+        }
+    else if (typeid(T) == typeid(unsigned char))
+        {
+        data_stype_string = "MET_UCHAR";
+        }
+    else if (typeid(T) == typeid(short))
+        {
+        data_stype_string = "MET_SHORT";
+        }
+    else if (typeid(T) == typeid(unsigned short))
+        {
+        data_stype_string = "MET_USHORT";
+        }
+    else if (typeid(T) == typeid(int))
+        {
+        data_stype_string = "MET_INT";
+        }
+    else if (typeid(T) == typeid(unsigned int))
+        {
+        data_stype_string = "MET_UINT";
+        }
+    else
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported data type");
+        }
+
+    meta_header << "ElementType = " << data_stype_string << std::endl;
+
+    // There are no trailing bytes (extra bytes at the end of the file)
+    meta_header << "HeaderSize = -1" << std::endl;
+
+    meta_header << "ElementSize = 1 1 1" << std::endl;
+
+    if (m_number_of_slices == 1)
+        {
+        meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << std::endl;
+        }
+    else
+        {
+        meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << " " << m_spacing[2] << std::endl;
+        }
+
+    if (isBigEndian())
+        {
+        meta_header << "ElementByteOrderMSB = True" << std::endl;
+        }
+    else
+        {
+        meta_header << "ElementByteOrderMSB = False" << std::endl;
+        }
+
+    std::string raw_file_name(aFileName);
+    if (isMHD(aFileName))
+        {
+        raw_file_name[raw_file_name.size() - 3] = 'r';
+        raw_file_name[raw_file_name.size() - 2] = 'a';
+        raw_file_name[raw_file_name.size() - 1] = 'w';
+        }
+    else
+        {
+        raw_file_name += ".raw";
+        }
+
+    meta_header << "ElementDataFile = " << raw_file_name << std::endl;
+
+    saveRAW(raw_file_name);
 }
 
 
