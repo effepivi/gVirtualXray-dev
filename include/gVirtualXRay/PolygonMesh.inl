@@ -412,9 +412,9 @@ inline void PolygonMesh::moveToCentre()
 }
 
 
-//-------------------------------------------
-inline void PolygonMesh::inverNormalVectors()
-//-------------------------------------------
+//--------------------------------------------
+inline void PolygonMesh::invertNormalVectors()
+//--------------------------------------------
 {
     for (std::vector<RATIONAL_NUMBER>::iterator ite(
                             m_p_vertex_normal_set.begin());
