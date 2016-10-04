@@ -324,4 +324,21 @@ inline bool checkExtension(const char* aFileName,
 }
 
 
+//-----------------------
+inline bool isBigEndian()
+//-----------------------
+{
+    unsigned int x(1);
+    return (reinterpret_cast<unsigned char*>(&x)[0] == 0);
+}
+
+
+//--------------------------
+inline bool isLitlleEndian()
+//--------------------------
+{
+    return (!isBigEndian());
+}
+
+
 } // namespace gVirtualXRay

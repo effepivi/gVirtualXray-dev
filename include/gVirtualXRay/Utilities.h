@@ -294,6 +294,10 @@ bool checkExtension(const char* aFileName, const char* anExtension);
 bool checkExtension(const std::string& aFileName, const std::string& anExtension);
 
 
+bool isBigEndian();
+bool isLitlleEndian();
+
+
 } // namespace gVirtualXRay
 
 
