@@ -636,7 +636,7 @@ void createPhantom()
     g_polygon_mesh = phantom.marchingCubes(-500);
     g_polygon_mesh.setHounsfieldValue(-500);
     //g_polygon_mesh.mergeVertices(true);
-    g_polygon_mesh.computeNormalVectors();
+    //g_polygon_mesh.computeNormalVectors();
     g_polygon_mesh.useVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
 }
 
@@ -827,10 +827,6 @@ void render()
         pushEnableDisableState(GL_DEPTH_TEST);
         pushEnableDisableState(GL_BLEND);
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-
         // Enable the shader
         pushShaderProgram();
         g_display_shader.enable();
@@ -887,16 +883,37 @@ void render()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         GLint lighting;
-        lighting = 1;
-        handle = glGetUniformLocation(shader_id,"g_use_lighting");
-        glUniform1iv(handle, 1, &lighting);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Store the current transformation matrix
         pushModelViewMatrix();
 
         g_current_modelview_matrix *= g_sample_rotation_matrix;
         applyModelViewMatrix();
+
+        {
+        lighting = 0;
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        const GLfloat material_ambient[]  = {1.0, 0.0, 0.0,  1.0};
+
+        // Define colours inshader
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, material_ambient);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        g_polygon_mesh.displayFaceNormal(g_resolution[0] * 2.0);
+        }
+
+        lighting = 1;
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         // Get the material
         Material& material(g_polygon_mesh.getMaterial());
@@ -927,15 +944,6 @@ void render()
             g_polygon_mesh.display();
         }
 
-        glDisable(GL_CULL_FACE);
-        glLineWidth(3);
-
-        lighting = 0;
-        handle = glGetUniformLocation(shader_id,"g_use_lighting");
-        glUniform1iv(handle, 1, &lighting);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        g_polygon_mesh.displayFaceNormal(100 * cm);
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -1457,6 +1465,8 @@ void updateXRayImage()
 
 		// Normalise the X-ray image
 		g_xray_renderer.normalise();
+
+		g_xray_renderer.printLBuffer("LBuffer.mhd");
 
 		// The X-ray image is up-to-date
 		g_is_xray_image_up_to_date = true;

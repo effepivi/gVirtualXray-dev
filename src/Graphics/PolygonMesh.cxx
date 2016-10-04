@@ -279,18 +279,6 @@ void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize)
     // There are as many normals as there are vertices
     if (getVertexNormalNumber() == m_number_of_vertices)
         {
-        // Create the VBO if needed
-        if (!m_p_vertex_normal_vbo.get())
-            {
-            m_p_vertex_normal_vbo.reset(createVBO());
-            }
-
-        // Update the VBO if needed
-        if (!m_p_vertex_normal_vbo->isReady())
-            {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-            }
-
         m_p_vertex_normal_vbo->display();
 
         // Check the OpenGL error status
@@ -314,32 +302,27 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
 {
     std::vector<float> p_normal_set;
 
-    // Create the VBO if needed
     if (!m_p_face_normal_vbo.get())
         {
-        m_p_face_normal_vbo.reset(createVBO());
+        m_p_face_normal_vbo.reset(new PolygonMesh());
         }
 
     // There is an index
     if (m_p_index_set && m_number_of_indices)
         {
-        // Update the VBO if needed
-        if (!m_p_face_normal_vbo->isReady())
+        for (unsigned int i(0); i < m_number_of_indices; ++i)
             {
-            for (unsigned int i(0); i < m_number_of_indices; ++i)
-                {
-                unsigned int index(getIndex(i));
-                VEC3 vertex(getVertex(index));
-                VEC3 nomral(vertex + getFaceNormal(index) * aNormalSize);
+            unsigned int index(getIndex(i));
+            VEC3 vertex(getVertex(index));
+            VEC3 normal(vertex + getFaceNormal(index) * aNormalSize);
 
-                p_normal_set.push_back(vertex.getX());
-                p_normal_set.push_back(vertex.getY());
-                p_normal_set.push_back(vertex.getZ());
+            p_normal_set.push_back(vertex.getX());
+            p_normal_set.push_back(vertex.getY());
+            p_normal_set.push_back(vertex.getZ());
 
-                p_normal_set.push_back(nomral.getX());
-                p_normal_set.push_back(nomral.getY());
-                p_normal_set.push_back(nomral.getZ());
-                }
+            p_normal_set.push_back(normal.getX());
+            p_normal_set.push_back(normal.getY());
+            p_normal_set.push_back(normal.getZ());
             }
         }
     // There is no index
@@ -348,22 +331,18 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
         // There are as many normals as there are vertices
         if (getFaceNormalNumber() == m_number_of_vertices)
             {
-            // Update the VBO if needed
-            if (!m_p_face_normal_vbo->isReady())
+            for (unsigned int i(0); i < m_number_of_vertices; ++i)
                 {
-                for (unsigned int i(0); i < m_number_of_vertices; ++i)
-                    {
-                    VEC3 vertex(getVertex(i));
-                    VEC3 nomral(vertex + getFaceNormal(i) * aNormalSize);
+                VEC3 vertex(getVertex(i));
+                VEC3 normal(vertex + getFaceNormal(i) * aNormalSize);
 
-                    p_normal_set.push_back(vertex.getX());
-                    p_normal_set.push_back(vertex.getY());
-                    p_normal_set.push_back(vertex.getZ());
+                p_normal_set.push_back(vertex.getX());
+                p_normal_set.push_back(vertex.getY());
+                p_normal_set.push_back(vertex.getZ());
 
-                    p_normal_set.push_back(nomral.getX());
-                    p_normal_set.push_back(nomral.getY());
-                    p_normal_set.push_back(nomral.getZ());
-                    }
+                p_normal_set.push_back(normal.getX());
+                p_normal_set.push_back(normal.getY());
+                p_normal_set.push_back(normal.getZ());
                 }
             }
         // There are not as many normals as there are vertices
@@ -374,33 +353,17 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
             }
         }
 
-    if (!m_p_face_normal_vbo->isReady())
-        {
-        m_p_face_normal_vbo->setVertexData(
-                GL_LINES,
-                p_normal_set.size() / 3,
-                3,
-                GL_FLOAT,
-                &p_normal_set[0],
-                0,
-                0,
-                GL_NONE,
-                0,
-                0,
-                0,
-                GL_NONE,
-                0,
-                0,
-                0,
-                GL_NONE,
-                0);
-        }
+    m_p_face_normal_vbo->setInternalData(GL_LINES,
+            &p_normal_set[0],
+            p_normal_set.size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            true,
+            GL_STATIC_DRAW);
 
-    if (!m_p_face_normal_vbo->isReady())
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot create the VBO.");
-        }
+    m_p_face_normal_vbo->display();
 }
 
 
