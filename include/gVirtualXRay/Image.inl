@@ -546,6 +546,18 @@ template<typename T> void Image<T>::setSpacing(const VEC3& aPixelSize)
 }
 
 
+//------------------------------------------------------------------------
+template<typename T> void Image<T>::setSpacing(const double& aPixelWidth,
+                                               const double& aPixelHeight,
+                                               const double& aPixelDepth)
+//------------------------------------------------------------------------
+{
+    m_spacing[0] = aPixelWidth;
+    m_spacing[1] = aPixelHeight;
+    m_spacing[2] = aPixelDepth;
+}
+
+
 //-----------------------------------------------------------
 template<typename T> const VEC3& Image<T>::getSpacing() const
 //-----------------------------------------------------------
@@ -940,7 +952,9 @@ template<typename T> void Image<T>::saveASCII(const std::string& aFileName) cons
 }
 
 
+//----------------------------------------------------------------------
 template<typename T> void Image<T>::saveMHD(const char* aFileName) const
+//----------------------------------------------------------------------
 {
     // Open the file which will contain the meta header
     std::ofstream meta_header(aFileName);
@@ -1043,7 +1057,31 @@ template<typename T> void Image<T>::saveMHD(const char* aFileName) const
         raw_file_name += ".raw";
         }
 
-    meta_header << "ElementDataFile = " << raw_file_name << std::endl;
+    size_t index1(raw_file_name.find_last_of('\\'));
+    size_t index2(raw_file_name.find_last_of('/'));
+    size_t index(0);
+
+    if (index1 != std::string::npos) 
+        {
+        ++index1;
+        }
+    else
+        {
+        index1 = 0;
+        }
+
+    if (index2 != std::string::npos)
+        {
+        ++index2;
+        }
+    else
+        {
+        index2 = 0;
+        }
+
+    index = std::max(index1, index2);
+
+    meta_header << "ElementDataFile = " << raw_file_name.substr(index, raw_file_name.size() - index) << std::endl;
 
     saveRAW(raw_file_name);
 }

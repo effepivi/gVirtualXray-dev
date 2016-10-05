@@ -253,6 +253,9 @@ public:
 
 
     void setSpacing(const VEC3& aPixelSize);
+    void setSpacing(const double& aPixelWidth,
+            const double& aPixelHeight,
+            const double& aPixelDepth = 0.0);
 
 
     const VEC3& getSpacing() const;
