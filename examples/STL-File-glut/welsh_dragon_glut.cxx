@@ -241,10 +241,9 @@ double g_number_of_seconds(0);
 double g_fps(0);
 bool g_use_fullscreen(true);
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
-#endif
 
 
 //******************************************************************************
@@ -562,10 +561,18 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
-    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16 * 27);
-    g_display_help = true;
-#endif
+    try
+        {
+        g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        g_display_help = true;
+        g_has_freetype = true;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        g_display_help = false;
+        g_has_freetype = false;
+        }
 }
 
 
@@ -725,8 +732,7 @@ void render()
             g_xray_detector.displayBeam();
             }
 
-#ifdef HAS_FREETYPE
-        if (g_display_help)
+        if (g_has_freetype && g_display_help)
             {
             displayHelp();
 
@@ -734,7 +740,6 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             }
-#endif
 
         // Disable the shader
         popShaderProgram();
@@ -867,11 +872,12 @@ void keyCallback(unsigned char aKey, int aXPosition, int aYPosition)
             g_is_xray_image_up_to_date = false;
             break;
 
-    #ifdef HAS_FREETYPE
         case 'h':
-            g_display_help = !g_display_help;
+            if (g_has_freetype)
+                {
+                g_display_help = !g_display_help;
+                }
             break;
-    #endif
 
         case 'q':
         case 27:
@@ -1505,7 +1511,6 @@ void idle()
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
             g_background_colour.getX(),
             g_background_colour.getY(),
@@ -1667,5 +1672,4 @@ void displayHelp()
             p_font_colour);
 
     popEnableDisableState();
-#endif
 }

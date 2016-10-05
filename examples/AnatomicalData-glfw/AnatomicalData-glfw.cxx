@@ -298,10 +298,9 @@ VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
 VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
-#endif
 
 bool g_swap_patient(false);
 
@@ -659,10 +658,18 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
-    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    g_display_help = true;
-#endif
+    try
+        {
+        g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        g_display_help = true;
+        g_has_freetype = true;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        g_display_help = false;
+        g_has_freetype = false;
+        }
 }
 
 
@@ -861,8 +868,7 @@ void draw()
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Draw the help message
-#ifdef HAS_FREETYPE
-        if (g_display_help)
+        if (g_has_freetype && g_display_help)
             {
             displayHelp();
 
@@ -870,7 +876,6 @@ void draw()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             }
-#endif
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -1100,11 +1105,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 g_display_wireframe = !g_display_wireframe;
                 break;
 
-    #ifdef HAS_FREETYPE
             case GLFW_KEY_H:
-                g_display_help = !g_display_help;
+                if (g_has_freetype)
+                    {
+                    g_display_help = !g_display_help;
+                    }
                 break;
-    #endif
 
             case GLFW_KEY_P:
                 if (g_current_patient == P4)
@@ -1675,7 +1681,6 @@ void reset()
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
         g_background_colour.getX(),
         g_background_colour.getY(),
@@ -1753,5 +1758,4 @@ void displayHelp()
         p_font_colour);
 
     popEnableDisableState();
-#endif
 }

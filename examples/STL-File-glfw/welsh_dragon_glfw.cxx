@@ -232,10 +232,9 @@ double g_number_of_seconds(0);
 double g_fps(0);
 bool g_use_fullscreen(true);
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
-#endif
 
 bool g_use_left_shift_key(false);
 bool g_use_right_shift_key(false);
@@ -559,10 +558,18 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
-    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    g_display_help = true;
-#endif
+    try
+        {
+        g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        g_display_help = true;
+        g_has_freetype = true;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        g_display_help = false;
+        g_has_freetype = false;
+        }
 }
 
 
@@ -714,8 +721,7 @@ void render()
             g_xray_detector.displayBeam();
         }
 
-#ifdef HAS_FREETYPE
-        if (g_display_help)
+        if (g_has_freetype && g_display_help)
         {
             displayHelp();
 
@@ -723,7 +729,6 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-#endif
 
         // Disable the shader
         popShaderProgram();
@@ -838,11 +843,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	{
 		switch(key)
 		{
-#ifdef HAS_FREETYPE
         	case GLFW_KEY_H:
-            		g_display_help = !g_display_help;
+            		if (g_has_freetype)
+                        {
+                        g_display_help = !g_display_help;
+                        }
             		break;
-#endif
+
         	case GLFW_KEY_A:
             		g_artefact_filtering = !g_artefact_filtering;
             		if (g_artefact_filtering)
@@ -1433,7 +1440,6 @@ void idle()
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
             g_background_colour.getX(),
             g_background_colour.getY(),
@@ -1570,5 +1576,4 @@ void displayHelp()
             p_font_colour);
 
     popEnableDisableState();
-#endif
 }

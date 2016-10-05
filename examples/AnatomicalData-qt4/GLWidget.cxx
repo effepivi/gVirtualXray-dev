@@ -231,9 +231,8 @@ GLWidget::GLWidget(QWidget *parent):
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
-    #ifdef HAS_FREETYPE
     m_display_help(true),
-    #endif
+    m_has_freetype(true),
 
     m_swap_patient(false)
 //----------------------------------
@@ -427,8 +426,7 @@ void GLWidget::paintGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Draw the help message
-#ifdef HAS_FREETYPE
-    if (m_display_help)
+    if (m_display_help && m_has_freetype)
         {
         displayHelp();
 
@@ -436,7 +434,6 @@ void GLWidget::paintGL()
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-#endif
 
     // Restore the current transformation matrix
     popModelViewMatrix();
@@ -503,12 +500,12 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
             m_display_wireframe = !m_display_wireframe;
             break;
 
-
-    #ifdef HAS_FREETYPE
         case Qt::Key_H:
-            m_display_help = !m_display_help;
+            if (m_has_freetype)
+                {
+                m_display_help = !m_display_help;
+                }
             break;
-    #endif
 
         case Qt::Key_P:
             if (m_current_patient == P4) m_current_patient = P5;
@@ -646,10 +643,18 @@ void GLWidget::initGL()
 void GLWidget::initFreeType()
 //---------------------------
 {
-#ifdef HAS_FREETYPE
-    m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    m_display_help = true;
-#endif
+    try
+        {
+        m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        m_display_help = true;
+        m_has_freetype = true;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        m_display_help = false;
+        m_has_freetype = false;
+        }
 }
 
 
@@ -1129,7 +1134,6 @@ void GLWidget::displayPatient(std::vector<PolygonMesh>& apMeshSet,
 void GLWidget::displayHelp()
 //--------------------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
         g_background_colour.getX(),
         g_background_colour.getY(),
@@ -1206,7 +1210,6 @@ void GLWidget::displayHelp()
         p_font_colour);
 
     popEnableDisableState();
-#endif
 }
 
 

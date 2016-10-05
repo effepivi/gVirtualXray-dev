@@ -286,13 +286,10 @@ VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
 VEC3 g_detector_up_vector(g_initial_detector_up_vector);
 
-#ifdef HAS_FREETYPE
 bool g_display_help(true);
+bool g_has_freetype(true);
 TextRenderer g_font_rendered;
 bool g_run_tomography_acquisition(false);
-#else
-bool g_run_tomography_acquisition(true);
-#endif
 
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
@@ -942,18 +939,18 @@ void initGL()
 void initFreeType()
 //-----------------
 {
-#ifdef HAS_FREETYPE
     try
         {
         g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
         g_display_help = true;
+        g_has_freetype = true;
         }
     catch (const std::exception& error)
         {
-        std::cerr << error.what() << std::endl;
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
         g_display_help = false;
+        g_has_freetype = false;
         }
-#endif
 }
 
 
@@ -1244,8 +1241,7 @@ void render()
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-#ifdef HAS_FREETYPE
-        if (g_display_help)
+        if (g_has_freetype && g_display_help)
             {
             displayHelp();
 
@@ -1253,7 +1249,6 @@ void render()
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             }
-#endif
         }
     // Catch exception if any
     catch (const std::exception& error)
@@ -1290,11 +1285,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         {
         switch (key)
             {
-#ifdef HAS_FREETYPE
             case GLFW_KEY_H:
-                g_display_help = !g_display_help;
+                if (g_has_freetype)
+                    {
+                    g_display_help = !g_display_help;
+                    }
                 break;
-#endif
 
             case GLFW_KEY_Q:
             case GLFW_KEY_ESCAPE:
@@ -2546,7 +2542,6 @@ void reset()
 void displayHelp()
 //----------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
         g_background_colour.getX(),
         g_background_colour.getY(),
@@ -2619,8 +2614,6 @@ void displayHelp()
         p_font_colour);
 
     popEnableDisableState();
-
-#endif
 }
 
 
