@@ -241,7 +241,8 @@ bool g_display_wireframe(false);
 unsigned int g_angle_number(360);
 RATIONAL_NUMBER g_angle_step(0.5);
 RATIONAL_NUMBER g_first_angle(0);
-RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
+RATIONAL_NUMBER g_last_angle(
+    g_first_angle + g_angle_step * (g_angle_number - 1));
 unsigned int g_next_angle_to_process(0);
 unsigned int g_current_angle(0);
 AcquisitionType g_acquisition_type(ROTATE_SAMPLE);
@@ -440,9 +441,14 @@ int main(int argc, char** argv)
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Create a windowed mode window and its OpenGL context
-        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        g_p_main_window_id = glfwCreateWindow(
+                g_main_window_width,
+                g_main_window_height,
+                "Tomography Reconstruction using the Simple Back Projection",
+                0,
+                0);
 
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
             {
             glfwTerminate();
@@ -564,7 +570,8 @@ int main(int argc, char** argv)
                                 rotation_matrix * g_detector_position;
 
                             // Set the source position
-                            g_xray_detector.setXrayPointSource(g_source_position);
+                            g_xray_detector.setXrayPointSource(
+                                    g_source_position);
 
                             // Use a parallel source
                             g_xray_detector.setParallelBeam();
@@ -650,9 +657,9 @@ void createPhantom()
     Image<short> phantom(32 * scaling, 32 * scaling, 16 * scaling, -1000);
 
     phantom.setSpacing(VEC3(
-        4.0 / float(scaling),
-        4.0 / float(scaling),
-        8.0 / float(scaling)));
+            4.0 / float(scaling),
+            4.0 / float(scaling),
+            8.0 / float(scaling)));
 
     // Set pixels in a square to one value
     unsigned int slice_size(phantom.getDepth() / 4);
@@ -661,29 +668,34 @@ void createPhantom()
     unsigned int step_number(6);
 
 
-    unsigned int step_height(((phantom.getWidth() - (phantom.getWidth() / 2) / 2)) / step_number);
+    unsigned int step_height(
+        ((phantom.getWidth() - (phantom.getWidth() / 2) / 2)) / step_number);
 
     for(unsigned int s = start_slice; s < start_slice + slice_size; s++)
-    {
-        for (unsigned int step(0); step < step_number; ++step)
         {
+        for (unsigned int step(0); step < step_number; ++step)
+            {
             unsigned int row_size(phantom.getHeight() / 2);
             unsigned int start_row((phantom.getHeight() - row_size) / 4);
             start_row += step * step_height;
 
             for(unsigned int r = start_row; r < start_row + step_height; r++)
-            {
+                {
                 unsigned int column_size(phantom.getWidth() / 2);
-                unsigned int start_column((phantom.getWidth() - column_size) / 4);
+                
+                unsigned int start_column(
+                    (phantom.getWidth() - column_size) / 4);
 
                 unsigned int step_width(step_height * (1 + step));
-                for(unsigned int c = start_column; c < start_column + step_width; c++)
-                {
+                for(unsigned int c = start_column;
+                        c < start_column + step_width;
+                        c++)
+                    {
                     phantom.setPixel(r, c, s, 0);
+                    }
                 }
             }
         }
-    }
     
     PolygonMesh iso_surface(phantom.marchingCubes(-500));
     //iso_surface.mergeVertices(true);
@@ -694,7 +706,7 @@ void createPhantom()
     sphere.invertNormalVectors();
 //    sphere.moveToCentre();
     
-    g_polygon_mesh = iso_surface /*+ sphere*/;
+    g_polygon_mesh = iso_surface;// + sphere;
     g_polygon_mesh.moveToCentre();
     
     g_polygon_mesh.setHounsfieldValue(-500);
@@ -716,47 +728,47 @@ void quit()
 //---------
 {
     if (g_p_main_window_id)
-    {
-        if (g_projection_texture_id)
         {
+        if (g_projection_texture_id)
+            {
             glDeleteTextures(1, &g_projection_texture_id);
             g_projection_texture_id = 0;
-        }
+            }
 
         if (g_sinogram_texture_id)
-        {
+            {
             glDeleteTextures(1, &g_sinogram_texture_id);
             g_sinogram_texture_id = 0;
-        }
+            }
 
         if (g_tomography_texture_id)
-        {
+            {
             glDeleteTextures(1, &g_tomography_texture_id);
             g_tomography_texture_id = 0;
-        }
+            }
 
         if (g_p_projection_data)
-        {
+            {
             delete [] g_p_projection_data;
             g_p_projection_data = 0;
-        }
+            }
 
         if (g_p_sinogram_data)
-        {
+            {
             delete [] g_p_sinogram_data;
             g_p_sinogram_data = 0;
-        }
+            }
 
         if (g_p_tomography_data)
-        {
+            {
             delete [] g_p_tomography_data;
             g_p_tomography_data = 0;
-        }
+            }
 
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 }
 
 
@@ -772,9 +784,15 @@ void initGLEW()
 void initGL()
 //-----------
 {
-    std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
-    std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
-    std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
+    std::cout << "OpenGL renderer:   " <<
+            glGetString(GL_RENDERER)   << std::endl;
+    
+    std::cout << "OpenGL version:    " <<
+            glGetString(GL_VERSION)    << std::endl;
+    
+    std::cout << "OpenGL vender:     " <<
+            glGetString(GL_VENDOR)     << std::endl;
+    
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Enable the Z-buffer
@@ -782,7 +800,11 @@ void initGL()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    glClearColor(g_background_colour.getX(), g_background_colour.getY(), g_background_colour.getZ(), 1.0);
+    glClearColor(
+            g_background_colour.getX(),
+            g_background_colour.getY(),
+            g_background_colour.getZ(),
+            1.0);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable(GL_MULTISAMPLE);
@@ -837,7 +859,8 @@ void initGL()
     p_vertex_shader = 0;
     p_fragment_shader = 0;
 
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            !vertex_shader.size() || !fragment_shader.size())
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot decode the shader using ZLib.");
@@ -888,7 +911,8 @@ void initGL()
     p_vertex_shader = 0;
     p_fragment_shader = 0;
 
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            !vertex_shader.size() || !fragment_shader.size())
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot decode the shader using ZLib.");
@@ -926,7 +950,11 @@ void render()
     try
     {
         // Display the 3D elements
-        glViewport(g_main_window_width / 2, 0, g_main_window_width / 2, g_main_window_height);
+        glViewport(
+                g_main_window_width / 2,
+                0,
+                g_main_window_width / 2,
+                g_main_window_height);
 
         // Handle for shader variables
         GLuint handle(0);
@@ -984,11 +1012,19 @@ void render()
         g_current_modelview_matrix *= g_scene_rotation_matrix;
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        glUniformMatrix4fv(
+                handle,
+                1,
+                GL_FALSE,
+                g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        glUniformMatrix4fv(
+                handle,
+                1,
+                GL_FALSE,
+                g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
@@ -1143,7 +1179,11 @@ void render()
 
         // Draw the projections
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
+        glUniformMatrix4fv(
+                handle,
+                1,
+                GL_FALSE,
+                g_current_2D_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         glActiveTexture(GL_TEXTURE0);
@@ -1215,90 +1255,100 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 //-------------------------------------------------------------------------------
 {
     if (action == GLFW_PRESS)
-    {
-        switch (key)
         {
-        case GLFW_KEY_H:
-            if (g_has_freetype)
-                {
-                g_display_help = !g_display_help;
-                }
-            break;
-
-        case GLFW_KEY_Q:
-        case GLFW_KEY_ESCAPE:
-            glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-            break;
-
-        case GLFW_KEY_SPACE:
-            g_run_tomography_acquisition = !g_run_tomography_acquisition;
-
-            if (g_run_tomography_acquisition)
+        switch (key)
             {
-                //if (g_next_angle_to_process == g_angle_number)
-                {
-                    reset();
-                }
-            }
-            break;
+            case GLFW_KEY_H:
+                if (g_has_freetype)
+                    {
+                    g_display_help = !g_display_help;
+                    }
+                break;
 
-        case GLFW_KEY_B:
-            g_display_beam = !g_display_beam;
-            break;
+            case GLFW_KEY_Q:
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+                break;
 
-        case GLFW_KEY_N:
-            g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
-            break;
+            case GLFW_KEY_SPACE:
+                g_run_tomography_acquisition = !g_run_tomography_acquisition;
 
-        case GLFW_KEY_W:
-            g_display_wireframe = !g_display_wireframe;
-            break;
+                if (g_run_tomography_acquisition)
+                    {
+                    //if (g_next_angle_to_process == g_angle_number)
+                        {
+                        reset();
+                        }
+                    }
+                break;
 
-        case GLFW_KEY_KP_ADD:
-            g_zoom -= 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            break;
+            case GLFW_KEY_B:
+                g_display_beam = !g_display_beam;
+                break;
 
-        case GLFW_KEY_EQUAL:
+            case GLFW_KEY_N:
+                g_xray_renderer.useNegativeFilteringFlag(
+                        !g_xray_renderer.getNegativeFilteringFlag());
+                break;
 
-            if (g_use_left_shift || g_use_right_shift)
-            {
+            case GLFW_KEY_W:
+                g_display_wireframe = !g_display_wireframe;
+                break;
+
+            case GLFW_KEY_KP_ADD:
                 g_zoom -= 1.0 * cm;
-                framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
+                framebufferSizeCallback(
+                        g_p_main_window_id,
+                        g_main_window_width,
+                        g_main_window_height);
+                break;
+
+            case GLFW_KEY_EQUAL:
+
+                if (g_use_left_shift || g_use_right_shift)
+                {
+                    g_zoom -= 1.0 * cm;
+                    framebufferSizeCallback(
+                            g_p_main_window_id,
+                            g_main_window_width,
+                            g_main_window_height);
+                }
+                break;
+
+            case GLFW_KEY_MINUS:
+            case GLFW_KEY_KP_SUBTRACT:
+                g_zoom += 1.0 * cm;
+                framebufferSizeCallback(
+                        g_p_main_window_id,
+                        g_main_window_width,
+                        g_main_window_height);
+                break;
+
+            case GLFW_KEY_LEFT_SHIFT:
+                g_use_left_shift = true;
+                break;
+
+            case GLFW_KEY_RIGHT_SHIFT:
+                g_use_right_shift = true;
+                break;
+
+            default:
+                break;
             }
-            break;
-
-        case GLFW_KEY_MINUS:
-        case GLFW_KEY_KP_SUBTRACT:
-            g_zoom += 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            break;
-
-        case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = true;
-            break;
-
-        case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = true;
-            break;
-
-        default:
-            break;
         }
-    }
     else if (action == GLFW_RELEASE)
-    {
-        switch (key)
         {
-        case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = false;
-            break;
+        switch (key)
+            {
+            case GLFW_KEY_LEFT_SHIFT:
+                g_use_left_shift = false;
+                break;
 
-        case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = false;
-            break;
+            case GLFW_KEY_RIGHT_SHIFT:
+                g_use_right_shift = false;
+                break;
+            }
         }
-    }
 }
 
 
@@ -1308,29 +1358,34 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 {
     glViewport(0, 0, width, height);
 
+    // Prevent divide by 0
     if (height == 0)
-    {
-        // Prevent divide by 0
+        {
         height = 1;
-    }
+        }
 
     g_main_window_width = width;
     g_main_window_height = height;
 
-    double screen_aspect_ratio(double(g_main_window_width / 2) / double(g_main_window_height));
+    double screen_aspect_ratio(
+            double(g_main_window_width / 2) /
+            double(g_main_window_height));
 
-    loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-    /*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
-            -height / 2.0, height / 2.0,
-            0.01, g_initial_far);
-     */
+    loadPerspectiveProjectionMatrix(
+            g_initial_fovy,
+            screen_aspect_ratio,
+            g_initial_near,
+            g_initial_far);
 
     loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
 
-    double x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
+    double x(
+            float(g_number_of_pixels.getX()) /
+            float(g_number_of_pixels.getX()));
+    
     double y(float(g_angle_number) / float(g_number_of_pixels.getX()));
     y *= 2.1;
     y += 1.0;
@@ -1342,15 +1397,15 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     double scaling_y(y / h);
 
     if (scaling_x < scaling_y)
-    {
+        {
         scaling_x = y * w / h;
         scaling_y = y;
-    }
+        }
     else
-    {
+        {
         scaling_x = x;
         scaling_y = x * h / w;
-    }
+        }
 
     g_current_2D_projection_matrix = buildOrthoProjectionMatrix(0,
             scaling_x,
@@ -1381,14 +1436,14 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 
     // Use the arc ball
     if (g_button_state == GLFW_PRESS)
-    {
+        {
         g_use_arc_ball = true;
-    }
+        }
     // Stop using the arc ball
     else
-    {
+        {
         g_use_arc_ball = false;
-    }
+        }
 
     double xpos(0);
     double ypos(0);
@@ -1420,11 +1475,14 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 {
     // Scrolling along the Y-axis
     if (fabs(yoffset) > EPSILON)
-    {
+        {
         g_use_arc_ball = false;
         g_zoom += yoffset * cm;
-        framebufferSizeCallback(apWindow, g_main_window_width, g_main_window_height);
-    }
+        framebufferSizeCallback(
+                apWindow,
+                g_main_window_width,
+                g_main_window_height);
+        }
 }
 
 
@@ -1443,14 +1501,32 @@ void loadSTLFile()
     VEC3 base_colour(red, green, blue);
     base_colour.normalise();
 
-    g_polygon_mesh.getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-    g_polygon_mesh.getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-    g_polygon_mesh.getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
+    g_polygon_mesh.getMaterial().setAmbientColour(
+            base_colour.getX() * 0.19225,
+            base_colour.getY() * 0.19225,
+            base_colour.getZ() * 0.19225,
+            alpha);
+        
+    g_polygon_mesh.getMaterial().setDiffuseColour(
+            base_colour.getX() * 0.50754,
+            base_colour.getY() * 0.50754,
+            base_colour.getZ() * 0.50754,
+            alpha);
+    
+    g_polygon_mesh.getMaterial().setSpecularColour(
+            base_colour.getX() * 0.50827,
+            base_colour.getY() * 0.50827,
+            base_colour.getZ() * 0.50827,
+            alpha);
+    
     g_polygon_mesh.getMaterial().setShininess(50);
 
     // Compute the translation vector
-    g_translation_vector = g_polygon_mesh.getMinCorner() + (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0;
-    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+    g_translation_vector = g_polygon_mesh.getMinCorner() +
+        (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0;
+    
+    g_sample_rotation_matrix =
+        Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1508,7 +1584,8 @@ void loadXRaySimulator()
 Vec3<GLfloat> getArcballVector(int x, int y)
 //------------------------------------------
 {
-    Vec3<GLfloat> P(2.0 * float(x) / float(g_main_window_width) - 1.0,
+    Vec3<GLfloat> P(
+            2.0 * float(x) / float(g_main_window_width) - 1.0,
             2.0 * float(y) / float(g_main_window_height) - 1.0,
             0);
 
@@ -1516,13 +1593,13 @@ Vec3<GLfloat> getArcballVector(int x, int y)
 
     float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
     if (OP_squared <= 1.0)
-    {
+        {
         P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-    }
+        }
     else
-    {
+        {
         P.normalise();  // nearest point
-    }
+        }
 
     return (P);
 }
@@ -1541,20 +1618,26 @@ void computeRotation(MATRIX4& aRotationMatrix)
 //--------------------------------------------
 {
     if (g_use_arc_ball)
-    {
-        if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
         {
-            Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
-            Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
+        if (g_current_x_position != g_last_x_position ||
+                g_current_y_position != g_last_y_position)
+            {
+            Vec3<GLfloat> va(getArcballVector(
+                g_last_x_position,
+                g_last_y_position));
+        
+            Vec3<GLfloat> vb(getArcballVector(
+                g_current_x_position,
+                g_current_y_position));
 
-            float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+            float angle(g_rotation_speed *
+                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-            //axis_in_camera_coord.normalize();
 
             Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-            Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-            //axis_in_object_coord.normalize();
+            Vec3<GLfloat> axis_in_object_coord =
+                camera2object * axis_in_camera_coord;
 
             Matrix4x4<GLfloat> rotation_matrix;
             rotation_matrix.rotate(angle, axis_in_object_coord);
@@ -1562,8 +1645,8 @@ void computeRotation(MATRIX4& aRotationMatrix)
 
             g_last_x_position = g_current_x_position;
             g_last_y_position = g_current_y_position;
+            }
         }
-    }
 }
 
 
@@ -1573,7 +1656,7 @@ void updateXRayImage()
 {
     // The X-ray image is not up-to-date
     if (!g_is_xray_image_up_to_date)
-    {
+        {
         // Compute the X-Ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
@@ -1582,7 +1665,7 @@ void updateXRayImage()
 
         // The X-ray image is up-to-date
         g_is_xray_image_up_to_date = true;
-    }
+        }
 }
 
 
@@ -1620,22 +1703,22 @@ void createTexture(GLuint& aTextureID,
     glActiveTexture(GL_TEXTURE0);
 
     if (aTextureID)
-    {
+        {
         glDeleteTextures(1, &aTextureID);
         aTextureID = 0;
-    }
+        }
 
     if (*apImage)
-    {
+        {
         delete [] *apImage;
         *apImage = 0;
-    }
+        }
 
     *apImage = new float[number_of_pixels];
     for (unsigned int i(0); i < number_of_pixels; ++i)
-    {
+        {
         (*apImage)[i] = 0;
-    }
+        }
 
     glGenTextures(1, &aTextureID);
 
@@ -1651,7 +1734,16 @@ void createTexture(GLuint& aTextureID,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, aWidth, aHeight, 0, GL_RED, GL_FLOAT, *apImage);
+    glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_R32F,
+            aWidth,
+            aHeight,
+            0,
+            GL_RED,
+            GL_FLOAT,
+            *apImage);
 
     popTexture();
 
@@ -1663,7 +1755,12 @@ void createTexture(GLuint& aTextureID,
 void createProjection()
 //---------------------
 {
-    createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, &g_p_projection_data);
+    createTexture(
+            g_projection_texture_id,
+            g_number_of_pixels.getX(),
+            g_angle_number,
+            &g_p_projection_data);
+    
     g_min_projection = 0;
     g_max_projection = 0;
 
@@ -1722,15 +1819,25 @@ void createProjection()
     p_texture_coordinates.push_back(0);
 
     if (!g_sinogram_rectangle.get())
-    {
+        {
         g_sinogram_rectangle.reset(createVBO());
-    }
+        }
 
     g_sinogram_rectangle->setBufferUsageHint(GL_STATIC_DRAW);
-    g_sinogram_rectangle->setVertexData(GL_TRIANGLES,
-        p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
-        0, 0, GL_NONE, 0,
-        p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+    g_sinogram_rectangle->setVertexData(
+            GL_TRIANGLES,
+            p_vertices.size() / 3,
+            3,
+            GL_FLOAT,
+            &p_vertices[0],
+            0,
+            0,
+            GL_NONE,
+            0,
+            p_texture_coordinates.size() / 3,
+            3,
+            GL_FLOAT,
+            &p_texture_coordinates[0]);
 
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1740,7 +1847,12 @@ void createProjection()
 void createSinogram()
 //-------------------
 {
-    createTexture(g_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, &g_p_sinogram_data);
+    createTexture(
+            g_sinogram_texture_id,
+            g_number_of_pixels.getX(),
+            g_angle_number,
+            &g_p_sinogram_data);
+    
     g_min_sinogram = 0;
     g_max_sinogram = 0;
 }
@@ -1750,7 +1862,12 @@ void createSinogram()
 void createTomography()
 //---------------------
 {
-    createTexture(g_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), &g_p_tomography_data);
+    createTexture(
+            g_tomography_texture_id,
+            g_number_of_pixels.getX(),
+            g_number_of_pixels.getX(),
+            &g_p_tomography_data);
+    
     g_min_tomography = 0;
     g_max_tomography = 0;
 
@@ -1807,15 +1924,25 @@ void createTomography()
     p_texture_coordinates.push_back(0);
 
     if (!g_tomography_rectangle.get())
-    {
+        {
         g_tomography_rectangle.reset(createVBO());
-    }
+        }
 
     g_tomography_rectangle->setBufferUsageHint(GL_STATIC_DRAW);
-    g_tomography_rectangle->setVertexData(GL_TRIANGLES,
-        p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
-        0, 0, GL_NONE, 0,
-        p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+    g_tomography_rectangle->setVertexData(
+        GL_TRIANGLES,
+        p_vertices.size() / 3,
+        3,
+        GL_FLOAT,
+        &p_vertices[0],
+        0,
+        0,
+        GL_NONE,
+        0,
+        p_texture_coordinates.size() / 3,
+        3,
+         GL_FLOAT,
+        &p_texture_coordinates[0]);
 
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1825,38 +1952,50 @@ void createTomography()
 void updateProjection()
 //---------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getEnergyFluence().getRawData());
-    float* p_output_image(g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
+    RATIONAL_NUMBER* p_input_image(
+        g_xray_renderer.getEnergyFluence().getRawData());
+    
+    float* p_output_image(
+        g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
 
     float value;
 
     if (g_current_angle == 0)
-    {
+        {
         value = *p_input_image;
         g_min_projection = *p_input_image;
         g_max_projection = *p_input_image;
-    }
+        }
 
     for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
+        {
         value = *p_input_image++;
 
         if (g_min_projection > value)
-        {
+            {
             g_min_projection = value;
-        }
+            }
 
         if (g_max_projection < value)
-        {
+            {
             g_max_projection = value;
-        }
+            }
 
         *p_output_image++ = value;
-    }
+        }
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
+    glTexSubImage2D(
+            GL_TEXTURE_2D,
+            0,
+            0,
+            g_current_angle,
+            g_number_of_pixels.getX(),
+            1,
+            GL_RED,
+            GL_FLOAT,
+            g_p_projection_data + g_current_angle * g_number_of_pixels.getX());
     popTexture();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1906,15 +2045,15 @@ void updateSinogram()
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
     glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0,
-        g_current_angle,
-        g_number_of_pixels.getX(),
-        1,
-        GL_RED,
-        GL_FLOAT,
-        g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+            GL_TEXTURE_2D,
+            0,
+            0,
+            g_current_angle,
+            g_number_of_pixels.getX(),
+            1,
+            GL_RED,
+            GL_FLOAT,
+            g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
     
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
@@ -1926,7 +2065,9 @@ void updateTomography()
 //---------------------
 {
     // Get the current projection from the sinogram
-    float* p_current_projection(g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+    float* p_current_projection(
+        g_p_sinogram_data + g_current_angle * g_number_of_pixels.getX());
+    
     float current_angle(g_angle_step * g_current_angle);
 
     float width(g_resolution.getX() * g_number_of_pixels.getX());
@@ -1934,16 +2075,28 @@ void updateTomography()
 
     // Get the position of the first point in the projection
     VEC3 rotation_axis(0, 0, 1);
-    MATRIX4 rotation_matrix(MATRIX4::buildRotationMatrix(current_angle, rotation_axis));
-    VEC3 first_projection_point_position(-half_width + g_resolution.getX() / 2.0, 0, 0);
-    first_projection_point_position = rotation_matrix * first_projection_point_position;
+    
+    MATRIX4 rotation_matrix(
+        MATRIX4::buildRotationMatrix(current_angle, rotation_axis));
+    
+    VEC3 first_projection_point_position(
+        -half_width + g_resolution.getX() / 2.0, 0, 0);
+    
+    first_projection_point_position =
+        rotation_matrix * first_projection_point_position;
 
     // Get the position of the last point in the projection
-    VEC3 last_projection_point_position(half_width - g_resolution.getX() / 2.0, 0, 0);
-    last_projection_point_position = rotation_matrix * last_projection_point_position;
+    VEC3 last_projection_point_position(
+        half_width - g_resolution.getX() / 2.0,
+        0, 0);
+    
+    last_projection_point_position =
+        rotation_matrix * last_projection_point_position;
 
     // Get the normal vector
-    VEC3 direction((last_projection_point_position - first_projection_point_position).normal());
+    VEC3 direction(
+        (last_projection_point_position - first_projection_point_position).normal());
+    
     VEC3 normal(direction ^ VEC3(0, 0, 1));
 
     // Process every pixel of the projection
@@ -1979,12 +2132,12 @@ void updateTomography()
 
         // Backproject the pixel
         drawLine(
-            first_projection_sample_id,
-            last_projection_sample_id,
-            g_number_of_pixels.getX(),
-            g_number_of_pixels.getX(),
-            g_p_tomography_data,
-            intensity / width);
+                first_projection_sample_id,
+                last_projection_sample_id,
+                g_number_of_pixels.getX(),
+                g_number_of_pixels.getX(),
+                g_p_tomography_data,
+                intensity / width);
         }
 
     unsigned int number_of_pixels(
@@ -2008,15 +2161,15 @@ void updateTomography()
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
     glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0,
-        0,
-        g_number_of_pixels.getX(),
-        g_number_of_pixels.getX(),
-        GL_RED,
-        GL_FLOAT,
-        g_p_tomography_data);
+            GL_TEXTURE_2D,
+            0,
+            0,
+            0,
+            g_number_of_pixels.getX(),
+            g_number_of_pixels.getX(),
+            GL_RED,
+            GL_FLOAT,
+            g_p_tomography_data);
     
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
@@ -2044,9 +2197,9 @@ void displayProjection()
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
     if (g_max_projection != g_min_projection)
-    {
+        {
         scale = 1.0 / (g_max_projection - g_min_projection);
-    }
+        }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2075,9 +2228,9 @@ void displaySinogram()
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
     if (g_max_sinogram != g_min_sinogram)
-    {
+        {
         scale = 1.0 / (g_max_sinogram - g_min_sinogram);
-    }
+        }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2106,9 +2259,9 @@ void displayTomography()
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
     if (g_max_tomography != g_min_tomography)
-    {
+        {
         scale = 1.0 / (g_max_tomography - g_min_tomography);
-    }
+        }
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2145,43 +2298,43 @@ void reset()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0,
-        0,
-        g_number_of_pixels.getX(),
-        g_angle_number,
-        GL_RED,
-        GL_FLOAT,
-        g_p_projection_data);
+            GL_TEXTURE_2D,
+            0,
+            0,
+            0,
+            g_number_of_pixels.getX(),
+            g_angle_number,
+            GL_RED,
+            GL_FLOAT,
+            g_p_projection_data);
     
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
     glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0,
-        0,
-        g_number_of_pixels.getX(),
-        g_angle_number,
-        GL_RED,
-        GL_FLOAT,
-        g_p_sinogram_data);
+            GL_TEXTURE_2D,
+            0,
+            0,
+            0,
+            g_number_of_pixels.getX(),
+            g_angle_number,
+            GL_RED,
+            GL_FLOAT,
+            g_p_sinogram_data);
     
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
     glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0,
-        0,
-        g_number_of_pixels.getX(),
-        g_number_of_pixels.getX(),
-        GL_RED,
-        GL_FLOAT,
-        g_p_tomography_data);
+            GL_TEXTURE_2D,
+            0,
+            0,
+            0,
+            g_number_of_pixels.getX(),
+            g_number_of_pixels.getX(),
+            GL_RED,
+            GL_FLOAT,
+            g_p_tomography_data);
     
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
@@ -2198,13 +2351,13 @@ void reset()
     g_current_angle = 0;
 
     if (g_acquisition_type == ROTATE_SOURCE_DETECTOR)
-    {
+        {
         g_acquisition_type = ROTATE_SAMPLE;
-    }
+        }
     else
-    {
+        {
         g_acquisition_type = ROTATE_SOURCE_DETECTOR;
-    }
+        }
 }
 
 
@@ -2218,7 +2371,8 @@ void drawLine(const Vec2i& aVector0,
 //----------------------------------
 {
     // Draw a line using Xiaolin Wu's algorithm for Anti-Aliased line
-    // For an example, see http://rosettacode.org/wiki/Xiaolin_Wu%27s_line_algorithm
+    // For an example,
+    // see http://rosettacode.org/wiki/Xiaolin_Wu%27s_line_algorithm
     int x1(aVector0.getX());
     int y1(aVector0.getY());
     int x2(aVector1.getX());
@@ -2226,13 +2380,15 @@ void drawLine(const Vec2i& aVector0,
 
     double dx = (double)x2 - (double)x1;
     double dy = (double)y2 - (double)y1;
+
     if ( fabs(dx) > fabs(dy) )
-    {
-        if ( x2 < x1 )
         {
+        if ( x2 < x1 )
+            {
             swap(x1, x2);
             swap(y1, y2);
-        }
+            }
+    
         double gradient = dy / dx;
         double xend = round(x1);
         double yend = y1 + gradient*(xend - x1);
@@ -2284,9 +2440,8 @@ void drawLine(const Vec2i& aVector0,
             apData,
             intensity);
 
-        int x;
-        for(x=xpxl1+1; x <= (xpxl2-1); x++)
-        {
+        for(int x(xpxl1 + 1); x <= (xpxl2 - 1); x++)
+            {
             plot(
                 x,
                 ipart(intery),
@@ -2306,15 +2461,16 @@ void drawLine(const Vec2i& aVector0,
                 intensity);
             
             intery += gradient;
+            }
         }
-    }
     else
-    {
-        if ( y2 < y1 )
         {
+        if ( y2 < y1 )
+            {
             swap(x1, x2);
             swap(y1, y2);
-        }
+            }
+    
         double gradient = dx / dy;
         double yend = round(y1);
         double xend = x1 + gradient*(yend - y1);
@@ -2365,9 +2521,8 @@ void drawLine(const Vec2i& aVector0,
             apData,
             intensity);
 
-        int y;
-        for(y=ypxl1+1; y <= (ypxl2-1); y++)
-        {
+        for(int y(ypxl1 + 1); y <= (ypxl2 - 1); y++)
+            {
             plot(
                 ipart(interx),
                 y,
@@ -2387,8 +2542,8 @@ void drawLine(const Vec2i& aVector0,
                 intensity);
             
             interx += gradient;
+            }
         }
-    }
 }
 
 
