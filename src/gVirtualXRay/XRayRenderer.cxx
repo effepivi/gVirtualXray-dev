@@ -208,14 +208,6 @@ XRayRenderer::XRayRenderer():
 		m_p_pbo_set(XRAY_DETECTOR_PBO_NUMBER, 0),
 		m_p_texture_name_set(XRAY_DETECTOR_2D_TEXTURE_NUMBER + XRAY_DETECTOR_3D_TEXTURE_NUMBER, 0),
 		m_shader_set(XRAY_DETECTOR_SHADER_NUMBER),
-#ifdef HAS_ITK
-		m_p_l_buffer_image(ImageType::New()),
-		m_p_cumulated_lbuffer_image(ImageType::New()),
-		m_p_sum_mux_dx_image(ImageType::New()),
-		m_p_energy_fluence_image(ImageType::New()),
-        m_p_sinogram_image(ImageType::New()),
-        m_p_projection_set(ImageType::New()),
-#endif
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
@@ -342,61 +334,6 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     pixel_size[0] /= mm;
     pixel_size[1] /= mm;
 
-#ifdef HAS_ITK
-	// Compute the size of a pixel
-	ImageType::SpacingType itk_pixel_size;
-	itk_pixel_size[0] = pixel_size.getX();
-	itk_pixel_size[1] = pixel_size.getY();
-	itk_pixel_size[2] = pixel_size.getZ();
-
-	// Create a new image
-	ImageType::IndexType start;
-	start[0] = 0;
-	start[1] = 0;
-	start[2] = 0;
-
-	ImageType::SizeType l_buffer_size;
-	ImageType::SizeType sum_mu_x_d_x_size;
-	ImageType::SizeType energy_fluence_size;
-
-	l_buffer_size[0] = sum_mu_x_d_x_size[0] = energy_fluence_size[0] = m_p_detector->getNumberOfPixels().getX();
-
-	l_buffer_size[1] = sum_mu_x_d_x_size[1] = energy_fluence_size[1] = m_p_detector->getNumberOfPixels().getY();
-
-	l_buffer_size[2]       = 3;
-	sum_mu_x_d_x_size[2]   = m_p_xray_beam->getEnergyChannelNumber();
-	energy_fluence_size[2] = 1;
-
-	ImageType::RegionType l_buffer_region;
-	ImageType::RegionType sum_mu_x_d_x_region;
-	ImageType::RegionType energy_fluence_region;
-	l_buffer_region.SetSize(l_buffer_size);
-	sum_mu_x_d_x_region.SetSize(sum_mu_x_d_x_size);
-	energy_fluence_region.SetSize(energy_fluence_size);
-
-	l_buffer_region.SetIndex(start);
-	sum_mu_x_d_x_region.SetIndex(start);
-	energy_fluence_region.SetIndex(start);
-
-	// Allocate memory
-	m_p_l_buffer_image->SetRegions(l_buffer_region);
-	m_p_cumulated_lbuffer_image->SetRegions(l_buffer_region);;
-	m_p_sum_mux_dx_image->SetRegions(sum_mu_x_d_x_region);
-	m_p_energy_fluence_image->SetRegions(energy_fluence_region);
-
-	m_p_l_buffer_image->Allocate();
-	m_p_cumulated_lbuffer_image->Allocate();
-	m_p_sum_mux_dx_image->Allocate();
-	m_p_energy_fluence_image->Allocate();
-
-	// Set the pixel size
-	m_p_l_buffer_image->SetSpacing(itk_pixel_size);
-	m_p_cumulated_lbuffer_image->SetSpacing(itk_pixel_size);
-	m_p_sum_mux_dx_image->SetSpacing(itk_pixel_size);
-	m_p_energy_fluence_image->SetSpacing(itk_pixel_size);
-
-#else // HAS_ITK
-
     m_l_buffer_image          = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
             m_p_detector->getNumberOfPixels().getY(),
@@ -423,8 +360,6 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     m_cumulated_lbuffer_image.setSpacing(pixel_size);
     m_sum_mux_dx_image.setSpacing(pixel_size);
     m_energy_fluence_image.setSpacing(pixel_size);
-
-#endif // HAS_ITK
 
 	// Create the VBO
 	updateVBO();
@@ -468,39 +403,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
     pixel_size[1] /= 1.0;
     pixel_size[2] /= mm;
 
-    #ifdef HAS_ITK
-    // Compute the size of a pixel
-    ImageType::SpacingType itk_pixel_size;
-    itk_pixel_size[0] = pixel_size.getX();
-    itk_pixel_size[1] = pixel_size.getY();
-    itk_pixel_size[2] = pixel_size.getZ();
-
-
-    // Create a new image
-    ImageType::IndexType start;
-    start[0] = 0;
-    start[1] = 0;
-    start[2] = 0;
-
-    ImageType::SizeType sinogram_size;
-    sinogram_size[0] = m_p_detector->getNumberOfPixels().getX();
-    sinogram_size[1] = aNumberOfAngle;
-    sinogram_size[2] = m_p_detector->getNumberOfPixels().getY();
-
-    ImageType::RegionType sinogram_region;
-    sinogram_region.SetSize(sinogram_size);
-    sinogram_region.SetIndex(start);
-
-    // Allocate memory
-    m_p_sinogram_image->SetRegions(sinogram_region);
-
-    m_p_sinogram_image->Allocate();
-
-    // Set the pixel size
-    m_p_sinogram_image->SetSpacing(itk_pixel_size);
-
-#else // HAS_ITK
-
     // Allocate the memory
     m_sinogram_image = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
@@ -509,8 +411,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
 
     // Set the pixel size
     m_sinogram_image.setSpacing(pixel_size);
-
-#endif // HAS_ITK
 
     // Compute the translation vector
     VEC3 translation_vector(-aRotationCenter);
@@ -539,11 +439,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
         // Get the destination pointer
-#ifdef HAS_ITK
-        PixelType* p_pixel_set(m_p_sinogram_image->GetBufferPointer());
-#else // HAS_ITK
         PixelType* p_pixel_set(m_sinogram_image.getRawData());
-#endif // HAS_ITK
 
         // Convert the data into a sinogram
         PixelType* p_input_data(m_temp_raw_data.getRawData());
@@ -637,37 +533,6 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
     pixel_size[1] /= mm;
     pixel_size[2] /= 1.0;
 
-#ifdef HAS_ITK
-    // Compute the size of a pixel
-    ImageType::SpacingType itk_pixel_size;
-    itk_pixel_size[0] = pixel_size.getX();
-    itk_pixel_size[1] = pixel_size.getY();
-    itk_pixel_size[2] = pixel_size.getZ();
-
-    // Create a new image
-    ImageType::IndexType start;
-    start[0] = 0;
-    start[1] = 0;
-    start[2] = 0;
-
-    ImageType::SizeType projection_set_size;
-    projection_set_size[0] = m_p_detector->getNumberOfPixels().getX();
-    projection_set_size[1] = m_p_detector->getNumberOfPixels().getY();
-    projection_set_size[2] = aNumberOfAngle;
-
-    ImageType::RegionType projection_set_region;
-    projection_set_region.SetSize(projection_set_size);
-    projection_set_region.SetIndex(start);
-
-    // Allocate memory
-    m_p_projection_set->SetRegions(projection_set_region);
-
-    m_p_projection_set->Allocate();
-
-    // Set the pixel size
-    m_p_projection_set->SetSpacing(itk_pixel_size);
-#else // HAS_ITK
-
     // Allocate the memory
     m_projection_set = Image<PixelType>(
             m_p_detector->getNumberOfPixels().getX(),
@@ -677,8 +542,6 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
 
     // Set the pixel size
     m_projection_set.setSpacing(pixel_size);
-
-#endif
 
     // Compute the translation vector
     VEC3 translation_vector(-aRotationCenter);
@@ -707,11 +570,7 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
 
         // Get the destination pointer
-#ifdef HAS_ITK
-        PixelType* p_pixel_set(m_p_projection_set->GetBufferPointer());
-#else // HAS_ITK
         PixelType* p_pixel_set(m_projection_set.getRawData());
-#endif // HAS_ITK
 
         // Copy the data
         memcpy(p_pixel_set + angle * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY(), m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
@@ -1795,69 +1654,6 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 	// The filename is not empty
 	if (aFileName)
 	{
-#ifdef HAS_ITK
-
-	    // Create the file writer
-		typedef itk::ImageFileWriter<ImageType> ImageWriter;
-		ImageWriter::Pointer p_writer(ImageWriter::New());
-
-		// Get the destination pointer
-		PixelType* p_pixel_set(0);
-
-		// Get the raw pointer
-		// Set the file writer
-		switch (aFBOID)
-		{
-        case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
-            p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
-
-            p_writer->SetInput(m_p_l_buffer_image);
-            break;
-
-        case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
-            p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
-
-            p_writer->SetInput(m_p_l_buffer_image);
-            break;
-
-		case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
-			p_pixel_set = m_p_sum_mux_dx_image->GetBufferPointer();
-			memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
-
-			p_writer->SetInput(m_p_sum_mux_dx_image);
-			break;
-
-        case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
-            p_pixel_set = m_p_cumulated_lbuffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3) ;
-
-            p_writer->SetInput(m_p_cumulated_lbuffer_image);
-            break;
-
-        case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
-            p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY()) ;
-
-            p_writer->SetInput(m_p_energy_fluence_image);
-            break;
-
-		default:
-			{
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
-			}
-			break;
-		}
-
-		// Set the writer
-		p_writer->SetFileName(aFileName);
-
-		// Write the data into a file
-		p_writer->Update();
-
-#else // HAS_ITK
-
         switch (aFBOID)
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
@@ -1891,8 +1687,6 @@ void XRayRenderer::printFBO(GLuint aFBOID,
             }
             break;
         }
-
-#endif // HAS_ITK
 	}
 }
 
@@ -1908,69 +1702,6 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 	// The filename is not empty
 	if (aFileName)
 	{
-#ifdef HAS_ITK
-
-		// Create the file writer
-		typedef itk::ImageFileWriter<ImageType> ImageWriter;
-		ImageWriter::Pointer p_writer(ImageWriter::New());
-
-		// Get the destination pointer
-		PixelType* p_pixel_set(0);
-
-		// Get the raw pointer
-		// Set the file writer
-		switch (aTextureID)
-		{
-        case XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID:
-            p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
-
-            p_writer->SetInput(m_p_l_buffer_image);
-            break;
-
-        case XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID:
-            p_pixel_set = m_p_l_buffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
-
-            p_writer->SetInput(m_p_l_buffer_image);
-            break;
-
-		case XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID:
-			p_pixel_set = m_p_sum_mux_dx_image->GetBufferPointer();
-			memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * m_p_xray_beam->getEnergyChannelNumber());
-
-			p_writer->SetInput(m_p_sum_mux_dx_image);
-			break;
-
-        case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
-            p_pixel_set = m_p_cumulated_lbuffer_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY() * 3);
-
-            p_writer->SetInput(m_p_cumulated_lbuffer_image);
-            break;
-
-        case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
-            p_pixel_set = m_p_energy_fluence_image->GetBufferPointer();
-            memcpy(p_pixel_set, m_temp_raw_data.getRawData(), sizeof(PixelType) * m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY());
-
-            p_writer->SetInput(m_p_energy_fluence_image);
-            break;
-
-		default:
-			{
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, please contact Dr FP Vidal.");
-			}
-			break;
-		}
-
-		// Set the writer
-		p_writer->SetFileName(aFileName);
-
-		// Write the data into a file
-		p_writer->Update();
-
-#else // HAS_ITK
-
         switch (aTextureID)
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
@@ -2004,8 +1735,6 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
             }
             break;
         }
-
-#endif // HAS_ITK
 	}
 }
 

@@ -53,6 +53,7 @@ SET (RESOURCES_SOURCES
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 CreateHeaderFiles("." "BinaryValidationFiles" "${RESOURCES_SOURCES}")
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # Copy data files into the build directory (useful for debugging) #############
 IF (WIN32)
@@ -95,29 +96,6 @@ IF (glfw3_FOUND)
 ELSE (glfw3_FOUND)
     MESSAGE(WARNING "GLFW3 not found, (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)
-
-
-# ITK #########################################################################
-#FIND_PACKAGE (ITK)
-#IF (ITK_FOUND)
-#	ADD_DEFINITIONS(-DHAS_ITK)
-#	INCLUDE( ${ITK_USE_FILE} )
-#	set (optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-#ELSE(ITK_FOUND)
-#    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
-#ENDIF(ITK_FOUND)
-
-
-# VTK #########################################################################
-#FIND_PACKAGE (VTK)
-#IF (VTK_FOUND)
-#	ADD_DEFINITIONS(-DHAS_VTK)
-#	INCLUDE( ${VTK_USE_FILE} )
-#	set (optionalLibs ${optionalLibs} ${VTK_LIBRARIES})
-#ELSE(VTK_FOUND)
-#    MESSAGE(WARNING "VTK not found. It will be disabled.")
-#ENDIF(VTK_FOUND)
-
 
 
 # Copy data files into the build directory (useful for debugging) #############
@@ -212,20 +190,18 @@ IF (gVirtualXRay_BINARY_DIR)
      ADD_DEPENDENCIES(validation_07   gVirtualXRay)
 ENDIF (gVirtualXRay_BINARY_DIR)
 
-IF (ITK_FOUND)
-    ADD_EXECUTABLE (validation_08 src/validation_08.cxx)
-	TARGET_LINK_LIBRARIES (validation_08 gVirtualXRay ${optionalLibs} ${requiredLibs})
-	ADD_DEPENDENCIES(validation_08 BinaryValidationFiles)
-	INSTALL(TARGETS validation_08 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
-	INSTALL(DIRECTORY 
-			DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_08"
-			DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
+ADD_EXECUTABLE (validation_08 src/validation_08.cxx)
+TARGET_LINK_LIBRARIES (validation_08 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_08 BinaryValidationFiles)
+INSTALL(TARGETS validation_08 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_08"
+        DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
 
-    IF (gVirtualXRay_BINARY_DIR)
-        ADD_DEPENDENCIES(validation_08   gVirtualXRay)
-    ENDIF (gVirtualXRay_BINARY_DIR)
+IF (gVirtualXRay_BINARY_DIR)
+    ADD_DEPENDENCIES(validation_08   gVirtualXRay)
+ENDIF (gVirtualXRay_BINARY_DIR)
 
-ENDIF (ITK_FOUND)
 
 ADD_EXECUTABLE (validation_09 src/validation_09.cxx)
 TARGET_LINK_LIBRARIES (validation_09 gVirtualXRay ${optionalLibs} ${requiredLibs})

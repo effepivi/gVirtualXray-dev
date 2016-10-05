@@ -74,10 +74,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#ifdef HAS_ITK
-#include <itkImage.h>
-#endif
-
 #ifndef __Image_h
 #include "gVirtualXRay/Image.h"
 #endif
@@ -152,10 +148,6 @@ class XRayRenderer
 //******************************************************************************
 public:
 	typedef RATIONAL_NUMBER PixelType; ///< Pixel type
-
-#ifdef HAS_ITK
-	typedef itk::Image<PixelType, 3> ImageType; ///< Image type
-#endif // HAS_ITK
 
 
 //******************************************************************************
@@ -643,17 +635,8 @@ public:
     void printSinogram(const std::string& aFileName);
 
 
-#ifdef HAS_ITK
-
-    const ImageType::Pointer& getSinogram() const;
-    ImageType::Pointer& getSinogram();
-
-#else // HAS_ITK
-
     const Image<XRayRenderer::PixelType>& getSinogram() const;
     Image<XRayRenderer::PixelType>& getSinogram();
-
-#endif // HAS_ITK
 
 
     const PixelType* getSinogramRawData() const;
@@ -669,32 +652,16 @@ public:
     void printProjectionSet(const std::string& aFileName);
 
 
-#ifdef HAS_ITK
-
-    const ImageType::Pointer& getProjectionSet() const;
-    ImageType::Pointer& getProjectionSet();
-
-#else // HAS_ITK
-
     const Image<XRayRenderer::PixelType>& getProjectionSet() const;
     Image<XRayRenderer::PixelType>& getProjectionSet();
 
-#endif // HAS_ITK
 
     const PixelType* getProjectionSetRawData();
 
 
-#ifdef HAS_ITK
-
-    const ImageType::Pointer& getEnergyFluence();
-    ImageType::Pointer& getEnergyFluence();
-
-#else // HAS_ITK
-
     const Image<XRayRenderer::PixelType>& getEnergyFluence() const;
     Image<XRayRenderer::PixelType>& getEnergyFluence();
 
-#endif // HAS_ITK
 
     const PixelType* getEnergyFluenceRawData();
 
@@ -976,31 +943,6 @@ protected:
 	std::vector<FramebufferObject*> m_p_fbo_set;
 
 
-#ifdef HAS_ITK
-	/// L-buffer
-	ImageType::Pointer m_p_l_buffer_image;
-
-
-    /// Cumulated L-buffer for all the inner surfaces
-    ImageType::Pointer m_p_cumulated_lbuffer_image;
-
-
-	/// Sum(Mu_x * d_x)
-	ImageType::Pointer m_p_sum_mux_dx_image;
-
-
-	/// Energy fluence
-	ImageType::Pointer m_p_energy_fluence_image;
-
-
-    /// Sinogram
-    ImageType::Pointer m_p_sinogram_image;
-
-
-    /// Projection set
-    ImageType::Pointer m_p_projection_set;
-
-#else // HAS_ITK
     /// L-buffer
     Image<PixelType> m_l_buffer_image;
 
@@ -1023,7 +965,6 @@ protected:
 
     /// Projection set
     Image<PixelType> m_projection_set;
-#endif // HAS_ITK
 
 
 	/// Min value in simulated X-ray image

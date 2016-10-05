@@ -66,10 +66,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifdef HAS_ITK
-#include <itkImageFileWriter.h>
-#endif
-
 #include <sstream>
 
 #ifndef GVXR_OPENGL_UTILITIES_H
@@ -438,112 +434,6 @@ namespace gVirtualXRay {
     }
     
 
-
-#ifdef HAS_ITK
-
-    //------------------------------------------------------------------------------
-    inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram() const
-    //------------------------------------------------------------------------------
-    {
-        return (m_p_sinogram_image);
-    }
-
-
-    //------------------------------------------------------------------
-    inline XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram()
-    //------------------------------------------------------------------
-    {
-        return (m_p_sinogram_image);
-    }
-
-
-    //--------------------------------------------------------------
-    inline const PixelType* XRayRenderer::getSinogramRawData() const
-    //--------------------------------------------------------------
-    {
-        if (m_p_sinogram_image.IsNull())
-        {
-            return (0);
-        }
-        else
-        {
-            return (m_p_sinogram_image->GetBufferPointer());
-        }
-    }
-
-
-    //-----------------------------------------------------------------------------------
-    inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getProjectionSet() const
-    //-----------------------------------------------------------------------------------
-    {
-        return (m_p_projection_set);
-    }
-
-
-    //-----------------------------------------------------------------------
-    inline XRayRenderer::ImageType::Pointer& XRayRenderer::getProjectionSet()
-    //-----------------------------------------------------------------------
-    {
-        return (m_p_projection_set);
-    }
-
-
-    //-------------------------------------------------------------------
-    inline const PixelType* XRayRenderer::getProjectionSetRawData() const
-    //-------------------------------------------------------------------
-    {
-        if (m_p_projection_set.IsNull())
-        {
-            return (0);
-        }
-        else
-        {
-            return (m_p_projection_set->GetBufferPointer());
-        }
-    }
-
-
-    //-----------------------------------------------------------------------------
-    inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getEnergyFluence()
-    //-----------------------------------------------------------------------------
-    {
-        memcpy(getEnergyFluenceRawData(),
-                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
-                sizeof(RATIONAL_NUMBER) * m_p_energy_fluence_image.getWidth() * m_p_energy_fluence_image.getHeight());
-
-        return (m_p_energy_fluence_image);
-    }
-
-
-    //-----------------------------------------------------------------------
-    inline XRayRenderer::ImageType::Pointer& XRayRenderer::getEnergyFluence()
-    //-----------------------------------------------------------------------
-    {
-        memcpy(getEnergyFluenceRawData(),
-                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
-                sizeof(RATIONAL_NUMBER) * m_p_energy_fluence_image.getWidth() * m_p_energy_fluence_image.getHeight());
-
-        return (m_p_energy_fluence_image);
-    }
-
-
-    //-------------------------------------------------------------
-    inline const PixelType* XRayRenderer::getEnergyFluenceRawData()
-    //-------------------------------------------------------------
-    {
-        if (m_p_energy_fluence_image.IsNull())
-        {
-            return (0);
-        }
-        else
-        {
-            return (m_p_energy_fluence_image->GetBufferPointer());
-        }
-    }
-
-
-#else // HAS_ITK
-
     //---------------------------------------------------------------------------
     inline const Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram() const
     //---------------------------------------------------------------------------
@@ -629,8 +519,6 @@ namespace gVirtualXRay {
         return (m_energy_fluence_image.getRawData());
     }
 
-#endif // HAS_ITK
-
 
     //-------------------------------------------------
     inline void XRayRenderer::enableArtefactFiltering()
@@ -668,24 +556,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::printSinogram(const char* aFileName)
     //------------------------------------------------------------
     {
-#ifdef HAS_ITK
-        // The filename is not empty
-        if (aFileName)
-        {
-            // Create the file writer
-            typedef itk::ImageFileWriter<ImageType> ImageWriter;
-            ImageWriter::Pointer p_writer(ImageWriter::New());
-            p_writer->SetInput(m_p_sinogram_image);
-
-            // Set the writer
-            p_writer->SetFileName(aFileName);
-
-            // Write the data into a file
-            p_writer->Update();
-        }
-#else // HAS_ITK
         m_sinogram_image.save(aFileName);
-#endif // HAS_ITK
     }
 
 
@@ -701,24 +572,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::printProjectionSet(const char* aFileName)
     //-----------------------------------------------------------------
     {
-#ifdef HAS_ITK
-        // The filename is not empty
-        if (aFileName)
-        {
-            // Create the file writer
-            typedef itk::ImageFileWriter<ImageType> ImageWriter;
-            ImageWriter::Pointer p_writer(ImageWriter::New());
-            p_writer->SetInput(m_p_projection_set);
-
-            // Set the writer
-            p_writer->SetFileName(aFileName);
-
-            // Write the data into a file
-            p_writer->Update();
-        }
-#else // HAS_ITK
         m_projection_set.save(aFileName);
-#endif // HAS_ITK
     }
 
 
