@@ -334,7 +334,7 @@ inline bool isBigEndian()
 
 
 //--------------------------
-inline bool isLitlleEndian()
+inline bool isLittleEndian()
 //--------------------------
 {
     return (!isBigEndian());
