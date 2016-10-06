@@ -29,13 +29,13 @@
 //******************************************************************************
 #include <sstream> // Header file for stringstream
 #include <fstream> // Header file for filestream
+#include <iomanip>
 #include <algorithm> // Header file for min/max/fill
 #include <cmath> // Header file for abs
 #include <numeric> // Header file for accumulate
 #include <limits> // Numeric limits per types
 #include <vector>
 #include <iostream>
-
 #include <typeinfo>
 
 #ifdef HAS_GDCM
@@ -79,6 +79,10 @@
 
 #ifndef __OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
+#endif
+
+#ifndef __FileDoesNotExistException_h
+#include "FileDoesNotExistException.h"
 #endif
 
 #ifndef __PolygonMesh_h
@@ -701,6 +705,71 @@ template<typename T> Image<T> Image<T>::log() const
 }
 
 
+//-------------------------------------------------------------
+template<typename T> void Image<T>::load(const char* aFileName)
+//-------------------------------------------------------------
+{
+    if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
+    {
+        loadASCII(aFileName);
+    }
+    else if (isPGM(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Loading MHA files is not implemented, "
+                "please contact Dr FP Vidal.");
+    }
+    else if (isRAW(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Loading MHA files is not implemented, "
+                "please contact Dr FP Vidal.");
+    }
+    else if (isMHD(aFileName))
+    {
+        loadMHD(aFileName);
+    }
+    else if (isMHA(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Loading MHA files is not implemented, "
+                "please contact Dr FP Vidal.");
+    }
+    else if (isDCM(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Loading DICOM files is not implemented, "
+                "please contact Dr FP Vidal.");
+    }
+    else if (isTIFF(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Loading TIFF files is not implemented, "
+                "please contact Dr FP Vidal.");
+    }
+    else if (isJPEG(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Loading JPEG files is not implemented, "
+                "please contact Dr FP Vidal.");
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Unknown file format, to get it added to the library, "
+                "please contact Dr FP Vidal.");
+    }
+}
+
+
+//--------------------------------------------------------------------
+template<typename T> void Image<T>::load(const std::string& aFileName)
+//--------------------------------------------------------------------
+{
+    load(aFileName.data());
+}
+
+
 //------------------------------------------------------------------
 template<typename T> void Image<T>::save(const char* aFileName,
                                          bool anInvertLUTFlag,
@@ -749,7 +818,318 @@ template<typename T> void Image<T>::save(const char* aFileName,
                 "Unknown file format, to get it added to the library, "
                 "please contact Dr FP Vidal.");
     }
+}
 
+
+//-----------------------------------------------------------------------
+template<typename T> void Image<T>::loadMHD(const std::string& aFileName)
+//-----------------------------------------------------------------------
+{
+    loadMHD(aFileName.data());
+}
+
+
+//----------------------------------------------------------------
+template<typename T> void Image<T>::loadMHD(const char* aFileName)
+//----------------------------------------------------------------
+{
+    // Open the meta header
+    std::ifstream meta_header(aFileName);
+
+    // The file cannot be opened
+    if (!meta_header.is_open())
+        {
+        // Throw an error
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+        }
+
+    // Parse the meta header
+    unsigned int number_of_dimensions(0);
+    double spacing[3] = {0.0, 0.0, 0.0};
+    unsigned int dimensions[3] = {1, 1, 1};
+    std::string element_type;
+    std::string raw_file_name;
+    bool change_endianess(false);
+
+    std::string info_type;
+    while (meta_header >> info_type)
+        {
+        std::string equal_sign;
+        meta_header >> equal_sign;
+
+        // Remove the equal sign
+        if (equal_sign != "=")
+            {
+            std::string error_message("The program was expecting \"=\" but received \"");
+            error_message += equal_sign;
+            error_message += "\".";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+
+        if (info_type == "ObjectType")
+            {
+            std::string object_type;
+            meta_header >> object_type;
+
+            if (object_type != "Image")
+                {
+                std::string error_message("The object type \"");
+                error_message += object_type;
+                error_message += "\" is not known. It should have been \"Image\".";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                }
+            }
+        else if (info_type == "NDims")
+            {
+            meta_header >> number_of_dimensions;
+
+            if (number_of_dimensions < 0 || 3 < number_of_dimensions)
+                {
+                std::stringstream error_message;
+                error_message << "The number of dimensions \"" << number_of_dimensions <<
+                        "\" is not valid. It should have been in the range [0, 3].";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+                }
+            }
+        else if (info_type == "BinaryData")
+            {
+            std::string data_type;
+            meta_header >> data_type;
+
+            if (data_type != "True")
+                {
+                std::string error_message("The data type is not binary.");
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                }
+            }
+        else if (info_type == "BinaryDataByteOrderMSB")
+            {
+            std::string big_endian;
+            meta_header >> big_endian;
+
+            if (big_endian == "False" && isBigEndian())
+                {
+                change_endianess = true;
+                }
+
+            if (big_endian == "True" && isLittleEndian())
+                {
+                change_endianess = true;
+                }
+            }
+        else if (info_type == "CompressedData")
+            {
+            std::string compression;
+            meta_header >> compression;
+
+            if (compression == "True")
+                {
+                std::string error_message("The data is compressed.");
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                }
+            }
+        else if (info_type == "TransformMatrix")
+            {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+                {
+                for (unsigned int i(0); i < number_of_dimensions; ++i)
+                    {
+                    double temp;
+                    meta_header >> temp;
+                    }
+                }
+            }
+        else if (info_type == "Offset")
+        {
+        for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+            double temp;
+            meta_header >> temp;
+            }
+        }
+        else if (info_type == "CenterOfRotation")
+            {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+                {
+                double temp;
+                meta_header >> temp;
+                }
+            }
+        else if (info_type == "AnatomicalOrientation")
+            {
+            std::string anatomical_orientation;
+            meta_header >> anatomical_orientation;
+            }
+        else if (info_type == "ElementSpacing")
+            {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+                {
+                meta_header >> spacing[i];
+                }
+            }
+        else if (info_type == "DimSize")
+            {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+                {
+                meta_header >> dimensions[i];
+                }
+            }
+        else if (info_type == "ElementType")
+            {
+            std::string data_type_string;
+            meta_header >> data_type_string;
+
+            if (data_type_string == "MET_DOUBLE")
+                {
+                data_type_string = typeid(double).name();
+                }
+            else if (data_type_string == "MET_FLOAT")
+                {
+                data_type_string = typeid(float).name();
+                }
+            else if (data_type_string == "MET_CHAR")
+                {
+                element_type = typeid(char).name();
+                }
+            else if (data_type_string == "MET_UCHAR")
+                {
+                element_type = typeid(unsigned char).name();
+                }
+            else if (data_type_string == "MET_SHORT")
+                {
+                element_type = typeid(short).name();
+                }
+            else if (data_type_string == "MET_USHORT")
+                {
+                element_type = typeid(unsigned short).name();
+                }
+            else if (data_type_string == "MET_INT")
+                {
+                element_type = typeid(int).name();
+                }
+            else if (data_type_string == "MET_UINT")
+                {
+                element_type = typeid(unsigned int).name();
+                }
+            else
+                {
+                std::string error_message("The data type \"");
+                error_message += data_type_string;
+                error_message += "\" is not known.";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                }
+            }
+        else if (info_type == "ElementDataFile")
+            {
+            meta_header >> raw_file_name;
+
+            std::string meta_header_file_name(aFileName);
+            size_t index1(meta_header_file_name.find_last_of('\\'));
+            size_t index2(meta_header_file_name.find_last_of('/'));
+            size_t index(0);
+
+            if (index1 == std::string::npos)
+                {
+                index1 = 0;
+                }
+
+            if (index2 == std::string::npos)
+                {
+                index2 = 0;
+                }
+
+            index = std::max(index1, index2);
+
+            if (index)
+                {
+                raw_file_name = meta_header_file_name.substr(0, index) + "/" + raw_file_name;
+                }
+            }
+        else
+            {
+            std::string error_message("The field \"");
+            error_message += info_type;
+            error_message += "\" is not known.";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+
+    destroy();
+    loadRAW(raw_file_name, dimensions[0], dimensions[1], dimensions[2], change_endianess);
+    setSpacing(spacing[0], spacing[1], spacing[2]);
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadRAW(const char* aFileName,
+        unsigned int aWidth,
+        unsigned int aHeight,
+        unsigned int aNumberOfSlices,
+        bool aChangeEndianessFlag)
+//------------------------------------------------------------------------
+{
+    // Release memory if any
+    destroy();
+
+    // Open the file
+    std::ifstream input(aFileName, std::ios::binary|std::ios::in );
+
+    // The file cannot be opened
+    if (!input.is_open())
+        {
+        // Throw an error
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+        }
+
+    // Store the image size
+    m_width = aWidth;
+    m_height = aHeight;
+    m_number_of_slices = aNumberOfSlices;
+
+    // Allocate the memory
+    m_p_image = new T[m_width * m_height * m_number_of_slices];
+
+    // Out of memeory
+    if (m_width && m_height && m_number_of_slices && !m_p_image)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Get file size
+    input.seekg (0, std::ios::end);
+    unsigned int length(input.tellg());
+    input.seekg (0, std::ios::beg);
+
+    if (length < m_width * m_height * m_number_of_slices * sizeof(T))
+        {
+        std::string error_message("The file size of \"");
+        error_message += aFileName;
+        error_message += "\" is too small to contained the specified raw data.";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+    // Read the data
+    input.read(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+
+    // Close the file
+    input.close();
+
+    // Change endianess
+    if (aChangeEndianessFlag)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Changing endianess is not implmented.");
+    }
+}
+
+//-----------------------------------------------------------------------
+template<typename T> void Image<T>::loadRAW(const std::string& aFileName,
+                                            unsigned int aWidth,
+                                            unsigned int aHeight,
+                                            unsigned int aNumberOfSlices,
+                                            bool aChangeEndianessFlag)
+//-----------------------------------------------------------------------
+{
+    loadRAW(aFileName.data(), aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag);
 }
 
 
@@ -982,45 +1362,45 @@ template<typename T> void Image<T>::saveMHD(const char* aFileName) const
         meta_header << "DimSize = " << m_width << " " << m_height << " " << m_number_of_slices << std::endl;
         }
 
-    std::string data_stype_string;
+    std::string data_type_string;
     if (typeid(T) == typeid(double))
         {
-        data_stype_string = "MET_DOUBLE";
+        data_type_string = "MET_DOUBLE";
         }
     else if (typeid(T) == typeid(float))
         {
-        data_stype_string = "MET_FLOAT";
+        data_type_string = "MET_FLOAT";
         }
     else if (typeid(T) == typeid(char))
         {
-        data_stype_string = "MET_CHAR";
+        data_type_string = "MET_CHAR";
         }
     else if (typeid(T) == typeid(unsigned char))
         {
-        data_stype_string = "MET_UCHAR";
+        data_type_string = "MET_UCHAR";
         }
     else if (typeid(T) == typeid(short))
         {
-        data_stype_string = "MET_SHORT";
+        data_type_string = "MET_SHORT";
         }
     else if (typeid(T) == typeid(unsigned short))
         {
-        data_stype_string = "MET_USHORT";
+        data_type_string = "MET_USHORT";
         }
     else if (typeid(T) == typeid(int))
         {
-        data_stype_string = "MET_INT";
+        data_type_string = "MET_INT";
         }
     else if (typeid(T) == typeid(unsigned int))
         {
-        data_stype_string = "MET_UINT";
+        data_type_string = "MET_UINT";
         }
     else
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported data type");
         }
 
-    meta_header << "ElementType = " << data_stype_string << std::endl;
+    meta_header << "ElementType = " << data_type_string << std::endl;
 
     // There are no trailing bytes (extra bytes at the end of the file)
     meta_header << "HeaderSize = -1" << std::endl;
@@ -2699,108 +3079,111 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     GLvector asEdgeVertex[12];
     GLvector asEdgeNorm[12];
 
-    for (int k(0); k < m_number_of_slices - 1; ++k)
+    if (m_width && m_height && m_number_of_slices && m_p_image)
         {
-        for (int j(0); j < m_height - 1; ++j)
+        for (int k(0); k < m_number_of_slices - 1; ++k)
             {
-            for (int i(0); i < m_width - 1; ++i)
+            for (int j(0); j < m_height - 1; ++j)
                 {
-                VEC3 voxel_position(getPixelPosition(i, j, k));
-
-                //Make a local copy of the values at the cube's corners
-                for(iVertex = 0; iVertex < 8; iVertex++)
+                for (int i(0); i < m_width - 1; ++i)
                     {
-                        afCubeValue[iVertex] = getPixelValue(i + a2fVertexOffset[iVertex][0],
-                                                             j + a2fVertexOffset[iVertex][1],
-                                                             k + a2fVertexOffset[iVertex][2]);
-                    }
+                    VEC3 voxel_position(getPixelPosition(i, j, k));
 
-                //Find which vertices are inside of the surface and which are outside
-                iFlagIndex = 0;
-                for(iVertexTest = 0; iVertexTest < 8; iVertexTest++)
-                    {
-                    if((!aTwoThresholdFlag && afCubeValue[iVertexTest] <= aFirstThesholdValue) ||
-                            (aTwoThresholdFlag && aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue))
+                    //Make a local copy of the values at the cube's corners
+                    for(iVertex = 0; iVertex < 8; iVertex++)
                         {
-                        iFlagIndex |= 1<<iVertexTest;
+                            afCubeValue[iVertex] = getPixelValue(i + a2fVertexOffset[iVertex][0],
+                                                                 j + a2fVertexOffset[iVertex][1],
+                                                                 k + a2fVertexOffset[iVertex][2]);
                         }
-                    }
 
-                //Find which edges are intersected by the surface
-                iEdgeFlags = aiCubeEdgeFlags[iFlagIndex];
-
-                //If the cube is not entirely inside or outside of the surface, then there will be no intersections
-                if(iEdgeFlags != 0)
-                    {
-                    //Find the point of intersection of the surface with each edge
-                    //Then find the normal to the surface at those points
-                    for(iEdge = 0; iEdge < 12; iEdge++)
+                    //Find which vertices are inside of the surface and which are outside
+                    iFlagIndex = 0;
+                    for(iVertexTest = 0; iVertexTest < 8; iVertexTest++)
                         {
-                        //if there is an intersection on this edge
-                        if(iEdgeFlags & (1<<iEdge))
+                        if((!aTwoThresholdFlag && afCubeValue[iVertexTest] <= aFirstThesholdValue) ||
+                                (aTwoThresholdFlag && aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue))
                             {
-                                double fDelta = afCubeValue[ a2iEdgeConnection[iEdge][1] ] - afCubeValue[ a2iEdgeConnection[iEdge][0] ];
-
-                                if (std::abs(fDelta) < EPSILON)
-                                    {
-                                    fOffset = 0.5;
-                                    }
-                                else
-                                    {
-                                    if (!aTwoThresholdFlag)
-                                        {
-                                        fOffset = (aFirstThesholdValue - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
-                                        }
-                                    else
-                                        {
-                                        fOffset = (aSecondThresholdValue - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
-                                        }
-                                    }
-
-                            asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * m_spacing[0];
-                            asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * m_spacing[1];
-                            asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * m_spacing[2];
-
+                            iFlagIndex |= 1<<iVertexTest;
                             }
                         }
 
-                    //Draw the triangles that were found.  There can be up to five per cube
-                    for(iTriangle = 0; iTriangle < 5; iTriangle++)
+                    //Find which edges are intersected by the surface
+                    iEdgeFlags = aiCubeEdgeFlags[iFlagIndex];
+
+                    //If the cube is not entirely inside or outside of the surface, then there will be no intersections
+                    if(iEdgeFlags != 0)
                         {
-                        if(a2iTriangleConnectionTable[iFlagIndex][3*iTriangle] < 0)
-                            break;
-
-                        for(iCorner = 0; iCorner < 3; iCorner++)
+                        //Find the point of intersection of the surface with each edge
+                        //Then find the normal to the surface at those points
+                        for(iEdge = 0; iEdge < 12; iEdge++)
                             {
-                                iVertex = a2iTriangleConnectionTable[iFlagIndex][3*iTriangle+iCorner];
+                            //if there is an intersection on this edge
+                            if(iEdgeFlags & (1<<iEdge))
+                                {
+                                    double fDelta = afCubeValue[ a2iEdgeConnection[iEdge][1] ] - afCubeValue[ a2iEdgeConnection[iEdge][0] ];
 
-                                p_vertex_set.push_back(asEdgeVertex[iVertex].fX);
-                                p_vertex_set.push_back(asEdgeVertex[iVertex].fY);
-                                p_vertex_set.push_back(asEdgeVertex[iVertex].fZ);
+                                    if (std::abs(fDelta) < EPSILON)
+                                        {
+                                        fOffset = 0.5;
+                                        }
+                                    else
+                                        {
+                                        if (!aTwoThresholdFlag)
+                                            {
+                                            fOffset = (aFirstThesholdValue - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
+                                            }
+                                        else
+                                            {
+                                            fOffset = (aSecondThresholdValue - afCubeValue[ a2iEdgeConnection[iEdge][0] ])/fDelta;
+                                            }
+                                        }
 
-                                VEC3 normal(
-                                        getPixelValue(std::max(i - 1, 0), j, k) - getPixelValue(std::min(i + 1, int(m_width) - 1), j, k),
-                                        getPixelValue(i, std::max(j - 1, 0), k) - getPixelValue(i, std::min(j + 1, int(m_height) - 1), k),
-                                        getPixelValue(i, j, std::max(k - 1, 0)) - getPixelValue(i, j, std::min(k + 1, int(m_number_of_slices) - 1)));
+                                asEdgeVertex[iEdge].fX = voxel_position.getX() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0]) * m_spacing[0];
+                                asEdgeVertex[iEdge].fY = voxel_position.getY() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1]) * m_spacing[1];
+                                asEdgeVertex[iEdge].fZ = voxel_position.getZ() + (a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) * m_spacing[2];
 
-                                normal.normalise();
+                                }
+                            }
 
-                                p_normal_vector_set.push_back(normal.getX());
-                                p_normal_vector_set.push_back(normal.getY());
-                                p_normal_vector_set.push_back(normal.getZ());
+                        //Draw the triangles that were found.  There can be up to five per cube
+                        for(iTriangle = 0; iTriangle < 5; iTriangle++)
+                            {
+                            if(a2iTriangleConnectionTable[iFlagIndex][3*iTriangle] < 0)
+                                break;
+
+                            for(iCorner = 0; iCorner < 3; iCorner++)
+                                {
+                                    iVertex = a2iTriangleConnectionTable[iFlagIndex][3*iTriangle+iCorner];
+
+                                    p_vertex_set.push_back(asEdgeVertex[iVertex].fX);
+                                    p_vertex_set.push_back(asEdgeVertex[iVertex].fY);
+                                    p_vertex_set.push_back(asEdgeVertex[iVertex].fZ);
+
+                                    VEC3 normal(
+                                            getPixelValue(std::max(i - 1, 0), j, k) - getPixelValue(std::min(i + 1, int(m_width) - 1), j, k),
+                                            getPixelValue(i, std::max(j - 1, 0), k) - getPixelValue(i, std::min(j + 1, int(m_height) - 1), k),
+                                            getPixelValue(i, j, std::max(k - 1, 0)) - getPixelValue(i, j, std::min(k + 1, int(m_number_of_slices) - 1)));
+
+                                    normal.normalise();
+
+                                    p_normal_vector_set.push_back(normal.getX());
+                                    p_normal_vector_set.push_back(normal.getY());
+                                    p_normal_vector_set.push_back(normal.getZ());
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-    iso_surface.setInternalData(
-            g_mesh_type,
-            &p_vertex_set,
-            &p_normal_vector_set,
-            false,
-            g_vbo_type);
+        iso_surface.setInternalData(
+                g_mesh_type,
+                &p_vertex_set,
+                &p_normal_vector_set,
+                false,
+                g_vbo_type);
+        }
 
     return (iso_surface);
 }

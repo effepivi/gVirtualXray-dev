@@ -254,7 +254,7 @@ public:
 
     void setSpacing(const VEC3& aPixelSize);
     void setSpacing(const double& aPixelWidth,
-            const double& aPixelHeight,
+            const double& aPixelHeight = 0.0,
             const double& aPixelDepth = 0.0);
 
 
@@ -322,8 +322,26 @@ public:
     Image normalized() const;
     
     
+    void load(const char* aFileName);
+    void load(const std::string& aFileName);
+
     void loadASCII(const char* aFileName);
     void loadASCII(const std::string& aFileName);
+
+    void loadMHD(const char* aFileName);
+    void loadMHD(const std::string& aFileName);
+
+    void loadRAW(const char* aFileName,
+            unsigned int aWidth,
+            unsigned int aHeight,
+            unsigned int aNumberOfSlices = 1,
+            bool aChangeEndianessFlag = false);
+
+    void loadRAW(const std::string& aFileName,
+            unsigned int aWidth,
+            unsigned int aHeight,
+            unsigned int aNumberOfSlices = 1,
+            bool aChangeEndianessFlag = false);
 
 
     //------------------------------------------------------------------------
