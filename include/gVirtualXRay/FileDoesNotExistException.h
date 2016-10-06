@@ -32,14 +32,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
-#define GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef __FileDoesNotExistException_h
+#define __FileDoesNotExistException_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		FileDoesNotExistException.inl
+*	@file		FileDoesNotExistException.h
 *
 *	@brief		Class to handle exceptions when trying to open a read-only file
 *				that is not accessible.
@@ -134,4 +134,4 @@ public:
 #include "FileDoesNotExistException.inl"
 
 
-#endif // FILE_DOES_NOT_EXIST_EXCEPTION_H
+#endif // __FileDoesNotExistException_h
