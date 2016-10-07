@@ -38,10 +38,16 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 # Configure the project ########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 
 
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
+
+
+# Create the RESOURCES ###########################################################
+SET (RESOURCES_SOURCES "display_gl2.vert" "display_gl2.frag" "display_gl3.vert" "display_gl3.frag")
+CreateHeaderFiles("." "BinaryMarchingCubesFiles" "${RESOURCES_SOURCES}")
 
 
 # Check if GLFW is enable #####################################################
@@ -51,7 +57,7 @@ ENDIF (USE_SYSTEM_GLFW)
 
 IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES (${GLFW3_INCLUDE_DIR})
-    SET (requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+    SET (optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
     ADD_DEFINITIONS(-DHAS_GLFW)
 ELSE (glfw3_FOUND)
     MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
@@ -59,18 +65,18 @@ ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################
-IF (glfw3_FOUND)
-    ADD_EXECUTABLE (gvxrMarchingCubes gvxrMarchingCubes.cxx cmdline.h cmdline.c)
-    TARGET_LINK_LIBRARIES (gvxrMarchingCubes ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs})
+ADD_EXECUTABLE (gvxrMarchingCubes gvxrMarchingCubes.cxx cmdline.h cmdline.c)
+TARGET_LINK_LIBRARIES (gvxrMarchingCubes ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs})
+#ADD_DEPENDENCIES(gvxrMarchingCubes BinaryMarchingCubesFiles)
 
-    IF (gVirtualXRay_BINARY_DIR)
-         ADD_DEPENDENCIES (gvxrMarchingCubes   gVirtualXRay)
-    ENDIF (gVirtualXRay_BINARY_DIR)
+IF (gVirtualXRay_BINARY_DIR)
+    ADD_DEPENDENCIES (gvxrMarchingCubes   gVirtualXRay)
+ENDIF (gVirtualXRay_BINARY_DIR)
 
-    INSTALL (TARGETS gvxrMarchingCubes RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT tools)
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tools/ COMPONENT tools)
+INSTALL (TARGETS gvxrMarchingCubes RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT tools)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tools/ COMPONENT tools)
 
-    SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
+SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
-    INCLUDE (CPack)
-ENDIF (glfw3_FOUND)
+INCLUDE (CPack)
+
