@@ -341,4 +341,21 @@ inline bool isLittleEndian()
 }
 
 
+template<typename T> void swapBytes(T& aValue)
+{
+    // There is more than one byte in T
+    if (sizeof(T) != 1)
+        {
+        // Swap bytes
+        char* p_casted_format(reinterpret_cast<char*>(&aValue));
+        for (unsigned int i(0); i < sizeof(T) / 2; ++i)
+            {
+            char temp(p_casted_format[i]);
+            p_casted_format[i] = p_casted_format[sizeof(T) - 1 - i];
+            p_casted_format[sizeof(T) - 1 - i] = temp;
+            }
+        }
+}
+
+
 } // namespace gVirtualXRay
