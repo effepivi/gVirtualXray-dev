@@ -298,6 +298,10 @@ bool isBigEndian();
 bool isLittleEndian();
 
 
+template<typename T> void swapBytes(T& aValue);
+
+
+
 } // namespace gVirtualXRay
 
 

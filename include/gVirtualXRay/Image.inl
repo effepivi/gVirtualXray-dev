@@ -1115,9 +1115,13 @@ template<typename T> void Image<T>::loadRAW(const char* aFileName,
     input.close();
 
     // Change endianess
-    if (aChangeEndianessFlag)
+    if (aChangeEndianessFlag && sizeof(T) > 1)
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Changing endianess is not implmented.");
+        T* p_temp(m_p_image);
+        for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+            {
+            swapBytes(*p_temp++);
+            }
     }
 }
 
@@ -3102,7 +3106,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     for(iVertexTest = 0; iVertexTest < 8; iVertexTest++)
                         {
                         if((!aTwoThresholdFlag && afCubeValue[iVertexTest] <= aFirstThesholdValue) ||
-                                (aTwoThresholdFlag && aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue))
+                                (aTwoThresholdFlag && !(aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue)))
                             {
                             iFlagIndex |= 1<<iVertexTest;
                             }
