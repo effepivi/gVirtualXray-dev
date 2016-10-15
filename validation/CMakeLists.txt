@@ -67,6 +67,8 @@ IF (WIN32)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_08/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_09/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_10/)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_11/)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_12/)
     CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/data/cylinder_bin.stl COPYONLY)
     CONFIGURE_FILE (data/validation_10/beam_spectrum.csv ${CMAKE_CURRENT_BINARY_DIR}/data/validation_10/beam_spectrum.csv COPYONLY)
 ELSE (WIN32)
@@ -80,6 +82,8 @@ ELSE (WIN32)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_08/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_09/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_10/)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_11/)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_12/)
     CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/cylinder_bin.stl COPYONLY)
     CONFIGURE_FILE (data/validation_10/beam_spectrum.csv ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_10/beam_spectrum.csv COPYONLY)
 ENDIF (WIN32)
@@ -225,6 +229,32 @@ INSTALL(DIRECTORY
 
 IF (gVirtualXRay_BINARY_DIR)
     ADD_DEPENDENCIES(validation_10   gVirtualXRay)
+ENDIF (gVirtualXRay_BINARY_DIR)
+
+
+ADD_EXECUTABLE (validation_11 src/validation_11.cxx)
+TARGET_LINK_LIBRARIES (validation_11 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_11 BinaryValidationFiles)
+INSTALL(TARGETS validation_11 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY 
+                DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_11"
+                DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
+
+IF (gVirtualXRay_BINARY_DIR)
+    ADD_DEPENDENCIES(validation_11   gVirtualXRay)
+ENDIF (gVirtualXRay_BINARY_DIR)
+
+
+ADD_EXECUTABLE (validation_12 src/validation_12.cxx)
+TARGET_LINK_LIBRARIES (validation_12 gVirtualXRay ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(validation_12 BinaryValidationFiles)
+INSTALL(TARGETS validation_12 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/bin COMPONENT validation)
+INSTALL(DIRECTORY
+                DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_12"
+                DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
+
+IF (gVirtualXRay_BINARY_DIR)
+    ADD_DEPENDENCIES(validation_12   gVirtualXRay)
 ENDIF (gVirtualXRay_BINARY_DIR)
 
 
