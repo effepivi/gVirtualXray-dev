@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_XRAY_BEAM_H
-#define GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
+#define __XRayBeam_h
 
 
 /**
@@ -208,5 +208,5 @@ protected:
 #include "XRayBeam.inl"
 
 
-#endif // XRAY_BEAM_H
+#endif // __XRayBeam_h
 

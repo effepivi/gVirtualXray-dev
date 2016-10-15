@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_CUBE_MESH_H
-#define GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
+#define __CubeMesh_h
 
 
 /**
@@ -123,4 +123,4 @@ public:
 #include "CubeMesh.inl"
 
 
-#endif // CUBE_MESH_H
+#endif // __CubeMesh_h
