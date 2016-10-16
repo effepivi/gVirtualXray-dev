@@ -47,7 +47,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @date       13/10/2014
 *
-*   @todo       Merge the energy set and mass attenuation set using 
+*   @todo       Merge the energy set and mass attenuation set using
 *               std::pair<double, double>
 *
 *   @author     Dr Franck P. Vidal
@@ -59,7 +59,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -102,7 +102,7 @@ class AtomicElement;
 //------------------------------------------------------------------------------
 /// operator <<
 /*
-*   @param anOutputSream:   the stream in which an element is going 
+*   @param anOutputSream:   the stream in which an element is going
 *                           to be printed
 *   @param anElement:       the element to send into the stream
 *   @return the output stream
@@ -138,14 +138,14 @@ public:
     //--------------------------------------------------------------------------
     /// Default Constructor
     /*
-    *   @param aName:       the name of the element
-    *   @param aSymbol:     the symbol of the element
-    *   @param aZNumber:    the atomic number (Z) of the element
-    *   @param aMolarMass:  the molar mass of the element (in g/mol))
-    *   @param aDensity:    the density of the element (in g/cm3)
-    *   @param aState:      the state of the element
-    *   @param aVoxelSize:  the size of a voxel
-    */
+     *  @param aName:       the name of the element
+     *  @param aSymbol:     the symbol of the element
+     *  @param aZNumber:    the atomic number (Z) of the element
+     *  @param aMolarMass:  the molar mass of the element (in g/mol))
+     *  @param aDensity:    the density of the element (in g/cm3)
+     *  @param aState:      the state of the element
+     *  @param aVoxelSize:  the size of a voxel
+     */
     //--------------------------------------------------------------------------
     AtomicElement(const std::string& aName = "",
             const std::string& aSymbol = "",
@@ -225,7 +225,7 @@ public:
     
     
     //--------------------------------------------------------------------------
-    /// Get the mass attenuation coefficient at a given energy 
+    /// Get the mass attenuation coefficient at a given energy
     /// (values are interpolated).
     /*
     *   @param anEnergy:    the energy
@@ -236,7 +236,7 @@ public:
     
     
     //--------------------------------------------------------------------------
-    /// Get the linear attenuation coefficient at a given energy (in mm-1) 
+    /// Get the linear attenuation coefficient at a given energy (in mm-1)
     /// (values are interpolated).
     /*
     *   @param anEnergy:    the energy
@@ -301,7 +301,7 @@ public:
     
     
     //--------------------------------------------------------------------------
-    /// Accessor on the number of energy channels in the attenuation 
+    /// Accessor on the number of energy channels in the attenuation
     /// coefficient list.
     /*
     *   @return the number of energy channels
@@ -311,7 +311,7 @@ public:
     
     
     //--------------------------------------------------------------------------
-    /// Accessor on the smallest energy step in the linear attenuation 
+    /// Accessor on the smallest energy step in the linear attenuation
     /// coefficient list.
     /*
     *   @return the smallest energy step

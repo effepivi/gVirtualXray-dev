@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ELEMENT_SET_H
-#define GVXR_ELEMENT_SET_H
+#ifndef __ElementSet_h
+#define __ElementSet_h
 
 
 /**
@@ -56,7 +56,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -64,7 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -109,8 +109,8 @@ std::ostream & operator << (std::ostream& anOutputSream,
 
 //==============================================================================
 /**
-*	@class	ElementSet
-*	@brief	ElementSet is a class to manage a table of elements in material.
+*   @class  ElementSet
+*   @brief  ElementSet is a class to manage a table of elements in material.
 */
 //==============================================================================
 class ElementSet
@@ -145,16 +145,16 @@ public:
     ElementSet& operator=(const ElementSet&);
 
 
-	//---------------------------------------------------------------------------
-	///	Destructor.
-	//---------------------------------------------------------------------------
-	~ElementSet();
+    //---------------------------------------------------------------------------
+    /// Destructor.
+    //---------------------------------------------------------------------------
+    ~ElementSet();
 
 
-	//---------------------------------------------------------------------------
-	///	Clear all the memory.
-	//---------------------------------------------------------------------------
-	void clearMemory();
+    //---------------------------------------------------------------------------
+    /// Clear all the memory.
+    //---------------------------------------------------------------------------
+    void clearMemory();
 
 
     //---------------------------------------------------------------------------
@@ -175,53 +175,53 @@ public:
     void addElement(const AtomicElement& anElement);
 
 
-	//---------------------------------------------------------------------------
-	///	Get a given element.
-	/*
-	*	@param anAtomicNumber:	the atomic number (Z) of the element
-	*	@return the element
-	*/
-	//---------------------------------------------------------------------------
-	AtomicElement& getElement(unsigned short anAtomicNumber);
+    //---------------------------------------------------------------------------
+    /// Get a given element.
+    /*
+    *   @param anAtomicNumber:  the atomic number (Z) of the element
+    *   @return the element
+    */
+    //---------------------------------------------------------------------------
+    AtomicElement& getElement(unsigned short anAtomicNumber);
 
 
-	//---------------------------------------------------------------------------
-	///	Get a given element.
-	/*
-	*	@param anAtomicNumber:	the atomic number (Z) of the element
-	*	@return the element
-	*/
-	//---------------------------------------------------------------------------
-	const AtomicElement& getElement(unsigned short anAtomicNumber) const;
+    //---------------------------------------------------------------------------
+    /// Get a given element.
+    /*
+    *   @param anAtomicNumber:  the atomic number (Z) of the element
+    *   @return the element
+    */
+    //---------------------------------------------------------------------------
+    const AtomicElement& getElement(unsigned short anAtomicNumber) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the molar mass of the element.
-	/*
-	*	@param anAtomicNumber:	the atomic number (Z) of the element
-	*	@return the molar mass of the element
-	*/
-	//---------------------------------------------------------------------------
-	float getMolarMass(unsigned short anAtomicNumber) const;
+    //---------------------------------------------------------------------------
+    /// Accessor on the molar mass of the element.
+    /*
+    *   @param anAtomicNumber:  the atomic number (Z) of the element
+    *   @return the molar mass of the element
+    */
+    //---------------------------------------------------------------------------
+    float getMolarMass(unsigned short anAtomicNumber) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the density of the element.
-	/*
-	*	@param anAtomicNumber:	the atomic number (Z) of the element
-	*	@return the density of the element
-	*/
-	//---------------------------------------------------------------------------
-	float getDensity(unsigned short anAtomicNumber) const;
+    //---------------------------------------------------------------------------
+    /// Accessor on the density of the element.
+    /*
+    *   @param anAtomicNumber:  the atomic number (Z) of the element
+    *   @return the density of the element
+    */
+    //---------------------------------------------------------------------------
+    float getDensity(unsigned short anAtomicNumber) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the number of elements in the set.
-	/*
-	*	@return	the number of elements in the set
-	*/
-	//---------------------------------------------------------------------------
-	unsigned int getElementSetSize() const;
+    //---------------------------------------------------------------------------
+    /// Accessor on the number of elements in the set.
+    /*
+    *   @return the number of elements in the set
+    */
+    //---------------------------------------------------------------------------
+    unsigned int getElementSetSize() const;
 
 
     //---------------------------------------------------------------------------
@@ -242,18 +242,18 @@ public:
     std::map<unsigned short, AtomicElement>::const_iterator end() const;
 
 
-//*****************************************************************************
+//*******************************************************************************
 private:
-	//---------------------------------------------------------------------------
-	///	Clear the dynamically allocated memory
-	//---------------------------------------------------------------------------
-	void clearDynamicallyMemory();
+    //---------------------------------------------------------------------------
+    /// Clear the dynamically allocated memory
+    //---------------------------------------------------------------------------
+    void clearDynamicallyMemory();
 
 
-	//---------------------------------------------------------------------------
-	///	An indexed table containing elements.
-	//---------------------------------------------------------------------------
-	std::map<unsigned short, AtomicElement> m_element_set;
+    //---------------------------------------------------------------------------
+    /// An indexed table containing elements.
+    //---------------------------------------------------------------------------
+    std::map<unsigned short, AtomicElement> m_element_set;
 };
 
 
@@ -264,4 +264,4 @@ private:
 #include "ElementSet.inl"
 
 
-#endif // GVXR_ELEMENT_SET_H
+#endif // __ElementSet_h
