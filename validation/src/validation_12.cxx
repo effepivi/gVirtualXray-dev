@@ -233,6 +233,8 @@ int main(int argc, char** argv)
         float incident_energy(g_number_of_photons * g_photon_energy);
 
         // Output the results
+        std::cout.precision(4);
+
         std::cout << "The total energy of the incident beam is " << g_number_of_photons <<
                 " * " << g_photon_energy / MeV << " = " <<
                 incident_energy / MeV << " MeV" << std::endl;
@@ -241,7 +243,8 @@ int main(int argc, char** argv)
         
         float theoretical_energy_fluence(incident_energy * std::exp(-1.837E-01 * g_cube_thickness / cm));
 
-        std::cout << "The theoretical energy fluence is " << g_number_of_photons << " * " << incident_energy / MeV << " * exp(-1.837E-01 * " << g_cube_thickness / cm << ") = " << theoretical_energy_fluence / MeV << " MeV" << std::endl;
+        std::cout << "The theoretical energy fluence is " << g_number_of_photons <<
+                " * " << incident_energy / MeV << " * exp(-1.837E-01 * " << g_cube_thickness / cm << ") = " << theoretical_energy_fluence / MeV << " MeV" << std::endl;
 
         std::cout << "The simulated energy fluence is " << simulated_energy_fluence << " MeV" << std::endl;
         
