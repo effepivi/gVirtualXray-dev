@@ -55,7 +55,7 @@ IF (USE_GLFW)
     ADD_SUBDIRECTORY (SimpleBackProjection)
     ADD_SUBDIRECTORY (FilteredBackProjection)
     ADD_SUBDIRECTORY (Tomography)
-    ADD_SUBDIRECTORY (VisibleHuman)
+    #ADD_SUBDIRECTORY (VisibleHuman)
 ENDIF ()
 
 IF (USE_GLUT)
