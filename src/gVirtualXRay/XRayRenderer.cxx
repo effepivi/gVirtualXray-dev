@@ -1654,31 +1654,40 @@ void XRayRenderer::printFBO(GLuint aFBOID,
 	// The filename is not empty
 	if (aFileName)
 	{
+        Image<RATIONAL_NUMBER> temp_image;
+        std::string message;
+        bool invert_LUT(false);
+    
         switch (aFBOID)
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
             m_l_buffer_image = m_temp_raw_data.getRawData();
-            m_l_buffer_image.save(aFileName, false, "L-buffer");
+            temp_image = m_l_buffer_image.flipVertically();
+            message = "gVirtualXRay -- L-buffer";
             break;
 
         case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
             m_l_buffer_image = m_temp_raw_data.getRawData();
-            m_l_buffer_image.save(aFileName, false, "Cleaned L-buffer");
+            temp_image = m_l_buffer_image.flipVertically();
+            message = "gVirtualXRay -- Cleaned L-buffer";
             break;
 
         case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
             m_sum_mux_dx_image = m_temp_raw_data.getRawData();
-            m_sum_mux_dx_image.save(aFileName, false, "Sigma(m_x*dx)");
+            temp_image = m_sum_mux_dx_image.flipVertically();
+            message = "gVirtualXRay -- Sigma(m_x*dx)";
             break;
 
         case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
             m_cumulated_lbuffer_image = m_temp_raw_data.getRawData();
-            m_cumulated_lbuffer_image.save(aFileName, false, "Cumulative L-buffer");
+            temp_image = m_cumulated_lbuffer_image.flipVertically();
+            message = "gVirtualXRay -- Cumulative L-buffer";
             break;
 
         case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
             m_energy_fluence_image = m_temp_raw_data.getRawData();
-            m_energy_fluence_image.save(aFileName, true, "Energy fluence");
+            temp_image = m_energy_fluence_image.flipVertically();
+            message = "gVirtualXRay -- Energy fluence";
             break;
 
         default:
@@ -1687,6 +1696,9 @@ void XRayRenderer::printFBO(GLuint aFBOID,
             }
             break;
         }
+    
+        // Save the image
+        temp_image.save(aFileName, invert_LUT, message);
 	}
 }
 
@@ -1702,31 +1714,40 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
 	// The filename is not empty
 	if (aFileName)
 	{
+        Image<RATIONAL_NUMBER> temp_image;
+        std::string message;
+        bool invert_LUT(false);
+    
         switch (aTextureID)
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
             m_l_buffer_image = m_temp_raw_data.getRawData();
-            m_l_buffer_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            temp_image = m_l_buffer_image.flipVertically();
+            message = "gVirtualXRay -- L-buffer";
             break;
 
         case XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID:
             m_l_buffer_image = m_temp_raw_data.getRawData();
-            m_l_buffer_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            temp_image = m_l_buffer_image.flipVertically();
+            message = "gVirtualXRay -- Cleaned L-buffer";
             break;
 
         case XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID:
             m_sum_mux_dx_image = m_temp_raw_data.getRawData();
-            m_sum_mux_dx_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            temp_image = m_sum_mux_dx_image.flipVertically();
+            message = "gVirtualXRay -- Sigma(m_x*dx)";
             break;
 
         case XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID:
             m_cumulated_lbuffer_image = m_temp_raw_data.getRawData();
-            m_cumulated_lbuffer_image.save(aFileName, false, "gVirtualXRay -- Energy fluence");
+            temp_image = m_cumulated_lbuffer_image.flipVertically();
+            message = "gVirtualXRay -- Cumulative L-buffer";
             break;
 
         case XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID:
             m_energy_fluence_image = m_temp_raw_data.getRawData();
-            m_energy_fluence_image.save(aFileName, true, "gVirtualXRay -- Energy fluence");
+            temp_image = m_energy_fluence_image.flipVertically();
+            message = "gVirtualXRay -- Energy fluence";
             break;
 
         default:
@@ -1735,6 +1756,9 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
             }
             break;
         }
+    
+        // Save the image
+        temp_image.save(aFileName, invert_LUT, message);
 	}
 }
 
