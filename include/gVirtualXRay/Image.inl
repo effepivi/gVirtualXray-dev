@@ -661,6 +661,54 @@ template<typename T> Image<T> Image<T>::normalized() const
 }
 
 
+//------------------------------------------------------------
+template<typename T> Image<T> Image<T>::flipVertically() const
+//------------------------------------------------------------
+{
+    Image<T> temp(*this);
+
+    for (unsigned int k(0); k < m_number_of_slices; ++k)
+    {
+        for (unsigned int j(0); j < (m_height / 2); ++j)
+        {
+            for (unsigned int i(0); i < m_width; ++i)
+            {
+            swap(
+                temp[k * m_height * m_width +                 j  * m_width + i],
+                temp[k * m_height * m_width + (m_height - 1 - j) * m_width + i]
+                );
+            }
+        }
+    }
+
+    return (temp);
+}
+
+
+//--------------------------------------------------------------
+template<typename T> Image<T> Image<T>::flipHorizontally() const
+//--------------------------------------------------------------
+{
+    Image<T> temp(*this);
+
+    for (unsigned int k(0); k < m_number_of_slices; ++k)
+    {
+        for (unsigned int j(0); j < m_height; ++j)
+        {
+            for (unsigned int i(0); i < (m_width / 2); ++i)
+            {
+            swap(
+                temp[k * m_height * m_width + j * m_width +                i ],
+                temp[k * m_height * m_width + j * m_width + (m_width - 1 - i)]
+                );
+            }
+        }
+    }
+
+    return (temp);
+}
+
+
 //----------------------
 template<typename T> Image<T> Image<T>::abs() const
 //----------------------

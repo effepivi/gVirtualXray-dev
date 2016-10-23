@@ -342,7 +342,7 @@ public:
             unsigned int aHeight,
             unsigned int aNumberOfSlices = 1,
             bool aChangeEndianessFlag = false);
-
+    
 
     //------------------------------------------------------------------------
     /// Save the image in a file
@@ -691,6 +691,10 @@ public:
 
 
     Image<T> log() const;
+    
+    Image<T> flipVertically() const;
+    Image<T> flipHorizontally() const;
+
 
     double getSum() const;
     double getAverage() const;
