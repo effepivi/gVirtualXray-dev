@@ -341,7 +341,9 @@ inline bool isLittleEndian()
 }
 
 
+//--------------------------------------------
 template<typename T> void swapBytes(T& aValue)
+//--------------------------------------------
 {
     // There is more than one byte in T
     if (sizeof(T) != 1)
@@ -355,6 +357,16 @@ template<typename T> void swapBytes(T& aValue)
             p_casted_format[sizeof(T) - 1 - i] = temp;
             }
         }
+}
+
+
+//----------------------------------------------------
+template<typename T> void swap(T& aValue1, T& aValue2)
+//----------------------------------------------------
+{
+    T temp(aValue1);
+    aValue1 = aValue2;
+    aValue2 = temp;
 }
 
 

@@ -299,6 +299,7 @@ bool isLittleEndian();
 
 
 template<typename T> void swapBytes(T& aValue);
+template<typename T> void swap(T& aValue1, T& aValue2);
 
 
 
