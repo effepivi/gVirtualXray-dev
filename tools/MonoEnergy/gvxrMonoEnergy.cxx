@@ -64,10 +64,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -363,6 +359,9 @@ int main(int argc, char** argv)
 	    // Enable anti-aliasing
 	    glfwWindowHint(GLFW_SAMPLES, 16);
 
+		// Offscreen rendering
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		
 		// Create the window title
 		std::stringstream window_title;
 		window_title << "gVirtualXRay -- Command Line Tool -- Monochromatic";
