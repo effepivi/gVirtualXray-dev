@@ -141,6 +141,7 @@ SET (CXX_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImplicitSurface.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenGL2VBO.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenGL3VBO.cxx
+    #${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ParticleSystem.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/PolygonMesh.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Shader.cxx
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SphereMesh.cxx
@@ -204,6 +205,8 @@ SET (HXX_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL2VBO.inl
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL3VBO.h
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL3VBO.inl
+	#${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ParticleSystem.h
+	#${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ParticleSystem.inl
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PolygonMesh.h
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PolygonMesh.inl
 	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Shader.h
