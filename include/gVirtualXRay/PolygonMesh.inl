@@ -139,6 +139,14 @@ inline const std::string& PolygonMesh::getFileName() const
 }
 
 
+//-------------------------------------
+inline void PolygonMesh::moveToCenter()
+//-------------------------------------
+{
+    moveToCentre();
+}
+
+
 //-------------------------------------------------------------------
 inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 //-------------------------------------------------------------------
