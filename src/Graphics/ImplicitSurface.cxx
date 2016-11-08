@@ -120,7 +120,6 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 							   const VEC3& aVoxelSize)
 //-----------------------------------------------------------
 {
-    m_centre = aCenter;
 
 	VEC3 half_voxel_size(aVoxelSize.getX() / 2.0,
 			aVoxelSize.getY() / 2.0,
@@ -130,7 +129,8 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 			half_voxel_size.getY() * aNumberOfVoxels.getY(),
 			half_voxel_size.getZ() * aNumberOfVoxels.getZ());
 
-	VEC3 offset(aCenter - half_volume_size + half_voxel_size);
+    m_centre = aCenter - half_volume_size + half_voxel_size;
+
 
 	// Get the current size of the volume
 	unsigned int previous_width(0);
@@ -175,17 +175,17 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 
 	for (unsigned int z(0); z < aNumberOfVoxels.getZ(); ++z)
 	{
-		voxel_center.setZ(offset.getZ() + z * aVoxelSize.getZ());
+		voxel_center.setZ(m_centre.getZ() + z * aVoxelSize.getZ());
 
 		for (unsigned int y(0); y < aNumberOfVoxels.getY(); ++y)
 		{
-			voxel_center.setY(offset.getY() + y * aVoxelSize.getY());
+			voxel_center.setY(m_centre.getY() + y * aVoxelSize.getY());
 
 			for (unsigned int x(0); x < aNumberOfVoxels.getX(); ++x)
 			{
 				RATIONAL_NUMBER voxel_value(0);
 
-				voxel_center.setX(offset.getX() + x * aVoxelSize.getX());
+				voxel_center.setX(m_centre.getX() + x * aVoxelSize.getX());
 
 				// Process all the points
 				for (std::vector<std::pair<DensityFunctionParameterType, VEC3> >::const_iterator point_ite(m_control_point_set.begin());
