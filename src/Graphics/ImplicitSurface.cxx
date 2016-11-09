@@ -163,29 +163,31 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 	origin[2] = offset.getZ();
 	m_p_volume->SetOrigin(origin);
 */
-	VEC3 voxel_center;
 
-	RATIONAL_NUMBER r(0);
-
-	VEC3 point_1;
-	VEC3 point_2;
-
-	VEC3 v1;
-	VEC3 v2;
-
-	for (unsigned int z(0); z < aNumberOfVoxels.getZ(); ++z)
+    #pragma omp parallel for collapse(3)
+	for (unsigned int z = 0; z < aNumberOfVoxels.getZ(); ++z)
 	{
-		voxel_center.setZ(m_centre.getZ() + z * aVoxelSize.getZ());
 
-		for (unsigned int y(0); y < aNumberOfVoxels.getY(); ++y)
+		for (unsigned int y = 0; y < aNumberOfVoxels.getY(); ++y)
 		{
-			voxel_center.setY(m_centre.getY() + y * aVoxelSize.getY());
 
-			for (unsigned int x(0); x < aNumberOfVoxels.getX(); ++x)
+			for (unsigned int x = 0; x < aNumberOfVoxels.getX(); ++x)
 			{
 				RATIONAL_NUMBER voxel_value(0);
 
-				voxel_center.setX(m_centre.getX() + x * aVoxelSize.getX());
+			    VEC3 voxel_center;
+
+			    RATIONAL_NUMBER r(0);
+
+			    VEC3 point_1;
+			    VEC3 point_2;
+
+			    VEC3 v1;
+			    VEC3 v2;
+
+			    voxel_center.setX(m_centre.getX() + x * aVoxelSize.getX());
+	            voxel_center.setY(m_centre.getY() + y * aVoxelSize.getY());
+	            voxel_center.setZ(m_centre.getZ() + z * aVoxelSize.getZ());
 
 				// Process all the points
 				for (std::vector<std::pair<DensityFunctionParameterType, VEC3> >::const_iterator point_ite(m_control_point_set.begin());
