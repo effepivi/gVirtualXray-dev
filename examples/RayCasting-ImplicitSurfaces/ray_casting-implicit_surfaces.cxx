@@ -232,10 +232,11 @@ double g_fps(0);
 bool g_use_fullscreen(true);
 bool g_make_threshold_bigger(true);
 
-float g_threshold(0.0125);
+float g_threshold(1.5);
 
-RATIONAL_NUMBER g_scaling_factor(2);
-Vec3ui g_number_of_voxel(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
+//RATIONAL_NUMBER g_scaling_factor(30);
+RATIONAL_NUMBER g_scaling_factor(50);
+Vec3ui g_initial_number_of_voxel(30, 25, 7);
 
 ImplicitSurface g_meta_ball;
 
@@ -246,7 +247,7 @@ TextRenderer g_font_rendered;
 bool g_use_left_shift_key(false);
 bool g_use_right_shift_key(false);
 
-ParticleSystem g_particle_system;
+//ParticleSystem g_particle_system;
 
 
 //******************************************************************************
@@ -282,8 +283,6 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 
 void errorCallback(int error, const char* description);
 
-void quit();
-
 void idle();
 
 void extractIsoSurface();
@@ -316,6 +315,8 @@ Vec3<GLfloat> getArcballVector(int x, int y);
 
 void displayHelp();
 
+void takeScreenshot(const std::string& aFileName);
+
 
 //-----------------------------
 int main(int argc, char** argv)
@@ -325,9 +326,6 @@ int main(int argc, char** argv)
         {
         // Set an error callback
         glfwSetErrorCallback(errorCallback);
-
-        // Register the exit callback
-        atexit(quit);
 
         // Initialize GLFW
         if (!glfwInit())
@@ -445,8 +443,6 @@ int main(int argc, char** argv)
         loadImplicitSurface();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        g_xray_renderer.addInnerSurface(&(g_meta_ball.getPolygonMesh()));
-
         // Rotate the sample
         g_sample_rotation_matrix.rotate( 180, VEC3(0, 1, 0));
         g_sample_rotation_matrix.rotate( 90, VEC3(0, 0, 1));
@@ -498,19 +494,6 @@ int main(int argc, char** argv)
 
     // Return an exit code
     return (EXIT_SUCCESS);
-}
-
-
-//---------
-void quit()
-//---------
-{
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
 }
 
 
@@ -729,8 +712,9 @@ void render()
         applyModelViewMatrix();
 
         // Display the sample
-        g_particle_system.addParticle(0.1);
-        extractIsoSurface();
+       // g_particle_system.addParticle(0.1);
+        //g_particle_system.addParticle(0.1);
+       // extractIsoSurface();
 
         if (g_meta_ball.getPolygonMesh().getTriangleNumber())
         {
@@ -935,17 +919,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
                 break;
 
-            case GLFW_KEY_S:
-                if (g_stereo_helper.isActive())
-                    {
-                    g_stereo_helper.disable();
-                    }
-                else
-                    {
-                    g_stereo_helper.enable();
-                    }
-                break;
-
             case GLFW_KEY_O:
                 g_stereo_helper.setIntraocularDistance(
                         g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
@@ -1063,34 +1036,48 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                         g_current_main_window_height);
                 break;
 
-            case GLFW_KEY_Z:
-                g_scaling_factor += 0.05;
-                
-                g_number_of_voxel = Vec3ui(
-                        g_scaling_factor * 128,
-                        g_scaling_factor * 128,
-                        g_scaling_factor * 128);
-                    
-                std::cout << "Volume size: " << g_number_of_voxel << std::endl;
-                
+            case GLFW_KEY_1:
+                g_threshold = 1;
                 extractIsoSurface();
                 break;
 
-            case GLFW_KEY_X:
-                g_scaling_factor -= 0.05;
-                
-                if (g_scaling_factor < 0.2)
-                    {
-                    g_scaling_factor = 0.2;
-                    }
-                    
-                g_number_of_voxel = Vec3ui(
-                        g_scaling_factor * 128,
-                        g_scaling_factor * 128,
-                        g_scaling_factor * 128);
-                    
-                std::cout << "Volume size: " << g_number_of_voxel << std::endl;
-                
+            case GLFW_KEY_2:
+                g_threshold = 2;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_3:
+                g_threshold = 3;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_4:
+                g_threshold = 4;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_5:
+                g_threshold = 5;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_6:
+                g_threshold = 6;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_7:
+                g_threshold = 7;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_8:
+                g_threshold = 8;
+                extractIsoSurface();
+                break;
+
+            case GLFW_KEY_9:
+                g_threshold = 9;
                 extractIsoSurface();
                 break;
 
@@ -1098,8 +1085,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 g_use_left_shift_key = true;
                 break;
 
-            case GLFW_KEY_RIGHT_SHIFT:
-                g_use_right_shift_key = true;
+            case GLFW_KEY_S:
+                {
+                std::stringstream file_name;
+                file_name << "screenshot_" << g_threshold << ".tga";
+                takeScreenshot(file_name.str());
+                }
                 break;
 
             default:
@@ -1286,12 +1277,15 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 void loadImplicitSurface()
 //------------------------
 {
-    g_particle_system.setGravity(-g_detector_up_vector);
-    g_particle_system.setInitialPosition(VEC3(0.0, 0.0, 0.0));
-    g_particle_system.setUpVector(VEC3(1.0, 0.0, 0.0));
-    g_particle_system.setFOV(30);
-    g_particle_system.setAgeLimit(50);
-    g_particle_system.setParticleLimit(10);
+    //g_particle_system.setGravity(VEC3(0.0, -10.0, 0.0));
+
+    //g_particle_system.setInitialPosition(VEC3(0.0, 0.0, 0.0));
+    //g_particle_system.setUpVector(VEC3(1.0, 1.0, 0.0).normal());
+    //g_particle_system.setFOV(20);
+    //g_particle_system.setAgeLimit(100);
+    //g_particle_system.setParticleLimit(25);
+
+    extractIsoSurface();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1353,6 +1347,9 @@ void updateXRayImage()
     // The X-ray image is not up-to-date
     if (!g_is_xray_image_up_to_date)
         {
+        // Add the geometry
+        g_xray_renderer.addOuterSurface(&(g_meta_ball.getPolygonMesh()));
+
         // Compute the X-Ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
@@ -1491,12 +1488,52 @@ void extractIsoSurface()
     ImplicitSurface::DensityFunctionParameterType density_function_parameter;
 
     density_function_parameter.m_density_function = ImplicitSurface::META_BALL;
-    density_function_parameter.m_a = 5;
-    density_function_parameter.m_b = 15;
+    density_function_parameter.m_a = 10;
+    density_function_parameter.m_b = 17;
+
+    std::vector<VEC3> particle_set;
 
     VEC3 centre(0.0, 0.0, 0.0);
 
     unsigned int count(0);
+
+    particle_set.push_back(VEC3(-5.0 * cm, -2.0 * cm, 0.0));
+    particle_set.push_back(VEC3(-2.5 * cm, -2.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 0.0 * cm, -2.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 2.5 * cm, -2.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 5.0 * cm, -2.0 * cm, 0.0));
+
+    particle_set.push_back(VEC3(-5.0 * cm,  0.0 * cm, 0.0));
+    particle_set.push_back(VEC3(-2.5 * cm,  0.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 0.0 * cm,  0.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 2.5 * cm,  0.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 5.0 * cm,  0.0 * cm, 0.0));
+
+    particle_set.push_back(VEC3(-5.0 * cm,  2.0 * cm, 0.0));
+    particle_set.push_back(VEC3(-2.5 * cm,  2.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 0.0 * cm,  2.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 2.5 * cm,  2.0 * cm, 0.0));
+    particle_set.push_back(VEC3( 5.0 * cm,  2.0 * cm, 0.0));
+
+    /*
+    particle_set.push_back(VEC3(0.0, -3.0 * cm, 3.0 * cm));
+    particle_set.push_back(VEC3(0.0,  3.0 * cm, 3.0 * cm));
+
+    particle_set.push_back(VEC3(0.0, -5.0 * cm, 3.0 * cm));
+    particle_set.push_back(VEC3(0.0,  5.0 * cm, 3.0 * cm));
+*/
+
+    for (std::vector<VEC3>::const_iterator ite(particle_set.begin());
+            ite != particle_set.end();
+            ++ite)
+    {
+         g_meta_ball.addControlPoint(density_function_parameter, *ite);
+         centre += *ite;
+         ++count;
+    }
+
+
+    /*
     for (std::vector<ParticleSystem::Particle>::const_iterator ite(g_particle_system.m_particle_set.begin());
             ite != g_particle_system.m_particle_set.end();
             ++ite)
@@ -1507,24 +1544,27 @@ void extractIsoSurface()
              centre += ite->m_position;
              ++count;
          }
-
-    }
+    }*/
 
     centre /= double(count);
 
-    g_number_of_voxel = Vec3ui(
-            g_scaling_factor * 64,
-            g_scaling_factor * 64,
-            g_scaling_factor * 64);
+    Vec3ui number_of_voxel = g_scaling_factor * g_initial_number_of_voxel;
+
+
+
 
     VEC3 voxel_size(
             0.5 * cm / g_scaling_factor,
             0.5 * cm / g_scaling_factor,
             0.5 * cm / g_scaling_factor);
 
-    g_meta_ball.voxelise(g_number_of_voxel,
+    g_meta_ball.voxelise(number_of_voxel,
             centre,
             voxel_size);
+
+    g_meta_ball.writeVoxelData("voxel_data.mhd");
+    std::cout << "Volume size: " << number_of_voxel << std::endl;
+
     g_meta_ball.extractIsoSurface(g_threshold);
 
     // Set geometry
@@ -1687,3 +1727,58 @@ void displayHelp()
 
     popEnableDisableState();
 }
+
+
+void takeScreenshot(const std::string& aFileName)
+{
+    // Code adapted from:
+    // https://www.opengl.org/discussion_boards/showthread.php/129137-Taking-screenshots-How-to
+
+    int HEADER_SIZE = 18;
+    unsigned char *buffer;
+    int w = g_current_main_window_width;
+    int h = g_current_main_window_height;
+    int buf_size = HEADER_SIZE + (w * h * 3);
+    int i;
+    unsigned char temp;
+    FILE *out_file;
+
+    // open file for output
+    if (!(out_file = fopen(aFileName.data(), "wb")))
+        {
+        return;
+        }
+
+    // allocate mem to read from frame buf
+    if (!(buffer = (unsigned char *) calloc(1, buf_size)))
+        {
+        return;
+        }
+
+    // set header info
+    buffer[2] = 2;    // uncompressed
+    buffer[12] = w & 255;
+    buffer[13] = w >> 8;
+    buffer[14] = h & 255;
+    buffer[15] = h >> 8;
+    buffer[16] = 24;    // 24 bits per pix
+
+    // read frame buf
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer + HEADER_SIZE);
+
+    // RGB to BGR
+    for (i = HEADER_SIZE; i < buf_size; i += 3)
+        {
+        temp = buffer[i];
+        buffer[i] = buffer[i + 2];
+        buffer[i + 2] = temp;
+        }
+
+    // write header + color buf to file
+    fwrite(buffer, sizeof(unsigned char), buf_size, out_file);
+
+    // cleanup
+    fclose(out_file);
+    free(buffer);
+}
+
