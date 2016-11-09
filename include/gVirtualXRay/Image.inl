@@ -3154,7 +3154,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     for(iVertexTest = 0; iVertexTest < 8; iVertexTest++)
                         {
                         if((!aTwoThresholdFlag && afCubeValue[iVertexTest] <= aFirstThesholdValue) ||
-                                (aTwoThresholdFlag && !(aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue)))
+                                (aTwoThresholdFlag && (aFirstThesholdValue <= afCubeValue[iVertexTest] && afCubeValue[iVertexTest] <= aSecondThresholdValue)))
                             {
                             iFlagIndex |= 1<<iVertexTest;
                             }
