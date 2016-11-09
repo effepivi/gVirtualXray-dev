@@ -150,6 +150,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
+//  Defines
+//******************************************************************************
+#define PREFIX ".."
+
+
+//******************************************************************************
 //  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
@@ -236,8 +242,6 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 
     m_display_beam(true),
 
-    m_p_p4_polygon_mesh_set(),
-    m_p_p5_polygon_mesh_set(),
     m_current_patient(P4),
 
     m_display_wireframe(false),
@@ -249,13 +253,8 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SOURCE_DETECTOR),
 
-    m_shadow_map(),
-
-    #undef HAS_FREETYPE
-
-    #ifdef HAS_FREETYPE
     m_display_help(true),
-    #endif
+    m_has_freetype(true),
 
     m_swap_patient(false),
 
@@ -458,8 +457,7 @@ void AnatomicalDataHandler::draw()
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Draw the help message
-#ifdef HAS_FREETYPE
-    if (m_display_help)
+    if (m_display_help && m_has_freetype)
         {
         displayHelp();
 
@@ -467,7 +465,6 @@ void AnatomicalDataHandler::draw()
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
-#endif
 
     // Restore the current transformation matrix
     popModelViewMatrix();
@@ -595,10 +592,18 @@ void AnatomicalDataHandler::initGL()
 void AnatomicalDataHandler::initFreeType()
 //----------------------------------------
 {
-#ifdef HAS_FREETYPE
-    m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16 * 27);
-    m_display_help = true;
-#endif
+    try
+        {
+        m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16 * 27);
+        m_display_help = true;
+        m_has_freetype = true;
+        }
+    catch (const std::exception& error)
+        {
+        m_display_help = false;
+        m_has_freetype = false;
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        }
 }
 
 
@@ -868,12 +873,12 @@ void AnatomicalDataHandler::render()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
 
-        handle = glGetUniformLocation(shader_id, "g_shadow_map");
-        glUniform1i(handle,0);
+        //##handle = glGetUniformLocation(shader_id, "g_shadow_map");
+        //##glUniform1i(handle, 0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadow_matrix.get());
+       //## handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
+        //##glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadow_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
@@ -895,8 +900,7 @@ void AnatomicalDataHandler::render()
         glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        GLint lighting;
-        lighting = 1;
+        GLint lighting(1);
         handle = glGetUniformLocation(shader_id,"g_use_lighting");
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -917,14 +921,14 @@ void AnatomicalDataHandler::render()
         applyModelViewMatrix();
 
         // Display the current patient
-        if (m_current_patient == P4)
+      /*##  if (m_current_patient == P4)
             {
             displayPatient(m_p_p4_polygon_mesh_set, shader_id);
             }
         else
             {
             displayPatient(m_p_p5_polygon_mesh_set, shader_id);
-            }
+            }*/
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -968,7 +972,7 @@ void AnatomicalDataHandler::render()
             glUniform4fv(handle, 1, &material_ambient[0]);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            lighting = 0;
+            GLint lighting(0);
             handle = glGetUniformLocation(shader_id,"g_use_lighting");
             glUniform1iv(handle, 1, &lighting);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -979,11 +983,11 @@ void AnatomicalDataHandler::render()
         //clean up the texture
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        // Disable the shader
-        popShaderProgram();
-
         // Restore the current transformation matrix
         popModelViewMatrix();
+
+        // Disable the shader
+        popShaderProgram();
 
         // Restore the attributes
         popEnableDisableState();
@@ -1007,7 +1011,7 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
                                            GLint aShaderID)
 //---------------------------------------------------------------------------------
 {
-    for(int i(apMeshSet.size()-1); i>=0; --i)
+     for(int i(apMeshSet.size()-1); i>=0; --i)
         {
         apMeshSet[i]->defineDisplayShaderInput(aShaderID);
 
@@ -1019,7 +1023,7 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
             {
             if(apMeshSet[i]->isTransparent())
                  {
-                /*pushEnableDisableState(GL_CULL_FACE);
+                pushEnableDisableState(GL_CULL_FACE);
                 pushEnableDisableState(GL_BLEND);
 
                 glDisable(GL_CULL_FACE);
@@ -1030,7 +1034,7 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
 
                 popEnableDisableState();
                 popEnableDisableState();
-            */  }
+              }
             else
                 {
                 apMeshSet[i]->display();
@@ -1040,11 +1044,10 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
 }
 
 
-//--------------------------
+//---------------------------------------
 void AnatomicalDataHandler::displayHelp()
-//--------------------------
+//---------------------------------------
 {
-#ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
         g_background_colour.getX(),
         g_background_colour.getY(),
@@ -1121,7 +1124,6 @@ void AnatomicalDataHandler::displayHelp()
         p_font_colour);
 
     popEnableDisableState();
-#endif
 }
 
 

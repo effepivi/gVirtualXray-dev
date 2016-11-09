@@ -428,13 +428,14 @@ private:
     /// The current acquisition type
     AnatomicalDataHandler::AcquisitionType m_acquisition_type;
 
-#ifdef HAS_FREETYPE
     /// Flag set to true when the help message is displayed, false otherwise
     bool m_display_help;
 
+    /// Flag set to true when Freetype is working well, false otherwise
+    bool m_has_freetype;
+
     /// The text renderer
     gVirtualXRay::TextRenderer m_font_rendered;
-#endif
 
     /// Flag set to true if the patients have to be swapped at the next
     /// iteration, false otherwise
