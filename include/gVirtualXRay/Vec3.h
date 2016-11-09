@@ -230,7 +230,17 @@ public:
      *  @return the dot product
      */
     //--------------------------------------------------------------------------
-    double operator*(const Vec3& aVector) const;
+    //double operator*(const Vec3& aVector) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Element-wise product
+    /**
+     *  @param aVector: the other vector
+     *  @return the new vector resulting of the element-wise product
+     */
+    //--------------------------------------------------------------------------
+    Vec3<T> elementWiseProduct(const Vec3& aVector) const;
 
 
     //--------------------------------------------------------------------------

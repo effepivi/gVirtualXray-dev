@@ -177,12 +177,20 @@ template<typename T> double Vec3<T>::dotProduct(const Vec3& aVector) const
     return (m_x * aVector.m_x + m_y * aVector.m_y + m_z * aVector.m_z);
 }
 
-
+/*
 //-----------------------------------------------------------------------
 template<typename T> double Vec3<T>::operator*(const Vec3& aVector) const
 //-----------------------------------------------------------------------
 {
     return (m_x * aVector.m_x + m_y * aVector.m_y + m_z * aVector.m_z);
+}*/
+
+
+//---------------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::elementWiseProduct(const Vec3& aVector) const
+//---------------------------------------------------------------------------------
+{
+    return (Vec3(m_x * aVector.m_x, m_y * aVector.m_y, m_z * aVector.m_z));
 }
 
 
@@ -461,7 +469,7 @@ template<typename T> Vec3<T> operator*(const double& aValue,
                                        const Vec3<T>& aVector)
 //-------------------------------------------------------------
 {
-    return Vec3 < T > (aVector.getX() * aValue, aVector.getY() * aValue, aVector.getZ() * aValue);
+    return Vec3<T>(aVector.getX() * aValue, aVector.getY() * aValue, aVector.getZ() * aValue);
 }
 
 
