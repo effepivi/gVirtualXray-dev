@@ -282,6 +282,13 @@ int GLWidget::handle(int event)
 void GLWidget::draw()
 //-------------------
 {
+    // Initialise OpenGL
+    if (m_is_first_time)
+    {
+        initializeGL();
+        m_is_first_time = false;
+    }
+
     // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
