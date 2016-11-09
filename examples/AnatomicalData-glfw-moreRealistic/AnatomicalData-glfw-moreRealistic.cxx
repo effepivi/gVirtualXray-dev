@@ -263,6 +263,16 @@ void keyCallback(GLFWwindow* apWindow,
                  int aModifierKey)
 //------------------------------------
 {
+    if (anAction == GLFW_PRESS)
+        {
+        switch (aKey)
+            {
+            case GLFW_KEY_Q:
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(apWindow, GL_TRUE);
+                break;
+            }
+        }
 }
 
 
