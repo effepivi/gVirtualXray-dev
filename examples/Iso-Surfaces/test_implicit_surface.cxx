@@ -232,7 +232,7 @@ bool g_make_threshold_bigger(true);
 float g_threshold(0.5);
 int g_selected_iso_surface(4);
 
-RATIONAL_NUMBER g_scaling_factor(0.25);
+RATIONAL_NUMBER g_scaling_factor(0.5);
 Vec3ui g_number_of_voxel(g_scaling_factor * 128, g_scaling_factor * 128, g_scaling_factor * 128);
 
 ImplicitSurface g_sphere_1;
@@ -448,8 +448,6 @@ int main(int argc, char** argv)
         // Add the geometry to the X-ray renderer
         loadImplicitSurface();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        g_xray_renderer.addInnerSurface(g_p_polygon_data);
 
         // Rotate the sample
         g_sample_rotation_matrix.rotate( 180, VEC3(0, 1, 0));
@@ -1409,6 +1407,9 @@ void updateXRayImage()
     // The X-ray image is not up-to-date
     if (!g_is_xray_image_up_to_date)
         {
+        // Make sure the polygon data is updated
+        g_xray_renderer.addOuterSurface(g_p_polygon_data);
+
         // Compute the X-Ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
