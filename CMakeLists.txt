@@ -296,6 +296,15 @@ ENDIF (NOT APPLE)
 #SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
 
 
+# OpenMP ######################################################################
+FIND_PACKAGE(OpenMP)
+IF (OPENMP_FOUND)
+
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP" ${OpenMP_CXX_FLAGS})
+
+ENDIF (OPENMP_FOUND)
+
+
 # GZIP ########################################################################
 FIND_PACKAGE(GZIP)
 IF (NOT GZIP_FOUND)
