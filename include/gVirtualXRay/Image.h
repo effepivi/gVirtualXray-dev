@@ -505,6 +505,24 @@ public:
 
 
     //------------------------------------------------------------------------
+    /// Save the image in a file using ITK
+    /**
+    * @param aFileName: the name of the file to write
+    */
+    //------------------------------------------------------------------------
+    void saveUsingITK(const char* aFileName) const;
+
+
+    //------------------------------------------------------------------------
+    /// Save the image in a file using ITK
+    /**
+    * @param aFileName: the name of the file to write
+    */
+    //------------------------------------------------------------------------
+    void saveUsingITK(const std::string& aFileName) const;
+
+
+    //------------------------------------------------------------------------
     /// Operator Equal to
     /**
     * @param anImage: the image to compare with

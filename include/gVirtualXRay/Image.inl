@@ -982,6 +982,9 @@ template<typename T> void Image<T>::save(const char* aFileName,
                                          const char* aComment) const
 //------------------------------------------------------------------
 {
+#ifdef HAS_ITK
+    saveUsingITK(aFileName);
+#else
     if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
     {
         saveASCII(aFileName);
@@ -1024,6 +1027,7 @@ template<typename T> void Image<T>::save(const char* aFileName,
                 "Unknown file format, to get it added to the library, "
                 "please contact Dr FP Vidal.");
     }
+#endif
 }
 
 
@@ -2166,6 +2170,66 @@ template<typename T> void Image<T>::saveTIFF(const std::string& aFileName,
 //------------------------------------------------------------------------
 {
     saveTIFF(aFileName.data(), anInvertLUTFlag);
+}
+
+
+//---------------------------------------------------------------------------
+template<typename T> void Image<T>::saveUsingITK(const char* aFileName) const
+//---------------------------------------------------------------------------
+{
+#ifdef HAS_ITK
+    typedef itk::Image< T, 3 >  ImageType;
+    typedef itk::ImageFileWriter<   ImageType > WriterType;
+
+    typename ImageType::RegionType region;
+    typename ImageType::IndexType start;
+    start[0] = 0;
+    start[1] = 0;
+    start[2] = 0;
+
+    typename ImageType::SizeType size;
+    size[0] = m_width;
+    size[1] = m_height;
+    size[2] = m_number_of_slices;
+
+    region.SetSize(size);
+    region.SetIndex(start);
+ 
+    typename ImageType::Pointer p_image(ImageType::New());
+    p_image->SetRegions(region);
+    p_image->Allocate();
+
+
+    typename ImageType::SpacingType spacing;
+    spacing[0] = m_spacing[0];
+    spacing[1] = m_spacing[1];
+    spacing[2] = m_spacing[2];
+    p_image->SetSpacing(spacing);
+
+    // Copy the pixel data
+    int number_of_pixels(m_width * m_height * m_number_of_slices);
+    std::copy(m_p_image,
+            m_p_image + number_of_pixels,
+            p_image->GetBufferPointer());
+
+    // Save the data
+    typename WriterType::Pointer p_writer(WriterType::New());
+    p_writer->SetFileName( aFileName );
+    p_writer->SetInput( p_image );
+    p_writer->Update();
+
+#else
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "ITK is not supported.");
+#endif
+}
+
+
+//----------------------------------------------------------------------------------
+template<typename T> void Image<T>::saveUsingITK(const std::string& aFileName) const
+//----------------------------------------------------------------------------------
+{
+    saveUsingITK(aFileName.data());
 }
 
 
