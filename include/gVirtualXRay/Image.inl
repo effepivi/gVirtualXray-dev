@@ -38,6 +38,15 @@
 #include <iostream>
 #include <typeinfo>
 
+#ifdef HAS_ITK
+#include <itkImage.h>
+#include <itkImageSeriesReader.h>
+#include <itkImageFileWriter.h>
+#include <itkNumericSeriesFileNames.h>
+#include "itkGDCMImageIO.h"
+#include "itkGDCMSeriesFileNames.h"
+#endif
+
 #ifdef HAS_GDCM
 #include <gdcmGlobal.h>
 
@@ -825,6 +834,80 @@ template<typename T> void Image<T>::load(const std::string& aFileName)
 //--------------------------------------------------------------------
 {
     load(aFileName.data());
+}
+
+
+//------------------------------------------------------------------
+template<typename T> void Image<T>::loadSeries(const char* aPattern,
+                                               int aFirstSliceIndex,
+                                               int aLastSliceIndex,
+                                               int anIncrementIndex)
+//------------------------------------------------------------------
+{
+#ifdef HAS_ITK
+
+    // Set some types
+    typedef T   PixelType;
+    const unsigned int Dimension = 3;
+
+    typedef itk::Image< PixelType, Dimension >  ImageType;
+    typedef itk::ImageSeriesReader< ImageType > ReaderType;
+    typedef itk::NumericSeriesFileNames    NameGeneratorType;
+
+    // Create the file names
+    NameGeneratorType::Pointer p_name_generator(NameGeneratorType::New());
+
+    p_name_generator->SetSeriesFormat(aPattern);
+    p_name_generator->SetStartIndex(aFirstSliceIndex);
+    p_name_generator->SetEndIndex(aLastSliceIndex);
+    p_name_generator->SetIncrementIndex(anIncrementIndex);
+    std::vector<std::string> p_name_set(p_name_generator->GetFileNames());
+
+    // Set the loader
+    typename ReaderType::Pointer p_reader(ReaderType::New());
+    p_reader->SetFileNames(p_name_set);
+    p_reader->Update();
+
+    // Get the image size
+    typename ImageType::RegionType region(p_reader->GetOutput()->GetLargestPossibleRegion());
+    typename ImageType::SizeType size(region.GetSize());
+
+    m_width            = size[0];
+    m_height           = size[1];
+    m_number_of_slices = size[2];
+
+    const typename ImageType::SpacingType spacing(p_reader->GetOutput()->GetSpacing());
+    m_spacing[0] = spacing[0];
+    m_spacing[1] = spacing[1];
+    m_spacing[2] = spacing[2];
+
+    // Release the memory if needed
+    if (m_p_image) delete [] m_p_image;
+
+    // Allocate the memory
+    int number_of_pixels(m_width * m_height * m_number_of_slices);
+    m_p_image = new T[number_of_pixels];
+
+    // Copy the pixel data
+    std::copy(p_reader->GetOutput()->GetBufferPointer(),
+            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels, 
+            m_p_image);
+
+#else
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "ITK is not supported.");
+#endif
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadSeries(const std::string& aPattern,
+                                               int aFirstSliceIndex, 
+                                               int aLastSliceIndex, 
+                                               int anIncrementIndex)
+//-------------------------------------------------------------------------
+{
+    loadSeries(aPattern.data(), aFirstSliceIndex, aLastSliceIndex, anIncrementIndex);
 }
 
 

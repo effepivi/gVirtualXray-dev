@@ -325,6 +325,12 @@ public:
     void load(const char* aFileName);
     void load(const std::string& aFileName);
 
+    void loadSeries(const char* aPattern, int aFirstSliceIndex, int aLastSliceIndex, int anIncrementIndex = 1);
+    void loadSeries(const std::string& aPattern, int aFirstSliceIndex, int aLastSliceIndex, int anIncrementIndex = 1);
+
+    void loadDicomSeries(const char* aDirectory);
+    void loadDicomSeries(const std::string& aDirectory);
+
     void loadASCII(const char* aFileName);
     void loadASCII(const std::string& aFileName);
 
