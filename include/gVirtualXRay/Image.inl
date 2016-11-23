@@ -41,6 +41,7 @@
 #ifdef HAS_ITK
 #include <itkImage.h>
 #include <itkImageSeriesReader.h>
+#include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkNumericSeriesFileNames.h>
 #include "itkGDCMImageIO.h"
@@ -250,7 +251,7 @@ template<typename T> void Image<T>::loadASCII(const char* aFileName)
         error_message += aFileName;
         error_message += ") is invalid";
 
-        throw error_message;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
     }
 
     // Release the memory
@@ -776,6 +777,9 @@ template<typename T> Image<T> Image<T>::log() const
 template<typename T> void Image<T>::load(const char* aFileName)
 //-------------------------------------------------------------
 {
+#ifdef HAS_ITK
+    loadUsingITK(aFileName);
+#else
     if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
     {
         loadASCII(aFileName);
@@ -826,6 +830,7 @@ template<typename T> void Image<T>::load(const char* aFileName)
                 "Unknown file format, to get it added to the library, "
                 "please contact Dr FP Vidal.");
     }
+#endif
 }
 
 
@@ -834,6 +839,65 @@ template<typename T> void Image<T>::load(const std::string& aFileName)
 //--------------------------------------------------------------------
 {
     load(aFileName.data());
+}
+
+
+//---------------------------------------------------------------------
+template<typename T> void Image<T>::loadUsingITK(const char* aFileName)
+//---------------------------------------------------------------------
+{
+#ifdef HAS_ITK
+
+    // Set some types
+    typedef T   PixelType;
+    const unsigned int Dimension = 3;
+
+    typedef itk::Image< PixelType, Dimension >  ImageType;
+    typedef itk::ImageFileReader < ImageType > ReaderType;
+
+    // Set the loader
+    typename ReaderType::Pointer p_reader(ReaderType::New());
+    p_reader->SetFileName(aFileName);
+    p_reader->Update();
+
+    // Get the image size
+    typename ImageType::RegionType region(p_reader->GetOutput()->GetLargestPossibleRegion());
+    typename ImageType::SizeType size(region.GetSize());
+
+    m_width            = size[0];
+    m_height           = size[1];
+    m_number_of_slices = size[2];
+
+    const typename ImageType::SpacingType spacing(p_reader->GetOutput()->GetSpacing());
+    m_spacing[0] = spacing[0];
+    m_spacing[1] = spacing[1];
+    m_spacing[2] = spacing[2];
+
+    // Release the memory if needed
+    if (m_p_image) delete [] m_p_image;
+
+    // Allocate the memory
+    int number_of_pixels(m_width * m_height * m_number_of_slices);
+    m_p_image = new T[number_of_pixels];
+
+    // Copy the pixel data
+    std::copy(p_reader->GetOutput()->GetBufferPointer(),
+            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels, 
+            m_p_image);
+
+#else
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "ITK is not supported.");
+#endif
+
+}
+
+
+//----------------------------------------------------------------------------
+template<typename T> void Image<T>::loadUsingITK(const std::string& aFileName)
+//----------------------------------------------------------------------------
+{
+    loadUsingITK(aFileName.data());
 }
 
 
@@ -2281,7 +2345,7 @@ template<typename T> double Image<T>::getSum() const
     // The image is empty
     if (!m_p_image)
         {
-        throw "Empty image";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
         }
 
     return (std::accumulate(&m_p_image[0], 
@@ -2329,7 +2393,7 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
 {
     if (m_width != anImage.m_width || m_height != anImage.m_height || m_number_of_slices != anImage.m_number_of_slices)
     {
-        throw "The images have different sizes";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The images have different sizes");
     }
     
     double sae(0.0);
@@ -2350,7 +2414,7 @@ template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
 {
     if (m_width != anImage.m_width || m_height != anImage.m_height || m_number_of_slices != anImage.m_number_of_slices)
     {
-        throw "The images have different sizes";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The images have different sizes");
     }
     
     double average1(getAverage());

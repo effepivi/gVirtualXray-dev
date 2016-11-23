@@ -327,6 +327,9 @@ public:
     void load(const char* aFileName);
     void load(const std::string& aFileName);
 
+    void loadUsingITK(const char* aFileName);
+    void loadUsingITK(const std::string& aFileName);
+
     void loadSeries(const char* aPattern, int aFirstSliceIndex, int aLastSliceIndex, int anIncrementIndex = 1);
     void loadSeries(const std::string& aPattern, int aFirstSliceIndex, int aLastSliceIndex, int anIncrementIndex = 1);
 
