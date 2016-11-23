@@ -911,6 +911,71 @@ template<typename T> void Image<T>::loadSeries(const std::string& aPattern,
 }
 
 
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadDicomSeries(const char* aDirectory)
+//-------------------------------------------------------------------------
+{
+#ifdef HAS_ITK
+
+    // Set some types
+    typedef T   PixelType;
+    const unsigned int Dimension = 3;
+
+    typedef itk::Image< PixelType, Dimension >  ImageType;
+    typedef itk::ImageSeriesReader< ImageType > ReaderType;
+    typedef itk::GDCMSeriesFileNames InputNamesGeneratorType;
+
+    // Create the file names
+    InputNamesGeneratorType::Pointer p_name_generator(InputNamesGeneratorType::New());
+    p_name_generator->SetInputDirectory(aDirectory);
+    const typename ReaderType::FileNamesContainer& p_name_set(p_name_generator->GetInputFileNames());
+
+    // Set the loader
+    typename ReaderType::Pointer p_reader(ReaderType::New());
+    p_reader->SetFileNames(p_name_set);
+    p_reader->Update();
+
+    // Get the image size
+    typename ImageType::RegionType region(p_reader->GetOutput()->GetLargestPossibleRegion());
+    typename ImageType::SizeType size(region.GetSize());
+
+    m_width            = size[0];
+    m_height           = size[1];
+    m_number_of_slices = size[2];
+
+    const typename ImageType::SpacingType spacing(p_reader->GetOutput()->GetSpacing());
+    m_spacing[0] = spacing[0];
+    m_spacing[1] = spacing[1];
+    m_spacing[2] = spacing[2];
+
+    // Release the memory if needed
+    if (m_p_image) delete [] m_p_image;
+
+    // Allocate the memory
+    int number_of_pixels(m_width * m_height * m_number_of_slices);
+    m_p_image = new T[number_of_pixels];
+
+    // Copy the pixel data
+    std::copy(p_reader->GetOutput()->GetBufferPointer(),
+            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels, 
+            m_p_image);
+
+#else
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "ITK is not supported.");
+#endif
+}
+
+
+//--------------------------------------------------------------------------------
+template<typename T> void Image<T>::loadDicomSeries(const std::string& aDirectory)
+//--------------------------------------------------------------------------------
+{
+    loadDicomSeries(aDirectory.data());
+}
+
+
+
 //------------------------------------------------------------------
 template<typename T> void Image<T>::save(const char* aFileName,
                                          bool anInvertLUTFlag,
@@ -3370,6 +3435,44 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
     }
 
     return (iso_surface);
+}
+
+
+//---------------------------------------------
+std::string getPixelType(const char* aFileName)
+//---------------------------------------------
+{
+#ifdef HAS_ITK
+    // Create a type
+    typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
+
+    // Create an imageIO based on the first file
+    itk::ImageIOBase::Pointer imageIO(itk::ImageIOFactory::CreateImageIO(aFileName, itk::ImageIOFactory::ReadMode));
+
+    // Cannot create the imageIO
+    if (!imageIO)
+        {
+        std::stringstream error_message;
+        error_message << "Could not CreateImageIO for \"" << aFileName << "\"";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
+    imageIO->SetFileName(aFileName);
+    imageIO->ReadImageInformation();
+
+    const ScalarPixelType pixelType = imageIO->GetComponentType();
+    
+    return (std::string(imageIO->GetComponentTypeAsString(pixelType)));
+#else
+    return (std::string("unknown"));
+#endif
+}
+
+
+//----------------------------------------------------
+std::string getPixelType(const std::string& aFileName)
+//----------------------------------------------------
+{
+    return (getPixelType(aFileName.data()));
 }
 
 

@@ -57,6 +57,8 @@ class PolygonMesh;
 template<typename T> Image<T> operator*(const T& aValue, const Image<T>& anImage);
 template<typename T> Image<T> operator/(const T& aValue, const Image<T>& anImage);
 template<typename T> Image<T> log(const Image<T>& anImage);
+std::string getPixelType(const std::string& aFileName);
+std::string getPixelType(const char* aFileName);
 
 
 //==============================================================================
