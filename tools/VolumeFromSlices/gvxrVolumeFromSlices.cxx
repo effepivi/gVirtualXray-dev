@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		gvxrMonoEnergy.cxx
+*	@file		gvxrVolumeFromSlices.cxx
 *
 *	@brief		Command line tool to convert a series of 2D slices into
 *               a 3D volume.
@@ -69,68 +69,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <string>
+#include <cstdio>
 
 #ifdef HAS_ITK
 #include <itkMacro.h>
 #endif
 
-/*
-#include <stdlib.h>
-#include <ctime>
-#include <algorithm>
-*/
 #include "cmdline.h"
-/*
-#ifdef HAS_BUNDLE
-#include <boost/filesystem.hpp>
-#endif
-
-#define GLFW_INCLUDE_GLCOREARB 1
-#include <GLFW/glfw3.h>
-
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
-#ifndef GVXR_UNITS_H
-#include "gVirtualXRay/Units.h"
-#endif
-
-#ifndef GVXR_POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
-#endif
-
-#ifndef GVXR_CUBE_MESH_H
-#include "gVirtualXRay/CubeMesh.h"
-#endif
-
-#ifndef GVXR_XRAY_BEAM_H
-#include "gVirtualXRay/XRayBeam.h"
-#endif
-
-#ifndef GVXR_XRAY_DETECTOR_H
-#include "gVirtualXRay/XRayDetector.h"
-#endif
-
-#ifndef GVXR_OPENGL_UTILITIES_H
-#include "gVirtualXRay/OpenGLUtilities.h"
-#endif
-
-#ifndef GVXR_MATRIX4X4_H
-#include "gVirtualXRay/Matrix4x4.h"
-#endif
-
-#ifndef GVXR_XRAY_RENDERER_H
-#include "gVirtualXRay/XRayRenderer.h"
-#endif
-
-#ifndef GVXR_SHADER_H
-#include "gVirtualXRay/Shader.h"
-#endif
-
-#ifndef GVXR_UTILITIES_H
-#include "gVirtualXRay/Utilities.h"
-#endif*/
 
 #ifndef __Image_h
 #include "gVirtualXRay/Image.h"
@@ -145,16 +90,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-
-
-//******************************************************************************
-//	Global variables
-//******************************************************************************
-
-
-//******************************************************************************
-//	Function declaration
-//******************************************************************************
 
 
 //-----------------------------
@@ -195,14 +130,106 @@ int main(int argc, char** argv)
             output_file_name = ai.output_arg;
             }
         
-        // Create an image
-        Image<float> temp_image;
+        char first_file[2048];
+        if (sprintf (first_file, pattern.data(), first_slice) < 0)
+            {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create the file name of the first slice.");
+            }
         
-        // Load the series
-        temp_image.loadSeries(pattern, first_slice, last_slice, 1);
-        
-        // Save the volume into a file
-        temp_image.save(output_file_name);
+        std::string pixel_type(getPixelType(first_file));
+
+        if (pixel_type == "short")
+            {
+            // Create an image
+            Image<short> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "unsigned short")
+            {
+            // Create an image
+            Image<unsigned short> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "int")
+            {
+            // Create an image
+            Image<int> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "unsigned int")
+            {
+            // Create an image
+            Image<unsigned int> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "char")
+            {
+            // Create an image
+            Image<char> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "unsigned char")
+            {
+            // Create an image
+            Image<unsigned char> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "float")
+            {
+            // Create an image
+            Image<float> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else if (pixel_type == "double")
+            {
+            // Create an image
+            Image<double> temp_image;
+            
+            // Load the series
+            temp_image.loadSeries(pattern, first_slice, last_slice, 1);
+            
+            // Save the volume into a file
+            temp_image.save(output_file_name);
+            }
+        else
+            {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: unknown pixel type.");
+            }
         }
 	// Catch exception if any
 #ifdef HAS_ITK

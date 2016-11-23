@@ -94,16 +94,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
-//******************************************************************************
-//	Global variables
-//******************************************************************************
-
-
-//******************************************************************************
-//	Function declaration
-//******************************************************************************
-
-
 //-----------------------------
 int main(int argc, char** argv)
 //-----------------------------
@@ -228,6 +218,10 @@ int main(int argc, char** argv)
             
             // Save the volume into a file
             temp_image.save(output_file_name);
+            }
+        else
+            {
+	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: unknown pixel type.");
             }
         }
 	// Catch exception if any
