@@ -3636,11 +3636,48 @@ template<typename T> Image<T> operator/(const T& aValue,
 }
 
 
+//--------------------------------------------------------------
+template<typename T> Image<T> operator+(const T& aValue,
+                                        const Image<T>& anImage)
+//--------------------------------------------------------------
+{
+    return (anImage + aValue);
+}
+
+
+//--------------------------------------------------------------
+template<typename T> Image<T> operator-(const T& aValue,
+                                        const Image<T>& anImage)
+//--------------------------------------------------------------
+{
+    Image<T> temp_image(anImage);
+
+    unsigned int number_of_voxels(temp_image.getWidth() * temp_image.getHeight() * temp_image.getDepth());
+    T* p_temp(temp_image.getRawData());
+
+    #pragma omp parallel for
+    for (unsigned int i = 0; i < number_of_voxels; ++i, ++p_temp)
+    {
+        *p_temp = aValue - *p_temp;
+    }
+
+    return (temp_image);
+}
+
+
 //--------------------------------------------------------
 template<typename T> Image<T> log(const Image<T>& anImage)
 //--------------------------------------------------------
 {
     return (anImage.log());
+}
+
+
+//--------------------------------------------------------
+template<typename T> Image<T> abs(const Image<T>& anImage)
+//--------------------------------------------------------
+{
+    return (anImage.abs());
 }
 
 
