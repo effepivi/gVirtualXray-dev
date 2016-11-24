@@ -146,6 +146,18 @@ IF (gVirtualXRay_USE_SYSTEM_LIBTIFF)
 ENDIF()
 
 
+# ITK
+SET(gVirtualXRay_USE_ITK "@USE_ITK@")
+IF (gVirtualXRay_USE_ITK)
+    FIND_PACKAGE (ITK REQUIRED)
+
+    include(${ITK_USE_FILE})
+    
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ITK_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARIES ${gVirtualXRay_LIBRARIES} ${ITK_LIBRARIES})
+ENDIF()
+
+
 # NIST's XCOM database
 SET(gVirtualXRay_HAS_XCOM "@HAS_XCOM@")
 SET(gVirtualXRay_USE_SYSTEM_XCOM "@USE_SYSTEM_XCOM@")

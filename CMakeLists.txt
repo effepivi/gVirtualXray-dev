@@ -373,6 +373,8 @@ ENDIF (OPENGL_FOUND)
 # ITK #########################################################################
 FIND_PACKAGE(ITK)
 IF (ITK_FOUND)
+    SET (USE_ITK ON)
+    
     include(${ITK_USE_FILE})
 
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ITK")
