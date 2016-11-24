@@ -381,7 +381,7 @@ IF (ITK_FOUND)
     SET (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
 ELSE(ITK_FOUND)
     MESSAGE(WARNING "ITK not found, it will be disable.")
-ENDIF (OPENGL_FOUND)
+ENDIF (ITK_FOUND)
 
 
 # ZLIB #########################################################################
