@@ -1363,7 +1363,7 @@ template<typename T> void Image<T>::loadRAW(const char* aFileName,
     // Allocate the memory
     m_p_image = new T[m_width * m_height * m_number_of_slices];
 
-    // Out of memeory
+    // Out of memory
     if (m_width && m_height && m_number_of_slices && !m_p_image)
         {
         throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
