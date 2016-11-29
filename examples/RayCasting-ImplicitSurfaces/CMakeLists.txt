@@ -46,6 +46,10 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
+SET (RESOURCES_SOURCES 
+        "${RESOURCES_SOURCES}"
+        ray_casting_gl2.frag ray_casting_gl2.vert
+        ray_casting_gl3.frag ray_casting_gl3.vert)
 CreateHeaderFiles("." "BinaryRayCastingImplicitSurfacesFiles" "${RESOURCES_SOURCES}")
 
 
