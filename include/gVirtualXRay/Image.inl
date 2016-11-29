@@ -3566,9 +3566,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 }
 
 
-//---------------------------------------------
-std::string getPixelType(const char* aFileName)
-//---------------------------------------------
+//----------------------------------------------------
+inline std::string getPixelType(const char* aFileName)
+//----------------------------------------------------
 {
 #ifdef HAS_ITK
     // Create a type
@@ -3596,9 +3596,9 @@ std::string getPixelType(const char* aFileName)
 }
 
 
-//----------------------------------------------------
-std::string getPixelType(const std::string& aFileName)
-//----------------------------------------------------
+//-----------------------------------------------------------
+inline std::string getPixelType(const std::string& aFileName)
+//-----------------------------------------------------------
 {
     return (getPixelType(aFileName.data()));
 }
