@@ -120,10 +120,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef __StereoHelper_h
-#include "gVirtualXRay/StereoHelper.h"
-#endif
-
 #ifndef __ImplicitSurface_h
 #include "gVirtualXRay/ImplicitSurface.h"
 #endif
@@ -166,7 +162,6 @@ const int SCENE(1);
 const int OBJECT(2);
 const int DETECTOR(3);
 
-const double g_initial_intraocular_distance(1.5 * cm); // Intraocular distance
 const double g_initial_fovy(45);        // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);  // Near clipping plane
 const double g_initial_far(500.0 * cm); // Far clipping plane
@@ -214,8 +209,6 @@ XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_renderer;
 Shader g_display_shader;
-
-StereoHelper g_stereo_helper;
 
 bool g_is_xray_image_up_to_date(false);
 int g_rotation_mode(NONE);
@@ -299,15 +292,9 @@ void loadImplicitSurface();
 
 void updateXRayImage();
 
-
 void render();
 
 void draw();
-
-void drawMono();
-
-void drawStereo();
-
 
 void setCurrentEye();
 
@@ -338,11 +325,8 @@ int main(int argc, char** argv)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-        // Enable quad-buffering if possible
-        glfwWindowHint(GLFW_STEREO, GL_TRUE);
-
         // Enable anti-aliasing
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        glfwWindowHint(GLFW_SAMPLES, 16);
 
         // Create the window title
         std::stringstream window_title;
@@ -355,21 +339,6 @@ int main(int argc, char** argv)
                 window_title.str().data(),
                 NULL,
                 NULL);
-
-        // Window cannot be created 
-        if (!g_p_main_window_id)
-            {
-            // Disable quad-buffering
-            glfwWindowHint(GLFW_STEREO, GL_FALSE);
-
-            // Create the window
-            g_p_main_window_id = glfwCreateWindow(
-                    g_current_main_window_width,
-                    g_current_main_window_height,
-                    window_title.str().data(),
-                    NULL,
-                    NULL);
-            }
         
         // Window cannot be created 
         if (!g_p_main_window_id)
@@ -385,16 +354,6 @@ int main(int argc, char** argv)
 
         // Initialise GLEW
         initialiseGLEW();
-
-         // Is stereo enable
-        if (g_stereo_helper.enable())
-            {
-            std::cout << "Stereo is enable." << std::endl;
-            }
-        else
-            {
-            std::cout << "Stereo is not enable." << std::endl;
-            }
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the OpenGL version
@@ -413,14 +372,6 @@ int main(int argc, char** argv)
 
         // Check the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Set the stereo parameters
-        g_stereo_helper.setIntraocularDistance(g_initial_intraocular_distance);
-        g_stereo_helper.setFieldOfViewY(g_initial_fovy);
-        g_stereo_helper.setNear(g_initial_near);
-        g_stereo_helper.setFar(g_initial_far);
-        g_stereo_helper.setScreenProjectionPlane(
-                g_initial_screen_projection_plane);
 
         // Initialize GLFW callback
         glfwSetKeyCallback(g_p_main_window_id, keyCallback);
@@ -823,8 +774,6 @@ void draw()
     GLint back_buffer(0);
     glGetIntegerv(GL_DRAW_BUFFER, &back_buffer);
 
-    g_stereo_helper.swapEye();
-
     // Clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -836,26 +785,6 @@ void draw()
 
     // Restore the draw buffer if needed
     glDrawBuffer(back_buffer);
-}
-
-
-//---------------
-void drawStereo()
-//---------------
-{
-    if (g_stereo_helper.enable())
-        {
-        draw();
-        draw();
-        }
-}
-
-
-//-------------
-void drawMono()
-//-------------
-{
-    draw();
 }
 
 
@@ -875,17 +804,9 @@ void display()
     // Update the X-ray image
     updateXRayImage();
 
-    // Use stereo
-    if (g_stereo_helper.isActive())
-        {
-        drawStereo();
-        }
-    // Cannot use stereo
-    else
-        {
-        drawMono();
-        }
-
+    // Display using OpenGL
+    draw();
+    
     // Restore the current transformation matrix
     popModelViewMatrix();
     popProjectionMatrix();
@@ -917,16 +838,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_Q:
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-                break;
-
-            case GLFW_KEY_O:
-                g_stereo_helper.setIntraocularDistance(
-                        g_stereo_helper.getIntraocularDistance() + 5.0 * mm);
-                break;
-
-            case GLFW_KEY_P:
-                g_stereo_helper.setIntraocularDistance(
-                        g_stereo_helper.getIntraocularDistance() - 5.0 * mm);
                 break;
 
             case GLFW_KEY_RIGHT:
@@ -1130,7 +1041,6 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 
     double screen_aspect_ratio(double(g_current_main_window_width) /
             double(g_current_main_window_height));
-    g_stereo_helper.setScreenAspectRatio(screen_aspect_ratio);
 
     glViewport(x, y, w, h);
 
@@ -1498,7 +1408,7 @@ void extractIsoSurface()
     unsigned int count(0);
 
     particle_set.push_back(VEC3(-5.0 * cm, -2.0 * cm, 0.0));
-    particle_set.push_back(VEC3(-2.5 * cm, -2.0 * cm, 0.0));
+ /*   particle_set.push_back(VEC3(-2.5 * cm, -2.0 * cm, 0.0));
     particle_set.push_back(VEC3( 0.0 * cm, -2.0 * cm, 0.0));
     particle_set.push_back(VEC3( 2.5 * cm, -2.0 * cm, 0.0));
     particle_set.push_back(VEC3( 5.0 * cm, -2.0 * cm, 0.0));
@@ -1514,7 +1424,7 @@ void extractIsoSurface()
     particle_set.push_back(VEC3( 0.0 * cm,  2.0 * cm, 0.0));
     particle_set.push_back(VEC3( 2.5 * cm,  2.0 * cm, 0.0));
     particle_set.push_back(VEC3( 5.0 * cm,  2.0 * cm, 0.0));
-
+*/
     /*
     particle_set.push_back(VEC3(0.0, -3.0 * cm, 3.0 * cm));
     particle_set.push_back(VEC3(0.0,  3.0 * cm, 3.0 * cm));
@@ -1614,13 +1524,6 @@ void displayHelp()
 
     g_font_rendered.renderText(
             std::string("\'h\': display|hide help message"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    g_font_rendered.renderText(
-            std::string("\'s\': toggle stereo"),
             40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
