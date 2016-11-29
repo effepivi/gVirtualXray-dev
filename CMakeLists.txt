@@ -371,19 +371,24 @@ ENDIF (OPENGL_FOUND)
 
 
 # ITK #########################################################################
-FIND_PACKAGE(ITK)
-IF (ITK_FOUND)
-    SET (USE_ITK ON)
+OPTION(USE_ITK       "Use ITK"       ON)
+
+IF (USE_ITK)
+    FIND_PACKAGE(ITK)
     
-    include(${ITK_USE_FILE})
+    IF (ITK_FOUND)
+    
+        include(${ITK_USE_FILE})
 
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ITK")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ITK")
 
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ITK_INCLUDE_DIRS}")
-    SET (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-    MESSAGE(WARNING "ITK not found, it will be disable.")
-ENDIF (ITK_FOUND)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ITK_INCLUDE_DIRS}")
+        SET (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
+    ELSE(ITK_FOUND)
+        MESSAGE(WARNING "ITK not found, it will be disable.")
+        SET (USE_ITK OFF)
+    ENDIF (ITK_FOUND)
+ENDIF (USE_ITK)
 
 
 # ZLIB #########################################################################
