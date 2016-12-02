@@ -3656,9 +3656,9 @@ template<typename T> Image<T> operator-(const T& aValue,
     T* p_temp(temp_image.getRawData());
 
     #pragma omp parallel for
-    for (unsigned int i = 0; i < number_of_voxels; ++i, ++p_temp)
+    for (unsigned int i = 0; i < number_of_voxels; ++i)
     {
-        *p_temp = aValue - *p_temp;
+        p_temp[i] = aValue - p_temp[i];
     }
 
     return (temp_image);
