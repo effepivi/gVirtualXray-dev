@@ -228,7 +228,7 @@ bool g_make_threshold_bigger(true);
 float g_threshold(1.5);
 
 //RATIONAL_NUMBER g_scaling_factor(30);
-RATIONAL_NUMBER g_scaling_factor(50);
+RATIONAL_NUMBER g_scaling_factor(5);
 Vec3ui g_initial_number_of_voxel(30, 25, 7);
 
 ImplicitSurface g_meta_ball;
@@ -330,7 +330,7 @@ int main(int argc, char** argv)
 
         // Create the window title
         std::stringstream window_title;
-        window_title << "gVirtualXRay -- Implicit surface/Marching cubes test";
+        window_title << "gVirtualXRay -- Implicit surface/Marching cubes/Ray-casting";
 
         // Create a windowed mode window and its OpenGL context
         g_p_main_window_id = glfwCreateWindow(
