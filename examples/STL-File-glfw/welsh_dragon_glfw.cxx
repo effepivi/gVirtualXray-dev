@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glew.h>
 #endif
 
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -82,59 +82,59 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
-#ifndef GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_STEREO_HELPER_H
+#ifndef __StereoHelper_h
 #include "gVirtualXRay/StereoHelper.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
+#ifndef __TextRenderer_h
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
@@ -201,11 +201,14 @@ Matrix4x4<GLfloat> g_text_2D_projection_matrix;
 
 GLfloat g_incident_energy(80.0 * keV);
 VEC2 g_detector_size(320.0 * mm, 320.0 * mm);
+//Vec2ui g_number_of_pixels(2, 2);
 Vec2ui g_number_of_pixels(640, 640);
 GLfloat g_resolution(g_detector_size.getX() / g_number_of_pixels.getX());
 
-VEC3 g_source_position(   0.0, 0.0, -40.0 * cm);
-VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
+//VEC3 g_source_position(8.0*cm, 8.0*cm, -40.0 * cm);
+//VEC3 g_detector_position(8.0*cm, 8.0*cm,  10.0 * cm);
+VEC3 g_source_position(0.0*cm, 0.0*cm, -40.0 * cm);
+VEC3 g_detector_position(0.0*cm, 0.0*cm,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
@@ -868,10 +871,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             		break;
 
         	case GLFW_KEY_Z:
-            		//g_xray_renderer.printLBuffer(PREFIX"/data/lbuffer.mhd");
-            		//g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
-            		//g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
-            		//g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
+            		g_xray_renderer.printLBuffer(PREFIX"/data/lbuffer.mhd");
+            		g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
+            		g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
+            		g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
             		break;
 
 		case GLFW_KEY_Q:
@@ -1299,7 +1302,7 @@ void loadSource()
 {
 	// Set the energy
 	g_xray_beam.initialise(g_incident_energy);
-
+	g_xray_beam.addChannel(100, g_incident_energy);
 	// Set the source position
 	g_xray_detector.setXrayPointSource(g_source_position);
 	//g_xray_detector.setParallelBeam();
@@ -1431,6 +1434,14 @@ void idle()
 	if ((g_image_computed % 50) == 0)
 	{
 		std::cout << "FPS:\t" << g_fps << std::endl;
+		
+        //Matrix4x4<GLfloat> g_sample_rotation_matrix;
+        //g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), 1, 0);
+		//float simulated_energy_fluence(g_xray_renderer.getProjectionSet().getPixel(0,0, 0));
+		//std::cout.precision(4);
+		//std::cout << g_current_modelview_matrix << std::endl;
+		//std::cout << "The simulated energy fluence is " << simulated_energy_fluence << " MeV" << std::endl;
+		
 		g_image_computed = 0;
 	}
 }
