@@ -1157,7 +1157,9 @@ template<typename T> void Image<T>::loadMHD(const char* aFileName)
             {
             meta_header >> number_of_dimensions;
 
-            if (number_of_dimensions < 0 || 3 < number_of_dimensions)
+            // number_of_dimensions is always positive as
+            // it is an unsigned int
+            if (/*number_of_dimensions < 0 ||*/ 3 < number_of_dimensions)
                 {
                 std::stringstream error_message;
                 error_message << "The number of dimensions \"" << number_of_dimensions <<
