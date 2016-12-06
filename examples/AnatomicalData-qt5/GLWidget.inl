@@ -62,11 +62,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
@@ -184,10 +184,18 @@ inline void GLWidget::animate()
 inline void GLWidget::initFreeType()
 //----------------------------------
 {
-#ifdef HAS_FREETYPE
-    m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-    m_display_help = true;
-#endif
+    try
+    {
+        m_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        m_display_help = true;
+        m_has_freetype = true;
+    }
+    catch (const std::exception& error)
+    {
+        std::cerr << "WARNING:\t" << error.what() << std::endl;
+        m_display_help = false;
+        m_has_freetype = false;
+    }
 }
 
 
