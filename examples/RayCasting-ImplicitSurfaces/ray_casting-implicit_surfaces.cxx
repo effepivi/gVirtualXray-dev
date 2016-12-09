@@ -1472,7 +1472,8 @@ void extractIsoSurface()
             centre,
             voxel_size);
 
-    g_meta_ball.writeVoxelData("voxel_data.mhd");
+    // Do not save file
+    //g_meta_ball.writeVoxelData("voxel_data.mhd");
     std::cout << "Volume size: " << number_of_voxel << std::endl;
 
     g_meta_ball.extractIsoSurface(g_threshold);

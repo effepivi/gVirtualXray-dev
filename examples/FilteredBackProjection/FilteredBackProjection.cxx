@@ -2151,7 +2151,8 @@ void updateFilteredSinogram()
         scaling_factor *
         (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
     
-    raw_sinogram.saveASCII("raw_line.mat");
+    // Do not save image
+    // raw_sinogram.saveASCII("raw_line.mat");
 
     // Compute the FFTs
     FFT<float> sinogram_fft(raw_sinogram.getFFT());
@@ -2161,7 +2162,9 @@ void updateFilteredSinogram()
 
     // Compute the iFFTs
     ProjectionImageType filtered_projection(sinogram_fft.getInverseFFT());
-    filtered_projection.saveASCII("filtered_line.mat");
+    
+    // Do not save image
+    // filtered_projection.saveASCII("filtered_line.mat");
 
     memcpy(&(g_filtered_sinogram_data(0, g_current_angle,0)),
             filtered_projection.getRawData(),
