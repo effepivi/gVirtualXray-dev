@@ -776,9 +776,10 @@ INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTA
 set(gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/UsegVirtualXRay.cmake")
 configure_file(cmake/gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
-install(FILES ${gVirtualXRay_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
-    UsegVirtualXRay.cmake
-    DESTINATION ${gVirtualXRay_INSTALL_PACKAGE_DIR}
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
     COMPONENT Development)
 
 
