@@ -101,9 +101,9 @@ using namespace gVirtualXRay;
 bool Shader::m_shader_capable = false;
 
 
-//------------------
-void Shader::reset()
-//------------------
+//--------------------
+void Shader::release()
+//--------------------
 {
 	// Get the current program
 	GLint current_shader(0);
@@ -218,7 +218,7 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 //----------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
-	reset();
+	release();
 
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();
@@ -247,7 +247,7 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 //-------------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
-	reset();
+	release();
 
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();

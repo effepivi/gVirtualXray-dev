@@ -117,7 +117,7 @@ public:
 	///	Reset (delete the current shader if it is loaded, and restore default
 	///	values).
 	//--------------------------------------------------------------------------
-	void reset();
+	void release();
 
 
 	//--------------------------------------------------------------------------

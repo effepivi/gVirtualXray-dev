@@ -194,7 +194,7 @@ public:
 	///	Reset the renderer (release memory on the host and the device,
 	///	and restore default values).
 	//--------------------------------------------------------------------------
-	void reset();
+	void release();
 
 
 	//--------------------------------------------------------------------------

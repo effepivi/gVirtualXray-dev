@@ -168,6 +168,9 @@ public:
     virtual ~AnatomicalDataHandler();
 
 
+    void release();
+    
+
     unsigned int getWidth() const;
     unsigned int getHeight() const;
     
@@ -338,6 +341,7 @@ private:
     /// render the patient to the shadow map.
     //--------------------------------------------------------------------------
     void renderToShadowMap();
+
 
     /// Window width
     int m_width;

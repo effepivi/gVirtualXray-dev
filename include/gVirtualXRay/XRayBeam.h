@@ -39,16 +39,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		XRayBeam.h
+*   @file       XRayBeam.h
 *
-*	@brief		Class to manage X-Ray beams. The beam spectrum is discretised
-*				into energy channels.
+*   @brief      Class to manage X-Ray beams. The beam spectrum is discretised
+*               into energy channels.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		29/11/2013
+*   @date       29/11/2013
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -67,18 +67,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <vector>
 #include <iostream>
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_SPECTRUM_RECORD_H
+#ifndef __SpectrumRecord_h
 #include "gVirtualXRay/SpectrumRecord.h"
 #endif
 

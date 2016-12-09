@@ -66,6 +66,41 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 
+//------------------------------------------
+inline void AnatomicalDataHandler::release()
+//------------------------------------------
+{
+    m_width = 0;
+    m_height = 0;
+    
+    m_use_arc_ball = false;
+
+    m_xray_beam.clear();
+
+    m_xray_detector.release();
+
+    m_xray_renderer.release();
+
+    m_display_shader.release();
+
+    m_shadow_map.release();
+
+    for(unsigned int i(0); i < m_p_p4_polygon_mesh_set.size(); i++)
+        {
+        delete m_p_p4_polygon_mesh_set[i];
+        }
+    m_p_p4_polygon_mesh_set.clear();
+
+    for(unsigned int i(0); i < m_p_p5_polygon_mesh_set.size(); i++)
+        {
+        delete m_p_p5_polygon_mesh_set[i];
+        }
+    m_p_p5_polygon_mesh_set.clear();
+
+    m_font_rendered.release();
+}
+
+
 //---------------------------------------------------------
 inline unsigned int AnatomicalDataHandler::getWidth() const
 //---------------------------------------------------------

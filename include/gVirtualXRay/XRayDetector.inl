@@ -92,10 +92,24 @@ inline XRayDetector::XRayDetector():
 }
 
 
-//-----------------------------------
-inline 	XRayDetector::~XRayDetector()
-//-----------------------------------
+//----------------------------------
+inline XRayDetector::~XRayDetector()
+//----------------------------------
 {
+}
+
+
+//---------------------------------
+inline void XRayDetector::release()
+//---------------------------------
+{
+    m_p_xray_source_position_set.clear();
+    m_detector_geometry.reset();
+    m_parallel_beam.reset();
+    m_cone_beam.reset();
+    m_parallel_beam_highlight.reset();
+    m_cone_beam_highlight.reset();
+    m_source_mesh.reset();
 }
 
 

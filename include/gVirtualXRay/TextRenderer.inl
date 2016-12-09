@@ -90,6 +90,14 @@ namespace gVirtualXRay {
     inline TextRenderer::Character::~Character()
     //------------------------------------------
     {
+        release();
+    }
+
+
+    //--------------------------------------------
+    inline void TextRenderer::Character::release()
+    //--------------------------------------------
+    {
         if (m_texture_id)
         {
             glDeleteTextures(1, &m_texture_id);
@@ -110,10 +118,22 @@ namespace gVirtualXRay {
     inline TextRenderer::~TextRenderer()
     //----------------------------------
     {
+        release();
+    }
+
+
+    //---------------------------------
+    inline void TextRenderer::release()
+    //---------------------------------
+    {
 #ifdef HAS_FREETYPE
         m_character_set.clear();
+        m_text_vbo.reset();
+        m_display_text_shader.release();
+        m_initialised = false;
 #endif
     }
+
 
 
     //----------------------------------------------------------

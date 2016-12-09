@@ -148,6 +148,8 @@ private:
         virtual ~Character();
 
 
+        void release();
+
         unsigned int m_texture_id;    ///< The ID of the texture
         int m_width;            ///< The width of the bitmap
         int m_height;           ///< The height of the bitmap
@@ -174,6 +176,9 @@ public:
     virtual ~TextRenderer();
 
 
+    void release();
+
+    
     //--------------------------------------------------------------------------
     /// Initialise the default font.
     /**

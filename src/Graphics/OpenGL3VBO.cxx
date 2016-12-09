@@ -88,6 +88,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
+  //Define this somewhere in your header file
+  #define BUFFER_OFFSET(i) ((void*)(i))
+
 //----------------------------------------------
 OpenGL3VBO::OpenGL3VBO():
 //----------------------------------------------
@@ -138,7 +141,7 @@ void OpenGL3VBO::display() const
 		else
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
-			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, 0);
+			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, BUFFER_OFFSET(0));
 
 		    // Check the OpenGL error status
 		    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

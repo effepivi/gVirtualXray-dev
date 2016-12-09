@@ -251,8 +251,8 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 		throw InvalidImageSizeException(apDetector->getNumberOfPixels().getX(), apDetector->getNumberOfPixels().getY(), __FILE__, __FUNCTION__, __LINE__);
 	}
 
-	// Reset the X-ray detector
-	reset();
+	// Reset the X-ray renderer
+	release();
 
 	// Set the detector
 	m_p_detector = const_cast<XRayDetector*>(apDetector);
@@ -728,9 +728,9 @@ void XRayRenderer::loadMaterialSet()
 }
 
 
-//------------------------
-void XRayRenderer::reset()
-//------------------------
+//--------------------------
+void XRayRenderer::release()
+//--------------------------
 {
 	// Delete PBOs
 	for (std::vector<GLuint>::iterator ite(m_p_pbo_set.begin());
@@ -790,7 +790,7 @@ void XRayRenderer::reset()
 	{
 		try
 		{
-			ite->reset();
+			ite->release();
 		}
 		catch (std::exception& e)
 		{

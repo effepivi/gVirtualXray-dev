@@ -88,7 +88,7 @@ inline Shader::Shader():
 inline Shader::~Shader()
 //----------------------
 {
-	reset();
+	release();
 }
 
 

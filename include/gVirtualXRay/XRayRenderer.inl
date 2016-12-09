@@ -106,7 +106,7 @@ namespace gVirtualXRay {
     inline XRayRenderer::~XRayRenderer()
     //----------------------------------
     {
-        reset();
+        release();
     }
 
 

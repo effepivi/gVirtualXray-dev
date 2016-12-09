@@ -52,11 +52,38 @@ DepthMap::DepthMap(int map_size) :
 {
 }
 
+
 //------------------------------------------------------------------------
 DepthMap::~DepthMap()
 //------------------------------------------------------------------------
 {
+    release();
 }
+
+
+//----------------------
+void DepthMap::release()
+//----------------------
+{
+    m_is_initialized = false;
+
+    m_depth_shader.release();
+
+    if (m_map_frame_buffer)
+        {
+        glDeleteFramebuffers(1, &m_map_frame_buffer);
+        m_map_frame_buffer = 0;
+        }
+
+    if (m_map_texture)
+        {
+        glDeleteTextures(1, &m_map_texture);
+        m_map_texture = 0;
+        }
+
+    m_map_size = 0;
+}
+
 
 //------------------------------------------------------------------------
 void DepthMap::initialize()

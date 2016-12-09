@@ -268,15 +268,7 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 AnatomicalDataHandler::~AnatomicalDataHandler()
 //---------------------------------------------
 {
-    for(unsigned int i(0); i < m_p_p4_polygon_mesh_set.size(); i++)
-        {
-        delete m_p_p4_polygon_mesh_set[i];
-        }
-    
-    for(unsigned int i(0); i < m_p_p5_polygon_mesh_set.size(); i++)
-        {
-        delete m_p_p5_polygon_mesh_set[i];
-        }
+    release();
 }
 
 
@@ -921,14 +913,14 @@ void AnatomicalDataHandler::render()
         applyModelViewMatrix();
 
         // Display the current patient
-      /*##  if (m_current_patient == P4)
+        if (m_current_patient == P4)
             {
             displayPatient(m_p_p4_polygon_mesh_set, shader_id);
             }
         else
             {
             displayPatient(m_p_p5_polygon_mesh_set, shader_id);
-            }*/
+            }
 
         // Restore the current transformation matrix
         popModelViewMatrix();
