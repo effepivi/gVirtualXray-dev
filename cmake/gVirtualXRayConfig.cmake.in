@@ -146,6 +146,16 @@ IF (gVirtualXRay_USE_SYSTEM_LIBTIFF)
 ENDIF()
 
 
+# GDCM
+SET(gVirtualXRay_USE_SYSTEM_GDCM "@USE_SYSTEM_GDCM@")
+IF (gVirtualXRay_USE_SYSTEM_GDCM)
+    FIND_PACKAGE (GDCM REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${GDCM_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS}" "${GDCM_LIBRARY_DIR}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${GDCM_LIBRARIES}")
+ENDIF()
+
+
 # ITK
 SET(gVirtualXRay_USE_ITK "@USE_ITK@")
 IF (gVirtualXRay_USE_ITK)
@@ -158,6 +168,7 @@ IF (gVirtualXRay_USE_ITK)
 ENDIF()
 
 
+# OpenMP
 SET(gVirtualXRay_USE_OPENMP "@USE_OPENMP@")
 IF (gVirtualXRay_USE_OPENMP)
     FIND_PACKAGE (OpenMP)
