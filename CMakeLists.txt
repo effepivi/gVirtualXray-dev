@@ -299,10 +299,12 @@ ENDIF (NOT APPLE)
 # OpenMP ######################################################################
 FIND_PACKAGE(OpenMP)
 IF (OPENMP_FOUND)
-
+    SET (USE_OPENMP ON)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP")
     SET (requiredLibs ${requiredLibs} ${OpenMP_EXE_LINKER_FLAGS})
+ELSE (OPENMP_FOUND)
+    SET (USE_OPENMP OFF)
 ENDIF (OPENMP_FOUND)
 
 

@@ -158,6 +158,16 @@ IF (gVirtualXRay_USE_ITK)
 ENDIF()
 
 
+SET(gVirtualXRay_USE_OPENMP "@USE_OPENMP@")
+IF (gVirtualXRay_USE_OPENMP)
+    FIND_PACKAGE (OpenMP)
+
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
+    SET (gVirtualXRay_LIBRARIES ${gVirtualXRay_LIBRARIES} ${OpenMP_EXE_LINKER_FLAGS})
+ENDIF()
+
+
 # NIST's XCOM database
 SET(gVirtualXRay_HAS_XCOM "@HAS_XCOM@")
 SET(gVirtualXRay_USE_SYSTEM_XCOM "@USE_SYSTEM_XCOM@")
