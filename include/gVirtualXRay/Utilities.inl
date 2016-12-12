@@ -361,16 +361,6 @@ template<typename T> void swapBytes(T& aValue)
 }
 
 
-//----------------------------------------------------
-template<typename T> void swap(T& aValue1, T& aValue2)
-//----------------------------------------------------
-{
-    T temp(aValue1);
-    aValue1 = aValue2;
-    aValue2 = temp;
-}
-
-
 //-------------------------------------------------------------
 template<typename T> T degreeToRadian(const T& anAngleInDegree)
 //-------------------------------------------------------------

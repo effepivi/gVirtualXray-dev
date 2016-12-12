@@ -299,7 +299,6 @@ bool isLittleEndian();
 
 
 template<typename T> void swapBytes(T& aValue);
-template<typename T> void swap(T& aValue1, T& aValue2);
 
 template<typename T> T degreeToRadian(const T& aAngleInDegree);
 template<typename T> T radianToDegree(const T& aAngleInRadian);

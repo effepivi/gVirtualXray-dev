@@ -38,6 +38,11 @@
 #include <iostream>
 #include <typeinfo>
 
+// C++ 11
+#if __cplusplus > 199711L
+#include <utility>
+#endif
+
 #ifdef HAS_ITK
 #include <itkImage.h>
 #include <itkImageSeriesReader.h>
@@ -690,7 +695,7 @@ template<typename T> Image<T> Image<T>::flipVertically() const
             {
             for (unsigned int i = 0; i < m_width; ++i)
                 {
-                swap(
+                std::swap(
                     temp[k * m_height * m_width +                 j  * m_width + i],
                     temp[k * m_height * m_width + (m_height - 1 - j) * m_width + i]
                     );
@@ -715,7 +720,7 @@ template<typename T> Image<T> Image<T>::flipHorizontally() const
             {
             for (unsigned int i = 0; i < (m_width / 2); ++i)
                 {
-                swap(
+                std::swap(
                     temp[k * m_height * m_width + j * m_width +                i ],
                     temp[k * m_height * m_width + j * m_width + (m_width - 1 - i)]
                     );
