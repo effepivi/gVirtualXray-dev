@@ -600,7 +600,7 @@ ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
 
 # Linkage of the target ########################################################
 set_target_properties(gVirtualXRay PROPERTIES LINK_SEARCH_START_STATIC ON)
-SET (gVirtualXRay_LIBRARIES ${requiredLibs} ${optionalLibs} gVirtualXRay)
+SET (gVirtualXRay_LIBRARIES ${requiredLibs} ${optionalLibs} ${gVirtualXRay_LIBRARY})
 TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
