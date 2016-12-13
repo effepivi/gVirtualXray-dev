@@ -67,6 +67,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GL/glew.h"
 #endif
 
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
+
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -138,7 +144,12 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	// There was an error
 	if (error_code != GL_NO_ERROR)
 	{
-		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+	    std::cerr << "OpenGL error:" << gluErrorString(error_code) << std::endl;
+	    std::cerr << "\t- in File: " << aFileName << std::endl;
+	    std::cerr << "\t- in Function: " << aFunctionName << std::endl;
+	    std::cerr << "\t- at Line: " << aLineNumber << std::endl;
+
+		//throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
 }
 
