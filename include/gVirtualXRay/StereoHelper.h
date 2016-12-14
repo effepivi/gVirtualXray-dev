@@ -152,6 +152,15 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Accessor on the field of view along the y-axis
+	/**
+	*	return the field of view along the y-axis
+	*/
+	//--------------------------------------------------------------------------
+	double getFieldOfViewY() const;
+
+
+	//--------------------------------------------------------------------------
 	///	Set the near clipping plane
 	/**
 	*	@param aPlane: the near clipping plane
@@ -161,12 +170,30 @@ public:
 
 
 	//--------------------------------------------------------------------------
+	///	Accessor on the near clipping plane
+	/**
+	*	@return the near clipping plane
+	*/
+	//--------------------------------------------------------------------------
+	double getNear() const;
+
+
+	//--------------------------------------------------------------------------
 	///	Set the far clipping plane
 	/**
 	*	@param aPlane: the far clipping plane
 	*/
 	//--------------------------------------------------------------------------
 	void setFar(double aPlane);
+
+
+	//--------------------------------------------------------------------------
+	///	Accessor on the far clipping plane
+	/**
+	*	@return the far clipping plane
+	*/
+	//--------------------------------------------------------------------------
+	double getFar() const;
 
 
 	//--------------------------------------------------------------------------
