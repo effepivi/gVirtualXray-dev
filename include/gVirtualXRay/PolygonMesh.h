@@ -380,12 +380,35 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Use a vertex buffer object if possible.
+    /// Translate the polygon mesh given a translation vector, and
+    /// update the VBO if needed.
     /**
      * @param aTranslationVector:  the translation vector
      */
     //--------------------------------------------------------------------------
     void translate(const VEC3& aTranslationVector);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Rotate the polygon mesh given a rotation axis and angle, and
+    /// update the VBO if needed.
+    /**
+     * @param aRotationAxis:  the rotation axis
+     * @param aRotationAngleInDegrees:  the rotation angle in degrees
+     */
+    //--------------------------------------------------------------------------
+    void rotate(const VEC3& aRotationAxis,
+                RATIONAL_NUMBER aRotationAngleInDegrees);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Transform the polygon mesh given a transformation matrix and
+    /// update the VBO if needed.
+    /**
+     * @param aTransformationMatrix:  the transformation matrix
+     */
+    //--------------------------------------------------------------------------
+    void transform(const MATRIX4& aTransformationMatrix);
     
     
     //--------------------------------------------------------------------------
@@ -463,8 +486,8 @@ public:
      */
     //--------------------------------------------------------------------------
     VEC3 getVertex(unsigned int anIndex) const;
-
-
+    
+    
     //--------------------------------------------------------------------------
     /// Change the value of a given vertex.
     /**

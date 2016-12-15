@@ -408,7 +408,72 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
         }
 }
 
+    
+//----------------------------------------------------------------------
+inline void PolygonMesh::rotate(const VEC3& aRotationAxis,
+                                RATIONAL_NUMBER aRotationAngleInDegrees)
+//----------------------------------------------------------------------
+{
+    if (m_number_of_vertices)
+        {
+        MATRIX4 rotation_matrix(MATRIX4::buildRotationMatrix(
+                aRotationAngleInDegrees,
+                aRotationAxis));
 
+        for (unsigned int i(0); i < m_number_of_vertices; i++)
+            {
+            VEC3 vertex(rotation_matrix * getVertex(i));
+            setVertex(i, vertex);
+            }
+        
+        // Update the bounding box
+        computeBoundingBox();
+            
+        // Create the VBO if needed
+        if (!m_p_vbo.get())
+            {
+            m_p_vbo.reset(createVBO());
+            }
+        
+        // Update the VBO
+        if (m_p_vbo->isReady())
+            {
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            }
+        }
+}
+    
+    
+//----------------------------------------------------------------------
+inline void PolygonMesh::transform(const MATRIX4& aTransformationMatrix)
+//----------------------------------------------------------------------
+{
+    if (m_number_of_vertices)
+        {
+        for (unsigned int i(0); i < m_number_of_vertices; i++)
+            {
+            VEC3 vertex(aTransformationMatrix * getVertex(i));
+            setVertex(i, vertex);
+            }
+        
+        // Update the bounding box
+        computeBoundingBox();
+        
+        // Create the VBO if needed
+        if (!m_p_vbo.get())
+            {
+            m_p_vbo.reset(createVBO());
+            }
+        
+        // Update the VBO
+        if (m_p_vbo->isReady())
+            {
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            }
+        }
+}
+
+    
 //-------------------------------------
 inline void PolygonMesh::moveToCentre()
 //-------------------------------------
