@@ -818,8 +818,13 @@ ELSE ()
 ENDIF ()
 
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
-	
-    OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
+
+    IF (NOT APPLE)
+        OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
+    ELSE (NOT APPLE)
+        OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" OFF)
+    ENDIF (NOT APPLE)
+
     IF (USE_FLTK)
         OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
     ENDIF (USE_FLTK)
