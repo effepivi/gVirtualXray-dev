@@ -690,6 +690,13 @@ public:
     void disableArtifactFiltering();
 
 
+    void useArtifactFiltering(bool aFlag);
+    void useArtefactFiltering(bool aFlag);
+
+    bool useArtifactFiltering() const;
+    bool useArtefactFiltering() const;
+
+
 //******************************************************************************
 protected:
 	//--------------------------------------------------------------------------

@@ -552,6 +552,38 @@ namespace gVirtualXRay {
     }
 
 
+    //--------------------------------------------------------
+    inline void XRayRenderer::useArtifactFiltering(bool aFlag)
+    //--------------------------------------------------------
+    {
+        m_use_L_buffer_artefact_filtering = aFlag;
+    }
+
+
+    //--------------------------------------------------------
+    inline void XRayRenderer::useArtefactFiltering(bool aFlag)
+    //--------------------------------------------------------
+    {
+        m_use_L_buffer_artefact_filtering = aFlag;
+    }
+
+
+    //----------------------------------------------------
+    inline bool XRayRenderer::useArtifactFiltering() const
+    //----------------------------------------------------
+    {
+        return (m_use_L_buffer_artefact_filtering);
+    }
+
+
+    //----------------------------------------------------
+    inline bool XRayRenderer::useArtefactFiltering() const
+    //----------------------------------------------------
+    {
+        return (m_use_L_buffer_artefact_filtering);
+    }
+
+
     //------------------------------------------------------------
     inline void XRayRenderer::printSinogram(const char* aFileName)
     //------------------------------------------------------------
