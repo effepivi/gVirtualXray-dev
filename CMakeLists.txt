@@ -447,44 +447,54 @@ ENDIF (USE_FFTW3)
 
 
 # FREETYPE ####################################################################
-OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
+OPTION(USE_FREETYPE       "Use FreeType"       ON)
 
-IF (USE_SYSTEM_FREETYPE)
-    FIND_PACKAGE(Freetype)
+IF (USE_FREETYPE)
 
-    IF (NOT FREETYPE_FOUND)
-        MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
-    ENDIF (NOT FREETYPE_FOUND)
+    OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 
-ELSE (USE_SYSTEM_FREETYPE)
-    INCLUDE(BuildFreeType)
-    build_freetype( freetype ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_FREETYPE)
+    IF (USE_SYSTEM_FREETYPE)
+        FIND_PACKAGE(Freetype)
 
-IF (FREETYPE_FOUND)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
-    SET (optionalLibs "${optionalLibs}" "${FREETYPE_LIBRARIES}")
+        IF (NOT FREETYPE_FOUND)
+            MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
+        ENDIF (NOT FREETYPE_FOUND)
 
-    FIND_PACKAGE(PNG)
-    IF (PNG_FOUND)
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PNG_INCLUDE_DIRS}")
-        SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
-    ENDIF (PNG_FOUND)
+    ELSE (USE_SYSTEM_FREETYPE)
+        INCLUDE(BuildFreeType)
+        build_freetype( freetype ${PROJECT_BINARY_DIR} )
+    ENDIF (USE_SYSTEM_FREETYPE)
 
-    FIND_PACKAGE(BZip2)
-    IF (BZIP2_FOUND)
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${BZIP2_INCLUDE_DIR}")
-        SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
-    ENDIF (BZIP2_FOUND)
+    IF (FREETYPE_FOUND)
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
+        SET (optionalLibs "${optionalLibs}" "${FREETYPE_LIBRARIES}")
 
-    #FIND_PACKAGE(HARFBUZZ)
-    #IF (HARFBUZZ_FOUND)
-    #    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${HARFBUZZ_INCLUDE_DIRS}")
-    #    SET(optionalLibs ${optionalLibs} ${HARFBUZZ_LIBRARIES})
-    #ENDIF (HARFBUZZ_FOUND)
+        FIND_PACKAGE(PNG)
+        IF (PNG_FOUND)
+            SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PNG_INCLUDE_DIRS}")
+            SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
+        ENDIF (PNG_FOUND)
 
-ENDIF (FREETYPE_FOUND)
+        FIND_PACKAGE(BZip2)
+        IF (BZIP2_FOUND)
+            SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${BZIP2_INCLUDE_DIR}")
+            SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
+        ENDIF (BZIP2_FOUND)
+
+        #FIND_PACKAGE(HARFBUZZ)
+        #IF (HARFBUZZ_FOUND)
+        #    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${HARFBUZZ_INCLUDE_DIRS}")
+        #    SET(optionalLibs ${optionalLibs} ${HARFBUZZ_LIBRARIES})
+        #ENDIF (HARFBUZZ_FOUND)
+
+    ELSE (FREETYPE_FOUND)
+        MESSAGE (WARNING "FreeType not found, the use of FreeType will be disable.")
+    ENDIF (FREETYPE_FOUND)
+
+ELSE (USE_FREETYPE)
+    SET (USE_SYSTEM_FREETYPE OFF)
+ENDIF (USE_FREETYPE)
 
 
 # GDCM #########################################################################
@@ -689,7 +699,6 @@ SET (RESOURCES_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.vert
 	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.frag
 	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/FreeSans.ttf
 	
 	${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.vert
@@ -713,6 +722,12 @@ SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl3.vert
 
 )
+
+# Add the font file if necessary
+IF (USE_FREETYPE)
+    SET (RESOURCES_SOURCES ${RESOURCES_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/resources/FreeSans.ttf)
+ENDIF (USE_FREETYPE)
+
 CreateHeaderFiles("cmake" "BinaryLibFiles" "${RESOURCES_SOURCES}")
 
 
