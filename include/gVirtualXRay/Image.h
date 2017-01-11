@@ -26,6 +26,7 @@
 //  Include
 //******************************************************************************
 #include <string>
+#include <map>
 
 #ifdef HAS_GDCM
 #include <gdcmFile.h>
@@ -344,7 +345,10 @@ public:
 
     void loadMHD(const char* aFileName);
     void loadMHD(const std::string& aFileName);
-
+    
+    void loadMHA(const char* aFileName);
+    void loadMHA(const std::string& aFileName);
+    
     void loadRAW(const char* aFileName,
             unsigned int aWidth,
             unsigned int aHeight,
@@ -453,21 +457,39 @@ public:
     //------------------------------------------------------------------------
     /// Save the image in a MHD+RAW file
     /**
-    * @param aFileName: the name of the file to write
-    */
+     * @param aFileName: the name of the file to write
+     */
     //------------------------------------------------------------------------
     void saveMHD(const char* aFileName) const;
-
-
+    
+    
     //------------------------------------------------------------------------
     /// Save the image in a MHD+RAW file
     /**
-    * @param aFileName: the name of the file to write
-    */
+     * @param aFileName: the name of the file to write
+     */
     //------------------------------------------------------------------------
     void saveMHD(const std::string& aFileName) const;
-
-
+    
+    
+    //------------------------------------------------------------------------
+    /// Save the image in a MHA+RAW file
+    /**
+     * @param aFileName: the name of the file to write
+     */
+    //------------------------------------------------------------------------
+    void saveMHA(const char* aFileName) const;
+    
+    
+    //------------------------------------------------------------------------
+    /// Save the image in a MHA+RAW file
+    /**
+     * @param aFileName: the name of the file to write
+     */
+    //------------------------------------------------------------------------
+    void saveMHA(const std::string& aFileName) const;
+    
+    
     //------------------------------------------------------------------------
     /// Save the image in a DICOM file
     /**
@@ -760,8 +782,31 @@ public:
             bool aTwoThresholdFlag = false) const;
     
     
+    //------------------------------------------------------------------------
+    /// Convert every voxel into a cube.
+    /**
+     * @param aPolygonMeshSet:   the set of polygon mesh
+     */
+    //------------------------------------------------------------------------
+    void convertVoxelsToCubes(std::map<T, PolygonMesh>& aPolygonMeshSet,
+                              T anAirThreshold = -1000) const;
+    
+    
 //******************************************************************************
 private:
+    void loadMetaHeader(const char* aFileName);
+    void loadMetaHeader(const std::string& aFileName);
+    
+    void loadRAW(std::ifstream& anInputStream,
+                 unsigned int aWidth,
+                 unsigned int aHeight,
+                 unsigned int aNumberOfSlices,
+                 bool aChangeEndianessFlag,
+                 const char* aFileName);
+
+    void saveMetaHeader(const char* aFileName) const;
+    void saveMetaHeader(const std::string& aFileName) const;
+
 #ifdef HAS_GDCM
     void addTag(double aValue,
             unsigned int anAddress1,

@@ -807,9 +807,7 @@ template<typename T> void Image<T>::load(const char* aFileName)
     }
     else if (isMHA(aFileName))
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Loading MHA files is not implemented, "
-                "please contact Dr FP Vidal.");
+        loadMHA(aFileName);
     }
     else if (isDCM(aFileName))
     {
@@ -1072,9 +1070,7 @@ template<typename T> void Image<T>::save(const char* aFileName,
     }
     else if (isMHA(aFileName))
     {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Saving MHA files is not implemented, "
-                "please contact Dr FP Vidal.");
+        saveMHA(aFileName);
     }
     else if (isDCM(aFileName))
     {
@@ -1112,232 +1108,25 @@ template<typename T> void Image<T>::loadMHD(const std::string& aFileName)
 template<typename T> void Image<T>::loadMHD(const char* aFileName)
 //----------------------------------------------------------------
 {
-    // Open the meta header
-    std::ifstream meta_header(aFileName);
+    // Load the meta header
+    loadMetaHeader(aFileName);
+}
 
-    // The file cannot be opened
-    if (!meta_header.is_open())
-        {
-        // Throw an error
-        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
-        }
 
-    // Parse the meta header
-    unsigned int number_of_dimensions(0);
-    double spacing[3] = {0.0, 0.0, 0.0};
-    unsigned int dimensions[3] = {1, 1, 1};
-    std::string element_type;
-    std::string raw_file_name;
-    bool change_endianess(false);
+//-----------------------------------------------------------------------
+template<typename T> void Image<T>::loadMHA(const std::string& aFileName)
+//-----------------------------------------------------------------------
+{
+    loadMHA(aFileName.data());
+}
 
-    std::string info_type;
-    while (meta_header >> info_type)
-        {
-        std::string equal_sign;
-        meta_header >> equal_sign;
 
-        // Remove the equal sign
-        if (equal_sign != "=")
-            {
-            std::string error_message("The program was expecting \"=\" but received \"");
-            error_message += equal_sign;
-            error_message += "\".";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-            }
-
-        if (info_type == "ObjectType")
-            {
-            std::string object_type;
-            meta_header >> object_type;
-
-            if (object_type != "Image")
-                {
-                std::string error_message("The object type \"");
-                error_message += object_type;
-                error_message += "\" is not known. It should have been \"Image\".";
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-                }
-            }
-        else if (info_type == "NDims")
-            {
-            meta_header >> number_of_dimensions;
-
-            // number_of_dimensions is always positive as
-            // it is an unsigned int
-            if (/*number_of_dimensions < 0 ||*/ 3 < number_of_dimensions)
-                {
-                std::stringstream error_message;
-                error_message << "The number of dimensions \"" << number_of_dimensions <<
-                        "\" is not valid. It should have been in the range [0, 3].";
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-                }
-            }
-        else if (info_type == "BinaryData")
-            {
-            std::string data_type;
-            meta_header >> data_type;
-
-            if (data_type != "True")
-                {
-                std::string error_message("The data type is not binary.");
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-                }
-            }
-        else if (info_type == "BinaryDataByteOrderMSB")
-            {
-            std::string big_endian;
-            meta_header >> big_endian;
-
-            if (big_endian == "False" && isBigEndian())
-                {
-                change_endianess = true;
-                }
-
-            if (big_endian == "True" && isLittleEndian())
-                {
-                change_endianess = true;
-                }
-            }
-        else if (info_type == "CompressedData")
-            {
-            std::string compression;
-            meta_header >> compression;
-
-            if (compression == "True")
-                {
-                std::string error_message("The data is compressed.");
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-                }
-            }
-        else if (info_type == "TransformMatrix")
-            {
-            for (unsigned int i(0); i < number_of_dimensions; ++i)
-                {
-                for (unsigned int i(0); i < number_of_dimensions; ++i)
-                    {
-                    double temp;
-                    meta_header >> temp;
-                    }
-                }
-            }
-        else if (info_type == "Offset")
-        {
-        for (unsigned int i(0); i < number_of_dimensions; ++i)
-            {
-            double temp;
-            meta_header >> temp;
-            }
-        }
-        else if (info_type == "CenterOfRotation")
-            {
-            for (unsigned int i(0); i < number_of_dimensions; ++i)
-                {
-                double temp;
-                meta_header >> temp;
-                }
-            }
-        else if (info_type == "AnatomicalOrientation")
-            {
-            std::string anatomical_orientation;
-            meta_header >> anatomical_orientation;
-            }
-        else if (info_type == "ElementSpacing")
-            {
-            for (unsigned int i(0); i < number_of_dimensions; ++i)
-                {
-                meta_header >> spacing[i];
-                }
-            }
-        else if (info_type == "DimSize")
-            {
-            for (unsigned int i(0); i < number_of_dimensions; ++i)
-                {
-                meta_header >> dimensions[i];
-                }
-            }
-        else if (info_type == "ElementType")
-            {
-            std::string data_type_string;
-            meta_header >> data_type_string;
-
-            if (data_type_string == "MET_DOUBLE")
-                {
-                data_type_string = typeid(double).name();
-                }
-            else if (data_type_string == "MET_FLOAT")
-                {
-                data_type_string = typeid(float).name();
-                }
-            else if (data_type_string == "MET_CHAR")
-                {
-                element_type = typeid(char).name();
-                }
-            else if (data_type_string == "MET_UCHAR")
-                {
-                element_type = typeid(unsigned char).name();
-                }
-            else if (data_type_string == "MET_SHORT")
-                {
-                element_type = typeid(short).name();
-                }
-            else if (data_type_string == "MET_USHORT")
-                {
-                element_type = typeid(unsigned short).name();
-                }
-            else if (data_type_string == "MET_INT")
-                {
-                element_type = typeid(int).name();
-                }
-            else if (data_type_string == "MET_UINT")
-                {
-                element_type = typeid(unsigned int).name();
-                }
-            else
-                {
-                std::string error_message("The data type \"");
-                error_message += data_type_string;
-                error_message += "\" is not known.";
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-                }
-            }
-        else if (info_type == "ElementDataFile")
-            {
-            meta_header >> raw_file_name;
-
-            std::string meta_header_file_name(aFileName);
-            size_t index1(meta_header_file_name.find_last_of('\\'));
-            size_t index2(meta_header_file_name.find_last_of('/'));
-            size_t index(0);
-
-            if (index1 == std::string::npos)
-                {
-                index1 = 0;
-                }
-
-            if (index2 == std::string::npos)
-                {
-                index2 = 0;
-                }
-
-            index = std::max(index1, index2);
-
-            if (index)
-                {
-                raw_file_name = meta_header_file_name.substr(0, index) + "/" + raw_file_name;
-                }
-            }
-        else
-            {
-            std::string error_message("The field \"");
-            error_message += info_type;
-            error_message += "\" is not known.";
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-            }
-        }
-
-    destroy();
-    loadRAW(raw_file_name, dimensions[0], dimensions[1], dimensions[2], change_endianess);
-    setSpacing(spacing[0], spacing[1], spacing[2]);
+//----------------------------------------------------------------
+template<typename T> void Image<T>::loadMHA(const char* aFileName)
+//----------------------------------------------------------------
+{
+    // Load the meta header
+    loadMetaHeader(aFileName);
 }
 
 
@@ -1357,53 +1146,12 @@ template<typename T> void Image<T>::loadRAW(const char* aFileName,
 
     // The file cannot be opened
     if (!input.is_open())
-        {
+    {
         // Throw an error
         throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
-        }
-
-    // Store the image size
-    m_width = aWidth;
-    m_height = aHeight;
-    m_number_of_slices = aNumberOfSlices;
-
-    // Allocate the memory
-    m_p_image = new T[m_width * m_height * m_number_of_slices];
-
-    // Out of memory
-    if (m_width && m_height && m_number_of_slices && !m_p_image)
-        {
-        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-        }
-
-    // Get file size
-    input.seekg (0, std::ios::end);
-    unsigned int length(input.tellg());
-    input.seekg (0, std::ios::beg);
-
-    if (length < m_width * m_height * m_number_of_slices * sizeof(T))
-        {
-        std::string error_message("The file size of \"");
-        error_message += aFileName;
-        error_message += "\" is too small to contained the specified raw data.";
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-    // Read the data
-    input.read(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
-
-    // Close the file
-    input.close();
-
-    // Change endianess
-    if (aChangeEndianessFlag && sizeof(T) > 1)
-        {
-        #pragma omp parallel for
-        for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
-            {
-            swapBytes(m_p_image[i]);
-            }
-        }
+    }
+    
+    loadRAW(input, aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag, aFileName);
 }
 
 //-----------------------------------------------------------------------
@@ -1621,140 +1369,26 @@ template<typename T> void Image<T>::saveASCII(const std::string& aFileName) cons
 template<typename T> void Image<T>::saveMHD(const char* aFileName) const
 //----------------------------------------------------------------------
 {
-    // Open the file which will contain the meta header
-    std::ofstream meta_header(aFileName);
-
-    // The file is not open
-    if (!meta_header.is_open())
-        {
-        std::string error_message;
-        error_message = "Cannot create the file (\"";
-        error_message += aFileName;
-        error_message += "\")";
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-
-    meta_header << "ObjectType = Image" << std::endl;
-    if (m_number_of_slices == 1)
-        {
-        meta_header << "NDims = 2" << std::endl;
-        meta_header << "DimSize = " << m_width << " " << m_height << std::endl;
-        }
-    else
-        {
-        meta_header << "NDims = 3" << std::endl;
-        meta_header << "DimSize = " << m_width << " " << m_height << " " << m_number_of_slices << std::endl;
-        }
-
-    std::string data_type_string;
-    if (typeid(T) == typeid(double))
-        {
-        data_type_string = "MET_DOUBLE";
-        }
-    else if (typeid(T) == typeid(float))
-        {
-        data_type_string = "MET_FLOAT";
-        }
-    else if (typeid(T) == typeid(char))
-        {
-        data_type_string = "MET_CHAR";
-        }
-    else if (typeid(T) == typeid(unsigned char))
-        {
-        data_type_string = "MET_UCHAR";
-        }
-    else if (typeid(T) == typeid(short))
-        {
-        data_type_string = "MET_SHORT";
-        }
-    else if (typeid(T) == typeid(unsigned short))
-        {
-        data_type_string = "MET_USHORT";
-        }
-    else if (typeid(T) == typeid(int))
-        {
-        data_type_string = "MET_INT";
-        }
-    else if (typeid(T) == typeid(unsigned int))
-        {
-        data_type_string = "MET_UINT";
-        }
-    else
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported data type");
-        }
-
-    meta_header << "ElementType = " << data_type_string << std::endl;
-
-    // There are no trailing bytes (extra bytes at the end of the file)
-    meta_header << "HeaderSize = -1" << std::endl;
-
-    meta_header << "ElementSize = 1 1 1" << std::endl;
-
-    if (m_number_of_slices == 1)
-        {
-        meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << std::endl;
-        }
-    else
-        {
-        meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << " " << m_spacing[2] << std::endl;
-        }
-
-    if (isBigEndian())
-        {
-        meta_header << "ElementByteOrderMSB = True" << std::endl;
-        }
-    else
-        {
-        meta_header << "ElementByteOrderMSB = False" << std::endl;
-        }
-
-    std::string raw_file_name(aFileName);
-    if (isMHD(aFileName))
-        {
-        raw_file_name[raw_file_name.size() - 3] = 'r';
-        raw_file_name[raw_file_name.size() - 2] = 'a';
-        raw_file_name[raw_file_name.size() - 1] = 'w';
-        }
-    else
-        {
-        raw_file_name += ".raw";
-        }
-
-    size_t index1(raw_file_name.find_last_of('\\'));
-    size_t index2(raw_file_name.find_last_of('/'));
-    size_t index(0);
-
-    if (index1 != std::string::npos) 
-        {
-        ++index1;
-        }
-    else
-        {
-        index1 = 0;
-        }
-
-    if (index2 != std::string::npos)
-        {
-        ++index2;
-        }
-    else
-        {
-        index2 = 0;
-        }
-
-    index = std::max(index1, index2);
-
-    meta_header << "ElementDataFile = " << raw_file_name.substr(index, raw_file_name.size() - index) << std::endl;
-
-    saveRAW(raw_file_name);
+    // Save the header
+    saveMetaHeader(aFileName);
 }
 
 
 template<typename T> void Image<T>::saveMHD(const std::string& aFileName) const
 {
     saveMHD(aFileName.data());
+}
+
+    
+template<typename T> void Image<T>::saveMHA(const char* aFileName) const
+{
+    saveMetaHeader(aFileName);
+}
+
+
+template<typename T> void Image<T>::saveMHA(const std::string& aFileName) const
+{
+    saveMHA(aFileName.data());
 }
 
 
@@ -3701,6 +3335,483 @@ template<typename T> VEC3 Image<T>::VertexInterp(const T& aThresholdValue,
     return (p1 + (p0 - p1) * ratio);
 }
 
+    
+//------------------------------------------------------------------------------
+template<typename T> void Image<T>::loadMetaHeader(const std::string& aFileName)
+//------------------------------------------------------------------------------
+{
+    loadMetaHeader(aFileName.data());
+}
 
+
+//-----------------------------------------------------------------------
+template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
+//-----------------------------------------------------------------------
+{
+    // Open the meta header
+    std::ifstream meta_header(aFileName, std::ios::binary|std::ios::in);
+    
+    // The file cannot be opened
+    if (!meta_header.is_open())
+    {
+        // Throw an error
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+    }
+    
+    // Parse the meta header
+    unsigned int number_of_dimensions(0);
+    double spacing[3] = {0.0, 0.0, 0.0};
+    unsigned int dimensions[3] = {1, 1, 1};
+    std::string element_type;
+    std::string raw_file_name;
+    bool change_endianess(false);
+    
+    std::string info_type;
+    while (meta_header >> info_type)
+    {
+        std::string equal_sign;
+        meta_header >> equal_sign;
+        
+        // Remove the equal sign
+        if (equal_sign != "=")
+        {
+            std::string error_message("The program was expecting \"=\" but received \"");
+            error_message += equal_sign;
+            error_message += "\".";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+        
+        if (info_type == "ObjectType")
+        {
+            std::string object_type;
+            meta_header >> object_type;
+            
+            if (object_type != "Image")
+            {
+                std::string error_message("The object type \"");
+                error_message += object_type;
+                error_message += "\" is not known. It should have been \"Image\".";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else if (info_type == "NDims")
+        {
+            meta_header >> number_of_dimensions;
+            
+            // number_of_dimensions is always positive as
+            // it is an unsigned int
+            if (/*number_of_dimensions < 0 ||*/ 3 < number_of_dimensions)
+            {
+                std::stringstream error_message;
+                error_message << "The number of dimensions \"" << number_of_dimensions <<
+                "\" is not valid. It should have been in the range [0, 3].";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+            }
+        }
+        else if (info_type == "BinaryData")
+        {
+            std::string data_type;
+            meta_header >> data_type;
+            
+            if (data_type != "True")
+            {
+                std::string error_message("The data type is not binary.");
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else if (info_type == "BinaryDataByteOrderMSB" || info_type == "ElementByteOrderMSB")
+        {
+            std::string big_endian;
+            meta_header >> big_endian;
+            
+            if (big_endian == "False" && isBigEndian())
+            {
+                change_endianess = true;
+            }
+            
+            if (big_endian == "True" && isLittleEndian())
+            {
+                change_endianess = true;
+            }
+        }
+        else if (info_type == "CompressedData")
+        {
+            std::string compression;
+            meta_header >> compression;
+            
+            if (compression == "True")
+            {
+                std::string error_message("The data is compressed.");
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else if (info_type == "TransformMatrix")
+        {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+                for (unsigned int i(0); i < number_of_dimensions; ++i)
+                {
+                    double temp;
+                    meta_header >> temp;
+                }
+            }
+        }
+        else if (info_type == "Offset")
+        {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+                double temp;
+                meta_header >> temp;
+            }
+        }
+        else if (info_type == "CenterOfRotation")
+        {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+                double temp;
+                meta_header >> temp;
+            }
+        }
+        else if (info_type == "AnatomicalOrientation")
+        {
+            std::string anatomical_orientation;
+            meta_header >> anatomical_orientation;
+        }
+        else if (info_type == "ElementSpacing")
+        {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+                meta_header >> spacing[i];
+            }
+        }
+        else if (info_type == "DimSize")
+        {
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+                meta_header >> dimensions[i];
+            }
+        }
+        else if (info_type == "ElementType")
+        {
+            std::string data_type_string;
+            meta_header >> data_type_string;
+            
+            if (data_type_string == "MET_DOUBLE")
+            {
+                data_type_string = typeid(double).name();
+            }
+            else if (data_type_string == "MET_FLOAT")
+            {
+                data_type_string = typeid(float).name();
+            }
+            else if (data_type_string == "MET_CHAR")
+            {
+                element_type = typeid(char).name();
+            }
+            else if (data_type_string == "MET_UCHAR")
+            {
+                element_type = typeid(unsigned char).name();
+            }
+            else if (data_type_string == "MET_SHORT")
+            {
+                element_type = typeid(short).name();
+            }
+            else if (data_type_string == "MET_USHORT")
+            {
+                element_type = typeid(unsigned short).name();
+            }
+            else if (data_type_string == "MET_INT")
+            {
+                element_type = typeid(int).name();
+            }
+            else if (data_type_string == "MET_UINT")
+            {
+                element_type = typeid(unsigned int).name();
+            }
+            else
+            {
+                std::string error_message("The data type \"");
+                error_message += data_type_string;
+                error_message += "\" is not known.";
+                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+            }
+        }
+        else if (info_type == "HeaderSize")
+        {
+            int header_size;
+            meta_header >> header_size;
+        }
+        else if (info_type == "ElementSize")
+        {
+            int element_size;
+
+            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            {
+                meta_header >> element_size;
+            }
+        }
+        else if (info_type == "ElementDataFile")
+        {
+            meta_header >> raw_file_name;
+            
+            if (raw_file_name == "LOCAL")
+            {
+                loadRAW(meta_header, dimensions[0], dimensions[1], dimensions[2], change_endianess, aFileName);
+            }
+            else
+            {
+                std::string meta_header_file_name(aFileName);
+                size_t index1(meta_header_file_name.find_last_of('\\'));
+                size_t index2(meta_header_file_name.find_last_of('/'));
+                size_t index(0);
+                
+                if (index1 == std::string::npos)
+                {
+                    index1 = 0;
+                }
+                
+                if (index2 == std::string::npos)
+                {
+                    index2 = 0;
+                }
+                
+                index = std::max(index1, index2);
+                
+                if (index)
+                {
+                    raw_file_name = meta_header_file_name.substr(0, index) + "/" + raw_file_name;
+                }
+
+                loadRAW(raw_file_name, dimensions[0], dimensions[1], dimensions[2], change_endianess);
+            }
+            
+            setSpacing(spacing[0], spacing[1], spacing[2]);
+        }
+        else
+        {
+            std::string error_message("The field \"");
+            error_message += info_type;
+            error_message += "\" is not known.";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+    }
+}
+
+
+//-----------------------------------------------------------------------
+template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
+                                            unsigned int aWidth,
+                                            unsigned int aHeight,
+                                            unsigned int aNumberOfSlices,
+                                            bool aChangeEndianessFlag,
+                                            const char* aFileName)
+//-----------------------------------------------------------------------
+{
+    
+    // Store the image size
+    m_width = aWidth;
+    m_height = aHeight;
+    m_number_of_slices = aNumberOfSlices;
+    
+    // Allocate the memory
+    m_p_image = new T[m_width * m_height * m_number_of_slices];
+    
+    // Out of memory
+    if (m_width && m_height && m_number_of_slices && !m_p_image)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+    
+    // Get file size
+    int offset_current_position(anInputStream.tellg());
+    anInputStream.seekg (0, std::ios::end);
+    unsigned int length(anInputStream.tellg() - offset_current_position);
+    anInputStream.seekg (offset_current_position, std::ios::beg);
+     
+     if (length < m_width * m_height * m_number_of_slices * sizeof(T))
+     {
+     std::string error_message("The file size of \"");
+     error_message += aFileName;
+     error_message += "\" is too small to contained the specified raw data.";
+     throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+     }
+    
+    // Skip the first byte if needed
+    int offset_in_bytes(0);
+    anInputStream.read(reinterpret_cast<char*>(m_p_image), 1);
+    if (*reinterpret_cast<char*>(m_p_image) != 10)
+    {
+        offset_in_bytes = 1;
+    }
+    
+    // Read the data
+    anInputStream.read(reinterpret_cast<char*>(m_p_image) + offset_in_bytes, m_width * m_height * m_number_of_slices * sizeof(T));
+    
+    // Close the file
+    anInputStream.close();
+    
+    // Change endianess
+    if (aChangeEndianessFlag && sizeof(T) > 1)
+    {
+#pragma omp parallel for
+        for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+        {
+            swapBytes(m_p_image[i]);
+        }
+    }
+}
+    
+  
+//------------------------------------------------------------------------------------
+template<typename T> void Image<T>::saveMetaHeader(const std::string& aFileName) const
+//------------------------------------------------------------------------------------
+{
+    saveMetaHeader(aFileName.data());
+}
+
+
+//-----------------------------------------------------------------------------
+template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
+//-----------------------------------------------------------------------------
+{
+    // Open the file which will contain the meta header
+    std::ofstream meta_header(aFileName);
+    
+    // The file is not open
+    if (!meta_header.is_open())
+    {
+        std::string error_message;
+        error_message = "Cannot create the file (\"";
+        error_message += aFileName;
+        error_message += "\")";
+        
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+    }
+    
+    meta_header << "ObjectType = Image" << std::endl;
+    if (m_number_of_slices == 1)
+    {
+        meta_header << "NDims = 2" << std::endl;
+        meta_header << "DimSize = " << m_width << " " << m_height << std::endl;
+    }
+    else
+    {
+        meta_header << "NDims = 3" << std::endl;
+        meta_header << "DimSize = " << m_width << " " << m_height << " " << m_number_of_slices << std::endl;
+    }
+    
+    std::string data_type_string;
+    if (typeid(T) == typeid(double))
+    {
+        data_type_string = "MET_DOUBLE";
+    }
+    else if (typeid(T) == typeid(float))
+    {
+        data_type_string = "MET_FLOAT";
+    }
+    else if (typeid(T) == typeid(char))
+    {
+        data_type_string = "MET_CHAR";
+    }
+    else if (typeid(T) == typeid(unsigned char))
+    {
+        data_type_string = "MET_UCHAR";
+    }
+    else if (typeid(T) == typeid(short))
+    {
+        data_type_string = "MET_SHORT";
+    }
+    else if (typeid(T) == typeid(unsigned short))
+    {
+        data_type_string = "MET_USHORT";
+    }
+    else if (typeid(T) == typeid(int))
+    {
+        data_type_string = "MET_INT";
+    }
+    else if (typeid(T) == typeid(unsigned int))
+    {
+        data_type_string = "MET_UINT";
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported data type");
+    }
+    
+    meta_header << "ElementType = " << data_type_string << std::endl;
+    
+    if (m_number_of_slices == 1)
+    {
+        meta_header << "ElementSize = 1 1" << std::endl;
+        meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << std::endl;
+    }
+    else
+    {
+        meta_header << "ElementSize = 1 1 1" << std::endl;
+        meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << " " << m_spacing[2] << std::endl;
+    }
+    
+    if (isBigEndian())
+    {
+        meta_header << "ElementByteOrderMSB = True" << std::endl;
+    }
+    else
+    {
+        meta_header << "ElementByteOrderMSB = False" << std::endl;
+    }
+
+    std::string raw_file_name(aFileName);
+    if (isMHD(aFileName))
+    {
+        raw_file_name[raw_file_name.size() - 3] = 'r';
+        raw_file_name[raw_file_name.size() - 2] = 'a';
+        raw_file_name[raw_file_name.size() - 1] = 'w';
+    }
+    else
+    {
+        raw_file_name += ".raw";
+    }
+    
+    size_t index1(raw_file_name.find_last_of('\\'));
+    size_t index2(raw_file_name.find_last_of('/'));
+    size_t index(0);
+    
+    if (index1 != std::string::npos)
+    {
+        ++index1;
+    }
+    else
+    {
+        index1 = 0;
+    }
+    
+    if (index2 != std::string::npos)
+    {
+        ++index2;
+    }
+    else
+    {
+        index2 = 0;
+    }
+    
+    index = std::max(index1, index2);
+    
+    
+    if (isMHD(aFileName))
+    {
+        meta_header << "ElementDataFile = " << raw_file_name.substr(index, raw_file_name.size() - index) << std::endl;
+        
+        saveRAW(raw_file_name);
+    }
+    else
+    {
+        meta_header << "ElementDataFile = " << "LOCAL\n";// << std::endl;
+        
+        // Write content to file
+        meta_header.write(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+    }
+}
+
+    
 } // namespace gVirtualXRay
 
