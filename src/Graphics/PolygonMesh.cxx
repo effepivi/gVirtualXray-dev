@@ -900,36 +900,42 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
 PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 //-----------------------------------------------------------------------
 {
-    if (m_index_data_type != aPolygonMesh.m_index_data_type)
+    if (m_number_of_indices)
         {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot combine the two polygon meshes, "
-                "their index data types are different.");
+        if (m_index_data_type != aPolygonMesh.m_index_data_type)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot combine the two polygon meshes, "
+                    "their index data types are different.");
 
+            }
         }
-
-    if (m_vertex_data_type != aPolygonMesh.m_vertex_data_type)
+    
+    if (m_number_of_vertices)
         {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot combine the two polygon meshes, "
-                "their vertex data types are different.");
+        if (m_vertex_data_type != aPolygonMesh.m_vertex_data_type)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot combine the two polygon meshes, "
+                    "their vertex data types are different.");
 
+            }
+        
+        // Check the polygon types
+        if (m_polygon_type != aPolygonMesh.m_polygon_type)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot combine the two polygon meshes, "
+                    "their polygon types are different.");
+
+            }
         }
-
-    // Check the polygon types
-    if (m_polygon_type != aPolygonMesh.m_polygon_type)
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Cannot combine the two polygon meshes, "
-                "their polygon types are different.");
-
-        }
-
+    
     // Create the new instance
     PolygonMesh new_polygon_mesh;
-    new_polygon_mesh.m_index_data_type  = m_index_data_type;
-    new_polygon_mesh.m_vertex_data_type = m_vertex_data_type;
-    new_polygon_mesh.m_polygon_type     = m_polygon_type;
+    new_polygon_mesh.m_index_data_type  = aPolygonMesh.m_index_data_type;
+    new_polygon_mesh.m_vertex_data_type = aPolygonMesh.m_vertex_data_type;
+    new_polygon_mesh.m_polygon_type     = aPolygonMesh.m_polygon_type;
 
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
@@ -1394,7 +1400,10 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 PolygonMesh& PolygonMesh::operator+=(const PolygonMesh& aPolygonMesh)
 //-------------------------------------------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+    PolygonMesh new_polygon(*this + aPolygonMesh);
+    *this = new_polygon;
+    
+    return (*this);
 }
 
 
@@ -1402,7 +1411,10 @@ PolygonMesh& PolygonMesh::operator+=(const PolygonMesh& aPolygonMesh)
 PolygonMesh& PolygonMesh::operator-=(const PolygonMesh& aPolygonMesh)
 //-------------------------------------------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
+    PolygonMesh new_polygon(*this - aPolygonMesh);
+    *this = new_polygon;
+    
+    return (*this);
 }
 
 
