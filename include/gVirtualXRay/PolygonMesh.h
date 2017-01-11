@@ -988,8 +988,20 @@ public:
      */
     //--------------------------------------------------------------------------
     void applyScale(const RATIONAL_NUMBER& aScale);
-
-
+    
+    
+    //--------------------------------------------------------------------------
+    /// Apply a scaling factor to the vertex data. Note that the bounding box
+    /// will be automatically updated.
+    /**
+     *  @param aScale:  scaling factor
+     */
+    //--------------------------------------------------------------------------
+    void applyScale(const RATIONAL_NUMBER& aScaleX,
+                    const RATIONAL_NUMBER& aScaleY,
+                    const RATIONAL_NUMBER& aScaleZ);
+    
+    
     //--------------------------------------------------------------------------
     /// Inverse the normal vectors.
     //--------------------------------------------------------------------------
