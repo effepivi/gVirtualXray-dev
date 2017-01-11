@@ -57,6 +57,7 @@ IF (USE_GLFW)
     ADD_SUBDIRECTORY (Tomography)
     #ADD_SUBDIRECTORY (VisibleHuman)
     ADD_SUBDIRECTORY (RayCasting-ImplicitSurfaces)
+    ADD_SUBDIRECTORY (CTinHUtoSimulation)
 ENDIF ()
 
 IF (USE_GLUT)
