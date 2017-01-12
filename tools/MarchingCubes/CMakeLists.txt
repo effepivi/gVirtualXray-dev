@@ -67,7 +67,7 @@ ENDIF (glfw3_FOUND)
 # Create the main program ######################################################
 ADD_EXECUTABLE (gvxrMarchingCubes gvxrMarchingCubes.cxx cmdline.h cmdline.c)
 TARGET_LINK_LIBRARIES (gvxrMarchingCubes ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs})
-#ADD_DEPENDENCIES(gvxrMarchingCubes BinaryMarchingCubesFiles)
+ADD_DEPENDENCIES(gvxrMarchingCubes BinaryMarchingCubesFiles)
 
 IF (gVirtualXRay_BINARY_DIR)
     ADD_DEPENDENCIES (gvxrMarchingCubes   gVirtualXRay)
