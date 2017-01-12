@@ -566,6 +566,14 @@ IF (WIN32 OR MSVC)
     )
 
     INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt")
+
+    # copy libraries into install tree
+    INSTALL (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt
+        DESTINATION ${INSTALL_DIR}/third_party
+        COMPONENT Development)
+
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
 
     SET (USE_EXTERNAL_GETOPT ON)
 ENDIF (WIN32 OR MSVC)
