@@ -100,7 +100,7 @@ ELSE (NOT APPLE)
 
     ADD_EXECUTABLE (RayCasting-ImplicitSurfaces MACOSX_BUNDLE ${RayCasting-ImplicitSurfaces_SRCS})
     TARGET_LINK_LIBRARIES (RayCasting-ImplicitSurfaces gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(RayCasting-ImplicitSurfaces BinaryGUIFLTKFiles)
+    ADD_DEPENDENCIES(RayCasting-ImplicitSurfaces BinaryRayCastingImplicitSurfacesFiles)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME RayCasting-ImplicitSurfaces)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "RayCasting-ImplicitSurfaces")

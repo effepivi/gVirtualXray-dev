@@ -96,7 +96,7 @@ ELSE (NOT APPLE)
 
     ADD_EXECUTABLE (Iso-Surfaces MACOSX_BUNDLE ${Iso-Surfaces_SRCS})
     TARGET_LINK_LIBRARIES (Iso-Surfaces gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(Iso-Surfaces BinaryGUIFLTKFiles)
+    ADD_DEPENDENCIES(Iso-Surfaces BinaryIsoSurfaceFiles)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME Iso-Surfaces)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "Iso-Surfaces")
