@@ -552,6 +552,25 @@ IF (TIFF_FOUND)
 ENDIF (TIFF_FOUND)
 
 
+# getopt ######################################################################
+IF (WIN32 OR MSVC)
+    INCLUDE (ExternalProject)
+    ExternalProject_Add(getopt
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
+        #DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/getopt
+        GIT_REPOSITORY "https://github.com/skandhurkat/Getopt-for-Visual-Studio.git"
+        CONFIGURE_COMMAND ""
+        UPDATE_COMMAND ""
+        BUILD_COMMAND ""
+        INSTALL_COMMAND ""
+    )
+
+    INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
+
+    SET (USE_EXTERNAL_GETOPT ON)
+ENDIF (WIN32 OR MSVC)
+
+
 # XCOM Database ################################################################
 
 # XCOM: Photon Cross Sections Database
