@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 

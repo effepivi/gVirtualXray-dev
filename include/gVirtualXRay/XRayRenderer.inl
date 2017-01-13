@@ -524,7 +524,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::enableArtefactFiltering()
     //-------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = true;
+        m_use_l_buffer_artefact_filtering = true;
     }
 
 
@@ -532,7 +532,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::enableArtifactFiltering()
     //-------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = true;
+        m_use_l_buffer_artefact_filtering = true;
     }
 
 
@@ -540,7 +540,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::disableArtefactFiltering()
     //--------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = false;
+        m_use_l_buffer_artefact_filtering = false;
     }
 
 
@@ -548,7 +548,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::disableArtifactFiltering()
     //--------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = false;
+        m_use_l_buffer_artefact_filtering = false;
     }
 
 
@@ -556,7 +556,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::useArtifactFiltering(bool aFlag)
     //--------------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = aFlag;
+        m_use_l_buffer_artefact_filtering = aFlag;
     }
 
 
@@ -564,7 +564,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::useArtefactFiltering(bool aFlag)
     //--------------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = aFlag;
+        m_use_l_buffer_artefact_filtering = aFlag;
     }
 
 
@@ -572,7 +572,7 @@ namespace gVirtualXRay {
     inline bool XRayRenderer::useArtifactFiltering() const
     //----------------------------------------------------
     {
-        return (m_use_L_buffer_artefact_filtering);
+        return (m_use_l_buffer_artefact_filtering);
     }
 
 
@@ -580,7 +580,7 @@ namespace gVirtualXRay {
     inline bool XRayRenderer::useArtefactFiltering() const
     //----------------------------------------------------
     {
-        return (m_use_L_buffer_artefact_filtering);
+        return (m_use_l_buffer_artefact_filtering);
     }
 
 
@@ -696,7 +696,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::printLBuffer(const char* aFileName)
     //-----------------------------------------------------------
     {
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
             //print2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID, aFileName);
             printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, aFileName);
@@ -749,7 +749,7 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER* XRayRenderer::getLBuffer()
     //------------------------------------------------
     {
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
             //return (get2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID));
             return (getFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID));
@@ -802,7 +802,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::displayLBuffer()
     //----------------------------------------
     {
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
             display2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID);
         }

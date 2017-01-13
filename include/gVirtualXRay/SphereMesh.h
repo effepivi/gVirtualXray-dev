@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -39,17 +39,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		SphereMesh.h
+*   @file       SphereMesh.h
 *
-*	@brief		Class to handle 3D meshes of spheres.
+*   @brief      Class to handle 3D meshes of spheres.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		22/03/2014
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@todo		Make it possible to merge vertices if an array of indices exists
+*   @todo       Make it possible to merge vertices if an array of indices exists
 *
 *   License
 *   BSD 3-Clause License.
@@ -58,15 +58,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -85,15 +85,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	SphereMesh
-*	@brief	SphereMesh is a class to handle 3D meshes of spheres.
+*   @class  SphereMesh
+*   @brief  SphereMesh is a class to handle 3D meshes of spheres.
 */
 //==============================================================================
 class SphereMesh: public PolygonMesh
@@ -101,30 +101,30 @@ class SphereMesh: public PolygonMesh
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-    /**
-    *   @param aNumberOfRings   the number of rings (default value: 10)
-    *   @param aNumberOfSectors the number of sectors (default value: 10)
-    *   @param aRadius the radius (default value: 0.5 cm)
-    */
     //--------------------------------------------------------------------------
-	SphereMesh(unsigned int aNumberOfRings = 10,
-			unsigned int aNumberOfSectors = 10,
-			float aRadius = 0.5 * cm);
-
-
-	//--------------------------------------------------------------------------
-	///	Create a new sphere.
+    /// Default constructor.
     /**
-    *   @param aNumberOfRings   the number of rings (default value: 10)
-    *   @param aNumberOfSectors the number of sectors (default value: 10)
-    *   @param aRadius the radius (default value: 0.5 cm)
-    */
-	//--------------------------------------------------------------------------
-	void create(unsigned int aNumberOfRings = 10,
-			unsigned int aNumberOfSectors = 10,
-			float aRadius = 0.5 * cm);
+     *  @param aNumberOfRings   the number of rings (default value: 10)
+     *  @param aNumberOfSectors the number of sectors (default value: 10)
+     *  @param aRadius the radius (default value: 0.5 cm)
+     */
+    //--------------------------------------------------------------------------
+    SphereMesh(unsigned int aNumberOfRings = 10,
+               unsigned int aNumberOfSectors = 10,
+               float aRadius = 0.5 * cm);
+
+
+    //--------------------------------------------------------------------------
+    /// Create a new sphere.
+    /**
+     *  @param aNumberOfRings   the number of rings (default value: 10)
+     *  @param aNumberOfSectors the number of sectors (default value: 10)
+     *  @param aRadius the radius (default value: 0.5 cm)
+     */
+    //--------------------------------------------------------------------------
+    void create(unsigned int aNumberOfRings = 10,
+                unsigned int aNumberOfSectors = 10,
+                float aRadius = 0.5 * cm);
 };
 
 

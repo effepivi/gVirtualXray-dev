@@ -67,7 +67,7 @@ ENDIF (APPLE)
 
 
 # Support for the CTest dashboard testing system
-INCLUDE(CTest)
+#INCLUDE(CTest)
 
 
 # Set a default build type if none was specified
@@ -968,13 +968,13 @@ ENDIF (BUILD_TUTORIALS)
 
 
 # Unit tests ###################################################################
-IF(BUILD_TESTING)
-    ENABLE_TESTING()
-	MESSAGE(STATUS "Build unit tests.")
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
-ELSE (BUILD_TESTING)
-   	MESSAGE("Do not build unit tests.")
-ENDIF(BUILD_TESTING)
+#IF(BUILD_TESTING)
+#    ENABLE_TESTING()
+#	MESSAGE(STATUS "Build unit tests.")
+#	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
+#ELSE (BUILD_TESTING)
+#   	MESSAGE("Do not build unit tests.")
+#ENDIF(BUILD_TESTING)
 
 
 # Validation tests #############################################################

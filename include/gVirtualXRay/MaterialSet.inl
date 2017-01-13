@@ -70,8 +70,8 @@ inline MaterialSet::MaterialSet():
 //--------------------------------
 	m_mu_min_energy(0),
 	m_mu_max_energy(0),
-	m_S_min_x(0),
-	m_S_max_x(0),
+	m_min_S(0),
+	m_max_S(0),
 	m_min_HU(0),
 	m_max_HU(0)
 //--------------------------------

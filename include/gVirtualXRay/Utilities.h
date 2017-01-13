@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -45,7 +45,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       12/02/2014
+*   @date       13/01/2017
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -57,7 +57,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   Copyright
 *   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -291,16 +291,24 @@ bool isTIFF(const std::string& aFileName);
 
 
 bool checkExtension(const char* aFileName, const char* anExtension);
-bool checkExtension(const std::string& aFileName, const std::string& anExtension);
+    
+    
+bool checkExtension(const std::string& aFileName,
+                    const std::string& anExtension);
 
 
 bool isBigEndian();
+
+    
 bool isLittleEndian();
 
 
 template<typename T> void swapBytes(T& aValue);
 
+    
 template<typename T> T degreeToRadian(const T& aAngleInDegree);
+
+    
 template<typename T> T radianToDegree(const T& aAngleInRadian);
 
 

@@ -95,14 +95,14 @@ void SoftTissueMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 		{
 		    m_p_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
-					m_number_of_vertices, 2, GL_FLOAT, &m_2D_texture_coordinates[0],
-					m_number_of_vertices, 3, GL_FLOAT, &m_3D_texture_coordinates[0]);
+					m_number_of_vertices, 2, GL_FLOAT, &m_texture_coordinates_2d[0],
+					m_number_of_vertices, 3, GL_FLOAT, &m_texture_coordinates_3d[0]);
 		}
 		else
 		{
 		    m_p_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
 					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
-					m_number_of_vertices, 2, GL_FLOAT, &m_2D_texture_coordinates[0]);
+					m_number_of_vertices, 2, GL_FLOAT, &m_texture_coordinates_2d[0]);
 		}
 	}
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -128,7 +128,7 @@ void SoftTissueMesh::defineDisplayShaderInput(int aShaderID)
 		glUniform1i(handle,4);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		float repeate_frequency(2.f/float(m_texture_3D_size));
+		float repeate_frequency(2.f/float(m_texture_size_3d));
 
 		handle = glGetUniformLocation(aShaderID, "g_repeat_frequency");
 		glUniform1fv(handle, 1,&repeate_frequency);
@@ -276,7 +276,7 @@ void SoftTissueMesh::initialize()
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
 		{
-			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.6/m_texture_2D_size);
+			m_texture_coordinates_2d[i]+=m_margin_direction[i]*float(0.6/m_texture_size_2d);
 		}
 
 	    // Check the OpenGL error status
@@ -297,7 +297,7 @@ void SoftTissueMesh::initialize()
 		//Change the sampling coordinates to avoid artifacts at the boundary of the polygons
 		for(unsigned int i(0); i<m_number_of_vertices; i++)
 		{
-			m_2D_texture_coordinates[i]+=m_margin_direction[i]*float(0.2/m_texture_2D_size);
+			m_texture_coordinates_2d[i]+=m_margin_direction[i]*float(0.2/m_texture_size_2d);
 		}
 
 	    // Check the OpenGL error status
@@ -362,7 +362,7 @@ void SoftTissueMesh::defineBumpMapShaderInput(int shader_id)
 {
 	if(m_use_3D_bump_map)
 	{
-		float bump_frequency(float(m_texture_3D_size)/2.f);
+		float bump_frequency(float(m_texture_size_3d)/2.f);
 
 		GLuint handle = glGetUniformLocation(shader_id, "g_bump_frequency");
 		glUniform1fv(handle, 1,&bump_frequency);
@@ -404,7 +404,7 @@ void SoftTissueMesh::defineColourTextureShaderInput(int shader_id)
 
 	if(m_use_3D_colour_texture)
 	{
-		texture_frequency = float(m_texture_3D_size)/2.f;
+		texture_frequency = float(m_texture_size_3d)/2.f;
 	}
 
 	handle = glGetUniformLocation(shader_id, "g_texture_frequency");

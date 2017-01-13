@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -45,7 +45,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       24/08/2016
+*   @date       13/01/2017
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -60,7 +60,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   Copyright
 *   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -77,19 +77,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 
-#ifndef GVXR_VBO_H
+#ifndef __VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_MATERIAL_H
+#ifndef __Material_h
 #include "gVirtualXRay/Material.h"
 #endif
 
@@ -1179,13 +1179,13 @@ protected:
 
     /// Vertex buffer object
 #if __cplusplus <= 199711L
-    std::auto_ptr<VBO> m_p_vbo;
-    std::auto_ptr<PolygonMesh> m_p_face_normal_vbo;
-    std::auto_ptr<PolygonMesh> m_p_vertex_normal_vbo;
+    std::auto_ptr<VBO>          m_p_vbo;
+    std::auto_ptr<PolygonMesh>  m_p_face_normal_vbo;
+    std::auto_ptr<PolygonMesh>  m_p_vertex_normal_vbo;
 #else
-    std::unique_ptr<VBO> m_p_vbo;
-    std::unique_ptr<PolygonMesh> m_p_face_normal_vbo;
-    std::unique_ptr<PolygonMesh> m_p_vertex_normal_vbo;
+    std::unique_ptr<VBO>            m_p_vbo;
+    std::unique_ptr<PolygonMesh>    m_p_face_normal_vbo;
+    std::unique_ptr<PolygonMesh>    m_p_vertex_normal_vbo;
 #endif
 
     /// Flag about the use of the Hounsfield value or attenuation coefficient

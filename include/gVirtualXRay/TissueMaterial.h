@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_TISSUE_MATERIAL_H
-#define GVXR_TISSUE_MATERIAL_H
+#ifndef __TissueMaterial_h
+#define __TissueMaterial_h
 
 
 /**
@@ -50,7 +50,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       13/10/2014
+*   @date       13/01/2017
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -61,17 +61,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -81,18 +81,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	define
+//  define
 //******************************************************************************
 
 
 //------------------------------------------------------------------------------
-///	The number of elements in a material
+/// The number of elements in a material
 //------------------------------------------------------------------------------
 #define NUMBER_OF_ELEMENTS_PER_MATERIAL 17
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
@@ -105,8 +105,8 @@ class ElementSet;
 
 //==============================================================================
 /**
-*	@class	TissueMaterial
-*	@brief	TissueMaterial is a class to manage a material.
+*   @class  TissueMaterial
+*   @brief  TissueMaterial is a class to manage a material.
 */
 //==============================================================================
 class TissueMaterial
@@ -114,196 +114,214 @@ class TissueMaterial
 {
 //******************************************************************************
 public:
-	//---------------------------------------------------------------------------
-	///	Default Constructor
-	/*
-	*	@param aMinHUValue:	the minimum Hounsfield unit of the material
-	*	@param aMaxHUValue:	the maximum Hounsfield unit of the material
-	*	@param H:	the amount of H in the material
-	*	@param C:	the amount of C in the material
-	*	@param N:	the amount of N in the material
-	*	@param O:	the amount of O in the material
-	*	@param Na:	the amount of Na in the material
-	*	@param Mg:	the amount of Mg in the material
-	*	@param P:	the amount of P in the material
-	*	@param S:	the amount of S in the material
-	*	@param Cl:	the amount of Cl in the material
-	*	@param Ar:	the amount of Ar in the material
-	*	@param K:	the amount of K in the material
-	*	@param Ca:	the amount of Ca in the material
-	*	@param Ti:	the amount of Ti in the material
-	*	@param Cu:	the amount of Cu in the material
-	*	@param Zn:	the amount of Zn in the material
-	*	@param Ag:	the amount of Ag in the material
-	*	@param Sn:	the amount of Sn in the material
-	*/
-	//---------------------------------------------------------------------------
-	TissueMaterial(short aMinHUValue = 0,
-			short aMaxHUValue = 0,
-			double H = 0,
-			double C = 0,
-			double N = 0,
-			double O = 0,
-			double Na = 0,
-			double Mg = 0,
-			double P = 0,
-			double S = 0,
-			double Cl = 0,
-			double Ar = 0,
-			double K = 0,
-			double Ca = 0,
-			double Ti = 0,
-			double Cu = 0,
-			double Zn = 0,
-			double Ag = 0,
-			double Sn = 0);
+    //--------------------------------------------------------------------------
+    /// Default Constructor
+    /*
+     *  @param aMinHUValue: the minimum Hounsfield unit of the material
+     *  @param aMaxHUValue: the maximum Hounsfield unit of the material
+     *  @param H:   the amount of H in the material
+     *  @param C:   the amount of C in the material
+     *  @param N:   the amount of N in the material
+     *  @param O:   the amount of O in the material
+     *  @param Na:  the amount of Na in the material
+     *  @param Mg:  the amount of Mg in the material
+     *  @param P:   the amount of P in the material
+     *  @param S:   the amount of S in the material
+     *  @param Cl:  the amount of Cl in the material
+     *  @param Ar:  the amount of Ar in the material
+     *  @param K:   the amount of K in the material
+     *  @param Ca:  the amount of Ca in the material
+     *  @param Ti:  the amount of Ti in the material
+     *  @param Cu:  the amount of Cu in the material
+     *  @param Zn:  the amount of Zn in the material
+     *  @param Ag:  the amount of Ag in the material
+     *  @param Sn:  the amount of Sn in the material
+     */
+    //--------------------------------------------------------------------------
+    TissueMaterial(short aMinHUValue = 0,
+                   short aMaxHUValue = 0,
+                   double H = 0,
+                   double C = 0,
+                   double N = 0,
+                   double O = 0,
+                   double Na = 0,
+                   double Mg = 0,
+                   double P = 0,
+                   double S = 0,
+                   double Cl = 0,
+                   double Ar = 0,
+                   double K = 0,
+                   double Ca = 0,
+                   double Ti = 0,
+                   double Cu = 0,
+                   double Zn = 0,
+                   double Ag = 0,
+                   double Sn = 0);
 
 
-	//---------------------------------------------------------------------------
-	///	Copy constructor
-	/*
-	*	@param aMaterial:	the material to copy
-	*/
-	//---------------------------------------------------------------------------
-	TissueMaterial(const TissueMaterial& aMaterial);
+    //--------------------------------------------------------------------------
+    /// Copy constructor
+    /*
+    *  @param aMaterial:    the material to copy
+    */
+    //--------------------------------------------------------------------------
+    TissueMaterial(const TissueMaterial& aMaterial);
 
 
     static void registerElementSet(const ElementSet* apElementSet);
 
 
-	//---------------------------------------------------------------------------
-	///	Normalise the weight set.
-	//---------------------------------------------------------------------------
-	void normaliseWeightSet();
+    //--------------------------------------------------------------------------
+    /// Normalise the weight set.
+    //--------------------------------------------------------------------------
+    void normaliseWeightSet();
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the minimum HU.
-	/*
-	*	@return the minimum HU
-	*/
-	//---------------------------------------------------------------------------
-	short getMinHUValue() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the minimum HU.
+    /*
+    *   @return the minimum HU
+    */
+    //--------------------------------------------------------------------------
+    short getMinHUValue() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the maximum HU.
-	/*
-	*	@return the maximum HU
-	*/
-	//---------------------------------------------------------------------------
-	short getMaxHUValue() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the maximum HU.
+    /*
+    *   @return the maximum HU
+    */
+    //--------------------------------------------------------------------------
+    short getMaxHUValue() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the atomic element weights.
-	/*
-	*	@return the atomic element weights
-	*/
-	//---------------------------------------------------------------------------
-	const double* getWeightSet() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the atomic element weights.
+    /*
+    *   @return the atomic element weights
+    */
+    //--------------------------------------------------------------------------
+    const double* getWeightSet() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Update the value of the molar mass of the material.
-	/*
-	*	@return the molar mass of the material
-	*/
-	//---------------------------------------------------------------------------
-	double computeMolarMass();
+    //--------------------------------------------------------------------------
+    /// Update the value of the molar mass of the material.
+    /*
+    *   @return the molar mass of the material
+    */
+    //--------------------------------------------------------------------------
+    double computeMolarMass();
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the molar mass of the material.
-	/*
-	*	@return the molar mass of the element
-	*/
-	//---------------------------------------------------------------------------
-	double getMolarMass() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the molar mass of the material.
+    /*
+    *   @return the molar mass of the element
+    */
+    //--------------------------------------------------------------------------
+    double getMolarMass() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Get the density for a given material (in HU).
-	/*
-	*	@param aHounsfieldValue:	the material (HU) value
-	*	@return the material (HU) density
-	*/
-	//---------------------------------------------------------------------------
-	static double getDensity(short aHounsfieldValue);
+    //--------------------------------------------------------------------------
+    /// Get the density for a given material (in HU).
+    /*
+    *   @param aHounsfieldValue:    the material (HU) value
+    *   @return the material (HU) density
+    */
+    //--------------------------------------------------------------------------
+    static double getDensity(short aHounsfieldValue);
 
 
-	//---------------------------------------------------------------------------
-	///	Get the mass attenuation coefficient at a given energy (values are interpolated).
-	/*
-	*	@param aHounsfieldValue:	the material (HU) value
-	*	@param anEnergy:	the energy	
-	*	@return	the corresponding linear attenuation coefficient
-	*/
-	//---------------------------------------------------------------------------
-	double getMassAttenuationTotal(short aHounsfieldValue, double anEnergy) const;
+    //--------------------------------------------------------------------------
+    /// Get the mass attenuation coefficient at a given energy
+    /// (values are interpolated).
+    /*
+    *   @param aHounsfieldValue:    the material (HU) value
+    *   @param anEnergy:    the energy
+    *   @return the corresponding linear attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    double getMassAttenuationTotal(short aHounsfieldValue,
+                                   double anEnergy) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Get the linear attenuation coefficient at a given energy (in mm-1) (values are interpolated).
-	/*
-	*	@param aHounsfieldValue:	the material (HU) value
-	*	@param anEnergy:	the energy	
-	*	@return	the corresponding linear attenuation coefficient
-	*/
-	//---------------------------------------------------------------------------
-	double getMU(short aHounsfieldValue, double anEnergy) const;
+    //--------------------------------------------------------------------------
+    /// Get the linear attenuation coefficient at a given energy (in mm-1)
+    /// (values are interpolated).
+    /*
+    *  @param aHounsfieldValue:     the material (HU) value
+    *  @param anEnergy:             the energy
+    *  @return the corresponding linear attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    double getMU(short aHounsfieldValue, double anEnergy) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Get the Compton scattering cross section sample (values are interpolated).
-	/*
-	*	@param x:	the sample
-	*	@return	the Compton scattering cross section value
-	*/
-	//---------------------------------------------------------------------------
-	double getS(double x) const;
+    //--------------------------------------------------------------------------
+    /// Get the Compton scattering cross section sample
+    /// (values are interpolated).
+    /*
+    *   @param x:   the sample
+    *   @return the Compton scattering cross section value
+    */
+    //--------------------------------------------------------------------------
+    double getS(double x) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Copy operator.
-	/*
-	*	@param aMaterial:	the material to copy
-	*	@return the newly created material
-	*/
-	//---------------------------------------------------------------------------
-	TissueMaterial& operator=(const TissueMaterial& aMaterial);
+    //--------------------------------------------------------------------------
+    /// Copy operator.
+    /*
+    *  @param aMaterial:    the material to copy
+    *  @return the newly created material
+    */
+    //--------------------------------------------------------------------------
+    TissueMaterial& operator=(const TissueMaterial& aMaterial);
 
 
-	//---------------------------------------------------------------------------
-	///	operator <<
-	/*
-	*	@param anOutputSream:	the output stream
-	*	@param aTissueMaterial:	the material to output
-	*	@return the output stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::ostream & operator << (std::ostream& anOutputSream,
-			const TissueMaterial& aTissueMaterial);
+    //--------------------------------------------------------------------------
+    /// operator <<
+    /*
+     *  @param anOutputSream:   the output stream
+     *  @param aTissueMaterial: the material to output
+     *  @return the output stream
+     */
+    //--------------------------------------------------------------------------
+    friend std::ostream & operator << (std::ostream& anOutputSream,
+                                       const TissueMaterial& aTissueMaterial);
 
-	//---------------------------------------------------------------------------
-	///	operator <<
-	/*
-	*	@param anInputSream:	the input stream
-	*	@param aTissueMaterial:	the material to read
-	*	@return the input stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::istream & operator >> (std::istream& anInputSream,
-			TissueMaterial& aTissueMaterial);
+    
+    //--------------------------------------------------------------------------
+    /// operator <<
+    /*
+     *  @param anInputSream:    the input stream
+     *  @param aTissueMaterial: the material to read
+     *  @return the input stream
+     */
+    //--------------------------------------------------------------------------
+    friend std::istream & operator >> (std::istream& anInputSream,
+                                       TissueMaterial& aTissueMaterial);
 
 
-//*****************************************************************************
+//******************************************************************************
 private:
-	static ElementSet* m_p_element_set;                     ///< The element set
-	short m_min_HU_value;                                   ///< The minimum HU value of the material
-	short m_max_HU_value;                                   ///< The maximum HU value of the material
-	double m_p_weight_set[NUMBER_OF_ELEMENTS_PER_MATERIAL]; ///< The weight of each element in the material
-	double m_molar_mass;                                    ///< The molar mass of the material
+    // The element set
+    static ElementSet* m_p_element_set;
+    
+    
+    // The minimum HU value of the material
+    short m_min_HU_value;
+    
+    
+    // The maximum HU value of the material
+    short m_max_HU_value;
+    
+    
+    // The weight of each element in the material
+    double m_p_weight_set[NUMBER_OF_ELEMENTS_PER_MATERIAL];
+    
+    
+    // The molar mass of the material
+    double m_molar_mass;
 };
 
 
@@ -314,5 +332,4 @@ private:
 #include "TissueMaterial.inl"
 
 
-#endif // GVXR_TISSUE_MATERIAL_H
-
+#endif // __TissueMaterial_h

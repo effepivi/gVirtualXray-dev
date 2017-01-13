@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_FBO_EXCEPTION_H
-#define GVXR_FBO_EXCEPTION_H
+#ifndef __FBOException_h
+#define __FBOException_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		OpenGLException.h
+*   @file       FBOException.h
 *
-*	@brief		Class to handle exceptions related to frame buffer objects (FBOs).
+*   @brief      Class to handle exceptions related to frame buffer objects
+*               (FBOs).
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		07/11/2013
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,15 +57,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -76,15 +77,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	FBOException
-*	@brief	FBOException is a class to handle exceptions related to FBOs.
+*   @class  FBOException
+*   @brief  FBOException is a class to handle exceptions related to FBOs.
 */
 //==============================================================================
 class FBOException: public Exception
@@ -92,20 +93,25 @@ class FBOException: public Exception
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown
-	*	@param 	aFunctionName:	name of the function where the exception was thrown
-	*	@param 	anErrorLine:	name at which the exception was thrown
-	*	@param 	anErrorCode:	FBO error code
-	*/
-	//--------------------------------------------------------------------------
-	FBOException(const char* aFileName, const char* aFunctionName, int anErrorLine, int anErrorCode);
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    /**
+     *  @param  aFileName:  name of the source file where the exception
+     *                      was thrown
+     *  @param  aFunctionName:  name of the function where the exception
+     *                          was thrown
+     *  @param  anErrorLine:    name at which the exception was thrown
+     *  @param  anErrorCode:    FBO error code
+     */
+    //--------------------------------------------------------------------------
+    FBOException(const char* aFileName,
+                 const char* aFunctionName,
+                 int anErrorLine,
+                 int anErrorCode);
 };
 
 
 } // namespace gVirtualXRay
 
 
-#endif // FBO_EXCEPTION_H
+#endif // __FBOException_h

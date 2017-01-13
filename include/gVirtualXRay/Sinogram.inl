@@ -50,7 +50,7 @@ template<typename T> Sinogram<T>::Sinogram(unsigned int aWidth,
 
 
 //------------------------------------------------------------------------------
-template<typename T> Image<T> Sinogram<T>::ART(double aFirstAngle,
+template<typename T> Image<T> Sinogram<T>::art(double aFirstAngle,
                                                double anAngleStep,
                                                double aLastAngle,
                                                unsigned int aNumberOfIterations,
@@ -131,7 +131,7 @@ template<typename T> Image<T> Sinogram<T>::ART(double aFirstAngle,
 
 
 //-------------------------------------------------------------------------------
-template<typename T> Image<T> Sinogram<T>::MART(double aFirstAngle,
+template<typename T> Image<T> Sinogram<T>::mart(double aFirstAngle,
                                                 double anAngleStep,
                                                 double aLastAngle,
                                                 unsigned int aNumberOfIterations,
@@ -212,7 +212,7 @@ template<typename T> Image<T> Sinogram<T>::MART(double aFirstAngle,
 
 
 //-------------------------------------------------------------------------------
-template<typename T> Image<T> Sinogram<T>::SIRT(double aFirstAngle,
+template<typename T> Image<T> Sinogram<T>::sirt(double aFirstAngle,
                                                 double anAngleStep,
                                                 double aLastAngle,
                                                 unsigned int aNumberOfIterations,
@@ -254,7 +254,7 @@ template<typename T> Image<T> Sinogram<T>::SIRT(double aFirstAngle,
         T* p_temp(new_estimated_image.m_p_image);
         for (unsigned int i(0); i < new_estimated_image.m_width * new_estimated_image.m_height * new_estimated_image.m_number_of_slices; ++i, ++p_temp)
         {
-        	*p_temp = std::max(0.0f, *p_temp);
+            *p_temp = std::max(0.0f, *p_temp);
         }
 
         if (aDirectory)
@@ -298,9 +298,9 @@ template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAng
                                                                 const char* aDirectory) const
 //-------------------------------------------------------------------------------------------
 {
-	Image<T> sinogram(this->resize(this->m_width * 2, this->m_height, this->m_number_of_slices));
-	sinogram.saveASCII("resized.mat");
-	unsigned int image_width(2 * floor (sinogram.m_width / (2.0 * std::sqrt(2.0))));
+    Image<T> sinogram(this->resize(this->m_width * 2, this->m_height, this->m_number_of_slices));
+    sinogram.saveASCII("resized.mat");
+    unsigned int image_width(2 * floor (sinogram.m_width / (2.0 * std::sqrt(2.0))));
 
     Image<T> reconstruction(sinogram.m_width, sinogram.m_width, sinogram.m_number_of_slices);
 
@@ -356,29 +356,29 @@ template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstA
 {
     typedef  FFT<T>   FAST_FOURIER_TRANSFORM;
 
-	// Compute the FFTs
-	std::vector<FAST_FOURIER_TRANSFORM> p_fft_set;
-	for (unsigned int j(0); j < this->m_height; ++j)
-	{
-		p_fft_set.push_back(this->getROI(0, j, 0, this->m_width, 1, this->m_number_of_slices).getFFT());
-	}
+    // Compute the FFTs
+    std::vector<FAST_FOURIER_TRANSFORM> p_fft_set;
+    for (unsigned int j(0); j < this->m_height; ++j)
+    {
+        p_fft_set.push_back(this->getROI(0, j, 0, this->m_width, 1, this->m_number_of_slices).getFFT());
+    }
 
-	// Compute the rho filter
-	for (typename std::vector<FAST_FOURIER_TRANSFORM>::iterator ite(p_fft_set.begin());
-			ite != p_fft_set.end();
-			++ite)
-	{
-	    *ite = ite->rhoFilter(aFilterType, aScalingFactor);
-	}
+    // Compute the rho filter
+    for (typename std::vector<FAST_FOURIER_TRANSFORM>::iterator ite(p_fft_set.begin());
+            ite != p_fft_set.end();
+            ++ite)
+    {
+        *ite = ite->rhoFilter(aFilterType, aScalingFactor);
+    }
 
-	// Compute the iFFTs
-	std::vector<Image<T> > p_ifft_set(this->m_height);
-	for (unsigned int j(0); j < this->m_height; ++j)
-	{
-		p_ifft_set[j] = p_fft_set[j].getInverseFFT();
-	}
+    // Compute the iFFTs
+    std::vector<Image<T> > p_ifft_set(this->m_height);
+    for (unsigned int j(0); j < this->m_height; ++j)
+    {
+        p_ifft_set[j] = p_fft_set[j].getInverseFFT();
+    }
 
-	// Store the results
+    // Store the results
     Sinogram<T> filtered_sinogram(this->m_width, this->m_height, this->m_number_of_slices);
 
     for (unsigned int k(0); k < this->m_number_of_slices; ++k)
@@ -392,46 +392,46 @@ template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstA
         }
     }
 
-	//std::cout << getAverage() << "  " << filtered_sinogram.getAverage() << std::endl;
-	//filtered_sinogram *= filtered_sinogram.getAverage() / getAverage();
-	filtered_sinogram.saveASCII("filtered_sinogram.mat");
+    //std::cout << getAverage() << "  " << filtered_sinogram.getAverage() << std::endl;
+    //filtered_sinogram *= filtered_sinogram.getAverage() / getAverage();
+    filtered_sinogram.saveASCII("filtered_sinogram.mat");
     return (filtered_sinogram.simpleBackProjection(aFirstAngle, anAngleStep, aLastAngle, aDirectory));
 }
 
 
 //---------------------------------------------------------------------------------
-template<typename T> Image<T> Sinogram<T>::ART(double aFirstAngle,
+template<typename T> Image<T> Sinogram<T>::art(double aFirstAngle,
                                                double anAngleStep, 
                                                double aLastAngle, 
                                                unsigned int aNumberOfIterations, 
                                                const std::string& aDirectory) const
 //---------------------------------------------------------------------------------
 {
-    return (ART(aFirstAngle, anAngleStep, aLastAngle, aNumberOfIterations, aDirectory.data()));
+    return (art(aFirstAngle, anAngleStep, aLastAngle, aNumberOfIterations, aDirectory.data()));
 }
 
 
 //----------------------------------------------------------------------------------
-template<typename T> Image<T> Sinogram<T>::MART(double aFirstAngle,
+template<typename T> Image<T> Sinogram<T>::mart(double aFirstAngle,
                                                 double anAngleStep,
                                                 double aLastAngle,
                                                 unsigned int aNumberOfIterations,
                                                 const std::string& aDirectory) const
 //----------------------------------------------------------------------------------
 {
-    return (MART(aFirstAngle, anAngleStep, aLastAngle, aNumberOfIterations, aDirectory.data()));
+    return (mart(aFirstAngle, anAngleStep, aLastAngle, aNumberOfIterations, aDirectory.data()));
 }
 
 
 //----------------------------------------------------------------------------------
-template<typename T> Image<T> Sinogram<T>::SIRT(double aFirstAngle,
+template<typename T> Image<T> Sinogram<T>::sirt(double aFirstAngle,
                                                 double anAngleStep,
                                                 double aLastAngle,
                                                 unsigned int aNumberOfIterations,
                                                 const std::string& aDirectory) const
 //----------------------------------------------------------------------------------
 {
-    return (SIRT(aFirstAngle, anAngleStep, aLastAngle, aNumberOfIterations, aDirectory.data()));
+    return (sirt(aFirstAngle, anAngleStep, aLastAngle, aNumberOfIterations, aDirectory.data()));
 }
 
 

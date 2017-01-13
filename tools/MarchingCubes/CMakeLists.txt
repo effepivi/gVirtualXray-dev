@@ -57,7 +57,7 @@ ENDIF (USE_SYSTEM_GLFW)
 
 IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES (${GLFW3_INCLUDE_DIR})
-    SET (optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
+    SET (optionalLibs ${optionalLibs} glfw3)
     ADD_DEFINITIONS(-DHAS_GLFW)
 ELSE (glfw3_FOUND)
     MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")

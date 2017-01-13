@@ -187,7 +187,7 @@ using namespace gVirtualXRay;
 const GLfloat g_rotation_speed(2.0);
 
 const float g_incident_energy(0.08 * MeV);
-const VEC2 g_resolution(0.75 * mm, 5.0 * mm);
+const VEC2 g_resolution(0.25 * mm, 0.25 * mm);
 const Vec2ui g_number_of_pixels(257, 1);
 
 const double g_initial_fovy(45);        // Field of view along the y-axis
@@ -711,7 +711,7 @@ int main(int argc, char** argv)
 void createPhantom()
 //------------------
 {
-    unsigned int scaling(1);
+ /*   unsigned int scaling(1);
     Image<short> phantom(32 * scaling, 32 * scaling, 16 * scaling, -1000);
     
     VEC3 voxel_size(4.0 / float(scaling),
@@ -779,17 +779,19 @@ void createPhantom()
                 }
             }
         }
-    }
+    }*/
      
      //phantom.save("/Users/fpvidal/Desktop/phantom-CT.mha");
     // phantom.save("/Users/fpvidal/Desktop/phantom-CT.mha");
 
     
     
-    /*
+    
     Image<short> phantom;
     phantom.load("/Users/fpvidal/Desktop/ASSURANCETOURIX-CT.mha");
-    */
+    phantom = phantom.resize(128, 128, 3);
+    phantom.save("/Users/fpvidal/Desktop/ASSURANCETOURIX-CT-small.mha");
+
     phantom.convertVoxelsToCubes(g_polygon_mesh_set, -950);
     
     VEC3 min_corner(FLT_MAX, FLT_MAX, FLT_MAX);

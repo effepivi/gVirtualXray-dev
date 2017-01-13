@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_TEXT_RENDERER_H
-#define GVXR_TEXT_RENDERER_H
+#ifndef __TextRenderer_h
+#define __TextRenderer_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		TextRenderer.h
+*   @file       TextRenderer.h
 *
-*	@brief		Class to render text using OpenGL and FreeType2.
+*   @brief      Class to render text using OpenGL and FreeType2.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		16/11/2014
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,8 +56,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -78,29 +78,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include FT_FREETYPE_H
 #endif
 
-#ifdef GVXR_VBO_H
+#ifdef __VBO_h
 #include "VBO.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifdef GVXR_VEC3_H
+#ifdef __Vec3_h
 #include "Vec3.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	TextRenderer
-*	@brief	TextRenderer is a class to render text using OpenGL and FreeType2.
+*   @class  TextRenderer
+*   @brief  TextRenderer is a class to render text using OpenGL and FreeType2.
 */
 //==============================================================================
 class TextRenderer
@@ -108,8 +108,6 @@ class TextRenderer
 {
 //******************************************************************************
 private:
-
-
     //==========================================================================
     /**
     *   @class  Character
@@ -124,22 +122,22 @@ private:
         //----------------------------------------------------------------------
         /// Default constructor
         /**
-        *   @param aTextureID   the ID of the texture (default value: 0)
-        *   @param aWidth   the width of the bitmap (default value: 0)
-        *   @param aHeight   the height of the bitmap (default value: 0)
-        *   @param aVX   the horizontal alignment parameter (default value: 0)
-        *   @param aVY   the vertical alignment parameter (default value: 0)
-        *   @param aXOffset   the horizontal offset (default value: 0)
-        *   @param aYOffset   the vertical offset (default value: 0)
-        */
+         *  @param aTextureID   the ID of the texture (default value: 0)
+         *  @param aWidth   the width of the bitmap (default value: 0)
+         *  @param aHeight   the height of the bitmap (default value: 0)
+         *  @param aVX   the horizontal alignment parameter (default value: 0)
+         *  @param aVY   the vertical alignment parameter (default value: 0)
+         *  @param aXOffset   the horizontal offset (default value: 0)
+         *  @param aYOffset   the vertical offset (default value: 0)
+         */
         //----------------------------------------------------------------------
         Character(unsigned int aTextureID = 0,
-                int aWidth = 0,
-                int aHeight = 0,
-                float aVX = 0,
-                float aVY = 0,
-                float aXOffset = 0,
-                float aYOffset = 0);
+                  int aWidth = 0,
+                  int aHeight = 0,
+                  float aVX = 0,
+                  float aVY = 0,
+                  float aXOffset = 0,
+                  float aYOffset = 0);
 
 
         //----------------------------------------------------------------------
@@ -149,21 +147,20 @@ private:
 
 
         void release();
+            
 
-        unsigned int m_texture_id;    ///< The ID of the texture
-        int m_width;            ///< The width of the bitmap
-        int m_height;           ///< The height of the bitmap
-        float m_vx;             ///< The horizontal alignment parameter
-        float m_vy;             ///< The vertical alignment parameter
-        float m_x_offset;       ///< The horizontal offset
-        float m_y_offset;       ///< The vertical offset
+        unsigned int m_texture_id;  ///< The ID of the texture
+        int          m_width;       ///< The width of the bitmap
+        int          m_height;      ///< The height of the bitmap
+        float        m_vx;          ///< The horizontal alignment parameter
+        float        m_vy;          ///< The vertical alignment parameter
+        float        m_x_offset;    ///< The horizontal offset
+        float        m_y_offset;    ///< The vertical offset
     };
 
-
+    
 //******************************************************************************
 public:
-
-
     //--------------------------------------------------------------------------
     /// Default constructor.
     //--------------------------------------------------------------------------
@@ -246,8 +243,6 @@ public:
 
 //******************************************************************************
 protected:
-
-
     //--------------------------------------------------------------------------
     /// Initialise internal states.
     /**
@@ -272,9 +267,9 @@ protected:
 
     /// The VBO used to display the characters
 #if __cplusplus <= 199711L
-	std::auto_ptr<VBO> m_text_vbo;
+    std::auto_ptr<VBO> m_text_vbo;
 #else
-	std::unique_ptr<VBO> m_text_vbo;
+    std::unique_ptr<VBO> m_text_vbo;
 #endif
 
 
@@ -294,4 +289,4 @@ protected:
 #include "TextRenderer.inl"
 
 
-#endif // GVXR_TEXT_RENDERER_H
+#endif // __TextRenderer_h

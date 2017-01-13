@@ -211,8 +211,8 @@ XRayRenderer::XRayRenderer():
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
-		m_use_L_buffer_artefact_filtering(true),
-		m_L_buffer_empty(false),
+		m_use_l_buffer_artefact_filtering(true),
+		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false)
 //-------------------------------------------------------------------------------------------------
 {
@@ -806,7 +806,7 @@ void XRayRenderer::release()
 	m_computing_mode = OPENGL;
 	m_mu_water_set.clear();
 	m_p_fbo_set.clear();
-	m_L_buffer_empty = false;
+	m_l_buffer_empty = false;
 	m_energy_fluence_empty = false;
 }
 
@@ -1611,14 +1611,14 @@ void XRayRenderer::resetLBuffer()
 //-------------------------------
 {
 	// The L-buffer is not empty
-	if (!m_L_buffer_empty)
+	if (!m_l_buffer_empty)
 	{
 		switch (m_computing_mode)
 		{
 		case OPENGL:
 			reset2DBuffer(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
 
-			if (m_use_L_buffer_artefact_filtering)
+			if (m_use_l_buffer_artefact_filtering)
 			{
 	            reset2DBuffer(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
 			}
@@ -1639,7 +1639,7 @@ void XRayRenderer::resetLBuffer()
 	}
 
 	// The L-buffer is now empty
-	m_L_buffer_empty = true;
+	m_l_buffer_empty = true;
 }
 
 
@@ -2058,7 +2058,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Clean the L-Buffer
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
         	RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
             cleanLBuffer(1.0 * bbox_diagonal);
@@ -2086,7 +2086,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	glFinish();
 
 	// The L-buffer is not empty
-	m_L_buffer_empty = false;
+	m_l_buffer_empty = false;
 }
 
 
@@ -2120,7 +2120,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	pushEnableDisableState(GL_BLEND);
 
 	// Bind frame buffer object
-    if (m_use_L_buffer_artefact_filtering)
+    if (m_use_l_buffer_artefact_filtering)
     {
         m_p_fbo_set[XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID]->Bind();
     }
@@ -2266,7 +2266,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    if (m_use_L_buffer_artefact_filtering)
+    if (m_use_l_buffer_artefact_filtering)
     {
         glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
     }
@@ -2381,7 +2381,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 			// Cumulated L-buffers
 			glActiveTexture(saved_texture);
 
-			if (m_use_L_buffer_artefact_filtering)
+			if (m_use_l_buffer_artefact_filtering)
 			{
 			    glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
 			}

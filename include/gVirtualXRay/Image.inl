@@ -2534,11 +2534,6 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
                                                unsigned int aNewNumberOfSlices) const
 //-----------------------------------------------------------------------------------
 {
-    if (aNewNumberOfSlices != m_number_of_slices)
-    {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-    }
-
     Image temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
 
     #pragma omp parallel for collapse(3)
@@ -2551,15 +2546,19 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
             
                 double x = double(i) * (m_width  - 1) / (aNewWidth  - 1);
                 double y = double(j) * (m_height - 1) / (aNewHeight - 1);
+                double z = double(k) * (m_number_of_slices - 1) / (aNewNumberOfSlices - 1);
             
                 int x1 = floor(x);
                 int y1 = floor(y);
+                int z1 = floor(z);
             
                 if (x1 < 0) x1 = 0;
                 if (y1 < 0) y1 = 0;
+                if (z1 < 0) z1 = 0;
 
                 int x2 = x1 + 1.0;
                 int y2 = y1 + 1.0;
+                int z2 = z1 + 1.0;
 
                 if (x2 >= m_width)
                 {
@@ -2570,27 +2569,60 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
                 {
                     y2 = m_height - 1;
                 }
+                
+                if (z2 >= m_number_of_slices)
+                {
+                    z2 = m_number_of_slices - 1;
+                }
+                
+                
+                
+                double c111 = getPixel(x1, y1, z1);
+                double c121 = getPixel(x1, y2, z1);
+                double c221 = getPixel(x2, y2, z1);
+                double c211 = getPixel(x2, y1, z1);
 
-                double c11 = getPixel(x1, y1, k);
-                double c12 = getPixel(x1, y2, k);
-                double c22 = getPixel(x2, y2, k);
-                double c21 = getPixel(x2, y1, k);
-
-                double cx1 = c11;
-                double cx2 = c12;
+                double cx11 = c111;
+                double cx21 = c121;
                 if (x1 != x2)
                 {
-                    cx1 += (c21 - c11) * (x - x1) / (x2 - x1);
-                    cx2 += (c22 - c12) * (x - x1) / (x2 - x1);
+                    cx11 += (c211 - c111) * (x - x1) / (x2 - x1);
+                    cx21 += (c221 - c121) * (x - x1) / (x2 - x1);
                 }
 
-                double cy  = cx1;
+                double cy1  = cx11;
                 if (y1 != y2)
                 {
-                    cy += (cx2 - cx1) * (y - y1) / (y2 - y1);
+                    cy1 += (cx21 - cx11) * (y - y1) / (y2 - y1);
                 }
         
-                temp(i, j, k) = cy;
+                
+                double c112 = getPixel(x1, y1, z2);
+                double c122 = getPixel(x1, y2, z2);
+                double c222 = getPixel(x2, y2, z2);
+                double c212 = getPixel(x2, y1, z2);
+                
+                double cx12 = c112;
+                double cx22 = c122;
+                if (x1 != x2)
+                {
+                    cx12 += (c212 - c112) * (x - x1) / (x2 - x1);
+                    cx22 += (c222 - c122) * (x - x1) / (x2 - x1);
+                }
+                
+                double cy2  = cx12;
+                if (y1 != y2)
+                {
+                    cy2 += (cx22 - cx12) * (y - y1) / (y2 - y1);
+                }
+                
+                double cz  = cy1;
+                if (z1 != z2)
+                {
+                    cz += (cy2 - cy1) * (z - z1) / (z2 - z1);
+                }
+
+                temp(i, j, k) = cz;
             }
         }
     }

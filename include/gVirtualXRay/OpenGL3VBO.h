@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef OPENGL3_VBO_H
-#define OPENGL3_VBO_H
+#ifndef __OpenGL3VBO_h
+#define __OpenGL3VBO_h
 
 
 /**
@@ -41,11 +41,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       OpenGL3VBO.h
 *
-*   @brief      Class to handle vertex buffer objects (VBOs) in OpenGL 3.x or 4.x.
+*   @brief      Class to handle vertex buffer objects (VBOs) in
+*               OpenGL 3.x or 4.x.
 *
 *   @version    1.0
 *
-*   @date       07/08/2014
+*   @date       13/01/2017
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -56,8 +57,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -66,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -76,15 +77,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	OpenGL3VBO
-*	@brief	OpenGL3VBO is a class to handle a vertex buffer object (VBO) in OpenGL 3.x or 4.x.
+*   @class  OpenGL3VBO
+*   @brief  OpenGL3VBO is a class to handle a vertex buffer object (VBO) in
+*           OpenGL 3.x or 4.x.
 */
 //==============================================================================
 class OpenGL3VBO: public VBO
@@ -92,47 +94,70 @@ class OpenGL3VBO: public VBO
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	//--------------------------------------------------------------------------
-    OpenGL3VBO();
-	
-	
-	//--------------------------------------------------------------------------
-	///	Destructor.
-	//--------------------------------------------------------------------------
-	virtual ~OpenGL3VBO();
-	
-	
     //--------------------------------------------------------------------------
-    ///	Release the data on the GPU.
+    /// Default constructor.
+    //--------------------------------------------------------------------------
+    OpenGL3VBO();
+    
+    
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    virtual ~OpenGL3VBO();
+
+
+    //--------------------------------------------------------------------------
+    /// Release the data on the GPU.
     //--------------------------------------------------------------------------
     virtual void destroy();
 
 
     //--------------------------------------------------------------------------
-    ///	Set the vertex data.
+    /// Set the vertex data.
     /**
-    *	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
-    *	@param aNumberOfVertices:				number of vertices (default: 0)
-    *	@param aNumberOfCompontentsPerVertex:	the number of component per vertex (default: 0)
-    *	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE (default: 0)
-    *	@param apVertices:						address of the first component of the first vertex (default: 0)
-    *	@param aNumberOfNormals:				number of normal vectors (default: 0)
-    *	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector (default: 0)
-    *	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE (default: 0)
-    *	@param apNormals:						address of the first component of the firth normal vector (default: 0)
-    *	@param aNumberOfTextureCoordinates:		number of texture coordinates (default: 0)
-    *	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate (default: 0)
-    *	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE (default: 0)
-    *	@param apTextureCoordinates:			address of the first component of the first texture coordinate (default: 0)
-    *	@param aNumberOfAdditionalData:			number of additional data (default: 0)
-    *	@param aNumberOfCompontentsPerAdditionalData:	the number of component per additional data (default: 0)
-    *	@param anAdditionalDataType:			the data type of additional data; valid values are GL_FLOAT and GL_DOUBLE (default: 0)
-    *	@param apAdditionalData:				address of the first component of the first additional data (default: 0)
-    */
+     *  @param aPrimitiveType:  the primitive type; valid values are:
+     *                          GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP,
+     *                          GL_LINES, GL_LINE_STRIP_ADJACENCY,
+     *                          GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP,
+     *                          GL_TRIANGLE_FAN, GL_TRIANGLES,
+     *                          GL_TRIANGLE_STRIP_ADJACENCY,
+     *                          GL_TRIANGLES_ADJACENCY and GL_PATCHES
+     *  @param aNumberOfVertices:   number of vertices (default: 0)
+     *  @param aNumberOfCompontentsPerVertex:   the number of component per
+     *                                          vertex (default: 0)
+     *  @param aVertexDataType: the data type of vertices; valid values are
+     *                          GL_FLOAT and GL_DOUBLE (default: 0)
+     *  @param apVertices:  address of the first component of the first vertex
+     *                      (default: 0)
+     *  @param aNumberOfNormals:    number of normal vectors (default: 0)
+     *  @param aNumberOfCompontentsPerNormal:   the number of component per
+     *                                          normal vector (default: 0)
+     *  @param aNormalDataType:     the data type of normal vectors; valid
+     *                              values are GL_FLOAT and GL_DOUBLE
+     *                              (default: 0)
+     *  @param apNormals:   address of the first component of the firth normal
+     *                      vector (default: 0)
+     *  @param aNumberOfTextureCoordinates:     number of texture coordinates
+     *                                          (default: 0)
+     *  @param aNumberOfCompontentsPerCoord:    the number of component per
+     *                                          texture coordinate (default: 0)
+     *  @param aCoordDataType:  the data type of texture coordinates; valid
+     *                          values are GL_FLOAT and GL_DOUBLE (default: 0)
+     *  @param apTextureCoordinates:    address of the first component of
+     *                                  the first texture coordinate
+     *                                  (default: 0)
+     *  @param aNumberOfAdditionalData: number of additional data (default: 0)
+     *  @param aNumberOfCompontentsPerAdditionalData:   the number of component
+     *                                                  per additional data
+     *                                                  (default: 0)
+     *  @param anAdditionalDataType:    the data type of additional data;
+     *                                  valid values are GL_FLOAT and GL_DOUBLE
+     *                                  (default: 0)
+     *  @param apAdditionalData:    address of the first component of
+     *                              the first additional data (default: 0)
+     */
     //--------------------------------------------------------------------------
-	virtual void setVertexData(int aPrimitiveType,
+    virtual void setVertexData(int aPrimitiveType,
             const unsigned int aNumberOfVertices = 0,
             unsigned int aNumberOfCompontentsPerVertex = 0,
             int aVertexDataType = 0,
@@ -145,19 +170,21 @@ public:
             unsigned int aNumberOfCompontentsPerCoord = 0,
             int aCoordDataType = 0,
             const void* apTextureCoordinates = 0,
-			const unsigned int aNumberOfAdditionalData = 0,
-			unsigned int aNumberOfCompontentsPerAdditionalData = 0,
-			int anAdditionalDataType = 0,
-			const void* apAdditionalData = 0);
+            const unsigned int aNumberOfAdditionalData = 0,
+            unsigned int aNumberOfCompontentsPerAdditionalData = 0,
+            int anAdditionalDataType = 0,
+            const void* apAdditionalData = 0);
 
 
     //--------------------------------------------------------------------------
-    ///	Set the index.
+    /// Set the index.
     /**
-    *	@param aNumberOfIndexes:	number of indices
-    *	@param anIndexDataType:		the data type of indices; valid values are GL_UNSGINED_BYTE, GL_UNSGINED_SHORT and GL_UNSGINED_INT
-    *	@param apIndexSet:			the index set
-    */
+     *  @param aNumberOfIndexes:    number of indices
+     *  @param anIndexDataType:     the data type of indices;
+     *                              valid values are GL_UNSGINED_BYTE,
+     *                              GL_UNSGINED_SHORT and GL_UNSGINED_INT
+     *  @param apIndexSet:          the index set
+     */
     //--------------------------------------------------------------------------
     virtual void setIndexData(const unsigned int aNumberOfIndexes,
             int anIndexDataType,
@@ -165,25 +192,25 @@ public:
 
 
     //--------------------------------------------------------------------------
-    ///	Display the triangular mesh using OpenGL.
+    /// Display the triangular mesh using OpenGL.
     //--------------------------------------------------------------------------
     virtual void display() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Copy operator.
-	/**
-	*	@param aVbo:	VBO to copy
-	*	@return the new VBO
-	*/
-	//--------------------------------------------------------------------------
-	virtual VBO& operator=(const OpenGL3VBO& aVbo);
+    //--------------------------------------------------------------------------
+    /// Copy operator.
+    /**
+     *  @param aVbo:    VBO to copy
+     *  @return the new VBO
+     */
+    //--------------------------------------------------------------------------
+    virtual VBO& operator=(const OpenGL3VBO& aVbo);
 
 
 //******************************************************************************
 protected:
-	/// ID of VAO
-	unsigned int m_vao_id;
+    /// ID of VAO
+    unsigned int m_vao_id;
 };
 
 
@@ -194,5 +221,4 @@ protected:
 #include "OpenGL3VBO.inl"
 
 
-#endif // OPENGL3_VBO_H
-
+#endif // __OpenGL3VBO_h

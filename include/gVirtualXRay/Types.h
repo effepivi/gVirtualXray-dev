@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_TYPES_H
-#define GVXR_TYPES_H
+#ifndef __Types_h
+#define __Types_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Types.h
+*   @file       Types.h
 *
-*	@brief		Type declarations.
+*   @brief      Type declarations.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		08/11/2013
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,48 +56,48 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <limits>
 
-#ifndef GVXR_VEC3_H
+#ifndef __Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef GVXR_VEC2_H
+#ifndef __Vec2_h
 #include "gVirtualXRay/Vec2.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
 
 //******************************************************************************
-//	define
+//  define
 //******************************************************************************
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	type declaration
+//  type declaration
 //******************************************************************************
 /// Type of data used to store sinograms
 typedef float                    SinogramType;
@@ -120,13 +120,13 @@ typedef Matrix4x4<RATIONAL_NUMBER> MATRIX4;
 
 
 //******************************************************************************
-//	class declaration
+//  class declaration
 //******************************************************************************
 //==============================================================================
 /**
- *	@typedef Vec2d
- *	@brief	Vec2d is a class to handle a 2D vector using double precision
- *				floating point numbers.
+ *  @typedef Vec2d
+ *  @brief  Vec2d is a class to handle a 2D vector using double precision
+ *          floating point numbers.
  */
 //==============================================================================
 typedef Vec2<double> Vec2d;
@@ -134,9 +134,9 @@ typedef Vec2<double> Vec2d;
 
 //==============================================================================
 /**
- *	@typedef Vec2f
- *	@brief	Vec2f is a class to handle a 2D vector using double precision
- *				floating point numbers.
+ *  @typedef Vec2f
+ *  @brief  Vec2f is a class to handle a 2D vector using double precision
+ *          floating point numbers.
  */
 //==============================================================================
 typedef Vec2<float> Vec2f;
@@ -144,8 +144,8 @@ typedef Vec2<float> Vec2f;
 
 //==============================================================================
 /**
- *	@typedef Vec2i
- *	@brief	Vec2i is a class to handle a 2D vector using 32 bits integers.
+ *  @typedef Vec2i
+ *  @brief  Vec2i is a class to handle a 2D vector using 32 bits integers.
  */
 //==============================================================================
 typedef Vec2<int> Vec2i;
@@ -153,9 +153,9 @@ typedef Vec2<int> Vec2i;
 
 //==============================================================================
 /**
- *	@typedef Vec2ui
- *	@brief	Vec2ui is a class to handle a 2D vector using
- *				unsigned 32 bits integers.
+ *  @typedef Vec2ui
+ *  @brief  Vec2ui is a class to handle a 2D vector using
+ *          unsigned 32 bits integers.
  */
 //==============================================================================
 typedef Vec2<unsigned int> Vec2ui;
@@ -163,9 +163,9 @@ typedef Vec2<unsigned int> Vec2ui;
 
 //==============================================================================
 /**
- *	@typedef Vec3d
- *	@brief	Vec3d is a class to handle a 3D vector using double precision
- *				floating point numbers.
+ *  @typedef Vec3d
+ *  @brief  Vec3d is a class to handle a 3D vector using double precision
+ *          floating point numbers.
  */
 //==============================================================================
 typedef Vec3<double> Vec3d;
@@ -173,9 +173,9 @@ typedef Vec3<double> Vec3d;
 
 //==============================================================================
 /**
- *	@typedef Vec3f
- *	@brief	Vec3f is a class to handle a 3D vector using double precision
- *				floating point numbers.
+ *  @typedef Vec3f
+ *  @brief  Vec3f is a class to handle a 3D vector using double precision
+ *          floating point numbers.
  */
 //==============================================================================
 typedef Vec3<float> Vec3f;
@@ -183,9 +183,9 @@ typedef Vec3<float> Vec3f;
 
 //==============================================================================
 /**
- *	@typedef Vec3i
- *	@brief	Vec3i is a class to handle a 3D vector using
- *				signed 32 bits integers.
+ *  @typedef Vec3i
+ *  @brief  Vec3i is a class to handle a 3D vector using
+ *          signed 32 bits integers.
  */
 //==============================================================================
 typedef Vec3<int> Vec3i;
@@ -193,9 +193,9 @@ typedef Vec3<int> Vec3i;
 
 //==============================================================================
 /**
- *	@typedef Vec3ui
- *	@brief	Vec3ui is a class to handle a 3D vector using
- *				unsigned 32 bits integers.
+ *  @typedef Vec3ui
+ *  @brief  Vec3ui is a class to handle a 3D vector using
+ *          unsigned 32 bits integers.
  */
 //==============================================================================
 typedef Vec3<unsigned int> Vec3ui;
@@ -203,9 +203,9 @@ typedef Vec3<unsigned int> Vec3ui;
 
 //==============================================================================
 /**
- *	@typedef Matrix4x4d
- *	@brief	Matrix4x4d is a class to handle a 4x4 matrix
- *				using double precision floating point numbers.
+ *  @typedef Matrix4x4d
+ *  @brief  Matrix4x4d is a class to handle a 4x4 matrix
+ *          using double precision floating point numbers.
  */
 //==============================================================================
 typedef Matrix4x4<double> Matrix4x4d;
@@ -213,20 +213,20 @@ typedef Matrix4x4<double> Matrix4x4d;
 
 //==============================================================================
 /**
- *	@typedef Matrix4x4f
- *	@brief	Matrix4x4f is a class to handle a 4x4 matrix
- *				using single precision floating point numbers.
+ *  @typedef Matrix4x4f
+ *  @brief  Matrix4x4f is a class to handle a 4x4 matrix
+ *          using single precision floating point numbers.
  */
 //==============================================================================
 typedef Matrix4x4<float> Matrix4x4f;
 
 
 //******************************************************************************
-//	function declaration
+//  function declaration
 //******************************************************************************
 
 
 } // namespace gVirtualXRay
 
 
-#endif // TYPES_H
+#endif // __Types_h

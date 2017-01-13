@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_VEC2_H
-#define GVXR_VEC2_H
+#ifndef __Vec2_h
+#define __Vec2_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Vec2.h
+*   @file       Vec2.h
 *
-*	@brief		Template class to handle 2D vectors.
+*   @brief      Template class to handle 2D vectors.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		11/11/2013
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,8 +56,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -66,34 +66,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	class declaration
+//  class declaration
 //******************************************************************************
 template<typename T> class Vec2;
 
 
 //******************************************************************************
-//	function declaration
+//  function declaration
 //******************************************************************************
 template <typename T> std::ostream& operator<<(std::ostream& anOutputStream,
-		const Vec2<T>& aVector);
+                                               const Vec2<T>& aVector);
 
 
 //==============================================================================
 /**
-*	@class	Vec2
-*	@brief	Vec2 is a template class to handle a 2D vector.
+*   @class  Vec2
+*   @brief  Vec2 is a template class to handle a 2D vector.
 */
 //==============================================================================
 template<typename T> class Vec2
@@ -101,249 +101,253 @@ template<typename T> class Vec2
 {
 //******************************************************************************
 public:
-	//---------------------------------------------------------------------------
-	///	Default Constructor
-	/**
-	*	@param aX: the position along the x-axis
-	*	@param aY: the position along the y-axis
-	*/
-	//---------------------------------------------------------------------------
-	Vec2(const T& aX = 0.0f, const T& aY = 0.0f);
+    //---------------------------------------------------------------------------
+    /// Default Constructor
+    /**
+     *  @param aX: the position along the x-axis
+     *  @param aY: the position along the y-axis
+     */
+    //---------------------------------------------------------------------------
+    Vec2(const T& aX = 0.0f, const T& aY = 0.0f);
 
 
-	//---------------------------------------------------------------------------
-	///	Set the position along the x-axis
-	/**
-	*	@param aValue:	the position along the x-axis
-	*/
-	//---------------------------------------------------------------------------
-	void setX(const T& aValue);
+    //---------------------------------------------------------------------------
+    /// Set the position along the x-axis
+    /**
+     *  @param aValue:  the position along the x-axis
+     */
+    //---------------------------------------------------------------------------
+    void setX(const T& aValue);
 
 
-	//---------------------------------------------------------------------------
-	///	Set the position along the y-axis
-	/**
-	*	@param aValue:	the position along the y-axis
-	*/
-	//---------------------------------------------------------------------------
-	void setY(const T& aValue);
+    //---------------------------------------------------------------------------
+    /// Set the position along the y-axis
+    /**
+     *  @param aValue:  the position along the y-axis
+     */
+    //---------------------------------------------------------------------------
+    void setY(const T& aValue);
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the position along the x-axis
-	/**
-	*	@return the position along the x-axis
-	*/
-	//---------------------------------------------------------------------------
-	T getX() const;
+    //---------------------------------------------------------------------------
+    /// Accessor on the position along the x-axis
+    /**
+     *  @return the position along the x-axis
+     */
+    //---------------------------------------------------------------------------
+    T getX() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the position along the y-axis
-	/**
-	*	@return the position along the y-axis
-	*/
-	//---------------------------------------------------------------------------
-	T getY() const;
+    //---------------------------------------------------------------------------
+    /// Accessor on the position along the y-axis
+    /**
+     *  @return the position along the y-axis
+     */
+    //---------------------------------------------------------------------------
+    T getY() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Get the length of the vector.
-	/**
-	*	@return the length of the vector
-	*/
-	//---------------------------------------------------------------------------
-	double length() const;
+    //---------------------------------------------------------------------------
+    /// Get the length of the vector.
+    /**
+     *  @return the length of the vector
+     */
+    //---------------------------------------------------------------------------
+    double length() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Get the unit vector corresponding to the normed current vector.
-	/**
-	*	@return the unit vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2 normal() const;
+    //---------------------------------------------------------------------------
+    /// Get the unit vector corresponding to the normed current vector.
+    /**
+     *  @return the unit vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2 normal() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Normalize the current vector so that its length is 1.
-	//---------------------------------------------------------------------------
-	void normalize();
+    //---------------------------------------------------------------------------
+    /// Normalize the current vector so that its length is 1.
+    //---------------------------------------------------------------------------
+    void normalize();
 
 
-	//---------------------------------------------------------------------------
-	///	Normalise the current vector so that its length is 1.
-	//---------------------------------------------------------------------------
-	void normalise();
+    //---------------------------------------------------------------------------
+    /// Normalise the current vector so that its length is 1.
+    //---------------------------------------------------------------------------
+    void normalise();
 
 
-	//---------------------------------------------------------------------------
-	///	Get the dot product between the current vector and a given vector.
-	/**
-	*	@param aVector:	the other vector
-	*	@return the dot product
-	*/
-	//---------------------------------------------------------------------------
-	double dotProduct(const Vec2& aVector) const;
+    //---------------------------------------------------------------------------
+    /// Get the dot product between the current vector and a given vector.
+    /**
+     *  @param aVector: the other vector
+     *  @return the dot product
+     */
+    //---------------------------------------------------------------------------
+    double dotProduct(const Vec2& aVector) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Get the distance between the 2D position represented
-	///	by the current vector and another position.
-	/**
-	*	@param aVector:	the other vector
-	*	@return the distance
-	*/
-	//---------------------------------------------------------------------------
-	double distance(const Vec2& aVector) const;
+    //---------------------------------------------------------------------------
+    /// Get the distance between the 2D position represented
+    /// by the current vector and another position.
+    /**
+     *  @param aVector: the other vector
+     *  @return the distance
+     */
+    //---------------------------------------------------------------------------
+    double distance(const Vec2& aVector) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator +
-	/**
-	*	@param aVector:	the other vector
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator+(const Vec2& aVector) const;
+    //---------------------------------------------------------------------------
+    /// Operator +
+    /**
+     *  @param aVector: the other vector
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator+(const Vec2& aVector) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator +=
-	/**
-	*	@param aVector:	the other vector
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2& operator+=(const Vec2& aVector);
-	
+    //---------------------------------------------------------------------------
+    /// Operator +=
+    /**
+     *  @param aVector: the other vector
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2& operator+=(const Vec2& aVector);
+    
 
-	//---------------------------------------------------------------------------
-	///	Operator -
-	/**
-	*	@param aVector:	the other vector
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator-(const Vec2& aVector) const;
-
-
-	//---------------------------------------------------------------------------
-	///	Operator -=
-	/**
-	*	@param aVector:	the other vector
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2& operator-=(const Vec2& aVector);
+    //---------------------------------------------------------------------------
+    /// Operator -
+    /**
+     *  @param aVector: the other vector
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator-(const Vec2& aVector) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator * to multiply each component of the vector by a given value.
-	/**
-	*	@param aValue:	the multiplicative value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator*(const double& aValue) const;
+    //---------------------------------------------------------------------------
+    /// Operator -=
+    /**
+     *  @param aVector: the other vector
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2& operator-=(const Vec2& aVector);
 
 
-	//---------------------------------------------------------------------------
-	///	Operator *= to multiply each component of the vector by a given value,
-	///	and modify the current vector.
-	/**
-	*	@param aValue:	the multiplicative value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2& operator*=(const double& aValue);
+    //---------------------------------------------------------------------------
+    /// Operator * to multiply each component of the vector by a given value.
+    /**
+     *  @param aValue:  the multiplicative value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator*(const double& aValue) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator * to multiply each component of the vector by a given value.
-	/**
-	*	@param aValue:	the multiplicative value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator*(const float& aValue) const;
+    //---------------------------------------------------------------------------
+    /// Operator *= to multiply each component of the vector by a given value,
+    /// and modify the current vector.
+    /**
+     *  @param aValue:  the multiplicative value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2& operator*=(const double& aValue);
 
 
-	//---------------------------------------------------------------------------
-	///	Operator *= to multiply each component of the vector by a given value,
-	///	and modify the current vector.
-	/**
-	*	@param aValue:	the multiplicative value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2& operator*=(const float& aValue);
+    //---------------------------------------------------------------------------
+    /// Operator * to multiply each component of the vector by a given value.
+    /**
+     *  @param aValue:  the multiplicative value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator*(const float& aValue) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator / to divide each component of the vector by a given value.
-	/**
-	*	@param aValue:	the value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator/(const double& aValue) const;
+    //---------------------------------------------------------------------------
+    /// Operator *= to multiply each component of the vector by a given value,
+    /// and modify the current vector.
+    /**
+     *  @param aValue:  the multiplicative value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2& operator*=(const float& aValue);
 
 
-	//---------------------------------------------------------------------------
-	///	Operator /= to divide each component of the vector by a given value,
-	///	and modify the current vector.
-	/**
-	*	@param aValue:	the value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2& operator/=(const double& aValue);
+    //---------------------------------------------------------------------------
+    /// Operator / to divide each component of the vector by a given value.
+    /**
+     *  @param aValue:  the value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator/(const double& aValue) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator / to divide each component of the vector by a given value.
-	/**
-	*	@param aValue:	the value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator/(const float& aValue) const;
+    //---------------------------------------------------------------------------
+    /// Operator /= to divide each component of the vector by a given value,
+    /// and modify the current vector.
+    /**
+     *  @param aValue:  the value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2& operator/=(const double& aValue);
 
 
-	//---------------------------------------------------------------------------
-	///	Operator /= to divide each component of the vector by a given value,
-	///	and modify the current vector.
-	/**
-	*	@param aValue:	the value
-	*	@return the modified vector
-	*/
-	//---------------------------------------------------------------------------
-	Vec2& operator/=(const float& aValue);
+    //---------------------------------------------------------------------------
+    /// Operator / to divide each component of the vector by a given value.
+    /**
+     *  @param aValue:  the value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator/(const float& aValue) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Operator - to get the opposite vector.
-	/**
-	*	@return the opposite vector
-	*/
-	//---------------------------------------------------------------------------
-	const Vec2 operator-() const;
+    //---------------------------------------------------------------------------
+    /// Operator /= to divide each component of the vector by a given value,
+    /// and modify the current vector.
+    /**
+     *  @param aValue:  the value
+     *  @return the modified vector
+     */
+    //---------------------------------------------------------------------------
+    Vec2& operator/=(const float& aValue);
 
+
+    //---------------------------------------------------------------------------
+    /// Operator - to get the opposite vector.
+    /**
+     *  @return the opposite vector
+     */
+    //---------------------------------------------------------------------------
+    const Vec2 operator-() const;
 
 
     T& operator()(unsigned int i);
+
+    
     const T& operator()(unsigned int i) const;
 
+    
     T& operator[](unsigned int i);
+    
+    
     const T& operator[](unsigned int i) const;
 
 
 //******************************************************************************
 protected:
-	//**************************************************************************
-	T m_x; ///< the position along the x-axis
-	T m_y; ///< the position along the y-axi
+    //**************************************************************************
+    T m_x; ///< the position along the x-axis
+    T m_y; ///< the position along the y-axi
 };
 
 
@@ -354,4 +358,4 @@ protected:
 #include "Vec2.inl"
 
 
-#endif // VEC2_H
+#endif // __Vec2_h

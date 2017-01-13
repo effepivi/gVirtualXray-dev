@@ -21,6 +21,8 @@ FILES=`ls ../../include/gVirtualXRay/*.h \
 
 FILES=`ls ../../examples/*/*.h ../../examples/*/*.inl ../../examples/*/*.cxx ../../examples/*/*.vert ../../examples/*/*.frag`
 
+FILES=`ls ../../include/gVirtualXRay/*.h`
+
 
 for i in $FILES
 do

@@ -69,8 +69,8 @@ InternalOrganMesh::InternalOrganMesh(bool optimize_texture_coordinates,
 		m_is_lung(0),
 		m_has_thin_bumps(0),
 		m_use_3D_bump_map(0),
-		m_texture_2D_size(texture_2D_size),
-		m_texture_3D_size(texture_3D_size),
+		m_texture_size_2d(texture_2D_size),
+		m_texture_size_3d(texture_3D_size),
 		m_need_initialize(true),
 		m_generation_texture_coord_are_set(false),
 		m_optimize_texture_coordinates(optimize_texture_coordinates)
@@ -146,7 +146,7 @@ void InternalOrganMesh::generate2DTexture(Shader const& shader,
 {
 	//render to the bump buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
-	glViewport(0, 0, m_texture_2D_size, m_texture_2D_size);
+	glViewport(0, 0, m_texture_size_2d, m_texture_size_2d);
 
 	// Enable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
@@ -209,7 +209,7 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 
 	//render to the bump buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
-	glViewport(0, 0, m_texture_3D_size, m_texture_3D_size);
+	glViewport(0, 0, m_texture_size_3d, m_texture_size_3d);
 
 	// Disable back face culling
 	pushEnableDisableState(GL_CULL_FACE);
@@ -236,7 +236,7 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 		defineBumpMapShaderInput(shader_id);
 	}
 
-	for(unsigned int i(0); i < m_texture_3D_size; i++)
+	for(unsigned int i(0); i < m_texture_size_3d; i++)
 	{
 		//link the frame buffer and the texture
 		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, texture, 0, i);
@@ -249,7 +249,7 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 
 		square_filler.display();
 
-		square_filler.translate(VEC3(0,0,1.f/m_texture_3D_size));
+		square_filler.translate(VEC3(0,0,1.f/m_texture_size_3d));
 	}
 
 	// Check the OpenGL error status
@@ -298,7 +298,7 @@ void InternalOrganMesh::initialize2DBuffer(unsigned int& aTexture, unsigned int&
 	//Intialize the buffer for the texture
 	glGenTextures(1, &aTexture);
 	glBindTexture(GL_TEXTURE_2D, aTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, m_texture_2D_size, m_texture_2D_size, 0, GL_RGB, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, m_texture_size_2d, m_texture_size_2d, 0, GL_RGB, GL_FLOAT, 0);
 
 	//Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -334,11 +334,11 @@ void InternalOrganMesh::initialize3DBuffer(unsigned int& aTexture, unsigned int&
 
 	if(has_colours)
 	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16, m_texture_3D_size, m_texture_3D_size, m_texture_3D_size, 0, GL_RGB, GL_FLOAT, 0);
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16, m_texture_size_3d, m_texture_size_3d, m_texture_size_3d, 0, GL_RGB, GL_FLOAT, 0);
 	}
 	else
 	{
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_3D_size, m_texture_3D_size, m_texture_3D_size, 0, GL_RED, GL_FLOAT, 0);
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_R16, m_texture_size_3d, m_texture_size_3d, m_texture_size_3d, 0, GL_RED, GL_FLOAT, 0);
 	}
 
 	//Filtering
@@ -460,7 +460,7 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 	{
 		std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 
-		m_2D_texture_coordinates.resize(m_number_of_vertices);
+		m_texture_coordinates_2d.resize(m_number_of_vertices);
 		m_margin_direction.resize(m_number_of_vertices);
 		std::vector<bool> has_texture_coordinates(m_number_of_vertices/3,false);
 		unsigned int k(0);
@@ -501,14 +501,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (first_matching_vertex==first_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v3;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v1;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v2;
+									m_texture_coordinates_2d[first_triangle_indice] = v3;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v1;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v2;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v3;
-									m_2D_texture_coordinates[matching_face_indice+1] = v4;
-									m_2D_texture_coordinates[matching_face_indice+2] = v1;
+									m_texture_coordinates_2d[matching_face_indice] = v3;
+									m_texture_coordinates_2d[matching_face_indice+1] = v4;
+									m_texture_coordinates_2d[matching_face_indice+2] = v1;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
@@ -526,14 +526,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (second_matching_vertex==first_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v3;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v1;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v2;
+									m_texture_coordinates_2d[first_triangle_indice] = v3;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v1;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v2;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v1;
-									m_2D_texture_coordinates[matching_face_indice+1] = v3;
-									m_2D_texture_coordinates[matching_face_indice+2] = v4;
+									m_texture_coordinates_2d[matching_face_indice] = v1;
+									m_texture_coordinates_2d[matching_face_indice+1] = v3;
+									m_texture_coordinates_2d[matching_face_indice+2] = v4;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
@@ -551,14 +551,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (third_matching_vertex == first_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v3;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v1;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v2;
+									m_texture_coordinates_2d[first_triangle_indice] = v3;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v1;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v2;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v4;
-									m_2D_texture_coordinates[matching_face_indice+1] = v1;
-									m_2D_texture_coordinates[matching_face_indice+2] = v3;
+									m_texture_coordinates_2d[matching_face_indice] = v4;
+									m_texture_coordinates_2d[matching_face_indice+1] = v1;
+									m_texture_coordinates_2d[matching_face_indice+2] = v3;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., -1.);
@@ -578,14 +578,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (first_matching_vertex==second_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v2;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v3;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v1;
+									m_texture_coordinates_2d[first_triangle_indice] = v2;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v3;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v1;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v3;
-									m_2D_texture_coordinates[matching_face_indice+1] = v4;
-									m_2D_texture_coordinates[matching_face_indice+2] = v1;
+									m_texture_coordinates_2d[matching_face_indice] = v3;
+									m_texture_coordinates_2d[matching_face_indice+1] = v4;
+									m_texture_coordinates_2d[matching_face_indice+2] = v1;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
@@ -603,14 +603,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (second_matching_vertex==second_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v2;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v3;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v1;
+									m_texture_coordinates_2d[first_triangle_indice] = v2;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v3;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v1;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v1;
-									m_2D_texture_coordinates[matching_face_indice+1] = v3;
-									m_2D_texture_coordinates[matching_face_indice+2] = v4;
+									m_texture_coordinates_2d[matching_face_indice] = v1;
+									m_texture_coordinates_2d[matching_face_indice+1] = v3;
+									m_texture_coordinates_2d[matching_face_indice+2] = v4;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
@@ -628,14 +628,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (third_matching_vertex == second_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v2;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v3;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v1;
+									m_texture_coordinates_2d[first_triangle_indice] = v2;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v3;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v1;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v4;
-									m_2D_texture_coordinates[matching_face_indice+1] = v1;
-									m_2D_texture_coordinates[matching_face_indice+2] = v3;
+									m_texture_coordinates_2d[matching_face_indice] = v4;
+									m_texture_coordinates_2d[matching_face_indice+1] = v1;
+									m_texture_coordinates_2d[matching_face_indice+2] = v3;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(-1., 1.);
@@ -655,14 +655,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (first_matching_vertex==third_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v1;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v2;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v3;
+									m_texture_coordinates_2d[first_triangle_indice] = v1;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v2;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v3;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v3;
-									m_2D_texture_coordinates[matching_face_indice+1] = v4;
-									m_2D_texture_coordinates[matching_face_indice+2] = v1;
+									m_texture_coordinates_2d[matching_face_indice] = v3;
+									m_texture_coordinates_2d[matching_face_indice+1] = v4;
+									m_texture_coordinates_2d[matching_face_indice+2] = v1;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
@@ -680,14 +680,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (second_matching_vertex==third_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v1;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v2;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v3;
+									m_texture_coordinates_2d[first_triangle_indice] = v1;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v2;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v3;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v1;
-									m_2D_texture_coordinates[matching_face_indice+1] = v3;
-									m_2D_texture_coordinates[matching_face_indice+2] = v4;
+									m_texture_coordinates_2d[matching_face_indice] = v1;
+									m_texture_coordinates_2d[matching_face_indice+1] = v3;
+									m_texture_coordinates_2d[matching_face_indice+2] = v4;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
@@ -705,14 +705,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 									&& (third_matching_vertex == third_vertex))
 								{
 									//the first triangle
-									m_2D_texture_coordinates[first_triangle_indice] = v1;
-									m_2D_texture_coordinates[first_triangle_indice+1] = v2;
-									m_2D_texture_coordinates[first_triangle_indice+2] = v3;
+									m_texture_coordinates_2d[first_triangle_indice] = v1;
+									m_texture_coordinates_2d[first_triangle_indice+1] = v2;
+									m_texture_coordinates_2d[first_triangle_indice+2] = v3;
 
 									//the second triangle
-									m_2D_texture_coordinates[matching_face_indice] = v4;
-									m_2D_texture_coordinates[matching_face_indice+1] = v1;
-									m_2D_texture_coordinates[matching_face_indice+2] = v3;
+									m_texture_coordinates_2d[matching_face_indice] = v4;
+									m_texture_coordinates_2d[matching_face_indice+1] = v1;
+									m_texture_coordinates_2d[matching_face_indice+2] = v3;
 
 									//Set the margin direction
 									m_margin_direction[first_triangle_indice] = VEC2(1., 1.);
@@ -740,9 +740,9 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 					if(matching_face_indice >= m_number_of_vertices)
 					{
 						//only one triangle
-						m_2D_texture_coordinates[first_triangle_indice] = v1;
-						m_2D_texture_coordinates[first_triangle_indice+1] = v2;
-						m_2D_texture_coordinates[first_triangle_indice+2] = v3;
+						m_texture_coordinates_2d[first_triangle_indice] = v1;
+						m_texture_coordinates_2d[first_triangle_indice+1] = v2;
+						m_texture_coordinates_2d[first_triangle_indice+2] = v3;
 
 						//Set the margin direction
 						m_margin_direction[first_triangle_indice] = VEC2(2., 1.);
@@ -757,7 +757,7 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 	{
 		std::cout<<"Don't optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
 
-		m_2D_texture_coordinates.reserve(m_number_of_vertices);
+		m_texture_coordinates_2d.reserve(m_number_of_vertices);
 		m_margin_direction.reserve(m_number_of_vertices);
 
 		for (unsigned int i(0); i < n; i++) {
@@ -769,14 +769,14 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 				VEC2 v4(float(i)/n, float(j + 1)/n);
 
 				//the first triangle
-				m_2D_texture_coordinates.push_back(v1);
-				m_2D_texture_coordinates.push_back(v2);
-				m_2D_texture_coordinates.push_back(v3);
+				m_texture_coordinates_2d.push_back(v1);
+				m_texture_coordinates_2d.push_back(v2);
+				m_texture_coordinates_2d.push_back(v3);
 
 				//the second triangle
-				m_2D_texture_coordinates.push_back(v1);
-				m_2D_texture_coordinates.push_back(v3);
-				m_2D_texture_coordinates.push_back(v4);
+				m_texture_coordinates_2d.push_back(v1);
+				m_texture_coordinates_2d.push_back(v3);
+				m_texture_coordinates_2d.push_back(v4);
 
 				m_margin_direction.push_back(VEC2(1., 1.));
 				m_margin_direction.push_back(VEC2(-1., 1.));
@@ -797,11 +797,11 @@ void InternalOrganMesh::initialize3DTextureCoordinates()
 //----------------------------------------------
 {
 	// Initialize the texture coordinates using the vertices position
-    m_3D_texture_coordinates.reserve(m_number_of_vertices);
+    m_texture_coordinates_3d.reserve(m_number_of_vertices);
 
 	for(unsigned int i(0); i < m_number_of_vertices; i++)
     {
-    	m_3D_texture_coordinates.push_back(getVertex(i));
+    	m_texture_coordinates_3d.push_back(getVertex(i));
     }
 }
 
@@ -815,26 +815,26 @@ void InternalOrganMesh::addMargin(float margin)
 	for (unsigned int i(0); i < n; i++) {
 		for (unsigned int j(0); j < n; j++) {
 			//the first triangle
-			m_2D_texture_coordinates[k]+=VEC2(2*margin,margin);
+			m_texture_coordinates_2d[k]+=VEC2(2*margin,margin);
 			k++;
-			m_2D_texture_coordinates[k]+=VEC2(-margin,margin);
+			m_texture_coordinates_2d[k]+=VEC2(-margin,margin);
 			k++;
-			m_2D_texture_coordinates[k]+=VEC2(-margin,-2*margin);
+			m_texture_coordinates_2d[k]+=VEC2(-margin,-2*margin);
 			k++;
 
 			//the second triangle
-			m_2D_texture_coordinates[k]+=VEC2(margin,2*margin);
+			m_texture_coordinates_2d[k]+=VEC2(margin,2*margin);
 			k++;
-			m_2D_texture_coordinates[k]+=VEC2(-2*margin,-margin);
+			m_texture_coordinates_2d[k]+=VEC2(-2*margin,-margin);
 			k++;
-			m_2D_texture_coordinates[k]+=VEC2(margin,-margin);
+			m_texture_coordinates_2d[k]+=VEC2(margin,-margin);
 			k++;
 		}
 	}
 }
 
 /*unsigned int n(int(sqrt(float(m_number_of_vertices))/2.4));
-m_2D_texture_coordinates.reserve(m_number_of_vertices);
+m_texture_coordinates_2d.reserve(m_number_of_vertices);
 m_margin_direction.reserve(m_number_of_vertices);
 
 for (unsigned int i(0); i < n; i++) {
@@ -846,14 +846,14 @@ for (unsigned int i(0); i < n; i++) {
 		VEC2 v4(float(i)/n, float(j + 1)/n);
 
 		//the first triangle
-		m_2D_texture_coordinates.push_back(v1);
-		m_2D_texture_coordinates.push_back(v2);
-		m_2D_texture_coordinates.push_back(v3);
+		m_texture_coordinates_2d.push_back(v1);
+		m_texture_coordinates_2d.push_back(v2);
+		m_texture_coordinates_2d.push_back(v3);
 
 		//the second triangle
-		m_2D_texture_coordinates.push_back(v1);
-		m_2D_texture_coordinates.push_back(v3);
-		m_2D_texture_coordinates.push_back(v4);
+		m_texture_coordinates_2d.push_back(v1);
+		m_texture_coordinates_2d.push_back(v3);
+		m_texture_coordinates_2d.push_back(v4);
 
 		m_margin_direction.push_back(VEC2(1., 1.));
 		m_margin_direction.push_back(VEC2(-1., 1.));
