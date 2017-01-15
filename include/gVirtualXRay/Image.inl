@@ -3657,7 +3657,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     // Get file size
     int offset_current_position(anInputStream.tellg());
     anInputStream.seekg (0, std::ios::end);
-    unsigned int length(anInputStream.tellg() - offset_current_position);
+    unsigned int length(int(anInputStream.tellg()) - offset_current_position);
     anInputStream.seekg (offset_current_position, std::ios::beg);
      
      if (length < m_width * m_height * m_number_of_slices * sizeof(T))
