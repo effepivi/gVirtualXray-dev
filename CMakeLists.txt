@@ -394,7 +394,11 @@ ENDIF (USE_ITK)
 
 
 # ZLIB #########################################################################
-OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
+IF (WIN32 OR MSVC)
+    OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
+ELSE (WIN32 OR MSVC)
+    OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       ON)
+ENDIF (WIN32 OR MSVC)
 
 IF (USE_SYSTEM_ZLIB)
     FIND_PACKAGE( ZLIB   REQUIRED )
@@ -937,6 +941,7 @@ ENDIF (USE_FLTK)
 
 # Doxygen documentation ########################################################
 INCLUDE (${CMAKE_ROOT}/Modules/Documentation.cmake)
+
 IF(BUILD_DOCUMENTATION)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
     MESSAGE(STATUS "Build documentation.")
