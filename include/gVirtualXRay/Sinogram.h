@@ -95,27 +95,31 @@ public:
                  double anAngleStep,
                  double aLastAngle,
                  unsigned int aNumberOfIterations = 0,
-                 const char* aDirectory = 0) const;
+                 const char* aDirectory = 0,
+                 void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
     
     
     Image<T> mart(double aFirstAngle,
                   double anAngleStep,
                   double aLastAngle,
                   unsigned int aNumberOfIterations = 0,
-                  const char* aDirectory = 0) const;
+                  const char* aDirectory = 0,
+                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
     
     
     Image<T> sirt(double aFirstAngle,
                   double anAngleStep,
                   double aLastAngle,
                   unsigned int aNumberOfIterations = 0,
-                  const char* aDirectory = 0) const;
+                  const char* aDirectory = 0,
+                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
     
     
     Image<T> simpleBackProjection(double aFirstAngle,
                                   double anAngleStep,
                                   double aLastAngle,
-                                  const char* aDirectorye = 0) const;
+                                  const char* aDirectorye = 0,
+                                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
     
     
     Image<T> filteredBackProjection(double aFirstAngle,
@@ -123,34 +127,39 @@ public:
                                     double aLastAngle,
                                     const char* aFilterType = 0,
                                     float aScalingFactor = 1.0,
-                                    const char* aDirectory = 0) const;
+                                    const char* aDirectory = 0,
+                                    void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
     
     
     Image<T> art(double aFirstAngle,
                  double anAngleStep,
                  double aLastAngle,
                  unsigned int aNumberOfIterations,
-                 const std::string& aDirectory) const;
+                 const std::string& aDirectory,
+                 void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
     
     
     Image<T> mart(double aFirstAngle,
                   double anAngleStep,
                   double aLastAngle,
                   unsigned int aNumberOfIterations,
-                  const std::string& aDirectory) const;
+                  const std::string& aDirectory,
+                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
     
     
     Image<T> sirt(double aFirstAngle,
                   double anAngleStep,
                   double aLastAngle,
                   unsigned int aNumberOfIterations,
-                  const std::string& aDirectory) const;
+                  const std::string& aDirectory,
+                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
     
     
     Image<T> simpleBackProjection(double aFirstAngle,
                                   double anAngleStep,
                                   double aLastAngle,
-                                  const std::string& aDirectory) const;
+                                  const std::string& aDirectory,
+                                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
     
     
     Image<T> filteredBackProjection(double aFirstAngle,
@@ -158,7 +167,8 @@ public:
                                     double aLastAngle,
                                     const std::string& aFilterType,
                                     float aScalingFactor,
-                                    const std::string& aDirectory) const;
+                                    const std::string& aDirectory,
+                                    void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
 };
 
 
