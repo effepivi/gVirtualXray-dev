@@ -711,12 +711,12 @@ int main(int argc, char** argv)
 void createPhantom()
 //------------------
 {
- /*   unsigned int scaling(1);
+    unsigned int scaling(1);
     Image<short> phantom(32 * scaling, 32 * scaling, 16 * scaling, -1000);
     
-    VEC3 voxel_size(4.0 / float(scaling),
-                    4.0 / float(scaling),
-                    8.0 / float(scaling));
+    VEC3 voxel_size(1.0 / float(scaling),
+                    1.0 / float(scaling),
+                    4.0 / float(scaling));
     
     VEC3 half_volume_size(voxel_size[0] * phantom.getWidth() / 2.0,
                           voxel_size[1] * phantom.getHeight() / 2.0,
@@ -760,7 +760,7 @@ void createPhantom()
         }
     }
     
-    VEC3 step_centre(step_height * 5.0, step_height * 0.5, 0);
+    VEC3 step_centre(step_height * 1.0, step_height * 0.5, 0);
     
     for(unsigned int k = 0; k < phantom.getDepth(); k++)
     {
@@ -779,19 +779,19 @@ void createPhantom()
                 }
             }
         }
-    }*/
+    }
      
      //phantom.save("/Users/fpvidal/Desktop/phantom-CT.mha");
     // phantom.save("/Users/fpvidal/Desktop/phantom-CT.mha");
 
     
-    
+    /*
     
     Image<short> phantom;
     phantom.load("/Users/fpvidal/Desktop/ASSURANCETOURIX-CT.mha");
-    phantom = phantom.resize(128, 128, 3);
+    phantom = phantom.resize(32, 32, 3);
     phantom.save("/Users/fpvidal/Desktop/ASSURANCETOURIX-CT-small.mha");
-
+*/
     phantom.convertVoxelsToCubes(g_polygon_mesh_set, -950);
     
     VEC3 min_corner(FLT_MAX, FLT_MAX, FLT_MAX);
