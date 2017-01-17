@@ -127,7 +127,7 @@ FBOException::FBOException(const char* aFileName,
         error_message << "the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures." << std::endl;
 		break;
 
-    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_ARB:
         error_message << "FBO error: any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target." << std::endl;
 		break;
 

@@ -63,16 +63,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #include <stdlib.h>
 #include <ctime>
+#include <algorithm>  // For the min/max functions
 
 #ifdef HAS_BUNDLE
 #ifdef HAS_BOOST
@@ -1462,13 +1463,8 @@ void computeRotation(MATRIX4& aRotationMatrix)
                     g_current_x_position,
                     g_current_y_position));
 
-#if (defined(_WIN32) || defined(_WIN64)) && !defined(__GNUC__)
-            float angle(g_rotation_speed *
-                    radian2degree(acos(min(1.0, va.dotProduct(vb)))));
-#else
             float angle(g_rotation_speed *
                     radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
-#endif
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
 

@@ -382,8 +382,8 @@ void popTexture()
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 		break;
 
-    case GL_TEXTURE_RECTANGLE:
-        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+    case GL_TEXTURE_RECTANGLE_ARB:
+        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
         break;
 
 	default:
@@ -408,8 +408,8 @@ void popTexture()
 			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
 			break;
 
-            case GL_TEXTURE_RECTANGLE:
-            glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
+            case GL_TEXTURE_RECTANGLE_ARB:
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, previous_texture.second);
             break;
 
         default:

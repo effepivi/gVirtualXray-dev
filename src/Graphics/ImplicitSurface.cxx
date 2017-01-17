@@ -164,7 +164,9 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 	m_p_volume->SetOrigin(origin);
 */
 
-    #pragma omp parallel for collapse(3)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
 	for (unsigned int z = 0; z < aNumberOfVoxels.getZ(); ++z)
 	{
 

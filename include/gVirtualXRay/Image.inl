@@ -688,7 +688,9 @@ template<typename T> Image<T> Image<T>::flipVertically() const
 {
     Image<T> temp(*this);
 
-    #pragma omp parallel for collapse(3)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
     for (unsigned int k = 0; k < m_number_of_slices; ++k)
         {
         for (unsigned int j = 0; j < (m_height / 2); ++j)
@@ -1232,14 +1234,10 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
                         pixel_value = 255.0 * (m_p_image[k * m_width * m_height + j * m_width + i] - min_value) / range_value;
                     }
 
-#ifndef _WIN32
 					pixel_value = std::max(0, pixel_value);
                     pixel_value = std::min(255, pixel_value);
-#else
-					pixel_value = max(0, pixel_value);
-					pixel_value = min(255, pixel_value);
-#endif
-                    output_file << pixel_value;
+
+					output_file << pixel_value;
 
                     // It is not the last pixel of the line
                     if (i < (m_width - 1))
@@ -1449,7 +1447,7 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
         unsigned short* p_temp(new unsigned short[m_width * m_height * m_number_of_slices]);
 
         #pragma omp parallel for
-        for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+        for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
             {
             p_temp[i] = min_output_value + difference_output * (double(m_p_image[i] - min_input_value) / double(difference_input));
             }
@@ -1624,7 +1622,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
         if (p_float_data)
             {
             #pragma omp parallel for
-            for (unsigned int i = 0; i < number_of_pixels; ++i)
+            for (int i = 0; i < number_of_pixels; ++i)
                 {
                 float temp(double(m_p_image[k * m_width * m_height + i] - min_value) / value_range);
                 p_float_data[i] = temp;
@@ -3095,7 +3093,9 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             std::vector<std::vector<float> > p_vertex_set(max_thread);
             std::vector<std::vector<float> > p_normal_vector_set(max_thread);
     
-            #pragma omp parallel for collapse(3)
+#ifndef WIN32
+			#pragma omp parallel for collapse(3)
+#endif
             for (int k = 0; k < m_number_of_slices - 1; ++k)
             {
             for (int j = 0; j < m_height - 1; ++j)
@@ -3686,7 +3686,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     if (aChangeEndianessFlag && sizeof(T) > 1)
     {
 #pragma omp parallel for
-        for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+        for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
             swapBytes(m_p_image[i]);
         }

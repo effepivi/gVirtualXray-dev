@@ -65,12 +65,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_GLEW
-#include <GL/glew.h>  // Handle shaders
-#endif
-
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#ifdef HAS_GLEW
+#include <GL/glew.h>  // Handle shaders
 #endif
 
 // Create an OpenGL context and attach a window to it
@@ -84,6 +84,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>    // Generate error messages
 #include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
+#include <algorithm>  // For the min/max functions
 
 // Define new types, e.g.~RATIONAL_NUMBER, VEC2, VEC3 and MATRIX4 to name a few
 #include "gVirtualXRay/Types.h"
@@ -645,7 +646,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
             VEC3 va(getArcballVector(g_last_x_position,    g_last_y_position));
             VEC3 vb(getArcballVector(g_current_x_position, g_current_y_position));
 
-            float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+            float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 
             VEC3 axis_in_camera_coord(va ^ vb);
             //axis_in_camera_coord.normalize();
