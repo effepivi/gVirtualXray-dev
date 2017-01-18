@@ -69,7 +69,7 @@ ENDIF (USE_SYSTEM_GLFW)
 IF(glfw3_FOUND)
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
-    SET(optionalLibs ${optionalLibs} glfw3)
+    SET(optionalLibs ${optionalLibs} glfw)
 
     IF (APPLE)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
