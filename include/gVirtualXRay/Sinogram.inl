@@ -327,46 +327,45 @@ template<typename T> Image<T> Sinogram<T>::sirt(double aFirstAngle,
 //-------------------------------------------------------------------------------------------
 template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAngle,
                                                                 double anAngleStep,
-                                                                double aLastAngle,
                                                                 const char* aDirectory,
                                                                 void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const
 //-------------------------------------------------------------------------------------------
 {
     Image<T> sinogram(this->resize(this->m_width * 2, this->m_height, this->m_number_of_slices));
     sinogram.saveASCII("resized.mat");
-    unsigned int image_width(2 * floor (sinogram.m_width / (2.0 * std::sqrt(2.0))));
+    unsigned int image_width(2 * floor (sinogram.getWidth() / (2.0 * std::sqrt(2.0))));
 
-    Image<T> reconstruction(sinogram.m_width, sinogram.m_width, sinogram.m_number_of_slices);
+    Image<T> reconstruction(sinogram.getWidth(), sinogram.getWidth(), sinogram.getDepth());
 
     double angle(aFirstAngle);
     for (unsigned int angle_id(0);
-            angle_id < this->m_height && (angle < aLastAngle || std::abs(angle - aLastAngle) < EPSILON);
+            angle_id < this->m_height;
             ++angle_id, angle += anAngleStep)
     {
         if (angle_id == 130)
         {
             int itr=0;
         }
-        Image<T> back_projection(sinogram.m_width, sinogram.m_width, sinogram.m_number_of_slices);
+        Image<T> back_projection(sinogram.getWidth(), sinogram.getWidth(), sinogram.getDepth());
 
-        for (int k(0); k < reconstruction.m_number_of_slices; ++k)
+        for (int k(0); k < reconstruction.getDepth(); ++k)
         {
-            for (int j(0); j < reconstruction.m_height; ++j)
+            for (int j(0); j < reconstruction.getHeight(); ++j)
             {
-                for (int i(0); i < reconstruction.m_width; ++i)
+                for (int i(0); i < reconstruction.getWidth(); ++i)
                 {
                     back_projection(i, j, k) += sinogram.getPixel(i, angle_id, k);
                 }
             }
         }
 
-        reconstruction += back_projection.rotate(-angle) / reconstruction.m_height;
+        reconstruction += back_projection.rotate(-angle) / reconstruction.getHeight();
 
         if (aDirectory)
         {
             std::stringstream filename;
             filename << aDirectory << "/angle_" << angle_id << ".pgm";
-            (reconstruction.setCanvasSize(image_width, image_width, reconstruction.m_number_of_slices).resize(image_width / 2, image_width / 2, reconstruction.m_number_of_slices).normalised() * 255).savePGM(filename.str());
+            (reconstruction.setCanvasSize(image_width, image_width, reconstruction.getDepth()).resize(image_width / 2, image_width / 2, reconstruction.getDepth()).normalised() * 255).savePGM(filename.str());
         }
 
         
@@ -379,16 +378,15 @@ template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAng
     //reconstruction = reconstruction.rotate(-angle);
 
     reconstruction = reconstruction.setCanvasSize(image_width, image_width, this->m_number_of_slices);
-    reconstruction *= M_PI / (/*2.0 * */ this->m_height);
+    reconstruction *= M_PI / (/*2.0 * */ this->getHeight());
 
-    return (reconstruction.resize(image_width / 2, image_width / 2, this->m_number_of_slices));
+    return (reconstruction.resize(image_width / 2, image_width / 2, this->getDepth()));
 }
 
 
 //---------------------------------------------------------------------------------------------
 template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstAngle,
                                                                   double anAngleStep,
-                                                                  double aLastAngle,
                                                                   const char* aFilterType,
                                                                   float aScalingFactor,
                                                                   const char* aDirectory,
@@ -438,7 +436,6 @@ template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstA
     filtered_sinogram.saveASCII("filtered_sinogram.mat");
     return (filtered_sinogram.simpleBackProjection(aFirstAngle,
                                                    anAngleStep,
-                                                   aLastAngle,
                                                    aDirectory,
                                                    aCallback));
 }
@@ -501,14 +498,12 @@ template<typename T> Image<T> Sinogram<T>::sirt(double aFirstAngle,
 //--------------------------------------------------------------------------------------------------
 template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAngle,
                                                                 double anAngleStep,
-                                                                double aLastAngle,
                                                                 const std::string& aDirectory,
                                                                 void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const
 //--------------------------------------------------------------------------------------------------
 {
     return (simpleBackProjection(aFirstAngle,
                                  anAngleStep,
-                                 aLastAngle,
                                  aDirectory.data(),
                                  aCallback));
 }
@@ -517,7 +512,6 @@ template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAng
 //----------------------------------------------------------------------------------------------------
 template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstAngle,
                                                                   double anAngleStep,
-                                                                  double aLastAngle,
                                                                   const std::string& aFilterType,
                                                                   float aScalingFactor,
                                                                   const std::string& aDirectory,
@@ -526,7 +520,6 @@ template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstA
 {
     return (filteredBackProjection(aFirstAngle,
                                    anAngleStep,
-                                   aLastAngle,
                                    aFilterType.data(),
                                    aScalingFactor,
                                    aDirectory.data(),

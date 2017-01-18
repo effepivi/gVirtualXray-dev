@@ -48,22 +48,22 @@ SET (RESOURCES_SOURCES ${RESOURCES_SOURCES}
     STL/cervical_vertebra_C5.stl   
     STL/cervical_vertebra_C6.stl   
     STL/cranium.stl   
-    STL/frontal_sinus.stl   
-    STL/grey_matter.stl   
-    STL/hyoid_bone.stl   
-    STL/larynx.stl   
-    STL/left_eye.stl   
-    STL/left_lens.stl   
-    STL/left_maxillary_sinus.stl   
-    STL/left_palatine_tonsil.stl   
-    STL/left_styloid_process.stl   
-    STL/lingual_tonsil.stl   
-    STL/mandible.stl   
-    STL/right_eye.stl   
-    STL/right_lens.stl   
-    STL/right_maxillary_sinus.stl   
-    STL/right_palatine_tonsil.stl   
-    STL/right_styloid_process.stl   
+    STL/frontal_sinus.stl
+    STL/grey_matter.stl
+    STL/hyoid_bone.stl
+    STL/larynx.stl
+    STL/left_eye.stl
+    STL/left_lens.stl
+    STL/left_maxillary_sinus.stl
+    STL/left_palatine_tonsil.stl
+    STL/left_styloid_process.stl
+    STL/lingual_tonsil.stl
+    STL/mandible.stl
+    STL/right_eye.stl
+    STL/right_lens.stl
+    STL/right_maxillary_sinus.stl
+    STL/right_palatine_tonsil.stl
+    STL/right_styloid_process.stl
     STL/thyroid_gland.stl   
     )
 

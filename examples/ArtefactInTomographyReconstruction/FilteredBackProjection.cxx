@@ -168,15 +168,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_image_gl3.frag.h"
 #include "display_image_gl3.vert.h"
 
-//#include "atlas_C1.stl.h"
-//#include "axis_C2.stl.h"
+#include "atlas_C1.stl.h"
+#include "axis_C2.stl.h"
 #include "brain.stl.h"
 #include "cervical_vertebra_C3.stl.h"
 #include "cervical_vertebra_C4.stl.h"
 #include "cervical_vertebra_C5.stl.h"
 #include "cervical_vertebra_C6.stl.h"
 #include "cranium.stl.h"
-/*#include "frontal_sinus.stl.h"
+#include "frontal_sinus.stl.h"
 #include "grey_matter.stl.h"
 #include "hyoid_bone.stl.h"
 #include "larynx.stl.h"
@@ -192,7 +192,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "right_maxillary_sinus.stl.h"
 #include "right_palatine_tonsil.stl.h"
 #include "right_styloid_process.stl.h"
-#include "thyroid_gland.stl.h"*/
+#include "thyroid_gland.stl.h"
 
 
 //******************************************************************************
@@ -209,30 +209,29 @@ using namespace gVirtualXRay;
 #define ATLAS_C1_ID 0
 #define AXIS_C2_ID  1
 #define BRAIN_ID    2
-#define CERVICAL_VERTEBRA_C3    3
-#define CERVICAL_VERTEBRA_C4    4
-#define CERVICAL_VERTEBRA_C5    5
-#define CERVICAL_VERTEBRA_C6    6
-
-
+#define CERVICAL_VERTEBRA_C3_ID 3
+#define CERVICAL_VERTEBRA_C4_ID 4
+#define CERVICAL_VERTEBRA_C5_ID 5
+#define CERVICAL_VERTEBRA_C6_ID 6
+#define CRANIUM_ID              7
+//#include "frontal_sinus.stl.h"
+#define GREY_MATTER             9
+#define HYOID_BONE             10
+#define LARYNX_ID              11
+#define LEFT_EYE               12
 
 /*
-/*#include "frontal_sinus.stl.h"
-#include "grey_matter.stl.h"
-#include "hyoid_bone.stl.h"
-#include "larynx.stl.h"
-#include "left_eye.stl.h"
 #include "left_lens.stl.h"
 #include "left_maxillary_sinus.stl.h"
 #include "left_palatine_tonsil.stl.h"
 #include "left_styloid_process.stl.h"
-#include "lingual_tonsil.stl.h"
-#include "mandible.stl.h"
-#include "right_eye.stl.h"
-#include "right_lens.stl.h"
-#include "right_maxillary_sinus.stl.h"
-#include "right_palatine_tonsil.stl.h"
-#include "right_styloid_process.stl.h"
+#include "lingual_tonsil.stl.h"*/
+#define MANDIBLE_ID             18
+#define RIGHT_EYE               19
+/*#include "right_lens.stl.h"
+#include "right_maxillary_sinus.stl.h"*/
+#define RIGHT_PALATINE_TONSIL   22
+/*#include "right_styloid_process.stl.h"
 #include "thyroid_gland.stl.h"*/
 
 
@@ -243,15 +242,15 @@ using namespace gVirtualXRay;
 const GLfloat g_rotation_speed(2.0);
 
 const float g_incident_energy(0.08 * MeV);
-const VEC2 g_resolution(0.75 * mm, 5.0 * mm);
+const VEC2 g_resolution(0.9 * mm, 5.0 * mm);
 const Vec2ui g_number_of_pixels(257, 1);
 
 const double g_initial_fovy(45);        // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);  // Near clipping plane
 const double g_initial_far(500.0 * cm); // Far clipping plane
 
-const VEC3 g_initial_source_position(   0.0,  20.0 * cm, 0.0);
-const VEC3 g_initial_detector_position( 0.0, -20.0 * cm, 0.0);
+const VEC3 g_initial_source_position(   0.0,  20.0 * cm, 5.5 * cm);
+const VEC3 g_initial_detector_position( 0.0, -20.0 * cm, 5.5 * cm);
 const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 
 typedef enum AcquisitionTypeTag
@@ -679,6 +678,13 @@ int main(int argc, char** argv)
                 if (g_next_angle_to_process == g_angle_number)
                     {
                     g_run_tomography_acquisition = false;
+                    Image<float> sbp = g_raw_sinogram_data.simpleBackProjection(0.0, g_angle_step);
+                    Image<float> fbp1 = g_raw_sinogram_data.filteredBackProjection(0.0, g_angle_step);
+                    Image<float> fbp2 = g_filtered_sinogram_data.simpleBackProjection(0.0, g_angle_step);
+                        
+                    sbp.save("sbp.mha");
+                    fbp1.save("fbp1.mha");
+                    fbp2.save("fbp2.mha");
                     }
                 }
 
@@ -789,23 +795,54 @@ void decompressMesh(unsigned int aMeshID,
             aSize = inflate(g_brain_stl, sizeof(g_brain_stl), &apData);
             break;
 
-        case CERVICAL_VERTEBRA_C3:
+        case CERVICAL_VERTEBRA_C3_ID:
             aSize = inflate(g_cervical_vertebra_C3_stl, sizeof(g_cervical_vertebra_C3_stl), &apData);
             break;
 
-        case CERVICAL_VERTEBRA_C4:
+        case CERVICAL_VERTEBRA_C4_ID:
             aSize = inflate(g_cervical_vertebra_C4_stl, sizeof(g_cervical_vertebra_C4_stl), &apData);
             break;
 
-        case CERVICAL_VERTEBRA_C5:
+        case CERVICAL_VERTEBRA_C5_ID:
             aSize = inflate(g_cervical_vertebra_C5_stl, sizeof(g_cervical_vertebra_C5_stl), &apData);
             break;
 
-        case CERVICAL_VERTEBRA_C6:
+        case CERVICAL_VERTEBRA_C6_ID:
             aSize = inflate(g_cervical_vertebra_C6_stl, sizeof(g_cervical_vertebra_C6_stl), &apData);
             break;
 
+        case CRANIUM_ID:
+            aSize = inflate(g_cranium_stl, sizeof(g_cranium_stl), &apData);
+            break;
 
+        case MANDIBLE_ID:
+            aSize = inflate(g_mandible_stl, sizeof(g_mandible_stl), &apData);
+            break;
+
+        case LARYNX_ID:
+            aSize = inflate(g_larynx_stl, sizeof(g_larynx_stl), &apData);
+            break;
+
+        case HYOID_BONE:
+            aSize = inflate(g_hyoid_bone_stl, sizeof(g_hyoid_bone_stl), &apData);
+            break;
+
+        case LEFT_EYE:
+            aSize = inflate(g_left_eye_stl, sizeof(g_left_eye_stl), &apData);
+            break;
+
+        case RIGHT_EYE:
+            aSize = inflate(g_right_eye_stl, sizeof(g_right_eye_stl), &apData);
+            break;
+
+        case RIGHT_PALATINE_TONSIL:
+            aSize = inflate(g_right_palatine_tonsil_stl, sizeof(g_right_palatine_tonsil_stl), &apData);
+            break;
+                
+        case GREY_MATTER:
+            aSize = inflate(g_grey_matter_stl, sizeof(g_grey_matter_stl), &apData);
+            break;
+ 
         default:
             break;
         }
@@ -828,43 +865,90 @@ void createPhantom()
     g_p_polygon_mesh_set.clear();
     g_p_HU_set.clear();
 
-    g_p_polygon_mesh_set.resize(7);
-    g_p_HU_set.resize(7);
-
-    decompressMesh(0, p_data, size);
-    g_p_polygon_mesh_set[0].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[0] = 100;
-
-
-    decompressMesh(1, p_data, size);
-    g_p_polygon_mesh_set[1].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[1] = 100;
-
-    decompressMesh(2, p_data, size);
-    g_p_polygon_mesh_set[2].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[2] = 100;
-
+    //g_p_polygon_mesh_set.resize(9);
+    //g_p_HU_set.resize(9);
 
     decompressMesh(3, p_data, size);
-    g_p_polygon_mesh_set[3].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[3] = 100;
-
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
 
     decompressMesh(4, p_data, size);
-    g_p_polygon_mesh_set[4].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[4] = 100;
-
-
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
     decompressMesh(5, p_data, size);
-    g_p_polygon_mesh_set[5].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[5] = 100;
-
-
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
     decompressMesh(6, p_data, size);
-    g_p_polygon_mesh_set[6].loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
-    g_p_HU_set[6] = 100;
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(7, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(9, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(10, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(11, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(12, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
 
+    decompressMesh(18, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(19, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
+    
+    decompressMesh(22, p_data, size);
+    g_p_polygon_mesh_set.push_back(PolygonMesh());
+    g_p_polygon_mesh_set.back().loadSTLDataFromStream(p_data, false, true, false, true, mm, GL_STATIC_DRAW);
+    g_p_HU_set.push_back(100);
 
+    //g_p_polygon_mesh_set.push_back(SphereMesh(10, 10, 0.25 * cm));
+    g_p_polygon_mesh_set.push_back(CubeMesh<float>(0.25 * cm));
+    g_p_polygon_mesh_set.back().translate(VEC3(27.75 * cm, 25.0 * cm, 18.75 * cm));
+    g_p_HU_set.push_back(3000);
+    
+    //g_p_polygon_mesh_set.push_back(SphereMesh(10, 10, 0.25 * cm));
+    g_p_polygon_mesh_set.push_back(CubeMesh<float>(0.25 * cm));
+    g_p_polygon_mesh_set.back().translate(VEC3(27.0 * cm, 23.0 * cm, 18.75 * cm));
+    g_p_HU_set.push_back(3000);
+    
+    //g_p_polygon_mesh_set.push_back(SphereMesh(10, 10, 0.25 * cm));
+    g_p_polygon_mesh_set.push_back(CubeMesh<float>(0.25 * cm));
+    g_p_polygon_mesh_set.back().translate(VEC3(30.95 * cm, 24.0 * cm, 18.75 * cm));
+    g_p_HU_set.push_back(3000);
+    
+
+//    228.754, 167.247, 128.708
+//    349.787, 256.446, 233.819
+
+    
+    
     // Delete data
         if (p_data)
             {

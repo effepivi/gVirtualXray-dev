@@ -117,14 +117,12 @@ public:
     
     Image<T> simpleBackProjection(double aFirstAngle,
                                   double anAngleStep,
-                                  double aLastAngle,
                                   const char* aDirectorye = 0,
                                   void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
     
     
     Image<T> filteredBackProjection(double aFirstAngle,
                                     double anAngleStep,
-                                    double aLastAngle,
                                     const char* aFilterType = 0,
                                     float aScalingFactor = 1.0,
                                     const char* aDirectory = 0,
@@ -157,14 +155,12 @@ public:
     
     Image<T> simpleBackProjection(double aFirstAngle,
                                   double anAngleStep,
-                                  double aLastAngle,
                                   const std::string& aDirectory,
                                   void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
     
     
     Image<T> filteredBackProjection(double aFirstAngle,
                                     double anAngleStep,
-                                    double aLastAngle,
                                     const std::string& aFilterType,
                                     float aScalingFactor,
                                     const std::string& aDirectory,
