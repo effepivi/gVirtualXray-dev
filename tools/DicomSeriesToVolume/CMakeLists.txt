@@ -44,6 +44,14 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 
 
+# Check if GLFW is enable #####################################################
+IF (glfw3_FOUND)
+    ADD_DEFINITIONS(-DHAS_GLFW)
+ELSE (glfw3_FOUND)
+    MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
+
+
 # Create the main program ######################################################
 ADD_EXECUTABLE (gvxrDicomSeriesToVolume gvxrDicomSeriesToVolume.cxx cmdline.h cmdline.c)
 TARGET_LINK_LIBRARIES (gvxrDicomSeriesToVolume ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})

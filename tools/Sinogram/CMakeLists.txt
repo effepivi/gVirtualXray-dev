@@ -45,13 +45,8 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Check if GLFW is enable #####################################################
-IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE (glfw3   REQUIRED)
-ENDIF (USE_SYSTEM_GLFW)
-
 IF (glfw3_FOUND)
-    INCLUDE_DIRECTORIES (${GLFW3_INCLUDE_DIR})
-    SET (requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+    ADD_DEFINITIONS(-DHAS_GLFW)
 ELSE (glfw3_FOUND)
     MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)

@@ -38,10 +38,10 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 # Configure the project ########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 
 
 # Headers of the project #######################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 
 
@@ -51,13 +51,7 @@ CreateHeaderFiles("." "BinaryMarchingCubesFiles" "${RESOURCES_SOURCES}")
 
 
 # Check if GLFW is enable #####################################################
-IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE (glfw3   REQUIRED)
-ENDIF (USE_SYSTEM_GLFW)
-
 IF (glfw3_FOUND)
-    INCLUDE_DIRECTORIES (${GLFW3_INCLUDE_DIR})
-    SET (optionalLibs ${optionalLibs} glfw3)
     ADD_DEFINITIONS(-DHAS_GLFW)
 ELSE (glfw3_FOUND)
     MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
