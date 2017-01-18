@@ -1927,7 +1927,7 @@ void loadSource()
 //---------------
 {
     // Set the energy
-    g_xray_beam.initialise(g_incident_energy);
+    g_xray_beam.initialise("../data/beam_spectrum.csv", MeV, 1);
 
     // Set the source position
     g_xray_detector.setXrayPointSource(g_source_position);

@@ -81,8 +81,10 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 
 # Copy data files into the build directory (useful for debugging) #############
 IF (WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/beam_spectrum.csv              ${CMAKE_CURRENT_BINARY_DIR}/data/beam_spectrum.csv COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/data/arial.ttf COPYONLY)
 ELSE (WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/beam_spectrum.csv              ${CMAKE_CURRENT_BINARY_DIR}/../data/beam_spectrum.csv COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
 ENDIF (WIN32)
 
