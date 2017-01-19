@@ -87,8 +87,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#include "display_realistic_gl2.frag.h"
-#include "display_realistic_gl2.vert.h"
+//#include "display_realistic_gl2.frag.h"
+//#include "display_realistic_gl2.vert.h"
 
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
@@ -189,8 +189,10 @@ void GLWidget::initializeGL()
     // Modern OpenGL 3.2 or above is not supported
     else
     {
-        z_lib_return_code_vertex   = inflate(g_display_realistic_gl2_vert, sizeof(g_display_realistic_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_realistic_gl2_frag, sizeof(g_display_realistic_gl2_frag), &p_fragment_shader);
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenGL 2.x is not supported in this tutorial.");
+
+//        z_lib_return_code_vertex   = inflate(g_display_realistic_gl2_vert, sizeof(g_display_realistic_gl2_vert),   &p_vertex_shader);
+//        z_lib_return_code_fragment = inflate(g_display_realistic_gl2_frag, sizeof(g_display_realistic_gl2_frag), &p_fragment_shader);
     }
 
     vertex_shader   = p_vertex_shader;

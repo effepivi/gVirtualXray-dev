@@ -64,6 +64,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif // HAS_GLEW
 
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -78,10 +81,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL3_PROTOTYPES 1
 #else
 #define GL_GLEXT_PROTOTYPES 1
-#endif
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1

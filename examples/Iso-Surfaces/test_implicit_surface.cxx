@@ -66,13 +66,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif // HAS_GLEW
 
 #ifndef GVXR_CONFIG_H
 #include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
 #endif
 
 #include <GLFW/glfw3.h>
