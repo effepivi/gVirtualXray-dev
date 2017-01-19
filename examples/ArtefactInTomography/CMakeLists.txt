@@ -30,7 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-project(gVirtualXRay-ArtefactInTomographyReconstruction)
+project(gVirtualXRay-ArtefactInTomography)
 
 # Initialise some states by default ############################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
@@ -68,7 +68,7 @@ SET (RESOURCES_SOURCES ${RESOURCES_SOURCES}
     )
 
 
-CreateHeaderFiles("." "BinaryArtefactInTomographyReconstructionFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinaryArtefactInTomographyFiles" "${RESOURCES_SOURCES}")
 
 
 # Headers of the project #######################################################
@@ -105,35 +105,35 @@ ENDIF ()
 
 # Create the main program ######################################################
 IF (glfw3_FOUND)
-add_executable(demo-artefact-in-tomography-reconstruction FilteredBackProjection.cxx)
-target_link_libraries(demo-artefact-in-tomography-reconstruction ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(demo-artefact-in-tomography-reconstruction BinaryArtefactInTomographyReconstructionFiles)
+add_executable(demo-artefact-in-tomography FilteredBackProjection.cxx)
+target_link_libraries(demo-artefact-in-tomography ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(demo-artefact-in-tomography BinaryArtefactInTomographyFiles)
 
     if (gVirtualXRay_BINARY_DIR)
-         ADD_DEPENDENCIES(demo-artefact-in-tomography-reconstruction   gVirtualXRay)
+         ADD_DEPENDENCIES(demo-artefact-in-tomography   gVirtualXRay)
     endif (gVirtualXRay_BINARY_DIR)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS demo-artefact-in-tomography-reconstruction RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
+    INSTALL(TARGETS demo-artefact-in-tomography RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
     SET (MACOSX_RPATH 1)
-    SET(ArtefactInTomographyReconstruction_SRCS
+    SET(ArtefactInTomography_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/FilteredBackProjection.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
     )
 
-    ADD_EXECUTABLE (ArtefactInTomographyReconstruction MACOSX_BUNDLE ${ArtefactInTomographyReconstruction_SRCS})
-    TARGET_LINK_LIBRARIES (ArtefactInTomographyReconstruction gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(ArtefactInTomographyReconstruction BinaryArtefactInTomographyReconstructionFiles)
+    ADD_EXECUTABLE (ArtefactInTomography MACOSX_BUNDLE ${ArtefactInTomography_SRCS})
+    TARGET_LINK_LIBRARIES (ArtefactInTomography gVirtualXRay ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(ArtefactInTomography BinaryArtefactInTomographyFiles)
 
-    set(MACOSX_BUNDLE_BUNDLE_NAME ArtefactInTomographyReconstruction)
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "ArtefactInTomographyReconstruction")
+    set(MACOSX_BUNDLE_BUNDLE_NAME ArtefactInTomography)
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "ArtefactInTomography")
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
     set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
@@ -142,9 +142,9 @@ ELSE (NOT APPLE)
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
     set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
 
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ArtefactInTomographyReconstruction.app")
+    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ArtefactInTomography.app")
 
-    INSTALL(TARGETS ArtefactInTomographyReconstruction 
+    INSTALL(TARGETS ArtefactInTomography 
         BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
         RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
     )
