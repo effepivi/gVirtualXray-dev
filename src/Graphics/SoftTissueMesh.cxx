@@ -260,7 +260,7 @@ void SoftTissueMesh::initialize()
 
 			shareNormalVectors();
 
-			updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+			updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
 		}
 
 	    // Check the OpenGL error status
@@ -283,7 +283,7 @@ void SoftTissueMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		//Update the VBO
-		updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+		updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
 
 	    // Check the OpenGL error status
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -304,7 +304,7 @@ void SoftTissueMesh::initialize()
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		//Update the VBO
-		updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+		updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
 
 	    // Check the OpenGL error status
 	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);

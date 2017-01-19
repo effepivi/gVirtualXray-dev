@@ -229,7 +229,7 @@ void PolygonMesh::display()
         }
 
     // Update the VBO if needed
-    if (!m_p_vbo->isReady())
+	if (!m_p_vbo->isReady() || m_polygon_type != m_p_vbo->getPrimitiveType())
         {
         updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
         }
