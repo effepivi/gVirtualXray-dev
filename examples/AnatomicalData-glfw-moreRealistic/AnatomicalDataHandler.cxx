@@ -676,7 +676,7 @@ void AnatomicalDataHandler::loadPatient(PatientID aPatientID)
             false,
             true,
             false,
-            true,
+			false,
             mm,
             GL_STATIC_DRAW);
 
@@ -755,6 +755,7 @@ void AnatomicalDataHandler::usePatient(const PatientID& aPatientID)
     m_xray_renderer.removeOuterSurface();
     for (unsigned int i(0); i < p_mesh_set->size(); ++i)
         {
+		(*p_mesh_set)[i]->updateVBO(GL_STATIC_DRAW, GL_TRIANGLES);
         m_xray_renderer.addInnerSurface(((*p_mesh_set)[i]));
         }
 
@@ -868,12 +869,12 @@ void AnatomicalDataHandler::render()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
 
-        //##handle = glGetUniformLocation(shader_id, "g_shadow_map");
-        //##glUniform1i(handle, 0);
+        handle = glGetUniformLocation(shader_id, "g_shadow_map");
+        glUniform1i(handle, 0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-       //## handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
-        //##glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadow_matrix.get());
+        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadow_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");

@@ -500,6 +500,10 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
             close();
             break;
 
+		case Qt::Key_S:
+			m_xray_renderer.printXRayImage("projection.txt");
+			break;
+
         case Qt::Key_Space:
             reset();
             break;
@@ -1297,13 +1301,8 @@ void GLWidget::computeRotation(MATRIX4& aRotationMatrix,
                 aXmousePosition,
                 aYmousePosition));
 
-#ifdef _WIN32
-            float angle(g_rotation_speed *
-                radian2degree(acos(min(1.0, va.dotProduct(vb)))));
-#else
             float angle(g_rotation_speed *
                 radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
-#endif
 
             Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
 
