@@ -856,16 +856,11 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
 
-IF (BUILD_EXAMPLES OR BUILD_TUTORIALS OR BUILD_VALIDATION)
-
     OPTION (USE_GLFW "Build the programs (demos, tutorials, and validation tests) that make use of GLFW" ON)
     IF (USE_GLFW)
         OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
     ENDIF (USE_GLFW)
 
-ELSE ()
-    SET (USE_GLFW OFF)
-ENDIF ()
 
 IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
 
@@ -912,9 +907,9 @@ ENDIF ()
 IF (USE_GLFW)
     IF (NOT USE_SYSTEM_GLFW)
         SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-        INCLUDE(BuildGlfw3)
-        build_glfw3( glfw3 ${PROJECT_BINARY_DIR} )
-        ADD_DEPENDENCIES(gVirtualXRay glfw3)
+        INCLUDE(BuildGlfw)
+        build_glfw( glfw ${PROJECT_BINARY_DIR} )
+        ADD_DEPENDENCIES(gVirtualXRay glfw)
     ENDIF (NOT USE_SYSTEM_GLFW)
 ELSE (USE_GLFW)
     SET (USE_SYSTEM_GLFW OFF)

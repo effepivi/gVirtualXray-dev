@@ -71,6 +71,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>

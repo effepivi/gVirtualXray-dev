@@ -104,7 +104,7 @@ ENDIF ()
 
 
 # Create the main program ######################################################
-IF (glfw3_FOUND AND FFTW3_LIBRARIES)
+IF (glfw3_FOUND)
 add_executable(demo-artefact-in-tomography-reconstruction FilteredBackProjection.cxx)
 target_link_libraries(demo-artefact-in-tomography-reconstruction ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-artefact-in-tomography-reconstruction BinaryArtefactInTomographyReconstructionFiles)

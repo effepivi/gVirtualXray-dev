@@ -74,8 +74,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctime>
 #include <algorithm>
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
+#define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
 #ifndef __Units_h

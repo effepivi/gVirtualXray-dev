@@ -80,8 +80,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
+#define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
 #ifndef __Types_h

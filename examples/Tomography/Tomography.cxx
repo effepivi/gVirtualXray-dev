@@ -84,8 +84,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
+#define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
 #ifndef __Types_h
@@ -743,8 +746,10 @@ void createPhantom()
     float j_3(float(size) / 2.0);
     float k_3(float(size) / 2.0);
 
-    #pragma omp parallel for collapse(3)
-    for(unsigned int k = 0; k < size; k++)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
+	for (unsigned int k = 0; k < size; k++)
     {
         for(unsigned int j = 0; j < size; j++)
         {

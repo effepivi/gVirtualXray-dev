@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "cmdline.h"
 
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif // HAS_GLEW
+
 #ifdef HAS_GLFW
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
@@ -106,6 +110,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __Units_h
 #include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef __OpenGLUtilities_h
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #include "display_gl2.frag.h"

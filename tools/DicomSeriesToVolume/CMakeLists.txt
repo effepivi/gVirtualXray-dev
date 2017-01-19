@@ -48,7 +48,7 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 IF (glfw3_FOUND)
     ADD_DEFINITIONS(-DHAS_GLFW)
 ELSE (glfw3_FOUND)
-    MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
+	MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)
 
 

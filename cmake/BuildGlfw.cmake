@@ -1,5 +1,5 @@
 # make a custom GLFW configuration file
-macro(build_glfw3 install_prefix staging_prefix)
+macro(build_glfw install_prefix staging_prefix)
 
 if (NOT TARGET GLFW)
     SET (GLFW_VERSION_STRING 3.2)
@@ -17,7 +17,7 @@ if (NOT TARGET GLFW)
     endif()
 
 
-    ExternalProject_Add(glfw3
+    ExternalProject_Add(glfw
         URL  "https://github.com/GLFW/GLFW/releases/download/3.2/GLFW-3.2.zip"
         URL_MD5 "d51fa09602abce26a65096ce97b4831c"
         UPDATE_COMMAND ""
@@ -37,11 +37,11 @@ if (NOT TARGET GLFW)
            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
     )
 
-    SET(GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
-    SET(GLFW3_DIR         ${staging_prefix}/${install_prefix}-install)
-    SET(glfw3_FOUND ON)
-
-    SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
+    SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
+    SET (GLFW3_DIR         ${staging_prefix}/${install_prefix}-install)
+    SET (glfw3_FOUND ON)
+    SET (GLFW3_LIBRARY_DIR "${staging_prefix}/${install_prefix}-install/lib")
+    SET (GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
 
     IF (WIN32)
         IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
@@ -49,7 +49,7 @@ if (NOT TARGET GLFW)
         ENDIF ()
     ENDIF (WIN32)
 
-        install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
@@ -57,7 +57,11 @@ if (NOT TARGET GLFW)
     install(DIRECTORY ${staging_prefix}/${install_prefix}-install/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
 
+    SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${staging_prefix}/${install_prefix}-install/lib/cmake/glfw3 ${staging_prefix}/${install_prefix}-install/lib/cmake  ${staging_prefix}/${install_prefix}-install/lib)
+    SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${staging_prefix}/${install_prefix}-install/lib/cmake/glfw3 ${staging_prefix}/${install_prefix}-install/lib/cmake  ${staging_prefix}/${install_prefix}-install/lib)
+
+
 endif(NOT TARGET GLFW)
 
-endmacro(build_glfw3)
+endmacro(build_glfw)
 

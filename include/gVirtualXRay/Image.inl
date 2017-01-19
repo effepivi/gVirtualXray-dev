@@ -294,8 +294,10 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
     Image<T> roi(aWidth, aHeight, aDepth);
 
     // Process every slice of the ROI
-    #pragma omp parallel for collapse(3)
-    for (unsigned int z = 0; z < aDepth; ++z)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
+	for (unsigned int z = 0; z < aDepth; ++z)
     {
         // Process every row of the ROI
         for (unsigned int y = 0; y < aHeight; ++y)
@@ -715,7 +717,9 @@ template<typename T> Image<T> Image<T>::flipHorizontally() const
 {
     Image<T> temp(*this);
 
-    #pragma omp parallel for collapse(3)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
     for (unsigned int k = 0; k < m_number_of_slices; ++k)
         {
         for (unsigned int j = 0; j < m_height; ++j)
@@ -764,7 +768,7 @@ template<typename T> Image<T> Image<T>::log() const
         }
 
     #pragma omp parallel for
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         double pixel(m_p_image[i]);
 
@@ -2083,7 +2087,9 @@ template<typename T> Image<T> Image<T>::transpose() const
 {
     Image<T> temp(m_height, m_width, m_number_of_slices);
 
-    #pragma omp parallel for collapse(3)
+#ifndef WIN32
+			#pragma omp parallel for collapse(3)
+#endif
     for (unsigned int k = 0; k < m_number_of_slices; ++k)
     {
         for (unsigned int j = 0; j < m_height; ++j)
@@ -2158,7 +2164,9 @@ template<typename T> Image<T> Image<T>::operator+(const Image<T>& anImage) const
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
 
     // Copy the data
-    #pragma omp parallel for collapse(3)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
     for (unsigned int k = 0; k < min_depth; ++k)
         {
         for (unsigned int j = 0; j < min_height; ++j)
@@ -2188,7 +2196,9 @@ template<typename T> Image<T> Image<T>::operator-(const Image<T>& anImage) const
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
 
     // Copy the data
-    #pragma omp parallel for collapse(3)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
     for (unsigned int k = 0; k < min_depth; ++k)
         {
         for (unsigned int j = 0; j < min_height; ++j)
@@ -2218,8 +2228,10 @@ template<typename T> Image<T> Image<T>::operator*(const Image<T>& anImage) const
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
 
     // Copy the data
-    #pragma omp parallel for collapse(3)
-    for (unsigned int k = 0; k < min_depth; ++k)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
+	for (unsigned int k = 0; k < min_depth; ++k)
         {
         for (unsigned int j = 0; j < min_height; ++j)
             {
@@ -2367,7 +2379,7 @@ template<typename T> Image<T> Image<T>::operator*(T aValue) const
     Image<T> temp(*this);
 
     #pragma omp parallel for
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp.m_p_image[i] *= aValue;
         }
@@ -2391,7 +2403,7 @@ template<typename T> Image<T> Image<T>::operator/(T aValue) const
     Image<T> temp(*this);
 
     #pragma omp parallel for
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp.m_p_image[i] /= aValue;
         }
@@ -2436,7 +2448,7 @@ template<typename T> Image<T>& Image<T>::operator*=(T aValue)
 //-----------------------------------------------------------
 {
     #pragma omp parallel for
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         m_p_image[i] *= aValue;
         }
@@ -2505,8 +2517,10 @@ template<typename T> Image<T> Image<T>::setCanvasSize(unsigned int aNewWidth,
     int y_offset((int(aNewHeight) - int(m_height)) / 2);
     int z_offset((int(aNewNumberOfSlices) - int(m_number_of_slices)) / 2);
 
-    #pragma omp parallel for collapse(3)
-    for (int k = 0; k < m_number_of_slices; ++k)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
+	for (int k = 0; k < m_number_of_slices; ++k)
     {
         for (int j = 0; j < m_height; ++j)
         {
@@ -2534,8 +2548,10 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
 {
     Image temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
 
-    #pragma omp parallel for collapse(3)
-    for (unsigned k = 0; k < aNewNumberOfSlices; ++k)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
+	for (int k = 0; k < aNewNumberOfSlices; ++k)
     {
         for (unsigned j = 0; j < aNewHeight; ++j)
         {
@@ -2640,8 +2656,10 @@ template<typename T> Image<T> Image<T>::rotate(float anAngleInDegrees) const
     //double center_x(0.5 * (m_width + 1) /*- 1*/);
     //double center_y(0.5 * (m_height + 1) /*- 1*/);
     
-    #pragma omp parallel for collapse(3)
-    for (int k = 0; k < m_number_of_slices; ++k)
+#ifndef WIN32
+	#pragma omp parallel for collapse(3)
+#endif
+	for (int k = 0; k < m_number_of_slices; ++k)
     {
         for (unsigned j = 0; j < m_height; ++j)
         {
@@ -2732,8 +2750,10 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
         {
         Image<T> rotated_image(padded_image.rotate(angle));
     
-        #pragma omp parallel for collapse(3)
-        for (int j = 0; j < rotated_image.m_height; ++j)
+#ifndef WIN32
+		#pragma omp parallel for collapse(3)
+#endif
+		for (int j = 0; j < rotated_image.m_height; ++j)
             {
             for (int i = 0; i < rotated_image.m_width; ++i)
                 {

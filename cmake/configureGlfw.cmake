@@ -52,7 +52,8 @@ IF (USE_GLFW)
 
     IF(glfw3_FOUND)
 
-		#LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
+        LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
+	#SET(optionalLibs ${optionalLibs} glfw3)
 
     	IF (APPLE)
 	    	FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -74,7 +75,7 @@ IF (USE_GLFW)
 	    ENDIF(UNIX)
 
         INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
-        SET(optionalLibs ${optionalLibs} glfw)
+	SET(optionalLibs ${optionalLibs} glfw3)
 
     ELSE(glfw3_FOUND)
         MESSAGE(WARNING "GLFW3 not found.")

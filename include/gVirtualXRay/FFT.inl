@@ -33,6 +33,10 @@
 #include <fftw3.h>
 #endif
 
+#ifndef __Exception_h
+#include "Exception.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -77,7 +81,8 @@ template<typename T> FFT<T>& FFT<T>::operator=(const FFT<T>& aFFT)
 template<typename T> FFT<T> FFT<T>::computeFFT(const Image<T>& anImage)
 //---------------------------------------------------------------------
 {
-    FFT fft;
+#ifdef HAS_FFTW
+	FFT fft;
     fft.m_origin_image_width  = anImage.getWidth();
     fft.m_origin_image_height = anImage.getHeight();
 
@@ -196,6 +201,9 @@ template<typename T> FFT<T> FFT<T>::computeFFT(const Image<T>& anImage)
     fftw_free(out_src);
 
     return (fft);
+#else // HAS_FFTW
+throw Exception(__FILE__, __FUNCTION__, __LINE__, "FFTW not supported");
+#endif // HAS_FFTW
 }
 
 
@@ -203,7 +211,8 @@ template<typename T> FFT<T> FFT<T>::computeFFT(const Image<T>& anImage)
 template<typename T> Image<T> FFT<T>::getInverseFFT() const
 //---------------------------------------------------------
 {
-    Image<T> temp(m_real.getWidth(), m_real.getHeight(), m_real.getDepth());
+#ifdef HAS_FFTW
+	Image<T> temp(m_real.getWidth(), m_real.getHeight(), m_real.getDepth());
 
     // allocate input arrays
     fftw_complex *in_src, *out_src;
@@ -253,6 +262,9 @@ template<typename T> Image<T> FFT<T>::getInverseFFT() const
     fftw_free(in_src); fftw_free(out_src);
 
     return (temp.getROI(0, 0, 0, m_origin_image_width, m_origin_image_height, m_real.getDepth()));
+#else // HAS_FFTW
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "FFTW not supported");
+#endif // HAS_FFTW
 }
 
 
@@ -355,10 +367,9 @@ template<typename T> FFT<T> FFT<T>::rhoFilter(const std::string& aFilterType, fl
     }
     else if (!(aFilterType == "ramp" || aFilterType == "Ramp" || aFilterType == "RAMP"))
     {
-        throw ("rho_filter: Unknown window type");
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "rho_filter: Unknown window type");
     }
-
-
+	
     for (unsigned int k(0); k < filtered_fft.m_real.getDepth(); ++k)
     {
         for (unsigned int j(0); j < filtered_fft.m_real.getHeight(); ++j)

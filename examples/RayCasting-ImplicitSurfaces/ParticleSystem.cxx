@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdlib>
 #include <cmath>
+#include <ctime>
 
 #ifndef __ParticleSystem_h
 //#include "gVirtualXRay/ParticleSystem.h"

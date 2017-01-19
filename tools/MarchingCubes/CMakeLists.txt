@@ -41,13 +41,7 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 
 
 # Headers of the project #######################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/CreateHeaderFiles.cmake)
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
-
-
-# Create the RESOURCES ###########################################################
-SET (RESOURCES_SOURCES "display_gl2.vert" "display_gl2.frag" "display_gl3.vert" "display_gl3.frag")
-CreateHeaderFiles("." "BinaryMarchingCubesFiles" "${RESOURCES_SOURCES}")
 
 
 # Check if GLFW is enable #####################################################
@@ -60,8 +54,7 @@ ENDIF (glfw3_FOUND)
 
 # Create the main program ######################################################
 ADD_EXECUTABLE (gvxrMarchingCubes gvxrMarchingCubes.cxx cmdline.h cmdline.c)
-TARGET_LINK_LIBRARIES (gvxrMarchingCubes ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(gvxrMarchingCubes BinaryMarchingCubesFiles)
+TARGET_LINK_LIBRARIES (gvxrMarchingCubes ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
 IF (gVirtualXRay_BINARY_DIR)
     ADD_DEPENDENCIES (gvxrMarchingCubes   gVirtualXRay)
