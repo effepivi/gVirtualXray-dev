@@ -84,8 +84,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #endif
 
-#define GLFW_INCLUDE_GLCOREARB 1
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
 
+#define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
 #ifndef __Types_h
@@ -168,31 +171,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_image_gl3.frag.h"
 #include "display_image_gl3.vert.h"
 
-#include "atlas_C1.stl.h"
+/*#include "atlas_C1.stl.h"
 #include "axis_C2.stl.h"
-#include "brain.stl.h"
+#include "brain.stl.h"*/
 #include "cervical_vertebra_C3.stl.h"
 #include "cervical_vertebra_C4.stl.h"
 #include "cervical_vertebra_C5.stl.h"
 #include "cervical_vertebra_C6.stl.h"
 #include "cranium.stl.h"
-#include "frontal_sinus.stl.h"
+/*#include "frontal_sinus.stl.h"*/
 #include "grey_matter.stl.h"
 #include "hyoid_bone.stl.h"
 #include "larynx.stl.h"
 #include "left_eye.stl.h"
-#include "left_lens.stl.h"
+/*#include "left_lens.stl.h"
 #include "left_maxillary_sinus.stl.h"
 #include "left_palatine_tonsil.stl.h"
 #include "left_styloid_process.stl.h"
-#include "lingual_tonsil.stl.h"
+#include "lingual_tonsil.stl.h"*/
 #include "mandible.stl.h"
 #include "right_eye.stl.h"
-#include "right_lens.stl.h"
-#include "right_maxillary_sinus.stl.h"
+/*#include "right_lens.stl.h"
+#include "right_maxillary_sinus.stl.h"*/
 #include "right_palatine_tonsil.stl.h"
-#include "right_styloid_process.stl.h"
-#include "thyroid_gland.stl.h"
+/*#include "right_styloid_process.stl.h"
+#include "thyroid_gland.stl.h"*/
 
 
 //******************************************************************************
@@ -206,9 +209,9 @@ using namespace gVirtualXRay;
 //******************************************************************************
 #define PREFIX ".."
 
-#define ATLAS_C1_ID 0
+/*#define ATLAS_C1_ID 0
 #define AXIS_C2_ID  1
-#define BRAIN_ID    2
+#define BRAIN_ID    2*/
 #define CERVICAL_VERTEBRA_C3_ID 3
 #define CERVICAL_VERTEBRA_C4_ID 4
 #define CERVICAL_VERTEBRA_C5_ID 5
@@ -679,12 +682,15 @@ int main(int argc, char** argv)
                     {
                     g_run_tomography_acquisition = false;
                     Image<float> sbp = g_raw_sinogram_data.simpleBackProjection(0.0, g_angle_step);
-                    Image<float> fbp1 = g_raw_sinogram_data.filteredBackProjection(0.0, g_angle_step);
-                    Image<float> fbp2 = g_filtered_sinogram_data.simpleBackProjection(0.0, g_angle_step);
-                        
-                    sbp.save("sbp.mha");
-                    fbp1.save("fbp1.mha");
+					sbp.save("sbp.mha");
+					
+#ifdef HAS_FFTW
+					Image<float> fbp1 = g_raw_sinogram_data.filteredBackProjection(0.0, g_angle_step);
+					fbp1.save("fbp1.mha");
+					
+					Image<float> fbp2 = g_filtered_sinogram_data.simpleBackProjection(0.0, g_angle_step);
                     fbp2.save("fbp2.mha");
+#endif
                     }
                 }
 
@@ -709,10 +715,12 @@ int main(int argc, char** argv)
                         g_raw_tomography_texture_id);
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                updateTomography(g_filtered_sinogram_data,
+#ifdef HAS_FFTW
+				updateTomography(g_filtered_sinogram_data,
                         g_filtered_tomography_data,
                         g_filtered_tomography_texture_id);
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+#endif
 
                 g_update_projection_and_sinogram = false;
                 }
@@ -783,7 +791,7 @@ void decompressMesh(unsigned int aMeshID,
 
     switch (aMeshID)
         {
-        case ATLAS_C1_ID:
+/*        case ATLAS_C1_ID:
             aSize = inflate(g_atlas_C1_stl, sizeof(g_atlas_C1_stl), &apData);
             break;
 
@@ -794,7 +802,7 @@ void decompressMesh(unsigned int aMeshID,
         case BRAIN_ID:
             aSize = inflate(g_brain_stl, sizeof(g_brain_stl), &apData);
             break;
-
+			*/
         case CERVICAL_VERTEBRA_C3_ID:
             aSize = inflate(g_cervical_vertebra_C3_stl, sizeof(g_cervical_vertebra_C3_stl), &apData);
             break;
@@ -1927,7 +1935,15 @@ void loadSource()
 //---------------
 {
     // Set the energy
-    g_xray_beam.initialise("../data/beam_spectrum.csv", MeV, 1);
+    //g_xray_beam.initialise("../data/beam_spectrum.csv", MeV, 1);
+	g_xray_beam.addChannel(3, 33.0 * keV);
+	g_xray_beam.addChannel(2, 66.0 * keV);
+	g_xray_beam.addChannel(1, 99.0 * keV);
+
+	if (!g_xray_beam.getEnergyChannelNumber())
+		{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The X-ray beam has no energy channel.");
+		}
 
     // Set the source position
     g_xray_detector.setXrayPointSource(g_source_position);
@@ -2389,6 +2405,7 @@ void updateRawSinogram()
 void updateFilteredSinogram()
 //---------------------------
 {
+#ifdef HAS_FFTW
     float total_input_energy(g_xray_beam.getTotalEnergy());
     float scaling_factor(float(g_number_of_pixels.getX()) /
         ((g_resolution.getX() * g_number_of_pixels.getX()) / cm)
@@ -2432,6 +2449,7 @@ void updateFilteredSinogram()
         &g_filtered_sinogram_data(0, g_current_angle, 0));
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
+#endif
 }
 
 

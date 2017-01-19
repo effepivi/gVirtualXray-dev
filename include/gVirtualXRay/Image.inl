@@ -657,7 +657,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue, dou
     
     // Process every pixel of the image
     #pragma omp parallel for
-    for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         // Apply the shilft/scale filter
         temp[i] = (temp[i] + aShiftValue) * aScaleValue;

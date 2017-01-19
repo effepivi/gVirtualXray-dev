@@ -142,11 +142,8 @@ inline void XRayBeam::initialise(const char* aFileName,
 
 	// Load the file
 	SpectrumRecord temp;
-	while (!beam_spectrum_stream.eof())
+	while (beam_spectrum_stream >> temp)
 	{
-		// Read a record
-		beam_spectrum_stream >> temp;
-		
 		// The record is valid
 		if (!beam_spectrum_stream.eof())
 		{
