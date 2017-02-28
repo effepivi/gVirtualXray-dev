@@ -60,14 +60,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
-//******************************************************************************
-#ifndef GVXR_EXCEPTION_H
-#include "gVirtualXRay/Exception.h"
-#endif
-
-
-//******************************************************************************
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {
@@ -96,7 +88,7 @@ inline Shader::Shader():
 inline Shader::~Shader()
 //----------------------
 {
-	reset();
+	release();
 }
 
 

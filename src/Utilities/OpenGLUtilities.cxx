@@ -63,24 +63,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
+
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
 #include "gVirtualXRay/OutOfBoundsException.h"
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#else
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#endif
 #endif
 
 #include "gVirtualXRay/Shader.h"
@@ -102,6 +104,34 @@ std::vector<std::pair<int, bool> > g_enable_disable_state_stack;
 std::vector<int> g_shader_program_stack;
 
 
+//-------------------
+void initialiseGLEW()
+//-------------------
+{
+#ifdef HAS_GLEW
+	glewExperimental = GL_TRUE;
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		std::stringstream error_message;
+		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+	}
+
+	glGetError(); // Remove an error that occurs in Windows
+#endif
+}
+
+
+//-------------------
+void initializeGLEW()
+//-------------------
+{
+	initialiseGLEW();
+}
+
+
 //----------------------------------------------------
 void checkOpenGLErrorStatus(const char* aFileName,
 							const char* aFunctionName,
@@ -114,7 +144,12 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	// There was an error
 	if (error_code != GL_NO_ERROR)
 	{
-		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+	    std::cerr << "OpenGL error:" << gluErrorString(error_code) << std::endl;
+	    std::cerr << "\t- in File: " << aFileName << std::endl;
+	    std::cerr << "\t- in Function: " << aFunctionName << std::endl;
+	    std::cerr << "\t- at Line: " << aLineNumber << std::endl;
+
+		//throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
 }
 
@@ -347,8 +382,8 @@ void popTexture()
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &current_texture_id);
 		break;
 
-    case GL_TEXTURE_RECTANGLE:
-        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE, &current_texture_id);
+    case GL_TEXTURE_RECTANGLE_ARB:
+        glGetIntegerv(GL_TEXTURE_BINDING_RECTANGLE_ARB, &current_texture_id);
         break;
 
 	default:
@@ -373,8 +408,8 @@ void popTexture()
 			glBindTexture(GL_TEXTURE_3D, previous_texture.second);
 			break;
 
-            case GL_TEXTURE_RECTANGLE:
-            glBindTexture(GL_TEXTURE_RECTANGLE, previous_texture.second);
+            case GL_TEXTURE_RECTANGLE_ARB:
+            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, previous_texture.second);
             break;
 
         default:

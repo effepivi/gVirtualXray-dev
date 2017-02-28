@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,52 +35,62 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		Utilities.cxx
+*   file        Utilities.cxx
 *
-*	@brief		Some utility functions that do not fit anywhere else.
+*  @brief       Some utility functions that do not fit anywhere else.
 *
-*	@version	1.0
+*  @version     1.0
 *
-*	@date		12/02/2014
+*  @date        12/02/2014
 *
-*	@author		Dr Franck P. Vidal
+*  @author      Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*  @section     License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*  @section     Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
-#ifndef GVXR_UTILITIES_H
+//******************************************************************************
+//  Include
+//******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#include <zlib.h>
+#include <iostream>
+
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
 
 //******************************************************************************
-//	Include
+//  namespace
 //******************************************************************************
-#include <zlib.h>
-#include <string.h>
+namespace gVirtualXRay {
 
 
-//------------------------------------------------------------------
-int gVirtualXRay::inflate(const void *src, int srcLen, char** apDst)
-//------------------------------------------------------------------
+//----------------------------------------------------
+int inflate(const void *src, int srcLen, char** apDst)
+//----------------------------------------------------
 {
-	// See http://stackoverflow.com/questions/4901842/in-memory-decompression-with-zlib
-	int dstLen(50 * srcLen);
-	if (*apDst) delete [] *apDst;
-	*apDst = new char[dstLen];
-	memset(*apDst, '\0', dstLen * sizeof(char));
+    // See http://stackoverflow.com/questions/4901842/
+    //                   in-memory-decompression-with-zlib
+    int dstLen(50 * srcLen);
+    if (*apDst) delete [] *apDst;
+    *apDst = new char[dstLen];
+    memset(*apDst, '\0', dstLen * sizeof(char));
 
     z_stream strm  = {0};
     strm.total_in  = strm.avail_in  = srcLen;
@@ -95,26 +105,58 @@ int gVirtualXRay::inflate(const void *src, int srcLen, char** apDst)
     int err = -1;
     int ret = -1;
 
-    err = inflateInit2(&strm, (15 + 32)); //15 window bits, and the +32 tells zlib to to detect if using gzip or zlib
-    if (err == Z_OK) {
+    //15 window bits, and the +32 tells zlib to to detect if using gzip or zlib
+    err = inflateInit2(&strm, (15 + 32));
+    if (err == Z_OK)
+        {
         err = inflate(&strm, Z_FINISH);
-        if (err == Z_STREAM_END) {
+
+        if (err == Z_STREAM_END)
+            {
             ret = strm.total_out;
+            }
+        else
+            {
+            inflateEnd(&strm);
+            delete [] *apDst;
+            *apDst = 0;
+            return (err);
+            }
         }
-        else {
-             inflateEnd(&strm);
-             delete [] *apDst;
-             *apDst = 0;
-             return (err);
-        }
-    }
-    else {
+    else
+        {
         inflateEnd(&strm);
         delete [] *apDst;
         *apDst = 0;
         return (err);
-    }
+        }
 
     inflateEnd(&strm);
     return (ret);
 }
+
+
+//-------------------------------------------------
+bool checkExtension(const std::string& aFileName,
+                    const std::string& anExtension)
+//-------------------------------------------------
+{
+    unsigned int file_name_size(aFileName.size());
+    unsigned int extension_size(anExtension.size());
+
+    if (file_name_size < (extension_size + 2))
+        {
+        return (false);
+        }
+
+    std::string file_extension(aFileName.substr(file_name_size - extension_size - 1,
+            extension_size + 1));
+
+    std::string extension_plus_dot(".");
+    extension_plus_dot += anExtension;
+
+    return (file_extension == extension_plus_dot);
+}
+
+
+};

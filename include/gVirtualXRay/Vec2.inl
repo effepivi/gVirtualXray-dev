@@ -282,6 +282,82 @@ template<typename T> const Vec2<T> Vec2<T>::operator-() const
 }
 
 
+//---------------------------------------------------------
+template<typename T> T& Vec2<T>::operator()(unsigned int i)
+//---------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else
+        {
+        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------------------
+template<typename T> const T& Vec2<T>::operator()(unsigned int i) const
+//---------------------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else
+        {
+        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------
+template<typename T> T& Vec2<T>::operator[](unsigned int i)
+//---------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else
+        {
+        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------------------
+template<typename T> const T& Vec2<T>::operator[](unsigned int i) const
+//---------------------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else
+        {
+        OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
 //--------------------------------------------------------------------------
 template <typename T> std::ostream& operator<<(std::ostream& anOutputStream,
 											   const Vec2<T>& aVector)

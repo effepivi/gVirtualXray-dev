@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,39 +35,46 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		validation_02.cxx
+*  @file        validation_02.cxx
 *
-*	@brief		Main program to test the value of density (rho)
-*				for various tissues.
+*  @brief       Main program to test the value of density (rho)
+*               for various tissues.
 *
-*	@version	1.0
+*  @version1.0
 *
-*	@date		15/10/2014
+*  @date        15/10/2014
 *
-*	@author		Dr Franck P. Vidal
+*  @author      Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*  @section     License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*  @section     Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifdef HAS_GLEW
 #include <GL/glew.h>
+#endif
+
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#include <cstdlib>
 
 #define GLFW_INCLUDE_GLCOREARB 1
-
 #include <GLFW/glfw3.h>
 
 #ifndef GVXR_XRAY_RENDERER_H
@@ -76,19 +83,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Defines
+//  Defines
 //******************************************************************************
 #define PREFIX "../data/validation_02"
 
 
 //******************************************************************************
-//	Global variables
+//  Global variables
 //******************************************************************************
 RATIONAL_NUMBER g_incident_energy(80.0 * keV);
 Vec2ui g_number_of_pixels(64, 64);
@@ -100,104 +107,102 @@ XRayRenderer g_xray_renderer;
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
-void initGLEW();
 void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
-void printAttenuationCoeffiecient(double& anEnergy, double aThreshold, double anOffset, std::ostream& anOutput);
+void printAttenuationCoeffiecient(double& anEnergy,
+    double aThreshold,
+    double anOffset,
+    std::ostream& anOutput);
+
 
 //-----------------------------
 int main(int argc, char** argv)
 //-----------------------------
 {
-	try
-	{
-	    // Set an error callback
-	    glfwSetErrorCallback(errorCallback);
+    try
+        {
+        // Set an error callback
+        glfwSetErrorCallback(errorCallback);
 
-	    // Initialize GLFW
-	    if (!glfwInit())
-	    {
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-	    }
+        // Initialize GLFW
+        if (!glfwInit())
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
 
         // Enable OpenGL 2.1 if possible
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-	    // Create the window
-	    GLFWwindow* p_main_window_id(glfwCreateWindow(64, 64, "", 0, 0));
-	    if (!p_main_window_id)
-	    {
-	        glfwTerminate();
-	    	throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-	    }
+        // Create the window
+        GLFWwindow* p_main_window_id(glfwCreateWindow(64,
+            64,
+            "gVirtualXRay -- Validation 02",
+            0,
+            0));
 
-	    // Make the window's context current
-	    glfwMakeContextCurrent(p_main_window_id);
+        if (!p_main_window_id)
+            {
+            glfwTerminate();
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
+            }
+
+        // Make the window's context current
+        glfwMakeContextCurrent(p_main_window_id);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Load the data
-		loadDetector();
-		loadSource();
-		loadXRaySimulator();
+        loadDetector();
+        loadSource();
+        loadXRaySimulator();
 
-		// Print the density in g/cm3 for a range of HU values
-		std::ofstream test_stream(PREFIX"/test_density.csv");
+        // Print the density in g/cm3 for a range of HU values
+        std::ofstream test_stream(PREFIX"/test_density.csv");
 
         if (!test_stream.is_open())
-        {
+            {
             std::stringstream error_message;
-            error_message << "ERROR: cannot open file:\t" << PREFIX"//test_density.csv";
+            error_message << "ERROR: cannot open file:\t" <<
+                PREFIX"//test_density.csv";
 
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                error_message.str());
+            }
 
         test_stream     << "HU\t" <<
                 "density (in g/cm3)" <<
                 std::endl;
 
         for (short HU(-1000); HU <= 1600; ++HU)
+            {
+            test_stream << HU << "\t" <<
+                g_xray_renderer.getDensityFromHU(HU) / (g/cm3) << std::endl;
+            }
+
+        // Close the window and shut GLFW
+        if (p_main_window_id)
+            {
+            glfwDestroyWindow(p_main_window_id);
+            p_main_window_id = 0;
+            glfwTerminate();
+            }
+        }
+    // Catch exception if any
+    catch (const std::exception& error)
         {
-        	test_stream << HU << "\t" << g_xray_renderer.getDensityFromHU(HU) / (g/cm3) << std::endl;
+        std::cerr << error.what() << std::endl;
         }
 
-		// Close the window and shut GLFW
-		if (p_main_window_id)
-		{
-			glfwDestroyWindow(p_main_window_id);
-			p_main_window_id = 0;
-			glfwTerminate();
-		}
-	}
-	// Catch exception if any
-	catch (const std::exception& error)
-	{
-		std::cerr << error.what() << std::endl;
-	}
-
-	return (EXIT_SUCCESS);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
+    return (EXIT_SUCCESS);
 }
 
 
@@ -205,8 +210,8 @@ void initGLEW()
 void loadDetector()
 //-----------------
 {
-	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
-	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+    g_xray_detector.setNumberOfPixels(g_number_of_pixels);
 }
 
 
@@ -214,8 +219,8 @@ void loadDetector()
 void loadSource()
 //---------------
 {
-	// Set the energy
-	g_xray_beam.initialise(g_incident_energy);
+    // Set the energy
+    g_xray_beam.initialise(g_incident_energy);
 }
 
 
@@ -223,7 +228,7 @@ void loadSource()
 void loadXRaySimulator()
 //----------------------
 {
-	// Initialise the X-ray renderer
+    // Initialise the X-ray renderer
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
             GL_RGB16F,
             &g_xray_detector,
@@ -235,5 +240,5 @@ void loadXRaySimulator()
 void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
-	std::cerr << "GLFW error: " << description << std::endl;
+    std::cerr << "GLFW error: " << description << std::endl;
 }

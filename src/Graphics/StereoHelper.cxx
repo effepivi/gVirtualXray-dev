@@ -63,12 +63,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #ifndef GVXR_STEREO_HELPER_H

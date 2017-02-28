@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_MATERIAL_H
-#define GVXR_MATERIAL_H
+#ifndef __Material_h
+#define __Material_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Material.h
+*   @file       Material.h
 *
-*	@brief		Class to handle a material.
+*   @brief      Class to handle a material.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		21/10/2014
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,23 +56,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	namespace
+//  Include
+//******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+
+//******************************************************************************
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	Material
-*	@brief	Material is a class to handle materials.
+*   @class  Material
+*   @brief  Material is a class to handle materials.
 */
 //==============================================================================
 class Material
@@ -80,38 +88,38 @@ class Material
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    //--------------------------------------------------------------------------
     Material();
 
 
-	//--------------------------------------------------------------------------
-	///	Copy constructor.
-	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    /// Copy constructor.
+    //--------------------------------------------------------------------------
     Material(const Material& aMaterial);
 
 
-	//--------------------------------------------------------------------------
-	///	Destructor.
-	//--------------------------------------------------------------------------
-	~Material();
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    ~Material();
 
 
-	//--------------------------------------------------------------------------
-	///	Copy operator.
-	//--------------------------------------------------------------------------
-	Material& operator=(const Material& aMaterial);
+    //--------------------------------------------------------------------------
+    /// Copy operator.
+    //--------------------------------------------------------------------------
+    Material& operator=(const Material& aMaterial);
 
 
     //--------------------------------------------------------------------------
     /// Set the ambient colour.
     /**
-    *   @param aRedChannel      red channel of the colour
-    *   @param aGreenChannel    green channel of the colour
-    *   @param aBlueChannel     blue channel of the colour
-    *   @param aAlphaChannel    alpha channel of the colour
-    */
+     *  @param aRedChannel:     red channel of the colour
+     *  @param aGreenChannel:   green channel of the colour
+     *  @param aBlueChannel:    blue channel of the colour
+     *  @param aAlphaChannel:   alpha channel of the colour
+     */
     //--------------------------------------------------------------------------
     void setAmbientColour(float aRedChannel,
             float aGreenChannel,
@@ -122,11 +130,11 @@ public:
     //--------------------------------------------------------------------------
     /// Set the diffuse colour.
     /**
-    *   @param aRedChannel      red channel of the colour
-    *   @param aGreenChannel    green channel of the colour
-    *   @param aBlueChannel     blue channel of the colour
-    *   @param aAlphaChannel    alpha channel of the colour
-    */
+     *  @param aRedChannel:     red channel of the colour
+     *  @param aGreenChannel:   green channel of the colour
+     *  @param aBlueChannel:    blue channel of the colour
+     *  @param aAlphaChannel:   alpha channel of the colour
+     */
     //--------------------------------------------------------------------------
     void setDiffuseColour(float aRedChannel,
             float aGreenChannel,
@@ -137,11 +145,11 @@ public:
     //--------------------------------------------------------------------------
     /// Set the specular colour.
     /**
-    *   @param aRedChannel      red channel of the colour
-    *   @param aGreenChannel    green channel of the colour
-    *   @param aBlueChannel     blue channel of the colour
-    *   @param aAlphaChannel    alpha channel of the colour
-    */
+     *  @param aRedChannel:     red channel of the colour
+     *  @param aGreenChannel:   green channel of the colour
+     *  @param aBlueChannel:    blue channel of the colour
+     *  @param aAlphaChannel:   alpha channel of the colour
+     */
     //--------------------------------------------------------------------------
     void setSpecularColour(float aRedChannel,
             float aGreenChannel,
@@ -152,8 +160,8 @@ public:
     //--------------------------------------------------------------------------
     /// Set the shininess of the material.
     /**
-    *   @param aShininessValue  amount of shininess
-    */
+     *  @param aShininessValue: amount of shininess
+     */
     //--------------------------------------------------------------------------
     void setShininess(float aShininessValue);
 
@@ -161,8 +169,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the ambient colour.
     /**
-    *   @return the ambient colour
-    */
+     *  @return the ambient colour
+     */
     //--------------------------------------------------------------------------
     const float* getAmbientColour() const;
 
@@ -170,8 +178,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the diffuse colour.
     /**
-    *   @return the diffuse colour
-    */
+     *  @return the diffuse colour
+     */
     //--------------------------------------------------------------------------
     const float* getDiffuseColour() const;
 
@@ -179,8 +187,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the specular colour.
     /**
-    *   @return the specular colour
-    */
+     *  @return the specular colour
+     */
     //--------------------------------------------------------------------------
     const float* getSpecularColour() const;
 
@@ -188,8 +196,8 @@ public:
     //--------------------------------------------------------------------------
     /// Accessor on the shininess of the material.
     /**
-    *   @return the amount of shininess
-    */
+     *  @return the amount of shininess
+     */
     //--------------------------------------------------------------------------
     float getShininess() const;
 
@@ -220,5 +228,4 @@ protected:
 #include "Material.inl"
 
 
-#endif // GVXR_MATERIAL_H
-
+#endif // __Material_h

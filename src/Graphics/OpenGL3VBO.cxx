@@ -63,16 +63,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#else
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
+#ifdef HAS_GLEW
+#include "GL/glew.h"
 #endif
+
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <iostream>
@@ -92,6 +88,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
+  //Define this somewhere in your header file
+  #define BUFFER_OFFSET(i) ((void*)(i))
+
 //----------------------------------------------
 OpenGL3VBO::OpenGL3VBO():
 //----------------------------------------------
@@ -102,7 +101,8 @@ OpenGL3VBO::OpenGL3VBO():
 	m_id_set[VERTEX_SET_ID]     = 0;
 	m_id_set[TEXT_COORD_SET_ID] = 0;
 	m_id_set[NORMAL_SET_ID]     = 0;
-	m_id_set[INDEX_SET_ID]      = 0;
+    m_id_set[ADDITIONAL_DATA_ID]= 0;
+    m_id_set[INDEX_SET_ID]      = 0;
 }
 
 
@@ -134,13 +134,18 @@ void OpenGL3VBO::display() const
 		if (!m_number_of_indices)
 		{
 			glDrawArrays(m_primitive_type, 0, m_number_of_vertices);
+
+		    // Check the OpenGL error status
+		    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
 		else
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
-			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, 0);
+			glDrawElements(m_primitive_type, m_number_of_indices, m_index_data_type, BUFFER_OFFSET(0));
+
+		    // Check the OpenGL error status
+		    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 		}
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		// Unbind the VAO
 		glBindVertexArray(0);
@@ -157,16 +162,26 @@ void OpenGL3VBO::display() const
 void OpenGL3VBO::setVertexData(int aPrimitiveType,
                                const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* vertices,
                                const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
-                               const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates)
+                               const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates,
+							   const unsigned int aNumberOfAdditionalData,	   unsigned int aNumberOfCompontentsPerAdditionalData, int anAdditionalDataType, const void* apAdditionalData)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	// Reset the internal data
 	reset();
 
+	//Set the type to GL_NONE if use the default value (0)
+	if(aVertexDataType == 0) aVertexDataType = GL_NONE;
+	if(aNormalDataType == 0) aNormalDataType = GL_NONE;
+	if(aCoordDataType == 0) aCoordDataType = GL_NONE;
+	if(anAdditionalDataType == 0) anAdditionalDataType = GL_NONE;
+
 	// Initialise class members
 	m_primitive_type = aPrimitiveType;
 	m_number_of_normals  = aNumberOfNormals;
     m_number_of_compontents_per_normal = aNumberOfCompontentsPerNormal;
+
+    m_number_of_additional_data  = aNumberOfAdditionalData;
+    m_number_of_compontents_per_additional_data = aNumberOfCompontentsPerAdditionalData;
 
 	m_number_of_vertices = aNumberOfVertices;
     m_number_of_compontents_per_vertex = aNumberOfCompontentsPerVertex;
@@ -175,10 +190,12 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 	m_number_of_compontents_per_texture_coord = aNumberOfCompontentsPerCoord;
 
 	m_normal_size             = m_number_of_normals             * aNumberOfCompontentsPerNormal;
+	m_additional_data_size    = m_number_of_additional_data     * aNumberOfCompontentsPerAdditionalData;
 	m_texture_coordinate_size = m_number_of_texture_coordinates * aNumberOfCompontentsPerCoord;
 	m_vertex_size             = m_number_of_vertices            * aNumberOfCompontentsPerVertex;
 
 	m_normal_data_type = aNormalDataType;
+	m_additional_data_type = anAdditionalDataType;
 	m_texture_coordinate_data_type = aCoordDataType;
 	m_vertex_data_type = aVertexDataType;
 
@@ -194,6 +211,24 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 
 	case GL_NONE:
 		m_normal_size = 0;
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+
+	switch (m_additional_data_type)
+	{
+	case GL_FLOAT:
+		m_additional_data_size *= sizeof(GLfloat);
+		break;
+
+	case GL_DOUBLE:
+		m_additional_data_size *= sizeof(GLdouble);
+		break;
+
+	case GL_NONE:
+		m_additional_data_size = 0;
 		break;
 
 	default:
@@ -267,12 +302,41 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 		glEnableVertexAttribArray(2);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		glVertexAttribPointer(2, m_number_of_compontents_per_vertex, m_normal_data_type, GL_FALSE, 0, 0);
+		glVertexAttribPointer(2, m_number_of_compontents_per_normal, m_normal_data_type, GL_FALSE, 0, 0);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 	else
 	{
 		glDisableVertexAttribArray(2);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// There is additional data
+	if (apAdditionalData)
+	{
+		// Create the VBO
+		if (!m_id_set[ADDITIONAL_DATA_ID])
+		{
+			glGenBuffers(1, &m_id_set[ADDITIONAL_DATA_ID]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		// Bind the new VBO
+		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[ADDITIONAL_DATA_ID]);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glBufferData(GL_ARRAY_BUFFER, m_additional_data_size, apAdditionalData, m_storage_type);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glEnableVertexAttribArray(3);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(3, m_number_of_compontents_per_additional_data, m_additional_data_type, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(3);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -361,6 +425,16 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 		glDisableVertexAttribArray(2);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	if (m_id_set[ADDITIONAL_DATA_ID] != 0 && m_additional_data_size == 0)
+	{
+		glDeleteBuffers(1, &m_id_set[ADDITIONAL_DATA_ID]);
+		m_id_set[ADDITIONAL_DATA_ID] = 0;
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glDisableVertexAttribArray(3);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 

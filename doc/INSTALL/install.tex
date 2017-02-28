@@ -31,7 +31,7 @@
 
 \title{gVirtualXRay -- Installation Guide}
 \author{Dr Franck P. Vidal}
-\date{17\textsuperscript{th} December 2014}
+\date{31\textsuperscript{th} August 2016}
 
 \begin{document}
  \sloppy
@@ -54,6 +54,120 @@
 \listoftables
 
 \newpage
+
+
+\section{Requirements}
+
+	We rely on the \href{http://www.cmake.org/}{CMake} toolchain. 
+	To make life easy, we have decided to automatically download and compile most of the software libraries in the build tree. 
+	It is optional, of course, in case you want to use your system's libraries. 
+	The default behaviour is to let CMake download and install the dependencies.
+	The list of tools and libraries required to build gVirtualXRay is summarised in Table~\ref{tab:requiredToolsAndLibraries}.
+
+\begin{table}[tbhp]
+	\begin{center}
+		\caption{\label{tab:requiredToolsAndLibraries} Tools and libraries required to build gVirtualXRay. Components marked with (*) cannot be installed automatically.} 
+		\begin{small}
+			\begin{tabular}{|c|c|c|c|p{0.3\linewidth}|}
+				\hline
+				\textbf{Name} &\textbf{Component} & \textbf{Platform} & \textbf{Status} & \textbf{URL}\\
+				\hline
+				\hline
+				C++ compiler  & Development tool & Linux, Mac OS X \& Windows & Required & Platform dependant\\
+				\hline
+				CMake (*)  & Development tool & Linux, Mac OS X \& Windows & Required & \url{http://www.cmake.org/}\\
+				\hline
+				OpenGL (*) & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.opengl.org/}\\
+				\hline
+				\Acrshort{Gzip} & System tool & Linux, Mac OS X \& Windows & Required & \url{http://www.gzip.org/}\\
+				\hline
+				\Acrshort{GLEW} & Library & Linux, Mac OS X \& Windows & Required & \url{http://glew.sourceforge.net/}\\
+				\hline
+				Zlib & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.zlib.net/}\\
+				\hline
+				FreeType & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.freetype.org/}\\
+				\hline
+				\Acrshort{GCDM} & Library & Linux, Mac OS X \& Windows & Optional & \url{http://gdcm.sourceforge.net/}\\
+				\hline
+				LibTIFF & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.libtiff.org/}\\
+				\hline
+				XCOM & Database & Linux, Mac OS X \& Windows & Optional & \url{http://physics.nist.gov/PhysRefData/Xcom/Text/download.html}\\
+				\hline
+				GLFW & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.glfw.org/}\\
+				\hline
+				GLUT & Library & Linux, Mac OS X \& Windows & Optional & \url{http://freeglut.sourceforge.net/}\\
+				\hline
+				\Acrshort{FLTK} & Library & Linux, Mac OS X \& Windows & Optional & \url{http://www.fltk.org/}\\
+				\hline
+				Qt4 (*) & Library & Linux, Mac OS X \& Windows & Optional & \url{https://www.qt.io/}\\
+				
+				Qt4 COMPONENTS QtCore QtGui QtOpenGL
+				\hline
+				Qt5 (*) & Library & Linux, Mac OS X \& Windows & Optional & \url{https://www.qt.io/}\\
+				
+				find_package(Qt5Gui)
+find_package(Qt5Widgets)
+find_package(Qt5OpenGL)
+
+				
+				\hline
+				Doxygen (*) & Development tool & Linux, Mac OS X \& Windows & Optional & \url{http://www.doxygen.org/}\\
+				\hline
+			\end{tabular}
+		\end{small}
+	\end{center}
+\end{table}
+
+	\subsection{Linux}
+
+To my knowledge, g++, CMake, make, gzip Qt4, Qt5 and Doxygen are official packages on every Linux system. 
+The version I have tested are:
+
+\begin{itemize}
+\item Linux system: OpenSUSE Leap 42.1, x86_64
+\item g++: 4.8.5
+\item CMake: 3.3.2
+\item make: GNU Make 4.0
+\item gzip: 1.6
+\item Qt4: 4.8.6
+\item Qt5: 5.5.1
+\item Doxygen: 1.8.6
+\end{itemize}
+
+
+    \subsection{Windows}
+
+
+    \subsection{Mac OS X}
+
+\item Mac OS X system: Mountain Lion, 10.8.5, x86_64
+\item g++: 4.8.3 \& 4.9.0 (from Homebrew)
+\item clang: Apple LLVM version 5.1
+\item CMake: 3.6.1
+\item make: GNU Make 3.81
+\item gzip: 1.3.12
+\item Qt4: 4.8.7 (from Homebrew)
+\item Qt5: 5.6.1 (from Homebrew)
+\item Doxygen: 1.8.11 (from Homebrew)
+\end{itemize}
+
+I have not been able to let CMake download and install Freeglut 3.0.0 on Mac OS X. 
+There is a well known linkage error. 
+If you want to have the tutorials and the examples that make use of Glut, it needs to be via the system's library. 
+
+%    
+%\section{Compiling gVirtualXRay}
+%
+%    \subsection{CMake options}
+
+
+
+
+
+
+
+
+
 \section{Requirements}
 
 The list of tools and libraries required to build gVirtualXRay is summarised in Table~\ref{tab:requiredToolsAndLibraries}.
@@ -77,8 +191,8 @@ To build the library, you will need:
  \item \href{http://www.zlib.net/}{\includegraphics[width=2cm]{Zlib_3D_green}}~\cite{zlib}\\
  The Zlib is used to decompress the data at run-time (the data compressed using \Gls{Gzip}).
 
-  \item \href{http://www.boost.org/}{\includegraphics[width=2cm]{Boost}}~\cite{boost}\\
- It is only needed for its implementation of pointers (\verb+boost::scoped_ptr+).
+  %\item \href{http://www.boost.org/}{\includegraphics[width=2cm]{Boost}}~\cite{boost}\\
+% It is only needed for its implementation of pointers (\verb+boost::scoped_ptr+).
 
   \item \href{http://www.freetype.org/}{FreeType2}~\cite{freetype}\\
  It is used to display text.
@@ -94,31 +208,6 @@ To build the demos and tutorials, you will need:
  \item \href{http://www.glfw.org/}{GLFW}~\cite{glfw} is also used to create windows. \Gls{GLUT} does not support OpenGL 3.x or above, GLFW does. \\
 \end{itemize}
 
-\begin{table}[tbhp]
-	\begin{center}
-		\caption{\label{tab:requiredToolsAndLibraries} Tools and libraries required to build gVirtualXRay.} 
-		\begin{small}
-			\begin{tabular}{|c|c|c|c|p{0.3\linewidth}|}
-				\hline
-				\textbf{Name} & \textbf{Component} & \textbf{Platform} & \textbf{Status} & \textbf{URL}\\
-				\hline
-				\hline
-				CMake & Development tool & Linux, Mac OS X \& Windows & Required & \url{http://www.cmake.org/}\\
-				\hline
-				\Acrshort{Gzip} & System tool & Linux, Mac OS X \& Windows & Required & \url{http://www.gzip.org/}\\
-				\hline
-				OpenGL & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.opengl.org/}\\
-				\hline
-				\Acrshort{GLEW} & Library & Linux, Mac OS X \& Windows & Required & \url{http://glew.sourceforge.net/}\\
-				\hline
-				Zlib & Library & Linux, Mac OS X \& Windows & Required & \url{http://www.zlib.net/}\\
-				\hline
-				Boost & Library & Mac OS X & Required & \url{http://www.boost.org/}\\
-				\hline
-			\end{tabular}
-		\end{small}
-	\end{center}
-\end{table}
 
 
 \section{Options}

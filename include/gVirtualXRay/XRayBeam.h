@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,23 +32,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_XRAY_BEAM_H
-#define GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
+#define __XRayBeam_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		XRayBeam.h
+*   @file       XRayBeam.h
 *
-*	@brief		Class to manage X-Ray beams. The beam spectrum is discretised
-*				into energy channels.
+*   @brief      Class to manage X-Ray beams. The beam spectrum is discretised
+*               into energy channels.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		29/11/2013
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -57,39 +57,43 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <vector>
 #include <iostream>
 
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_SPECTRUM_RECORD_H
+#ifndef __SpectrumRecord_h
 #include "gVirtualXRay/SpectrumRecord.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	XRayBeam
-*	@brief	XRayBeam is a class to handle the X-Ray beam.
-*			The beam spectrum is discretised into energy channels.
+*   @class  XRayBeam
+*   @brief  XRayBeam is a class to handle the X-Ray beam.
+*           The beam spectrum is discretised into energy channels.
 */
 //==============================================================================
 class XRayBeam
@@ -97,103 +101,106 @@ class XRayBeam
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	//--------------------------------------------------------------------------
-	XRayBeam();
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    //--------------------------------------------------------------------------
+    XRayBeam();
 
 
-	//--------------------------------------------------------------------------
-	///	Remove all the energy channels from the beam.
-	//--------------------------------------------------------------------------
-	void clear();
+    //--------------------------------------------------------------------------
+    /// Remove all the energy channels from the beam.
+    //--------------------------------------------------------------------------
+    void clear();
 
 
-	//--------------------------------------------------------------------------
-	///	Add an energy channel to the beam.
-	/**
-	*	@param aNumberOfPhotons:	the number of photons in this energy channel
-	*	@param anIncidentEnergy:	the energy of the photons in this energy channel
-	*/
-	//--------------------------------------------------------------------------
-	void addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
-            const RATIONAL_NUMBER& anIncidentEnergy);
+    //--------------------------------------------------------------------------
+    /// Add an energy channel to the beam.
+    /**
+     *  @param aNumberOfPhotons:    the number of photons in this energy channel
+     *  @param anIncidentEnergy:    the energy of the photons in
+     *                              this energy channel
+     */
+    //--------------------------------------------------------------------------
+    void addChannel(const RATIONAL_NUMBER& aNumberOfPhotons,
+                    const RATIONAL_NUMBER& anIncidentEnergy);
 
 
-	//--------------------------------------------------------------------------
-	///	Initialise the X-ray beam specturm with a polychromatic spectrum.
-	/**
-	*	@param aFileName:	name of the file that stores the spectrum
-	*	@param aUnit:	unit in which the data is stored, e.g. meV, eV, keV, or MeV
-	*	@param aMergeChannelFlag:	the number of records to store in a single bin (default value: 1)
-	*/
-	//--------------------------------------------------------------------------
-	void initialise(const char* aFileName,
-			const RATIONAL_NUMBER& aUnit,
-			unsigned int aMergeChannelFlag = 1);
+    //--------------------------------------------------------------------------
+    /// Initialise the X-ray beam specturm with a polychromatic spectrum.
+    /**
+     *  @param aFileName:           name of the file that stores the spectrum
+     *  @param aUnit:               unit in which the data is stored,
+     *                              e.g. meV, eV, keV, or MeV
+     *  @param aMergeChannelFlag:   the number of records to store in a single
+     *                              bin (default value: 1)
+     */
+    //--------------------------------------------------------------------------
+    void initialise(const char* aFileName,
+                    const RATIONAL_NUMBER& aUnit,
+                    unsigned int aMergeChannelFlag = 1);
 
 
-	//--------------------------------------------------------------------------
-	///	Initialise the X-ray beam specturm with a monochromatic spectrum.
-	/**
-	*	@param anIncidentEnergy:	the energy of these photons
-	*/
-	//--------------------------------------------------------------------------
-	void initialise(const RATIONAL_NUMBER& anIncidentEnergy);
+    //--------------------------------------------------------------------------
+    /// Initialise the X-ray beam specturm with a monochromatic spectrum.
+    /**
+     *  @param anIncidentEnergy:    the energy of these photons
+     */
+    //--------------------------------------------------------------------------
+    void initialise(const RATIONAL_NUMBER& anIncidentEnergy);
 
 
-	//--------------------------------------------------------------------------
-	///	Normalise the number of photons so that the total incident energy is 1.0.
-	//--------------------------------------------------------------------------
-	void normalise();
+    //--------------------------------------------------------------------------
+    /// Normalise the number of photons so that the total incident energy is 1.0.
+    //--------------------------------------------------------------------------
+    void normalise();
 
 
-	//--------------------------------------------------------------------------
-	///	Set a threshold to discard energy bins with a tiny number of photons.
-	/**
-	*	@param aThreshold:	the threshold
-	*/
-	//--------------------------------------------------------------------------
-	void setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aThreshold);
+    //--------------------------------------------------------------------------
+    /// Set a threshold to discard energy bins with a tiny number of photons.
+    /**
+     *  @param aThreshold:  the threshold
+     */
+    //--------------------------------------------------------------------------
+    void setNumberOfPhotonsLowerThreshold(const RATIONAL_NUMBER& aThreshold);
 
-	
-	//--------------------------------------------------------------------------
-	///	Accessor on the number of bins in the spectrum.
-	/**
-	*	@return the number of energy bins in the spectrum
-	*/
-	//--------------------------------------------------------------------------
-	unsigned int getEnergyChannelNumber() const;
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of bins in the spectrum.
+    /**
+     *  @return the number of energy bins in the spectrum
+     */
+    //--------------------------------------------------------------------------
+    unsigned int getEnergyChannelNumber() const;
 
-	
-	//--------------------------------------------------------------------------
-	///	Accessor on a given energy bin.
-	/**
-	*	@param anID:	the ID of the bin
-	*	@return the energy bin
-	*/
-	//--------------------------------------------------------------------------
-	const SpectrumRecord& getEnergyChannel(unsigned int anID) const;
-	
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on a given energy bin.
+    /**
+     *  @param anID:    the ID of the bin
+     *  @return the energy bin
+     */
+    //--------------------------------------------------------------------------
+    const SpectrumRecord& getEnergyChannel(unsigned int anID) const;
+    
 
     //--------------------------------------------------------------------------
     /// Accessor on a total energy of the beam.
     /**
-    *   @return the total energy
-    */
+     *  @return the total energy
+     */
     //--------------------------------------------------------------------------
-	RATIONAL_NUMBER getTotalEnergy() const;
+    RATIONAL_NUMBER getTotalEnergy() const;
 
 
 //******************************************************************************
 protected:
-	/// Set of photon bins
-	std::vector<SpectrumRecord> m_beam_spectrum;
+    /// Set of photon bins
+    std::vector<SpectrumRecord> m_beam_spectrum;
 
 
-	/// All the photon bins with a number of photons lower than
-	/// m_epsilon_number_of_photons will be ignored
-	RATIONAL_NUMBER m_number_of_photons_lower_threshold;
+    /// All the photon bins with a number of photons lower than
+    /// m_epsilon_number_of_photons will be ignored
+    RATIONAL_NUMBER m_number_of_photons_lower_threshold;
 };
 
 
@@ -204,5 +211,4 @@ protected:
 #include "XRayBeam.inl"
 
 
-#endif // XRAY_BEAM_H
-
+#endif // __XRayBeam_h

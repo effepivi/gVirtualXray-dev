@@ -1,0 +1,11 @@
+version "1.1.0"
+package "gVirtualXRay"
+purpose "Command line tool to compute combine a series of 2D slices into a 3D volume."
+description "See http://gvirtualxray.sourceforge.net/"
+versiontext "(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), http://www.fpvidal.net/, Nov 2016, 2016, version 1.1, BSD 3-Clause License"
+
+# Options
+option "pattern"      p "Pattern using the printf format" required string
+option "first_slice"  f "first slice of the volume"       required int
+option "last_slice"   l "last slice of the volume"        required int
+option "output"       o "Output file name"                required string

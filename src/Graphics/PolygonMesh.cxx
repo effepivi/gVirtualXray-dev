@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,33 +35,44 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		PolygonMesh.cxx
+*   @file       PolygonMesh.cxx
 *
-*	@brief		Class to handle polygon (triangles) meshes.
+*   @brief      Class to handle polygon (triangles) meshes.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		07/11/2013
+*   @date       24/08/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @todo       Make it possible to merge vertices if an array of indices exists
+*               Convert triangle mesh into arbitrary polygon mesh
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*   License
+*   BSD 3-Clause License.
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
+
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <map>
 #include <fstream>
 #include <cstring>
@@ -69,63 +80,59 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/stat.h>
 //#include <unistd.h>
 
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#endif
-
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef __FileDoesNotExistException_h
 #include "gVirtualXRay/FileDoesNotExistException.h"
+#endif
+
+#ifndef __OutOfMemoryException_h
+#include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Constant variables
+//  Constant variables
 //******************************************************************************
 
 
 //******************************************************************************
-//	Global variables
+//  Global variables
 //******************************************************************************
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
 
 
 //-----------------------------------
 PolygonMesh::PolygonMesh():
 //-----------------------------------
-		m_use_hounsfield_value(true),
-		m_hounsfield_value(0),
-		m_attenuation_coefficient(0),
-		m_bounding_box_diagonal(0),
-		m_p_vertex_set(0),
-		m_p_index_set(0),
-		m_number_of_indices(0),
-		m_number_of_vertices(0),
-		m_index_data_type(GL_NONE),
-		m_vertex_data_type(GL_NONE),
-		m_polygon_type(GL_NONE),
-		m_external_data_flag(false)
+        m_use_hounsfield_value(true),
+        m_hounsfield_value(0),
+        m_attenuation_coefficient(0),
+        m_bounding_box_diagonal(0),
+        m_p_vertex_set(0),
+        m_p_index_set(0),
+        m_number_of_indices(0),
+        m_number_of_vertices(0),
+        m_index_data_type(GL_NONE),
+        m_vertex_data_type(GL_NONE),
+        m_polygon_type(GL_NONE),
+        m_external_data_flag(false)
 //-----------------------------------
 {
 }
@@ -134,41 +141,35 @@ PolygonMesh::PolygonMesh():
 //------------------------------------------------------------------------
 PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
 //------------------------------------------------------------------------
-		m_filename(aPolygonMesh.m_filename),
-		m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
-		m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
-		m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
-		m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
-		m_min_corner(aPolygonMesh.m_min_corner),
-		m_max_corner(aPolygonMesh.m_max_corner),
-		m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
-		m_p_vertex_normal_set(aPolygonMesh.m_p_vertex_normal_set),
-		m_number_of_indices(aPolygonMesh.m_number_of_indices),
-		m_number_of_vertices(aPolygonMesh.m_number_of_vertices),
-		m_index_data_type(aPolygonMesh.m_index_data_type),
-		m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
-		m_polygon_type(aPolygonMesh.m_polygon_type),
-		m_external_data_flag(aPolygonMesh.m_external_data_flag),
-		m_material(aPolygonMesh.m_material)
+        m_filename(aPolygonMesh.m_filename),
+        m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
+        m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
+        m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
+        m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
+        m_min_corner(aPolygonMesh.m_min_corner),
+        m_max_corner(aPolygonMesh.m_max_corner),
+        m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
+        m_p_vertex_normal_set(aPolygonMesh.m_p_vertex_normal_set),
+        m_p_vertex_set(0),
+        m_p_index_set(0),
+        m_number_of_indices(aPolygonMesh.m_number_of_indices),
+        m_number_of_vertices(aPolygonMesh.m_number_of_vertices),
+        m_index_data_type(aPolygonMesh.m_index_data_type),
+        m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
+        m_polygon_type(aPolygonMesh.m_polygon_type),
+        m_external_data_flag(aPolygonMesh.m_external_data_flag),
+        m_material(aPolygonMesh.m_material)
 //------------------------------------------------------------------------
 {
     if (aPolygonMesh.m_p_vertex_set)
-    {
+        {
         copyVertexSet(aPolygonMesh.m_p_vertex_set);
-    }
-    else
-    {
-        m_p_vertex_set = 0;
-    }
+        }
 
     if (aPolygonMesh.m_p_index_set)
-    {
+        {
         copyIndexSet(aPolygonMesh.m_p_index_set);
-    }
-    else
-    {
-        m_p_index_set = 0;
-    }
+        }
 }
 
 
@@ -176,34 +177,44 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
 void PolygonMesh::reset()
 //-----------------------
 {
-	// Reset class members to their default values
-	if (m_vbo.get())
-	{
-	    m_vbo->reset();
-	}
+    // Reset class members to their default values
+    if (m_p_vbo.get())
+        {
+        m_p_vbo->reset();
+        }
 
-	m_use_hounsfield_value = true;
-	m_hounsfield_value = 0;
-	m_attenuation_coefficient = 0;
+    if (m_p_vertex_normal_vbo.get())
+        {
+        m_p_vertex_normal_vbo->reset();
+        }
 
-	m_bounding_box_diagonal = 0;
+    if (m_p_face_normal_vbo.get())
+        {
+        m_p_face_normal_vbo->reset();
+        }
 
-	m_min_corner = VEC3();
-	m_max_corner = VEC3();
+    m_use_hounsfield_value = true;
+    m_hounsfield_value = 0;
+    m_attenuation_coefficient = 0;
 
-	m_p_face_normal_set.clear();
-	m_p_vertex_normal_set.clear();
+    m_bounding_box_diagonal = 0;
 
-	destroyIndexData();
-	destroyVertexData();
+    m_min_corner = VEC3();
+    m_max_corner = VEC3();
 
-	m_number_of_indices  = 0;
-	m_number_of_vertices = 0;
+    m_p_face_normal_set.clear();
+    m_p_vertex_normal_set.clear();
 
-	m_index_data_type = GL_NONE;
-	m_vertex_data_type = GL_NONE;
+    destroyIndexData();
+    destroyVertexData();
 
-	m_external_data_flag = false;
+    m_number_of_indices  = 0;
+    m_number_of_vertices = 0;
+
+    m_index_data_type = GL_NONE;
+    m_vertex_data_type = GL_NONE;
+
+    m_external_data_flag = false;
 }
 
 
@@ -211,34 +222,35 @@ void PolygonMesh::reset()
 void PolygonMesh::display()
 //-------------------------
 {
-	// Create the VBO if needed
-    if (!m_vbo.get())
-    {
-        m_vbo.reset(createVBO());
-    }
+    // Create the VBO if needed
+    if (!m_p_vbo.get())
+        {
+        m_p_vbo.reset(createVBO());
+        }
 
     // Update the VBO if needed
-	if (!m_vbo->isReady())
-	{
-		updateVBO(m_vbo->getBufferUsageHint(), m_polygon_type);
-	}
+	if (!m_p_vbo->isReady() || m_polygon_type != m_p_vbo->getPrimitiveType())
+        {
+        updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
+        }
 
-	// Display the polygon mesh using a VBO
-	if (m_vbo->isReady())
-	{
-		if (m_number_of_vertices)
-		{
-			m_vbo->display();
-		}
-	}
-	// Do not use the VBO
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot create the VBO.");
-	}
+    // Display the polygon mesh using a VBO
+    if (m_p_vbo->isReady())
+        {
+        if (m_number_of_vertices)
+            {
+            m_p_vbo->display();
+            }
+        }
+    // Do not use the VBO
+    else
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot create the VBO.");
+        }
 
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // Check the OpenGL error status
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -246,62 +258,112 @@ void PolygonMesh::display()
 void PolygonMesh::displayWireFrame()
 //----------------------------------
 {
-	// Turn on wireframe mode
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // Turn on wireframe mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	display();
+    display();
 
-	// Turn off wireframe mode
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // Turn off wireframe mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	// Check the OpenGL error status
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // Check the OpenGL error status
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
-//----------------------------------------------------------------------
-void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize) const
-//----------------------------------------------------------------------
+//----------------------------------------------------------------
+void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize)
+//----------------------------------------------------------------
 {
-	// There are as many normals as there are vertices
-	if (getVertexNormalNumber() == m_number_of_vertices)
-	{
-    		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-	}
-	// There are not as many normals as there are vertices
-	else
-	{
-		std::stringstream error_message;
-		error_message << "There are not as many normals (" << getVertexNormalNumber() << ") as there are vertices (" << m_number_of_vertices << ").";
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
+    // There are as many normals as there are vertices
+    if (getVertexNormalNumber() == m_number_of_vertices)
+        {
+        m_p_vertex_normal_vbo->display();
+
+        // Check the OpenGL error status
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+    // There are not as many normals as there are vertices
+    else
+        {
+        std::stringstream error_message;
+        error_message << "There are not as many normals (" <<
+                getVertexNormalNumber() << ") as there are vertices (" <<
+                m_number_of_vertices << ").";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }
 }
 
 
-//------------------------------------------------------------
-void PolygonMesh::displayFaceNormal(GLfloat aNormalSize) const
-//------------------------------------------------------------
+//------------------------------------------------------
+void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
+//------------------------------------------------------
 {
-	// There is an index
-	if (m_p_index_set && m_number_of_indices)
-	{
-    		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-	}
-	// There is no index
-	else
-	{
-		// There are as many normals as there are vertices
-		if (getFaceNormalNumber() == m_number_of_vertices)
-		{
-    		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-		}
-		// There are not as many normals as there are vertices
-		else
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "There are not as many normals as there are vertices.");
-		}
-	}
+    std::vector<float> p_normal_set;
+
+    if (!m_p_face_normal_vbo.get())
+        {
+        m_p_face_normal_vbo.reset(new PolygonMesh());
+        }
+
+    // There is an index
+    if (m_p_index_set && m_number_of_indices)
+        {
+        for (unsigned int i(0); i < m_number_of_indices; ++i)
+            {
+            unsigned int index(getIndex(i));
+            VEC3 vertex(getVertex(index));
+            VEC3 normal(vertex + getFaceNormal(index) * aNormalSize);
+
+            p_normal_set.push_back(vertex.getX());
+            p_normal_set.push_back(vertex.getY());
+            p_normal_set.push_back(vertex.getZ());
+
+            p_normal_set.push_back(normal.getX());
+            p_normal_set.push_back(normal.getY());
+            p_normal_set.push_back(normal.getZ());
+            }
+        }
+    // There is no index
+    else
+        {
+        // There are as many normals as there are vertices
+        if (getFaceNormalNumber() == m_number_of_vertices)
+            {
+            for (unsigned int i(0); i < m_number_of_vertices; ++i)
+                {
+                VEC3 vertex(getVertex(i));
+                VEC3 normal(vertex + getFaceNormal(i) * aNormalSize);
+
+                p_normal_set.push_back(vertex.getX());
+                p_normal_set.push_back(vertex.getY());
+                p_normal_set.push_back(vertex.getZ());
+
+                p_normal_set.push_back(normal.getX());
+                p_normal_set.push_back(normal.getY());
+                p_normal_set.push_back(normal.getZ());
+                }
+            }
+        // There are not as many normals as there are vertices
+        else
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "There are not as many normals as there are vertices.");
+            }
+        }
+
+    m_p_face_normal_vbo->setInternalData(GL_LINES,
+            &p_normal_set[0],
+            p_normal_set.size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            true,
+            GL_STATIC_DRAW);
+
+    m_p_face_normal_vbo->display();
 }
 
 
@@ -309,33 +371,34 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize) const
 unsigned int PolygonMesh::getFaceNumber() const
 //---------------------------------------------
 {
-	int number_vertex_per_face(0);
+    int number_vertex_per_face(0);
 
-	switch (m_polygon_type)
-	{
-		case GL_TRIANGLES:
-			number_vertex_per_face = 3;
-			break;
+    switch (m_polygon_type)
+        {
+        case GL_TRIANGLES:
+            number_vertex_per_face = 3;
+            break;
 
-		case GL_LINES:
-			number_vertex_per_face = 2;
-			break;
+        case GL_LINES:
+            number_vertex_per_face = 2;
+            break;
 
-	default:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid polygon type.");
-	}
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid polygon type.");
+        }
 
-	// Return the number of faces
-	if (m_p_index_set && m_number_of_indices)
-	{
-		// There are 3 or 4 indices per face
-		return (m_number_of_indices / number_vertex_per_face);
-	}
-	else
-	{
-		// There are 3 or 4 vertices per face
-		return (m_number_of_vertices / number_vertex_per_face);
-	}
+    // Return the number of faces
+    if (m_p_index_set && m_number_of_indices)
+        {
+        // There are 3 or 4 indices per face
+        return (m_number_of_indices / number_vertex_per_face);
+        }
+    else
+        {
+        // There are 3 or 4 vertices per face
+        return (m_number_of_vertices / number_vertex_per_face);
+        }
 }
 
 
@@ -343,188 +406,207 @@ unsigned int PolygonMesh::getFaceNumber() const
 unsigned int PolygonMesh::getTriangleNumber() const
 //-------------------------------------------------
 {
-	switch (m_polygon_type)
-	{
-	case GL_TRIANGLES:
-		// Return the number of faces
-		if (m_p_index_set && m_number_of_indices)
-		{
-			// There are 3 indices per triangle
-			return (m_number_of_indices / 3);
-		}
-		else
-		{
-			// There are 3 vertices per triangle
-			return (m_number_of_vertices / 3);
-		}
+    switch (m_polygon_type)
+        {
+        case GL_TRIANGLES:
+            // Return the number of faces
+            if (m_p_index_set && m_number_of_indices)
+                {
+                // There are 3 indices per triangle
+                return (m_number_of_indices / 3);
+                }
+            else
+                {
+                // There are 3 vertices per triangle
+                return (m_number_of_vertices / 3);
+                }
 
-	case GL_LINES:
-		// Return the number of faces
-		if (m_p_index_set && m_number_of_indices)
-		{
-			// There are 2 indices per line
-			return (m_number_of_indices / 2);
-		}
-		else
-		{
-			// There are 2 vertices per line
-			return (m_number_of_vertices / 2);
-		}
+        case GL_LINES:
+            // Return the number of faces
+            if (m_p_index_set && m_number_of_indices)
+                {
+                // There are 2 indices per line
+                return (m_number_of_indices / 2);
+                }
+            else
+                {
+                // There are 2 vertices per line
+                return (m_number_of_vertices / 2);
+                }
 
-	default:
-		return (0);
-	}
+        default:
+            return (0);
+        }
 }
 
 
 //---------------------------------------------------------
 void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
-							  bool anAutoComputeNormalFlag,
-							  bool aPrintDebugInfoFlag,
-							  bool aCreateVBOFlag,
-							  RATIONAL_NUMBER aScale,
-							  int aBufferUsageHing)
+                              bool anAutoComputeNormalFlag,
+                              bool aPrintDebugInfoFlag,
+                              bool aCreateVBOFlag,
+                              RATIONAL_NUMBER aScale,
+                              int aBufferUsageHing)
 //---------------------------------------------------------
 {
-	// Reset the data
-	reset();
-	
-	// Open the file in reading more
-    std::ifstream input_stream(m_filename.c_str(), std::ios::in | std::ios::binary);
+    // Reset the data
+    reset();
 
-	// The file is not open
-	if (!input_stream.is_open())
-	{
-		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, m_filename);
-	}
+    // Open the file in reading more
+    std::ifstream input_stream(m_filename.c_str(),
+            std::ios::in | std::ios::binary);
 
-	char* p_data(0);
+    // The file is not open
+    if (!input_stream.is_open())
+        {
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__,
+                m_filename);
+        }
+
+    char* p_data(0);
 
     struct stat stat_buf;
     int rc = stat(m_filename.c_str(), &stat_buf);
 
     if (rc != 0)
-    {
-		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, m_filename);
-    }
+        {
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__,
+                m_filename);
+        }
 
     p_data = new char[stat_buf.st_size];
 
     input_stream.read(p_data, stat_buf.st_size);
 
-	// Load the data
-	loadSTLDataFromStream(p_data,
-			aMoveToCentreFlag,
-			anAutoComputeNormalFlag,
-			aPrintDebugInfoFlag,
-			aCreateVBOFlag,
-			aScale,
-			aBufferUsageHing);
+    // Load the data
+    loadSTLDataFromStream(p_data,
+            aMoveToCentreFlag,
+            anAutoComputeNormalFlag,
+            aPrintDebugInfoFlag,
+            aCreateVBOFlag,
+            aScale,
+            aBufferUsageHing);
 
-	delete [] p_data;
+    delete [] p_data;
 
-	// Close the STL file
-	input_stream.close();
+    // Close the STL file
+    input_stream.close();
 }
 
 
 //------------------------------------------------------------------
 void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
-										bool aMoveToCentreFlag,
-										bool anAutoComputeNormalFlag,
-										bool aPrintDebugInfoFlag,
-										bool aCreateVBOFlag,
-										RATIONAL_NUMBER aScale,
-										int aBufferUsageHing)
+                                        bool aMoveToCentreFlag,
+                                        bool anAutoComputeNormalFlag,
+                                        bool aPrintDebugInfoFlag,
+                                        bool aCreateVBOFlag,
+                                        RATIONAL_NUMBER aScale,
+                                        int aBufferUsageHing)
 //------------------------------------------------------------------
 {
-	// Get the number of triangles in the file header
-	// (the header is made of 80 bytes followded by the number of triangles (4 bytes))
-	char const* p_input_data(apInputData);
-	p_input_data += 80;
+    // Get the number of triangles in the file header
+    // (the header is made of 80 bytes followded by the number of
+    // triangles (4 bytes))
+    char const* p_input_data(apInputData);
+    p_input_data += 80;
 
-	unsigned int read_size(0);
-	int triangle_number;
+    int triangle_number;
 
-	memcpy(&triangle_number, p_input_data, sizeof(int));
-	p_input_data += sizeof(int);
+    memcpy(&triangle_number, p_input_data, sizeof(int));
+    p_input_data += sizeof(int);
 
-	// Set the kind of polygon
-	m_polygon_type = GL_TRIANGLES;
+    // Set the kind of polygon
+    m_polygon_type = GL_TRIANGLES;
 
-	// Set the size of arrays to store the vertices and normal vectors
-	m_external_data_flag = false;
-	m_number_of_vertices = triangle_number * 3;
-	GLfloat* p_vertex_set(new GLfloat[m_number_of_vertices * 3]);
-	m_vertex_data_type = GL_FLOAT;
-	m_p_vertex_set = p_vertex_set;
+    // Set the size of arrays to store the vertices and normal vectors
+    m_external_data_flag = false;
+    m_number_of_vertices = triangle_number * 3;
+    GLfloat* p_vertex_set(new GLfloat[m_number_of_vertices * 3]);
+    m_vertex_data_type = GL_FLOAT;
+    m_p_vertex_set = p_vertex_set;
 
-	m_p_face_normal_set.resize(m_number_of_vertices * 3);
-	m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
+    m_p_face_normal_set.resize(m_number_of_vertices * 3);
+    m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
-	
-	// Read the data
-	for (unsigned int i(0); i < getFaceNumber(); i++)
-	{
-		// Read normals
-		memcpy(&m_p_face_normal_set[9 * i], p_input_data, sizeof(float) * 3);
-		p_input_data += sizeof(float) * 3;
 
-		// Copy one normal per vertex 
-		if (!anAutoComputeNormalFlag)
-		{
-			for (unsigned int k=1; k<3; k++)
-			{
-				m_p_face_normal_set[9 * i + 3 * k]     = m_p_face_normal_set[9 * i];
-				m_p_face_normal_set[9 * i + 3 * k + 1] = m_p_face_normal_set[9 * i + 1];
-				m_p_face_normal_set[9 * i + 3 * k + 2] = m_p_face_normal_set[9 * i + 2];
+    // Read the data
+    for (unsigned int i(0); i < getFaceNumber(); i++)
+        {
+        // Read normals
+        memcpy(&m_p_face_normal_set[9 * i], p_input_data, sizeof(float) * 3);
+        p_input_data += sizeof(float) * 3;
 
-				m_p_vertex_normal_set[9 * i + 3 * k]     = m_p_face_normal_set[9 * i];
-				m_p_vertex_normal_set[9 * i + 3 * k + 1] = m_p_face_normal_set[9 * i + 1];
-				m_p_vertex_normal_set[9 * i + 3 * k + 2] = m_p_face_normal_set[9 * i + 2];
-			}
-		}
+        // Copy one normal per vertex
+        if (!anAutoComputeNormalFlag)
+            {
+            for (unsigned int k=1; k<3; k++)
+                {
+                m_p_face_normal_set[9 * i + 3 * k]     =
+                        m_p_face_normal_set[9 * i];
 
-		// Read vertices
-		memcpy(&p_vertex_set[9 * i], p_input_data, sizeof(float) * 3 * 3);
-		p_input_data += sizeof(float) * 3 * 3;
+                m_p_face_normal_set[9 * i + 3 * k + 1] =
+                        m_p_face_normal_set[9 * i + 1];
 
-		// Skip data
-		p_input_data += 2;
-	}
+                m_p_face_normal_set[9 * i + 3 * k + 2] =
+                        m_p_face_normal_set[9 * i + 2];
 
-	// Compute the normal vectors using the cross product
-	if (anAutoComputeNormalFlag)
-	{
-		computeNormalVectors();
-		normaliseNormals();
-	}
 
-	// Change scale and compute bounding box
-	applyScale(aScale);
-	computeBoundingBox();
+                m_p_vertex_normal_set[9 * i + 3 * k]     =
+                        m_p_face_normal_set[9 * i];
 
-	// Move the object to the center
-	if (aMoveToCentreFlag)
-	{
-		moveToCentre();
-	}
+                m_p_vertex_normal_set[9 * i + 3 * k + 1] =
+                        m_p_face_normal_set[9 * i + 1];
 
-	// Display extra debug info
-	if (aPrintDebugInfoFlag)
-	{
-		std::cout << "file_name:\t" << m_filename <<
-				"\tnb_faces:\t" << getFaceNumber() <<
-				"\tnb_vertices:\t" << m_number_of_vertices <<
-				"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
-										m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
-	}
-	
-	// Create the VBO
-	if (aCreateVBOFlag)
-	{
-		updateVBO(aBufferUsageHing, m_polygon_type);
-	}
+                m_p_vertex_normal_set[9 * i + 3 * k + 2] =
+                        m_p_face_normal_set[9 * i + 2];
+                }
+            }
+
+        // Read vertices
+        memcpy(&p_vertex_set[9 * i], p_input_data, sizeof(float) * 3 * 3);
+        p_input_data += sizeof(float) * 3 * 3;
+
+        // Skip data
+        p_input_data += 2;
+        }
+
+    // Compute the normal vectors using the cross product
+    if (anAutoComputeNormalFlag)
+        {
+        computeNormalVectors();
+        normaliseNormals();
+        }
+
+    // Change scale and compute bounding box
+    applyScale(aScale);
+    computeBoundingBox();
+
+    // Move the object to the center
+    if (aMoveToCentreFlag)
+        {
+        moveToCentre();
+        }
+
+    // Display extra debug info
+    if (aPrintDebugInfoFlag)
+        {
+        std::cout << "file_name:\t" << m_filename <<
+                "\tnb_faces:\t" << getFaceNumber() <<
+                "\tnb_vertices:\t" << m_number_of_vertices <<
+                "\tbounding_box (in cm):\t(" <<
+                        m_min_corner.getX() / cm << ", " <<
+                        m_min_corner.getY() / cm << ", " <<
+                        m_min_corner.getZ() / cm << ")\t(" <<
+                        m_max_corner.getX() / cm << ", " <<
+                        m_max_corner.getY() / cm << ", " <<
+                        m_max_corner.getZ() / cm << ")" << std::endl;
+        }
+
+    // Create the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aBufferUsageHing, m_polygon_type);
+        }
 }
 
 
@@ -532,109 +614,116 @@ void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
 void PolygonMesh::writeSTLFile()
 //------------------------------
 {
-	if (m_polygon_type != GL_TRIANGLES)
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot write a STL file, mesh is not made of triangles.");
-	}
+    if (m_polygon_type != GL_TRIANGLES)
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot write a STL file, mesh is not made of triangles.");
+        }
 
-	if (!getTriangleNumber())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot write a STL file, there is no triangle to save.");
-	}
+    if (!getTriangleNumber())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot write a STL file, there is no triangle to save.");
+        }
 
-	if (!m_filename.size())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot write a STL file, not file name provided.");
-	}
+    if (!m_filename.size())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot write a STL file, not file name provided.");
+        }
 
-	// Open the file in writing more
-    std::ofstream output_stream(m_filename.c_str(), std::ios::out | std::ios::binary);
+    // Open the file in writing more
+    std::ofstream output_stream(m_filename.c_str(),
+            std::ios::out | std::ios::binary);
 
-	// The file is not open
-	if (!output_stream.is_open())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot open the STL file in writing mode");
-	}
+    // The file is not open
+    if (!output_stream.is_open())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot open the STL file in writing mode");
+        }
 
-	// The header is made of 80 bytes
-	char temp(0);
-	for (unsigned int i(0); i < 80; ++i)
-	{
-		output_stream.write(&temp, 1);
-	}
+    // The header is made of 80 bytes
+    char temp(0);
+    for (unsigned int i(0); i < 80; ++i)
+        {
+        output_stream.write(&temp, 1);
+        }
 
-	// The number of triangles
-	int triangle_number(getTriangleNumber());
-	output_stream.write((char*) &triangle_number, sizeof(triangle_number));
+    // The number of triangles
+    int triangle_number(getTriangleNumber());
+    output_stream.write((char*) &triangle_number, sizeof(triangle_number));
 
-	// Read the data
-	float* p_vertex_set((float*) m_p_vertex_set);
+    // Read the data
+    float* p_vertex_set((float*) m_p_vertex_set);
 
-	// Use an index
-	if (getIndexNumber())
-	{
-		for (unsigned int i(0); i < getFaceNumber(); i++)
-		{
-			int id0(getIndex(i * 3 + 0));
-			int id1(getIndex(i * 3 + 1));
-			int id2(getIndex(i * 3 + 2));
+    // Use an index
+    if (getIndexNumber())
+        {
+        for (unsigned int i(0); i < getFaceNumber(); i++)
+            {
+            int id0(getIndex(i * 3 + 0));
+            int id1(getIndex(i * 3 + 1));
+            int id2(getIndex(i * 3 + 2));
 
-			VEC3 v0(getVertex(id0));
-			VEC3 v1(getVertex(id1));
-			VEC3 v2(getVertex(id2));
+            VEC3 v0(getVertex(id0));
+            VEC3 v1(getVertex(id1));
+            VEC3 v2(getVertex(id2));
 
-			VEC3 n0(getVertexNormal(id0));
-			VEC3 n1(getVertexNormal(id1));
-			VEC3 n2(getVertexNormal(id2));
-			VEC3 normal(n0 + n1 + n2);
-			normal.normalise();
+            VEC3 n0(getVertexNormal(id0));
+            VEC3 n1(getVertexNormal(id1));
+            VEC3 n2(getVertexNormal(id2));
+            VEC3 normal(n0 + n1 + n2);
+            normal.normalise();
 
-			float temp[3];
-			temp[0] = normal.getX();
-			temp[1] = normal.getY();
-			temp[2] = normal.getZ();
-			output_stream.write((char*) temp, sizeof(float) * 3);
+            float temp[3];
+            temp[0] = normal.getX();
+            temp[1] = normal.getY();
+            temp[2] = normal.getZ();
+            output_stream.write((char*) temp, sizeof(float) * 3);
 
-			temp[0] = v0.getX();
-			temp[1] = v0.getY();
-			temp[2] = v0.getZ();
-			output_stream.write((char*) temp, sizeof(float) * 3);
+            temp[0] = v0.getX();
+            temp[1] = v0.getY();
+            temp[2] = v0.getZ();
+            output_stream.write((char*) temp, sizeof(float) * 3);
 
-			temp[0] = v1.getX();
-			temp[1] = v1.getY();
-			temp[2] = v1.getZ();
-			output_stream.write((char*) temp, sizeof(float) * 3);
+            temp[0] = v1.getX();
+            temp[1] = v1.getY();
+            temp[2] = v1.getZ();
+            output_stream.write((char*) temp, sizeof(float) * 3);
 
-			temp[0] = v2.getX();
-			temp[1] = v2.getY();
-			temp[2] = v2.getZ();
-			output_stream.write((char*) temp, sizeof(float) * 3);
+            temp[0] = v2.getX();
+            temp[1] = v2.getY();
+            temp[2] = v2.getZ();
+            output_stream.write((char*) temp, sizeof(float) * 3);
 
-			// Write data
-			char dummy(0);
-			output_stream.write(&dummy, 1);
-			output_stream.write(&dummy, 1);
-		}
-	}
-	// Do not use an index
-	else
-	{
-		for (unsigned int i(0); i < getFaceNumber(); i++)
-		{
-			// Write normals
-			output_stream.write((char*) &m_p_face_normal_set[9 * i], sizeof(float) * 3);
+            // Write data
+            char dummy(0);
+            output_stream.write(&dummy, 1);
+            output_stream.write(&dummy, 1);
+            }
+        }
+    // Do not use an index
+    else
+        {
+        for (unsigned int i(0); i < getFaceNumber(); i++)
+            {
+            // Write normals
+            output_stream.write((char*) &m_p_face_normal_set[9 * i],
+                    sizeof(float) * 3);
 
-			// Write vertices
-			output_stream.write((char*) &p_vertex_set[9 * i], sizeof(float) * 3 * 3);
+            // Write vertices
+            output_stream.write((char*) &p_vertex_set[9 * i],
+                    sizeof(float) * 3 * 3);
 
-			// Write data
-			output_stream.write(&temp, 1);
-			output_stream.write(&temp, 1);
-		}
-	}
+            // Write data
+            output_stream.write(&temp, 1);
+            output_stream.write(&temp, 1);
+            }
+        }
 
-	// Close the STL file
-	output_stream.close();
+    // Close the STL file
+    output_stream.close();
 }
 
 
@@ -642,124 +731,124 @@ void PolygonMesh::writeSTLFile()
 void PolygonMesh::computeNormalVectors()
 //--------------------------------------
 {
-	m_p_face_normal_set.clear();
-	m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+    m_p_vertex_normal_set.clear();
 
-	switch (m_polygon_type)
-	{
-		case GL_TRIANGLES:
-		// There is an index
-		if (m_number_of_indices)
-		{
-			if (m_number_of_indices % 3 != 0)
-			{
-				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-			}
+    switch (m_polygon_type)
+        {
+        case GL_TRIANGLES:
+        // There is an index
+        if (m_number_of_indices)
+            {
+            if (m_number_of_indices % 3 != 0)
+                {
+                throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+                }
 
-			// Allocate the memory
-			m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
+            // Allocate the memory
+            m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
 
-			// Process every triangle
-			for (unsigned int i(0); i < m_number_of_indices; i += 3)
-			{
-				// Get the vertex IDs
-				int id_0(getIndex(i + 0));
-				int id_1(getIndex(i + 1));
-				int id_2(getIndex(i + 2));
+            // Process every triangle
+            for (unsigned int i(0); i < m_number_of_indices; i += 3)
+                {
+                // Get the vertex IDs
+                int id_0(getIndex(i + 0));
+                int id_1(getIndex(i + 1));
+                int id_2(getIndex(i + 2));
 
-				// Get the vertices
-				VEC3 vec_A(getVertex(id_0));
-				VEC3 vec_B(getVertex(id_1));
-				VEC3 vec_C(getVertex(id_2));
+                // Get the vertices
+                VEC3 vec_A(getVertex(id_0));
+                VEC3 vec_B(getVertex(id_1));
+                VEC3 vec_C(getVertex(id_2));
 
-				// Compute the normal for the triangle
-				VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+                // Compute the normal for the triangle
+                VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
 
-				// Normalise the vector
-				if (!(
-						(std::abs(normal.getX()) <= EPSILON) &&
-						(std::abs(normal.getY()) <= EPSILON) &&
-						(std::abs(normal.getZ()) <= EPSILON)
-					 ))
-				{
-					normal.normalize();
+                // Normalise the vector
+                if (!(
+                        (std::abs(normal.getX()) <= EPSILON) &&
+                        (std::abs(normal.getY()) <= EPSILON) &&
+                        (std::abs(normal.getZ()) <= EPSILON)
+                     ))
+                    {
+                    normal.normalize();
 
-					// Add the new normal
-					m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
-					m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
-					m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
+                    // Add the new normal
+                    m_p_vertex_normal_set[id_0 * 3 + 0] += normal.getX();
+                    m_p_vertex_normal_set[id_0 * 3 + 1] += normal.getY();
+                    m_p_vertex_normal_set[id_0 * 3 + 2] += normal.getZ();
 
-					m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
-					m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
-					m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
+                    m_p_vertex_normal_set[id_1 * 3 + 0] += normal.getX();
+                    m_p_vertex_normal_set[id_1 * 3 + 1] += normal.getY();
+                    m_p_vertex_normal_set[id_1 * 3 + 2] += normal.getZ();
 
-					m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
-					m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
-					m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
-				}
-			}
+                    m_p_vertex_normal_set[id_2 * 3 + 0] += normal.getX();
+                    m_p_vertex_normal_set[id_2 * 3 + 1] += normal.getY();
+                    m_p_vertex_normal_set[id_2 * 3 + 2] += normal.getZ();
+                    }
+                }
 
-			normaliseNormals();
-		}
-		// There is not any index
-		else
-		{
-			if (m_number_of_vertices % 3 != 0)
-			{
-				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-			}
+            normaliseNormals();
+            }
+        // There is not any index
+        else
+            {
+            if (m_number_of_vertices % 3 != 0)
+                {
+                throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+                }
 
-			// Allocate the memory
-			m_p_face_normal_set.resize(m_number_of_vertices * 3, 0.0);
-			m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
+            // Allocate the memory
+            m_p_face_normal_set.resize(m_number_of_vertices * 3, 0.0);
+            m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
 
-			// Process every triangle
-			for (unsigned int i(0); i < m_number_of_vertices; i += 3)
-			{
-				// Get the vertex IDs
-				int id_0(i + 0);
-				int id_1(i + 1);
-				int id_2(i + 2);
+            // Process every triangle
+            for (unsigned int i(0); i < m_number_of_vertices; i += 3)
+                {
+                // Get the vertex IDs
+                int id_0(i + 0);
+                int id_1(i + 1);
+                int id_2(i + 2);
 
-				// Get the vertices
-				VEC3 vec_A(getVertex(id_0));
-				VEC3 vec_B(getVertex(id_1));
-				VEC3 vec_C(getVertex(id_2));
+                // Get the vertices
+                VEC3 vec_A(getVertex(id_0));
+                VEC3 vec_B(getVertex(id_1));
+                VEC3 vec_C(getVertex(id_2));
 
-				// Compute the normal for the triangle
-				VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+                // Compute the normal for the triangle
+                VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
 
-				// Normalise the vector
-				normal.normalize();
+                // Normalise the vector
+                normal.normalize();
 
-				// Add the new normal
-				m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
-				m_p_face_normal_set[id_0 * 3 + 1] = normal.getY();
-				m_p_face_normal_set[id_0 * 3 + 2] = normal.getZ();
+                // Add the new normal
+                m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
+                m_p_face_normal_set[id_0 * 3 + 1] = normal.getY();
+                m_p_face_normal_set[id_0 * 3 + 2] = normal.getZ();
 
-				m_p_face_normal_set[id_1 * 3 + 0] = normal.getX();
-				m_p_face_normal_set[id_1 * 3 + 1] = normal.getY();
-				m_p_face_normal_set[id_1 * 3 + 2] = normal.getZ();
+                m_p_face_normal_set[id_1 * 3 + 0] = normal.getX();
+                m_p_face_normal_set[id_1 * 3 + 1] = normal.getY();
+                m_p_face_normal_set[id_1 * 3 + 2] = normal.getZ();
 
-				m_p_face_normal_set[id_2 * 3 + 0] = normal.getX();
-				m_p_face_normal_set[id_2 * 3 + 1] = normal.getY();
-				m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();
+                m_p_face_normal_set[id_2 * 3 + 0] = normal.getX();
+                m_p_face_normal_set[id_2 * 3 + 1] = normal.getY();
+                m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();
 
-				m_p_vertex_normal_set[id_0 * 3 + 0] = normal.getX();
-				m_p_vertex_normal_set[id_0 * 3 + 1] = normal.getY();
-				m_p_vertex_normal_set[id_0 * 3 + 2] = normal.getZ();
+                m_p_vertex_normal_set[id_0 * 3 + 0] = normal.getX();
+                m_p_vertex_normal_set[id_0 * 3 + 1] = normal.getY();
+                m_p_vertex_normal_set[id_0 * 3 + 2] = normal.getZ();
 
-				m_p_vertex_normal_set[id_1 * 3 + 0] = normal.getX();
-				m_p_vertex_normal_set[id_1 * 3 + 1] = normal.getY();
-				m_p_vertex_normal_set[id_1 * 3 + 2] = normal.getZ();
+                m_p_vertex_normal_set[id_1 * 3 + 0] = normal.getX();
+                m_p_vertex_normal_set[id_1 * 3 + 1] = normal.getY();
+                m_p_vertex_normal_set[id_1 * 3 + 2] = normal.getZ();
 
-				m_p_vertex_normal_set[id_2 * 3 + 0] = normal.getX();
-				m_p_vertex_normal_set[id_2 * 3 + 1] = normal.getY();
-				m_p_vertex_normal_set[id_2 * 3 + 2] = normal.getZ();
-			}
-		}
-		break;
-	}
+                m_p_vertex_normal_set[id_2 * 3 + 0] = normal.getX();
+                m_p_vertex_normal_set[id_2 * 3 + 1] = normal.getY();
+                m_p_vertex_normal_set[id_2 * 3 + 2] = normal.getZ();
+                }
+            }
+        break;
+        }
 }
 
 
@@ -781,14 +870,24 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
     m_index_data_type         = aPolygonMesh.m_index_data_type;
     m_vertex_data_type        = aPolygonMesh.m_vertex_data_type;
     m_polygon_type            = aPolygonMesh.m_polygon_type;
-	m_external_data_flag      = aPolygonMesh.m_external_data_flag;
-	m_material                = aPolygonMesh.m_material;
+    m_external_data_flag      = aPolygonMesh.m_external_data_flag;
+    m_material                = aPolygonMesh.m_material;
 
     // Delete the VBO if needed
-    if (!m_vbo.get())
-    {
-        m_vbo.reset(0);
-    }
+    if (!m_p_vbo.get())
+        {
+        m_p_vbo.reset(0);
+        }
+
+    if (!m_p_face_normal_vbo.get())
+        {
+        m_p_face_normal_vbo.reset(0);
+        }
+
+    if (!m_p_vertex_normal_vbo.get())
+        {
+        m_p_vertex_normal_vbo.reset(0);
+        }
 
     copyVertexSet(aPolygonMesh.m_p_vertex_set);
     copyIndexSet(aPolygonMesh.m_p_index_set);
@@ -797,87 +896,663 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
 }
 
 
+//-----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
+//-----------------------------------------------------------------------
+{
+    if (m_number_of_indices)
+        {
+        if (m_index_data_type != aPolygonMesh.m_index_data_type)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot combine the two polygon meshes, "
+                    "their index data types are different.");
+
+            }
+        }
+    
+    if (m_number_of_vertices)
+        {
+        if (m_vertex_data_type != aPolygonMesh.m_vertex_data_type)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot combine the two polygon meshes, "
+                    "their vertex data types are different.");
+
+            }
+        
+        // Check the polygon types
+        if (m_polygon_type != aPolygonMesh.m_polygon_type)
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Cannot combine the two polygon meshes, "
+                    "their polygon types are different.");
+
+            }
+        }
+    
+    // Create the new instance
+    PolygonMesh new_polygon_mesh;
+    new_polygon_mesh.m_index_data_type  = aPolygonMesh.m_index_data_type;
+    new_polygon_mesh.m_vertex_data_type = aPolygonMesh.m_vertex_data_type;
+    new_polygon_mesh.m_polygon_type     = aPolygonMesh.m_polygon_type;
+
+    // The data is held by the instance
+    new_polygon_mesh.m_external_data_flag = false;
+
+    // Allocate memory space for the face normal set
+    new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() +
+            aPolygonMesh.m_p_face_normal_set.size());
+
+    // Add the face normal vectors of the fist polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    m_p_face_normal_set.begin());
+            ite != m_p_face_normal_set.end();
+            ++ite)
+        {
+        new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
+        }
+
+    // Add the face normal vectors of the second polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    aPolygonMesh.m_p_face_normal_set.begin());
+            ite != aPolygonMesh.m_p_face_normal_set.end();
+            ++ite)
+        {
+        new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
+        }
+
+    // Allocate memory space for the vertex normal set
+    new_polygon_mesh.m_p_vertex_normal_set.reserve(
+            m_p_vertex_normal_set.size() +
+            aPolygonMesh.m_p_vertex_normal_set.size());
+
+    // Add the vertex normal vectors of the fist polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    m_p_vertex_normal_set.begin());
+            ite != m_p_vertex_normal_set.end();
+            ++ite)
+        {
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(*ite);
+        }
+
+    // Add the vertex normal vectors of the second polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    aPolygonMesh.m_p_vertex_normal_set.begin());
+            ite != aPolygonMesh.m_p_vertex_normal_set.end();
+            ++ite)
+        {
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(*ite);
+        }
+
+    // Allocate memory to store the vertex data
+    new_polygon_mesh.m_number_of_vertices = m_number_of_vertices +
+            aPolygonMesh.m_number_of_vertices;
+
+    switch (new_polygon_mesh.m_vertex_data_type)
+        {
+        case GL_FLOAT:
+            new_polygon_mesh.m_p_vertex_set =
+                    new GLfloat[new_polygon_mesh.m_number_of_vertices * 3];
+            break;
+
+        case GL_DOUBLE:
+            new_polygon_mesh.m_p_vertex_set =
+                    new GLdouble[new_polygon_mesh.m_number_of_vertices * 3];
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
+
+    if (new_polygon_mesh.m_number_of_vertices &&
+            !new_polygon_mesh.m_p_vertex_set)
+        {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+    // Copy the data
+    switch (new_polygon_mesh.m_vertex_data_type)
+        {
+        case GL_FLOAT:
+            {
+            GLfloat* p_temp(static_cast<GLfloat*>(new_polygon_mesh.m_p_vertex_set));
+   
+            std::memcpy(p_temp,
+                    m_p_vertex_set,
+                    m_number_of_vertices * sizeof(GLfloat) * 3);
+
+            std::memcpy(p_temp + m_number_of_vertices * 3,
+                    aPolygonMesh.m_p_vertex_set,
+                    aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
+            }
+            break;
+
+        case GL_DOUBLE:
+            {
+            GLdouble* p_temp(static_cast<GLdouble*>(new_polygon_mesh.m_p_vertex_set));
+
+            std::memcpy(p_temp,
+                    m_p_vertex_set,
+                    m_number_of_vertices * sizeof(GLdouble) * 3);
+
+            std::memcpy(p_temp + m_number_of_vertices * 3,
+                    aPolygonMesh.m_p_vertex_set,
+                    aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
+            }
+            break;
+        }
+
+    // Allocate memory to store the index data
+    new_polygon_mesh.m_number_of_indices = m_number_of_indices +
+            aPolygonMesh.m_number_of_indices;
+
+    switch (m_index_data_type)
+        {
+        case 0:
+            break;
+
+        case GL_UNSIGNED_INT:
+            new_polygon_mesh.m_p_index_set =
+                    new GLuint[new_polygon_mesh.m_number_of_indices];
+            break;
+
+        case GL_UNSIGNED_SHORT:
+            new_polygon_mesh.m_p_index_set =
+                    new GLushort[new_polygon_mesh.m_number_of_indices];
+            break;
+
+        case GL_UNSIGNED_BYTE:
+            new_polygon_mesh.m_p_index_set =
+                    new GLubyte[new_polygon_mesh.m_number_of_indices];
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
+
+    // Copy the data
+    switch (new_polygon_mesh.m_index_data_type)
+        {
+        case GL_UNSIGNED_INT:
+            {
+            GLuint* p_temp1(reinterpret_cast<GLuint*>(
+                    new_polygon_mesh.m_p_index_set));
+
+            GLuint* p_temp2(reinterpret_cast<GLuint*>(
+                    aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLuint));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+                {
+                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+                }
+            }
+            break;
+
+        case GL_UNSIGNED_SHORT:
+            {
+            GLushort* p_temp1(reinterpret_cast<GLushort*>(
+                    new_polygon_mesh.m_p_index_set));
+
+            GLushort* p_temp2(reinterpret_cast<GLushort*>(
+                    aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLshort));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+                {
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                }
+            }
+            break;
+
+        case GL_UNSIGNED_BYTE:
+            {
+            GLubyte* p_temp1(reinterpret_cast<GLubyte*>(
+                    new_polygon_mesh.m_p_index_set));
+
+            GLubyte* p_temp2(reinterpret_cast<GLubyte*>(
+                    aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLubyte));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+                {
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                }
+            }
+            break;
+        }
+
+    // Update internal data
+    new_polygon_mesh.computeBoundingBox();
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//-----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
+//-----------------------------------------------------------------------
+{
+    if (m_index_data_type != aPolygonMesh.m_index_data_type)
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot combine the two polygon meshes, "
+                "their index data types are different.");
+
+        }
+
+    if (m_vertex_data_type != aPolygonMesh.m_vertex_data_type)
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot combine the two polygon meshes, "
+                "their vertex data types are different.");
+
+        }
+
+    // Check the polygon types
+    if (m_polygon_type != aPolygonMesh.m_polygon_type)
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot combine the two polygon meshes, "
+                "their polygon types are different.");
+
+        }
+
+    // Create the new instance
+    PolygonMesh new_polygon_mesh;
+    new_polygon_mesh.m_index_data_type  = m_index_data_type;
+    new_polygon_mesh.m_vertex_data_type = m_vertex_data_type;
+    new_polygon_mesh.m_polygon_type     = m_polygon_type;
+
+    // The data is held by the instance
+    new_polygon_mesh.m_external_data_flag = false;
+
+    // Allocate memory space for the face normal set
+    new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() +
+            aPolygonMesh.m_p_face_normal_set.size());
+
+    // Add the face normal vectors of the fist polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    m_p_face_normal_set.begin());
+            ite != m_p_face_normal_set.end();
+            ++ite)
+        {
+        new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
+        }
+
+    // Add the face normal vectors of the second polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    aPolygonMesh.m_p_face_normal_set.begin());
+            ite != aPolygonMesh.m_p_face_normal_set.end();
+            ++ite)
+        {
+        // Inverse the normal
+        new_polygon_mesh.m_p_face_normal_set.push_back(-*ite);
+        }
+
+    // Allocate memory space for the vertex normal set
+    new_polygon_mesh.m_p_vertex_normal_set.reserve(
+            m_p_vertex_normal_set.size() +
+            aPolygonMesh.m_p_vertex_normal_set.size());
+
+    // Add the vertex normal vectors of the fist polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    m_p_vertex_normal_set.begin());
+            ite != m_p_vertex_normal_set.end();
+            ++ite)
+        {
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(*ite);
+        }
+
+    // Add the vertex normal vectors of the second polygon mesh
+    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+                    aPolygonMesh.m_p_vertex_normal_set.begin());
+            ite != aPolygonMesh.m_p_vertex_normal_set.end();
+            ++ite)
+        {
+        // Inverse the normal
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(-*ite);
+        }
+
+    // Allocate memory to store the vertex data
+    new_polygon_mesh.m_number_of_vertices = m_number_of_vertices +
+            aPolygonMesh.m_number_of_vertices;
+
+    switch (new_polygon_mesh.m_vertex_data_type)
+        {
+        case GL_FLOAT:
+            new_polygon_mesh.m_p_vertex_set =
+                    new GLfloat[new_polygon_mesh.m_number_of_vertices * 3];
+            break;
+
+        case GL_DOUBLE:
+            new_polygon_mesh.m_p_vertex_set =
+                    new GLdouble[new_polygon_mesh.m_number_of_vertices * 3];
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
+
+    if (new_polygon_mesh.m_number_of_vertices &&
+            !new_polygon_mesh.m_p_vertex_set)
+        {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+    // Copy the data
+    switch (new_polygon_mesh.m_vertex_data_type)
+        {
+        case GL_FLOAT:
+            {
+            GLfloat* p_temp(static_cast<GLfloat*>(new_polygon_mesh.m_p_vertex_set));
+
+            std::memcpy(p_temp,
+                    m_p_vertex_set,
+                    m_number_of_vertices * sizeof(GLfloat) * 3);
+
+            std::memcpy(p_temp + m_number_of_vertices * 3,
+                    aPolygonMesh.m_p_vertex_set,
+                    aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
+            }
+            break;
+
+        case GL_DOUBLE:
+            {
+            GLdouble* p_temp(static_cast<GLdouble*>(new_polygon_mesh.m_p_vertex_set));
+
+            std::memcpy(p_temp,
+                    m_p_vertex_set,
+                    m_number_of_vertices * sizeof(GLdouble) * 3);
+
+            std::memcpy(p_temp + m_number_of_vertices * 3,
+                    aPolygonMesh.m_p_vertex_set,
+                    aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
+            }
+            break;
+        }
+
+    // Allocate memory to store the index data
+    new_polygon_mesh.m_number_of_indices = m_number_of_indices +
+            aPolygonMesh.m_number_of_indices;
+
+    switch (m_index_data_type)
+        {
+        case 0:
+            break;
+
+        case GL_UNSIGNED_INT:
+            new_polygon_mesh.m_p_index_set =
+                    new GLuint[new_polygon_mesh.m_number_of_indices];
+            break;
+
+        case GL_UNSIGNED_SHORT:
+            new_polygon_mesh.m_p_index_set =
+                    new GLushort[new_polygon_mesh.m_number_of_indices];
+            break;
+
+        case GL_UNSIGNED_BYTE:
+            new_polygon_mesh.m_p_index_set =
+                    new GLubyte[new_polygon_mesh.m_number_of_indices];
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
+
+    // Copy the data
+    switch (new_polygon_mesh.m_index_data_type)
+        {
+        case GL_UNSIGNED_INT:
+            {
+            GLuint* p_temp1(reinterpret_cast<GLuint*>(
+                    new_polygon_mesh.m_p_index_set));
+
+            GLuint* p_temp2(reinterpret_cast<GLuint*>(
+                    aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLuint));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+                {
+                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+                }
+            }
+            break;
+
+        case GL_UNSIGNED_SHORT:
+            {
+            GLushort* p_temp1(reinterpret_cast<GLushort*>(
+                    new_polygon_mesh.m_p_index_set));
+
+            GLushort* p_temp2(reinterpret_cast<GLushort*>(
+                    aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLshort));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+                {
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                }
+            }
+            break;
+
+        case GL_UNSIGNED_BYTE:
+            {
+            GLubyte* p_temp1(reinterpret_cast<GLubyte*>(
+                    new_polygon_mesh.m_p_index_set));
+
+            GLubyte* p_temp2(reinterpret_cast<GLubyte*>(
+                    aPolygonMesh.m_p_index_set));
+
+            std::memcpy(p_temp1,
+                    m_p_index_set,
+                    m_number_of_indices * sizeof(GLubyte));
+
+            p_temp1 += m_number_of_indices;
+
+            for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
+                {
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                }
+            }
+            break;
+        }
+
+    // Update internal data
+    new_polygon_mesh.computeBoundingBox();
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//-------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator+=(const PolygonMesh& aPolygonMesh)
+//-------------------------------------------------------------------
+{
+    PolygonMesh new_polygon(*this + aPolygonMesh);
+    *this = new_polygon;
+    
+    return (*this);
+}
+
+
+//-------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator-=(const PolygonMesh& aPolygonMesh)
+//-------------------------------------------------------------------
+{
+    PolygonMesh new_polygon(*this - aPolygonMesh);
+    *this = new_polygon;
+    
+    return (*this);
+}
+
+
+//----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator+(const VEC3& aTranslationVector) const
+//----------------------------------------------------------------------
+{
+    // Copy the current instance into a new polygon mesh
+    PolygonMesh new_polygon_mesh(*this);
+
+    // Translate all the vertices
+    new_polygon_mesh.translate(aTranslationVector);
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//----------------------------------------------------------------------
+PolygonMesh PolygonMesh::operator-(const VEC3& aTranslationVector) const
+//----------------------------------------------------------------------
+{
+    // Copy the current instance into a new polygon mesh
+    PolygonMesh new_polygon_mesh(*this);
+
+    // Translate all the vertices
+    new_polygon_mesh.translate(-aTranslationVector);
+
+    // Return the new polygon mesh
+    return (new_polygon_mesh);
+}
+
+
+//------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator+=(const VEC3& aTranslationVector)
+//------------------------------------------------------------------
+{
+    // Translate all the vertices
+    translate(aTranslationVector);
+
+    // Return the current instance
+    return (*this);
+}
+
+
+//------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
+//------------------------------------------------------------------
+{
+    // Translate all the vertices
+    translate(-aTranslationVector);
+
+    // Return the current instance
+    return (*this);
+}
+
+
 //----------------------------------
 void PolygonMesh::normaliseNormals()
 //----------------------------------
 {
-	if (!getFaceNormalNumber() && !getVertexNormalNumber())
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    if (!getFaceNormalNumber() && !getVertexNormalNumber())
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
 
-	for (unsigned int i(0); i < getFaceNormalNumber(); ++i)
-	{
-		VEC3 normal(m_p_face_normal_set[i * 3 + 0],
-				m_p_face_normal_set[i * 3 + 1],
-				m_p_face_normal_set[i * 3 + 2]);
+    for (unsigned int i(0); i < getFaceNormalNumber(); ++i)
+        {
+        VEC3 normal(m_p_face_normal_set[i * 3 + 0],
+                m_p_face_normal_set[i * 3 + 1],
+                m_p_face_normal_set[i * 3 + 2]);
 
-		normal.normalise();
+        normal.normalise();
 
-		m_p_face_normal_set[i * 3 + 0] = normal.getX();
-		m_p_face_normal_set[i * 3 + 1] = normal.getY();
-		m_p_face_normal_set[i * 3 + 2] = normal.getZ();
-	}
+        m_p_face_normal_set[i * 3 + 0] = normal.getX();
+        m_p_face_normal_set[i * 3 + 1] = normal.getY();
+        m_p_face_normal_set[i * 3 + 2] = normal.getZ();
+        }
 
-	for (unsigned int i(0); i < getVertexNormalNumber(); ++i)
-	{
-		VEC3 normal(m_p_vertex_normal_set[i * 3 + 0],
-				m_p_vertex_normal_set[i * 3 + 1],
-				m_p_vertex_normal_set[i * 3 + 2]);
+    for (unsigned int i(0); i < getVertexNormalNumber(); ++i)
+        {
+        VEC3 normal(m_p_vertex_normal_set[i * 3 + 0],
+                m_p_vertex_normal_set[i * 3 + 1],
+                m_p_vertex_normal_set[i * 3 + 2]);
 
-		normal.normalise();
+        normal.normalise();
 
-		m_p_vertex_normal_set[i * 3 + 0] = normal.getX();
-		m_p_vertex_normal_set[i * 3 + 1] = normal.getY();
-		m_p_vertex_normal_set[i * 3 + 2] = normal.getZ();
-	}
+        m_p_vertex_normal_set[i * 3 + 0] = normal.getX();
+        m_p_vertex_normal_set[i * 3 + 1] = normal.getY();
+        m_p_vertex_normal_set[i * 3 + 2] = normal.getZ();
+        }
 }
 
 
 struct VectorComparer
 {
-	// Return true if aLeftNode is less than aRightNode
+    // Return true if aLeftNode is less than aRightNode
     bool operator()(const VEC3 & aLeftNode, const VEC3 & aRightNode) const
     {
-    	double epsilon(EPSILON);
+        double epsilon(EPSILON);
 
-    	if (fabs(aLeftNode.getX() - aRightNode.getX()) > epsilon)
-    	{
-    		if (aLeftNode.getX() < aRightNode.getX())
-    		{
-    			return (true);
-    		}
-    		else
-    		{
-    			return (false);
-    		}
-    	}
+        if (fabs(aLeftNode.getX() - aRightNode.getX()) > epsilon)
+            {
+            if (aLeftNode.getX() < aRightNode.getX())
+                {
+                return (true);
+                }
+            else
+                {
+                return (false);
+                }
+            }
 
-    	if (fabs(aLeftNode.getY() - aRightNode.getY()) > epsilon)
-    	{
-    		if (aLeftNode.getY() < aRightNode.getY())
-    		{
-    			return (true);
-    		}
-    		else
-    		{
-    			return (false);
-    		}
-    	}
+        if (fabs(aLeftNode.getY() - aRightNode.getY()) > epsilon)
+            {
+            if (aLeftNode.getY() < aRightNode.getY())
+                {
+                return (true);
+                }
+            else
+                {
+                return (false);
+                }
+            }
 
-    	if (fabs(aLeftNode.getZ() - aRightNode.getZ()) > epsilon)
-    	{
-    		if (aLeftNode.getZ() < aRightNode.getZ())
-    		{
-    			return (true);
-    		}
-    		else
-    		{
-    			return (false);
-    		}
-    	}
+        if (fabs(aLeftNode.getZ() - aRightNode.getZ()) > epsilon)
+            {
+            if (aLeftNode.getZ() < aRightNode.getZ())
+                {
+                return (true);
+                }
+            else
+                {
+                return (false);
+                }
+            }
 
-    	return (false);
+        return (false);
     }
 };
 
@@ -885,23 +1560,23 @@ struct VectorComparer
 class TempRecord
 {
 public:
-	inline const TempRecord& operator +=(const VEC3& aNormal)
-	{
-		m_normal += aNormal;
+    inline const TempRecord& operator += (const VEC3& aNormal)
+    {
+        m_normal += aNormal;
 
-		return (*this);
-	}
+        return (*this);
+    }
 
 
-	inline const TempRecord& operator =(unsigned int anID)
-	{
-		m_id = anID;
+    inline const TempRecord& operator = (unsigned int anID)
+    {
+        m_id = anID;
 
-		return (*this);
-	}
+        return (*this);
+    }
 
-	VEC3 m_normal;
-	unsigned int m_id;
+    VEC3 m_normal;
+    unsigned int m_id;
 };
 
 
@@ -909,171 +1584,192 @@ public:
 void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 //-------------------------------------------------------
 {
-	// Merge vertices only if external data is not used
-	if (!m_external_data_flag)
-	{
-		// It only works if no index has been set
-		if (!m_p_index_set && !m_number_of_indices)
-		{
-			// The polygon is made of triangles
-			if (m_polygon_type == GL_TRIANGLES)
-			{
-				// Allocate the memory of the index
-				int number_of_vertices_per_face(3);
-				m_number_of_indices = getFaceNumber() * number_of_vertices_per_face;
-				GLuint* p_index_set(new GLuint[m_number_of_indices]);
-				m_index_data_type = GL_UNSIGNED_INT;
-				m_p_index_set = p_index_set;
+    // Merge vertices only if external data is not used
+    if (!m_external_data_flag)
+        {
+        // It only works if no index has been set
+        if (!m_p_index_set && !m_number_of_indices)
+            {
+            // The polygon is made of triangles
+            if (m_polygon_type == GL_TRIANGLES)
+                {
+                // Allocate the memory of the index
+                int number_of_vertices_per_face(3);
+                m_number_of_indices = getFaceNumber() *
+                        number_of_vertices_per_face;
+                GLuint* p_index_set(new GLuint[m_number_of_indices]);
+                m_index_data_type = GL_UNSIGNED_INT;
+                m_p_index_set = p_index_set;
 
-				// Add the vertices to the hash table
-				std::map<VEC3, TempRecord, VectorComparer> hash_table;
-				unsigned int number_of_vertices(m_number_of_vertices);
-				for (unsigned int i(0); i < number_of_vertices; ++i)
-				{
-					VEC3 current_vertex(getVertex(i));
-					VEC3 normal(getFaceNormal(i));
+                // Add the vertices to the hash table
+                std::map<VEC3, TempRecord, VectorComparer> hash_table;
+                unsigned int number_of_vertices(m_number_of_vertices);
+                for (unsigned int i(0); i < number_of_vertices; ++i)
+                    {
+                    VEC3 current_vertex(getVertex(i));
+                    VEC3 normal(getFaceNormal(i));
 
-					hash_table[current_vertex].m_normal += normal;
-				}
+                    hash_table[current_vertex].m_normal += normal;
+                    }
 
-				m_p_vertex_normal_set.clear();
-				m_p_vertex_normal_set.resize(hash_table.size() * 3);
-				unsigned int id(0);
-				for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
-						ite != hash_table.end();
-						++ite, ++id)
-				{
-					VEC3 normal(ite->second.m_normal.normal());
+                m_p_vertex_normal_set.clear();
+                m_p_vertex_normal_set.resize(hash_table.size() * 3);
+                unsigned int id(0);
+                for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(
+                                    hash_table.begin());
+                        ite != hash_table.end();
+                        ++ite, ++id)
+                    {
+                    VEC3 normal(ite->second.m_normal.normal());
 
-					m_p_vertex_normal_set[id * 3 + 0] = normal.getX();
-					m_p_vertex_normal_set[id * 3 + 1] = normal.getY();
-					m_p_vertex_normal_set[id * 3 + 2] = normal.getZ();
-				}
+                    m_p_vertex_normal_set[id * 3 + 0] = normal.getX();
+                    m_p_vertex_normal_set[id * 3 + 1] = normal.getY();
+                    m_p_vertex_normal_set[id * 3 + 2] = normal.getZ();
+                    }
 
-				// Set the index in the hash table
-				id = 0;
-				for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
-						ite != hash_table.end();
-						++ite, ++id)
-				{
-					ite->second.m_id = id;
-				}
+                // Set the index in the hash table
+                id = 0;
+                for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(
+                                    hash_table.begin());
+                        ite != hash_table.end();
+                        ++ite, ++id)
+                    {
+                    ite->second.m_id = id;
+                    }
 
-				// Fill the index
-				unsigned int number_of_triangles(getTriangleNumber());
-				for (unsigned int i(0); i < number_of_triangles; ++i)
-				{
-					VEC3 vertex_0(getVertex(i * 3 + 0));
-					VEC3 vertex_1(getVertex(i * 3 + 1));
-					VEC3 vertex_2(getVertex(i * 3 + 2));
+                // Fill the index
+                unsigned int number_of_triangles(getTriangleNumber());
+                for (unsigned int i(0); i < number_of_triangles; ++i)
+                    {
+                    VEC3 vertex_0(getVertex(i * 3 + 0));
+                    VEC3 vertex_1(getVertex(i * 3 + 1));
+                    VEC3 vertex_2(getVertex(i * 3 + 2));
 
-					unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
-					unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
-					unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
+                    unsigned int id_0(hash_table.find(vertex_0)->second.m_id);
+                    unsigned int id_1(hash_table.find(vertex_1)->second.m_id);
+                    unsigned int id_2(hash_table.find(vertex_2)->second.m_id);
 
-					if (id_0 >= hash_table.size() || id_1 >= hash_table.size() || id_2 >= hash_table.size())
-					{
-						throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid vertex index");
-					}
+                    if (id_0 >= hash_table.size() ||
+                            id_1 >= hash_table.size() ||
+                            id_2 >= hash_table.size())
+                        {
+                        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                                "Invalid vertex index");
+                        }
 
-					p_index_set[i * 3 + 0] = id_0;
-					p_index_set[i * 3 + 1] = id_1;
-					p_index_set[i * 3 + 2] = id_2;
-				}
+                    p_index_set[i * 3 + 0] = id_0;
+                    p_index_set[i * 3 + 1] = id_1;
+                    p_index_set[i * 3 + 2] = id_2;
+                    }
 
-				// Set the index in the hash table and create the list of vertices
-				destroyVertexData();
-				m_number_of_vertices = hash_table.size();
+                // Set the index in the hash table and
+                // create the list of vertices
+                destroyVertexData();
+                m_number_of_vertices = hash_table.size();
 
-				GLfloat* p_float_vertex_set(0);
-				GLdouble* p_double_vertex_set(0);
-				switch (m_vertex_data_type)
-				{
-				case GL_FLOAT:
-					m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
-					p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
-					break;
+                GLfloat* p_float_vertex_set(0);
+                GLdouble* p_double_vertex_set(0);
+                switch (m_vertex_data_type)
+                    {
+                    case GL_FLOAT:
+                        m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
+                        p_float_vertex_set =
+                                reinterpret_cast<GLfloat*>(m_p_vertex_set);
+                        break;
 
-				case GL_DOUBLE:
-					m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
-					p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
-					break;
+                    case GL_DOUBLE:
+                        m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
+                        p_double_vertex_set =
+                                reinterpret_cast<GLdouble*>(m_p_vertex_set);
+                        break;
 
-				default:
-					throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-				}
-				id = 0;
-				for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(hash_table.begin());
-						ite != hash_table.end();
-						++ite, ++id)
-				{
-					if (p_float_vertex_set)
-					{
-						p_float_vertex_set[id * 3 + 0] = ite->first.getX();
-						p_float_vertex_set[id * 3 + 1] = ite->first.getY();
-						p_float_vertex_set[id * 3 + 2] = ite->first.getZ();
-					}
-					if (p_double_vertex_set)
-					{
-						p_double_vertex_set[id * 3 + 0] = ite->first.getX();
-						p_double_vertex_set[id * 3 + 1] = ite->first.getY();
-						p_double_vertex_set[id * 3 + 2] = ite->first.getZ();
-					}
-				}
+                    default:
+                        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                                "Invalid data type.");
+                    }
 
-				// Normalise the normals in the normal set
-				unsigned int number_of_normals(getVertexNormalNumber());
-				for (unsigned int i(0); i < number_of_normals; ++i)
-				{
-					VEC3 normal(getVertexNormal(i));
-					normal.normalise();
-					m_p_vertex_normal_set[i * 3 + 0] = normal.getX();
-					m_p_vertex_normal_set[i * 3 + 1] = normal.getY();
-					m_p_vertex_normal_set[i * 3 + 2] = normal.getZ();
-				}
+                id = 0;
+                for (std::map<VEC3, TempRecord, VectorComparer>::iterator ite(
+                                    hash_table.begin());
+                        ite != hash_table.end();
+                        ++ite, ++id)
+                    {
+                    if (p_float_vertex_set)
+                        {
+                        p_float_vertex_set[id * 3 + 0] = ite->first.getX();
+                        p_float_vertex_set[id * 3 + 1] = ite->first.getY();
+                        p_float_vertex_set[id * 3 + 2] = ite->first.getZ();
+                        }
+                    if (p_double_vertex_set)
+                        {
+                        p_double_vertex_set[id * 3 + 0] = ite->first.getX();
+                        p_double_vertex_set[id * 3 + 1] = ite->first.getY();
+                        p_double_vertex_set[id * 3 + 2] = ite->first.getZ();
+                        }
+                    }
 
-				// Reset the normal per face set
-				m_p_face_normal_set.clear();
+                // Normalise the normals in the normal set
+                unsigned int number_of_normals(getVertexNormalNumber());
+                for (unsigned int i(0); i < number_of_normals; ++i)
+                    {
+                    VEC3 normal(getVertexNormal(i));
+                    normal.normalise();
+                    m_p_vertex_normal_set[i * 3 + 0] = normal.getX();
+                    m_p_vertex_normal_set[i * 3 + 1] = normal.getY();
+                    m_p_vertex_normal_set[i * 3 + 2] = normal.getZ();
+                    }
 
-		        // Create the VBO if needed
-		        if (!m_vbo.get())
-		        {
-		            m_vbo.reset(createVBO());
-		        }
+                // Reset the normal per face set
+                m_p_face_normal_set.clear();
 
-				// Update the VBO
-				if (m_vbo->isReady())
-				{
-					updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-				}
+                // Create the VBO if needed
+                if (!m_p_vbo.get())
+                    {
+                    m_p_vbo.reset(createVBO());
+                    }
 
-				// Display extra debug info
-				if (aPrintDebugInfoFlag)
-				{
-					std::cout << "file_name:\t" << m_filename <<
-							"\tnb_faces:\t" << getFaceNumber() <<
-							"\tnb_vertices:\t" << m_number_of_vertices <<
-							"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
-													m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
-				}
-			}
-			// Not supported
-			else
-			{
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-			}
-		}
-		// Generate an error
-		else
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "There is no vertex to merge.");
-		}
-	}
-	// Generate an error
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
-	}
+                // Update the VBO
+                if (m_p_vbo->isReady())
+                    {
+                    updateVBO(m_p_vbo->getBufferUsageHint(),
+                            m_p_vbo->getPrimitiveType());
+                    }
+
+                // Display extra debug info
+                if (aPrintDebugInfoFlag)
+                    {
+                    std::cout << "file_name:\t" << m_filename <<
+                            "\tnb_faces:\t" << getFaceNumber() <<
+                            "\tnb_vertices:\t" << m_number_of_vertices <<
+                            "\tbounding_box (in cm):\t(" <<
+                                m_min_corner.getX() / cm << ", " <<
+                                m_min_corner.getY() / cm << ", " <<
+                                m_min_corner.getZ() / cm << ")\t(" <<
+                                m_max_corner.getX() / cm << ", " <<
+                                m_max_corner.getY() / cm << ", " <<
+                                m_max_corner.getZ() / cm << ")" << std::endl;
+                    }
+                }
+            // Not supported
+            else
+                {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Not implemented.");
+                }
+            }
+        // Generate an error
+        else
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "There is no vertex to merge.");
+            }
+        }
+    // Generate an error
+    else
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "The operation cannot be performed on external data.");
+        }
 }
 
 
@@ -1081,194 +1777,205 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 //----------------------------------------------------
 {
-	// Split faces only if external data is not used
-	if (!m_external_data_flag)
-	{
-		// It only works if no index has been set
-		bool has_an_index(false);
-		if (m_p_index_set && m_number_of_indices)
-		{
-			removeIndex(aPrintDebugInfoFlag);
-			has_an_index = true;
-		}
+    // Split faces only if external data is not used
+    if (!m_external_data_flag)
+        {
+        // It only works if no index has been set
+        bool has_an_index(false);
+        if (m_p_index_set && m_number_of_indices)
+            {
+            removeIndex(aPrintDebugInfoFlag);
+            has_an_index = true;
+            }
 
-		// The polygon is made of triangles
-		if (m_polygon_type == GL_TRIANGLES)
-		{
-			// Reset the normal per face set
-			m_p_vertex_normal_set.clear();
+        // The polygon is made of triangles
+        if (m_polygon_type == GL_TRIANGLES)
+            {
+            // Reset the normal per face set
+            m_p_vertex_normal_set.clear();
 
-			// Reset the normal per face set
-			m_p_face_normal_set.clear();
+            // Reset the normal per face set
+            m_p_face_normal_set.clear();
 
-			// Store the new vertices
-			std::vector<double> p_new_vertex_set;
+            // Store the new vertices
+            std::vector<double> p_new_vertex_set;
 
-			// Process every triangle
-			unsigned int triangle_number(getTriangleNumber());
-			for (unsigned int i(0); i < triangle_number; ++i)
-			{
-				// Get the current vertices
-				VEC3 vertex_0(getVertex(i * 3 + 0));
-				VEC3 vertex_1(getVertex(i * 3 + 1));
-				VEC3 vertex_2(getVertex(i * 3 + 2));
+            // Process every triangle
+            unsigned int triangle_number(getTriangleNumber());
+            for (unsigned int i(0); i < triangle_number; ++i)
+                {
+                // Get the current vertices
+                VEC3 vertex_0(getVertex(i * 3 + 0));
+                VEC3 vertex_1(getVertex(i * 3 + 1));
+                VEC3 vertex_2(getVertex(i * 3 + 2));
 
-				// Get the new vertices
-				VEC3 vertex_3((vertex_0 + vertex_1) / 2.0);
-				VEC3 vertex_4((vertex_1 + vertex_2) / 2.0);
-				VEC3 vertex_5((vertex_2 + vertex_0) / 2.0);
+                // Get the new vertices
+                VEC3 vertex_3((vertex_0 + vertex_1) / 2.0);
+                VEC3 vertex_4((vertex_1 + vertex_2) / 2.0);
+                VEC3 vertex_5((vertex_2 + vertex_0) / 2.0);
 
-				// Compute the normal vector
-				VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
-				normal.normalize();
+                // Compute the normal vector
+                VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
+                normal.normalize();
 
-				// Add the first triangle
-				p_new_vertex_set.push_back(vertex_0.getX());
-				p_new_vertex_set.push_back(vertex_0.getY());
-				p_new_vertex_set.push_back(vertex_0.getZ());
-				p_new_vertex_set.push_back(vertex_3.getX());
-				p_new_vertex_set.push_back(vertex_3.getY());
-				p_new_vertex_set.push_back(vertex_3.getZ());
-				p_new_vertex_set.push_back(vertex_5.getX());
-				p_new_vertex_set.push_back(vertex_5.getY());
-				p_new_vertex_set.push_back(vertex_5.getZ());
+                // Add the first triangle
+                p_new_vertex_set.push_back(vertex_0.getX());
+                p_new_vertex_set.push_back(vertex_0.getY());
+                p_new_vertex_set.push_back(vertex_0.getZ());
+                p_new_vertex_set.push_back(vertex_3.getX());
+                p_new_vertex_set.push_back(vertex_3.getY());
+                p_new_vertex_set.push_back(vertex_3.getZ());
+                p_new_vertex_set.push_back(vertex_5.getX());
+                p_new_vertex_set.push_back(vertex_5.getY());
+                p_new_vertex_set.push_back(vertex_5.getZ());
 
-				for (unsigned int j(0); j < 3; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
+                for (unsigned int j(0); j < 3; ++j)
+                    {
+                    m_p_face_normal_set.push_back(normal.getX());
+                    m_p_face_normal_set.push_back(normal.getY());
+                    m_p_face_normal_set.push_back(normal.getZ());
+                    }
 
-				// Add the second triangle
-				p_new_vertex_set.push_back(vertex_3.getX());
-				p_new_vertex_set.push_back(vertex_3.getY());
-				p_new_vertex_set.push_back(vertex_3.getZ());
-				p_new_vertex_set.push_back(vertex_1.getX());
-				p_new_vertex_set.push_back(vertex_1.getY());
-				p_new_vertex_set.push_back(vertex_1.getZ());
-				p_new_vertex_set.push_back(vertex_4.getX());
-				p_new_vertex_set.push_back(vertex_4.getY());
-				p_new_vertex_set.push_back(vertex_4.getZ());
+                // Add the second triangle
+                p_new_vertex_set.push_back(vertex_3.getX());
+                p_new_vertex_set.push_back(vertex_3.getY());
+                p_new_vertex_set.push_back(vertex_3.getZ());
+                p_new_vertex_set.push_back(vertex_1.getX());
+                p_new_vertex_set.push_back(vertex_1.getY());
+                p_new_vertex_set.push_back(vertex_1.getZ());
+                p_new_vertex_set.push_back(vertex_4.getX());
+                p_new_vertex_set.push_back(vertex_4.getY());
+                p_new_vertex_set.push_back(vertex_4.getZ());
 
-				for (unsigned int j(0); j < 3; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
+                for (unsigned int j(0); j < 3; ++j)
+                    {
+                    m_p_face_normal_set.push_back(normal.getX());
+                    m_p_face_normal_set.push_back(normal.getY());
+                    m_p_face_normal_set.push_back(normal.getZ());
+                    }
 
-				// Add the third triangle
-				p_new_vertex_set.push_back(vertex_3.getX());
-				p_new_vertex_set.push_back(vertex_3.getY());
-				p_new_vertex_set.push_back(vertex_3.getZ());
-				p_new_vertex_set.push_back(vertex_4.getX());
-				p_new_vertex_set.push_back(vertex_4.getY());
-				p_new_vertex_set.push_back(vertex_4.getZ());
-				p_new_vertex_set.push_back(vertex_5.getX());
-				p_new_vertex_set.push_back(vertex_5.getY());
-				p_new_vertex_set.push_back(vertex_5.getZ());
+                // Add the third triangle
+                p_new_vertex_set.push_back(vertex_3.getX());
+                p_new_vertex_set.push_back(vertex_3.getY());
+                p_new_vertex_set.push_back(vertex_3.getZ());
+                p_new_vertex_set.push_back(vertex_4.getX());
+                p_new_vertex_set.push_back(vertex_4.getY());
+                p_new_vertex_set.push_back(vertex_4.getZ());
+                p_new_vertex_set.push_back(vertex_5.getX());
+                p_new_vertex_set.push_back(vertex_5.getY());
+                p_new_vertex_set.push_back(vertex_5.getZ());
 
-				for (unsigned int j(0); j < 3; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
+                for (unsigned int j(0); j < 3; ++j)
+                    {
+                    m_p_face_normal_set.push_back(normal.getX());
+                    m_p_face_normal_set.push_back(normal.getY());
+                    m_p_face_normal_set.push_back(normal.getZ());
+                    }
 
-				// Add the fourth triangle
-				p_new_vertex_set.push_back(vertex_5.getX());
-				p_new_vertex_set.push_back(vertex_5.getY());
-				p_new_vertex_set.push_back(vertex_5.getZ());
-				p_new_vertex_set.push_back(vertex_4.getX());
-				p_new_vertex_set.push_back(vertex_4.getY());
-				p_new_vertex_set.push_back(vertex_4.getZ());
-				p_new_vertex_set.push_back(vertex_2.getX());
-				p_new_vertex_set.push_back(vertex_2.getY());
-				p_new_vertex_set.push_back(vertex_2.getZ());
+                // Add the fourth triangle
+                p_new_vertex_set.push_back(vertex_5.getX());
+                p_new_vertex_set.push_back(vertex_5.getY());
+                p_new_vertex_set.push_back(vertex_5.getZ());
+                p_new_vertex_set.push_back(vertex_4.getX());
+                p_new_vertex_set.push_back(vertex_4.getY());
+                p_new_vertex_set.push_back(vertex_4.getZ());
+                p_new_vertex_set.push_back(vertex_2.getX());
+                p_new_vertex_set.push_back(vertex_2.getY());
+                p_new_vertex_set.push_back(vertex_2.getZ());
 
-				for (unsigned int j(0); j < 3; ++j)
-				{
-					m_p_face_normal_set.push_back(normal.getX());
-					m_p_face_normal_set.push_back(normal.getY());
-					m_p_face_normal_set.push_back(normal.getZ());
-				}
-			}
+                for (unsigned int j(0); j < 3; ++j)
+                    {
+                    m_p_face_normal_set.push_back(normal.getX());
+                    m_p_face_normal_set.push_back(normal.getY());
+                    m_p_face_normal_set.push_back(normal.getZ());
+                    }
+                }
 
-			// Set the index in the hash table and create the list of vertices
-			destroyVertexData();
-			m_number_of_vertices = p_new_vertex_set.size() / 3;
+            // Set the index in the hash table and create the list of vertices
+            destroyVertexData();
+            m_number_of_vertices = p_new_vertex_set.size() / 3;
 
-			GLfloat* p_float_vertex_set(0);
-			GLdouble* p_double_vertex_set(0);
-			switch (m_vertex_data_type)
-			{
-			case GL_FLOAT:
-				m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
-				p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
-				break;
+            GLfloat* p_float_vertex_set(0);
+            GLdouble* p_double_vertex_set(0);
+            switch (m_vertex_data_type)
+                {
+                case GL_FLOAT:
+                    m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
+                    p_float_vertex_set =
+                            reinterpret_cast<GLfloat*>(m_p_vertex_set);
+                    break;
 
-			case GL_DOUBLE:
-				m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
-				p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
-				break;
+                case GL_DOUBLE:
+                    m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
+                    p_double_vertex_set =
+                            reinterpret_cast<GLdouble*>(m_p_vertex_set);
+                    break;
 
-			default:
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-			}
+                default:
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                            "Invalid data type.");
+                }
 
-			// Save the result
-			for (unsigned int id(0); id < p_new_vertex_set.size(); ++id)
-			{
-				if (p_float_vertex_set)
-				{
-					p_float_vertex_set[id] = p_new_vertex_set[id];
-				}
-				if (p_double_vertex_set)
-				{
-					p_double_vertex_set[id] = p_new_vertex_set[id];
-				}
-			}
+            // Save the result
+            for (unsigned int id(0); id < p_new_vertex_set.size(); ++id)
+                {
+                if (p_float_vertex_set)
+                    {
+                    p_float_vertex_set[id] = p_new_vertex_set[id];
+                    }
+                if (p_double_vertex_set)
+                    {
+                    p_double_vertex_set[id] = p_new_vertex_set[id];
+                    }
+                }
 
-			// Restore the index
-			if (has_an_index)
-			{
-				mergeVertices(aPrintDebugInfoFlag);
-			}
+            // Restore the index
+            if (has_an_index)
+                {
+                mergeVertices(aPrintDebugInfoFlag);
+                }
 
-	        // Create the VBO if needed
-	        if (!m_vbo.get())
-	        {
-	            m_vbo.reset(createVBO());
-	        }
+            // Create the VBO if needed
+            if (!m_p_vbo.get())
+                {
+                m_p_vbo.reset(createVBO());
+                }
 
-			// Update the VBO
-			if (m_vbo->isReady())
-			{
-				updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-			}
+            // Update the VBO
+            if (m_p_vbo->isReady())
+                {
+                updateVBO(m_p_vbo->getBufferUsageHint(),
+                        m_p_vbo->getPrimitiveType());
+                }
 
-			// Display extra debug info
-			if (aPrintDebugInfoFlag)
-			{
-				std::cout << "file_name:\t" << m_filename <<
-						"\tnb_faces:\t" << getFaceNumber() <<
-						"\tnb_vertices:\t" << m_number_of_vertices <<
-						"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
-												m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
-			}
-		}
-		// Not supported
-		else
-		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-		}
-	}
-	// Generate an error
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
-	}
+            // Display extra debug info
+            if (aPrintDebugInfoFlag)
+                {
+                std::cout << "file_name:\t" << m_filename <<
+                        "\tnb_faces:\t" << getFaceNumber() <<
+                        "\tnb_vertices:\t" << m_number_of_vertices <<
+                        "\tbounding_box (in cm):\t(" <<
+                        m_min_corner.getX() / cm << ", " <<
+                        m_min_corner.getY() / cm << ", " <<
+                        m_min_corner.getZ() / cm << ")\t(" <<
+                        m_max_corner.getX() / cm << ", " <<
+                        m_max_corner.getY() / cm << ", " <<
+                        m_max_corner.getZ() / cm << ")" << std::endl;
+                }
+            }
+        // Not supported
+        else
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Not implemented.");
+            }
+        }
+    // Generate an error
+    else
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "The operation cannot be performed on external data.");
+        }
 }
 
 
@@ -1276,41 +1983,73 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 //---------------------------------------------------------------
 {
-	if (m_p_vertex_set && m_number_of_vertices)
-	{
-        // Create the VBO if needed
-        if (!m_vbo.get())
+    if (m_p_vertex_set && m_number_of_vertices)
         {
-            m_vbo.reset(createVBO());
+        // Create the VBO if needed
+        if (!m_p_vbo.get())
+            {
+            m_p_vbo.reset(createVBO());
+            }
+
+        // Set the type of VBO
+        m_p_vbo->setBufferUsageHint(aTypeOfVBO);
+
+        if (getVertexNormalNumber())
+            {
+            m_p_vbo->setVertexData(aTypeOfPrimitive,
+                    m_number_of_vertices,
+                    3, m_vertex_data_type,
+                    m_p_vertex_set,
+                    getVertexNormalNumber(),
+                    3,
+                    GL_FLOAT,
+                    &m_p_vertex_normal_set[0],
+                    0,
+                    0,
+                    GL_NONE,
+                    0);
+            }
+        else if (getFaceNormalNumber())
+            {
+            m_p_vbo->setVertexData(aTypeOfPrimitive,
+                    m_number_of_vertices,
+                    3,
+                    m_vertex_data_type,
+                    m_p_vertex_set,
+                    getFaceNormalNumber(),
+                    3,
+                    GL_FLOAT,
+                    &m_p_face_normal_set[0],
+                    0,
+                    0,
+                    GL_NONE,
+                    0);
+            }
+        else
+            {
+            m_p_vbo->setVertexData(aTypeOfPrimitive,
+                    m_number_of_vertices,
+                    3,
+                    m_vertex_data_type,
+                    m_p_vertex_set,
+                    0,
+                    0,
+                    GL_NONE,
+                    0,
+                    0,
+                    0,
+                    GL_NONE,
+                    0);
+            }
+
+        if (m_p_index_set && m_number_of_indices &&
+                m_index_data_type != GL_NONE)
+            {
+            m_p_vbo->setIndexData(m_number_of_indices,
+                    m_index_data_type,
+                    m_p_index_set);
+            }
         }
-
-		// Set the type of VBO
-		m_vbo->setBufferUsageHint(aTypeOfVBO);
-
-		if (getVertexNormalNumber())
-		{
-			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
-					getVertexNormalNumber(), 3, GL_FLOAT, &m_p_vertex_normal_set[0],
-					0, 0, GL_NONE, 0);
-		}
-		else if (getFaceNormalNumber())
-		{
-			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
-					getFaceNormalNumber(), 3, GL_FLOAT, &m_p_face_normal_set[0],
-					0, 0, GL_NONE, 0);
-		}
-		else
-		{
-			m_vbo->setVertexData(aTypeOfPrimitive, m_number_of_vertices, 3, m_vertex_data_type, m_p_vertex_set,
-					0, 0, GL_NONE, 0,
-					0, 0, GL_NONE, 0);
-		}
-
-		if (m_p_index_set && m_number_of_indices && m_index_data_type != GL_NONE)
-		{
-			m_vbo->setIndexData(m_number_of_indices, m_index_data_type, m_p_index_set);
-		}
-	}
 }
 
 
@@ -1318,74 +2057,78 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 VEC3 PolygonMesh::getVertex(unsigned int anIndex) const
 //-----------------------------------------------------
 {
-	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    if (m_number_of_vertices <= anIndex && m_p_vertex_set)
+    {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+    }
 
-	double x, y, z;
+    double x;
+    double y;
+    double z;
 
-	switch (m_vertex_data_type)
-	{
-	case GL_FLOAT:
-		{
-			GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
-			x = p_temp[anIndex * 3 + 0];
-			y = p_temp[anIndex * 3 + 1];
-			z = p_temp[anIndex * 3 + 2];
-		}
-		break;
+    switch (m_vertex_data_type)
+        {
+        case GL_FLOAT:
+            {
+            GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
+            x = p_temp[anIndex * 3 + 0];
+            y = p_temp[anIndex * 3 + 1];
+            z = p_temp[anIndex * 3 + 2];
+            }
+            break;
 
-	case GL_DOUBLE:
-		{
-			GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
-			x = p_temp[anIndex * 3 + 0];
-			y = p_temp[anIndex * 3 + 1];
-			z = p_temp[anIndex * 3 + 2];
-		}
-		break;
+        case GL_DOUBLE:
+            {
+            GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
+            x = p_temp[anIndex * 3 + 0];
+            y = p_temp[anIndex * 3 + 1];
+            z = p_temp[anIndex * 3 + 2];
+            }
+            break;
 
-	default:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-	}
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
 
-	return (VEC3(x, y, z));
+    return (VEC3(x, y, z));
 }
 
 
 //-----------------------------------------------
 void PolygonMesh::setVertex(unsigned int anIndex,
-							const VEC3& aVertex)
+                            const VEC3& aVertex)
 //-----------------------------------------------
 {
-	if (m_number_of_vertices <= anIndex && m_p_vertex_set)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    if (m_number_of_vertices <= anIndex && m_p_vertex_set)
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
 
-	switch (m_vertex_data_type)
-	{
-	case GL_FLOAT:
-		{
-			GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
-			p_temp[anIndex * 3 + 0] = aVertex.getX();
-			p_temp[anIndex * 3 + 1] = aVertex.getY();
-			p_temp[anIndex * 3 + 2] = aVertex.getZ();
-		}
-		break;
+    switch (m_vertex_data_type)
+        {
+        case GL_FLOAT:
+            {
+            GLfloat* p_temp(reinterpret_cast<GLfloat*>(m_p_vertex_set));
+            p_temp[anIndex * 3 + 0] = aVertex.getX();
+            p_temp[anIndex * 3 + 1] = aVertex.getY();
+            p_temp[anIndex * 3 + 2] = aVertex.getZ();
+            }
+            break;
 
-	case GL_DOUBLE:
-		{
-			GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
-			p_temp[anIndex * 3 + 0] = aVertex.getX();
-			p_temp[anIndex * 3 + 1] = aVertex.getY();
-			p_temp[anIndex * 3 + 2] = aVertex.getZ();
-		}
-		break;
+        case GL_DOUBLE:
+            {
+            GLdouble* p_temp(reinterpret_cast<GLdouble*>(m_p_vertex_set));
+            p_temp[anIndex * 3 + 0] = aVertex.getX();
+            p_temp[anIndex * 3 + 1] = aVertex.getY();
+            p_temp[anIndex * 3 + 2] = aVertex.getZ();
+            }
+            break;
 
-	default:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-	}
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
 }
 
 
@@ -1393,449 +2136,532 @@ void PolygonMesh::setVertex(unsigned int anIndex,
 int PolygonMesh::getIndex(unsigned int anIndex) const
 //---------------------------------------------------
 {
-	if (m_number_of_indices <= anIndex && m_p_index_set)
-	{
-		throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-	}
+    if (m_number_of_indices <= anIndex && m_p_index_set)
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
 
-	switch (m_index_data_type)
-	{
-	case GL_UNSIGNED_INT:
-		{
-			GLuint* p_temp(reinterpret_cast<GLuint*>(m_p_index_set));
-			return (int(p_temp[anIndex]));
-		}
-		break;
+    switch (m_index_data_type)
+        {
+        case GL_UNSIGNED_INT:
+            {
+            GLuint* p_temp(reinterpret_cast<GLuint*>(m_p_index_set));
+            return (int(p_temp[anIndex]));
+            }
+            break;
 
-	case GL_UNSIGNED_SHORT:
-		{
-			GLushort* p_temp(reinterpret_cast<GLushort*>(m_p_index_set));
-			return (int(p_temp[anIndex]));
-		}
-		break;
+        case GL_UNSIGNED_SHORT:
+            {
+            GLushort* p_temp(reinterpret_cast<GLushort*>(m_p_index_set));
+            return (int(p_temp[anIndex]));
+            }
+            break;
 
-	case GL_UNSIGNED_BYTE:
-		{
-			GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
-			return (int(p_temp[anIndex]));
-		}
-		break;
+        case GL_UNSIGNED_BYTE:
+            {
+            GLubyte* p_temp(reinterpret_cast<GLubyte*>(m_p_index_set));
+            return (int(p_temp[anIndex]));
+            }
+            break;
 
-	default:
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-	}
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid data type.");
+        }
 }
 
 
 //-----------------------------------------------------------------------
 void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<float>* aVertexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //-----------------------------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			0,
-			0,
-			GL_NONE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //------------------------------------------------------------------------
 void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<double>* aVertexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //------------------------------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			0,
-			0,
-			GL_NONE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //------------------------------------------------------------------------------
 void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  const std::vector<unsigned int>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<float>* aVertexArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //------------------------------------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_INT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_INT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //------------------------------------------------------------------------------
 void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  const std::vector<unsigned int>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //------------------------------------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_INT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_INT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//--------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  const std::vector<unsigned short>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//--------------------------------------------------------------------------------
+//------------------------------------------------------
+void PolygonMesh::setExternalData(
+        int aTypeOfPrimitive,
+        const std::vector<float>* aVertexArray,
+        const std::vector<unsigned short>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//------------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_SHORT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_SHORT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//--------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  const std::vector<unsigned short>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//--------------------------------------------------------------------------------
+//------------------------------------------------------
+void PolygonMesh::setExternalData(
+        int aTypeOfPrimitive,
+        const std::vector<double>* aVertexArray,
+        const std::vector<unsigned short>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//------------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_SHORT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_SHORT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//-------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  const std::vector<unsigned char>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//-------------------------------------------------------------------------------
+//-----------------------------------------------------
+void PolygonMesh::setExternalData(
+        int aTypeOfPrimitive,
+        const std::vector<float>* aVertexArray,
+        const std::vector<unsigned char>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//-----------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_BYTE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_BYTE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//-------------------------------------------------------------------------------
-void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  const std::vector<unsigned char>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//-------------------------------------------------------------------------------
+//-----------------------------------------------------
+void PolygonMesh::setExternalData(
+        int aTypeOfPrimitive,
+        const std::vector<double>* aVertexArray,
+        const std::vector<unsigned char>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//-----------------------------------------------------
 {
-	setExternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_BYTE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setExternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_BYTE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //---------------------------------------------------------------
 void PolygonMesh::setExternalData(int aTypeOfPrimitive,
-								  const void* aVertexArray,
-								  unsigned int aNumberOfVertices,
-								  int aVertexDataType,
-								  const void* anIndexArray,
-								  unsigned int aNumberOfIndices,
-								  int anIndexDataType,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const void* aVertexArray,
+                                  unsigned int aNumberOfVertices,
+                                  int aVertexDataType,
+                                  const void* anIndexArray,
+                                  unsigned int aNumberOfIndices,
+                                  int anIndexDataType,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //---------------------------------------------------------------
 {
-	reset();
+    reset();
 
-	m_external_data_flag = true;
-	m_polygon_type       = aTypeOfPrimitive;
-	m_p_vertex_set       = const_cast<void*>(aVertexArray);
-	m_number_of_vertices = aNumberOfVertices;
-	m_vertex_data_type   = aVertexDataType;
+    m_external_data_flag = true;
+    m_polygon_type       = aTypeOfPrimitive;
+    m_p_vertex_set       = const_cast<void*>(aVertexArray);
+    m_number_of_vertices = aNumberOfVertices;
+    m_vertex_data_type   = aVertexDataType;
 
-	// There are index data
-	if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
-	{
-		m_p_index_set       = const_cast<void*>(anIndexArray);
-		m_number_of_indices = aNumberOfIndices;
-		m_index_data_type   = anIndexDataType;
-	}
-	else
-	{
-		m_p_index_set       = 0;
-		m_number_of_indices = 0;
-		m_index_data_type   = GL_NONE;
-	}
+    // There are index data
+    if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
+        {
+        m_p_index_set       = const_cast<void*>(anIndexArray);
+        m_number_of_indices = aNumberOfIndices;
+        m_index_data_type   = anIndexDataType;
+        }
+    else
+        {
+        m_p_index_set       = 0;
+        m_number_of_indices = 0;
+        m_index_data_type   = GL_NONE;
+        }
 
-	// Compute the bounding box
-	computeBoundingBox();
+    // Compute the bounding box
+    computeBoundingBox();
 
-	// Compute the normal vectors
-	computeNormalVectors();
+    // Compute the normal vectors
+    computeNormalVectors();
 
-	// Update the VBO
-	if (aCreateVBOFlag)
-	{
-		updateVBO(aTypeOfVBO, m_polygon_type);
-	}
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, m_polygon_type);
+        }
 }
 
 
 //-----------------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+        const std::vector<float>* aVertexArray,
+        const std::vector<float>* aNormalArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //-----------------------------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			0,
-			0,
-			GL_NONE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+
+    if (aVertexArray->size() == aNormalArray->size())
+    {
+        m_p_vertex_normal_set = *aNormalArray;
+    }
+    else
+    {
+        m_p_face_normal_set = *aNormalArray;
+    }
+
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+}
+
+
+//-----------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<float>* aVertexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//-----------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+}
+
+
+//-----------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+        const std::vector<double>* aVertexArray,
+        const std::vector<double>* aNormalArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//-----------------------------------------------------------------------
+{
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+
+    if (aVertexArray->size() == aNormalArray->size())
+    {
+        for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                ite != aNormalArray->end();
+                ++ite)
+        {
+            m_p_vertex_normal_set.push_back(*ite);
+        }
+    }
+    else
+    {
+        for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                ite != aNormalArray->end();
+                ++ite)
+        {
+            m_p_face_normal_set.push_back(*ite);
+        }
+    }
+
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //------------------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<double>* aVertexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //------------------------------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			0,
-			0,
-			GL_NONE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //------------------------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  const std::vector<unsigned int>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<float>* aVertexArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //------------------------------------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_INT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_INT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //------------------------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  const std::vector<unsigned int>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //------------------------------------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_INT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_INT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//--------------------------------------------------------------------------------
-void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  const std::vector<unsigned short>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//--------------------------------------------------------------------------------
+//------------------------------------------------------
+void PolygonMesh::setInternalData(
+        int aTypeOfPrimitive,
+        const std::vector<float>* aVertexArray,
+        const std::vector<unsigned short>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//------------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_SHORT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_SHORT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//--------------------------------------------------------------------------------
-void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  const std::vector<unsigned short>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//--------------------------------------------------------------------------------
+//------------------------------------------------------
+void PolygonMesh::setInternalData(
+        int aTypeOfPrimitive,
+        const std::vector<double>* aVertexArray,
+        const std::vector<unsigned short>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//------------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_SHORT,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_SHORT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//-------------------------------------------------------------------------------
-void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<float>* aVertexArray,
-								  const std::vector<unsigned char>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//-------------------------------------------------------------------------------
+//-----------------------------------------------------
+void PolygonMesh::setInternalData(
+        int aTypeOfPrimitive,
+        const std::vector<float>* aVertexArray,
+        const std::vector<unsigned char>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//-----------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_FLOAT,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_BYTE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_BYTE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
-//-------------------------------------------------------------------------------
-void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const std::vector<double>* aVertexArray,
-								  const std::vector<unsigned char>* anIndexArray,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
-//-------------------------------------------------------------------------------
+//-----------------------------------------------------
+void PolygonMesh::setInternalData(
+        int aTypeOfPrimitive,
+        const std::vector<double>* aVertexArray,
+        const std::vector<unsigned char>* anIndexArray,
+        bool aCreateVBOFlag,
+        int aTypeOfVBO)
+//-----------------------------------------------------
 {
-	setInternalData(aTypeOfPrimitive,
-			&((*aVertexArray)[0]),
-			aVertexArray->size() / 3,
-			GL_DOUBLE,
-			&((*anIndexArray)[0]),
-			anIndexArray->size(),
-			GL_UNSIGNED_BYTE,
-			aCreateVBOFlag,
-			aTypeOfVBO);
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_BYTE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
 }
 
 
 //---------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
-								  const void* aVertexArray,
-								  unsigned int aNumberOfVertices,
-								  int aVertexDataType,
-								  const void* anIndexArray,
-								  unsigned int aNumberOfIndices,
-								  int anIndexDataType,
-								  bool aCreateVBOFlag,
-								  int aTypeOfVBO)
+                                  const void* aVertexArray,
+                                  unsigned int aNumberOfVertices,
+                                  int aVertexDataType,
+                                  const void* anIndexArray,
+                                  unsigned int aNumberOfIndices,
+                                  int anIndexDataType,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
 //---------------------------------------------------------------
 {
-	reset();
+    reset();
 
-	m_external_data_flag = false;
-	m_polygon_type       = aTypeOfPrimitive;
-	m_number_of_vertices = aNumberOfVertices;
-	m_vertex_data_type   = aVertexDataType;
-	copyVertexSet(aVertexArray);
+    m_external_data_flag = false;
+    m_polygon_type       = aTypeOfPrimitive;
+    m_number_of_vertices = aNumberOfVertices;
+    m_vertex_data_type   = aVertexDataType;
+    copyVertexSet(aVertexArray);
 
-	// There are index data
-	if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
-	{
-		m_number_of_indices = aNumberOfIndices;
-		m_index_data_type   = anIndexDataType;
-		copyIndexSet(anIndexArray);
-	}
-	else
-	{
-		m_p_index_set       = 0;
-		m_number_of_indices = 0;
-		m_index_data_type   = GL_NONE;
-	}
+    // There are index data
+    if (anIndexArray && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
+        {
+        m_number_of_indices = aNumberOfIndices;
+        m_index_data_type   = anIndexDataType;
+        copyIndexSet(anIndexArray);
+        }
+    else
+        {
+        m_p_index_set       = 0;
+        m_number_of_indices = 0;
+        m_index_data_type   = GL_NONE;
+        }
 
-	// Compute the bounding box
-	computeBoundingBox();
+    // Compute the bounding box
+    computeBoundingBox();
 
-	// Compute the normal vectors
-	computeNormalVectors();
+    // Compute the normal vectors
+    computeNormalVectors();
 
-	// Update the VBO
-	if (aCreateVBOFlag)
-	{
-		updateVBO(aTypeOfVBO, m_polygon_type);
-	}
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, m_polygon_type);
+        }
 }
 
 
@@ -1843,34 +2669,37 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 void PolygonMesh::destroyVertexData()
 //-----------------------------------
 {
-	// The data is manage externally
-	if (m_external_data_flag)
-	{
-		m_p_vertex_set = 0;
-	}
-	// The data is manage internally
-	else
-	{
-		if (m_p_vertex_set)
-		{
-			// Cannot release the memory of an array whose type is void*
-			switch (m_vertex_data_type)
-			{
-			case GL_FLOAT:
-				delete [] reinterpret_cast<GLfloat*>(m_p_vertex_set);
-				break;
+    // The data is manage externally
+    if (m_external_data_flag)
+        {
+        m_p_vertex_set = 0;
+        }
+    // The data is manage internally
+    else
+        {
+        if (m_p_vertex_set)
+            {
+            // Cannot release the memory of an array whose type is void*
+            switch (m_vertex_data_type)
+                {
+                case GL_FLOAT:
+                    delete [] reinterpret_cast<GLfloat*>(m_p_vertex_set);
+                    break;
 
-			case GL_DOUBLE:
-				delete [] reinterpret_cast<GLdouble*>(m_p_vertex_set);
-				break;
+                case GL_DOUBLE:
+                    delete [] reinterpret_cast<GLdouble*>(m_p_vertex_set);
+                    break;
 
-			default:
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-			}
-			m_p_vertex_set = 0;
-		}
-	}
-	m_number_of_vertices = 0;
+                default:
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                            "Invalid data type.");
+                }
+
+            m_p_vertex_set = 0;
+            }
+        }
+
+    m_number_of_vertices = 0;
 }
 
 
@@ -1878,38 +2707,40 @@ void PolygonMesh::destroyVertexData()
 void PolygonMesh::destroyIndexData()
 //----------------------------------
 {
-	// The data is manage externally
-	if (m_external_data_flag)
-	{
-		m_p_index_set  = 0;
-	}
-	// The data is manage internally
-	else
-	{
-		if (m_p_index_set)
-		{
-			// Cannot release the memory of an array whose type is void*
-			switch (m_index_data_type)
-			{
-			case GL_UNSIGNED_INT:
-				delete [] reinterpret_cast<GLuint*>(m_p_index_set);
-				break;
+    // The data is manage externally
+    if (m_external_data_flag)
+        {
+        m_p_index_set  = 0;
+        }
+    // The data is manage internally
+    else
+        {
+        if (m_p_index_set)
+            {
+            // Cannot release the memory of an array whose type is void*
+            switch (m_index_data_type)
+                {
+                case GL_UNSIGNED_INT:
+                    delete [] reinterpret_cast<GLuint*>(m_p_index_set);
+                    break;
 
-			case GL_UNSIGNED_SHORT:
-				delete [] reinterpret_cast<GLushort*>(m_p_index_set);
-				break;
+                case GL_UNSIGNED_SHORT:
+                    delete [] reinterpret_cast<GLushort*>(m_p_index_set);
+                    break;
 
-			case GL_UNSIGNED_BYTE:
-				delete [] reinterpret_cast<GLubyte*>(m_p_index_set);
-				break;
+                case GL_UNSIGNED_BYTE:
+                    delete [] reinterpret_cast<GLubyte*>(m_p_index_set);
+                    break;
 
-			default:
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-			}
-			m_p_index_set = 0;
-		}
-	}
-	m_number_of_indices = 0;
+                default:
+                    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                            "Invalid data type.");
+                }
+
+            m_p_index_set = 0;
+            }
+        }
+    m_number_of_indices = 0;
 }
 
 
@@ -1917,130 +2748,142 @@ void PolygonMesh::destroyIndexData()
 void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 //-----------------------------------------------------
 {
-	// Split faces only if external data is not used
-	if (!m_external_data_flag)
-	{
-		// It only works if an index has been set
-		if (m_p_index_set && m_number_of_indices)
-		{
-			// The polygon is made of triangles
-			if (m_polygon_type == GL_TRIANGLES)
-			{
-				// Reset the normal per face set
-				m_p_vertex_normal_set.clear();
+    // Split faces only if external data is not used
+    if (!m_external_data_flag)
+        {
+        // It only works if an index has been set
+        if (m_p_index_set && m_number_of_indices)
+            {
+            // The polygon is made of triangles
+            if (m_polygon_type == GL_TRIANGLES)
+                {
+                // Reset the normal per face set
+                m_p_vertex_normal_set.clear();
 
-				// Reset the normal per face set
-				m_p_face_normal_set.clear();
+                // Reset the normal per face set
+                m_p_face_normal_set.clear();
 
-				// Store the new vertices
-				std::vector<double> p_new_vertex_set;
+                // Store the new vertices
+                std::vector<double> p_new_vertex_set;
 
-				// Process every triangle
-				unsigned int triangle_number(getTriangleNumber());
-				for (unsigned int i(0); i < triangle_number; ++i)
-				{
-					// Get the current vertices
-					int id_0(getIndex(i * 3 + 0));
-					int id_1(getIndex(i * 3 + 1));
-					int id_2(getIndex(i * 3 + 2));
+                // Process every triangle
+                unsigned int triangle_number(getTriangleNumber());
+                for (unsigned int i(0); i < triangle_number; ++i)
+                    {
+                    // Get the current vertices
+                    int id_0(getIndex(i * 3 + 0));
+                    int id_1(getIndex(i * 3 + 1));
+                    int id_2(getIndex(i * 3 + 2));
 
-					VEC3 vertex_0(getVertex(id_0));
-					VEC3 vertex_1(getVertex(id_1));
-					VEC3 vertex_2(getVertex(id_2));
+                    VEC3 vertex_0(getVertex(id_0));
+                    VEC3 vertex_1(getVertex(id_1));
+                    VEC3 vertex_2(getVertex(id_2));
 
-					// Compute the normal vector
-					VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
-					normal.normalize();
+                    // Compute the normal vector
+                    VEC3 normal((vertex_2 - vertex_0)^(vertex_2 - vertex_1));
+                    normal.normalize();
 
-					// Add the first triangle
-					p_new_vertex_set.push_back(vertex_0.getX());
-					p_new_vertex_set.push_back(vertex_0.getY());
-					p_new_vertex_set.push_back(vertex_0.getZ());
-					p_new_vertex_set.push_back(vertex_1.getX());
-					p_new_vertex_set.push_back(vertex_1.getY());
-					p_new_vertex_set.push_back(vertex_1.getZ());
-					p_new_vertex_set.push_back(vertex_2.getX());
-					p_new_vertex_set.push_back(vertex_2.getY());
-					p_new_vertex_set.push_back(vertex_2.getZ());
+                    // Add the first triangle
+                    p_new_vertex_set.push_back(vertex_0.getX());
+                    p_new_vertex_set.push_back(vertex_0.getY());
+                    p_new_vertex_set.push_back(vertex_0.getZ());
+                    p_new_vertex_set.push_back(vertex_1.getX());
+                    p_new_vertex_set.push_back(vertex_1.getY());
+                    p_new_vertex_set.push_back(vertex_1.getZ());
+                    p_new_vertex_set.push_back(vertex_2.getX());
+                    p_new_vertex_set.push_back(vertex_2.getY());
+                    p_new_vertex_set.push_back(vertex_2.getZ());
 
-					for (unsigned int j(0); j < 3; ++j)
-					{
-						m_p_face_normal_set.push_back(normal.getX());
-						m_p_face_normal_set.push_back(normal.getY());
-						m_p_face_normal_set.push_back(normal.getZ());
-					}
-				}
+                    for (unsigned int j(0); j < 3; ++j)
+                        {
+                        m_p_face_normal_set.push_back(normal.getX());
+                        m_p_face_normal_set.push_back(normal.getY());
+                        m_p_face_normal_set.push_back(normal.getZ());
+                        }
+                    }
 
-				// Set the index in the hash table and create the list of vertices
-				destroyIndexData();
-				destroyVertexData();
-				m_number_of_vertices = p_new_vertex_set.size() / 3;
+                // Set the index in the hash table and
+                // create the list of vertices
+                destroyIndexData();
+                destroyVertexData();
+                m_number_of_vertices = p_new_vertex_set.size() / 3;
 
-				GLfloat* p_float_vertex_set(0);
-				GLdouble* p_double_vertex_set(0);
-				switch (m_vertex_data_type)
-				{
-				case GL_FLOAT:
-					m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
-					p_float_vertex_set = reinterpret_cast<GLfloat*>(m_p_vertex_set);
-					break;
+                GLfloat* p_float_vertex_set(0);
+                GLdouble* p_double_vertex_set(0);
+                switch (m_vertex_data_type)
+                    {
+                    case GL_FLOAT:
+                        m_p_vertex_set = new GLfloat[m_number_of_vertices * 3];
+                        p_float_vertex_set =
+                                reinterpret_cast<GLfloat*>(m_p_vertex_set);
+                        break;
 
-				case GL_DOUBLE:
-					m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
-					p_double_vertex_set = reinterpret_cast<GLdouble*>(m_p_vertex_set);
-					break;
+                    case GL_DOUBLE:
+                        m_p_vertex_set = new GLdouble[m_number_of_vertices * 3];
+                        p_double_vertex_set =
+                                reinterpret_cast<GLdouble*>(m_p_vertex_set);
+                        break;
 
-				default:
-					throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-				}
+                    default:
+                        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                                "Invalid data type.");
+                    }
 
-				// Save the result
-				for (unsigned int id(0); id < p_new_vertex_set.size(); ++id)
-				{
-					if (p_float_vertex_set)
-					{
-						p_float_vertex_set[id] = p_new_vertex_set[id];
-					}
-					if (p_double_vertex_set)
-					{
-						p_double_vertex_set[id] = p_new_vertex_set[id];
-					}
-				}
+                // Save the result
+                for (unsigned int id(0); id < p_new_vertex_set.size(); ++id)
+                    {
+                    if (p_float_vertex_set)
+                        {
+                        p_float_vertex_set[id] = p_new_vertex_set[id];
+                        }
+                    if (p_double_vertex_set)
+                        {
+                        p_double_vertex_set[id] = p_new_vertex_set[id];
+                        }
+                    }
 
-		        // Create the VBO if needed
-		        if (!m_vbo.get())
-		        {
-		            m_vbo.reset(createVBO());
-		        }
+                // Create the VBO if needed
+                if (!m_p_vbo.get())
+                    {
+                    m_p_vbo.reset(createVBO());
+                    }
 
-				// Update the VBO
-				if (m_vbo->isReady())
-				{
-					updateVBO(m_vbo->getBufferUsageHint(), m_vbo->getPrimitiveType());
-				}
+                // Update the VBO
+                if (m_p_vbo->isReady())
+                    {
+                    updateVBO(m_p_vbo->getBufferUsageHint(),
+                            m_p_vbo->getPrimitiveType());
+                    }
 
-				// Display extra debug info
-				if (aPrintDebugInfoFlag)
-				{
-					std::cout << "file_name:\t" << m_filename <<
-							"\tnb_faces:\t" << getFaceNumber() <<
-							"\tnb_vertices:\t" << m_number_of_vertices <<
-							"\tbounding_box (in cm):\t(" << m_min_corner.getX() / cm << ", " << m_min_corner.getY() / cm << ", " << m_min_corner.getZ() / cm << ")\t(" <<
-													m_max_corner.getX() / cm << ", " << m_max_corner.getY() / cm << ", " << m_max_corner.getZ() / cm << ")" << std::endl;
-				}
-			}
-			// Not supported
-			else
-			{
-				throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented.");
-			}
-		}
-	}
-	// Generate an error
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The operation cannot be performed on external data.");
-	}
+                // Display extra debug info
+                if (aPrintDebugInfoFlag)
+                    {
+                    std::cout << "file_name:\t" << m_filename <<
+                            "\tnb_faces:\t" << getFaceNumber() <<
+                            "\tnb_vertices:\t" << m_number_of_vertices <<
+                            "\tbounding_box (in cm):\t(" <<
+                            m_min_corner.getX() / cm << ", " <<
+                            m_min_corner.getY() / cm << ", " <<
+                            m_min_corner.getZ() / cm << ")\t(" <<
+                            m_max_corner.getX() / cm << ", " <<
+                            m_max_corner.getY() / cm << ", " <<
+                            m_max_corner.getZ() / cm << ")" << std::endl;
+                    }
+                }
+            // Not supported
+            else
+                {
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Not implemented.");
+                }
+            }
+        }
+    // Generate an error
+    else
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "The operation cannot be performed on external data.");
+        }
 }
 
 
@@ -2048,47 +2891,48 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
 void PolygonMesh::copyVertexSet(const void* apVertexSet)
 //------------------------------------------------------
 {
-	// Store the number of vertices
-	unsigned int temp(m_number_of_vertices);
+    // Store the number of vertices
+    unsigned int temp(m_number_of_vertices);
 
-	// Destroy data if needed
-	destroyVertexData();
+    // Destroy data if needed
+    destroyVertexData();
 
-	// Restore the number of vertices
-	m_number_of_vertices = temp;
+    // Restore the number of vertices
+    m_number_of_vertices = temp;
 
-	// The data is manage externally
-	if (m_external_data_flag)
-	{
-		m_p_vertex_set = const_cast<void*>(apVertexSet);
-	}
-	// The data is not manage externally
-	else
-	{
-		unsigned int size_to_copy(m_number_of_vertices * 3);
+    // The data is manage externally
+    if (m_external_data_flag)
+        {
+        m_p_vertex_set = const_cast<void*>(apVertexSet);
+        }
+    // The data is not manage externally
+    else
+        {
+        unsigned int size_to_copy(m_number_of_vertices * 3);
 
-		switch (m_vertex_data_type)
-		{
-		case GL_FLOAT:
-			m_p_vertex_set = new GLfloat[size_to_copy];
-			size_to_copy *= sizeof(GLfloat);
-			break;
+        switch (m_vertex_data_type)
+            {
+            case GL_FLOAT:
+                m_p_vertex_set = new GLfloat[size_to_copy];
+                size_to_copy *= sizeof(GLfloat);
+                break;
 
-		case GL_DOUBLE:
-			m_p_vertex_set = new GLdouble[size_to_copy];
-			size_to_copy *= sizeof(GLdouble);
-			break;
+            case GL_DOUBLE:
+                m_p_vertex_set = new GLdouble[size_to_copy];
+                size_to_copy *= sizeof(GLdouble);
+                break;
 
-		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-		}
+            default:
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Invalid data type.");
+            }
 
-		// Copy data if needed
-		if (size_to_copy)
-		{
-			memcpy (m_p_vertex_set, apVertexSet, size_to_copy);
-		}
-	}
+        // Copy data if needed
+        if (size_to_copy)
+            {
+            memcpy (m_p_vertex_set, apVertexSet, size_to_copy);
+            }
+        }
 }
 
 
@@ -2096,62 +2940,67 @@ void PolygonMesh::copyVertexSet(const void* apVertexSet)
 void PolygonMesh::copyIndexSet(const void* apIndexSet)
 //----------------------------------------------------
 {
-	// Store the number of indices
-	unsigned int temp(m_number_of_indices);
+    // Store the number of indices
+    unsigned int temp(m_number_of_indices);
 
-	// Destroy data if needed
-	destroyIndexData();
+    // Destroy data if needed
+    destroyIndexData();
 
-	// Restore the number of indices
-	m_number_of_indices = temp;
+    // Restore the number of indices
+    m_number_of_indices = temp;
 
-	// The data is manage externally
-	if (m_external_data_flag)
-	{
-		m_p_index_set  = const_cast<void*>(apIndexSet);
-	}
-	// The data is not manage externally
-	else
-	{
-		unsigned int size_to_copy(m_number_of_indices);
+    // The data is manage externally
+    if (m_external_data_flag)
+        {
+        m_p_index_set  = const_cast<void*>(apIndexSet);
+        }
+    // The data is not manage externally
+    else
+        {
+        unsigned int size_to_copy(m_number_of_indices);
 
-		switch (m_polygon_type)
-		{
-			case GL_TRIANGLES:
-				break;
+        switch (m_polygon_type)
+            {
+            case GL_TRIANGLES:
+                break;
 
-			case GL_LINES:
-				break;
+            case GL_LINES:
+                break;
 
-		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-		}
+            default:
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Invalid data type.");
+            }
 
-		switch (m_index_data_type)
-		{
-		case GL_UNSIGNED_INT:
-			m_p_index_set = new GLuint[size_to_copy];
-			size_to_copy *= sizeof(GLuint);
-			break;
+        switch (m_index_data_type)
+            {
+            case 0:
+                break;
 
-		case GL_UNSIGNED_SHORT:
-			m_p_index_set = new GLushort[size_to_copy];
-			size_to_copy *= sizeof(GLushort);
-			break;
+            case GL_UNSIGNED_INT:
+                m_p_index_set = new GLuint[size_to_copy];
+                size_to_copy *= sizeof(GLuint);
+                break;
 
-		case GL_UNSIGNED_BYTE:
-			m_p_index_set = new GLubyte[size_to_copy];
-			size_to_copy *= sizeof(GLubyte);
-			break;
+            case GL_UNSIGNED_SHORT:
+                m_p_index_set = new GLushort[size_to_copy];
+                size_to_copy *= sizeof(GLushort);
+                break;
 
-		default:
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
-		}
+            case GL_UNSIGNED_BYTE:
+                m_p_index_set = new GLubyte[size_to_copy];
+                size_to_copy *= sizeof(GLubyte);
+                break;
 
-		// Copy data if needed
-		if (size_to_copy)
-		{
-			memcpy (m_p_index_set, apIndexSet, size_to_copy);
-		}
-	}
+            default:
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Invalid data type.");
+            }
+
+        // Copy data if needed
+        if (size_to_copy)
+            {
+            memcpy (m_p_index_set, apIndexSet, size_to_copy);
+            }
+        }
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_MATERIAL_SET_H
-#define GVXR_MATERIAL_SET_H
+#ifndef __MaterialSet_h
+#define __MaterialSet_h
 
 
 /**
@@ -45,7 +45,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       13/10/2014
+*   @date       13/01/2017
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -56,35 +56,39 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <iostream>
 #include <map>
 #include <string>
 
-#ifndef GVXR_TISSUE_MATERIAL_H
+#ifndef __TissueMaterial_h
 #include "TissueMaterial.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	MaterialSet
-*	@brief	MaterialSet is a class to manage a table of materials.
+*   @class  MaterialSet
+*   @brief  MaterialSet is a class to manage a table of materials.
 */
 //==============================================================================
 class MaterialSet
@@ -92,52 +96,52 @@ class MaterialSet
 {
 //******************************************************************************
 public:
-	//---------------------------------------------------------------------------
-	///	Default Constructor (prevent instanciation).
-	//---------------------------------------------------------------------------
-	MaterialSet();
+    //---------------------------------------------------------------------------
+    /// Default Constructor (prevent instanciation).
+    //---------------------------------------------------------------------------
+    MaterialSet();
 
 
-	//--------------------------------------------------------------------------
-	///	Copy constructor (prevent copy-construction).
-	//--------------------------------------------------------------------------
-	MaterialSet(const MaterialSet&);
+    //--------------------------------------------------------------------------
+    /// Copy constructor (prevent copy-construction).
+    //--------------------------------------------------------------------------
+    MaterialSet(const MaterialSet&);
 
 
-	//---------------------------------------------------------------------------
-	///	Constructor (prevent instanciation).
-	/*
-	*	@param aFileName:	the name of the file to load
-	*/
-	//---------------------------------------------------------------------------
-	MaterialSet(const std::string& aFileName);
+    //--------------------------------------------------------------------------
+    /// Constructor (prevent instanciation).
+    /*
+     *  @param aFileName:   the name of the file to load
+     */
+    //--------------------------------------------------------------------------
+    MaterialSet(const std::string& aFileName);
 
 
-	//--------------------------------------------------------------------------
-	///	Copy operator (prevent assignment)
-	//--------------------------------------------------------------------------
-	MaterialSet& operator=(const MaterialSet&);
+    //--------------------------------------------------------------------------
+    /// Copy operator (prevent assignment)
+    //--------------------------------------------------------------------------
+    MaterialSet& operator=(const MaterialSet&);
 
 
-	//---------------------------------------------------------------------------
-	///	Destructor.
-	//---------------------------------------------------------------------------
-	~MaterialSet();
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    ~MaterialSet();
 
 
-	//---------------------------------------------------------------------------
-	///	Clear all the memory.
-	//---------------------------------------------------------------------------
-	void clearMemory();
+    //--------------------------------------------------------------------------
+    /// Clear all the memory.
+    //--------------------------------------------------------------------------
+    void clearMemory();
 
 
-	//---------------------------------------------------------------------------
-	///	Load a file containing materials.
-	/*
-	*	@param aFileName:	the name of the file to load
-	*/
-	//---------------------------------------------------------------------------
-	void loadFromFile(const std::string& aFileName);
+    //--------------------------------------------------------------------------
+    /// Load a file containing materials.
+    /*
+    *   @param aFileName:   the name of the file to load
+    */
+    //--------------------------------------------------------------------------
+    void loadFromFile(const std::string& aFileName);
 
 
     //---------------------------------------------------------------------------
@@ -146,117 +150,117 @@ public:
     *   @param aMaterial    the material to add
     */
     //---------------------------------------------------------------------------
-	void addMaterial(const TissueMaterial& aMaterial);
+    void addMaterial(const TissueMaterial& aMaterial);
 
 
-	//---------------------------------------------------------------------------
-	///	Get the material corresponding to a given HU value.
-	/*
-	*	@param aHUValue:	the HU value of the material
-	*/
-	//---------------------------------------------------------------------------
-	const TissueMaterial& getMaterial(short aHUValue) const;
+    //--------------------------------------------------------------------------
+    /// Get the material corresponding to a given HU value.
+    /*
+    *   @param aHUValue:    the HU value of the material
+    */
+    //--------------------------------------------------------------------------
+    const TissueMaterial& getMaterial(short aHUValue) const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the lower energy cutoff for attenuation coefficient.
-	/*
-	*	@return the lower energy cutoff for attenuation coefficient
-	*/
-	//---------------------------------------------------------------------------
-	float getMuMinEnergy() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the lower energy cutoff for attenuation coefficient.
+    /*
+    *   @return the lower energy cutoff for attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    float getMuMinEnergy() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the higher energy cutoff for attenuation coefficient.
-	/*
-	*	@return the higher energy cutoff for attenuation coefficient
-	*/
-	//---------------------------------------------------------------------------
-	float getMuMaxEnergy() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the higher energy cutoff for attenuation coefficient.
+    /*
+    *   @return the higher energy cutoff for attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    float getMuMaxEnergy() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the minimum Hounsfield unit that the material set can handle.
-	/*
-	*	@return the minimum Hounsfield unit that the material set can handle
-	*/
-	//---------------------------------------------------------------------------
-	short getMinHU() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the minimum Hounsfield unit that the material set can handle.
+    /*
+    *   @return the minimum Hounsfield unit that the material set can handle
+    */
+    //--------------------------------------------------------------------------
+    short getMinHU() const;
 
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the maximum Hounsfield unit that the material set can handle.
-	/*
-	*	@return the maximum Hounsfield unit that the material set can handle
-	*/
-	//---------------------------------------------------------------------------
-	short getMaxHU() const;
-	
+    //--------------------------------------------------------------------------
+    /// Accessor on the maximum Hounsfield unit that the material set can handle.
+    /*
+    *   @return the maximum Hounsfield unit that the material set can handle
+    */
+    //--------------------------------------------------------------------------
+    short getMaxHU() const;
+    
 
-	//---------------------------------------------------------------------------
-	///	Accessor on the number of materials in the set.
-	/*
-	*	@return the number of materials
-	*/
-	//---------------------------------------------------------------------------
-	unsigned int getMaterialNumber() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of materials in the set.
+    /*
+    *   @return the number of materials
+    */
+    //--------------------------------------------------------------------------
+    unsigned int getMaterialNumber() const;
 
 
-	//---------------------------------------------------------------------------
-	///	operator <<
-	/*
-	*	@param anOutputSream:	the output stream
-	*	@param anElement:	the element to output
-	*	@return the output stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::ostream & operator << (std::ostream& anOutputSream,
-			const MaterialSet& anMaterialSet);
+    //--------------------------------------------------------------------------
+    /// operator <<
+    /*
+     *  @param anOutputSream:   the output stream
+     *  @param anElement:       the element to output
+     *  @return the output stream
+     */
+    //--------------------------------------------------------------------------
+    friend std::ostream & operator << (std::ostream& anOutputSream,
+                                       const MaterialSet& anMaterialSet);
 
 
 //*****************************************************************************
 private:
-	//---------------------------------------------------------------------------
-	///	An indexed table containing elements.
-	//---------------------------------------------------------------------------
-	std::map<std::pair<short, short>, TissueMaterial> m_material_set;
+    //--------------------------------------------------------------------------
+    /// An indexed table containing elements.
+    //--------------------------------------------------------------------------
+    std::map<std::pair<short, short>, TissueMaterial> m_material_set;
 
-	
-	//---------------------------------------------------------------------------
-	///	The lower energy cutoff for attenuation coefficient.
-	//---------------------------------------------------------------------------
-	float m_mu_min_energy;
-
-
-	//---------------------------------------------------------------------------
-	///	The higher energy cutoff for attenuation coefficient.
-	//---------------------------------------------------------------------------
-	float m_mu_max_energy;
+    
+    //--------------------------------------------------------------------------
+    /// The lower energy cutoff for attenuation coefficient.
+    //--------------------------------------------------------------------------
+    float m_mu_min_energy;
 
 
-	//---------------------------------------------------------------------------
-	///	The lower cutoff for Compton scattering cross section samples.
-	//---------------------------------------------------------------------------
-	float m_S_min_x;
+    //--------------------------------------------------------------------------
+    /// The higher energy cutoff for attenuation coefficient.
+    //--------------------------------------------------------------------------
+    float m_mu_max_energy;
 
 
-	//---------------------------------------------------------------------------
-	///	The higher cutoff for Compton scattering cross section samples.
-	//---------------------------------------------------------------------------
-	float m_S_max_x;
+    //--------------------------------------------------------------------------
+    /// The lower cutoff for Compton scattering cross section samples.
+    //--------------------------------------------------------------------------
+    float m_min_S;
 
 
-	//---------------------------------------------------------------------------
-	///	The minimum Hounsfield unit that the material set can handle.
-	//---------------------------------------------------------------------------
-	short m_min_HU;
+    //--------------------------------------------------------------------------
+    /// The higher cutoff for Compton scattering cross section samples.
+    //--------------------------------------------------------------------------
+    float m_max_S;
 
 
-	//---------------------------------------------------------------------------
-	///	The maximum Hounsfield unit that the material set can handle.
-	//---------------------------------------------------------------------------
-	short m_max_HU;
+    //--------------------------------------------------------------------------
+    /// The minimum Hounsfield unit that the material set can handle.
+    //--------------------------------------------------------------------------
+    short m_min_HU;
+
+
+    //--------------------------------------------------------------------------
+    /// The maximum Hounsfield unit that the material set can handle.
+    //--------------------------------------------------------------------------
+    short m_max_HU;
 };
 
 
@@ -267,5 +271,4 @@ private:
 #include "MaterialSet.inl"
 
 
-#endif // GVXR_MATERIAL_SET_H
-
+#endif // __MaterialSet_h

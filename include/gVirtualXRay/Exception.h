@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_EXCEPTION_H
-#define GVXR_EXCEPTION_H
+#ifndef __Exception_h
+#define __Exception_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Exception.h
+*   @file       Exception.h
 *
-*	@brief		Generic class to handle exceptions.
+*   @brief      Generic class to handle exceptions.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		07/11/2013
+*   @date       07/11/2013
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,7 +56,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -64,46 +64,50 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <string>
 #include <exception>
 #include <iostream>
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	Class declaration
+//  Class declaration
 //******************************************************************************
 class Exception;
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
 
 
 //------------------------------------------------------------------------------
-///	operator<<
+/// operator<<
 /**
-*	@param 	anOutputStream:	the output stream
-*	@param 	anException:	the exception to add to the output stream
-*	@return the output stream
+*   @param  anOutputStream: the output stream
+*   @param  anException:    the exception to add to the output stream
+*   @return the output stream
 */
 //------------------------------------------------------------------------------
 std::ostream& operator<<(std::ostream& anOutputStream,
-		const Exception& anException);
+        const Exception& anException);
 
 
 //==============================================================================
 /**
-*	@class	Exception
-*	@brief	Exception is a class to handle exceptions.
+*   @class  Exception
+*   @brief  Exception is a class to handle exceptions.
 */
 //==============================================================================
 class Exception: public std::exception
@@ -111,49 +115,61 @@ class Exception: public std::exception
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown (default value: 0)
-	*	@param 	aFunctionName:	name of the function where the exception was thrown  (default value: 0)
-	*	@param 	anErrorLine:	name at which the exception was thrown (default value: 0)
-	*	@param 	anErrorMessage:	error message corresponding to the exception (default value: 0)
-	*/
-	//--------------------------------------------------------------------------
-	Exception(const char* aFileName = 0, const char* aFunctionName = 0, int anErrorLine = 0, const char* anErrorMessage = 0);
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    /**
+     *  @param  aFileName:      name of the source file where the exception
+     *                          was thrown (default value: 0)
+     *  @param  aFunctionName:  name of the function where the exception
+     *                          was thrown  (default value: 0)
+     *  @param  anErrorLine:    name at which the exception was thrown
+     *                          (default value: 0)
+     *  @param  anErrorMessage: error message corresponding to the exception
+     *                          (default value: 0)
+     */
+    //--------------------------------------------------------------------------
+    Exception(const char* aFileName = 0,
+            const char* aFunctionName = 0,
+            int anErrorLine = 0,
+            const char* anErrorMessage = 0);
 
 
-	//--------------------------------------------------------------------------
-	///	Constructor.
-	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown (default value: 0)
-	*	@param 	aFunctionName:	name of the function where the exception was thrown  (default value: 0)
-	*	@param 	anErrorLine:	name at which the exception was thrown (default value: 0)
-	*	@param 	anErrorMessage:	error message corresponding to the exception (default value: 0)
-	*/
-	//--------------------------------------------------------------------------
-	Exception(const char* aFileName, const char* aFunctionName, int anErrorLine, const std::string& anErrorMessage);
+    //--------------------------------------------------------------------------
+    /// Constructor.
+    /**
+     *  @param  aFileName:      name of the source file where the exception
+     *                          was thrown
+     *  @param  aFunctionName:  name of the function where the exception
+     *                          was thrown
+     *  @param  anErrorLine:    name at which the exception was thrown
+     *  @param  anErrorMessage: error message corresponding to the exception
+     */
+    //--------------------------------------------------------------------------
+    Exception(const char* aFileName,
+            const char* aFunctionName,
+            int anErrorLine,
+            const std::string& anErrorMessage);
 
 
-	//--------------------------------------------------------------------------
-	///	Destructor.
-	//--------------------------------------------------------------------------
-	virtual ~Exception() throw();
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    virtual ~Exception() throw();
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the error message.
-	/**
-	*	@return the error message
-	*/
-	//--------------------------------------------------------------------------
-	virtual const char* what() const throw();
+    //--------------------------------------------------------------------------
+    /// Accessor on the error message.
+    /**
+     *  @return the error message
+     */
+    //--------------------------------------------------------------------------
+    virtual const char* what() const throw();
 
 
 //******************************************************************************
 protected:
-	/// The error message
-	std::string m_error_message;
+    /// The error message
+    std::string m_error_message;
 };
 
 
@@ -164,4 +180,4 @@ protected:
 #include "Exception.inl"
 
 
-#endif // EXCEPTION_H
+#endif // __Exception_h

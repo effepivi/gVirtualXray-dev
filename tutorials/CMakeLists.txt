@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -32,27 +32,82 @@
 
 project(gVirtualXRay-tutorials)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
+if(NOT gVirtualXRay_BINARY_DIR)
+    find_package(gVirtualXRay REQUIRED)
+    include(${gVirtualXRay_USE_FILE})
+else()
+    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
+    find_package(gVirtualXRay REQUIRED)
+endif()
 
-add_subdirectory(tutorial_00_glfw)
-add_subdirectory(tutorial_00_glut)
-add_subdirectory(tutorial_00_qt4)
-add_subdirectory(tutorial_00_qt5)
 
-add_subdirectory(tutorial_01_glfw)
-add_subdirectory(tutorial_01_glut)
-add_subdirectory(tutorial_01_qt4)
-add_subdirectory(tutorial_01_qt5)
+# Copy data files into the build directory (useful for debugging) #############
+IF (NOT WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/run.sh ${CMAKE_CURRENT_BINARY_DIR}/run.sh COPYONLY)
+ENDIF (NOT WIN32)
 
-add_subdirectory(tutorial_02_glfw)
-add_subdirectory(tutorial_02_glut)
-add_subdirectory(tutorial_02_qt4)
-add_subdirectory(tutorial_02_qt5)
 
-add_subdirectory(tutorial_03_glfw)
-add_subdirectory(tutorial_03_glut)
-add_subdirectory(tutorial_03_qt4)
-add_subdirectory(tutorial_03_qt5)
+IF (USE_FLTK)
+    add_subdirectory(tutorial_00_fltk)
+    add_subdirectory(tutorial_01_fltk)
+    add_subdirectory(tutorial_02_fltk)
+    add_subdirectory(tutorial_03_fltk)
+    add_subdirectory(tutorial_04_fltk)
+    add_subdirectory(tutorial_05_fltk)
+    add_subdirectory(tutorial_06_fltk)
+    add_subdirectory(tutorial_07_fltk)
+    add_subdirectory(tutorial_08_fltk)
+ENDIF ()
+
+IF (USE_GLFW)
+    add_subdirectory(tutorial_00_glfw)
+    add_subdirectory(tutorial_01_glfw)
+    add_subdirectory(tutorial_02_glfw)
+    add_subdirectory(tutorial_03_glfw)
+    #add_subdirectory(tutorial_04_glfw)
+    #add_subdirectory(tutorial_05_glfw)
+    add_subdirectory(tutorial_06_glfw)
+    #add_subdirectory(tutorial_07_glfw)
+    #add_subdirectory(tutorial_08_glfw)
+ENDIF ()
+
+IF (USE_GLUT)
+    add_subdirectory(tutorial_00_glut)
+    add_subdirectory(tutorial_01_glut)
+    add_subdirectory(tutorial_02_glut)
+    add_subdirectory(tutorial_03_glut)
+    #add_subdirectory(tutorial_04_glut)
+    #add_subdirectory(tutorial_05_glut)
+    #add_subdirectory(tutorial_06_glut)
+    #add_subdirectory(tutorial_07_glut)
+    #add_subdirectory(tutorial_08_glut)
+ENDIF ()
+
+
+IF (USE_QT4)
+    add_subdirectory(tutorial_00_qt4)
+    add_subdirectory(tutorial_01_qt4)
+    add_subdirectory(tutorial_02_qt4)
+    add_subdirectory(tutorial_03_qt4)
+    add_subdirectory(tutorial_04_qt4)
+    add_subdirectory(tutorial_05_qt4)
+    add_subdirectory(tutorial_06_qt4)
+    add_subdirectory(tutorial_07_qt4)
+    add_subdirectory(tutorial_08_qt4)
+ENDIF ()
+
+IF (USE_QT5)
+    add_subdirectory(tutorial_00_qt5)
+    add_subdirectory(tutorial_01_qt5)
+    add_subdirectory(tutorial_02_qt5)
+    add_subdirectory(tutorial_03_qt5)
+    add_subdirectory(tutorial_04_qt5)
+    add_subdirectory(tutorial_05_qt5)
+    add_subdirectory(tutorial_06_qt5)
+    add_subdirectory(tutorial_07_qt5)
+    add_subdirectory(tutorial_08_qt5)
+ENDIF ()
+
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 

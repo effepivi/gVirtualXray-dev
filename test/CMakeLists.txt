@@ -36,52 +36,36 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
 
 
 # gVirtualXRay #################################################################
-FIND_PACKAGE(gVirtualXRay REQUIRED)
-IF(gVirtualXRay_FOUND)
-    INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIR})
-    SET(requiredLibs ${requiredLibs} ${gVirtualXRay_LIBRARY})
-ELSE(gVirtualXRay_FOUND)
-    MESSAGE(FATAL_ERROR "gVirtualXRay not found.")
-ENDIF(gVirtualXRay_FOUND)
+if (NOT gVirtualXRay_BINARY_DIR)
+    find_package(gVirtualXRay REQUIRED)
+    include(${gVirtualXRay_USE_FILE})
+else (NOT gVirtualXRay_BINARY_DIR)
+    set(gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
+    find_package(gVirtualXRay REQUIRED)
+endif (NOT gVirtualXRay_BINARY_DIR)
 
 
 # Boost ########################################################################
-find_package (Boost COMPONENTS unit_test_framework REQUIRED)
+find_package (Boost COMPONENTS unit_test_framework)
 if(Boost_FOUND)
 	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 	add_definitions (-DBOOST_TEST_DYN_LINK)
 	LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
 	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
 ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
+    MESSAGE(WARNING "Boost not found, the unit test (${PROJECT_NAME}) will be disable.")
 ENDIF(Boost_FOUND)
 
 
-# GLEW #########################################################################
-FIND_PACKAGE(GLEW REQUIRED)
-IF(GLEW_FOUND)
-    ADD_DEFINITIONS(-DHAS_GLEW)    
-    INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-    LINK_DIRECTORIES(${GLEW_LIBRARY_DIR})
-    SET(requiredLibs ${requiredLibs} ${GLEW_LIBRARY})
-ELSE(GLEW_FOUND)
-    MESSAGE(FATAL_ERROR "GLEW not found.")
-ENDIF(GLEW_FOUND)
+if(Boost_FOUND)
+    add_executable(TestDensity TestDensity.cxx)
+    target_link_libraries(TestDensity ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
 
-# ITK #########################################################################
-FIND_PACKAGE (ITK)
-IF (ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE( ${ITK_USE_FILE} )
-	set (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-    MESSAGE(WARNING "ITK not found. The 8-th validation progam cannot be built.")
-ENDIF(ITK_FOUND)
+    add_test (test TestDensity)
 
-
-add_executable(TestDensity TestDensity.cxx)
-target_link_libraries (TestDensity ${requiredLibs})
-
-add_test (test TestDensity)
+ENDIF(Boost_FOUND)
 

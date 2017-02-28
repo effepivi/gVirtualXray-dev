@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,56 +35,52 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		SimpleBackProjection.cxx
+*   @file       FilteredBackProjection.cxx
 *
-*	@brief      Demo to illustrate the tomography acquisition and reconstruction
-*	             processes.
+*   @brief      Demo to illustrate the tomography acquisition and
+*               filtered-back-projection processes.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		10/11/2014
+*   @date       13/09/2016
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Sept 2016, 2016, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifdef HAS_GLEW
 #include <GL/glew.h>
+#endif // HAS_GLEW
 
-#include <boost/scoped_ptr.hpp>
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
 
+#include <exception>
+#include <memory>
 #include <cstdlib>
 #include <sstream>
+#include <iomanip>
 #include <string>
 #include <ctime>
 #include <cmath>
 #include <cfloat>
-
-#include <itkMacro.h>
-#include <itkImage.h>
-#include <itkImageFileWriter.h>
-
-#include <itkBinaryMask3DMeshSource.h>
-#include <itkBinaryThresholdImageFilter.h>
-#include <itkMesh.h>
-#include <itkQuadEdgeMesh.h>
-//#include <itkMeshFileWriter.h>
-#include <itkQuadEdgeMeshDecimationCriteria.h>
 
 #ifdef __APPLE__
 #define GL3_PROTOTYPES 1
@@ -93,24 +89,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
-
 #include <GLFW/glfw3.h>
 
-#include <stdlib.h>
-
-#ifndef GVXR_TYPES_H
+#ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
 
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
 
@@ -118,36 +111,52 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_TEXT_RENDERER_H
+#ifndef __TextRenderer_h
 #include "gVirtualXRay/TextRenderer.h"
+#endif
+
+#ifndef __SphereMesh_h
+#include "gVirtualXRay/SphereMesh.h"
+#endif
+
+#ifndef __FFT_h
+#include "gVirtualXRay/FFT.h"
+#endif
+
+#ifndef __Sinogram_h
+#include "gVirtualXRay/Sinogram.h"
+#endif
+
+#ifndef __CubeeMesh_h
+#include "gVirtualXRay/CubeMesh.h"
 #endif
 
 #include "display_gl2.frag.h"
@@ -164,29 +173,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
 
 
 //******************************************************************************
-//	Defines
+//  Defines
 //******************************************************************************
 #define PREFIX ".."
 
 
 //******************************************************************************
-//	Constant variables
+//  Constant variables
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
 const float g_incident_energy(0.08 * MeV);
 const VEC2 g_resolution(0.75 * mm, 5.0 * mm);
-const Vec2ui g_number_of_pixels(256, 1);
+const Vec2ui g_number_of_pixels(257, 1);
 
-const double g_initial_fovy(45);                              // Field of view along the y-axis
-const double g_initial_near(5.0 * cm);                        // Near clipping plane
-const double g_initial_far(500.0 * cm);                       // Far clipping plane
+const double g_initial_fovy(45);        // Field of view along the y-axis
+const double g_initial_near(5.0 * cm);  // Near clipping plane
+const double g_initial_far(500.0 * cm); // Far clipping plane
 
 const VEC3 g_initial_source_position(   0.0,  20.0 * cm, 0.0);
 const VEC3 g_initial_detector_position( 0.0, -20.0 * cm, 0.0);
@@ -200,10 +209,10 @@ typedef enum AcquisitionTypeTag
 
 
 //******************************************************************************
-//	Global variables
+//  Global variables
 //******************************************************************************
-GLsizei g_main_window_width( 1200);
-GLsizei g_main_window_height(600);
+GLsizei g_main_window_width( 512);
+GLsizei g_main_window_height(512);
 GLFWwindow* g_p_main_window_id(0);
 GLfloat g_zoom(60.0 * cm);
 GLfloat g_eye_offset(2.0 * cm);
@@ -227,8 +236,14 @@ VEC3 g_translation_vector;
 std::vector<float> g_p_HU_set;
 
 std::vector<PolygonMesh> g_p_polygon_mesh_set;
-boost::scoped_ptr<VBO> g_sinogram_rectangle;
-boost::scoped_ptr<VBO> g_tomography_rectangle;
+
+#if __cplusplus <= 199711L
+    std::auto_ptr<VBO> g_sinogram_rectangle;
+    std::auto_ptr<VBO> g_tomography_rectangle;
+#else
+    std::unique_ptr<VBO> g_sinogram_rectangle;
+    std::unique_ptr<VBO> g_tomography_rectangle;
+#endif
 
 PolygonMesh g_rotation_axis_geometry;
 
@@ -243,31 +258,32 @@ bool g_is_xray_image_up_to_date(false);
 bool g_update_projection_and_sinogram(false);
 bool g_display_wireframe(false);
 
-unsigned int g_angle_number(360);
-RATIONAL_NUMBER g_angle_step(0.5);
+unsigned int g_angle_number(360 / 1);
+RATIONAL_NUMBER g_angle_step(0.5 * 1);
 RATIONAL_NUMBER g_first_angle(0);
-RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
+RATIONAL_NUMBER g_last_angle(g_first_angle +
+    g_angle_step * (g_angle_number - 1));
 unsigned int g_next_angle_to_process(0);
 unsigned int g_current_angle(0);
 AcquisitionType g_acquisition_type(ROTATE_SAMPLE);
 VEC3 g_rotation_axis(g_initial_detector_up_vector);
 VEC3 g_rotation_centre(0, 0, 0);
 GLuint g_projection_texture_id(0);
-GLuint g_sinogram_texture_id(0);
-GLuint g_tomography_texture_id(0);
+GLuint g_raw_sinogram_texture_id(0);
+GLuint g_filtered_sinogram_texture_id(0);
+GLuint g_raw_tomography_texture_id(0);
+GLuint g_filtered_tomography_texture_id(0);
 
-typedef itk::Image<float, 2> ProjectionImageType;
+typedef Image<float>    ProjectionImageType;
+typedef Sinogram<float> SinogramType;
 
-ProjectionImageType::Pointer g_p_projection_data(ProjectionImageType::New());
-ProjectionImageType::Pointer g_p_sinogram_data(ProjectionImageType::New());
-ProjectionImageType::Pointer g_p_tomography_data(ProjectionImageType::New());
+ProjectionImageType g_projection_data;
+Sinogram<float> g_raw_sinogram_data;
+Sinogram<float> g_filtered_sinogram_data;
+ProjectionImageType g_raw_tomography_data;
+ProjectionImageType g_filtered_tomography_data;
+
 float g_pixel_width(0);
-float g_min_projection(0);
-float g_max_projection(0);
-float g_min_sinogram(0);
-float g_max_sinogram(0);
-float g_min_tomography(0);
-float g_max_tomography(0);
 
 VEC3 g_source_position(g_initial_source_position);
 VEC3 g_detector_position(g_initial_detector_position);
@@ -284,43 +300,95 @@ bool g_run_tomography_acquisition(true);
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
 bool g_display_skin(true);
+bool g_take_screenshot(true);
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
 void createPhantom();
+
 void initGLEW();
+
 void initGL();
+
 void initFreeType();
+
 void display();
-void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
-void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
-void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+
+void framebufferSizeCallback(GLFWwindow* apWindow,
+    int aWidth,
+    int aHeight);
+
+void keyCallback(GLFWwindow* apWindow,
+    int aKey,
+    int aScanCode,
+    int anAction,
+    int aModifierKey);
+
+void mouseButtonCallback(GLFWwindow* apWindow,
+    int aButton,
+    int aButtonState,
+    int aModifierKey);
+
+void cursorPosCallback(GLFWwindow* apWindow,
+    double x,
+    double y);
+
+void scrollCallback(GLFWwindow* apWindow,
+    double xoffset,
+    double yoffset);
+
 void quit();
+
 void loadSTLFile();
+
 void loadDetector();
+
 void loadSource();
+
 void loadXRaySimulator();
+
 Vec3<GLfloat> getArcballVector(int x, int y);
+
 void computeRotation(MATRIX4& aRotationMatrix);
+
 bool updateXRayImage();
+
 void errorCallback(int error, const char* description);
+
 void draw();
+
 void createProjection();
+
 void createSinogram();
+
 void createTomography();
+
 void updateProjection();
-void updateSinogram();
-void updateTomography();
+
+void updateRawSinogram();
+
+void updateFilteredSinogram();
+
+void updateTomography(const Sinogram<float>& aSinogram,
+        ProjectionImageType& aTomographySlice,
+        GLuint aTextureID);
+
 void displayProjection();
-void displaySinogram();
-void displayTomography();
+
+void displayRawSinogram();
+
+void displayFilteredSinogram();
+
+void displayRawTomography();
+
+void displayFilteredTomography();
+
 void reset();
-void drawLine(const Vec2i& aVector0, const Vec2i& aVector1, int width, int height, float* apData, float intensity);
+
 void displayHelp();
+
 void takeScreenshot(const std::string& aFileName);
 
 
@@ -328,7 +396,7 @@ void takeScreenshot(const std::string& aFileName);
 inline int ipart(double X)
 //------------------------
 {
-	return (int(X));
+    return (int(X));
 }
 
 
@@ -336,7 +404,7 @@ inline int ipart(double X)
 inline double fpart(double X)
 //---------------------------
 {
-	return (double(X) - double(ipart(X)));
+    return (double(X) - double(ipart(X)));
 }
 
 
@@ -344,7 +412,7 @@ inline double fpart(double X)
 inline double rfpart(double X)
 //----------------------------
 {
-	return (1.0 - fpart(X));
+    return (1.0 - fpart(X));
 }
 
 
@@ -352,28 +420,28 @@ inline double rfpart(double X)
 inline void swap(int& a, int& b)
 //------------------------------
 {
-	int temp(b);
-	b = a;
-	a = temp;
+    int temp(b);
+    b = a;
+    a = temp;
 }
 
 
 //-------------------------------
 inline void plot(int x,
-				 int y,
-				 float distance,
-				 int width,
-				 int height,
-				 float* apData,
-				 float intensity)
+                 int y,
+                 float distance,
+                 int width,
+                 int height,
+                 float* apData,
+                 float intensity)
 //-------------------------------
 {
-	int index(x + y * width);
+    int index(x + y * width);
 
-	if (index >= 0 && index < width * height)
-	{
-		apData[x + y * width] += fabs(distance * intensity);
-	}
+    if (index >= 0 && index < width * height)
+        {
+        apData[x + y * width] += fabs(distance * intensity);
+        }
 }
 
 
@@ -381,10 +449,10 @@ inline void plot(int x,
 int main(int argc, char** argv)
 //-----------------------------
 {
-	try
-	{
-	    // Initialize random seed
-	    srand(time(0));
+    try
+        {
+        // Initialize random seed
+        srand(time(0));
 
         // Set an error callback
         glfwSetErrorCallback(errorCallback);
@@ -394,25 +462,33 @@ int main(int argc, char** argv)
 
         // Initialize GLFW
         if (!glfwInit())
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot initialise GLFW.");
-        }
+            {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot initialise GLFW.");
+            }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
         // Enable anti-aliasing
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        glfwWindowHint(GLFW_SAMPLES, 16);
 
         // Create a windowed mode window and its OpenGL context
-        g_p_main_window_id = glfwCreateWindow(g_main_window_width, g_main_window_height, "GPU X-Ray Demo", NULL, NULL);
+        g_p_main_window_id = glfwCreateWindow(
+            g_main_window_width,
+            g_main_window_height,
+            "FBP Tomography Reconstruction Demo",
+            0,
+            0);
 
-        // Window cannot be created 
+        // Window cannot be created
         if (!g_p_main_window_id)
-        {
+            {
             glfwTerminate();
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "ERROR: cannot create a GLFW windowed mode window and its OpenGL context.");
-        }
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "ERROR: cannot create a GLFW windowed mode window and "
+                "its OpenGL context.");
+            }
 
         // Make the window's context current
         glfwMakeContextCurrent(g_p_main_window_id);
@@ -422,10 +498,12 @@ int main(int argc, char** argv)
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the OpenGL version
-        std::cout << "GL:\t" << glGetString(GL_VERSION) << std::endl;
+        std::cout << "GL:\t" <<
+            glGetString(GL_VERSION) << std::endl;
 
         // Check the GLSL version
-        std::cout << "GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+        std::cout << "GLSL:\t" <<
+            glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         // Initialise OpenGL
         initGL();
@@ -435,220 +513,202 @@ int main(int argc, char** argv)
         initFreeType();
 
         // Check the current FBO
-		checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		// Initialize GLFL callback
-		glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-		glfwSetFramebufferSizeCallback(g_p_main_window_id, framebufferSizeCallback);
-		glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
-		glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
-		glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
+        // Initialize GLFL callback
+        glfwSetKeyCallback(g_p_main_window_id, keyCallback);
+        glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
+        glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
+        glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
+        glfwSetFramebufferSizeCallback(g_p_main_window_id,
+            framebufferSizeCallback);
 
-	    // Create the phantom
-	    createPhantom();
+        // Create the phantom
+        createPhantom();
 
-		// Display the mu coefficients
-		//std::cout << "Linear attenuation coefficient at:\t" << g_incident_energy / keV << " keV (" << g_incident_energy / MeV << "MeV)" << std::endl;
-		//std::cout << "Mu(HU(0):     \t" << g_xray_renderer.getMuFromHU(0, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
-		//std::cout << "Mu(HU(-1000): \t" << g_xray_renderer.getMuFromHU(-1000, g_incident_energy) / (1.0 / cm)      << " cm-1" << std::endl;
+        // Load the data
+        loadDetector();
+        loadSource();
+        loadXRaySimulator();
 
-		// Load the data
-		loadDetector();
-		loadSource();
-		loadXRaySimulator();
+        // Add the geometry to the X-ray renderer
+        loadSTLFile();
 
-		// Add the geometry to the X-ray renderer
-		loadSTLFile();
+        for (std::vector<PolygonMesh>::const_iterator ite(g_p_polygon_mesh_set.begin());
+                ite != g_p_polygon_mesh_set.end();
+                ++ite)
+            {
+            g_xray_renderer.addInnerSurface(&(*ite));
+            }
 
-		for (std::vector<PolygonMesh>::const_iterator ite(g_p_polygon_mesh_set.begin());
-				ite != g_p_polygon_mesh_set.end();
-				++ite)
-		{
-			g_xray_renderer.addInnerSurface(&(*ite));
-		}
+        // Set the projection matrix
+        GLint width(0);
+        GLint height(0);
+        glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+        framebufferSizeCallback(g_p_main_window_id, width, height);
 
-		// Set the projection matrix
-		GLint width(0);
-		GLint height(0);
-		glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
-		framebufferSizeCallback(g_p_main_window_id, width, height);
-
-        //std::cout << "Angular step: " << g_angle_step << " degrees" << std::endl;
-        //std::cout << "Angular span: [" << 0 << ", " << g_angle_step * (g_angle_number - 1) << "] degrees" << std::endl;
-
-        // Compute the sinogram
-        //g_xray_renderer.computeSinogram(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
-
-        // Save the sinogram
-        //g_xray_renderer.printSinogram(PREFIX"/simulation_sinogram.mhd");
-
-        // Compute the projection set
-        //g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix, VEC3(), g_angle_number, g_angle_step);
-
-        // Save the projection set
-        //g_xray_renderer.printProjectionSet(PREFIX"/simulation_projection_set.mhd");
-
-		createProjection();
+        createProjection();
         createSinogram();
         createTomography();
 
-        g_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(120.0, VEC3(1, 0, 0));
+        g_scene_rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(
+            120.0, VEC3(1, 0, 0));
 
-		// Launch the event loop
-	    while (!glfwWindowShouldClose(g_p_main_window_id))
-	    {
-
-	        if (g_run_tomography_acquisition)
-	        {
-	            // Rotation
-	            if (g_current_angle != g_next_angle_to_process)
-	            {
-	                switch (g_acquisition_type)
-	                {
+        // Launch the event loop
+        while (!glfwWindowShouldClose(g_p_main_window_id))
+            {
+            if (g_run_tomography_acquisition)
+                {
+                switch (g_acquisition_type)
+                    {
                     case ROTATE_SAMPLE:
                         {
-                            Matrix4x4<GLfloat> rotation_matrix;
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_translation_vector);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(-g_angle_step, g_rotation_axis);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+                        Matrix4x4<GLfloat> rotation_matrix;
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                g_translation_vector);
 
-                            g_sample_rotation_matrix *= rotation_matrix;
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildRotationMatrix(
+                                -g_angle_step,
+                                g_rotation_axis);
+
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                -g_translation_vector);
+
+                        g_sample_rotation_matrix *= rotation_matrix;
                         }
                         break;
 
                     case ROTATE_SOURCE_DETECTOR:
                         {
-                            Matrix4x4<GLfloat> rotation_matrix;
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix( g_rotation_centre);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildRotationMatrix(g_angle_step, g_rotation_axis);
-                            rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-g_rotation_centre);
+                        Matrix4x4<GLfloat> rotation_matrix;
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                g_rotation_centre);
 
-                            g_source_position   = rotation_matrix * g_source_position;
-                            g_detector_position = rotation_matrix * g_detector_position;
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildRotationMatrix(
+                                g_angle_step,
+                                g_rotation_axis);
 
-                            // Set the source position
-                            g_xray_detector.setXrayPointSource(g_source_position);
+                        rotation_matrix *=
+                            Matrix4x4<GLfloat>::buildTranslationMatrix(
+                                -g_rotation_centre);
 
-                            // Use a parallel source
-                            g_xray_detector.setParallelBeam();
+                        g_source_position   =
+                            rotation_matrix * g_source_position;
 
-                            // Set the detector position
-                            g_xray_detector.setDetectorPosition(g_detector_position);
+                        g_detector_position =
+                            rotation_matrix * g_detector_position;
+
+                        // Set the source position
+                        g_xray_detector.setXrayPointSource(g_source_position);
+
+                        // Use a parallel source
+                        g_xray_detector.setParallelBeam();
+
+                        // Set the detector position
+                        g_xray_detector.setDetectorPosition(g_detector_position);
                         }
                         break;
-	                }
-	            }
+                    }
 
-	            // Update the X-ray image
-	            g_is_xray_image_up_to_date = false;
+                // Update the X-ray image
+                g_is_xray_image_up_to_date = false;
 
-	            // Update the projection and sinogram
-	            g_update_projection_and_sinogram = true;
+                // Update the projection and sinogram
+                g_update_projection_and_sinogram = true;
 
-	            // Update the current angle
+                // Update the current angle
                 g_current_angle = g_next_angle_to_process;
                 ++g_next_angle_to_process;
 
                 // Stop the acquisition
                 if (g_next_angle_to_process == g_angle_number)
-                {
+                    {
                     g_run_tomography_acquisition = false;
+                    }
                 }
-	        }
 
-	        // Update the X-ray image
-	        bool updated_image(updateXRayImage());
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            // Update the X-ray image
+            bool updated_image(updateXRayImage());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Update the projection and sinogram
-	        if (g_update_projection_and_sinogram)
-	        {
+            if (g_update_projection_and_sinogram)
+                {
                 updateProjection();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                updateSinogram();
+                updateRawSinogram();
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                updateTomography();
+                updateFilteredSinogram();
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+                updateTomography(g_raw_sinogram_data,
+                        g_raw_tomography_data,
+                        g_raw_tomography_texture_id);
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+                updateTomography(g_filtered_sinogram_data,
+                        g_filtered_tomography_data,
+                        g_filtered_tomography_texture_id);
                 checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
                 g_update_projection_and_sinogram = false;
-	        }
+                }
 
-	        // Render here
-	    	display();
-	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            // Render here
+            display();
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             // Swap front and back buffers
-	        glfwSwapBuffers(g_p_main_window_id);
+            glfwSwapBuffers(g_p_main_window_id);
 /*
-	        if (g_current_angle % )
-	        {
-	        	unsigned int g_angle_number(360);
-	        	RATIONAL_NUMBER g_angle_step(0.5);
-	        	RATIONAL_NUMBER g_first_angle(0);
-	        	RATIONAL_NUMBER g_last_angle(g_first_angle + g_angle_step * (g_angle_number - 1));
-	        	unsigned int g_next_angle_to_process(0);
-	        	unsigned int g_current_angle(0);
+            if (updated_image || g_take_screenshot)
+                {
+                //if (g_first_angle == g_current_angle ||
+                        g_current_angle == (g_angle_number - 1) ||
+                        !(g_current_angle % 60))
+                    {
+                    //std::cout << g_current_angle << std::endl;
 
-	        }
-	        */
+                    std::stringstream filename;
+                    static unsigned int screenshot_counter(0);
+                    filename << "tga/screenshot_" <<
+                        std::setfill('0') <<
+                        std::setw(5) <<
+                        ++screenshot_counter <<
+                        ".tga";
 
-	        if (updated_image)
-	        {
-	        	if (g_first_angle == g_current_angle || g_current_angle == (g_angle_number - 1) || !(g_current_angle % 60))
-	        	{
-	        		std::cout << g_current_angle << std::endl;
+                    takeScreenshot(filename.str());
+                    }
 
-	        		std::stringstream filename;
-	        		filename << "screenshot_" << g_current_angle << ".tga";
+                g_take_screenshot = false;
+                }
+*/
+            // Poll for and process events
+            glfwPollEvents();
+            }
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << error.what() << std::endl;
+        }
 
-	        		takeScreenshot(filename.str());
-	        	}
+    // Close the window and shut GLFW
+    if (g_p_main_window_id)
+        {
+        glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        glfwTerminate();
+        }
 
-	        	if (g_current_angle == (g_angle_number - 1))
-	        	{
-	        		typedef itk::ImageFileWriter <ProjectionImageType> VolumeWriterType;
-
-	        		VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
-	        		p_writer->SetInput(g_p_sinogram_data);
-	        		p_writer->SetFileName("sinogram.mhd");
-	        		p_writer->Update();
-
-	        		p_writer->SetInput(g_p_projection_data);
-	        		p_writer->SetFileName("projection.mhd");
-	        		p_writer->Update();
-
-	        		p_writer->SetInput(g_p_tomography_data);
-	        		p_writer->SetFileName("simple_back_projection.mhd");
-	        		p_writer->Update();
-	        	}
-	        }
-
-	        // Poll for and process events
-	        glfwPollEvents();
-	    }
-	}
-	// Catch exception if any
-	catch(itk::ExceptionObject& error)
-	{
-		std::cerr << error << std::endl;
-	}
-	catch (const std::exception& error)
-	{
-	    std::cerr << error.what() << std::endl;
-	}
-
-	// Close the window and shut GLFW
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-		g_p_main_window_id = 0;
-		glfwTerminate();
-	}
-
-	// Return an exit code
-	return (EXIT_SUCCESS);
+    // Return an exit code
+    return (EXIT_SUCCESS);
 }
 
 
@@ -656,218 +716,81 @@ int main(int argc, char** argv)
 void createPhantom()
 //------------------
 {
-	typedef itk::Image<short, 3> ImageType;
-	typedef itk::ImageFileWriter <ImageType> VolumeWriterType;
+    float scale(1.0 /*/ 5.0*/);
+    unsigned int size(256 * scale);
 
-	ImageType::Pointer p_phantom(ImageType::New());
+    Image<short> phantom(size, size, size, -1000);
 
-	VolumeWriterType::Pointer p_writer(VolumeWriterType::New());
-	p_writer->SetInput(p_phantom);
-	p_writer->SetFileName("phantom.mhd");
+    g_pixel_width = 0.75 / scale;
+    phantom.setSpacing(VEC3(g_pixel_width, g_pixel_width, g_pixel_width));
 
-	float scale(1.0);
-	ImageType::SizeType	size;
-	size[0] = 256 * scale;
-	size[1] = 256 * scale;
-	size[2] = 256 * scale;
+    float squared_radius_0(std::pow(g_pixel_width * size * 0.05,   2));
+    float squared_radius_1(std::pow(g_pixel_width * size * 0.025,  2));
+    float squared_radius_2(std::pow(g_pixel_width * size * 0.0125, 2));
+    float squared_radius_3(std::pow(g_pixel_width * size * 0.345,  2));
 
-	ImageType::IndexType start;
-	start[0] = 0;
-	start[1] = 0;
-	start[2] = 0;
+    float i_0(float(size) / 3.0);
+    float j_0(float(size) / 3.0);
+    float k_0(float(size) / 2.0);
 
-	ImageType::RegionType region;
-	region.SetSize(size);
-	region.SetIndex(start);
-
-	p_phantom->SetRegions(region);
-	p_phantom->Allocate();
-
-	g_pixel_width = 0.75 / scale;
-	double spacing[3];
-	spacing[0] = g_pixel_width;
-	spacing[1] = g_pixel_width;
-	spacing[2] = g_pixel_width;
-	p_phantom->SetSpacing(spacing);
-	double origin[3];
-	origin[0] = 0;
-	origin[1] = 0;
-	origin[2] = 0;
-	p_phantom->SetOrigin(origin);
-
-	p_phantom->FillBuffer(-1000);
-
-	float squared_radius_0(std::pow(spacing[0] * size[0] * 0.05, 2));
-	float squared_radius_1(std::pow(spacing[0] * size[0] * 0.025, 2));
-	float squared_radius_2(std::pow(spacing[0] * size[0] * 0.0125, 2));
-	float squared_radius_3(std::pow(spacing[0] * size[0] * 0.345, 2));
-
-	float i_0(size[0] / 3.0);
-	float j_0(size[1] / 3.0);
-	float k_0(size[2] / 2.0);
-
-	float i_1(2.0 * size[0] / 3.0);
-	float j_1(2.0 * size[1] / 3.0);
-	float k_1(      size[2] / 2.0);
+    float i_1(2.0 * float(size) / 3.0);
+    float j_1(2.0 * float(size) / 3.0);
+    float k_1(      float(size) / 2.0);
 
 
-	float i_2(size[0] / 4.0);
-	float j_2(size[1] / 4.0);
-	float k_2(size[2] / 2.0);
+    float i_2(float(size) / 4.0);
+    float j_2(float(size) / 4.0);
+    float k_2(float(size) / 2.0);
 
-	float i_3(size[0] / 2.0);
-	float j_3(size[1] / 2.0);
-	float k_3(size[2] / 2.0);
+    float i_3(float(size) / 2.0);
+    float j_3(float(size) / 2.0);
+    float k_3(float(size) / 2.0);
 
+#ifndef WIN32
 	#pragma omp parallel for collapse(3)
-	for(unsigned int k = 0; k < size[2]; k++)
-	{
-		for(unsigned int j = 0; j < size[1]; j++)
-		{
-			for(unsigned int i = 0; i < size[0]; i++)
-			{
-				ImageType::IndexType pixelIndex;
-				pixelIndex[0] = i;
-				pixelIndex[1] = j;
-				pixelIndex[2] = k;
+#endif
+	for (unsigned int k = 0; k < size; k++)
+    {
+        for(unsigned int j = 0; j < size; j++)
+        {
+            for(unsigned int i = 0; i < size; i++)
+            {
+                if (std::pow(g_pixel_width * (i_0 - i), 2) + std::pow(g_pixel_width * (j_0 - j), 2) + std::pow(g_pixel_width * (k_0 - k), 2) <= squared_radius_0)
+                {
+                    phantom.setPixel(i, j, k, -500);
+                }
+                else if (std::pow(g_pixel_width * (i_1 - i), 2) + std::pow(g_pixel_width * (j_1 - j), 2) + std::pow(g_pixel_width * (k_1 - k), 2) <= squared_radius_1)
+                {
+                    phantom.setPixel(i, j, k, 0);
+                }
+                else if (std::pow(g_pixel_width * (i_2 - i), 2) + std::pow(g_pixel_width * (j_2 - j), 2) + std::pow(g_pixel_width * (k_2 - k), 2) <= squared_radius_2)
+                {
+                    phantom.setPixel(i, j, k, 500);
+                }
+                else if (std::pow(g_pixel_width * (i_3 - i), 2) + std::pow(g_pixel_width * (j_3 - j), 2) <= squared_radius_3 && std::pow(g_pixel_width * (k_3 - k), 2) <= squared_radius_0 * 2.001)
+                {
+                    phantom.setPixel(i, j, k, -800);
+                }
+            }
+        }
+    }
 
-				if (std::pow(spacing[0] * (i_0 - i), 2) + std::pow(spacing[1] * (j_0 - j), 2) + std::pow(spacing[2] * (k_0 - k), 2) <= squared_radius_0)
-				{
-					p_phantom->SetPixel(pixelIndex, -500);
-				}
-				else if (std::pow(spacing[0] * (i_1 - i), 2) + std::pow(spacing[1] * (j_1 - j), 2) + std::pow(spacing[2] * (k_1 - k), 2) <= squared_radius_1)
-				{
-					p_phantom->SetPixel(pixelIndex, 0);
-				}
-				else if (std::pow(spacing[0] * (i_2 - i), 2) + std::pow(spacing[1] * (j_2 - j), 2) + std::pow(spacing[2] * (k_2 - k), 2) <= squared_radius_2)
-				{
-					p_phantom->SetPixel(pixelIndex, 500);
-				}
-				else if (std::pow(spacing[0] * (i_3 - i), 2) + std::pow(spacing[1] * (j_3 - j), 2) <= squared_radius_3 && std::pow(spacing[2] * (k_3 - k), 2) <= squared_radius_0 * 2.001)
-				{
-					p_phantom->SetPixel(pixelIndex, -800);
-				}
-			}
-		}
-	}
+    g_p_HU_set.push_back(-500);
+    g_p_HU_set.push_back(   0);
+    g_p_HU_set.push_back( 500);
+    g_p_HU_set.push_back(-800);
 
-	g_p_HU_set.push_back(-500);
-	g_p_HU_set.push_back(   0);
-	g_p_HU_set.push_back( 500);
-	g_p_HU_set.push_back(-800);
+    g_p_polygon_mesh_set.clear();
+    g_p_polygon_mesh_set.resize(g_p_HU_set.size());
 
-	g_p_polygon_mesh_set.clear();
-	g_p_polygon_mesh_set.resize(g_p_HU_set.size());
+    unsigned int i(0);
+    for (std::vector<float>::const_iterator ite(g_p_HU_set.begin()); ite != g_p_HU_set.end(); ++ite, ++i)
+    {
+        g_p_polygon_mesh_set[i] = phantom.marchingCubes(*ite - 1, *ite + 1, true);
+        g_p_polygon_mesh_set[i].invertNormalVectors();
+    }
 
-	unsigned int i(0);
-	for (std::vector<float>::const_iterator ite(g_p_HU_set.begin()); ite != g_p_HU_set.end(); ++ite, ++i)
-	{
-		typedef unsigned char OutputVoxelDataType;
-		typedef itk::Image<OutputVoxelDataType, 3> OutputVolumeType;
-		typedef itk::QuadEdgeMesh<float, 3> MeshType;
-
-		typedef itk::BinaryThresholdImageFilter<ImageType, OutputVolumeType> BinaryThresholdType;
-		typedef itk::BinaryMask3DMeshSource<OutputVolumeType, MeshType> IsoSurfaceExtracterType;
-
-		BinaryThresholdType::Pointer p_threshold_filter(BinaryThresholdType::New());
-		IsoSurfaceExtracterType::Pointer p_iso_surface_extracter(IsoSurfaceExtracterType::New());
-
-		// Create the binary mask
-		p_threshold_filter->SetInput(p_phantom);
-		p_threshold_filter->SetLowerThreshold(*ite - 1);
-		p_threshold_filter->SetUpperThreshold(*ite + 1);
-		p_threshold_filter->SetOutsideValue(0);
-		p_threshold_filter->SetInsideValue(1);
-		p_threshold_filter->Update();
-
-		// Extract the isosurface
-		p_iso_surface_extracter->SetInput(p_threshold_filter->GetOutput());
-		p_iso_surface_extracter->SetObjectValue(1);
-		p_iso_surface_extracter->Update();
-
-		// Get the polygon mesh
-		MeshType::Pointer p_mesh(p_iso_surface_extracter->GetOutput());
-
-		// There are triangles
-		std::vector<float> p_vertex_data;
-		std::vector<unsigned int> p_index_data;
-		if (p_mesh->GetNumberOfCells() && p_mesh->GetNumberOfPoints())
-		{
-			p_vertex_data.resize(p_mesh->GetNumberOfPoints() * 3, 0);
-			p_index_data.resize(p_mesh->GetNumberOfCells() * 3, 0);
-
-			MeshType::PointsContainer* p_itk_point_set = p_mesh->GetPoints();
-			MeshType::CellsContainer* p_itk_cell_set = p_mesh->GetCells();
-
-			// Copy points
-			for(MeshType::PointsContainer::Iterator ite(p_itk_point_set->Begin());
-				ite != p_itk_point_set->End();
-				++ite)
-			{
-				// Get the point index from the point container iterator
-				int idx = ite.Index();
-
-				// Get the point
-				MeshType::PointType p = ite.Value(); // access the point
-
-				// Copy the point
-				p_vertex_data[idx * 3 + 0] = p[0];
-				p_vertex_data[idx * 3 + 1] = p[1];
-				p_vertex_data[idx * 3 + 2] = p[2];
-			}
-
-			typedef MeshType::CellType	CellType;
-			typedef CellType::PointIdIterator	PointIdIterator;
-
-			for(MeshType::CellsContainer::Iterator ite(p_itk_cell_set->Begin());
-				ite != p_itk_cell_set->End();
-				++ite)
-			{
-				// Get the cell index from the point container iterator
-				int idx = ite.Index();
-
-				// Get the cell
-				CellType* p_cell = ite.Value();
-
-				// Copy point indices
-				int i(0);
-				for (PointIdIterator ite_point_idx(p_cell->PointIdsBegin());
-					ite_point_idx != p_cell->PointIdsEnd();
-					++ite_point_idx, ++i)
-				{
-					unsigned int point_id = *ite_point_idx;
-					p_index_data[idx * 3 + i] = point_id;
-				}
-			}
-		}
-
-		g_p_polygon_mesh_set[i].setInternalData(GL_TRIANGLES,
-				&p_vertex_data[0],
-				p_vertex_data.size() / 3,
-				GL_FLOAT,
-				&p_index_data[0],
-				p_index_data.size(),
-				GL_UNSIGNED_INT,
-				true,
-				GL_STATIC_DRAW);
-	}
-
-	p_writer->Update();
-
-/*	typedef itk::MeshFileWriter< MeshType > MeshWriterType;
-	MeshWriterType::Pointer writer(MeshWriterType::New());
-	writer->SetFileTypeAsBINARY ();
-	writer->SetFileName(PREFIX"/sinogram.mhd");
-	writer->SetInput(p_iso_surface_extracter->GetOutput());
-	try
-	{
-		writer->Update();
-	}
-	catch( itk::ExceptionObject & error )
-	{
-		std::cerr << "Cannot save the polygon mesh in STL file: \"" << PREFIX"/sinogram.mhd" << "\"" << std::endl;
-		std::cerr << "Error: " << error << std::endl;
-	}*/
+    phantom.save("phantom.dcm");
 }
 
 
@@ -875,7 +798,7 @@ void createPhantom()
 void errorCallback(int error, const char* description)
 //----------------------------------------------------
 {
-	std::cerr << "GLFW error: " << description << std::endl;
+    std::cerr << "GLFW error: " << description << std::endl;
 }
 
 
@@ -884,29 +807,41 @@ void quit()
 //---------
 {
     if (g_p_main_window_id)
-    {
-        if (g_projection_texture_id)
         {
+        if (g_projection_texture_id)
+            {
             glDeleteTextures(1, &g_projection_texture_id);
             g_projection_texture_id = 0;
-        }
+            }
 
-        if (g_sinogram_texture_id)
-        {
-            glDeleteTextures(1, &g_sinogram_texture_id);
-            g_sinogram_texture_id = 0;
-        }
+        if (g_raw_sinogram_texture_id)
+            {
+            glDeleteTextures(1, &g_raw_sinogram_texture_id);
+            g_raw_sinogram_texture_id = 0;
+            }
 
-        if (g_tomography_texture_id)
-        {
-            glDeleteTextures(1, &g_tomography_texture_id);
-            g_tomography_texture_id = 0;
-        }
+        if (g_filtered_sinogram_texture_id)
+            {
+            glDeleteTextures(1, &g_filtered_sinogram_texture_id);
+            g_filtered_sinogram_texture_id = 0;
+            }
+
+        if (g_raw_tomography_texture_id)
+            {
+            glDeleteTextures(1, &g_raw_tomography_texture_id);
+            g_raw_tomography_texture_id = 0;
+            }
+
+        if (g_filtered_tomography_texture_id)
+            {
+            glDeleteTextures(1, &g_filtered_tomography_texture_id);
+            g_filtered_tomography_texture_id = 0;
+            }
 
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         glfwTerminate();
-    }
+        }
 }
 
 
@@ -914,18 +849,7 @@ void quit()
 void initGLEW()
 //-------------
 {
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-    }
-
-    do
-    {
-    } while (glGetError() != GL_NO_ERROR);
+    initialiseGLEW();
 }
 
 
@@ -933,80 +857,143 @@ void initGLEW()
 void initGL()
 //-----------
 {
-	std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER)   << std::endl;
-	std::cout << "OpenGL version:    " << glGetString(GL_VERSION)    << std::endl;
-	std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR)     << std::endl;
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    std::cout << "OpenGL renderer:   " <<
+        glGetString(GL_RENDERER)   << std::endl;
 
-	// Enable the Z-buffer
-	glEnable(GL_DEPTH_TEST);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    std::cout << "OpenGL version:    " <<
+        glGetString(GL_VERSION)    << std::endl;
 
-	// Set the background colour
-    glClearColor(g_background_colour.getX(), g_background_colour.getY(), g_background_colour.getZ(), 1.0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    std::cout << "OpenGL vender:     " <<
+        glGetString(GL_VENDOR)     << std::endl;
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	glEnable(GL_MULTISAMPLE);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    // Enable the Z-buffer
+    glEnable(GL_DEPTH_TEST);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	// Initialise the shaders
-	char* p_vertex_shader(0);
-	char* p_fragment_shader(0);
+    // Set the background colour
+    glClearColor(
+        g_background_colour.getX(),
+        g_background_colour.getY(),
+        g_background_colour.getZ(),
+        1.0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	int z_lib_return_code_vertex(0);
-	int z_lib_return_code_fragment(0);
+    glEnable(GL_MULTISAMPLE);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	std::string vertex_shader;
-	std::string fragment_shader;
+    // Initialise the shaders
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
 
-	// Display shader
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
     // Display shader
     if (useOpenGL3_2OrAbove())
-    {
-        z_lib_return_code_vertex   = inflate(g_display_gl3_vert, sizeof(g_display_gl3_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl3_frag, sizeof(g_display_gl3_frag), &p_fragment_shader);
-    }
+        {
+        z_lib_return_code_vertex   = inflate(
+            g_display_gl3_vert,
+            sizeof(g_display_gl3_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(
+            g_display_gl3_frag,
+            sizeof(g_display_gl3_frag),
+            &p_fragment_shader);
+
+        g_display_shader.setLabels(
+            "display_gl3.vert",
+            "display_gl3.frag");
+        }
     else
-    {
-        z_lib_return_code_vertex   = inflate(g_display_gl2_vert, sizeof(g_display_gl2_vert),   &p_vertex_shader);
-        z_lib_return_code_fragment = inflate(g_display_gl2_frag, sizeof(g_display_gl2_frag), &p_fragment_shader);
-    }
+        {
+        z_lib_return_code_vertex   = inflate(
+            g_display_gl2_vert,
+            sizeof(g_display_gl2_vert),
+            &p_vertex_shader);
 
-	vertex_shader   = p_vertex_shader;
-	fragment_shader = p_fragment_shader;
-	delete [] p_vertex_shader;     p_vertex_shader = 0;
-	delete [] p_fragment_shader; p_fragment_shader = 0;
+        z_lib_return_code_fragment = inflate(
+            g_display_gl2_frag,
+            sizeof(g_display_gl2_frag),
+            &p_fragment_shader);
 
-	if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-	}
-	g_display_shader.setLabels("display.vert", "display.frag");
-	g_display_shader.loadSource(vertex_shader, fragment_shader);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Display shader
-	if (useOpenGL3_2OrAbove())
-	{
-		z_lib_return_code_vertex   = inflate(g_display_image_gl3_vert, sizeof(g_display_image_gl3_vert),   &p_vertex_shader);
-		z_lib_return_code_fragment = inflate(g_display_image_gl3_frag, sizeof(g_display_image_gl3_frag), &p_fragment_shader);
-	}
-	else
-	{
-		z_lib_return_code_vertex   = inflate(g_display_image_gl2_vert, sizeof(g_display_image_gl2_vert),   &p_vertex_shader);
-		z_lib_return_code_fragment = inflate(g_display_image_gl2_frag, sizeof(g_display_image_gl2_frag), &p_fragment_shader);
-	}
+        g_display_shader.setLabels(
+            "display_gl2.vert",
+            "display_gl2.frag");
+        }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
-    delete [] p_vertex_shader;     p_vertex_shader = 0;
-    delete [] p_fragment_shader; p_fragment_shader = 0;
 
-    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 || !vertex_shader.size() || !fragment_shader.size())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot decode the shader using ZLib.");
-    }
-    g_display_image_shader.setLabels("display_image.vert", "display_image.frag");
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+        !vertex_shader.size() || !fragment_shader.size())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot decode the shader using ZLib.");
+        }
+    g_display_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Display shader
+    if (useOpenGL3_2OrAbove())
+        {
+        z_lib_return_code_vertex   = inflate(
+            g_display_image_gl3_vert,
+            sizeof(g_display_image_gl3_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(
+            g_display_image_gl3_frag,
+            sizeof(g_display_image_gl3_frag),
+            &p_fragment_shader);
+
+        g_display_image_shader.setLabels(
+            "display_image_gl3.vert",
+            "display_image_gl3.frag");
+        }
+    else
+        {
+        z_lib_return_code_vertex   = inflate(
+            g_display_image_gl2_vert,
+            sizeof(g_display_image_gl2_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(
+            g_display_image_gl2_frag,
+            sizeof(g_display_image_gl2_frag),
+            &p_fragment_shader);
+
+        g_display_image_shader.setLabels(
+            "display_image_gl2.vert",
+            "display_image_gl2.frag");
+        }
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+        !vertex_shader.size() || !fragment_shader.size())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot decode the shader using ZLib.");
+        }
+
     g_display_image_shader.loadSource(vertex_shader, fragment_shader);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1017,16 +1004,16 @@ void initFreeType()
 //-----------------
 {
 #ifdef HAS_FREETYPE
-	try
-	{
-	    g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
-	    g_display_help = true;
-	}
-	catch (const std::exception& error)
-	{
-		std::cerr << error.what() << std::endl;
-	    g_display_help = false;
-	}
+    try
+        {
+        g_font_rendered.initialise(PREFIX"/data/arial.ttf", 16*27);
+        g_display_help = true;
+        }
+    catch (const std::exception& error)
+        {
+        std::cerr << error.what() << std::endl;
+        g_display_help = false;
+        }
 #endif
 }
 
@@ -1035,10 +1022,14 @@ void initFreeType()
 void render()
 //-----------
 {
-	try
-	{
+    try
+        {
         // Display the 3D elements
-        glViewport(g_main_window_width / 2, 0, g_main_window_width / 2, g_main_window_height);
+        glViewport(
+            g_main_window_width / 2,
+            0,
+            g_main_window_width / 2,
+            g_main_window_height);
 
         // Handle for shader variables
         GLuint handle(0);
@@ -1049,7 +1040,7 @@ void render()
         pushEnableDisableState(GL_BLEND);
 
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
         // Enable the shader
@@ -1058,30 +1049,36 @@ void render()
         GLint shader_id(g_display_shader.getProgramHandle());
 
         // Define the light colours here
-        GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-        GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
-        GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-        GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+            {
+            GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+            GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+            GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+            GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
-        handle = glGetUniformLocation(shader_id, "light_global_ambient");
-        glUniform4fv(handle, 1, &light_global_ambient[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "light_global_ambient");
+            glUniform4fv(handle, 1, &light_global_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "light_ambient");
-        glUniform4fv(handle, 1, &light_ambient[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "light_ambient");
+            glUniform4fv(handle, 1, &light_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "light_diffuse");
-        glUniform4fv(handle, 1, &light_diffuse[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "light_diffuse");
+            glUniform4fv(handle, 1, &light_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "light_specular");
-        glUniform4fv(handle, 1, &light_specular[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "light_specular");
+            glUniform4fv(handle, 1, &light_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            }
 
         VEC3 light_position(0, 0, g_zoom);
         handle = glGetUniformLocation(shader_id, "light_position");
-        glUniform4f(handle, light_position.getX(), light_position.getY(), light_position.getZ(), 1.0);
+        glUniform4f(
+            handle,
+            light_position.getX(),
+            light_position.getY(),
+            light_position.getZ(), 1.0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the status of OpenGL and of the current FBO
@@ -1095,11 +1092,19 @@ void render()
         g_current_modelview_matrix *= g_scene_rotation_matrix;
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_modelview_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         MATRIX4 normal_matrix(g_current_modelview_matrix);
@@ -1119,100 +1124,67 @@ void render()
         g_current_modelview_matrix *= g_sample_rotation_matrix;
         applyModelViewMatrix();
 
-		{
-			// Get the material
-			const Material& material(g_rotation_axis_geometry.getMaterial());
+        // Get the material
+        const Material& material(g_rotation_axis_geometry.getMaterial());
 
-			// Define colours inshader
-			handle = glGetUniformLocation(shader_id, "material_ambient");
-			glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        // Define colours inshader
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			handle = glGetUniformLocation(shader_id, "material_diffuse");
-			glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_diffuse");
+        glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			handle = glGetUniformLocation(shader_id, "material_specular");
-			glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_specular");
+        glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			handle = glGetUniformLocation(shader_id, "material_shininess");
-			glUniform1f(handle, material.getShininess());
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_shininess");
+        glUniform1f(handle, material.getShininess());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			g_rotation_axis_geometry.display();
-		}
+        g_rotation_axis_geometry.display();
 
-		for (std::vector<PolygonMesh>::iterator ite(g_p_polygon_mesh_set.begin());
-				ite != g_p_polygon_mesh_set.end() - 1;
-				++ite)
-		{
-			// Get the material
-			const Material& material(ite->getMaterial());
+        for (std::vector<PolygonMesh>::iterator ite(g_p_polygon_mesh_set.begin());
+                ite != g_p_polygon_mesh_set.end();
+                ++ite)
+            {
+            // Get the material
+            const Material& material(ite->getMaterial());
 
-			// Define colours inshader
-			handle = glGetUniformLocation(shader_id, "material_ambient");
-			glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            // Define colours inshader
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			handle = glGetUniformLocation(shader_id, "material_diffuse");
-			glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			handle = glGetUniformLocation(shader_id, "material_specular");
-			glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			handle = glGetUniformLocation(shader_id, "material_shininess");
-			glUniform1f(handle, material.getShininess());
-			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1f(handle, material.getShininess());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-			if (g_display_wireframe)
-			{
-				ite->displayWireFrame();
-			}
-			else
-			{
-				ite->display();
-			}
-		}
-
-		if (g_display_skin)
-		{
-			if (g_display_wireframe)
-			{
-				g_p_polygon_mesh_set.back().displayWireFrame();
-			}
-			else
-			{
-				// Store the enable/disable state
-				pushEnableDisableState(GL_DEPTH_TEST);
-				pushEnableDisableState(GL_BLEND);
-				pushEnableDisableState(GL_CULL_FACE);
-
-				//glEnable(GL_DEPTH_TEST);
-				//glDepthMask(GL_FALSE);
-				glEnable(GL_BLEND);
-				//glDisable(GL_CULL_FACE);
-			   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glBlendFunc (GL_ONE, GL_ONE);
-
-				g_p_polygon_mesh_set.back().display();
-
-				//glDepthMask(GL_TRUE);
-
-				// Restore the enable/disable state
-				popEnableDisableState();
-				popEnableDisableState();
-				popEnableDisableState();
-			}
-		}
+            if (g_display_wireframe)
+                {
+                ite->displayWireFrame();
+                }
+            else
+                {
+                ite->display();
+                }
+            }
 
         // Restore the current transformation matrix
         popModelViewMatrix();
 
         // Define colours
-        {
+            {
             const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
             const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
             const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
@@ -1233,7 +1205,7 @@ void render()
             handle = glGetUniformLocation(shader_id, "material_shininess");
             glUniform1fv(handle, 1, &material_shininess);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
+            }
 
         // Display the source
         g_xray_detector.displaySource();
@@ -1244,7 +1216,7 @@ void render()
 
         // Display the beam
         if (g_display_beam)
-        {
+            {
             const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.1};
             handle = glGetUniformLocation(shader_id, "material_ambient");
             glUniform4fv(handle, 1, &material_ambient[0]);
@@ -1256,7 +1228,7 @@ void render()
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
             g_xray_detector.displayBeam();
-        }
+            }
 
         // Disable the shader
         popShaderProgram();
@@ -1292,7 +1264,11 @@ void render()
 
         // Draw the projections
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_2D_projection_matrix.get());
+        glUniformMatrix4fv(
+            handle,
+            1,
+            GL_FALSE,
+            g_current_2D_projection_matrix.get());
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         glActiveTexture(GL_TEXTURE0);
@@ -1303,10 +1279,16 @@ void render()
         displayProjection();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        displaySinogram();
+        displayRawSinogram();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        displayTomography();
+        displayFilteredSinogram();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        displayRawTomography();
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        displayFilteredTomography();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         popTexture();
@@ -1325,20 +1307,20 @@ void render()
 
 #ifdef HAS_FREETYPE
         if (g_display_help)
-        {
+            {
             displayHelp();
 
             // Check the status of OpenGL and of the current FBO
             checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
+            }
 #endif
-	}
-	// Catch exception if any
-	catch (const std::exception& error)
-	{
-		std::cerr << error.what() << std::endl;
-	}
+        }
+    // Catch exception if any
+    catch (const std::exception& error)
+        {
+        std::cerr << error.what() << std::endl;
+        }
 }
 
 
@@ -1346,18 +1328,18 @@ void render()
 void display()
 //------------
 {
-	// Store the current transformation matrix
-	pushModelViewMatrix();
-	pushProjectionMatrix();
+    // Store the current transformation matrix
+    pushModelViewMatrix();
+    pushProjectionMatrix();
 
-	// Update the X-ray image
-	updateXRayImage();
+    // Update the X-ray image
+    updateXRayImage();
 
     draw();
 
-	// Restore the current transformation matrix
-	popModelViewMatrix();
-	popProjectionMatrix();
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+    popProjectionMatrix();
 }
 
 
@@ -1365,102 +1347,114 @@ void display()
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 //-------------------------------------------------------------------------------
 {
-	if (action == GLFW_PRESS)
-	{
-		switch (key)
-		{
+    if (action == GLFW_PRESS)
+        {
+        switch (key)
+            {
 #ifdef HAS_FREETYPE
-        case GLFW_KEY_H:
-            g_display_help = !g_display_help;
-            break;
+            case GLFW_KEY_H:
+                g_display_help = !g_display_help;
+                break;
 #endif
 
-		case GLFW_KEY_Q:
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-			break;
+            case GLFW_KEY_Q:
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+                break;
 
-		case GLFW_KEY_SPACE:
-		    g_run_tomography_acquisition = !g_run_tomography_acquisition;
+            case GLFW_KEY_SPACE:
+                g_run_tomography_acquisition = !g_run_tomography_acquisition;
 
-            if (g_run_tomography_acquisition)
-            {
-                //if (g_next_angle_to_process == g_angle_number)
-                {
-                    reset();
-                }
-		    }
-		    break;
+                if (g_run_tomography_acquisition)
+                    {
+                    //if (g_next_angle_to_process == g_angle_number)
+                        {
+                        reset();
+                        }
+                    }
+                break;
 
-		case GLFW_KEY_B:
-			g_display_beam = !g_display_beam;
-			break;
+            case GLFW_KEY_B:
+                g_display_beam = !g_display_beam;
+                break;
 
-		case GLFW_KEY_N:
-			g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
-			break;
+            case GLFW_KEY_N:
+                g_xray_renderer.useNegativeFilteringFlag(
+                    !g_xray_renderer.getNegativeFilteringFlag());
+                break;
 
-		case GLFW_KEY_W:
-			g_display_wireframe = !g_display_wireframe;
-			break;
+            case GLFW_KEY_W:
+                g_display_wireframe = !g_display_wireframe;
+                break;
 
-        case GLFW_KEY_KP_ADD:
-            g_zoom -= 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            break;
-
-        case GLFW_KEY_EQUAL:
-
-            if (g_use_left_shift || g_use_right_shift)
-            {
+            case GLFW_KEY_KP_ADD:
                 g_zoom -= 1.0 * cm;
-                framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
+                framebufferSizeCallback(
+                    g_p_main_window_id,
+                    g_main_window_width,
+                    g_main_window_height);
+                break;
+
+            case GLFW_KEY_EQUAL:
+
+                if (g_use_left_shift || g_use_right_shift)
+                    {
+                    g_zoom -= 1.0 * cm;
+                    framebufferSizeCallback(
+                        g_p_main_window_id,
+                        g_main_window_width,
+                        g_main_window_height);
+                    }
+                break;
+
+            case GLFW_KEY_MINUS:
+            case GLFW_KEY_KP_SUBTRACT:
+                g_zoom += 1.0 * cm;
+                framebufferSizeCallback(
+                    g_p_main_window_id,
+                    g_main_window_width,
+                    g_main_window_height);
+                break;
+
+            case GLFW_KEY_LEFT_SHIFT:
+                g_use_left_shift = true;
+                break;
+
+            case GLFW_KEY_RIGHT_SHIFT:
+                g_use_right_shift = true;
+                break;
+
+            case GLFW_KEY_S:
+                if (g_display_skin)
+                    {
+                    takeScreenshot("screenshot_with_skin.tga");
+                    }
+                else
+                    {
+                    takeScreenshot("screenshot_without_skin.tga");
+                    }
+                g_display_skin = !g_display_skin;
+                break;
+
+            default:
+                break;
             }
-            break;
-
-        case GLFW_KEY_MINUS:
-        case GLFW_KEY_KP_SUBTRACT:
-            g_zoom += 1.0 * cm;
-            framebufferSizeCallback(g_p_main_window_id, g_main_window_width, g_main_window_height);
-            break;
-
-        case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = true;
-            break;
-
-        case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = true;
-            break;
-
-		case GLFW_KEY_S:
-			if (g_display_skin)
-			{
-				takeScreenshot("screenshot_with_skin.tga");
-			}
-			else
-			{
-				takeScreenshot("screenshot_without_skin.tga");
-			}
-			g_display_skin = !g_display_skin;
-			break;
-
-        default:
-            break;
         }
-    }
     else if (action == GLFW_RELEASE)
-    {
-        switch (key)
         {
-        case GLFW_KEY_LEFT_SHIFT:
-            g_use_left_shift = false;
-            break;
+        switch (key)
+            {
+            case GLFW_KEY_LEFT_SHIFT:
+                g_use_left_shift = false;
+                break;
 
-        case GLFW_KEY_RIGHT_SHIFT:
-            g_use_right_shift = false;
-            break;
+            case GLFW_KEY_RIGHT_SHIFT:
+                g_use_right_shift = false;
+                break;
+            }
         }
-    }
+
+    g_take_screenshot = true;
 }
 
 
@@ -1468,34 +1462,39 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 //-----------------------------------------------------------------------
 {
-	glViewport(0, 0, width, height);
+    glViewport(0, 0, width, height);
 
-	if (height == 0)
-	{
-		// Prevent divide by 0
-		height = 1;
-	}
+    if (height == 0)
+        {
+        // Prevent divide by 0
+        height = 1;
+        }
 
-	g_main_window_width = width;
-	g_main_window_height = height;
+    g_main_window_width = width;
+    g_main_window_height = height;
 
-	double screen_aspect_ratio(double(g_main_window_width / 2) / double(g_main_window_height));
+    double screen_aspect_ratio(double(g_main_window_width / 2) /
+        double(g_main_window_height));
 
-	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
-	/*loadOrthoProjectionMatrix(-width / 2.0, width / 2.0,
-			-height / 2.0, height / 2.0,
-			0.01, g_initial_far);
-	 */
+    loadPerspectiveProjectionMatrix(
+        g_initial_fovy,
+        screen_aspect_ratio,
+        g_initial_near,
+        g_initial_far);
 
-	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-			0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0);
+    loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0);
 
 
-	double x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
-	double y(float(g_angle_number) / float(g_number_of_pixels.getX()));
-	y *= 2.1;
-	y += 1.0;
+    double x(float(g_number_of_pixels.getX()) /
+        float(g_number_of_pixels.getX()));
+
+    double y(float(g_angle_number) /
+        float(g_number_of_pixels.getX()));
+
+    y *= 2.1;
+    y += 1.0;
 
     double w(double(g_main_window_width) / 2.0);
     double h(g_main_window_height);
@@ -1504,63 +1503,64 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     double scaling_y(y / h);
 
     if (scaling_x < scaling_y)
-    {
-    	scaling_x = y * w / h;
-    	scaling_y = y;
-    }
+        {
+        scaling_x = y * w / h;
+        scaling_y = y;
+        }
     else
-    {
-    	scaling_x = x;
-    	scaling_y = x * h / w;
-    }
+        {
+        scaling_x = x;
+        scaling_y = x * h / w;
+        }
 
-	g_current_2D_projection_matrix = buildOrthoProjectionMatrix(0,
-			scaling_x,
-	        0,
-	        scaling_y,
-	        -1.0,
-	        1.0);
-
+    g_current_2D_projection_matrix = buildOrthoProjectionMatrix(0,
+        scaling_x,
+        0,
+        scaling_y,
+        -1.0,
+        1.0);
 
     g_text_2D_projection_matrix = buildOrthoProjectionMatrix(0,
-            g_main_window_width,
-            g_main_window_height,
-            0,
-            -1.0,
-            1.0);
+        g_main_window_width,
+        g_main_window_height,
+        0,
+        -1.0,
+        1.0);
 }
 
 
 //--------------------------------------------
 void mouseButtonCallback(GLFWwindow* apWindow,
-						 int aButton,
-						 int aButtonState,
-						 int aModifierKey)
+                         int aButton,
+                         int aButtonState,
+                         int aModifierKey)
 //--------------------------------------------
 {
-	g_button = aButton;
-	g_button_state = aButtonState;
+    g_button = aButton;
+    g_button_state = aButtonState;
 
-	// Use the arc ball
-	if (g_button_state == GLFW_PRESS)
-	{
-		g_use_arc_ball = true;
-	}
-	// Stop using the arc ball
-	else
-	{
-		g_use_arc_ball = false;
-	}
+    // Use the arc ball
+    if (g_button_state == GLFW_PRESS)
+        {
+        g_use_arc_ball = true;
+        }
+    // Stop using the arc ball
+    else
+        {
+        g_use_arc_ball = false;
+        }
 
-	double xpos(0);
-	double ypos(0);
-	glfwGetCursorPos (apWindow, &xpos, &ypos);
+    double xpos(0);
+    double ypos(0);
+    glfwGetCursorPos (apWindow, &xpos, &ypos);
 
-	g_last_x_position = xpos;
-	g_last_y_position = ypos;
+    g_last_x_position = xpos;
+    g_last_y_position = ypos;
 
-	g_current_x_position = xpos;
-	g_current_y_position = ypos;
+    g_current_x_position = xpos;
+    g_current_y_position = ypos;
+
+    g_take_screenshot = true;
 }
 
 
@@ -1568,11 +1568,13 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 //--------------------------------------------------------------
 {
-	g_current_x_position = x;
-	g_current_y_position = y;
+    g_current_x_position = x;
+    g_current_y_position = y;
 
-	// Update the rotation matrix if needed
-	computeRotation(g_scene_rotation_matrix);
+    // Update the rotation matrix if needed
+    computeRotation(g_scene_rotation_matrix);
+
+    g_take_screenshot = true;
 }
 
 
@@ -1580,13 +1582,18 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 //-----------------------------------------------------------------------
 {
-	// Scrolling along the Y-axis
-	if (fabs(yoffset) > EPSILON)
-	{
-		g_use_arc_ball = false;
-		g_zoom += yoffset * cm;
-		framebufferSizeCallback(apWindow, g_main_window_width, g_main_window_height);
-	}
+    // Scrolling along the Y-axis
+    if (fabs(yoffset) > EPSILON)
+        {
+        g_use_arc_ball = false;
+        g_zoom += yoffset * cm;
+        framebufferSizeCallback(
+            apWindow,
+            g_main_window_width,
+            g_main_window_height);
+        }
+
+    g_take_screenshot = true;
 }
 
 
@@ -1594,98 +1601,124 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 void loadSTLFile()
 //----------------
 {
-	VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
-	VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
+    VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-	unsigned int i(0);
-	for (std::vector<PolygonMesh>::iterator ite(g_p_polygon_mesh_set.begin());
-			ite != g_p_polygon_mesh_set.end();
-			++ite, ++i)
-	{
-		// Set geometry
-		ite->setHounsfieldValue(g_p_HU_set[i]);
+    unsigned int i(0);
+    for (std::vector<PolygonMesh>::iterator ite(g_p_polygon_mesh_set.begin());
+            ite != g_p_polygon_mesh_set.end();
+            ++ite, ++i)
+        {
+        // Set geometry
+        ite->setHounsfieldValue(g_p_HU_set[i]);
 
-		float red((float(rand()) / (RAND_MAX)) + 1);
-		float green((float(rand()) / (RAND_MAX)) + 1);
-		float blue((float(rand()) / (RAND_MAX)) + 1);
-		float alpha(1.0);
+        float red((float(rand()) / (RAND_MAX)) + 1);
+        float green((float(rand()) / (RAND_MAX)) + 1);
+        float blue((float(rand()) / (RAND_MAX)) + 1);
+        float alpha(1.0);
 
-		if (i == g_p_polygon_mesh_set.size() - 1)
-		{
-			alpha = 1.0 / 3.0;
-		}
+        if (i == g_p_polygon_mesh_set.size() - 1)
+            {
+            alpha = 1.0 / 3.0;
+            }
 
-		VEC3 base_colour(red, green, blue);
-		base_colour.normalise();
+        VEC3 base_colour(red, green, blue);
+        base_colour.normalise();
 
-		ite->getMaterial().setAmbientColour( base_colour.getX() * 0.19225, base_colour.getY() * 0.19225, base_colour.getZ() * 0.19225, alpha);
-		ite->getMaterial().setDiffuseColour( base_colour.getX() * 0.50754, base_colour.getY() * 0.50754, base_colour.getZ() * 0.50754, alpha);
-		ite->getMaterial().setSpecularColour(base_colour.getX() * 0.50827, base_colour.getY() * 0.50827, base_colour.getZ() * 0.50827, alpha);
-		ite->getMaterial().setShininess(50);
+        ite->getMaterial().setAmbientColour(
+            base_colour.getX() * 0.19225,
+            base_colour.getY() * 0.19225,
+            base_colour.getZ() * 0.19225,
+            alpha);
 
-		if (min_corner.getX() > ite->getMinCorner().getX())
-		{
-			min_corner.setX(ite->getMinCorner().getX());
-		}
+        ite->getMaterial().setDiffuseColour(
+            base_colour.getX() * 0.50754,
+            base_colour.getY() * 0.50754,
+            base_colour.getZ() * 0.50754,
+            alpha);
 
-		if (min_corner.getY() > ite->getMinCorner().getY())
-		{
-			min_corner.setY(ite->getMinCorner().getY());
-		}
+        ite->getMaterial().setSpecularColour(
+            base_colour.getX() * 0.50827,
+            base_colour.getY() * 0.50827,
+            base_colour.getZ() * 0.50827,
+            alpha);
 
-		if (min_corner.getZ() > ite->getMinCorner().getZ())
-		{
-			min_corner.setZ(ite->getMinCorner().getZ());
-		}
+        ite->getMaterial().setShininess(50);
 
-		if (max_corner.getX() < ite->getMaxCorner().getX())
-		{
-			max_corner.setX(ite->getMaxCorner().getX());
-		}
+        if (min_corner.getX() > ite->getMinCorner().getX())
+            {
+            min_corner.setX(ite->getMinCorner().getX());
+            }
 
-		if (max_corner.getY() < ite->getMaxCorner().getY())
-		{
-			max_corner.setY(ite->getMaxCorner().getY());
-		}
+        if (min_corner.getY() > ite->getMinCorner().getY())
+            {
+            min_corner.setY(ite->getMinCorner().getY());
+            }
 
-		if (max_corner.getZ() < ite->getMaxCorner().getZ())
-		{
-			max_corner.setZ(ite->getMaxCorner().getZ());
-		}
-	}
+        if (min_corner.getZ() > ite->getMinCorner().getZ())
+            {
+            min_corner.setZ(ite->getMinCorner().getZ());
+            }
 
-	g_rotation_axis_geometry.getMaterial().setAmbientColour(0.0, 0.0, 0.0, 1.0);
-	g_rotation_axis_geometry.getMaterial().setDiffuseColour(0.0, 0.0, 0.0, 1.0);
-	g_rotation_axis_geometry.getMaterial().setSpecularColour(0.0, 0.0, 0.0, 1.0);
-	g_rotation_axis_geometry.getMaterial().setShininess(50);
+        if (max_corner.getX() < ite->getMaxCorner().getX())
+            {
+            max_corner.setX(ite->getMaxCorner().getX());
+            }
+
+        if (max_corner.getY() < ite->getMaxCorner().getY())
+            {
+            max_corner.setY(ite->getMaxCorner().getY());
+            }
+
+        if (max_corner.getZ() < ite->getMaxCorner().getZ())
+            {
+            max_corner.setZ(ite->getMaxCorner().getZ());
+            }
+        }
+
+    g_rotation_axis_geometry.getMaterial().setAmbientColour(0.0, 0.0, 0.0, 1.0);
+    g_rotation_axis_geometry.getMaterial().setDiffuseColour(0.0, 0.0, 0.0, 1.0);
+    g_rotation_axis_geometry.getMaterial().setSpecularColour(0.0, 0.0, 0.0, 1.0);
+    g_rotation_axis_geometry.getMaterial().setShininess(50);
 
     // Compute the translation vector
     g_translation_vector = min_corner + (max_corner - min_corner) / 2.0;
-    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
+    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(
+        -g_translation_vector);
 
-	std::vector<float> p_line_vertex_data;
-	std::vector<unsigned int> p_line_index_data;
+    std::vector<float> p_line_vertex_data;
+    std::vector<unsigned int> p_line_index_data;
 
-	p_line_vertex_data.push_back(g_translation_vector.getX() + g_initial_detector_up_vector.getX() * 10.0 * cm);
-	p_line_vertex_data.push_back(g_translation_vector.getY() + g_initial_detector_up_vector.getY() * 10.0 * cm);
-	p_line_vertex_data.push_back(g_translation_vector.getZ() + g_initial_detector_up_vector.getZ() * 10.0 * cm);
+    p_line_vertex_data.push_back(g_translation_vector.getX() +
+        g_initial_detector_up_vector.getX() * 10.0 * cm);
 
-	p_line_vertex_data.push_back(g_translation_vector.getX() - g_initial_detector_up_vector.getX() * 10.0 * cm);
-	p_line_vertex_data.push_back(g_translation_vector.getY() - g_initial_detector_up_vector.getY() * 10.0 * cm);
-	p_line_vertex_data.push_back(g_translation_vector.getZ() - g_initial_detector_up_vector.getZ() * 10.0 * cm);
+    p_line_vertex_data.push_back(g_translation_vector.getY() +
+        g_initial_detector_up_vector.getY() * 10.0 * cm);
 
-	p_line_index_data.push_back(0);
-	p_line_index_data.push_back(1);
+    p_line_vertex_data.push_back(g_translation_vector.getZ() +
+        g_initial_detector_up_vector.getZ() * 10.0 * cm);
 
-	g_rotation_axis_geometry.setInternalData(GL_LINES,
-		&p_line_vertex_data[0],
-		p_line_vertex_data.size() / 3,
-		GL_FLOAT,
-		&p_line_index_data[0],
-		p_line_index_data.size(),
-		GL_UNSIGNED_INT,
-		true,
-		GL_STATIC_DRAW);
+    p_line_vertex_data.push_back(g_translation_vector.getX() -
+        g_initial_detector_up_vector.getX() * 10.0 * cm);
+
+    p_line_vertex_data.push_back(g_translation_vector.getY() -
+        g_initial_detector_up_vector.getY() * 10.0 * cm);
+
+    p_line_vertex_data.push_back(g_translation_vector.getZ() -
+        g_initial_detector_up_vector.getZ() * 10.0 * cm);
+
+    p_line_index_data.push_back(0);
+    p_line_index_data.push_back(1);
+
+    g_rotation_axis_geometry.setInternalData(GL_LINES,
+        &p_line_vertex_data[0],
+        p_line_vertex_data.size() / 3,
+        GL_FLOAT,
+        &p_line_index_data[0],
+        p_line_index_data.size(),
+        GL_UNSIGNED_INT,
+        true,
+        GL_STATIC_DRAW);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1696,13 +1729,13 @@ void loadSTLFile()
 void loadDetector()
 //-----------------
 {
-	g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
-	g_xray_detector.setNumberOfPixels(g_number_of_pixels);
-	g_xray_detector.setDetectorPosition(g_detector_position);
-	g_xray_detector.setUpVector(g_detector_up_vector);
+    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
+    g_xray_detector.setNumberOfPixels(g_number_of_pixels);
+    g_xray_detector.setDetectorPosition(g_detector_position);
+    g_xray_detector.setUpVector(g_detector_up_vector);
 
-	// The X-ray image is not up-to-date
-	g_is_xray_image_up_to_date = false;
+    // The X-ray image is not up-to-date
+    g_is_xray_image_up_to_date = false;
 }
 
 
@@ -1710,17 +1743,17 @@ void loadDetector()
 void loadSource()
 //---------------
 {
-	// Set the energy
-	g_xray_beam.initialise(g_incident_energy);
+    // Set the energy
+    g_xray_beam.initialise(g_incident_energy);
 
-	// Set the source position
-	g_xray_detector.setXrayPointSource(g_source_position);
+    // Set the source position
+    g_xray_detector.setXrayPointSource(g_source_position);
 
-	// Use a parallel source
-	g_xray_detector.setParallelBeam();
+    // Use a parallel source
+    g_xray_detector.setParallelBeam();
 
-	// The X-ray image is not up-to-date
-	g_is_xray_image_up_to_date = false;
+    // The X-ray image is not up-to-date
+    g_is_xray_image_up_to_date = false;
 }
 
 
@@ -1728,14 +1761,14 @@ void loadSource()
 void loadXRaySimulator()
 //----------------------
 {
-	// Initialise the X-ray renderer
+    // Initialise the X-ray renderer
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB16F,
-            &g_xray_detector,
-            &g_xray_beam);
+        GL_RGB32F,
+        &g_xray_detector,
+        &g_xray_beam);
 
-	// The X-ray image is not up-to-date
-	g_is_xray_image_up_to_date = false;
+    // The X-ray image is not up-to-date
+    g_is_xray_image_up_to_date = false;
 }
 
 
@@ -1743,23 +1776,23 @@ void loadXRaySimulator()
 Vec3<GLfloat> getArcballVector(int x, int y)
 //------------------------------------------
 {
-	Vec3<GLfloat> P(2.0 * float(x) / float(g_main_window_width) - 1.0,
-			2.0 * float(y) / float(g_main_window_height) - 1.0,
-			0);
+    Vec3<GLfloat> P(2.0 * float(x) / float(g_main_window_width) - 1.0,
+            2.0 * float(y) / float(g_main_window_height) - 1.0,
+            0);
 
-	P.setY(-P.getY());
+    P.setY(-P.getY());
 
-	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
-	if (OP_squared <= 1.0)
-	{
-		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-	}
-	else
-	{
-		P.normalise();  // nearest point
-	}
+    float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+    if (OP_squared <= 1.0)
+        {
+        P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+        }
+    else
+        {
+        P.normalise();  // nearest point
+        }
 
-	return (P);
+    return (P);
 }
 
 
@@ -1767,7 +1800,7 @@ Vec3<GLfloat> getArcballVector(int x, int y)
 float radian2degree(float anAngle)
 //--------------------------------
 {
-	return (180.0 * anAngle / gVirtualXRay::PI);
+    return (180.0 * anAngle / gVirtualXRay::PI);
 }
 
 
@@ -1775,30 +1808,37 @@ float radian2degree(float anAngle)
 void computeRotation(MATRIX4& aRotationMatrix)
 //--------------------------------------------
 {
-	if (g_use_arc_ball)
-	{
-		if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
-		{
-			Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position));
-			Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position));
+    if (g_use_arc_ball)
+        {
+        if (g_current_x_position != g_last_x_position ||
+                g_current_y_position != g_last_y_position)
+            {
+            Vec3<GLfloat> va(getArcballVector(
+                g_last_x_position,
+                g_last_y_position));
 
-			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+            Vec3<GLfloat> vb(getArcballVector(
+                g_current_x_position,
+                g_current_y_position));
 
-			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
-			//axis_in_camera_coord.normalize();
+            float angle(g_rotation_speed *
+                radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 
-			Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
-			Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
-			//axis_in_object_coord.normalize();
+            Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
 
-			Matrix4x4<GLfloat> rotation_matrix;
-			rotation_matrix.rotate(angle, axis_in_object_coord);
-			aRotationMatrix = aRotationMatrix * rotation_matrix;
+            Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
 
-			g_last_x_position = g_current_x_position;
-			g_last_y_position = g_current_y_position;
-		}
-	}
+            Vec3<GLfloat> axis_in_object_coord =
+                camera2object * axis_in_camera_coord;
+
+            Matrix4x4<GLfloat> rotation_matrix;
+            rotation_matrix.rotate(angle, axis_in_object_coord);
+            aRotationMatrix = aRotationMatrix * rotation_matrix;
+
+            g_last_x_position = g_current_x_position;
+            g_last_y_position = g_current_y_position;
+            }
+        }
 }
 
 
@@ -1806,24 +1846,24 @@ void computeRotation(MATRIX4& aRotationMatrix)
 bool updateXRayImage()
 //--------------------
 {
-	bool return_value(false);
+    bool return_value(false);
 
-	// The X-ray image is not up-to-date
-	if (!g_is_xray_image_up_to_date)
-	{
-		// Compute the X-Ray image
-		g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    // The X-ray image is not up-to-date
+    if (!g_is_xray_image_up_to_date)
+        {
+        // Compute the X-Ray image
+        g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
-		// Normalise the X-ray image
-		g_xray_renderer.normalise();
+        // Normalise the X-ray image
+        g_xray_renderer.normalise();
 
-		// The X-ray image is up-to-date
-		g_is_xray_image_up_to_date = true;
+        // The X-ray image is up-to-date
+        g_is_xray_image_up_to_date = true;
 
-		return_value = true;
-	}
+        return_value = true;
+        }
 
-	return (return_value);
+    return (return_value);
 }
 
 
@@ -1831,67 +1871,43 @@ bool updateXRayImage()
 void draw()
 //---------
 {
-	// Get the current draw buffer if needed
-	GLint back_buffer(0);
-	glGetIntegerv(GL_DRAW_BUFFER, &back_buffer);
+    // Get the current draw buffer if needed
+    GLint back_buffer(0);
+    glGetIntegerv(GL_DRAW_BUFFER, &back_buffer);
 
-	// Clear the buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Display the 3D scene
-	render();
+    // Display the 3D scene
+    render();
 
-	// Make sure all the OpenGL code is done
-	glFinish();
+    // Make sure all the OpenGL code is done
+    glFinish();
 
-	// Restore the draw buffer if needed
-	glDrawBuffer(back_buffer);
+    // Restore the draw buffer if needed
+    glDrawBuffer(back_buffer);
 }
 
 
-//-------------------------------------------------------
+//----------------------------------------------
 void createTexture(GLuint& aTextureID,
-				   unsigned int aImageWidth,
-				   unsigned int aImageHeight,
-				   float aPixelWidth,
-				   float aPixelHeight,
-				   ProjectionImageType::Pointer& anImage)
-//-------------------------------------------------------
+                   unsigned int aImageWidth,
+                   unsigned int aImageHeight,
+                   float aPixelWidth,
+                   float aPixelHeight,
+                   ProjectionImageType& anImage)
+//----------------------------------------------
 {
     glActiveTexture(GL_TEXTURE0);
 
     if (aTextureID)
-    {
+        {
         glDeleteTextures(1, &aTextureID);
         aTextureID = 0;
-    }
+        }
 
-    ProjectionImageType::SizeType	size;
-	size[0] = aImageWidth;
-	size[1] = aImageHeight;
-
-	ProjectionImageType::IndexType start;
-	start[0] = 0;
-	start[1] = 0;
-
-	ProjectionImageType::RegionType region;
-	region.SetSize(size);
-	region.SetIndex(start);
-
-	anImage->SetRegions(region);
-	anImage->Allocate();
-
-	double spacing[2];
-	spacing[0] = aPixelWidth;
-	spacing[1] = aPixelHeight;
-	anImage->SetSpacing(spacing);
-
-	double origin[2];
-	origin[0] = 0;
-	origin[1] = 0;
-	anImage->SetOrigin(origin);
-
-	anImage->FillBuffer(0);
+    anImage = ProjectionImageType(aImageWidth, aImageHeight);
+    anImage.setSpacing(VEC3(aPixelWidth, aPixelHeight));
 
     glGenTextures(1, &aTextureID);
 
@@ -1907,7 +1923,16 @@ void createTexture(GLuint& aTextureID,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, aImageWidth, aImageHeight, 0, GL_RED, GL_FLOAT, anImage->GetBufferPointer());
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_R32F,
+        aImageWidth,
+        aImageHeight,
+        0,
+        GL_RED,
+        GL_FLOAT,
+        anImage.getRawData());
 
     popTexture();
 
@@ -1919,9 +1944,13 @@ void createTexture(GLuint& aTextureID,
 void createProjection()
 //---------------------
 {
-    createTexture(g_projection_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_projection_data);
-    g_min_projection = 0;
-    g_max_projection = 0;
+    createTexture(
+        g_projection_texture_id,
+        g_number_of_pixels.getX(),
+        g_angle_number,
+        g_pixel_width,
+        g_angle_step,
+        g_projection_data);
 
     float x(float(g_number_of_pixels.getX()) / float(g_number_of_pixels.getX()));
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
@@ -1978,15 +2007,22 @@ void createProjection()
     p_texture_coordinates.push_back(0);
 
     if (!g_sinogram_rectangle.get())
-    {
+        {
         g_sinogram_rectangle.reset(createVBO());
-    }
+        }
 
     g_sinogram_rectangle->setBufferUsageHint(GL_STATIC_DRAW);
+
     g_sinogram_rectangle->setVertexData(GL_TRIANGLES,
-        p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
+        p_vertices.size() / 3,
+        3,
+        GL_FLOAT,
+        &p_vertices[0],
         0, 0, GL_NONE, 0,
-        p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+        p_texture_coordinates.size() / 3,
+        3,
+        GL_FLOAT,
+        &p_texture_coordinates[0]);
 
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1996,9 +2032,21 @@ void createProjection()
 void createSinogram()
 //-------------------
 {
-    createTexture(g_sinogram_texture_id, g_number_of_pixels.getX(), g_angle_number, g_pixel_width, g_angle_step, g_p_sinogram_data);
-    g_min_sinogram = 0;
-    g_max_sinogram = 0;
+    createTexture(
+        g_raw_sinogram_texture_id,
+        g_number_of_pixels.getX(),
+        g_angle_number,
+        g_pixel_width,
+        g_angle_step,
+        g_raw_sinogram_data);
+
+    createTexture(
+        g_filtered_sinogram_texture_id,
+        g_number_of_pixels.getX(),
+        g_angle_number,
+        g_pixel_width,
+        g_angle_step,
+        g_filtered_sinogram_data);
 }
 
 
@@ -2006,9 +2054,21 @@ void createSinogram()
 void createTomography()
 //---------------------
 {
-    createTexture(g_tomography_texture_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_pixel_width, g_pixel_width, g_p_tomography_data);
-    g_min_tomography = 0;
-    g_max_tomography = 0;
+    createTexture(
+        g_raw_tomography_texture_id,
+        g_number_of_pixels.getX(),
+        g_number_of_pixels.getX(),
+        g_pixel_width,
+        g_pixel_width,
+        g_raw_tomography_data);
+
+    createTexture(
+        g_filtered_tomography_texture_id,
+        g_number_of_pixels.getX(),
+        g_number_of_pixels.getX(),
+        g_pixel_width,
+        g_pixel_width,
+        g_filtered_tomography_data);
 
     std::vector<GLfloat> p_vertices;
     p_vertices.push_back(0);
@@ -2063,15 +2123,18 @@ void createTomography()
     p_texture_coordinates.push_back(0);
 
     if (!g_tomography_rectangle.get())
-    {
+        {
         g_tomography_rectangle.reset(createVBO());
-    }
+        }
 
     g_tomography_rectangle->setBufferUsageHint(GL_STATIC_DRAW);
     g_tomography_rectangle->setVertexData(GL_TRIANGLES,
         p_vertices.size() / 3, 3, GL_FLOAT, &p_vertices[0],
         0, 0, GL_NONE, 0,
-        p_texture_coordinates.size() / 3, 3, GL_FLOAT, &p_texture_coordinates[0]);
+        p_texture_coordinates.size() / 3,
+        3,
+        GL_FLOAT,
+        &p_texture_coordinates[0]);
 
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -2081,157 +2144,177 @@ void createTomography()
 void updateProjection()
 //---------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_p_projection_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
-
-    float value;
-
-    if (g_current_angle == 0)
-    {
-    	value = *p_input_image;
-        g_min_projection = *p_input_image;
-        g_max_projection = *p_input_image;
-    }
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-    	value = *p_input_image++;
-
-        if (g_min_projection > value)
-        {
-            g_min_projection = value;
-        }
-
-        if (g_max_projection < value)
-        {
-            g_max_projection = value;
-        }
-
-        *p_output_image++ = value;
-    }
+    memcpy(&g_projection_data.getPixel(0, g_current_angle, 0),
+            g_xray_renderer.getEnergyFluence().getRawData(),
+            sizeof(float) * g_number_of_pixels.getX()
+    );
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_projection_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        g_current_angle,
+        g_number_of_pixels.getX(),
+        1,
+        GL_RED,
+        GL_FLOAT,
+        g_projection_data.getRawData() +
+            g_current_angle * g_number_of_pixels.getX());
     popTexture();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
-//-------------------
-void updateSinogram()
-//-------------------
+//----------------------
+void updateRawSinogram()
+//----------------------
 {
-    RATIONAL_NUMBER* p_input_image(g_xray_renderer.getXRayImage());
-    float* p_output_image(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
-
     float total_input_energy(g_xray_beam.getTotalEnergy());
-    float scaling_factor(
-            float(g_number_of_pixels.getX()) / ((g_resolution.getX() * g_number_of_pixels.getX()) / cm)
+    float scaling_factor(float(g_number_of_pixels.getX()) /
+        ((g_resolution.getX() * g_number_of_pixels.getX()) / cm)
     );
 
-    float value;
+    // Convert the projection into a sinogram
+    Sinogram<float> raw_sinogram(scaling_factor *
+        (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
 
-    if (g_current_angle == 0)
-    {
-        value = scaling_factor * log(total_input_energy / *p_input_image);
-        g_min_sinogram = value;
-        g_max_sinogram = value;
-    }
-
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-        value = scaling_factor * log(total_input_energy / *p_input_image++);
-
-        if (g_min_sinogram > value)
-        {
-            g_min_sinogram = value;
-        }
-
-        if (g_max_sinogram < value)
-        {
-            g_max_sinogram = value;
-        }
-
-        *p_output_image++ = value;
-    }
+    memcpy(&(g_raw_sinogram_data(0, g_current_angle,0)),
+            raw_sinogram.getRawData(),
+            sizeof(float) * g_number_of_pixels.getX());
 
     pushTexture2D();
-    glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, g_current_angle, g_number_of_pixels.getX(), 1, GL_RED, GL_FLOAT, g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
+    glBindTexture(GL_TEXTURE_2D, g_raw_sinogram_texture_id);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        g_current_angle,
+        g_number_of_pixels.getX(),
+        1,
+        GL_RED,
+        GL_FLOAT,
+        g_raw_sinogram_data.getRawData() +
+            g_current_angle * g_number_of_pixels.getX());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
 
 
-//---------------------
-void updateTomography()
-//---------------------
+//---------------------------
+void updateFilteredSinogram()
+//---------------------------
 {
-    // Get the current projection from the sinogram
-    float* p_current_projection(g_p_sinogram_data->GetBufferPointer() + g_current_angle * g_number_of_pixels.getX());
-    float current_angle(g_angle_step * g_current_angle);
+    float total_input_energy(g_xray_beam.getTotalEnergy());
+    float scaling_factor(float(g_number_of_pixels.getX()) /
+        ((g_resolution.getX() * g_number_of_pixels.getX()) / cm)
+    );
 
-    float width(g_resolution.getX() * g_number_of_pixels.getX());
-    float half_width(width / 2.0);
+    // Convert the projection into a sinogram
+    Sinogram<float> raw_sinogram(
+        scaling_factor *
+        (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
 
-    // Get the position of the first point in the projection
-    VEC3 rotation_axis(0, 0, 1);
-    MATRIX4 rotation_matrix(MATRIX4::buildRotationMatrix(current_angle, rotation_axis));
-    VEC3 first_projection_point_position(-half_width + g_resolution.getX() / 2.0, 0, 0);
-    first_projection_point_position = rotation_matrix * first_projection_point_position;
+    raw_sinogram.saveASCII("raw_line.mat");
 
-    // Get the position of the last point in the projection
-    VEC3 last_projection_point_position(half_width - g_resolution.getX() / 2.0, 0, 0);
-    last_projection_point_position = rotation_matrix * last_projection_point_position;
+    // Compute the FFTs
+    FFT<float> sinogram_fft(raw_sinogram.getFFT());
 
-    // Get the normal vector
-    VEC3 direction((last_projection_point_position - first_projection_point_position).normal());
-    VEC3 normal(direction ^ VEC3(0, 0, 1));
+    // Compute the ramp filter
+    sinogram_fft = sinogram_fft.rhoFilter("hamming", 1.0);
 
-    // Process every pixel of the projection
-    for (unsigned int i(0); i < g_number_of_pixels.getX(); ++i)
-    {
-    	// Get the pixel color
-    	float intensity(*p_current_projection++);
+    // Compute the iFFTs
+    ProjectionImageType filtered_projection(sinogram_fft.getInverseFFT());
+    filtered_projection.saveASCII("filtered_line.mat");
 
-    	// Get the pixel position
-    	VEC3 pixel_position(first_projection_point_position + direction * (float(i) * g_resolution.getX()));
+    memcpy(&(g_filtered_sinogram_data(0, g_current_angle,0)),
+            filtered_projection.getRawData(),
+            sizeof(float) * g_number_of_pixels.getX());
 
-    	VEC3 first_projection_sample_position(pixel_position + normal * half_width);
-    	VEC3 last_projection_sample_position( pixel_position - normal * half_width);
+    pushTexture2D();
+    glBindTexture(GL_TEXTURE_2D, g_filtered_sinogram_texture_id);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        g_current_angle,
+        g_number_of_pixels.getX(),
+        1,
+        GL_RED,
+        GL_FLOAT,
+        &g_filtered_sinogram_data(0, g_current_angle, 0));
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    popTexture();
+}
 
-    	// Get the first end point
-        Vec2i first_projection_sample_id((first_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
-        		(first_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
 
-        // Get the second end point
-        Vec2i last_projection_sample_id((last_projection_sample_position.getX() - -half_width) / width * float(g_number_of_pixels.getX() - 1),
-        		(last_projection_sample_position.getY() - -half_width) / width * float(g_number_of_pixels.getX() - 1));
+//----------------------------------------------------------
+void updateTomography(const Sinogram<float>& aSinogram,
+                      ProjectionImageType& aTomographySlice,
+                      GLuint aTextureID)
+//----------------------------------------------------------
+{
+    Image<float> sinogram(aSinogram.getROI(
+        0, g_current_angle,
+        0, aSinogram.getWidth(),
+        1, aSinogram.getDepth()));
 
-    	// Backproject the pixel
-    	drawLine(first_projection_sample_id, last_projection_sample_id, g_number_of_pixels.getX(), g_number_of_pixels.getX(), g_p_tomography_data->GetBufferPointer(), intensity / width);
-    }
+    sinogram = sinogram.resize(
+        sinogram.getWidth() * 2,
+        1,
+        aSinogram.getDepth());
 
-    unsigned int number_of_pixels(g_number_of_pixels.getX() * g_number_of_pixels.getX());
-    g_min_tomography = g_max_tomography = g_p_tomography_data->GetBufferPointer()[0];
-    for (unsigned int i(1); i < number_of_pixels; ++i)
-    {
-        if (g_min_tomography > g_p_tomography_data->GetBufferPointer()[i])
+    unsigned int image_width(2 * floor (sinogram.getWidth() /
+        (2.0 * std::sqrt(2.0))));
+
+    Image<float> back_projection(
+        sinogram.getWidth(),
+        sinogram.getWidth(),
+        sinogram.getDepth());
+
+    for (int k(0); k < back_projection.getDepth(); ++k)
         {
-        	g_min_tomography = g_p_tomography_data->GetBufferPointer()[i];
+        for (int j(0); j < back_projection.getHeight(); ++j)
+            {
+            for (int i(0); i < back_projection.getWidth(); ++i)
+                {
+                back_projection(i, j, k) += sinogram.getPixel(i, 0, k);
+                }
+            }
         }
 
-        if (g_max_tomography < g_p_tomography_data->GetBufferPointer()[i])
-        {
-        	g_max_tomography = g_p_tomography_data->GetBufferPointer()[i];
-        }
-    }
+    back_projection = back_projection.rotate(-(
+        g_first_angle + g_angle_step * g_current_angle)) /
+            back_projection.getHeight();
+
+    back_projection = back_projection.setCanvasSize(
+        image_width,
+        image_width,
+        back_projection.getDepth());
+
+    back_projection *= M_PI / ( back_projection.getHeight());
+
+    back_projection = back_projection.resize(
+        aSinogram.getWidth(),
+        aSinogram.getWidth(),
+        back_projection.getDepth());
+
+    aTomographySlice += back_projection;
 
     // Update the texture
     pushTexture2D();
-    glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data->GetBufferPointer());
+    glBindTexture(GL_TEXTURE_2D, aTextureID);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        aTomographySlice.getWidth(),
+        aTomographySlice.getHeight(),
+        GL_RED,
+        GL_FLOAT,
+        aTomographySlice.getRawData());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     popTexture();
 }
@@ -2241,6 +2324,9 @@ void updateTomography()
 void displayProjection()
 //----------------------
 {
+    float min_value(g_projection_data.getMinValue());
+    float max_value(g_projection_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     MATRIX4 model_view;
@@ -2252,15 +2338,16 @@ void displayProjection()
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_projection);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_projection != g_min_projection)
-    {
-        scale = 1.0 / (g_max_projection - g_min_projection);
-    }
+    if (max_value != min_value)
+        {
+        scale = 1.0 / (max_value - min_value);
+        }
+
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2268,10 +2355,13 @@ void displayProjection()
 }
 
 
-//--------------------
-void displaySinogram()
-//--------------------
+//-----------------------
+void displayRawSinogram()
+//-----------------------
 {
+    float min_value(g_raw_sinogram_data.getMinValue());
+    float max_value(g_raw_sinogram_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
@@ -2280,18 +2370,19 @@ void displaySinogram()
     glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
+    glBindTexture(GL_TEXTURE_2D, g_raw_sinogram_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_sinogram);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_sinogram != g_min_sinogram)
-    {
-        scale = 1.0 / (g_max_sinogram - g_min_sinogram);
-    }
+    if (max_value != min_value)
+        {
+        scale = 1.0 / (max_value - min_value);
+        }
+
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2299,10 +2390,51 @@ void displaySinogram()
 }
 
 
-//----------------------
-void displayTomography()
-//----------------------
+//----------------------------
+void displayFilteredSinogram()
+//----------------------------
 {
+    float min_value(g_filtered_sinogram_data.getMinValue());
+    float max_value(g_filtered_sinogram_data.getMaxValue());
+
+    GLint shader_id(g_display_image_shader.getProgramHandle());
+
+    double x(double(g_number_of_pixels.getX()) /
+        double(g_number_of_pixels.getX()));
+    double y(double(g_angle_number) /
+        double(g_number_of_pixels.getX()));
+    MATRIX4 model_view(MATRIX4::buildTranslationMatrix(x * 1.05, y * 1.05, 0));
+    GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
+    glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glBindTexture(GL_TEXTURE_2D, g_filtered_sinogram_texture_id);
+
+    handle = glGetUniformLocation(shader_id, "shift");
+    glUniform1f(handle, -min_value);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(shader_id, "scale");
+    float scale(1);
+    if (max_value != min_value)
+        {
+        scale = 1.0 / (max_value - min_value);
+        }
+
+    glUniform1f(handle, scale);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    g_sinogram_rectangle->display();
+}
+
+
+//-------------------------
+void displayRawTomography()
+//-------------------------
+{
+    float min_value(g_raw_tomography_data.getMinValue());
+    float max_value(g_raw_tomography_data.getMaxValue());
+
     GLint shader_id(g_display_image_shader.getProgramHandle());
 
     float y(float(g_angle_number) / float(g_number_of_pixels.getX()));
@@ -2311,18 +2443,58 @@ void displayTomography()
     glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
+    glBindTexture(GL_TEXTURE_2D, g_raw_tomography_texture_id);
 
     handle = glGetUniformLocation(shader_id, "shift");
-    glUniform1f(handle, -g_min_tomography);
+    glUniform1f(handle, -min_value);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     handle = glGetUniformLocation(shader_id, "scale");
     float scale(1);
-    if (g_max_tomography != g_min_tomography)
-    {
-        scale = 1.0 / (g_max_tomography - g_min_tomography);
-    }
+    if (max_value != min_value)
+        {
+        scale = 1.0 / (max_value - min_value);
+        }
+
+    glUniform1f(handle, scale);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    g_tomography_rectangle->display();
+}
+
+
+//------------------------------
+void displayFilteredTomography()
+//------------------------------
+{
+    float min_value(g_filtered_tomography_data.getMinValue());
+    float max_value(g_filtered_tomography_data.getMaxValue());
+
+    GLint shader_id(g_display_image_shader.getProgramHandle());
+
+    double x(double(g_number_of_pixels.getX()) /
+        double(g_number_of_pixels.getX()));
+
+    double y(double(g_angle_number) /
+        double(g_number_of_pixels.getX()));
+    MATRIX4 model_view(MATRIX4::buildTranslationMatrix(x * 1.05, y * 2.1, 0));
+    GLuint handle(glGetUniformLocation(shader_id, "g_modelview_matrix"));
+    glUniformMatrix4fv(handle, 1, GL_FALSE, model_view.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glBindTexture(GL_TEXTURE_2D, g_filtered_tomography_texture_id);
+
+    handle = glGetUniformLocation(shader_id, "shift");
+    glUniform1f(handle, -min_value);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(shader_id, "scale");
+    float scale(1);
+    if (max_value != min_value)
+        {
+        scale = 1.0 / (max_value - min_value);
+        }
+
     glUniform1f(handle, scale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2336,144 +2508,98 @@ void reset()
 {
     unsigned int number_of_pixels(g_number_of_pixels.getX() * g_angle_number);
     for (unsigned int i(0); i < number_of_pixels; ++i)
-    {
-        g_p_projection_data->GetBufferPointer()[i] = 0;
-        g_p_sinogram_data->GetBufferPointer()[i] = 0;
-    }
+        {
+        g_projection_data.getRawData()[i] = 0;
+        g_raw_sinogram_data.getRawData()[i] = 0;
+        g_filtered_sinogram_data.getRawData()[i] = 0;
+        }
 
     number_of_pixels = g_number_of_pixels.getX() * g_number_of_pixels.getX();
     for (unsigned int i(0); i < number_of_pixels; ++i)
-    {
-        g_p_tomography_data->GetBufferPointer()[i] = 0;
-    }
-
-    g_min_projection = 0;
-    g_max_projection = 0;
-    g_min_sinogram = 0;
-    g_max_sinogram = 0;
-    g_min_tomography = 0;
-    g_max_tomography = 0;
+        {
+        g_raw_tomography_data.getRawData()[i] = 0;
+        g_filtered_tomography_data.getRawData()[i] = 0;
+        }
 
     pushTexture2D();
     glBindTexture(GL_TEXTURE_2D, g_projection_texture_id);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RED, GL_FLOAT, g_p_projection_data);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        g_number_of_pixels.getX(),
+        g_angle_number,
+        GL_RED,
+        GL_FLOAT,
+        g_projection_data.getRawData());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glBindTexture(GL_TEXTURE_2D, g_sinogram_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_angle_number, GL_RED, GL_FLOAT, g_p_sinogram_data);
+    glBindTexture(GL_TEXTURE_2D, g_raw_sinogram_texture_id);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        g_number_of_pixels.getX(),
+        g_angle_number,
+        GL_RED,
+        GL_FLOAT,
+        g_raw_sinogram_data.getRawData());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    glBindTexture(GL_TEXTURE_2D, g_tomography_texture_id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_number_of_pixels.getX(), g_number_of_pixels.getX(), GL_RED, GL_FLOAT, g_p_tomography_data);
+    glBindTexture(GL_TEXTURE_2D, g_filtered_sinogram_texture_id);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        g_number_of_pixels.getX(),
+        g_angle_number,
+        GL_RED,
+        GL_FLOAT,
+        g_filtered_sinogram_data.getRawData());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glBindTexture(GL_TEXTURE_2D, g_raw_tomography_texture_id);
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        g_number_of_pixels.getX(),
+        g_number_of_pixels.getX(),
+        GL_RED, GL_FLOAT,
+        g_raw_tomography_data.getRawData());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glBindTexture(GL_TEXTURE_2D, g_filtered_tomography_texture_id);
+    glTexSubImage2D(GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        g_number_of_pixels.getX(),
+        g_number_of_pixels.getX(),
+        GL_RED,
+        GL_FLOAT,
+        g_filtered_tomography_data.getRawData());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     popTexture();
 
-/*    g_sample_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
-
-    g_source_position = g_initial_source_position;
-    g_detector_position = g_initial_detector_position;
-    g_detector_up_vector = g_initial_detector_up_vector;
-*/
     g_next_angle_to_process = 0;
     g_current_angle = 0;
 
     if (g_acquisition_type == ROTATE_SOURCE_DETECTOR)
-    {
-    	g_acquisition_type = ROTATE_SAMPLE;
-    }
+        {
+        g_acquisition_type = ROTATE_SAMPLE;
+        }
     else
-    {
-    	g_acquisition_type = ROTATE_SOURCE_DETECTOR;
-    }
-}
-
-
-//----------------------------------
-void drawLine(const Vec2i& aVector0,
-		      const Vec2i& aVector1,
-		      int width,
-		      int height,
-		      float* apData,
-		      float intensity)
-//----------------------------------
-{
-	// Draw a line using Xiaolin Wu's algorithm for Anti-Aliased line
-	// For an example, see http://rosettacode.org/wiki/Xiaolin_Wu%27s_line_algorithm
-	int x1(aVector0.getX());
-	int y1(aVector0.getY());
-	int x2(aVector1.getX());
-	int y2(aVector1.getY());
-
-	double dx = (double)x2 - (double)x1;
-	double dy = (double)y2 - (double)y1;
-	if ( fabs(dx) > fabs(dy) )
-	{
-		if ( x2 < x1 )
-		{
-			swap(x1, x2);
-			swap(y1, y2);
-		}
-		double gradient = dy / dx;
-		double xend = round(x1);
-		double yend = y1 + gradient*(xend - x1);
-		double xgap = rfpart(x1 + 0.5);
-		int xpxl1 = xend;
-		int ypxl1 = ipart(yend);
-		plot(xpxl1, ypxl1, rfpart(yend)*xgap, width, height, apData, intensity);
-		plot(xpxl1, ypxl1+1, fpart(yend)*xgap, width, height, apData, intensity);
-		double intery = yend + gradient;
-
-		xend = round(x2);
-		yend = y2 + gradient*(xend - x2);
-		xgap = fpart(x2+0.5);
-		int xpxl2 = xend;
-		int ypxl2 = ipart(yend);
-		plot(xpxl2, ypxl2, rfpart(yend) * xgap, width, height, apData, intensity);
-		plot(xpxl2, ypxl2 + 1, fpart(yend) * xgap, width, height, apData, intensity);
-
-		int x;
-		for(x=xpxl1+1; x <= (xpxl2-1); x++)
-		{
-			plot(x, ipart(intery), rfpart(intery), width, height, apData, intensity);
-			plot(x, ipart(intery) + 1, fpart(intery), width, height, apData, intensity);
-			intery += gradient;
-		}
-	}
-	else
-	{
-		if ( y2 < y1 )
-		{
-			swap(x1, x2);
-			swap(y1, y2);
-		}
-		double gradient = dx / dy;
-		double yend = round(y1);
-		double xend = x1 + gradient*(yend - y1);
-		double ygap = rfpart(y1 + 0.5);
-		int ypxl1 = yend;
-		int xpxl1 = ipart(xend);
-		plot(xpxl1, ypxl1, rfpart(xend)*ygap, width, height, apData, intensity);
-		plot(xpxl1, ypxl1+1, fpart(xend)*ygap, width, height, apData, intensity);
-		double interx = xend + gradient;
-
-		yend = round(y2);
-		xend = x2 + gradient*(yend - y2);
-		ygap = fpart(y2+0.5);
-		int ypxl2 = yend;
-		int xpxl2 = ipart(xend);
-		plot(xpxl2, ypxl2, rfpart(xend) * ygap, width, height, apData, intensity);
-		plot(xpxl2, ypxl2 + 1, fpart(xend) * ygap, width, height, apData, intensity);
-
-		int y;
-		for(y=ypxl1+1; y <= (ypxl2-1); y++)
-		{
-			plot(ipart(interx), y, rfpart(interx), width, height, apData, intensity);
-			plot(ipart(interx) + 1, y, fpart(interx), width, height, apData, intensity);
-			interx += gradient;
-		}
-	}
+        {
+        g_acquisition_type = ROTATE_SOURCE_DETECTOR;
+        }
 }
 
 
@@ -2483,17 +2609,17 @@ void displayHelp()
 {
 #ifdef HAS_FREETYPE
     GLfloat p_background_colour [] = {
-            g_background_colour.getX(),
-            g_background_colour.getY(),
-            g_background_colour.getZ(),
-            0.0
+        g_background_colour.getX(),
+        g_background_colour.getY(),
+        g_background_colour.getZ(),
+        0.0
     };
 
     GLfloat p_font_colour [] = {
-            1.0,
-            1.0,
-            0.0,
-            1.0
+        1.0,
+        1.0,
+        0.0,
+        1.0
     };
 
     glViewport(0, 0, g_main_window_width, g_main_window_height);
@@ -2504,47 +2630,54 @@ void displayHelp()
 
     int x_position(15);
     int offset(29);
-    g_font_rendered.renderText(std::string("Help"),
-            20,   x_position += offset,
+    g_font_rendered.renderText(
+        std::string("Help"),
+        20,   x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
+
+    g_font_rendered.renderText(
+        std::string("\'h\': display|hide help message"),
+        40, x_position += offset,
             g_text_2D_projection_matrix,
             p_background_colour,
             p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'h\': display|hide help message"),
-            40, x_position += offset,
-                g_text_2D_projection_matrix,
-                p_background_colour,
-                p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'n\': toggle negative image"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'n\': toggle negative image"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'b\': display|hide X-ray beam"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'b\': display|hide X-ray beam"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'w\': wireframe|solid rendering"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("\'w\': wireframe|solid rendering"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("space bar': start|stop tomography"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
-    g_font_rendered.renderText(std::string("space bar': start|stop tomography"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
-
-    g_font_rendered.renderText(std::string("\'q\', 'Esc': quit"),
-            40, x_position += offset,
-            g_text_2D_projection_matrix,
-            p_background_colour,
-            p_font_colour);
+    g_font_rendered.renderText(
+        std::string("\'q\', 'Esc': quit"),
+        40, x_position += offset,
+        g_text_2D_projection_matrix,
+        p_background_colour,
+        p_font_colour);
 
     popEnableDisableState();
 
@@ -2554,53 +2687,53 @@ void displayHelp()
 
 void takeScreenshot(const std::string& aFileName)
 {
-	// Code adapted from:
-	// https://www.opengl.org/discussion_boards/showthread.php/129137-Taking-screenshots-How-to
+    // Code adapted from:
+    // https://www.opengl.org/discussion_boards/showthread.php/129137-Taking-screenshots-How-to
 
-	int HEADER_SIZE = 18;
-	unsigned char *buffer;
-	int w = g_main_window_width;
-	int h = g_main_window_height;
-	int buf_size = HEADER_SIZE + (w * h * 3);
-	int i;
-	unsigned char temp;
-	FILE *out_file;
+    int HEADER_SIZE = 18;
+    unsigned char *buffer;
+    int w = g_main_window_width;
+    int h = g_main_window_height;
+    int buf_size = HEADER_SIZE + (w * h * 3);
+    int i;
+    unsigned char temp;
+    FILE *out_file;
 
-	// open file for output
-	if (!(out_file = fopen(aFileName.data(), "wb")))
-	{
-		return;
-	}
+    // open file for output
+    if (!(out_file = fopen(aFileName.data(), "wb")))
+        {
+        return;
+        }
 
-	// allocate mem to read from frame buf
-	if (!(buffer = (unsigned char *) calloc(1, buf_size)))
-	{
-		return;
-	}
+    // allocate mem to read from frame buf
+    if (!(buffer = (unsigned char *) calloc(1, buf_size)))
+        {
+        return;
+        }
 
-	// set header info
-	buffer[2] = 2;	// uncompressed
-	buffer[12] = w & 255;
-	buffer[13] = w >> 8;
-	buffer[14] = h & 255;
-	buffer[15] = h >> 8;
-	buffer[16] = 24;	// 24 bits per pix
+    // set header info
+    buffer[2] = 2;    // uncompressed
+    buffer[12] = w & 255;
+    buffer[13] = w >> 8;
+    buffer[14] = h & 255;
+    buffer[15] = h >> 8;
+    buffer[16] = 24;    // 24 bits per pix
 
-	// read frame buf
-	glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer + HEADER_SIZE);
+    // read frame buf
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer + HEADER_SIZE);
 
-	// RGB to BGR
-	for (i = HEADER_SIZE; i < buf_size; i += 3)
-	{
-		temp = buffer[i];
-		buffer[i] = buffer[i + 2];
-		buffer[i + 2] = temp;
-	}
+    // RGB to BGR
+    for (i = HEADER_SIZE; i < buf_size; i += 3)
+        {
+        temp = buffer[i];
+        buffer[i] = buffer[i + 2];
+        buffer[i + 2] = temp;
+        }
 
-	// write header + color buf to file
-	fwrite(buffer, sizeof(unsigned char), buf_size, out_file);
+    // write header + color buf to file
+    fwrite(buffer, sizeof(unsigned char), buf_size, out_file);
 
-	// cleanup
-	fclose(out_file);
-	free(buffer);
+    // cleanup
+    fclose(out_file);
+    free(buffer);
 }

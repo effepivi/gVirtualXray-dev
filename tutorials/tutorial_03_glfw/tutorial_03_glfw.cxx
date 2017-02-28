@@ -66,15 +66,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef _WIN32
-#include <GL/glew.h> // Fix undefined references on Windows
+#ifdef HAS_GLEW
+#include <GL/glew.h> // For advanced OpenGL functionalities
 #endif
 
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
@@ -105,6 +102,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h" // Compute X-Ray images on the GPU
 
 #include "buildCube.h" // Create the triangle mesh of a cube
+
+#include "tutorial_03_gl2.frag.h" // Fragment shader for OpenGL 2.x 
+#include "tutorial_03_gl2.vert.h" // Vertex shader for OpenGL 2.x 
 
 #include "tutorial_03_gl3.frag.h" // Fragment shader for OpenGL 3.x
 #include "tutorial_03_gl3.vert.h" // Vertex shader for OpenGL 3.x
@@ -178,7 +178,6 @@ bool g_wireframe(false);
 //  Function declaration
 //******************************************************************************
 void initGLFW();
-void initGLEW();
 void initGL();
 void initShader();
 void load3DObjects();
@@ -217,7 +216,7 @@ int main(int argc, char** argv)
         initGLFW();
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -302,7 +301,7 @@ void initGLFW()
 
     // Create a windowed mode window and its OpenGL context
     g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 02", NULL, NULL);
+            "gVirtualXRay -- Tutorial 03 using GLFW3", NULL, NULL);
 
     // The window has not been created
     if (!g_p_window_id)
@@ -323,23 +322,6 @@ void initGLFW()
 }
 
 
-//-------------
-void initGLEW()
-//-------------
-{
-#ifdef _WIN32
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
-}
-
-
 //---------------
 void initShader()
 //---------------
@@ -354,9 +336,19 @@ void initShader()
     std::string vertex_shader;
     std::string fragment_shader;
 
-    // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_03_gl3_vert, sizeof(g_tutorial_03_gl3_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_03_gl3_frag, sizeof(g_tutorial_03_gl3_frag), &p_fragment_shader);
+    // Decompress the shader using the ZLib
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_03_gl3_vert, sizeof(g_tutorial_03_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_03_gl3_frag, sizeof(g_tutorial_03_gl3_frag), &p_fragment_shader);
+    }
+    // Modern OpenGL 3.2 or above isnot supported
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_03_gl2_vert, sizeof(g_tutorial_03_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_03_gl2_frag, sizeof(g_tutorial_03_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;

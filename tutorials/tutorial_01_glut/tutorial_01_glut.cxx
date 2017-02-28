@@ -62,7 +62,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <GL/glew.h>  // Handle shaders
+#ifdef HAS_GLEW
+#include <GL/glew.h> // Handle shaders
+#endif
+
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
 
 // Create an OpenGL context and attach a window to it
 #ifdef __APPLE__
@@ -131,7 +137,7 @@ vector<float> g_p_vertex_set_2;
 RATIONAL_NUMBER g_zoom(50.0 * cm);
 
 // Vertex shader
-const GLchar* g_vertex_shader = "\
+const GLchar* g_vertex_shader_110 = "\
 \n#version 110\n \
 \n \
 uniform mat4 g_projection_matrix;\n \
@@ -144,7 +150,7 @@ void main(void)\n \
 ";
 
 // Fragment shader
-const GLchar* g_fragment_shader = "\
+const GLchar* g_fragment_shader_110 = "\
 \n#version 110\n \
 \n \
 void main(void)\n \
@@ -154,11 +160,38 @@ void main(void)\n \
 ";
 
 
+// Vertex shader
+const GLchar* g_vertex_shader_150 = "\
+\n#version 150\n \
+\n \
+in vec3 in_Vertex;\n \
+\n \
+uniform mat4 g_projection_matrix;\n \
+uniform mat4 g_modelview_matrix;\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
+}\n \
+";
+
+// Fragment shader
+const GLchar* g_fragment_shader_150 = "\
+\n#version 150\n \
+precision highp float;\n \
+\n \
+out vec4 fragColor;\n \
+void main(void)\n \
+{\n \
+    fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+}\n \
+";
+
+
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
 void initGLUT(int argc, char** argv);
-void initGLEW();
 void initGL();
 void load3DObjects();
 void displayCallback();
@@ -185,7 +218,7 @@ int main(int argc, char** argv)
         initGLUT(argc, argv);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -194,7 +227,16 @@ int main(int argc, char** argv)
         g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
         // Load the source code of the shaders onto the GPU
-        g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
+        // Modern OpenGL 3.2 or above is supported
+        if (useOpenGL3_2OrAbove())
+        {
+            g_display_shader.loadSource(g_vertex_shader_150, g_fragment_shader_150);
+        }
+        // Modern OpenGL 3.2 or above is not supported
+        else
+        {
+            g_display_shader.loadSource(g_vertex_shader_110, g_fragment_shader_110);
+        }
 
         // Initialise the geometry of the 3D objects
         load3DObjects();
@@ -230,7 +272,7 @@ void initGLUT(int argc, char** argv)
 	// Create a windowed mode window and its OpenGL context
 	glutInitWindowSize(g_window_width, g_window_height);
 	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 01");
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 01 using Glut");
 
     // The window has not been created
     if (!g_window_id)
@@ -245,21 +287,6 @@ void initGLUT(int argc, char** argv)
     glutKeyboardFunc(keyCallback);
     glutMouseFunc(scrollCallback);
     glutIdleFunc(idleCallback);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
 }
 
 

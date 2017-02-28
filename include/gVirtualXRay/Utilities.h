@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_UTILITIES_H
-#define GVXR_UTILITIES_H
+#ifndef __Utilities_h
+#define __Utilities_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Utilities.h
+*   @file       Utilities.h
 *
-*	@brief		Some utility functions that do not fit anywhere else.
+*   @brief      Some utility functions that do not fit anywhere else.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		12/02/2014
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,35 +56,267 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	namespace
+//  Include
+//******************************************************************************
+#include <string>
+
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+
+//******************************************************************************
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //------------------------------------------------------------------------------
-///	Uncompress data using the Zlib.
+/// Uncompress data using the Zlib.
 /**
-*	@param 	src:	compressed data
-*	@param 	srcLen:	length of the uncompressed data
-*	@param 	apDst:	uncompressed data
+*   @param  src:    compressed data
+*   @param  srcLen: length of the uncompressed data
+*   @param  apDst:  uncompressed data
 */
 //------------------------------------------------------------------------------
 int inflate(const void *src, int srcLen, char** apDst);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMAT(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDAT(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TXT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TXT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTXT(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is PGM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PGM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPGM(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is RAW.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is RAW; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isRAW(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MHA.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MHA; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHA(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MHD.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MHD; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHD(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DCM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DCM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDCM(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is JPEG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is JPEG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isJPEG(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TIFF.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TIFF; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTIFF(const char* aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMAT(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DAT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DAT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDAT(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TXT.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TXT; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTXT(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is PGM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is PGM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isPGM(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is RAW.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is RAW; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isRAW(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MHA.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MHA; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHA(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is MHD.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is MHD; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isMHD(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is DCM.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is DCM; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isDCM(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is JPEG.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is JPEG; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isJPEG(const std::string& aFileName);
+
+
+//------------------------------------------------------------------------------
+/// Check if the extension of a file name is TIFF.
+/**
+*   @param  aFileName:  the file name to check
+*   @return true if the extension of aFileName is TIFF; false if it is not
+*/
+//------------------------------------------------------------------------------
+bool isTIFF(const std::string& aFileName);
+
+
+bool checkExtension(const char* aFileName, const char* anExtension);
+    
+    
+bool checkExtension(const std::string& aFileName,
+                    const std::string& anExtension);
+
+
+bool isBigEndian();
+
+    
+bool isLittleEndian();
+
+
+template<typename T> void swapBytes(T& aValue);
+
+    
+template<typename T> T degreeToRadian(const T& aAngleInDegree);
+
+    
+template<typename T> T radianToDegree(const T& aAngleInRadian);
 
 
 } // namespace gVirtualXRay
 
 
 //******************************************************************************
-//#include "Utilities.inl"
+#include "Utilities.inl"
 
 
-#endif // UTILITIES_H
+#endif // __Utilities_h

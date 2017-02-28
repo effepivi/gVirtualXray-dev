@@ -1,0 +1,2351 @@
+<html>
+<HEAD>
+<META name="description" content="kitware.com">
+<META name="keywords" content="kwstyle,Kitware,Style,Checker,Dart">
+<META name="author" content="Kitware">
+<META name="revisit-after" content="2 days">
+<META name="robots" content="all">
+<title>KWStyle - results/.._.._include_gVirtualXRay_Sinogram.inl.html</title>
+</HEAD>
+<table width="100%" border="0">
+ <tr>
+   <td width="15%" height="2"><img src="images/logo.png"></td>
+   <td width="85%" height="2" bgcolor="#0099CC"> 
+     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - .._.._include_gVirtualXRay_Sinogram.inl</font></b></div>
+   </td>
+ </tr>
+</table>
+<table width="100%" border="0">
+ <tr> 
+   <td width="15%" height="30" >&nbsp;</td>
+   <td height="30" width="12%" bgcolor="#0099CC"> 
+     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>
+   </td>
+   <td width="10%" height="30" bgcolor="#0099CC" >
+ <div align="center"><a href="KWSDescription.html">Description</a></div>
+  </td>
+   <td width="63%" height="30"> 
+     <div align="left"><b></b></div>
+     <div align="right"></div>
+   </td>
+ </tr>
+</table>
+<hr size="1"><table width="100%" border="0" height="1">
+<tr>
+<td height="1">1</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">/**</font></font></td>
+</tr>
+<tr>
+<td height="1">2</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr>
+<td height="1">3</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">4</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@file&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sinogram.h</font></font></td>
+</tr>
+<tr>
+<td height="1">5</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">6</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@brief&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class&nbsp;to&nbsp;reconstruct&nbsp;images&nbsp;from&nbsp;a&nbsp;sinogram.</font></font></td>
+</tr>
+<tr>
+<td height="1">7</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">8</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;1.0</font></font></td>
+</tr>
+<tr>
+<td height="1">9</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">10</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14/09/2016</font></font></td>
+</tr>
+<tr>
+<td height="1">11</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">12</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@author&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Franck&nbsp;Vidal</font></font></td>
+</tr>
+<tr>
+<td height="1">13</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">14</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">15</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr bgcolor="#FF3300">
+<td height="1">16</td>
+<td height="1">DEF</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">17</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">18</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">19</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">20</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Define<font></font></td>
+</tr>
+<tr>
+<td height="1">21</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">22</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">23</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">24</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">25</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Include<font></font></td>
+</tr>
+<tr>
+<td height="1">26</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">27</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">28</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">29</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">30</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;namespace<font></font></td>
+</tr>
+<tr>
+<td height="1">31</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">32</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">namespace&nbsp;gVirtualXRay&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">33</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">34</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">35</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Sinogram&lt;T&gt;::Sinogram():</font></td>
+</tr>
+<tr>
+<td height="1">36</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;()</font></td>
+</tr>
+<tr>
+<td height="1">37</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{}</font></td>
+</tr>
+<tr>
+<td height="1">38</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">39</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">40</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Sinogram&lt;T&gt;::Sinogram(const&nbsp;Image&lt;T&gt;&nbsp;anImage):</font></td>
+</tr>
+<tr>
+<td height="1">41</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;(anImage)</font></td>
+</tr>
+<tr>
+<td height="1">42</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{}</font></td>
+</tr>
+<tr>
+<td height="1">43</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">44</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">45</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Sinogram&lt;T&gt;::Sinogram(unsigned&nbsp;int&nbsp;aWidth,</font></td>
+</tr>
+<tr>
+<td height="1">46</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aHeight,</font></td>
+</tr>
+<tr>
+<td height="1">47</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfSlices):</font></td>
+</tr>
+<tr>
+<td height="1">48</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;(aWidth,&nbsp;aHeight,&nbsp;aNumberOfSlices)</font></td>
+</tr>
+<tr>
+<td height="1">49</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{}</font></td>
+</tr>
+<tr>
+<td height="1">50</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">51</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">52</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">53</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::ART(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr>
+<td height="1">54</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr>
+<td height="1">55</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr>
+<td height="1">56</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfIterations,</font></td>
+</tr>
+<tr>
+<td height="1">57</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char*&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr>
+<td height="1">58</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">59</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">60</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;image_width(2&nbsp;*&nbsp;floor&nbsp;(this-&gt;m_width&nbsp;/&nbsp;(2.0&nbsp;*&nbsp;std::sqrt(2.0))));</font></td>
+</tr>
+<tr>
+<td height="1">61</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">62</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Start&nbsp;with&nbsp;a&nbsp;homogenous&nbsp;image<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">63</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;new_estimated_image(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices,&nbsp;this-&gt;getSum()&nbsp;/&nbsp;(image_width&nbsp;*&nbsp;image_width));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">64</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;old_estimated_image(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices,&nbsp;this-&gt;getSum()&nbsp;/&nbsp;(image_width&nbsp;*&nbsp;image_width));</font></td>
+</tr>
+<tr>
+<td height="1">65</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">66</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;old_ncc(0.0);</font></td>
+</tr>
+<tr>
+<td height="1">67</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">68</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;iteration(1);</font></td>
+</tr>
+<tr>
+<td height="1">69</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;stop(false);</font></td>
+</tr>
+<tr>
+<td height="1">70</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!stop)</font></td>
+</tr>
+<tr>
+<td height="1">71</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">72</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********old_estimated_image&nbsp;=&nbsp;new_estimated_image;</font></td>
+</tr>
+<tr>
+<td height="1">73</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">74</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Process&nbsp;every&nbsp;angle<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">75</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********double&nbsp;angle(aFirstAngle);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">76</td>
+<td height="1">LEN,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********for&nbsp;(unsigned&nbsp;int&nbsp;angle_id(0);&nbsp;angle_id&nbsp;&lt;&nbsp;this-&gt;m_height;&nbsp;++angle_id,&nbsp;angle&nbsp;+=&nbsp;anAngleStep)</font></td>
+</tr>
+<tr>
+<td height="1">77</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">78</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;projections<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">79</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;estimated_projection(new_estimated_image.radonTransform(angle,&nbsp;0.0,&nbsp;angle).setCanvasSize(this-&gt;m_width,&nbsp;1,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">80</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//double&nbsp;sum_estimated(estimated_projection.getSum());<font></font></td>
+</tr>
+<tr>
+<td height="1">81</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">82</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************<font color="#009933">//&nbsp;Real&nbsp;image<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">83</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;real_projection(this-&gt;getROI(0,&nbsp;angle_id,&nbsp;0,&nbsp;this-&gt;m_width,&nbsp;1,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">84</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">85</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;error<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">86</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sinogram&lt;T&gt;&nbsp;error_in_projections(real_projection&nbsp;-&nbsp;estimated_projection);</font></td>
+</tr>
+<tr>
+<td height="1">87</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">88</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************<font color="#009933">//&nbsp;Correct&nbsp;for&nbsp;errors<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">89</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;error_back_projection(error_in_projections.simpleBackProjection(angle,&nbsp;0.0,&nbsp;angle));</font></td>
+</tr>
+<tr>
+<td height="1">90</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">91</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new_estimated_image&nbsp;+=&nbsp;error_back_projection.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices);</font></td>
+</tr>
+<tr>
+<td height="1">92</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">93</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************T*&nbsp;p_temp(new_estimated_image.m_p_image);</font></td>
+</tr>
+<tr bgcolor="#FFFFCC">
+<td height="1">94</td>
+<td height="1">LEN,IND,SPL</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************for&nbsp;(unsigned&nbsp;int&nbsp;i(0);&nbsp;i&nbsp;&lt;&nbsp;new_estimated_image.m_width&nbsp;*&nbsp;new_estimated_image.m_height&nbsp;*&nbsp;new_estimated_image.m_number_of_slices;&nbsp;++i,&nbsp;++p_temp)</font></td>
+</tr>
+<tr>
+<td height="1">95</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">96</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*p_temp&nbsp;=&nbsp;std::max(0.0f,&nbsp;*p_temp);</font></td>
+</tr>
+<tr>
+<td height="1">97</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">98</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">99</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(aDirectory)</font></td>
+</tr>
+<tr>
+<td height="1">100</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">101</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::stringstream&nbsp;filename;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">102</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;&lt;&lt;&nbsp;aDirectory&nbsp;&lt;&lt;&nbsp;"/iteration_"&nbsp;&lt;&lt;&nbsp;iteration&nbsp;&lt;&lt;&nbsp;"_"&nbsp;&lt;&lt;&nbsp;angle_id&nbsp;&lt;&lt;&nbsp;".pgm";</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">103</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new_estimated_image.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices).normalised()&nbsp;*&nbsp;255).savePGM(filename.str());</font></td>
+</tr>
+<tr>
+<td height="1">104</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">105</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">106</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">107</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;projection<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">108</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;estimated_projections(new_estimated_image.radonTransform(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle).setCanvasSize(this-&gt;m_width,&nbsp;this-&gt;m_height,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">109</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">110</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Stopping&nbsp;criteria<font></font></td>
+</tr>
+<tr>
+<td height="1">111</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;ncc_projections(100.0&nbsp;*&nbsp;this-&gt;computeNCC(estimated_projections));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">112</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;ncc_reconstructions(100.0&nbsp;*&nbsp;new_estimated_image.computeNCC(old_estimated_image));</font></td>
+</tr>
+<tr>
+<td height="1">113</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">114</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;((ncc_projections&nbsp;&nbsp;&gt;&nbsp;99.99&nbsp;||&nbsp;ncc_reconstructions&nbsp;&gt;&nbsp;99.99)&nbsp;&&&nbsp;std::abs(old_ncc&nbsp;-&nbsp;ncc_reconstructions)&nbsp;&lt;&nbsp;EPSILON)</font></td>
+</tr>
+<tr>
+<td height="1">115</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">116</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">117</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">118</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(aNumberOfIterations&nbsp;==&nbsp;iteration)</font></td>
+</tr>
+<tr>
+<td height="1">119</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">120</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">121</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">122</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">123</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;old_ncc&nbsp;=&nbsp;ncc_reconstructions;</font></td>
+</tr>
+<tr>
+<td height="1">124</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">125</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iteration++;</font></td>
+</tr>
+<tr>
+<td height="1">126</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">127</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">128</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">129</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(new_estimated_image.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">130</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">131</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">132</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">133</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">134</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::MART(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr>
+<td height="1">135</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr>
+<td height="1">136</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr>
+<td height="1">137</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfIterations,</font></td>
+</tr>
+<tr>
+<td height="1">138</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char*&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr>
+<td height="1">139</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">140</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">141</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;image_width(2&nbsp;*&nbsp;floor&nbsp;(this-&gt;m_width&nbsp;/&nbsp;(2.0&nbsp;*&nbsp;std::sqrt(2.0))));</font></td>
+</tr>
+<tr>
+<td height="1">142</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">143</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Start&nbsp;with&nbsp;a&nbsp;homogenous&nbsp;image<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">144</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;new_estimated_image(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices,&nbsp;this-&gt;getSum()&nbsp;/&nbsp;(image_width&nbsp;*&nbsp;image_width));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">145</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;old_estimated_image(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices,&nbsp;this-&gt;getSum()&nbsp;/&nbsp;(image_width&nbsp;*&nbsp;image_width));</font></td>
+</tr>
+<tr>
+<td height="1">146</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">147</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;old_ncc(0.0);</font></td>
+</tr>
+<tr>
+<td height="1">148</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">149</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;iteration(1);</font></td>
+</tr>
+<tr>
+<td height="1">150</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;stop(false);</font></td>
+</tr>
+<tr>
+<td height="1">151</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!stop)</font></td>
+</tr>
+<tr>
+<td height="1">152</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">153</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;old_estimated_image&nbsp;=&nbsp;new_estimated_image;</font></td>
+</tr>
+<tr>
+<td height="1">154</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">155</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Process&nbsp;every&nbsp;angle<font></font></td>
+</tr>
+<tr>
+<td height="1">156</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;angle(aFirstAngle);</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">157</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(unsigned&nbsp;int&nbsp;angle_id(0);&nbsp;angle_id&nbsp;&lt;&nbsp;this-&gt;m_height;&nbsp;++angle_id,&nbsp;angle&nbsp;+=&nbsp;anAngleStep)</font></td>
+</tr>
+<tr>
+<td height="1">158</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">159</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;projections<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">160</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;estimated_projection(new_estimated_image.radonTransform(angle,&nbsp;0.0,&nbsp;angle).setCanvasSize(this-&gt;m_width,&nbsp;1,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">161</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//double&nbsp;sum_estimated(estimated_projection.getSum());<font></font></td>
+</tr>
+<tr>
+<td height="1">162</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">163</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************<font color="#009933">//&nbsp;Real&nbsp;image<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">164</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;real_projection(this-&gt;getROI(0,&nbsp;angle_id,&nbsp;0,&nbsp;this-&gt;m_width,&nbsp;1,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">165</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">166</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;error<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">167</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sinogram&lt;T&gt;&nbsp;error_in_projections(real_projection&nbsp;-&nbsp;estimated_projection);</font></td>
+</tr>
+<tr>
+<td height="1">168</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">169</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************<font color="#009933">//&nbsp;Correct&nbsp;for&nbsp;errors<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">170</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;error_back_projection(error_in_projections.simpleBackProjection(angle,&nbsp;0.0,&nbsp;angle));</font></td>
+</tr>
+<tr>
+<td height="1">171</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">172</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new_estimated_image&nbsp;*=&nbsp;error_back_projection.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices);</font></td>
+</tr>
+<tr>
+<td height="1">173</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">174</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************T*&nbsp;p_temp(new_estimated_image.m_p_image);</font></td>
+</tr>
+<tr bgcolor="#FFFFCC">
+<td height="1">175</td>
+<td height="1">LEN,IND,SPL</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************for&nbsp;(unsigned&nbsp;int&nbsp;i(0);&nbsp;i&nbsp;&lt;&nbsp;new_estimated_image.m_width&nbsp;*&nbsp;new_estimated_image.m_height&nbsp;*&nbsp;new_estimated_image.m_number_of_slices;&nbsp;++i,&nbsp;++p_temp)</font></td>
+</tr>
+<tr>
+<td height="1">176</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">177</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*p_temp&nbsp;=&nbsp;std::max(0.0f,&nbsp;*p_temp);</font></td>
+</tr>
+<tr>
+<td height="1">178</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">179</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">180</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(aDirectory)</font></td>
+</tr>
+<tr>
+<td height="1">181</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">182</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::stringstream&nbsp;filename;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">183</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;&lt;&lt;&nbsp;aDirectory&nbsp;&lt;&lt;&nbsp;"/iteration_"&nbsp;&lt;&lt;&nbsp;iteration&nbsp;&lt;&lt;&nbsp;"_"&nbsp;&lt;&lt;&nbsp;angle_id&nbsp;&lt;&lt;&nbsp;".pgm";</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">184</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new_estimated_image.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices).normalised()&nbsp;*&nbsp;255).savePGM(filename.str());</font></td>
+</tr>
+<tr>
+<td height="1">185</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">186</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">187</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">188</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;projection<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">189</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;estimated_projections(new_estimated_image.radonTransform(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle).setCanvasSize(this-&gt;m_width,&nbsp;this-&gt;m_height,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">190</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">191</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Stopping&nbsp;criteria<font></font></td>
+</tr>
+<tr>
+<td height="1">192</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;ncc_projections(100.0&nbsp;*&nbsp;this-&gt;computeNCC(estimated_projections));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">193</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;ncc_reconstructions(100.0&nbsp;*&nbsp;new_estimated_image.computeNCC(old_estimated_image));</font></td>
+</tr>
+<tr>
+<td height="1">194</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">195</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;((ncc_projections&nbsp;&nbsp;&gt;&nbsp;99.99&nbsp;||&nbsp;ncc_reconstructions&nbsp;&gt;&nbsp;99.99)&nbsp;&&&nbsp;std::abs(old_ncc&nbsp;-&nbsp;ncc_reconstructions)&nbsp;&lt;&nbsp;EPSILON)</font></td>
+</tr>
+<tr>
+<td height="1">196</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">197</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">198</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">199</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(aNumberOfIterations&nbsp;==&nbsp;iteration)</font></td>
+</tr>
+<tr>
+<td height="1">200</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">201</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">202</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">203</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">204</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;old_ncc&nbsp;=&nbsp;ncc_reconstructions;</font></td>
+</tr>
+<tr>
+<td height="1">205</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">206</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iteration++;</font></td>
+</tr>
+<tr>
+<td height="1">207</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">208</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">209</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">210</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(new_estimated_image.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">211</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">212</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">213</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">214</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">215</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::SIRT(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr>
+<td height="1">216</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr>
+<td height="1">217</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr>
+<td height="1">218</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfIterations,</font></td>
+</tr>
+<tr>
+<td height="1">219</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char*&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr>
+<td height="1">220</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">221</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">222</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;image_width(2&nbsp;*&nbsp;floor&nbsp;(this-&gt;m_width&nbsp;/&nbsp;(2.0&nbsp;*&nbsp;std::sqrt(2.0))));</font></td>
+</tr>
+<tr>
+<td height="1">223</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">224</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Start&nbsp;with&nbsp;a&nbsp;homogenous&nbsp;image<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">225</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;new_estimated_image(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices,&nbsp;this-&gt;getSum()&nbsp;/&nbsp;(image_width&nbsp;*&nbsp;image_width));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">226</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;old_estimated_image(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices,&nbsp;this-&gt;getSum()&nbsp;/&nbsp;(image_width&nbsp;*&nbsp;image_width));</font></td>
+</tr>
+<tr>
+<td height="1">227</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">228</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;this-&gt;getSum()&nbsp;&lt;&lt;&nbsp;"\t"&nbsp;&lt;&lt;&nbsp;new_estimated_image.getSum()&nbsp;&lt;&lt;&nbsp;std::endl;</font></td>
+</tr>
+<tr>
+<td height="1">229</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;old_ncc(0.0);</font></td>
+</tr>
+<tr>
+<td height="1">230</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">231</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;iteration(1);</font></td>
+</tr>
+<tr>
+<td height="1">232</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;stop(false);</font></td>
+</tr>
+<tr>
+<td height="1">233</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!stop)</font></td>
+</tr>
+<tr>
+<td height="1">234</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">235</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;old_estimated_image&nbsp;=&nbsp;new_estimated_image;</font></td>
+</tr>
+<tr>
+<td height="1">236</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">237</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;estimated_projection(new_estimated_image.radonTransform(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle));</font></td>
+</tr>
+<tr>
+<td height="1">238</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">239</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">240</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sinogram&lt;T&gt;&nbsp;error_in_projections(*this&nbsp;-&nbsp;estimated_projection);</font></td>
+</tr>
+<tr>
+<td height="1">241</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">242</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********this-&gt;saveASCII("real_projection.mat");</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">243</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********estimated_projection.saveASCII("estimated_projection.mat");</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">244</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********error_in_projections.saveASCII("error_in_projections.mat");</font></td>
+</tr>
+<tr>
+<td height="1">245</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">246</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;error_back_projection(error_in_projections.simpleBackProjection(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">247</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********error_back_projection.saveASCII("error_back_projection.mat");</font></td>
+</tr>
+<tr>
+<td height="1">248</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">249</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********<font color="#009933">//&nbsp;Correct&nbsp;for&nbsp;errors<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">250</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new_estimated_image&nbsp;+=&nbsp;error_back_projection.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">251</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********new_estimated_image.saveASCII("new_estimated_image.mat");</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">252</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********old_estimated_image.saveASCII("old_estimated_image.mat");</font></td>
+</tr>
+<tr>
+<td height="1">253</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">254</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********T*&nbsp;p_temp(new_estimated_image.m_p_image);</font></td>
+</tr>
+<tr bgcolor="#FFFFCC">
+<td height="1">255</td>
+<td height="1">LEN,IND,SPL</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********for&nbsp;(unsigned&nbsp;int&nbsp;i(0);&nbsp;i&nbsp;&lt;&nbsp;new_estimated_image.m_width&nbsp;*&nbsp;new_estimated_image.m_height&nbsp;*&nbsp;new_estimated_image.m_number_of_slices;&nbsp;++i,&nbsp;++p_temp)</font></td>
+</tr>
+<tr>
+<td height="1">256</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">257</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	*p_temp&nbsp;=&nbsp;std::max(0.0f,&nbsp;*p_temp);</font></td>
+</tr>
+<tr>
+<td height="1">258</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">259</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">260</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(aDirectory)</font></td>
+</tr>
+<tr>
+<td height="1">261</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">262</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::stringstream&nbsp;filename;</font></td>
+</tr>
+<tr>
+<td height="1">263</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;&lt;&lt;&nbsp;aDirectory&nbsp;&lt;&lt;&nbsp;"/iteration_"&nbsp;&lt;&lt;&nbsp;iteration&nbsp;&lt;&lt;&nbsp;".pgm";</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">264</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new_estimated_image.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices).normalised()&nbsp;*&nbsp;255).savePGM(filename.str());</font></td>
+</tr>
+<tr>
+<td height="1">265</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">266</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">267</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;projection<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">268</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;estimated_projections(new_estimated_image.radonTransform(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle).setCanvasSize(this-&gt;m_width,&nbsp;this-&gt;m_height,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">269</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;estimated_projections.saveASCII("simulated_projection.mat");</font></td>
+</tr>
+<tr>
+<td height="1">270</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">271</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Stopping&nbsp;criteria<font></font></td>
+</tr>
+<tr>
+<td height="1">272</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;ncc_projections(100.0&nbsp;*&nbsp;this-&gt;computeNCC(estimated_projections));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">273</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;ncc_reconstructions(100.0&nbsp;*&nbsp;new_estimated_image.computeNCC(old_estimated_image));</font></td>
+</tr>
+<tr>
+<td height="1">274</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">275</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;((ncc_projections&nbsp;&nbsp;&gt;&nbsp;99.99&nbsp;||&nbsp;ncc_reconstructions&nbsp;&gt;&nbsp;99.99)&nbsp;&&&nbsp;std::abs(old_ncc&nbsp;-&nbsp;ncc_reconstructions)&nbsp;&lt;&nbsp;EPSILON)</font></td>
+</tr>
+<tr>
+<td height="1">276</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">277</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">278</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">279</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(aNumberOfIterations&nbsp;==&nbsp;iteration)</font></td>
+</tr>
+<tr>
+<td height="1">280</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">281</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">282</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">283</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">284</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;old_ncc&nbsp;=&nbsp;ncc_reconstructions;</font></td>
+</tr>
+<tr>
+<td height="1">285</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">286</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iteration++;</font></td>
+</tr>
+<tr>
+<td height="1">287</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">288</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">289</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">290</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(new_estimated_image.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">291</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">292</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">293</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">294</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">295</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::simpleBackProjection(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">296</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">297</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">298</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char*&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">299</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">300</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">301</td>
+<td height="1">LEN,TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	Image&lt;T&gt;&nbsp;sinogram(this-&gt;resize(this-&gt;m_width&nbsp;*&nbsp;2,&nbsp;this-&gt;m_height,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">302</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	sinogram.saveASCII("resized.mat");</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">303</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	unsigned&nbsp;int&nbsp;image_width(2&nbsp;*&nbsp;floor&nbsp;(sinogram.m_width&nbsp;/&nbsp;(2.0&nbsp;*&nbsp;std::sqrt(2.0))));</font></td>
+</tr>
+<tr>
+<td height="1">304</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">305</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;reconstruction(sinogram.m_width,&nbsp;sinogram.m_width,&nbsp;sinogram.m_number_of_slices);</font></td>
+</tr>
+<tr>
+<td height="1">306</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">307</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;angle(aFirstAngle);</font></td>
+</tr>
+<tr>
+<td height="1">308</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(unsigned&nbsp;int&nbsp;angle_id(0);</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">309</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;angle_id&nbsp;&lt;&nbsp;this-&gt;m_height&nbsp;&&&nbsp;(angle&nbsp;&lt;&nbsp;aLastAngle&nbsp;||&nbsp;std::abs(angle&nbsp;-&nbsp;aLastAngle)&nbsp;&lt;&nbsp;EPSILON);</font></td>
+</tr>
+<tr>
+<td height="1">310</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++angle_id,&nbsp;angle&nbsp;+=&nbsp;anAngleStep)</font></td>
+</tr>
+<tr>
+<td height="1">311</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">312</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(angle_id&nbsp;==&nbsp;130)</font></td>
+</tr>
+<tr>
+<td height="1">313</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">314</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;itr=0;</font></td>
+</tr>
+<tr>
+<td height="1">315</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">316</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image&lt;T&gt;&nbsp;back_projection(sinogram.m_width,&nbsp;sinogram.m_width,&nbsp;sinogram.m_number_of_slices);</font></td>
+</tr>
+<tr>
+<td height="1">317</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">318</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********for&nbsp;(int&nbsp;k(0);&nbsp;k&nbsp;&lt;&nbsp;reconstruction.m_number_of_slices;&nbsp;++k)</font></td>
+</tr>
+<tr>
+<td height="1">319</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">320</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;j(0);&nbsp;j&nbsp;&lt;&nbsp;reconstruction.m_height;&nbsp;++j)</font></td>
+</tr>
+<tr>
+<td height="1">321</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">322</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i(0);&nbsp;i&nbsp;&lt;&nbsp;reconstruction.m_width;&nbsp;++i)</font></td>
+</tr>
+<tr>
+<td height="1">323</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">324</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;back_projection(i,&nbsp;j,&nbsp;k)&nbsp;+=&nbsp;sinogram.getPixel(i,&nbsp;angle_id,&nbsp;k);</font></td>
+</tr>
+<tr>
+<td height="1">325</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">326</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">327</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">328</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">329</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reconstruction&nbsp;+=&nbsp;back_projection.rotate(-angle)&nbsp;/&nbsp;reconstruction.m_height;</font></td>
+</tr>
+<tr>
+<td height="1">330</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">331</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(aDirectory)</font></td>
+</tr>
+<tr>
+<td height="1">332</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">333</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::stringstream&nbsp;filename;</font></td>
+</tr>
+<tr>
+<td height="1">334</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;&lt;&lt;&nbsp;aDirectory&nbsp;&lt;&lt;&nbsp;"/angle_"&nbsp;&lt;&lt;&nbsp;angle_id&nbsp;&lt;&lt;&nbsp;".pgm";</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">335</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reconstruction.setCanvasSize(image_width,&nbsp;image_width,&nbsp;reconstruction.m_number_of_slices).resize(image_width&nbsp;/&nbsp;2,&nbsp;image_width&nbsp;/&nbsp;2,&nbsp;reconstruction.m_number_of_slices).normalised()&nbsp;*&nbsp;255).savePGM(filename.str());</font></td>
+</tr>
+<tr>
+<td height="1">336</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">337</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">338</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">339</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//reconstruction&nbsp;=&nbsp;reconstruction.rotate(-angle);<font></font></td>
+</tr>
+<tr>
+<td height="1">340</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">341</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;reconstruction&nbsp;=&nbsp;reconstruction.setCanvasSize(image_width,&nbsp;image_width,&nbsp;this-&gt;m_number_of_slices);</font></td>
+</tr>
+<tr>
+<td height="1">342</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;reconstruction&nbsp;*=&nbsp;M_PI&nbsp;/&nbsp;(<font color="#009933">/*2.0&nbsp;*&nbsp;*/</font>&nbsp;this-&gt;m_height);</font></font></td>
+</tr>
+<tr>
+<td height="1">343</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">344</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(reconstruction.resize(image_width&nbsp;/&nbsp;2,&nbsp;image_width&nbsp;/&nbsp;2,&nbsp;this-&gt;m_number_of_slices));</font></td>
+</tr>
+<tr>
+<td height="1">345</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">346</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">347</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">348</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">349</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::filteredBackProjection(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">350</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">351</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">352</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char*&nbsp;aFilterType,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">353</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float&nbsp;aScalingFactor,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">354</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char*&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">355</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">356</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">357</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;typedef&nbsp;&nbsp;FFT&lt;T&gt;&nbsp;&nbsp;&nbsp;FAST_FOURIER_TRANSFORM;</font></td>
+</tr>
+<tr>
+<td height="1">358</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">359</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;FFTs<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">360</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	std::vector&lt;FAST_FOURIER_TRANSFORM&gt;&nbsp;p_fft_set;</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">361</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	for&nbsp;(unsigned&nbsp;int&nbsp;j(0);&nbsp;j&nbsp;&lt;&nbsp;this-&gt;m_height;&nbsp;++j)</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">362</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">363</td>
+<td height="1">LEN,TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		p_fft_set.push_back(this-&gt;getROI(0,&nbsp;j,&nbsp;0,&nbsp;this-&gt;m_width,&nbsp;1,&nbsp;this-&gt;m_number_of_slices).getFFT());</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">364</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">365</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">366</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;rho&nbsp;filter<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">367</td>
+<td height="1">LEN,TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	for&nbsp;(typename&nbsp;std::vector&lt;FAST_FOURIER_TRANSFORM&gt;::iterator&nbsp;ite(p_fft_set.begin());</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">368</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			ite&nbsp;!=&nbsp;p_fft_set.end();</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">369</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">			++ite)</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">370</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">371</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	&nbsp;&nbsp;&nbsp;&nbsp;*ite&nbsp;=&nbsp;ite-&gt;rhoFilter(aFilterType,&nbsp;aScalingFactor);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">372</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">373</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">374</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;iFFTs<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">375</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	std::vector&lt;Image&lt;T&gt;&nbsp;&gt;&nbsp;p_ifft_set(this-&gt;m_height);</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">376</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	for&nbsp;(unsigned&nbsp;int&nbsp;j(0);&nbsp;j&nbsp;&lt;&nbsp;this-&gt;m_height;&nbsp;++j)</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">377</td>
+<td height="1">TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	{</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">378</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">		p_ifft_set[j]&nbsp;=&nbsp;p_fft_set[j].getInverseFFT();</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">379</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	}</font></td>
+</tr>
+<tr>
+<td height="1">380</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">381</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//&nbsp;Store&nbsp;the&nbsp;results<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">382</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Sinogram&lt;T&gt;&nbsp;filtered_sinogram(this-&gt;m_width,&nbsp;this-&gt;m_height,&nbsp;this-&gt;m_number_of_slices);</font></td>
+</tr>
+<tr>
+<td height="1">383</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">384</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(unsigned&nbsp;int&nbsp;k(0);&nbsp;k&nbsp;&lt;&nbsp;this-&gt;m_number_of_slices;&nbsp;++k)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">385</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr>
+<td height="1">386</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(unsigned&nbsp;int&nbsp;j(0);&nbsp;j&nbsp;&lt;&nbsp;this-&gt;m_height;&nbsp;++j)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">387</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********{</font></td>
+</tr>
+<tr>
+<td height="1">388</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(unsigned&nbsp;int&nbsp;i(0);&nbsp;i&nbsp;&lt;&nbsp;this-&gt;m_width;&nbsp;++i)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">389</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************{</font></td>
+</tr>
+<tr>
+<td height="1">390</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filtered_sinogram(i,&nbsp;j,&nbsp;k)&nbsp;=&nbsp;p_ifft_set[j](i,&nbsp;0,&nbsp;k);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">391</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">************}</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">392</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********}</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">393</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">394</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">395</td>
+<td height="1">LEN,TAB</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//std::cout&nbsp;&lt;&lt;&nbsp;getAverage()&nbsp;&lt;&lt;&nbsp;"&nbsp;&nbsp;"&nbsp;&lt;&lt;&nbsp;filtered_sinogram.getAverage()&nbsp;&lt;&lt;&nbsp;std::endl;<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">396</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	<font color="#009933">//filtered_sinogram&nbsp;*=&nbsp;filtered_sinogram.getAverage()&nbsp;/&nbsp;getAverage();<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">397</td>
+<td height="1">TAB,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">	filtered_sinogram.saveASCII("filtered_sinogram.mat");</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">398</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(filtered_sinogram.simpleBackProjection(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle,&nbsp;aDirectory));</font></td>
+</tr>
+<tr>
+<td height="1">399</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">400</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">401</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">402</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">403</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::ART(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">404</td>
+<td height="1">ESP</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,*</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">405</td>
+<td height="1">ESP</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,*</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">406</td>
+<td height="1">ESP</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfIterations,*</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">407</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;std::string&&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">408</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">409</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">410</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(ART(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle,&nbsp;aNumberOfIterations,&nbsp;aDirectory.data()));</font></td>
+</tr>
+<tr>
+<td height="1">411</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">412</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">413</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">414</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">415</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::MART(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr>
+<td height="1">416</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr>
+<td height="1">417</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr>
+<td height="1">418</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfIterations,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">419</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;std::string&&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">420</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">421</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">422</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(MART(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle,&nbsp;aNumberOfIterations,&nbsp;aDirectory.data()));</font></td>
+</tr>
+<tr>
+<td height="1">423</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">424</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">425</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">426</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">427</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::SIRT(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr>
+<td height="1">428</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr>
+<td height="1">429</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr>
+<td height="1">430</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;int&nbsp;aNumberOfIterations,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">431</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;std::string&&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">432</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#99CCCC">
+<td height="1">433</td>
+<td height="1">FRG</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">434</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(SIRT(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle,&nbsp;aNumberOfIterations,&nbsp;aDirectory.data()));</font></td>
+</tr>
+<tr>
+<td height="1">435</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">436</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">437</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">438</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">439</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::simpleBackProjection(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">440</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">441</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">442</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;std::string&&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">443</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">444</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">445</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(simpleBackProjection(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle,&nbsp;aDirectory.data()));</font></td>
+</tr>
+<tr>
+<td height="1">446</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">447</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">448</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">449</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">450</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">template&lt;typename&nbsp;T&gt;&nbsp;Image&lt;T&gt;&nbsp;Sinogram&lt;T&gt;::filteredBackProjection(double&nbsp;aFirstAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">451</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;anAngleStep,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">452</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;aLastAngle,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">453</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;std::string&&nbsp;aFilterType,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">454</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float&nbsp;aScalingFactor,</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">455</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;std::string&&nbsp;aDirectory)&nbsp;const</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">456</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">457</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">458</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(filteredBackProjection(aFirstAngle,&nbsp;anAngleStep,&nbsp;aLastAngle,&nbsp;aFilterType.data(),&nbsp;aScalingFactor,&nbsp;aDirectory.data()));</font></td>
+</tr>
+<tr>
+<td height="1">459</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">460</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">461</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">462</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}&nbsp;<font color="#009933">//&nbsp;namespace&nbsp;gVirtualXRay<font></font></td>
+</tr>
+<tr>
+<td height="1">463</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+</table>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Tuesday September,20 at 03:20:19PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+</td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>

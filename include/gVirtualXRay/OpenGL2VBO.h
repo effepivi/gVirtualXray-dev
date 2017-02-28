@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef OPENGL2_VBO_H
-#define OPENGL2_VBO_H
+#ifndef __OpenGL2VBO_h
+#define __OpenGL2VBO_h
 
 
 /**
@@ -45,7 +45,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       07/08/2014
+*   @date       13/01/2017
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -56,8 +56,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
@@ -66,21 +66,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #ifndef GVXR_VBO_H
 #include "gVirtualXRay/VBO.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	OpenGL2VBO
-*	@brief	OpenGL2VBO is a class to handle a vertex buffer object (VBO) in OpenGL 2.x.
+*   @class  OpenGL2VBO
+*   @brief  OpenGL2VBO is a class to handle a vertex buffer object (VBO) in
+*           OpenGL 2.x.
 */
 //==============================================================================
 class OpenGL2VBO: public VBO
@@ -88,57 +93,101 @@ class OpenGL2VBO: public VBO
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    //--------------------------------------------------------------------------
     OpenGL2VBO();
-	
-	
-	//--------------------------------------------------------------------------
-	///	Destructor.
-	//--------------------------------------------------------------------------
-	virtual ~OpenGL2VBO();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the vertex data.
-	/**
-	*	@param aPrimitiveType:					the primitive type; valid values are:  GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY and GL_PATCHES
-	*	@param aNumberOfVertices:				number of vertices
-	*	@param aNumberOfCompontentsPerVertex:	the number of component per vertex
-	*	@param aVertexDataType:					the data type of vertices; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apVertices:						address of the first component of the first vertex
-	*	@param aNumberOfNormals:				number of normal vectors
-	*	@param aNumberOfCompontentsPerNormal:	the number of component per normal vector
-	*	@param aNormalDataType:					the data type of normal vectors; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apNormals:						address of the first component of the firth normal vector
-	*	@param aNumberOfTextureCoordinates:		number of texture coordinates
-	*	@param aNumberOfCompontentsPerCoord:	the number of component per texture coordinate
-	*	@param aCoordDataType:					the data type of texture coordinates; valid values are GL_FLOAT and GL_DOUBLE
-	*	@param apTextureCoordinates:			address of the first component of the first texture coordinate
-	*/
-	//--------------------------------------------------------------------------
-	virtual void setVertexData(int aPrimitiveType,
-			const unsigned int aNumberOfVertices,           unsigned int aNumberOfCompontentsPerVertex, int aVertexDataType, const void* apVertices,
-			const unsigned int aNumberOfNormals,            unsigned int aNumberOfCompontentsPerNormal, int aNormalDataType, const void* apNormals,
-			const unsigned int aNumberOfTextureCoordinates, unsigned int aNumberOfCompontentsPerCoord,  int aCoordDataType,  const void* apTextureCoordinates);
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    virtual ~OpenGL2VBO();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the index.
-	/**
-	*	@param aNumberOfIndexes:	number of indices
-	*	@param anIndexDataType:		the data type of indices; valid values are GL_UNSGINED_BYTE, GL_UNSGINED_SHORT and GL_UNSGINED_INT
-	*	@param apIndexSet:			the index set
-	*/
-	//--------------------------------------------------------------------------
-	virtual void setIndexData(const unsigned int aNumberOfIndexes, int anIndexDataType, const void* apIndexSet);
+    //--------------------------------------------------------------------------
+    /// Set the vertex data.
+    /**
+     *  @param aPrimitiveType:  the primitive type; valid values are:
+     *                          GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP,
+     *                          GL_LINES, GL_LINE_STRIP_ADJACENCY,
+     *                          GL_LINES_ADJACENCY, GL_TRIANGLE_STRIP,
+     *                          GL_TRIANGLE_FAN, GL_TRIANGLES,
+     *                          GL_TRIANGLE_STRIP_ADJACENCY,
+     *                          GL_TRIANGLES_ADJACENCY and GL_PATCHES
+     *  @param aNumberOfVertices:   number of vertices (default: 0)
+     *  @param aNumberOfCompontentsPerVertex:   the number of component per
+     *                                          vertex (default: 0)
+     *  @param aVertexDataType: the data type of vertices; valid values are
+     *                          GL_FLOAT and GL_DOUBLE (default: 0)
+     *  @param apVertices:  address of the first component of the first vertex
+     *                      (default: 0)
+     *  @param aNumberOfNormals:    number of normal vectors (default: 0)
+     *  @param aNumberOfCompontentsPerNormal:   the number of component per
+     *                                          normal vector (default: 0)
+     *  @param aNormalDataType:     the data type of normal vectors; valid
+     *                              values are GL_FLOAT and GL_DOUBLE
+     *                              (default: 0)
+     *  @param apNormals:   address of the first component of the firth normal
+     *                      vector (default: 0)
+     *  @param aNumberOfTextureCoordinates:     number of texture coordinates
+     *                                          (default: 0)
+     *  @param aNumberOfCompontentsPerCoord:    the number of component per
+     *                                          texture coordinate (default: 0)
+     *  @param aCoordDataType:  the data type of texture coordinates; valid
+     *                          values are GL_FLOAT and GL_DOUBLE (default: 0)
+     *  @param apTextureCoordinates:    address of the first component of
+     *                                  the first texture coordinate
+     *                                  (default: 0)
+     *  @param aNumberOfAdditionalData: number of additional data (default: 0)
+     *  @param aNumberOfCompontentsPerAdditionalData:   the number of component
+     *                                                  per additional data
+     *                                                  (default: 0)
+     *  @param anAdditionalDataType:    the data type of additional data;
+     *                                  valid values are GL_FLOAT and GL_DOUBLE
+     *                                  (default: 0)
+     *  @param apAdditionalData:    address of the first component of
+     *                              the first additional data (default: 0)
+     */
+    //--------------------------------------------------------------------------
+    virtual void setVertexData(int aPrimitiveType,
+            const unsigned int aNumberOfVertices = 0,
+            unsigned int aNumberOfCompontentsPerVertex = 0,
+            int aVertexDataType = 0,
+            const void* apVertices = 0,
+            const unsigned int aNumberOfNormals = 0,
+            unsigned int aNumberOfCompontentsPerNormal = 0,
+            int aNormalDataType = 0,
+            const void* apNormals = 0,
+            const unsigned int aNumberOfTextureCoordinates = 0,
+            unsigned int aNumberOfCompontentsPerCoord = 0,
+            int aCoordDataType = 0,
+            const void* apTextureCoordinates = 0,
+            const unsigned int aNumberOfAdditionalData = 0,
+            unsigned int aNumberOfCompontentsPerAdditionalData = 0,
+            int anAdditionalDataType = 0,
+            const void* apAdditionalData = 0);
 
 
-	//--------------------------------------------------------------------------
-	///	Display the triangular mesh using OpenGL.
-	//--------------------------------------------------------------------------
-	virtual void display() const;
+    //--------------------------------------------------------------------------
+    /// Set the index.
+    /**
+     *  @param aNumberOfIndexes:    number of indices
+     *  @param anIndexDataType:     the data type of indices;
+     *                              valid values are GL_UNSGINED_BYTE,
+     *                              GL_UNSGINED_SHORT and GL_UNSGINED_INT
+     *  @param apIndexSet:          the index set
+     */
+    //--------------------------------------------------------------------------
+    virtual void setIndexData(const unsigned int aNumberOfIndexes,
+                              int anIndexDataType,
+                              const void* apIndexSet);
+
+
+    //--------------------------------------------------------------------------
+    /// Display the triangular mesh using OpenGL.
+    //--------------------------------------------------------------------------
+    virtual void display() const;
 };
 
 
@@ -149,5 +198,4 @@ public:
 #include "OpenGL2VBO.inl"
 
 
-#endif // OPENGL2_VBO_H
-
+#endif // __OpenGL2VBO_h

@@ -42,21 +42,13 @@
 #ifndef UCDAVIS_FRAMEBUFFER_OBJECT_H
 #define UCDAVIS_FRAMEBUFFER_OBJECT_H
 
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
 // Added by Franck P. Vidal
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#else
-#ifdef __APPLE__
-#ifndef GL3_PROTOTYPES
-#define GL3_PROTOTYPES 1
-#endif
-#include <OpenGL/gl3.h>
-#else
-#ifndef GL_GLEXT_PROTOTYPES
-#define GL_GLEXT_PROTOTYPES 1
-#endif
-#include <GL/glcorearb.h>
-#endif
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <iostream>

@@ -33,10 +33,12 @@
 project(gVirtualXRay-tutorial_00_qt5)
 
 
+# Set new policy #################################################################
+cmake_policy(SET CMP0020 NEW)
+
+
 # Fix linkage problem with windows and cross-compilation #######################
 IF (WIN32)
-    ADD_DEFINITIONS(-DGLEW_STATIC)
-    ADD_DEFINITIONS(-DFREEGLUT_STATIC)
     SET (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -lwinmm")
 ENDIF (WIN32)
 
@@ -62,8 +64,8 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt5 #########################################################################
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Widgets)
+find_package(Qt5OpenGL)
 
 IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
     SET(CMAKE_AUTOMOC ON)
@@ -76,8 +78,13 @@ IF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
     INSTALL(TARGETS tutorial_00_qt5 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
+
+    IF (gVirtualXRay_BINARY_DIR)
+        ADD_DEPENDENCIES(tutorial_00_qt5   gVirtualXRay)
+    ENDIF (gVirtualXRay_BINARY_DIR)
+
 ELSE(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
-    MESSAGE(WARNING "Qt5 not found.")
+    MESSAGE(WARNING "Qt5 not found, ${PROJECT_NAME} will not be built.")
 ENDIF(Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
 

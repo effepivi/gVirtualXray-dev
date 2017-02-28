@@ -62,8 +62,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+
+#include <cmath>
 #include <fstream>
 #include <iostream>
+
 
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
@@ -81,7 +84,7 @@ inline XRayDetector::XRayDetector():
 //----------------------------------------------
 	m_resolution_in_unit_of_length_per_pixel(0),
 	m_distance_source_detector(0),
-	m_VBOs_need_update(true),
+	m_vbo_need_update(true),
 	m_source_mesh(10, 10, 0.5 * cm),
 	m_source_shape(UNKNOWN_SHAPE)
 //----------------------------------------------
@@ -89,10 +92,24 @@ inline XRayDetector::XRayDetector():
 }
 
 
-//-----------------------------------
-inline 	XRayDetector::~XRayDetector()
-//-----------------------------------
+//----------------------------------
+inline XRayDetector::~XRayDetector()
+//----------------------------------
 {
+}
+
+
+//---------------------------------
+inline void XRayDetector::release()
+//---------------------------------
+{
+    m_p_xray_source_position_set.clear();
+    m_detector_geometry.reset();
+    m_parallel_beam.reset();
+    m_cone_beam.reset();
+    m_parallel_beam_highlight.reset();
+    m_cone_beam_highlight.reset();
+    m_source_mesh.reset();
 }
 
 
@@ -131,7 +148,7 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NU
     updateSizeInUnitOfLength();
 
     // The VBOs need to be updated
-    m_VBOs_need_update = true;
+    m_vbo_need_update = true;
 }
 
 
@@ -146,7 +163,7 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const VEC2& aReso
     updateSizeInUnitOfLength();
 
     // The VBOs need to be updated
-    m_VBOs_need_update = true;
+    m_vbo_need_update = true;
 }
 
 
@@ -161,7 +178,7 @@ inline void XRayDetector::setNumberOfPixels(const Vec2ui& aSizeInPixels)
 	updateSizeInUnitOfLength();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -176,7 +193,7 @@ inline void XRayDetector::setDetectorPosition(const VEC3& aDetectorPosition)
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -200,7 +217,7 @@ inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -215,7 +232,7 @@ inline void XRayDetector::setXrayPointSource()
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -230,7 +247,7 @@ inline void XRayDetector::setCubicSource()
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -245,7 +262,7 @@ inline void XRayDetector::setSquareSource()
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -260,7 +277,7 @@ inline void XRayDetector::setLineSource()
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -271,7 +288,7 @@ inline void XRayDetector::setUpVector(const VEC3& anUpVector)
 	m_up_vector = anUpVector;
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -282,7 +299,7 @@ inline void XRayDetector::setRotationMatrix(const MATRIX4& aMatrix)
 	m_rotation_matrix = aMatrix;
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 
@@ -423,7 +440,7 @@ inline void XRayDetector::setSourcePositions(const std::vector<VEC3>& aSourcePos
 	updateInternalValues();
 	
 	// The VBOs need to be updated
-	m_VBOs_need_update = true;
+	m_vbo_need_update = true;
 }
 
 

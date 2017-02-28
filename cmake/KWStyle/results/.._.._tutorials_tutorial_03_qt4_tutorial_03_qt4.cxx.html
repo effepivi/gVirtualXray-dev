@@ -1,0 +1,4276 @@
+<html>
+<HEAD>
+<META name="description" content="kitware.com">
+<META name="keywords" content="kwstyle,Kitware,Style,Checker,Dart">
+<META name="author" content="Kitware">
+<META name="revisit-after" content="2 days">
+<META name="robots" content="all">
+<title>KWStyle - results/.._.._tutorials_tutorial_03_qt4_tutorial_03_qt4.cxx.html</title>
+</HEAD>
+<table width="100%" border="0">
+ <tr>
+   <td width="15%" height="2"><img src="images/logo.png"></td>
+   <td width="85%" height="2" bgcolor="#0099CC"> 
+     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - .._.._tutorials_tutorial_03_qt4_tutorial_03_qt4.cxx</font></b></div>
+   </td>
+ </tr>
+</table>
+<table width="100%" border="0">
+ <tr> 
+   <td width="15%" height="30" >&nbsp;</td>
+   <td height="30" width="12%" bgcolor="#0099CC"> 
+     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>
+   </td>
+   <td width="10%" height="30" bgcolor="#0099CC" >
+ <div align="center"><a href="KWSDescription.html">Description</a></div>
+  </td>
+   <td width="63%" height="30"> 
+     <div align="left"><b></b></div>
+     <div align="right"></div>
+   </td>
+ </tr>
+</table>
+<hr size="1"><table width="100%" border="0" height="1">
+<tr>
+<td height="1">1</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">/*</font></font></td>
+</tr>
+<tr>
+<td height="1">2</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">3</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">Copyright&nbsp;(c)&nbsp;2014,&nbsp;Dr&nbsp;Franck&nbsp;P.&nbsp;Vidal&nbsp;(franck.p.vidal@fpvidal.net),</font></font></td>
+</tr>
+<tr>
+<td height="1">4</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">http:<font color="#009933">//www.fpvidal.net/<font></font></td>
+</tr>
+<tr>
+<td height="1">5</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">All&nbsp;rights&nbsp;reserved.</font></font></td>
+</tr>
+<tr>
+<td height="1">6</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">7</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without&nbsp;modification,</font></font></td>
+</tr>
+<tr>
+<td height="1">8</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:</font></font></td>
+</tr>
+<tr>
+<td height="1">9</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">10</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">1.&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,</font></font></td>
+</tr>
+<tr>
+<td height="1">11</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.</font></font></td>
+</tr>
+<tr>
+<td height="1">12</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">13</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">2.&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,</font></font></td>
+</tr>
+<tr>
+<td height="1">14</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation&nbsp;and/or</font></font></td>
+</tr>
+<tr>
+<td height="1">15</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.</font></font></td>
+</tr>
+<tr>
+<td height="1">16</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">17</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">3.&nbsp;Neither&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;Bangor&nbsp;University&nbsp;nor&nbsp;the&nbsp;names&nbsp;of&nbsp;its&nbsp;contributors</font></font></td>
+</tr>
+<tr>
+<td height="1">18</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">may&nbsp;be&nbsp;used&nbsp;to&nbsp;endorse&nbsp;or&nbsp;promote&nbsp;products&nbsp;derived&nbsp;from&nbsp;this&nbsp;software&nbsp;without</font></font></td>
+</tr>
+<tr>
+<td height="1">19</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">specific&nbsp;prior&nbsp;written&nbsp;permission.</font></font></td>
+</tr>
+<tr>
+<td height="1">20</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">21</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"&nbsp;AND</font></font></td>
+</tr>
+<tr>
+<td height="1">22</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,</font></font></td>
+</tr>
+<tr>
+<td height="1">23</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">THE&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE</font></font></td>
+</tr>
+<tr>
+<td height="1">24</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">ARE&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE</font></font></td>
+</tr>
+<tr>
+<td height="1">25</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL</font></font></td>
+</tr>
+<tr>
+<td height="1">26</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR</font></font></td>
+</tr>
+<tr>
+<td height="1">27</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER</font></font></td>
+</tr>
+<tr>
+<td height="1">28</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,</font></font></td>
+</tr>
+<tr>
+<td height="1">29</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE&nbsp;OF</font></font></td>
+</tr>
+<tr>
+<td height="1">30</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</font></font></td>
+</tr>
+<tr>
+<td height="1">31</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">32</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">33</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">34</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">35</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">/**</font></font></td>
+</tr>
+<tr>
+<td height="1">36</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr>
+<td height="1">37</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">38</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@file&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tutorial_03_qt4.cxx</font></font></td>
+</tr>
+<tr>
+<td height="1">39</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">40</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@brief&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Improve&nbsp;the&nbsp;second&nbsp;tutorial&nbsp;by:</font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">41</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Adding&nbsp;a&nbsp;better&nbsp;shader&nbsp;program&nbsp;to&nbsp;display&nbsp;the&nbsp;3D&nbsp;scene&nbsp;with&nbsp;Phong&nbsp;shading.</font></font></td>
+</tr>
+<tr>
+<td height="1">42</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Adding&nbsp;the&nbsp;X-ray&nbsp;simulation.</font></font></td>
+</tr>
+<tr>
+<td height="1">43</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Display&nbsp;objects&nbsp;in&nbsp;wireframe&nbsp;or&nbsp;not</font></font></td>
+</tr>
+<tr>
+<td height="1">44</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">45</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;1.0</font></font></td>
+</tr>
+<tr>
+<td height="1">46</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">47</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30/06/2016</font></font></td>
+</tr>
+<tr>
+<td height="1">48</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">49</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@author&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dr&nbsp;Franck&nbsp;P.&nbsp;Vidal</font></font></td>
+</tr>
+<tr>
+<td height="1">50</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">51</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@section&nbsp;&nbsp;&nbsp;&nbsp;License</font></font></td>
+</tr>
+<tr>
+<td height="1">52</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BSD&nbsp;3-Clause&nbsp;License.</font></font></td>
+</tr>
+<tr>
+<td height="1">53</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">54</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;details&nbsp;on&nbsp;use&nbsp;and&nbsp;redistribution&nbsp;please&nbsp;refer</font></font></td>
+</tr>
+<tr>
+<td height="1">55</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;http:<font color="#009933">//opensource.org/licenses/BSD-3-Clause<font></font></td>
+</tr>
+<tr>
+<td height="1">56</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">57</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;@section&nbsp;&nbsp;&nbsp;&nbsp;Copyright</font></font></td>
+</tr>
+<tr>
+<td height="1">58</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(c)&nbsp;by&nbsp;Dr&nbsp;Franck&nbsp;P.&nbsp;Vidal&nbsp;(franck.p.vidal@fpvidal.net),</font></font></td>
+</tr>
+<tr>
+<td height="1">59</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http:<font color="#009933">//www.fpvidal.net/,&nbsp;Dec&nbsp;2014,&nbsp;2014,&nbsp;version&nbsp;1.0,<font></font></td>
+</tr>
+<tr>
+<td height="1">60</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BSD&nbsp;3-Clause&nbsp;License</font></font></td>
+</tr>
+<tr>
+<td height="1">61</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*</font></font></td>
+</tr>
+<tr>
+<td height="1">62</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">********************************************************************************</font></font></td>
+</tr>
+<tr>
+<td height="1">63</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">64</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">65</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">66</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">67</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Include<font></font></td>
+</tr>
+<tr>
+<td height="1">68</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">69</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifdef&nbsp;HAS_GLEW</font></td>
+</tr>
+<tr>
+<td height="1">70</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;GL/glew.h&gt;</font></td>
+</tr>
+<tr>
+<td height="1">71</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#endif</font></td>
+</tr>
+<tr>
+<td height="1">72</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">73</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#ifndef&nbsp;GVXR_CONFIG_H</font></td>
+</tr>
+<tr>
+<td height="1">74</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/gVirtualXRayConfig.h"</font></td>
+</tr>
+<tr>
+<td height="1">75</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#endif</font></td>
+</tr>
+<tr>
+<td height="1">76</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">77</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;QtGui&gt;</font></td>
+</tr>
+<tr>
+<td height="1">78</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;QGLWidget&gt;</font></td>
+</tr>
+<tr>
+<td height="1">79</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">80</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;iostream&gt;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Print&nbsp;error&nbsp;messages&nbsp;in&nbsp;the&nbsp;console<font></font></td>
+</tr>
+<tr>
+<td height="1">81</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;sstream&gt;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Generate&nbsp;error&nbsp;messages<font></font></td>
+</tr>
+<tr>
+<td height="1">82</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;exception&gt;&nbsp;&nbsp;<font color="#009933">//&nbsp;Catch&nbsp;C++&nbsp;exception<font></font></td>
+</tr>
+<tr>
+<td height="1">83</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;&lt;cstdlib&gt;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Define&nbsp;return&nbsp;status&nbsp;(EXIT_SUCCESS&nbsp;and&nbsp;EXIT_FAILURE)<font></font></td>
+</tr>
+<tr>
+<td height="1">84</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">85</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Define&nbsp;new&nbsp;types,&nbsp;e.g.~RATIONAL_NUMBER,&nbsp;VEC2,&nbsp;VEC3&nbsp;and&nbsp;MATRIX4&nbsp;to&nbsp;name&nbsp;a&nbsp;few<font></font></td>
+</tr>
+<tr>
+<td height="1">86</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/Types.h"</font></td>
+</tr>
+<tr>
+<td height="1">87</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">88</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Define&nbsp;units&nbsp;such&nbsp;as&nbsp;metre,&nbsp;kilometre,&nbsp;electronvolt,&nbsp;gram,&nbsp;kilogram,&nbsp;etc.<font></font></td>
+</tr>
+<tr>
+<td height="1">89</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/Units.h"</font></td>
+</tr>
+<tr>
+<td height="1">90</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">91</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Some&nbsp;utility&nbsp;functions&nbsp;about&nbsp;OpenGL,&nbsp;e.g.&nbsp;matrix&nbsp;stacks,<font></font></td>
+</tr>
+<tr>
+<td height="1">92</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;how&nbsp;to&nbsp;set&nbsp;the&nbsp;projection&nbsp;matrix,&nbsp;etc.<font></font></td>
+</tr>
+<tr>
+<td height="1">93</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/OpenGLUtilities.h"</font></td>
+</tr>
+<tr>
+<td height="1">94</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">95</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/PolygonMesh.h"&nbsp;&nbsp;<font color="#009933">//&nbsp;Handle&nbsp;3D&nbsp;triangle&nbsp;meshes<font></font></td>
+</tr>
+<tr>
+<td height="1">96</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/Shader.h"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Handle&nbsp;GLSL&nbsp;programs<font></font></td>
+</tr>
+<tr>
+<td height="1">97</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">98</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/Utilities.h"&nbsp;<font color="#009933">//&nbsp;Handle&nbsp;decompression&nbsp;using&nbsp;the&nbsp;Z&nbsp;library<font></font></td>
+</tr>
+<tr>
+<td height="1">99</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">100</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/XRayBeam.h"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Manage&nbsp;X-Ray&nbsp;beams<font></font></td>
+</tr>
+<tr>
+<td height="1">101</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/XRayDetector.h"&nbsp;<font color="#009933">//&nbsp;Handle&nbsp;virtual&nbsp;X-Ray&nbsp;detectors<font></font></td>
+</tr>
+<tr>
+<td height="1">102</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"gVirtualXRay/XRayRenderer.h"&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;X-Ray&nbsp;images&nbsp;on&nbsp;the&nbsp;GPU<font></font></td>
+</tr>
+<tr>
+<td height="1">103</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">104</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"buildCube.h"&nbsp;<font color="#009933">//&nbsp;Create&nbsp;the&nbsp;triangle&nbsp;mesh&nbsp;of&nbsp;a&nbsp;cube<font></font></td>
+</tr>
+<tr>
+<td height="1">105</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">106</td>
+<td height="1">ESP</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"tutorial_03_gl2.frag.h"&nbsp;<font color="#009933">//&nbsp;Fragment&nbsp;shader&nbsp;for&nbsp;OpenGL&nbsp;2.x*<font></font></td>
+</tr>
+<tr>
+<td height="1">107</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"tutorial_03_gl2.vert.h"&nbsp;<font color="#009933">//&nbsp;Vertex&nbsp;shader&nbsp;for&nbsp;OpenGL&nbsp;2.x<font></font></td>
+</tr>
+<tr>
+<td height="1">108</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">109</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"tutorial_03_gl3.frag.h"&nbsp;<font color="#009933">//&nbsp;Fragment&nbsp;shader&nbsp;for&nbsp;OpenGL&nbsp;3.x<font></font></td>
+</tr>
+<tr>
+<td height="1">110</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#include&nbsp;"tutorial_03_gl3.vert.h"&nbsp;<font color="#009933">//&nbsp;Vertex&nbsp;shader&nbsp;for&nbsp;OpenGL&nbsp;3.x<font></font></td>
+</tr>
+<tr>
+<td height="1">111</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">112</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">113</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">114</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Name&nbsp;space<font></font></td>
+</tr>
+<tr>
+<td height="1">115</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">116</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">using&nbsp;namespace&nbsp;gVirtualXRay;</font></td>
+</tr>
+<tr>
+<td height="1">117</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">using&nbsp;namespace&nbsp;std;</font></td>
+</tr>
+<tr>
+<td height="1">118</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">119</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">120</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">121</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Constant&nbsp;variables<font></font></td>
+</tr>
+<tr>
+<td height="1">122</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">123</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">const&nbsp;GLfloat&nbsp;g_rotation_speed(2.0);</font></td>
+</tr>
+<tr>
+<td height="1">124</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">125</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">126</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">127</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Global&nbsp;variables<font></font></td>
+</tr>
+<tr>
+<td height="1">128</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">129</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Keep&nbsp;track&nbsp;of&nbsp;the&nbsp;window&nbsp;width<font></font></td>
+</tr>
+<tr>
+<td height="1">130</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLsizei&nbsp;g_window_width(640);</font></td>
+</tr>
+<tr>
+<td height="1">131</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">132</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Keep&nbsp;track&nbsp;of&nbsp;the&nbsp;window&nbsp;height<font></font></td>
+</tr>
+<tr>
+<td height="1">133</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLsizei&nbsp;g_window_height(480);</font></td>
+</tr>
+<tr>
+<td height="1">134</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">135</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Shader&nbsp;program&nbsp;used&nbsp;to&nbsp;display&nbsp;the&nbsp;3D&nbsp;scene<font></font></td>
+</tr>
+<tr>
+<td height="1">136</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">Shader&nbsp;g_display_shader;</font></td>
+</tr>
+<tr>
+<td height="1">137</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">138</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;3D&nbsp;objects&nbsp;as&nbsp;VAOs&nbsp;and&nbsp;VBOs<font></font></td>
+</tr>
+<tr>
+<td height="1">139</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">PolygonMesh&nbsp;g_polygon_mesh_1;</font></td>
+</tr>
+<tr>
+<td height="1">140</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">PolygonMesh&nbsp;g_polygon_mesh_2;</font></td>
+</tr>
+<tr>
+<td height="1">141</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">142</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Transformation&nbsp;matrices<font></font></td>
+</tr>
+<tr>
+<td height="1">143</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">MATRIX4&nbsp;g_sample_rotation_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">144</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">MATRIX4&nbsp;g_scene_rotation_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">145</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">146</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Geometric&nbsp;data<font></font></td>
+</tr>
+<tr>
+<td height="1">147</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">vector&lt;double&gt;&nbsp;g_p_vertex_set_1;</font></td>
+</tr>
+<tr>
+<td height="1">148</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">vector&lt;unsigned&nbsp;char&gt;&nbsp;g_p_index_set_1;</font></td>
+</tr>
+<tr>
+<td height="1">149</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">vector&lt;float&gt;&nbsp;g_p_vertex_set_2;</font></td>
+</tr>
+<tr>
+<td height="1">150</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">151</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Control&nbsp;the&nbsp;zoom<font></font></td>
+</tr>
+<tr>
+<td height="1">152</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">RATIONAL_NUMBER&nbsp;g_zoom(50.0&nbsp;*&nbsp;cm);</font></td>
+</tr>
+<tr>
+<td height="1">153</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">154</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Use&nbsp;the&nbsp;arc&nbsp;ball&nbsp;rotation<font></font></td>
+</tr>
+<tr>
+<td height="1">155</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">bool&nbsp;g_use_arc_ball(false);</font></td>
+</tr>
+<tr>
+<td height="1">156</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">157</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;States&nbsp;of&nbsp;the&nbsp;mouse<font></font></td>
+</tr>
+<tr>
+<td height="1">158</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">int&nbsp;g_button(-1);&nbsp;<font color="#009933">//&nbsp;Button<font></font></td>
+</tr>
+<tr>
+<td height="1">159</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">int&nbsp;g_button_state(-1);&nbsp;<font color="#009933">//&nbsp;Button&nbsp;state<font></font></td>
+</tr>
+<tr>
+<td height="1">160</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLint&nbsp;g_last_x_position(0);&nbsp;<font color="#009933">//&nbsp;Previous&nbsp;x&nbsp;position&nbsp;of&nbsp;the&nbsp;cursor<font></font></td>
+</tr>
+<tr>
+<td height="1">161</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLint&nbsp;g_last_y_position(0);&nbsp;<font color="#009933">//&nbsp;Previous&nbsp;y&nbsp;position&nbsp;of&nbsp;the&nbsp;cursor<font></font></td>
+</tr>
+<tr>
+<td height="1">162</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLint&nbsp;g_current_x_position(0);&nbsp;<font color="#009933">//&nbsp;Current&nbsp;x&nbsp;position&nbsp;of&nbsp;the&nbsp;cursor<font></font></td>
+</tr>
+<tr>
+<td height="1">163</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLint&nbsp;g_current_y_position(0);&nbsp;<font color="#009933">//&nbsp;Current&nbsp;x&nbsp;position&nbsp;of&nbsp;the&nbsp;cursor<font></font></td>
+</tr>
+<tr>
+<td height="1">164</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">165</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Components&nbsp;needed&nbsp;to&nbsp;simulate&nbsp;X-ray&nbsp;images<font></font></td>
+</tr>
+<tr>
+<td height="1">166</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">XRayDetector&nbsp;g_xray_detector;</font></td>
+</tr>
+<tr>
+<td height="1">167</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">XRayBeam&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_xray_beam;</font></td>
+</tr>
+<tr>
+<td height="1">168</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">XRayRenderer&nbsp;g_xray_simulator;</font></td>
+</tr>
+<tr>
+<td height="1">169</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">170</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;Control&nbsp;the&nbsp;display&nbsp;in&nbsp;wireframe&nbsp;or&nbsp;not<font></font></td>
+</tr>
+<tr>
+<td height="1">171</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">bool&nbsp;g_wireframe(false);</font></td>
+</tr>
+<tr>
+<td height="1">172</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">173</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">174</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">175</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Class&nbsp;declaration<font></font></td>
+</tr>
+<tr>
+<td height="1">176</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">177</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">class&nbsp;GLWidget;</font></td>
+</tr>
+<tr>
+<td height="1">178</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">179</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">180</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">181</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Function&nbsp;declaration<font></font></td>
+</tr>
+<tr>
+<td height="1">182</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">183</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initQt(GLWidget&&nbsp;aWindow);</font></td>
+</tr>
+<tr>
+<td height="1">184</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initGLUT(int&nbsp;argc,&nbsp;char**&nbsp;argv);</font></td>
+</tr>
+<tr>
+<td height="1">185</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initGL();</font></td>
+</tr>
+<tr>
+<td height="1">186</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initShader();</font></td>
+</tr>
+<tr>
+<td height="1">187</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;load3DObjects();</font></td>
+</tr>
+<tr>
+<td height="1">188</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;displayCallback();</font></td>
+</tr>
+<tr>
+<td height="1">189</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;idleCallback();</font></td>
+</tr>
+<tr>
+<td height="1">190</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;quitCallback();</font></td>
+</tr>
+<tr>
+<td height="1">191</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;framebufferSizeCallback(int&nbsp;aWidth,&nbsp;int&nbsp;aHeight);</font></td>
+</tr>
+<tr>
+<td height="1">192</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;keyCallback(unsigned&nbsp;char&nbsp;aKey,&nbsp;int&nbsp;aXPosition,&nbsp;int&nbsp;aYPosition);</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">193</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;mouseButtonCallback(int&nbsp;aButton,&nbsp;int&nbsp;aState,&nbsp;int&nbsp;aXPosition,&nbsp;int&nbsp;aYPosition);</font></td>
+</tr>
+<tr>
+<td height="1">194</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;cursorPosCallback(int&nbsp;aXPosition,&nbsp;int&nbsp;aYPosition);</font></td>
+</tr>
+<tr>
+<td height="1">195</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">VEC3&nbsp;getArcballVector(int&nbsp;x,&nbsp;int&nbsp;y);</font></td>
+</tr>
+<tr>
+<td height="1">196</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">float&nbsp;radian2degree(float&nbsp;anAngle);</font></td>
+</tr>
+<tr>
+<td height="1">197</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;computeRotation(MATRIX4&&nbsp;aRotationMatrix);</font></td>
+</tr>
+<tr>
+<td height="1">198</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setDetector();</font></td>
+</tr>
+<tr>
+<td height="1">199</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setSource();</font></td>
+</tr>
+<tr>
+<td height="1">200</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setBeam();</font></td>
+</tr>
+<tr>
+<td height="1">201</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setScannedObjects();</font></td>
+</tr>
+<tr>
+<td height="1">202</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setSimulator();</font></td>
+</tr>
+<tr>
+<td height="1">203</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">204</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">205</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">206</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//&nbsp;&nbsp;Class&nbsp;definition<font></font></td>
+</tr>
+<tr>
+<td height="1">207</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//******************************************************************************<font></font></td>
+</tr>
+<tr>
+<td height="1">208</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">class&nbsp;GLWidget:&nbsp;public&nbsp;QGLWidget</font></td>
+</tr>
+<tr>
+<td height="1">209</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">210</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">public:</font></td>
+</tr>
+<tr>
+<td height="1">211</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;GLWidget(QWidget&nbsp;*parent&nbsp;=&nbsp;0);</font></td>
+</tr>
+<tr>
+<td height="1">212</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;GLWidget(QGLFormat&&nbsp;aGLFormat,&nbsp;QWidget&nbsp;*parent&nbsp;=&nbsp;0);</font></td>
+</tr>
+<tr>
+<td height="1">213</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;~GLWidget();</font></td>
+</tr>
+<tr>
+<td height="1">214</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">215</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;QSize&nbsp;minimumSizeHint()&nbsp;const;</font></td>
+</tr>
+<tr>
+<td height="1">216</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;QSize&nbsp;sizeHint()&nbsp;const;</font></td>
+</tr>
+<tr>
+<td height="1">217</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">218</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">protected:</font></td>
+</tr>
+<tr>
+<td height="1">219</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;initializeGL();</font></td>
+</tr>
+<tr>
+<td height="1">220</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;paintGL();</font></td>
+</tr>
+<tr>
+<td height="1">221</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;animate();</font></td>
+</tr>
+<tr>
+<td height="1">222</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;resizeGL(int&nbsp;width,&nbsp;int&nbsp;height);</font></td>
+</tr>
+<tr>
+<td height="1">223</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;keyPressEvent(QKeyEvent&nbsp;*&nbsp;event);</font></td>
+</tr>
+<tr>
+<td height="1">224</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;mouseMoveEvent(QMouseEvent&nbsp;*eventMove);</font></td>
+</tr>
+<tr>
+<td height="1">225</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;mousePressEvent(QMouseEvent&nbsp;*eventPress);</font></td>
+</tr>
+<tr>
+<td height="1">226</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;mouseReleaseEvent(QMouseEvent&nbsp;*releaseEvent);</font></td>
+</tr>
+<tr>
+<td height="1">227</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;wheelEvent(QWheelEvent&nbsp;*wheelEvent);</font></td>
+</tr>
+<tr>
+<td height="1">228</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">};</font></td>
+</tr>
+<tr>
+<td height="1">229</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">230</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">231</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">232</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">int&nbsp;main(int&nbsp;argc,&nbsp;char**&nbsp;argv)</font></td>
+</tr>
+<tr>
+<td height="1">233</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">234</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">235</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Return&nbsp;code<font></font></td>
+</tr>
+<tr>
+<td height="1">236</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;return_code(EXIT_SUCCESS);</font></td>
+</tr>
+<tr>
+<td height="1">237</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">238</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Register&nbsp;the&nbsp;exit&nbsp;callback<font></font></td>
+</tr>
+<tr>
+<td height="1">239</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;atexit(quitCallback);</font></td>
+</tr>
+<tr>
+<td height="1">240</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">241</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;try</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">242</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr>
+<td height="1">243</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;Qt&nbsp;and&nbsp;OpenGL<font></font></td>
+</tr>
+<tr>
+<td height="1">244</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QApplication&nbsp;application(argc,&nbsp;argv);</font></td>
+</tr>
+<tr>
+<td height="1">245</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">246</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Create&nbsp;a&nbsp;GL&nbsp;format&nbsp;to&nbsp;OpenGL&nbsp;3.2&nbsp;Core<font></font></td>
+</tr>
+<tr>
+<td height="1">247</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QGLFormat&nbsp;gl_format;</font></td>
+</tr>
+<tr>
+<td height="1">248</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gl_format.setVersion(3,&nbsp;2);</font></td>
+</tr>
+<tr>
+<td height="1">249</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gl_format.setProfile(QGLFormat::CoreProfile);</font></td>
+</tr>
+<tr>
+<td height="1">250</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">251</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;the&nbsp;GL&nbsp;format&nbsp;of&nbsp;the&nbsp;QGLWidget<font></font></td>
+</tr>
+<tr>
+<td height="1">252</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLWidget&nbsp;window(gl_format);</font></td>
+</tr>
+<tr>
+<td height="1">253</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initQt(window);</font></td>
+</tr>
+<tr>
+<td height="1">254</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">255</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Launch&nbsp;the&nbsp;event&nbsp;loop<font></font></td>
+</tr>
+<tr>
+<td height="1">256</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return_code&nbsp;=&nbsp;application.exec();</font></td>
+</tr>
+<tr>
+<td height="1">257</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">258</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Catch&nbsp;exception&nbsp;if&nbsp;any<font></font></td>
+</tr>
+<tr>
+<td height="1">259</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;catch&nbsp;(const&nbsp;exception&&nbsp;error)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">260</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr>
+<td height="1">261</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr&nbsp;&lt;&lt;&nbsp;error.what()&nbsp;&lt;&lt;&nbsp;endl;</font></td>
+</tr>
+<tr>
+<td height="1">262</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return_code&nbsp;=&nbsp;EXIT_FAILURE;</font></td>
+</tr>
+<tr>
+<td height="1">263</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">264</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">265</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Clean&nbsp;up<font></font></td>
+</tr>
+<tr>
+<td height="1">266</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;quitCallback();</font></td>
+</tr>
+<tr>
+<td height="1">267</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">268</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Return&nbsp;an&nbsp;exit&nbsp;code<font></font></td>
+</tr>
+<tr>
+<td height="1">269</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(return_code);</font></td>
+</tr>
+<tr>
+<td height="1">270</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">271</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">272</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">273</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">274</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initQt(GLWidget&&nbsp;aWindow)</font></td>
+</tr>
+<tr>
+<td height="1">275</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">276</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">277</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialize&nbsp;Qt<font></font></td>
+</tr>
+<tr>
+<td height="1">278</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;and&nbsp;create&nbsp;a&nbsp;windowed&nbsp;mode&nbsp;window&nbsp;and&nbsp;its&nbsp;OpenGL&nbsp;context<font></font></td>
+</tr>
+<tr>
+<td height="1">279</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">280</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;aWindow.resize(g_window_width,&nbsp;g_window_height);</font></td>
+</tr>
+<tr>
+<td height="1">281</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;aWindow.show();</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">282</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;aWindow.setWindowTitle(QApplication::translate("toplevel",&nbsp;"gVirtualXRay&nbsp;--&nbsp;Tutorial&nbsp;03&nbsp;using&nbsp;Qt4"));</font></td>
+</tr>
+<tr>
+<td height="1">283</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">284</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Make&nbsp;the&nbsp;window's&nbsp;context&nbsp;current<font></font></td>
+</tr>
+<tr>
+<td height="1">285</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;aWindow.makeCurrent();</font></td>
+</tr>
+<tr>
+<td height="1">286</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">287</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">288</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">289</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">290</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLWidget::GLWidget(QWidget&nbsp;*parent):</font></td>
+</tr>
+<tr>
+<td height="1">291</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">292</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;QGLWidget(parent)</font></td>
+</tr>
+<tr>
+<td height="1">293</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">294</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">295</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">296</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">297</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">298</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">299</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLWidget::GLWidget(QGLFormat&&nbsp;aGLFormat,&nbsp;QWidget&nbsp;*parent):</font></td>
+</tr>
+<tr>
+<td height="1">300</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">301</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;QGLWidget(aGLFormat,&nbsp;parent)</font></td>
+</tr>
+<tr>
+<td height="1">302</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">303</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">304</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">305</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">306</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">307</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">308</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">GLWidget::~GLWidget()</font></td>
+</tr>
+<tr>
+<td height="1">309</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">310</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{}</font></td>
+</tr>
+<tr>
+<td height="1">311</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">312</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">313</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">314</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">QSize&nbsp;GLWidget::minimumSizeHint()&nbsp;const</font></td>
+</tr>
+<tr>
+<td height="1">315</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">316</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">317</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;QSize(50,&nbsp;50);</font></td>
+</tr>
+<tr>
+<td height="1">318</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">319</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">320</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">321</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">322</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">QSize&nbsp;GLWidget::sizeHint()&nbsp;const</font></td>
+</tr>
+<tr>
+<td height="1">323</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">324</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">325</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;QSize(g_window_width,&nbsp;g_window_height);</font></td>
+</tr>
+<tr>
+<td height="1">326</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">327</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td height="1">328</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">329</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">330</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::initializeGL()</font></td>
+</tr>
+<tr>
+<td height="1">331</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">332</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">333</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;GLEW<font></font></td>
+</tr>
+<tr>
+<td height="1">334</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;initialiseGLEW();</font></td>
+</tr>
+<tr>
+<td height="1">335</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">336</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;OpenGL<font></font></td>
+</tr>
+<tr>
+<td height="1">337</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;initGL();</font></td>
+</tr>
+<tr>
+<td height="1">338</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">339</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;shader&nbsp;from&nbsp;files&nbsp;compressed&nbsp;using&nbsp;the&nbsp;Z&nbsp;library<font></font></td>
+</tr>
+<tr>
+<td height="1">340</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;initShader();</font></td>
+</tr>
+<tr>
+<td height="1">341</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">342</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;geometry&nbsp;of&nbsp;the&nbsp;3D&nbsp;objects<font></font></td>
+</tr>
+<tr>
+<td height="1">343</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;load3DObjects();</font></td>
+</tr>
+<tr>
+<td height="1">344</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">345</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;position&nbsp;and&nbsp;shape&nbsp;of&nbsp;the&nbsp;X-ray&nbsp;detector<font></font></td>
+</tr>
+<tr>
+<td height="1">346</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;setDetector();</font></td>
+</tr>
+<tr>
+<td height="1">347</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">348</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;position&nbsp;and&nbsp;shape&nbsp;of&nbsp;the&nbsp;X-ray&nbsp;source<font></font></td>
+</tr>
+<tr>
+<td height="1">349</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;setSource();</font></td>
+</tr>
+<tr>
+<td height="1">350</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">351</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;spectrum&nbsp;of&nbsp;the&nbsp;X-ray&nbsp;beam<font></font></td>
+</tr>
+<tr>
+<td height="1">352</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;setBeam();</font></td>
+</tr>
+<tr>
+<td height="1">353</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">354</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;geometry&nbsp;of&nbsp;the&nbsp;scanned&nbsp;object<font></font></td>
+</tr>
+<tr>
+<td height="1">355</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;setScannedObjects();</font></td>
+</tr>
+<tr>
+<td height="1">356</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">357</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;simulation<font></font></td>
+</tr>
+<tr>
+<td height="1">358</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;setSimulator();</font></td>
+</tr>
+<tr>
+<td height="1">359</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">360</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">361</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">362</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">363</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::paintGL()</font></td>
+</tr>
+<tr>
+<td height="1">364</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">365</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">366</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Clear&nbsp;the&nbsp;buffers<font></font></td>
+</tr>
+<tr>
+<td height="1">367</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glClear(GL_COLOR_BUFFER_BIT&nbsp;|&nbsp;GL_DEPTH_BUFFER_BIT);</font></td>
+</tr>
+<tr>
+<td height="1">368</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">369</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Add&nbsp;the&nbsp;current&nbsp;shader&nbsp;to&nbsp;the&nbsp;shader&nbsp;stack<font></font></td>
+</tr>
+<tr>
+<td height="1">370</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;pushShaderProgram();</font></td>
+</tr>
+<tr>
+<td height="1">371</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">372</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Enable&nbsp;the&nbsp;shader<font></font></td>
+</tr>
+<tr>
+<td height="1">373</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_display_shader.enable();</font></td>
+</tr>
+<tr>
+<td height="1">374</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;GLint&nbsp;shader_id(g_display_shader.getProgramHandle());</font></td>
+</tr>
+<tr>
+<td height="1">375</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">376</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Check&nbsp;the&nbsp;status&nbsp;of&nbsp;OpenGL&nbsp;and&nbsp;of&nbsp;the&nbsp;current&nbsp;FBO<font></font></td>
+</tr>
+<tr>
+<td height="1">377</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkFBOErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">378</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">379</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">380</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;A&nbsp;handle&nbsp;for&nbsp;shader&nbsp;resources<font></font></td>
+</tr>
+<tr>
+<td height="1">381</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;GLuint&nbsp;handle(0);</font></td>
+</tr>
+<tr>
+<td height="1">382</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">383</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Upload&nbsp;the&nbsp;projection&nbsp;matrix<font></font></td>
+</tr>
+<tr>
+<td height="1">384</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;handle&nbsp;=&nbsp;glGetUniformLocation(shader_id,&nbsp;"g_projection_matrix");</font></td>
+</tr>
+<tr>
+<td height="1">385</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniformMatrix4fv(handle,&nbsp;1,&nbsp;GL_FALSE,&nbsp;g_current_projection_matrix.get());</font></td>
+</tr>
+<tr>
+<td height="1">386</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">387</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">388</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Upload&nbsp;the&nbsp;modelview&nbsp;matrix<font></font></td>
+</tr>
+<tr>
+<td height="1">389</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;handle&nbsp;=&nbsp;glGetUniformLocation(shader_id,&nbsp;"g_modelview_matrix");</font></td>
+</tr>
+<tr>
+<td height="1">390</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniformMatrix4fv(handle,&nbsp;1,&nbsp;GL_FALSE,&nbsp;g_current_modelview_matrix.get());</font></td>
+</tr>
+<tr>
+<td height="1">391</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">392</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">393</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Store&nbsp;the&nbsp;current&nbsp;transformation&nbsp;matrices<font></font></td>
+</tr>
+<tr>
+<td height="1">394</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;pushModelViewMatrix();</font></td>
+</tr>
+<tr>
+<td height="1">395</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;pushProjectionMatrix();</font></td>
+</tr>
+<tr>
+<td height="1">396</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">397</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Rotate&nbsp;the&nbsp;3D&nbsp;scene<font></font></td>
+</tr>
+<tr>
+<td height="1">398</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_current_modelview_matrix&nbsp;*=&nbsp;g_scene_rotation_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">399</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">400</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Wireframe&nbsp;mode<font></font></td>
+</tr>
+<tr>
+<td height="1">401</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;handle&nbsp;=&nbsp;glGetUniformLocation(shader_id,&nbsp;"g_wireframe");</font></td>
+</tr>
+<tr>
+<td height="1">402</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniform1i(handle,&nbsp;false);</font></td>
+</tr>
+<tr>
+<td height="1">403</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">404</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">405</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;The&nbsp;first&nbsp;object&nbsp;is&nbsp;the&nbsp;inner&nbsp;cube<font></font></td>
+</tr>
+<tr>
+<td height="1">406</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;handle&nbsp;=&nbsp;glGetUniformLocation(shader_id,&nbsp;"g_inner_surface");</font></td>
+</tr>
+<tr>
+<td height="1">407</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniform1i(handle,&nbsp;0);</font></td>
+</tr>
+<tr>
+<td height="1">408</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">409</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">410</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Display&nbsp;the&nbsp;source<font></font></td>
+</tr>
+<tr>
+<td height="1">411</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_detector.displaySource();</font></td>
+</tr>
+<tr>
+<td height="1">412</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">413</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Display&nbsp;the&nbsp;detector&nbsp;with&nbsp;the&nbsp;corresponding&nbsp;X-ray&nbsp;image<font></font></td>
+</tr>
+<tr>
+<td height="1">414</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_simulator.display();</font></td>
+</tr>
+<tr>
+<td height="1">415</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">416</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Rotate&nbsp;the&nbsp;1st&nbsp;object<font></font></td>
+</tr>
+<tr>
+<td height="1">417</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_current_modelview_matrix&nbsp;*=&nbsp;g_sample_rotation_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">418</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">419</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Apply&nbsp;the&nbsp;change&nbsp;to&nbsp;the&nbsp;shader&nbsp;program<font></font></td>
+</tr>
+<tr>
+<td height="1">420</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;applyModelViewMatrix();</font></td>
+</tr>
+<tr>
+<td height="1">421</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">422</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Wireframe&nbsp;mode<font></font></td>
+</tr>
+<tr>
+<td height="1">423</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;handle&nbsp;=&nbsp;glGetUniformLocation(shader_id,&nbsp;"g_wireframe");</font></td>
+</tr>
+<tr>
+<td height="1">424</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniform1i(handle,&nbsp;g_wireframe);</font></td>
+</tr>
+<tr>
+<td height="1">425</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">426</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">427</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;The&nbsp;first&nbsp;object&nbsp;is&nbsp;the&nbsp;inner&nbsp;cube<font></font></td>
+</tr>
+<tr>
+<td height="1">428</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;handle&nbsp;=&nbsp;glGetUniformLocation(shader_id,&nbsp;"g_inner_surface");</font></td>
+</tr>
+<tr>
+<td height="1">429</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniform1i(handle,&nbsp;1);</font></td>
+</tr>
+<tr>
+<td height="1">430</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">431</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">432</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Display&nbsp;the&nbsp;1st&nbsp;object<font></font></td>
+</tr>
+<tr>
+<td height="1">433</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!g_wireframe)</font></td>
+</tr>
+<tr>
+<td height="1">434</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">435</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_1.display();</font></td>
+</tr>
+<tr>
+<td height="1">436</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">437</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;else</font></td>
+</tr>
+<tr>
+<td height="1">438</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">439</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_1.displayWireFrame();</font></td>
+</tr>
+<tr>
+<td height="1">440</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">441</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">442</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Store&nbsp;the&nbsp;state&nbsp;of&nbsp;alpha&nbsp;blending<font></font></td>
+</tr>
+<tr>
+<td height="1">443</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!g_wireframe)</font></td>
+</tr>
+<tr>
+<td height="1">444</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">445</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pushEnableDisableState(GL_BLEND);</font></td>
+</tr>
+<tr>
+<td height="1">446</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;glEnable(GL_BLEND);</font></td>
+</tr>
+<tr>
+<td height="1">447</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;glDepthMask&nbsp;(GL_FALSE);</font></td>
+</tr>
+<tr>
+<td height="1">448</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;glBlendFunc&nbsp;(GL_SRC_ALPHA,&nbsp;GL_ONE_MINUS_SRC_ALPHA);</font></td>
+</tr>
+<tr>
+<td height="1">449</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">450</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">451</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;The&nbsp;second&nbsp;object&nbsp;is&nbsp;the&nbsp;outer&nbsp;cube<font></font></td>
+</tr>
+<tr>
+<td height="1">452</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glUniform1i(handle,&nbsp;0);</font></td>
+</tr>
+<tr>
+<td height="1">453</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">454</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">455</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Display&nbsp;the&nbsp;2nd&nbsp;object<font></font></td>
+</tr>
+<tr>
+<td height="1">456</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!g_wireframe)</font></td>
+</tr>
+<tr>
+<td height="1">457</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">458</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_2.display();</font></td>
+</tr>
+<tr>
+<td height="1">459</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">460</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;else</font></td>
+</tr>
+<tr>
+<td height="1">461</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">462</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_2.displayWireFrame();</font></td>
+</tr>
+<tr>
+<td height="1">463</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">464</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">465</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Restore&nbsp;the&nbsp;state&nbsp;of&nbsp;alpha&nbsp;blending<font></font></td>
+</tr>
+<tr>
+<td height="1">466</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!g_wireframe)</font></td>
+</tr>
+<tr>
+<td height="1">467</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">468</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;popEnableDisableState();</font></td>
+</tr>
+<tr>
+<td height="1">469</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;glDepthMask&nbsp;(GL_TRUE);</font></td>
+</tr>
+<tr>
+<td height="1">470</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">471</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">472</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Restore&nbsp;the&nbsp;current&nbsp;transformation&nbsp;matrix<font></font></td>
+</tr>
+<tr>
+<td height="1">473</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;popModelViewMatrix();</font></td>
+</tr>
+<tr>
+<td height="1">474</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;popProjectionMatrix();</font></td>
+</tr>
+<tr>
+<td height="1">475</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">476</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Disable&nbsp;the&nbsp;shader&nbsp;and&nbsp;restore&nbsp;the&nbsp;previous&nbsp;shader&nbsp;from&nbsp;the&nbsp;stack<font></font></td>
+</tr>
+<tr>
+<td height="1">477</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;popShaderProgram();</font></td>
+</tr>
+<tr>
+<td height="1">478</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">479</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Check&nbsp;the&nbsp;status&nbsp;of&nbsp;OpenGL&nbsp;and&nbsp;of&nbsp;the&nbsp;current&nbsp;FBO<font></font></td>
+</tr>
+<tr>
+<td height="1">480</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkFBOErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">481</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">482</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">483</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;animate();</font></td>
+</tr>
+<tr>
+<td height="1">484</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">485</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">486</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">487</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">488</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::animate()</font></td>
+</tr>
+<tr>
+<td height="1">489</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">490</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">491</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Rotate&nbsp;the&nbsp;objects<font></font></td>
+</tr>
+<tr>
+<td height="1">492</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_sample_rotation_matrix.rotate(1.0,&nbsp;VEC3(1.0,&nbsp;0.0,&nbsp;0.0));</font></td>
+</tr>
+<tr>
+<td height="1">493</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">494</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;X-Ray&nbsp;image<font></font></td>
+</tr>
+<tr>
+<td height="1">495</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(g_xray_simulator.isReady())</font></td>
+</tr>
+<tr>
+<td height="1">496</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">497</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_xray_simulator.computeImage(g_sample_rotation_matrix);</font></td>
+</tr>
+<tr>
+<td height="1">498</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">499</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Normalise&nbsp;the&nbsp;X-ray&nbsp;image<font></font></td>
+</tr>
+<tr>
+<td height="1">500</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_xray_simulator.normalise();</font></td>
+</tr>
+<tr>
+<td height="1">501</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">502</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">503</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;QCoreApplication::postEvent(this,&nbsp;new&nbsp;QEvent(QEvent::UpdateRequest));</font></td>
+</tr>
+<tr>
+<td height="1">504</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">505</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">506</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">507</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">508</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::resizeGL(int&nbsp;width,&nbsp;int&nbsp;height)</font></td>
+</tr>
+<tr>
+<td height="1">509</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">510</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">511</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Avoid&nbsp;a&nbsp;division&nbsp;by&nbsp;zero<font></font></td>
+</tr>
+<tr>
+<td height="1">512</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(height&nbsp;==&nbsp;0)</font></td>
+</tr>
+<tr>
+<td height="1">513</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">514</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Prevent&nbsp;divide&nbsp;by&nbsp;0<font></font></td>
+</tr>
+<tr>
+<td height="1">515</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height&nbsp;=&nbsp;1;</font></td>
+</tr>
+<tr>
+<td height="1">516</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;}</font></td>
+</tr>
+<tr>
+<td height="1">517</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">518</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;x(0),&nbsp;y(0),&nbsp;w(width),&nbsp;h(height);</font></td>
+</tr>
+<tr>
+<td height="1">519</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">520</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Store&nbsp;the&nbsp;width&nbsp;and&nbsp;height&nbsp;of&nbsp;the&nbsp;window<font></font></td>
+</tr>
+<tr>
+<td height="1">521</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_window_width&nbsp;=&nbsp;width;</font></td>
+</tr>
+<tr>
+<td height="1">522</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_window_height&nbsp;=&nbsp;height;</font></td>
+</tr>
+<tr>
+<td height="1">523</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">524</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Compute&nbsp;the&nbsp;aspect&nbsp;ratio&nbsp;of&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;window<font></font></td>
+</tr>
+<tr>
+<td height="1">525</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;screen_aspect_ratio(double(g_window_width)&nbsp;/&nbsp;double(g_window_height));</font></td>
+</tr>
+<tr>
+<td height="1">526</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">527</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Update&nbsp;the&nbsp;viewport<font></font></td>
+</tr>
+<tr>
+<td height="1">528</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glViewport(x,&nbsp;y,&nbsp;w,&nbsp;h);</font></td>
+</tr>
+<tr>
+<td height="1">529</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">530</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;up&nbsp;the&nbsp;projection&nbsp;matrix&nbsp;(g_current_projection_matrix)<font></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">531</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;loadPerspectiveProjectionMatrix(45.0,&nbsp;screen_aspect_ratio,&nbsp;0.1&nbsp;*&nbsp;cm,&nbsp;5000.0&nbsp;*&nbsp;cm);</font></td>
+</tr>
+<tr>
+<td height="1">532</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">533</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;up&nbsp;the&nbsp;modelling-viewing&nbsp;matrix&nbsp;(g_current_modelview_matrix)<font></font></td>
+</tr>
+<tr>
+<td height="1">534</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;loadLookAtModelViewMatrix(0.0&nbsp;*&nbsp;cm,&nbsp;0.0&nbsp;*&nbsp;cm,&nbsp;g_zoom,</font></td>
+</tr>
+<tr>
+<td height="1">535</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.0,&nbsp;0.0,&nbsp;0.0,</font></td>
+</tr>
+<tr>
+<td height="1">536</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.0,&nbsp;1.0,&nbsp;0.0);</font></td>
+</tr>
+<tr>
+<td height="1">537</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">538</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">539</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">540</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">541</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::keyPressEvent(QKeyEvent&nbsp;*&nbsp;event)</font></td>
+</tr>
+<tr>
+<td height="1">542</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">543</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">544</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;switch(event-&gt;key())</font></td>
+</tr>
+<tr>
+<td height="1">545</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">546</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Close&nbsp;the&nbsp;program<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">547</td>
+<td height="1">IND,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****case&nbsp;Qt::Key_Q:</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">548</td>
+<td height="1">IND,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****case&nbsp;Qt::Key_Escape:</font></td>
+</tr>
+<tr>
+<td height="1">549</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close();</font></td>
+</tr>
+<tr>
+<td height="1">550</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</font></td>
+</tr>
+<tr>
+<td height="1">551</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">552</td>
+<td height="1">IND,IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****case&nbsp;Qt::Key_W:</font></td>
+</tr>
+<tr>
+<td height="1">553</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_wireframe&nbsp;=&nbsp;!g_wireframe;</font></td>
+</tr>
+<tr>
+<td height="1">554</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</font></td>
+</tr>
+<tr>
+<td height="1">555</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">556</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****default:</font></td>
+</tr>
+<tr>
+<td height="1">557</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;std::cout&nbsp;&lt;&lt;&nbsp;event-&gt;key()&nbsp;&lt;&lt;&nbsp;std::endl;</font></td>
+</tr>
+<tr>
+<td height="1">558</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">559</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">560</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">561</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">562</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">563</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">564</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::mouseMoveEvent(QMouseEvent&nbsp;*eventMove)</font></td>
+</tr>
+<tr>
+<td height="1">565</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">566</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">567</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_current_x_position&nbsp;=&nbsp;eventMove-&gt;x();</font></td>
+</tr>
+<tr>
+<td height="1">568</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_current_y_position&nbsp;=&nbsp;eventMove-&gt;y();</font></td>
+</tr>
+<tr>
+<td height="1">569</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">570</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;computeRotation(g_scene_rotation_matrix);</font></td>
+</tr>
+<tr>
+<td height="1">571</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">572</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">573</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">574</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">575</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::mousePressEvent(QMouseEvent&nbsp;*eventPress)</font></td>
+</tr>
+<tr>
+<td height="1">576</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">577</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">578</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_use_arc_ball&nbsp;=&nbsp;true;</font></td>
+</tr>
+<tr>
+<td height="1">579</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">580</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_last_x_position&nbsp;=&nbsp;eventPress-&gt;x();</font></td>
+</tr>
+<tr>
+<td height="1">581</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_last_y_position&nbsp;=&nbsp;eventPress-&gt;y();</font></td>
+</tr>
+<tr>
+<td height="1">582</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">583</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_current_x_position&nbsp;=&nbsp;eventPress-&gt;x();</font></td>
+</tr>
+<tr>
+<td height="1">584</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_current_y_position&nbsp;=&nbsp;eventPress-&gt;y();</font></td>
+</tr>
+<tr>
+<td height="1">585</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">586</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">587</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">588</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">589</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::mouseReleaseEvent(QMouseEvent&nbsp;*releaseEvent)</font></td>
+</tr>
+<tr>
+<td height="1">590</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">591</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">592</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_use_arc_ball&nbsp;=&nbsp;false;</font></td>
+</tr>
+<tr>
+<td height="1">593</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">594</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">595</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">596</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">597</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;GLWidget::wheelEvent(QWheelEvent&nbsp;*wheelEvent)</font></td>
+</tr>
+<tr>
+<td height="1">598</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">599</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">600</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Scrolling&nbsp;along&nbsp;the&nbsp;Y-axis<font></font></td>
+</tr>
+<tr>
+<td height="1">601</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(std::abs(wheelEvent-&gt;delta())&nbsp;&gt;&nbsp;EPSILON)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">602</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr>
+<td height="1">603</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Change&nbsp;the&nbsp;zoom<font></font></td>
+</tr>
+<tr>
+<td height="1">604</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_zoom&nbsp;+=&nbsp;0.1&nbsp;*&nbsp;wheelEvent-&gt;delta()&nbsp;*&nbsp;cm;</font></td>
+</tr>
+<tr>
+<td height="1">605</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">606</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Update&nbsp;the&nbsp;projection&nbsp;matrix<font></font></td>
+</tr>
+<tr>
+<td height="1">607</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resizeGL(g_window_width,&nbsp;g_window_height);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">608</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">609</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">610</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">611</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">612</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------<font></font></td>
+</tr>
+<tr>
+<td height="1">613</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initShader()</font></td>
+</tr>
+<tr>
+<td height="1">614</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------<font></font></td>
+</tr>
+<tr>
+<td height="1">615</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">616</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;shaders<font></font></td>
+</tr>
+<tr>
+<td height="1">617</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;char*&nbsp;p_vertex_shader(0);</font></td>
+</tr>
+<tr>
+<td height="1">618</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;char*&nbsp;p_fragment_shader(0);</font></td>
+</tr>
+<tr>
+<td height="1">619</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">620</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;z_lib_return_code_vertex(0);</font></td>
+</tr>
+<tr>
+<td height="1">621</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;z_lib_return_code_fragment(0);</font></td>
+</tr>
+<tr>
+<td height="1">622</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">623</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;vertex_shader;</font></td>
+</tr>
+<tr>
+<td height="1">624</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;std::string&nbsp;fragment_shader;</font></td>
+</tr>
+<tr>
+<td height="1">625</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">626</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Decompress&nbsp;the&nbsp;shader&nbsp;using&nbsp;the&nbsp;ZLib<font></font></td>
+</tr>
+<tr>
+<td height="1">627</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Modern&nbsp;OpenGL&nbsp;3.2&nbsp;or&nbsp;above&nbsp;is&nbsp;supported<font></font></td>
+</tr>
+<tr>
+<td height="1">628</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(useOpenGL3_2OrAbove())</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">629</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">630</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_lib_return_code_vertex&nbsp;&nbsp;&nbsp;=&nbsp;inflate(g_tutorial_03_gl3_vert,&nbsp;sizeof(g_tutorial_03_gl3_vert),&nbsp;&nbsp;&nbsp;&p_vertex_shader);</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">631</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_lib_return_code_fragment&nbsp;=&nbsp;inflate(g_tutorial_03_gl3_frag,&nbsp;sizeof(g_tutorial_03_gl3_frag),&nbsp;&p_fragment_shader);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">632</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">633</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Modern&nbsp;OpenGL&nbsp;3.2&nbsp;or&nbsp;above&nbsp;isnot&nbsp;supported<font></font></td>
+</tr>
+<tr>
+<td height="1">634</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;else</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">635</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">636</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_lib_return_code_vertex&nbsp;&nbsp;&nbsp;=&nbsp;inflate(g_tutorial_03_gl2_vert,&nbsp;sizeof(g_tutorial_03_gl2_vert),&nbsp;&nbsp;&nbsp;&p_vertex_shader);</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">637</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_lib_return_code_fragment&nbsp;=&nbsp;inflate(g_tutorial_03_gl2_frag,&nbsp;sizeof(g_tutorial_03_gl2_frag),&nbsp;&p_fragment_shader);</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">638</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">639</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">640</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;vertex_shader&nbsp;&nbsp;&nbsp;=&nbsp;p_vertex_shader;</font></td>
+</tr>
+<tr>
+<td height="1">641</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;fragment_shader&nbsp;=&nbsp;p_fragment_shader;</font></td>
+</tr>
+<tr bgcolor="#FFFFCC">
+<td height="1">642</td>
+<td height="1">SPL</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;delete&nbsp;[]&nbsp;p_vertex_shader;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_vertex_shader&nbsp;=&nbsp;0;</font></td>
+</tr>
+<tr bgcolor="#FFFFCC">
+<td height="1">643</td>
+<td height="1">SPL</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;delete&nbsp;[]&nbsp;p_fragment_shader;&nbsp;p_fragment_shader&nbsp;=&nbsp;0;</font></td>
+</tr>
+<tr>
+<td height="1">644</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">645</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(z_lib_return_code_vertex&nbsp;&lt;=&nbsp;0&nbsp;||&nbsp;z_lib_return_code_fragment&nbsp;&lt;=&nbsp;0&nbsp;||&nbsp;!vertex_shader.size()&nbsp;||&nbsp;!fragment_shader.size())</font></td>
+</tr>
+<tr>
+<td height="1">646</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">647</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;Exception(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__,&nbsp;"Cannot&nbsp;decode&nbsp;the&nbsp;shader&nbsp;using&nbsp;ZLib.");</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">648</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">649</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_display_shader.setLabels("display.vert",&nbsp;"display.frag");</font></td>
+</tr>
+<tr>
+<td height="1">650</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_display_shader.loadSource(vertex_shader,&nbsp;fragment_shader);</font></td>
+</tr>
+<tr>
+<td height="1">651</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">652</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">653</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">654</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">655</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------<font></font></td>
+</tr>
+<tr>
+<td height="1">656</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;initGL()</font></td>
+</tr>
+<tr>
+<td height="1">657</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------<font></font></td>
+</tr>
+<tr>
+<td height="1">658</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">659</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Enable&nbsp;the&nbsp;Z-buffer<font></font></td>
+</tr>
+<tr>
+<td height="1">660</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glEnable(GL_DEPTH_TEST);</font></td>
+</tr>
+<tr>
+<td height="1">661</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">662</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;the&nbsp;background&nbsp;colour<font></font></td>
+</tr>
+<tr>
+<td height="1">663</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;glClearColor(0.5,&nbsp;0.5,&nbsp;0.5,&nbsp;1.0);</font></td>
+</tr>
+<tr>
+<td height="1">664</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">665</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Check&nbsp;if&nbsp;any&nbsp;OpenGL&nbsp;error&nbsp;has&nbsp;occurred.<font></font></td>
+</tr>
+<tr>
+<td height="1">666</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;If&nbsp;any&nbsp;has,&nbsp;an&nbsp;exception&nbsp;is&nbsp;thrown<font></font></td>
+</tr>
+<tr>
+<td height="1">667</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;checkOpenGLErrorStatus(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__);</font></td>
+</tr>
+<tr>
+<td height="1">668</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">669</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">670</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">671</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">672</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;load3DObjects()</font></td>
+</tr>
+<tr>
+<td height="1">673</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">674</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">675</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Create&nbsp;the&nbsp;cube<font></font></td>
+</tr>
+<tr>
+<td height="1">676</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;cube_centre(0,&nbsp;0,&nbsp;0);</font></td>
+</tr>
+<tr>
+<td height="1">677</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;RATIONAL_NUMBER&nbsp;length_1(&nbsp;5.0&nbsp;*&nbsp;cm);</font></td>
+</tr>
+<tr>
+<td height="1">678</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;RATIONAL_NUMBER&nbsp;length_2(10.0&nbsp;*&nbsp;cm);</font></td>
+</tr>
+<tr>
+<td height="1">679</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;buildCube(length_1,&nbsp;cube_centre,&nbsp;g_p_vertex_set_1,&nbsp;g_p_index_set_1);</font></td>
+</tr>
+<tr>
+<td height="1">680</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;buildCube(length_2,&nbsp;cube_centre,&nbsp;g_p_vertex_set_2);</font></td>
+</tr>
+<tr>
+<td height="1">681</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">682</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Rotate&nbsp;the&nbsp;sample<font></font></td>
+</tr>
+<tr>
+<td height="1">683</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_sample_rotation_matrix.rotate(&nbsp;30,&nbsp;VEC3(0,&nbsp;1,&nbsp;0));</font></td>
+</tr>
+<tr>
+<td height="1">684</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_sample_rotation_matrix.rotate(&nbsp;30,&nbsp;VEC3(0,&nbsp;0,&nbsp;1));</font></td>
+</tr>
+<tr>
+<td height="1">685</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_sample_rotation_matrix.rotate(&nbsp;30,&nbsp;VEC3(0,&nbsp;1,&nbsp;0));</font></td>
+</tr>
+<tr>
+<td height="1">686</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">687</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;geometry<font></font></td>
+</tr>
+<tr>
+<td height="1">688</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_1.setExternalData(GL_TRIANGLES,</font></td>
+</tr>
+<tr>
+<td height="1">689</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_p_vertex_set_1,</font></td>
+</tr>
+<tr>
+<td height="1">690</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_p_index_set_1,</font></td>
+</tr>
+<tr>
+<td height="1">691</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true,</font></td>
+</tr>
+<tr>
+<td height="1">692</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_STATIC_DRAW);</font></td>
+</tr>
+<tr>
+<td height="1">693</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">694</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_2.setExternalData(GL_TRIANGLES,</font></td>
+</tr>
+<tr>
+<td height="1">695</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_p_vertex_set_2,</font></td>
+</tr>
+<tr>
+<td height="1">696</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true,</font></td>
+</tr>
+<tr>
+<td height="1">697</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_STATIC_DRAW);</font></td>
+</tr>
+<tr>
+<td height="1">698</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">699</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">700</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">701</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------<font></font></td>
+</tr>
+<tr>
+<td height="1">702</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;quitCallback()</font></td>
+</tr>
+<tr>
+<td height="1">703</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------<font></font></td>
+</tr>
+<tr>
+<td height="1">704</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">705</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Do&nbsp;nothing<font></font></td>
+</tr>
+<tr>
+<td height="1">706</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">707</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">708</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">709</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">710</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;errorCallback(int&nbsp;error,&nbsp;const&nbsp;char*&nbsp;description)</font></td>
+</tr>
+<tr>
+<td height="1">711</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">712</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">713</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Throw&nbsp;an&nbsp;error<font></font></td>
+</tr>
+<tr>
+<td height="1">714</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;Exception(__FILE__,&nbsp;__FUNCTION__,&nbsp;__LINE__,&nbsp;description);</font></td>
+</tr>
+<tr>
+<td height="1">715</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">716</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">717</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">718</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">719</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">VEC3&nbsp;getArcballVector(int&nbsp;x,&nbsp;int&nbsp;y)</font></td>
+</tr>
+<tr>
+<td height="1">720</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">721</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">722</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;P(2.0&nbsp;*&nbsp;float(x)&nbsp;/&nbsp;float(g_window_width)&nbsp;-&nbsp;1.0,</font></td>
+</tr>
+<tr>
+<td height="1">723</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.0&nbsp;*&nbsp;float(y)&nbsp;/&nbsp;float(g_window_height)&nbsp;-&nbsp;1.0,</font></td>
+</tr>
+<tr>
+<td height="1">724</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0);</font></td>
+</tr>
+<tr>
+<td height="1">725</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">726</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;P.setY(-P.getY());</font></td>
+</tr>
+<tr>
+<td height="1">727</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">728</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;float&nbsp;OP_squared&nbsp;=&nbsp;P.getX()&nbsp;*&nbsp;P.getX()&nbsp;+&nbsp;P.getY()&nbsp;*&nbsp;P.getY();</font></td>
+</tr>
+<tr>
+<td height="1">729</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(OP_squared&nbsp;&lt;=&nbsp;1.0)</font></td>
+</tr>
+<tr>
+<td height="1">730</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">731</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P.setZ(sqrt(1.0&nbsp;-&nbsp;OP_squared));&nbsp;&nbsp;<font color="#009933">//&nbsp;Pythagore<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">732</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">733</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;else</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">734</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr>
+<td height="1">735</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P.normalise();&nbsp;&nbsp;<font color="#009933">//&nbsp;Nearest&nbsp;point<font></font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">736</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">737</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">738</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(P);</font></td>
+</tr>
+<tr>
+<td height="1">739</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">740</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">741</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">742</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">743</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">inline&nbsp;float&nbsp;radian2degree(float&nbsp;anAngle)</font></td>
+</tr>
+<tr>
+<td height="1">744</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//---------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">745</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">746</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(180.0&nbsp;*&nbsp;anAngle&nbsp;/&nbsp;gVirtualXRay::PI);</font></td>
+</tr>
+<tr>
+<td height="1">747</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">748</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">749</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">750</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">751</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;computeRotation(MATRIX4&&nbsp;aRotationMatrix)</font></td>
+</tr>
+<tr>
+<td height="1">752</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------------------------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">753</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">754</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(g_use_arc_ball)</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">755</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****{</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">756</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(g_current_x_position&nbsp;!=&nbsp;g_last_x_position&nbsp;||&nbsp;g_current_y_position&nbsp;!=&nbsp;g_last_y_position)</font></td>
+</tr>
+<tr>
+<td height="1">757</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></td>
+</tr>
+<tr>
+<td height="1">758</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;va(getArcballVector(g_last_x_position,&nbsp;&nbsp;&nbsp;&nbsp;g_last_y_position));</font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">759</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;vb(getArcballVector(g_current_x_position,&nbsp;g_current_y_position));</font></td>
+</tr>
+<tr>
+<td height="1">760</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">761</td>
+<td height="1">LEN</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float&nbsp;angle(g_rotation_speed&nbsp;*&nbsp;radian2degree(acos(min(1.0,&nbsp;va.dotProduct(vb)))));</font></td>
+</tr>
+<tr>
+<td height="1">762</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">763</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;axis_in_camera_coord(va&nbsp;^&nbsp;vb);</font></td>
+</tr>
+<tr>
+<td height="1">764</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;axis_in_camera_coord.normalize();</font></td>
+</tr>
+<tr>
+<td height="1">765</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">766</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MATRIX4&nbsp;camera2object(aRotationMatrix.getInverse());</font></td>
+</tr>
+<tr>
+<td height="1">767</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;axis_in_object_coord&nbsp;=&nbsp;camera2object&nbsp;*&nbsp;axis_in_camera_coord;</font></td>
+</tr>
+<tr>
+<td height="1">768</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;axis_in_object_coord.normalize();</font></td>
+</tr>
+<tr>
+<td height="1">769</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">770</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MATRIX4&nbsp;rotation_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">771</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rotation_matrix.rotate(angle,&nbsp;axis_in_object_coord);</font></td>
+</tr>
+<tr>
+<td height="1">772</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aRotationMatrix&nbsp;=&nbsp;aRotationMatrix&nbsp;*&nbsp;rotation_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">773</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">774</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_last_x_position&nbsp;=&nbsp;g_current_x_position;</font></td>
+</tr>
+<tr>
+<td height="1">775</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_last_y_position&nbsp;=&nbsp;g_current_y_position;</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">776</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">********}</font></td>
+</tr>
+<tr bgcolor="#FF99CC">
+<td height="1">777</td>
+<td height="1">IND</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">****}</font></td>
+</tr>
+<tr>
+<td height="1">778</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">779</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">780</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">781</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------<font></font></td>
+</tr>
+<tr>
+<td height="1">782</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setDetector()</font></td>
+</tr>
+<tr>
+<td height="1">783</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------<font></font></td>
+</tr>
+<tr>
+<td height="1">784</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">785</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Number&nbsp;of&nbsp;pixels&nbsp;of&nbsp;the&nbsp;detector<font></font></td>
+</tr>
+<tr>
+<td height="1">786</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Vec2ui&nbsp;number_of_pixels(640,&nbsp;640);</font></td>
+</tr>
+<tr>
+<td height="1">787</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_detector.setNumberOfPixels(number_of_pixels);</font></td>
+</tr>
+<tr>
+<td height="1">788</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">789</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Size&nbsp;of&nbsp;pixels&nbsp;(in&nbsp;unit&nbsp;of&nbsp;length)<font></font></td>
+</tr>
+<tr>
+<td height="1">790</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;RATIONAL_NUMBER&nbsp;resolution(320.0&nbsp;*&nbsp;mm&nbsp;/&nbsp;number_of_pixels.getX());</font></td>
+</tr>
+<tr>
+<td height="1">791</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_detector.setResolutionInUnitsOfLengthPerPixel(resolution);</font></td>
+</tr>
+<tr>
+<td height="1">792</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">793</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Position&nbsp;of&nbsp;the&nbsp;detector<font></font></td>
+</tr>
+<tr>
+<td height="1">794</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;detector_position(&nbsp;0.0,&nbsp;0.0,&nbsp;10.0&nbsp;*&nbsp;cm);</font></td>
+</tr>
+<tr>
+<td height="1">795</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_detector.setDetectorPosition(detector_position);</font></td>
+</tr>
+<tr>
+<td height="1">796</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">797</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Orientation&nbsp;of&nbsp;the&nbsp;detector<font></font></td>
+</tr>
+<tr>
+<td height="1">798</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;detector_up_vector(0.0,&nbsp;1.0,&nbsp;0.0);</font></td>
+</tr>
+<tr>
+<td height="1">799</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_detector.setUpVector(detector_up_vector);</font></td>
+</tr>
+<tr>
+<td height="1">800</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">801</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">802</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">803</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------<font></font></td>
+</tr>
+<tr>
+<td height="1">804</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setSource()</font></td>
+</tr>
+<tr>
+<td height="1">805</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//--------------<font></font></td>
+</tr>
+<tr>
+<td height="1">806</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">807</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;the&nbsp;source&nbsp;position&nbsp;and&nbsp;shape<font></font></td>
+</tr>
+<tr>
+<td height="1">808</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;VEC3&nbsp;source_position(0.0,&nbsp;0.0,&nbsp;-40.0&nbsp;*&nbsp;cm);</font></td>
+</tr>
+<tr>
+<td height="1">809</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_detector.setXrayPointSource(source_position);</font></td>
+</tr>
+<tr>
+<td height="1">810</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">811</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">812</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">813</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------<font></font></td>
+</tr>
+<tr>
+<td height="1">814</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setBeam()</font></td>
+</tr>
+<tr>
+<td height="1">815</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//------------<font></font></td>
+</tr>
+<tr>
+<td height="1">816</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">817</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;the&nbsp;energy<font></font></td>
+</tr>
+<tr>
+<td height="1">818</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;RATIONAL_NUMBER&nbsp;incident_energy(80.0&nbsp;*&nbsp;keV);</font></td>
+</tr>
+<tr>
+<td height="1">819</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_beam.initialise(incident_energy);</font></td>
+</tr>
+<tr>
+<td height="1">820</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">821</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">822</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">823</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">824</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setScannedObjects()</font></td>
+</tr>
+<tr>
+<td height="1">825</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//----------------------<font></font></td>
+</tr>
+<tr>
+<td height="1">826</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">827</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Set&nbsp;the&nbsp;material&nbsp;properties<font></font></td>
+</tr>
+<tr>
+<td height="1">828</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_1.setHounsfieldValue(1000.0);</font></td>
+</tr>
+<tr>
+<td height="1">829</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_polygon_mesh_2.setHounsfieldValue(-200.0);</font></td>
+</tr>
+<tr>
+<td height="1">830</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">831</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">832</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">833</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------<font></font></td>
+</tr>
+<tr>
+<td height="1">834</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;setSimulator()</font></td>
+</tr>
+<tr>
+<td height="1">835</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">//-----------------<font></font></td>
+</tr>
+<tr>
+<td height="1">836</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">837</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Initialise&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
+</tr>
+<tr>
+<td height="1">838</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_simulator.initialise(XRayRenderer::OPENGL,</font></td>
+</tr>
+<tr>
+<td height="1">839</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GL_RGB16F,</font></td>
+</tr>
+<tr>
+<td height="1">840</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_detector,</font></td>
+</tr>
+<tr>
+<td height="1">841</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&g_xray_beam);</font></td>
+</tr>
+<tr>
+<td height="1">842</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">843</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;<font color="#009933">//&nbsp;Add&nbsp;the&nbsp;geometry&nbsp;to&nbsp;the&nbsp;X-ray&nbsp;renderer<font></font></td>
+</tr>
+<tr>
+<td height="1">844</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_simulator.addInnerSurface(&g_polygon_mesh_1);</font></td>
+</tr>
+<tr>
+<td height="1">845</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_xray_simulator.addOuterSurface(&g_polygon_mesh_2);</font></td>
+</tr>
+<tr>
+<td height="1">846</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">847</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr bgcolor="#FFCC33">
+<td height="1">848</td>
+<td height="1">EOF</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+</table>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Tuesday September,20 at 03:20:21PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+</td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>

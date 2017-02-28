@@ -37,6 +37,8 @@ project(gVirtualXRay-tutorial_03_glut)
 SET (RESOURCES_SOURCES
     tutorial_03_gl2.frag
     tutorial_03_gl2.vert
+    tutorial_03_gl3.frag
+    tutorial_03_gl3.vert
 )
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../CreateHeaderFiles.cmake)
@@ -77,20 +79,32 @@ ENDIF(OPENGL_FOUND)
 
 
 # GLUT ########################################################################
-FIND_PACKAGE(GLUT)
+IF (USE_SYSTEM_GLUT)
+    FIND_PACKAGE( GLUT   REQUIRED )
+ENDIF (USE_SYSTEM_GLUT)
+
 IF(GLUT_FOUND)
     INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
     SET(optionalLibs ${optionalLibs} ${GLUT_LIBRARIES})
 ELSE(GLUT_FOUND)
-    MESSAGE(FATAL_ERROR "GLUT not found.")
+    MESSAGE(WARNING "GLUT not found, the tutorial (${PROJECT_NAME}) will not be built.")
 ENDIF(GLUT_FOUND)
 
 
 # Create the main program ######################################################
-add_executable(tutorial_03_glut tutorial_03_glut.cxx buildCube.cxx)
-target_link_libraries(tutorial_03_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(tutorial_03_glut Binarytutorial_03_glutFiles)
+IF(GLUT_FOUND)
+    add_executable(tutorial_03_glut tutorial_03_glut.cxx buildCube.cxx)
+    target_link_libraries(tutorial_03_glut ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(tutorial_03_glut Binarytutorial_03_glutFiles)
 
-INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
+    INSTALL(TARGETS tutorial_03_glut RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
+
+    IF (gVirtualXRay_BINARY_DIR)
+        ADD_DEPENDENCIES(tutorial_03_glut   gVirtualXRay)
+    ENDIF (gVirtualXRay_BINARY_DIR)
+
+ELSE(GLUT_FOUND)
+    MESSAGE(WARNING "GLUT not found, ${PROJECT_NAME} will not be built.")
+ENDIF(GLUT_FOUND)
 

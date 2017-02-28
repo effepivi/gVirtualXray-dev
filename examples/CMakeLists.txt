@@ -30,21 +30,55 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-project(gVirtualXRay-demos)
-cmake_minimum_required(VERSION 2.6)
+PROJECT (gVirtualXRay-demos)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/version.cmake)
+SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
-find_package(gVirtualXRay REQUIRED)
+IF (NOT gVirtualXRay_BINARY_DIR)
+    FIND_PACKAGE (gVirtualXRay REQUIRED)
+    INCLUDE (${gVirtualXRay_USE_FILE})
+ELSE ()
+    SET (gVirtualXRay_DIR ${gVirtualXRay_BINARY_DIR}/CMakeFiles)
+    FIND_PACKAGE (gVirtualXRay REQUIRED)
+ENDIF ()
 
-add_subdirectory(STL-File)
-add_subdirectory(GUI-FLTK)
-add_subdirectory(Iso-Surfaces)
-add_subdirectory(Intersections)
-add_subdirectory(SimpleBackProjection)
-add_subdirectory(Tomography)
-add_subdirectory(AnatomicalData)
-#add_subdirectory(VisualArts)
+IF (USE_FLTK)
+    ADD_SUBDIRECTORY (GUI-FLTK)
+ENDIF ()
+
+IF (USE_GLFW)
+	#ADD_SUBDIRECTORY (ArtefactInTomography)
+    ADD_SUBDIRECTORY (Iso-Surfaces)
+    ADD_SUBDIRECTORY (AnatomicalData-glfw)
+    ADD_SUBDIRECTORY (AnatomicalData-glfw-moreRealistic)
+    ADD_SUBDIRECTORY (STL-File-glfw)
+    ADD_SUBDIRECTORY (Intersections)
+    ADD_SUBDIRECTORY (SimpleBackProjection)
+    ADD_SUBDIRECTORY (FilteredBackProjection)
+    ADD_SUBDIRECTORY (Tomography)
+    #ADD_SUBDIRECTORY (VisibleHuman)
+    ADD_SUBDIRECTORY (RayCasting-ImplicitSurfaces)
+    ADD_SUBDIRECTORY (CTinHUtoSimulation)
+ENDIF ()
+
+IF (USE_GLUT)
+    ADD_SUBDIRECTORY (STL-File-glut)
+ENDIF ()
+
+
+IF (USE_QT4)
+    ADD_SUBDIRECTORY (AnatomicalData-qt4)
+    ADD_SUBDIRECTORY (AnatomicalData-qt4-moreRealistic)
+ENDIF ()
+
+IF (USE_QT5)
+    ADD_SUBDIRECTORY (AnatomicalData-qt5)
+    #ADD_SUBDIRECTORY (AnatomicalData-qt5-moreRealistic)
+ENDIF ()
+
+
+
+
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 

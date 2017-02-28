@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <cmath>
 
-#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef __OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
@@ -212,14 +212,14 @@ inline void ImplicitSurface::writeVoxelData(const std::string& aFileName) const
 }
 
 
-//-------------------------------------------------------------------------------
-inline void ImplicitSurface::writePolygonMesh(const std::string& aFileName) const
-//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+inline void ImplicitSurface::writePolygonMesh(const std::string& aFileName)
+//-------------------------------------------------------------------------
 {
 	writePolygonMesh(aFileName.data());
 }
 
-
+/*
 //-------------------------------------------------------------------------------
 inline const std::vector<RATIONAL_NUMBER>& ImplicitSurface::getVertexData() const
 //-------------------------------------------------------------------------------
@@ -233,6 +233,23 @@ inline const std::vector<unsigned int>& ImplicitSurface::getIndexData() const
 //---------------------------------------------------------------------------
 {
 	return (m_p_index_data);
+}
+*/
+
+
+//---------------------------------------------------
+inline PolygonMesh& ImplicitSurface::getPolygonMesh()
+//---------------------------------------------------
+{
+    return (m_mesh_data);
+}
+
+
+//---------------------------------------------------------------
+inline const PolygonMesh& ImplicitSurface::getPolygonMesh() const
+//---------------------------------------------------------------
+{
+    return (m_mesh_data);
 }
 
 

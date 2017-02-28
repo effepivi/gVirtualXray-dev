@@ -54,7 +54,7 @@ smooth in vec3 g_normal;
 //******************************************************************************
 //	Output
 //******************************************************************************
-out vec3 fragColor;
+out vec4 fragColor;
 
 
 //******************************************************************************
@@ -131,5 +131,5 @@ void main (void)
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
-	fragColor = vec3(value, dot_product_sign, distance_source_vertex);
+	fragColor = vec4(value, dot_product_sign, distance_source_vertex * g_to_cm_scale, 1.0);
 }

@@ -66,17 +66,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifdef HAS_ITK
-#include <itkImageFileWriter.h>
-#endif
-
 #include <sstream>
 
 #ifndef GVXR_OPENGL_UTILITIES_H
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#include "gVirtualXRay/framebufferObject.h"
+#ifndef __Utilities_h
+#include "gVirtualXRay/Utilities.h"
+#endif
 
 
 //******************************************************************************
@@ -108,7 +106,7 @@ namespace gVirtualXRay {
     inline XRayRenderer::~XRayRenderer()
     //----------------------------------
     {
-        reset();
+        release();
     }
 
 
@@ -436,67 +434,89 @@ namespace gVirtualXRay {
     }
     
 
-
-#ifdef HAS_ITK
-    //------------------------------------------------------------------------------
-    inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram() const
-    //------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram() const
+    //---------------------------------------------------------------------------
     {
-        return (m_p_sinogram_image);
+        return (m_sinogram_image);
     }
 
 
-    //------------------------------------------------------------------
-    inline XRayRenderer::ImageType::Pointer& XRayRenderer::getSinogram()
-    //------------------------------------------------------------------
+    //---------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram()
+    //---------------------------------------------------------------
     {
-        return (m_p_sinogram_image);
+        return (m_sinogram_image);
     }
 
 
-    //--------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getSinogramRawData() const
-    //--------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getSinogramRawData() const
+    //----------------------------------------------------------------------------
     {
-        if (m_p_sinogram_image.IsNull())
-        {
-            return (0);
-        }
-        else
-        {
-            return (m_p_sinogram_image->GetBufferPointer());
-        }
+        return (m_sinogram_image.getRawData());
     }
 
 
-    //-----------------------------------------------------------------------------------
-    inline const XRayRenderer::ImageType::Pointer& XRayRenderer::getProjectionSet() const
-    //-----------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getProjectionSet() const
+    //--------------------------------------------------------------------------------
     {
-        return (m_p_projection_set);
+        return (m_projection_set);
     }
 
 
-    //-----------------------------------------------------------------------
-    inline XRayRenderer::ImageType::Pointer& XRayRenderer::getProjectionSet()
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getProjectionSet()
+    //--------------------------------------------------------------------
     {
-        return (m_p_projection_set);
+        return (m_projection_set);
     }
 
 
-    //-------------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getProjectionSetRawData() const
-    //-------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getProjectionSetRawData()
     {
-        if (m_p_projection_set.IsNull())
-        {
-            return (0);
-        }
-        else
-        {
-            return (m_p_projection_set->GetBufferPointer());
-        }
+        return (m_projection_set.getRawData());
+    }
+
+
+    //---------------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence() const
+    //---------------------------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(const_cast<RATIONAL_NUMBER*>(m_energy_fluence_image.getRawData()));
+        RATIONAL_NUMBER* p_source(const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
+
+        memcpy(p_target,
+                p_source,
+                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        return (m_energy_fluence_image);
+    }
+
+
+    //--------------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getEnergyFluence()
+    //--------------------------------------------------------------------
+    {
+        memcpy(m_energy_fluence_image.getRawData(),
+                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
+                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        return (m_energy_fluence_image);
+    }
+
+
+    //---------------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getEnergyFluenceRawData()
+    //---------------------------------------------------------------------------
+    {
+        memcpy(m_energy_fluence_image.getRawData(),
+                getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID),
+                sizeof(RATIONAL_NUMBER) * m_energy_fluence_image.getWidth() * m_energy_fluence_image.getHeight());
+
+        return (m_energy_fluence_image.getRawData());
     }
 
 
@@ -504,7 +524,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::enableArtefactFiltering()
     //-------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = true;
+        m_use_l_buffer_artefact_filtering = true;
     }
 
 
@@ -512,7 +532,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::enableArtifactFiltering()
     //-------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = true;
+        m_use_l_buffer_artefact_filtering = true;
     }
 
 
@@ -520,7 +540,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::disableArtefactFiltering()
     //--------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = false;
+        m_use_l_buffer_artefact_filtering = false;
     }
 
 
@@ -528,30 +548,39 @@ namespace gVirtualXRay {
     inline void XRayRenderer::disableArtifactFiltering()
     //--------------------------------------------------
     {
-        m_use_L_buffer_artefact_filtering = false;
+        m_use_l_buffer_artefact_filtering = false;
     }
 
 
-#endif
-
-
-    //------------------------------------
-    inline void XRayRenderer::deleteFBOs()
-    //------------------------------------
+    //--------------------------------------------------------
+    inline void XRayRenderer::useArtifactFiltering(bool aFlag)
+    //--------------------------------------------------------
     {
-        // Delete the FBOs
-        for (std::vector<FramebufferObject*>::iterator ite(m_p_fbo_set.begin());
-                ite != m_p_fbo_set.end();
-                ++ite)
-        {
-            if (*ite)
-            {
-                delete *ite;
-                *ite = 0;
-            }
-        }
+        m_use_l_buffer_artefact_filtering = aFlag;
+    }
 
-        m_p_fbo_set.clear();
+
+    //--------------------------------------------------------
+    inline void XRayRenderer::useArtefactFiltering(bool aFlag)
+    //--------------------------------------------------------
+    {
+        m_use_l_buffer_artefact_filtering = aFlag;
+    }
+
+
+    //----------------------------------------------------
+    inline bool XRayRenderer::useArtifactFiltering() const
+    //----------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering);
+    }
+
+
+    //----------------------------------------------------
+    inline bool XRayRenderer::useArtefactFiltering() const
+    //----------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering);
     }
 
 
@@ -559,47 +588,33 @@ namespace gVirtualXRay {
     inline void XRayRenderer::printSinogram(const char* aFileName)
     //------------------------------------------------------------
     {
-#ifdef HAS_ITK
-        // The filename is not empty
-        if (aFileName)
-        {
-            // Create the file writer
-            typedef itk::ImageFileWriter<ImageType> ImageWriter;
-            ImageWriter::Pointer p_writer(ImageWriter::New());
-            p_writer->SetInput(m_p_sinogram_image);
-
-            // Set the writer
-            p_writer->SetFileName(aFileName);
-
-            // Write the data into a file
-            p_writer->Update();
-        }
-#endif // HAS_ITK
+        m_sinogram_image.save(aFileName);
     }
 
+
+    //-------------------------------------------------------------------
+    inline void XRayRenderer::printSinogram(const std::string& aFileName)
+    //-------------------------------------------------------------------
+    {
+        printSinogram(aFileName.data());
+    }
+    
 
     //-----------------------------------------------------------------
     inline void XRayRenderer::printProjectionSet(const char* aFileName)
     //-----------------------------------------------------------------
     {
-#ifdef HAS_ITK
-        // The filename is not empty
-        if (aFileName)
-        {
-            // Create the file writer
-            typedef itk::ImageFileWriter<ImageType> ImageWriter;
-            ImageWriter::Pointer p_writer(ImageWriter::New());
-            p_writer->SetInput(m_p_projection_set);
-
-            // Set the writer
-            p_writer->SetFileName(aFileName);
-
-            // Write the data into a file
-            p_writer->Update();
-        }
-#endif // HAS_ITK
+        m_projection_set.save(aFileName);
     }
 
+
+    //------------------------------------------------------------------------
+    inline void XRayRenderer::printProjectionSet(const std::string& aFileName)
+    //------------------------------------------------------------------------
+    {
+        printProjectionSet(aFileName.data());
+    }
+    
 
     //--------------------------------------------
     inline void XRayRenderer::resetEnergyFluence()
@@ -681,7 +696,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::printLBuffer(const char* aFileName)
     //-----------------------------------------------------------
     {
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
             //print2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID, aFileName);
             printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, aFileName);
@@ -729,12 +744,12 @@ namespace gVirtualXRay {
         printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName);
     }
 
-
-    //------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getLBuffer() const
-    //------------------------------------------------------
+/*
+    //------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getLBuffer()
+    //------------------------------------------------
     {
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
             //return (get2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID));
             return (getFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID));
@@ -747,47 +762,47 @@ namespace gVirtualXRay {
     }
 
 
-    //---------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getCumulatedLBuffer() const
-    //---------------------------------------------------------------
+    //---------------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getCumulatedLBuffer()
+    //---------------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID));
     }
 
 
-    //-------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getSumMuxDx() const
-    //-------------------------------------------------------
+    //-------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getSumMuxDx()
+    //-------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID));
     }
 
 
-    //------------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getEnergyFluence() const
-    //------------------------------------------------------------
+    //------------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getEnergyFluence()
+    //------------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
     }
 
 
-    //--------------------------------------------------------
-    inline RATIONAL_NUMBER* XRayRenderer::getXRayImage() const
-    //--------------------------------------------------------
+    //--------------------------------------------------
+    inline RATIONAL_NUMBER* XRayRenderer::getXRayImage()
+    //--------------------------------------------------
     {
         //return (get2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID));
         return (getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID));
     }
-
+*/
 
     //----------------------------------------
     inline void XRayRenderer::displayLBuffer()
     //----------------------------------------
     {
-        if (m_use_L_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering)
         {
             display2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID);
         }

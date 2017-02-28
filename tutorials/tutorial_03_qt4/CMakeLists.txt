@@ -35,6 +35,8 @@ project(gVirtualXRay-tutorial_03_qt4)
 
 # Create the RESOURCES ###########################################################
 SET (RESOURCES_SOURCES
+    tutorial_03_gl2.frag
+    tutorial_03_gl2.vert
     tutorial_03_gl3.frag
     tutorial_03_gl3.vert
 )
@@ -77,7 +79,17 @@ ENDIF(OPENGL_FOUND)
 
 
 # Qt4 #########################################################################
-FIND_PACKAGE(Qt4 REQUIRED QtGui QtOpenGL)
+IF (WIN32)
+    # 64 bit version of VC++
+    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        MESSAGE (WARNING "There is no 64 bit version of Qt4 for MSVC++.")
+    else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
+    endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+else (WIN32)
+    FIND_PACKAGE(Qt4 COMPONENTS QtGui QtOpenGL)
+endif (WIN32)
+
 IF(Qt4_FOUND)
     SET(CMAKE_AUTOMOC ON)
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -90,6 +102,11 @@ IF(Qt4_FOUND)
 
     INSTALL(TARGETS tutorial_03_qt4 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
+
+    IF (gVirtualXRay_BINARY_DIR)
+        ADD_DEPENDENCIES(tutorial_03_qt4   gVirtualXRay)
+    ENDIF (gVirtualXRay_BINARY_DIR)
+
 ELSE(Qt4_FOUND)
-    MESSAGE(WARNING "Qt4 not found.")
+    MESSAGE(WARNING "Qt4 not found, ${PROJECT_NAME} will not be built.")
 ENDIF(Qt4_FOUND)

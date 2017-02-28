@@ -36,23 +36,38 @@ project(gVirtualXRay-Iso-Surfaces)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
-# Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
-CreateHeaderFiles("." "BinaryIsoSurfaceFiles" "${RESOURCES_SOURCES}")
-
-
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+
+
+# Create the RESOURCES ###########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
+CreateHeaderFiles("." "BinaryIsoSurfaceFiles" "${RESOURCES_SOURCES}")
+
+
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw3_FOUND)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(WARNING "GLFW3 not found, the demo (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################
@@ -60,10 +75,14 @@ add_executable(test_implicit_surface test_implicit_surface.cxx)
 target_link_libraries(test_implicit_surface ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(test_implicit_surface BinaryIsoSurfaceFiles)
 
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(test_implicit_surface   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
+
 IF (NOT APPLE)
-    INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Iso-Surfaces COMPONENT demos)
+    INSTALL(TARGETS test_implicit_surface RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
@@ -77,7 +96,7 @@ ELSE (NOT APPLE)
 
     ADD_EXECUTABLE (Iso-Surfaces MACOSX_BUNDLE ${Iso-Surfaces_SRCS})
     TARGET_LINK_LIBRARIES (Iso-Surfaces gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(Iso-Surfaces BinaryGUIFLTKFiles)
+    ADD_DEPENDENCIES(Iso-Surfaces BinaryIsoSurfaceFiles)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME Iso-Surfaces)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "Iso-Surfaces")

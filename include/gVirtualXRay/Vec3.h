@@ -1,74 +1,78 @@
 /*
 
- Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
- http://www.fpvidal.net/
- All rights reserved.
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+http://www.fpvidal.net/
+All rights reserved.
 
- Redistribution and use in source and binary forms, with or without modification,
- are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
 
- 1. Redistributions of source code must retain the above copyright notice,
- this list of conditions and the following disclaimer.
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
 
- 2. Redistributions in binary form must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation and/or
- other materials provided with the distribution.
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
 
- 3. Neither the name of the Bangor University nor the names of its contributors
- may be used to endorse or promote products derived from this software without
- specific prior written permission.
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- */
+*/
 
 
-#ifndef GVXR_VEC3_H
-#define GVXR_VEC3_H
+#ifndef __Vec3_h
+#define __Vec3_h
 
 
 /**
- *******************************************************************************
- *
- *  @file       Vec3.h
- *
- *  @brief      Template class to handle 3D vectors.
- *
- *  @todo       Add an exception in Length().
- *              Add a header for constants, use EPSILON instead of 0.0000001
- *
- *  @version    1.0
- *
- *  @date       11/11/2013
- *
- *  @author     Dr Franck P. Vidal
- *
- *   License
- *   BSD 3-Clause License.
- *
- *   For details on use and redistribution please refer
- *   to http://opensource.org/licenses/BSD-3-Clause
- *
- *   Copyright
- *   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
- *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
- *
- *******************************************************************************
- */
+********************************************************************************
+*
+*   @file       Vec3.h
+*
+*   @brief      Template class to handle 3D vectors.
+*
+*   @todo       Add an exception in Length().
+*               Add a header for constants, use EPSILON instead of 0.0000001
+*
+*   @version    1.0
+*
+*   @date       13/01/2017
+*
+*   @author     Dr Franck P. Vidal
+*
+*   License
+*   BSD 3-Clause License.
+*
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
+*
+********************************************************************************
+*/
 
 
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <iostream>
 
 
@@ -226,7 +230,17 @@ public:
      *  @return the dot product
      */
     //--------------------------------------------------------------------------
-    double operator*(const Vec3& aVector) const;
+    //double operator*(const Vec3& aVector) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Element-wise product
+    /**
+     *  @param aVector: the other vector
+     *  @return the new vector resulting of the element-wise product
+     */
+    //--------------------------------------------------------------------------
+    Vec3<T> elementWiseProduct(const Vec3& aVector) const;
 
 
     //--------------------------------------------------------------------------
@@ -393,6 +407,13 @@ public:
     bool operator!=(const Vec3& aVector) const;
 
 
+    T& operator()(unsigned int i);
+    const T& operator()(unsigned int i) const;
+
+    T& operator[](unsigned int i);
+    const T& operator[](unsigned int i) const;
+    
+    
 //******************************************************************************
 protected:
     //**************************************************************************
@@ -421,4 +442,4 @@ template<typename T> Vec3<T> operator*(const double& aValue,
 #include "Vec3.inl"
 
 
-#endif // VEC3_H
+#endif // __Vec3_h

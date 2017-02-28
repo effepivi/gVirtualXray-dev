@@ -65,12 +65,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BOOST_TEST_MODULE TestDensity
 #include <boost/test/unit_test.hpp>
 
+#ifdef HAS_GLEW
 #include <GL/glew.h>
+#endif
 
-#ifdef __APPLE__
-#include <OpenGL/GL.h>
-#else
-#include <GL/gl.h>
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #ifndef GVXR_XRAY_RENDERER_H

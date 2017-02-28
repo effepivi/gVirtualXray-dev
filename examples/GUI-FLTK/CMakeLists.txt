@@ -37,7 +37,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinaryGUIFLTKFiles" "${RESOURCES_SOURCES}")
 
 
@@ -46,49 +46,73 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/data/welsh-dragon-small.stl COPYONLY)
+    CONFIGURE_FILE (../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/welsh-dragon-small.stl COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/welsh-dragon-small.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/welsh-dragon-small.stl COPYONLY)
+ENDIF (WIN32)
+
+
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/config.cmake)
 
 
 # FLTK ########################################################################
-FIND_PACKAGE(FLTK)
-if(FLTK_FOUND)
-        ADD_DEFINITIONS(-DHAS_FLTK)
-        INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})
-        SET(optionalLibs ${optionalLibs} ${FLTK_LIBRARIES})
-ELSE(FLTK_FOUND)
-        MESSAGE(FATAL_ERROR "FLTK not found.")
-ENDIF(FLTK_FOUND)
+
+IF (USE_SYSTEM_FLTK)
+    FIND_PACKAGE( FLTK   REQUIRED )
+ENDIF (USE_SYSTEM_FLTK)
+
+IF (FLTK_FOUND)
+    INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} ${FLTK_INCLUDE_DIRS})
+    SET(requiredLibs ${requiredLibs} ${FLTK_LIBRARIES})
+ELSE (FLTK_FOUND)
+    MESSAGE(WARNING "FLTK not found, the demo (${PROJECT_NAME}) will be disable.")
+ENDIF (FLTK_FOUND)
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE( OpenGL   REQUIRED )
+SET(requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+
+
+IF (FLTK_FOUND)
 # BOOST #######################################################################
-FIND_PACKAGE(Boost QUIET REQUIRED COMPONENTS filesystem system)
+FIND_PACKAGE(Boost QUIET COMPONENTS filesystem system)
 if(Boost_FOUND)
 	SET( Boost_USE_STATIC_LIBS OFF )
 	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 	SET(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+	ADD_DEFINITIONS(-DHAS_BOOST)
 ELSE(Boost_FOUND)
-	MESSAGE(FATAL_ERROR "Boost not found.")
+	MESSAGE(WARNING "Boost not found, the use of Boost in (${PROJECT_NAME}) will be disable.")
 ENDIF(Boost_FOUND)
 
 
 # Create the GUI files with Fluid ##############################################
-IF (FLTK_FOUND)
-    SET (FLUID_OUTPUT_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_command(OUTPUT ${FLUID_OUTPUT_FILES}
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
-        COMMAND ${FLTK_FLUID_EXECUTABLE}
-        ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
-        COMMENT "Build the GUI using Fluid"
-    )
+SET (FLUID_OUTPUT_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(OUTPUT ${FLUID_OUTPUT_FILES}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
+    COMMAND ${FLTK_FLUID_EXECUTABLE}
+    ARGS -c ${CMAKE_CURRENT_SOURCE_DIR}/gui.fl
+    COMMENT "Build the GUI using Fluid"
+)
 
-    ADD_CUSTOM_TARGET(FluidFiles ALL echo DEPENDS ${FLUID_OUTPUT_FILES})
+ADD_CUSTOM_TARGET(FluidFiles ALL echo DEPENDS ${FLUID_OUTPUT_FILES})
+#ADD_DEPENDENCIES(gui.h   FluidFiles)
+#ADD_DEPENDENCIES(gui.cxx FluidFiles)
+#
+IF (NOT USE_SYSTEM_FLTK)
+    ADD_DEPENDENCIES(FluidFiles fltk)
+ENDIF(NOT USE_SYSTEM_FLTK)
 
-    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h)
-    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
-ENDIF (FLTK_FOUND)
+
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.h)
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx)
 
 
 # Create the main program ######################################################
@@ -97,13 +121,18 @@ IF(WIN32)
 ELSE(WIN32)
     ADD_EXECUTABLE (gVirtualXRay-gui ${CMAKE_CURRENT_BINARY_DIR}/gui.cxx OpenGLWindow.cxx)
 ENDIF(WIN32)
-TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${optionalLibs} ${requiredLibs})
+TARGET_LINK_LIBRARIES (gVirtualXRay-gui gVirtualXRay ${requiredLibs} ${optionalLibs})
 ADD_DEPENDENCIES(gVirtualXRay-gui BinaryGUIFLTKFiles)
+ADD_DEPENDENCIES(gVirtualXRay-gui FluidFiles)
+
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(gVirtualXRay-gui   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/GUI-FLTK/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/GUI-FLTK/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/GUI-FLTK COMPONENT demos)
+    INSTALL(TARGETS gVirtualXRay-gui RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/welsh-dragon-small.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
@@ -119,6 +148,7 @@ ELSE (NOT APPLE)
     ADD_EXECUTABLE (GUI-FLTK MACOSX_BUNDLE ${GUI-FLTK_SRCS})
     TARGET_LINK_LIBRARIES (GUI-FLTK gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(GUI-FLTK BinaryGUIFLTKFiles)
+    ADD_DEPENDENCIES(GUI-FLTK FluidFiles)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME GUI-FLTK)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "GUI-FLTK")
@@ -159,3 +189,5 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF (FLTK_FOUND)
+

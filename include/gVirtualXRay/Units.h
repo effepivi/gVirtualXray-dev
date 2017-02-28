@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_UNITS_H
-#define GVXR_UNITS_H
+#ifndef __Units_h
+#define __Units_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		Units.h
+*   @file       Units.h
 *
-*	@brief		Units, such as meters, etc.
+*   @brief      Units, such as meters, etc.
 *
-*	@version    1.0
+*   @version    1.0
 *
-*	@date		17/11/2013
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,21 +56,29 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	namespace
+//  Include
+//******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+
+//******************************************************************************
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	Constant declarations
+//  Constant declarations
 //******************************************************************************
 const double kilometer  = 1000.0    / 0.001; ///< kilometre
 const double hectometer =  100.0    / 0.001; ///< hectometre
@@ -117,9 +125,9 @@ const double cm3  = cm * cm * cm;    ///< cubic centimeter
 const double mm3  = mm * mm * mm;    ///< cubic millimeter
 const double um3  = um * um * um;    ///< cubic micrometre
 
-const double megaelectronvolt  = 1.0; ///< megaelectron volt
-const double kiloelectronvolt  = megaelectronvolt * 1.0e-3;    ///< kiloelectron volt
-const double electronvolt      = megaelectronvolt * 1.0e-6;       ///< electronvolt
+const double megaelectronvolt = 1.0; ///< megaelectron volt
+const double kiloelectronvolt = megaelectronvolt * 1.0e-3;///< kiloelectron volt
+const double electronvolt     = megaelectronvolt * 1.0e-6;///< electronvolt
 
 const double MeV              = megaelectronvolt;  ///< megaelectron volt
 const double keV              = kiloelectronvolt;  ///< kiloelectron volt
@@ -148,4 +156,4 @@ const double mole = 1.0; ///< mole
 } // namespace gVirtualXRay
 
 
-#endif // UNITS_H
+#endif // __Units_h

@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_ATOMIC_ELEMENT_H
-#define GVXR_ATOMIC_ELEMENT_H
+#ifndef __AtomicElement_h
+#define __AtomicElement_h
 
 
 /**
@@ -47,7 +47,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @date       13/10/2014
 *
-*   @todo       Merge the enrgy set and mass attenuation set using std::pair<double, double>
+*   @todo       Merge the energy set and mass attenuation set using
+*               std::pair<double, double>
 *
 *   @author     Dr Franck P. Vidal
 *
@@ -58,7 +59,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -66,28 +67,67 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <iostream>
 #include <vector>
 #include <string>
 
 
 //******************************************************************************
-//	defines
+//  defines
 //******************************************************************************
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
+//******************************************************************************
+//  Class declaration
+//******************************************************************************
+class AtomicElement;
+
+
+//******************************************************************************
+//  Function declarations
+//******************************************************************************
+
+//------------------------------------------------------------------------------
+/// operator <<
+/*
+*   @param anOutputSream:   the stream in which an element is going
+*                           to be printed
+*   @param anElement:       the element to send into the stream
+*   @return the output stream
+*/
+//------------------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& anOutputSream,
+        const gVirtualXRay::AtomicElement& anElement);
+
+
+//------------------------------------------------------------------------------
+/// operator >>
+/*
+*   @param anInputSream:    the stream from which an element is going to be read
+*   @param anElement:       the element to read from the stream
+*   @return the input stream
+*/
+//------------------------------------------------------------------------------
+std::istream& operator>>(std::istream& anInputSream,
+        gVirtualXRay::AtomicElement& anElement);
+
+
 //==============================================================================
 /**
-*	@class	AtomicElement
-*	@brief	AtomicElement is a class to manage elements in material.
+*   @class  AtomicElement
+*   @brief  AtomicElement is a class to manage elements in material.
 */
 //==============================================================================
 class AtomicElement
@@ -95,223 +135,208 @@ class AtomicElement
 {
 //******************************************************************************
 public:
-	//---------------------------------------------------------------------------
-	///	Default Constructor
-	/*
-	*	@param aName:	the name of the element
-	*	@param aSymbol:	the symbol of the element
-	*	@param aZNumber:	the atomic number (Z) of the element
-	*	@param aMolarMass:	the molar mass of the element (in g/mol))
-	*	@param aDensity:	the density of the element (in g/cm3)
-	*	@param aState:	the state of the element
-	*	@param aVoxelSize:	the size of a voxel
-	*/
-	//---------------------------------------------------------------------------
-	AtomicElement(const std::string& aName = "",
-			const std::string& aSymbol = "",
-			unsigned short aZNumber = 0,
-			double aMolarMass = 0,
-			double aDensity = 0,
-			const std::string& aState = "");
+    //--------------------------------------------------------------------------
+    /// Default Constructor
+    /*
+     *  @param aName:       the name of the element
+     *  @param aSymbol:     the symbol of the element
+     *  @param aZNumber:    the atomic number (Z) of the element
+     *  @param aMolarMass:  the molar mass of the element (in g/mol))
+     *  @param aDensity:    the density of the element (in g/cm3)
+     *  @param aState:      the state of the element
+     *  @param aVoxelSize:  the size of a voxel
+     */
+    //--------------------------------------------------------------------------
+    AtomicElement(const std::string& aName = "",
+            const std::string& aSymbol = "",
+            unsigned short aZNumber = 0,
+            double aMolarMass = 0,
+            double aDensity = 0,
+            const std::string& aState = "");
 
 
-	//---------------------------------------------------------------------------
-	///	Copy Constructor
-	/*
-	*	@param anElement:	the element to copy
-	*/
-	//---------------------------------------------------------------------------
-	AtomicElement(const AtomicElement& anElement);
-
-
-	//---------------------------------------------------------------------------
-	///	Destructor
-	//---------------------------------------------------------------------------
-	~AtomicElement();
-
-
-	//---------------------------------------------------------------------------
-	///	Set the name of the element.
-	/*
-	*	@param aName:	the name of the element
-	*/
-	//---------------------------------------------------------------------------
-	void setName(const std::string& aName);
-
-
-	//---------------------------------------------------------------------------
-	///	Set the symbol of the element.
-	/*
-	*	@param aSymbol:	the symbol of the element
-	*/
-	//---------------------------------------------------------------------------
-	void setSymbol(const std::string& aSymbol);
-
-
-	//---------------------------------------------------------------------------
-	///	Set the atomic number (Z) of the element.
-	/*
-	*	@param aZNumber:	the atomic number (Z) of the element
-	*/
-	//---------------------------------------------------------------------------
-	void setAtomicNumber(unsigned short aZNumber);
-
-
-	//---------------------------------------------------------------------------
-	///	Set the molar mass of the element.
-	/*
-	*	@param aMolarMass:	the molar mass of the element
-	*/
-	//---------------------------------------------------------------------------
-	void setMolarMass(double aMolarMass);
-
-
-	//---------------------------------------------------------------------------
-	///	Set the density of the element.
-	/*
-	*	@param aDensity:	the density of the element
-	*/
-	//---------------------------------------------------------------------------
-	void setDensity(double aDensity);
-
-
-	//---------------------------------------------------------------------------
-	///	Set the state of the element.
-	/*
-	*	@param aState:	the state of the element
-	*/
-	//---------------------------------------------------------------------------
-	void setState(const std::string& aState);
-
-
-	//---------------------------------------------------------------------------
-	///	Get the mass attenuation coefficient at a given energy (values are interpolated).
-	/*
-	*	@param anEnergy:	the energy	
-	*	@return	the corresponding linear attenuation coefficient
-	*/
-	//---------------------------------------------------------------------------
-	double getMassAttenuationTotal(double anEnergy);
-
-
-	//---------------------------------------------------------------------------
-	///	Get the linear attenuation coefficient at a given energy (in mm-1) (values are interpolated).
-	/*
-	*	@param anEnergy:	the energy	
-	*	@return	the corresponding linear attenuation coefficient
-	*/
-	//---------------------------------------------------------------------------
-	double getMU(double anEnergy);
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the name of the element.
-	/*
-	*	@return the name of the element
-	*/
-	//---------------------------------------------------------------------------
-	const std::string& getName() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the symbol of the element.
-	/*
-	*	@return the symbol of the element
-	*/
-	//---------------------------------------------------------------------------
-	const std::string& getSymbol() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the atomic number (Z) of the element.
-	/*
-	*	@return the atomic number (Z) of the element
-	*/
-	//---------------------------------------------------------------------------
-	unsigned short getAtomicNumber() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the molar mass of the element.
-	/*
-	*	@return the molar mass of the element
-	*/
-	//---------------------------------------------------------------------------
-	double getMolarMass() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the density of the element.
-	/*
-	*	@return the density of the element
-	*/
-	//---------------------------------------------------------------------------
-	double getDensity() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the state of the element.
-	/*
-	*	@return the state of the element
-	*/
-	//---------------------------------------------------------------------------
-	const std::string& getState() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the number of energy channels in the attenuation coefficient list.
-	/*
-	*	@return the number of energy channels
-	*/
-	//---------------------------------------------------------------------------
-	unsigned int getEnergyChannelNumber() const;
-
-
-	//---------------------------------------------------------------------------
-	///	Accessor on the smallest energy step in the linear attenuation coefficient list.
-	/*
-	*	@return the smallest energy step
-	*/
-	//---------------------------------------------------------------------------
-	double getSmallestEnergyStep() const;
-	
-
-	//---------------------------------------------------------------------------
-	///	Copy operator
-	/*
-	*	@param anElement:	the element to copy
-	*/
-	//---------------------------------------------------------------------------
-	AtomicElement& operator=(const AtomicElement& anElement);
-
-
-	//---------------------------------------------------------------------------
-	///	operator <<
-	/*
-	*	@param anOutputSream:	the output stream
-	*	@param anElement:	the element to output
-	*	@return the output stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::ostream & operator << (std::ostream& anOutputSream,
-			const AtomicElement& anElement);
-
-
-	//---------------------------------------------------------------------------
-	///	operator >>
-	/*
-	*	@param anInputSream:	the input stream
-	*	@param anElement:	the element to read
-	*	@return the input stream
-	*/
-	//---------------------------------------------------------------------------
-	friend std::istream & operator >> (std::istream& anInputSream,
-			AtomicElement& anElement);
-
+    //--------------------------------------------------------------------------
+    /// Copy Constructor
+    /*
+    *   @param anElement:   the element to copy
+    */
+    //--------------------------------------------------------------------------
+    AtomicElement(const AtomicElement& anElement);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Destructor
+    //--------------------------------------------------------------------------
+    ~AtomicElement();
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set the name of the element.
+    /*
+    *   @param aName:   the name of the element
+    */
+    //--------------------------------------------------------------------------
+    void setName(const std::string& aName);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set the symbol of the element.
+    /*
+    *   @param aSymbol: the symbol of the element
+    */
+    //--------------------------------------------------------------------------
+    void setSymbol(const std::string& aSymbol);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set the atomic number (Z) of the element.
+    /*
+    *   @param aZNumber:    the atomic number (Z) of the element
+    */
+    //--------------------------------------------------------------------------
+    void setAtomicNumber(unsigned short aZNumber);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set the molar mass of the element.
+    /*
+    *   @param aMolarMass:  the molar mass of the element
+    */
+    //--------------------------------------------------------------------------
+    void setMolarMass(double aMolarMass);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set the density of the element.
+    /*
+    *   @param aDensity:    the density of the element
+    */
+    //--------------------------------------------------------------------------
+    void setDensity(double aDensity);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set the state of the element.
+    /*
+    *   @param aState:  the state of the element
+    */
+    //--------------------------------------------------------------------------
+    void setState(const std::string& aState);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Get the mass attenuation coefficient at a given energy
+    /// (values are interpolated).
+    /*
+    *   @param anEnergy:    the energy
+    *   @return the corresponding linear attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    double getMassAttenuationTotal(double anEnergy);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Get the linear attenuation coefficient at a given energy (in mm-1)
+    /// (values are interpolated).
+    /*
+    *   @param anEnergy:    the energy
+    *   @return the corresponding linear attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    double getMU(double anEnergy);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the name of the element.
+    /*
+    *   @return the name of the element
+    */
+    //--------------------------------------------------------------------------
+    const std::string& getName() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the symbol of the element.
+    /*
+    *   @return the symbol of the element
+    */
+    //--------------------------------------------------------------------------
+    const std::string& getSymbol() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the atomic number (Z) of the element.
+    /*
+    *   @return the atomic number (Z) of the element
+    */
+    //--------------------------------------------------------------------------
+    unsigned short getAtomicNumber() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the molar mass of the element.
+    /*
+    *   @return the molar mass of the element
+    */
+    //--------------------------------------------------------------------------
+    double getMolarMass() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the density of the element.
+    /*
+    *   @return the density of the element
+    */
+    //--------------------------------------------------------------------------
+    double getDensity() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the state of the element.
+    /*
+    *   @return the state of the element
+    */
+    //--------------------------------------------------------------------------
+    const std::string& getState() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the number of energy channels in the attenuation
+    /// coefficient list.
+    /*
+    *   @return the number of energy channels
+    */
+    //--------------------------------------------------------------------------
+    unsigned int getEnergyChannelNumber() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the smallest energy step in the linear attenuation
+    /// coefficient list.
+    /*
+    *   @return the smallest energy step
+    */
+    //--------------------------------------------------------------------------
+    double getSmallestEnergyStep() const;
+    
+    
+    //--------------------------------------------------------------------------
+    /// Copy operator
+    /*
+    *   @param anElement:   the element to copy
+    */
+    //--------------------------------------------------------------------------
+    AtomicElement& operator=(const AtomicElement& anElement);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Load the attenuation coefficient from the XCOM database
+    //--------------------------------------------------------------------------
+    void loadDataFromXCOM();
+    
 
 //*****************************************************************************
-private:
-    void loadDataFromXCOM();
+protected:
 
     std::string    m_name;                  ///< The name of the element
     std::string    m_symbol;                ///< The symbol of the element
@@ -335,5 +360,4 @@ private:
 #include "AtomicElement.inl"
 
 
-#endif // GVXR_ATOMIC_ELEMENT_H
-
+#endif // __AtomicElement_h

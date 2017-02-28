@@ -65,7 +65,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#ifdef HAS_GLEW
 #include <GL/glew.h>  // Handle shaders
+#endif
 
 // Create an OpenGL context and attach a window to it
 #ifdef __APPLE__
@@ -78,6 +84,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>    // Generate error messages
 #include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
+#include <algorithm>  // For the min/max functions
 
 // Define new types, e.g.~RATIONAL_NUMBER, VEC2, VEC3 and MATRIX4 to name a few
 #include "gVirtualXRay/Types.h"
@@ -98,6 +105,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "tutorial_02_gl2.frag.h" // Fragment shader for OpenGL 2.x
 #include "tutorial_02_gl2.vert.h" // Vertex shader for OpenGL 2.x
+
+#include "tutorial_02_gl3.frag.h" // Fragment shader for OpenGL 3.x
+#include "tutorial_02_gl3.vert.h" // Vertex shader for OpenGL 3.x
 
 
 //******************************************************************************
@@ -161,7 +171,6 @@ GLint g_current_y_position(0); // Current x position of the cursor
 //  Function declaration
 //******************************************************************************
 void initGLUT(int argc, char** argv);
-void initGLEW();
 void initGL();
 void initShader();
 void load3DObjects();
@@ -193,7 +202,7 @@ int main(int argc, char** argv)
         initGLUT(argc, argv);
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -235,7 +244,7 @@ void initGLUT(int argc, char** argv)
 	// Create a windowed mode window and its OpenGL context
 	glutInitWindowSize(g_window_width, g_window_height);
 	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 02");
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 02 using Glut");
 
     // The window has not been created
     if (!g_window_id)
@@ -254,21 +263,6 @@ void initGLUT(int argc, char** argv)
 }
 
 
-//-------------
-void initGLEW()
-//-------------
-{
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-}
-
-
 //---------------
 void initShader()
 //---------------
@@ -283,9 +277,19 @@ void initShader()
     std::string vertex_shader;
     std::string fragment_shader;
 
-    // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_02_gl2_vert, sizeof(g_tutorial_02_gl2_vert),   &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_02_gl2_frag, sizeof(g_tutorial_02_gl2_frag), &p_fragment_shader);
+    // Decompress the shader using the ZLib
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert, sizeof(g_tutorial_02_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag, sizeof(g_tutorial_02_gl3_frag), &p_fragment_shader);
+    }
+    // Modern OpenGL 3.2 or above isnot supported
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_02_gl2_vert, sizeof(g_tutorial_02_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_02_gl2_frag, sizeof(g_tutorial_02_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;
@@ -446,8 +450,8 @@ void idleCallback()
 //-----------------
 {
     // Rotate the objects
-    g_object_1_rotation_matrix.rotate(.01, VEC3(1.0, 0.0, 0.0));
-    g_object_2_rotation_matrix.rotate(.02, VEC3(0.0, 1.0, 0.0));
+    g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
+    g_object_2_rotation_matrix.rotate(2.0, VEC3(0.0, 1.0, 0.0));
 
 	// Redisplay the scene
 	glutPostRedisplay();
@@ -642,7 +646,7 @@ void computeRotation(MATRIX4& aRotationMatrix)
             VEC3 va(getArcballVector(g_last_x_position,    g_last_y_position));
             VEC3 vb(getArcballVector(g_current_x_position, g_current_y_position));
 
-            float angle(g_rotation_speed * radian2degree(acos(min(1.0, va.dotProduct(vb)))));
+            float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 
             VEC3 axis_in_camera_coord(va ^ vb);
             //axis_in_camera_coord.normalize();

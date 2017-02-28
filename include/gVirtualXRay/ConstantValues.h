@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,22 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_CONSTANT_VALUES_H
-#define GVXR_CONSTANT_VALUES_H
+#ifndef __ConstantValues_h
+#define __ConstantValues_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		ConstantValues.h
+*   @file       ConstantValues.h
 *
-*	@brief		Constant values, such as the Z number of different atoms, etc.
+*   @brief      Constant values, such as the Z number of different atoms, etc.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		13/10/2014
+*   @date       13/10/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -56,7 +56,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -64,13 +64,32 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  Include
+//******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+
+//******************************************************************************
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //******************************************************************************
-//	Constant declarations
+//  defines
+//******************************************************************************
+/// Biggest value that can be stored with a real number
+#define RATIONAL_NUMBER_MAX   FLT_MAX
+
+
+/// Smallest value that can be stored with a real number
+#define EPSILON               0.0000001
+
+
+//******************************************************************************
+//  Constant declarations
 //******************************************************************************
 const double PI = 3.14159265358979323846; ///< Pi
 const double PI_2 = PI / 2.0; ///< Pi divided by 2.0
@@ -99,4 +118,4 @@ const unsigned short Z_Sn = 50; ///< Tin atomic number
 } // namespace gVirtualXRay
 
 
-#endif // GVXR_CONSTANT_VALUES_H
+#endif // __ConstantValues_h

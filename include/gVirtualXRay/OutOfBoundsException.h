@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,23 +32,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
-#define GVXR_OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef __OutOfBoundsException_h
+#define __OutOfBoundsException_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		OutOfBoundsException.h
+*   @file       OutOfBoundsException.h
 *
-*	@brief		Class to handle exceptions when accessing an array cell that is
-*				not accessible, i.e. out of bounds memory access.
+*   @brief      Class to handle exceptions when accessing an array cell that is
+*               not accessible, i.e. out of bounds memory access.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		30/11/2013
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -57,33 +57,37 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#ifndef GVXR_EXCEPTION_H
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	OutOfMemoryException
-*	@brief	OutOfMemoryException is a class to handle exceptions when accessing
-*			an array cell that is not accessible, i.e. out of bounds
-*			memory access.
+*   @class  OutOfMemoryException
+*   @brief  OutOfMemoryException is a class to handle exceptions when accessing
+*           an array cell that is not accessible, i.e. out of bounds
+*           memory access.
 */
 //==============================================================================
 class OutOfBoundsException: public Exception
@@ -91,17 +95,20 @@ class OutOfBoundsException: public Exception
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	/**
-	*	@param 	aFileName:	name of the source file where the exception was thrown (default value: 0)
-	*	@param 	aFunctionName:	name of the function where the exception was thrown  (default value: 0)
-	*	@param 	anErrorLine:	name at which the exception was thrown (default value: 0)
-	*/
-	//--------------------------------------------------------------------------
-	OutOfBoundsException(const char* aFileName = 0,
-			const char* aFunctionName = 0,
-			int anErrorLine = 0);
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    /**
+     *  @param  aFileName:      name of the source file where the exception was
+     *                          thrown (default value: 0)
+     *  @param  aFunctionName:  name of the function where the exception was
+     *                          thrown  (default value: 0)
+     *  @param  anErrorLine:    name at which the exception was thrown
+     *                          (default value: 0)
+     */
+    //--------------------------------------------------------------------------
+    OutOfBoundsException(const char* aFileName = 0,
+                         const char* aFunctionName = 0,
+                         int anErrorLine = 0);
 };
 
 
@@ -112,4 +119,4 @@ public:
 #include "OutOfBoundsException.inl"
 
 
-#endif // OUT_OF_BOUNDS_EXCEPTION_H
+#endif // __OutOfBoundsException_h

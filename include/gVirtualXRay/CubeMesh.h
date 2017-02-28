@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -32,24 +32,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_CUBE_MESH_H
-#define GVXR_CUBE_MESH_H
+#ifndef __CubeMesh_h
+#define __CubeMesh_h
 
 
 /**
 ********************************************************************************
 *
-*	@file		CubeMesh.h
+*   @file       CubeMesh.h
 *
-*	@brief		Class to handle 3D meshes of cubes.
+*   @brief      Class to handle 3D meshes of cubes.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		23/03/2014
+*   @date       23/03/2014
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
-*	@todo		Make it possible to merge vertices if an array of indices exists
+*   @todo       Make it possible to merge vertices if an array of indices exists
 *
 *   License
 *   BSD 3-Clause License.
@@ -58,7 +58,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -66,8 +66,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <string>
 #include <vector>
 
@@ -75,44 +79,40 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_TYPES_H
-#include "gVirtualXRay/Types.h"
-#endif
-
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	CubeMesh
-*	@brief	CubeMesh is a class to handle 3D meshes of cubes.
+*   @class    CubeMesh
+*    @brief    CubeMesh is a class to handle 3D meshes of cubes.
 */
 //==============================================================================
-class CubeMesh: public PolygonMesh
+template<typename T> class CubeMesh: public PolygonMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Default constructor.
+    //--------------------------------------------------------------------------
+    ///    Default constructor.
     /*
-    *   @param aLength:   the length of a side of the cude (default value = 1 cm)
+    *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
-	//--------------------------------------------------------------------------
-	CubeMesh(float aLength = 1.0 * cm);
+    //--------------------------------------------------------------------------
+    CubeMesh(double aLength = 1.0 * cm, int anIndexDataType = 0);
 
 
-	//--------------------------------------------------------------------------
-	///	Create a new cube.
+    //--------------------------------------------------------------------------
+    ///    Create a new cube.
     /*
-    *   @param aLength:   the length of a side of the cude (default value = 1 cm)
+    *   @param aLength:   the length of a side of the cube (default value: 1 cm)
     */
-	//--------------------------------------------------------------------------
-	void create(float aLength = 1.0 * cm);
+    //--------------------------------------------------------------------------
+    void create(double aLength = 1.0 * cm, int anIndexDataType = 0);
 };
 
 
@@ -123,4 +123,4 @@ public:
 #include "CubeMesh.inl"
 
 
-#endif // CUBE_MESH_H
+#endif // __CubeMesh_h

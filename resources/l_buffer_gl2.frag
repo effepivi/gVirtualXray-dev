@@ -124,5 +124,5 @@ void main (void)
 	// In the green channel the sign of the dot product (useful to detect errors in the final L-buffer)
 	// In the blue channel: 0.0 (unused)
 	// In the alpha channel: 1.0 (unused)
-	gl_FragColor = vec4(value, dot_product_sign, distance_source_vertex, 1.0);
+	gl_FragColor = vec4(value, dot_product_sign, distance_source_vertex * g_to_cm_scale, 1.0);
 }

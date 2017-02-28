@@ -101,6 +101,14 @@ inline void StereoHelper::setFieldOfViewY(double aFOVY)
 }
 
 
+//-------------------------------------------------
+inline double StereoHelper::getFieldOfViewY() const
+//-------------------------------------------------
+{
+	return (m_fovy);
+}
+
+
 //----------------------------------------------
 inline void StereoHelper::setNear(double aPlane)
 //----------------------------------------------
@@ -110,12 +118,28 @@ inline void StereoHelper::setNear(double aPlane)
 }
 
 
+//-----------------------------------------
+inline double StereoHelper::getNear() const
+//-----------------------------------------
+{
+	return (m_near);
+}
+
+
 //---------------------------------------------
 inline void StereoHelper::setFar(double aPlane)
 //---------------------------------------------
 {
 	m_far = aPlane;
 	m_matrices_are_up_to_date = false;
+}
+
+
+//----------------------------------------
+inline double StereoHelper::getFar() const
+//----------------------------------------
+{
+	return (m_far);
 }
 
 

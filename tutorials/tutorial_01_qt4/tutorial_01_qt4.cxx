@@ -63,17 +63,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
+#ifdef HAS_GLEW
+#include <GL/glew.h>
 #endif
 
-#include <GL/glew.h>
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
 
+#include <QApplication>
 #include <QtGui>
-#include <QGLWidget>
+#include <QGLFormat> // Select the right version of OpenGL
 
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
@@ -131,8 +131,33 @@ vector<float> g_p_vertex_set_2;
 // Control the zoom
 RATIONAL_NUMBER g_zoom(50.0 * cm);
 
+
 // Vertex shader
-const GLchar* g_vertex_shader = "\
+const GLchar* g_vertex_shader_110 = "\
+\n#version 110\n \
+\n \
+uniform mat4 g_projection_matrix;\n \
+uniform mat4 g_modelview_matrix;\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);\n \
+}\n \
+";
+
+// Fragment shader
+const GLchar* g_fragment_shader_110 = "\
+\n#version 110\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+}\n \
+";
+
+
+// Vertex shader
+const GLchar* g_vertex_shader_150 = "\
 \n#version 150\n \
 \n \
 in vec3 in_Vertex;\n \
@@ -147,7 +172,7 @@ void main(void)\n \
 ";
 
 // Fragment shader
-const GLchar* g_fragment_shader = "\
+const GLchar* g_fragment_shader_150 = "\
 \n#version 150\n \
 precision highp float;\n \
 \n \
@@ -169,14 +194,9 @@ class GLWidget;
 //  Function declaration
 //******************************************************************************
 void initQt(GLWidget& aWindow);
-void initGLFW();
-void initGLEW();
 void initGL();
 void load3DObjects();
 void quitCallback();
-///void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
-///void keyCallback(GLFWwindow* apWindow, int aKey, int aScanCode, int anAction, int aModifierKey);
-///void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 void errorCallback(int error, const char* description);
 
 
@@ -187,6 +207,7 @@ class GLWidget: public QGLWidget
 {
 public:
     GLWidget(QWidget *parent = 0);
+    GLWidget(QGLFormat& aGLFormat, QWidget *parent = 0);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
@@ -215,9 +236,16 @@ int main(int argc, char** argv)
     {
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
-        GLWidget window;
-        initQt(window);
 
+        // Create a GL format to OpenGL 3.2 Core
+        QGLFormat gl_format(QGLFormat::defaultFormat());
+        gl_format.setVersion(3, 2);
+        gl_format.setProfile(QGLFormat::CoreProfile);
+
+        // Set the GL format of the QGLWidget
+        GLWidget window(gl_format);
+        initQt(window);
+    
         // Launch the event loop
         return_code = application.exec();
     }
@@ -245,7 +273,7 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01 using Qt4"));
     
     // Make the window's context current
     aWindow.makeCurrent();
@@ -257,6 +285,15 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent)
 //----------------------------------
+{
+}
+
+
+//--------------------------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+//--------------------------------------------------------
+    QGLWidget(aGLFormat, parent)
+//--------------------------------------------------------
 {
 }
 
@@ -287,11 +324,8 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
-    // Initialise GLFW
-    //initGLFW();
-
     // Initialise GLEW
-    initGLEW();
+    initialiseGLEW();
 
     // Initialise OpenGL
     initGL();
@@ -300,7 +334,16 @@ void GLWidget::initializeGL()
     g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
     // Load the source code of the shaders onto the GPU
-    g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        g_display_shader.loadSource(g_vertex_shader_150, g_fragment_shader_150);
+    }
+    // Modern OpenGL 3.2 or above is not supported
+    else
+    {
+        g_display_shader.loadSource(g_vertex_shader_110, g_fragment_shader_110);
+    }
 
     // Initialise the geometry of the 3D objects
     load3DObjects();
@@ -452,21 +495,6 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
     default:
     std::cout << event->key() << std::endl;
         break;
-    }
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::stringstream error_message;
-        error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
     }
 }
 

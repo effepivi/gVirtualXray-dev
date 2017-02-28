@@ -63,16 +63,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-// Fix undefined references on Windows
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
+#ifdef HAS_GLEW
+#include <GL/glew.h> // For advanced OpenGL functionalities
 #endif
 
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #define GLFW_INCLUDE_GLCOREARB 1 // Tell GLFW to include the OpenGL core profile header
@@ -138,7 +134,31 @@ vector<float> g_p_vertex_set_2;
 RATIONAL_NUMBER g_zoom(50.0 * cm);
 
 // Vertex shader
-const GLchar* g_vertex_shader = "\
+const GLchar* g_vertex_shader_110 = "\
+\n#version 110\n \
+\n \
+uniform mat4 g_projection_matrix;\n \
+uniform mat4 g_modelview_matrix;\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_Position = g_projection_matrix * g_modelview_matrix * vec4(gl_Vertex.xyz, 1.0);\n \
+}\n \
+";
+
+// Fragment shader
+const GLchar* g_fragment_shader_110 = "\
+\n#version 110\n \
+\n \
+void main(void)\n \
+{\n \
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+}\n \
+";
+
+
+// Vertex shader
+const GLchar* g_vertex_shader_150 = "\
 \n#version 150\n \
 \n \
 in vec3 in_Vertex;\n \
@@ -153,7 +173,7 @@ void main(void)\n \
 ";
 
 // Fragment shader
-const GLchar* g_fragment_shader = "\
+const GLchar* g_fragment_shader_150 = "\
 \n#version 150\n \
 precision highp float;\n \
 \n \
@@ -169,7 +189,6 @@ void main(void)\n \
 //  Function declaration
 //******************************************************************************
 void initGLFW();
-void initGLEW();
 void initGL();
 void load3DObjects();
 void displayCallback();
@@ -197,7 +216,7 @@ int main(int argc, char** argv)
         initGLFW();
 
         // Initialise GLEW
-        initGLEW();
+        initialiseGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -206,7 +225,16 @@ int main(int argc, char** argv)
         g_display_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
         // Load the source code of the shaders onto the GPU
-        g_display_shader.loadSource(g_vertex_shader, g_fragment_shader);
+        // Modern OpenGL 3.2 or above is supported
+        if (useOpenGL3_2OrAbove())
+        {
+            g_display_shader.loadSource(g_vertex_shader_150, g_fragment_shader_150);
+        }
+        // Modern OpenGL 3.2 or above is not supported
+        else
+        {
+            g_display_shader.loadSource(g_vertex_shader_110, g_fragment_shader_110);
+        }
 
         // Initialise the geometry of the 3D objects
         load3DObjects();
@@ -270,7 +298,7 @@ void initGLFW()
 
     // Create a windowed mode window and its OpenGL context
     g_p_window_id = glfwCreateWindow(g_window_width, g_window_height,
-            "gVirtualXRay -- Tutorial 01", NULL, NULL);
+            "gVirtualXRay -- Tutorial 01 using GLFW3", NULL, NULL);
 
     // The window has not been created
     if (!g_p_window_id)
@@ -286,23 +314,6 @@ void initGLFW()
     glfwSetFramebufferSizeCallback(g_p_window_id, framebufferSizeCallback);
     glfwSetKeyCallback(g_p_window_id, keyCallback);
     glfwSetScrollCallback(g_p_window_id, scrollCallback);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-#ifdef _WIN32
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-#endif
 }
 
 

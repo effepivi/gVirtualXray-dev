@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,40 +35,42 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  ********************************************************************************
  *
- *	@file		display_gl3.frag
+ *  @file       display_gl3.frag
  *
- *	@brief		Fragment shader to display 3D objects with Phong shading.
+ *  @brief      Fragment shader to display 3D objects with Phong shading.
  *
- *	@version	1.0
+ *  @version    1.0
  *
- *	@date		31/12/2013
+ *  @date       31/12/2013
  *
- *	@author		Dr Franck P. Vidal
+ *  @author     Dr Franck P. Vidal
  *
- *	@section	License
- *				BSD 3-Clause License.
+ *  @section    License
+ *              BSD 3-Clause License.
  *
- *				For details on use and redistribution please refer
- *				to http://opensource.org/licenses/BSD-3-Clause
+ *              For details on use and redistribution please refer
+ *              to http://opensource.org/licenses/BSD-3-Clause
  *
- *	@section	Copyright
- *				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
- *				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
- *				BSD 3-Clause License
+ *  @section    Copyright
+ *              (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+ *              http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+ *              BSD 3-Clause License
  *
  ********************************************************************************
  */
 
 
 //******************************************************************************
-//	OpenGL 3.2
+//  OpenGL 3.2
 //******************************************************************************
 #version 150
-precision highp float; // Video card drivers require this line to function properly
+
+// Video card drivers require this line to function properly
+precision highp float;
 
 
 //******************************************************************************
-//	Input
+//  Input
 //******************************************************************************
 smooth in vec3 g_texture_coordinates;
 smooth in vec3 g_normal;
@@ -76,13 +78,13 @@ smooth in vec4 g_object_position;
 
 
 //******************************************************************************
-//	Output
+//  Output
 //******************************************************************************
 out vec4 fragColor;
 
 
 //******************************************************************************
-//	Uniform variables
+//  Uniform variables
 //******************************************************************************
 uniform int g_use_lighting;
 uniform vec4 light_global_ambient;
@@ -101,22 +103,25 @@ void main(void)
 //-------------
 {
     if (g_use_lighting  == 1)
-    {
-	    vec3 view_direction  = vec3(g_object_position) / g_object_position.w;
-	    vec3 normal_vector   = normalize(g_normal);
+        {
+        vec3 view_direction  = vec3(g_object_position) / g_object_position.w;
+        vec3 normal_vector   = normalize(g_normal);
         vec3 light_direction = normalize(vec3(light_position.xyz));
         
         vec3 half_vector     = normalize(view_direction + light_direction);
-	
-	    vec3 global_ambient = vec3(light_global_ambient * material_ambient);
-	    vec3 ambient        = vec3(material_ambient  * light_ambient);
-	    vec3 diffuse        = vec3(material_diffuse  * light_diffuse  * max(0.0, dot(light_direction, normal_vector)));
-	    vec3 specular       = vec3(material_specular * light_specular * pow(max(dot(normal_vector, half_vector), 0.0), material_shininess));
-	
-    	fragColor = vec4(global_ambient + ambient + diffuse + specular, 1.0);
-    }
+    
+        vec3 global_ambient = vec3(light_global_ambient * material_ambient);
+        vec3 ambient        = vec3(material_ambient  * light_ambient);
+        vec3 diffuse        = vec3(material_diffuse  * light_diffuse  *
+                max(0.0, dot(light_direction, normal_vector)));
+        vec3 specular       = vec3(material_specular * light_specular *
+                pow(max(dot(normal_vector, half_vector), 0.0),
+                material_shininess));
+    
+        fragColor = vec4(global_ambient + ambient + diffuse + specular, 1.0);
+        }
     else
-    {
+        {
         fragColor = material_ambient;
-    }
+        }
 }

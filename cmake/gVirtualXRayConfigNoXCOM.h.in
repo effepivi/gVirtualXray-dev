@@ -36,8 +36,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GVXR_CONFIG_H
 
 // the configured options and settings for gVirtualXRay
-#define gVirtualXRay_VERSION_MAJOR @gVirtualXRay_VERSION_MAJOR@
-#define gVirtualXRay_VERSION_MINOR @gVirtualXRay_VERSION_MINOR@
-#define gVirtualXRay_VERSION_PATCH @gVirtualXRay_VERSION_PATCH@
+#define gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@"
+#define gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@"
+#define gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@"
+
+#if defined(_WIN32) || defined(_WIN64)
+#define _USE_MATH_DEFINES
+#endif
+
+//#ifdef HAS_GLEW
+
+#if defined(_WIN32) || defined(_WIN64)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
+
+//#include <GL/glew.h>
+
+//#else // HAS_GLEW
+
+#ifdef __APPLE__
+#ifndef GL3_PROTOTYPES
+#define GL3_PROTOTYPES 1
+#endif // GL3_PROTOTYPES
+#include <OpenGL/gl3.h>
+#else // __APPLE__
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif // GL_GLEXT_PROTOTYPES
+#ifndef HAS_GLEW
+#include <GL/glcorearb.h>
+#endif // HAS_GLEW
+#endif // __APPLE__
+
+#if (defined(_MSC_VER) && (_MSC_VER <= 1600))
+#define isnan(x) _isnan(x)
+#define isinf(x) (!_finite(x))
+#endif
+
+
+//#endif // HAS_GLEW
 
 #endif // GVXR_CONFIG_H

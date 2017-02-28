@@ -1,14 +1,19 @@
 # - Find GZIP
 # Find the native GZIP command
 # This module defines
-#  GZIP_TOOL, where to find gizp
-#  GZIP_FOUND, If false, do not try to use GLEW.
+#  GZIP_TOOL, where to find gzip
+#  GZIP_FOUND, If false, do not try to use GZIP.
 
 SET(GZIP_NAMES ${GZIP_NAMES} gzip gzip.exe gzip124.exe)
-FIND_PROGRAM(GZIP_TOOL NAMES ${GZIP_NAMES} PATHS /bin /usr/bin /usr/local/bin ${PROJECT_BINARY_DIR})
 
-# handle the QUIETLY and REQUIRED arguments and set GLEW_FOUND to TRUE if 
+find_program(GZIP_TOOL
+  NAMES ${GZIP_NAMES}
+  PATHS /bin /usr/bin /usr/local/bin ${PROJECT_BINARY_DIR}
+)
+
+
+# handle the QUIETLY and REQUIRED arguments and set GZIP_FOUND to TRUE if 
 # all listed variables are TRUE
-INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(GZIP DEFAULT_MSG GZIP_TOOL)
 
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(GZIP REQUIRED_VARS GZIP_TOOL VERSION_VAR GZIP_VERSION)

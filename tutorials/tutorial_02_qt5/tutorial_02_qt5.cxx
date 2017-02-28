@@ -65,15 +65,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-// Ensure we are using opengl's core profile only
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#else
-#define GL_GLEXT_PROTOTYPES 1
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-//#include <GL/glew.h>
-
+#include <QOpenGLFunctions_3_2_Core>
 #include <QApplication>
 #include <QtGui>
 #include <QGLWidget>
@@ -98,6 +94,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Utilities.h" // Handle decompression using the Z library
 
 #include "buildCube.h" // Create the triangle mesh of a cube
+
+#include "tutorial_02_gl2.frag.h" // Fragment shader for OpenGL 2.x
+#include "tutorial_02_gl2.vert.h" // Vertex shader for OpenGL 2.x
 
 #include "tutorial_02_gl3.frag.h" // Fragment shader for OpenGL 3.x
 #include "tutorial_02_gl3.vert.h" // Vertex shader for OpenGL 3.x
@@ -187,10 +186,11 @@ void computeRotation(MATRIX4& aRotationMatrix);
 //******************************************************************************
 //  Class definition
 //******************************************************************************
-class GLWidget: public QGLWidget
+class GLWidget: public QGLWidget, protected QOpenGLFunctions_3_2_Core
 {
 public:
     GLWidget(QWidget *parent = 0);
+    GLWidget(QGLFormat& aGLFormat, QWidget *parent = 0);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
@@ -223,7 +223,14 @@ int main(int argc, char** argv)
     {
         // Initialise Qt and OpenGL
         QApplication application(argc, argv);
-        GLWidget window;
+
+        // Create a GL format to OpenGL 3.2 Core
+        QGLFormat gl_format(QGLFormat::defaultFormat());
+        gl_format.setVersion(3, 2);
+        gl_format.setProfile(QGLFormat::CoreProfile);
+
+        // Set the GL format of the QGLWidget
+        GLWidget window(gl_format);
         initQt(window);
 
         // Launch the event loop
@@ -253,8 +260,8 @@ void initQt(GLWidget& aWindow)
 
     aWindow.resize(g_window_width, g_window_height);
     aWindow.show();
-    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 01"));
-    
+    aWindow.setWindowTitle(QApplication::translate("toplevel", "gVirtualXRay -- Tutorial 02 using Qt5"));
+
     // Make the window's context current
     aWindow.makeCurrent();
 }
@@ -265,6 +272,15 @@ GLWidget::GLWidget(QWidget *parent):
 //----------------------------------
     QGLWidget(parent)
 //----------------------------------
+{
+}
+
+
+//--------------------------------------------------------
+GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
+//--------------------------------------------------------
+    QGLWidget(aGLFormat, parent)
+//--------------------------------------------------------
 {
 }
 
@@ -295,7 +311,13 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 //---------------------------
 {
-    // Initialise OpenGL
+	// Initialise OpeGL functions
+	initializeOpenGLFunctions();
+
+	// Initialise GLEW if needed
+	initialiseGLEW();
+
+	// Initialise OpenGL
     initGL();
 
     // Initialise the shader from files compressed using the Z library
@@ -499,7 +521,7 @@ void GLWidget::wheelEvent(QWheelEvent *wheelEvent)
 //------------------------------------------------
 {
     // Scrolling along the Y-axis
-    if (fabs(wheelEvent->delta()) > EPSILON)
+    if (std::abs(wheelEvent->delta()) > EPSILON)
     {
         // Change the zoom
         g_zoom += 0.1 * wheelEvent->delta() * cm;
@@ -524,13 +546,19 @@ void initShader()
     std::string vertex_shader;
     std::string fragment_shader;
 
-    // L-buffer
-    z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert,
-            sizeof(g_tutorial_02_gl3_vert),
-            &p_vertex_shader);
-    z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag,
-            sizeof(g_tutorial_02_gl3_frag),
-            &p_fragment_shader);
+    // Decompress the shader using the ZLib
+    // Modern OpenGL 3.2 or above is supported
+    if (useOpenGL3_2OrAbove())
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_02_gl3_vert, sizeof(g_tutorial_02_gl3_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_02_gl3_frag, sizeof(g_tutorial_02_gl3_frag), &p_fragment_shader);
+    }
+    // Modern OpenGL 3.2 or above isnot supported
+    else
+    {
+        z_lib_return_code_vertex   = inflate(g_tutorial_02_gl2_vert, sizeof(g_tutorial_02_gl2_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_tutorial_02_gl2_frag, sizeof(g_tutorial_02_gl2_frag), &p_fragment_shader);
+    }
 
     vertex_shader   = p_vertex_shader;
     fragment_shader = p_fragment_shader;

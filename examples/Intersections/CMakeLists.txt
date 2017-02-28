@@ -37,7 +37,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
 # Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 CreateHeaderFiles("." "BinaryIntersectionsFiles" "${RESOURCES_SOURCES}")
 
 
@@ -46,25 +46,47 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+
+
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/data/cylinder_bin.stl COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/cylinder_bin.stl COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw3_FOUND)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(WARNING "GLFW3 not found, the demo (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################
+IF (glfw3_FOUND)
 add_executable(demo-intersections Intersections.cxx)
 target_link_libraries(demo-intersections ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(welsh_dragon_glut BinaryIntersectionsFiles)
+ADD_DEPENDENCIES(demo-intersections BinaryIntersectionsFiles)
+
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-intersections   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS demo-intersections RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Intersections COMPONENT demos)
+    INSTALL(TARGETS demo-intersections RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 
@@ -121,4 +143,5 @@ ENDIF(NOT APPLE)
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
 include(CPack)
+ENDIF (glfw3_FOUND)
 

@@ -63,22 +63,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
+
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <cstring>
-
-#if defined(_WIN32) || defined(_WIN64)
-#include <GL/glew.h>
-#else
-#ifdef __APPLE__
-#define GL3_PROTOTYPES 1
-#include <OpenGL/gl3.h>
-#else
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/glcorearb.h>
-#endif
-#endif
 
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
@@ -105,9 +101,9 @@ using namespace gVirtualXRay;
 bool Shader::m_shader_capable = false;
 
 
-//------------------
-void Shader::reset()
-//------------------
+//--------------------
+void Shader::release()
+//--------------------
 {
 	// Get the current program
 	GLint current_shader(0);
@@ -222,7 +218,7 @@ void Shader::loadFiles(const std::string& aVertexShaderFilename,
 //----------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
-	reset();
+	release();
 
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();
@@ -251,7 +247,7 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 //-------------------------------------------------------------------
 {
 	// Reset the shader and restore the default values
-	reset();
+	release();
 
 	// Create the shader program
 	m_shader_program_id = glCreateProgram();

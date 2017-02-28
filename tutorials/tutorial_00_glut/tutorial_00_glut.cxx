@@ -62,7 +62,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <GL/glew.h>  // Handle shaders
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
 
 // Create an OpenGL context and attach a window to it
 #ifdef __APPLE__
@@ -100,7 +102,6 @@ int g_window_id(0);
 //  Function declaration
 //******************************************************************************
 void initGLUT(int argc, char** argv);
-void initGLEW();
 void initGL();
 void displayCallback();
 void idleCallback();
@@ -123,9 +124,6 @@ int main(int argc, char** argv)
     {
         // Initialise GLUT
         initGLUT(argc, argv);
-
-        // Initialise GLEW
-        initGLEW();
 
         // Initialise OpenGL
         initGL();
@@ -172,7 +170,7 @@ void initGLUT(int argc, char** argv)
 	// Create a windowed mode window and its OpenGL context
 	glutInitWindowSize(g_window_width, g_window_height);
 	glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 00");
+    g_window_id = glutCreateWindow("gVirtualXRay -- Tutorial 00 using Glut");
 
     // The window has not been created
     if (!g_window_id)
@@ -185,21 +183,6 @@ void initGLUT(int argc, char** argv)
     glutReshapeFunc(framebufferSizeCallback);
     glutKeyboardFunc(keyCallback);
     glutIdleFunc(idleCallback);
-}
-
-
-//-------------
-void initGLEW()
-//-------------
-{
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
-
-        throw (error_message.str());
-	}
 }
 
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,59 +35,61 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		OpenGLWindow.h
+*   @file       OpenGLWindow.h
 *
-*	@brief		Class to handle the OpenGL rendering in FLTK.
+*   @brief      Class to handle the OpenGL rendering in FLTK.
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		26/02/2014
+*   @date       26/02/2014
 *
-*	@author		Steven Hampson
+*   @author     Steven Hampson
 *
-*	@section	License
-*				BSD 3-Clause License.
+*   @section    License
+*               BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer
-*				to http://opensource.org/licenses/BSD-3-Clause
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
 *
-*	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
-*				BSD 3-Clause License
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
-#ifndef OPENGL_WINDOW_H
-#define OPENGL_WINDOW_H
+#ifndef __OpenGLWindow_h
+#define __OpenGLWindow_h
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
-#include <GL/glew.h>
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
 
 #include <FL/Fl_Gl_Window.H>
 
-#ifndef POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef XRAY_BEAM_H
+#ifndef __XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef STEREO_HELPER_H
+#ifndef __StereoHelper_h
 #include "gVirtualXRay/StereoHelper.h"
 #endif
 
@@ -97,14 +99,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Function declaration
+//  Function declaration
 //******************************************************************************
 
 
 //------------------------------------------------------------------------------
-///	Idle callback.
+/// Idle callback.
 /**
-*	@param 	apData:	a pointer on the OpenGLWindow
+*   @param  apData: a pointer on the OpenGLWindow
 */
 //------------------------------------------------------------------------------
 void idleCallback(void* apData);
@@ -112,247 +114,249 @@ void idleCallback(void* apData);
 
 //==============================================================================
 /**
-*	@class	OpenGLWindow
-*	@brief	OpenGLWindow is a class to handle the OpenGL rendering in FLTK.
+*   @class  OpenGLWindow
+*   @brief  OpenGLWindow is a class to handle the OpenGL rendering in FLTK.
 */
 //==============================================================================
 class OpenGLWindow: public Fl_Gl_Window
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Constructor.
-	/**
-	*	@param 	X:	position of the window along the horizontal axis
-	*	@param 	Y:	position of the window along the vertical axis
-	*	@param 	aWidth:	width of the window
-	*	@param 	aHeight:	height of the window
-	*	@param 	apTitle:	title of the window
-	*/
-	//--------------------------------------------------------------------------
-	OpenGLWindow(int X, int Y, int aWidth, int aHeight, char* apTitle);
+    //--------------------------------------------------------------------------
+    /// Constructor.
+    /**
+     *  @param X:   position of the window along the horizontal axis
+     *  @param Y:   position of the window along the vertical axis
+     *  @param aWidth:  width of the window
+     *  @param aHeight: height of the window
+     *  @param apTitle: title of the window
+     */
+    //--------------------------------------------------------------------------
+    OpenGLWindow(int X, int Y, int aWidth, int aHeight, char* apTitle);
 
 
-	//--------------------------------------------------------------------------
-	///	Destructor.
-	//--------------------------------------------------------------------------
-	virtual ~OpenGLWindow();
+    //--------------------------------------------------------------------------
+    /// Destructor.
+    //--------------------------------------------------------------------------
+    virtual ~OpenGLWindow();
 
 
-	//--------------------------------------------------------------------------
-	///	Draw the 3D scene.
-	//--------------------------------------------------------------------------
-	virtual void draw();
+    //--------------------------------------------------------------------------
+    /// Draw the 3D scene.
+    //--------------------------------------------------------------------------
+    virtual void draw();
 
 
-	//--------------------------------------------------------------------------
-	///	Event handler.
-	/**
-	*	@param anEvent:	the kind of event received
-	*	@return 0 if the event was not used or understood, 1 if the event was used and can be deleted
-	*/
-	//--------------------------------------------------------------------------
-	virtual int handle(int anEvent);
+    //--------------------------------------------------------------------------
+    /// Event handler.
+    /**
+     *  @param anEvent: the kind of event received
+     *  @return 0 if the event was not used or understood,
+     *          1 if the event was used and can be deleted
+     */
+    //--------------------------------------------------------------------------
+    virtual int handle(int anEvent);
 
 
-	//--------------------------------------------------------------------------
-	///	Set the rotation angle.
-	/**
-	*	@param anAngle:	the new angle of rotation
-	*/
-	//--------------------------------------------------------------------------
-	void setObjectRotationAngle(float anAngle);
+    //--------------------------------------------------------------------------
+    /// Set the rotation angle.
+    /**
+     *  @param anAngle: the new angle of rotation
+     */
+    //--------------------------------------------------------------------------
+    void setObjectRotationAngle(float anAngle);
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the angle of rotation.
-	/**
-	*	@return the angle of rotation
-	*/
-	//--------------------------------------------------------------------------
-	//float getObjectRotationAngle() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the angle of rotation.
+    /**
+     *  @return the angle of rotation
+     */
+    //--------------------------------------------------------------------------
+    //float getObjectRotationAngle() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the animation flag.
-	/**
-	*	@return the animation flag
-	*/
-	//--------------------------------------------------------------------------
-	float getAnimationFlag() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the animation flag.
+    /**
+     *  @return the animation flag
+     */
+    //--------------------------------------------------------------------------
+    float getAnimationFlag() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the increment value of the rotation angle.
-	/**
-	*	@return the increment value
-	*/
-	//--------------------------------------------------------------------------
-	float getRotationIncrement() const;
+    //--------------------------------------------------------------------------
+    /// Accessor on the increment value of the rotation angle.
+    /**
+     *  @return the increment value
+     */
+    //--------------------------------------------------------------------------
+    float getRotationIncrement() const;
 
-	void setZoom(int aValue);
+    void setZoom(int aValue);
 
-	void rotateObject(const double anAngle);
+    void rotateObject(const double anAngle);
 
-	void rotateDetector(const double aValue);
+    void rotateDetector(const double aValue);
 
-	void rotateEnvironment(const double aValue);
+    void rotateEnvironment(const double aValue);
 
-	void setNegative(int aValue);
+    void setNegative(int aValue);
 
-	void setWireframe(const double aValue);
+    void setWireframe(const double aValue);
 
-	void setSourceParallel(double aValue);
+    void setSourceParallel(double aValue);
 
-	void setStereo(bool aValue);
+    void setStereo(bool aValue);
 
-	void setSourceLine(double aValue);
+    void setSourceLine(double aValue);
 
-	void setSourceSquare(double aValue);
+    void setSourceSquare(double aValue);
 
-	void setSourceCube(double aValue);
+    void setSourceCube(double aValue);
 
-	void setPointSource(double aValue);
+    void setPointSource(double aValue);
 
-	void setBeam(double aValue);
+    void setBeam(double aValue);
 
-	void loadObject(double aValue);
+    void loadObject(double aValue);
 
-	void setIntraocularDistance(float aValue);
+    void setIntraocularDistance(float aValue);
 
-	void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix);
+    void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix);
 
-	gVirtualXRay::VEC3 getArcballVector(int x, int y);
+    gVirtualXRay::VEC3 getArcballVector(int x, int y);
 
 
-	void setExecutable(char *argv);
+    void setExecutable(char *argv);
 
 
 //******************************************************************************
 private:
-	//--------------------------------------------------------------------------
-	///	Initialise OpenGL.
-	//--------------------------------------------------------------------------
-	void initializeGL();
+    //--------------------------------------------------------------------------
+    /// Initialise OpenGL.
+    //--------------------------------------------------------------------------
+    void initializeGL();
 
 
-	//--------------------------------------------------------------------------
-	///	Render the 3D scene.
-	//--------------------------------------------------------------------------
-	void render();
+    //--------------------------------------------------------------------------
+    /// Render the 3D scene.
+    //--------------------------------------------------------------------------
+    void render();
 
 
-	//--------------------------------------------------------------------------
-	///	Resize the window.
-	/**
-	*	@param X:	the position of the window along the horizontal axis
-	*	@param Y:	the position of the window along the vertical axis
-	*	@param W:	the width of the window
-	*	@param H:	the height of the window
-	*/
-	//--------------------------------------------------------------------------
-	virtual void resize(int X,int Y,int W,int H);
+    //--------------------------------------------------------------------------
+    /// Resize the window.
+    /**
+     *  @param X:   the position of the window along the horizontal axis
+     *  @param Y:   the position of the window along the vertical axis
+     *  @param W:   the width of the window
+     *  @param H:   the height of the window
+     */
+    //--------------------------------------------------------------------------
+    virtual void resize(int X,int Y,int W,int H);
 
 
-	//--------------------------------------------------------------------------
-	///	Set the X-ray detector.
-	//--------------------------------------------------------------------------
-	void loadDetector();
+    //--------------------------------------------------------------------------
+    /// Set the X-ray detector.
+    //--------------------------------------------------------------------------
+    void loadDetector();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the X-ray source.
-	//--------------------------------------------------------------------------
-	void loadSource();
+    //--------------------------------------------------------------------------
+    /// Set the X-ray source.
+    //--------------------------------------------------------------------------
+    void loadSource();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the X-ray renderer.
-	//--------------------------------------------------------------------------
-	void loadXRaySimulator();
+    //--------------------------------------------------------------------------
+    /// Set the X-ray renderer.
+    //--------------------------------------------------------------------------
+    void loadXRaySimulator();
 
 
-	//--------------------------------------------------------------------------
-	///	Set the X-ray renderer.
-	/**
-	*	@param aFileName:	the file name of the 3D triangle mesh of the scanned object
-	*/
-	//--------------------------------------------------------------------------
-	void loadSTLFile(const std::string& aFileName);
+    //--------------------------------------------------------------------------
+    /// Set the X-ray renderer.
+    /**
+     *  @param aFileName:   the file name of the 3D triangle mesh of
+     *                      the scanned object
+     */
+    //--------------------------------------------------------------------------
+    void loadSTLFile(const std::string& aFileName);
 
 
-	//--------------------------------------------------------------------------
-	///	Set the GLSL shader to render the 3D scene.
-	//--------------------------------------------------------------------------
-	void loadShader();
+    //--------------------------------------------------------------------------
+    /// Set the GLSL shader to render the 3D scene.
+    //--------------------------------------------------------------------------
+    void loadShader();
 
 
-
-	//--------------------------------------------------------------------------
-	///	Update the transformation matrices.
-	/**
-	*	@param aWidth:	the width of the window
-	*	@param aHeight:	the height of the window
-	*/
-	//--------------------------------------------------------------------------
-	void reshape(int aWidth,int aHeight);
-
-
-	//--------------------------------------------------------------------------
-	///	Update the X-ry image using lazy evaluation.
-	//--------------------------------------------------------------------------
-	void updateXRayImage();
+    //--------------------------------------------------------------------------
+    /// Update the transformation matrices.
+    /**
+     *  @param aWidth:  the width of the window
+     *  @param aHeight: the height of the window
+     */
+    //--------------------------------------------------------------------------
+    void reshape(int aWidth,int aHeight);
 
 
-	std::string m_executable_path;
+    //--------------------------------------------------------------------------
+    /// Update the X-ry image using lazy evaluation.
+    //--------------------------------------------------------------------------
+    void updateXRayImage();
 
 
-	/// The scene rotation angle
-	float m_scene_rotation_angle;
+    std::string m_executable_path;
 
 
-	/// The object rotation angle
-	float m_object_rotation_angle;
+    /// The scene rotation angle
+    float m_scene_rotation_angle;
 
 
-	/// The increment value of the rotation angle
-	float m_rotation_increment;
+    /// The object rotation angle
+    float m_object_rotation_angle;
 
 
-	/// The animation flag
-	bool  m_animating;
+    /// The increment value of the rotation angle
+    float m_rotation_increment;
 
 
-	/// Flag set to false when OpenGL is initialised
-	bool  m_first_time;
+    /// The animation flag
+    bool  m_animating;
 
 
-	/// Flag set to true if the 3D object is rendered in wireframe mode, to false if the 3D object is rendered normally
-	bool m_display_wireframe;
+    /// Flag set to false when OpenGL is initialised
+    bool  m_first_time;
 
 
-	/// Flag set to true if the X-ray beam is displayed, to false if it isn't
-	bool m_display_beam;
+    /// Flag set to true if the 3D object is rendered in wireframe mode,
+    /// to false if the 3D object is rendered normally
+    bool m_display_wireframe;
 
 
-	/// Flag set to true if the X-ray detector is displayed, to false if it isn't
-	bool m_display_detector;
+    /// Flag set to true if the X-ray beam is displayed, to false if it isn't
+    bool m_display_beam;
 
 
-	/// Stereo manager
-	gVirtualXRay::StereoHelper m_stereo_helper;
+    /// Flag set to true if the X-ray detector is displayed, to false if it isn't
+    bool m_display_detector;
 
 
-	/// Flag set to true if the X-ray image is up-to-date, to false if it needs updating
-	/// (used for lazy evaluation)
-	bool m_is_xray_image_up_to_date;
+    /// Stereo manager
+    gVirtualXRay::StereoHelper m_stereo_helper;
 
 
-	/// Distance between the camera and the centre of the scene
-	float m_zoom;
+    /// Flag set to true if the X-ray image is up-to-date,
+    /// to false if it needs updating (used for lazy evaluation)
+    bool m_is_xray_image_up_to_date;
 
 
-	bool m_use_arc_ball;
+    /// Distance between the camera and the centre of the scene
+    float m_zoom;
+
+
+    bool m_use_arc_ball;
 
 
     int m_last_x_position;
@@ -370,37 +374,36 @@ private:
     float m_rotation_speed;
 
 
-
-	/// 3D triangle mesh of the scanned object
+    /// 3D triangle mesh of the scanned object
     gVirtualXRay::PolygonMesh     m_polygon_data;
 
 
-	/// X-ray beam
-	gVirtualXRay::XRayBeam     m_xray_beam;
+    /// X-ray beam
+    gVirtualXRay::XRayBeam     m_xray_beam;
 
 
-	/// X-ray detector
-	gVirtualXRay::XRayDetector m_xray_detector;
+    /// X-ray detector
+    gVirtualXRay::XRayDetector m_xray_detector;
 
 
-	/// X-ray renderer
-	gVirtualXRay::XRayRenderer m_xray_renderer;
+    /// X-ray renderer
+    gVirtualXRay::XRayRenderer m_xray_renderer;
 
 
-	/// GLSL shader to render the 3D scene
-	gVirtualXRay::Shader       m_display_shader;
+    /// GLSL shader to render the 3D scene
+    gVirtualXRay::Shader       m_display_shader;
 
 
-	/// Transformation matrix of the 3D scene
-	gVirtualXRay::MATRIX4         m_scene_rotation_matrix;
+    /// Transformation matrix of the 3D scene
+    gVirtualXRay::MATRIX4         m_scene_rotation_matrix;
 
 
-	/// Transformation matrix of the X-ray detector
-	gVirtualXRay::MATRIX4         m_detector_rotation_matrix;
+    /// Transformation matrix of the X-ray detector
+    gVirtualXRay::MATRIX4         m_detector_rotation_matrix;
 
 
-	/// Transformation matrix of the 3D object
-	gVirtualXRay::MATRIX4         m_sample_rotation_matrix;
+    /// Transformation matrix of the 3D object
+    gVirtualXRay::MATRIX4         m_sample_rotation_matrix;
 };
 
 

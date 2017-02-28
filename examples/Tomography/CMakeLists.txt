@@ -36,44 +36,53 @@ project(gVirtualXRay-Tomography)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
 
 
-# Create the RESOURCES ###########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../resources.cmake)
-CreateHeaderFiles("." "BinaryTomographyFiles" "${RESOURCES_SOURCES}")
-
-
 # Headers of the project #######################################################
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../config.cmake)
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
+
+
+# Create the RESOURCES ###########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
+CreateHeaderFiles("." "BinaryTomographyFiles" "${RESOURCES_SOURCES}")
+
+
+# Copy data files into the build directory (useful for debugging) #############
+IF (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ELSE (WIN32)
+    CONFIGURE_FILE (../data/arial.ttf ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
+ENDIF (WIN32)
 
 
 # Check if GLFW is enable #####################################################
-IF(NOT glfw3_FOUND)
-    MESSAGE(FATAL_ERROR "GLFW was not found. The demo cannot be built.")
-ENDIF(NOT glfw3_FOUND)
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
 
-
-# ITK #########################################################################
-FIND_PACKAGE (ITK)
-IF (ITK_FOUND)
-	ADD_DEFINITIONS(-DHAS_ITK)
-	INCLUDE( ${ITK_USE_FILE} )
-	set (optionalLibs ${optionalLibs} ${ITK_LIBRARIES})
-ELSE(ITK_FOUND)
-    MESSAGE(FATAL_ERROR "ITK not found. The demo cannot be built.")
-ENDIF(ITK_FOUND)
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(WARNING "GLFW3 not found, the demo (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
 
 
 # Create the main program ######################################################
 add_executable(demo-tomography Tomography.cxx)
 target_link_libraries(demo-tomography ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(demo-tomography BinaryTomographyFiles)
+
+    if (gVirtualXRay_BINARY_DIR)
+         ADD_DEPENDENCIES(demo-tomography   gVirtualXRay)
+    endif (gVirtualXRay_BINARY_DIR)
 
 IF (NOT APPLE)
-    INSTALL(TARGETS demo-tomography RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Tomography/bin COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Tomography/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/Tomography COMPONENT demos)
+    INSTALL(TARGETS demo-tomography RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 ELSE (NOT APPLE)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
 

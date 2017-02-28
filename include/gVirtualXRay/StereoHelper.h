@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -35,16 +35,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*	@file		StereoHelper.h
+*   @file       StereoHelper.h
 *
-*	@brief		Class to handle stereo vision using OpenGL's quad buffer.
-*				The code is relying on // http://www.orthostereo.com/geometryopengl.html
+*   @brief      Class to handle stereo vision using OpenGL's quad buffer.
+*               The code is relying on
+*               http://www.orthostereo.com/geometryopengl.html
 *
-*	@version	1.0
+*   @version    1.0
 *
-*	@date		14/02/2014
+*   @date       13/01/2017
 *
-*	@author		Dr Franck P. Vidal
+*   @author     Dr Franck P. Vidal
 *
 *   License
 *   BSD 3-Clause License.
@@ -53,20 +54,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Jan 2017, 2017, version 1.1, BSD 3-Clause License
 *
 ********************************************************************************
 */
 
 
-#ifndef GVXR_STEREO_HELPER_H
-#define GVXR_STEREO_HELPER_H
+#ifndef __StereoHelper_h
+#define __StereoHelper_h
 
 
 //******************************************************************************
-//	Include
+//  Include
 //******************************************************************************
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #ifndef GVXR_MATRIX4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
@@ -77,16 +82,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	namespace
+//  namespace
 //******************************************************************************
 namespace gVirtualXRay {
 
 
 //==============================================================================
 /**
-*	@class	StereoHelper
-*	@brief	StereoHelper is a class to handle stereo vision using OpenGL's
-*			quad buffer.
+*   @class  StereoHelper
+*   @brief  StereoHelper is a class to handle stereo vision using OpenGL's
+*           quad buffer.
 */
 //==============================================================================
 class StereoHelper
@@ -94,192 +99,219 @@ class StereoHelper
 {
 //******************************************************************************
 public:
-	//--------------------------------------------------------------------------
-	///	Enum defining eyes.
-	//--------------------------------------------------------------------------
-	typedef enum EyeTypeTag
-	{
-		LEFT_EYE  = 0, //< Left eye (stereo vision)
-		RIGHT_EYE = 1, //< Right eye (stereo vision)
-		MONO      = 2  //< Monovision
-	} EyeType;
+    //--------------------------------------------------------------------------
+    /// Enum defining eyes.
+    //--------------------------------------------------------------------------
+    typedef enum EyeTypeTag
+    {
+        LEFT_EYE  = 0, //< Left eye (stereo vision)
+        RIGHT_EYE = 1, //< Right eye (stereo vision)
+        MONO      = 2  //< Monovision
+    } EyeType;
 
 
-	//--------------------------------------------------------------------------
-	///	Default constructor.
-	//--------------------------------------------------------------------------
-	StereoHelper();
-	
+    //--------------------------------------------------------------------------
+    /// Default constructor.
+    //--------------------------------------------------------------------------
+    StereoHelper();
+    
 
-	//--------------------------------------------------------------------------
-	///	Set the intraocular distance
-	/**
-	*	@param aDistance: the intraocular distance
-	*/
-	//--------------------------------------------------------------------------
-	void setIntraocularDistance(double aDistance);
-
-
-	//--------------------------------------------------------------------------
-	///	Accessor on the intraocular distance
-	/**
-	*	@return the intraocular distance
-	*/
-	//--------------------------------------------------------------------------
-	double getIntraocularDistance() const;
+    //--------------------------------------------------------------------------
+    /// Set the intraocular distance
+    /**
+     *  @param aDistance: the intraocular distance
+     */
+    //--------------------------------------------------------------------------
+    void setIntraocularDistance(double aDistance);
 
 
-	//--------------------------------------------------------------------------
-	///	Set the screen aspect ratio
-	/**
-	*	@param aRatio: the screen aspect ratio
-	*/
-	//--------------------------------------------------------------------------
-	void setScreenAspectRatio(double aRatio);
+    //--------------------------------------------------------------------------
+    /// Accessor on the intraocular distance
+    /**
+     *  @return the intraocular distance
+     */
+    //--------------------------------------------------------------------------
+    double getIntraocularDistance() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Set the field of view along the y-axis
-	/**
-	*	@param aFOVY: the field of view along the y-axis
-	*/
-	//--------------------------------------------------------------------------
-	void setFieldOfViewY(double aFOVY);
+    //--------------------------------------------------------------------------
+    /// Set the screen aspect ratio
+    /**
+     *  @param aRatio: the screen aspect ratio
+     */
+    //--------------------------------------------------------------------------
+    void setScreenAspectRatio(double aRatio);
 
 
-	//--------------------------------------------------------------------------
-	///	Set the near clipping plane
-	/**
-	*	@param aPlane: the near clipping plane
-	*/
-	//--------------------------------------------------------------------------
-	void setNear(double aPlane);
+    //--------------------------------------------------------------------------
+    /// Set the field of view along the y-axis
+    /**
+     *  @param aFOVY: the field of view along the y-axis
+     */
+    //--------------------------------------------------------------------------
+    void setFieldOfViewY(double aFOVY);
 
 
-	//--------------------------------------------------------------------------
-	///	Set the far clipping plane
-	/**
-	*	@param aPlane: the far clipping plane
-	*/
-	//--------------------------------------------------------------------------
-	void setFar(double aPlane);
+    //--------------------------------------------------------------------------
+    /// Accessor on the field of view along the y-axis
+    /**
+     *  return the field of view along the y-axis
+     */
+    //--------------------------------------------------------------------------
+    double getFieldOfViewY() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Set the screen projection plane
-	/**
-	*	@param aPlane: the screen projection plane
-	*/
-	//--------------------------------------------------------------------------
-	void setScreenProjectionPlane(double aPlane);
+    //--------------------------------------------------------------------------
+    /// Set the near clipping plane
+    /**
+     *  @param aPlane: the near clipping plane
+     */
+    //--------------------------------------------------------------------------
+    void setNear(double aPlane);
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the projection matrix corresponding to the left eye.
-	/**
-	*	@return the projection matrix
-	*/
-	//--------------------------------------------------------------------------
-	const MATRIX4& getLeftEyeProjectionMatrix();
+    //--------------------------------------------------------------------------
+    /// Accessor on the near clipping plane
+    /**
+     *  @return the near clipping plane
+     */
+    //--------------------------------------------------------------------------
+    double getNear() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the projection matrix corresponding to the right eye.
-	/**
-	*	@return the projection matrix
-	*/
-	//--------------------------------------------------------------------------
-	const MATRIX4& getRightEyeProjectionMatrix();
+    //--------------------------------------------------------------------------
+    /// Set the far clipping plane
+    /**
+     *  @param aPlane: the far clipping plane
+     */
+    //--------------------------------------------------------------------------
+    void setFar(double aPlane);
 
 
-	//--------------------------------------------------------------------------
-	///	Swap eye.
-	//--------------------------------------------------------------------------
-	void swapEye();
+    //--------------------------------------------------------------------------
+    /// Accessor on the far clipping plane
+    /**
+     *  @return the far clipping plane
+     */
+    //--------------------------------------------------------------------------
+    double getFar() const;
 
 
-	//--------------------------------------------------------------------------
-	///	Enable the stereo if possible.
-	//--------------------------------------------------------------------------
-	bool enable();
+    //--------------------------------------------------------------------------
+    /// Set the screen projection plane
+    /**
+     *  @param aPlane: the screen projection plane
+     */
+    //--------------------------------------------------------------------------
+    void setScreenProjectionPlane(double aPlane);
 
 
-	//--------------------------------------------------------------------------
-	///	Disable the stereo.
-	//--------------------------------------------------------------------------
-	void disable();
+    //--------------------------------------------------------------------------
+    /// Accessor on the projection matrix corresponding to the left eye.
+    /**
+     *  @return the projection matrix
+     */
+    //--------------------------------------------------------------------------
+    const MATRIX4& getLeftEyeProjectionMatrix();
 
 
-	//--------------------------------------------------------------------------
-	///	Accessor on the stereo flag.
-	//--------------------------------------------------------------------------
-	bool isActive() const;
+    //--------------------------------------------------------------------------
+    ///    Accessor on the projection matrix corresponding to the right eye.
+    /**
+     *  @return the projection matrix
+     */
+    //--------------------------------------------------------------------------
+    const MATRIX4& getRightEyeProjectionMatrix();
+
+
+    //--------------------------------------------------------------------------
+    /// Swap eye.
+    //--------------------------------------------------------------------------
+    void swapEye();
+
+
+    //--------------------------------------------------------------------------
+    /// Enable the stereo if possible.
+    //--------------------------------------------------------------------------
+    bool enable();
+
+
+    //--------------------------------------------------------------------------
+    /// Disable the stereo.
+    //--------------------------------------------------------------------------
+    void disable();
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the stereo flag.
+    //--------------------------------------------------------------------------
+    bool isActive() const;
 
 
 //******************************************************************************
 protected:
-	/// Compute the projection matrices
-	void update();
+    /// Compute the projection matrices
+    void update();
 
 
-	/// Intraocular distance
-	double m_intraocular_distance;
+    /// Intraocular distance
+    double m_intraocular_distance;
 
 
-	/// The projection matrix corresponding to the left eye
-	MATRIX4 m_left_eye_projection_matrix;
+    /// The projection matrix corresponding to the left eye
+    MATRIX4 m_left_eye_projection_matrix;
 
 
-	/// The projection matrix corresponding to the right eye
-	MATRIX4 m_right_eye_projection_matrix;
+    /// The projection matrix corresponding to the right eye
+    MATRIX4 m_right_eye_projection_matrix;
 
 
-	/// Frustum of the left eye
-	/// m_left_eye_frustum[0] corresponds to the left clipping plane
-	/// m_left_eye_frustum[1] corresponds to the right clipping plane
-	/// m_left_eye_frustum[2] corresponds to the bottom clipping plane
-	/// m_left_eye_frustum[3] corresponds to the top clipping plane
-	double m_left_eye_frustum[4];
+    /// Frustum of the left eye
+    /// m_left_eye_frustum[0] corresponds to the left clipping plane
+    /// m_left_eye_frustum[1] corresponds to the right clipping plane
+    /// m_left_eye_frustum[2] corresponds to the bottom clipping plane
+    /// m_left_eye_frustum[3] corresponds to the top clipping plane
+    double m_left_eye_frustum[4];
 
 
-	/// Frustum of the right eye
-	/// m_right_eye_frustum[0] corresponds to the left clipping plane
-	/// m_right_eye_frustum[1] corresponds to the right clipping plane
-	/// m_right_eye_frustum[2] corresponds to the bottom clipping plane
-	/// m_right_eye_frustum[3] corresponds to the top clipping plane
-	double m_right_eye_frustum[4];
+    /// Frustum of the right eye
+    /// m_right_eye_frustum[0] corresponds to the left clipping plane
+    /// m_right_eye_frustum[1] corresponds to the right clipping plane
+    /// m_right_eye_frustum[2] corresponds to the bottom clipping plane
+    /// m_right_eye_frustum[3] corresponds to the top clipping plane
+    double m_right_eye_frustum[4];
 
 
-	/// Near clipping plane
-	double m_near;
+    /// Near clipping plane
+    double m_near;
 
 
-	/// Far clipping plane
-	double m_far;
+    /// Far clipping plane
+    double m_far;
 
 
-	/// Field of view along the y-axis
-	double m_fovy;
+    /// Field of view along the y-axis
+    double m_fovy;
 
 
-	/// Screen aspect ratio
-	double m_screen_aspect_ratio;
+    /// Screen aspect ratio
+    double m_screen_aspect_ratio;
 
 
-	/// Screen projection plane
-	double m_screen_projection_plane;
+    /// Screen projection plane
+    double m_screen_projection_plane;
 
 
-	/// Flag set to true when the matrices are up-to-date
-	bool m_matrices_are_up_to_date;
+    /// Flag set to true when the matrices are up-to-date
+    bool m_matrices_are_up_to_date;
 
 
-	/// Current eye type
-	EyeType m_current_eye;
+    /// Current eye type
+    EyeType m_current_eye;
 
 
-	/// Flag set to true when the stereo is in used
-	bool m_stereo_currently_in_use;
+    /// Flag set to true when the stereo is in used
+    bool m_stereo_currently_in_use;
 };
 
 
@@ -290,5 +322,4 @@ protected:
 #include "StereoHelper.inl"
 
 
-#endif // STEREO_HELPER_H
-
+#endif // __StereoHelper_h

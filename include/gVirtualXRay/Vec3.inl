@@ -67,6 +67,10 @@
 //******************************************************************************
 #include <cmath>
 
+#ifndef __OutOfBoundsException_h
+#include "gVirtualXRay/OutOfBoundsException.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -173,12 +177,20 @@ template<typename T> double Vec3<T>::dotProduct(const Vec3& aVector) const
     return (m_x * aVector.m_x + m_y * aVector.m_y + m_z * aVector.m_z);
 }
 
-
+/*
 //-----------------------------------------------------------------------
 template<typename T> double Vec3<T>::operator*(const Vec3& aVector) const
 //-----------------------------------------------------------------------
 {
     return (m_x * aVector.m_x + m_y * aVector.m_y + m_z * aVector.m_z);
+}*/
+
+
+//---------------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::elementWiseProduct(const Vec3& aVector) const
+//---------------------------------------------------------------------------------
+{
+    return (Vec3(m_x * aVector.m_x, m_y * aVector.m_y, m_z * aVector.m_z));
 }
 
 
@@ -360,12 +372,104 @@ template<typename T> bool Vec3<T>::operator!=(const Vec3<T>& aVector) const
 }
 
 
+//---------------------------------------------------------
+template<typename T> T& Vec3<T>::operator()(unsigned int i)
+//---------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else if (i == 2)
+        {
+        return (m_z);
+        }
+    else
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------------------
+template<typename T> const T& Vec3<T>::operator()(unsigned int i) const
+//---------------------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else if (i == 2)
+        {
+        return (m_z);
+        }
+    else
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------
+template<typename T> T& Vec3<T>::operator[](unsigned int i)
+//---------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else if (i == 2)
+        {
+        return (m_z);
+        }
+    else
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
+//---------------------------------------------------------------------
+template<typename T> const T& Vec3<T>::operator[](unsigned int i) const
+//---------------------------------------------------------------------
+{
+    if (i == 0)
+        {
+        return (m_x);
+        }
+    else if (i == 1)
+        {
+        return (m_y);
+        }
+    else if (i == 2)
+        {
+        return (m_z);
+        }
+    else
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+}
+
+
 //-------------------------------------------------------------
 template<typename T> Vec3<T> operator*(const double& aValue,
                                        const Vec3<T>& aVector)
 //-------------------------------------------------------------
 {
-    return Vec3 < T > (aVector.getX() * aValue, aVector.getY() * aValue, aVector.getZ() * aValue);
+    return Vec3<T>(aVector.getX() * aValue, aVector.getY() * aValue, aVector.getZ() * aValue);
 }
 
 
