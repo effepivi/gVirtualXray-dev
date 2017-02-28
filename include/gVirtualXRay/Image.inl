@@ -294,16 +294,18 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
     Image<T> roi(aWidth, aHeight, aDepth);
 
     // Process every slice of the ROI
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef WIN32
+	#pragma omp parallel for
+#else
+    #pragma omp parallel for collapse(3)
 #endif
-	for (unsigned int z = 0; z < aDepth; ++z)
+	for (int z = 0; z < aDepth; ++z)
     {
         // Process every row of the ROI
-        for (unsigned int y = 0; y < aHeight; ++y)
+        for (int y = 0; y < aHeight; ++y)
         {
             // Process every column of the ROI
-            for (unsigned int x = 0; x < aWidth; ++x)
+            for (int x = 0; x < aWidth; ++x)
             {
                 unsigned int index_i(x + i);
                 unsigned int index_j(y + j);
@@ -648,9 +650,10 @@ template<typename T> T Image<T>::getMaxValue(unsigned int aSliceID) const
 }
 
 
-//-----------------------------------------------------------------------
-template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue, double aScaleValue) const
-//-----------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
+                                                         double aScaleValue) const
+//--------------------------------------------------------------------------------
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
@@ -668,17 +671,17 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue, dou
 }
 
 
-//-----------------------------
+//--------------------------------------------------------
 template<typename T> Image<T> Image<T>::normalised() const
-//-----------------------------
+//--------------------------------------------------------
 {
     return (shiftScaleFilter(-getMinValue(), 1.0 / (getMaxValue() - getMinValue())));
 }
 
 
-//-----------------------------
+//--------------------------------------------------------
 template<typename T> Image<T> Image<T>::normalized() const
-//-----------------------------
+//--------------------------------------------------------
 {
     return (normalised());
 }
@@ -690,14 +693,16 @@ template<typename T> Image<T> Image<T>::flipVertically() const
 {
     Image<T> temp(*this);
 
-#ifndef WIN32
+#ifdef WIN32
+    #pragma omp parallel for
+#else
 	#pragma omp parallel for collapse(3)
 #endif
-    for (unsigned int k = 0; k < m_number_of_slices; ++k)
+    for (int k = 0; k < m_number_of_slices; ++k)
         {
-        for (unsigned int j = 0; j < (m_height / 2); ++j)
+        for (int j = 0; j < (m_height / 2); ++j)
             {
-            for (unsigned int i = 0; i < m_width; ++i)
+            for (int i = 0; i < m_width; ++i)
                 {
                 std::swap(
                     temp[k * m_height * m_width +                 j  * m_width + i],

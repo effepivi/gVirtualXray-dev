@@ -125,6 +125,8 @@ void quit();
 
 void errorCallback(int error, const char* description);
 
+void takeScreenshot(const std::string& aFileName);
+
 
 //-----------------------------
 int main(int argc, char** argv)
@@ -215,6 +217,21 @@ int main(int argc, char** argv)
 
             // Swap front and back buffers
             glfwSwapBuffers(g_p_main_window_id);
+
+            // Swap front and back buffers
+            glfwSwapBuffers(g_p_main_window_id);
+            
+            {
+                std::stringstream filename;
+                static unsigned int screenshot_counter(0);
+                filename << "tga/screenshot_" <<
+                    std::setfill('0') <<
+                    std::setw(5) <<
+                    ++screenshot_counter <<
+                    ".tga";
+
+                takeScreenshot(filename.str());
+            }
 
             // Poll for and process events
             glfwPollEvents();
@@ -322,4 +339,61 @@ void quit()
         g_p_main_window_id = 0;
         glfwTerminate();
         }
+}
+
+
+void takeScreenshot(const std::string& aFileName)
+{
+    // Code adapted from:
+    // https://www.opengl.org/discussion_boards/showthread.php/129137-Taking-screenshots-How-to
+
+    int HEADER_SIZE = 18;
+    unsigned char *buffer;
+    int w = g_anatomical_data.getWidth();
+    int h = g_anatomical_data.getHeight();
+
+    int buf_size = HEADER_SIZE + (w * h * 3);
+    int i;
+    unsigned char temp;
+    FILE *out_file;
+
+    // open file for output
+    if (!(out_file = fopen(aFileName.data(), "wb")))
+    {
+        std::cerr << "Cannot open " << aFileName << std::endl;
+        return;
+    }
+
+    // allocate mem to read from frame buf
+    if (!(buffer = (unsigned char *)calloc(1, buf_size)))
+    {
+        std::cerr << "Cannot allocate memory to save " << aFileName << std::endl;
+        return;
+    }
+
+    // set header info
+    buffer[2] = 2;    // uncompressed
+    buffer[12] = w & 255;
+    buffer[13] = w >> 8;
+    buffer[14] = h & 255;
+    buffer[15] = h >> 8;
+    buffer[16] = 24;    // 24 bits per pix
+
+                        // read frame buf
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer + HEADER_SIZE);
+
+    // RGB to BGR
+    for (i = HEADER_SIZE; i < buf_size; i += 3)
+    {
+        temp = buffer[i];
+        buffer[i] = buffer[i + 2];
+        buffer[i + 2] = temp;
+    }
+
+    // write header + color buf to file
+    fwrite(buffer, sizeof(unsigned char), buf_size, out_file);
+
+    // cleanup
+    fclose(out_file);
+    free(buffer);
 }

@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -90,8 +90,14 @@ SET (CMAKE_FIND_FRAMEWORK "LAST")
 
 # Enable all compiler warnings #################################################
 #IF (NOT WIN32)
-#	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-Wall")
+#    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-Wall")
 #ENDIF (NOT WIN32)
+
+
+# Define NOMINMAX ler warnings #################################################
+IF (WIN32)
+	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DNOMINMAX")
+ENDIF (WIN32)
 
 
 # for superbuild
@@ -131,157 +137,159 @@ ENDIF ()
 
 # Library source code ##########################################################
 SET (CXX_SOURCES
-	# gVirtualXRay
-	${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayDetector.cxx
+    # gVirtualXRay
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayDetector.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayRenderer.cxx
 
-	# Graphics
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/framebufferObject.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Image.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImplicitSurface.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenGL2VBO.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenGL3VBO.cxx
+    # Graphics
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/framebufferObject.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Image.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImplicitSurface.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenGL2VBO.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenGL3VBO.cxx
     #${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ParticleSystem.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/PolygonMesh.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Shader.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SphereMesh.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/StereoHelper.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/VBO.cxx
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/AnatomicalMesh.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/InternalOrganMesh.cxx 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftTissueMesh.cxx 
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/BoneMesh.cxx 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DiaphragmMesh.cxx 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/LiverMesh.cxx 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/LungsMesh.cxx 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SkinMesh.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/PolygonMesh.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Shader.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SphereMesh.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/StereoHelper.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/VBO.cxx
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/AnatomicalMesh.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/InternalOrganMesh.cxx 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftTissueMesh.cxx 
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/BoneMesh.cxx 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DiaphragmMesh.cxx 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/LiverMesh.cxx 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/LungsMesh.cxx 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SkinMesh.cxx
 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DepthMap.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DepthMap.cxx
 
     # Utilities
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLException.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLUtilities.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/TissueMaterial.cxx
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Utilities.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLException.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLUtilities.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/TissueMaterial.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Utilities.cxx
 )
 
 
 # Add header files to the project
 SET (HXX_SOURCES
-	# gVirtualXRay
-	${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h
+    # gVirtualXRay
+    ${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h
 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayBeam.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayBeam.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayDetector.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayDetector.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayRenderer.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayRenderer.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AttenuationCoefficient.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SpectrumRecord.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayBeam.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayBeam.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayDetector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayDetector.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayRenderer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/XRayRenderer.inl
 
-	# Graphics
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/framebufferObject.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.h
-   	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.h
-   	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.h
-   	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Material.h
+    # Graphics
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/CubeMesh.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/framebufferObject.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FFT.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Image.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ImplicitSurface.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Material.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Material.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL2VBO.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL2VBO.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL3VBO.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL3VBO.inl
-	#${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ParticleSystem.h
-	#${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ParticleSystem.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PolygonMesh.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PolygonMesh.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Shader.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Shader.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StereoHelper.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StereoHelper.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SphereMesh.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SphereMesh.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/VBO.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/VBO.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL2VBO.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL2VBO.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL3VBO.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGL3VBO.inl
+    #${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ParticleSystem.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ParticleSystem.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PolygonMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PolygonMesh.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Shader.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Shader.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Sinogram.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Sinogram.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StereoHelper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/StereoHelper.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SphereMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SphereMesh.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/VBO.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/VBO.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.inl
 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AnatomicalMesh.h 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/InternalOrganMesh.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SoftTissueMesh.h
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/BoneMesh.h 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/DiaphragmMesh.h 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/LiverMesh.h 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/LungsMesh.h 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SkinMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AnatomicalMesh.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/InternalOrganMesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SoftTissueMesh.h
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/BoneMesh.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/DiaphragmMesh.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/LiverMesh.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/LungsMesh.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SkinMesh.h
 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/DepthMap.h 
-	
-	# Math
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Matrix4x4.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Matrix4x4.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec2.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec2.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec3.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec3.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/DepthMap.h 
+    
+    # Math
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Matrix4x4.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Matrix4x4.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec2.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Vec3.inl
 
-	# Utilities
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AtomicElement.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AtomicElement.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ConstantValues.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ElementSet.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ElementSet.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Exception.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Exception.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FBOException.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLException.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLUtilities.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLUtilities.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfBoundsException.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfBoundsException.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfMemoryException.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfMemoryException.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TissueMaterial.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TissueMaterial.inl
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Types.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Units.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Utilities.h
-	${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Utilities.inl
+    # Utilities
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AtomicElement.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AtomicElement.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ConstantValues.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ElementSet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ElementSet.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Exception.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Exception.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FBOException.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLException.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLUtilities.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLUtilities.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfBoundsException.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfBoundsException.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfMemoryException.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfMemoryException.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TissueMaterial.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TissueMaterial.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Types.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Units.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Utilities.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Utilities.inl
 )
 
 
 # Add source to the project ####################################################
 IF (WIN32)
-	IF (NOT CYGWIN)
-		SET (SOURCES ${CXX_SOURCES} ${HXX_SOURCES})
-	ELSE(NOT CYGWIN)
-		SET (SOURCES ${CXX_SOURCES})
-	ENDIF (NOT CYGWIN)
+    IF (NOT CYGWIN)
+        SET (SOURCES ${CXX_SOURCES} ${HXX_SOURCES})
+    ELSE(NOT CYGWIN)
+        SET (SOURCES ${CXX_SOURCES})
+    ENDIF (NOT CYGWIN)
 ELSE(WIN32)
-	IF (APPLE)
-		SET (SOURCES ${CXX_SOURCES} ${HXX_SOURCES})
-	ELSE(APPLE)
-		SET (SOURCES ${CXX_SOURCES})
-	ENDIF (APPLE)
+    IF (APPLE)
+        SET (SOURCES ${CXX_SOURCES} ${HXX_SOURCES})
+    ELSE(APPLE)
+        SET (SOURCES ${CXX_SOURCES})
+    ENDIF (APPLE)
 ENDIF (WIN32)
 
 
@@ -313,18 +321,18 @@ FIND_PACKAGE(GZIP)
 IF (NOT GZIP_FOUND)
     IF (WIN32)
         file(DOWNLOAD http://www.gzip.org/gzip124xN.exe ${PROJECT_BINARY_DIR}/gzip124xN.exe)
-		
-		# Execute gzip124xN.exe to extract gzip.exe
-		execute_process(COMMAND ${PROJECT_BINARY_DIR}/gzip124xN.exe WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+        
+        # Execute gzip124xN.exe to extract gzip.exe
+        execute_process(COMMAND ${PROJECT_BINARY_DIR}/gzip124xN.exe WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
 
         FIND_PACKAGE(GZIP REQUIRED)
         IF (NOT GZIP_FOUND)
-    	    MESSAGE(FATAL_ERROR "GZIP not found. You can find it on gzip's website at: http://www.gzip.org/")
+            MESSAGE(FATAL_ERROR "GZIP not found. You can find it on gzip's website at: http://www.gzip.org/")
         ENDIF (NOT GZIP_FOUND)
 
     ELSE (WIN32)
-    	MESSAGE(FATAL_ERROR "GZIP not found.")
+        MESSAGE(FATAL_ERROR "GZIP not found.")
     ENDIF (WIN32)
 ENDIF (NOT GZIP_FOUND)
 
@@ -373,7 +381,11 @@ ENDIF (OPENGL_FOUND)
 
 
 # ITK #########################################################################
-OPTION(USE_ITK       "Use ITK"       ON)
+IF (WIN32 OR MSVC)
+    OPTION(USE_ITK       "Use ITK"       OFF)
+ELSE (WIN32 OR MSVC)
+    OPTION(USE_ITK       "Use ITK"       ON)
+ENDIF (WIN32 OR MSVC)
 
 IF (USE_ITK)
     FIND_PACKAGE(ITK)
@@ -413,7 +425,11 @@ SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 
 
 # FFTW3 ########################################################################
-OPTION(USE_FFTW3       "Use FFTW3"       ON)
+IF (WIN32 OR MSVC)
+    OPTION(USE_FFTW3       "Use FFTW3"       OFF)
+ELSE (WIN32 OR MSVC)
+    OPTION(USE_FFTW3       "Use FFTW3"       ON)
+ENDIF (WIN32 OR MSVC)
 
 IF (USE_FFTW3)
     OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       OFF)
@@ -424,7 +440,7 @@ IF (USE_FFTW3)
 
     ELSE(USE_SYSTEM_FFTW3)
 
-	IF (UNIX)
+    IF (UNIX)
             INCLUDE(BuildFFTW3)
             build_fftw3( fftw3 ${PROJECT_BINARY_DIR} )
         ELSE (UNIX)
@@ -695,43 +711,43 @@ IF (XCOM_PATH)
 ENDIF (XCOM_PATH)
 
 SET (RESOURCES_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/correlation_CT_number_and_tissue_material.csv
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/mu_water.csv
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/element.csv
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.frag
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.vert
-	
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/correlation_CT_number_and_tissue_material.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/mu_water.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/element.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.vert
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl3.vert
@@ -891,11 +907,11 @@ IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
     OPTION (USE_QT5  "Build the programs (demos, and tutorials) that make use of Qt5" ON)
 
     IF (WIN32)
-	    IF (EX_PLATFORM EQUAL 32)
+        IF (EX_PLATFORM EQUAL 32)
             OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
-	    ENDIF ()
+        ENDIF ()
     ENDIF (WIN32)
-		    
+            
 ELSE ()
     SET (USE_FLTK OFF)
     SET (USE_GLUT OFF)
@@ -920,7 +936,7 @@ IF (USE_GLUT)
         SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
         INCLUDE(BuildGlut)
         build_glut( glut ${PROJECT_BINARY_DIR} )
-	ADD_DEPENDENCIES(gVirtualXRay glut)
+        ADD_DEPENDENCIES(gVirtualXRay glut)
     ENDIF (NOT USE_SYSTEM_GLUT)
 ELSE (USE_GLUT)
     SET (USE_SYSTEM_GLUT OFF)
@@ -945,7 +961,7 @@ IF(BUILD_DOCUMENTATION)
     ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
     MESSAGE(STATUS "Build documentation.")
 ELSE (BUILD_DOCUMENTATION)
-   	MESSAGE("Do not build documentation.")
+       MESSAGE("Do not build documentation.")
 ENDIF(BUILD_DOCUMENTATION)
 
 
@@ -958,35 +974,35 @@ IF (BUILD_EXAMPLES)
     MESSAGE(STATUS "Build examples.")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
 ELSE (BUILD_EXAMPLES)
-   	MESSAGE("Do not build examples.")
+       MESSAGE("Do not build examples.")
 ENDIF (BUILD_EXAMPLES)
 
 
 # Tutorials ####################################################################
 IF (BUILD_TUTORIALS)
-   	MESSAGE(STATUS "Build tutorials.")
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
+       MESSAGE(STATUS "Build tutorials.")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
 ELSE (BUILD_TUTORIALS)
-   	MESSAGE("Do not build tutorials.")
+       MESSAGE("Do not build tutorials.")
 ENDIF (BUILD_TUTORIALS)
 
 
 # Unit tests ###################################################################
 #IF(BUILD_TESTING)
 #    ENABLE_TESTING()
-#	MESSAGE(STATUS "Build unit tests.")
-#	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
+#    MESSAGE(STATUS "Build unit tests.")
+#    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
 #ELSE (BUILD_TESTING)
-#   	MESSAGE("Do not build unit tests.")
+#       MESSAGE("Do not build unit tests.")
 #ENDIF(BUILD_TESTING)
 
 
 # Validation tests #############################################################
 IF (BUILD_VALIDATION)
-   	MESSAGE(STATUS "Build validation tests.")
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
+       MESSAGE(STATUS "Build validation tests.")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
 ELSE (BUILD_VALIDATION)
-   	MESSAGE("Do not build validation tests.")
+       MESSAGE("Do not build validation tests.")
 ENDIF (BUILD_VALIDATION)
 
 
@@ -995,10 +1011,10 @@ SET (CPACK_PACKAGE_FILE_NAME gVirtualXRay)
 SET (CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/doc/logo.ico)
 
 IF (APPLE)
-	SET (CPACK_BUNDLE_NAME gVirtualXRay)
-	SET (CPACK_BUNDLE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/examples/build/DragonDemo.icns)
-	#SET (CPACK_BUNDLE_PLIST - path to a file that will become the bundle plist.
-	#SET (CPACK_BUNDLE_STARTUP_COMMAND - path to a file that will be executed when the user opens the bundle. Could be a shell-script or a binary. 
+    SET (CPACK_BUNDLE_NAME gVirtualXRay)
+    SET (CPACK_BUNDLE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/examples/build/DragonDemo.icns)
+    #SET (CPACK_BUNDLE_PLIST - path to a file that will become the bundle plist.
+    #SET (CPACK_BUNDLE_STARTUP_COMMAND - path to a file that will be executed when the user opens the bundle. Could be a shell-script or a binary. 
 ENDIF (APPLE)
 
 

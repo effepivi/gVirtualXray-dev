@@ -52,9 +52,16 @@ ELSE (glfw3_FOUND)
 ENDIF (glfw3_FOUND)
 
 
+# Create the RESOURCES ###########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
+SET (RESOURCES_SOURCES display_gl2.vert display_gl2.frag display_gl3.vert display_gl3.frag)
+CreateHeaderFiles("." "BinaryMarchingCubesFiles" "${RESOURCES_SOURCES}")
+
+
 # Create the main program ######################################################
 ADD_EXECUTABLE (gvxrMarchingCubes gvxrMarchingCubes.cxx cmdline.h cmdline.c)
 TARGET_LINK_LIBRARIES (gvxrMarchingCubes ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ADD_DEPENDENCIES(gvxrMarchingCubes BinaryMarchingCubesFiles)
 
 IF (gVirtualXRay_BINARY_DIR)
     ADD_DEPENDENCIES (gvxrMarchingCubes   gVirtualXRay)

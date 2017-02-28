@@ -80,6 +80,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>   // Print error messages in the console
 #include <exception>  // Catch C++ exception
 #include <cstdlib>    // Define return status (EXIT_SUCCESS and EXIT_FAILURE)
+#include <algorithm>  // For std::min and std::max
 
 // Define new types, e.g.~RATIONAL_NUMBER, VEC2, VEC3 and MATRIX4 to name a few
 #include "gVirtualXRay/Types.h"

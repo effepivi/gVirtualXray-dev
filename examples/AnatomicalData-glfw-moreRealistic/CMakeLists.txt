@@ -47,7 +47,7 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
-CreateHeaderFiles("." "BinaryAnatomicalDataGlfwMoreRealisticFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("." "BinAnatomicalGlfwRealisticFiles" "${RESOURCES_SOURCES}")
 
 
 # Copy data files into the build directory (useful for debugging) #############
@@ -78,7 +78,7 @@ add_executable(demo-anatomical-data-glfw-moreRealistic
     AnatomicalDataHandler.inl
     AnatomicalDataHandler.cxx)
 target_link_libraries(demo-anatomical-data-glfw-moreRealistic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(demo-anatomical-data-glfw-moreRealistic BinaryAnatomicalDataGlfwMoreRealisticFiles)
+ADD_DEPENDENCIES(demo-anatomical-data-glfw-moreRealistic BinAnatomicalGlfwRealisticFiles)
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(demo-anatomical-data-glfw-moreRealistic   gVirtualXRay)
@@ -104,7 +104,7 @@ ELSE (NOT APPLE)
 
     ADD_EXECUTABLE (AnatomicalData-glfw-moreRealistic MACOSX_BUNDLE ${AnatomicalData-glfw-moreRealistic_SRCS})
     TARGET_LINK_LIBRARIES (AnatomicalData-glfw-moreRealistic gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(AnatomicalData-glfw-moreRealistic BinaryAnatomicalDataGlfwMoreRealisticFiles)
+    ADD_DEPENDENCIES(AnatomicalData-glfw-moreRealistic BinAnatomicalGlfwRealisticFiles)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME AnatomicalData-glfw-moreRealistic)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "AnatomicalData-glfw-moreRealistic")

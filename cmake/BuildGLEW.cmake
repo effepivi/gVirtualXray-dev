@@ -17,8 +17,8 @@ endif()
 SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
-  URL  "http://liquidtelecom.dl.sourceforge.net/project/glew/glew/1.13.0/glew-1.13.0.tgz"
-  URL_MD5 "7cbada3166d2aadfc4169c4283701066"
+  URL  "https://sourceforge.net/projects/glew/files/glew/2.0.0/glew-2.0.0.zip/download"
+  #URL_MD5 "7cbada3166d2aadfc4169c4283701066"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   #BINARY_DIR  ${staging_prefix}/${install_prefix}-build

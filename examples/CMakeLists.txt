@@ -47,7 +47,7 @@ IF (USE_FLTK)
 ENDIF ()
 
 IF (USE_GLFW)
-    ADD_SUBDIRECTORY (ArtefactInTomography)
+	#ADD_SUBDIRECTORY (ArtefactInTomography)
     ADD_SUBDIRECTORY (Iso-Surfaces)
     ADD_SUBDIRECTORY (AnatomicalData-glfw)
     ADD_SUBDIRECTORY (AnatomicalData-glfw-moreRealistic)

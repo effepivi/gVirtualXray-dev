@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -61,15 +61,15 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 
-# GLFW ########################################################################
+# Check if GLFW is enable #####################################################
 IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE( glfw3   REQUIRED )
+    FIND_PACKAGE(glfw3)
 ENDIF (USE_SYSTEM_GLFW)
 
+# The library has been found
 IF(glfw3_FOUND)
-    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
-    SET(optionalLibs ${optionalLibs} glfw)
 
     IF (APPLE)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -82,21 +82,22 @@ IF(glfw3_FOUND)
 
     IF (UNIX)
         FIND_PACKAGE (X11 REQUIRED)
-        iF (X11_FOUND)
+	IF (X11_FOUND)
             INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-            SET(optionalLibs ${optionalLibs} dl pthread ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+            SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
         ELSE (X11_FOUND)
             MESSAGE(FATAL_ERROR "X11 not found.")
         ENDIF (X11_FOUND)
     ENDIF(UNIX)
 
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(optionalLibs ${optionalLibs} glfw3)
+
+
     # Create the main program ######################################################
     add_executable(tutorial_01_glfw tutorial_01_glfw.cxx buildCube.cxx)
     target_link_libraries(tutorial_01_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/TUTORIALS/tutorial-01-glfw/tutorial-01-glfw.pdf 
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials 
-        COMPONENT tutorials)
     INSTALL(TARGETS tutorial_01_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
 
@@ -104,9 +105,7 @@ IF(glfw3_FOUND)
         ADD_DEPENDENCIES(tutorial_01_glfw   gVirtualXRay)
     ENDIF (gVirtualXRay_BINARY_DIR)
 
-ELSE(glfw3_FOUND)
-    MESSAGE(WARNING "GLFW not found, ${PROJECT_NAME} will not be built.")
-ENDIF(glfw3_FOUND)
-
-
-
+# The library has not been foud
+ELSE (glfw3_FOUND)
+    MESSAGE(WARNING "GLFW3 not found, the tutorial (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
