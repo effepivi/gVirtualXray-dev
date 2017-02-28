@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2016, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -55,7 +55,7 @@ ENDIF (glfw3_FOUND)
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
 SET (RESOURCES_SOURCES display_gl2.vert display_gl2.frag display_gl3.vert display_gl3.frag)
-CreateHeaderFiles("." "BinaryMarchingCubesFiles" "${RESOURCES_SOURCES}")
+CreateHeaderFiles("cmake" "BinaryMarchingCubesFiles" "${RESOURCES_SOURCES}")
 
 
 # Create the main program ######################################################
