@@ -1,168 +1,86 @@
-Supports any windowing framework that can create an OpenGL context
-
-Works on Windows (native) (cross compilation from Linux and Mac OSX), Linux, and Mac OS X.
-
-Compiled on Mac OS X 10.8.5 using Apple LLVM version 5.1 (clang-503.0.40) for Mac OS X and Makefiles
-   - Tutorials that works:
-       everything except
-           tutorial_01_qt4 and 5: GLSL: ERROR: 0:2: '' :  version '150' is not supported
-           tutorial_02_qt4 and 5: GLSL: ERROR: 0:2: '' :  version '150' is not supported
-           tutorial_03_qt4 and 5: GLSL: ERROR: 0:2: '' :  version '150' is not supported
-
-   - Validation that works:
-       everything except 
-           validation_04: 
-Error: Not implemented, please contact Dr FP Vidal.
-	- in File: /Users/fpvidal/Documents/gvirtualxray-code/branches/zlibIntegration/cmake/../include/gVirtualXRay/XRayRenderer.inl
-	- in Function: printSinogram
-	- at Line: 605
-
-           validation_06: 
-Error: The number of projections is zero.
-	- in File: /Users/fpvidal/Documents/gvirtualxray-code/branches/zlibIntegration/src/gVirtualXRay/XRayRenderer.cxx
-	- in Function: computeProjectionSet
-	- at Line: 609
-
-           validation_07:
-Error: The number of projections is zero.
-	- in File: /Users/fpvidal/Documents/gvirtualxray-code/branches/zlibIntegration/src/gVirtualXRay/XRayRenderer.cxx
-	- in Function: computeProjectionSet
-	- at Line: 609
-
-           validation_08 and validation_10:
- Use of ITK not replaced yet
-
-           validation_09:
-Error: The number of projections is zero.
-	- in File: /Users/fpvidal/Documents/gvirtualxray-code/branches/zlibIntegration/src/gVirtualXRay/XRayRenderer.cxx
-	- in Function: computeProjectionSet
-	- at Line: 609
-
-
-   - Examples that work:
-AnatomicalData-glfw.app
-demo-anatomical-data-glfw
-GUI-FLTK.app
-gVirtualXRay-gui
-Intersections.app
-demo-intersections
-STL-File-GLFW
-welsh_dragon_glfw
-welsh_dragon_glut
-
-   - Examples that do not work:
-
-STL-File-GLUT.app
-
-demo-anatomical-data-qt4
-AnatomicalData-qt4.app
-FBO error: the target is the default framebuffer, but the default framebuffer does not exist.
-	- in File: /Users/fpvidal/Documents/gvirtualxray-code/branches/zlibIntegration/examples/AnatomicalData-qt4/GLWidget.cxx
-	- in Function: initializeGL
-	- at Line: 289
-
-demo-anatomical-data-qt4-more-realistic
-AnatomicalData-qt4-moreRealistic.app
-ERROR: 0:66: '' :  version '150' is not supported
-
-demo-anatomical-data-qt5
-AnatomicalData-qt5.app
-Segmentation fault: 11
-
-
-Compiled on Mac OS X 10.8.5 using Apple LLVM version 5.1 (clang-503.0.40) for Mac OS X and Xcode
-Compiled on Mac OS X 10.8.5 using gcc-4.9 (Homebrew gcc49 4.9.0) for Mac OS X
-Compiled on Mac OS X 10.8.5 using i686-w64-mingw32 (from MXE) for Windows
-Compiled on ?? using ?? for ??
-
-Tutorials using:
-- GLUT
-- GLFW3
-- FLTK
-- Qt4
-- Qt5
+********************************************************************************
+*              gVirtualXRay: Virtual X-Ray Imaging Library on GPU              *
+********************************************************************************
 
 
 
+********************************************************************************
+* Description                                                                  *
+********************************************************************************
 
-VC++ 2010-64
+This project is focused on developing new software technologies for simulating 
+X-ray images on the graphics processor unit (GPU) using OpenGL. It supports 
+`old' OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). 
+No deprecated function in OpenGL has been used. The library takes care of 
+matrix transformations, matrix stacks, etc.
 
-demo-anatomical-data-glfw
+The source code of gVirtualXRay's is available under the BSD 3-Clause License. 
+For details on use and redistribution please refer to 
+http://opensource.org/licenses/BSD-3-Clause.
 
-demo-anatomical-data-qt5
+gVirtualXRay has been successfully tested on the following platforms (compilers):
 
-gVirtualXRay-gui
+ -   MS Windows 7, MS Visual C++ 2013
+ -   MS Windows 8, MS Visual C++ 2010
+ -   GNU/Linux openSUSE 12.3 (x86_64), g++ 4.7
+ -   Mac OS X 10.8, Apple LLVM 4.2
+ -   Mac OS X 10.8, g++ 4.7
+ -   MS Windows 7, cross compilation using MXE on GNU/Linux openSUSE 12.3 (x86_64) and Mac OS X 10.8 (note that the tutorials do not compile in this configuration)
+ -   MS Windows 8, cross compilation using MXE on GNU/Linux openSUSE 12.3 (x86_64) and Mac OS X 10.8 (note that the tutorials do not compile in this configuration)
 
-tutorial_00_glfw
-tutorial_00_glut
-tutorial_00_qt5
-tutorial_01_glfw
-tutorial_01_glut
-tutorial_01_qt5
-tutorial_02_glfw
-tutorial_02_glut
-tutorial_02_qt5
-tutorial_03_glfw
-tutorial_03_glut
-tutorial_03_qt5
+It should be possible to build it on other platforms, but this has not been tested.
 
-validation_01
-validation_02
-validation_03
-validation_04
-validation_05
-validation_06
-validation_07
-validation_09
-welsh_dragon_glfw
-welsh_dragon_glut
+gVirtualXRay has been successfully tested on the following platforms (graphics card):
 
-VC++ 2013-64
+ -   NVIDIA GeForce 320M (laptop, Mac OS X)
+ -   Intel HD Graphics 4000 (laptop, Mac OS X)
+ -   AMD Radeon X1950pro (PC, GNU/Linux & Windows 7)
+ -   NVIDIA GeForce 680 (PC, GNU/Linux)
 
-demo-anatomical-data-glfw
-
-demo-anatomical-data-qt5
-
-gVirtualXRay-gui
-
-tutorial_00_glfw
-tutorial_00_glut
-tutorial_00_qt5
-tutorial_01_glfw
-tutorial_01_glut
-tutorial_01_qt5
-tutorial_02_glfw
-tutorial_02_glut
-tutorial_02_qt5
-tutorial_03_glfw
-tutorial_03_glut
-tutorial_03_qt5
-
-validation_01
-validation_02
-validation_03
-validation_04
-validation_05
-validation_06
-validation_07
-validation_09
-
-welsh_dragon_glfw
-welsh_dragon_glut
+It should be possible to run it on other platforms, but this has not been tested.
 
 
+********************************************************************************
+* Paper                                                                        *
+********************************************************************************
 
-VC++ 2010-32
+Details about (most of) the methods used and implemented in gVirtualXRay can 
+be found in these papers:
+F. P. Vidal, and P.-F. Villard. ``Development and validation of real-time 
+simulation of X-ray imaging with respiratory motion''. 
+Computerized Medical Imaging and Graphics, 49:1-15, April 2016. 
+DOI: 10.1016/j.compmedimag.2015.12.002
+PMID: 26773644
 
-VC++ 2013-32
- 
+Abstract: We present a framework that combines evolutionary optimisation, 
+soft tissue modelling and ray tracing on GPU to simultaneously compute 
+the respiratory motion and X-ray imaging in real-time. Our aim is to provide 
+validated building blocks with high fidelity to closely match both the human 
+physiology and the physics of X-rays. A CPU-based set of algorithms is 
+presented to model organ behaviours during respiration. Soft tissue deformation 
+is computed with an extension of the Chain Mail method. Rigid elements move 
+according to kinematic laws. A GPU-based surface rendering method is proposed 
+to compute the X-ray image using the Beer-Lambert law. It is provided as 
+an open-source library. A quantitative validation study is provided 
+to objectively assess the accuracy of both components: (i) the respiration 
+against anatomical data, and (ii) the X-ray against the Beer-Lambert law and 
+the results of Monte Carlo simulations. Our implementation can be used in 
+various applications, such as interactive medical virtual environment 
+to train percutaneous transhepatic cholangiography in interventional 
+radiology, 2D/3D registration, computation of digitally reconstructed 
+radiograph, simulation of 4D sinograms to test tomography 
+reconstruction tools.
 
+Keywords: 
+ -   Deterministic simulation (ray-tracing); 
+ -   Digitally reconstructed radiograph; 
+ -   Imaging guidance; 
+ -   Interventional radiology training; 
+ -   Medical virtual environment; 
+ -   Respiration simulation; 
+ -   X-ray simulation
 
+There are other scientific papers of interest. For more details, visit our 
+publication page at http://gvirtualxray.sourceforge.net/publications.php
 
-
-
-
-
-Includes a small 3D library to create FBO, VBO, matrix stacks, viewing transformations, etc.
-
-
+Copyright (c) 2013-2017 Dr Franck P. Vidal, Bangor University, f.vidal@bangor.ac.uk
