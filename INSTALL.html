@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="gVirtualXRay: Installation" />
+    <meta name="robots" content="index, follow" />
+    <meta name="revisit-after" content="30 days" />
+    <meta name="keywords" content="X-ray simulation,GPU programing,OpenGL,GLSL,medical imaging,simulation" />
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://gvirtualxray.sourceforge.net/css/main.css" type="text/css" media="print,screen,speech,all" />
+    <link rel="shortcut icon" href="http://gvirtualxray.sourceforge.net/img/logo.ico" type="image/x-icon">
+    <title>gVirtualXRay</title>
+</head>
+
+<body>
+
+
+<h1>gVirtualXRay: Installation guide</h1>
+
+<!-- begin content which houses our two columns and footer -->
+<!--div id="content" class="clearfix" /-->
+
+<!-- begin main column -->
+<div id="main_big"><div id="main-inner">
+
+
+<h2>Get the software</h2>
+<p>
+The latest version is 1.1.0. 
+Get the source code from a ZIP file or a tarball at <a href="http://gvirtualxray.sourceforge.net/downloads.php">http://gvirtualxray.sourceforge.net/downloads.php</a>. 
+Alternatively, get the latest version from our SVN repository using the following command:<br/>
+<div class="code">svn checkout svn://svn.code.sf.net/p/gvirtualxray/code/tags/1.1.0 gvirtualxray-1.1.0</div>
+</p>
+
+<h2>Requirements</h2>
+<p>
+To run a simulation, you will need a computer with a graphics processor unit (GPU). 
+The library has been tested against GPUs made by Intel, Nvidia, and AMD. You can use Windows, Linux or Mac OS X.
+</p>
+
+<p>
+To install the library from the source code, you will need CMake. It can be downloaded at <a href="https://cmake.org/">https://cmake.org/</a>. 
+You will also need a modern C++ compiler supporting with <a href="https://en.wikipedia.org/wiki/C%2B%2B11">C++11</a>. 
+</p>
+
+<h2>Required and optional dependencies</h2>
+
+Many of the required (R) and optional (O) dependencies can be downloaded and built directly thanks to CMake. Note that it takes quite some time to build the project... but it makes your life easier.
+
+ <table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>Windows</th>
+    <th>Linux</th>
+    <th>Mac OS X</th>
+    <th>Usage</th>
+  </tr>
+
+  <tr>
+    <td>FFTW3</td>
+    <td></td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Compute the Fast Fourier Transform of an image, and the inverse Fourier transform. It can be used for the Filtered-back projection recontruction algorithm.</td>
+  </tr>
+  
+  <tr>
+    <td>FLTK</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td></td>
+    <td>Use in tutorials and examples to create a GUI and an OpenGL context.</td>
+  </tr>
+
+  <tr>
+    <td>FreeType</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Useful to display text in an OpenGL window.</td>
+  </tr>
+
+  <tr>
+    <td>GCDM</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Useful to save DICOM files.</td>
+  </tr>
+
+  <tr>
+    <td>GLEW</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Activate modern OpenGL functionalities.</td>
+  </tr>
+
+  <tr>
+    <td>GLFW3</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Use in tools, tutorials, examples and validation to create a window and an OpenGL context. It is a modern alternative to GLUT.</td>
+  </tr>
+
+  <tr>
+    <td>GLUT</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Use tutorials, and examples to create a window and an OpenGL context.</td>
+  </tr>
+
+  <tr>
+    <td>ITK</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Useful to load/save images.</td>
+  </tr>
+
+  <tr>
+    <td>Qt4</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Use tutorials, and examples to create a window and an OpenGL context.</td>
+  </tr>
+  
+  <tr>
+    <td>Qt5</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Use tutorials, and examples to create a window and an OpenGL context.</td>
+  </tr>
+
+  <tr>
+    <td>LibTIFF</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Useful to load/save TIFF files.</td>
+  </tr>
+
+  <tr>
+    <td>XCOM</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>(O)</td>
+    <td>Photon cross-sections, useful to make the simulation accurate.</td>
+  </tr>
+
+  <tr>
+    <td>ZLib</td>
+    <td>(R)</td>
+    <td>(R)</td>
+    <td>(R)</td>
+    <td>Useful to compress/decompress data.</td>
+  </tr>
+
+
+</table> 
+
+<h2>Compilation</h2>
+
+CMake creates Makefiles on Unix platforms (e.g. Linux and Mac OS X), Visual Studio Solution files on Windowsm, and XCode project files on Mac OS X. It sets your compiler, operating
+   system, and other system variables.
+
+
+</div></div><!-- end main column -->
+
+
+<!-- begin footer -->
+<div id="footer">
+	<p>
+	Copyright &copy; 2013-2017 Dr Franck P. Vidal, Bangor University, f&lsaquo;DOT&rsaquo;vidal&lsaquo;AT&rsaquo;bangor&lsaquo;DOT&rsaquo;ac&lsaquo;DOT&rsaquo;uk
+
+
+        <a href="http://validator.w3.org/check?uri=referer"><img style="border:0;height:31px" src="http://www.w3.org/html/logo/badge/html5-badge-h-solo.png" alt="HTML5 Powered" title="HTML5 Powered"></a>
+		<a href="http://jigsaw.w3.org/css-validator/check/referer">
+			<img style="border:0;width:88px;height:31px"
+			src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+			alt="Valid CSS!" />
+		</a>
+	</p>
+</div>
+
+<!-- end footer -->
+
+</body>
+
+</html>
+
