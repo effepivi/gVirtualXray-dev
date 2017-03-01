@@ -65,12 +65,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
-#include "gVirtualXRay/gVirtualXRayConfig.h"
+#ifdef HAS_GLEW
+#include <GL/glew.h>
 #endif
 
-#ifdef HAS_GLEW
-#include <GL/glew.h>  // Handle shaders
+#ifndef GVXR_CONFIG_H
+#include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 // Create an OpenGL context and attach a window to it

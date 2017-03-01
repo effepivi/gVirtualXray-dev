@@ -887,7 +887,11 @@ IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
     ENDIF (NOT APPLE)
 
     IF (USE_FLTK)
-        OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
+        IF (WIN32 OR MSVC)
+            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
+        ELSE (WIN32 OR MSVC)
+            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       ON)
+        ENDIF (WIN32 OR MSVC)
     ENDIF (USE_FLTK)
 
     OPTION (USE_GLUT "Build the programs (demos, and tutorials) that make use of the OpenGL Utility Toolkit (GLUT)" ON)
