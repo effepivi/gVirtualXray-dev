@@ -79,13 +79,42 @@ else ()
         ${GDCM_INSTALL_DIR}/lib/libgdcmDICT.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmexpat.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmMSFF.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmuuid.a
         ${GDCM_INSTALL_DIR}/lib/libsocketxx.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg12.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg8.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg16.a
-        dl
+    )
+
+    IF (NOT WIN32)
+        SET(GDCM_LIBRARIES  
+            ${GDCM_LIBRARIES} 
+            ${GDCM_INSTALL_DIR}/lib/libgdcmuuid.a 
+            dl
         )
+    ELSE (NOT WIN32)
+        SET(GDCM_LIBRARIES  
+            ${GDCM_LIBRARIES} 
+            ${GDCM_INSTALL_DIR}/lib/libgdcmcharls.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmDICT.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmexpat.a   
+            ${GDCM_INSTALL_DIR}/lib/libgdcmIOD.a     
+            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg16.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmMEXD.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmopenjpeg.a  
+            ${GDCM_INSTALL_DIR}/lib/libsocketxx.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmCommon.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmDSED.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmgetopt.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg12.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg8.a   
+            ${GDCM_INSTALL_DIR}/lib/libgdcmMSFF.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmzlib.a
+
+	        rpcrt4
+	        ws2_32
+        )
+    ENDIF (NOT WIN32)
+
 endif ()
 
 SET (GDCM_LIBRARY ${GDCM_LIBRARIES})

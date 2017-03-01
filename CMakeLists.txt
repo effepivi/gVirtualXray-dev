@@ -573,7 +573,7 @@ ENDIF (TIFF_FOUND)
 
 
 # getopt ######################################################################
-IF (WIN32 OR MSVC)
+IF (WIN32 AND MSVC)
     INCLUDE (ExternalProject)
     ExternalProject_Add(getopt
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
@@ -596,7 +596,7 @@ IF (WIN32 OR MSVC)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
 
     SET (USE_EXTERNAL_GETOPT ON)
-ENDIF (WIN32 OR MSVC)
+ENDIF (WIN32 AND MSVC)
 
 
 # XCOM Database ################################################################
