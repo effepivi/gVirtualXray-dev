@@ -31,8 +31,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef GVXR_GL_WIDGET_H
-#define GVXR_GL_WIDGET_H
+#ifndef __GLWidget_h
+#define __GLWidget_h
 
 /**
 ********************************************************************************
@@ -65,7 +65,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -74,25 +74,25 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QtGui>
 #include <QGLWidget>
 
-#ifndef GVXR_VEC3_H
+#ifndef __Vec3_h
 #include "gVirtualXRay/Vec3.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef DEPTH_MAP_H
+#ifndef __DepthMap_h
 #include "gVirtualXRay/DepthMap.h"
 #endif
 
+#ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
-
-#include "gVirtualXRay/CubeMesh.h"
+#endif
 
 
 //******************************************************************************

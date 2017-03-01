@@ -2,6 +2,12 @@
 version 1.0302 
 header_name {.h} 
 code_name {.cxx}
+decl {\#ifdef HAS_GLEW
+\#include <GL/glew.h>
+
+\#endif} {selected public global
+} 
+
 decl {\#include <stdio.h>} {private local
 } 
 
@@ -315,6 +321,5 @@ w->icon((char *)p);
 \#endif
 \#else
 w->icon((char *)LoadIcon(fl_display, MAKEINTRESOURCE(101)));
-\#endif} {selected
-  }
+\#endif} {}
 } 

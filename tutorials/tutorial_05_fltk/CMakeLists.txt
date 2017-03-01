@@ -67,5 +67,10 @@ IF(FLTK_FOUND)
     SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
 
     include(CPack)
+
+    IF (gVirtualXRay_BINARY_DIR)
+        ADD_DEPENDENCIES(tutorial_05_fltk   gVirtualXRay)
+    ENDIF (gVirtualXRay_BINARY_DIR)
+
 ENDIF(FLTK_FOUND)
 

@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       GLWidget.cxx
 *
-*   @brief      Qt5 widget to handle our OpenGL window.
+*   @brief      Qt4 widget to handle our OpenGL window.
 *
 *   @version    1.0
 *
@@ -62,7 +62,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
