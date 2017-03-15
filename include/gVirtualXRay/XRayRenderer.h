@@ -906,6 +906,13 @@ protected:
     void updateVBO();
 
 
+    //--------------------------------------------------------------------------
+    /// Update the list of all the HU values and corresponding polygon meshes
+    /// when a new mesh is added.
+    //--------------------------------------------------------------------------
+    void updateHUPolygonMeshSet();
+
+
     /// The X-ray detector
     XRayDetector* m_p_detector;
 
@@ -1012,6 +1019,14 @@ protected:
 
     /// Set of materials
     MaterialSet m_material_set;
+
+
+    /// A list of all the HU values and corresponding polygon meshes
+    std::list<std::pair<RATIONAL_NUMBER, std::vector<PolygonMesh*> > > m_p_HU_polygon_mesh_set;
+
+
+    /// Flag about the status of m_p_HU_polygon_mesh_set
+    bool m_HU_polygon_mesh_set_up_to_date;
 };
 
 

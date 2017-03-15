@@ -213,7 +213,8 @@ XRayRenderer::XRayRenderer():
 		m_negative_display_flag(1),
 		m_use_l_buffer_artefact_filtering(true),
 		m_l_buffer_empty(false),
-		m_energy_fluence_empty(false)
+		m_energy_fluence_empty(false),
+		m_HU_polygon_mesh_set_up_to_date(true)
 //-------------------------------------------------------------------------------------------------
 {
 }
@@ -953,6 +954,10 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 	// The renderer is ready
 	if (isReady())
 	{
+	    // Make sure the list of all the HU values and corresponding polygon
+	    // meshes is up-to-date
+	    updateHUPolygonMeshSet();
+
 		// Wait for all OpenGL execution to be completed
 		glFinish();
 
@@ -3043,4 +3048,17 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
     // Restore the texturing flags
     popTexture();
+}
+
+
+//-----------------------------------------
+void XRayRenderer::updateHUPolygonMeshSet()
+//-----------------------------------------
+{
+    // Not implemented
+
+    if (!m_HU_polygon_mesh_set_up_to_date)
+    {
+        m_HU_polygon_mesh_set_up_to_date = true;
+    }
 }
