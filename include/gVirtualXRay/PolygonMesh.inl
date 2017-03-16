@@ -179,10 +179,9 @@ inline bool PolygonMesh::getUseHounsfieldValueFlag() const
 }
 
 
-//----------------------------------------------------------------
-inline void PolygonMesh::setHounsfieldValue(const RATIONAL_NUMBER&
-        aHounsfieldValue)
-//----------------------------------------------------------------
+//-----------------------------------------------------------------
+inline void PolygonMesh::setHounsfieldValue(short aHounsfieldValue)
+//-----------------------------------------------------------------
 {
     // Set the Hounsfield value
     m_hounsfield_value = aHounsfieldValue;
@@ -205,9 +204,9 @@ inline void PolygonMesh::setAttenuationCoefficient(const RATIONAL_NUMBER&
 }
 
 
-//------------------------------------------------------------
-inline RATIONAL_NUMBER PolygonMesh::getHounsfieldValue() const
-//------------------------------------------------------------
+//--------------------------------------------------
+inline short PolygonMesh::getHounsfieldValue() const
+//--------------------------------------------------
 {
     // Return the Hounsfield value
     return (m_hounsfield_value);

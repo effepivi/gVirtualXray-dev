@@ -1935,131 +1935,15 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------------
 {
-    // Save the current FBO
-    pushFBO();
-
-    // Store the state
-    pushEnableDisableState(GL_BLEND);
-    pushEnableDisableState(GL_DEPTH_TEST);
-
-    // Store the current transformation matrix
-    pushModelViewMatrix();
-
-    // Store the current projection matrix
-    pushProjectionMatrix();
-
-    // Save the viwport
+    // Store GPU states
     GLint p_viewport[4];
-    glGetIntegerv(GL_VIEWPORT, &p_viewport[0]);
-
-    // Change the viewport
-    glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
-
-    // Reset its L-buffer
-    resetLBuffer();
+    preComputeLBuffer(p_viewport, aXRaySourceSampleOffset, aModellingTransformationMatrix);
 
     // The 3D object is not empty
     if (anObject.getVertexNumber())
     {
-        // Bind frame buffer object
-        m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Disable depth buffer
-        glDisable(GL_DEPTH_TEST);
-
-        // Enable blending
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Activate the first shader
-        pushShaderProgram();
-        m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Values to pass to the shader
-        GLint program_handle(0);
-        glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
-        GLuint handle(glGetUniformLocation(program_handle, "g_source_position"));
-        glUniform3f(handle, source_sample_position.getX(), source_sample_position.getY(), source_sample_position.getZ());
-		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        if (!m_p_detector->useParallelBeam())
-        {
-            handle = glGetUniformLocation(program_handle, "g_projection_type");
-            glUniform1i(handle, 0);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
-        else
-        {
-            handle = glGetUniformLocation(program_handle, "g_projection_type");
-            glUniform1i(handle, 1);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
-            handle = glGetUniformLocation(program_handle, "g_ray_direction");
-            glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-		}
-
-        // Load uniform variables to the GPU
-        handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        MATRIX4 modelview_matrix(aModellingTransformationMatrix);
-
-        handle = glGetUniformLocation(program_handle, "g_normal_matrix");
-        glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        GLfloat p_float_4[4];
-        m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
-        handle = glGetUniformLocation(program_handle,"g_detector_plane");
-        glUniform4fv(handle, 1, p_float_4);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        p_float_4[0] = m_p_detector->getDetectorPosition().getX();
-        p_float_4[1] = m_p_detector->getDetectorPosition().getY();
-        p_float_4[2] = m_p_detector->getDetectorPosition().getZ();
-        handle = glGetUniformLocation(program_handle,"g_detector_center");
-        glUniform3fv(handle, 1, p_float_4);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
-        handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
-        glUniform3f(handle, -up_vector.getX(), -up_vector.getY(), -up_vector.getZ());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
-        right_vector.normalise();
-        handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
-        glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
-        glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(program_handle,"g_detector_height_in_units_of_length");
-        glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getY());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(program_handle,"g_to_cm_scale");
-        glUniform1f(handle, GLfloat(1.0 / cm));
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
         // Display the object
         anObject.display();
-
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Restore the shader program
-        popShaderProgram();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Clean the L-Buffer
@@ -2071,24 +1955,8 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
-	// Restore the viewport
-	glViewport(p_viewport[0], p_viewport[1], p_viewport[2], p_viewport[3]);
-
-	// Restore the current FBO
-	popFBO();
-
-	// Restore the current transformation matrix
-	popModelViewMatrix();
-
-	// Restore the current projection matrix
-	popProjectionMatrix();
-
-	// Restore the state
-	popEnableDisableState();
-	popEnableDisableState();
-
-	// Wait for all OpenGL execution to be completed
-	glFinish();
+    // Restore GPU states
+    postComputeLBuffer(p_viewport);
 
 	// The L-buffer is not empty
 	m_l_buffer_empty = false;
@@ -3057,8 +2925,173 @@ void XRayRenderer::updateHUPolygonMeshSet()
 {
     // Not implemented
 
+    // The list is not up-to-date (a mesh has been added
     if (!m_HU_polygon_mesh_set_up_to_date)
     {
+        // Make sure the list is empty
+        m_p_HU_polygon_mesh_set.clear();
+
+        // Add all the internal structure meshes
+        for (std::vector<PolygonMesh*>::iterator ite(m_p_inner_surface_set.begin());
+                ite != m_p_inner_surface_set.end();
+                ++ite)
+        {
+            short hounsfield_value((*ite)->getHounsfieldValue());
+            m_p_HU_polygon_mesh_set[hounsfield_value].push_back(*ite);
+        }
+
+        // The list is now up-to-date
         m_HU_polygon_mesh_set_up_to_date = true;
     }
+}
+
+
+//-----------------------------------------------------
+void XRayRenderer::preComputeLBuffer(GLint* apViewport,
+        const VEC3& aXRaySourceSampleOffset,
+        const MATRIX4& aModellingTransformationMatrix)
+//-----------------------------------------------------
+{
+    // Save the current FBO
+    pushFBO();
+
+    // Store the state
+    pushEnableDisableState(GL_BLEND);
+    pushEnableDisableState(GL_DEPTH_TEST);
+
+    // Store the current transformation matrix
+    pushModelViewMatrix();
+
+    // Store the current projection matrix
+    pushProjectionMatrix();
+
+    // Save the viwport
+    glGetIntegerv(GL_VIEWPORT, apViewport);
+
+    // Change the viewport
+    glViewport(0, 0, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY());
+
+    // Reset its L-buffer
+    resetLBuffer();
+
+    // Bind frame buffer object
+    m_p_fbo_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID]->Bind();
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Activate the first shader
+    pushShaderProgram();
+    m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].enable();
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Disable depth buffer
+    glDisable(GL_DEPTH_TEST);
+
+    // Enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Values to pass to the shader
+    GLint program_handle(0);
+    glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    VEC3 source_sample_position(m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset);
+    GLuint handle(glGetUniformLocation(program_handle, "g_source_position"));
+    glUniform3f(handle, source_sample_position.getX(), source_sample_position.getY(), source_sample_position.getZ());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    if (!m_p_detector->useParallelBeam())
+    {
+        handle = glGetUniformLocation(program_handle, "g_projection_type");
+        glUniform1i(handle, 0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+    else
+    {
+        handle = glGetUniformLocation(program_handle, "g_projection_type");
+        glUniform1i(handle, 1);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
+        handle = glGetUniformLocation(program_handle, "g_ray_direction");
+        glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Load uniform variables to the GPU
+    handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
+    glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    MATRIX4 modelview_matrix(aModellingTransformationMatrix);
+
+    handle = glGetUniformLocation(program_handle, "g_normal_matrix");
+    glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    GLfloat p_float_4[4];
+    m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
+    handle = glGetUniformLocation(program_handle,"g_detector_plane");
+    glUniform4fv(handle, 1, p_float_4);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    p_float_4[0] = m_p_detector->getDetectorPosition().getX();
+    p_float_4[1] = m_p_detector->getDetectorPosition().getY();
+    p_float_4[2] = m_p_detector->getDetectorPosition().getZ();
+    handle = glGetUniformLocation(program_handle,"g_detector_center");
+    glUniform3fv(handle, 1, p_float_4);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    VEC3 up_vector((m_p_detector->getRotationMatrix() * m_p_detector->getUpVector()));
+    handle = glGetUniformLocation(program_handle,"g_detector_up_vector");
+    glUniform3f(handle, -up_vector.getX(), -up_vector.getY(), -up_vector.getZ());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    VEC3 right_vector((m_p_detector->getRotationMatrix() * m_p_detector->getRightVector()));
+    right_vector.normalise();
+    handle = glGetUniformLocation(program_handle,"g_detector_right_vector");
+    glUniform3f(handle, right_vector.getX(), right_vector.getY(), right_vector.getZ());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(program_handle,"g_detector_width_in_units_of_length");
+    glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getX());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(program_handle,"g_detector_height_in_units_of_length");
+    glUniform1f(handle, m_p_detector->getSizeInUnitOfLength().getY());
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(program_handle,"g_to_cm_scale");
+    glUniform1f(handle, GLfloat(1.0 / cm));
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//------------------------------------------------------------
+void XRayRenderer::postComputeLBuffer(const GLint* apViewport)
+//------------------------------------------------------------
+{
+    // Restore the shader program
+    popShaderProgram();
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Restore the viewport
+    glViewport(apViewport[0], apViewport[1], apViewport[2], apViewport[3]);
+
+    // Restore the current FBO
+    popFBO();
+
+    // Restore the current transformation matrix
+    popModelViewMatrix();
+
+    // Restore the current projection matrix
+    popProjectionMatrix();
+
+    // Restore the state
+    popEnableDisableState();
+    popEnableDisableState();
+
+    // Wait for all OpenGL execution to be completed
+    glFinish();
 }

@@ -71,6 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <vector>
+#include <map>
 #include <string>
 #include <memory>
 
@@ -913,6 +914,11 @@ protected:
     void updateHUPolygonMeshSet();
 
 
+    void preComputeLBuffer(GLint* apViewport, const VEC3& aXRaySourceSampleOffset,
+            const MATRIX4& aModellingTransformationMatrix);
+    void postComputeLBuffer(const GLint* apViewport);
+
+
     /// The X-ray detector
     XRayDetector* m_p_detector;
 
@@ -1022,7 +1028,7 @@ protected:
 
 
     /// A list of all the HU values and corresponding polygon meshes
-    std::list<std::pair<RATIONAL_NUMBER, std::vector<PolygonMesh*> > > m_p_HU_polygon_mesh_set;
+    std::map<short, std::vector<PolygonMesh*> > m_p_HU_polygon_mesh_set;
 
 
     /// Flag about the status of m_p_HU_polygon_mesh_set

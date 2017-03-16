@@ -318,7 +318,7 @@ public:
      * @param aHounsfieldValue:    the Hounsfield value of the object material
      */
     //--------------------------------------------------------------------------
-    void setHounsfieldValue(const RATIONAL_NUMBER& aHounsfieldValue);
+    void setHounsfieldValue(short aHounsfieldValue);
 
 
     //--------------------------------------------------------------------------
@@ -349,7 +349,7 @@ public:
      * @return the Hounsfield value
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getHounsfieldValue() const;
+    short getHounsfieldValue() const;
 
 
     //--------------------------------------------------------------------------
@@ -1193,7 +1193,7 @@ protected:
 
 
     /// Hounsfield value
-    RATIONAL_NUMBER m_hounsfield_value;
+    short m_hounsfield_value;
 
 
     /// Attenuation coefficient
