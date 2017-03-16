@@ -679,13 +679,14 @@ namespace gVirtualXRay {
     //-------------------------------------------------------------------------------------
     inline void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
                                              const VEC3& aXRaySourceDetectorTranslation,
-                                             const MATRIX4& aModellingTransformationMatrix)
+                                             const MATRIX4& aModellingTransformationMatrix,
+                                             bool aGPUStateConservationFlag)
     //-------------------------------------------------------------------------------------
     {
         // This is an internal mesh
         if (&anObject != m_p_outer_surface || !m_p_inner_surface_set.size())
         {
-            computeInnerSurfaceLBuffer(anObject, aXRaySourceDetectorTranslation, aModellingTransformationMatrix);
+            computeInnerSurfaceLBuffer(anObject, aXRaySourceDetectorTranslation, aModellingTransformationMatrix, aGPUStateConservationFlag);
         }
         // This is the external mesh
         else

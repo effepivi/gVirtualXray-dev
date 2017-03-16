@@ -999,22 +999,34 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 
 				// For each object
 				unsigned int object_number(0);
-				for (std::vector<PolygonMesh*>::const_iterator ite(m_p_inner_surface_set.begin());
-					ite != m_p_inner_surface_set.end();
+				for (std::map<short, std::vector<PolygonMesh*> >::const_iterator ite(m_p_HU_polygon_mesh_set.begin());
+					ite != m_p_HU_polygon_mesh_set.end();
 					++ite, ++object_number)
 				{
-					// Compute its L-buffer
-					computeLBuffer(*(*ite), xray_source_detector_translation, aModellingTransformationMatrix);
+				    // Store GPU states
+				    GLint p_viewport[4];
+				    preComputeLBuffer(p_viewport, xray_source_detector_translation, aModellingTransformationMatrix);
 
-					// Integrate the energy for every channel
-					RATIONAL_NUMBER HU((*ite)->getHounsfieldValue());
-					computeSumMUxDx(HU, object_number);
+				    for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
+				            ite_meshes != ite->second.end();
+				            ++ite_meshes)
+				    {
+                        // Compute its L-buffer
+                        computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
+				    }
 
-					// Only update the cummulated L-buffers if the outer surface exists
-					if (m_p_outer_surface)
-					{
-						updateCumulatedLBuffers(object_number);
-					}
+				    // Restore GPU states
+				    postComputeLBuffer(p_viewport);
+
+				    // Integrate the energy for every channel
+                    RATIONAL_NUMBER HU(ite->first);
+                    computeSumMUxDx(HU, object_number);
+
+                    // Only update the cummulated L-buffers if the outer surface exists
+                    if (m_p_outer_surface)
+                    {
+                        updateCumulatedLBuffers(object_number);
+                    }
 				}
 
 				// Compute the L-buffer of the outer surface that wraps the inner objects
@@ -1932,12 +1944,16 @@ void XRayRenderer::display2DTexture(unsigned int aTexutreID)
 //------------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               const VEC3& aXRaySourceSampleOffset,
-                                              const MATRIX4& aModellingTransformationMatrix)
+                                              const MATRIX4& aModellingTransformationMatrix,
+                                              bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------------------
 {
     // Store GPU states
     GLint p_viewport[4];
-    preComputeLBuffer(p_viewport, aXRaySourceSampleOffset, aModellingTransformationMatrix);
+    if (aGPUStateConservationFlag)
+        {
+        preComputeLBuffer(p_viewport, aXRaySourceSampleOffset, aModellingTransformationMatrix);
+        }
 
     // The 3D object is not empty
     if (anObject.getVertexNumber())
@@ -1956,7 +1972,10 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 	}
 
     // Restore GPU states
-    postComputeLBuffer(p_viewport);
+    if (aGPUStateConservationFlag)
+        {
+        postComputeLBuffer(p_viewport);
+        }
 
 	// The L-buffer is not empty
 	m_l_buffer_empty = false;
@@ -1980,7 +1999,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	resetLBuffer();
 
 	// Compute the L-buffer of the external surface
-	computeInnerSurfaceLBuffer(anObject, aXRaySourceSampleOffset, aModellingTransformationMatrix);
+	computeInnerSurfaceLBuffer(anObject, aXRaySourceSampleOffset, aModellingTransformationMatrix, true);
 
 	// Substract the L-buffer of the internal surfaces
 	// Save the current FBO

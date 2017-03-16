@@ -252,7 +252,8 @@ public:
     //--------------------------------------------------------------------------
     void computeLBuffer(PolygonMesh& anObject,
                         const VEC3& aXRaySourceDetectorTranslation,
-                        const MATRIX4& aModellingTransformationMatrix);
+                        const MATRIX4& aModellingTransformationMatrix,
+                        bool aGPUStateConservationFlag = true);
 
 
     //--------------------------------------------------------------------------
@@ -846,7 +847,8 @@ protected:
     //--------------------------------------------------------------------------
     void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             const VEC3& aXRaySourceSampleOffset,
-            const MATRIX4& aModellingTransformationMatrix);
+            const MATRIX4& aModellingTransformationMatrix,
+            bool aGPUStateConservationFlag);
 
 
     //--------------------------------------------------------------------------
