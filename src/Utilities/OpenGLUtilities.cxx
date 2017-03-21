@@ -151,7 +151,7 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	    std::cerr << "\t- in Function: " << aFunctionName << std::endl;
 	    std::cerr << "\t- at Line: " << aLineNumber << std::endl;
 
-		//throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
 #endif
 }
