@@ -138,6 +138,8 @@ void checkOpenGLErrorStatus(const char* aFileName,
 							int aLineNumber)
 //----------------------------------------------------
 {
+    // No OpenGL error checking in Release modes
+#ifndef NDEBUG
 	// Get the OpenGL error code
 	GLenum error_code(glGetError());
 
@@ -151,6 +153,7 @@ void checkOpenGLErrorStatus(const char* aFileName,
 
 		//throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
+#endif
 }
 
 
