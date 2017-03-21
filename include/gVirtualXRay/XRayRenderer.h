@@ -918,7 +918,7 @@ protected:
 
     void preComputeLBuffer(GLint* apViewport, const VEC3& aXRaySourceSampleOffset,
             const MATRIX4& aModellingTransformationMatrix);
-    void postComputeLBuffer(const GLint* apViewport);
+    void postComputeLBuffer(const GLint* apViewport, RATIONAL_NUMBER aDiagonal);
 
 
     /// The X-ray detector

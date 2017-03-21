@@ -1007,16 +1007,31 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				    GLint p_viewport[4];
 				    preComputeLBuffer(p_viewport, xray_source_detector_translation, aModellingTransformationMatrix);
 
+				    RATIONAL_NUMBER bbox_diagonal(0.0);
+                    VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
+                    VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+                    VEC3 temp;
 				    for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
 				            ite_meshes != ite->second.end();
 				            ++ite_meshes)
 				    {
                         // Compute its L-buffer
                         computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
+
+                        temp = (*ite_meshes)->getMaxCorner();
+                        max_corner[0] = std::max(temp[0], max_corner[0]);
+                        max_corner[1] = std::max(temp[1], max_corner[1]);
+                        max_corner[2] = std::max(temp[2], max_corner[2]);
+
+                        temp = (*ite_meshes)->getMinCorner();
+                        min_corner[0] = std::min(temp[0], min_corner[0]);
+                        min_corner[1] = std::min(temp[1], min_corner[1]);
+                        min_corner[2] = std::min(temp[2], min_corner[2]);
 				    }
 
 				    // Restore GPU states
-				    postComputeLBuffer(p_viewport);
+				    postComputeLBuffer(p_viewport, (max_corner - min_corner).length() / cm);
 
 				    // Integrate the energy for every channel
                     RATIONAL_NUMBER HU(ite->first);
@@ -1961,20 +1976,14 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         // Display the object
         anObject.display();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        // Clean the L-Buffer
-        if (m_use_l_buffer_artefact_filtering)
-        {
-        	RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
-            cleanLBuffer(1.0 * bbox_diagonal);
-        }
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 	}
 
     // Restore GPU states
     if (aGPUStateConservationFlag)
         {
-        postComputeLBuffer(p_viewport);
+
+        RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
+        postComputeLBuffer(p_viewport, bbox_diagonal);
         }
 
 	// The L-buffer is not empty
@@ -3087,10 +3096,18 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
 }
 
 
-//------------------------------------------------------------
-void XRayRenderer::postComputeLBuffer(const GLint* apViewport)
-//------------------------------------------------------------
+//--------------------------------------------------------------
+void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
+                                      RATIONAL_NUMBER aDiagonal)
+//--------------------------------------------------------------
 {
+    // Clean the L-Buffer
+    if (m_use_l_buffer_artefact_filtering)
+    {
+        cleanLBuffer(1.0 * aDiagonal);
+    }
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
     // Restore the shader program
     popShaderProgram();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
