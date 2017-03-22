@@ -41,7 +41,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       26/12/2014
+*   @date       22/03/2017
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************

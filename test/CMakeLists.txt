@@ -45,6 +45,23 @@ else (NOT gVirtualXRay_BINARY_DIR)
 endif (NOT gVirtualXRay_BINARY_DIR)
 
 
+# Configure the project ########################################################
+INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/configureGlfw.cmake)
+
+
+# Check if GLFW is enable #####################################################
+IF (USE_SYSTEM_GLFW)
+    FIND_PACKAGE( glfw3   REQUIRED )
+ENDIF (USE_SYSTEM_GLFW)
+
+IF (glfw3_FOUND)
+    INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
+    SET(requiredLibs ${requiredLibs} ${GLFW3_LIBRARY})
+ELSE (glfw3_FOUND)
+    MESSAGE(WARNING "GLFW3 not found, (${PROJECT_NAME}) will be disable.")
+ENDIF (glfw3_FOUND)
+
+
 # Boost ########################################################################
 find_package (Boost COMPONENTS unit_test_framework)
 if(Boost_FOUND)
@@ -61,17 +78,33 @@ if(Boost_FOUND)
     add_executable(TestDensity                     TestDensity.cxx)
     add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 
+IF (glfw3_FOUND)
+    add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
+    add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
+ENDIF()
+
     target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+IF (glfw3_FOUND)
+    target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+ENDIF()
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
          ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
+IF (glfw3_FOUND)
+         ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
+         ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
+ENDIF()
     endif (gVirtualXRay_BINARY_DIR)
 
     add_test (TestDensity TestDensity)
     add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
-    
+IF (glfw3_FOUND)
+    add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
+    add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
+ENDIF()
     
     FILE (MAKE_DIRECTORY data/)
     CONFIGURE_FILE (../validation/data/validation_01/bone.csv   data/bone.csv   COPYONLY)
@@ -79,6 +112,7 @@ if(Boost_FOUND)
     CONFIGURE_FILE (../validation/data/validation_01/gas.csv    data/gas.csv    COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/tissue.csv data/tissue.csv COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/water.csv  data/water.csv  COPYONLY)
+    CONFIGURE_FILE (../validation/data/cylinder_bin.stl         data/cylinder_bin.stl  COPYONLY)
 
 ENDIF(Boost_FOUND)
 

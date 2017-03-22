@@ -41,7 +41,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       21/03/2017
+*   @date       22/03/2017
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
