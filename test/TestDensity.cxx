@@ -119,57 +119,141 @@ BOOST_AUTO_TEST_CASE(TestDensity)
     // Initialise the X-ray renderer
     XRayRenderer g_xray_renderer;
 
-    // Computed density values in g/cm3
-    double rho_bone(       g_xray_renderer.getDensityFromHU(HU_bone)        / (g/cm3));
-    double rho_brain(      g_xray_renderer.getDensityFromHU(HU_brain)       / (g/cm3));
-    double rho_gas(        g_xray_renderer.getDensityFromHU(HU_gas)         / (g/cm3));
-    double rho_soft_tissue(g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3));
-    double rho_water(      g_xray_renderer.getDensityFromHU(HU_water)       / (g/cm3));
+    double rho_reference;
+    short HU;
+    double rho_test;
+    
+    // Soft tissues
+    HU = -741;
+    rho_reference = 0.26 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_brain,       1.040E+00, 5.0);
-    BOOST_CHECK_CLOSE(rho_soft_tissue, 1.060E+00, 5.0);
-    BOOST_CHECK_CLOSE(rho_water,       1.000E+00, 5.0);
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = -98;
+    rho_reference = 0.93 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = -77;
+    rho_reference = 0.95 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = -55;
+    rho_reference = 0.97 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 36;
+    rho_reference = 1.04 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 40;
+    rho_reference = 1.045 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 46;
+    rho_reference = 1.05 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    // Soft tissues
+    HU = 49;
+    rho_reference = 1.07 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+
+    HU = 54;
+    rho_reference = 1.06 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 63;
+    rho_reference = 1.07 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 77;
+    rho_reference = 1.09 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+    HU = 100;
+    rho_reference = 1.12 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+
+    // Skeletal tissues
+    HU = -49;
+    rho_reference = 0.98 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = -22;
+    rho_reference = 1.00 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 11;
+    rho_reference = 1.03 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 102;
+    rho_reference = 1.10 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 385;
+    rho_reference = 1.25 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 454;
+    rho_reference = 1.29 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 466;
+    rho_reference = 1.3 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 1239;
+    rho_reference = 1.75 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
+
+    HU = 1524;
+    rho_reference = 1.92 * (g/cm3);
+    rho_test = g_xray_renderer.getDensityFromHU(HU);
+
+    BOOST_CHECK_CLOSE(rho_reference, rho_test, 5.0);
 }
 
-
-//--------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestMassAttenuationCoefficient)
-//--------------------------------------------------
-{
-    // Initialise the X-ray renderer
-    XRayRenderer g_xray_renderer;
-
-    // Computed mass attenuation coefficients in cm2/g
-    double mass_attenuation_coefficient_bone(       g_xray_renderer.getMassAttenuationFromHU(HU_bone,        80.0 * keV) / (cm2 / g));
-    double mass_attenuation_coefficient_brain(      g_xray_renderer.getMassAttenuationFromHU(HU_brain,       80.0 * keV) / (cm2 / g));
-    double mass_attenuation_coefficient_gas(        g_xray_renderer.getMassAttenuationFromHU(HU_gas,         80.0 * keV) / (cm2 / g));
-    double mass_attenuation_coefficient_soft_tissue(g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, 80.0 * keV) / (cm2 / g));
-    double mass_attenuation_coefficient_water(      g_xray_renderer.getMassAttenuationFromHU(HU_water,       80.0 * keV) / (cm2 / g));
-
-    BOOST_CHECK_CLOSE(mass_attenuation_coefficient_brain,       1.831E-01, 5.0);
-    BOOST_CHECK_CLOSE(mass_attenuation_coefficient_soft_tissue, 1.823E-01, 5.0);
-    BOOST_CHECK_CLOSE(mass_attenuation_coefficient_water,       1.837E-01, 5.0);
-}
-
-
-//----------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestLinearAttenuationCoefficient)
-//----------------------------------------------------
-{
-    // Initialise the X-ray renderer
-    XRayRenderer g_xray_renderer;
-
-    // Computed linear attenuation coefficients in cm-1
-    double linear_attenuation_coefficient_bone(       g_xray_renderer.getMuFromHU(HU_bone,        80.0 * keV) / (1.0 / cm));
-    double linear_attenuation_coefficient_brain(      g_xray_renderer.getMuFromHU(HU_brain,       80.0 * keV) / (1.0 / cm));
-    double linear_attenuation_coefficient_gas(        g_xray_renderer.getMuFromHU(HU_gas,         80.0 * keV) / (1.0 / cm));
-    double linear_attenuation_coefficient_soft_tissue(g_xray_renderer.getMuFromHU(HU_soft_tissue, 80.0 * keV) / (1.0 / cm));
-    double linear_attenuation_coefficient_water(      g_xray_renderer.getMuFromHU(HU_water,       80.0 * keV) / (1.0 / cm));
-
-    BOOST_CHECK_CLOSE(linear_attenuation_coefficient_brain,       1.831E-01, 5.0);
-    BOOST_CHECK_CLOSE(linear_attenuation_coefficient_soft_tissue, 1.932E-01, 5.0);
-    BOOST_CHECK_CLOSE(linear_attenuation_coefficient_water,       1.837E-01, 5.0);
-}
 
 
 
