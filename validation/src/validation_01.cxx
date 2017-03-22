@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glew.h>
 #endif
 
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -77,7 +77,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
