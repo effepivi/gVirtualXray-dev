@@ -64,43 +64,134 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #define BOOST_TEST_MODULE TestDensity
 #include <boost/test/unit_test.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
 #endif
 
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_XRAY_INVALID_INTERNAL_FORMAT_EXCEPTION_H
+#ifndef __InvalidInternalFormalException_h
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
-#ifndef GVXR_XRAY_INVALID_IMAGE_SIZE_EXCEPTION_H
+#ifndef __InvalidImageSizeException_h
 #include "gVirtualXRay/InvalidImageSizeException.h"
 #endif
 
-#ifndef GVXR_XRAY_NO_DETECTOR_EXCEPTION_H
+#ifndef __NoDetectorException_h
 #include "gVirtualXRay/NoDetectorException.h"
 #endif
 
-#ifndef GVXR_XRAY_NO_BEAM_EXCEPTION_H
+#ifndef __NoBeamException_h
 #include "gVirtualXRay/NoBeamException.h"
 #endif
+
 
 
 //******************************************************************************
 //  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
-//using namespace std;
 
 
+//******************************************************************************
+//  Const
+//******************************************************************************
+const short HU_bone(1330);
+const short HU_brain(37);
+const short HU_gas(-998);
+const short HU_soft_tissue(52);
+const short HU_water(0);
+
+
+//-------------------------------
+BOOST_AUTO_TEST_CASE(TestDensity)
+//-------------------------------
+{
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+
+    // Computed density values in g/cm3
+    double rho_bone(       g_xray_renderer.getDensityFromHU(HU_bone)        / (g/cm3));
+    double rho_brain(      g_xray_renderer.getDensityFromHU(HU_brain)       / (g/cm3));
+    double rho_gas(        g_xray_renderer.getDensityFromHU(HU_gas)         / (g/cm3));
+    double rho_soft_tissue(g_xray_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3));
+    double rho_water(      g_xray_renderer.getDensityFromHU(HU_water)       / (g/cm3));
+
+    BOOST_CHECK_CLOSE(rho_brain,       1.040E+00, 5.0);
+    BOOST_CHECK_CLOSE(rho_soft_tissue, 1.060E+00, 5.0);
+    BOOST_CHECK_CLOSE(rho_water,       1.000E+00, 5.0);
+}
+
+
+//--------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestMassAttenuationCoefficient)
+//--------------------------------------------------
+{
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+
+    // Computed mass attenuation coefficients in cm2/g
+    double mass_attenuation_coefficient_bone(       g_xray_renderer.getMassAttenuationFromHU(HU_bone,        80.0 * keV) / (cm2 / g));
+    double mass_attenuation_coefficient_brain(      g_xray_renderer.getMassAttenuationFromHU(HU_brain,       80.0 * keV) / (cm2 / g));
+    double mass_attenuation_coefficient_gas(        g_xray_renderer.getMassAttenuationFromHU(HU_gas,         80.0 * keV) / (cm2 / g));
+    double mass_attenuation_coefficient_soft_tissue(g_xray_renderer.getMassAttenuationFromHU(HU_soft_tissue, 80.0 * keV) / (cm2 / g));
+    double mass_attenuation_coefficient_water(      g_xray_renderer.getMassAttenuationFromHU(HU_water,       80.0 * keV) / (cm2 / g));
+
+    BOOST_CHECK_CLOSE(mass_attenuation_coefficient_brain,       1.831E-01, 5.0);
+    BOOST_CHECK_CLOSE(mass_attenuation_coefficient_soft_tissue, 1.823E-01, 5.0);
+    BOOST_CHECK_CLOSE(mass_attenuation_coefficient_water,       1.837E-01, 5.0);
+}
+
+
+//----------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestLinearAttenuationCoefficient)
+//----------------------------------------------------
+{
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+
+    // Computed linear attenuation coefficients in cm-1
+    double linear_attenuation_coefficient_bone(       g_xray_renderer.getMuFromHU(HU_bone,        80.0 * keV) / (1.0 / cm));
+    double linear_attenuation_coefficient_brain(      g_xray_renderer.getMuFromHU(HU_brain,       80.0 * keV) / (1.0 / cm));
+    double linear_attenuation_coefficient_gas(        g_xray_renderer.getMuFromHU(HU_gas,         80.0 * keV) / (1.0 / cm));
+    double linear_attenuation_coefficient_soft_tissue(g_xray_renderer.getMuFromHU(HU_soft_tissue, 80.0 * keV) / (1.0 / cm));
+    double linear_attenuation_coefficient_water(      g_xray_renderer.getMuFromHU(HU_water,       80.0 * keV) / (1.0 / cm));
+
+    BOOST_CHECK_CLOSE(linear_attenuation_coefficient_brain,       1.831E-01, 5.0);
+    BOOST_CHECK_CLOSE(linear_attenuation_coefficient_soft_tissue, 1.932E-01, 5.0);
+    BOOST_CHECK_CLOSE(linear_attenuation_coefficient_water,       1.837E-01, 5.0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 BOOST_AUTO_TEST_CASE(InvalidInternalFormal)
 {
     // Initialise the X-ray renderer
@@ -154,12 +245,12 @@ BOOST_AUTO_TEST_CASE(NoBeam)
 }
 
 
+*/
 
-
-
+/*
 BOOST_AUTO_TEST_CASE(AtomicNumber)
 {
-   /* XRayRenderer g_xray_renderer;
+    XRayRenderer g_xray_renderer;
 
 	// Initialise the X-ray renderer
     g_xray_renderer.initialise(XRayRenderer::OPENGL,
@@ -167,7 +258,7 @@ BOOST_AUTO_TEST_CASE(AtomicNumber)
             0,
             0);
 */
-    BOOST_CHECK_EQUAL(4, 2 * 2);
+  /*  BOOST_CHECK_EQUAL(4, 2 * 2);
 }
 
 BOOST_AUTO_TEST_CASE(FailTest)
@@ -205,4 +296,4 @@ BOOST_AUTO_TEST_CASE(testMissingServer)
     client.connect(someNonexistentServerIP, somePort), 
     boost::asio::error::Connection_refused
   );*/
-}
+//}

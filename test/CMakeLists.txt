@@ -58,14 +58,27 @@ ENDIF(Boost_FOUND)
 
 
 if(Boost_FOUND)
-    add_executable(TestDensity TestDensity.cxx)
-    target_link_libraries(TestDensity ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    add_executable(TestDensity                     TestDensity.cxx)
+    add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
+
+    target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
+         ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
     endif (gVirtualXRay_BINARY_DIR)
 
-    add_test (test TestDensity)
+    add_test (TestDensity TestDensity)
+    add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
+    
+    
+    FILE (MAKE_DIRECTORY data/)
+    CONFIGURE_FILE (../validation/data/validation_01/bone.csv   data/bone.csv   COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_01/brain.csv  data/brain.csv  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_01/gas.csv    data/gas.csv    COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_01/tissue.csv data/tissue.csv COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_01/water.csv  data/water.csv  COPYONLY)
 
 ENDIF(Boost_FOUND)
 

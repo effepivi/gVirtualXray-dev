@@ -859,6 +859,7 @@ install(FILES
 option(BUILD_EXAMPLES   "Build examples." ON)
 option(BUILD_TUTORIALS  "Build tutorials." ON)
 option(BUILD_VALIDATION "Build validation tests." ON)
+option(BUILD_TESTING    "Build unit tests." OFF)
 
 
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -992,13 +993,13 @@ ENDIF (BUILD_TUTORIALS)
 
 
 # Unit tests ###################################################################
-#IF(BUILD_TESTING)
-#    ENABLE_TESTING()
-#    MESSAGE(STATUS "Build unit tests.")
-#    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
-#ELSE (BUILD_TESTING)
-#       MESSAGE("Do not build unit tests.")
-#ENDIF(BUILD_TESTING)
+IF(BUILD_TESTING)
+    ENABLE_TESTING()
+    MESSAGE(STATUS "Build unit tests.")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
+ELSE (BUILD_TESTING)
+       MESSAGE("Do not build unit tests.")
+ENDIF(BUILD_TESTING)
 
 
 # Validation tests #############################################################
