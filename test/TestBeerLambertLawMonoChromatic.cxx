@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestBeerLambertLawMonoChromatic.cxx
 *
-*   @brief      Unit testing: Beer-Lambert Law, Monochromatism Case.
+*   @brief      Unit testing: Beer-Lambert Law, Monochromatism Case (validation_03).
 *
 *   @version    1.0
 *
@@ -178,9 +178,9 @@ void loadXRaySimulator();
 void errorCallback(int error, const char* description);
 
 
-//-------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
-//-------------------------------------------------------
+//---------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
+//---------------------------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)

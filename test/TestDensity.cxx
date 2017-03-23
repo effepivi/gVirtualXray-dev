@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestDensity.cxx
 *
-*   @brief      Unit testing: density.
+*   @brief      Unit testing: density (validation_02).
 *
 *   @version    1.0
 *

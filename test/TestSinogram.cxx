@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 ********************************************************************************
 *
-*   @file       TestBeerLambertLawPolyChromatic.cxx
+*   @file       TestSinogram.cxx
 *
 *   @brief      Unit testing: Sinogram (validation_08).
 *
@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#define BOOST_TEST_MODULE TestBeerLambertLawMonoChromatic
+#define BOOST_TEST_MODULE TestSinogram
 #include <boost/test/unit_test.hpp>
 
 #ifdef HAS_GLEW
@@ -197,9 +197,9 @@ void errorCallback(int error, const char* description);
 void draw();
 
 
-//-------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
-//-------------------------------------------------------
+//--------------------------------
+BOOST_AUTO_TEST_CASE(TestSinogram)
+//--------------------------------
 {
     // Initialize random seed
     srand(time(0));
@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
         g_angle_step);
 
     // Save the sinogram
-    g_xray_renderer.printSinogram("simulation_sinogram.mhd");
+    g_xray_renderer.printSinogram("TestSinogram_simulation_sinogram.mhd");
 
     // Compute the projection set
     g_xray_renderer.computeProjectionSet(
@@ -293,34 +293,17 @@ BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
         g_angle_step);
 
     // Save the projection set
-    g_xray_renderer.printProjectionSet("simulation_projection_set.mhd");
+    g_xray_renderer.printProjectionSet("TestSinogram_simulation_projection_set.mhd");
 
 
     // Load reference sinogram (computed using GNU octave)
-    Image<XRayRenderer::PixelType> reference_sinogram("phantom_sinogram.mhd");
+    Image<XRayRenderer::PixelType> reference_sinogram("data/phantom_sinogram.mhd");
 
     // Compare reference sinogram and simulated sinogram using NCC
-    BOOST_CHECK_CLOSE(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.000001);
-
-    // Compare reference sinogram and simulated sinogram using MAE
-    BOOST_CHECK_CLOSE(reference_sinogram.computeMAE(g_xray_renderer.getSinogram()), 0.0, 0.000001);
+    BOOST_CHECK_CLOSE(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.1);
 
     // Compare reference sinogram and simulated sinogram using RMSE
-    BOOST_CHECK_CLOSE(reference_sinogram.computeRMSE(g_xray_renderer.getSinogram()), 0.0, 0.000001);
-
-
-    // Load reference projection set (computed using GNU octave)
-    Image<XRayRenderer::PixelType> reference_projection_set("phantom_projections.mhd");
-
-    // Compare reference projection set and simulated projection set using NCC
-//    const Image<XRayRenderer::PixelType>& getProjectionSet() const;
-    BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.000001);
-
-    // Compare reference projection set and simulated projection set using MAE
-    BOOST_CHECK_CLOSE(reference_projection_set.computeMAE(g_xray_renderer.getProjectionSet()), 0.0, 0.000001);
-
-    // Compare reference projection set and simulated projection set using MSE
-    BOOST_CHECK_CLOSE(reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet()), 0.0, 0.000001);
+    BOOST_CHECK_CLOSE(reference_sinogram.computeRMSE(g_xray_renderer.getSinogram()) + 1.0, 0.0 + 1.0, 1);
 }
 
 
@@ -328,7 +311,7 @@ BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
 void createPhantom()
 //------------------
 {
-    Image<short> phantom(256, 256, 256, -1000);
+    Image<short> phantom(256, 256, 128, -1000);
     phantom.setSpacing(0.5, 0.5, 1.0);
 
     // Set pixels in a square to one value
@@ -366,7 +349,7 @@ void createPhantom()
             }
         }
 
-    phantom.save("phantom.mhd");
+    phantom.save("TestSinogram_phantom.mhd");
 
     // Extract the isosurface
     g_polygon_mesh = phantom.marchingCubes(-500);

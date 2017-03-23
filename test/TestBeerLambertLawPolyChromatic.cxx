@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestBeerLambertLawPolyChromatic.cxx
 *
-*   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case.
+*   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case (validation_05).
 *
 *   @version    1.0
 *
@@ -67,7 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#define BOOST_TEST_MODULE TestBeerLambertLawMonoChromatic
+#define BOOST_TEST_MODULE TestBeerLambertLawPolyChromatic
 #include <boost/test/unit_test.hpp>
 
 #ifdef HAS_GLEW
@@ -185,9 +185,9 @@ void loadXRaySimulator();
 void errorCallback(int error, const char* description);
 
 
-//-------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
-//-------------------------------------------------------
+//---------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
+//---------------------------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)

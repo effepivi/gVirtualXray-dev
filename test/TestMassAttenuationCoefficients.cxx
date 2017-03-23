@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestMassAttenuationCoefficients.cxx
 *
-*   @brief      Unit testing: mass attenuation coefficients.
+*   @brief      Unit testing: mass attenuation coefficients (validation_01).
 *
 *   @version    1.0
 *
