@@ -123,7 +123,7 @@ public:
     
     Image<T> filteredBackProjection(double aFirstAngle,
                                     double anAngleStep,
-                                    const char* aFilterType = 0,
+                                    const char* aFilterType = "hamming",
                                     float aScalingFactor = 1.0,
                                     const char* aDirectory = 0,
                                     void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;

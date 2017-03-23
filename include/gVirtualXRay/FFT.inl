@@ -351,12 +351,13 @@ template<typename T> FFT<T> FFT<T>::rhoFilter(const std::string& aFilterType, fl
     }
     else if (aFilterType == "hann" || aFilterType == "Hann" || aFilterType == "HANN" || aFilterType == "hanning" || aFilterType == "Hanning" || aFilterType == "HANNING")
     {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "rho_filter: Unknown window type");
     }
     else if (aFilterType == "cosine" || aFilterType == "Cosine" || aFilterType == "COSINE")
     {
         //f = 0.5 * (0:length (rho) - 1)' / length (rho);
         //filt = fftshift (sin (2 * pi * f));
-
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "rho_filter: Unknown window type");
     }
     else if (aFilterType == "shepp-logan" || aFilterType == "Shepp-logan" || aFilterType == "Shepp-Logan" || aFilterType == "SHEPP-LOGAN")
     {
@@ -364,6 +365,7 @@ template<typename T> FFT<T> FFT<T>::rhoFilter(const std::string& aFilterType, fl
         //filt = sin (pi * f) ./ (pi * f);
         //filt (1) = 1;
         //filt = [filt; filt(end - 1:-1:2)];
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "rho_filter: Unknown window type");
     }
     else if (!(aFilterType == "ramp" || aFilterType == "Ramp" || aFilterType == "RAMP"))
     {

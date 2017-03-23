@@ -24,6 +24,9 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef __FFT_h
+#include "gVirtualXRay/FFT.h"
+#endif
 
 
 //******************************************************************************
@@ -433,7 +436,7 @@ template<typename T> Image<T> Sinogram<T>::filteredBackProjection(double aFirstA
 
     //std::cout << getAverage() << "  " << filtered_sinogram.getAverage() << std::endl;
     //filtered_sinogram *= filtered_sinogram.getAverage() / getAverage();
-    filtered_sinogram.saveASCII("filtered_sinogram.mat");
+    //filtered_sinogram.saveASCII("filtered_sinogram.mat");
     return (filtered_sinogram.simpleBackProjection(aFirstAngle,
                                                    anAngleStep,
                                                    aDirectory,
