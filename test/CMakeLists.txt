@@ -81,6 +81,7 @@ if(Boost_FOUND)
 IF (glfw3_FOUND)
     add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
     add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
+    add_executable(TestSinogram TestSinogram.cxx)
 ENDIF()
 
     target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
@@ -88,6 +89,7 @@ ENDIF()
 IF (glfw3_FOUND)
     target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    target_link_libraries(TestSinogram                    ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ENDIF()
 
     if (gVirtualXRay_BINARY_DIR)
@@ -96,6 +98,7 @@ ENDIF()
 IF (glfw3_FOUND)
          ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
          ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
+         ADD_DEPENDENCIES(TestSinogram                      gVirtualXRay)
 ENDIF()
     endif (gVirtualXRay_BINARY_DIR)
 
@@ -104,6 +107,7 @@ ENDIF()
 IF (glfw3_FOUND)
     add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
     add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
+    add_test (TestSinogram                    TestBeerLambertLawPolyChromatic)
 ENDIF()
     
     FILE (MAKE_DIRECTORY data/)
@@ -113,6 +117,14 @@ ENDIF()
     CONFIGURE_FILE (../validation/data/validation_01/tissue.csv data/tissue.csv COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/water.csv  data/water.csv  COPYONLY)
     CONFIGURE_FILE (../validation/data/cylinder_bin.stl         data/cylinder_bin.stl  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_08/phantom_sinogram.mhd   data/phantom_sinogram.mhd  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_08/phantom_sinogram.raw   data/phantom_sinogram.raw  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_08/phantom_projections.mhd   data/phantom_projections.mhd  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_08/phantom_projections.raw   data/phantom_projections.raw  COPYONLY)
+
+    
+    
+    
 
 ENDIF(Boost_FOUND)
 

@@ -115,15 +115,15 @@
 namespace gVirtualXRay {
 
 
-//------------------
+//-------------------------------------
 template<typename T> Image<T>::Image():
-//------------------
+//-------------------------------------
         m_width(0),
         m_height(0),
         m_number_of_slices(0),
         m_spacing(1, 1, 1),
         m_p_image(0)
-//------------------
+//-------------------------------------
 {}
 
 
@@ -145,6 +145,34 @@ template<typename T> Image<T>::Image(const Image<T>& anImage):
     
     // Copy the data
     std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
+}
+
+
+//----------------------------------------------------------
+template<typename T> Image<T>::Image(const char* aFileName):
+//----------------------------------------------------------
+        m_width(0),
+        m_height(0),
+        m_number_of_slices(0),
+        m_spacing(1, 1, 1),
+        m_p_image(0)
+//----------------------------------------------------------
+{
+    load(aFileName);
+}
+
+
+//-----------------------------------------------------------------
+template<typename T> Image<T>::Image(const std::string& aFileName):
+//-----------------------------------------------------------------
+        m_width(0),
+        m_height(0),
+        m_number_of_slices(0),
+        m_spacing(1, 1, 1),
+        m_p_image(0)
+//-----------------------------------------------------------------
+{
+    load(aFileName);
 }
 
 
@@ -2035,9 +2063,9 @@ template<typename T> double Image<T>::getStandardDeviation() const
 }
 
 
-//--------------------------------------------
+//-----------------------------------------------------------------------------
 template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
-//--------------------------------------------
+//-----------------------------------------------------------------------------
 {
     if (m_width != anImage.m_width || m_height != anImage.m_height || m_number_of_slices != anImage.m_number_of_slices)
     {
@@ -2053,6 +2081,55 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
     }
     
     return (sae);
+}
+
+
+//-----------------------------------------------------------------------------
+template<typename T> double Image<T>::computeMAE(const Image<T>& anImage) const
+//-----------------------------------------------------------------------------
+{
+    return (computeSAE(anImage) / double(m_width * m_height * m_number_of_slices));
+}
+
+
+//-----------------------------------------------------------------------------
+template<typename T> double Image<T>::computeSSE(const Image<T>& anImage) const
+//-----------------------------------------------------------------------------
+{
+    if (m_width != anImage.m_width || m_height != anImage.m_height || m_number_of_slices != anImage.m_number_of_slices)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "The images have different sizes");
+    }
+    
+    double sse(0.0);
+    double temp;
+    
+    #pragma omp parallel reduction( + : sse ) private(temp)
+    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    {
+        temp = m_p_image[i] - anImage.m_p_image[i];
+        temp *= temp;
+        
+        sse += temp;
+    }
+    
+    return (sse);
+}
+
+
+//-----------------------------------------------------------------------------
+template<typename T> double Image<T>::computeMSE(const Image<T>& anImage) const
+//-----------------------------------------------------------------------------
+{
+    return (computeSSE(anImage) / double(m_width * m_height * m_number_of_slices));
+}
+
+
+//------------------------------------------------------------------------------
+template<typename T> double Image<T>::computeRMSE(const Image<T>& anImage) const
+//------------------------------------------------------------------------------
+{
+    return (std::sqrt(computeMSE(anImage) / double(m_width * m_height * m_number_of_slices)));
 }
 
 

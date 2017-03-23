@@ -147,6 +147,24 @@ public:
     
     
     //--------------------------------------------------------------------------
+    /// Constructor.
+    /**
+     *  @param aFileName: the name of the file to load
+     */
+    //--------------------------------------------------------------------------
+    Image(const char* aFileName);
+
+    
+    //--------------------------------------------------------------------------
+    /// Constructor.
+    /**
+     *  @param aFileName: the name of the file to load
+     */
+    //--------------------------------------------------------------------------
+    Image(const std::string& aFileName);
+    
+    
+    //--------------------------------------------------------------------------
     /// Constructor from an array.
     /**
      *  @param apData:          the array to copy
@@ -897,6 +915,18 @@ public:
     
     double computeSAE(const Image<T>& anImage) const;
     
+    
+    double computeMAE(const Image<T>& anImage) const;
+    
+    
+    double computeSSE(const Image<T>& anImage) const;
+    
+    
+    double computeMSE(const Image<T>& anImage) const;
+    
+    
+    double computeRMSE(const Image<T>& anImage) const;
+
     
     double computeNCC(const Image<T>& anImage) const;
     

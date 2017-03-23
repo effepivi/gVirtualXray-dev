@@ -221,7 +221,7 @@ BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
     // Create a windowed mode window and its OpenGL context
     g_p_main_window_id = glfwCreateWindow(g_main_window_width,
         g_main_window_height,
-        "gVirtualXRay -- Unit testing: Beer-Lambert Law, Monochromatism Case.",
+        "gVirtualXRay -- Unit testing: Beer-Lambert Law, Polychromatism Case.",
         0,
         0);
 
