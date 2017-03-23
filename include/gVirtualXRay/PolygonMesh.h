@@ -137,6 +137,25 @@ public:
     //--------------------------------------------------------------------------
     void reset();
 
+	//--------------------------------------------------------------------------
+	/// Set if the mesh is displayed or not
+	/**
+	* @param display:  true or false
+	*/
+	//--------------------------------------------------------------------------
+	void setDisplayFlag(bool display);
+
+
+	//--------------------------------------------------------------------------
+	/// Accessor on the display flag of the polygon mesh.
+	/**
+	* @return display flag
+	*/
+	//--------------------------------------------------------------------------
+	bool getDisplayFlag() const;
+
+
+
 
     //--------------------------------------------------------------------------
     /// Display the triangular mesh using OpenGL.
@@ -733,6 +752,35 @@ public:
             int aTypeOfVBO);
 
 
+	//--------------------------------------------------------------------------
+	/// Set the polygon mesh using external data. The class instance will
+	/// manage the memory.
+	/**
+
+	*  @param aVertexArray:        array containing the vertex data
+	*  @param aNumberOfVertices:   number of vertices
+	*  @param aVertexVBO		   identificator of vbo for vertices
+	*  @param aNormalVBO		   identificator of vbo for normals
+	*  @param aTextureVBO		   identificator of vbo for texture coords
+	*  @param anIndexVBO:          array containing the index data
+	*  @param aNumberOfIndices:    number of indices
+	*  @param anIndexDataType:     data type of the index data; valid values
+	*                              are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT,
+	*                              GL_UNSIGNED_BYTE and GL_NONE
+	*/
+	//--------------------------------------------------------------------------
+	void setVBOData(
+		const void* aVertexArray,
+		unsigned int aNumberOfVertices,
+		unsigned int aVertexVBO,
+		unsigned int aNormalVBO,
+		unsigned int aTextureVBO,
+		unsigned int anIndexVBO,
+		unsigned int aNumberOfIndices,
+		int anIndexDataType
+		);
+
+
     //--------------------------------------------------------------------------
     /// Set the polygon mesh using external data. The class instance will
     /// manage the memory.
@@ -1021,6 +1069,22 @@ public:
     virtual void updateVBO(int aTypeOfVBO, int aTypeOfPrimitive);
 
 
+	//--------------------------------------------------------------------------
+	/// Update the VBOs with VBO already created.
+	/**
+	*  @param aVertexVBO		   identificator of vbo for vertices
+	*  @param aNormalVBO		   identificator of vbo for normals
+	*  @param aTextureVBO		   identificator of vbo for texture coords
+	*  @param anIndexVBO:          array containing the index data
+	*/
+	//--------------------------------------------------------------------------
+	virtual void updateVBOs(unsigned int aVertexVBO,
+		unsigned int aNormalVBO,
+		unsigned int aTextureVBO,
+		unsigned int anIndexVBO);
+
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the material of the polygon mesh.
     /**
@@ -1254,6 +1318,12 @@ protected:
     /// this class instance; set to false if the memory is managed
     /// by this class instance
     bool m_external_data_flag;
+
+
+	/// A flag set to true if you want to display in the Xray
+	///image
+	bool m_display_flag;
+
 
 
     /// Material of the object

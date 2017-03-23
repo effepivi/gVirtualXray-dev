@@ -1955,6 +1955,15 @@ void XRayRenderer::display2DTexture(unsigned int aTexutreID)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
+//----------------------------------------------------------
+unsigned int XRayRenderer::getID2DTexture()
+//----------------------------------------------------------
+{
+
+	return m_p_texture_name_set[XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID];
+
+}
+
 
 //------------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,

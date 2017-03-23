@@ -132,7 +132,8 @@ PolygonMesh::PolygonMesh():
         m_index_data_type(GL_NONE),
         m_vertex_data_type(GL_NONE),
         m_polygon_type(GL_NONE),
-        m_external_data_flag(false)
+		m_external_data_flag(false),
+		m_display_flag(true)
 //-----------------------------------
 {
 }
@@ -158,6 +159,7 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_vertex_data_type(aPolygonMesh.m_vertex_data_type),
         m_polygon_type(aPolygonMesh.m_polygon_type),
         m_external_data_flag(aPolygonMesh.m_external_data_flag),
+		m_display_flag(aPolygonMesh.m_display_flag),
         m_material(aPolygonMesh.m_material)
 //------------------------------------------------------------------------
 {
@@ -222,6 +224,11 @@ void PolygonMesh::reset()
 void PolygonMesh::display()
 //-------------------------
 {
+
+	// It is not neccesary display this mesh
+	if (!m_display_flag)
+		return;
+
     // Create the VBO if needed
     if (!m_p_vbo.get())
         {
@@ -258,6 +265,10 @@ void PolygonMesh::display()
 void PolygonMesh::displayWireFrame()
 //----------------------------------
 {
+	// It is not neccesary display this mesh
+	if (!m_display_flag)
+		return;
+
     // Turn on wireframe mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2051,6 +2062,46 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
             }
         }
 }
+//---------------------------------------------------------------
+void PolygonMesh::updateVBOs(unsigned int aVertexVBO,
+	unsigned int aNormalVBO,
+	unsigned int aTextureVBO,
+	unsigned int anIndexVBO)
+	//---------------------------------------------------------------
+{
+	if (m_p_vertex_set && m_number_of_vertices)
+	{
+		// Create the VBO if needed
+		if (!m_p_vbo.get())
+		{
+			m_p_vbo.reset(createVBO());
+		}
+
+		// Set the type of VBO
+		m_p_vbo->setBufferUsageHint(GL_DYNAMIC_DRAW);
+
+		OpenGL3VBO* aux_vbo = dynamic_cast<OpenGL3VBO*>(m_p_vbo.get());
+		if (aux_vbo != NULL)
+
+			aux_vbo->setVertexVBO(
+			m_number_of_vertices,
+			aVertexVBO,
+			aNormalVBO,
+			aTextureVBO);
+
+
+		if (anIndexVBO && m_number_of_indices &&
+			m_index_data_type != GL_NONE)
+		{
+			aux_vbo->setIndexVBO(
+				m_number_of_indices,
+				m_index_data_type,
+				anIndexVBO);
+		}
+
+
+	}
+}
 
 
 //-----------------------------------------------------
@@ -2379,6 +2430,59 @@ void PolygonMesh::setExternalData(int aTypeOfPrimitive,
         updateVBO(aTypeOfVBO, m_polygon_type);
         }
 }
+
+//---------------------------------------------------------------
+void PolygonMesh::setVBOData(
+	const void* aVertexArray,
+	unsigned int aNumberOfVertices,
+	unsigned int aVertexVBO,
+	unsigned int aNormalVBO,
+	unsigned int aTextureVBO,
+	unsigned int anIndexVBO,
+	unsigned int aNumberOfIndices,
+	int anIndexDataType)
+	//---------------------------------------------------------------
+{
+	reset();
+
+	m_external_data_flag = true;
+
+	m_p_vertex_set = const_cast<void*>(aVertexArray);
+	m_number_of_vertices = aNumberOfVertices;
+	m_vertex_data_type = GL_FLOAT;
+	m_polygon_type = GL_TRIANGLES;
+
+
+	// There are index data
+	if (anIndexVBO != GL_INVALID_INDEX && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
+	{
+		m_p_index_set = 0;
+		m_number_of_indices = aNumberOfIndices;
+		m_index_data_type = anIndexDataType;
+	}
+	else
+	{
+		m_p_index_set = 0;
+		m_number_of_indices = 0;
+		m_index_data_type = GL_NONE;
+	}
+
+	// Compute the bounding box
+	computeBoundingBox();
+
+	// Compute the normal vectors
+	if (aNormalVBO == GL_INVALID_INDEX)
+		computeNormalVectors();
+
+	// Update the VBO
+
+	updateVBOs(aVertexVBO, aNormalVBO, aTextureVBO, anIndexVBO);
+	/*if (aCreateVBOFlag)
+	{
+	updateVBO(aTypeOfVBO, m_polygon_type);
+	}*/
+}
+
 
 
 //-----------------------------------------------------------------------

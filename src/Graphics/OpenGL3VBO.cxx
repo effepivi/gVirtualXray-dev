@@ -455,6 +455,206 @@ void OpenGL3VBO::setVertexData(int aPrimitiveType,
 }
 
 
+
+//----------------------------------------------------------------
+void OpenGL3VBO::setVertexVBO(
+	//----------------------------------------------------------------
+	unsigned int number_of_vertices,
+	unsigned int aVertexVBO,
+	unsigned int aNormalVBO,
+	unsigned int aTextureVBO
+	)
+{
+	// Reset the internal data
+	reset();
+
+
+	m_primitive_type = GL_TRIANGLES;
+	m_number_of_vertices = number_of_vertices;
+	m_number_of_normals = number_of_vertices;
+	m_number_of_texture_coordinates = number_of_vertices;
+
+
+	m_number_of_compontents_per_normal = 3;
+	m_number_of_compontents_per_vertex = 3;
+	m_number_of_compontents_per_texture_coord = 2;
+
+	m_number_of_additional_data = 0;
+	m_number_of_compontents_per_additional_data = 0;
+
+	m_normal_size = m_number_of_normals * 3;
+	m_additional_data_size = m_number_of_additional_data * 3;
+	m_texture_coordinate_size = m_number_of_texture_coordinates * 2;
+	m_vertex_size = m_number_of_vertices * 3;
+
+	m_normal_data_type = GL_FLOAT;
+	m_additional_data_type = GL_FLOAT;
+	m_texture_coordinate_data_type = GL_FLOAT;
+	m_vertex_data_type = GL_FLOAT;
+
+	m_normal_size *= sizeof(GLfloat);
+	m_additional_data_size *= sizeof(GLfloat);
+	m_texture_coordinate_size *= sizeof(GLfloat);
+	m_vertex_size *= sizeof(GLfloat);
+
+
+	// Load the data in the VBO
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// There is no VAO
+	if (!m_vao_id)
+	{
+		// Create a VAO
+		glGenVertexArrays(1, &m_vao_id);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Bind the VAO
+	glBindVertexArray(m_vao_id);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// There is normal data
+	if (aNormalVBO)
+	{
+		// Create the VBO
+		if (!m_id_set[NORMAL_SET_ID])
+		{
+			m_id_set[NORMAL_SET_ID] = aNormalVBO;
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[NORMAL_SET_ID]);
+
+		glEnableVertexAttribArray(2);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(2);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// There is additional data
+
+	glDisableVertexAttribArray(3);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+	// There are texture coordinates
+	if (aTextureVBO)
+	{
+		// Create the VBO
+		if (!m_id_set[TEXT_COORD_SET_ID])
+		{
+			m_id_set[TEXT_COORD_SET_ID] = aTextureVBO;
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[TEXT_COORD_SET_ID]);
+		glEnableVertexAttribArray(1);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(1);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// There are vertex coordinates
+	if (aVertexVBO)
+	{
+		// Create the VBO
+		if (!m_id_set[VERTEX_SET_ID])
+		{
+			m_id_set[VERTEX_SET_ID] = aVertexVBO;
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_id_set[VERTEX_SET_ID]);
+
+		glEnableVertexAttribArray(0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		glDisableVertexAttribArray(0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	// Unbind the VAO
+	glBindVertexArray(0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Unbind the VBO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+}
+//----------------------------------------------------------------
+void OpenGL3VBO::setIndexVBO(
+	//----------------------------------------------------------------
+	unsigned int aNumberOfIndexes,
+	int anIndexDataType,
+	unsigned int anIndexVBO)
+{
+	m_number_of_indices = aNumberOfIndexes;
+	m_index_size = aNumberOfIndexes;
+	m_index_data_type = anIndexDataType;
+	switch (m_index_data_type)
+	{
+	case GL_UNSIGNED_INT:
+		m_index_size *= sizeof(GLuint);
+		break;
+
+	case GL_UNSIGNED_SHORT:
+		m_index_size *= sizeof(GLushort);
+		break;
+
+	case GL_UNSIGNED_BYTE:
+		m_index_size *= sizeof(GLubyte);
+		break;
+
+	default:
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid data type.");
+	}
+
+	// Bind the VAO
+	glBindVertexArray(m_vao_id);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Create the VBO
+	if (!m_id_set[INDEX_SET_ID] && m_number_of_indices)
+	{
+		m_id_set[INDEX_SET_ID] = anIndexVBO;
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id_set[INDEX_SET_ID]);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	m_index_size = aNumberOfIndexes;
+	m_index_data_type = anIndexDataType;
+
+
+	// Unbind the VAO
+	glBindVertexArray(0);
+	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+}
+
+
 //----------------------------------------------------------------
 void OpenGL3VBO::setIndexData(const unsigned int aNumberOfIndexes,
                               int anIndexDataType,

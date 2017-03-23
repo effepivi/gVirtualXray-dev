@@ -176,6 +176,40 @@ public:
             const void* apAdditionalData = 0);
 
 
+	//--------------------------------------------------------------------------
+	/// Set the vertex buffer objects.
+	/**
+	*  @param aNumberOfVertices:   number of vertices (default: 0)
+	*  @param aVertexVBO		   identificator of vbo for vertices
+	*  @param aNormalVBO		   identificator of vbo for normals
+	*  @param aTextureVBO		   identificator of vbo for texture coords
+	*/
+	//--------------------------------------------------------------------------
+	virtual void setVertexVBO(
+		unsigned int number_of_vertices,
+		unsigned int aVertexVBO,
+		unsigned int aNormalVBO,
+		unsigned int aTextureVBO
+		);
+
+	//--------------------------------------------------------------------------
+	/// Set the index.
+	/**
+	*  @param aNumberOfIndexes:    number of indices
+	*  @param anIndexDataType:     the data type of indices;
+	*                              valid values are GL_UNSGINED_BYTE,
+	*                              GL_UNSGINED_SHORT and GL_UNSGINED_INT
+	*  @param anIndexVBO:          array containing the index data
+	*/
+	//--------------------------------------------------------------------------
+	virtual void setIndexVBO(
+		unsigned int aNumberOfIndexes,
+		int anIndexDataType,
+		unsigned int anIndexVBO);
+
+
+
+
     //--------------------------------------------------------------------------
     /// Set the index.
     /**

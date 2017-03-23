@@ -83,7 +83,21 @@ inline PolygonMesh::~PolygonMesh()
     // Make sure the VBO and the dynamically allocated memory are released
     reset();
 }
+//--------------------------------------------------------------------------
+inline void PolygonMesh::setDisplayFlag(bool display)
+//--------------------------------------------------------------------------
+{
+	//Change the value of the display flag
+	m_display_flag = display;
+}
 
+//--------------------------------------------------------------------------
+inline bool PolygonMesh::getDisplayFlag() const
+//--------------------------------------------------------------------------
+{
+	// Return the display flag value
+	return m_display_flag;
+}
 
 //---------------------------------------------------------
 inline void PolygonMesh::setFilename(const char* aFilename)
