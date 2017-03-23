@@ -73,6 +73,14 @@ ELSE(Boost_FOUND)
     MESSAGE(WARNING "Boost not found, the unit test (${PROJECT_NAME}) will be disable.")
 ENDIF(Boost_FOUND)
 
+# FFTW3 #######################################################################
+FIND_LIBRARY(FFTW3_LIBRARIES NAMES fftw3 libfftw3 libfftw3_omp)
+IF (FFTW3_LIBRARIES)
+    SET (requiredLibs ${requiredLibs} ${FFTW3_LIBRARIES})
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FFTW")
+ELSE ()
+    MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
+ENDIF ()
 
 if(Boost_FOUND)
     add_executable(TestDensity                     TestDensity.cxx)
@@ -85,6 +93,10 @@ IF (glfw3_FOUND)
     add_executable(TestPointSource                 TestPointSource.cxx)
     add_executable(TestCubeSource                  TestCubeSource.cxx)
     add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
+
+    IF (FFTW3_LIBRARIES)
+        add_executable(TestFBP                     TestFBP.cxx)
+    ENDIF()
 ENDIF()
 
     target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
@@ -96,6 +108,10 @@ IF (glfw3_FOUND)
     target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+
+    IF (FFTW3_LIBRARIES)
+        target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    ENDIF()
 ENDIF()
 
     if (gVirtualXRay_BINARY_DIR)
@@ -108,6 +124,10 @@ IF (glfw3_FOUND)
          ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay)
          ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay)
          ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
+
+    IF (FFTW3_LIBRARIES)
+         ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
+    ENDIF()
 ENDIF()
     endif (gVirtualXRay_BINARY_DIR)
 
@@ -120,6 +140,10 @@ IF (glfw3_FOUND)
     add_test (TestPointSource                 TestPointSource)
     add_test (TestCubeSource                  TestCubeSource)
     add_test (TestUncenteredSource            TestUncenteredSource)
+    
+    IF (FFTW3_LIBRARIES)
+        add_test (TestFBP                     TestFBP)
+    ENDIF()
 ENDIF()
     
     FILE (MAKE_DIRECTORY data/)
