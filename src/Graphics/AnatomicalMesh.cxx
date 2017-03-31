@@ -83,4 +83,41 @@ void AnatomicalMesh::defineDisplayShaderInput(int shader_id)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
+
+//---------------------------------------------------------------
+void AnatomicalMesh::copyFrom(const AnatomicalMesh& aPolygonMesh)
+//---------------------------------------------------------------
+{
+    PolygonMesh::copyFrom(aPolygonMesh);
+
+    m_use_texture = aPolygonMesh.m_use_texture;
+    m_use_bump_map = aPolygonMesh.m_use_bump_map;
+}
+
+
+//------------------------------------------------------------------------
+AnatomicalMesh& AnatomicalMesh::operator=(const PolygonMesh& aPolygonMesh)
+//------------------------------------------------------------------------
+{
+    PolygonMesh::copyFrom(aPolygonMesh);
+
+    m_use_texture = 0;
+    m_use_bump_map = 0;
+
+    getMaterial().setSpecularColour(1.,1.,1.,1.);
+
+    return (*this);
+}
+
+
+//---------------------------------------------------------------------------
+AnatomicalMesh& AnatomicalMesh::operator=(const AnatomicalMesh& aPolygonMesh)
+//---------------------------------------------------------------------------
+{
+    AnatomicalMesh::copyFrom(aPolygonMesh);
+
+    return (*this);
+}
+
+
 } // namespace gVirtualXRay

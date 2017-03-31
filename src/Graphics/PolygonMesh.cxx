@@ -863,9 +863,9 @@ void PolygonMesh::computeNormalVectors()
 }
 
 
-//------------------------------------------------------------------
-PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
-//------------------------------------------------------------------
+//---------------------------------------------------------
+void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
+//---------------------------------------------------------
 {
     m_filename                = aPolygonMesh.m_filename;
     m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
@@ -902,6 +902,14 @@ PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
 
     copyVertexSet(aPolygonMesh.m_p_vertex_set);
     copyIndexSet(aPolygonMesh.m_p_index_set);
+}
+
+
+//------------------------------------------------------------------
+PolygonMesh& PolygonMesh::operator=(const PolygonMesh& aPolygonMesh)
+//------------------------------------------------------------------
+{
+    copyFrom(aPolygonMesh);
 
     return (*this);
 }

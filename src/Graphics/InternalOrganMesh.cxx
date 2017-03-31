@@ -1108,4 +1108,40 @@ void InternalOrganMesh::initPermutation()
 }
 
 
+//---------------------------------------------------------------------
+void InternalOrganMesh::copyFrom(const InternalOrganMesh& aPolygonMesh)
+//---------------------------------------------------------------------
+{
+    AnatomicalMesh::copyFrom(aPolygonMesh);
+
+    m_gradient_tab = aPolygonMesh.m_gradient_tab;
+    m_permutation = aPolygonMesh.m_permutation;
+    m_texture_coordinates_2d = aPolygonMesh.m_texture_coordinates_2d;
+    m_texture_coordinates_3d = aPolygonMesh.m_texture_coordinates_3d;
+    m_margin_direction = aPolygonMesh.m_margin_direction;
+    m_bump_map_texture = aPolygonMesh.m_bump_map_texture;
+    m_bump_map_frame_buffer = aPolygonMesh.m_bump_map_frame_buffer;
+    m_bump_map_shader = aPolygonMesh.m_bump_map_shader;
+    m_has_tendon = aPolygonMesh.m_has_tendon;
+    m_is_lung = aPolygonMesh.m_is_lung;
+    m_has_thin_bumps = aPolygonMesh.m_has_thin_bumps;
+    m_use_3D_bump_map = aPolygonMesh.m_use_3D_bump_map;
+    m_texture_size_2d = aPolygonMesh.m_texture_size_2d;
+    m_texture_size_3d = aPolygonMesh.m_texture_size_3d;
+    m_need_initialize = aPolygonMesh.m_need_initialize;
+    m_generation_texture_coord_are_set = aPolygonMesh.m_generation_texture_coord_are_set;
+    m_optimize_texture_coordinates = aPolygonMesh.m_optimize_texture_coordinates;
+}
+
+
+//------------------------------------------------------------------------------------
+InternalOrganMesh& InternalOrganMesh::operator=(const InternalOrganMesh& aPolygonMesh)
+//------------------------------------------------------------------------------------
+{
+    InternalOrganMesh::copyFrom(aPolygonMesh);
+
+    return (*this);
+}
+
+
 } // namespace gVirtualXRay

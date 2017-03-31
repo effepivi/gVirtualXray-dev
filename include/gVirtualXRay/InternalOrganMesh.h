@@ -139,6 +139,12 @@ public:
     virtual void splitFaces();
 
 
+    virtual void copyFrom(const InternalOrganMesh& aPolygonMesh);
+
+
+    virtual InternalOrganMesh& operator=(const InternalOrganMesh& aPolygonMesh);
+
+
 //******************************************************************************
 protected:
     /// To know if a bump map or a colour texture has to be created

@@ -1104,6 +1104,15 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Copy.
+    /**
+     *  @param aPolygonMesh:    the polygon mesh to copy
+     */
+    //--------------------------------------------------------------------------
+    virtual void copyFrom(const PolygonMesh& aPolygonMesh);
+
+
+    //--------------------------------------------------------------------------
     /// Copy operator.
     /**
      *  @param aPolygonMesh:    the polygon mesh to copy

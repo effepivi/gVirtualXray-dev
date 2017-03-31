@@ -122,6 +122,15 @@ public:
     virtual void initialize() = 0;
 
 
+    virtual void copyFrom(const AnatomicalMesh& aPolygonMesh);
+
+
+    virtual AnatomicalMesh& operator=(const PolygonMesh& aPolygonMesh);
+
+
+    virtual AnatomicalMesh& operator=(const AnatomicalMesh& aPolygonMesh);
+
+
 //******************************************************************************
 protected:
     /// 1 if the mesh use texturing; default value is 0
