@@ -175,9 +175,9 @@ template<> Image<float> Image<float>::convertHU2mu(double anEnergy) const
 }
 
 
-//------------------------------------------------------------------------
-template<> Image<double> Image<float>::convertHU2mu(double anEnergy) const
-//------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+template<> Image<double> Image<double>::convertHU2mu(double anEnergy) const
+//-------------------------------------------------------------------------
 {
     Image<double> temp(*this);
 
