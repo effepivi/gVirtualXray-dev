@@ -978,6 +978,9 @@ public:
                               T anAirThreshold = -1000) const;
     
     
+    Image<T> convertHU2mu(double anEnergy) const;
+
+
 //******************************************************************************
 protected:
     VEC3 VertexInterp(const T& aThresholdValue,

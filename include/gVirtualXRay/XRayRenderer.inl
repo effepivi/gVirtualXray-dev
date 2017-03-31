@@ -280,10 +280,10 @@ namespace gVirtualXRay {
     }
 
 
-    //-----------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------
     inline RATIONAL_NUMBER XRayRenderer::getMuFromHUAndMuWater(const RATIONAL_NUMBER& HU,
-                                                               const RATIONAL_NUMBER& mu_water) const
-    //-----------------------------------------------------------------------------------------------
+                                                               const RATIONAL_NUMBER& mu_water)
+    //-----------------------------------------------------------------------------------------
     {
         // Convert a Hounsfield value into a liner attenuation coefficient given mu(water)
         return RATIONAL_NUMBER(mu_water * (1.0 + HU / 1000.0));

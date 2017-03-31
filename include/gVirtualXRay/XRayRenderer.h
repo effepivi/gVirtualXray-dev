@@ -484,7 +484,7 @@ public:
      *  @return the corresponding attenuation coefficient of water
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getMuWaterLogLinearInterpolation(
+    static RATIONAL_NUMBER getMuWaterLogLinearInterpolation(
             const RATIONAL_NUMBER& anIncidentEnergy);
 
 
@@ -497,8 +497,8 @@ public:
      *  @return the corresponding attenuation coefficient
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getMuFromHUAndMuWater(const RATIONAL_NUMBER& HU,
-            const RATIONAL_NUMBER& mu_water) const;
+    static RATIONAL_NUMBER getMuFromHUAndMuWater(const RATIONAL_NUMBER& HU,
+            const RATIONAL_NUMBER& mu_water);
 
 
     //--------------------------------------------------------------------------
@@ -509,7 +509,7 @@ public:
      *  @return the corresponding attenuation coefficient
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getMuFromHU(const RATIONAL_NUMBER& HU,
+    static RATIONAL_NUMBER getMuFromHU(const RATIONAL_NUMBER& HU,
                                 const RATIONAL_NUMBER& anEnergy);
 
 
@@ -699,19 +699,19 @@ protected:
     //--------------------------------------------------------------------------
     /// Load the table of water attenuation coefficients.
     //--------------------------------------------------------------------------
-    void loadMuWater();
+    static void loadMuWater();
 
 
     //--------------------------------------------------------------------------
     /// Load the table of elements.
     //--------------------------------------------------------------------------
-    void loadElementSet();
+    static void loadElementSet();
 
 
     //--------------------------------------------------------------------------
     /// Load the table of materials.
     //--------------------------------------------------------------------------
-    void loadMaterialSet();
+    static void loadMaterialSet();
 
 
     //--------------------------------------------------------------------------
@@ -964,7 +964,7 @@ protected:
 
 
     /// The table of water energy fluence coefficients
-    std::vector<AttenuationCoefficient> m_mu_water_set;
+    static std::vector<AttenuationCoefficient> m_mu_water_set;
 
 
     /// The set of FBOs
@@ -1028,11 +1028,11 @@ protected:
 
 
     /// Set of elements
-    ElementSet m_element_set;
+    static ElementSet m_element_set;
 
 
     /// Set of materials
-    MaterialSet m_material_set;
+    static MaterialSet m_material_set;
 
 
     /// A list of all the HU values and corresponding polygon meshes

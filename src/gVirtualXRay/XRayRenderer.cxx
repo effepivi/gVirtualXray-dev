@@ -193,9 +193,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //******************************************************************************
-//	Name space
+//  Name space
 //******************************************************************************
 using namespace gVirtualXRay;
+
+
+//******************************************************************************
+//  Static members
+//******************************************************************************
+std::vector<AttenuationCoefficient> XRayRenderer::m_mu_water_set;
+ElementSet XRayRenderer::m_element_set;
+MaterialSet XRayRenderer::m_material_set;
 
 
 //-------------------------------------------------------------------------------------------------
