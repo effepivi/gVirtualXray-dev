@@ -170,8 +170,8 @@ XRayRenderer g_xray_renderer;
 RATIONAL_NUMBER g_literature_result(0.0);
 RATIONAL_NUMBER g_expected_result(0.0);
 
-unsigned int g_angle_number(360);
-RATIONAL_NUMBER g_angle_step(0.5);
+unsigned int g_angle_number(360 / 4.0);
+RATIONAL_NUMBER g_angle_step(0.5 * 4.0);
 
 
 //******************************************************************************
@@ -310,11 +310,29 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         }
 
     Sinogram<XRayRenderer::PixelType> sinogram(g_xray_renderer.getSinogram());
-    Image<XRayRenderer::PixelType> fbp_reconstruction(sinogram.filteredBackProjection(0,
-            g_angle_step, "hamming", 2.5));
 
-    fbp_reconstruction.save("TestFBP_reconstruction.mhd");
+    Image<XRayRenderer::PixelType> reconstruction;
 
+    // SBP
+    reconstruction = sinogram.simpleBackProjection(0, g_angle_step, "data/SBP");
+    reconstruction.save("data/TestFBP_SBP_reconstruction.mhd");
+
+    // FBP
+    reconstruction = sinogram.filteredBackProjection(0,
+            g_angle_step, "hamming", 2.5, "data/FBP");
+    reconstruction.save("data/TestFBP_FBP_reconstruction.mhd");
+
+    // ART
+    reconstruction = sinogram.art(0, g_angle_step, 25, "data/ART");
+    reconstruction.save("data/TestFBP_ART_reconstruction.mhd");
+
+    // MART
+    reconstruction = sinogram.mart(0, g_angle_step, 25, "data/MART");
+    reconstruction.save("data/TestFBP_MART_reconstruction.mhd");
+
+    // SIRT
+    reconstruction = sinogram.sirt(0, g_angle_step, 25, "data/SIRT");
+    reconstruction.save("data/TestFBP_SIRT_reconstruction.mhd");
 
     // Compare reference projection set and simulated projection set using NCC
     //BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);

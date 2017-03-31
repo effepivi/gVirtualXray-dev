@@ -148,6 +148,12 @@ ENDIF()
     
     FILE (MAKE_DIRECTORY data/)
     FILE (MAKE_DIRECTORY data/point_source)
+    FILE (MAKE_DIRECTORY data/SBP)
+    FILE (MAKE_DIRECTORY data/FBP)
+    FILE (MAKE_DIRECTORY data/ART)
+    FILE (MAKE_DIRECTORY data/MART)
+    FILE (MAKE_DIRECTORY data/SIRT)
+    
     CONFIGURE_FILE (../validation/data/validation_01/bone.csv   data/bone.csv   COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/brain.csv  data/brain.csv  COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/gas.csv    data/gas.csv    COPYONLY)

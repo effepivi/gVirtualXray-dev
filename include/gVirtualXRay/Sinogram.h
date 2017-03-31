@@ -90,10 +90,11 @@ public:
              unsigned int aHeight,
              unsigned int aNumberOfSlices = 1);
     
+    Image<T> getProjectionSet() const;
+
     
     Image<T> art(double aFirstAngle,
                  double anAngleStep,
-                 double aLastAngle,
                  unsigned int aNumberOfIterations = 0,
                  const char* aDirectory = 0,
                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
@@ -101,7 +102,6 @@ public:
     
     Image<T> mart(double aFirstAngle,
                   double anAngleStep,
-                  double aLastAngle,
                   unsigned int aNumberOfIterations = 0,
                   const char* aDirectory = 0,
                   void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
@@ -109,7 +109,6 @@ public:
     
     Image<T> sirt(double aFirstAngle,
                   double anAngleStep,
-                  double aLastAngle,
                   unsigned int aNumberOfIterations = 0,
                   const char* aDirectory = 0,
                   void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*) = 0) const;
@@ -131,7 +130,6 @@ public:
     
     Image<T> art(double aFirstAngle,
                  double anAngleStep,
-                 double aLastAngle,
                  unsigned int aNumberOfIterations,
                  const std::string& aDirectory,
                  void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
@@ -139,7 +137,6 @@ public:
     
     Image<T> mart(double aFirstAngle,
                   double anAngleStep,
-                  double aLastAngle,
                   unsigned int aNumberOfIterations,
                   const std::string& aDirectory,
                   void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
@@ -147,7 +144,6 @@ public:
     
     Image<T> sirt(double aFirstAngle,
                   double anAngleStep,
-                  double aLastAngle,
                   unsigned int aNumberOfIterations,
                   const std::string& aDirectory,
                   void (*aCallback)(const Image<T>*, const Image<T>*, const Image<T>*)) const;
