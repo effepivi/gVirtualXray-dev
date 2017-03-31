@@ -322,10 +322,12 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
     Image<T> roi(aWidth, aHeight, aDepth);
 
     // Process every slice of the ROI
+#ifdef NDEBUG
 #ifdef WIN32
-	#pragma omp parallel for
+        #pragma omp parallel for
 #else
-    #pragma omp parallel for collapse(3)
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
 	for (int z = 0; z < aDepth; ++z)
     {
@@ -687,7 +689,9 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
     Image<T> temp(*this);
     
     // Process every pixel of the image
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         // Apply the shilft/scale filter
@@ -721,10 +725,12 @@ template<typename T> Image<T> Image<T>::flipVertically() const
 {
     Image<T> temp(*this);
 
+#ifdef NDEBUG
 #ifdef WIN32
-    #pragma omp parallel for
+        #pragma omp parallel for
 #else
-	#pragma omp parallel for collapse(3)
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
     for (int k = 0; k < m_number_of_slices; ++k)
         {
@@ -750,8 +756,12 @@ template<typename T> Image<T> Image<T>::flipHorizontally() const
 {
     Image<T> temp(*this);
 
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
     for (unsigned int k = 0; k < m_number_of_slices; ++k)
         {
@@ -777,7 +787,9 @@ template<typename T> Image<T> Image<T>::abs() const
 {
     Image<T> temp(*this);
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp[i] = std::abs(m_p_image[i]);
@@ -800,7 +812,9 @@ template<typename T> Image<T> Image<T>::log() const
         offset = 0.000000157;
         }
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         double pixel(m_p_image[i]);
@@ -1483,7 +1497,9 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
 
         unsigned short* p_temp(new unsigned short[m_width * m_height * m_number_of_slices]);
 
+#ifdef NDEBUG
         #pragma omp parallel for
+#endif
         for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
             {
             p_temp[i] = min_output_value + difference_output * (double(m_p_image[i] - min_input_value) / double(difference_input));
@@ -1658,7 +1674,9 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
         // Convert the image if necessary
         if (p_float_data)
             {
-            #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
             for (int i = 0; i < number_of_pixels; ++i)
                 {
                 float temp(double(m_p_image[k * m_width * m_height + i] - min_value) / value_range);
@@ -2045,7 +2063,9 @@ template<typename T> double Image<T>::getVariance() const
     double variance(0.0);
     double average(getAverage());
     
+#ifdef NDEBUG
     #pragma omp parallel reduction( + : variance )
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         variance += std::pow(m_p_image[i] - average, 2);
@@ -2074,7 +2094,9 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
     
     double sae(0.0);
 
+#ifdef NDEBUG
     #pragma omp parallel reduction( + : sae )
+#endif
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
     {
         sae += std::abs(m_p_image[i] - anImage.m_p_image[i]);
@@ -2104,7 +2126,9 @@ template<typename T> double Image<T>::computeSSE(const Image<T>& anImage) const
     double sse(0.0);
     double temp;
     
+#ifdef NDEBUG
     #pragma omp parallel reduction( + : sse ) private(temp)
+#endif
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
     {
         temp = m_p_image[i] - anImage.m_p_image[i];
@@ -2148,7 +2172,9 @@ template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
     double standard_deviation_product(getStandardDeviation() * anImage.getStandardDeviation());
     double ncc(0.0);
 
+#ifdef NDEBUG
     #pragma omp parallel reduction( + : ncc )
+#endif
     for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
     {
         ncc += (m_p_image[i] - average1) * (anImage.m_p_image[i] - average2);
@@ -2169,14 +2195,18 @@ template<typename T> Image<T> Image<T>::transpose() const
 {
     Image<T> temp(m_height, m_width, m_number_of_slices);
 
-#ifndef WIN32
-			#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
 #endif
-    for (unsigned int k = 0; k < m_number_of_slices; ++k)
+#endif
+    for (int k = 0; k < m_number_of_slices; ++k)
     {
-        for (unsigned int j = 0; j < m_height; ++j)
+        for (int j = 0; j < m_height; ++j)
         {
-            for (unsigned int i = 0; i < m_width; ++i)
+            for (int i = 0; i < m_width; ++i)
             {
                 temp(j, i, k) = getPixel(i, j, k);
             }
@@ -2246,14 +2276,18 @@ template<typename T> Image<T> Image<T>::operator+(const Image<T>& anImage) const
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
 
     // Copy the data
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
 #endif
-    for (unsigned int k = 0; k < min_depth; ++k)
+#endif
+    for (int k = 0; k < min_depth; ++k)
         {
-        for (unsigned int j = 0; j < min_height; ++j)
+        for (int j = 0; j < min_height; ++j)
             {
-            for (unsigned int i = 0; i < min_width; ++i)
+            for (int i = 0; i < min_width; ++i)
                 {
                 temp(i, j, k) += anImage(i, j, k);
                 }
@@ -2278,14 +2312,18 @@ template<typename T> Image<T> Image<T>::operator-(const Image<T>& anImage) const
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
 
     // Copy the data
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
 #endif
-    for (unsigned int k = 0; k < min_depth; ++k)
+#endif
+    for (int k = 0; k < min_depth; ++k)
         {
-        for (unsigned int j = 0; j < min_height; ++j)
+        for (int j = 0; j < min_height; ++j)
             {
-            for (unsigned int i = 0; i < min_width; ++i)
+            for (int i = 0; i < min_width; ++i)
                 {
                 temp(i, j, k) -= anImage(i, j, k);
                 }
@@ -2310,14 +2348,18 @@ template<typename T> Image<T> Image<T>::operator*(const Image<T>& anImage) const
     Image<T> temp(getROI(0, 0, 0, min_width, min_height, min_depth));
 
     // Copy the data
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
 #endif
-	for (unsigned int k = 0; k < min_depth; ++k)
+#endif
+	for (int k = 0; k < min_depth; ++k)
         {
-        for (unsigned int j = 0; j < min_height; ++j)
+        for (int j = 0; j < min_height; ++j)
             {
-            for (unsigned int i = 0; i < min_width; ++i)
+            for (int i = 0; i < min_width; ++i)
                 {
                 temp(i, j, k) *= anImage(i, j, k);
                 }
@@ -2424,7 +2466,9 @@ template<typename T> Image<T> Image<T>::operator+(T aValue) const
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp.m_p_image[i] += aValue;
@@ -2442,7 +2486,9 @@ template<typename T> Image<T> Image<T>::operator-(T aValue) const
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp.m_p_image[i] -= aValue;
@@ -2460,7 +2506,9 @@ template<typename T> Image<T> Image<T>::operator*(T aValue) const
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp.m_p_image[i] *= aValue;
@@ -2484,7 +2532,9 @@ template<typename T> Image<T> Image<T>::operator/(T aValue) const
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         temp.m_p_image[i] /= aValue;
@@ -2499,7 +2549,9 @@ template<typename T> Image<T> Image<T>::operator/(T aValue) const
 template<typename T> Image<T>& Image<T>::operator+=(T aValue)
 //-----------------------------------------------------------
 {
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         m_p_image[i] += aValue;
@@ -2514,7 +2566,9 @@ template<typename T> Image<T>& Image<T>::operator+=(T aValue)
 template<typename T> Image<T>& Image<T>::operator-=(T aValue)
 //-----------------------------------------------------------
 {
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         m_p_image[i] -= aValue;
@@ -2529,7 +2583,9 @@ template<typename T> Image<T>& Image<T>::operator-=(T aValue)
 template<typename T> Image<T>& Image<T>::operator*=(T aValue)
 //-----------------------------------------------------------
 {
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         m_p_image[i] *= aValue;
@@ -2550,7 +2606,9 @@ template<typename T> Image<T>& Image<T>::operator/=(T aValue)
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Division by zero.");
     }
 
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
         m_p_image[i] /= aValue;
@@ -2573,7 +2631,9 @@ template<typename T> Image<T> Image<T>::operator!() const
     T range(max_value - min_value);
 
     // Process every pixel
-    #pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
     for (unsigned int i = 0;
             i < m_width * m_height * m_number_of_slices;
             ++i)
@@ -2599,8 +2659,12 @@ template<typename T> Image<T> Image<T>::setCanvasSize(unsigned int aNewWidth,
     int y_offset((int(aNewHeight) - int(m_height)) / 2);
     int z_offset((int(aNewNumberOfSlices) - int(m_number_of_slices)) / 2);
 
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
 	for (int k = 0; k < m_number_of_slices; ++k)
     {
@@ -2630,8 +2694,12 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
 {
     Image temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
 
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
 	for (int k = 0; k < aNewNumberOfSlices; ++k)
     {
@@ -2738,8 +2806,12 @@ template<typename T> Image<T> Image<T>::rotate(float anAngleInDegrees) const
     //double center_x(0.5 * (m_width + 1) /*- 1*/);
     //double center_y(0.5 * (m_height + 1) /*- 1*/);
     
-#ifndef WIN32
-	#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
 	for (int k = 0; k < m_number_of_slices; ++k)
     {
@@ -2747,51 +2819,47 @@ template<typename T> Image<T> Image<T>::rotate(float anAngleInDegrees) const
         {
             for (unsigned i = 0; i < m_width; ++i)
             {
-                double translated_i(-0.5 + double(i - 0) / double(m_width - 1));
-                //double translated_i(i);
-                //translated_i -= center_x;
-            
-                double translated_j(-0.5 + double(j - 0) / double(m_height - 1));
-                //double translated_j(j);
-                //translated_j -= center_y;
-            
-                double x(translated_i * std::cos(angle_in_radian) + translated_j * std::sin(angle_in_radian));
-                double y(translated_j * std::cos(angle_in_radian) - translated_i * std::sin(angle_in_radian));
+                double temp_x(i);
+                double temp_y(j);
 
-                x += 0.5;// * m_width;
-                y += 0.5;// * m_height;
+                temp_x += 0.5;
+                temp_y += 0.5;
 
-                x *= m_width - 1;
-                y *= m_height - 1;
-                
+                temp_x -= (m_width - 1.0) / 2.0;
+                temp_y -= (m_height - 1.0) / 2.0;
+
+                double x = temp_x * std::cos(angle_in_radian) + temp_y * std::sin(angle_in_radian);
+                double y = temp_y * std::cos(angle_in_radian) - temp_x * std::sin(angle_in_radian);
+
+                x += (m_width - 1.0) / 2.0;
+                y += (m_height - 1.0) / 2.0;
+
                 int x1 = floor(x);
                 int y1 = floor(y);
-            
-                //if (x1 < 0) x1 = 0;
-                //if (y1 < 0) y1 = 0;
 
-                int x2 = x1 + 1.0;
-                int y2 = y1 + 1.0;
-
-                //if (x2 >= m_width)  x2 = m_width  - 1;
-                //if (y2 >= m_height) y2 = m_height - 1;
+                int x2 = x1 + 1;
+                int y2 = y1 + 1;
 
                 if (x1 >= 0 && x1 < m_width &&
-                    x2 >= 0 && x2 < m_width &&
-                    y1 >= 0 && y1 < m_height &&
-                    y2 >= 0 && y2 < m_height)
+                    y1 >= 0 && y1 < m_height)
                 {
-                    double c11 = getPixel(x1, y1);
-                    double c12 = getPixel(x1, y2);
-                    double c22 = getPixel(x2, y2);
-                    double c21 = getPixel(x2, y1);
+                temp(i, j, k) = getPixel(x1, y1, k);
 
-                    double cx1 = c11 + (c21 - c11) * (x - x1) / (x2 - x1);
-                    double cx2 = c12 + (c22 - c12) * (x - x1) / (x2 - x1);
-                
-                    double cy  = cx1 + (cx2 - cx1) * (y - y1) / (y2 - y1);
-                
+                if (x2 >= 0 && x2 < m_width &&
+                        y2 >= 0 && y2 < m_height)
+                    {
+                    double c11 = getPixel(x1, y1, k);
+                    double c12 = getPixel(x1, y2, k);
+                    double c22 = getPixel(x2, y2, k);
+                    double c21 = getPixel(x2, y1, k);
+
+                    double cx1 = c11 + (c21 - c11) * (x - double(x1)) / double(x2 - x1);
+                    double cx2 = c12 + (c22 - c12) * (x - double(x1)) / double(x2 - x1);
+
+                    double cy  = cx1 + (cx2 - cx1) * double(y - y1) / double(y2 - y1);
+
                     temp(i, j, k) = cy;
+                    }
                 }
             }
         }
@@ -2825,26 +2893,50 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
     Sinogram<T> sinogram(sinogram_width, sinogram_height, m_number_of_slices);
     
     Image<T> padded_image(setCanvasSize(sinogram_width, scaling_factor * m_height, m_number_of_slices));
-    
+
+#ifndef NDEBUG
+    padded_image.save("padded.mhd");
+#endif
+
     double angle(aFirstAngle);
 
     for (unsigned int angle_id(0); angle_id < sinogram_height; ++angle_id, angle += anAngleStep)
         {
         Image<T> rotated_image(padded_image.rotate(angle));
-    
-#ifndef WIN32
+#ifndef NDEBUG
+        {
+            std::stringstream file_name;
+            file_name << "rotated_" << angle << ".mhd";
+            rotated_image.save(file_name.str());
+        }
+#endif
+
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
 		#pragma omp parallel for collapse(3)
+#endif
 #endif
 		for (int j = 0; j < rotated_image.m_height; ++j)
             {
             for (int i = 0; i < rotated_image.m_width; ++i)
                 {
-                for (unsigned int k = 0; k < m_number_of_slices; ++k)
+                for (int k = 0; k < m_number_of_slices; ++k)
                     {
                     sinogram(i, angle_id, k) += rotated_image(i, j, k);
                     }
                 }
             }
+
+#ifndef NDEBUG
+        {
+            std::stringstream file_name;
+            file_name << "sinogram_" << angle << ".mhd";
+            sinogram.save(file_name.str());
+        }
+#endif
+
         }
 
     return (sinogram);
@@ -3195,8 +3287,12 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             std::vector<std::vector<float> > p_vertex_set(max_thread);
             std::vector<std::vector<float> > p_normal_vector_set(max_thread);
     
-#ifndef WIN32
-			#pragma omp parallel for collapse(3)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
 #endif
             for (int k = 0; k < m_number_of_slices - 1; ++k)
             {
@@ -3430,8 +3526,10 @@ template<typename T> Image<T> operator-(const T& aValue,
     unsigned int number_of_voxels(temp_image.getWidth() * temp_image.getHeight() * temp_image.getDepth());
     T* p_temp(temp_image.getRawData());
 
-    #pragma omp parallel for
-    for (unsigned int i = 0; i < number_of_voxels; ++i)
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
+    for (int i = 0; i < number_of_voxels; ++i)
     {
         p_temp[i] = aValue - p_temp[i];
     }
@@ -3787,7 +3885,9 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     // Change endianess
     if (aChangeEndianessFlag && sizeof(T) > 1)
     {
-#pragma omp parallel for
+#ifdef NDEBUG
+        #pragma omp parallel for
+#endif
         for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
             swapBytes(m_p_image[i]);
