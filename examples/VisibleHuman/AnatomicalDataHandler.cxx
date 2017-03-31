@@ -133,15 +133,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
-
+/*
 #include "P4_skin.stl.h"
 #include "P4_diaph.stl.h"
 #include "P4_spine.stl.h"
 #include "P4_ribs.stl.h"
-
+*/
 //#include "kidney.stl.h"
 //#include "lung.stl.h"
-#include "liver.stl.h"
+//#include "liver.stl.h"
 //#include "diaphragm.stl.h"
 
 
@@ -156,7 +156,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const float g_scaling_factor(2);
+const float g_scaling_factor(0.25);
 const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
 const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
 
@@ -170,7 +170,7 @@ const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
 const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
 const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
-
+/*
 const unsigned char SKIN_ID(0);
 const unsigned char LIVER_ID(1);
 const unsigned char LUNG_ID(2);
@@ -178,8 +178,53 @@ const unsigned char DIAPH_ID(3);
 const unsigned char SPINE_ID(4);
 const unsigned char RIBS_ID(5);
 const unsigned char KIDNEY_ID(6);
+*/
+
+/*
+4593: "right palatine tonsil"
+4595: "thyroid gland"
+4596: "left palatine tonsil"
+4598: "grey matter"
+4632: "lingual tonsil"
+5149: "cranium"
+5152: "mandible"
+5153: "left styloid process"
+5154: "right styloid process"
+5156: "left eye"
+5157: "right eye"
+5158: "brain"
+5161: "larynx"
+5176: "right lens"
+5177: "left lens"
+5178: "frontal sinus"
+5179: "right maxillary sinus"
+5180: "left maxillary sinus"
+6507: "atlas C1"
+6508: "axis C2"
+6509: "cervical vertebra C3"
+6510: "cervical vertebra C4"
+6511: "cervical vertebra C5"
+6512: "cervical vertebra C6"
+6545: "hyoid bone"
+*/
 
 
+const unsigned char VERTEBRA_ID(0);
+const unsigned char HYOID_BONE_ID(1);
+const unsigned char SINUS_ID(2);
+const unsigned char EYE_ID(3);
+const unsigned char TONGUE_ID(4);
+const unsigned char TONSIL_ID(5);
+const unsigned char GREY_MATTER_ID(6);
+const unsigned char LENS_ID(7);
+const unsigned char THYROID_ID(8);
+const unsigned char BRAIN_ID(9);
+const unsigned char LARYNX_ID(10);
+
+const unsigned char CRANIUM_ID(11);
+
+
+/*
 const double g_p_HU_set [] =
 {
     -70.202,
@@ -188,7 +233,7 @@ const double g_p_HU_set [] =
     -41.284,
     181.08,
     181.08,
-};
+};*/
 
 
 //******************************************************************************
@@ -231,7 +276,7 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_current_angle(0),
     m_simulation_total_time(0),
     m_number_of_rotations(0),
-    m_acquisition_type(ROTATE_SOURCE_DETECTOR),
+    m_acquisition_type(ROTATE_SAMPLE),
 
     m_shadow_map(),
 
@@ -593,26 +638,371 @@ void AnatomicalDataHandler::loadPatient()
     // Set geometry
     for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
         {
-        char* p_data(0);
-        unsigned int data_size(0);
-        decompressMesh(i, p_data, data_size);
+        //char* p_data(0);
+        //unsigned int data_size(0);
+        //decompressMesh(i, p_data, data_size);
+        double HU_value(-1000);
 
-        m_p_polygon_mesh_set[i]->loadSTLDataFromStream(
-            p_data,
-            false,
-            true,
-            false,
-            true,
-            mm,
-            GL_STATIC_DRAW);
+        switch (i)
+        {
+        case VERTEBRA_ID:
+            {
+            BoneMesh p1;
+            BoneMesh p2;
+            BoneMesh p3;
+            BoneMesh p4;
+            BoneMesh p5;
+            BoneMesh p6;
 
+            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C3.stl");
+            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C4.stl");
+            p3.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C5.stl");
+            p4.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C6.stl");
+            p5.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/atlas_C1.stl");
+            p6.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/axis_C2.stl");
+
+            p1.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p2.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p3.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p4.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p5.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p6.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            *(m_p_polygon_mesh_set[i]) = p1 + p2 + p3 + p4 + p5 + p6;
+
+            HU_value =  (221.71129682829866 + 224.66567090742953 + 224.431593261313   + 220.99315552175565 + 221.96307037896366 + 221.50775979344235) / 6.0;
+            }
+            break;
+
+        case HYOID_BONE_ID:
+            {
+            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/hyoid_bone.stl");
+
+            m_p_polygon_mesh_set[i]->loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            HU_value = 208.4762484774665;
+            }
+            break;
+
+        case SINUS_ID:
+            {
+            BoneMesh p1;
+            BoneMesh p2;
+            BoneMesh p3;
+
+            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_maxillary_sinus.stl");
+            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_maxillary_sinus.stl");
+            p3.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/frontal_sinus.stl");
+
+            p1.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p2.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p3.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+
+            *(m_p_polygon_mesh_set[i]) = p1 + p2 + p3;
+
+            HU_value = (0.5605566870332654 + 0.6805360496793516 + 1.2631457976862375) / 3.0;
+            }
+            break;
+
+        case EYE_ID:
+            {
+            BoneMesh p1;
+            BoneMesh p2;
+
+            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_eye.stl");
+            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_eye.stl");
+
+            p1.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p2.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            *(m_p_polygon_mesh_set[i]) = p1 + p2;
+
+            HU_value = (77.58484270734033 + 78.10232558139535) / 2.0;
+            }
+            break;
+
+        case TONGUE_ID:
+            {
+            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/hyoid_bone.stl");
+
+            m_p_polygon_mesh_set[i]->loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            HU_value = 79.86510437179992;
+            }
+            break;
+
+        case TONSIL_ID:
+            {
+            BoneMesh p1;
+            BoneMesh p2;
+
+            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_palatine_tonsil.stl");
+            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_palatine_tonsil.stl");
+
+            p1.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p2.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            *(m_p_polygon_mesh_set[i]) = p1 + p2;
+
+            HU_value = (82.83418988368948 + 89.67550839964633) / 2.0;
+            }
+            break;
+
+
+
+        case GREY_MATTER_ID:
+            {
+            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/grey_matter.stl");
+
+            m_p_polygon_mesh_set[i]->loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            HU_value = 88.03497942386831;
+            }
+            break;
+
+        case LARYNX_ID:
+            {
+            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/larynx.stl");
+
+            m_p_polygon_mesh_set[i]->loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            HU_value = 151.2662734818698;
+            }
+            break;
+
+        case LENS_ID:
+            {
+            BoneMesh p1;
+            BoneMesh p2;
+
+            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_lens.stl");
+            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_lens.stl");
+
+            p1.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p2.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            *(m_p_polygon_mesh_set[i]) = p1 + p2;
+
+            HU_value = (90.068359375 + 92.84291187739464) / 2.0;
+            }
+            break;
+
+        case THYROID_ID:
+            {
+            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/thyroid_gland.stl");
+
+            m_p_polygon_mesh_set[i]->loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            HU_value = 94.07185628742515;
+            }
+            break;
+
+
+        case BRAIN_ID:
+            {
+            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/brain.stl");
+
+            m_p_polygon_mesh_set[i]->loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            HU_value = 94.97935295425961;
+            }
+            break;
+
+        case CRANIUM_ID:
+            {
+            BoneMesh p1;
+            BoneMesh p2;
+            BoneMesh p3;
+            BoneMesh p4;
+
+            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cranium.stl");
+            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/mandible.stl");
+            p3.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_styloid_process.stl");
+            p4.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_styloid_process.stl");
+
+            p1.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p2.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p3.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            p4.loadSTLFile(
+                false,
+                true,
+                false,
+                true,
+                mm,
+                GL_STATIC_DRAW);
+
+            *(m_p_polygon_mesh_set[i]) = p1 + p2 + p3 + p4;
+
+            HU_value = (233.32136682188195 + 232.73651678763204 + 232.71139102667863 + 227.32326283987916) / 4.0;
+            }
+            break;
+        }
+/*
         // Delete data
         if (p_data)
             {
             delete [] p_data;
             p_data = 0;
             }
-
+*/
        // if (i == LEFT_LUNG_ID)
         {
             /*char* p_data(0);
@@ -641,15 +1031,17 @@ void AnatomicalDataHandler::loadPatient()
         }
 
 
-        m_p_polygon_mesh_set[i]->setHounsfieldValue(g_p_HU_set[i]);
+
+        HU_value = -1000.0 + 2357 * (HU_value / 255.0);
+        m_p_polygon_mesh_set[i]->setHounsfieldValue(HU_value);
         m_p_polygon_mesh_set[i]->initialize();
         }
 
     // Compute the translation vector
     m_translation_vector =
-            m_p_polygon_mesh_set[SKIN_ID]->getMinCorner() +
-        (m_p_polygon_mesh_set[SKIN_ID]->getMaxCorner() -
-                m_p_polygon_mesh_set[SKIN_ID]->getMinCorner()) / 2.0;
+            m_p_polygon_mesh_set[CRANIUM_ID]->getMinCorner() +
+        (m_p_polygon_mesh_set[CRANIUM_ID]->getMaxCorner() -
+                m_p_polygon_mesh_set[CRANIUM_ID]->getMinCorner()) / 2.0;
 
     m_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
         180.0, VEC3(1, 0, 0));
@@ -668,6 +1060,7 @@ void AnatomicalDataHandler::loadPatient()
     m_xray_renderer.removeOuterSurface();
     for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
         {
+        if (i != 10)
         m_xray_renderer.addInnerSurface((m_p_polygon_mesh_set[i]));
         }
 
@@ -899,7 +1292,7 @@ void AnatomicalDataHandler::render()
 void AnatomicalDataHandler::displayPatient(GLint aShaderID)
 //---------------------------------------------------------
 {
-    for(int i(m_p_polygon_mesh_set.size()-1); i>=0; --i)
+    for(int i(0); i < m_p_polygon_mesh_set.size() - 1; ++i)
         {
         m_p_polygon_mesh_set[i]->defineDisplayShaderInput(aShaderID);
 
@@ -911,18 +1304,18 @@ void AnatomicalDataHandler::displayPatient(GLint aShaderID)
             {
             if(m_p_polygon_mesh_set[i]->isTransparent())
                  {
-                /*pushEnableDisableState(GL_CULL_FACE);
+                pushEnableDisableState(GL_CULL_FACE);
                 pushEnableDisableState(GL_BLEND);
 
                 glDisable(GL_CULL_FACE);
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_ONE, GL_ONE);
 
-                apMeshSet[i]->display();
+                m_p_polygon_mesh_set[i]->display();
 
                 popEnableDisableState();
                 popEnableDisableState();
-            */  }
+              }
             else
                 {
                 m_p_polygon_mesh_set[i]->display();
@@ -1023,7 +1416,7 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
                                            unsigned int& aSize)
 //--------------------------------------------------------------
 {
-    // Initialise the data
+  /*  // Initialise the data
     if (apData)
         {
         delete [] apData;
@@ -1042,13 +1435,13 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
             aSize = inflate(bin2c_liver_stl_gz, sizeof(bin2c_liver_stl_gz), &apData);
             break;
 
-        /*case LEFT_LUNG_ID:
+        case LEFT_LUNG_ID:
             aSize = inflate(bin2c_left_lung_stl_gz, sizeof(bin2c_left_lung_stl_gz), &apData);
             break;
 
         case RIGHT_LUNG_ID:
             aSize = inflate(bin2c_right_lung_stl_gz, sizeof(bin2c_right_lung_stl_gz), &apData);
-            break;*/
+            break;
 
         case DIAPH_ID:
             aSize = inflate(g_P4_diaph_stl, sizeof(g_P4_diaph_stl), &apData);
@@ -1070,7 +1463,7 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "Cannot decode the shader using ZLib.");
-        }
+        }*/
 }
 
 
@@ -1157,12 +1550,28 @@ void AnatomicalDataHandler::zoomOut()
 void AnatomicalDataHandler::initializePatient()
 //---------------------------------------------
 {
+    m_p_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_polygon_mesh_set.push_back(new BoneMesh());
+
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+
+    m_p_polygon_mesh_set.push_back(new BoneMesh());
+/*
     m_p_polygon_mesh_set.push_back(new SkinMesh());
     m_p_polygon_mesh_set.push_back(new LiverMesh());
     m_p_polygon_mesh_set.push_back(new LungsMesh());
     m_p_polygon_mesh_set.push_back(new DiaphragmMesh());
     m_p_polygon_mesh_set.push_back(new BoneMesh());
     m_p_polygon_mesh_set.push_back(new BoneMesh());
+*/
 }
 
 //---------------------------------------------

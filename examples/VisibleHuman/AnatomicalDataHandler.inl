@@ -97,7 +97,7 @@ inline void AnatomicalDataHandler::reset()
 {
     m_next_angle_to_process = 0;
     m_current_angle = 0;
-
+/*
     if (m_acquisition_type == ROTATE_SOURCE_DETECTOR)
         {
         m_acquisition_type = ROTATE_SAMPLE;
@@ -105,7 +105,7 @@ inline void AnatomicalDataHandler::reset()
     else
         {
         m_acquisition_type = ROTATE_SOURCE_DETECTOR;
-        }
+        }*/
 }
 
 

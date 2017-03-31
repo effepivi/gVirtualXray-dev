@@ -144,6 +144,21 @@ int main(int argc, char** argv)
         // Register the exit callback
         atexit(quit);
 
+        //Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/frozenCT.mhd");
+        //CT_data_set = -1000.0f + (2357.0f / 255.0f) * CT_data_set;
+        //CT_data_set = CT_data_set.convertHU2mu(0.08 * MeV);
+        Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
+
+        Sinogram<float> sinogram(CT_data_set.radonTransform(0, 1, 179));
+
+        Image<float> projection_set(sinogram.getProjectionSet());
+
+//#ifndef NDEBUG
+        CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
+        sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
+        projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
+//#endif
+
         // Initialize GLFW
         if (!glfwInit())
             {
@@ -210,6 +225,7 @@ int main(int argc, char** argv)
         GLint height(0);
         glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
         framebufferSizeCallback(g_p_main_window_id, width, height);
+
 
         // Launch the event loop
         while (!glfwWindowShouldClose(g_p_main_window_id))
