@@ -1,0 +1,71 @@
+############################
+# VISUALIZATION PARAMETERS #
+############################
+#/control/execute ../gate_simulation/visu.mac
+/vis/disable
+
+#########################
+# SET MATERIAL DATABASE #
+#########################
+/gate/geometry/setMaterialDatabase ../gate_simulation/GateMaterials.db
+
+#########
+# WORLD #
+#########
+/gate/world/geometry/setXLength 50. cm
+/gate/world/geometry/setYLength 50. cm
+/gate/world/geometry/setZLength 50. cm
+/gate/world/setMaterial Air
+
+#######################################
+# CT scanner for small animal imaging #
+# 150x200 pixels                      #
+# size of pixels : 0.5x0.5x1.0 mm3    #
+# pixels are made up of silicon       #
+#######################################
+/control/execute ../gate_simulation/CTScanner.mac
+
+###################################
+# phantom :                       #
+#  * 1 soft tissue box            #
+#  * 1 bone cylinder              #
+###################################
+/control/execute ../gate_simulation/phantom.mac
+
+###########
+# PHYSICS #
+###########
+/control/execute ../gate_simulation/physics.mac
+
+#############
+# DIGITIZER #
+#############
+/control/execute ../gate_simulation/digitizer.mac
+
+##############
+# SOURCE GPS #
+##############
+/control/execute ../gate_simulation/source.mac
+
+##########
+# OUTPUT #
+##########
+/control/execute output.mac
+
+#############
+# VERBOSITY #
+#############
+/control/execute ../gate_simulation/verbose.mac
+
+##################
+# INITIALIZATION #
+##################
+/gate/run/initialize
+
+###############
+# ACQUISITION #
+###############
+/control/execute ../gate_simulation/acquisition.mac
+
+exit
+
