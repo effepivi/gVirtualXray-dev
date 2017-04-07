@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -59,6 +59,7 @@ IF (USE_GLFW)
     ADD_SUBDIRECTORY (VisibleHuman)
     ADD_SUBDIRECTORY (RayCasting-ImplicitSurfaces)
     ADD_SUBDIRECTORY (CTinHUtoSimulation)
+    ADD_SUBDIRECTORY (ICRP)
 ENDIF ()
 
 IF (USE_GLUT)
