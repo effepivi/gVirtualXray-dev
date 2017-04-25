@@ -264,7 +264,7 @@ template<typename T> void Image<T>::loadASCII(const char* aFileName)
             if (line[0] != '#')
             {
                 number_of_columns = 0;
-                double intensity;
+                T intensity;
                 std::stringstream line_parser;
                 line_parser << line;
                 while (line_parser >> intensity)
@@ -306,6 +306,88 @@ template<typename T> void Image<T>::loadASCII(const std::string& aFileName)
 //-------------------------------------------------------------------------
 {
     loadASCII(aFileName.data());
+}
+
+
+//-------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const char* aFileName,
+                                              unsigned int aWidth,
+                                              unsigned int aHeight,
+                                              unsigned int aDepth,
+                                              const VEC3& aVoxelSize)
+//-------------------------------------------------------------------
+{
+    // Open the file
+    std::ifstream input_file(aFileName);
+
+    // Release the memory
+    destroy();
+
+    // The file is not open
+    if (!input_file.is_open())
+    {
+        std::string error_message("The file (");
+        error_message += aFileName;
+        error_message += ") does not exist";
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+    }
+
+    // Allocate memory for file content
+    m_width = aWidth;
+    m_height = aHeight;
+    m_number_of_slices = aDepth;
+    unsigned int volume_size(m_width * m_height * m_number_of_slices);
+    m_p_image = new T[volume_size];
+    m_spacing = aVoxelSize;
+
+    // Read evely line
+    unsigned int voxels(0);
+    T intensity;
+
+    while (input_file >> intensity)
+    {
+        // Wrong number of pixels
+        if (voxels >= volume_size)
+        {
+            /*std::string error_message("The file (");
+            error_message += aFileName;
+            error_message += ") is invalid (too many voxels)";
+
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);*/
+        }
+        else
+        {
+            m_p_image[voxels] = intensity;
+
+        }
+        ++voxels;
+    }
+
+    // Wrong number of pixels
+    /*if (voxels < volume_size)
+    {
+        std::string error_message("The file (");
+        error_message += aFileName;
+        error_message += ") is invalid (not enough voxels)";
+
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+    }*/
+}
+
+
+//-------------------------------------------------------------------------
+template<typename T> void Image<T>::loadASCII(const std::string& aFileName,
+                                              unsigned int aWidth,
+                                              unsigned int aHeight,
+                                              unsigned int aDepth,
+                                              const VEC3& aVoxelSize)
+//-------------------------------------------------------------------------
+{
+    loadASCII(aFileName.data(), aWidth,
+        aHeight,
+        aDepth,
+        aVoxelSize);
 }
 
 
@@ -1289,7 +1371,7 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
                     pixel_value = std::min(255, pixel_value);
 
 					output_file << pixel_value;
-
+                    
                     // It is not the last pixel of the line
                     if (i < (m_width - 1))
                     {

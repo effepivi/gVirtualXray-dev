@@ -482,6 +482,12 @@ public:
     void loadASCII(const std::string& aFileName);
 
     
+    void loadASCII(const char* aFileName, unsigned int aWidth, unsigned int aHeight, unsigned int aDepth, const VEC3& aVoxelSize);
+
+
+    void loadASCII(const std::string& aFileName, unsigned int aWidth, unsigned int aHeight, unsigned int aDepth, const VEC3& aVoxelSize);
+    
+    
     void loadMHD(const char* aFileName);
     
     
