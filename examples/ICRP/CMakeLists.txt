@@ -72,79 +72,89 @@ ENDIF (glfw3_FOUND)
 
 # Create the main program ######################################################
 IF (glfw3_FOUND)
-add_executable(demo-ICRP
-    ICRP.cxx
-    AnatomicalDataHandler.h
-    AnatomicalDataHandler.inl
-    AnatomicalDataHandler.cxx)
-target_link_libraries(demo-ICRP ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-ADD_DEPENDENCIES(demo-ICRP BinICRPFiles)
 
+    # Download data from ICRP, 2009. Adult Reference Computational Phantoms. ICRP Publication 110. Ann. ICRP 39 (2).
+    file(DOWNLOAD http://www.icrp.org/docs/V1.2.zip ${CMAKE_CURRENT_BINARY_DIR}/V1.2.zip)
+    
+    
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xvf ${CMAKE_CURRENT_BINARY_DIR}/V1.2.zip
+        #WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/V1.2
+    )
+    
+    add_executable(demo-ICRP
+        ICRP.cxx
+        AnatomicalDataHandler.h
+        AnatomicalDataHandler.inl
+        AnatomicalDataHandler.cxx)
+    target_link_libraries(demo-ICRP ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    ADD_DEPENDENCIES(demo-ICRP BinICRPFiles)
+    
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(demo-ICRP   gVirtualXRay)
     endif (gVirtualXRay_BINARY_DIR)
-
-IF (NOT APPLE)
-    INSTALL(TARGETS demo-ICRP RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
-ELSE (NOT APPLE)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
     
-    SET (MACOSX_RPATH 1)
-    SET(ICRP_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/ICRP.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.inl
-        ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.cxx
-        ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
-    )
-
-    ADD_EXECUTABLE (ICRP MACOSX_BUNDLE ${ICRP_SRCS})
-    TARGET_LINK_LIBRARIES (ICRP gVirtualXRay ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(ICRP BinICRPFiles)
-
-    set(MACOSX_BUNDLE_BUNDLE_NAME ICRP)
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "ICRP")
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
-    set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MAIN_PROJECT_VERSION}")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
-    set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
-
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ICRP.app")
-
-    INSTALL(TARGETS ICRP 
-        BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
-    )
-
-    SET_SOURCE_FILES_PROPERTIES (
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
-        PROPERTIES
-        MACOSX_PACKAGE_LOCATION data
-    )
-
-    # directories to look for dependencies
-    SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
-
-    SET (LIBRARIES ${requiredLibs} ${optionalLibs})
-    INSTALL(CODE "
-        include(BundleUtilities)
-        fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
-        " COMPONENT Runtime)
-
-    set(CPACK_BINARY_DRAGNDROP ON)
-ENDIF(NOT APPLE)
-
-SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
-
-include(CPack)
+    IF (NOT APPLE)
+        INSTALL(TARGETS demo-ICRP RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
+    ELSE (NOT APPLE)
+        INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT demos)
+        
+        SET (MACOSX_RPATH 1)
+        SET(ICRP_SRCS
+            ${CMAKE_CURRENT_SOURCE_DIR}/ICRP.cxx
+            ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.inl
+            ${CMAKE_CURRENT_SOURCE_DIR}/AnatomicalDataHandler.cxx
+            ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
+        )
+    
+        ADD_EXECUTABLE (ICRP MACOSX_BUNDLE ${ICRP_SRCS})
+        TARGET_LINK_LIBRARIES (ICRP gVirtualXRay ${optionalLibs} ${requiredLibs})
+        ADD_DEPENDENCIES(ICRP BinICRPFiles)
+    
+        set(MACOSX_BUNDLE_BUNDLE_NAME ICRP)
+        set(MACOSX_BUNDLE_GUI_IDENTIFIER "ICRP")
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        set(MACOSX_BUNDLE_ICON_FILE DragonDemo.icns)
+        set(MACOSX_BUNDLE_INFO_STRING "${MAIN_PROJECT_VERSION}, ${COPYRIGHT_STRING}")
+        set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
+        set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MAIN_PROJECT_VERSION}")
+        set(MACOSX_BUNDLE_BUNDLE_VERSION "${MAIN_PROJECT_VERSION}")
+        set(MACOSX_BUNDLE_COPYRIGHT "${COPYRIGHT_STRING}")
+    
+        SET(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ICRP.app")
+    
+        INSTALL(TARGETS ICRP 
+            BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos COMPONENT Runtime
+            RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin COMPONENT Runtime
+        )
+    
+        SET_SOURCE_FILES_PROPERTIES (
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
+            ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
+            PROPERTIES
+            MACOSX_PACKAGE_LOCATION data
+        )
+    
+        # directories to look for dependencies
+        SET (DIRS /sw/lib /usr/local/lib ${Boost_LIBRARY_DIR})
+    
+        SET (LIBRARIES ${requiredLibs} ${optionalLibs})
+        INSTALL(CODE "
+            include(BundleUtilities)
+            fixup_bundle(\"${APPS}\" \"\${LIBRARIES}\" \"${DIRS}\")
+            " COMPONENT Runtime)
+    
+        set(CPACK_BINARY_DRAGNDROP ON)
+    ENDIF(NOT APPLE)
+    
+    SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
+    
+    include(CPack)
 ENDIF (glfw3_FOUND)
 
 
