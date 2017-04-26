@@ -260,7 +260,13 @@ void SoftTissueMesh::initialize()
 
 			shareNormalVectors();
 
-			updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
+			// Create the VBO if needed
+            if (!m_p_vbo.get())
+            {
+                m_p_vbo.reset(createVBO());
+            }
+
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_polygon_type);
 		}
 
 	    // Check the OpenGL error status
