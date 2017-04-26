@@ -363,80 +363,9 @@ inline void PolygonMesh::computeBoundingBox()
 inline void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScale)
 //----------------------------------------------------------------
 {
-    // There are vertices
-    if (m_number_of_vertices)
-    {
-        for (unsigned int i(0); i < m_number_of_vertices; ++i)
-        {
-            VEC3 vertex(getVertex(i) * aScale);
-            setVertex(i, vertex);
-        }
-
-        // Update the bounding box
-        m_min_corner *= aScale;
-        m_max_corner *= aScale;
-        m_bounding_box_diagonal *= aScale;
-
-        // Create the VBO if needed
-        if (!m_p_vbo.get())
-        {
-            m_p_vbo.reset(createVBO());
-        }
-
-        // Update the VBO
-        if (m_p_vbo->isReady())
-        {
-            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
-        }
-    }
+    applyScale(aScale, aScale, aScale);
 }
 
-    
-//-----------------------------------------------------------------
-inline void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScaleX,
-                                    const RATIONAL_NUMBER& aScaleY,
-                                    const RATIONAL_NUMBER& aScaleZ)
-//-----------------------------------------------------------------
-{
-    // There are vertices
-    if (m_number_of_vertices)
-    {
-        for (unsigned int i(0); i < m_number_of_vertices; ++i)
-        {
-            VEC3 vertex(getVertex(i));
-            
-            vertex[0] *= aScaleX;
-            vertex[1] *= aScaleY;
-            vertex[2] *= aScaleZ;
-
-            setVertex(i, vertex);
-        }
-
-        // Update the bounding box
-        m_min_corner[0] *= aScaleX;
-        m_min_corner[1] *= aScaleY;
-        m_min_corner[2] *= aScaleZ;
-
-        m_max_corner[0] *= aScaleX;
-        m_max_corner[1] *= aScaleY;
-        m_max_corner[2] *= aScaleZ;
-
-        m_bounding_box_diagonal = (m_max_corner - m_min_corner).length();
-
-        // Create the VBO if needed
-        if (!m_p_vbo.get())
-        {
-            m_p_vbo.reset(createVBO());
-        }
-
-        // Update the VBO
-        if (m_p_vbo->isReady())
-        {
-            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
-        }
-    }
-}
-    
 
 //----------------------------------------------------------------
 inline void PolygonMesh::translate(const VEC3& aTranslationVector)

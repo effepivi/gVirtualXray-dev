@@ -149,7 +149,8 @@ void loadTissueMaterial(const std::string& aFileName,
 void loadMaterialDensity(const std::string& aFileName,
         const Image<short>& aVolume,
         std::map<short, TissueMaterial>& apMaterialTable,
-        std::map<short, PolygonMesh>& apPolygonSet);
+        std::map<short, PolygonMesh>& apPolygonSet,
+        bool aCreatePolygonMeshes);
 
 void addToPolygon(short aThreshold,
         const Image<short>& aVolume,
@@ -182,15 +183,55 @@ int main(int argc, char** argv)
   */
         std::map<short, TissueMaterial> p_material_table;
 
-
         loadTissueMaterial("./P110 data V1.2/AF/AF_media.dat",
                 p_material_table);
 
         std::map<short, PolygonMesh> p_polygon_set;
+
+        bool create_meshes_flag(false);
+
+        for (std::map<short, TissueMaterial>::iterator ite(p_material_table.begin());
+                ite != p_material_table.end() && !create_meshes_flag;
+                ++ite)
+        {
+            // Set the filename
+            std::stringstream stl_file_name;
+            stl_file_name << "./P110 data V1.2/AF/AF_" << ite->first << ".stl";
+
+            // OPen the file
+            std::ifstream input_stream(stl_file_name.str().c_str(),
+                    std::ios::in | std::ios::binary);
+
+            // The file is not open
+            if (!input_stream.is_open())
+                {
+                create_meshes_flag = true;
+                }
+
+            else
+            {
+                p_polygon_set[ite->first].setFileName(stl_file_name.str());
+
+                p_polygon_set[ite->first].loadSTLFile(false,
+                    true,
+                    false,
+                    false,
+                    mm,
+                    GL_STATIC_DRAW);
+                }
+        }
+
+        // Make sure there is no mesh
+        if (create_meshes_flag)
+        {
+            p_polygon_set.clear();
+        }
+
         loadMaterialDensity("./P110 data V1.2/AF/AF_organs.dat",
                 ICRP_phantom_female,
                 p_material_table,
-                p_polygon_set);
+                p_polygon_set,
+                create_meshes_flag);
 
         for (std::map<short, PolygonMesh>::iterator ite(p_polygon_set.begin());
                 ite != p_polygon_set.end();
@@ -199,26 +240,9 @@ int main(int argc, char** argv)
             std::stringstream stl_file_name;
             stl_file_name << "./P110 data V1.2/AF/AF_" << ite->first << ".stl";
 
-            ite->second.setFileName(stl_file_name.str());
+            //ite->second.setFileName(stl_file_name.str());
             ite->second.writeSTLFile();
         }
-
-
-        exit(0);
-/*        Image<short> ICRP_phantom_male;
-        ICRP_phantom_male.loadASCII("./P110 data V1.2/AM/AM.dat", 300, 200, 350, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
-        ICRP_phantom_male.save("./P110 data V1.2/AM/AM.mhd");
-*/
-
-   //     Sinogram<float> sinogram(CT_data_set.radonTransform(0, 1, 179));
-
-//        Image<float> projection_set(sinogram.getProjectionSet());
-
-//#ifndef NDEBUG
-  //      CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
-  //      sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
-  //      projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
-//#endif
 
         // Initialize GLFW
         if (!glfwInit())
@@ -608,7 +632,8 @@ void loadTissueMaterial(const std::string& aFileName,
 void loadMaterialDensity(const std::string& aFileName,
                          const Image<short>& aVolume,
                          std::map<short, TissueMaterial>& apMaterialTable,
-                         std::map<short, PolygonMesh>& apPolygonSet)
+                         std::map<short, PolygonMesh>& apPolygonSet,
+                         bool aCreatePolygonMeshes)
 //-----------------------------------------------------------------------
 {
     // Open the input file
@@ -662,10 +687,13 @@ void loadMaterialDensity(const std::string& aFileName,
             apMaterialTable[material_id].setDensity(density);
 
             // Add the polygon
-            addToPolygon(tissue_id,
-                    aVolume,
-                    apMaterialTable[material_id],
-                    apPolygonSet[material_id]);
+            if (aCreatePolygonMeshes)
+            {
+                addToPolygon(tissue_id,
+                        aVolume,
+                        apMaterialTable[material_id],
+                        apPolygonSet[material_id]);
+            }
         }
     }
 }
@@ -679,7 +707,4 @@ void addToPolygon(short aThreshold,
 //------------------------------------------------
 {
     aPolygon += aVolume.marchingCubes(aThreshold, aThreshold, true);
-
-
-
 }
