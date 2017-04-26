@@ -110,6 +110,14 @@ namespace gVirtualXRay {
     }
 
 
+    //----------------------------------------------------
+    inline const ElementSet& XRayRenderer::getElementSet()
+    //----------------------------------------------------
+    {
+        return m_element_set;
+    }
+
+
     //------------------------------------------------------------
     inline void XRayRenderer::useNegativeFilteringFlag(bool aFlag)
     //------------------------------------------------------------

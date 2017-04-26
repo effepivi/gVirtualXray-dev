@@ -114,6 +114,7 @@ const unsigned short Z_Cu = 29; ///< Copper atomic number
 const unsigned short Z_Zn = 30; ///< Zinc atomic number
 const unsigned short Z_Ag = 47; ///< Silver atomic number
 const unsigned short Z_Sn = 50; ///< Tin atomic number
+const unsigned short Z_I  = 53; ///< Iodine atomic number
 
 } // namespace gVirtualXRay
 

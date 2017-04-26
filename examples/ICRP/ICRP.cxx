@@ -66,6 +66,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <map>
+
 #ifdef HAS_GLEW
 #include <GL/glew.h>
 #endif
@@ -82,8 +87,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+#ifndef __FileDoesNotExistException_h
+#include "gVirtualXRay/FileDoesNotExistException.h"
+#endif
+
 #ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
+#endif
+
+#ifndef __TissueMaterial_h
+#include "gVirtualXRay/TissueMaterial.h"
 #endif
 
 
@@ -130,6 +143,12 @@ void quit();
 void errorCallback(int error, const char* description);
 
 
+void loadTissueMaterial(const std::string& aFileName,
+        std::map<short, TissueMaterial>& apMaterialTable);
+
+void loadMaterialDensity(const std::string& aFileName,
+        std::map<short, TissueMaterial>& apMaterialTable);
+
 
 //-----------------------------
 int main(int argc, char** argv)
@@ -146,31 +165,32 @@ int main(int argc, char** argv)
         // Register the exit callback
         atexit(quit);
 
-       
+        std::map<short, TissueMaterial> p_material_table;
 
-        Image<short> ICRP_phantom_male;
-        ICRP_phantom_male.loadASCII("C:\\Users\\Franck\\Downloads\\V1.2\\P110 data V1.2\\AM\\AM.dat", 300, 200, 350, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
-        ICRP_phantom_male.save("C:\\Users\\Franck\\Downloads\\V1.2\\P110 data V1.2\\AM\\AM.mhd");
+        loadTissueMaterial("./P110 data V1.2/AF/AF_media.dat",
+                p_material_table);
 
-        exit(0);
+        loadMaterialDensity("./P110 data V1.2/AF/AF_organs.dat",
+                p_material_table);
 
         Image<short> ICRP_phantom_female;
-        ICRP_phantom_female.loadASCII("C:\\Users\\Franck\\Downloads\\V1.2\\P110 data V1.2\\AF\\AF.dat", 299, 137, 348, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
-        ICRP_phantom_female.save("C:\\Users\\Franck\\Downloads\\V1.2\\P110 data V1.2\\AF\\AF.mhd");
+        ICRP_phantom_female.loadASCII("./P110 data V1.2/AF/AF.dat", 299, 137, 348, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
+        ICRP_phantom_female.save("./P110 data V1.2/AF/AF.mhd");
 
-        //Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/frozenCT.mhd");
-        //CT_data_set = -1000.0f + (2357.0f / 255.0f) * CT_data_set;
-        //CT_data_set = CT_data_set.convertHU2mu(0.08 * MeV);
-        Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
+        exit(0);
+/*        Image<short> ICRP_phantom_male;
+        ICRP_phantom_male.loadASCII("./P110 data V1.2/AM/AM.dat", 300, 200, 350, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
+        ICRP_phantom_male.save("./P110 data V1.2/AM/AM.mhd");
+*/
 
-        Sinogram<float> sinogram(CT_data_set.radonTransform(0, 1, 179));
+   //     Sinogram<float> sinogram(CT_data_set.radonTransform(0, 1, 179));
 
-        Image<float> projection_set(sinogram.getProjectionSet());
+//        Image<float> projection_set(sinogram.getProjectionSet());
 
 //#ifndef NDEBUG
-        CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
-        sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
-        projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
+  //      CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
+  //      sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
+  //      projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
 //#endif
 
         // Initialize GLFW
@@ -479,4 +499,131 @@ void quit()
         g_p_main_window_id = 0;
         glfwTerminate();
         }
+}
+
+
+//-----------------------------------------------------------------------
+void loadTissueMaterial(const std::string& aFileName,
+                        std::map<short, TissueMaterial>& apMaterialTable)
+//-----------------------------------------------------------------------
+{
+    XRayRenderer::loadElementSet();
+    TissueMaterial::registerElementSet(&XRayRenderer::getElementSet());
+
+    // Open the input file
+    std::ifstream input_file_stream(aFileName.c_str());
+
+    // The file does not exist, throw an error
+    if (!input_file_stream.is_open())
+    {
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+    }
+
+    // Skip first three lines
+    std::string data;
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+
+    // Empty the material table
+    apMaterialTable.clear();
+
+    // Process every line of the file
+    while (input_file_stream.good())
+    {
+        // Store the material ID
+        short tissue_id;
+        input_file_stream >> tissue_id;
+
+        // Get the rest of the current line
+        std::getline(input_file_stream, data);
+
+        // Get the percentages only
+        data = data.substr(76, 153 - 77);
+
+        // Store the line in a stream
+        std::stringstream line;
+        line << data;
+
+        // Decompose the stream
+        float H, C, N, O, Na, Mg, P, S, Cl, K, Ca, Fe, I;
+        line >> H >> C >> N >> O >> Na >> Mg >> P >> S >> Cl >> K >> Ca >> Fe >> I;
+
+        // Build the material
+        TissueMaterial material(0, 0,
+                H,
+                C,
+                N,
+                O,
+                Na,
+                Mg,
+                P,
+                S,
+                Cl,
+                0,
+                K,
+                Ca,
+                0,
+                0,
+                0,
+                0,
+                0,
+                Fe,
+                I);
+
+        // Add the material to the table
+        apMaterialTable[tissue_id] = material;
+    }
+}
+
+
+//-----------------------------------------------------------------------
+void loadMaterialDensity(const std::string& aFileName,
+                         std::map<short, TissueMaterial>& apMaterialTable)
+//-----------------------------------------------------------------------
+{
+    // Open the input file
+    std::ifstream input_file_stream(aFileName.c_str());
+
+    // The file does not exist, throw an error
+    if (!input_file_stream.is_open())
+    {
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+    }
+
+    // Skip first four lines
+    std::string data;
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+
+    // Process every line of the file
+    while (input_file_stream.good())
+    {
+        // Get the current line
+        std::getline(input_file_stream, data);
+
+        if (data.size())
+        {
+            // Get the relevant data only
+            data = data.substr(55, 67 - 56);
+
+            // Store the line in a stream
+            std::stringstream line;
+            line << data;
+
+            // Store the material ID
+            short tissue_id;
+            line >> tissue_id;
+
+            // Store the material density
+            double density;
+            line >> density;
+            density *= g / cm3;
+
+            // Add the density to the material
+            apMaterialTable[tissue_id].setDensity(density);
+        }
+    }
 }

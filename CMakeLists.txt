@@ -704,6 +704,7 @@ IF (XCOM_PATH)
         ${XCOM_PATH}/MDATX3.047
 
         ${XCOM_PATH}/MDATX3.050
+        ${XCOM_PATH}/MDATX3.053
     )
 
     CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")

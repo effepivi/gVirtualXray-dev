@@ -95,11 +95,14 @@ inline TissueMaterial::TissueMaterial(short aMinHUValue,
                                       double Cu,
                                       double Zn,
                                       double Ag,
-                                      double Sn):
+                                      double Sn,
+                                      double Fe,
+                                      double I):
 //------------------------------------------------------
         m_min_HU_value(aMinHUValue),
         m_max_HU_value(aMaxHUValue),
-        m_molar_mass(0)
+        m_molar_mass(0),
+        m_density(-1)
 //------------------------------------------------------
 {
     m_p_weight_set[0]  =  H;
@@ -119,6 +122,8 @@ inline TissueMaterial::TissueMaterial(short aMinHUValue,
     m_p_weight_set[14] = Zn;
     m_p_weight_set[15] = Ag;
     m_p_weight_set[16] = Sn;
+    m_p_weight_set[17] = Fe;
+    m_p_weight_set[18] = I;
 
 	normaliseWeightSet();
 	
@@ -130,7 +135,8 @@ inline TissueMaterial::TissueMaterial(const TissueMaterial& aMaterial):
 //---------------------------------------------------------------------
         m_min_HU_value(aMaterial.m_min_HU_value),
         m_max_HU_value(aMaterial.m_max_HU_value),
-        m_molar_mass(aMaterial.m_molar_mass)
+        m_molar_mass(aMaterial.m_molar_mass),
+        m_density(aMaterial.m_density)
 //---------------------------------------------------------------------
 {
 	std::memcpy(m_p_weight_set, aMaterial.m_p_weight_set, sizeof(m_p_weight_set));
@@ -177,11 +183,29 @@ inline double TissueMaterial::getMolarMass() const
 }
 
 
-//------------------------------------------------------------------------------
-inline double TissueMaterial::getMU(short aHounsfieldValue, double anEnergy) const
-//------------------------------------------------------------------------------
+//-----------------------------------------------------
+inline void TissueMaterial::setDensity(double aDensity)
+//-----------------------------------------------------
 {
-	return (getMassAttenuationTotal(aHounsfieldValue, anEnergy) * (getDensity(aHounsfieldValue)));
+    m_density = aDensity;
+}
+
+
+//----------------------------------------------
+inline double TissueMaterial::getDensity() const
+//----------------------------------------------
+{
+    return m_density;
+}
+
+
+//---------------------------------------------------------
+inline double TissueMaterial::getMU(short aHounsfieldValue,
+                                    double anEnergy) const
+//---------------------------------------------------------
+{
+	return (getMassAttenuationTotal(aHounsfieldValue, anEnergy) *
+	        (getDensity(aHounsfieldValue)));
 }
 
 
@@ -191,7 +215,8 @@ inline TissueMaterial& TissueMaterial::operator=(const TissueMaterial& aMaterial
 {
 	m_min_HU_value = aMaterial.m_min_HU_value;
 	m_max_HU_value = aMaterial.m_max_HU_value;
-	m_molar_mass   = aMaterial.m_molar_mass;
+    m_molar_mass   = aMaterial.m_molar_mass;
+    m_density      = aMaterial.m_density;
 	memcpy(m_p_weight_set, aMaterial.m_p_weight_set, sizeof(m_p_weight_set));
 
 	return (*this);
@@ -221,8 +246,10 @@ inline std::ostream & operator << (std::ostream& anOutputSream,
 	anOutputSream << aTissueMaterial.m_p_weight_set[12] << "\t";
 	anOutputSream << aTissueMaterial.m_p_weight_set[13] << "\t";
 	anOutputSream << aTissueMaterial.m_p_weight_set[14] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[15] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[16] << std::endl;
+    anOutputSream << aTissueMaterial.m_p_weight_set[15] << "\t";
+    anOutputSream << aTissueMaterial.m_p_weight_set[16] << "\t";
+    anOutputSream << aTissueMaterial.m_p_weight_set[17] << "\t";
+	anOutputSream << aTissueMaterial.m_p_weight_set[18] << std::endl;
 	
 	return (anOutputSream);
 }
@@ -251,7 +278,9 @@ inline std::istream & operator >> (std::istream& anInputSream,
 	anInputSream >> aTissueMaterial.m_p_weight_set[13];
 	anInputSream >> aTissueMaterial.m_p_weight_set[14];
 	anInputSream >> aTissueMaterial.m_p_weight_set[15];
-	anInputSream >> aTissueMaterial.m_p_weight_set[16];
+    anInputSream >> aTissueMaterial.m_p_weight_set[16];
+    anInputSream >> aTissueMaterial.m_p_weight_set[17];
+    anInputSream >> aTissueMaterial.m_p_weight_set[18];
 	
 	aTissueMaterial.normaliseWeightSet();
 	

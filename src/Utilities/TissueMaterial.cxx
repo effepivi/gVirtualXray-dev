@@ -159,6 +159,8 @@ double TissueMaterial::computeMolarMass()
             m_p_weight_set[14] * m_p_element_set->getElement(Z_Zn).getMolarMass() +
             m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getMolarMass() +
             m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMolarMass();
+            m_p_weight_set[17] * m_p_element_set->getElement(Z_Fe).getMolarMass();
+            m_p_weight_set[18] * m_p_element_set->getElement(Z_I).getMolarMass();
 
     return (m_molar_mass);
 }
@@ -228,6 +230,8 @@ double TissueMaterial::getMassAttenuationTotal(short aHounsfieldValue, double an
             m_p_weight_set[13] * m_p_element_set->getElement(Z_Cu).getMassAttenuationTotal(anEnergy) +
             m_p_weight_set[14] * m_p_element_set->getElement(Z_Zn).getMassAttenuationTotal(anEnergy) +
             m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMassAttenuationTotal(anEnergy)
+            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[17] * m_p_element_set->getElement(Z_Fe).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[18] * m_p_element_set->getElement(Z_I).getMassAttenuationTotal(anEnergy)
     );
 }

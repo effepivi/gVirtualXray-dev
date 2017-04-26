@@ -101,11 +101,11 @@ inline FileDoesNotExistException::FileDoesNotExistException(const char* aFileNam
 //------------------------------------------------------------------------------------------------
 {
 	std::stringstream error_message;
-	error_message << "Error: cannot open the file \"" << aNameOfFileToOpen << "\"" << std::endl; 
-	error_message << "\t- in File: " << aFileName << std::endl; 
-	error_message << "\t- in Function: " << aFunctionName << std::endl; 
+	error_message << "Error: cannot open the file \"" << aNameOfFileToOpen << "\"" << std::endl;
+	error_message << "\t- in File: " << aFileName << std::endl;
+	error_message << "\t- in Function: " << aFunctionName << std::endl;
 	error_message << "\t- at Line: " << anErrorLine << std::endl;
-	
+
 	m_error_message = error_message.str();
 }
 

@@ -88,7 +88,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 /// The number of elements in a material
 //------------------------------------------------------------------------------
-#define NUMBER_OF_ELEMENTS_PER_MATERIAL 17
+#define NUMBER_OF_ELEMENTS_PER_MATERIAL 19
 
 
 //******************************************************************************
@@ -136,6 +136,8 @@ public:
      *  @param Zn:  the amount of Zn in the material
      *  @param Ag:  the amount of Ag in the material
      *  @param Sn:  the amount of Sn in the material
+     *  @param Fe:  the amount of Fe in the material
+     *  @param I:   the amount of I in the material
      */
     //--------------------------------------------------------------------------
     TissueMaterial(short aMinHUValue = 0,
@@ -156,7 +158,9 @@ public:
                    double Cu = 0,
                    double Zn = 0,
                    double Ag = 0,
-                   double Sn = 0);
+                   double Sn = 0,
+                   double Fe = 0,
+                   double I = 0);
 
 
     //--------------------------------------------------------------------------
@@ -230,6 +234,18 @@ public:
     */
     //--------------------------------------------------------------------------
     static double getDensity(short aHounsfieldValue);
+
+
+    void setDensity(double aDensity);
+
+
+    //--------------------------------------------------------------------------
+    /// Get the density of the material.
+    /*
+    *   @return the material density
+    */
+    //--------------------------------------------------------------------------
+    double getDensity() const;
 
 
     //--------------------------------------------------------------------------
@@ -322,6 +338,10 @@ private:
     
     // The molar mass of the material
     double m_molar_mass;
+
+    // The density (a negative value means that it is computed automatically from the HU number
+    // A positive value means that is is set by the user
+    double m_density;
 };
 
 
