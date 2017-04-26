@@ -67,6 +67,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //      Include
 //******************************************************************************
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <map>
+
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -142,7 +147,7 @@ public:
     *   @param aPath:   the path to the phantom directory
     */
     //--------------------------------------------------------------------------
-    void load(const std::string& aName, const std::string& aPath);
+    void load(const std::string& aPath, const std::string& aName);
 
 
     //--------------------------------------------------------------------------
@@ -156,7 +161,18 @@ public:
 
 //******************************************************************************
 private:
+    void loadTissueMaterial(const std::string& aFileName);
+
+    void loadMaterialDensity(const std::string& aFileName,
+            bool aCreatePolygonMeshes);
+
+    void addToPolygon(short aThreshold,
+            const gVirtualXRay::TissueMaterial& aMaterial,
+            gVirtualXRay::PolygonMesh& aPolygon);
+
     gVirtualXRay::Image<short> m_volume_dataset;
+    std::map<short, gVirtualXRay::TissueMaterial> m_p_material_table;
+    std::map<short, gVirtualXRay::PolygonMesh> m_p_polygon_set;
 };
 
 //==============================================================================

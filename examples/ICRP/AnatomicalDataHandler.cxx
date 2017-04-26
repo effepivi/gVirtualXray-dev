@@ -170,70 +170,6 @@ const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
 const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
 const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
-/*
-const unsigned char SKIN_ID(0);
-const unsigned char LIVER_ID(1);
-const unsigned char LUNG_ID(2);
-const unsigned char DIAPH_ID(3);
-const unsigned char SPINE_ID(4);
-const unsigned char RIBS_ID(5);
-const unsigned char KIDNEY_ID(6);
-*/
-
-/*
-4593: "right palatine tonsil"
-4595: "thyroid gland"
-4596: "left palatine tonsil"
-4598: "grey matter"
-4632: "lingual tonsil"
-5149: "cranium"
-5152: "mandible"
-5153: "left styloid process"
-5154: "right styloid process"
-5156: "left eye"
-5157: "right eye"
-5158: "brain"
-5161: "larynx"
-5176: "right lens"
-5177: "left lens"
-5178: "frontal sinus"
-5179: "right maxillary sinus"
-5180: "left maxillary sinus"
-6507: "atlas C1"
-6508: "axis C2"
-6509: "cervical vertebra C3"
-6510: "cervical vertebra C4"
-6511: "cervical vertebra C5"
-6512: "cervical vertebra C6"
-6545: "hyoid bone"
-*/
-
-
-const unsigned char VERTEBRA_ID(0);
-const unsigned char HYOID_BONE_ID(1);
-const unsigned char SINUS_ID(2);
-const unsigned char EYE_ID(3);
-const unsigned char TONGUE_ID(4);
-const unsigned char TONSIL_ID(5);
-const unsigned char GREY_MATTER_ID(6);
-const unsigned char LENS_ID(7);
-const unsigned char THYROID_ID(8);
-const unsigned char BRAIN_ID(9);
-const unsigned char LARYNX_ID(10);
-
-const unsigned char CRANIUM_ID(11);
-
-
-/*
-const double g_p_HU_set [] =
-{
-    -70.202,
-    36.9,
-    -687.297,
-    -41.284,
-    181.08,
-    181.08,
-};*/
 
 
 //******************************************************************************
@@ -256,15 +192,77 @@ inline float radian2degree(float anAngle)
 
 
 //------------------------------------------------------------------------
-void ICPRPhamtom::load(const std::string& aName, const std::string& aPath)
+void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
 //------------------------------------------------------------------------
 {
+
     std::string path(aPath);
     path += "/";
     path += aName;
-    path += ".dat";
+    path += "/";
+    path += aName;
 
-    m_volume_dataset.loadASCII(path, 299, 137, 348, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
+    m_volume_dataset.loadASCII(path + ".dat", 299, 137, 348, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
+
+    m_volume_dataset.save(path + ".mhd");
+
+    loadTissueMaterial(path + "_media.dat");
+
+    bool create_meshes_flag(false);
+
+    for (std::map<short, TissueMaterial>::iterator ite(m_p_material_table.begin());
+            ite != m_p_material_table.end() && !create_meshes_flag;
+            ++ite)
+    {
+        // Set the filename
+        std::stringstream stl_file_name;
+        stl_file_name << path << "_" << ite->first << ".stl";
+
+        // OPen the file
+        std::ifstream input_stream(stl_file_name.str().c_str(),
+                std::ios::in | std::ios::binary);
+
+        // The file is not open
+        if (!input_stream.is_open())
+            {
+            create_meshes_flag = true;
+            }
+
+        else
+        {
+            m_p_polygon_set[ite->first].setFileName(stl_file_name.str());
+
+            m_p_polygon_set[ite->first].loadSTLFile(false,
+                true,
+                false,
+                false,
+                mm,
+                GL_STATIC_DRAW);
+            }
+    }
+
+    // Make sure there is no mesh
+    if (create_meshes_flag)
+    {
+        m_p_polygon_set.clear();
+    }
+
+    loadMaterialDensity(path + "_organs.dat",
+            create_meshes_flag);
+
+    if (create_meshes_flag)
+    {
+        for (std::map<short, PolygonMesh>::iterator ite(m_p_polygon_set.begin());
+                ite != m_p_polygon_set.end();
+                ++ite)
+        {
+            std::stringstream stl_file_name;
+            stl_file_name << path << "_" << ite->first << ".stl";
+
+            //ite->second.setFileName(stl_file_name.str());
+            ite->second.writeSTLFile();
+        }
+    }
 }
 
 
@@ -274,6 +272,175 @@ void ICPRPhamtom::saveVolume(const std::string& aFileName) const
 {
     m_volume_dataset.save(aFileName);
 }
+
+
+
+//----------------------------------------------------------------
+void ICPRPhamtom::loadTissueMaterial(const std::string& aFileName)
+//----------------------------------------------------------------
+{
+    XRayRenderer::loadElementSet();
+    TissueMaterial::registerElementSet(&XRayRenderer::getElementSet());
+
+    // Open the input file
+    std::ifstream input_file_stream(aFileName.c_str());
+
+    // The file does not exist, throw an error
+    if (!input_file_stream.is_open())
+    {
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+    }
+
+    // Skip first three lines
+    std::string data;
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+
+    // Empty the material table
+    m_p_material_table.clear();
+
+    // Process every line of the file
+    while (input_file_stream.good())
+    {
+        // Store the material ID
+        short material_id;
+        input_file_stream >> material_id;
+
+        // Get the rest of the current line
+        std::getline(input_file_stream, data);
+
+        // Get the percentages only
+        data = data.substr(76, 153 - 77);
+
+        // Store the line in a stream
+        std::stringstream line;
+        line << data;
+
+        // Decompose the stream
+        float H, C, N, O, Na, Mg, P, S, Cl, K, Ca, Fe, I;
+        line >> H >> C >> N >> O >> Na >> Mg >> P >> S >> Cl >> K >> Ca >> Fe >> I;
+
+        // Build the material
+        TissueMaterial material(0, 0,
+                H,
+                C,
+                N,
+                O,
+                Na,
+                Mg,
+                P,
+                S,
+                Cl,
+                0,
+                K,
+                Ca,
+                0,
+                0,
+                0,
+                0,
+                0,
+                Fe,
+                I);
+
+        // Add the material to the table
+        m_p_material_table[material_id] = material;
+    }
+}
+
+
+//-----------------------------------------------------------------
+void ICPRPhamtom::loadMaterialDensity(const std::string& aFileName,
+                                      bool aCreatePolygonMeshes)
+//-----------------------------------------------------------------
+{
+    // Open the input file
+    std::ifstream input_file_stream(aFileName.c_str());
+
+    // The file does not exist, throw an error
+    if (!input_file_stream.is_open())
+    {
+        throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+    }
+
+    // Skip first four lines
+    std::string data;
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+    std::getline(input_file_stream, data);
+
+    // Process every line of the file
+    while (input_file_stream.good())
+    {
+        // Get the tissue ID
+        short tissue_id;
+        input_file_stream >> tissue_id;
+
+        // Get the rest of the current line
+        std::getline(input_file_stream, data);
+
+        if (data.size() && input_file_stream.good())
+        {
+            // Get the relevant data only
+           //std::cout << data << std::endl;
+            data = data.substr(55 - (67 - data.size()), 67 - 56);
+
+            // Store the rest of the line in a stream
+            std::stringstream line;
+            line << data;
+
+            // Store the material ID
+            short material_id;
+            line >> material_id;
+
+            // Store the material density
+            double density;
+            line >> density;
+            density *= g / cm3;
+
+            std::cout << tissue_id << "\t" << material_id << "\t" << density / (g / cm3) << std::endl;
+
+            // Add the density to the material
+            m_p_material_table[material_id].setDensity(density);
+
+            // Add the polygon
+            if (aCreatePolygonMeshes)
+            {
+                addToPolygon(tissue_id,
+                        m_p_material_table[material_id],
+                        m_p_polygon_set[material_id]);
+            }
+        }
+    }
+}
+
+
+//------------------------------------------------
+void ICPRPhamtom::addToPolygon(short aThreshold,
+                               const TissueMaterial& aMaterial,
+                               PolygonMesh& aPolygon)
+//------------------------------------------------
+{
+    aPolygon += m_volume_dataset.marchingCubes(aThreshold, aThreshold, true);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //-----------------------------------------------------------------
@@ -311,6 +478,7 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_light_direction(-1, 3, 1)
 //-----------------------------------------------------------------
 {
+    m_female_icrp_phantom.load("./P110 data V1.2", "AF");
 }
 
 
@@ -657,413 +825,12 @@ void AnatomicalDataHandler::loadXRaySimulator()
 void AnatomicalDataHandler::loadPatient()
 //---------------------------------------
 {
-    m_male_icrp_phantom.load("AM", "C:\\Users\\Franck\\Downloads\\V1.2\\P110 data V1.2\\AM");
 
-    m_female_icrp_phantom.load("AF", "C:\\Users\\Franck\\Downloads\\V1.2\\P110 data V1.2\\AF");
 
+    m_female_icrp_phantom.load("./P110 data V1.2", "AF");
 
-    // Set geometry
-    for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
-        {
-        //char* p_data(0);
-        //unsigned int data_size(0);
-        //decompressMesh(i, p_data, data_size);
-        double HU_value(-1000);
 
-        switch (i)
-        {
-        case VERTEBRA_ID:
-            {
-            BoneMesh p1;
-            BoneMesh p2;
-            BoneMesh p3;
-            BoneMesh p4;
-            BoneMesh p5;
-            BoneMesh p6;
-
-            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C3.stl");
-            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C4.stl");
-            p3.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C5.stl");
-            p4.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cervical_vertebra_C6.stl");
-            p5.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/atlas_C1.stl");
-            p6.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/axis_C2.stl");
-
-            p1.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p2.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p3.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p4.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p5.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p6.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            *(m_p_polygon_mesh_set[i]) = p1 + p2 + p3 + p4 + p5 + p6;
-
-            HU_value =  (221.71129682829866 + 224.66567090742953 + 224.431593261313   + 220.99315552175565 + 221.96307037896366 + 221.50775979344235) / 6.0;
-            }
-            break;
-
-        case HYOID_BONE_ID:
-            {
-            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/hyoid_bone.stl");
-
-            m_p_polygon_mesh_set[i]->loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            HU_value = 208.4762484774665;
-            }
-            break;
-
-        case SINUS_ID:
-            {
-            BoneMesh p1;
-            BoneMesh p2;
-            BoneMesh p3;
-
-            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_maxillary_sinus.stl");
-            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_maxillary_sinus.stl");
-            p3.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/frontal_sinus.stl");
-
-            p1.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p2.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p3.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-
-            *(m_p_polygon_mesh_set[i]) = p1 + p2 + p3;
-
-            HU_value = (0.5605566870332654 + 0.6805360496793516 + 1.2631457976862375) / 3.0;
-            }
-            break;
-
-        case EYE_ID:
-            {
-            BoneMesh p1;
-            BoneMesh p2;
-
-            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_eye.stl");
-            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_eye.stl");
-
-            p1.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p2.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            *(m_p_polygon_mesh_set[i]) = p1 + p2;
-
-            HU_value = (77.58484270734033 + 78.10232558139535) / 2.0;
-            }
-            break;
-
-        case TONGUE_ID:
-            {
-            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/hyoid_bone.stl");
-
-            m_p_polygon_mesh_set[i]->loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            HU_value = 79.86510437179992;
-            }
-            break;
-
-        case TONSIL_ID:
-            {
-            BoneMesh p1;
-            BoneMesh p2;
-
-            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_palatine_tonsil.stl");
-            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_palatine_tonsil.stl");
-
-            p1.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p2.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            *(m_p_polygon_mesh_set[i]) = p1 + p2;
-
-            HU_value = (82.83418988368948 + 89.67550839964633) / 2.0;
-            }
-            break;
-
-
-
-        case GREY_MATTER_ID:
-            {
-            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/grey_matter.stl");
-
-            m_p_polygon_mesh_set[i]->loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            HU_value = 88.03497942386831;
-            }
-            break;
-
-        case LARYNX_ID:
-            {
-            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/larynx.stl");
-
-            m_p_polygon_mesh_set[i]->loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            HU_value = 151.2662734818698;
-            }
-            break;
-
-        case LENS_ID:
-            {
-            BoneMesh p1;
-            BoneMesh p2;
-
-            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_lens.stl");
-            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_lens.stl");
-
-            p1.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p2.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            *(m_p_polygon_mesh_set[i]) = p1 + p2;
-
-            HU_value = (90.068359375 + 92.84291187739464) / 2.0;
-            }
-            break;
-
-        case THYROID_ID:
-            {
-            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/thyroid_gland.stl");
-
-            m_p_polygon_mesh_set[i]->loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            HU_value = 94.07185628742515;
-            }
-            break;
-
-
-        case BRAIN_ID:
-            {
-            m_p_polygon_mesh_set[i]->setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/brain.stl");
-
-            m_p_polygon_mesh_set[i]->loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            HU_value = 94.97935295425961;
-            }
-            break;
-
-        case CRANIUM_ID:
-            {
-            BoneMesh p1;
-            BoneMesh p2;
-            BoneMesh p3;
-            BoneMesh p4;
-
-            p1.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/cranium.stl");
-            p2.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/mandible.stl");
-            p3.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/left_styloid_process.stl");
-            p4.setFileName("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/STL/right_styloid_process.stl");
-
-            p1.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p2.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p3.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            p4.loadSTLFile(
-                false,
-                true,
-                false,
-                true,
-                mm,
-                GL_STATIC_DRAW);
-
-            *(m_p_polygon_mesh_set[i]) = p1 + p2 + p3 + p4;
-
-            HU_value = (233.32136682188195 + 232.73651678763204 + 232.71139102667863 + 227.32326283987916) / 4.0;
-            }
-            break;
-        }
 /*
-        // Delete data
-        if (p_data)
-            {
-            delete [] p_data;
-            p_data = 0;
-            }
-*/
-       // if (i == LEFT_LUNG_ID)
-        {
-            /*char* p_data(0);
-            unsigned int data_size(0);
-            decompressMesh(RIGHT_LUNG_ID, p_data, data_size);
-
-            AnatomicalMesh right_lung;
-            right_lung.loadSTLDataFromStream(
-                    p_data,
-                    false,
-                    true,
-                    false,
-                    true,
-                    mm,
-                    GL_STATIC_DRAW);
-
-
-            *(m_p_polygon_mesh_set[i]) = *(m_p_polygon_mesh_set[i]) + right_lung;
-
-            // Delete data
-            if (p_data)
-                {
-                delete [] p_data;
-                p_data = 0;
-                }*/
-        }
-
-
-
-        HU_value = -1000.0 + 2357 * (HU_value / 255.0);
-        m_p_polygon_mesh_set[i]->setHounsfieldValue(HU_value);
-        m_p_polygon_mesh_set[i]->initialize();
-        }
-
     // Compute the translation vector
     m_translation_vector =
             m_p_polygon_mesh_set[CRANIUM_ID]->getMinCorner() +
@@ -1090,7 +857,7 @@ void AnatomicalDataHandler::loadPatient()
         if (i != 10)
         m_xray_renderer.addInnerSurface((m_p_polygon_mesh_set[i]));
         }
-
+*/
     m_next_angle_to_process = 0;
     m_current_angle = 0;
 }
