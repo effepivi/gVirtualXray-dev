@@ -147,7 +147,14 @@ void loadTissueMaterial(const std::string& aFileName,
         std::map<short, TissueMaterial>& apMaterialTable);
 
 void loadMaterialDensity(const std::string& aFileName,
-        std::map<short, TissueMaterial>& apMaterialTable);
+        const Image<short>& aVolume,
+        std::map<short, TissueMaterial>& apMaterialTable,
+        std::map<short, PolygonMesh>& apPolygonSet);
+
+void addToPolygon(short aThreshold,
+        const Image<short>& aVolume,
+        const TissueMaterial& aMaterial,
+        PolygonMesh& aPolygon);
 
 
 //-----------------------------
@@ -165,17 +172,37 @@ int main(int argc, char** argv)
         // Register the exit callback
         atexit(quit);
 
+        Image<short> ICRP_phantom_female;
+        ICRP_phantom_female.loadASCII("./P110 data V1.2/AF/AF.dat", 299, 137, 348, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
+        ICRP_phantom_female.save("./P110 data V1.2/AF/AF.mhd");
+/*
+        ICRP_phantom_female.setCanvasSize(ICRP_phantom_female.getWidth() + 2,
+                ICRP_phantom_female.getHeight() + 2,
+                ICRP_phantom_female.getDepth() + 2);
+  */
         std::map<short, TissueMaterial> p_material_table;
+
 
         loadTissueMaterial("./P110 data V1.2/AF/AF_media.dat",
                 p_material_table);
 
+        std::map<short, PolygonMesh> p_polygon_set;
         loadMaterialDensity("./P110 data V1.2/AF/AF_organs.dat",
-                p_material_table);
+                ICRP_phantom_female,
+                p_material_table,
+                p_polygon_set);
 
-        Image<short> ICRP_phantom_female;
-        ICRP_phantom_female.loadASCII("./P110 data V1.2/AF/AF.dat", 299, 137, 348, VEC3(1.775 * mm, 1.775 * mm, 4.84 * mm));
-        ICRP_phantom_female.save("./P110 data V1.2/AF/AF.mhd");
+        for (std::map<short, PolygonMesh>::iterator ite(p_polygon_set.begin());
+                ite != p_polygon_set.end();
+                ++ite)
+        {
+            std::stringstream stl_file_name;
+            stl_file_name << "./P110 data V1.2/AF/AF_" << ite->first << ".stl";
+
+            ite->second.setFileName(stl_file_name.str());
+            ite->second.writeSTLFile();
+        }
+
 
         exit(0);
 /*        Image<short> ICRP_phantom_male;
@@ -532,8 +559,8 @@ void loadTissueMaterial(const std::string& aFileName,
     while (input_file_stream.good())
     {
         // Store the material ID
-        short tissue_id;
-        input_file_stream >> tissue_id;
+        short material_id;
+        input_file_stream >> material_id;
 
         // Get the rest of the current line
         std::getline(input_file_stream, data);
@@ -572,14 +599,16 @@ void loadTissueMaterial(const std::string& aFileName,
                 I);
 
         // Add the material to the table
-        apMaterialTable[tissue_id] = material;
+        apMaterialTable[material_id] = material;
     }
 }
 
 
 //-----------------------------------------------------------------------
 void loadMaterialDensity(const std::string& aFileName,
-                         std::map<short, TissueMaterial>& apMaterialTable)
+                         const Image<short>& aVolume,
+                         std::map<short, TissueMaterial>& apMaterialTable,
+                         std::map<short, PolygonMesh>& apPolygonSet)
 //-----------------------------------------------------------------------
 {
     // Open the input file
@@ -601,29 +630,56 @@ void loadMaterialDensity(const std::string& aFileName,
     // Process every line of the file
     while (input_file_stream.good())
     {
-        // Get the current line
+        // Get the tissue ID
+        short tissue_id;
+        input_file_stream >> tissue_id;
+
+        // Get the rest of the current line
         std::getline(input_file_stream, data);
 
-        if (data.size())
+        if (data.size() && input_file_stream.good())
         {
             // Get the relevant data only
-            data = data.substr(55, 67 - 56);
+           //std::cout << data << std::endl;
+            data = data.substr(55 - (67 - data.size()), 67 - 56);
 
-            // Store the line in a stream
+            // Store the rest of the line in a stream
             std::stringstream line;
             line << data;
 
             // Store the material ID
-            short tissue_id;
-            line >> tissue_id;
+            short material_id;
+            line >> material_id;
 
             // Store the material density
             double density;
             line >> density;
             density *= g / cm3;
 
+            std::cout << tissue_id << "\t" << material_id << "\t" << density / (g / cm3) << std::endl;
+
             // Add the density to the material
-            apMaterialTable[tissue_id].setDensity(density);
+            apMaterialTable[material_id].setDensity(density);
+
+            // Add the polygon
+            addToPolygon(tissue_id,
+                    aVolume,
+                    apMaterialTable[material_id],
+                    apPolygonSet[material_id]);
         }
     }
+}
+
+
+//------------------------------------------------
+void addToPolygon(short aThreshold,
+                  const Image<short>& aVolume,
+                  const TissueMaterial& aMaterial,
+                  PolygonMesh& aPolygon)
+//------------------------------------------------
+{
+    aPolygon += aVolume.marchingCubes(aThreshold, aThreshold, true);
+
+
+
 }
