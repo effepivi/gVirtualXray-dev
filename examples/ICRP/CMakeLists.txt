@@ -79,7 +79,7 @@ IF (glfw3_FOUND)
     
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E tar xvf ${CMAKE_CURRENT_BINARY_DIR}/V1.2.zip
-        #WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/V1.2
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/
     )
     
     add_executable(demo-ICRP
