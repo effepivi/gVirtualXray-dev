@@ -127,12 +127,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "display_gl3.frag.h"
 #include "display_gl3.vert.h"
-
+/*
 #include "display_realistic_gl2.frag.h"
 #include "display_realistic_gl2.vert.h"
 
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
+*/
 /*
 #include "P4_skin.stl.h"
 #include "P4_diaph.stl.h"
@@ -156,9 +157,9 @@ using namespace gVirtualXRay;
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const float g_scaling_factor(0.25);
+const float g_scaling_factor(1.0);
 const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
-const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
+const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 1000 / g_scaling_factor);
 
 const float g_incident_energy(0.08 * MeV);
 
@@ -166,8 +167,8 @@ const double g_initial_fovy(45);        // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);  // Near clipping plane
 const double g_initial_far(500.0 * cm); // Far clipping plane
 
-const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
-const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
+const VEC3 g_initial_source_position(   0.0,  50.0 * cm, 0.0);
+const VEC3 g_initial_detector_position( 0.0, -50.0 * cm, 0.0);
 const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
@@ -189,6 +190,11 @@ inline float radian2degree(float anAngle)
     return (180.0 * anAngle / gVirtualXRay::PI);
 }
 
+
+
+ICPRPhamtom::~ICPRPhamtom()
+{
+}
 
 
 //------------------------------------------------------------------------
@@ -241,7 +247,6 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
             }
     }
 
-    // Make sure there is no mesh
     if (create_meshes_flag)
     {
         m_p_polygon_set.clear();
@@ -262,6 +267,13 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
             //ite->second.setFileName(stl_file_name.str());
             ite->second.writeSTLFile();
         }
+    }
+
+    for (std::map<short, PolygonMesh>::iterator ite(m_p_polygon_set.begin());
+            ite != m_p_polygon_set.end();
+            ++ite)
+    {
+        //ite->second.mergeVertices(true);
     }
 }
 
@@ -427,6 +439,71 @@ void ICPRPhamtom::addToPolygon(short aThreshold,
 
 
 
+//------------------------------------------------
+void ICPRPhamtom::displaySolid()
+//------------------------------------------------
+{
+    for(std::map<short, gVirtualXRay::PolygonMesh>::iterator ite(m_p_polygon_set.begin());
+            ite != m_p_polygon_set.end(); ++ite)
+        {
+            {
+            ite->second.display();
+            }
+        }
+}
+
+
+//----------------------------------
+void ICPRPhamtom::displayWireframe()
+//----------------------------------
+{
+    for(std::map<short, gVirtualXRay::PolygonMesh>::iterator ite(m_p_polygon_set.begin());
+            ite != m_p_polygon_set.end(); ++ite)
+        {
+            {
+            ite->second.displayWireFrame();
+            }
+        }
+}
+
+
+//---------------------------------
+VEC3 ICPRPhamtom::getCentre() const
+//---------------------------------
+{
+    return (ICPRPhamtom::getCenter());
+}
+
+
+//---------------------------------
+VEC3 ICPRPhamtom::getCenter() const
+//---------------------------------
+{
+    VEC3 global_min_corner(FLT_MAX, FLT_MAX, FLT_MAX);
+    VEC3 global_max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+    for(std::map<short, gVirtualXRay::PolygonMesh>::const_iterator ite(m_p_polygon_set.begin());
+            ite != m_p_polygon_set.end(); ++ite)
+        {
+            {
+                VEC3 local_min_corner(ite->second.getMinCorner());
+                VEC3 local_max_corner(ite->second.getMaxCorner());
+
+                if (global_min_corner[0] > local_min_corner[0]) global_min_corner[0] = local_min_corner[0];
+                if (global_min_corner[1] > local_min_corner[1]) global_min_corner[1] = local_min_corner[1];
+                if (global_min_corner[2] > local_min_corner[2]) global_min_corner[2] = local_min_corner[2];
+
+                if (global_max_corner[0] < local_max_corner[0]) global_max_corner[0] = local_max_corner[0];
+                if (global_max_corner[1] < local_max_corner[1]) global_max_corner[1] = local_max_corner[1];
+                if (global_max_corner[2] < local_max_corner[2]) global_max_corner[2] = local_max_corner[2];
+            }
+        }
+
+    return (global_min_corner + (global_max_corner - global_min_corner) / 2.0);
+}
+
+
+
 
 
 
@@ -467,8 +544,6 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_number_of_rotations(0),
     m_acquisition_type(ROTATE_SAMPLE),
 
-    m_shadow_map(),
-
     #undef HAS_FREETYPE
 
     #ifdef HAS_FREETYPE
@@ -478,7 +553,6 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_light_direction(-1, 3, 1)
 //-----------------------------------------------------------------
 {
-    m_female_icrp_phantom.load("./P110 data V1.2", "AF");
 }
 
 
@@ -486,10 +560,6 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 AnatomicalDataHandler::~AnatomicalDataHandler()
 //---------------------------------------------
 {
-    for(unsigned int i(0); i < m_p_polygon_mesh_set.size(); i++)
-        {
-        delete m_p_polygon_mesh_set[i];
-        }
 }
 
 
@@ -524,9 +594,6 @@ void AnatomicalDataHandler::initializeGL()
     // Add the geometry to the X-ray renderer
     initializePatient();
     loadSTLFiles();
-
-    //initialize the buffers
-    m_shadow_map.initialize();
 
     //set the direction of the light
     m_light_direction.normalize();
@@ -631,7 +698,7 @@ void AnatomicalDataHandler::draw()
         }
 
     // Update the X-ray image
-    updateXRayImage();
+//    updateXRayImage();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Draw the 3D scene
@@ -726,29 +793,29 @@ void AnatomicalDataHandler::initGL()
     // Display shader
     if (useOpenGL3_2OrAbove())
         {
-        z_lib_return_code_vertex   = inflate(g_display_realistic_gl3_vert,
-            sizeof(g_display_realistic_gl3_vert),
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert,
+            sizeof(g_display_gl3_vert),
             &p_vertex_shader);
         
-        z_lib_return_code_fragment = inflate(g_display_realistic_gl3_frag,
-            sizeof(g_display_realistic_gl3_frag),
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag,
+            sizeof(g_display_gl3_frag),
             &p_fragment_shader);
         
-        m_display_shader.setLabels("display_realistic_gl3.vert",
-            "display_realistic_gl3.frag");
+        m_display_shader.setLabels("display_gl3.vert",
+            "display_gl3.frag");
         }
     else
         {
-        z_lib_return_code_vertex   = inflate(g_display_realistic_gl2_vert,
-            sizeof(g_display_realistic_gl2_vert),
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert,
+            sizeof(g_display_gl2_vert),
             &p_vertex_shader);
         
-        z_lib_return_code_fragment = inflate(g_display_realistic_gl2_frag,
-            sizeof(g_display_realistic_gl2_frag),
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag,
+            sizeof(g_display_gl2_frag),
             &p_fragment_shader);
         
-        m_display_shader.setLabels("display_realistic_gl2.vert",
-            "display_realistic_gl2.frag");
+        m_display_shader.setLabels("display_gl2.vert",
+            "display_gl2.frag");
         }
 
     vertex_shader   = p_vertex_shader;
@@ -829,13 +896,8 @@ void AnatomicalDataHandler::loadPatient()
 
     m_female_icrp_phantom.load("./P110 data V1.2", "AF");
 
-
-/*
     // Compute the translation vector
-    m_translation_vector =
-            m_p_polygon_mesh_set[CRANIUM_ID]->getMinCorner() +
-        (m_p_polygon_mesh_set[CRANIUM_ID]->getMaxCorner() -
-                m_p_polygon_mesh_set[CRANIUM_ID]->getMinCorner()) / 2.0;
+    m_translation_vector = m_female_icrp_phantom.getCenter();
 
     m_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
         180.0, VEC3(1, 0, 0));
@@ -843,16 +905,16 @@ void AnatomicalDataHandler::loadPatient()
     m_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
         -m_translation_vector);
 
-
+/*
     if (!m_p_polygon_mesh_set.size())
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "No anatomical data provided.");
         }
-
+*/
     m_xray_renderer.removeInnerSurfaces();
     m_xray_renderer.removeOuterSurface();
-    for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
+  /*  for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
         {
         if (i != 10)
         m_xray_renderer.addInnerSurface((m_p_polygon_mesh_set[i]));
@@ -894,13 +956,8 @@ void AnatomicalDataHandler::updateXRayImage()
 void AnatomicalDataHandler::render()
 //----------------------------------
 {
-  /*  try
+    try
         {
-        renderToShadowMap();
-
-        //Restore the view point
-        glViewport(0, 0, m_width, m_height);
-
         // Handle for shader variables
         GLuint handle(0);
 
@@ -920,7 +977,7 @@ void AnatomicalDataHandler::render()
 
         // Define the light colours here
         GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-        GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+        GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
         GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
@@ -940,11 +997,13 @@ void AnatomicalDataHandler::render()
         glUniform4fv(handle, 1, &light_specular[0]);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "light_direction");
-        glUniform3f(handle,
-            m_light_direction.getX(),
-            m_light_direction.getY(),
-            m_light_direction.getZ());
+        VEC3 light_position(0, 0, m_zoom);
+        handle = glGetUniformLocation(shader_id, "light_position");
+        glUniform4f(handle,
+            light_position.getX(),
+            light_position.getY(),
+            light_position.getZ(),
+            1.0);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Check the status of OpenGL and of the current FBO
@@ -956,18 +1015,6 @@ void AnatomicalDataHandler::render()
 
         // Rotate the sample
         g_current_modelview_matrix *= m_scene_rotation_matrix;
-
-        //Bind the shadow map texture in texture unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
-
-        handle = glGetUniformLocation(shader_id, "g_shadow_map");
-        glUniform1i(handle,0);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
-        glUniformMatrix4fv(handle, 1, GL_FALSE, m_shadow_matrix.get());
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");
         glUniformMatrix4fv(handle,
@@ -1000,38 +1047,35 @@ void AnatomicalDataHandler::render()
         // Set the modelview matrix
         g_current_modelview_matrix *= m_rotation_matrix;
 
-
         applyModelViewMatrix();
 
         // Display the current patient
-        displayPatient(shader_id);
+        m_female_icrp_phantom.displaySolid();
 
         // Restore the current transformation matrix
         popModelViewMatrix();
 
         // Define colours
-            {
-            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-            const GLfloat material_shininess = 50.2;
+        const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+        const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+        const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+        const GLfloat material_shininess = 50.2;
 
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_ambient");
+        glUniform4fv(handle, 1, &material_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_diffuse");
+        glUniform4fv(handle, 1, &material_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        handle = glGetUniformLocation(shader_id, "material_specular");
+        glUniform4fv(handle, 1, &material_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-            }
+        handle = glGetUniformLocation(shader_id, "material_shininess");
+        glUniform1fv(handle, 1, &material_shininess);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Display the source
         m_xray_detector.displaySource();
@@ -1056,9 +1100,6 @@ void AnatomicalDataHandler::render()
             m_xray_detector.displayBeam();
             }
 
-        //clean up the texture
-        glBindTexture(GL_TEXTURE_2D, 0);
-
         // Disable the shader
         popShaderProgram();
 
@@ -1078,7 +1119,7 @@ void AnatomicalDataHandler::render()
     catch (const std::exception& error)
         {
         std::cerr << error.what() << std::endl;
-        }*/
+        }
 }
 
 
@@ -1086,36 +1127,10 @@ void AnatomicalDataHandler::render()
 void AnatomicalDataHandler::displayPatient(GLint aShaderID)
 //---------------------------------------------------------
 {
-    for(int i(0); i < m_p_polygon_mesh_set.size() - 1; ++i)
-        {
-        m_p_polygon_mesh_set[i]->defineDisplayShaderInput(aShaderID);
-
-        if (m_display_wireframe)
-            {
-            m_p_polygon_mesh_set[i]->displayWireFrame();
-            }
-        else
-            {
-            if(m_p_polygon_mesh_set[i]->isTransparent())
-                 {
-                pushEnableDisableState(GL_CULL_FACE);
-                pushEnableDisableState(GL_BLEND);
-
-                glDisable(GL_CULL_FACE);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_ONE, GL_ONE);
-
-                m_p_polygon_mesh_set[i]->display();
-
-                popEnableDisableState();
-                popEnableDisableState();
-              }
-            else
-                {
-                m_p_polygon_mesh_set[i]->display();
-                }
-            }
-        }
+    if (m_display_wireframe)
+        m_female_icrp_phantom.displaySolid();
+    else
+        m_female_icrp_phantom.displayWireframe();
 }
 
 
@@ -1344,28 +1359,6 @@ void AnatomicalDataHandler::zoomOut()
 void AnatomicalDataHandler::initializePatient()
 //---------------------------------------------
 {
-    m_p_polygon_mesh_set.push_back(new BoneMesh());
-    m_p_polygon_mesh_set.push_back(new BoneMesh());
-
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-
-    m_p_polygon_mesh_set.push_back(new BoneMesh());
-/*
-    m_p_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_polygon_mesh_set.push_back(new LiverMesh());
-    m_p_polygon_mesh_set.push_back(new LungsMesh());
-    m_p_polygon_mesh_set.push_back(new DiaphragmMesh());
-    m_p_polygon_mesh_set.push_back(new BoneMesh());
-    m_p_polygon_mesh_set.push_back(new BoneMesh());
-*/
 }
 
 //---------------------------------------------
@@ -1373,7 +1366,7 @@ void AnatomicalDataHandler::renderToShadowMap()
 //---------------------------------------------
 {
     // Set the  matrix from the light's point of view to create the shadow map
-    Matrix4x4<GLfloat> shadow_projection_matrix(buildOrthoProjectionMatrix(
+/*    Matrix4x4<GLfloat> shadow_projection_matrix(buildOrthoProjectionMatrix(
         -300.0,
          300.0,
         -300.0,
@@ -1402,5 +1395,5 @@ void AnatomicalDataHandler::renderToShadowMap()
         }
 
     m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
-
+*/
 }

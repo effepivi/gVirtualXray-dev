@@ -114,12 +114,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/TextRenderer.h"
 #endif
 
-#ifndef __DepthMap_h
-#include "gVirtualXRay/DepthMap.h"
-#endif
-
-#ifndef __AnatomicalMesh_h
-#include "gVirtualXRay/AnatomicalMesh.h"
+#ifndef __PolygonMesh_h
+#include "gVirtualXRay/PolygonMesh.h"
 #endif
 
 #ifndef __Image_h
@@ -140,6 +136,9 @@ class ICPRPhamtom
 {
 //******************************************************************************
 public:
+    ~ICPRPhamtom();
+
+
     //--------------------------------------------------------------------------
     /// Load the data
     /*
@@ -159,6 +158,12 @@ public:
     void saveVolume(const std::string& aFileName) const;
 
 
+    void displaySolid();
+    void displayWireframe();
+
+    gVirtualXRay::VEC3 getCentre() const;
+    gVirtualXRay::VEC3 getCenter() const;
+
 //******************************************************************************
 private:
     void loadTissueMaterial(const std::string& aFileName);
@@ -168,7 +173,7 @@ private:
 
     void addToPolygon(short aThreshold,
             const gVirtualXRay::TissueMaterial& aMaterial,
-            gVirtualXRay::PolygonMesh& aPolygon);
+            gVirtualXRay::PolygonMesh& apPolygon);
 
     gVirtualXRay::Image<short> m_volume_dataset;
     std::map<short, gVirtualXRay::TissueMaterial> m_p_material_table;
@@ -439,12 +444,6 @@ private:
 
     /// GLSL shader
     gVirtualXRay::Shader m_display_shader;
-
-    ///object containing buffers to create the shadow map
-    gVirtualXRay::DepthMap m_shadow_map;
-
-    /// Set of polygon meshes for the patient
-    std::vector<gVirtualXRay::AnatomicalMesh*> m_p_polygon_mesh_set;
 
     /// Flag set to true when the meshes are displayed using wireframe,
     /// false otherwise
