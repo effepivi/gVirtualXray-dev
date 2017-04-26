@@ -244,6 +244,8 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
                 false,
                 mm,
                 GL_STATIC_DRAW);
+
+            //m_p_polygon_set[ite->first].invertNormalVectors();
             }
     }
 
@@ -273,7 +275,7 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
             ite != m_p_polygon_set.end();
             ++ite)
     {
-        //ite->second.mergeVertices(true);
+       // ite->second.mergeVertices(true);
     }
 }
 
@@ -967,8 +969,9 @@ void AnatomicalDataHandler::render()
         pushEnableDisableState(GL_BLEND);
 
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+        glDisable(GL_BLEND);
 
         // Enable the shader
         pushShaderProgram();
@@ -1049,33 +1052,61 @@ void AnatomicalDataHandler::render()
 
         applyModelViewMatrix();
 
+        {
+            const GLfloat material_ambient[]  = {1.0, 0.39225,  0.39225,  1.0};
+            const GLfloat material_diffuse[]  = {1.0, 0.70754,  0.70754,  1.0};
+            const GLfloat material_specular[] = {1.0, 0.708273, 0.708273, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            }
+
         // Display the current patient
-        m_female_icrp_phantom.displaySolid();
+        if (m_display_wireframe)
+            m_female_icrp_phantom.displayWireframe();
+        else
+            m_female_icrp_phantom.displaySolid();
 
         // Restore the current transformation matrix
         popModelViewMatrix();
 
         // Define colours
-        const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
-        const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
-        const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
-        const GLfloat material_shininess = 50.2;
+        {
+            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            const GLfloat material_shininess = 50.2;
 
-        handle = glGetUniformLocation(shader_id, "material_ambient");
-        glUniform4fv(handle, 1, &material_ambient[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "material_diffuse");
-        glUniform4fv(handle, 1, &material_diffuse[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "material_specular");
-        glUniform4fv(handle, 1, &material_specular[0]);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        handle = glGetUniformLocation(shader_id, "material_shininess");
-        glUniform1fv(handle, 1, &material_shininess);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
 
         // Display the source
         m_xray_detector.displaySource();
