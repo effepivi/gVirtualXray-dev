@@ -900,7 +900,11 @@ protected:
      *  @param anObjectID:
      */
     //--------------------------------------------------------------------------
-    void computeSumMUxDx(RATIONAL_NUMBER HU, unsigned int anObjectID);
+    void computeSumMUxDx(GLfloat aHUValue,
+            GLfloat anAttenuationCoefficient,
+            const TissueMaterial& aMaterial,
+            int aMaterialFlag,
+            int anObjectID);
 
 
     //--------------------------------------------------------------------------

@@ -183,16 +183,6 @@ inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 
-//--------------------------------------------------------
-inline bool PolygonMesh::getUseHounsfieldValueFlag() const
-//--------------------------------------------------------
-{
-    // Return true if the Hounsfield value is used,
-    // false if the attenuation coefficient is used
-    return (m_use_hounsfield_value);
-}
-
-
 //-----------------------------------------------------------------
 inline void PolygonMesh::setHounsfieldValue(short aHounsfieldValue)
 //-----------------------------------------------------------------
@@ -200,8 +190,22 @@ inline void PolygonMesh::setHounsfieldValue(short aHounsfieldValue)
     // Set the Hounsfield value
     m_hounsfield_value = aHounsfieldValue;
 
-    // The Hounsfield value will be used instead of the attenuation coefficient
+    // The HU value will be used instead of tissue material properties or attenuation coefficient
     m_use_hounsfield_value = true;
+    m_use_tissue_properties = false;
+}
+
+
+//-------------------------------------------------------------------------
+inline void PolygonMesh::setTissueMaterial(const TissueMaterial& aMaterial)
+//-------------------------------------------------------------------------
+{
+    // Set the tissue material properties
+    m_tissue_properties = aMaterial;
+
+    // The tissue material properties will be used instead of HU or attenuation coefficient
+    m_use_hounsfield_value = false;
+    m_use_tissue_properties = true;
 }
 
 
@@ -213,8 +217,29 @@ inline void PolygonMesh::setAttenuationCoefficient(const RATIONAL_NUMBER&
     // Set the attenuation coefficient
     m_attenuation_coefficient = anAttenuationCoefficient;
 
-    // The attenuation coefficient will be used instead of the Hounsfield value
+    // The attenuation coefficient will be used instead of HU or tissue material properties
     m_use_hounsfield_value = false;
+    m_use_tissue_properties = false;
+}
+
+
+//--------------------------------------------------------
+inline bool PolygonMesh::getUseHounsfieldValueFlag() const
+//--------------------------------------------------------
+{
+    // Return true if the Hounsfield value is used,
+    // false if the attenuation coefficient is used
+    return (m_use_hounsfield_value);
+}
+
+
+//--------------------------------------------------------
+inline bool PolygonMesh::getUseTissueMaterialFlag() const
+//--------------------------------------------------------
+{
+    // Return true if the Hounsfield value is used,
+    // false if the attenuation coefficient is used
+    return (m_use_tissue_properties);
 }
 
 
@@ -224,6 +249,14 @@ inline short PolygonMesh::getHounsfieldValue() const
 {
     // Return the Hounsfield value
     return (m_hounsfield_value);
+}
+
+//-----------------------------------------------------------------
+inline const TissueMaterial& PolygonMesh::getTissueMaterial() const
+//-----------------------------------------------------------------
+{
+    // Return the Hounsfield value
+    return (m_tissue_properties);
 }
 
 

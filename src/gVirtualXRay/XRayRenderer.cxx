@@ -1020,9 +1020,16 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
                     VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
                     VEC3 temp;
+
+                    RATIONAL_NUMBER HU;
+                    RATIONAL_NUMBER attenuation_coefficient;
+                    TissueMaterial tissue_properties;
+                    int tissue_method(3);
+
+                    unsigned int temp_id(0);
 				    for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
 				            ite_meshes != ite->second.end();
-				            ++ite_meshes)
+				            ++ite_meshes, ++temp_id)
 				    {
                         // Compute its L-buffer
                         computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
@@ -1036,14 +1043,42 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
                         min_corner[0] = std::min(temp[0], min_corner[0]);
                         min_corner[1] = std::min(temp[1], min_corner[1]);
                         min_corner[2] = std::min(temp[2], min_corner[2]);
+
+                        if (temp_id == 0)
+                        {
+                            HU =                      (*ite_meshes)->getHounsfieldValue();
+                            attenuation_coefficient = (*ite_meshes)->getAttenuationCoefficient();
+                            tissue_properties       = (*ite_meshes)->getTissueMaterial();
+
+                            if ((*ite_meshes)->getUseTissueMaterialFlag())
+                            {
+                                tissue_method = 1;
+                            }
+                            else
+                            {
+                                if ((*ite_meshes)->getUseHounsfieldValueFlag())
+                                {
+                                    tissue_method = 2;
+                                }
+                                else
+                                {
+                                    tissue_method = 3;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (HU != (*ite_meshes)->getHounsfieldValue()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
+                            if (attenuation_coefficient != (*ite_meshes)->getAttenuationCoefficient()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
+                            if (tissue_properties != (*ite_meshes)->getTissueMaterial()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
+                        }
 				    }
 
 				    // Restore GPU states
 				    postComputeLBuffer(p_viewport, (max_corner - min_corner).length() / cm);
 
-				    // Integrate the energy for every channel
-                    RATIONAL_NUMBER HU(ite->first);
-                    computeSumMUxDx(HU, object_number);
+                    // Integrate the energy for every channel
+				    computeSumMUxDx(HU, attenuation_coefficient, tissue_properties, tissue_method, object_number);
 
                     // Only update the cummulated L-buffers if the outer surface exists
                     if (m_p_outer_surface)
@@ -1059,8 +1094,24 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					computeLBuffer(*m_p_outer_surface, xray_source_detector_translation, aModellingTransformationMatrix);
 
 					// Integrate the energy for every channel
-					RATIONAL_NUMBER HU(m_p_outer_surface->getHounsfieldValue());
-					computeSumMUxDx(HU, m_p_inner_surface_set.size());
+					RATIONAL_NUMBER HU(                     m_p_outer_surface->getHounsfieldValue());
+                    RATIONAL_NUMBER attenuation_coefficient(m_p_outer_surface->getAttenuationCoefficient());
+                    TissueMaterial tissue_properties(       m_p_outer_surface->getTissueMaterial());
+
+                    int tissue_method(3);
+                    if (m_p_outer_surface->getUseTissueMaterialFlag())
+                    {
+                        tissue_method = 1;
+                    }
+                    else
+                    {
+                        if (m_p_outer_surface->getUseHounsfieldValueFlag())
+                        {
+                            tissue_method = 2;
+                        }
+                    }
+
+					computeSumMUxDx(HU, attenuation_coefficient, tissue_properties, tissue_method, m_p_inner_surface_set.size());
 				}
 
 				computeIntegratedEnergy();
@@ -2233,7 +2284,11 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 
 
 //---------------------------------------------------------------------
-void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
+void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
+                                   GLfloat anAttenuationCoefficient,
+                                   const TissueMaterial& aMaterial,
+                                   int aMaterialFlag,
+                                   int anObjectID)
 //---------------------------------------------------------------------
 {
 	// Save the current FBO
@@ -2330,58 +2385,68 @@ void XRayRenderer::computeSumMUxDx(GLfloat HU, unsigned int anObjectID)
 				// Get the energy and the corresponding attenuation coefficient
 				RATIONAL_NUMBER mu;
 
-			    bool mu_values_loaded(false);
+				if (aMaterialFlag == 1)
+				{
+                    mu = aMaterial.getMU(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+
+                    // Set the attenuation coefficient
+                    //glBlendColor(1.0, 1.0, 1.0, mu);
+                    // Convert mu in cm-1
+                    mu /= 1.0 / cm;
+				}
+				else if (aMaterialFlag == 2)
+				{
+                    bool mu_values_loaded(false);
 
 #ifdef gVirtualXRay_XCOM_PATH
-				if (m_material_set.getMaterialNumber() &&
-				        m_element_set.getElementSetSize() &&
-				        std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
-				{
-				    mu = getMuFromHU(HU, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
-				    mu_values_loaded = true;
-				}
+                    if (m_material_set.getMaterialNumber() &&
+                            m_element_set.getElementSetSize() &&
+                            std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
+                    {
+                        mu = getMuFromHU(aHUValue, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+                        mu_values_loaded = true;
+                    }
 #endif
 
-				if (!mu_values_loaded)
-				{
-                    RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
-                    mu = getMuFromHUAndMuWater(HU, mu_water);
+                    if (!mu_values_loaded)
+                    {
+                        RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
+                        mu = getMuFromHUAndMuWater(aHUValue, mu_water);
+                    }
+
+
+                    // Set the attenuation coefficient
+                    //glBlendColor(1.0, 1.0, 1.0, mu);
+                    // Convert mu in cm-1
+                    mu /= 1.0 / cm;
+                }
+                else //if (aMaterialFlag == 3)
+                {
+                    mu = anAttenuationCoefficient;
                 }
 
-               /* std::cout << "I_0 " << m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy() << std::endl;
-                std::cout << "mu water " << mu_water << std::endl;
-                std::cout << "HU " << HU << std::endl;
-                std::cout << "mu " << mu << std::endl;
-*/
                 // Bind the corresponding slice of the 3D texture
-				if (m_p_xray_beam->getEnergyChannelNumber() > 1)
-				{
-					// Bind default frame buffer
-					FramebufferObject::Disable();
+                if (m_p_xray_beam->getEnergyChannelNumber() > 1)
+                {
+                    // Bind default frame buffer
+                    FramebufferObject::Disable();
 
-					// Attach the texture
-					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
+                    // Attach the texture
+                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
 
-					// Bind the FBO
-					m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-					checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-				}
+                    // Bind the FBO
+                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+                    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+                }
 
-				// Set the attenuation coefficient
-				//glBlendColor(1.0, 1.0, 1.0, mu);
-				// Convert mu in cm-1
-				mu /= 1.0 / cm;
+                handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
+                glUniform1f(handle, mu);
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                //std::cout << "mu " << mu << "(cm2/g)" << std::endl;
-
-				handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
-				glUniform1f(handle, mu);
-				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-				// Display the textured square
-				m_detector_temporary_geometry->display();
-				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+                // Display the textured square
+                m_detector_temporary_geometry->display();
+                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 			}
 
 			// Restore the transformation matrices

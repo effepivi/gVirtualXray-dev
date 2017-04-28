@@ -358,7 +358,7 @@ namespace gVirtualXRay {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
         }
 
-        return (m_material_set.getMaterial(HU).getMassAttenuationTotal(HU, anEnergy));
+        return (m_material_set.getMaterial(HU).getMassAttenuationTotal(anEnergy));
     }
 
 

@@ -93,6 +93,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Material.h"
 #endif
 
+#ifndef __TissueMaterial_h
+#include "gVirtualXRay/TissueMaterial.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -369,6 +373,10 @@ public:
      */
     //--------------------------------------------------------------------------
     short getHounsfieldValue() const;
+
+    void setTissueMaterial(const TissueMaterial& aMaterial);
+    bool getUseTissueMaterialFlag() const;
+    const TissueMaterial& getTissueMaterial() const;
 
 
     //--------------------------------------------------------------------------
@@ -1271,6 +1279,11 @@ protected:
 
     /// Attenuation coefficient
     RATIONAL_NUMBER m_attenuation_coefficient;
+
+
+    bool m_use_tissue_properties;
+
+    TissueMaterial m_tissue_properties;
 
 
     /// Length of the bounding box diagonal

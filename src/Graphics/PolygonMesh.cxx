@@ -123,6 +123,7 @@ PolygonMesh::PolygonMesh():
 //-----------------------------------
         m_use_hounsfield_value(true),
         m_hounsfield_value(0),
+        m_use_tissue_properties(false),
         m_attenuation_coefficient(0),
         m_bounding_box_diagonal(0),
         m_p_vertex_set(0),
@@ -145,6 +146,8 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_filename(aPolygonMesh.m_filename),
         m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
         m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
+        m_use_tissue_properties(aPolygonMesh.m_use_tissue_properties),
+        m_tissue_properties(aPolygonMesh.m_tissue_properties),
         m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
         m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
         m_min_corner(aPolygonMesh.m_min_corner),
@@ -197,6 +200,9 @@ void PolygonMesh::reset()
 
     m_use_hounsfield_value = true;
     m_hounsfield_value = 0;
+
+    m_use_tissue_properties = false;
+
     m_attenuation_coefficient = 0;
 
     m_bounding_box_diagonal = 0;
@@ -870,6 +876,8 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_filename                = aPolygonMesh.m_filename;
     m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
     m_hounsfield_value        = aPolygonMesh.m_hounsfield_value;
+    m_use_tissue_properties   = aPolygonMesh.m_use_tissue_properties;
+    m_tissue_properties       = aPolygonMesh.m_tissue_properties;
     m_attenuation_coefficient = aPolygonMesh.m_attenuation_coefficient;
     m_bounding_box_diagonal   = aPolygonMesh.m_bounding_box_diagonal;
     m_min_corner              = aPolygonMesh.m_min_corner;
