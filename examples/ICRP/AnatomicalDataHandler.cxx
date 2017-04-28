@@ -216,9 +216,10 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
 
     bool create_meshes_flag(false);
 
+    short i(0);
     for (std::map<short, TissueMaterial>::iterator ite(m_p_material_table.begin());
             ite != m_p_material_table.end() && !create_meshes_flag;
-            ++ite)
+            ++ite, ++i)
     {
         // Set the filename
         std::stringstream stl_file_name;
@@ -245,6 +246,7 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
                 mm,
                 GL_STATIC_DRAW);
 
+            m_p_polygon_set[ite->first].setHounsfieldValue(i);
             //m_p_polygon_set[ite->first].invertNormalVectors();
             }
     }
@@ -437,8 +439,8 @@ void ICPRPhamtom::addToPolygon(short aThreshold,
 //------------------------------------------------
 {
     aPolygon += m_volume_dataset.marchingCubes(aThreshold, aThreshold, true);
+    aPolygon.setTissueMaterial(aMaterial);
 }
-
 
 
 //------------------------------------------------
