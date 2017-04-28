@@ -257,8 +257,7 @@ public:
     *   @return the corresponding linear attenuation coefficient
     */
     //--------------------------------------------------------------------------
-    double getMassAttenuationTotal(short aHounsfieldValue,
-                                   double anEnergy) const;
+    double getMassAttenuationTotal(double anEnergy) const;
 
 
     //--------------------------------------------------------------------------
@@ -271,6 +270,17 @@ public:
     */
     //--------------------------------------------------------------------------
     double getMU(short aHounsfieldValue, double anEnergy) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Get the linear attenuation coefficient at a given energy (in mm-1)
+    /// (values are interpolated).
+    /*
+    *  @param anEnergy:             the energy
+    *  @return the corresponding linear attenuation coefficient
+    */
+    //--------------------------------------------------------------------------
+    double getMU(double anEnergy) const;
 
 
     //--------------------------------------------------------------------------
@@ -292,6 +302,10 @@ public:
     */
     //--------------------------------------------------------------------------
     TissueMaterial& operator=(const TissueMaterial& aMaterial);
+
+
+    bool operator==(const TissueMaterial& aMaterial) const;
+    bool operator!=(const TissueMaterial& aMaterial) const;
 
 
     //--------------------------------------------------------------------------

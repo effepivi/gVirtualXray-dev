@@ -205,9 +205,9 @@ double TissueMaterial::getDensity(short aHounsfieldValue)
 }
 
 
-//-------------------------------------------------------------------------------------------
-double TissueMaterial::getMassAttenuationTotal(short aHounsfieldValue, double anEnergy) const
-//-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------
+double TissueMaterial::getMassAttenuationTotal(double anEnergy) const
+//-------------------------------------------------------------------
 {
     if (!m_p_element_set)
     {
@@ -234,4 +234,21 @@ double TissueMaterial::getMassAttenuationTotal(short aHounsfieldValue, double an
             m_p_weight_set[17] * m_p_element_set->getElement(Z_Fe).getMassAttenuationTotal(anEnergy) +
             m_p_weight_set[18] * m_p_element_set->getElement(Z_I).getMassAttenuationTotal(anEnergy)
     );
+}
+
+
+//--------------------------------------------------------------------
+bool TissueMaterial::operator==(const TissueMaterial& aMaterial) const
+//--------------------------------------------------------------------
+{
+    if (m_min_HU_value != aMaterial.m_min_HU_value) return false;
+    if (m_max_HU_value != aMaterial.m_max_HU_value) return false;
+
+    for (unsigned int i(0); i < NUMBER_OF_ELEMENTS_PER_MATERIAL; ++i)
+        if (m_p_weight_set[i] != aMaterial.m_p_weight_set[i]) return false;
+
+    if (m_molar_mass != aMaterial.m_molar_mass) return false;
+    if (m_density    != aMaterial.m_density)    return false;
+
+    return true;
 }

@@ -204,8 +204,17 @@ inline double TissueMaterial::getMU(short aHounsfieldValue,
                                     double anEnergy) const
 //---------------------------------------------------------
 {
-	return (getMassAttenuationTotal(aHounsfieldValue, anEnergy) *
-	        (getDensity(aHounsfieldValue)));
+    return (getMassAttenuationTotal(anEnergy) *
+            (getDensity(aHounsfieldValue)));
+}
+
+
+//---------------------------------------------------------
+inline double TissueMaterial::getMU(double anEnergy) const
+//---------------------------------------------------------
+{
+    return (getMassAttenuationTotal(anEnergy) *
+            (getDensity()));
 }
 
 
@@ -288,4 +297,10 @@ inline std::istream & operator >> (std::istream& anInputSream,
 }
 
 
+//---------------------------------------------------------------------------
+inline bool TissueMaterial::operator!=(const TissueMaterial& aMaterial) const
+//---------------------------------------------------------------------------
+{
+    return (!(operator==(aMaterial)));
+}
 } // namespace gVirtualXRay/
