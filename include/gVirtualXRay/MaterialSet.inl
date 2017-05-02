@@ -76,14 +76,7 @@ inline MaterialSet::MaterialSet():
 	m_max_HU(0)
 //--------------------------------
 {
-}
-
-
-//-----------------------------------------------------------
-inline MaterialSet::MaterialSet(const std::string& aFileName)
-//-----------------------------------------------------------
-{
-	loadFromFile(aFileName);
+    loadMaterialSetFromMemory();
 }
 
 

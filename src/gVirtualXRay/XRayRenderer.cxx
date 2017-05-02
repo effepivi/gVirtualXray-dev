@@ -168,7 +168,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "xray_display_gl3.vert.h"
 
 #include "mu_water.csv.h"
-#include "correlation_CT_number_and_tissue_material.csv.h"
 
 
 //******************************************************************************
@@ -201,7 +200,6 @@ using namespace gVirtualXRay;
 //  Static members
 //******************************************************************************
 std::vector<AttenuationCoefficient> XRayRenderer::m_mu_water_set;
-MaterialSet XRayRenderer::m_material_set;
 
 
 //-------------------------------------------------------------------------------------------------
@@ -266,9 +264,6 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 
     // Load mu water table
     loadMuWater();
-
-    // Load the meterial set
-    loadMaterialSet();
 
 	// Set the beam spectrum
 	m_p_xray_beam = const_cast<XRayBeam*>(apBeamSpectrum);
@@ -628,55 +623,6 @@ void XRayRenderer::loadMuWater()
 			m_mu_water_set.push_back(temp);
 		}
 	}
-}
-
-
-//----------------------------------
-void XRayRenderer::loadMaterialSet()
-//----------------------------------
-{
-    // Clear the data
-    m_material_set.clearMemory();
-
-    char* p_dest(0);
-    int z_lib_return_code = inflate(g_correlation_CT_number_and_tissue_material_csv, sizeof(g_correlation_CT_number_and_tissue_material_csv), &p_dest);
-
-    // It does not exist
-    if (!z_lib_return_code)
-    {
-        delete [] p_dest;
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No material was decoded.");
-    }
-
-    // Open the file
-    std::stringstream material_stream;
-    material_stream << (char*)p_dest;
-    delete [] p_dest;
-
-    // It does not exist
-    if (!material_stream.str().size())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No material was provided.");
-    }
-
-    // Ignore the first line
-    char first_line[1024];
-    material_stream.getline(first_line, 1024);
-
-    // Process every record
-    TissueMaterial temp;
-    while (!material_stream.eof())
-    {
-        // Load the record
-        material_stream >> temp;
-
-        // The record is valid
-        if (!material_stream.eof())
-        {
-            // Store the record
-            m_material_set.addMaterial(temp);
-        }
-    }
 }
 
 
@@ -2342,7 +2288,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
                     bool mu_values_loaded(false);
 
 #ifdef gVirtualXRay_XCOM_PATH
-                    if (m_material_set.getMaterialNumber() &&
+                    if (MaterialSet::getInstance().getMaterialNumber() &&
                             std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
                     {
                         mu = getMuFromHU(aHUValue, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());

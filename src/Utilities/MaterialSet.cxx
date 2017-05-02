@@ -63,25 +63,42 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#include <fstream>
+
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <fstream>
-
-#ifndef GVXR_MATERIAL_SET_H
+#ifndef __MaterialSet_h
 #include "gVirtualXRay/MaterialSet.h"
 #endif
 
-#ifndef EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
+
+#ifndef __Utilities_h
+#include "gVirtualXRay/Utilities.h"
+#endif
+
+#include "correlation_CT_number_and_tissue_material.csv.h"
 
 
 //******************************************************************************
 //	namespace
 //******************************************************************************
 using namespace gVirtualXRay;
+
+
+//-------------------------------------
+MaterialSet& MaterialSet::getInstance()
+//-------------------------------------
+{
+    static MaterialSet m_instance; // Guaranteed to be destroyed.
+                                   // Instantiated on first use.
+
+    return (m_instance);
+}
 
 
 //----------------------------------------------------------
@@ -127,6 +144,55 @@ void MaterialSet::loadFromFile(const std::string& aFileName)
 			m_material_set.insert(std::pair<std::pair<short, short>, TissueMaterial>(std::pair<short, short>(tissue_material.getMinHUValue(), tissue_material.getMaxHUValue()), tissue_material));
 		}
 	}
+}
+
+
+//-------------------------------------------
+void MaterialSet::loadMaterialSetFromMemory()
+//-------------------------------------------
+{
+    // Clear the data
+    clearMemory();
+
+    char* p_dest(0);
+    int z_lib_return_code = inflate(g_correlation_CT_number_and_tissue_material_csv, sizeof(g_correlation_CT_number_and_tissue_material_csv), &p_dest);
+
+    // It does not exist
+    if (!z_lib_return_code)
+    {
+        delete [] p_dest;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No material was decoded.");
+    }
+
+    // Open the file
+    std::stringstream material_stream;
+    material_stream << (char*)p_dest;
+    delete [] p_dest;
+
+    // It does not exist
+    if (!material_stream.str().size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No material was provided.");
+    }
+
+    // Ignore the first line
+    char first_line[1024];
+    material_stream.getline(first_line, 1024);
+
+    // Process every record
+    TissueMaterial temp;
+    while (!material_stream.eof())
+    {
+        // Load the record
+        material_stream >> temp;
+
+        // The record is valid
+        if (!material_stream.eof())
+        {
+            // Store the record
+            addMaterial(temp);
+        }
+    }
 }
 
 

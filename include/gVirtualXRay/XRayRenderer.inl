@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifndef __MaterialSet_h
+#include "gVirtualXRay/MaterialSet.h"
+#endif
+
 
 //******************************************************************************
 //  define
@@ -295,26 +299,7 @@ namespace gVirtualXRay {
                                                      const RATIONAL_NUMBER& anEnergy)
     //-------------------------------------------------------------------------------
     {
-        bool mu_values_loaded(false);
-
-#ifdef gVirtualXRay_XCOM_PATH
-        if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
-        {
-            if (!m_material_set.getMaterialNumber())
-            {
-                loadMaterialSet();
-            }
-
-            mu_values_loaded = true;
-        }
-#endif
-
-        if (!mu_values_loaded)
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
-        }
-
-        return (m_material_set.getMaterial(HU).getMU(HU, anEnergy));
+        return (MaterialSet::getInstance().getMaterial(HU).getMU(HU, anEnergy));
     }
 
 
@@ -323,25 +308,7 @@ namespace gVirtualXRay {
                                                                   const RATIONAL_NUMBER& anEnergy)
     //--------------------------------------------------------------------------------------------
     {
-        bool rho_values_loaded(false);
-#ifdef gVirtualXRay_XCOM_PATH
-        if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
-        {
-            if (!m_material_set.getMaterialNumber())
-            {
-                loadMaterialSet();
-            }
-
-            rho_values_loaded = true;
-        }
-#endif
-
-        if (!rho_values_loaded)
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
-        }
-
-        return (m_material_set.getMaterial(HU).getMassAttenuationTotal(anEnergy));
+        return (MaterialSet::getInstance().getMaterial(HU).getMassAttenuationTotal(anEnergy));
     }
 
 
@@ -349,11 +316,6 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER XRayRenderer::getDensityFromHU(const RATIONAL_NUMBER& HU)
     //------------------------------------------------------------------------------
     {
-        if (!m_material_set.getMaterialNumber())
-        {
-            loadMaterialSet();
-        }
-
         return (TissueMaterial::getDensity(HU));
     }
 

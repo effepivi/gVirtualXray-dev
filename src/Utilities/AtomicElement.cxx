@@ -147,7 +147,13 @@ void AtomicElement::loadDataFromXCOM()
             xcom_database_path = p_environment_variable;
         }
 
-        if (xcom_database_path.size() && xcom_database_path != "XCOM_PATH-NOTFOUND")
+        // XCOM database not installed
+        if (xcom_database_path == "XCOM_PATH-NOTFOUND")
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "The XCOM database is not installed. You can find it on the NIST's website at http://www.nist.gov/pml/data/xcom/index.cfm If you install it, you will need to re-compile the library.");
+        }
+
+        if (xcom_database_path.size())
         {
             // Clear the current list of attenuation coefficients
             m_p_mass_attenuation_coefficient_set.clear();

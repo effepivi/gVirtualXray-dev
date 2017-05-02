@@ -107,14 +107,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/VBO.h"
 #endif
 
-#ifndef GVXR_ELEMENT_SET_H
-#include "gVirtualXRay/ElementSet.h"
-#endif
-
-#ifndef GVXR_MATERIAL_SET_H
-#include "gVirtualXRay/MaterialSet.h"
-#endif
-
 
 //******************************************************************************
 //  Definitions
@@ -703,12 +695,6 @@ protected:
 
 
     //--------------------------------------------------------------------------
-    /// Load the table of materials.
-    //--------------------------------------------------------------------------
-    static void loadMaterialSet();
-
-
-    //--------------------------------------------------------------------------
     /// Check that the device supports all the required OpenGL extensions
     /// that are needed.
     //--------------------------------------------------------------------------
@@ -1023,10 +1009,6 @@ protected:
 #else
     std::unique_ptr<VBO> m_detector_temporary_geometry;
 #endif
-
-
-    /// Set of materials
-    static MaterialSet m_material_set;
 
 
     /// A list of all the HU values and corresponding polygon meshes
