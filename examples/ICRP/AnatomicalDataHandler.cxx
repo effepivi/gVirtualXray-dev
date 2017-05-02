@@ -295,7 +295,6 @@ void ICPRPhamtom::saveVolume(const std::string& aFileName) const
 void ICPRPhamtom::loadTissueMaterial(const std::string& aFileName)
 //----------------------------------------------------------------
 {
-    XRayRenderer::loadElementSet();
     TissueMaterial::registerElementSet(&XRayRenderer::getElementSet());
 
     // Open the input file

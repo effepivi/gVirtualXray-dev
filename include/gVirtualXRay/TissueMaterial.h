@@ -334,10 +334,6 @@ public:
 
 //******************************************************************************
 private:
-    // The element set
-    static ElementSet* m_p_element_set;
-    
-    
     // The minimum HU value of the material
     short m_min_HU_value;
     

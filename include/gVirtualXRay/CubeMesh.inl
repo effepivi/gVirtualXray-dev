@@ -142,7 +142,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
         p_vertex_set.push_back(bottom_near_right.getZ());
 
         // Indices
-        std::vector<GLubyte> p_ubyte_index_set;
+        std::vector<unsigned char> p_ubyte_index_set;
 
         p_ubyte_index_set.push_back(1);
         p_ubyte_index_set.push_back(2);

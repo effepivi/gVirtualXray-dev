@@ -143,14 +143,6 @@ inline TissueMaterial::TissueMaterial(const TissueMaterial& aMaterial):
 }
 
 
-//----------------------------------------------------------------------------
-inline void TissueMaterial::registerElementSet(const ElementSet* apElementSet)
-//----------------------------------------------------------------------------
-{
-    m_p_element_set = const_cast<ElementSet*>(apElementSet);
-}
-
-
 //------------------------------------------------
 inline short TissueMaterial::getMinHUValue() const
 //------------------------------------------------

@@ -68,32 +68,31 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#ifndef TISSUE_MATERIAL_H
+#ifndef __TissueMaterial_h
 #include "gVirtualXRay/TissueMaterial.h"
 #endif
 
-
-#ifndef GVXR_UNITS_H
+#ifndef __Units_h
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_ATOMIC_ELEMENT_H
+#ifndef __AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef GVXR_ELEMENT_SET_H
+#ifndef __ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef GVXR_CONSTANT_VALUES_H
+#ifndef __ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
@@ -102,12 +101,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	namespace
 //******************************************************************************
 using namespace gVirtualXRay;
-
-
-//******************************************************************************
-//  Static member
-//******************************************************************************
-ElementSet* TissueMaterial::m_p_element_set = 0;
 
 
 //---------------------------------------
@@ -136,31 +129,26 @@ void TissueMaterial::normaliseWeightSet()
 double TissueMaterial::computeMolarMass()
 //---------------------------------------
 {
-    if (!m_p_element_set)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element set has been registered.");
-    }
-
     m_molar_mass =
-            m_p_weight_set[ 0] * m_p_element_set->getElement(Z_H).getMolarMass() +
-            m_p_weight_set[ 1] * m_p_element_set->getElement(Z_C).getMolarMass() +
-            m_p_weight_set[ 2] * m_p_element_set->getElement(Z_N).getMolarMass() +
-            m_p_weight_set[ 3] * m_p_element_set->getElement(Z_O).getMolarMass() +
-            m_p_weight_set[ 4] * m_p_element_set->getElement(Z_Na).getMolarMass() +
-            m_p_weight_set[ 5] * m_p_element_set->getElement(Z_Mg).getMolarMass() +
-            m_p_weight_set[ 6] * m_p_element_set->getElement(Z_P).getMolarMass() +
-            m_p_weight_set[ 7] * m_p_element_set->getElement(Z_S).getMolarMass() +
-            m_p_weight_set[ 8] * m_p_element_set->getElement(Z_Cl).getMolarMass() +
-            m_p_weight_set[ 9] * m_p_element_set->getElement(Z_Ar).getMolarMass() +
-            m_p_weight_set[10] * m_p_element_set->getElement(Z_K).getMolarMass() +
-            m_p_weight_set[11] * m_p_element_set->getElement(Z_Ca).getMolarMass() +
-            m_p_weight_set[12] * m_p_element_set->getElement(Z_Ti).getMolarMass() +
-            m_p_weight_set[13] * m_p_element_set->getElement(Z_Cu).getMolarMass() +
-            m_p_weight_set[14] * m_p_element_set->getElement(Z_Zn).getMolarMass() +
-            m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getMolarMass() +
-            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMolarMass();
-            m_p_weight_set[17] * m_p_element_set->getElement(Z_Fe).getMolarMass();
-            m_p_weight_set[18] * m_p_element_set->getElement(Z_I).getMolarMass();
+            m_p_weight_set[ 0] * ElementSet::getInstance().getElement(Z_H).getMolarMass() +
+            m_p_weight_set[ 1] * ElementSet::getInstance().getElement(Z_C).getMolarMass() +
+            m_p_weight_set[ 2] * ElementSet::getInstance().getElement(Z_N).getMolarMass() +
+            m_p_weight_set[ 3] * ElementSet::getInstance().getElement(Z_O).getMolarMass() +
+            m_p_weight_set[ 4] * ElementSet::getInstance().getElement(Z_Na).getMolarMass() +
+            m_p_weight_set[ 5] * ElementSet::getInstance().getElement(Z_Mg).getMolarMass() +
+            m_p_weight_set[ 6] * ElementSet::getInstance().getElement(Z_P).getMolarMass() +
+            m_p_weight_set[ 7] * ElementSet::getInstance().getElement(Z_S).getMolarMass() +
+            m_p_weight_set[ 8] * ElementSet::getInstance().getElement(Z_Cl).getMolarMass() +
+            m_p_weight_set[ 9] * ElementSet::getInstance().getElement(Z_Ar).getMolarMass() +
+            m_p_weight_set[10] * ElementSet::getInstance().getElement(Z_K).getMolarMass() +
+            m_p_weight_set[11] * ElementSet::getInstance().getElement(Z_Ca).getMolarMass() +
+            m_p_weight_set[12] * ElementSet::getInstance().getElement(Z_Ti).getMolarMass() +
+            m_p_weight_set[13] * ElementSet::getInstance().getElement(Z_Cu).getMolarMass() +
+            m_p_weight_set[14] * ElementSet::getInstance().getElement(Z_Zn).getMolarMass() +
+            m_p_weight_set[15] * ElementSet::getInstance().getElement(Z_Ag).getMolarMass() +
+            m_p_weight_set[16] * ElementSet::getInstance().getElement(Z_Sn).getMolarMass();
+            m_p_weight_set[17] * ElementSet::getInstance().getElement(Z_Fe).getMolarMass();
+            m_p_weight_set[18] * ElementSet::getInstance().getElement(Z_I).getMolarMass();
 
     return (m_molar_mass);
 }
@@ -209,30 +197,25 @@ double TissueMaterial::getDensity(short aHounsfieldValue)
 double TissueMaterial::getMassAttenuationTotal(double anEnergy) const
 //-------------------------------------------------------------------
 {
-    if (!m_p_element_set)
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element set has been registered.");
-    }
-
-    return (m_p_weight_set[ 0] * m_p_element_set->getElement(Z_H).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 1] * m_p_element_set->getElement(Z_C).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 2] * m_p_element_set->getElement(Z_N).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 3] * m_p_element_set->getElement(Z_O).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 4] * m_p_element_set->getElement(Z_Na).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[ 5] * m_p_element_set->getElement(Z_Mg).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[ 6] * m_p_element_set->getElement(Z_P).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 7] * m_p_element_set->getElement(Z_S).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 8] * m_p_element_set->getElement(Z_Cl).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[ 9] * m_p_element_set->getElement(Z_Ar).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[10] * m_p_element_set->getElement(Z_K).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[11] * m_p_element_set->getElement(Z_Ca).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[12] * m_p_element_set->getElement(Z_Ti).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[13] * m_p_element_set->getElement(Z_Cu).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[14] * m_p_element_set->getElement(Z_Zn).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[15] * m_p_element_set->getElement(Z_Ag).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[16] * m_p_element_set->getElement(Z_Sn).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[17] * m_p_element_set->getElement(Z_Fe).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[18] * m_p_element_set->getElement(Z_I).getMassAttenuationTotal(anEnergy)
+    return (m_p_weight_set[ 0] * ElementSet::getInstance().getElement(Z_H).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 1] * ElementSet::getInstance().getElement(Z_C).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 2] * ElementSet::getInstance().getElement(Z_N).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 3] * ElementSet::getInstance().getElement(Z_O).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 4] * ElementSet::getInstance().getElement(Z_Na).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[ 5] * ElementSet::getInstance().getElement(Z_Mg).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[ 6] * ElementSet::getInstance().getElement(Z_P).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 7] * ElementSet::getInstance().getElement(Z_S).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[ 8] * ElementSet::getInstance().getElement(Z_Cl).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[ 9] * ElementSet::getInstance().getElement(Z_Ar).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[10] * ElementSet::getInstance().getElement(Z_K).getMassAttenuationTotal(anEnergy)  +
+            m_p_weight_set[11] * ElementSet::getInstance().getElement(Z_Ca).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[12] * ElementSet::getInstance().getElement(Z_Ti).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[13] * ElementSet::getInstance().getElement(Z_Cu).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[14] * ElementSet::getInstance().getElement(Z_Zn).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[15] * ElementSet::getInstance().getElement(Z_Ag).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[16] * ElementSet::getInstance().getElement(Z_Sn).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[17] * ElementSet::getInstance().getElement(Z_Fe).getMassAttenuationTotal(anEnergy) +
+            m_p_weight_set[18] * ElementSet::getInstance().getElement(Z_I).getMassAttenuationTotal(anEnergy)
     );
 }
 
@@ -252,3 +235,4 @@ bool TissueMaterial::operator==(const TissueMaterial& aMaterial) const
 
     return true;
 }
+

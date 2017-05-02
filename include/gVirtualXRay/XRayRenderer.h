@@ -694,18 +694,6 @@ public:
     bool useArtefactFiltering() const;
 
 
-    //--------------------------------------------------------------------------
-    /// Load the table of elements.
-    //--------------------------------------------------------------------------
-    static void loadElementSet();
-
-
-    //--------------------------------------------------------------------------
-    /// Load the table of elements.
-    //--------------------------------------------------------------------------
-    static const ElementSet& getElementSet();
-
-
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -1035,10 +1023,6 @@ protected:
 #else
     std::unique_ptr<VBO> m_detector_temporary_geometry;
 #endif
-
-
-    /// Set of elements
-    static ElementSet m_element_set;
 
 
     /// Set of materials

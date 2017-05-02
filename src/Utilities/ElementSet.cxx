@@ -63,29 +63,45 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
 #include <fstream>
 
-#ifndef GVXR_ELEMENT_SET_H
+#ifndef __ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
-#ifndef GVXR_ATOMIC_ELEMENT_H
+#ifndef __AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
+
+#ifndef __Utilities_h
+#include "gVirtualXRay/Utilities.h"
+#endif
+
+#include "element.csv.h"
 
 
 //******************************************************************************
 //	namespace
 //******************************************************************************
 using namespace gVirtualXRay;
+
+
+
+ElementSet& ElementSet::getInstance()
+{
+    static ElementSet m_instance; // Guaranteed to be destroyed.
+                                  // Instantiated on first use.
+
+    return (m_instance);
+}
 
 
 //---------------------------------------------------------
@@ -134,6 +150,55 @@ void ElementSet::loadFromFile(const std::string& aFileName)
 
 	// Close the input file
 	input_file.close();
+}
+
+
+//-----------------------------------------
+void ElementSet::loadElementSetFromMemory()
+//-----------------------------------------
+{
+    // Clear the data
+    clearMemory();
+
+    char* p_dest(0);
+    int z_lib_return_code = inflate(g_element_csv, sizeof(g_element_csv), &p_dest);
+
+    // It does not exist
+    if (!z_lib_return_code)
+    {
+        delete [] p_dest;
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element was decoded.");
+    }
+
+    // Open the file
+    std::stringstream element_stream;
+    element_stream << (char*)p_dest;
+    delete [] p_dest;
+
+    // It does not exist
+    if (!element_stream.str().size())
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element was provided.");
+    }
+
+    // Ignore the first line
+    char first_line[1024];
+    element_stream.getline(first_line, 1024);
+
+    // Process every record
+    AtomicElement temp;
+    while (!element_stream.eof())
+    {
+        // Load the record
+        element_stream >> temp;
+
+        // The record is valid
+        if (!element_stream.eof())
+        {
+            // Store the record
+            addElement(temp);
+        }
+    }
 }
 
 

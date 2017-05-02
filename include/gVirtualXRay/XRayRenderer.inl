@@ -110,14 +110,6 @@ namespace gVirtualXRay {
     }
 
 
-    //----------------------------------------------------
-    inline const ElementSet& XRayRenderer::getElementSet()
-    //----------------------------------------------------
-    {
-        return m_element_set;
-    }
-
-
     //------------------------------------------------------------
     inline void XRayRenderer::useNegativeFilteringFlag(bool aFlag)
     //------------------------------------------------------------
@@ -304,14 +296,10 @@ namespace gVirtualXRay {
     //-------------------------------------------------------------------------------
     {
         bool mu_values_loaded(false);
-    #ifdef gVirtualXRay_XCOM_PATH
+
+#ifdef gVirtualXRay_XCOM_PATH
         if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
         {
-            if (!m_element_set.getElementSetSize())
-            {
-                loadElementSet();
-            }
-
             if (!m_material_set.getMaterialNumber())
             {
                 loadMaterialSet();
@@ -319,7 +307,7 @@ namespace gVirtualXRay {
 
             mu_values_loaded = true;
         }
-    #endif
+#endif
 
         if (!mu_values_loaded)
         {
@@ -336,14 +324,9 @@ namespace gVirtualXRay {
     //--------------------------------------------------------------------------------------------
     {
         bool rho_values_loaded(false);
-    #ifdef gVirtualXRay_XCOM_PATH
+#ifdef gVirtualXRay_XCOM_PATH
         if (std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
         {
-            if (!m_element_set.getElementSetSize())
-            {
-                loadElementSet();
-            }
-
             if (!m_material_set.getMaterialNumber())
             {
                 loadMaterialSet();
@@ -351,7 +334,7 @@ namespace gVirtualXRay {
 
             rho_values_loaded = true;
         }
-    #endif
+#endif
 
         if (!rho_values_loaded)
         {
@@ -366,11 +349,6 @@ namespace gVirtualXRay {
     inline RATIONAL_NUMBER XRayRenderer::getDensityFromHU(const RATIONAL_NUMBER& HU)
     //------------------------------------------------------------------------------
     {
-        if (!m_element_set.getElementSetSize())
-        {
-            loadElementSet();
-        }
-
         if (!m_material_set.getMaterialNumber())
         {
             loadMaterialSet();

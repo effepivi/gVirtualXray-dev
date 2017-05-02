@@ -69,14 +69,8 @@ namespace gVirtualXRay {
 inline ElementSet::ElementSet()
 //-----------------------------
 {
-}
-
-
-//---------------------------------------------------------
-inline ElementSet::ElementSet(const std::string& aFileName)
-//---------------------------------------------------------
-{
-	loadFromFile(aFileName);
+    // Load the table from the compressed data in the RAM
+    loadElementSetFromMemory();
 }
 
 
@@ -84,7 +78,7 @@ inline ElementSet::ElementSet(const std::string& aFileName)
 inline ElementSet::~ElementSet()
 //------------------------------
 {
-	clearMemory();
+    clearMemory();
 }
 
 

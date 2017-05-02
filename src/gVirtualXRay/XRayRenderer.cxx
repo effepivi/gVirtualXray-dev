@@ -115,7 +115,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
@@ -168,7 +168,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "xray_display_gl3.vert.h"
 
 #include "mu_water.csv.h"
-#include "element.csv.h"
 #include "correlation_CT_number_and_tissue_material.csv.h"
 
 
@@ -202,7 +201,6 @@ using namespace gVirtualXRay;
 //  Static members
 //******************************************************************************
 std::vector<AttenuationCoefficient> XRayRenderer::m_mu_water_set;
-ElementSet XRayRenderer::m_element_set;
 MaterialSet XRayRenderer::m_material_set;
 
 
@@ -268,9 +266,6 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 
     // Load mu water table
     loadMuWater();
-
-    // Load the element set
-    loadElementSet();
 
     // Load the meterial set
     loadMaterialSet();
@@ -636,55 +631,6 @@ void XRayRenderer::loadMuWater()
 }
 
 
-//---------------------------------
-void XRayRenderer::loadElementSet()
-//---------------------------------
-{
-    // Clear the data
-    m_element_set.clearMemory();
-
-    char* p_dest(0);
-    int z_lib_return_code = inflate(g_element_csv, sizeof(g_element_csv), &p_dest);
-
-    // It does not exist
-    if (!z_lib_return_code)
-    {
-        delete [] p_dest;
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element was decoded.");
-    }
-
-    // Open the file
-    std::stringstream element_stream;
-    element_stream << (char*)p_dest;
-    delete [] p_dest;
-
-    // It does not exist
-    if (!element_stream.str().size())
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No element was provided.");
-    }
-
-    // Ignore the first line
-    char first_line[1024];
-    element_stream.getline(first_line, 1024);
-
-    // Process every record
-    AtomicElement temp;
-    while (!element_stream.eof())
-    {
-        // Load the record
-        element_stream >> temp;
-
-        // The record is valid
-        if (!element_stream.eof())
-        {
-            // Store the record
-            m_element_set.addElement(temp);
-        }
-    }
-}
-
-
 //----------------------------------
 void XRayRenderer::loadMaterialSet()
 //----------------------------------
@@ -716,9 +662,6 @@ void XRayRenderer::loadMaterialSet()
     // Ignore the first line
     char first_line[1024];
     material_stream.getline(first_line, 1024);
-
-    // Register the element set
-    TissueMaterial::registerElementSet(&m_element_set);
 
     // Process every record
     TissueMaterial temp;
@@ -2400,7 +2343,6 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
 
 #ifdef gVirtualXRay_XCOM_PATH
                     if (m_material_set.getMaterialNumber() &&
-                            m_element_set.getElementSetSize() &&
                             std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
                     {
                         mu = getMuFromHU(aHUValue, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
