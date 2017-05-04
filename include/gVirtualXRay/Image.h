@@ -176,7 +176,8 @@ public:
     Image(const T* apData,
                  unsigned int aWidth,
                  unsigned int aHeight,
-                 unsigned int aNumberOfSlices = 1);
+                 unsigned int aNumberOfSlices = 1,
+                 const VEC3& aVoxelSize = VEC3(1, 1, 1));
 
 
     //--------------------------------------------------------------------------
@@ -434,6 +435,17 @@ public:
     Image shiftScaleFilter(double aShiftValue, double aScaleValue) const;
     
     
+    Image<unsigned char> threshold(const T& aMinValue, const T& aMaxValue,
+            const T& anInValue,
+            const T& anOutValue) const;
+
+
+    Image<unsigned char> opening(unsigned int aRadius) const;
+    Image<unsigned char> closing(unsigned int aRadius) const;
+
+    Image<float> antiAliasBinaryImageFilter(double aMaximumRMSChange, unsigned int aNumberOfIterations, double aVariance) const;
+
+
     //--------------------------------------------------------------------------
     /// Normalise the image between 0 and 1
     //--------------------------------------------------------------------------

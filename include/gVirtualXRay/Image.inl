@@ -51,6 +51,12 @@
 #include <itkNumericSeriesFileNames.h>
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
+#include "itkImportImageFilter.h"
+#include "itkDiscreteGaussianImageFilter.h"
+#include "itkAntiAliasBinaryImageFilter.h"
+#include "itkBinaryBallStructuringElement.h"
+#include <itkBinaryMorphologicalOpeningImageFilter.h>
+#include <itkBinaryMorphologicalClosingImageFilter.h>
 #endif
 
 #ifdef HAS_GDCM
@@ -180,12 +186,13 @@ template<typename T> Image<T>::Image(const std::string& aFileName):
 template<typename T> Image<T>::Image(const T* apData,
              unsigned int aWidth,
              unsigned int aHeight,
-             unsigned int aNumberOfSlices):
+             unsigned int aNumberOfSlices,
+             const VEC3& aVoxelSize):
 //----------------------------------------------
         m_width(aWidth),
         m_height(aHeight),
         m_number_of_slices(aNumberOfSlices),
-        m_spacing(1, 1, 1),
+        m_spacing(aVoxelSize),
         m_p_image(new T[m_width * m_height * m_number_of_slices])
 //----------------------------------------------
 {
@@ -402,6 +409,7 @@ template<typename T> Image<T> Image<T>::getROI(unsigned int i,
 {
     // Create a black image
     Image<T> roi(aWidth, aHeight, aDepth);
+    roi.m_spacing = m_spacing;
 
     // Process every slice of the ROI
 #ifdef NDEBUG
@@ -782,6 +790,247 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
     
     // Return the result
     return (temp);
+}
+
+
+template<typename T> Image<unsigned char> Image<T>::threshold(const T& aMinValue,
+                                                              const T& aMaxValue,
+                                                              const T& anInValue,
+                                                              const T& anOutValue) const
+{
+    Image<unsigned char> segmentation(m_width, m_height, m_number_of_slices, anOutValue);
+    segmentation.setSpacing(m_spacing);
+
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
+#endif
+    for (int k = 0; k < m_number_of_slices; ++k)
+        {
+        for (int j = 0; j < (m_height); ++j)
+            {
+            for (int i = 0; i < m_width; ++i)
+                {
+                unsigned int index(k * m_width * m_height + j * m_width + i);
+
+                T voxel_value(m_p_image[index]);
+                if (aMinValue <= voxel_value && voxel_value <= aMaxValue)
+                    {
+                    segmentation.setPixel(i, j, k, anInValue);
+                    }
+                }
+            }
+        }
+
+    return (segmentation);
+}
+
+
+template<typename T> Image<unsigned char> Image<T>::opening(unsigned int aRadius) const
+{
+#ifndef HAS_ITK
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+#else
+
+    typedef itk::Image< unsigned char, 3 > InputImageType;
+    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+
+    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+
+    ImportFilterType::SizeType  size;
+    size[0]  = m_width;  // size along X
+    size[1]  = m_height;  // size along Y
+    size[2]  = m_number_of_slices;  // size along Z
+
+    ImportFilterType::IndexType start;
+    start.Fill( 0 );
+
+    ImportFilterType::RegionType region;
+    region.SetIndex( start );
+    region.SetSize(  size  );
+
+    importFilter->SetRegion( region );
+
+    double origin[ 3 ];
+    origin[0] = 0.0;    // X coordinate
+    origin[1] = 0.0;    // Y coordinate
+    origin[2] = 0.0;    // Z coordinate
+
+    importFilter->SetOrigin( origin );
+
+    double spacing[ 3 ];
+    spacing[0] = m_spacing[0];    // along X direction
+    spacing[1] = m_spacing[1];    // along Y direction
+    spacing[2] = m_spacing[2];    // along Z direction
+
+    importFilter->SetSpacing( spacing );
+
+    const bool importImageFilterWillOwnTheBuffer = false;
+    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+                                    importImageFilterWillOwnTheBuffer );
+
+    typedef itk::BinaryBallStructuringElement<InputImageType::PixelType, InputImageType::ImageDimension>
+                StructuringElementType;
+    StructuringElementType structuringElement;
+    structuringElement.SetRadius(aRadius);
+    structuringElement.CreateStructuringElement();
+
+    typedef itk::BinaryMorphologicalOpeningImageFilter <InputImageType, InputImageType, StructuringElementType>
+            BinaryMorphologicalOpeningImageFilterType;
+    BinaryMorphologicalOpeningImageFilterType::Pointer openingFilter
+            = BinaryMorphologicalOpeningImageFilterType::New();
+    openingFilter->SetInput(importFilter->GetOutput());
+    openingFilter->SetKernel(structuringElement);
+
+    openingFilter->SetBackgroundValue (getMinValue());
+
+    openingFilter->SetForegroundValue (getMaxValue());
+
+    openingFilter->Update();
+
+    return (Image<unsigned char>(openingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+#endif
+}
+
+
+template<typename T> Image<unsigned char> Image<T>::closing(unsigned int aRadius) const
+{
+#ifndef HAS_ITK
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+#else
+
+    typedef itk::Image< unsigned char, 3 > InputImageType;
+    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+
+    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+
+    ImportFilterType::SizeType  size;
+    size[0]  = m_width;  // size along X
+    size[1]  = m_height;  // size along Y
+    size[2]  = m_number_of_slices;  // size along Z
+
+    ImportFilterType::IndexType start;
+    start.Fill( 0 );
+
+    ImportFilterType::RegionType region;
+    region.SetIndex( start );
+    region.SetSize(  size  );
+
+    importFilter->SetRegion( region );
+
+    double origin[ 3 ];
+    origin[0] = 0.0;    // X coordinate
+    origin[1] = 0.0;    // Y coordinate
+    origin[2] = 0.0;    // Z coordinate
+
+    importFilter->SetOrigin( origin );
+
+    double spacing[ 3 ];
+    spacing[0] = m_spacing[0];    // along X direction
+    spacing[1] = m_spacing[1];    // along Y direction
+    spacing[2] = m_spacing[2];    // along Z direction
+
+    importFilter->SetSpacing( spacing );
+
+    const bool importImageFilterWillOwnTheBuffer = false;
+    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+                                    importImageFilterWillOwnTheBuffer );
+
+    typedef itk::BinaryBallStructuringElement<InputImageType::PixelType, InputImageType::ImageDimension>
+                StructuringElementType;
+    StructuringElementType structuringElement;
+    structuringElement.SetRadius(aRadius);
+    structuringElement.CreateStructuringElement();
+
+    typedef itk::BinaryMorphologicalClosingImageFilter <InputImageType, InputImageType, StructuringElementType>
+            BinaryMorphologicalClosingImageFilterType;
+    BinaryMorphologicalClosingImageFilterType::Pointer closingFilter
+            = BinaryMorphologicalClosingImageFilterType::New();
+    closingFilter->SetInput(importFilter->GetOutput());
+    closingFilter->SetKernel(structuringElement);
+
+   // closingFilter->SetBackgroundValue (getMinValue());
+
+    closingFilter->SetForegroundValue (getMaxValue());
+
+    closingFilter->Update();
+
+    return (Image<unsigned char>(closingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+#endif
+}
+
+
+template<typename T> Image<float> Image<T>::antiAliasBinaryImageFilter(double aMaximumRMSChange, unsigned int aNumberOfIterations, double aVariance) const
+{
+#ifndef HAS_ITK
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+#else
+    if (aMaximumRMSChange >= 1.0)
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "aMaximumRMSChange should be less than 1.0. A value of 0.07 is a good starting estimate.");
+        }
+
+    typedef itk::Image< unsigned char, 3 > InputImageType;
+    typedef itk::Image< float,         3 > OutputImageType;
+
+    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+
+    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+
+    ImportFilterType::SizeType  size;
+    size[0]  = m_width;  // size along X
+    size[1]  = m_height;  // size along Y
+    size[2]  = m_number_of_slices;  // size along Z
+
+    ImportFilterType::IndexType start;
+    start.Fill( 0 );
+
+    ImportFilterType::RegionType region;
+    region.SetIndex( start );
+    region.SetSize(  size  );
+
+    importFilter->SetRegion( region );
+
+    double origin[ 3 ];
+    origin[0] = 0.0;    // X coordinate
+    origin[1] = 0.0;    // Y coordinate
+    origin[2] = 0.0;    // Z coordinate
+
+    importFilter->SetOrigin( origin );
+
+    double spacing[ 3 ];
+    spacing[0] = m_spacing[0];    // along X direction
+    spacing[1] = m_spacing[1];    // along Y direction
+    spacing[2] = m_spacing[2];    // along Z direction
+
+    importFilter->SetSpacing( spacing );
+
+    const bool importImageFilterWillOwnTheBuffer = false;
+    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+                                    importImageFilterWillOwnTheBuffer );
+
+    typedef itk::DiscreteGaussianImageFilter< InputImageType, OutputImageType > GaussianBlurImageFilter;
+    GaussianBlurImageFilter::Pointer p_gaussian_blur_filter(GaussianBlurImageFilter::New());
+    p_gaussian_blur_filter->SetInput(importFilter->GetOutput());
+    p_gaussian_blur_filter->SetVariance(aVariance);
+    p_gaussian_blur_filter->Update();
+
+    typedef itk::AntiAliasBinaryImageFilter< OutputImageType, OutputImageType > AntiAliasBinaryImageFilter;
+    AntiAliasBinaryImageFilter::Pointer p_filter(AntiAliasBinaryImageFilter::New());
+    p_filter->SetInput(p_gaussian_blur_filter->GetOutput());
+    p_filter->SetNumberOfIterations(aNumberOfIterations);
+    p_filter->SetMaximumRMSError(aMaximumRMSChange);
+    p_filter->Update();
+
+    return (Image<float>(p_filter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+#endif
 }
 
 
