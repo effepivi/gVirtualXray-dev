@@ -164,20 +164,26 @@ public:
     gVirtualXRay::VEC3 getCentre() const;
     gVirtualXRay::VEC3 getCenter() const;
 
+
+    unsigned int getNumberOfPolygonMeshes() const;
+
+
+    const std::map<short, gVirtualXRay::PolygonMesh>& getPolygonMeshSet() const;
+
+
 //******************************************************************************
 private:
     void loadTissueMaterial(const std::string& aFileName);
 
-    void loadMaterialDensity(const std::string& aFileName,
-            bool aCreatePolygonMeshes);
+    void loadMaterialDensity(const std::string& aFileName, bool aCreateMeshesFlag);
 
-    void addToPolygon(short aThreshold,
-            const gVirtualXRay::TissueMaterial& aMaterial,
+    void addToPolygon(const gVirtualXRay::Image<unsigned char>& aBinaryImage,
             gVirtualXRay::PolygonMesh& apPolygon);
 
     gVirtualXRay::Image<short> m_volume_dataset;
     std::map<short, gVirtualXRay::TissueMaterial> m_p_material_table;
     std::map<short, gVirtualXRay::PolygonMesh> m_p_polygon_set;
+    std::map<short, gVirtualXRay::Image<unsigned char> > m_p_binary_mask_set;
 };
 
 //==============================================================================
@@ -475,8 +481,6 @@ private:
 
     ///the light direction (from the vertex to the camera)
     gVirtualXRay::VEC3 m_light_direction;
-
-    ICPRPhamtom m_male_icrp_phantom;
 
     ICPRPhamtom m_female_icrp_phantom;
 };

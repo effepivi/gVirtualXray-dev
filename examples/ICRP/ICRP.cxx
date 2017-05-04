@@ -175,7 +175,7 @@ int main(int argc, char** argv)
         // Create a windowed mode window and its OpenGL context
         g_p_main_window_id = glfwCreateWindow(g_main_window_width,
                 g_main_window_height,
-                "gVirtualXRay -- Visible Human Demo -- GLFW3",
+                "gVirtualXRay -- Adult Reference Computational Phantoms from ICRP -- GLFW3",
                 0,
                 0);
         

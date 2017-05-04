@@ -158,8 +158,8 @@ using namespace gVirtualXRay;
 const GLfloat g_rotation_speed(2.0);
 
 const float g_scaling_factor(1.0);
-const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
-const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 1000 / g_scaling_factor);
+const VEC2 g_resolution(0.5 * g_scaling_factor * mm, 0.5 * g_scaling_factor * mm);
+const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 250 / g_scaling_factor);
 
 const float g_incident_energy(0.08 * MeV);
 
@@ -216,16 +216,15 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
 
     bool create_meshes_flag(false);
 
-    short i(0);
     for (std::map<short, TissueMaterial>::iterator ite(m_p_material_table.begin());
             ite != m_p_material_table.end() && !create_meshes_flag;
-            ++ite, ++i)
+            ++ite)
     {
         // Set the filename
         std::stringstream stl_file_name;
         stl_file_name << path << "_" << ite->first << ".stl";
 
-        // OPen the file
+        // Open the file
         std::ifstream input_stream(stl_file_name.str().c_str(),
                 std::ios::in | std::ios::binary);
 
@@ -246,9 +245,9 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
                 mm,
                 GL_STATIC_DRAW);
 
-            m_p_polygon_set[ite->first].setHounsfieldValue(i);
-            //m_p_polygon_set[ite->first].invertNormalVectors();
-            }
+            m_p_polygon_set[ite->first].setHounsfieldValue(ite->first);
+            m_p_polygon_set[ite->first].invertNormalVectors();
+        }
     }
 
     if (create_meshes_flag)
@@ -256,20 +255,27 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
         m_p_polygon_set.clear();
     }
 
-    loadMaterialDensity(path + "_organs.dat",
-            create_meshes_flag);
+    loadMaterialDensity(path + "_organs.dat", create_meshes_flag);
 
     if (create_meshes_flag)
     {
-        for (std::map<short, PolygonMesh>::iterator ite(m_p_polygon_set.begin());
-                ite != m_p_polygon_set.end();
+        for (std::map<short, Image<unsigned char> >::iterator ite(m_p_binary_mask_set.begin());
+                ite != m_p_binary_mask_set.end();
                 ++ite)
         {
+            //if (ite->first == 2)
+            {
+            std::cout << "ite->first\t" << ite->first << std::endl;
+
+            addToPolygon(ite->second, m_p_polygon_set[ite->first]);
+
             std::stringstream stl_file_name;
             stl_file_name << path << "_" << ite->first << ".stl";
 
-            //ite->second.setFileName(stl_file_name.str());
-            ite->second.writeSTLFile();
+            m_p_polygon_set[ite->first].setFileName(stl_file_name.str());
+            m_p_polygon_set[ite->first].writeSTLFile();
+            m_p_polygon_set[ite->first].setHounsfieldValue(ite->first);
+            }
         }
     }
 
@@ -278,6 +284,7 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
             ++ite)
     {
        // ite->second.mergeVertices(true);
+        m_p_polygon_set[ite->first].setTissueMaterial(m_p_material_table[ite->first]);
     }
 }
 
@@ -287,6 +294,18 @@ void ICPRPhamtom::saveVolume(const std::string& aFileName) const
 //--------------------------------------------------------------
 {
     m_volume_dataset.save(aFileName);
+}
+
+
+unsigned int ICPRPhamtom::getNumberOfPolygonMeshes() const
+{
+    return (m_p_polygon_set.size());
+}
+
+
+const std::map<short, gVirtualXRay::PolygonMesh>& ICPRPhamtom::getPolygonMeshSet() const
+{
+    return (m_p_polygon_set);
 }
 
 
@@ -364,7 +383,7 @@ void ICPRPhamtom::loadTissueMaterial(const std::string& aFileName)
 
 //-----------------------------------------------------------------
 void ICPRPhamtom::loadMaterialDensity(const std::string& aFileName,
-                                      bool aCreatePolygonMeshes)
+        bool aCreateMeshesFlag)
 //-----------------------------------------------------------------
 {
     // Open the input file
@@ -417,26 +436,57 @@ void ICPRPhamtom::loadMaterialDensity(const std::string& aFileName,
             // Add the density to the material
             m_p_material_table[material_id].setDensity(density);
 
-            // Add the polygon
-            if (aCreatePolygonMeshes)
-            {
-                addToPolygon(tissue_id,
-                        m_p_material_table[material_id],
-                        m_p_polygon_set[material_id]);
-            }
+            // Threshold
+            if (aCreateMeshesFlag)
+                {
+
+                if (m_p_binary_mask_set[material_id].getWidth() == 0)
+                    {
+                    m_p_binary_mask_set[material_id] = Image<unsigned char>(m_volume_dataset.getWidth(), m_volume_dataset.getHeight(), m_volume_dataset.getDepth(), 0);
+                    m_p_binary_mask_set[material_id].setSpacing(m_volume_dataset.getSpacing());
+                    }
+
+                m_p_binary_mask_set[material_id] += m_volume_dataset.threshold(tissue_id, tissue_id, 128, 0);
+                }
         }
     }
 }
 
 
 //------------------------------------------------
-void ICPRPhamtom::addToPolygon(short aThreshold,
-                               const TissueMaterial& aMaterial,
+void ICPRPhamtom::addToPolygon(const Image<unsigned char>& aBinaryImage,
                                PolygonMesh& aPolygon)
 //------------------------------------------------
 {
-    aPolygon += m_volume_dataset.marchingCubes(aThreshold, aThreshold, true);
-    aPolygon.setTissueMaterial(aMaterial);
+    double maximum_RMS_change(0.07);
+    maximum_RMS_change = 0.5;
+    unsigned int number_of_iterations(50);
+
+    Image<unsigned char> image_after_opening = aBinaryImage.opening(1);
+    Image<unsigned char> image_after_closing = image_after_opening.closing(1);
+    Image<float> anti_alias_binary_image = image_after_closing.antiAliasBinaryImageFilter(maximum_RMS_change, number_of_iterations, 1.5);
+
+    aBinaryImage.save("segmentation.mhd");
+    image_after_opening.save("segmentation_after_opening.mhd");
+    image_after_closing.save("segmentation_after_closing.mhd");
+    anti_alias_binary_image.save("anti_aliased.mhd");
+
+
+
+    float min_value(anti_alias_binary_image.getMinValue());
+    float max_value(anti_alias_binary_image.getMaxValue());
+
+    float threshold(min_value + (max_value - min_value) / 2.0);
+    //threshold = 0;
+
+    std::cout << min_value << std::endl;
+    std::cout << max_value << std::endl;
+
+    if (min_value != max_value)
+    {
+        //aPolygon = anti_alias_binary_image.marchingCubes(threshold, max_value, true);
+        aPolygon = image_after_opening.marchingCubes(1, 1, false);
+    }
 }
 
 
@@ -593,8 +643,8 @@ void AnatomicalDataHandler::initializeGL()
     loadXRaySimulator();
 
     // Add the geometry to the X-ray renderer
-    initializePatient();
     loadSTLFiles();
+    initializePatient();
 
     //set the direction of the light
     m_light_direction.normalize();
@@ -699,7 +749,7 @@ void AnatomicalDataHandler::draw()
         }
 
     // Update the X-ray image
-//    updateXRayImage();
+    updateXRayImage();
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Draw the 3D scene
@@ -936,7 +986,7 @@ void AnatomicalDataHandler::updateXRayImage()
     m_xray_renderer.computeImage(m_rotation_matrix);
 
     // Normalise the X-ray image
-    if (fabs(m_current_angle) < EPSILON)
+    //if (fabs(m_current_angle) < EPSILON)
         {
         m_xray_renderer.normalise();
         }
@@ -1389,6 +1439,13 @@ void AnatomicalDataHandler::zoomOut()
 void AnatomicalDataHandler::initializePatient()
 //---------------------------------------------
 {
+    for (std::map<short, gVirtualXRay::PolygonMesh>::const_iterator ite(m_female_icrp_phantom.getPolygonMeshSet().begin());
+            ite != m_female_icrp_phantom.getPolygonMeshSet().end();
+            ++ite)
+    {
+        m_xray_renderer.addInnerSurface(&(ite->second));
+    }
+
 }
 
 //---------------------------------------------
