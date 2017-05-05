@@ -442,7 +442,7 @@ public:
 
     Image<unsigned char> opening(unsigned int aRadius) const;
     Image<unsigned char> closing(unsigned int aRadius) const;
-
+    Image<float> getIsoTropic() const;
     Image<float> antiAliasBinaryImageFilter(double aMaximumRMSChange, unsigned int aNumberOfIterations, double aVariance) const;
 
 

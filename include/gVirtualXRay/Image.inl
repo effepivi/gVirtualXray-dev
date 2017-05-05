@@ -57,6 +57,14 @@
 #include "itkBinaryBallStructuringElement.h"
 #include <itkBinaryMorphologicalOpeningImageFilter.h>
 #include <itkBinaryMorphologicalClosingImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkIdentityTransform.h>
+#include <itkBSplineInterpolateImageFunction.h>
+#include "itkMesh.h"
+//#include "itkBinaryThresholdImageFilter.h"
+#include "itkBinaryMask3DMeshSource.h"
+//#include "itkMeshFileWriter.h"
 #endif
 
 #ifdef HAS_GDCM
@@ -961,6 +969,240 @@ template<typename T> Image<unsigned char> Image<T>::closing(unsigned int aRadius
     closingFilter->Update();
 
     return (Image<unsigned char>(closingFilter->GetOutput()->GetBufferPointer(), m_width, m_height, m_number_of_slices, m_spacing));
+#endif
+}
+
+
+template<typename T> Image<float> Image<T>::getIsoTropic() const
+{
+#ifndef HAS_ITK
+    throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "gVirtualXRay has not been compiled with ITK support. As a consequence Image<T>::antiAliasBinaryImageFilter is not available.");
+#else
+
+    typedef itk::Image< unsigned char, 3 > InputImageType;
+    typedef itk::Image< float, 3 > OutputImageType;
+    typedef itk::ImportImageFilter< unsigned char, 3 >   ImportFilterType;
+
+    ImportFilterType::Pointer importFilter = ImportFilterType::New();
+
+    ImportFilterType::SizeType  current_size;
+    current_size[0]  = m_width;  // size along X
+    current_size[1]  = m_height;  // size along Y
+    current_size[2]  = m_number_of_slices;  // size along Z
+
+    ImportFilterType::IndexType start;
+    start.Fill( 0 );
+
+    ImportFilterType::RegionType region;
+    region.SetIndex( start );
+    region.SetSize(  current_size  );
+
+    importFilter->SetRegion( region );
+
+    double origin[ 3 ];
+    origin[0] = 0.0;    // X coordinate
+    origin[1] = 0.0;    // Y coordinate
+    origin[2] = 0.0;    // Z coordinate
+
+    importFilter->SetOrigin( origin );
+
+    double current_spacing[ 3 ];
+    current_spacing[0] = m_spacing[0];    // along X direction
+    current_spacing[1] = m_spacing[1];    // along Y direction
+    current_spacing[2] = m_spacing[2];    // along Z direction
+
+    importFilter->SetSpacing( current_spacing );
+
+    const bool importImageFilterWillOwnTheBuffer = false;
+    importFilter->SetImportPointer( m_p_image, m_width * m_height * m_number_of_slices,
+                                    importImageFilterWillOwnTheBuffer );
+
+
+    // Software Guide : BeginLatex
+    //
+    // We instantiate the smoothing filter that will be used on the preprocessing
+    // for subsampling the in-plane resolution of the dataset.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+    typedef itk::RecursiveGaussianImageFilter<
+            InputImageType,
+                                  OutputImageType > InputGaussianFilterType;
+    typedef itk::RecursiveGaussianImageFilter<
+            OutputImageType,
+                                  OutputImageType > OutputGaussianFilterType;
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // We create two instances of the smoothing filter: one will smooth along the
+    // $X$ direction while the other will smooth along the $Y$ direction. They are
+    // connected in a cascade in the pipeline, while taking their input from the
+    // intensity windowing filter. Note that you may want to skip the intensity
+    // windowing scale and simply take the input directly from the reader.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+    InputGaussianFilterType::Pointer smootherX = InputGaussianFilterType::New();
+    OutputGaussianFilterType::Pointer smootherY = OutputGaussianFilterType::New();
+      smootherX->SetInput( importFilter->GetOutput() );
+      smootherY->SetInput( smootherX->GetOutput() );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // We must now provide the settings for the resampling itself. This is done by
+    // searching for a value of isotropic resolution that will provide a trade-off
+    // between the evil of subsampling and the evil of supersampling. We advance
+    // here the conjecture that the geometrical mean between the in-plane and the
+    // inter-slice resolutions should be a convenient isotropic resolution to use.
+    // This conjecture is supported on nothing other than intuition and common
+    // sense. You can rightfully argue that this choice deserves a more technical
+    // consideration, but then, if you are so concerned about the technical integrity
+    // of the image sampling process, you should not be using this code, and should
+    // discuss these issues with the radiologist who
+    // acquired this ugly anisotropic dataset.
+    //
+    // We take the image from the input and then request its array of pixel spacing
+    // values.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      //InputImageType::ConstPointer inputImage = reader->GetOutput();
+      //const InputImageType::SpacingType& inputSpacing = inputImage->GetSpacing();
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // and apply our ad-hoc conjecture that the correct anisotropic resolution
+    // to use is the geometrical mean of the in-plane and inter-slice resolutions.
+    // Then set this spacing as the Sigma value to be used for the Gaussian
+    // smoothing at the preprocessing stage.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      const double isoSpacing = std::sqrt( current_spacing[2] * current_spacing[0] );
+      smootherX->SetSigma( isoSpacing );
+      smootherY->SetSigma( isoSpacing );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // We instruct the smoothing filters to act along the $X$ and $Y$ direction
+    // respectively.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      smootherX->SetDirection( 0 );
+      smootherY->SetDirection( 1 );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // Now that we have taken care of the smoothing in-plane, we proceed to
+    // instantiate the resampling filter that will reconstruct an isotropic image.
+    // We start by declaring the pixel type to be used as the output of this filter,
+    // then instantiate the image type and the type for the resampling filter.
+    // Finally we construct an instantiation of the filter.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      typedef itk::ResampleImageFilter<
+              OutputImageType, OutputImageType >  ResampleFilterType;
+      ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // The resampling filter requires that we provide a Transform, which in this
+    // particular case can simply be an identity transform.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      typedef itk::IdentityTransform< double, 3 >  TransformType;
+      TransformType::Pointer transform = TransformType::New();
+      transform->SetIdentity();
+      resampler->SetTransform( transform );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // The filter also requires an interpolator to be passed to it. In this case we
+    // chose to use a linear interpolator.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      typedef itk::LinearInterpolateImageFunction<
+      //typedef itk::BSplineInterpolateImageFunction<
+              OutputImageType, double >  InterpolatorType;
+      InterpolatorType::Pointer interpolator = InterpolatorType::New();
+      resampler->SetInterpolator( interpolator );
+    // Software Guide : EndCodeSnippet
+      resampler->SetDefaultPixelValue( 0 ); // highlight regions without source
+    // Software Guide : BeginLatex
+    //
+    // The pixel spacing of the resampled dataset is loaded in a \code{SpacingType}
+    // and passed to the resampling filter.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      OutputImageType::SpacingType spacing;
+      spacing[0] = isoSpacing;
+      spacing[1] = isoSpacing;
+      spacing[2] = isoSpacing;
+      resampler->SetOutputSpacing( spacing );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // The origin and orientation of the output image is maintained, since we
+    // decided to resample the image in the same physical extent of the input
+    // anisotropic image.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      resampler->SetOutputOrigin( origin );
+      resampler->SetOutputDirection( importFilter->GetOutput()->GetDirection() );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // The number of pixels to use along each dimension in the grid of the
+    // resampled image is computed using the ratio between the pixel spacings of the
+    // input image and those of the output image. Note that the computation of the
+    // number of pixels along the $Z$ direction is slightly different with the
+    // purpose of making sure that we don't attempt to compute pixels that are
+    // outside of the original anisotropic dataset.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      InputImageType::SizeType   inputSize =
+              importFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
+      typedef InputImageType::SizeType::SizeValueType SizeValueType;
+      const double dx = current_size[0] * current_spacing[0] / isoSpacing;
+      const double dy = current_size[1] * current_spacing[1] / isoSpacing;
+      const double dz = (current_size[2] - 1 ) * current_spacing[2] / isoSpacing;
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // Finally the values are stored in a \code{SizeType} and passed to the
+    // resampling filter. Note that this process requires a casting since the
+    // computations are performed in \code{double}, while the elements of the
+    // \code{SizeType} are integers.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      InputImageType::SizeType   size;
+      size[0] = static_cast<SizeValueType>( dx );
+      size[1] = static_cast<SizeValueType>( dy );
+      size[2] = static_cast<SizeValueType>( dz );
+      resampler->SetSize( size );
+    // Software Guide : EndCodeSnippet
+    // Software Guide : BeginLatex
+    //
+    // Our last action is to take the input for the resampling image filter from
+    // the output of the cascade of smoothing filters, and then to trigger the
+    // execution of the pipeline by invoking the \code{Update()} method on the
+    // resampling filter.
+    //
+    // Software Guide : EndLatex
+    // Software Guide : BeginCodeSnippet
+      resampler->SetInput( smootherY->GetOutput() );
+      resampler->Update();
+
+      return (Image<float>(resampler->GetOutput()->GetBufferPointer(), size[0], size[1], size[2], VEC3(isoSpacing, isoSpacing, isoSpacing)));
 #endif
 }
 
@@ -3280,6 +3522,10 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
         bool aTwoThresholdFlag) const
 //--------------------------------------------------------------------------------------
 {
+    PolygonMesh iso_surface;
+
+    {
+
     struct GLvector
     {
             float fX;
@@ -3605,8 +3851,6 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
     };
 
-
-    PolygonMesh iso_surface;
     
     if (m_width && m_height && m_number_of_slices && m_p_image)
         {
@@ -3762,6 +4006,8 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     false,
                     g_vbo_type);
             }
+    }
+
     }
 
     return (iso_surface);
