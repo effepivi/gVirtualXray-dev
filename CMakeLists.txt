@@ -424,6 +424,19 @@ SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
 SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 
 
+# VCG ##########################################################################
+OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
+
+IF (USE_SYSTEM_VCG)
+    FIND_PACKAGE( VCG   REQUIRED )
+ELSE(USE_SYSTEM_VCG)
+    INCLUDE(BuildVCG)
+    build_vcg( vcg ${PROJECT_BINARY_DIR} )
+ENDIF (USE_SYSTEM_VCG)
+
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${VCG_INCLUDE_DIR}")
+
+
 # FFTW3 ########################################################################
 IF (WIN32 OR MSVC)
     OPTION(USE_FFTW3       "Use FFTW3"       OFF)
@@ -789,6 +802,10 @@ ENDIF (XCOM_PATH)
 IF (NOT USE_SYSTEM_ZLIB)
     ADD_DEPENDENCIES(gVirtualXRay zlib)
 ENDIF (NOT USE_SYSTEM_ZLIB)
+
+IF (NOT USE_SYSTEM_VCG)
+    ADD_DEPENDENCIES(gVirtualXRay vcg)
+ENDIF (NOT USE_SYSTEM_VCG)
 
 IF (NOT USE_SYSTEM_XCOM)
     ADD_DEPENDENCIES(XCOMLibFiles xcom)
