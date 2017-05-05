@@ -67,12 +67,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#include <cstdlib>
 #include <algorithm>
 #include <cstdlib>
 #include <sstream>
 #include <streambuf>
 #include <ctime>
 #include <algorithm>
+#include <string>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
@@ -229,12 +231,12 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
                 std::ios::in | std::ios::binary);
 
         // The file is not open
-        if (!input_stream.is_open())
+        //if (!input_stream.is_open())
             {
             create_meshes_flag = true;
             }
 
-        else
+       /* else
         {
             m_p_polygon_set[ite->first].setFileName(stl_file_name.str());
 
@@ -247,7 +249,7 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
 
             m_p_polygon_set[ite->first].setHounsfieldValue(ite->first);
             m_p_polygon_set[ite->first].invertNormalVectors();
-        }
+        }*/
     }
 
     if (create_meshes_flag)
@@ -267,14 +269,17 @@ void ICPRPhamtom::load(const std::string& aPath, const std::string& aName)
             {
             std::cout << "ite->first\t" << ite->first << std::endl;
 
+            m_p_polygon_set[ite->first].setHounsfieldValue(ite->first);
             addToPolygon(ite->second, m_p_polygon_set[ite->first]);
 
-            std::stringstream stl_file_name;
-            stl_file_name << path << "_" << ite->first << ".stl";
+            if (m_p_polygon_set[ite->first].getVertexNumber())
+                {
+                std::stringstream stl_file_name;
+                stl_file_name << path << "_" << ite->first << ".stl";
 
-            m_p_polygon_set[ite->first].setFileName(stl_file_name.str());
-            m_p_polygon_set[ite->first].writeSTLFile();
-            m_p_polygon_set[ite->first].setHounsfieldValue(ite->first);
+                m_p_polygon_set[ite->first].setFileName(stl_file_name.str());
+                m_p_polygon_set[ite->first].writeSTLFile();
+                }
             }
         }
     }
@@ -462,19 +467,29 @@ void ICPRPhamtom::addToPolygon(const Image<unsigned char>& aBinaryImage,
     maximum_RMS_change = 0.5;
     unsigned int number_of_iterations(50);
 
-    Image<unsigned char> image_after_opening = aBinaryImage.opening(1);
-    Image<unsigned char> image_after_closing = image_after_opening.closing(1);
-    Image<float> anti_alias_binary_image = image_after_closing.antiAliasBinaryImageFilter(maximum_RMS_change, number_of_iterations, 1.5);
+    char hu_string[256];
+    sprintf(hu_string, "%i", aPolygon.getHounsfieldValue());
+    aBinaryImage.save(std::string("segmentation") + hu_string + std::string(".mhd"));
 
-    aBinaryImage.save("segmentation.mhd");
+   /* Image<unsigned char> image_after_opening = aBinaryImage.opening(1);
     image_after_opening.save("segmentation_after_opening.mhd");
+
+    Image<unsigned char> image_after_closing = image_after_opening.closing(1);
     image_after_closing.save("segmentation_after_closing.mhd");
-    anti_alias_binary_image.save("anti_aliased.mhd");
+*/
+    Image<float> iso_tropic_image = aBinaryImage.getIsoTropic(); // image_after_closing.getIsoTropic();
+    //iso_tropic_image.save("segmentation_isotropic.mhd");
+    iso_tropic_image.save(std::string("segmentation_isotropic") + hu_string + std::string(".mhd"));
 
 
 
-    float min_value(anti_alias_binary_image.getMinValue());
-    float max_value(anti_alias_binary_image.getMaxValue());
+    //Image<float> anti_alias_binary_image = image_after_closing.antiAliasBinaryImageFilter(maximum_RMS_change, number_of_iterations, 1.5);
+    //anti_alias_binary_image.save("anti_aliased.mhd");
+
+
+
+    float min_value(iso_tropic_image.getMinValue());
+    float max_value(iso_tropic_image.getMaxValue());
 
     float threshold(min_value + (max_value - min_value) / 2.0);
     //threshold = 0;
@@ -484,8 +499,8 @@ void ICPRPhamtom::addToPolygon(const Image<unsigned char>& aBinaryImage,
 
     if (min_value != max_value)
     {
-        //aPolygon = anti_alias_binary_image.marchingCubes(threshold, max_value, true);
-        aPolygon = image_after_opening.marchingCubes(1, 1, false);
+        aPolygon = iso_tropic_image.marchingCubes(threshold, max_value, false);
+        //aPolygon = image_after_opening.marchingCubes(1, 1, false);
     }
 }
 
