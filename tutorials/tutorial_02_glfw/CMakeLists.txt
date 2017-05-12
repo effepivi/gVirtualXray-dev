@@ -114,7 +114,7 @@ IF(glfw3_FOUND)
     # Create the main program ######################################################
     add_executable(tutorial_02_glfw tutorial_02_glfw.cxx buildCube.cxx)
     target_link_libraries(tutorial_02_glfw ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    ADD_DEPENDENCIES(tutorial_02_fltk Binarytutorial_02_glfwFiles)
+    ADD_DEPENDENCIES(tutorial_02_glfw Binarytutorial_02_glfwFiles)
 
     INSTALL(TARGETS tutorial_02_glfw RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials/bin  COMPONENT tutorials)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/tutorials COMPONENT tutorials)
