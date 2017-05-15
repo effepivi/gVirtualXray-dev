@@ -196,15 +196,15 @@ typedef enum PatientIDTag
 const GLfloat g_rotation_speed(2.0);
 
 const float g_incident_energy(0.08 * MeV);
-const float g_scaling_factor(2);
-const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
+const float g_scaling_factor(0.25);
+const VEC2 g_resolution(1.0 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
 const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
 
 const double g_initial_fovy(45);        // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);  // Near clipping plane
 const double g_initial_far(500.0 * cm); // Far clipping plane
 
-const VEC3 g_initial_source_position(   0.0,  25.0 * cm, 0.0);
+const VEC3 g_initial_source_position(   0.0,  50.0 * cm, 0.0);
 const VEC3 g_initial_detector_position( 0.0, -25.0 * cm, 0.0);
 const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
@@ -756,7 +756,7 @@ void draw()
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 
-    if (g_run_tomography_acquisition)
+    //if (g_run_tomography_acquisition)
         {
         // Rotation
         if (g_current_angle != g_next_angle_to_process)
@@ -835,7 +835,11 @@ void draw()
 
         // Update the current angle
         g_current_angle = g_next_angle_to_process;
+
+        if (g_run_tomography_acquisition)
+        {
         g_next_angle_to_process += g_angle_offset;
+        }
 
         // Stop the acquisition
         if (g_next_angle_to_process > g_angle_number)
@@ -1080,17 +1084,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         {
         switch (key)
             {
+
+            case GLFW_KEY_A:
+                // Enable/Disable artefact filtering
+                g_xray_renderer.useArtifactFiltering(g_xray_renderer.useArtifactFiltering());
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
             case GLFW_KEY_Q:
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
                 break;
 
             case GLFW_KEY_SPACE:
-                if (g_run_tomography_acquisition)
+                g_run_tomography_acquisition = !g_run_tomography_acquisition;
+  /*              if (g_run_tomography_acquisition)
                     {
                     reset();
                     }
-                break;
+*/                break;
 
             case GLFW_KEY_B:
                 g_display_beam = !g_display_beam;
@@ -1123,11 +1137,122 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                     }
                 
                     usePatient(g_current_patient);
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
                 break;
 
             case GLFW_KEY_V:
                 g_display_outside_polygon = !g_display_outside_polygon;
                 break;
+
+            case GLFW_KEY_1:
+                // This is a point source
+                if (g_xray_detector.getSourceShape() != XRayDetector::PARALLEL)
+                {
+                    // Use a parallel source
+                    g_xray_detector.setParallelBeam();
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("parallel_beam.mha");
+#endif
+                }
+                // This is a cubic source
+                else
+                {
+                    g_xray_detector.setPointSource();
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("point_source.mha");
+#endif
+
+                }
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_2:
+                // This is not a line source
+                if (g_xray_detector.getSourceShape() != XRayDetector::LINE)
+                {
+                    g_xray_detector.setLineSource(g_xray_detector.getXraySourceCentre(), VEC3(1, 0, 0), 16, 10.0*mm);
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("line_source.mha");
+#endif
+}
+                // This is a cubic source
+                else
+                {
+                    g_xray_detector.setPointSource();
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("point_source.mha");
+#endif
+                }
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_3:
+                // This is not a square source
+                if (g_xray_detector.getSourceShape() != XRayDetector::SQUARE)
+                {
+                    g_xray_detector.setSquareSource(g_xray_detector.getXraySourceCentre(), 10, 10.0*mm);
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("square_source.mha");
+#endif
+                }
+                // This is a cubic source
+                else
+                {
+                    g_xray_detector.setPointSource();
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("point_source.mha");
+#endif
+}
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+
+                break;
+
+            case GLFW_KEY_4:
+                // This is not a cubic source
+                if (g_xray_detector.getSourceShape() != XRayDetector::CUBE)
+                {
+                    g_xray_detector.setCubicSource(g_xray_detector.getXraySourceCentre(), 5, 10.0*mm);
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("cubic_source.mhd");
+#endif
+}
+                // This is a cubic source
+                else
+                {
+                    g_xray_detector.setPointSource();
+
+#ifdef _DEBUG
+                    updateXRayImage();
+                    g_xray_renderer.printEnergyFluence("point_source.mhd");
+#endif
+}
+
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+
 
             case GLFW_KEY_KP_ADD:
                 g_zoom += 1.0 * cm;
