@@ -100,6 +100,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
 	reset();
 	m_external_data_flag = false;
 
+    m_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
+    m_max_corner = VEC3( aRadius,  aRadius,  aRadius);
+
 	const float R(1.0 / float(aNumberOfRings   - 1));
 	const float S(1.0 / float(aNumberOfSectors - 1));
 

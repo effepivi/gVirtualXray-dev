@@ -90,6 +90,9 @@ template<typename T> void CubeMesh<T>::create(double aLength,
     // Cache the half length
     double half_length(aLength / 2.0);
 
+    m_min_corner = VEC3(-half_length, -half_length, -half_length);
+    m_max_corner = VEC3( half_length,  half_length,  half_length);
+
     // Find the 8 corners
 
     // Top
