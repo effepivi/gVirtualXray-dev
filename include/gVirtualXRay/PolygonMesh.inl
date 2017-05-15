@@ -430,6 +430,38 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
 }
 
     
+//----------------------------------------------------------
+inline void PolygonMesh::setFaceNormal(unsigned int anIndex,
+                                       const VEC3& aVertex)
+//----------------------------------------------------------
+{
+    if (getFaceNormalNumber() <= anIndex && m_p_face_normal_set.size())
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+    m_p_face_normal_set[anIndex * 3 + 0] = aVertex.getX();
+    m_p_face_normal_set[anIndex * 3 + 1] = aVertex.getY();
+    m_p_face_normal_set[anIndex * 3 + 2] = aVertex.getZ();
+}
+
+
+//------------------------------------------------------------
+inline void PolygonMesh::setVertexNormal(unsigned int anIndex,
+                                         const VEC3& aVertex)
+//------------------------------------------------------------
+{
+    if (getVertexNormalNumber() <= anIndex && m_p_vertex_normal_set.size())
+        {
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+    m_p_vertex_normal_set[anIndex * 3 + 0] = aVertex.getX();
+    m_p_vertex_normal_set[anIndex * 3 + 1] = aVertex.getY();
+    m_p_vertex_normal_set[anIndex * 3 + 2] = aVertex.getZ();
+}
+
+
 //----------------------------------------------------------------------
 inline void PolygonMesh::rotate(const VEC3& aRotationAxis,
                                 RATIONAL_NUMBER aRotationAngleInDegrees)
@@ -447,6 +479,18 @@ inline void PolygonMesh::rotate(const VEC3& aRotationAxis,
             setVertex(i, vertex);
             }
         
+        for (unsigned int i(0); i < getFaceNormalNumber(); i++)
+            {
+            VEC3 normal_vector(rotation_matrix * getFaceNormal(i));
+            setFaceNormal(i, normal_vector);
+            }
+
+        for (unsigned int i(0); i < getVertexNormalNumber(); i++)
+            {
+            VEC3 normal_vector(rotation_matrix * getVertexNormal(i));
+            setVertexNormal(i, normal_vector);
+            }
+
         // Update the bounding box
         computeBoundingBox();
             
@@ -477,6 +521,20 @@ inline void PolygonMesh::transform(const MATRIX4& aTransformationMatrix)
             setVertex(i, vertex);
             }
         
+        for (unsigned int i(0); i < getFaceNormalNumber(); i++)
+            {
+            VEC3 normal_vector(aTransformationMatrix * getFaceNormal(i));
+            normal_vector.normalize();
+            setFaceNormal(i, normal_vector);
+            }
+
+        for (unsigned int i(0); i < getVertexNormalNumber(); i++)
+            {
+            VEC3 normal_vector(aTransformationMatrix * getVertexNormal(i));
+            normal_vector.normalize();
+            setVertexNormal(i, normal_vector);
+            }
+
         // Update the bounding box
         computeBoundingBox();
         

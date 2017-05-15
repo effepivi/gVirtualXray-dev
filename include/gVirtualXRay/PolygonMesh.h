@@ -523,6 +523,8 @@ public:
      */
     //--------------------------------------------------------------------------
     void setVertex(unsigned int anIndex, const VEC3& aVertex);
+    void setFaceNormal(unsigned int anIndex, const VEC3& aNormalVector);
+    void setVertexNormal(unsigned int anIndex, const VEC3& aNormalVector);
 
 
     //--------------------------------------------------------------------------
