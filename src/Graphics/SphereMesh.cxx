@@ -100,7 +100,9 @@ void SphereMesh::create(unsigned int aNumberOfRings,
 	reset();
 	m_external_data_flag = false;
 
-    m_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
+	m_radius = aRadius;
+
+	m_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
     m_max_corner = VEC3( aRadius,  aRadius,  aRadius);
 
 	const float R(1.0 / float(aNumberOfRings   - 1));
@@ -162,4 +164,195 @@ void SphereMesh::create(unsigned int aNumberOfRings,
             *i++ = (r + 1) * aNumberOfSectors +  s;
     	}
     }
+}
+
+
+void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
+{
+    // Reset the mesh
+    reset();
+    m_external_data_flag = false;
+
+    m_radius = aRadius;
+
+    m_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
+    m_max_corner = VEC3( aRadius,  aRadius,  aRadius);
+
+    m_number_of_vertices = 12;
+
+    float X(0.525731112119133606);
+
+    float Z(0.850650808352039932);
+
+    float vertex_data[12 * 3] = {
+
+       -X, 0, Z,    X, 0,  Z,   -X,  0, -Z,    X,  0, -Z,
+
+        0, Z, X,    0, Z, -X,    0, -Z,  X,    0, -Z, -X,
+
+        Z, X, 0,   -Z, X,  0,    Z, -X,  0,   -Z, -X,  0
+    };
+
+    m_number_of_indices = 20 * 3;
+    unsigned int index_data[20 * 3] = {
+
+       0, 4, 1,   0,9, 4,   9, 5,4,    4,5,8,   4,8,1,
+
+       8,10, 1,   8,3,10,   5, 3,8,    5,2,3,   2,7,3,
+
+       7,10, 3,   7,6,10,   7,11,6,   11,0,6,    0,1,6,
+
+       6,1,10,    9,0,11,   9,11,2,    9,2,5,    7,2,11
+    };
+
+    GLfloat* p_vertices = new GLfloat[m_number_of_vertices * 3];
+    if (!p_vertices)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+    m_p_vertex_set = p_vertices;
+    m_vertex_data_type = GL_FLOAT;
+
+    // Set the kind of polygon
+    m_polygon_type = GL_TRIANGLES;
+
+    m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
+
+    //std::copy(vertex_data, vertex_data + m_number_of_vertices * 3, p_vertices);
+    //std::copy(vertex_data, vertex_data + m_number_of_vertices * 3, m_p_vertex_normal_set.begin());
+    float temp;
+    for (unsigned int i(0); i < m_number_of_vertices *3; ++i)
+    {
+        temp = vertex_data[i];
+        m_p_vertex_normal_set[i] = temp;
+        p_vertices[i] = temp * aRadius;
+    }
+
+    GLuint* p_indices = new GLuint[m_number_of_indices];
+    if (!p_indices)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+    m_p_index_set = p_indices;
+    m_index_data_type = GL_UNSIGNED_INT;
+
+    std::copy(index_data, index_data + m_number_of_indices, p_indices);
+
+    for (unsigned int i(0); i < aNumberOfSubdivision; ++i)
+    {
+        subdivision();
+    }
+}
+
+
+void SphereMesh::subdivision()
+{
+
+
+
+    unsigned int number_of_vertices(m_number_of_vertices + m_number_of_indices / 3);
+    GLfloat* p_vertices = new GLfloat[number_of_vertices * 3];
+    if (!p_vertices)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Copy previous vertex/normal data
+    float* p_vertex_set(static_cast<float*>(m_p_vertex_set));
+    std::vector<float> normal_vectors(m_p_vertex_normal_set);
+    std::copy(p_vertex_set, p_vertex_set + m_number_of_vertices * 3, p_vertices);
+
+
+
+
+
+
+
+    unsigned int number_of_indices(m_number_of_indices * 3);
+    GLuint* p_indices = new GLuint[number_of_indices];
+    if (!p_indices)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }
+
+
+
+
+
+    GLuint* p_index_set(static_cast<GLuint*>(m_p_index_set));
+    for (unsigned int triangle_id(0); triangle_id < m_number_of_indices / 3; ++triangle_id)
+    {
+        unsigned int idx0(p_index_set[triangle_id * 3 + 0]);
+        unsigned int idx1(p_index_set[triangle_id * 3 + 1]);
+        unsigned int idx2(p_index_set[triangle_id * 3 + 2]);
+
+        VEC3 normal_vector0(m_p_vertex_normal_set[idx0 * 3 + 0],
+                m_p_vertex_normal_set[idx0 * 3 + 1],
+                m_p_vertex_normal_set[idx0 * 3 + 2]);
+
+        VEC3 normal_vector1(m_p_vertex_normal_set[idx1 * 3 + 0],
+                m_p_vertex_normal_set[idx1 * 3 + 1],
+                m_p_vertex_normal_set[idx1 * 3 + 2]);
+
+        VEC3 normal_vector2(m_p_vertex_normal_set[idx2 * 3 + 0],
+                m_p_vertex_normal_set[idx2 * 3 + 1],
+                m_p_vertex_normal_set[idx2 * 3 + 2]);
+
+        VEC3 new_normal_vector(normal_vector0 + normal_vector1 + normal_vector2);
+        new_normal_vector.normalise();
+
+        VEC3 new_vertex(new_normal_vector * m_radius);
+
+        // Add normal
+        normal_vectors.push_back(new_normal_vector[0]);
+        normal_vectors.push_back(new_normal_vector[1]);
+        normal_vectors.push_back(new_normal_vector[2]);
+
+        // Add vertex
+        unsigned int new_vertex_id(m_number_of_vertices + triangle_id);
+        p_vertices[new_vertex_id * 3 + 0] = new_vertex[0];
+        p_vertices[new_vertex_id * 3 + 1] = new_vertex[1];
+        p_vertices[new_vertex_id * 3 + 2] = new_vertex[2];
+
+        // Add triangles
+        p_indices[triangle_id * 9 + 0] = idx0;
+        p_indices[triangle_id * 9 + 1] = idx1;
+        p_indices[triangle_id * 9 + 2] = new_vertex_id;
+
+        p_indices[triangle_id * 9 + 3] = idx1;
+        p_indices[triangle_id * 9 + 4] = idx2;
+        p_indices[triangle_id * 9 + 5] = new_vertex_id;
+
+        p_indices[triangle_id * 9 + 6] = idx2;
+        p_indices[triangle_id * 9 + 7] = idx0;
+        p_indices[triangle_id * 9 + 8] = new_vertex_id;
+/*
+        p_indices[triangle_id * 3 + 0] = idx0;
+        p_indices[triangle_id * 3 + 1] = idx1;
+        p_indices[triangle_id * 3 + 2] = idx2;*/
+    }
+
+    VEC3 min_corner(m_min_corner);
+    VEC3 max_corner(m_max_corner);
+
+  //  number_of_vertices = m_number_of_vertices;
+  //  number_of_indices = m_number_of_indices;
+
+    reset();
+
+    m_external_data_flag = false;
+
+    m_min_corner = min_corner;
+    m_max_corner = max_corner;
+
+    m_number_of_vertices = number_of_vertices;
+    m_number_of_indices = number_of_indices;
+
+    m_p_vertex_set = p_vertices;
+    m_vertex_data_type = GL_FLOAT;
+
+    m_p_vertex_normal_set = normal_vectors;
+
+    m_p_index_set = p_indices;
+    m_index_data_type = GL_UNSIGNED_INT;
 }

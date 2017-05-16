@@ -109,9 +109,12 @@ public:
      *  @param aRadius the radius (default value: 0.5 cm)
      */
     //--------------------------------------------------------------------------
-    SphereMesh(unsigned int aNumberOfRings = 10,
-               unsigned int aNumberOfSectors = 10,
-               float aRadius = 0.5 * cm);
+    SphereMesh(unsigned int aNumberOfRings,
+               unsigned int aNumberOfSectors,
+               float aRadius);
+
+
+    SphereMesh(unsigned int aNumberOfSubdivision = 0, float aRadius = 0.5 * cm);
 
 
     //--------------------------------------------------------------------------
@@ -122,9 +125,18 @@ public:
      *  @param aRadius the radius (default value: 0.5 cm)
      */
     //--------------------------------------------------------------------------
-    void create(unsigned int aNumberOfRings = 10,
-                unsigned int aNumberOfSectors = 10,
-                float aRadius = 0.5 * cm);
+    void create(unsigned int aNumberOfRings,
+                unsigned int aNumberOfSectors,
+                float aRadius);
+
+    void create(unsigned int aNumberOfSubdivision, float aRadius);
+
+
+
+
+private:
+    void subdivision();
+    float m_radius;
 };
 
 

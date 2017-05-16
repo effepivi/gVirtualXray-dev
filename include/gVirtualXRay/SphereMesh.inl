@@ -69,13 +69,24 @@ namespace gVirtualXRay {
 
 //----------------------------------------------------------
 inline SphereMesh::SphereMesh(unsigned int aNumberOfRings,
-							  unsigned int aNumberOfSectors,
-							  float aRadius):
+                              unsigned int aNumberOfSectors,
+                              float aRadius):
 //----------------------------------------------------------
-		PolygonMesh()
+        PolygonMesh()
 //----------------------------------------------------------
 {
-	create(aNumberOfRings, aNumberOfSectors, aRadius);
+    create(aNumberOfRings, aNumberOfSectors, aRadius);
+}
+
+
+//--------------------------------------------------------------
+inline SphereMesh::SphereMesh(unsigned int aNumberOfSubdivision,
+                              float aRadius):
+//--------------------------------------------------------------
+        PolygonMesh()
+//--------------------------------------------------------------
+{
+    create(aNumberOfSubdivision, aRadius);
 }
 
 

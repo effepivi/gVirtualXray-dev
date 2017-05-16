@@ -85,8 +85,9 @@ inline XRayDetector::XRayDetector():
 	m_resolution_in_unit_of_length_per_pixel(0),
 	m_distance_source_detector(0),
 	m_vbo_need_update(true),
-	m_source_mesh(10, 10, 0.5 * cm),
-	m_source_shape(UNKNOWN_SHAPE)
+	//m_source_mesh(10, 10, 0.5 * cm),
+	m_source_mesh(3, 0.5 * cm),
+    m_source_shape(UNKNOWN_SHAPE)
 //----------------------------------------------
 {
 }
@@ -117,23 +118,47 @@ inline void XRayDetector::release()
 inline void XRayDetector::displaySource()
 //---------------------------------------
 {
-	// Display all the sub-sources
-	for (std::vector<VEC3>::const_iterator ite(m_p_xray_source_position_set.begin());
-			ite != m_p_xray_source_position_set.end();
-			++ite)
-	{
-		// Store the model/view matrix
-		pushModelViewMatrix();
+    // Display all the sub-sources
+    for (std::vector<VEC3>::const_iterator ite(m_p_xray_source_position_set.begin());
+            ite != m_p_xray_source_position_set.end();
+            ++ite)
+    {
+        // Store the model/view matrix
+        pushModelViewMatrix();
 
-		g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
-		applyModelViewMatrix();
+        g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
+        applyModelViewMatrix();
 
-		// Draw sphere
-		m_source_mesh.display();
-		
-		// Restore the model/view matrix
-		popModelViewMatrix();
-	}
+        // Draw sphere
+        m_source_mesh.display();
+
+        // Restore the model/view matrix
+        popModelViewMatrix();
+    }
+}
+
+
+//------------------------------------------------
+inline void XRayDetector::displaySourceWireframe()
+//------------------------------------------------
+{
+    // Display all the sub-sources
+    for (std::vector<VEC3>::const_iterator ite(m_p_xray_source_position_set.begin());
+            ite != m_p_xray_source_position_set.end();
+            ++ite)
+    {
+        // Store the model/view matrix
+        pushModelViewMatrix();
+
+        g_current_modelview_matrix *= MATRIX4::buildTranslationMatrix(ite->getX(), ite->getY(), ite->getZ());
+        applyModelViewMatrix();
+
+        // Draw sphere
+        m_source_mesh.displayWireFrame();
+
+        // Restore the model/view matrix
+        popModelViewMatrix();
+    }
 }
 
 
