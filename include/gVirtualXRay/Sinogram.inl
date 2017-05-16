@@ -373,11 +373,18 @@ template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAng
         }
         Image<T> back_projection(sinogram.getWidth(), sinogram.getWidth(), sinogram.getDepth());
 
-        for (int k(0); k < reconstruction.getDepth(); ++k)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(3)
+#endif
+#endif
+        for (int k = 0; k < reconstruction.getDepth(); ++k)
         {
-            for (int j(0); j < reconstruction.getHeight(); ++j)
+            for (int j = 0; j < reconstruction.getHeight(); ++j)
             {
-                for (int i(0); i < reconstruction.getWidth(); ++i)
+                for (int i = 0; i < reconstruction.getWidth(); ++i)
                 {
                     back_projection(i, j, k) += sinogram.getPixel(i, angle_id, k);
                 }
