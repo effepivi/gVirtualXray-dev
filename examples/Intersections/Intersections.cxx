@@ -86,8 +86,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __PolygonMesh_h
-#include "gVirtualXRay/PolygonMesh.h"
+#ifndef __CylinderMesh_h
+#include "gVirtualXRay/CylinderMesh.h"
 #endif
 
 #ifndef __CubeMesh_h
@@ -198,7 +198,7 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-PolygonMesh g_inside_polygon_data;
+CylinderMesh g_inside_polygon_data;
 //CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
 CubeMesh<GLfloat> g_outside_polygon_data(3.0 * cm);
 
@@ -1389,14 +1389,7 @@ void loadSTLFile()
         }
 
     // Set geometry
-    g_inside_polygon_data.setFilename(stl_filename_0.data());
-    g_inside_polygon_data.loadSTLFile(
-        true,
-        true,
-        true,
-        true,
-        cm,
-        GL_STATIC_DRAW);
+    g_inside_polygon_data.create(20, 3.0 * cm, 1.0 * cm);
 
     g_inside_polygon_data.setHounsfieldValue(0.0);
     g_outside_polygon_data.setHounsfieldValue(500.0);
