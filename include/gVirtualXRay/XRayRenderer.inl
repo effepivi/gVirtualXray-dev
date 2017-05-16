@@ -385,17 +385,17 @@ namespace gVirtualXRay {
     }
     
 
-    //---------------------------------------------------------------------------
-    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram() const
-    //---------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------
+    inline const Sinogram<XRayRenderer::PixelType>& XRayRenderer::getSinogram() const
+    //-------------------------------------------------------------------------------
     {
         return (m_sinogram_image);
     }
 
 
-    //---------------------------------------------------------------
-    inline Image<XRayRenderer::PixelType>& XRayRenderer::getSinogram()
-    //---------------------------------------------------------------
+    //-------------------------------------------------------------------
+    inline Sinogram<XRayRenderer::PixelType>& XRayRenderer::getSinogram()
+    //-------------------------------------------------------------------
     {
         return (m_sinogram_image);
     }

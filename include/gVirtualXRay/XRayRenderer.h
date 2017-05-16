@@ -624,8 +624,8 @@ public:
     void printSinogram(const std::string& aFileName);
 
 
-    const Image<XRayRenderer::PixelType>& getSinogram() const;
-    Image<XRayRenderer::PixelType>& getSinogram();
+    const Sinogram<XRayRenderer::PixelType>& getSinogram() const;
+    Sinogram<XRayRenderer::PixelType>& getSinogram();
 
 
     const PixelType* getSinogramRawData() const;
