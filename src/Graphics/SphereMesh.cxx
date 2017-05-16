@@ -250,7 +250,7 @@ void SphereMesh::subdivision()
 
 
 
-    unsigned int number_of_vertices(m_number_of_vertices + m_number_of_indices / 3);
+    unsigned int number_of_vertices(m_number_of_vertices + m_number_of_indices);
     GLfloat* p_vertices = new GLfloat[number_of_vertices * 3];
     if (!p_vertices)
     {
@@ -268,7 +268,7 @@ void SphereMesh::subdivision()
 
 
 
-    unsigned int number_of_indices(m_number_of_indices * 3);
+    unsigned int number_of_indices(m_number_of_indices * 4);
     GLuint* p_indices = new GLuint[number_of_indices];
     if (!p_indices)
     {
@@ -277,7 +277,7 @@ void SphereMesh::subdivision()
 
 
 
-
+    unsigned int next_added_vertex_id(m_number_of_vertices);
 
     GLuint* p_index_set(static_cast<GLuint*>(m_p_index_set));
     for (unsigned int triangle_id(0); triangle_id < m_number_of_indices / 3; ++triangle_id)
@@ -298,38 +298,63 @@ void SphereMesh::subdivision()
                 m_p_vertex_normal_set[idx2 * 3 + 1],
                 m_p_vertex_normal_set[idx2 * 3 + 2]);
 
-        VEC3 new_normal_vector(normal_vector0 + normal_vector1 + normal_vector2);
-        new_normal_vector.normalise();
+        VEC3 normal_vector3(normal_vector0 + normal_vector1);
+        normal_vector3.normalise();
 
-        VEC3 new_vertex(new_normal_vector * m_radius);
+        VEC3 normal_vector4(normal_vector1 + normal_vector2);
+        normal_vector4.normalise();
+
+        VEC3 normal_vector5(normal_vector2 + normal_vector0);
+        normal_vector5.normalise();
+
+        VEC3 new_vertex3(normal_vector3 * m_radius);
+        VEC3 new_vertex4(normal_vector4 * m_radius);
+        VEC3 new_vertex5(normal_vector5 * m_radius);
 
         // Add normal
-        normal_vectors.push_back(new_normal_vector[0]);
-        normal_vectors.push_back(new_normal_vector[1]);
-        normal_vectors.push_back(new_normal_vector[2]);
+        normal_vectors.push_back(normal_vector3[0]);
+        normal_vectors.push_back(normal_vector3[1]);
+        normal_vectors.push_back(normal_vector3[2]);
+
+        normal_vectors.push_back(normal_vector4[0]);
+        normal_vectors.push_back(normal_vector4[1]);
+        normal_vectors.push_back(normal_vector4[2]);
+
+        normal_vectors.push_back(normal_vector5[0]);
+        normal_vectors.push_back(normal_vector5[1]);
+        normal_vectors.push_back(normal_vector5[2]);
 
         // Add vertex
-        unsigned int new_vertex_id(m_number_of_vertices + triangle_id);
-        p_vertices[new_vertex_id * 3 + 0] = new_vertex[0];
-        p_vertices[new_vertex_id * 3 + 1] = new_vertex[1];
-        p_vertices[new_vertex_id * 3 + 2] = new_vertex[2];
+        p_vertices[(next_added_vertex_id + 0) * 3 + 0] = new_vertex3[0];
+        p_vertices[(next_added_vertex_id + 0) * 3 + 1] = new_vertex3[1];
+        p_vertices[(next_added_vertex_id + 0) * 3 + 2] = new_vertex3[2];
+
+        p_vertices[(next_added_vertex_id + 1) * 3 + 0] = new_vertex4[0];
+        p_vertices[(next_added_vertex_id + 1) * 3 + 1] = new_vertex4[1];
+        p_vertices[(next_added_vertex_id + 1) * 3 + 2] = new_vertex4[2];
+
+        p_vertices[(next_added_vertex_id + 2) * 3 + 0] = new_vertex5[0];
+        p_vertices[(next_added_vertex_id + 2) * 3 + 1] = new_vertex5[1];
+        p_vertices[(next_added_vertex_id + 2) * 3 + 2] = new_vertex5[2];
 
         // Add triangles
-        p_indices[triangle_id * 9 + 0] = idx0;
-        p_indices[triangle_id * 9 + 1] = idx1;
-        p_indices[triangle_id * 9 + 2] = new_vertex_id;
+        p_indices[triangle_id * 12 +  0] = idx0;
+        p_indices[triangle_id * 12 +  1] = next_added_vertex_id;
+        p_indices[triangle_id * 12 +  2] = next_added_vertex_id + 2;
 
-        p_indices[triangle_id * 9 + 3] = idx1;
-        p_indices[triangle_id * 9 + 4] = idx2;
-        p_indices[triangle_id * 9 + 5] = new_vertex_id;
+        p_indices[triangle_id * 12 +  3] = next_added_vertex_id;
+        p_indices[triangle_id * 12 +  4] = idx1;
+        p_indices[triangle_id * 12 +  5] = next_added_vertex_id + 1;
 
-        p_indices[triangle_id * 9 + 6] = idx2;
-        p_indices[triangle_id * 9 + 7] = idx0;
-        p_indices[triangle_id * 9 + 8] = new_vertex_id;
-/*
-        p_indices[triangle_id * 3 + 0] = idx0;
-        p_indices[triangle_id * 3 + 1] = idx1;
-        p_indices[triangle_id * 3 + 2] = idx2;*/
+        p_indices[triangle_id * 12 +  6] = next_added_vertex_id + 2;
+        p_indices[triangle_id * 12 +  7] = next_added_vertex_id;
+        p_indices[triangle_id * 12 +  8] = next_added_vertex_id + 1;
+
+        p_indices[triangle_id * 12 +  9] = next_added_vertex_id + 2;
+        p_indices[triangle_id * 12 + 10] = next_added_vertex_id + 1;
+        p_indices[triangle_id * 12 + 11] = idx2;
+
+        next_added_vertex_id += 3;
     }
 
     VEC3 min_corner(m_min_corner);
