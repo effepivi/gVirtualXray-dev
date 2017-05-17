@@ -199,7 +199,7 @@ VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
 CylinderMesh g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
-CubeMesh<GLfloat> g_outside_polygon_data(3.0 * cm);
+CubeMesh<GLfloat> g_outside_polygon_data(3.0 * cm, GL_UNSIGNED_INT);
 
 #if __cplusplus <= 199711L
     std::auto_ptr<VBO> g_intersection_box_detector_vbo;
@@ -708,6 +708,9 @@ void render()
             {
             g_outside_polygon_data.display();
             }
+
+        //g_inside_polygon_data.displayVertexNormal();
+        //g_outside_polygon_data.displayFaceNormal();
 
         // Restore the current transformation matrix
         popModelViewMatrix();
