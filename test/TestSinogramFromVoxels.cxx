@@ -1,0 +1,135 @@
+/*
+
+Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+http://www.fpvidal.net/
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the Bangor University nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
+/**
+********************************************************************************
+*
+*   @file       TestSinogramFromVoxels.cxx
+*
+*   @brief      Unit testing: Sinogram.
+*
+*   @version    1.0
+*
+*   @date       03/04/2017
+*   @author     Dr Franck P. Vidal
+*
+*   @section    License
+*               BSD 3-Clause License.
+*
+*               For details on use and redistribution please refer
+*               to http://opensource.org/licenses/BSD-3-Clause
+*
+*   @section    Copyright
+*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
+*               BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//  Include
+//******************************************************************************
+#include <cmath>
+#include <iomanip>
+#include <memory>
+#include <cstdlib>
+
+#define BOOST_TEST_MODULE TestSinogramFromVoxels
+#include <boost/test/unit_test.hpp>
+
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
+#ifndef __Exception_h
+#include "gVirtualXRay/Exception.h"
+#endif
+
+#ifndef __Sinogram_h
+#include "gVirtualXRay/Sinogram.h"
+#endif
+
+
+//******************************************************************************
+//  Name space
+//******************************************************************************
+using namespace gVirtualXRay;
+//using namespace std;
+
+
+//******************************************************************************
+//  Global variables
+//******************************************************************************
+
+
+//******************************************************************************
+//  Function declaration
+//******************************************************************************
+
+
+//------------------------------------------
+BOOST_AUTO_TEST_CASE(TestSinogramFromVoxels)
+//------------------------------------------
+{
+    // Open CT data
+    Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
+
+    // Save a slice of the CT data set
+    Image<float> middle_ct_slice(CT_data_set.setCanvasSize(512, 512, 1));
+    middle_ct_slice.save("/home/fpvidal/Documents/gvirtualxray-code/trunk/validation/data/validation_11/ct_slice.mhd");
+
+    // Compute the sinogram of the CT slice
+    Sinogram<float> ct_slice_sinogram(middle_ct_slice.radonTransform(0, 1, 179));
+    ct_slice_sinogram.save("/home/fpvidal/Documents/gvirtualxray-code/trunk/validation/data/validation_11/test_sinogram.mhd");
+
+    // Compute a projection set from the sinogram
+    Image<float> projection_set(ct_slice_sinogram.getProjectionSet());
+    projection_set.save("/home/fpvidal/Documents/gvirtualxray-code/trunk/validation/data/validation_11/test_projection_set.mhd");
+
+//#ifndef NDEBUG
+   // CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
+   // sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
+   // projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
+//#endif
+
+
+    // Compare reference projection set and simulated projection set using NCC
+    //BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    //BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);
+}
+
