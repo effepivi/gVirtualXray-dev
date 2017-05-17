@@ -286,9 +286,40 @@ void keyCallback(GLFWwindow* apWindow,
         {
         switch (aKey)
             {
+            // Quit
             case GLFW_KEY_Q:
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(apWindow, GL_TRUE);
+                break;
+
+            // display|hide help message
+            case GLFW_KEY_H:
+                g_anatomical_data.toggleDisplayHelp();
+                break;
+
+            // toggle negative image
+            case GLFW_KEY_N:
+                g_anatomical_data.toggleNegativeImage();
+                break;
+
+            // change patient
+            case GLFW_KEY_P:
+                g_anatomical_data.swapPatients();
+                break;
+
+            // display|hide X-ray beam
+            case GLFW_KEY_B:
+                g_anatomical_data.toggleDisplayBeam();
+                break;
+
+            // wireframe|solid rendering
+            case GLFW_KEY_W:
+                g_anatomical_data.toggleWireframe();
+                break;
+
+            // change tomography mode
+            case GLFW_KEY_SPACE:
+                g_anatomical_data.reset();
                 break;
             }
         }

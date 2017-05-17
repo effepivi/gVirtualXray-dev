@@ -66,6 +66,47 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 
+inline void AnatomicalDataHandler::swapPatients()
+{
+    if (m_current_patient == P4)
+        {
+        usePatient(P5);
+        }
+    else
+        {
+        usePatient(P4);
+        }
+}
+
+
+inline void AnatomicalDataHandler::toggleNegativeImage()
+{
+    m_xray_renderer.useNegativeFilteringFlag(
+        !m_xray_renderer.getNegativeFilteringFlag());
+}
+
+
+inline void AnatomicalDataHandler::toggleDisplayBeam()
+{
+    m_display_beam = !m_display_beam;
+}
+
+
+inline void AnatomicalDataHandler::toggleWireframe()
+{
+    m_display_wireframe = !m_display_wireframe;
+}
+
+
+inline void AnatomicalDataHandler::toggleDisplayHelp()
+{
+    if (m_has_freetype)
+        {
+        m_display_help = !m_display_help;
+        }
+}
+
+
 //------------------------------------------
 inline void AnatomicalDataHandler::release()
 //------------------------------------------

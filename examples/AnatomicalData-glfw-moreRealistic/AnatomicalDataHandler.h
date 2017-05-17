@@ -191,6 +191,24 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Swap patients
+    //--------------------------------------------------------------------------
+    virtual void swapPatients();
+
+
+    virtual void toggleNegativeImage();
+
+
+    virtual void toggleDisplayBeam();
+
+
+    virtual void toggleWireframe();
+
+
+    virtual void toggleDisplayHelp();
+
+
+    //--------------------------------------------------------------------------
     /// initialize the set of anatomical mesh.
     /*
     *   @param apMeshSet: The set of polygon meshes to initialize
@@ -214,6 +232,12 @@ public:
     //--------------------------------------------------------------------------
     void resizeGL(int aWidth, int aHeight);
     
+
+    //--------------------------------------------------------------------------
+    /// Reset the rotation angle and the acquisition type to their default values
+    //--------------------------------------------------------------------------
+    virtual void reset();
+
 
 //*****************************************************************************
 private:
@@ -266,12 +290,6 @@ private:
     /// Render the 3D scene using OpenGL
     //--------------------------------------------------------------------------
     virtual void render();
-
-
-    //--------------------------------------------------------------------------
-    /// Reset the rotation angle and the acquisition type to their default values
-    //--------------------------------------------------------------------------
-    virtual void reset();
 
 
     //--------------------------------------------------------------------------
