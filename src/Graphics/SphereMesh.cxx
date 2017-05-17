@@ -247,9 +247,6 @@ void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
 
 void SphereMesh::subdivision()
 {
-
-
-
     unsigned int number_of_vertices(m_number_of_vertices + m_number_of_indices);
     GLfloat* p_vertices = new GLfloat[number_of_vertices * 3];
     if (!p_vertices)
