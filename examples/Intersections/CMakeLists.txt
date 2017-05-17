@@ -51,10 +51,8 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 
 # Copy data files into the build directory (useful for debugging) #############
 IF (WIN32)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/data/cylinder_bin.stl COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/data/arial.ttf COPYONLY)
 ELSE (WIN32)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/cylinder_bin.stl COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf              ${CMAKE_CURRENT_BINARY_DIR}/../data/arial.ttf COPYONLY)
 ENDIF (WIN32)
 
@@ -84,7 +82,6 @@ ADD_DEPENDENCIES(demo-intersections BinaryIntersectionsFiles)
 
 IF (NOT APPLE)
     INSTALL(TARGETS demo-intersections RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/bin  COMPONENT demos)
-    INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/data COMPONENT demos)
     INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/demos/ COMPONENT demos)
 ELSE (NOT APPLE)
@@ -95,7 +92,6 @@ ELSE (NOT APPLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/Intersections.cxx
         ${CMAKE_CURRENT_SOURCE_DIR}/../build/DragonDemo.icns
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
     )
 
@@ -122,7 +118,6 @@ ELSE (NOT APPLE)
 
     SET_SOURCE_FILES_PROPERTIES (
         ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/../data/cylinder_bin.stl
         ${CMAKE_CURRENT_SOURCE_DIR}/../data/arial.ttf
         PROPERTIES
         MACOSX_PACKAGE_LOCATION data

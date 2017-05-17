@@ -198,8 +198,7 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-CylinderMesh g_inside_polygon_data;
-//CubeMesh g_outside_polygon_data(g_resolution * 600 / g_scaling_factor);
+CylinderMesh g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
 CubeMesh<GLfloat> g_outside_polygon_data(3.0 * cm);
 
 #if __cplusplus <= 199711L
@@ -587,8 +586,8 @@ void render()
 
         // Enable back face culling
         pushEnableDisableState(GL_CULL_FACE);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+        //glEnable(GL_CULL_FACE);
+        //glCullFace(GL_BACK);
 
         // Enable the shader
         pushShaderProgram();
@@ -1389,8 +1388,6 @@ void loadSTLFile()
         }
 
     // Set geometry
-    g_inside_polygon_data.create(20, 3.0 * cm, 1.0 * cm);
-
     g_inside_polygon_data.setHounsfieldValue(0.0);
     g_outside_polygon_data.setHounsfieldValue(500.0);
 

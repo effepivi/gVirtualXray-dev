@@ -928,6 +928,13 @@ public:
             int aTypeOfVBO);
 
 
+    void setInternalData(int aTypeOfPrimitive,
+            const std::vector<float>* aVertexArray,
+            const std::vector<float>* aNormalArray,
+            const std::vector<unsigned int>* anIndexArray,
+            bool aCreateVBOFlag,
+            int aTypeOfVBO);
+
     //--------------------------------------------------------------------------
     /// Set the polygon mesh using external data. The class instance will
     /// manage the memory.

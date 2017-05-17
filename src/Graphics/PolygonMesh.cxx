@@ -2685,6 +2685,49 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
 //------------------------------------------------------------------------------
 void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<float>* aVertexArray,
+                                  const std::vector<float>* aNormalArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_INT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            m_p_vertex_normal_set = *aNormalArray;
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            m_p_face_normal_set = *aNormalArray;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                                   const std::vector<double>* aVertexArray,
                                   const std::vector<unsigned int>* anIndexArray,
                                   bool aCreateVBOFlag,

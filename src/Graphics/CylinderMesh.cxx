@@ -110,76 +110,130 @@ void CylinderMesh::create(unsigned int aNumberOfSectors,
 
 	const float S(1.0 / float(aNumberOfSectors - 1));
 
-    GLfloat* p_vertices = new GLfloat[aNumberOfSectors * 6];
-    if (!p_vertices)
-    {
-    	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
-    }
-    m_number_of_vertices = aNumberOfSectors * 2;
-    m_p_vertex_set = p_vertices;
-    m_vertex_data_type = GL_FLOAT;
-
-	// Set the kind of polygon
-	m_polygon_type = GL_TRIANGLES;
-
-    m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
-
-    GLfloat* v(p_vertices);
-    GLfloat* n(&m_p_vertex_normal_set[0]);
+    m_number_of_vertices = aNumberOfSectors * 2 + 2 + aNumberOfSectors * 2;
+    std::vector<float> p_vertex_set;
+    std::vector<float> p_normal_set;
+    std::vector<unsigned int> p_index_set;
 
     float theta(0);
     float angle(M_PI * 2.0 / aNumberOfSectors);
+
+    // The side of the cylinder
+    for(unsigned int s(0); s < aNumberOfSectors; ++s, theta += angle)
+    {
+        float const x = cos(theta);
+        float const z = sin(theta);
+
+        p_vertex_set.push_back(x * aRadius);
+        p_vertex_set.push_back(-aHeight / 2.0);
+        p_vertex_set.push_back(z * aRadius);
+
+        p_normal_set.push_back(x);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(z);
+
+        p_vertex_set.push_back(x * aRadius);
+        p_vertex_set.push_back(aHeight / 2.0);
+        p_vertex_set.push_back(z * aRadius);
+
+        p_normal_set.push_back(x);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(z);
+    }
+
+    // The caps of the cylinder
+    p_vertex_set.push_back(0);
+    p_vertex_set.push_back(-aHeight / 2.0);
+    p_vertex_set.push_back(0);
+
+    p_normal_set.push_back(0);
+    p_normal_set.push_back(-1);
+    p_normal_set.push_back(0);
+
+    p_vertex_set.push_back(0);
+    p_vertex_set.push_back(aHeight / 2.0);
+    p_vertex_set.push_back(0);
+
+    p_normal_set.push_back(0);
+    p_normal_set.push_back(1);
+    p_normal_set.push_back(0);
 
     for(unsigned int s(0); s < aNumberOfSectors; ++s, theta += angle)
     {
         float const x = cos(theta);
         float const z = sin(theta);
 
-        *v++ = x * aRadius;
-        *v++ = -aHeight / 2.;
-        *v++ = z * aRadius;
+        p_vertex_set.push_back(x * aRadius);
+        p_vertex_set.push_back(-aHeight / 2.0);
+        p_vertex_set.push_back(z * aRadius);
 
-        *n++ = x;
-        *n++ = 0;
-        *n++ = z;
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(-1);
+        p_normal_set.push_back(0);
 
-        *v++ = x * aRadius;
-        *v++ = aHeight / 2.;
-        *v++ = z * aRadius;
+        p_vertex_set.push_back(x * aRadius);
+        p_vertex_set.push_back(aHeight / 2.0);
+        p_vertex_set.push_back(z * aRadius);
 
-        *n++ = x;
-        *n++ = 0;
-        *n++ = z;
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(1);
+        p_normal_set.push_back(0);
     }
 
-    GLuint* p_indices = new GLuint[aNumberOfSectors * 6];
+    m_number_of_indices = aNumberOfSectors * 6 + aNumberOfSectors * 6;
+    GLuint* p_indices = new GLuint[m_number_of_indices];
     if (!p_indices)
     {
     	throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
-    m_number_of_indices = aNumberOfSectors * 6;
     m_p_index_set = p_indices;
     m_index_data_type = GL_UNSIGNED_INT;
 
-    GLuint* i(p_indices);
     for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
     {
-        *i++ = s * 2 + 0;
-        *i++ = s * 2 + 3;
-        *i++ = s * 2 + 1;
+        p_index_set.push_back(s * 2 + 0);
+        p_index_set.push_back(s * 2 + 3);
+        p_index_set.push_back(s * 2 + 1);
 
-        *i++ = s * 2 + 2;
-        *i++ = s * 2 + 3;
-        *i++ = s * 2 + 0;
+        p_index_set.push_back(s * 2 + 2);
+        p_index_set.push_back(s * 2 + 3);
+        p_index_set.push_back(s * 2 + 0);
     }
 
-    *i++ = 0;
-    *i++ = 1;
-    *i++ = m_number_of_vertices -1;
+    // The last sector
+    p_index_set.push_back(0);
+    p_index_set.push_back(1);
+    p_index_set.push_back(aNumberOfSectors * 2 - 1);
 
-    *i++ = m_number_of_vertices - 2;
-    *i++ = 0;
-    *i++ = m_number_of_vertices - 1;
+    p_index_set.push_back(aNumberOfSectors * 2 - 2);
+    p_index_set.push_back(0);
+    p_index_set.push_back(aNumberOfSectors * 2 - 1);
 
+    // The top and bottom caps
+    for (unsigned int s(0); s < aNumberOfSectors - 1; ++s)
+        {
+        p_index_set.push_back(aNumberOfSectors * 2);
+        p_index_set.push_back(aNumberOfSectors * 2 + s * 2 + 2);
+        p_index_set.push_back(aNumberOfSectors * 2 + s * 2 + 4);
+
+        p_index_set.push_back(aNumberOfSectors * 2 + 1);
+        p_index_set.push_back(aNumberOfSectors * 2 + s * 2 + 2 + 1);
+        p_index_set.push_back(aNumberOfSectors * 2 + s * 2 + 4 + 1);
+        }
+
+    p_index_set.push_back(aNumberOfSectors * 2);
+    p_index_set.push_back(aNumberOfSectors * 2 + 2);
+    p_index_set.push_back(aNumberOfSectors * 2 + (aNumberOfSectors - 1) * 2 + 2);
+
+    p_index_set.push_back(aNumberOfSectors * 2 + 1);
+    p_index_set.push_back(aNumberOfSectors * 2 + 2 + 1);
+    p_index_set.push_back(aNumberOfSectors * 2 + (aNumberOfSectors - 1) * 2 + 2 + 1);
+
+    setInternalData(GL_TRIANGLES,
+            &p_vertex_set,
+            &p_normal_set,
+            &p_index_set,
+            false,
+            GL_STATIC_DRAW);
 }
 
