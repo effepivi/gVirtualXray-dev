@@ -109,6 +109,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
 
     // Store vertices
     std::vector<T> p_vertex_set;
+    std::vector<T> p_normal_set;
     
     if (anIndexDataType)
         {
@@ -151,54 +152,102 @@ template<typename T> void CubeMesh<T>::create(double aLength,
         p_ubyte_index_set.push_back(2);
         p_ubyte_index_set.push_back(0);
 
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(1);
+        p_normal_set.push_back(0);
+
         p_ubyte_index_set.push_back(2);
         p_ubyte_index_set.push_back(1);
         p_ubyte_index_set.push_back(3);
+
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(1);
+        p_normal_set.push_back(0);
 
         // Bottom face
         p_ubyte_index_set.push_back(6);
         p_ubyte_index_set.push_back(5);
         p_ubyte_index_set.push_back(4);
 
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(-1);
+        p_normal_set.push_back(0);
+
         p_ubyte_index_set.push_back(5);
         p_ubyte_index_set.push_back(6);
         p_ubyte_index_set.push_back(7);
+
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(-1);
+        p_normal_set.push_back(0);
 
         // Front face
         p_ubyte_index_set.push_back(5);
         p_ubyte_index_set.push_back(3);
         p_ubyte_index_set.push_back(1);
 
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(1);
+
         p_ubyte_index_set.push_back(3);
         p_ubyte_index_set.push_back(5);
         p_ubyte_index_set.push_back(7);
+
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(1);
 
         // Back face
         p_ubyte_index_set.push_back(2);
         p_ubyte_index_set.push_back(4);
         p_ubyte_index_set.push_back(0);
 
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(-1);
+
         p_ubyte_index_set.push_back(4);
         p_ubyte_index_set.push_back(2);
         p_ubyte_index_set.push_back(6);
+
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(-1);
 
         // Left face
         p_ubyte_index_set.push_back(5);
         p_ubyte_index_set.push_back(0);
         p_ubyte_index_set.push_back(4);
 
+        p_normal_set.push_back(-1);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
+
         p_ubyte_index_set.push_back(0);
         p_ubyte_index_set.push_back(5);
         p_ubyte_index_set.push_back(1);
+
+        p_normal_set.push_back(-1);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
 
         // Right face
         p_ubyte_index_set.push_back(2);
         p_ubyte_index_set.push_back(7);
         p_ubyte_index_set.push_back(6);
 
+        p_normal_set.push_back(1);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
+
         p_ubyte_index_set.push_back(7);
         p_ubyte_index_set.push_back(2);
         p_ubyte_index_set.push_back(3);
+
+        p_normal_set.push_back(1);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(0);
 
         switch (anIndexDataType)
             {
@@ -215,6 +264,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
 
                     setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
+                            &p_normal_set,
                             &p_uint_index_set,
                             false,
                             GL_STATIC_DRAW);
@@ -234,6 +284,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
 
                     setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
+                            &p_normal_set,
                             &p_ushort_index_set,
                             false,
                             GL_STATIC_DRAW);
@@ -244,6 +295,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
                 {
                     setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
+                            &p_normal_set,
                             &p_ubyte_index_set,
                             false,
                             GL_STATIC_DRAW);
@@ -270,6 +322,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(top_far_left.getY());
             p_vertex_set.push_back(top_far_left.getZ());
 
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(1);
+            p_normal_set.push_back(0);
+
             p_vertex_set.push_back(top_far_right.getX());
             p_vertex_set.push_back(top_far_right.getY());
             p_vertex_set.push_back(top_far_right.getZ());
@@ -282,6 +338,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(top_near_right.getY());
             p_vertex_set.push_back(top_near_right.getZ());
             
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(1);
+            p_normal_set.push_back(0);
+
             // Bottom face
             p_vertex_set.push_back(bottom_far_right.getX());
             p_vertex_set.push_back(bottom_far_right.getY());
@@ -295,6 +355,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(bottom_far_left.getY());
             p_vertex_set.push_back(bottom_far_left.getZ());
             
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(-1);
+            p_normal_set.push_back(0);
+
             p_vertex_set.push_back(bottom_near_left.getX());
             p_vertex_set.push_back(bottom_near_left.getY());
             p_vertex_set.push_back(bottom_near_left.getZ());
@@ -306,7 +370,11 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(bottom_near_right.getX());
             p_vertex_set.push_back(bottom_near_right.getY());
             p_vertex_set.push_back(bottom_near_right.getZ());
-            
+
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(-1);
+            p_normal_set.push_back(0);
+
             // Front face
             p_vertex_set.push_back(bottom_near_left.getX());
             p_vertex_set.push_back(bottom_near_left.getY());
@@ -320,6 +388,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(top_near_left.getY());
             p_vertex_set.push_back(top_near_left.getZ());
 
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(1);
+
             p_vertex_set.push_back(top_near_right.getX());
             p_vertex_set.push_back(top_near_right.getY());
             p_vertex_set.push_back(top_near_right.getZ());
@@ -332,6 +404,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(bottom_near_right.getY());
             p_vertex_set.push_back(bottom_near_right.getZ());
             
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(1);
+
             // Back face
             p_vertex_set.push_back(top_far_right.getX());
             p_vertex_set.push_back(top_far_right.getY());
@@ -345,6 +421,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(top_far_left.getY());
             p_vertex_set.push_back(top_far_left.getZ());
 
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(-1);
+
             p_vertex_set.push_back(bottom_far_left.getX());
             p_vertex_set.push_back(bottom_far_left.getY());
             p_vertex_set.push_back(bottom_far_left.getZ());
@@ -357,6 +437,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(bottom_far_right.getY());
             p_vertex_set.push_back(bottom_far_right.getZ());
             
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(-1);
+
             // Left face
             p_vertex_set.push_back(bottom_near_left.getX());
             p_vertex_set.push_back(bottom_near_left.getY());
@@ -370,6 +454,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(bottom_far_left.getY());
             p_vertex_set.push_back(bottom_far_left.getZ());
             
+            p_normal_set.push_back(-1);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+
             p_vertex_set.push_back(top_far_left.getX());
             p_vertex_set.push_back(top_far_left.getY());
             p_vertex_set.push_back(top_far_left.getZ());
@@ -381,6 +469,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(top_near_left.getX());
             p_vertex_set.push_back(top_near_left.getY());
             p_vertex_set.push_back(top_near_left.getZ());
+
+            p_normal_set.push_back(-1);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
 
             // Right face
             p_vertex_set.push_back(top_far_right.getX());
@@ -395,6 +487,10 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(bottom_far_right.getY());
             p_vertex_set.push_back(bottom_far_right.getZ());
 
+            p_normal_set.push_back(1);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+
             p_vertex_set.push_back(bottom_near_right.getX());
             p_vertex_set.push_back(bottom_near_right.getY());
             p_vertex_set.push_back(bottom_near_right.getZ());
@@ -407,8 +503,13 @@ template<typename T> void CubeMesh<T>::create(double aLength,
             p_vertex_set.push_back(top_near_right.getY());
             p_vertex_set.push_back(top_near_right.getZ());
 
+            p_normal_set.push_back(1);
+            p_normal_set.push_back(0);
+            p_normal_set.push_back(0);
+
             setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
+                            &p_normal_set,
                             false,
                             GL_STATIC_DRAW);
         }
