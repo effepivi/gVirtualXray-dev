@@ -232,6 +232,34 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         BOOST_FAIL("Cannot create a GLFW windowed mode window and its OpenGL context.");
         }
 
+    // Open CT data
+    Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
+
+    // Compute a sinogram from the CT data
+    //Sinogram<float> sinogram(CT_data_set.radonTransform(0, 1, 179));
+
+    // Compute a projection set from the sinogram
+    //Image<float> projection_set(sinogram.getProjectionSet());
+
+    // Save a slice of the CT data set
+    Image<float> middle_ct_slice(CT_data_set.setCanvasSize(CT_data_set.getWidth(), CT_data_set.getHeight(), 1));
+    middle_ct_slice.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_slice_80keV.mhd");
+
+    // Compute the sinogram of the CT slice
+    Sinogram<float> ct_slice_sinogram(middle_ct_slice.radonTransform(0, 1, 179));
+    ct_slice_sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_slice_80keV.mhd");
+
+exit(0);
+
+//#ifndef NDEBUG
+   // CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
+   // sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
+   // projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
+//#endif
+
+
+
+
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
 
