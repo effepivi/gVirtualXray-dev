@@ -126,7 +126,7 @@ ParticleSystem::~ParticleSystem()
 void ParticleSystem::displayWithSpheres(RATIONAL_NUMBER aRadius) const
 //-------------------------------------------------------------------
 {
-    SphereMesh sphere(10, 10, aRadius);
+    SphereMesh sphere(5, aRadius);
     sphere.invertNormalVectors();
 
     // Display all the particles
