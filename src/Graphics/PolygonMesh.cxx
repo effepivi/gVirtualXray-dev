@@ -296,10 +296,41 @@ void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize)
     // There are as many normals as there are vertices
     if (getVertexNormalNumber() == m_number_of_vertices)
         {
-        m_p_vertex_normal_vbo->display();
+        std::vector<float> p_normal_set;
+
+        if (!m_p_vertex_normal_vbo.get())
+            {
+            m_p_vertex_normal_vbo.reset(new PolygonMesh());
+            }
+
+        for (unsigned int i(0); i < m_number_of_vertices; ++i)
+            {
+            VEC3 vertex(getVertex(i));
+            VEC3 normal(vertex + getVertexNormal(i) * aNormalSize);
+
+            p_normal_set.push_back(vertex.getX());
+            p_normal_set.push_back(vertex.getY());
+            p_normal_set.push_back(vertex.getZ());
+
+            p_normal_set.push_back(normal.getX());
+            p_normal_set.push_back(normal.getY());
+            p_normal_set.push_back(normal.getZ());
+            }
+
+        m_p_vertex_normal_vbo->setInternalData(GL_LINES,
+                &p_normal_set[0],
+                p_normal_set.size() / 3,
+                GL_FLOAT,
+                0,
+                0,
+                GL_NONE,
+                true,
+                GL_STATIC_DRAW);
 
         // Check the OpenGL error status
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        m_p_vertex_normal_vbo->display();
         }
     // There are not as many normals as there are vertices
     else
@@ -317,40 +348,44 @@ void PolygonMesh::displayVertexNormal(RATIONAL_NUMBER aNormalSize)
 void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
 //------------------------------------------------------
 {
-    std::vector<float> p_normal_set;
+    int number_vertex_per_face(0);
 
-    if (!m_p_face_normal_vbo.get())
+    switch (m_polygon_type)
         {
-        m_p_face_normal_vbo.reset(new PolygonMesh());
+        case GL_TRIANGLES:
+            number_vertex_per_face = 3;
+            break;
+
+        case GL_LINES:
+            number_vertex_per_face = 2;
+            break;
+
+        default:
+            throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                    "Invalid polygon type.");
         }
 
-    // There is an index
-    if (m_p_index_set && m_number_of_indices)
+    if (getFaceNormalNumber() == getFaceNumber())
         {
-        for (unsigned int i(0); i < m_number_of_indices; ++i)
+        std::vector<float> p_normal_set;
+
+        if (!m_p_face_normal_vbo.get())
             {
-            unsigned int index(getIndex(i));
-            VEC3 vertex(getVertex(index));
-            VEC3 normal(vertex + getFaceNormal(index) * aNormalSize);
-
-            p_normal_set.push_back(vertex.getX());
-            p_normal_set.push_back(vertex.getY());
-            p_normal_set.push_back(vertex.getZ());
-
-            p_normal_set.push_back(normal.getX());
-            p_normal_set.push_back(normal.getY());
-            p_normal_set.push_back(normal.getZ());
+            m_p_face_normal_vbo.reset(new PolygonMesh());
             }
-        }
-    // There is no index
-    else
-        {
-        // There are as many normals as there are vertices
-        if (getFaceNormalNumber() == m_number_of_vertices)
+
+        // There is an index
+        if (m_p_index_set && m_number_of_indices)
             {
-            for (unsigned int i(0); i < m_number_of_vertices; ++i)
+            for (unsigned int i(0); i < getFaceNumber(); ++i)
                 {
-                VEC3 vertex(getVertex(i));
+                VEC3 vertex;
+                for (unsigned int j(0); j < number_vertex_per_face; ++j)
+                {
+                    vertex += getVertex(getIndex(i * number_vertex_per_face + j));
+                }
+                vertex /= float(number_vertex_per_face);
+
                 VEC3 normal(vertex + getFaceNormal(i) * aNormalSize);
 
                 p_normal_set.push_back(vertex.getX());
@@ -362,26 +397,55 @@ void PolygonMesh::displayFaceNormal(GLfloat aNormalSize)
                 p_normal_set.push_back(normal.getZ());
                 }
             }
-        // There are not as many normals as there are vertices
+        // There is no index
         else
             {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                    "There are not as many normals as there are vertices.");
+            // There are as many normals as there are vertices
+            for (unsigned int i(0); i < getFaceNumber(); ++i)
+                {
+                VEC3 vertex;
+                for (unsigned int j(0); j < number_vertex_per_face; ++j)
+                {
+                    vertex += getVertex(i * number_vertex_per_face + j);
+                }
+                vertex /= float(number_vertex_per_face);
+
+                VEC3 normal(vertex + getFaceNormal(i) * aNormalSize);
+
+                p_normal_set.push_back(vertex.getX());
+                p_normal_set.push_back(vertex.getY());
+                p_normal_set.push_back(vertex.getZ());
+
+                p_normal_set.push_back(normal.getX());
+                p_normal_set.push_back(normal.getY());
+                p_normal_set.push_back(normal.getZ());
+                }
             }
+
+        m_p_face_normal_vbo->setInternalData(GL_LINES,
+                &p_normal_set[0],
+                p_normal_set.size() / 3,
+                GL_FLOAT,
+                0,
+                0,
+                GL_NONE,
+                true,
+                GL_STATIC_DRAW);
+
+        // Check the OpenGL error status
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        m_p_face_normal_vbo->display();
         }
-
-    m_p_face_normal_vbo->setInternalData(GL_LINES,
-            &p_normal_set[0],
-            p_normal_set.size() / 3,
-            GL_FLOAT,
-            0,
-            0,
-            GL_NONE,
-            true,
-            GL_STATIC_DRAW);
-
-    m_p_face_normal_vbo->display();
-}
+    // There are not as many normals as there are faces
+    else
+        {
+        std::stringstream error_message;
+        error_message << "There are not as many normals (" <<
+                getVertexNormalNumber() << ") as there are vertices (" <<
+                m_number_of_vertices << ").";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
+        }}
 
 
 //---------------------------------------------
@@ -2559,6 +2623,16 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                                   int aTypeOfVBO)
 //-----------------------------------------------------------------------
 {
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
     m_p_vertex_normal_set.clear();
     m_p_face_normal_set.clear();
 
@@ -2571,15 +2645,11 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
         m_p_face_normal_set = *aNormalArray;
     }
 
-    setInternalData(aTypeOfPrimitive,
-            &((*aVertexArray)[0]),
-            aVertexArray->size() / 3,
-            GL_FLOAT,
-            0,
-            0,
-            GL_NONE,
-            aCreateVBOFlag,
-            aTypeOfVBO);
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
 }
 
 
@@ -2610,6 +2680,16 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                                   int aTypeOfVBO)
 //-----------------------------------------------------------------------
 {
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            0,
+            0,
+            GL_NONE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
     m_p_vertex_normal_set.clear();
     m_p_face_normal_set.clear();
 
@@ -2632,15 +2712,11 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
         }
     }
 
-    setInternalData(aTypeOfPrimitive,
-            &((*aVertexArray)[0]),
-            aVertexArray->size() / 3,
-            GL_DOUBLE,
-            0,
-            0,
-            GL_NONE,
-            aCreateVBOFlag,
-            aTypeOfVBO);
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
 }
 
 
@@ -2746,6 +2822,49 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 }
 
 
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<float>* aNormalArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_INT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            m_p_vertex_normal_set = *aNormalArray;
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            m_p_face_normal_set = *aNormalArray;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
+}
+
+
 //------------------------------------------------------
 void PolygonMesh::setInternalData(
         int aTypeOfPrimitive,
@@ -2764,6 +2883,49 @@ void PolygonMesh::setInternalData(
             GL_UNSIGNED_SHORT,
             aCreateVBOFlag,
             aTypeOfVBO);
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<float>* aVertexArray,
+                                  const std::vector<float>* aNormalArray,
+                                  const std::vector<unsigned short>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_SHORT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            m_p_vertex_normal_set = *aNormalArray;
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            m_p_face_normal_set = *aNormalArray;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
 }
 
 
@@ -2788,6 +2950,49 @@ void PolygonMesh::setInternalData(
 }
 
 
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<float>* aNormalArray,
+                                  const std::vector<unsigned short>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_SHORT,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            m_p_vertex_normal_set = *aNormalArray;
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            m_p_face_normal_set = *aNormalArray;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
+}
+
+
 //-----------------------------------------------------
 void PolygonMesh::setInternalData(
         int aTypeOfPrimitive,
@@ -2809,6 +3014,49 @@ void PolygonMesh::setInternalData(
 }
 
 
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<float>* aVertexArray,
+                                  const std::vector<float>* aNormalArray,
+                                  const std::vector<unsigned char>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_FLOAT,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_BYTE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            m_p_vertex_normal_set = *aNormalArray;
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            m_p_face_normal_set = *aNormalArray;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
+}
+
+
 //-----------------------------------------------------
 void PolygonMesh::setInternalData(
         int aTypeOfPrimitive,
@@ -2827,6 +3075,49 @@ void PolygonMesh::setInternalData(
             GL_UNSIGNED_BYTE,
             aCreateVBOFlag,
             aTypeOfVBO);
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<float>* aNormalArray,
+                                  const std::vector<unsigned char>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+            &((*aVertexArray)[0]),
+            aVertexArray->size() / 3,
+            GL_DOUBLE,
+            &((*anIndexArray)[0]),
+            anIndexArray->size(),
+            GL_UNSIGNED_BYTE,
+            aCreateVBOFlag,
+            aTypeOfVBO);
+
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            m_p_vertex_normal_set = *aNormalArray;
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            m_p_face_normal_set = *aNormalArray;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+
+    // Update the VBO
+    if (aCreateVBOFlag)
+        {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+        }
 }
 
 
