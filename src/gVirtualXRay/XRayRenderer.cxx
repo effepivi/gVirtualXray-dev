@@ -2921,7 +2921,25 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 void XRayRenderer::updateHUPolygonMeshSet()
 //-----------------------------------------
 {
-    // Not implemented
+    // It things it is up-to-date, but is it? really?
+    if (m_HU_polygon_mesh_set_up_to_date)
+        {
+        // Detect local changes
+        for (std::map<short, std::vector<PolygonMesh*> >::const_iterator ite(m_p_HU_polygon_mesh_set.begin());
+            ite != m_p_HU_polygon_mesh_set.end() && m_HU_polygon_mesh_set_up_to_date;
+            ++ite)
+            {
+            for (std::vector<PolygonMesh*>::const_iterator ite_mesh(ite->second.begin());
+                    ite_mesh != ite->second.end();
+                    ++ite_mesh)
+                {
+                if ((*ite_mesh)->getHounsfieldValue() != ite->first)
+                    {
+                    m_HU_polygon_mesh_set_up_to_date = false;
+                    }
+                }
+            }
+        }
 
     // The list is not up-to-date (a mesh has been added
     if (!m_HU_polygon_mesh_set_up_to_date)
