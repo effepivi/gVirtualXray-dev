@@ -137,12 +137,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
 
-#include "mesh_HU45.stl.h"
+//#include "mesh_HU45.stl.h"
 #include "mesh_HU1276.stl.h"
-#include "mesh_HU442.stl.h"
-#include "mesh_HU62.stl.h"
-#include "mesh_HU42.stl.h"
-#include "mesh_HU89.stl.h"
+//#include "mesh_HU442.stl.h"
+//#include "mesh_HU62.stl.h"
+//#include "mesh_HU42.stl.h"
+//#include "mesh_HU89.stl.h"
 #include "mesh_HU156.stl.h"
 
 
@@ -163,7 +163,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const float g_scaling_factor(2);
+const float g_scaling_factor(0.75);
 const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
 const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
 
@@ -828,7 +828,7 @@ void AnatomicalDataHandler::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true, false);
+        m_xray_renderer.display(true, false, true);
 
         // Display the beam
         if (m_display_beam)
@@ -1015,7 +1015,7 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
         {
         case SKIN_ID:
             //aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
-            aSize = inflate(g_mesh_HU113_stl, sizeof(g_mesh_HU113_stl), &apData);
+            aSize = inflate(g_mesh_HU156_stl, sizeof(g_mesh_HU156_stl), &apData);
             break;
 
         case HARD_BONE_ID:
@@ -1023,23 +1023,23 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
             break;
 
         case SOFT_BONE_ID:
-            aSize = inflate(g_mesh_HU442_stl, sizeof(g_mesh_HU442_stl), &apData);
+            //aSize = inflate(g_mesh_HU442_stl, sizeof(g_mesh_HU442_stl), &apData);
             break;
 
         case SOFT_STRUCTURE0_ID:
-            aSize = inflate(g_mesh_HU62_stl, sizeof(g_mesh_HU62_stl), &apData);
+            //aSize = inflate(g_mesh_HU62_stl, sizeof(g_mesh_HU62_stl), &apData);
             break;
 
         case SOFT_STRUCTURE1_ID:
-            aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
+            //aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
             break;
 
         case SOFT_STRUCTURE2_ID:
-            aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
+            //aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
             break;
 
         case SOFT_STRUCTURE3_ID:
-            aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
+           // aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
 //            aSize = inflate(g_mesh_HU156_stl, sizeof(g_mesh_HU156_stl), &apData);
             break;
 
@@ -1098,11 +1098,11 @@ void AnatomicalDataHandler::initializePatients()
 {
     m_p_polygon_mesh_set.push_back(new SkinMesh());
     m_p_polygon_mesh_set.push_back(new BoneMesh());
-    m_p_polygon_mesh_set.push_back(new BoneMesh());
+   /* m_p_polygon_mesh_set.push_back(new BoneMesh());
     m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
     m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
     m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
-    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
+    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());*/
 }
 
 //---------------------------------------------

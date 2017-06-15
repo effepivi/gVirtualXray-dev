@@ -2552,16 +2552,23 @@ void XRayRenderer::normalise()
 }
 
 
-//------------------------------------------
-void XRayRenderer::display(bool useLogScale,
+//-----------------------------------------------
+void XRayRenderer::display(bool useNormalisation,
+                           bool useLogScale,
                            bool usePowerLaw,
-                           double c,
+                           double shift,
+                           double scale,
                            double gamma)
-//------------------------------------------
+//-----------------------------------------------
 {
     if (useLogScale && usePowerLaw)
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot use both the log scale and the power law at the same time");
+    }
+
+    if (useNormalisation)
+    {
+        normalise();
     }
 
 	// Activate shaders
@@ -2587,32 +2594,42 @@ void XRayRenderer::display(bool useLogScale,
 	glUniform1i(handle, m_negative_display_flag);
 
 	// Compute the filter parameters
-	GLfloat shift_filter(0);
-	GLfloat scale_filter(1);
+	GLfloat shift_filter(shift);
+	GLfloat scale_filter(scale);
 	double range(m_max_value_in_simulated_xray_image - m_min_value_in_simulated_xray_image);
 
-    if (fabs(range) > EPSILON)
+    GLfloat log_epsilon(1.0e-9);
+    GLfloat incident_energy(m_p_xray_beam->getTotalEnergy());
+
+    if (fabs(range) > EPSILON && useNormalisation)
     {
         if (!useLogScale && !usePowerLaw)
         {
+            //shift_filter = -std::pow(10.0, -std::log10(incident_energy / m_min_value_in_simulated_xray_image));
+            //scale_filter = 1.0 / (std::pow(10.0, -std::log10(incident_energy / m_max_value_in_simulated_xray_image)) + shift_filter);
+
             shift_filter = -m_min_value_in_simulated_xray_image;
-            scale_filter = 1.0 / range;
+            scale_filter = 1.0 / (m_max_value_in_simulated_xray_image + shift_filter);
         }
         else if (useLogScale)
         {
-            shift_filter = -std::log(m_min_value_in_simulated_xray_image + 1.0);
-            scale_filter = 1.0 / (std::log(m_max_value_in_simulated_xray_image + 1.0) - std::log(m_min_value_in_simulated_xray_image + 1.0));
+            shift_filter = -std::log10(m_min_value_in_simulated_xray_image + log_epsilon);
+            scale_filter = 1.0 / (std::log10(m_max_value_in_simulated_xray_image + log_epsilon) - std::log10(m_min_value_in_simulated_xray_image + log_epsilon));
         }
         else
         {
-            shift_filter = c * std::pow(m_min_value_in_simulated_xray_image, gamma);
-            scale_filter = 1.0 / (c * std::pow(m_max_value_in_simulated_xray_image, gamma) - c * std::pow(m_min_value_in_simulated_xray_image, gamma));
+            shift_filter = std::pow(m_min_value_in_simulated_xray_image, gamma);
+            scale_filter = 1.0 / (std::pow(m_max_value_in_simulated_xray_image, gamma) - std::pow(m_min_value_in_simulated_xray_image, gamma));
         }
     }
 
-	// Pass the shift parameter of the shift-scale filter to the shader
-	handle = glGetUniformLocation(program_handle, "g_shift_filter");
-	glUniform1f(handle, shift_filter);
+    // Pass the incident energy to the shader
+    handle = glGetUniformLocation(program_handle, "g_incident_energy");
+    glUniform1f(handle, incident_energy);
+
+    // Pass the shift parameter of the shift-scale filter to the shader
+    handle = glGetUniformLocation(program_handle, "g_shift_filter");
+    glUniform1f(handle, shift_filter);
 
     // Pass the scale parameter of the shift-scale filter to the shader
     handle = glGetUniformLocation(program_handle, "g_scale_filter");
@@ -2624,9 +2641,14 @@ void XRayRenderer::display(bool useLogScale,
     glUniform1i(handle, useLogScale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    // Pass the c parameter of the power law filter to the shader
-    handle = glGetUniformLocation(program_handle, "g_c");
-    glUniform1f(handle, c);
+    // Pass the epsilon parameter of the logfilter to the shader
+    handle = glGetUniformLocation(program_handle, "g_log_epsilon");
+    glUniform1f(handle, log_epsilon);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    
+    // Pass the flag of the power law filter to the shader
+    handle = glGetUniformLocation(program_handle, "g_use_power_law");
+    glUniform1i(handle, usePowerLaw);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Pass the gamma parameter of the power law filter to the shader

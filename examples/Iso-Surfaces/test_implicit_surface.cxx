@@ -779,7 +779,7 @@ void render()
         // Display the X-Ray image
         if (g_display_detector)
             {
-            g_xray_renderer.display(false, false);
+            g_xray_renderer.display(true, false, false);
             }
 
         // Display the beam

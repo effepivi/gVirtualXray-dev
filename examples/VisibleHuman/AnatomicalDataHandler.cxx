@@ -1099,7 +1099,7 @@ void AnatomicalDataHandler::updateXRayImage()
 //----------------------------------
 void AnatomicalDataHandler::render()
 //----------------------------------
-{
+{/*
     try
         {
         renderToShadowMap();
@@ -1244,7 +1244,7 @@ void AnatomicalDataHandler::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true, false);
+        m_xray_renderer.display(true, false, true);
 
         // Display the beam
         if (m_display_beam)
@@ -1284,7 +1284,7 @@ void AnatomicalDataHandler::render()
     catch (const std::exception& error)
         {
         std::cerr << error.what() << std::endl;
-        }
+        }*/
 }
 
 

@@ -453,7 +453,12 @@ public:
      *                      to false to use a linear scale (default: false)
      */
     //--------------------------------------------------------------------------
-    void display(bool useLogScale, bool usePowerLaw, double c = 1.0, double gamma = (1.0 / 2.5));
+    void display(bool useNormalisation,
+        bool useLogScale,
+        bool usePowerLaw,
+        double shift = 0.0,
+        double scale = 1.0,
+        double gamma = (1.0 / 2.5));
 
 
     //--------------------------------------------------------------------------

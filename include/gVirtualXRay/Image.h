@@ -60,7 +60,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 
 #include <string>
 #include <map>

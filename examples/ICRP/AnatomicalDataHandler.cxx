@@ -1025,7 +1025,7 @@ void AnatomicalDataHandler::render()
     try
         {
         // Handle for shader variables
-        GLuint handle(0);
+       /* GLuint handle(0);
 
         // Enable back face culling
         pushEnableDisableState(GL_CULL_FACE);
@@ -1177,7 +1177,7 @@ void AnatomicalDataHandler::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true, false);
+        m_xray_renderer.display(true, false, true);
 
         // Display the beam
         if (m_display_beam)
@@ -1208,7 +1208,7 @@ void AnatomicalDataHandler::render()
 
         // Check the status of OpenGL and of the current FBO
         checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);*/
         }
     // Catch exception if any
     catch (const std::exception& error)

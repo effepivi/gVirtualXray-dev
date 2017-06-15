@@ -59,8 +59,13 @@ out vec4 fragColor;
 uniform sampler2D g_attenuation;
 uniform bool      g_display_negative_image;
 uniform bool      g_use_log_scale;
+uniform bool      g_use_power_law;
+
 uniform float     g_shift_filter;
 uniform float     g_scale_filter;
+uniform float     log_epsilon;
+uniform float     g_gamma;
+uniform float     g_incident_energy;
 
 
 //-------------
@@ -68,23 +73,32 @@ void main(void)
 //-------------
 {
     // Get the texel value
-	float intensity = texture(g_attenuation, g_texture_coordinates.st).r;
+    float intensity = texture(g_attenuation, g_texture_coordinates.st).r;
+
+    // See https://imagej.nih.gov/nih-image/more-docs/Engineering/ImgEngr.html
+    //intensity = pow(10.0, -log10(g_incident_energy / intensity));
 
     // Use the log scale
     if (g_use_log_scale)
     {
-        intensity = log(intensity);
+        intensity = log10(intensity + log_epsilon);
+    }
+
+    // Use the power law
+    if (g_use_power_law)
+    {
+        intensity = pow(intensity, g_gamma);
     }
 
     // Apply the shift/scale filter
-	intensity = ((intensity) + g_shift_filter) * g_scale_filter;
+    intensity = ((intensity) + g_shift_filter) * g_scale_filter;
 
-        // Display the negative image
-	if (g_display_negative_image)
-	{
-		intensity = 1.0 - intensity;
-	}
+    // Display the negative image
+    if (g_display_negative_image)
+    {
+        intensity = 1.0 - intensity;
+    }
 
-	// Save the fragment value
-	fragColor = vec4(intensity, intensity, intensity, 1.0);
+    // Save the fragment value
+    fragColor = vec4(intensity, intensity, intensity, 1.0);
 }

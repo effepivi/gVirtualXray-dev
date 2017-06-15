@@ -188,10 +188,63 @@ inline void AnatomicalDataHandler::reset()
 }
 
 
+//--------------------------------------------------------
+inline void AnatomicalDataHandler::useArcBall(bool aState)
+//--------------------------------------------------------
+{
+    m_use_arc_ball = aState;
+}
+
+
+//-----------------------------------------------
+inline void AnatomicalDataHandler::useArcBallOn()
+//-----------------------------------------------
+{
+    m_use_arc_ball = true;
+}
+
+
+//------------------------------------------------
+inline void AnatomicalDataHandler::useArcBallOff()
+//------------------------------------------------
+{
+    m_use_arc_ball = false;
+}
+
+
+//----------------------------------------------------------------------
+inline void AnatomicalDataHandler::setCursorPosition(double x, double y)
+//----------------------------------------------------------------------
+{
+    if (m_use_arc_ball)
+    {
+        computeRotation(m_scene_rotation_matrix,
+            x,
+            y);
+    }
+
+    m_last_x_position = x;
+    m_last_y_position = y;
+}
+
+
+//------------------------------------------------------
+inline void AnatomicalDataHandler::scroll(double offset)
+//------------------------------------------------------
+{
+    // Scrolling along the Y-axis
+    if (fabs(offset) > EPSILON)
+    {
+        m_use_arc_ball = false;
+        m_zoom += offset * gVirtualXRay::cm;
+    }
+}
+
+
 //-------------------------------------------------------------------------------
 inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x,
-                                                                           int y)
-//-------------------------------------------------------------------------------
+    int y)
+    //-------------------------------------------------------------------------------
 {
     gVirtualXRay::Vec3<GLfloat> P(2.0 * float(x) / float(m_width) - 1.0,
         2.0 * float(y) / float(m_height) - 1.0,
@@ -201,13 +254,13 @@ inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x
 
     float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
     if (OP_squared <= 1.0)
-        {
+    {
         P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
-        }
+    }
     else
-        {
+    {
         P.normalise();  // nearest point
-        }
+    }
 
     return (P);
 }

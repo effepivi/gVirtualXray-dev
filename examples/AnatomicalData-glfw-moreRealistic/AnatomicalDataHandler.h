@@ -239,6 +239,15 @@ public:
     virtual void reset();
 
 
+    void useArcBall(bool aState);
+    void useArcBallOn();
+    void useArcBallOff();
+
+    void setCursorPosition(double x, double y);
+
+    void scroll(double offset);
+
+    
 //*****************************************************************************
 private:
     //--------------------------------------------------------------------------

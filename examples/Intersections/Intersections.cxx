@@ -746,7 +746,7 @@ void render()
         glDisable(GL_CULL_FACE);
 
         // Display the X-Ray image
-        g_xray_renderer.display(false, false);
+        g_xray_renderer.display(true, false, true);
 
         // Display the intersections
         g_intersection_box_detector_vbo->display();

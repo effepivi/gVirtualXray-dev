@@ -72,10 +72,34 @@ ELSE (glfw3_FOUND)
 ENDIF (glfw3_FOUND)
 
 
+# Get the DICOM data ###########################################################
+
+# https://mri.radiology.uiowa.edu/VHDicom/
+# http://mri.radiology.uiowa.edu/VHDicom/VHFCT1mm/VHF-Ankle.tar.gz
+
+
+set(MY_URL "http://mri.radiology.uiowa.edu/VHDicom/VHFCT1mm/VHF-Ankle.tar.gz")
+set(MY_DOWNLOAD_PATH "${CMAKE_CURRENT_BINARY_DIR}/VHF-Ankle.tar.gz")
+set(MY_EXTRACTED_FILE "${CMAKE_CURRENT_SOURCE_DIR}/DICOM")
+
+if (NOT EXISTS "${MY_DOWNLOAD_PATH}")
+    file(DOWNLOAD "${MY_URL}" "${MY_DOWNLOAD_PATH}")
+endif()
+
+add_custom_command(
+    TARGET VHF-Ankle
+    PRE_BUILD
+    #OUTPUT "${MY_EXTRACTED_FILE}"
+    COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_BINARY_DIR}/VHF-Ankle.tar.gz
+    DEPENDS "${MY_DOWNLOAD_PATH}"
+)
+
+
 # Create the main program ######################################################
 add_executable(demo-CT-in-HU-to-simulation CTinHUtoSimulation.cxx)
 target_link_libraries(demo-CT-in-HU-to-simulation ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation CTinHUtoSimulationFiles)
+ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation VHF-Ankle)
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation   gVirtualXRay)
@@ -99,6 +123,7 @@ ELSE (NOT APPLE)
     ADD_EXECUTABLE (CTinHUtoSimulation MACOSX_BUNDLE ${CTinHUtoSimulation_SRCS})
     TARGET_LINK_LIBRARIES (CTinHUtoSimulation gVirtualXRay ${optionalLibs} ${requiredLibs})
     ADD_DEPENDENCIES(CTinHUtoSimulation CTinHUtoSimulationFiles)
+    ADD_DEPENDENCIES(CTinHUtoSimulation VHF-Ankle)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME CTinHUtoSimulation)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "CTinHUtoSimulation")

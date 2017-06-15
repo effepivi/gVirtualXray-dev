@@ -328,29 +328,53 @@ void keyCallback(GLFWwindow* apWindow,
 
 //--------------------------------------------
 void mouseButtonCallback(GLFWwindow* apWindow,
-                         int aButton,
-                         int aButtonState,
-                         int aModifierKey)
-//--------------------------------------------
+    int aButton,
+    int aButtonState,
+    int aModifierKey)
+    //--------------------------------------------
 {
+    double x(0);
+    double y(0);
+    glfwGetCursorPos(apWindow, &x, &y);
+
+    g_anatomical_data.setCursorPosition(x, y);
+
+    if (aButton == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        if (aButtonState == GLFW_PRESS)
+        {
+            g_anatomical_data.useArcBallOn();
+        }
+        else
+        {
+            g_anatomical_data.useArcBallOff();
+        }
+    }
 }
 
 
 //------------------------------------------
 void cursorPosCallback(GLFWwindow* apWindow,
-                       double x,
-                       double y)
-//------------------------------------------
+    double x,
+    double y)
+    //------------------------------------------
 {
+    g_anatomical_data.setCursorPosition(x, y);
 }
 
 
 //---------------------------------------
 void scrollCallback(GLFWwindow* apWindow,
-                    double xoffset,
-                    double yoffset)
-//---------------------------------------
+    double xoffset,
+    double yoffset)
+    //---------------------------------------
 {
+    g_anatomical_data.scroll(yoffset);
+
+    GLint width(0);
+    GLint height(0);
+    glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+    framebufferSizeCallback(g_p_main_window_id, width, height);
 }
 
 

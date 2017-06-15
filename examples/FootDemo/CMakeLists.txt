@@ -49,13 +49,13 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../cmake/resources.cmake)
 SET (RESOURCES_SOURCES 
     "${RESOURCES_SOURCES}" 
-    data/mesh_HU62.stl
-    data/mesh_HU156.stl
-    data/mesh_HU45.stl
-    data/mesh_HU442.stl
-    data/mesh_HU1276.stl
-    data/mesh_HU42.stl
-    data/mesh_HU89.stl
+#    data/mesh_HU62.stl
+#    data/mesh_HU156.stl
+#    data/mesh_HU45.stl
+#    data/mesh_HU442.stl
+#    data/mesh_HU1276.stl
+#    data/mesh_HU42.stl
+#    data/mesh_HU89.stl
 )
 
 CreateHeaderFiles("." "BinFootDemoFiles" "${RESOURCES_SOURCES}")
