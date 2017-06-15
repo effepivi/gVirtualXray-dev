@@ -926,10 +926,11 @@ IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
     ENDIF (USE_GLUT)
 
     IF (NOT APPLE)
-        OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" ON)
+	OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
     ELSE (NOT APPLE)
         OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
     ENDIF (NOT APPLE)
+
     OPTION (USE_QT5  "Build the programs (demos, and tutorials) that make use of Qt5" ON)
 
     IF (WIN32)
