@@ -2553,9 +2553,17 @@ void XRayRenderer::normalise()
 
 
 //------------------------------------------
-void XRayRenderer::display(bool useLogScale)
+void XRayRenderer::display(bool useLogScale,
+                           bool usePowerLaw,
+                           double c,
+                           double gamma)
 //------------------------------------------
 {
+    if (useLogScale && usePowerLaw)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Cannot use both the log scale and the power law at the same time");
+    }
+
 	// Activate shaders
 	pushShaderProgram();
 	m_shader_set[XRAY_DETECTOR_DISPLAY_SHADER_ID].enable();
@@ -2585,23 +2593,20 @@ void XRayRenderer::display(bool useLogScale)
 
     if (fabs(range) > EPSILON)
     {
-        if (!useLogScale)
+        if (!useLogScale && !usePowerLaw)
         {
             shift_filter = -m_min_value_in_simulated_xray_image;
             scale_filter = 1.0 / range;
         }
+        else if (useLogScale)
+        {
+            shift_filter = -std::log(m_min_value_in_simulated_xray_image + 1.0);
+            scale_filter = 1.0 / (std::log(m_max_value_in_simulated_xray_image + 1.0) - std::log(m_min_value_in_simulated_xray_image + 1.0));
+        }
         else
         {
-            if (m_min_value_in_simulated_xray_image >= EPSILON)
-            {
-                shift_filter = -std::log(m_min_value_in_simulated_xray_image);
-                scale_filter = 1.0 / (std::log(m_max_value_in_simulated_xray_image) - std::log(m_min_value_in_simulated_xray_image));
-            }
-            else
-            {
-                shift_filter = -std::log(EPSILON);
-                scale_filter = 1.0 / (std::log(m_max_value_in_simulated_xray_image) - std::log(EPSILON));
-            }
+            shift_filter = c * std::pow(m_min_value_in_simulated_xray_image, gamma);
+            scale_filter = 1.0 / (c * std::pow(m_max_value_in_simulated_xray_image, gamma) - c * std::pow(m_min_value_in_simulated_xray_image, gamma));
         }
     }
 
@@ -2614,12 +2619,22 @@ void XRayRenderer::display(bool useLogScale)
     glUniform1f(handle, scale_filter);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    // Pass the scale parameter of the shift-scale filter to the shader
+    // Pass the flag of the log-scale filter to the shader
     handle = glGetUniformLocation(program_handle, "g_use_log_scale");
     glUniform1i(handle, useLogScale);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	handle = glGetUniformLocation(program_handle, "g_projection_matrix");
+    // Pass the c parameter of the power law filter to the shader
+    handle = glGetUniformLocation(program_handle, "g_c");
+    glUniform1f(handle, c);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Pass the gamma parameter of the power law filter to the shader
+    handle = glGetUniformLocation(program_handle, "g_gamma");
+    glUniform1f(handle, gamma);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    handle = glGetUniformLocation(program_handle, "g_projection_matrix");
 	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 

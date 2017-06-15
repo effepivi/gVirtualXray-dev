@@ -157,6 +157,59 @@ inline void AnatomicalDataHandler::reset()
 }
 
 
+//--------------------------------------------------------
+inline void AnatomicalDataHandler::useArcBall(bool aState)
+//--------------------------------------------------------
+{
+    m_use_arc_ball = aState;
+}
+
+
+//-----------------------------------------------
+inline void AnatomicalDataHandler::useArcBallOn()
+//-----------------------------------------------
+{
+    m_use_arc_ball = true;
+}
+
+
+//------------------------------------------------
+inline void AnatomicalDataHandler::useArcBallOff()
+//------------------------------------------------
+{
+    m_use_arc_ball = false;
+}
+
+
+//----------------------------------------------------------------------
+inline void AnatomicalDataHandler::setCursorPosition(double x, double y)
+//----------------------------------------------------------------------
+{
+    if (m_use_arc_ball)
+    {
+        computeRotation(m_scene_rotation_matrix,
+                x,
+                y);
+    }
+
+    m_last_x_position = x;
+    m_last_y_position = y;
+}
+
+
+//------------------------------------------------------
+inline void AnatomicalDataHandler::scroll(double offset)
+//------------------------------------------------------
+{
+    // Scrolling along the Y-axis
+    if (fabs(offset) > EPSILON)
+    {
+        m_use_arc_ball = false;
+        m_zoom += offset * gVirtualXRay::cm;
+    }
+}
+
+
 //-------------------------------------------------------------------------------
 inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x,
                                                                            int y)

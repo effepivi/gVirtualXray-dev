@@ -137,12 +137,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
 
-#include "mesh_HU113.stl.h"
+#include "mesh_HU45.stl.h"
 #include "mesh_HU1276.stl.h"
-#include "mesh_HU-42.stl.h"
 #include "mesh_HU442.stl.h"
-#include "mesh_HU62.stl"
-#include "mesh_HU-89.stl"
+#include "mesh_HU62.stl.h"
+#include "mesh_HU42.stl.h"
+#include "mesh_HU89.stl.h"
+#include "mesh_HU156.stl.h"
 
 
 //******************************************************************************
@@ -178,23 +179,24 @@ const VEC3 g_initial_detector_up_vector(0.0, 0.0, 1.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
 
-const unsigned char SOFT_STRUCTURE0_ID(0);
-const unsigned char SOFT_STRUCTURE1_ID(1);
-const unsigned char SOFT_STRUCTURE2_ID(2);
-const unsigned char SOFT_BONE_ID(3);
-const unsigned char HARD_BONE_ID(4);
-
-const unsigned char SKIN_ID(5);
+const unsigned char SKIN_ID(0);
+const unsigned char HARD_BONE_ID(1);
+const unsigned char SOFT_BONE_ID(2);
+const unsigned char SOFT_STRUCTURE0_ID(3);
+const unsigned char SOFT_STRUCTURE1_ID(4);
+const unsigned char SOFT_STRUCTURE2_ID(5);
+const unsigned char SOFT_STRUCTURE3_ID(6);
 
 
 const double g_p_HU_set [] =
 {
-        -89,
-        -42,
-        62,
-        442,
+        45,
         1276,
-        113
+        442,
+        62,
+        -42,
+        -89,
+        -156
 };
 
 
@@ -231,8 +233,6 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 
     m_display_beam(true),
 
-    m_current_patient(P4),
-
     m_display_wireframe(false),
 
     m_angle_step(1),
@@ -244,8 +244,6 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 
     m_display_help(true),
     m_has_freetype(true),
-
-    m_swap_patient(false),
 
     m_light_direction(-1, 3, 1)
 //-----------------------------------------------------------------
@@ -299,9 +297,6 @@ void AnatomicalDataHandler::initializeGL()
     //set the direction of the light
     m_light_direction.normalize();
 
-    // Set the patient
-    usePatient(m_current_patient);
-
     // Initialise the modelling matrix
     m_scene_rotation_matrix *=
         Matrix4x4<GLfloat>::buildRotationMatrix(180.0, VEC3(0, 0, 1));
@@ -344,36 +339,21 @@ void AnatomicalDataHandler::draw()
             {
             case ROTATE_SAMPLE:
                 {
-                    Matrix4x4<GLfloat> P4_rotation_matrix;
-                    P4_rotation_matrix *=
+                    Matrix4x4<GLfloat> rotation_matrix;
+                    rotation_matrix *=
                         Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            m_p4_translation_vector);
+                            m_translation_vector);
                 
-                    P4_rotation_matrix *=
+                    rotation_matrix *=
                         Matrix4x4<GLfloat>::buildRotationMatrix(
                             -m_angle_step,
                             g_initial_detector_up_vector);
                 
-                    P4_rotation_matrix *=
+                    rotation_matrix *=
                         Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            -m_p4_translation_vector);
+                            -m_translation_vector);
 
-                    Matrix4x4<GLfloat> P5_rotation_matrix;
-                    P5_rotation_matrix *=
-                        Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            m_p5_translation_vector);
-                
-                    P5_rotation_matrix *=
-                        Matrix4x4<GLfloat>::buildRotationMatrix(
-                            -m_angle_step,
-                            g_initial_detector_up_vector);
-                
-                    P5_rotation_matrix *=
-                        Matrix4x4<GLfloat>::buildTranslationMatrix(
-                            -m_p5_translation_vector);
-
-                    m_p4_rotation_matrix *= P4_rotation_matrix;
-                    m_p5_rotation_matrix *= P5_rotation_matrix;
+                    m_rotation_matrix *= rotation_matrix;
                 }
                 break;
 
@@ -410,23 +390,7 @@ void AnatomicalDataHandler::draw()
     // Stop the acquisition
     if (m_next_angle_to_process > 180.0)
         {
-        if (m_swap_patient)
-            {
-            if (m_current_patient == P4)
-                {
-                usePatient(P5);
-                }
-            else
-                {
-                usePatient(P4);
-                }
-            }
-        else
-            {
-            reset();
-            }
-
-        m_swap_patient = !m_swap_patient;
+        reset();
         }
 
     // Update the X-ray image
@@ -630,31 +594,14 @@ void AnatomicalDataHandler::loadXRaySimulator()
 void AnatomicalDataHandler::loadSTLFiles()
 //----------------------------------------
 {
-    switch (aPatientID)
-        {
-        case P4:
-            p_mesh_set = &m_p_p4_polygon_mesh_set;
-            p_HU_set = g_p_p4_HU_set;
-            break;
-
-        case P5:
-            p_mesh_set = &m_p_p5_polygon_mesh_set;
-            p_HU_set = g_p_p5_HU_set;
-            break;
-
-        default:
-            p_mesh_set = &m_p_p5_polygon_mesh_set;
-            p_HU_set = g_p_p5_HU_set;
-        }
-
     // Set geometry
-    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
+    for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
         {
         char* p_data(0);
         unsigned int data_size(0);
-        decompressMesh(i, aPatientID, p_data, data_size);
+        decompressMesh(i, p_data, data_size);
 
-        (*p_mesh_set)[i]->loadSTLDataFromStream(
+        m_p_polygon_mesh_set[i]->loadSTLDataFromStream(
             p_data,
             false,
             true,
@@ -670,81 +617,42 @@ void AnatomicalDataHandler::loadSTLFiles()
             p_data = 0;
             }
 
-        (*p_mesh_set)[i]->setHounsfieldValue(p_HU_set[i]);
-        (*p_mesh_set)[i]->initialize();
+        m_p_polygon_mesh_set[i]->setHounsfieldValue(g_p_HU_set[i]);
+        m_p_polygon_mesh_set[i]->initialize();
         }
 
     // Compute the translation vector
-    switch (aPatientID)
-        {
-        case P4:
-            m_p4_translation_vector =
-                (*p_mesh_set)[SKIN_ID]->getMinCorner() +
-                ((*p_mesh_set)[SKIN_ID]->getMaxCorner() -
-                    (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
-            
-            m_p4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
-                180.0, VEC3(1, 0, 0));
-            
-            m_p4_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
-                -m_p4_translation_vector);
-            break;
+    m_translation_vector =
+        m_p_polygon_mesh_set[SKIN_ID]->getMinCorner() +
+        (m_p_polygon_mesh_set[SKIN_ID]->getMaxCorner() -
+            m_p_polygon_mesh_set[SKIN_ID]->getMinCorner()) / 2.0;
 
-        case P5:
-            m_p5_translation_vector =
-                (*p_mesh_set)[SKIN_ID]->getMinCorner() +
-                ((*p_mesh_set)[SKIN_ID]->getMaxCorner() -
-                    (*p_mesh_set)[SKIN_ID]->getMinCorner()) / 2.0;
-            
-            m_p5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(
-                -m_p5_translation_vector);
-            break;
+    m_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
+        180.0, VEC3(1, 0, 0));
 
-        default:
-            break;
-        }
-}
-
-//-----------------------------------------------------------------
-void AnatomicalDataHandler::usePatient(const PatientID& aPatientID)
-//-----------------------------------------------------------------
-{
-    std::vector<AnatomicalMesh*>* p_mesh_set(0);
-    
-    switch (aPatientID)
-        {
-        case P4:
-            m_current_patient = P4;
-            p_mesh_set = &m_p_p4_polygon_mesh_set;
-            break;
-
-        case P5:
-            m_current_patient = P5;
-            p_mesh_set = &m_p_p5_polygon_mesh_set;
-            break;
-
-        default:
-            m_current_patient = P5;
-            p_mesh_set = &m_p_p5_polygon_mesh_set;
-        }
-
-    if (!p_mesh_set->size())
-        {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "No anatomical data provided.");
-        }
+    m_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(
+        -m_translation_vector);
 
     m_xray_renderer.removeInnerSurfaces();
     m_xray_renderer.removeOuterSurface();
-    for (unsigned int i(0); i < p_mesh_set->size(); ++i)
+    for (unsigned int i(0); i < m_p_polygon_mesh_set.size(); ++i)
         {
-		(*p_mesh_set)[i]->updateVBO(GL_STATIC_DRAW, GL_TRIANGLES);
-        m_xray_renderer.addInnerSurface(((*p_mesh_set)[i]));
+        m_p_polygon_mesh_set[i]->updateVBO(GL_STATIC_DRAW, GL_TRIANGLES);
+
+        if (i != SKIN_ID)
+            {
+            m_xray_renderer.addInnerSurface((m_p_polygon_mesh_set[i]));
+            }
+        else
+            {
+           // m_xray_renderer.addOuterSurface((m_p_polygon_mesh_set[i]));
+            }
         }
 
     m_next_angle_to_process = 0;
     m_current_angle = 0;
 }
+
 
 
 //-------------------------------------------
@@ -754,14 +662,7 @@ void AnatomicalDataHandler::updateXRayImage()
     float start_time(glfwGetTime());
 
     // Compute the X-Ray image
-    if (m_current_patient == P4)
-        {
-        m_xray_renderer.computeImage(m_p4_rotation_matrix);
-        }
-    else
-        {
-        m_xray_renderer.computeImage(m_p5_rotation_matrix);
-        }
+    m_xray_renderer.computeImage(m_rotation_matrix);
 
     // Normalise the X-ray image
     if (fabs(m_current_angle) < EPSILON)
@@ -888,26 +789,12 @@ void AnatomicalDataHandler::render()
         pushModelViewMatrix();
 
         // Set the modelview matrix
-        if (m_current_patient == P4)
-            {
-            g_current_modelview_matrix *= m_p4_rotation_matrix;
-            }
-        else
-            {
-            g_current_modelview_matrix *= m_p5_rotation_matrix;
-            }
+        g_current_modelview_matrix *= m_rotation_matrix;
 
         applyModelViewMatrix();
 
         // Display the current patient
-        if (m_current_patient == P4)
-            {
-            displayPatient(m_p_p4_polygon_mesh_set, shader_id);
-            }
-        else
-            {
-            displayPatient(m_p_p5_polygon_mesh_set, shader_id);
-            }
+        displayPatient(m_p_polygon_mesh_set, shader_id);
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -941,7 +828,7 @@ void AnatomicalDataHandler::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(false, true);
+        m_xray_renderer.display(true, false);
 
         // Display the beam
         if (m_display_beam)
@@ -1016,7 +903,10 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
               }
             else
                 {
-                apMeshSet[i]->display();
+                    if (i == HARD_BONE_ID || i == SOFT_BONE_ID)
+                    {
+                    apMeshSet[i]->display();
+                    }
                 }
             }
         }
@@ -1108,7 +998,6 @@ void AnatomicalDataHandler::displayHelp()
 
 //--------------------------------------------------------------
 void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
-                                           PatientID aPatientID,
                                            char*& apData,
                                            unsigned int& aSize)
 //--------------------------------------------------------------
@@ -1122,69 +1011,40 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
 
     aSize = 0;
 
-    if (aPatientID == P4)
+    switch (aMeshID)
         {
-        switch (aMeshID)
-            {
-            case SKIN_ID:
-                aSize = inflate(g_P4_skin_stl, sizeof(g_P4_skin_stl), &apData);
-                break;
+        case SKIN_ID:
+            //aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
+            aSize = inflate(g_mesh_HU113_stl, sizeof(g_mesh_HU113_stl), &apData);
+            break;
 
-            case LIVER_ID:
-                aSize = inflate(g_P4_liver_stl, sizeof(g_P4_liver_stl), &apData);
-                break;
+        case HARD_BONE_ID:
+            aSize = inflate(g_mesh_HU1276_stl, sizeof(g_mesh_HU1276_stl), &apData);
+            break;
 
-            case LUNG_ID:
-                aSize = inflate(g_P4_lung_stl, sizeof(g_P4_lung_stl), &apData);
-                break;
+        case SOFT_BONE_ID:
+            aSize = inflate(g_mesh_HU442_stl, sizeof(g_mesh_HU442_stl), &apData);
+            break;
 
-            case DIAPH_ID:
-                aSize = inflate(g_P4_diaph_stl, sizeof(g_P4_diaph_stl), &apData);
-                break;
+        case SOFT_STRUCTURE0_ID:
+            aSize = inflate(g_mesh_HU62_stl, sizeof(g_mesh_HU62_stl), &apData);
+            break;
 
-            case SPINE_ID:
-                aSize = inflate(g_P4_spine_stl, sizeof(g_P4_spine_stl), &apData);
-                break;
+        case SOFT_STRUCTURE1_ID:
+            aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
+            break;
 
-            case RIBS_ID:
-                aSize = inflate(g_P4_ribs_stl, sizeof(g_P4_ribs_stl), &apData);
-                break;
+        case SOFT_STRUCTURE2_ID:
+            aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
+            break;
 
-            default:
-                break;
-            }
-        }
-    else
-        {
-        switch (aMeshID)
-            {
-            case SKIN_ID:
-                aSize = inflate(g_P5_skin_stl, sizeof(g_P5_skin_stl), &apData);
-                break;
+        case SOFT_STRUCTURE3_ID:
+            aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
+//            aSize = inflate(g_mesh_HU156_stl, sizeof(g_mesh_HU156_stl), &apData);
+            break;
 
-            case LIVER_ID:
-                aSize = inflate(g_P5_liver_stl, sizeof(g_P5_liver_stl), &apData);
-                break;
-
-            case LUNG_ID:
-                aSize = inflate(g_P5_lung_stl, sizeof(g_P5_lung_stl), &apData);
-                break;
-
-            case DIAPH_ID:
-                aSize = inflate(g_P5_diaph_stl, sizeof(g_P5_diaph_stl), &apData);
-                break;
-
-            case SPINE_ID:
-                aSize = inflate(g_P5_spine_stl, sizeof(g_P5_spine_stl), &apData);
-                break;
-
-            case RIBS_ID:
-                aSize = inflate(g_P5_ribs_stl, sizeof(g_P5_ribs_stl), &apData);
-                break;
-
-            default:
-                break;
-            }
+        default:
+            break;
         }
 
     if (aSize <= 0)
@@ -1236,19 +1096,13 @@ void AnatomicalDataHandler::computeRotation(MATRIX4& aRotationMatrix,
 void AnatomicalDataHandler::initializePatients()
 //------------------------------------------------------
 {
-    m_p_p4_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_p4_polygon_mesh_set.push_back(new LiverMesh());
-    m_p_p4_polygon_mesh_set.push_back(new LungsMesh());
-    m_p_p4_polygon_mesh_set.push_back(new DiaphragmMesh());
-    m_p_p4_polygon_mesh_set.push_back(new BoneMesh());
-    m_p_p4_polygon_mesh_set.push_back(new BoneMesh());
-
-    m_p_p5_polygon_mesh_set.push_back(new SkinMesh());
-    m_p_p5_polygon_mesh_set.push_back(new LiverMesh());
-    m_p_p5_polygon_mesh_set.push_back(new LungsMesh(false, false, true));
-    m_p_p5_polygon_mesh_set.push_back(new DiaphragmMesh());
-    m_p_p5_polygon_mesh_set.push_back(new BoneMesh());
-    m_p_p5_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_polygon_mesh_set.push_back(new BoneMesh());
+    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
+    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
+    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
+    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
 }
 
 //---------------------------------------------
@@ -1271,38 +1125,18 @@ void AnatomicalDataHandler::renderToShadowMap()
     ));
 
     // Create the shadow map
-    if (m_current_patient == P4)
+    shadow_view_matrix *= m_scene_rotation_matrix * m_rotation_matrix;
+    m_shadow_matrix = shadow_projection_matrix * shadow_view_matrix;
+
+    std::vector<PolygonMesh*> polygon_mesh_set;
+
+    for(unsigned int i(0); i < m_p_polygon_mesh_set.size(); i++)
         {
-        shadow_view_matrix *= m_scene_rotation_matrix * m_p4_rotation_matrix;
-        m_shadow_matrix = shadow_projection_matrix * shadow_view_matrix;
-
-        std::vector<PolygonMesh*> polygon_mesh_set;
-
-        for(unsigned int i(0); i < m_p_p4_polygon_mesh_set.size(); i++)
+        if (!m_p_polygon_mesh_set[i]->isTransparent())
             {
-            if (!m_p_p4_polygon_mesh_set[i]->isTransparent())
-                {
-                polygon_mesh_set.push_back((m_p_p4_polygon_mesh_set[i]));
-                }
+            polygon_mesh_set.push_back((m_p_polygon_mesh_set[i]));
             }
-    
-        m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
         }
-    else
-        {
-        shadow_view_matrix *= m_scene_rotation_matrix * m_p5_rotation_matrix;
-        m_shadow_matrix = shadow_projection_matrix * shadow_view_matrix;
 
-        std::vector<PolygonMesh*> polygon_mesh_set;
-
-        for(unsigned int i(0); i < m_p_p5_polygon_mesh_set.size(); i++)
-            {
-            if (!m_p_p5_polygon_mesh_set[i]->isTransparent())
-                {
-                polygon_mesh_set.push_back((m_p_p5_polygon_mesh_set[i]));
-                }
-            }
-    
-        m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
-        }
+    m_shadow_map.render(polygon_mesh_set, m_shadow_matrix);
 }

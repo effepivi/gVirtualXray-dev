@@ -1012,7 +1012,9 @@ void GLWidget::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true);
+        m_xray_renderer.display(false, true, 1.0, 1.0 / 2.5);
+
+        m_xray_renderer.printEnergyFluence("energh_fluence.mhd");
 
         // Display the beam
         if (m_display_beam)

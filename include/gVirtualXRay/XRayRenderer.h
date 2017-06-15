@@ -450,10 +450,10 @@ public:
     /// Display the X-ray image using OpenGL.
     /**
      *  @param useLogScale: flag set to true to use the log scale,
-    *                       to false to use a linear scale (default)
+     *                      to false to use a linear scale (default: false)
      */
     //--------------------------------------------------------------------------
-    void display(bool useLogScale = false);
+    void display(bool useLogScale, bool usePowerLaw, double c = 1.0, double gamma = (1.0 / 2.5));
 
 
     //--------------------------------------------------------------------------

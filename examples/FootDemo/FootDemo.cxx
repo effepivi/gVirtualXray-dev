@@ -302,11 +302,6 @@ void keyCallback(GLFWwindow* apWindow,
                 g_anatomical_data.toggleNegativeImage();
                 break;
 
-            // change patient
-            case GLFW_KEY_P:
-                g_anatomical_data.swapPatients();
-                break;
-
             // display|hide X-ray beam
             case GLFW_KEY_B:
                 g_anatomical_data.toggleDisplayBeam();
@@ -333,6 +328,23 @@ void mouseButtonCallback(GLFWwindow* apWindow,
                          int aModifierKey)
 //--------------------------------------------
 {
+    double x(0);
+    double y(0);
+    glfwGetCursorPos (apWindow, &x, &y);
+
+    g_anatomical_data.setCursorPosition(x, y);
+
+    if (aButton ==  GLFW_MOUSE_BUTTON_LEFT)
+    {
+        if (aButtonState == GLFW_PRESS)
+        {
+            g_anatomical_data.useArcBallOn();
+        }
+        else
+        {
+            g_anatomical_data.useArcBallOff();
+        }
+    }
 }
 
 
@@ -342,6 +354,7 @@ void cursorPosCallback(GLFWwindow* apWindow,
                        double y)
 //------------------------------------------
 {
+    g_anatomical_data.setCursorPosition(x, y);
 }
 
 
@@ -351,6 +364,12 @@ void scrollCallback(GLFWwindow* apWindow,
                     double yoffset)
 //---------------------------------------
 {
+    g_anatomical_data.scroll(yoffset);
+
+    GLint width(0);
+    GLint height(0);
+    glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+    framebufferSizeCallback(g_p_main_window_id, width, height);
 }
 
 

@@ -746,7 +746,7 @@ void render()
         glDisable(GL_CULL_FACE);
 
         // Display the X-Ray image
-        g_xray_renderer.display();
+        g_xray_renderer.display(false, false);
 
         // Display the intersections
         g_intersection_box_detector_vbo->display();
@@ -1374,22 +1374,6 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 void loadSTLFile()
 //----------------
 {
-    string stl_filename_0("cylinder_bin.stl");
-
-    // Open the file
-    FILE* p_file_descriptor_0(fopen(stl_filename_0.data(), "rb"));
-
-    // The file is not in the same directory as the executable
-    if (!p_file_descriptor_0)
-        {
-        // Use the prefix
-        stl_filename_0 = "../data/" + stl_filename_0;
-        }
-    else
-        {
-        fclose(p_file_descriptor_0);
-        }
-
     // Set geometry
     g_inside_polygon_data.setHounsfieldValue(0.0);
     g_outside_polygon_data.setHounsfieldValue(500.0);

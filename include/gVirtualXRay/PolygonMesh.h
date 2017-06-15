@@ -1074,7 +1074,6 @@ public:
             bool aCreateVBOFlag,
             int aTypeOfVBO);
 
-
     void setInternalData(int aTypeOfPrimitive,
             const std::vector<double>* aVertexArray,
             const std::vector<float>* aNormalArray,
