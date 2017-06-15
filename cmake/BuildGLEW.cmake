@@ -1,7 +1,7 @@
 macro(build_glew install_prefix staging_prefix)
 
-SET (GLEW_VERSION_STRING 1.13)
-SET (GLEW_VERSION_MAJOR  1.13)
+SET (GLEW_VERSION_STRING 2.0)
+SET (GLEW_VERSION_MAJOR  2.0)
 SET (GLEW_VERSION_MINOR  0)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
@@ -18,7 +18,7 @@ SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
   URL  "https://sourceforge.net/projects/glew/files/glew/2.0.0/glew-2.0.0.zip/download"
-  #URL_MD5 "7cbada3166d2aadfc4169c4283701066"
+  URL_MD5 "54c913d0c00726fb028d089ad1664ede"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
