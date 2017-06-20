@@ -780,5 +780,11 @@ namespace gVirtualXRay {
         display2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID);
     }
 
+    //------------------------------------------
+    inline const XRayBeam* XRayRenderer::getXRayBeam( ) const
+      //------------------------------------------
+    {
+      return m_p_xray_beam;
+    }
 
 } // namespace gVirtualXRay

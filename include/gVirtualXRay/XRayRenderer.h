@@ -659,6 +659,14 @@ public:
 
     const PixelType* getEnergyFluenceRawData();
 
+    //--------------------------------------------------------------------------
+    /// Returns the actual Beam
+    /**
+    *  @return a const pointer to the actual Beam
+    */
+    //--------------------------------------------------------------------------
+    const XRayBeam* getXRayBeam( ) const;
+
 
     //--------------------------------------------------------------------------
     /// Enable artefact filtering.
@@ -689,6 +697,9 @@ public:
 
     bool useArtifactFiltering() const;
     bool useArtefactFiltering() const;
+
+
+    
 
 
 //******************************************************************************
