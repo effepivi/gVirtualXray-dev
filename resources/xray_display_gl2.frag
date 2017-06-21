@@ -74,7 +74,7 @@ void main(void)
     // Use the log scale
     if (g_use_log_scale)
     {
-        intensity = log10(intensity + log_epsilon);
+        intensity = log(intensity + log_epsilon) / log(10.0);
     }
 
     // Use the power law
