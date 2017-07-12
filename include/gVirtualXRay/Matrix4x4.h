@@ -207,6 +207,9 @@ public:
     void translate(T x, T y, T z);
 
 
+
+
+
     //--------------------------------------------------------------------------
     /// Build an identity matrix.
     /**
@@ -237,6 +240,29 @@ public:
      */
     //--------------------------------------------------------------------------
     static Matrix4x4 buildRotationMatrix(T anAngle, T x, T y, T z);
+
+
+    //--------------------------------------------------------------------------
+    /// Build a scale matrix.
+    /**
+    *  @param aVector: the scale vector
+    *  @return the corresponding scale matrix
+    */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildScaleMatrix( const Vec3<T>& aVector );
+
+
+    //--------------------------------------------------------------------------
+    /// Build a scale matrix.
+    /**
+    *  
+    *  @param x: the x-component of the axis of scale
+    *  @param y: the y-component of the axis of scale
+    *  @param z: the z-component of the axis of scale
+    *  @return the corresponding scale matrix
+    */
+    //--------------------------------------------------------------------------
+    static Matrix4x4 buildScaleMatrix(  T x, T y, T z );
 
 
     //--------------------------------------------------------------------------
