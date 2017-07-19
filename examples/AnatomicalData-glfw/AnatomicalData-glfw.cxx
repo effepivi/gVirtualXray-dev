@@ -1766,7 +1766,7 @@ void updateXRayImage()
         // Normalise the X-ray image
         if (fabs(g_current_angle) < EPSILON)
             {
-            g_xray_renderer.normalise();
+            g_xray_renderer.getEnergyFluenceMinMax();
             }
 
         g_simulation_total_time += glfwGetTime() - start_time;

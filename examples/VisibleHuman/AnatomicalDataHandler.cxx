@@ -1081,7 +1081,7 @@ void AnatomicalDataHandler::updateXRayImage()
     // Normalise the X-ray image
     if (fabs(m_current_angle) < EPSILON)
         {
-        m_xray_renderer.normalise();
+        m_xray_renderer.getEnergyFluenceMinMax();
         }
 
     m_simulation_total_time += glfwGetTime() - start_time;

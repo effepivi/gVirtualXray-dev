@@ -2509,9 +2509,9 @@ void XRayRenderer::computeIntegratedEnergy()
 }
 
 
-//----------------------------
-void XRayRenderer::normalise()
-//----------------------------
+//-----------------------------------------
+void XRayRenderer::getEnergyFluenceMinMax()
+//-----------------------------------------
 {
 	// Get the energy fluence map
 	getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
@@ -2568,7 +2568,7 @@ void XRayRenderer::display(bool useNormalisation,
 
     if (useNormalisation)
     {
-        normalise();
+        getEnergyFluenceMinMax();
     }
 
 	// Activate shaders
@@ -2601,7 +2601,7 @@ void XRayRenderer::display(bool useNormalisation,
     GLfloat log_epsilon(1.0e-9);
     GLfloat incident_energy(m_p_xray_beam->getTotalEnergy());
 
-    if (fabs(range) > EPSILON && useNormalisation)
+    if (fabs(range) > EPSILON /*&& useNormalisation*/)
     {
         if (!useLogScale && !usePowerLaw)
         {

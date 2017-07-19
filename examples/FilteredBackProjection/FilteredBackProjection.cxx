@@ -1152,7 +1152,7 @@ void render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        g_xray_renderer.display(false, false);
+        g_xray_renderer.display(true, false, true);
 
         // Display the beam
         if (g_display_beam)
@@ -1794,7 +1794,7 @@ bool updateXRayImage()
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
         // Normalise the X-ray image
-        g_xray_renderer.normalise();
+        g_xray_renderer.getEnergyFluenceMinMax();
 
         // The X-ray image is up-to-date
         g_is_xray_image_up_to_date = true;

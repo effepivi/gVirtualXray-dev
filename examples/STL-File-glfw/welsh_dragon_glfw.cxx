@@ -705,7 +705,7 @@ void render()
         // Display the X-Ray image
         if (g_display_detector)
         {
-            g_xray_renderer.display(false, false);
+            g_xray_renderer.display(true, false, true);
         }
 
         // Display the beam
@@ -1343,7 +1343,7 @@ void updateXRayImage()
 		// Normalise the X-ray image
                 if (!g_image_computed)
                 {
-                    g_xray_renderer.normalise();
+                    g_xray_renderer.getEnergyFluenceMinMax();
                 }
 
 		// The X-ray image is up-to-date
