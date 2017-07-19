@@ -210,6 +210,32 @@ inline void AnatomicalDataHandler::scroll(double offset)
 }
 
 
+//-------------------------------------------------
+inline void AnatomicalDataHandler::toggleLogScale()
+//-------------------------------------------------
+{
+    m_use_log_scale = !m_use_log_scale;
+
+    if (m_use_log_scale)
+    {
+        m_use_power_law = false;
+    }
+}
+
+
+//-------------------------------------------------
+inline void AnatomicalDataHandler::togglePowerLaw()
+//-------------------------------------------------
+{
+    m_use_power_law = !m_use_power_law;
+
+    if (m_use_power_law)
+    {
+        m_use_log_scale = false;
+    }
+}
+
+
 //-------------------------------------------------------------------------------
 inline gVirtualXRay::Vec3<GLfloat> AnatomicalDataHandler::getArcballVector(int x,
                                                                            int y)

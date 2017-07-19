@@ -221,6 +221,9 @@ public:
 
     void scroll(double offset);
 
+    void toggleLogScale();
+    void togglePowerLaw();
+
 //*****************************************************************************
 private:
     //--------------------------------------------------------------------------
@@ -415,6 +418,16 @@ private:
 
     /// Flag set to true when Freetype is working well, false otherwise
     bool m_has_freetype;
+
+    bool m_use_log_scale;
+
+    bool m_use_power_law;
+
+    float m_shift_value;
+
+    float m_scale_value;
+
+    float m_gamma;
 
     /// The text renderer
     gVirtualXRay::TextRenderer m_font_rendered;

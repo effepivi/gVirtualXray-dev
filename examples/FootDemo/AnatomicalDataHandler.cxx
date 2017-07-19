@@ -137,12 +137,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "display_realistic_gl3.frag.h"
 #include "display_realistic_gl3.vert.h"
 
-//#include "mesh_HU45.stl.h"
-#include "mesh_HU1276.stl.h"
-//#include "mesh_HU442.stl.h"
-//#include "mesh_HU62.stl.h"
-//#include "mesh_HU42.stl.h"
-//#include "mesh_HU89.stl.h"
+#include "mesh_HU45.stl.h"
+#include "mesh_HU729.stl.h"
+#include "mesh_HU253.stl.h"
+#include "mesh_HU113.stl.h"
+#include "mesh_HU14.stl.h"
+#include "mesh_HU89.stl.h"
 #include "mesh_HU156.stl.h"
 
 
@@ -163,11 +163,11 @@ using namespace gVirtualXRay;
 //******************************************************************************
 const GLfloat g_rotation_speed(2.0);
 
-const float g_scaling_factor(0.75);
+const float g_scaling_factor(0.25);
 const VEC2 g_resolution(0.7 * g_scaling_factor * mm, 1 * g_scaling_factor * mm);
 const Vec2ui g_number_of_pixels(500 / g_scaling_factor, 225 / g_scaling_factor);
 
-const float g_incident_energy(0.08 * MeV);
+const float g_incident_energy(0.12 * MeV);
 
 const double g_initial_fovy(45);        // Field of view along the y-axis
 const double g_initial_near(5.0 * cm);  // Near clipping plane
@@ -191,10 +191,10 @@ const unsigned char SOFT_STRUCTURE3_ID(6);
 const double g_p_HU_set [] =
 {
         45,
-        1276,
-        442,
-        62,
-        -42,
+        729,
+        253,
+        113,
+        14,
         -89,
         -156
 };
@@ -244,6 +244,16 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
 
     m_display_help(true),
     m_has_freetype(true),
+
+    m_use_log_scale(false),
+
+    m_use_power_law(false),
+
+    m_shift_value(0.0),
+
+    m_scale_value(1.0 / g_incident_energy),
+
+    m_gamma(1.0 / 2.5),
 
     m_light_direction(-1, 3, 1)
 //-----------------------------------------------------------------
@@ -645,7 +655,7 @@ void AnatomicalDataHandler::loadSTLFiles()
             }
         else
             {
-           // m_xray_renderer.addOuterSurface((m_p_polygon_mesh_set[i]));
+             m_xray_renderer.addOuterSurface((m_p_polygon_mesh_set[i]));
             }
         }
 
@@ -667,7 +677,7 @@ void AnatomicalDataHandler::updateXRayImage()
     // Normalise the X-ray image
     if (fabs(m_current_angle) < EPSILON)
         {
-        m_xray_renderer.normalise();
+        m_xray_renderer.getEnergyFluenceMinMax();
         }
 
     m_simulation_total_time += glfwGetTime() - start_time;
@@ -828,7 +838,7 @@ void AnatomicalDataHandler::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true, false, true);
+        m_xray_renderer.display(false, m_use_log_scale, m_use_power_law, m_shift_value, m_scale_value, m_gamma);
 
         // Display the beam
         if (m_display_beam)
@@ -877,7 +887,7 @@ void AnatomicalDataHandler::displayPatient(std::vector<AnatomicalMesh*>& apMeshS
                                            GLint aShaderID)
 //---------------------------------------------------------------------------------
 {
-     for(int i(apMeshSet.size()-1); i>=0; --i)
+     for(int i(apMeshSet.size() - 1); i >= 0; --i)
         {
         apMeshSet[i]->defineDisplayShaderInput(aShaderID);
 
@@ -1014,33 +1024,31 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
     switch (aMeshID)
         {
         case SKIN_ID:
-            //aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
-            aSize = inflate(g_mesh_HU156_stl, sizeof(g_mesh_HU156_stl), &apData);
+            aSize = inflate(g_mesh_HU45_stl, sizeof(g_mesh_HU45_stl), &apData);
             break;
 
         case HARD_BONE_ID:
-            aSize = inflate(g_mesh_HU1276_stl, sizeof(g_mesh_HU1276_stl), &apData);
+            aSize = inflate(g_mesh_HU729_stl, sizeof(g_mesh_HU729_stl), &apData);
             break;
 
         case SOFT_BONE_ID:
-            //aSize = inflate(g_mesh_HU442_stl, sizeof(g_mesh_HU442_stl), &apData);
+            aSize = inflate(g_mesh_HU253_stl, sizeof(g_mesh_HU253_stl), &apData);
             break;
 
         case SOFT_STRUCTURE0_ID:
-            //aSize = inflate(g_mesh_HU62_stl, sizeof(g_mesh_HU62_stl), &apData);
+            aSize = inflate(g_mesh_HU113_stl, sizeof(g_mesh_HU113_stl), &apData);
             break;
 
         case SOFT_STRUCTURE1_ID:
-            //aSize = inflate(g_mesh_HU42_stl, sizeof(g_mesh_HU42_stl), &apData);
+            aSize = inflate(g_mesh_HU14_stl, sizeof(g_mesh_HU14_stl), &apData);
             break;
 
         case SOFT_STRUCTURE2_ID:
-            //aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
+            aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
             break;
 
         case SOFT_STRUCTURE3_ID:
-           // aSize = inflate(g_mesh_HU89_stl, sizeof(g_mesh_HU89_stl), &apData);
-//            aSize = inflate(g_mesh_HU156_stl, sizeof(g_mesh_HU156_stl), &apData);
+            aSize = inflate(g_mesh_HU156_stl, sizeof(g_mesh_HU156_stl), &apData);
             break;
 
         default:
@@ -1050,7 +1058,7 @@ void AnatomicalDataHandler::decompressMesh(unsigned int aMeshID,
     if (aSize <= 0)
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-            "Cannot decode the shader using ZLib.");
+            "Cannot decode the polygon mesh using ZLib.");
         }
 }
 
@@ -1098,11 +1106,11 @@ void AnatomicalDataHandler::initializePatients()
 {
     m_p_polygon_mesh_set.push_back(new SkinMesh());
     m_p_polygon_mesh_set.push_back(new BoneMesh());
-   /* m_p_polygon_mesh_set.push_back(new BoneMesh());
-    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
-    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
-    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());
-    m_p_polygon_mesh_set.push_back(new SoftTissueMesh());*/
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
+    m_p_polygon_mesh_set.push_back(new SkinMesh());
 }
 
 //---------------------------------------------
