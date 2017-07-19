@@ -312,6 +312,16 @@ void keyCallback(GLFWwindow* apWindow,
                 g_anatomical_data.toggleWireframe();
                 break;
 
+            // log scale
+            case GLFW_KEY_L:
+                g_anatomical_data.toggleLogScale();
+                break;
+
+            // power law
+            case GLFW_KEY_P:
+                g_anatomical_data.togglePowerLaw();
+                break;
+
             // change tomography mode
             case GLFW_KEY_SPACE:
                 g_anatomical_data.reset();
