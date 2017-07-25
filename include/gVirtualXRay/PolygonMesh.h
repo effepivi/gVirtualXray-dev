@@ -374,8 +374,46 @@ public:
     //--------------------------------------------------------------------------
     short getHounsfieldValue() const;
 
+
+    //--------------------------------------------------------------------------
+    /// Set the tissue material for the polygon.
+    /**
+    * @param TissueMaterial
+    */
+    //--------------------------------------------------------------------------
     void setTissueMaterial(const TissueMaterial& aMaterial);
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the density value of the tissue material if exits.
+    /**
+    * @param the density value
+    */
+    //--------------------------------------------------------------------------
+    void setTissueDensity( double density );
+    
+    //--------------------------------------------------------------------------
+    /// Accessor on the density value of the tissue material if exits.
+    /**
+    * @return the density value
+    */
+    //--------------------------------------------------------------------------
+    double getTissueDensity( );
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the flag about the use of the tissue Material
+    /**
+    * @return the tissueMaterial flag value
+    */
+    //--------------------------------------------------------------------------
     bool getUseTissueMaterialFlag() const;
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the Tissue Material
+    /**
+    * @return the Hounsfield value
+    */
+    //--------------------------------------------------------------------------
     const TissueMaterial& getTissueMaterial() const;
 
 

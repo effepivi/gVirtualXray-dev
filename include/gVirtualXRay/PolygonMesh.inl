@@ -208,6 +208,28 @@ inline void PolygonMesh::setTissueMaterial(const TissueMaterial& aMaterial)
     m_use_tissue_properties = true;
 }
 
+//-------------------------------------------------------------------------
+inline void PolygonMesh::setTissueDensity( double density )
+//-------------------------------------------------------------------------
+{
+  //Only if there is one
+  if ( m_use_tissue_properties )
+    // Set the tissue material properties
+    m_tissue_properties.setDensity( density );
+}
+
+//-------------------------------------------------------------------------
+inline double PolygonMesh::getTissueDensity( )
+//-------------------------------------------------------------------------
+{
+  //Only if there is one
+  if ( m_use_tissue_properties )
+    // Set the tissue material properties
+    return m_tissue_properties.getDensity(  );
+
+  return 1;
+}
+
 
 //-----------------------------------------------------------------------
 inline void PolygonMesh::setAttenuationCoefficient(const RATIONAL_NUMBER&
