@@ -1761,7 +1761,8 @@ template<typename T> void Image<T>::loadRAW(const char* aFileName,
         unsigned int aWidth,
         unsigned int aHeight,
         unsigned int aNumberOfSlices,
-        bool aChangeEndianessFlag)
+        bool aChangeEndianessFlag,
+        const char* anElementType)
 //------------------------------------------------------------------------
 {
     // Release memory if any
@@ -1777,7 +1778,7 @@ template<typename T> void Image<T>::loadRAW(const char* aFileName,
         throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
     }
     
-    loadRAW(input, aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag, aFileName);
+    loadRAW(input, aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag, aFileName, anElementType);
 }
 
 //-----------------------------------------------------------------------
@@ -1785,10 +1786,11 @@ template<typename T> void Image<T>::loadRAW(const std::string& aFileName,
                                             unsigned int aWidth,
                                             unsigned int aHeight,
                                             unsigned int aNumberOfSlices,
-                                            bool aChangeEndianessFlag)
+                                            bool aChangeEndianessFlag,
+                                            const std::string& anElementType)
 //-----------------------------------------------------------------------
 {
-    loadRAW(aFileName.data(), aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag);
+    loadRAW(aFileName.data(), aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag, anElementType.data());
 }
 
 
@@ -4307,11 +4309,11 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
             
             if (data_type_string == "MET_DOUBLE")
             {
-                data_type_string = typeid(double).name();
+                element_type = typeid(double).name();
             }
             else if (data_type_string == "MET_FLOAT")
             {
-                data_type_string = typeid(float).name();
+                element_type = typeid(float).name();
             }
             else if (data_type_string == "MET_CHAR")
             {
@@ -4365,7 +4367,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
             
             if (raw_file_name == "LOCAL")
             {
-                loadRAW(meta_header, dimensions[0], dimensions[1], dimensions[2], change_endianess, aFileName);
+                loadRAW(meta_header, dimensions[0], dimensions[1], dimensions[2], change_endianess, aFileName, element_type.data());
             }
             else
             {
@@ -4391,7 +4393,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
                     raw_file_name = meta_header_file_name.substr(0, index) + "/" + raw_file_name;
                 }
 
-                loadRAW(raw_file_name, dimensions[0], dimensions[1], dimensions[2], change_endianess);
+                loadRAW(raw_file_name, dimensions[0], dimensions[1], dimensions[2], change_endianess, element_type);
             }
             
             setSpacing(spacing[0], spacing[1], spacing[2]);
@@ -4407,68 +4409,239 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
 }
 
 
+template<typename T> unsigned int Image<T>::sizeOf(const char* anElementType) const
+{
+    return (sizeOf(std::string(anElementType)));
+}
+
+
+template<typename T> unsigned int Image<T>::sizeOf(const std::string& anElementType) const
+{
+    // Double
+    if (anElementType == typeid(double).name())
+        return (sizeof(double));
+
+    // Float
+    else if (anElementType == typeid(float).name())
+        return (sizeof(float));
+
+    // char
+    else if (anElementType == typeid(char).name())
+        return (sizeof(char));
+
+    // unsigned char
+    else if (anElementType == typeid(unsigned char).name())
+        return (sizeof(unsigned char));
+
+    // short
+    else if (anElementType == typeid(short).name())
+        return (sizeof(short));
+
+    // unsigned short
+    else if (anElementType == typeid(unsigned short).name())
+        return (sizeof(unsigned short));
+
+    // int
+    else if (anElementType == typeid(int).name())
+        return (sizeof(int));
+
+    // unsigned int
+    else if (anElementType == typeid(unsigned int).name())
+        return (sizeof(unsigned int));
+
+
+    std::string error_message("The data type \"");
+    error_message += anElementType;
+    error_message += "\" is not known.";
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+}
+
+
 //-----------------------------------------------------------------------
 template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
                                             unsigned int aWidth,
                                             unsigned int aHeight,
                                             unsigned int aNumberOfSlices,
                                             bool aChangeEndianessFlag,
-                                            const char* aFileName)
+                                            const char* aFileName,
+                                            const char* anElementType)
 //-----------------------------------------------------------------------
 {
-    
+    // Release memory if needed
+    destroy();
+
     // Store the image size
     m_width = aWidth;
     m_height = aHeight;
     m_number_of_slices = aNumberOfSlices;
     
+    unsigned int number_of_voxels(m_width * m_height * m_number_of_slices);
+
+    // No data to read
+    if (!number_of_voxels)
+    {
+        return;
+    }
+
+    // Data size in native file format (in bytes)
+    unsigned int requested_length_in_bytes(
+            number_of_voxels *
+            sizeOf(anElementType));
+
     // Allocate the memory
-    m_p_image = new T[m_width * m_height * m_number_of_slices];
-    
+    char* p_temp_buffer(new char[requested_length_in_bytes]);
+
     // Out of memory
-    if (m_width && m_height && m_number_of_slices && !m_p_image)
+    if (!p_temp_buffer)
     {
         throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
-    
+
     // Get file size
     int offset_current_position(anInputStream.tellg());
     anInputStream.seekg (0, std::ios::end);
     unsigned int length(int(anInputStream.tellg()) - offset_current_position);
     anInputStream.seekg (offset_current_position, std::ios::beg);
-     
-     if (length < m_width * m_height * m_number_of_slices * sizeof(T))
-     {
-     std::string error_message("The file size of \"");
-     error_message += aFileName;
-     error_message += "\" is too small to contained the specified raw data.";
-     throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-     }
+
+    if (length < requested_length_in_bytes)
+    {
+        // release the memory
+        delete [] p_temp_buffer;
+
+        std::string error_message("The file size of \"");
+        error_message += aFileName;
+        error_message += "\" is too small to contained the specified raw data.";
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+    }
+
+
+    // Allocate the memory
+    /*m_p_image = new T[m_width * m_height * m_number_of_slices];
+    
+    // Out of memory
+    if (m_width && m_height && m_number_of_slices && !m_p_image)
+    {
+        throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+    }*/
+    
+
     
     // Skip the first byte if needed
     int offset_in_bytes(0);
-    anInputStream.read(reinterpret_cast<char*>(m_p_image), 1);
-    if (*reinterpret_cast<char*>(m_p_image) != 10)
+    anInputStream.read(reinterpret_cast<char*>(p_temp_buffer), 1);
+    if (*reinterpret_cast<char*>(p_temp_buffer) != 10)
     {
         offset_in_bytes = 1;
     }
     
     // Read the data
-    anInputStream.read(reinterpret_cast<char*>(m_p_image) + offset_in_bytes, m_width * m_height * m_number_of_slices * sizeof(T));
+    anInputStream.read(reinterpret_cast<char*>(p_temp_buffer) + offset_in_bytes, requested_length_in_bytes);
     
     // Close the file
     anInputStream.close();
     
     // Change endianess
-    if (aChangeEndianessFlag && sizeof(T) > 1)
+    if (aChangeEndianessFlag && sizeOf(anElementType) > 1)
     {
 #ifdef NDEBUG
         #pragma omp parallel for
 #endif
         for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
-            swapBytes(m_p_image[i]);
+            swapBytes(p_temp_buffer[i]);
         }
+    }
+
+    // Same native file format is the same as T
+    if (anElementType == typeid(T).name())
+    {
+        // Reassign the pointer
+        m_p_image = reinterpret_cast<T*>(p_temp_buffer);
+    }
+    // Conversion is needed
+    else
+    {
+        // Allocate the memory
+        m_p_image = new T[number_of_voxels];
+
+        // Out of memory
+        if (!m_p_image)
+        {
+            // release the memory
+            delete [] p_temp_buffer;
+
+            throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Double
+        if (std::string(anElementType) == typeid(double).name())
+        {
+            double* p_temp = reinterpret_cast<double*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // Float
+        else if (std::string(anElementType) == typeid(float).name())
+        {
+            float* p_temp = reinterpret_cast<float*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // char
+        else if (std::string(anElementType) == typeid(char).name())
+        {
+            char* p_temp = reinterpret_cast<char*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // unsigned char
+        else if (std::string(anElementType) == typeid(unsigned char).name())
+        {
+            unsigned char* p_temp = reinterpret_cast<unsigned char*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // short
+        else if (std::string(anElementType) == typeid(short).name())
+        {
+            short* p_temp = reinterpret_cast<short*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // unsigned short
+        else if (std::string(anElementType) == typeid(unsigned short).name())
+        {
+            unsigned short* p_temp = reinterpret_cast<unsigned short*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // int
+        else if (std::string(anElementType) == typeid(int).name())
+        {
+            int* p_temp = reinterpret_cast<int*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        // unsigned int
+        else if (std::string(anElementType) == typeid(unsigned int).name())
+        {
+            unsigned int* p_temp = reinterpret_cast<unsigned int*> (p_temp_buffer);
+            std::copy(p_temp, p_temp + number_of_voxels, m_p_image);
+        }
+
+        else
+        {
+            // release the memory
+            delete [] p_temp_buffer;
+
+            std::string error_message("The data type \"");
+            error_message += anElementType;
+            error_message += "\" is not known.";
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+        }
+
+        // release the memory
+        delete [] p_temp_buffer;
     }
 }
     

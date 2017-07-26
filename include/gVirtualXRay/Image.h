@@ -514,18 +514,24 @@ public:
     void loadMHA(const std::string& aFileName);
     
     
+    unsigned int sizeOf(const char* anElementType) const;
+
+	unsigned int sizeOf(const std::string& anElementType) const;
+
     void loadRAW(const char* aFileName,
                  unsigned int aWidth,
                  unsigned int aHeight,
                  unsigned int aNumberOfSlices = 1,
-                 bool aChangeEndianessFlag = false);
+                 bool aChangeEndianessFlag = false,
+                 const char* anElementType = 0);
 
     
     void loadRAW(const std::string& aFileName,
                  unsigned int aWidth,
                  unsigned int aHeight,
                  unsigned int aNumberOfSlices = 1,
-                 bool aChangeEndianessFlag = false);
+                 bool aChangeEndianessFlag = false,
+                 const std::string& anElementType = "");
     
 
     //--------------------------------------------------------------------------
@@ -1049,7 +1055,8 @@ private:
                  unsigned int aHeight,
                  unsigned int aNumberOfSlices,
                  bool aChangeEndianessFlag,
-                 const char* aFileName);
+                 const char* aFileName,
+                 const char* anElementType);
     
     
     void saveMetaHeader(const char* aFileName) const;
