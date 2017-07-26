@@ -146,9 +146,9 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_filename(aPolygonMesh.m_filename),
         m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
         m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
+        m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
         m_use_tissue_properties(aPolygonMesh.m_use_tissue_properties),
         m_tissue_properties(aPolygonMesh.m_tissue_properties),
-        m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
         m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
         m_min_corner(aPolygonMesh.m_min_corner),
         m_max_corner(aPolygonMesh.m_max_corner),
@@ -940,9 +940,9 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_filename                = aPolygonMesh.m_filename;
     m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
     m_hounsfield_value        = aPolygonMesh.m_hounsfield_value;
+    m_attenuation_coefficient = aPolygonMesh.m_attenuation_coefficient;
     m_use_tissue_properties   = aPolygonMesh.m_use_tissue_properties;
     m_tissue_properties       = aPolygonMesh.m_tissue_properties;
-    m_attenuation_coefficient = aPolygonMesh.m_attenuation_coefficient;
     m_bounding_box_diagonal   = aPolygonMesh.m_bounding_box_diagonal;
     m_min_corner              = aPolygonMesh.m_min_corner;
     m_max_corner              = aPolygonMesh.m_max_corner;
@@ -954,6 +954,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_vertex_data_type        = aPolygonMesh.m_vertex_data_type;
     m_polygon_type            = aPolygonMesh.m_polygon_type;
     m_external_data_flag      = aPolygonMesh.m_external_data_flag;
+    m_display_flag            = aPolygonMesh.m_display_flag;
     m_material                = aPolygonMesh.m_material;
 
     // Delete the VBO if needed
