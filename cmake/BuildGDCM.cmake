@@ -3,9 +3,9 @@ macro(build_gdcm install_prefix staging_prefix)
 
     # make a custom GDCM configuration file
 
-SET (GDCM_VERSION_STRING 2.6)
-SET (GDCM_VERSION_MAJOR  2.6)
-SET (GDCM_VERSION_MINOR  5)
+SET (GDCM_VERSION_STRING 2.8)
+SET (GDCM_VERSION_MAJOR  2.8)
+SET (GDCM_VERSION_MINOR  2)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
@@ -20,8 +20,8 @@ endif()
 SET (GDCM_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(gdcm
-  URL  "http://downloads.sourceforge.net/project/gdcm/gdcm%202.x/GDCM%202.6.5/gdcm-2.6.5.tar.gz"
-  URL_MD5 "594e0a23cb5dce554874b330b3584a03"
+  URL  "https://downloads.sourceforge.net/project/gdcm/gdcm%202.x/GDCM%202.8.2/gdcm-2.8.2.tar.gz"
+  URL_MD5 "878d389466d37cb5808efe24e6d17f9b"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   BINARY_DIR  ${staging_prefix}/${install_prefix}-build
