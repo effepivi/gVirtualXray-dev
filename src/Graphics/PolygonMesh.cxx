@@ -3170,6 +3170,177 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 }
 
 
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<double>* aNormalArray,
+                                  const std::vector<unsigned char>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+                    &((*aVertexArray)[0]),
+                    aVertexArray->size() / 3,
+                    GL_DOUBLE,
+                    &((*anIndexArray)[0]),
+                    anIndexArray->size(),
+                    GL_UNSIGNED_BYTE,
+                    aCreateVBOFlag,
+                    aTypeOfVBO);
+    
+    
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+    
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                 ite != aNormalArray->end();
+                 ++ite)
+            {
+                m_p_vertex_normal_set.push_back(*ite);
+            }
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                 ite != aNormalArray->end();
+                 ++ite)
+            {
+                m_p_face_normal_set.push_back(*ite);
+            }
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+    
+    // Update the VBO
+    if (aCreateVBOFlag)
+    {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+    }
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<double>* aNormalArray,
+                                  const std::vector<unsigned short>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+                    &((*aVertexArray)[0]),
+                    aVertexArray->size() / 3,
+                    GL_DOUBLE,
+                    &((*anIndexArray)[0]),
+                    anIndexArray->size(),
+                    GL_UNSIGNED_SHORT,
+                    aCreateVBOFlag,
+                    aTypeOfVBO);
+    
+    
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+    
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                 ite != aNormalArray->end();
+                 ++ite)
+            {
+                m_p_vertex_normal_set.push_back(*ite);
+            }
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                 ite != aNormalArray->end();
+                 ++ite)
+            {
+                m_p_face_normal_set.push_back(*ite);
+            }
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+    
+    // Update the VBO
+    if (aCreateVBOFlag)
+    {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+    }
+}
+
+
+//------------------------------------------------------------------------------
+void PolygonMesh::setInternalData(int aTypeOfPrimitive,
+                                  const std::vector<double>* aVertexArray,
+                                  const std::vector<double>* aNormalArray,
+                                  const std::vector<unsigned int>* anIndexArray,
+                                  bool aCreateVBOFlag,
+                                  int aTypeOfVBO)
+//------------------------------------------------------------------------------
+{
+    setInternalData(aTypeOfPrimitive,
+                    &((*aVertexArray)[0]),
+                    aVertexArray->size() / 3,
+                    GL_DOUBLE,
+                    &((*anIndexArray)[0]),
+                    anIndexArray->size(),
+                    GL_UNSIGNED_INT,
+                    aCreateVBOFlag,
+                    aTypeOfVBO);
+    
+    
+    m_p_vertex_normal_set.clear();
+    m_p_face_normal_set.clear();
+    
+    if (aNormalArray)
+    {
+        if (aNormalArray->size() == aVertexArray->size())
+        {
+            for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                 ite != aNormalArray->end();
+                 ++ite)
+            {
+                m_p_vertex_normal_set.push_back(*ite);
+            }
+        }
+        else if (aNormalArray->size() == anIndexArray->size())
+        {
+            for (std::vector<double>::const_iterator ite(aNormalArray->begin());
+                 ite != aNormalArray->end();
+                 ++ite)
+            {
+                m_p_face_normal_set.push_back(*ite);
+            }
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
+        }
+    }
+    
+    // Update the VBO
+    if (aCreateVBOFlag)
+    {
+        updateVBO(aTypeOfVBO, aTypeOfPrimitive);
+    }
+}
+
+
 //-----------------------------------
 void PolygonMesh::destroyVertexData()
 //-----------------------------------

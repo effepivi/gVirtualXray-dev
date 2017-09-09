@@ -1119,6 +1119,30 @@ public:
             bool aCreateVBOFlag,
             int aTypeOfVBO);
 
+
+    void setInternalData(int aTypeOfPrimitive,
+                         const std::vector<double>* aVertexArray,
+                         const std::vector<double>* aNormalArray,
+                         const std::vector<unsigned char>* anIndexArray,
+                         bool aCreateVBOFlag,
+                         int aTypeOfVBO);
+    
+        
+    void setInternalData(int aTypeOfPrimitive,
+                         const std::vector<double>* aVertexArray,
+                         const std::vector<double>* aNormalArray,
+                         const std::vector<unsigned short>* anIndexArray,
+                         bool aCreateVBOFlag,
+                         int aTypeOfVBO);
+
+    
+    void setInternalData(int aTypeOfPrimitive,
+                         const std::vector<double>* aVertexArray,
+                         const std::vector<double>* aNormalArray,
+                         const std::vector<unsigned int>* anIndexArray,
+                         bool aCreateVBOFlag,
+                         int aTypeOfVBO);
+
     //--------------------------------------------------------------------------
     /// Apply a scaling factor to the vertex data. Note that the bounding box
     /// will be automatically updated.
