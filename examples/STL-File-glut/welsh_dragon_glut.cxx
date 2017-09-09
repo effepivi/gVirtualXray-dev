@@ -714,7 +714,7 @@ void render()
         // Display the X-Ray image
         if (g_display_detector)
             {
-            g_xray_renderer.display();
+            g_xray_renderer.display(true, false, true);
             }
 
         // Display the beam
@@ -1400,10 +1400,10 @@ void updateXRayImage()
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
 
         // Normalise the X-ray image
-        if (!g_image_computed)
+        /*if (!g_image_computed)
             {
                 g_xray_renderer.normalise();
-            }
+            }*/
 
         // The X-ray image is up-to-date
         g_is_xray_image_up_to_date = true;

@@ -547,7 +547,7 @@ void idleCallback()
         g_xray_simulator.computeImage(g_sample_rotation_matrix);
 
         // Normalise the X-ray image
-        g_xray_simulator.normalise();
+        //g_xray_simulator.normalise();
     }
 }
 

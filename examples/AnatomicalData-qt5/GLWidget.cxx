@@ -845,10 +845,10 @@ void GLWidget::updateXRayImage()
         }
 
     // Normalise the X-ray image
-    if (fabs(m_current_angle) < EPSILON)
+    /*if (fabs(m_current_angle) < EPSILON)
         {
         m_xray_renderer.normalise();
-        }
+        }*/
 
     QDateTime stop_time = QDateTime::currentDateTime();
     m_simulation_total_time +=

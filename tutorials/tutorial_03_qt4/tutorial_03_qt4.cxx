@@ -411,7 +411,7 @@ void GLWidget::paintGL()
     g_xray_detector.displaySource();
 
     // Display the detector with the corresponding X-ray image
-    g_xray_simulator.display();
+    g_xray_simulator.display(true, false, false);
 
     // Rotate the 1st object
     g_current_modelview_matrix *= g_sample_rotation_matrix;
