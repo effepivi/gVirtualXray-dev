@@ -428,16 +428,16 @@ SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 
 
 # VCG ##########################################################################
-OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
+#OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
 
-IF (USE_SYSTEM_VCG)
-    FIND_PACKAGE( VCG   REQUIRED )
-ELSE(USE_SYSTEM_VCG)
-    INCLUDE(BuildVCG)
-    build_vcg( vcg ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_VCG)
+#IF (USE_SYSTEM_VCG)
+#    FIND_PACKAGE( VCG   REQUIRED )
+#ELSE(USE_SYSTEM_VCG)
+#    INCLUDE(BuildVCG)
+#    build_vcg( vcg ${PROJECT_BINARY_DIR} )
+#ENDIF (USE_SYSTEM_VCG)
 
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${VCG_INCLUDE_DIR}")
+#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${VCG_INCLUDE_DIR}")
 
 
 # FFTW3 ########################################################################
