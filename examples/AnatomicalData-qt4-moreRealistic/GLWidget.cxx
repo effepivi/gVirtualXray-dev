@@ -895,7 +895,7 @@ void GLWidget::updateXRayImage()
     // Normalise the X-ray image
     if (fabs(m_current_angle) < EPSILON)
         {
-        m_xray_renderer.normalise();
+        //m_xray_renderer.normalise();
         }
 
     QDateTime stop_time = QDateTime::currentDateTime();
@@ -1076,7 +1076,7 @@ void GLWidget::render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        m_xray_renderer.display(true);
+        m_xray_renderer.display(true, true, false);
 
         // Display the beam
         if (m_display_beam)

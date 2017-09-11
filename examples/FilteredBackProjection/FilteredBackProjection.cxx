@@ -1152,7 +1152,7 @@ void render()
 
         // Display the X-Ray image
         glDisable(GL_CULL_FACE);
-        g_xray_renderer.display(true, false, true);
+        g_xray_renderer.display(true, true, false);
 
         // Display the beam
         if (g_display_beam)
