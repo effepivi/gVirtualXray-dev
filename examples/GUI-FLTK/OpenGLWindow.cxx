@@ -642,7 +642,7 @@ void OpenGLWindow::render()
         // Display the X-Ray image
         if (m_display_detector)
             {
-            m_xray_renderer.display();
+            m_xray_renderer.display(true, true, false);
             }
 
         // Display the beam
@@ -922,7 +922,7 @@ void OpenGLWindow::updateXRayImage()
         m_xray_renderer.computeImage(m_sample_rotation_matrix);
 
         // Normalise the X-ray image
-        m_xray_renderer.normalise();
+        //m_xray_renderer.normalise();
 
         // The X-ray image is up-to-date
         m_is_xray_image_up_to_date = true;
