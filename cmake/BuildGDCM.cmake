@@ -69,20 +69,22 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     )
 else ()
     SET(GDCM_LIBRARIES 
-        ${GDCM_INSTALL_DIR}/lib/libgdcmCommon.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmDSED.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmIOD.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmMEXD.a
-        #${GDCM_INSTALL_DIR}/lib/libgdcmopenjpeg.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmzlib.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmcharls.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmCommon.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmDICT.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmDSED.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmexpat.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmMSFF.a
-        ${GDCM_INSTALL_DIR}/lib/libsocketxx.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmIOD.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg12.a
-        ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg8.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg16.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg8.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmMEXD.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmMSFF.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmopenjp2.a
+        ${GDCM_INSTALL_DIR}/lib/libgdcmzlib.a
+        ${GDCM_INSTALL_DIR}/lib/libsocketxx.a
+
+        #${GDCM_INSTALL_DIR}/lib/libgdcmopenjpeg.a
     )
 
     IF (NOT WIN32)
