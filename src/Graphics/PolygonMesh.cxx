@@ -1140,7 +1140,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_number_of_indices = m_number_of_indices +
             aPolygonMesh.m_number_of_indices;
 
-    switch (m_index_data_type)
+    switch (new_polygon_mesh.m_index_data_type)
         {
         case 0:
             break;
@@ -1184,7 +1184,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
                 }
             }
             break;
@@ -1432,7 +1432,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + m_number_of_indices;
+                *p_temp1++ = *p_temp2++ + getVertexNumber();
                 }
             }
             break;
@@ -2781,6 +2781,9 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
+        m_p_face_normal_set.clear();
+        m_p_vertex_normal_set.clear();
+
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
@@ -2844,6 +2847,9 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
+        m_p_face_normal_set.clear();
+        m_p_vertex_normal_set.clear();
+
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
@@ -2908,6 +2914,9 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
+        m_p_face_normal_set.clear();
+        m_p_vertex_normal_set.clear();
+
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
@@ -2972,6 +2981,9 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
+        m_p_face_normal_set.clear();
+        m_p_vertex_normal_set.clear();
+
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
@@ -3036,6 +3048,9 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
+        m_p_face_normal_set.clear();
+        m_p_vertex_normal_set.clear();
+
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
@@ -3100,6 +3115,9 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
+        m_p_face_normal_set.clear();
+        m_p_vertex_normal_set.clear();
+
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
