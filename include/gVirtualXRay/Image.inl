@@ -3268,6 +3268,10 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
 //-----------------------------------------------------------------------------------
 {
     Image temp(aNewWidth, aNewHeight, aNewNumberOfSlices);
+    temp.m_spacing = m_spacing;
+    temp.m_spacing[0] = m_spacing[0] * RATIONAL_NUMBER(m_width)            / RATIONAL_NUMBER(aNewWidth);
+    temp.m_spacing[1] = m_spacing[1] * RATIONAL_NUMBER(m_height)           / RATIONAL_NUMBER(aNewHeight);
+    temp.m_spacing[2] = m_spacing[2] * RATIONAL_NUMBER(m_number_of_slices) / RATIONAL_NUMBER(aNewNumberOfSlices);
 
 #ifdef NDEBUG
 #ifdef WIN32
