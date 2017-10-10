@@ -21,7 +21,9 @@
 #include "GL/glew.h"
 #endif
 
+#ifndef __DiaphragmMesh_h
 #include "gVirtualXRay/DiaphragmMesh.h"
+#endif
 
 
 //******************************************************************************
@@ -39,6 +41,7 @@ DiaphragmMesh::DiaphragmMesh(bool optimize_texture_coordinates,
 	getMaterial().setDiffuseColour(0.58,0.2,0.15,1.);
 	getMaterial().setAmbientColour(0.58,0.22,0.17,1.);
 	m_has_tendon=1;
+	m_label = "diaphragm";
 }
 
 //----------------------------------------------
@@ -47,6 +50,7 @@ DiaphragmMesh::~DiaphragmMesh()
 {
 	// TODO Auto-generated destructor stub
 }
+
 
 //----------------------------------------------
 void DiaphragmMesh::defineBumpMapShaderInput(int shader_id)

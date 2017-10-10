@@ -28,7 +28,7 @@
 #include "GL/glew.h"
 #endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
@@ -78,6 +78,7 @@ InternalOrganMesh::InternalOrganMesh(bool optimize_texture_coordinates,
 {
 	//internal organs use bump mapping
 	m_use_bump_map = 1;
+	m_label = "unknown_internal_organ";
 }
 
 //----------------------------------------

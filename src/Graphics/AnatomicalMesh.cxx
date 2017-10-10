@@ -22,7 +22,7 @@
 #include "GL/glew.h"
 #endif
 
-#ifndef ANATOMICAL_MESH_H
+#ifndef __AnatomicalMesh_h
 #include "gVirtualXRay/AnatomicalMesh.h"
 #endif
 
@@ -37,7 +37,8 @@ AnatomicalMesh::AnatomicalMesh():
 //----------------------------------------
 		PolygonMesh(),
 		m_use_texture(0),
-		m_use_bump_map(0)
+		m_use_bump_map(0),
+	    m_label("unknown")
 //----------------------------------------
 {
 	getMaterial().setSpecularColour(1.,1.,1.,1.);
@@ -92,6 +93,7 @@ void AnatomicalMesh::copyFrom(const AnatomicalMesh& aPolygonMesh)
 
     m_use_texture = aPolygonMesh.m_use_texture;
     m_use_bump_map = aPolygonMesh.m_use_bump_map;
+    m_label = aPolygonMesh.m_label;
 }
 
 
@@ -103,6 +105,7 @@ AnatomicalMesh& AnatomicalMesh::operator=(const PolygonMesh& aPolygonMesh)
 
     m_use_texture = 0;
     m_use_bump_map = 0;
+    m_label = "unknown";
 
     getMaterial().setSpecularColour(1.,1.,1.,1.);
 
@@ -117,6 +120,14 @@ AnatomicalMesh& AnatomicalMesh::operator=(const AnatomicalMesh& aPolygonMesh)
     AnatomicalMesh::copyFrom(aPolygonMesh);
 
     return (*this);
+}
+
+
+//-------------------------------------------------
+const std::string& AnatomicalMesh::getLabel() const
+//-------------------------------------------------
+{
+	return (m_label);
 }
 
 

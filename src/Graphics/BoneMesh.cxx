@@ -21,9 +21,11 @@
 #include "GL/glew.h"
 #endif
 
+#ifndef __BoneMesh_h
 #include "gVirtualXRay/BoneMesh.h"
+#endif
 
-#ifndef GVXR_UTILITIES_H
+#ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
 #endif
 
@@ -44,6 +46,7 @@ BoneMesh::BoneMesh(unsigned int texture_3D_size):
 	getMaterial().setSpecularColour(0.2,0.2,0.2,1.);
 	getMaterial().setDiffuseColour(0.84,0.74,0.6,1.);
 	getMaterial().setAmbientColour(0.84,0.74,0.6,1.);
+	m_label = "bones";
 }
 
 //----------------------------------------
@@ -140,6 +143,7 @@ void BoneMesh::initialize()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
+
 
 //----------------------------------------------
 void BoneMesh::generateTextures()

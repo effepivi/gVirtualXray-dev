@@ -56,12 +56,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <string>
 
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_MATRIX4X4_H
+#ifndef __Matrix4x4_h
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
@@ -131,6 +132,15 @@ public:
     virtual AnatomicalMesh& operator=(const AnatomicalMesh& aPolygonMesh);
 
 
+    //--------------------------------------------------------------------------
+    /// Accessor on the label that determines the type of the mesh
+    /*
+    *   @return the label
+    */
+    //-------------------------------------------------------------------------
+    virtual const std::string& getLabel() const;
+    
+    
 //******************************************************************************
 protected:
     /// 1 if the mesh use texturing; default value is 0
@@ -138,6 +148,9 @@ protected:
 
     /// 1 if the mesh use bump mapping; default value is 0
     int m_use_bump_map;
+    
+    /// A label to determine the type of the mesh
+    std::string m_label;
 };
 
 

@@ -60,6 +60,7 @@ SoftTissueMesh::SoftTissueMesh(bool optimize_texture_coordinates,
 {
 	getMaterial().setShininess(100);
 	m_use_texture = 1;
+	m_label = "unknown_soft_tissue";
 }
 
 //----------------------------------------------
