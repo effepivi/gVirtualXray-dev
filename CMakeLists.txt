@@ -40,8 +40,9 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 2.8.0 FATAL_ERROR)
-
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+set (CMAKE_CXX_STANDARD 11)
+set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
 
 # Flag required for shared libraries
 IF (UNIX)
@@ -866,7 +867,7 @@ INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTA
 
 
 # Generate gVirtualXRayConfig.cmake ############################################
-set(gVirtualXRay_USE_FILE "${gVirtualXRay_SOURCE_DIR}/UsegVirtualXRay.cmake")
+set(gVirtualXRay_USE_FILE "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/UsegVirtualXRay.cmake")
 configure_file(cmake/gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
 install(FILES
