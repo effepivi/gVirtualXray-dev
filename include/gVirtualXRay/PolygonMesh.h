@@ -1218,6 +1218,11 @@ public:
     Material& getMaterial();
 
 
+    void setTransformationMatrix(const MATRIX4& aTransformationMatrix);
+    const MATRIX4& getTransformationMatrix() const;
+    MATRIX4& getTransformationMatrix();
+
+
     //--------------------------------------------------------------------------
     /// Copy.
     /**
@@ -1454,9 +1459,12 @@ protected:
 	bool m_display_flag;
 
 
-
     /// Material of the object
     Material m_material;
+
+
+    /// Transformation matrix
+    MATRIX4 m_local_to_global_transformation;
 };
 
 

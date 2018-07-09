@@ -163,7 +163,8 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_polygon_type(aPolygonMesh.m_polygon_type),
         m_external_data_flag(aPolygonMesh.m_external_data_flag),
 		m_display_flag(aPolygonMesh.m_display_flag),
-        m_material(aPolygonMesh.m_material)
+        m_material(aPolygonMesh.m_material),
+		m_local_to_global_transformation(aPolygonMesh.m_local_to_global_transformation)
 //------------------------------------------------------------------------
 {
     if (aPolygonMesh.m_p_vertex_set)
@@ -223,6 +224,8 @@ void PolygonMesh::reset()
     m_vertex_data_type = GL_NONE;
 
     m_external_data_flag = false;
+    
+	m_local_to_global_transformation = MATRIX4();
 }
 
 
@@ -956,6 +959,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_external_data_flag      = aPolygonMesh.m_external_data_flag;
     m_display_flag            = aPolygonMesh.m_display_flag;
     m_material                = aPolygonMesh.m_material;
+	m_local_to_global_transformation = aPolygonMesh.m_local_to_global_transformation;
 
     // Delete the VBO if needed
     if (!m_p_vbo.get())

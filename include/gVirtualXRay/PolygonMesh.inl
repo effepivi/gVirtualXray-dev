@@ -625,4 +625,22 @@ inline Material& PolygonMesh::getMaterial()
 }
 
 
+inline void PolygonMesh::setTransformationMatrix(const MATRIX4& aTransformationMatrix)
+{
+	m_local_to_global_transformation = aTransformationMatrix;
+}
+
+
+inline const MATRIX4& PolygonMesh::getTransformationMatrix() const
+{
+	return (m_local_to_global_transformation);
+}
+
+
+inline MATRIX4& PolygonMesh::getTransformationMatrix()
+{
+	return (m_local_to_global_transformation);
+}
+
+
 } // namespace gVirtualXRay
