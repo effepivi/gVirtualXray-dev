@@ -922,8 +922,7 @@ protected:
     void updateHUPolygonMeshSet();
 
 
-    void preComputeLBuffer(GLint* apViewport, const VEC3& aXRaySourceSampleOffset,
-            const MATRIX4& aModellingTransformationMatrix);
+    void preComputeLBuffer(GLint* apViewport, const VEC3& aXRaySourceSampleOffset);
     void postComputeLBuffer(const GLint* apViewport, RATIONAL_NUMBER aDiagonal);
 
 

@@ -634,12 +634,17 @@ namespace gVirtualXRay {
         // This is an internal mesh
         if (&anObject != m_p_outer_surface || !m_p_inner_surface_set.size())
         {
-            computeInnerSurfaceLBuffer(anObject, aXRaySourceDetectorTranslation, aModellingTransformationMatrix, aGPUStateConservationFlag);
+            computeInnerSurfaceLBuffer(anObject,
+            		aXRaySourceDetectorTranslation,
+					aModellingTransformationMatrix * anObject.getTransformationMatrix(),
+					aGPUStateConservationFlag);
         }
         // This is the external mesh
         else
         {
-            computeOuterSurfaceLBuffer(anObject, aXRaySourceDetectorTranslation, aModellingTransformationMatrix);
+            computeOuterSurfaceLBuffer(anObject,
+            		aXRaySourceDetectorTranslation,
+					aModellingTransformationMatrix * anObject.getTransformationMatrix());
         }
     }
 

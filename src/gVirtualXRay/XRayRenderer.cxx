@@ -902,7 +902,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				{
 				    // Store GPU states
 				    GLint p_viewport[4];
-				    preComputeLBuffer(p_viewport, xray_source_detector_translation, aModellingTransformationMatrix);
+				    preComputeLBuffer(p_viewport, xray_source_detector_translation);
 
 				    RATIONAL_NUMBER bbox_diagonal(0.0);
                     VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
@@ -1924,12 +1924,27 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
     GLint p_viewport[4];
     if (aGPUStateConservationFlag)
         {
-        preComputeLBuffer(p_viewport, aXRaySourceSampleOffset, aModellingTransformationMatrix);
+        preComputeLBuffer(p_viewport, aXRaySourceSampleOffset);
         }
 
     // The 3D object is not empty
     if (anObject.getVertexNumber())
     {
+        // Load uniform variables to the GPU
+        GLint program_handle(0);
+        glGetIntegerv(GL_CURRENT_PROGRAM, &program_handle);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        GLint handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        MATRIX4 modelview_matrix(aModellingTransformationMatrix);
+
+        handle = glGetUniformLocation(program_handle, "g_normal_matrix");
+        glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
         // Display the object
         anObject.display();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -3001,8 +3016,7 @@ void XRayRenderer::updateHUPolygonMeshSet()
 
 //-----------------------------------------------------
 void XRayRenderer::preComputeLBuffer(GLint* apViewport,
-        const VEC3& aXRaySourceSampleOffset,
-        const MATRIX4& aModellingTransformationMatrix)
+        const VEC3& aXRaySourceSampleOffset)
 //-----------------------------------------------------
 {
     // Save the current FBO
@@ -3073,16 +3087,6 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
     }
 
     // Load uniform variables to the GPU
-    handle = glGetUniformLocation(program_handle, "g_modelling_matrix");
-    glUniformMatrix4fv(handle, 1, GL_FALSE, aModellingTransformationMatrix.get());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    MATRIX4 modelview_matrix(aModellingTransformationMatrix);
-
-    handle = glGetUniformLocation(program_handle, "g_normal_matrix");
-    glUniformMatrix3fv(handle, 1, GL_FALSE, modelview_matrix.get3x3());
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
     GLfloat p_float_4[4];
     m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
     handle = glGetUniformLocation(program_handle,"g_detector_plane");
