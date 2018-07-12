@@ -9,3 +9,5 @@ IF (USE_GLFW)
     ENDIF (USE_ITK)
 ENDIF ()
 
+ADD_SUBDIRECTORY (Python)
+
