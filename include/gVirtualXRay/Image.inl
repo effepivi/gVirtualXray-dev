@@ -1675,50 +1675,53 @@ template<typename T> void Image<T>::save(const char* aFileName,
                                          const char* aComment) const
 //------------------------------------------------------------------
 {
-#ifdef HAS_ITK
-    saveUsingITK(aFileName);
-#else
     if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
     {
         saveASCII(aFileName);
     }
-    else if (isPGM(aFileName))
-    {
-        savePGM(aFileName);
-    }
-    else if (isRAW(aFileName))
-    {
-        saveRAW(aFileName);
-    }
-    else if (isMHD(aFileName))
-    {
-        saveMHD(aFileName);
-    }
-    else if (isMHA(aFileName))
-    {
-        saveMHA(aFileName);
-    }
-    else if (isDCM(aFileName))
-    {
-        saveDCM(aFileName, anInvertLUTFlag, aComment);
-    }
-    else if (isTIFF(aFileName))
-    {
-        saveTIFF(aFileName, anInvertLUTFlag);
-    }
-    else if (isJPEG(aFileName))
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Saving JPEG files is not implemented, "
-                "please contact Dr FP Vidal.");
-    }
-    else
-    {
-        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Unknown file format, to get it added to the library, "
-                "please contact Dr FP Vidal.");
-    }
+	else
+	{
+#ifdef HAS_ITK
+    	saveUsingITK(aFileName);
+#else
+	    else if (isPGM(aFileName))
+	    {
+	        savePGM(aFileName);
+	    }
+	    else if (isRAW(aFileName))
+	    {
+	        saveRAW(aFileName);
+	    }
+	    else if (isMHD(aFileName))
+	    {
+	        saveMHD(aFileName);
+	    }
+	    else if (isMHA(aFileName))
+	    {
+	        saveMHA(aFileName);
+	    }
+	    else if (isDCM(aFileName))
+	    {
+	        saveDCM(aFileName, anInvertLUTFlag, aComment);
+	    }
+	    else if (isTIFF(aFileName))
+	    {
+	        saveTIFF(aFileName, anInvertLUTFlag);
+	    }
+	    else if (isJPEG(aFileName))
+	    {
+	        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+	                "Saving JPEG files is not implemented, "
+	                "please contact Dr FP Vidal.");
+	    }
+	    else
+	    {
+	        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+	                "Unknown file format, to get it added to the library, "
+	                "please contact Dr FP Vidal.");
+	    }
 #endif
+	}
 }
 
 
