@@ -172,8 +172,11 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NU
     // Update the size of the detector
     updateSizeInUnitOfLength();
 
-    // The VBOs need to be updated
-    m_vbo_need_update = true;
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
 }
 
 
@@ -187,8 +190,11 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const VEC2& aReso
     // Update the size of the detector
     updateSizeInUnitOfLength();
 
-    // The VBOs need to be updated
-    m_vbo_need_update = true;
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
 }
 
 
@@ -201,6 +207,9 @@ inline void XRayDetector::setNumberOfPixels(const Vec2ui& aSizeInPixels)
 
 	// Update the size of the detector
 	updateSizeInUnitOfLength();
+	
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
 	
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
@@ -312,6 +321,9 @@ inline void XRayDetector::setUpVector(const VEC3& anUpVector)
 {
 	m_up_vector = anUpVector;
 	
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -322,6 +334,9 @@ inline void XRayDetector::setRotationMatrix(const MATRIX4& aMatrix)
 //-----------------------------------------------------------------
 {
 	m_rotation_matrix = aMatrix;
+	
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
 	
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
@@ -340,6 +355,12 @@ inline void XRayDetector::setParallelBeam()
 
 	// Add the centre
 	m_p_xray_source_position_set.push_back(m_xray_source_centre);
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
 }
 
 
@@ -355,6 +376,12 @@ inline void XRayDetector::setConeBeam()
 
 	// Add the centre
 	m_p_xray_source_position_set.push_back(m_xray_source_centre);
+
+	// Update the distance between the source and the detector, etc.
+	updateInternalValues();
+	
+	// The VBOs need to be updated
+	m_vbo_need_update = true;
 }
 
 
