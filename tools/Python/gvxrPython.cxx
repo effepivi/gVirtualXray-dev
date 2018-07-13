@@ -60,11 +60,10 @@
 #endif
 
 // Shaders for rendering
-//#include "display_gl2.frag.h"
-//#include "display_gl2.vert.h"
-
-//#include "display_gl3.frag.h"
-//#include "display_gl3.vert.h"
+#include "display_gl2.frag.h"
+#include "display_gl2.vert.h"
+#include "display_gl3.frag.h"
+#include "display_gl3.vert.h"
 
 
 //******************************************************************************
@@ -93,6 +92,8 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight);
 void setDetectorPixelSize(RATIONAL_NUMBER aWidth, RATIONAL_NUMBER aHeight, const char* aUnitOfLength);
 void saveLastXRayImage(const char* aFileName = 0);
 np::ndarray getNumpyImage();
+void displayScene(int aWindowID = -1);
+void renderLoop(int aWindowID = -1);
 
 void loadMeshFile(const char* aLabel,
         const char* aFileName,
@@ -110,6 +111,14 @@ void initGL();
 void errorCallback(int error, const char* description);
 RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength);
 
+void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+void draw();
+void render();
+
 
 //******************************************************************************
 //  Global variables
@@ -121,7 +130,6 @@ std::map<string, PolygonMesh> g_p_polygon_mesh_set;
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_renderer;
-Shader g_display_shader;
 
 int g_file_counter = 0;
 bool g_renderer_initialised = false;
@@ -138,6 +146,38 @@ bool g_detector_pixel_size_initialised = false;
 
 
 
+const double g_initial_intraocular_distance(1.5 * cm);        // Intraocular distance
+const double g_initial_fovy(45);                              // Field of view along the y-axis
+const double g_initial_near(5.0 * cm);                        // Near clipping plane
+const double g_initial_far(500.0 * cm);                       // Far clipping plane
+const double g_initial_screen_projection_plane(10000.0 * cm); // Screen projection plane
+
+GLfloat g_zoom(120.0 * cm);
+
+int g_button(-1);
+int g_button_state(-1);
+bool g_use_arc_ball(false);
+GLint g_last_x_position(0);
+GLint g_last_y_position(0);
+GLint g_current_x_position(0);
+GLint g_current_y_position(0);
+
+bool g_display_beam(true);
+bool g_display_wireframe(false);
+bool g_use_lighing(true);
+bool g_display_detector(true);
+
+Matrix4x4<GLfloat> g_scene_rotation_matrix;
+Matrix4x4<GLfloat> g_detector_rotation_matrix;
+Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
+
+Shader g_display_shader;
+
+bool g_run_loop = false;
+const GLfloat g_rotation_speed(2.0);
+
+
 //******************************************************************************
 //  Implementation
 //******************************************************************************
@@ -147,6 +187,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads, createWindow, 0, 1)
 BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads, setWindowSize, 2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads, setMonoChromatic, 2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(displayScene_overloads, displayScene, 0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads, renderLoop, 0, 1)
 
 
 //------------------------------
@@ -178,6 +220,8 @@ void createWindow(int aWindowID)
             // Initialise GLEW
             initialiseGLEW();
 
+            // Initialise OpenGL
+            initGL();
 
             // Initialise the X-ray renderer if needed and if possible
             initialiseXRayRenderer();
@@ -226,7 +270,11 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
         // It has been found
         if(search != g_p_window_set.end())
         {
-            if (search->second) glfwSetWindowSize(search->second, aWidth, aHeight);
+            if (search->second)
+			{
+            	glfwSetWindowSize(search->second, aWidth, aHeight);
+                framebufferSizeCallback(search->second, aWidth, aHeight);
+			}
         }
         else
         {
@@ -329,7 +377,8 @@ void computeXRayImage()
     if (g_xray_renderer.isReady())
     {
         // Compute the X-ray image
-        g_xray_renderer.computeImage(MATRIX4());
+        g_xray_renderer.computeImage(g_sample_rotation_matrix /*MATRIX4()*/);
+        g_xray_renderer.printLBuffer("LBuffer.mha");
     }
     // The renderer is not ready
     else
@@ -497,7 +546,7 @@ void loadMeshFile(const char* aLabel,
     g_p_polygon_mesh_set[aLabel].setFileName(aFileName);
     
     // Load the file
-    g_p_polygon_mesh_set[aLabel].loadSTLFile(false, true, false, false, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
+    g_p_polygon_mesh_set[aLabel].loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     g_p_polygon_mesh_set[aLabel].setFileName("titi.stl");
     g_p_polygon_mesh_set[aLabel].writeSTLFile();
@@ -639,21 +688,102 @@ GLFWwindow* initGLFW(int aWindowID)
 	    // Make the window's context current
 	    glfwMakeContextCurrent(p_window);
 
+        framebufferSizeCallback(p_window, 500, 500);
+
 	    // Initialize GLFW callbacks
-	    //glfwSetKeyCallback(g_p_main_window_id, keyCallback);
-	    //glfwSetMouseButtonCallback(g_p_main_window_id, mouseButtonCallback);
-	    //glfwSetCursorPosCallback(g_p_main_window_id, cursorPosCallback);
-	    //glfwSetScrollCallback(g_p_main_window_id, scrollCallback);
-	    //glfwSetFramebufferSizeCallback(g_p_main_window_id,
-	    //	framebufferSizeCallback);
+	    glfwSetKeyCallback(p_window, keyCallback);
+	    glfwSetMouseButtonCallback(p_window, mouseButtonCallback);
+	    glfwSetCursorPosCallback(p_window, cursorPosCallback);
+	    glfwSetScrollCallback(p_window, scrollCallback);
+	    glfwSetFramebufferSizeCallback(p_window, framebufferSizeCallback);
     }
 
     return (p_window);
 }
 
 
+//-----------
 void initGL()
+//-----------
 {
+    std::cout << "OpenGL renderer:   " <<
+        glGetString(GL_RENDERER)   << std::endl;
+
+    std::cout << "OpenGL version:    " <<
+        glGetString(GL_VERSION)    << std::endl;
+
+    std::cout << "OpenGL vender:     " <<
+        glGetString(GL_VENDOR)     << std::endl;
+
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Enable the Z-buffer
+    glEnable(GL_DEPTH_TEST);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Set the background colour
+    glClearColor(0.5,
+        0.5,
+        0.5,
+        1.0);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    glEnable(GL_MULTISAMPLE);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+    // Initialise the shaders
+    char* p_vertex_shader(0);
+    char* p_fragment_shader(0);
+
+    int z_lib_return_code_vertex(0);
+    int z_lib_return_code_fragment(0);
+
+    std::string vertex_shader;
+    std::string fragment_shader;
+
+    // Display shader
+    if (useOpenGL3_2OrAbove())
+        {
+        z_lib_return_code_vertex   = inflate(g_display_gl3_vert,
+            sizeof(g_display_gl3_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(g_display_gl3_frag,
+            sizeof(g_display_gl3_frag),
+            &p_fragment_shader);
+
+        g_display_shader.setLabels("display_gl3.vert", "display_gl3.frag");
+        }
+    else
+        {
+        z_lib_return_code_vertex   = inflate(g_display_gl2_vert,
+            sizeof(g_display_gl2_vert),
+            &p_vertex_shader);
+
+        z_lib_return_code_fragment = inflate(g_display_gl2_frag,
+            sizeof(g_display_gl2_frag),
+            &p_fragment_shader);
+
+        g_display_shader.setLabels("display_gl2.vert", "display_gl2.frag");
+        }
+
+    vertex_shader   = p_vertex_shader;
+    fragment_shader = p_fragment_shader;
+
+    delete [] p_vertex_shader;
+    delete [] p_fragment_shader;
+
+    p_vertex_shader = 0;
+    p_fragment_shader = 0;
+
+    if (z_lib_return_code_vertex <= 0 || z_lib_return_code_fragment <= 0 ||
+            !vertex_shader.size() || !fragment_shader.size())
+        {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+            "Cannot decode the shader using ZLib.");
+        }
+    g_display_shader.loadSource(vertex_shader, fragment_shader);
+    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -730,7 +860,9 @@ RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength)
 }
 
 
+//-------------------------
 np::ndarray getNumpyImage()
+//-------------------------
 {
 	boost::python::object own;
 	boost::python::tuple stride = boost::python::make_tuple(sizeof(RATIONAL_NUMBER)*g_xray_detector.getNumberOfPixels().getX(),sizeof(RATIONAL_NUMBER));
@@ -748,6 +880,507 @@ np::ndarray getNumpyImage()
 	//std::cout << a(0,0) << endl;
 	return a;
 }
+
+
+//------------------------------
+void displayScene(int aWindowID)
+//------------------------------
+{
+    // Display in the last window that has been created
+    if (aWindowID == -1)
+    {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+        {
+            cerr << "gvxrWarning:\tNo active window to destroy." << endl;
+        }
+        // Destroy the last created window
+        else
+        {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+        }
+    }
+
+    // There is a window to use
+    if (aWindowID != -1)
+    {
+        // Find the window
+        auto search_window = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if(search_window != g_p_window_set.end())
+        {
+            if (search_window->second)
+            {
+        	    // Make the window's context current
+        	    glfwMakeContextCurrent(search_window->second);
+
+        		// Clear the buffers
+        		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        		// Display the 3D scene
+        		render();
+
+        		// Make sure all the OpenGL code is done
+        		glFinish();
+
+        		// Swap front and back buffers
+        		glfwSwapBuffers(search_window->second);
+            }
+        }
+        else
+        {
+            cerr << "gvxrWarning:\tWindow " << aWindowID << " not found in g_p_window_set." << endl;
+        }
+	}
+}
+
+
+//----------------------------
+void renderLoop(int aWindowID)
+//----------------------------
+{
+    // Display in the last window that has been created
+    if (aWindowID == -1)
+    {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+        {
+            cerr << "gvxrWarning:\tNo active window to destroy." << endl;
+        }
+        // Destroy the last created window
+        else
+        {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+        }
+    }
+
+    // There is a window to use
+    if (aWindowID != -1)
+    {
+        // Find the window
+        auto search_window = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if(search_window != g_p_window_set.end())
+        {
+            if (search_window->second)
+            {
+            	g_run_loop = true;
+
+            	// Launch the event loop
+                while (!glfwWindowShouldClose(search_window->second) && g_run_loop)
+                {
+                	// Udate the X-ray image
+                	computeXRayImage();
+
+                	// Render here
+                	displayScene(aWindowID);
+
+                    // Poll for and process events
+                    glfwPollEvents();
+                }
+            }
+        }
+        else
+        {
+            cerr << "gvxrWarning:\tWindow " << aWindowID << " not found in g_p_window_set." << endl;
+        }
+	}
+}
+
+
+//-----------------------------------------------------------------------
+void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
+//-----------------------------------------------------------------------
+{
+	if (height == 0)
+	{
+		// Prevent divide by 0
+		height = 1;
+	}
+
+	int x(0), y(0), w(width), h(height);
+
+	double screen_aspect_ratio(double(width) / double(height));
+	glViewport(x, y, w, h);
+
+	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
+
+	loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+			0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0);
+}
+
+
+//-------------------------------------------------------------------------------
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//-------------------------------------------------------------------------------
+{
+	if (action == GLFW_PRESS)
+	{
+		switch(key)
+		{
+		case GLFW_KEY_Q:
+		case GLFW_KEY_ESCAPE:
+			g_run_loop = false;
+			break;
+
+        case GLFW_KEY_B:
+            g_display_beam = !g_display_beam;
+            break;
+
+
+        case GLFW_KEY_W:
+            g_display_wireframe = !g_display_wireframe;
+            break;
+
+        case GLFW_KEY_N:
+            g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+            break;
+
+        case GLFW_KEY_L:
+            g_use_lighing = !g_use_lighing;
+            break;
+
+        case GLFW_KEY_D:
+            g_display_detector = !g_display_detector;
+            break;
+		}
+	}
+}
+
+
+//--------------------------------------------
+void mouseButtonCallback(GLFWwindow* apWindow,
+						 int aButton,
+						 int aButtonState,
+						 int aModifierKey)
+//--------------------------------------------
+{
+	g_button = aButton;
+	g_button_state = aButtonState;
+
+	// Use the arc ball
+	if (g_button_state == GLFW_PRESS)
+	{
+		g_use_arc_ball = true;
+	}
+	// Stop using the arc ball
+	else
+	{
+		g_use_arc_ball = false;
+	}
+
+	double xpos(0);
+	double ypos(0);
+	glfwGetCursorPos (apWindow, &xpos, &ypos);
+
+	g_last_x_position = xpos;
+	g_last_y_position = ypos;
+
+	g_current_x_position = xpos;
+	g_current_y_position = ypos;
+}
+
+
+//-----------------------------------------------------------------------
+void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
+//-----------------------------------------------------------------------
+{
+	// Scrolling along the Y-axis
+	if (fabs(yoffset) > EPSILON)
+	{
+		g_use_arc_ball = false;
+		g_zoom += yoffset * cm;
+
+		int width, height;
+		glfwGetWindowSize(apWindow, &width, &height);
+
+		framebufferSizeCallback(apWindow, width, height);
+	}
+}
+
+
+//------------------------------------------
+Vec3<GLfloat> getArcballVector(GLFWwindow* apWindow, int x, int y)
+//------------------------------------------
+{
+	int width, height;
+	glfwGetWindowSize(apWindow, &width, &height);
+
+	Vec3<GLfloat> P(2.0 * float(x) / float(width) - 1.0,
+			2.0 * float(y) / float(height) - 1.0,
+			0);
+
+	P.setY(-P.getY());
+
+	float OP_squared = P.getX() * P.getX() + P.getY() * P.getY();
+	if (OP_squared <= 1.0)
+	{
+		P.setZ(sqrt(1.0 - OP_squared));  // Pythagore
+	}
+	else
+	{
+		P.normalise();  // nearest point
+	}
+
+	return (P);
+}
+
+
+//--------------------------------
+float radian2degree(float anAngle)
+//--------------------------------
+{
+	return (180.0 * anAngle / gVirtualXRay::PI);
+}
+
+
+//--------------------------------------------
+void computeRotation(GLFWwindow* apWindow, MATRIX4& aRotationMatrix)
+//--------------------------------------------
+{
+	if (g_use_arc_ball)
+	{
+		if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
+		{
+			Vec3<GLfloat> va(getArcballVector(apWindow, g_last_x_position,    g_last_y_position));
+			Vec3<GLfloat> vb(getArcballVector(apWindow, g_current_x_position, g_current_y_position));
+
+			float angle(g_rotation_speed * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
+
+			Vec3<GLfloat> axis_in_camera_coord(va ^ vb);
+			//axis_in_camera_coord.normalize();
+
+			Matrix4x4<GLfloat> camera2object(aRotationMatrix.getInverse());
+			Vec3<GLfloat> axis_in_object_coord = camera2object * axis_in_camera_coord;
+			//axis_in_object_coord.normalize();
+
+			Matrix4x4<GLfloat> rotation_matrix;
+			rotation_matrix.rotate(angle, axis_in_object_coord);
+			aRotationMatrix = aRotationMatrix * rotation_matrix;
+
+			g_last_x_position = g_current_x_position;
+			g_last_y_position = g_current_y_position;
+		}
+	}
+}
+
+
+//--------------------------------------------------------------
+void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
+//--------------------------------------------------------------
+{
+	g_current_x_position = x;
+	g_current_y_position = y;
+
+	// Compute the rotation
+	computeRotation(apWindow, g_scene_rotation_matrix);
+}
+
+
+//---------
+void draw()
+//---------
+{
+	// Clear the buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Display the 3D scene
+	render();
+
+	// Make sure all the OpenGL code is done
+	glFinish();
+}
+
+
+//-----------
+void render()
+//-----------
+{
+	try
+	{
+        // Enable back face culling
+        pushEnableDisableState(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
+        // Enable the shader
+        pushShaderProgram();
+        g_display_shader.enable();
+        GLint shader_id(g_display_shader.getProgramHandle());
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Store the current transformation matrix
+        pushModelViewMatrix();
+
+        // Rotate the sample
+        g_current_modelview_matrix *= g_scene_rotation_matrix;
+
+        GLuint handle(0);
+        handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        MATRIX4 normal_matrix(g_current_modelview_matrix);
+        handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+        glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        GLint lighting;
+        if (g_use_lighing)
+        {
+            lighting = 1;
+        }
+        else
+        {
+            lighting = 0;
+        }
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Set the colour of the sample
+        {
+            const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
+            const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+            const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Store the current transformation matrix
+        pushModelViewMatrix();
+
+        g_current_modelview_matrix *= g_sample_rotation_matrix;
+
+
+
+        for (std::map<string, PolygonMesh>::iterator ite = g_p_polygon_mesh_set.begin();
+        		ite != g_p_polygon_mesh_set.end();
+        		++ite)
+        {
+            // Store the current transformation matrix
+            pushModelViewMatrix();
+
+            g_current_modelview_matrix *= ite->second.getTransformationMatrix();
+
+			applyModelViewMatrix();
+
+			// Display the sample
+			if (g_display_wireframe)
+			{
+				ite->second.displayWireFrame();
+			}
+			else
+			{
+				ite->second.display();
+			}
+
+			// Restore the current transformation matrix
+			popModelViewMatrix();
+        }
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Set the colour of the source
+        {
+            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Display the source
+        g_xray_detector.displaySource();
+
+        // Disable back face culling
+        glDisable(GL_CULL_FACE);
+
+        // Display the X-Ray image
+        if (g_display_detector)
+        {
+            g_xray_renderer.display(true, true, false);
+        }
+
+        // Display the beam
+        if (g_display_beam)
+        {
+            const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.3};
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            lighting = 0;
+            handle = glGetUniformLocation(shader_id,"g_use_lighting");
+            glUniform1iv(handle, 1, &lighting);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            g_xray_detector.displayBeam();
+        }
+
+        // Disable the shader
+        popShaderProgram();
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Restore the attributes
+        popEnableDisableState();
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	// Catch exception if any
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << std::endl;
+	}
+}
+
 
 
 BOOST_PYTHON_MODULE(gvxrPython)
@@ -802,5 +1435,8 @@ BOOST_PYTHON_MODULE(gvxrPython)
         
     boost::python::def("getNumpyImage", getNumpyImage);
     boost::python::def("saveLastXRayImage", saveLastXRayImage, saveLastXRayImage_overloads());
+
+    boost::python::def("displayScene", displayScene, displayScene_overloads());
+    boost::python::def("renderLoop",   renderLoop,   renderLoop_overloads());
 }
 

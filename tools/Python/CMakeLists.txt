@@ -56,11 +56,18 @@ if (PYTHONINTERP_FOUND)
         
 	            message(STATUS "Build bindings for Python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
 	
+				# Create the RESOURCES ###########################################################
+				INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
+				SET (RESOURCES_SOURCES display_gl2.vert display_gl2.frag display_gl3.vert display_gl3.frag)
+				CreateHeaderFiles("cmake" "BinaryPython" "${RESOURCES_SOURCES}")
+	
 	            INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
 	            
 	            PYTHON_ADD_MODULE(gvxrPython gvxrPython.cxx)
 	            target_link_libraries(gvxrPython ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES}
 	)
+				ADD_DEPENDENCIES(gvxrPython BinaryPython)
+	
 	            FILE(COPY gvxrPythonTest.py DESTINATION .)
 	            FILE(COPY ../../examples/data/welsh-dragon-small.stl DESTINATION .)
 
