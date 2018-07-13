@@ -44,23 +44,33 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 
 
-FIND_PACKAGE(PythonInterp)
+FIND_PACKAGE(PythonInterp 3)
 
 if (PYTHONINTERP_FOUND)
-    FIND_PACKAGE(Boost COMPONENTS python)
-    FIND_PACKAGE(PythonLibs)
+    FIND_PACKAGE(Boost COMPONENTS python-py3 numpy-py3)
+    FIND_PACKAGE(PythonLibs 3)
 
     IF (PythonLibs_FOUND)
         IF (Boost_FOUND)
-            message(STATUS "Build bindings for Python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+        	IF (NOT "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" VERSION_LESS "1.63")
+        
+	            message(STATUS "Build bindings for Python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+	
+	            INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+	            
+	            PYTHON_ADD_MODULE(gvxrPython gvxrPython.cxx)
+	            target_link_libraries(gvxrPython ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES}
+	)
+	            FILE(COPY gvxrPythonTest.py DESTINATION .)
+	            FILE(COPY ../../examples/data/welsh-dragon-small.stl DESTINATION .)
 
-            INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-            
-            PYTHON_ADD_MODULE(gvxrPython gvxrPython.cxx)
-            target_link_libraries(gvxrPython ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES}
-)
-            FILE(COPY gvxrPythonTest.py DESTINATION .)
-            
+				IF (gVirtualXRay_BINARY_DIR)
+				     ADD_DEPENDENCIES (gvxrPython   gVirtualXRay)
+				ENDIF (gVirtualXRay_BINARY_DIR)
+
+            ELSE ()
+                message(WARNING "Boost (${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}) is too old. Use at least 1.63")
+            ENDIF ()
         ELSE (Boost_FOUND)
             message(WARNING "Boost::Python not found")
         ENDIF (Boost_FOUND)
@@ -88,9 +98,6 @@ endif(PYTHONINTERP_FOUND)
 #ADD_EXECUTABLE (gvxrDicomSeriesToVolume gvxrDicomSeriesToVolume.cxx cmdline.h cmdline.c)
 #TARGET_LINK_LIBRARIES (gvxrDicomSeriesToVolume ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-#IF (gVirtualXRay_BINARY_DIR)
-#     ADD_DEPENDENCIES (gvxrDicomSeriesToVolume   gVirtualXRay)
-#ENDIF (gVirtualXRay_BINARY_DIR)
 
 #INSTALL (TARGETS gvxrDicomSeriesToVolume RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin  COMPONENT tools)
 #INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin/ COMPONENT tools)

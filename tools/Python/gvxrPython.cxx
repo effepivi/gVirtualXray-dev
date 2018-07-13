@@ -18,7 +18,11 @@
 #include <vector>
 #include <algorithm>
 
+// For Python
 #include <boost/python.hpp>
+
+// For Numpy
+#include <boost/python/numpy.hpp>
 
 // For exceptions
 #ifndef __Exception_h
@@ -68,6 +72,7 @@
 //******************************************************************************
 using namespace std;
 using namespace gVirtualXRay;
+namespace np = boost::python::numpy;
 
 
 //******************************************************************************
@@ -80,18 +85,30 @@ void destroyAllWindows();
 void computeXRayImage();
 void usePointSource();
 void useParallelBeam();
-void setMonoChromatic(float anEnergyInMeV);
-void setSourcePosition(float x, float y, float z);
-void setDetectorPosition(float x, float y, float z);
-void setDetectorUpVector(float x, float y, float z);
+void setMonoChromatic(RATIONAL_NUMBER anEnergy, const char* aUnitOfEnergy, RATIONAL_NUMBER aNumberOfPhotons = 1);
+void setSourcePosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength);
+void setDetectorPosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength);
+void setDetectorUpVector(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
 void setDetectorNumberOfPixels(int aWidth, int aHeight);
-void setDetectorPixelSize(float aWidth, float aHeight);
+void setDetectorPixelSize(RATIONAL_NUMBER aWidth, RATIONAL_NUMBER aHeight, const char* aUnitOfLength);
 void saveLastXRayImage(const char* aFileName = 0);
+np::ndarray getNumpyImage();
+
+void loadMeshFile(const char* aLabel,
+        const char* aFileName,
+        const char* aUnitOfLength);
+void moveToCentre(const char* aLabel);
+void setHU(const char* aLabel, RATIONAL_NUMBER aHU);
+void setAttenuationCoefficient(const char* aLabel,
+        RATIONAL_NUMBER anAttenuationCoefficient);
+
+void initialiseXRayRenderer();
 
 void quit();
 GLFWwindow* initGLFW(int aWindowID);
 void initGL();
 void errorCallback(int error, const char* description);
+RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength);
 
 
 //******************************************************************************
@@ -99,6 +116,7 @@ void errorCallback(int error, const char* description);
 //******************************************************************************
 std::map<int, GLFWwindow*> g_p_window_set;
 std::vector<int> g_p_window_id_stack;
+std::map<string, PolygonMesh> g_p_polygon_mesh_set;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -108,6 +126,17 @@ Shader g_display_shader;
 int g_file_counter = 0;
 bool g_renderer_initialised = false;
 
+bool g_beam_shape_initialised = false;
+bool g_beam_energy_initialised = false;
+bool g_source_position_initialised = false;
+bool g_detector_position_initialised   = false;
+bool g_detector_up_vector_initialised  = false;
+bool g_detector_size_initialised       = false;
+bool g_detector_pixel_size_initialised = false;
+
+
+
+
 
 //******************************************************************************
 //  Implementation
@@ -116,6 +145,7 @@ bool g_renderer_initialised = false;
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads, createWindow, 0, 1)
 BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads, setWindowSize, 2, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads, setMonoChromatic, 2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
 
 
@@ -144,6 +174,13 @@ void createWindow(int aWindowID)
 
             // Register its ID
             g_p_window_id_stack.push_back(aWindowID);
+            
+            // Initialise GLEW
+            initialiseGLEW();
+
+
+            // Initialise the X-ray renderer if needed and if possible
+            initialiseXRayRenderer();
         }
         // The window has not been created
         else
@@ -228,7 +265,7 @@ void destroyWindow(int aWindowID)
         // It has been found
         if(search_window != g_p_window_set.end())
         {
-            std::cout << "Destroy " << search_window->first << " " << search_window->second << endl;
+            cout << "gvxrStatus:\tDestroy window " << aWindowID << "(" << search_window->second << ")"<< endl;
             if (search_window->second) glfwDestroyWindow(search_window->second);
             g_p_window_set.erase(search_window);
         }
@@ -285,30 +322,13 @@ void computeXRayImage()
     if (g_p_window_id_stack.empty() || g_p_window_set.empty())
     {
         // Create a window
-    cout << "\tThere is no OpenGL context" << endl;
-    cout << "\tCreate a window" << endl;
         createWindow();
     }
 
-    // The renderer is not initialised
-    if (!g_renderer_initialised)
-    {
-    cout << "\tThe renderer is not initialised" << endl;
-        // Initialise the renderer
-        cout << "\tInitialise the renderer" << endl;
-        g_xray_renderer.initialise(XRayRenderer::OPENGL,
-            GL_RGB32F,
-            &g_xray_detector,
-            &g_xray_beam);
-    }
-
     // The renderer is ready
-    cout << "\tTest if the renderer is ready" << endl;
     if (g_xray_renderer.isReady())
     {
-        cout << "\tThe renderer is ready" << endl;
         // Compute the X-ray image
-        cout << "\tCompute the X-ray image" << endl;
         g_xray_renderer.computeImage(MATRIX4());
     }
     // The renderer is not ready
@@ -324,6 +344,10 @@ void usePointSource()
 //-------------------
 {
     g_xray_detector.setXrayPointSource();
+    g_beam_shape_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
@@ -333,38 +357,88 @@ void useParallelBeam()
 {
     // Use a parallel source
     g_xray_detector.setParallelBeam();
+    g_beam_shape_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
-//----------------------------------------
-void setMonoChromatic(float anEnergyInMeV)
-//----------------------------------------
+//-----------------------------------------------------
+void setMonoChromatic(RATIONAL_NUMBER anEnergy,
+		              const char* aUnitOfEnergy,
+					  RATIONAL_NUMBER aNumberOfPhotons)
+//-----------------------------------------------------
 {
-    g_xray_beam.initialise(anEnergyInMeV * MeV);
+    RATIONAL_NUMBER unit = 0;
+
+    if (!strcmp(aUnitOfEnergy, "megaelectronvolt") ||
+            !strcmp(aUnitOfEnergy, "MeV"))
+    {
+    unit = MeV;
+    }
+    else if (!strcmp(aUnitOfEnergy, "kiloelectronvolt") ||
+            !strcmp(aUnitOfEnergy, "keV"))
+    {
+    unit = keV;
+    }
+    else if (!strcmp(aUnitOfEnergy, "electronvolt") ||
+            !strcmp(aUnitOfEnergy, "eV"))
+    {
+    	unit = eV;
+    }
+    else
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of energy.");
+    }
+
+    g_xray_beam.clear();
+    g_xray_beam.addChannel(aNumberOfPhotons, anEnergy * unit);
+    g_beam_energy_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
 //-----------------------------------------------
-void setSourcePosition(float x, float y, float z)
+void setSourcePosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength)
 //-----------------------------------------------
 {
-    g_xray_detector.setXrayPointSource(VEC3(x * mm, y * mm, z * mm));
+	RATIONAL_NUMBER unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_xray_detector.setXrayPointSource(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+    g_source_position_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
 //-------------------------------------------------
-void setDetectorPosition(float x, float y, float z)
+void setDetectorPosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength)
 //-------------------------------------------------
 {
-    g_xray_detector.setDetectorPosition(VEC3(x * mm, y * mm, z * mm));
+	RATIONAL_NUMBER unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    g_xray_detector.setDetectorPosition(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+    g_detector_position_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
 //-------------------------------------------------
-void setDetectorUpVector(float x, float y, float z)
+void setDetectorUpVector(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
 //-------------------------------------------------
 {
     g_xray_detector.setUpVector(VEC3(x, y, z).normal());
+    g_detector_up_vector_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
@@ -373,14 +447,25 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 //-----------------------------------------------------
 {
     g_xray_detector.setNumberOfPixels(Vec2ui(aWidth, aHeight));
+    g_detector_size_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
-//----------------------------------------------------
-void setDetectorPixelSize(float aWidth, float aHeight)
-//----------------------------------------------------
+//--------------------------------------------------
+void setDetectorPixelSize(RATIONAL_NUMBER aWidth,
+						  RATIONAL_NUMBER aHeight,
+						  const char* aUnitOfLength)
+//--------------------------------------------------
 {
-    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(VEC2(aWidth * mm, aHeight * mm));
+	RATIONAL_NUMBER unit_of_length = getUnitOfLength(aUnitOfLength);
+    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(VEC2(aWidth * unit_of_length, aHeight * unit_of_length));
+    g_detector_pixel_size_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
 }
 
 
@@ -396,6 +481,125 @@ void saveLastXRayImage(const char* aFileName)
         file_name = "xray_image-" + to_string(g_file_counter++) + ".mha";
 
     g_xray_renderer.printXRayImage(file_name);
+}
+
+
+//------------------------------------------
+void loadMeshFile(const char* aLabel,
+                  const char* aFileName,
+                  const char* aUnitOfLength)
+//------------------------------------------
+{
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+
+    // Set the file name    
+    g_p_polygon_mesh_set[aLabel].setFileName(aFileName);
+    
+    // Load the file
+    g_p_polygon_mesh_set[aLabel].loadSTLFile(false, true, false, false, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
+
+    g_p_polygon_mesh_set[aLabel].setFileName("titi.stl");
+    g_p_polygon_mesh_set[aLabel].writeSTLFile();
+
+    // Add the geometry to the X-ray renderer
+    g_xray_renderer.addInnerSurface(&g_p_polygon_mesh_set[aLabel]);
+}
+
+
+//-----------------------------------
+void moveToCentre(const char* aLabel)
+//-----------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_polygon_mesh_set.find(aLabel);
+    
+    // It has been found
+    if(search_mesh != g_p_polygon_mesh_set.end())
+    {
+        // Move the mesh to the centre
+        g_p_polygon_mesh_set[aLabel].moveToCentre ();
+
+        g_p_polygon_mesh_set[aLabel].setFileName("toto.stl");
+        g_p_polygon_mesh_set[aLabel].writeSTLFile();
+
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//-------------------------------------------------
+void setHU(const char* aLabel, RATIONAL_NUMBER aHU)
+//-------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_polygon_mesh_set.find(aLabel);
+    
+    // It has been found
+    if(search_mesh != g_p_polygon_mesh_set.end())
+    {
+        // Set its properties
+        g_p_polygon_mesh_set[aLabel].setHounsfieldValue (aHU);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//----------------------------------------------------------------------
+void setAttenuationCoefficient(const char* aLabel,
+                               RATIONAL_NUMBER anAttenuationCoefficient)
+//----------------------------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_polygon_mesh_set.find(aLabel);
+    
+    // It has been found
+    if(search_mesh != g_p_polygon_mesh_set.end())
+    {
+        // Set its properties
+        g_p_polygon_mesh_set[aLabel].setAttenuationCoefficient (anAttenuationCoefficient);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//---------------------------
+void initialiseXRayRenderer()
+//---------------------------
+{
+	if (g_beam_shape_initialised &&
+			g_beam_energy_initialised &&
+			g_source_position_initialised &&
+			g_detector_position_initialised &&
+			g_detector_up_vector_initialised &&
+			g_detector_size_initialised &&
+			g_detector_pixel_size_initialised)
+	{
+        // The renderer is not initialised
+        if (!g_renderer_initialised)
+        {
+        	cout << "INIT RENDER" << endl;
+            // Initialise the renderer
+            g_xray_renderer.initialise(XRayRenderer::OPENGL,
+                GL_RGB32F,
+                &g_xray_detector,
+                &g_xray_beam);
+
+    		g_renderer_initialised = true;
+        }
+	}
 }
 
 
@@ -462,12 +666,100 @@ void errorCallback(int error, const char* description)
 }
 
 
+//--------------------------------------------------------
+RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength)
+//--------------------------------------------------------
+{
+	RATIONAL_NUMBER unit_of_length = 0;
+
+	if (!strcmp(aUnitOfLength, "kilometer") ||
+			!strcmp(aUnitOfLength, "kilometre") ||
+			!strcmp(aUnitOfLength, "km"))
+	{
+		unit_of_length = km;
+	}
+	else if (!strcmp(aUnitOfLength, "hectometer") ||
+			!strcmp(aUnitOfLength, "hectometre") ||
+			!strcmp(aUnitOfLength, "hm"))
+	{
+		unit_of_length = hm;
+	}
+	else if (!strcmp(aUnitOfLength, "decameter") ||
+			!strcmp(aUnitOfLength, "decametre") ||
+			!strcmp(aUnitOfLength, "dam"))
+	{
+		unit_of_length = dam;
+	}
+	else if (!strcmp(aUnitOfLength, "meter") ||
+			!strcmp(aUnitOfLength, "metre") ||
+			!strcmp(aUnitOfLength, "m"))
+	{
+		unit_of_length = m;
+	}
+	else if (!strcmp(aUnitOfLength, "decimeter") ||
+			!strcmp(aUnitOfLength, "decimetre") ||
+			!strcmp(aUnitOfLength, "dm"))
+	{
+		unit_of_length = dm;
+	}
+	else if (!strcmp(aUnitOfLength, "centimeter") ||
+			!strcmp(aUnitOfLength, "centimeter") ||
+			!strcmp(aUnitOfLength, "cm"))
+	{
+		unit_of_length = cm;
+	}
+	else if (!strcmp(aUnitOfLength, "millimeter") ||
+			!strcmp(aUnitOfLength, "millimeter") ||
+			!strcmp(aUnitOfLength, "mm"))
+	{
+		unit_of_length = mm;
+	}
+	else if (!strcmp(aUnitOfLength, "micrometer") ||
+			!strcmp(aUnitOfLength, "micrometer") ||
+			!strcmp(aUnitOfLength, "um"))
+	{
+		unit_of_length = um;
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of length.");
+	}
+
+	return (unit_of_length);
+}
+
+
+np::ndarray getNumpyImage()
+{
+	boost::python::object own;
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(RATIONAL_NUMBER)*g_xray_detector.getNumberOfPixels().getX(),sizeof(RATIONAL_NUMBER));
+
+
+    boost::python::tuple shape = boost::python::make_tuple(g_xray_detector.getNumberOfPixels().getY(), g_xray_detector.getNumberOfPixels().getX());
+	np::dtype dtype = np::dtype::get_builtin<RATIONAL_NUMBER>();
+	//np::ndarray a = np::zeros(shape, dtype);
+
+
+	np::ndarray a = np::from_data(g_xray_renderer.getEnergyFluenceRawData(), dtype, shape, stride,own);
+
+
+
+	//std::cout << a(0,0) << endl;
+	return a;
+}
+
+
 BOOST_PYTHON_MODULE(gvxrPython)
 {
-    using namespace boost::python;
 
     cout << "gvxrStatus:\tInitialise gvxrPython" << endl;
 
+    // Initialise Python
+    Py_Initialize();
+
+    // Initialise Numpy
+    np::initialize();
 
     // Make sure all the windows are destroyed
     atexit(quit);
@@ -483,25 +775,32 @@ BOOST_PYTHON_MODULE(gvxrPython)
 		}
 
     // Expose C++ to Python
-    def("createWindow",  createWindow,  createWindow_overloads());
-    def("setWindowSize", setWindowSize, setWindowSize_overloads());
+    boost::python::def("createWindow",  createWindow,  createWindow_overloads());
+    boost::python::def("setWindowSize", setWindowSize, setWindowSize_overloads());
 
-    def("destroyWindow",     destroyWindow);
-    def("destroyAllWindows", destroyAllWindows);        
+    boost::python::def("destroyWindow",     destroyWindow);
+    boost::python::def("destroyAllWindows", destroyAllWindows);
 
-    def("computeXRayImage", computeXRayImage); 
+    boost::python::def("computeXRayImage", computeXRayImage);
     
-    def("usePointSource",  usePointSource);        
-    def("useParallelBeam", useParallelBeam);        
+    boost::python::def("usePointSource",  usePointSource);
+    boost::python::def("useParallelBeam", useParallelBeam);
 
-    def("setMonoChromatic", setMonoChromatic);        
+    boost::python::def("setMonoChromatic", setMonoChromatic, setMonoChromatic_overloads());
            
-    def("setSourcePosition",         setSourcePosition);        
-    def("setDetectorPosition",       setDetectorPosition);        
-    def("setDetectorUpVector",       setDetectorUpVector);        
-    def("setDetectorNumberOfPixels", setDetectorNumberOfPixels);        
-    def("setDetectorPixelSize",      setDetectorPixelSize);        
+    boost::python::def("setSourcePosition",         setSourcePosition);
+    boost::python::def("setDetectorPosition",       setDetectorPosition);
+    boost::python::def("setDetectorUpVector",       setDetectorUpVector);
+    boost::python::def("setDetectorNumberOfPixels", setDetectorNumberOfPixels);
+    boost::python::def("setDetectorPixelSize",      setDetectorPixelSize);
 
-    def("saveLastXRayImage", saveLastXRayImage, saveLastXRayImage_overloads());
+    boost::python::def("loadMeshFile",              loadMeshFile);
+    boost::python::def("moveToCenter",              moveToCentre);
+    boost::python::def("moveToCentre",              moveToCentre);
+    boost::python::def("setHU",                     setHU);
+    boost::python::def("setAttenuationCoefficient", setAttenuationCoefficient);
+        
+    boost::python::def("getNumpyImage", getNumpyImage);
+    boost::python::def("saveLastXRayImage", saveLastXRayImage, saveLastXRayImage_overloads());
 }
 
