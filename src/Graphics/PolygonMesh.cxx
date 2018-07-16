@@ -977,8 +977,15 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
         m_p_vertex_normal_vbo.reset(0);
         }
 
-    copyVertexSet(aPolygonMesh.m_p_vertex_set);
-    copyIndexSet(aPolygonMesh.m_p_index_set);
+    if (m_number_of_vertices)
+    {
+    	copyVertexSet(aPolygonMesh.m_p_vertex_set);
+    }
+
+    if (m_number_of_indices)
+    {
+        copyIndexSet(aPolygonMesh.m_p_index_set);
+    }
 }
 
 
