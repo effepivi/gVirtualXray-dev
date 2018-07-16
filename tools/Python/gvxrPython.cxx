@@ -17,6 +17,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 // For Python
 #include <boost/python.hpp>
@@ -59,6 +60,16 @@
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+// To load a scenegraph using ASSIMP
+#ifndef __AssimpSceneGraphBinder_h
+#include "gVirtualXRay/AssimpSceneGraphBinder.h"
+#endif
+
+// To load a scenegraph using OpenSceneGraph
+#ifndef __OpenSceneGraphBinder_h
+#include "gVirtualXRay/OpenSceneGraphBinder.h"
+#endif
+
 // Shaders for rendering
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
@@ -98,12 +109,27 @@ void renderLoop(int aWindowID = -1);
 void loadMeshFile(const char* aLabel,
         const char* aFileName,
         const char* aUnitOfLength);
-void moveToCentre(const char* aLabel);
+void loadSceneGraph(const char* aFileName,
+        const char* aUnitOfLength);
+void moveToCentre(const char* aLabel = 0);
+
+void scaleNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+void rotateNode(const char* aLabel, RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+void translateNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+
+void scaleScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+void rotateScene(RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+void translateScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+
+
+
 void setHU(const char* aLabel, RATIONAL_NUMBER aHU);
 void setAttenuationCoefficient(const char* aLabel,
         RATIONAL_NUMBER anAttenuationCoefficient);
+boost::python::tuple getMeshLabelSet();
 
 void initialiseXRayRenderer();
+
 
 void quit();
 GLFWwindow* initGLFW(int aWindowID);
@@ -125,7 +151,6 @@ void render();
 //******************************************************************************
 std::map<int, GLFWwindow*> g_p_window_set;
 std::vector<int> g_p_window_id_stack;
-std::map<string, PolygonMesh> g_p_polygon_mesh_set;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -177,18 +202,24 @@ Shader g_display_shader;
 bool g_run_loop = false;
 const GLfloat g_rotation_speed(2.0);
 
+//AssimpSceneGraphBinder g_assimp_scenegraph;
+//OpenSceneGraphBinder g_open_scenegraph;
+
+std::shared_ptr<SceneGraphBinder> g_p_scene_graph = 0;
+
 
 //******************************************************************************
 //  Implementation
 //******************************************************************************
 
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads, createWindow, 0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads, setWindowSize, 2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads, setMonoChromatic, 2, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads,      createWindow,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads,     setWindowSize,     2, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads,  setMonoChromatic,  2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(displayScene_overloads, displayScene, 0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads, renderLoop, 0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(displayScene_overloads,      displayScene,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads,        renderLoop,        0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(moveToCentre_overloads,      moveToCentre,      0, 1)
 
 
 //------------------------------
@@ -542,17 +573,61 @@ void loadMeshFile(const char* aLabel,
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
 
-    // Set the file name    
-    g_p_polygon_mesh_set[aLabel].setFileName(aFileName);
+    SceneGraphBinder* p_temp = g_p_scene_graph.get();
+    if (!p_temp)
+    {
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+    }
+
+    // Set the file name
+    g_p_scene_graph->getPolygonMeshSet()[aLabel].setFileName(aFileName);
     
     // Load the file
-    g_p_polygon_mesh_set[aLabel].loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
-
-    g_p_polygon_mesh_set[aLabel].setFileName("titi.stl");
-    g_p_polygon_mesh_set[aLabel].writeSTLFile();
+    g_p_scene_graph->getPolygonMeshSet()[aLabel].loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
-    g_xray_renderer.addInnerSurface(&g_p_polygon_mesh_set[aLabel]);
+    g_xray_renderer.addInnerSurface(&g_p_scene_graph->getPolygonMeshSet()[aLabel]);
+}
+
+
+//--------------------------------------------
+void loadSceneGraph(const char* aFileName,
+        			const char* aUnitOfLength)
+//--------------------------------------------
+{
+	bool scene_graph_loaded = false;
+
+#ifdef HAS_ASSIMP
+	if (!scene_graph_loaded)
+	{
+		g_p_scene_graph.reset(new AssimpSceneGraphBinder(aFileName, getUnitOfLength(aUnitOfLength)));
+		scene_graph_loaded = true;
+	}
+#endif
+
+#ifdef HAS_OPENSCENEGRAPH
+	if (!scene_graph_loaded)
+	{
+		g_p_scene_graph.reset(new OpenSceneGraphBinder(aFileName, getUnitOfLength(aUnitOfLength)));
+		scene_graph_loaded = true;
+	}
+#endif
+
+	if (!scene_graph_loaded)
+	{
+        cerr << "gvxrWarning:\tGraphScene " << aFileName << " not loaded." << endl;
+	}
+    // Add the geometry to the X-ray renderer
+	else
+	{
+		// Look for all the meshes in the scenegraph
+		for (std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+				ite != g_p_scene_graph->getPolygonMeshSet().end();
+				++ite)
+		{
+			g_xray_renderer.addInnerSurface(&ite->second);
+		}
+	}
 }
 
 
@@ -560,24 +635,157 @@ void loadMeshFile(const char* aLabel,
 void moveToCentre(const char* aLabel)
 //-----------------------------------
 {
-    // Find the mesh
-    auto search_mesh = g_p_polygon_mesh_set.find(aLabel);
-    
-    // It has been found
-    if(search_mesh != g_p_polygon_mesh_set.end())
-    {
-        // Move the mesh to the centre
-        g_p_polygon_mesh_set[aLabel].moveToCentre ();
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		if (aLabel)
+		{
+			auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
 
-        g_p_polygon_mesh_set[aLabel].setFileName("toto.stl");
-        g_p_polygon_mesh_set[aLabel].writeSTLFile();
+			// It has been found
+			if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+			{
+				// Move the mesh to the centre
+				g_p_scene_graph->getPolygonMeshSet()[aLabel].moveToCentre ();
+			}
+			// It has not been found
+			else
+			{
+				cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+			}
+		}
+		// Move the scenegraph
+		else
+		{
+			g_p_scene_graph->moveToCentre();
+			g_p_scene_graph->updateMatrices();
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
 
-    }
-    // It has not been found
-    else
-    {
-        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-    }
+
+void scaleNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			g_p_scene_graph->scale(aLabel, VEC3(x, y, z));
+			g_p_scene_graph->updateMatrices();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void rotateNode(const char* aLabel, RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			g_p_scene_graph->rotate(aLabel, angle, VEC3(x, y, z));
+			g_p_scene_graph->updateMatrices();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void translateNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			g_p_scene_graph->translate(aLabel, VEC3(x, y, z));
+			g_p_scene_graph->updateMatrices();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+
+void scaleScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Move the scenegraph
+		g_sample_rotation_matrix *= MATRIX4::buildScaleMatrix(x, y, z);
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void rotateScene(RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Move the scenegraph
+		g_sample_rotation_matrix *= MATRIX4::buildRotationMatrix(angle, x, y, z);
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void translateScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Move the scenegraph
+		g_sample_rotation_matrix *= MATRIX4::buildTranslationMatrix(x, y, z);
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
 }
 
 
@@ -586,13 +794,13 @@ void setHU(const char* aLabel, RATIONAL_NUMBER aHU)
 //-------------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_polygon_mesh_set.find(aLabel);
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
     
     // It has been found
-    if(search_mesh != g_p_polygon_mesh_set.end())
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
     {
         // Set its properties
-        g_p_polygon_mesh_set[aLabel].setHounsfieldValue (aHU);
+    	g_p_scene_graph->getPolygonMeshSet()[aLabel].setHounsfieldValue (aHU);
     }
     // It has not been found
     else
@@ -608,19 +816,40 @@ void setAttenuationCoefficient(const char* aLabel,
 //----------------------------------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_polygon_mesh_set.find(aLabel);
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
     
     // It has been found
-    if(search_mesh != g_p_polygon_mesh_set.end())
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
     {
         // Set its properties
-        g_p_polygon_mesh_set[aLabel].setAttenuationCoefficient (anAttenuationCoefficient);
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setAttenuationCoefficient (anAttenuationCoefficient);
     }
     // It has not been found
     else
     {
         cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
     }
+}
+
+
+//------------------------------------
+boost::python::tuple getMeshLabelSet()
+//------------------------------------
+{
+	// Create a Python list
+	boost::python::list py_label_set;
+
+	// Look for all the meshes in the scenegraph
+	for (std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+			ite != g_p_scene_graph->getPolygonMeshSet().end();
+			++ite)
+	{
+		// Add the name of the node to the Python list
+		py_label_set.append(ite->first);
+	}
+
+	// Bind the list to Python
+	return (boost::python::tuple(py_label_set));
 }
 
 
@@ -1281,8 +1510,8 @@ void render()
 
 
 
-        for (std::map<string, PolygonMesh>::iterator ite = g_p_polygon_mesh_set.begin();
-        		ite != g_p_polygon_mesh_set.end();
+        for (std::map<string, PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+        		ite != g_p_scene_graph->getPolygonMeshSet().end();
         		++ite)
         {
             // Store the current transformation matrix
@@ -1332,6 +1561,39 @@ void render()
             glUniform1fv(handle, 1, &material_shininess);
             checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
         }
+
+        {
+			// Define the light colours here
+			GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+			GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+			GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+			GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+			handle = glGetUniformLocation(shader_id, "light_global_ambient");
+			glUniform4fv(handle, 1, &light_global_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "light_ambient");
+			glUniform4fv(handle, 1, &light_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "light_diffuse");
+			glUniform4fv(handle, 1, &light_diffuse[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "light_specular");
+			glUniform4fv(handle, 1, &light_specular[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			VEC3 light_position(0, 0, g_zoom);
+			handle = glGetUniformLocation(shader_id, "light_position");
+			glUniform4f(handle,
+				light_position.getX(),
+				light_position.getY(),
+				light_position.getZ(),
+				1.0);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
 
         // Display the source
         g_xray_detector.displaySource();
@@ -1428,10 +1690,19 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("setDetectorPixelSize",      setDetectorPixelSize);
 
     boost::python::def("loadMeshFile",              loadMeshFile);
-    boost::python::def("moveToCenter",              moveToCentre);
-    boost::python::def("moveToCentre",              moveToCentre);
+    boost::python::def("loadSceneGraph",            loadSceneGraph);
+    boost::python::def("moveToCenter",              moveToCentre, moveToCentre_overloads());
+    boost::python::def("moveToCentre",              moveToCentre, moveToCentre_overloads());
+    boost::python::def("scaleNode",                 scaleNode);
+    boost::python::def("rotateNode",                rotateNode);
+    boost::python::def("translateNode",             translateNode);
+    boost::python::def("scaleScene",                scaleScene);
+    boost::python::def("rotateScene",               rotateScene);
+    boost::python::def("translateScene",            translateScene);
+
     boost::python::def("setHU",                     setHU);
     boost::python::def("setAttenuationCoefficient", setAttenuationCoefficient);
+    boost::python::def("getMeshLabelSet",           getMeshLabelSet);
         
     boost::python::def("getNumpyImage", getNumpyImage);
     boost::python::def("saveLastXRayImage", saveLastXRayImage, saveLastXRayImage_overloads());

@@ -68,7 +68,8 @@ if (PYTHONINTERP_FOUND)
 	)
 				ADD_DEPENDENCIES(gvxrPython BinaryPython)
 	
-	            FILE(COPY gvxrPythonTest.py DESTINATION .)
+	            FILE(COPY gvxrPythonLoadStlFile.py                   DESTINATION .)
+	            FILE(COPY gvxrPythonLoadSceneGraphFile.py            DESTINATION .)
 	            FILE(COPY ../../examples/data/welsh-dragon-small.stl DESTINATION .)
 
 				IF (gVirtualXRay_BINARY_DIR)
