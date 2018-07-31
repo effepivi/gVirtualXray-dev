@@ -107,147 +107,180 @@ template<typename T> void CubeMesh<T>::create(double aLength,
     VEC3 bottom_far_right(  half_length, -half_length, -half_length);
     VEC3 bottom_near_right( half_length, -half_length,  half_length);
 
-    // Store vertices
+    // Store vertices, normal vectors and indices
     std::vector<T> p_vertex_set;
     std::vector<T> p_normal_set;
+    std::vector<unsigned char> p_ubyte_index_set;
     
+    // Vertices
+    p_vertex_set.push_back(top_far_left.getX());
+    p_vertex_set.push_back(top_far_left.getY());
+    p_vertex_set.push_back(top_far_left.getZ());
+
+    p_vertex_set.push_back(top_near_left.getX());
+    p_vertex_set.push_back(top_near_left.getY());
+    p_vertex_set.push_back(top_near_left.getZ());
+
+    p_vertex_set.push_back(top_far_right.getX());
+    p_vertex_set.push_back(top_far_right.getY());
+    p_vertex_set.push_back(top_far_right.getZ());
+
+    p_vertex_set.push_back(top_near_right.getX());
+    p_vertex_set.push_back(top_near_right.getY());
+    p_vertex_set.push_back(top_near_right.getZ());
+
+    p_vertex_set.push_back(bottom_far_left.getX());
+    p_vertex_set.push_back(bottom_far_left.getY());
+    p_vertex_set.push_back(bottom_far_left.getZ());
+
+    p_vertex_set.push_back(bottom_near_left.getX());
+    p_vertex_set.push_back(bottom_near_left.getY());
+    p_vertex_set.push_back(bottom_near_left.getZ());
+
+    p_vertex_set.push_back(bottom_far_right.getX());
+    p_vertex_set.push_back(bottom_far_right.getY());
+    p_vertex_set.push_back(bottom_far_right.getZ());
+
+    p_vertex_set.push_back(bottom_near_right.getX());
+    p_vertex_set.push_back(bottom_near_right.getY());
+    p_vertex_set.push_back(bottom_near_right.getZ());
+
+    // Indices and normal vectors
+
+    // Top face
+    p_ubyte_index_set.push_back(1);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(0);
+
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(1);
+    p_ubyte_index_set.push_back(3);
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+    	p_normal_set.push_back(0);
+		p_normal_set.push_back(1);
+		p_normal_set.push_back(0);
+    }
+
+    // Bottom face
+    p_ubyte_index_set.push_back(6);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(4);
+
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(6);
+    p_ubyte_index_set.push_back(7);
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+    	p_normal_set.push_back(0);
+		p_normal_set.push_back(-1);
+		p_normal_set.push_back(0);
+    }
+
+    // Front face
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(3);
+    p_ubyte_index_set.push_back(1);
+
+    p_ubyte_index_set.push_back(3);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(7);
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+    	p_normal_set.push_back(0);
+		p_normal_set.push_back(0);
+		p_normal_set.push_back(1);
+    }
+
+    // Back face
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(4);
+    p_ubyte_index_set.push_back(0);
+
+    p_ubyte_index_set.push_back(4);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(6);
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+    	p_normal_set.push_back(0);
+		p_normal_set.push_back(0);
+		p_normal_set.push_back(-1);
+    }
+
+    // Left face
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(0);
+    p_ubyte_index_set.push_back(4);
+
+    p_ubyte_index_set.push_back(0);
+    p_ubyte_index_set.push_back(5);
+    p_ubyte_index_set.push_back(1);
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+    	p_normal_set.push_back(-1);
+		p_normal_set.push_back(0);
+		p_normal_set.push_back(0);
+    }
+
+    // Right face
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(7);
+    p_ubyte_index_set.push_back(6);
+
+    p_ubyte_index_set.push_back(7);
+    p_ubyte_index_set.push_back(2);
+    p_ubyte_index_set.push_back(3);
+
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+    	p_normal_set.push_back(1);
+		p_normal_set.push_back(0);
+		p_normal_set.push_back(0);
+    }
+
     if (anIndexDataType)
-        {
-        p_vertex_set.push_back(top_far_left.getX());
-        p_vertex_set.push_back(top_far_left.getY());
-        p_vertex_set.push_back(top_far_left.getZ());
+	{
+    	// Use vertex normals
+    	std::vector<T> p_normal_set2;
 
-        p_vertex_set.push_back(top_near_left.getX());
-        p_vertex_set.push_back(top_near_left.getY());
-        p_vertex_set.push_back(top_near_left.getZ());
+	    int vertex_id = 0;
+    	for (unsigned int vertex_id = 0; vertex_id < p_vertex_set.size() / 3; ++vertex_id)
+    	{
+    		double x = 0;
+    		double y = 0;
+    		double z = 0;
 
-        p_vertex_set.push_back(top_far_right.getX());
-        p_vertex_set.push_back(top_far_right.getY());
-        p_vertex_set.push_back(top_far_right.getZ());
+    		unsigned int counter = 0;
 
-        p_vertex_set.push_back(top_near_right.getX());
-        p_vertex_set.push_back(top_near_right.getY());
-        p_vertex_set.push_back(top_near_right.getZ());
+        	for (unsigned int face_id = 0; face_id < p_ubyte_index_set.size() / 3; ++face_id)
+    		{
+        		if (p_ubyte_index_set[face_id * 3] == vertex_id ||
+        				p_ubyte_index_set[face_id * 3 + 1] == vertex_id ||
+						p_ubyte_index_set[face_id * 3 + 2] == vertex_id)
+        		{
+        			counter++;
+        			x += p_normal_set[face_id * 3];
+        			y += p_normal_set[face_id * 3 + 1];
+        			z += p_normal_set[face_id * 3 + 2];
+        		}
+    		}
 
-        p_vertex_set.push_back(bottom_far_left.getX());
-        p_vertex_set.push_back(bottom_far_left.getY());
-        p_vertex_set.push_back(bottom_far_left.getZ());
+    		if (counter > 0)
+    		{
+    			x /= counter;
+    			y /= counter;
+    			z /= counter;
+    		}
 
-        p_vertex_set.push_back(bottom_near_left.getX());
-        p_vertex_set.push_back(bottom_near_left.getY());
-        p_vertex_set.push_back(bottom_near_left.getZ());
-
-        p_vertex_set.push_back(bottom_far_right.getX());
-        p_vertex_set.push_back(bottom_far_right.getY());
-        p_vertex_set.push_back(bottom_far_right.getZ());
-
-        p_vertex_set.push_back(bottom_near_right.getX());
-        p_vertex_set.push_back(bottom_near_right.getY());
-        p_vertex_set.push_back(bottom_near_right.getZ());
-
-        // Indices
-        std::vector<unsigned char> p_ubyte_index_set;
-
-        p_ubyte_index_set.push_back(1);
-        p_ubyte_index_set.push_back(2);
-        p_ubyte_index_set.push_back(0);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(1);
-        p_normal_set.push_back(0);
-
-        p_ubyte_index_set.push_back(2);
-        p_ubyte_index_set.push_back(1);
-        p_ubyte_index_set.push_back(3);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(1);
-        p_normal_set.push_back(0);
-
-        // Bottom face
-        p_ubyte_index_set.push_back(6);
-        p_ubyte_index_set.push_back(5);
-        p_ubyte_index_set.push_back(4);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(-1);
-        p_normal_set.push_back(0);
-
-        p_ubyte_index_set.push_back(5);
-        p_ubyte_index_set.push_back(6);
-        p_ubyte_index_set.push_back(7);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(-1);
-        p_normal_set.push_back(0);
-
-        // Front face
-        p_ubyte_index_set.push_back(5);
-        p_ubyte_index_set.push_back(3);
-        p_ubyte_index_set.push_back(1);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(1);
-
-        p_ubyte_index_set.push_back(3);
-        p_ubyte_index_set.push_back(5);
-        p_ubyte_index_set.push_back(7);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(1);
-
-        // Back face
-        p_ubyte_index_set.push_back(2);
-        p_ubyte_index_set.push_back(4);
-        p_ubyte_index_set.push_back(0);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(-1);
-
-        p_ubyte_index_set.push_back(4);
-        p_ubyte_index_set.push_back(2);
-        p_ubyte_index_set.push_back(6);
-
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(-1);
-
-        // Left face
-        p_ubyte_index_set.push_back(5);
-        p_ubyte_index_set.push_back(0);
-        p_ubyte_index_set.push_back(4);
-
-        p_normal_set.push_back(-1);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-
-        p_ubyte_index_set.push_back(0);
-        p_ubyte_index_set.push_back(5);
-        p_ubyte_index_set.push_back(1);
-
-        p_normal_set.push_back(-1);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-
-        // Right face
-        p_ubyte_index_set.push_back(2);
-        p_ubyte_index_set.push_back(7);
-        p_ubyte_index_set.push_back(6);
-
-        p_normal_set.push_back(1);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
-
-        p_ubyte_index_set.push_back(7);
-        p_ubyte_index_set.push_back(2);
-        p_ubyte_index_set.push_back(3);
-
-        p_normal_set.push_back(1);
-        p_normal_set.push_back(0);
-        p_normal_set.push_back(0);
+    		p_normal_set2.push_back(x);
+    		p_normal_set2.push_back(y);
+    		p_normal_set2.push_back(z);
+    	}
 
         switch (anIndexDataType)
             {
@@ -264,7 +297,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
 
                     setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
-                            &p_normal_set,
+                            &p_normal_set2,
                             &p_uint_index_set,
                             false,
                             GL_STATIC_DRAW);
@@ -284,7 +317,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
 
                     setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
-                            &p_normal_set,
+                            &p_normal_set2,
                             &p_ushort_index_set,
                             false,
                             GL_STATIC_DRAW);
@@ -295,7 +328,7 @@ template<typename T> void CubeMesh<T>::create(double aLength,
                 {
                     setInternalData(GL_TRIANGLES,
                             &p_vertex_set,
-                            &p_normal_set,
+                            &p_normal_set2,
                             &p_ubyte_index_set,
                             false,
                             GL_STATIC_DRAW);
@@ -309,307 +342,30 @@ template<typename T> void CubeMesh<T>::create(double aLength,
         }
     // Don't use an index
     else
-        {
-            p_vertex_set.push_back(top_near_left.getX());
-            p_vertex_set.push_back(top_near_left.getY());
-            p_vertex_set.push_back(top_near_left.getZ());
-
-            p_vertex_set.push_back(top_far_right.getX());
-            p_vertex_set.push_back(top_far_right.getY());
-            p_vertex_set.push_back(top_far_right.getZ());
-
-            p_vertex_set.push_back(top_far_left.getX());
-            p_vertex_set.push_back(top_far_left.getY());
-            p_vertex_set.push_back(top_far_left.getZ());
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-
-            p_vertex_set.push_back(top_far_right.getX());
-            p_vertex_set.push_back(top_far_right.getY());
-            p_vertex_set.push_back(top_far_right.getZ());
-
-            p_vertex_set.push_back(top_near_left.getX());
-            p_vertex_set.push_back(top_near_left.getY());
-            p_vertex_set.push_back(top_near_left.getZ());
-
-            p_vertex_set.push_back(top_near_right.getX());
-            p_vertex_set.push_back(top_near_right.getY());
-            p_vertex_set.push_back(top_near_right.getZ());
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-
-            // Bottom face
-            p_vertex_set.push_back(bottom_far_right.getX());
-            p_vertex_set.push_back(bottom_far_right.getY());
-            p_vertex_set.push_back(bottom_far_right.getZ());
-
-            p_vertex_set.push_back(bottom_near_left.getX());
-            p_vertex_set.push_back(bottom_near_left.getY());
-            p_vertex_set.push_back(bottom_near_left.getZ());
-
-            p_vertex_set.push_back(bottom_far_left.getX());
-            p_vertex_set.push_back(bottom_far_left.getY());
-            p_vertex_set.push_back(bottom_far_left.getZ());
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-
-            p_vertex_set.push_back(bottom_near_left.getX());
-            p_vertex_set.push_back(bottom_near_left.getY());
-            p_vertex_set.push_back(bottom_near_left.getZ());
-
-            p_vertex_set.push_back(bottom_far_right.getX());
-            p_vertex_set.push_back(bottom_far_right.getY());
-            p_vertex_set.push_back(bottom_far_right.getZ());
-
-            p_vertex_set.push_back(bottom_near_right.getX());
-            p_vertex_set.push_back(bottom_near_right.getY());
-            p_vertex_set.push_back(bottom_near_right.getZ());
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-
-            // Front face
-            p_vertex_set.push_back(bottom_near_left.getX());
-            p_vertex_set.push_back(bottom_near_left.getY());
-            p_vertex_set.push_back(bottom_near_left.getZ());
-
-            p_vertex_set.push_back(top_near_right.getX());
-            p_vertex_set.push_back(top_near_right.getY());
-            p_vertex_set.push_back(top_near_right.getZ());
-
-            p_vertex_set.push_back(top_near_left.getX());
-            p_vertex_set.push_back(top_near_left.getY());
-            p_vertex_set.push_back(top_near_left.getZ());
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-
-            p_vertex_set.push_back(top_near_right.getX());
-            p_vertex_set.push_back(top_near_right.getY());
-            p_vertex_set.push_back(top_near_right.getZ());
-
-            p_vertex_set.push_back(bottom_near_left.getX());
-            p_vertex_set.push_back(bottom_near_left.getY());
-            p_vertex_set.push_back(bottom_near_left.getZ());
-
-            p_vertex_set.push_back(bottom_near_right.getX());
-            p_vertex_set.push_back(bottom_near_right.getY());
-            p_vertex_set.push_back(bottom_near_right.getZ());
-            
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(1);
-
-
-            // Back face
-            p_vertex_set.push_back(top_far_right.getX());
-            p_vertex_set.push_back(top_far_right.getY());
-            p_vertex_set.push_back(top_far_right.getZ());
-
-            p_vertex_set.push_back(bottom_far_left.getX());
-            p_vertex_set.push_back(bottom_far_left.getY());
-            p_vertex_set.push_back(bottom_far_left.getZ());
-
-            p_vertex_set.push_back(top_far_left.getX());
-            p_vertex_set.push_back(top_far_left.getY());
-            p_vertex_set.push_back(top_far_left.getZ());
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-
-            p_vertex_set.push_back(bottom_far_left.getX());
-            p_vertex_set.push_back(bottom_far_left.getY());
-            p_vertex_set.push_back(bottom_far_left.getZ());
-
-            p_vertex_set.push_back(top_far_right.getX());
-            p_vertex_set.push_back(top_far_right.getY());
-            p_vertex_set.push_back(top_far_right.getZ());
-
-            p_vertex_set.push_back(bottom_far_right.getX());
-            p_vertex_set.push_back(bottom_far_right.getY());
-            p_vertex_set.push_back(bottom_far_right.getZ());
-            
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(-1);
-
-            // Left face
-            p_vertex_set.push_back(bottom_near_left.getX());
-            p_vertex_set.push_back(bottom_near_left.getY());
-            p_vertex_set.push_back(bottom_near_left.getZ());
-
-            p_vertex_set.push_back(top_far_left.getX());
-            p_vertex_set.push_back(top_far_left.getY());
-            p_vertex_set.push_back(top_far_left.getZ());
-
-            p_vertex_set.push_back(bottom_far_left.getX());
-            p_vertex_set.push_back(bottom_far_left.getY());
-            p_vertex_set.push_back(bottom_far_left.getZ());
-            
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_vertex_set.push_back(top_far_left.getX());
-            p_vertex_set.push_back(top_far_left.getY());
-            p_vertex_set.push_back(top_far_left.getZ());
-
-            p_vertex_set.push_back(bottom_near_left.getX());
-            p_vertex_set.push_back(bottom_near_left.getY());
-            p_vertex_set.push_back(bottom_near_left.getZ());
-
-            p_vertex_set.push_back(top_near_left.getX());
-            p_vertex_set.push_back(top_near_left.getY());
-            p_vertex_set.push_back(top_near_left.getZ());
-
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(-1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            // Right face
-            p_vertex_set.push_back(top_far_right.getX());
-            p_vertex_set.push_back(top_far_right.getY());
-            p_vertex_set.push_back(top_far_right.getZ());
-
-            p_vertex_set.push_back(bottom_near_right.getX());
-            p_vertex_set.push_back(bottom_near_right.getY());
-            p_vertex_set.push_back(bottom_near_right.getZ());
-
-            p_vertex_set.push_back(bottom_far_right.getX());
-            p_vertex_set.push_back(bottom_far_right.getY());
-            p_vertex_set.push_back(bottom_far_right.getZ());
-
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_vertex_set.push_back(bottom_near_right.getX());
-            p_vertex_set.push_back(bottom_near_right.getY());
-            p_vertex_set.push_back(bottom_near_right.getZ());
-
-            p_vertex_set.push_back(top_far_right.getX());
-            p_vertex_set.push_back(top_far_right.getY());
-            p_vertex_set.push_back(top_far_right.getZ());
-
-            p_vertex_set.push_back(top_near_right.getX());
-            p_vertex_set.push_back(top_near_right.getY());
-            p_vertex_set.push_back(top_near_right.getZ());
-
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            p_normal_set.push_back(1);
-            p_normal_set.push_back(0);
-            p_normal_set.push_back(0);
-
-            setInternalData(GL_TRIANGLES,
-                            &p_vertex_set,
-                            &p_normal_set,
-                            false,
-                            GL_STATIC_DRAW);
-        }
+    {
+        std::vector<T> p_vertex_set2;
+    	std::vector<T> p_normal_set2;
+    
+	    int normal_id = 0;
+    	for (std::vector<unsigned char>::const_iterator ite = p_ubyte_index_set.begin();
+    			ite != p_ubyte_index_set.end();
+    			++ite, ++normal_id)
+    	{
+    		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 0]);
+    		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 1]);
+    		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 2]);
+    		
+    		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 0]);
+    		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 1]);
+    		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 2]);
+    	}
+    	
+        setInternalData(GL_TRIANGLES,
+                        &p_vertex_set2,
+                        &p_normal_set2,
+                        false,
+                        GL_STATIC_DRAW);
+    }
 }
 
 } // namespace gVirtualXRay
