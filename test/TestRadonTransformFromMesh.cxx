@@ -294,7 +294,7 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         g_angle_step);
 
     // Save the sinogram
-    g_xray_renderer.printSinogram("TestFBP_sinogram.mhd");
+    g_xray_renderer.printSinogram("TestRadonTransformFromMesh_sinogram.mhd");
 
     // Compute the projection set
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
@@ -303,7 +303,7 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         g_angle_step);
 
     // Save the projection set
-    g_xray_renderer.printProjectionSet("TestFBP_projection_set.mhd");
+    g_xray_renderer.printProjectionSet("TestRadonTransformFromMesh_projection_set.mhd");
 
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
@@ -321,7 +321,9 @@ BOOST_AUTO_TEST_CASE(TestFBP)
     BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.01);
 
     // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK_CLOSE(reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet()) + 1.0, 0.0 + 1.0, 0.01);
+    double RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
+    double range = (reference_projection_set.getMaxValue() - reference_projection_set.getMinValue());
+    BOOST_CHECK(RMSE < 0.01 * range);
 
 
     /********** Sinogram **********/
@@ -333,7 +335,9 @@ BOOST_AUTO_TEST_CASE(TestFBP)
     BOOST_CHECK_CLOSE(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.01);
 
     // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK_CLOSE(reference_sinogram.computeRMSE(g_xray_renderer.getSinogram()) + 1.0, 0.0 + 1.0, 0.01);
+    RMSE = reference_sinogram.computeRMSE(g_xray_renderer.getSinogram());
+    range = (reference_projection_set.getMaxValue() - reference_projection_set.getMinValue());
+    BOOST_CHECK(RMSE < 0.01 * range);
 }
 
 

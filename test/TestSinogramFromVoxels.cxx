@@ -93,6 +93,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
+double g_incident_energy = 80.0 * keV;
 
 
 //******************************************************************************
@@ -104,32 +105,44 @@ using namespace gVirtualXRay;
 BOOST_AUTO_TEST_CASE(TestSinogramFromVoxels)
 //------------------------------------------
 {
-    // Open CT data
-    Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
+    // Open CT data in HU
+    Image<float> CT_data_set_in_HU("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
+
+    // Convert HU to linear attenuation coefficients
+    Image<float> CT_data_set_in_mu =  CT_data_set_in_HU.convertHU2mu(g_incident_energy);
 
     // Save a slice of the CT data set
-    Image<float> middle_ct_slice(CT_data_set.setCanvasSize(512, 512, 1));
-    middle_ct_slice.save("/home/fpvidal/Documents/gvirtualxray-code/trunk/validation/data/validation_11/ct_slice.mhd");
+    Image<float> middle_ct_slice_in_HU(CT_data_set_in_HU.setCanvasSize(512, 512, 1));
+    Image<float> middle_ct_slice_in_mu(CT_data_set_in_mu.setCanvasSize(512, 512, 1));
 
-    // Compute the sinogram of the CT slice
-    Sinogram<float> ct_slice_sinogram(middle_ct_slice.radonTransform(0, 1, 179));
-    ct_slice_sinogram.save("/home/fpvidal/Documents/gvirtualxray-code/trunk/validation/data/validation_11/test_sinogram.mhd");
+    middle_ct_slice_in_HU.save("HU_ct_slice.mhd");
+    middle_ct_slice_in_mu.save("mu_ct_slice.mhd");
+
+    // Compute the Radon transform of the CT slice
+    Sinogram<float> sinogram_in_HU(middle_ct_slice_in_HU.radonTransform(0, 1, 179));
+    Sinogram<float> sinogram_in_mu(middle_ct_slice_in_mu.radonTransform(0, 1, 179));
+    sinogram_in_HU.save("HU_test_sinogram_set.mhd");
+    sinogram_in_mu.save("mu_test_sinogram_set.mhd");
 
     // Compute a projection set from the sinogram
-    Image<float> projection_set(ct_slice_sinogram.getProjectionSet());
-    projection_set.save("/home/fpvidal/Documents/gvirtualxray-code/trunk/validation/data/validation_11/test_projection_set.mhd");
+    Image<float> projection_set_in_HU(sinogram_in_HU.getProjectionSet());
+    Image<float> projection_set_in_mu(sinogram_in_mu.getProjectionSet());
+    projection_set_in_HU.save("HU_test_projection_set.mhd");
+    projection_set_in_mu.save("mu_test_projection_set.mhd");
 
-//#ifndef NDEBUG
-   // CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
-   // sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
-   // projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
-//#endif
+#ifndef NDEBUG
+    //CT_data_set.save("ct_data_80keV.mhd");
+    //sinogram.save("sinogram.mhd");
+    //projection_set.save("projection.mhd");
+#endif
 
 
-    // Compare reference projection set and simulated projection set using NCC
-    //BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
+	// Compare reference projection set and simulated projection set using NCC
+	//BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.1);
 
-    // Compare reference projection set and simulated projection set using RMSE
-    //BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);
+	// Compare reference projection set and simulated projection set using RMSE
+    //double RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
+    //double range = (reference_projection_set.getMaxValue() - reference_projection_set.getMinValue());
+    //BOOST_CHECK(RMSE < 0.01 * range);
 }
 

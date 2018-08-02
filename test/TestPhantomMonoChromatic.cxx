@@ -341,24 +341,6 @@ BOOST_AUTO_TEST_CASE(TestPhantomMonoChromatic)
 
     // Close the window and shut GLFW
     quit();
-
-    // Load reference image (computed using GEANT4/Gate)
-    /*Image<XRayRenderer::PixelType> reference_projection_set("data/point_source/gate_simulation.mhd");
-
-    // Compare reference projection set and simulated projection set using NCC
-    BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
-
-    // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);
-
-    // Load reference image (computed using GEANT4/Gate)
-    Image<XRayRenderer::PixelType> reference_projection_set("data/point_source/gate_simulation.mhd");
-
-    // Compare reference projection set and simulated projection set using NCC
-    BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
-
-    // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);*/
 }
 
 

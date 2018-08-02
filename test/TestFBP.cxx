@@ -186,9 +186,9 @@ void errorCallback(int error, const char* description);
 void quit();
 
 
-//---------------------------
-BOOST_AUTO_TEST_CASE(TestFBP)
-//---------------------------
+//----------------------------------------------
+BOOST_AUTO_TEST_CASE(TestRadonTransformFromMesh)
+//----------------------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
@@ -289,18 +289,7 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         VEC3(),
         g_angle_number,
         g_angle_step);
-
-    // Save the sinogram
-    g_xray_renderer.printSinogram("TestFBP_sinogram.mhd");
-
-    // Compute the projection set
-    g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
-        VEC3(),
-        g_angle_number,
-        g_angle_step);
-
-    // Save the projection set
-    g_xray_renderer.printProjectionSet("TestFBP_projection_set.mhd");
+    Sinogram<XRayRenderer::PixelType> sinogram(g_xray_renderer.getSinogram());
 
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
@@ -309,61 +298,83 @@ BOOST_AUTO_TEST_CASE(TestFBP)
     quit();
 
 
-    /********** Projection set **********/
-
-    // Load reference image (computed using GNU Octave)
-    Image<XRayRenderer::PixelType> reference_projection_set("data/CT_reconstruction/projection_set.mhd");
-
-    // Compare reference projection set and simulated projection set using NCC
-    BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
-
-    // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);
-
-
     /********** Sinogram **********/
 
-    // Load reference image (computed using GNU Octave)
-    Image<XRayRenderer::PixelType> reference_sinogram("data/CT_reconstruction/sinogram.mhd");
+    // Load reference image
+    Image<XRayRenderer::PixelType> reference_CT("data/CT_reconstruction/ct_volume_in_mu_80keV.mhd");
+    double range = (reference_CT.getMaxValue() - reference_CT.getMinValue());
 
-    // Compare reference projection set and simulated projection set using NCC
-    BOOST_CHECK_CLOSE(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.5);
-
-    // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK_CLOSE(reference_sinogram.normalised().computeRMSE(g_xray_renderer.getSinogram().normalised()) + 1.0, 0.0 + 1.0, 0.25);
-
-
-
-    Sinogram<XRayRenderer::PixelType> sinogram(g_xray_renderer.getSinogram());
-
-    Image<XRayRenderer::PixelType> reconstruction;
 
     // SBP
-    /*reconstruction = sinogram.simpleBackProjection(0, g_angle_step, "data/SBP");
-    reconstruction.save("data/TestFBP_SBP_reconstruction.mhd");
+    Image<XRayRenderer::PixelType> reconstruction;
+    reconstruction = sinogram.simpleBackProjection(0, g_angle_step, "data/SBP");
+    reconstruction.save("TestFBP_SBP_reconstruction.mhd");
+    double sbp_ncc  = reference_CT.computeNCC(reconstruction);
+    double sbp_rmse = reference_CT.computeRMSE(reconstruction);
+    std::cout << "SBP: NCC: " << 100.0 * sbp_ncc<< "\%" << "\tRMSE:" << sbp_rmse << std::endl;
+
+    // Compare reference CT and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(sbp_ncc, 1.0, 10.0);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    BOOST_CHECK(sbp_rmse < 0.01 * range);
+
 
     // FBP
-    reconstruction = sinogram.filteredBackProjection(0,
-            g_angle_step, "hamming", 2.5, "data/FBP");
-    reconstruction.save("data/TestFBP_FBP_reconstruction.mhd");
+    reconstruction = sinogram.filteredBackProjection(0, g_angle_step, "hamming", 1.0, "data/FBP");
+    reconstruction.save("TestFBP_FBP_reconstruction.mhd");
+    double fbp_ncc  = reference_CT.computeNCC(reconstruction);
+    double fbp_rmse = reference_CT.computeRMSE(reconstruction);
+    std::cout << "FBP: NCC: " << 100.0 * fbp_ncc<< "\%" << "\tRMSE:" << fbp_rmse << std::endl;
+
+    // Compare reference CT and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(fbp_ncc, 1.0, 0.5);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    BOOST_CHECK(fbp_rmse < 0.01 * range);
+/*
 
     // ART
     reconstruction = sinogram.art(0, g_angle_step, 25, "data/ART");
-    reconstruction.save("data/TestFBP_ART_reconstruction.mhd");
+    reconstruction.save("TestFBP_ART_reconstruction.mhd");
+    double art_ncc  = reference_CT.computeNCC(reconstruction);
+    double art_rmse = reference_CT.computeRMSE(reconstruction);
+    std::cout << "ART: NCC: " << 100.0 * art_ncc<< "\%" << "\tRMSE:" << art_rmse << std::endl;
+
+    // Compare reference CT and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(art_ncc, 1.0, 0.1);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    BOOST_CHECK(art_rmse < 0.01 * range);
+
 
     // MART
     reconstruction = sinogram.mart(0, g_angle_step, 25, "data/MART");
-    reconstruction.save("data/TestFBP_MART_reconstruction.mhd");
+    reconstruction.save("TestFBP_MART_reconstruction.mhd");
+    double mart_ncc  = reference_CT.computeNCC(reconstruction);
+    double mart_rmse = reference_CT.computeRMSE(reconstruction);
+    std::cout << "MART: NCC: " << 100.0 * mart_ncc<< "\%" << "\tRMSE:" << mart_rmse << std::endl;
+
+    // Compare reference CT and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(mart_ncc, 1.0, 0.1);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    BOOST_CHECK(mart_rmse < 0.01 * range);
+
 
     // SIRT
     reconstruction = sinogram.sirt(0, g_angle_step, 25, "data/SIRT");
-    reconstruction.save("data/TestFBP_SIRT_reconstruction.mhd");
-*/
-    // Compare reference projection set and simulated projection set using NCC
-    //BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
+    reconstruction.save("TestFBP_SIRT_reconstruction.mhd");
+    double sirt_ncc  = reference_CT.computeNCC(reconstruction);
+    double sirt_rmse = reference_CT.computeRMSE(reconstruction);
+    std::cout << "SIRT: NCC: " << 100.0 * sirt_ncc<< "\%" << "\tRMSE:" << sirt_rmse << std::endl;
+
+    // Compare reference CT and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(sirt_ncc, 1.0, 0.1);
 
     // Compare reference projection set and simulated projection set using RMSE
-    //BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);
+    BOOST_CHECK(sirt_rmse < 0.01 * range);
+    */
 }
 
 

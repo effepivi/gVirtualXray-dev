@@ -310,7 +310,9 @@ BOOST_AUTO_TEST_CASE(TestSinogramFromMesh)
     BOOST_CHECK_CLOSE(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.1);
 
     // Compare reference sinogram and simulated sinogram using RMSE
-    BOOST_CHECK_CLOSE(reference_sinogram.computeRMSE(g_xray_renderer.getSinogram()) + 1.0, 0.0 + 1.0, 1);
+    double RMSE = reference_sinogram.computeRMSE(g_xray_renderer.getSinogram());
+    double range = (reference_sinogram.getMaxValue() - reference_sinogram.getMinValue());
+    BOOST_CHECK(RMSE < 0.01 * range);
 }
 
 
