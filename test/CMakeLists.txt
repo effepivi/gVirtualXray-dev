@@ -117,6 +117,9 @@ IF (glfw3_FOUND)
     # Validation_??
     #add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
 
+    # Validation_04
+    add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
+
     IF (FFTW3_LIBRARIES)
 	    # Validation_04
         add_executable(TestFBP                     TestFBP.cxx)
@@ -134,6 +137,7 @@ IF (glfw3_FOUND)
     target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     #target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
     IF (FFTW3_LIBRARIES)
         target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
@@ -152,6 +156,7 @@ IF (glfw3_FOUND)
          ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay)
          ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
          #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
+         ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay)
 
     IF (FFTW3_LIBRARIES)
          ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
@@ -170,6 +175,7 @@ IF (glfw3_FOUND)
     add_test (TestCubeSource                  TestCubeSource)
     add_test (TestUncenteredSource            TestUncenteredSource)
     #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
+    add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
     
     IF (FFTW3_LIBRARIES)
         add_test (TestFBP                     TestFBP)
