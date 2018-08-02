@@ -103,23 +103,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
+void TissueMaterial::addElement(const std::string& aName, double aPercentage)
+{
+	m_p_weight_set[ElementSet::getInstance().getElement(aName).getAtomicNumber()] = aPercentage;
+	m_molar_mass = computeMolarMass();
+}
+
+
 //---------------------------------------
 void TissueMaterial::normaliseWeightSet()
 //---------------------------------------
 {
-    double sum(0);
+    double sum(0.0);
 
-    for (int i(0); i < NUMBER_OF_ELEMENTS_PER_MATERIAL; ++i)
-    {
-        sum += m_p_weight_set[i];
-    }
+	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
+			ite != m_p_weight_set.end();
+			++ite)
+	{
+		sum += ite->second;
+	}
 
     if (sum > EPSILON)
     {
-        for (int i(0); i < NUMBER_OF_ELEMENTS_PER_MATERIAL; ++i)
-        {
-            m_p_weight_set[i] /= sum;
-        }
+    	for (std::map<int, double>::iterator ite = m_p_weight_set.begin();
+    			ite != m_p_weight_set.end();
+    			++ite)
+    	{
+    		ite->second /= sum;
+    	}
     }
     m_molar_mass = computeMolarMass();
 }
@@ -129,26 +140,14 @@ void TissueMaterial::normaliseWeightSet()
 double TissueMaterial::computeMolarMass()
 //---------------------------------------
 {
-    m_molar_mass =
-            m_p_weight_set[ 0] * ElementSet::getInstance().getElement(Z_H).getMolarMass() +
-            m_p_weight_set[ 1] * ElementSet::getInstance().getElement(Z_C).getMolarMass() +
-            m_p_weight_set[ 2] * ElementSet::getInstance().getElement(Z_N).getMolarMass() +
-            m_p_weight_set[ 3] * ElementSet::getInstance().getElement(Z_O).getMolarMass() +
-            m_p_weight_set[ 4] * ElementSet::getInstance().getElement(Z_Na).getMolarMass() +
-            m_p_weight_set[ 5] * ElementSet::getInstance().getElement(Z_Mg).getMolarMass() +
-            m_p_weight_set[ 6] * ElementSet::getInstance().getElement(Z_P).getMolarMass() +
-            m_p_weight_set[ 7] * ElementSet::getInstance().getElement(Z_S).getMolarMass() +
-            m_p_weight_set[ 8] * ElementSet::getInstance().getElement(Z_Cl).getMolarMass() +
-            m_p_weight_set[ 9] * ElementSet::getInstance().getElement(Z_Ar).getMolarMass() +
-            m_p_weight_set[10] * ElementSet::getInstance().getElement(Z_K).getMolarMass() +
-            m_p_weight_set[11] * ElementSet::getInstance().getElement(Z_Ca).getMolarMass() +
-            m_p_weight_set[12] * ElementSet::getInstance().getElement(Z_Ti).getMolarMass() +
-            m_p_weight_set[13] * ElementSet::getInstance().getElement(Z_Cu).getMolarMass() +
-            m_p_weight_set[14] * ElementSet::getInstance().getElement(Z_Zn).getMolarMass() +
-            m_p_weight_set[15] * ElementSet::getInstance().getElement(Z_Ag).getMolarMass() +
-            m_p_weight_set[16] * ElementSet::getInstance().getElement(Z_Sn).getMolarMass();
-            m_p_weight_set[17] * ElementSet::getInstance().getElement(Z_Fe).getMolarMass();
-            m_p_weight_set[18] * ElementSet::getInstance().getElement(Z_I).getMolarMass();
+    m_molar_mass = 0.0;
+
+	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
+			ite != m_p_weight_set.end();
+			++ite)
+	{
+		m_molar_mass += ite->second * ElementSet::getInstance().getElement(ite->first).getMolarMass();
+	}
 
     return (m_molar_mass);
 }
@@ -197,26 +196,16 @@ double TissueMaterial::getDensity(short aHounsfieldValue)
 double TissueMaterial::getMassAttenuationTotal(double anEnergy) const
 //-------------------------------------------------------------------
 {
-    return (m_p_weight_set[ 0] * ElementSet::getInstance().getElement(Z_H).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 1] * ElementSet::getInstance().getElement(Z_C).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 2] * ElementSet::getInstance().getElement(Z_N).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 3] * ElementSet::getInstance().getElement(Z_O).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 4] * ElementSet::getInstance().getElement(Z_Na).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[ 5] * ElementSet::getInstance().getElement(Z_Mg).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[ 6] * ElementSet::getInstance().getElement(Z_P).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 7] * ElementSet::getInstance().getElement(Z_S).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[ 8] * ElementSet::getInstance().getElement(Z_Cl).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[ 9] * ElementSet::getInstance().getElement(Z_Ar).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[10] * ElementSet::getInstance().getElement(Z_K).getMassAttenuationTotal(anEnergy)  +
-            m_p_weight_set[11] * ElementSet::getInstance().getElement(Z_Ca).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[12] * ElementSet::getInstance().getElement(Z_Ti).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[13] * ElementSet::getInstance().getElement(Z_Cu).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[14] * ElementSet::getInstance().getElement(Z_Zn).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[15] * ElementSet::getInstance().getElement(Z_Ag).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[16] * ElementSet::getInstance().getElement(Z_Sn).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[17] * ElementSet::getInstance().getElement(Z_Fe).getMassAttenuationTotal(anEnergy) +
-            m_p_weight_set[18] * ElementSet::getInstance().getElement(Z_I).getMassAttenuationTotal(anEnergy)
-    );
+	double mass_attenuation_coefficient = 0.0;
+
+	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
+			ite != m_p_weight_set.end();
+			++ite)
+	{
+		mass_attenuation_coefficient += ite->second * ElementSet::getInstance().getElement(ite->first).getMassAttenuationTotal(anEnergy);
+	}
+
+    return (mass_attenuation_coefficient);
 }
 
 
@@ -227,8 +216,21 @@ bool TissueMaterial::operator==(const TissueMaterial& aMaterial) const
     if (m_min_HU_value != aMaterial.m_min_HU_value) return false;
     if (m_max_HU_value != aMaterial.m_max_HU_value) return false;
 
-    for (unsigned int i(0); i < NUMBER_OF_ELEMENTS_PER_MATERIAL; ++i)
-        if (m_p_weight_set[i] != aMaterial.m_p_weight_set[i]) return false;
+	for (std::map<int, double>::const_iterator ite = aMaterial.m_p_weight_set.begin();
+			ite != aMaterial.m_p_weight_set.end();
+			++ite)
+	{
+		if (m_p_weight_set.find(ite->first) == m_p_weight_set.end()) return false;
+        if (m_p_weight_set.find(ite->first)->second != ite->second) return false;
+	}
+
+	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
+			ite != m_p_weight_set.end();
+			++ite)
+	{
+		if (aMaterial.m_p_weight_set.find(ite->first) == aMaterial.m_p_weight_set.end()) return false;
+        if (aMaterial.m_p_weight_set.find(ite->first)->second != ite->second) return false;
+	}
 
     if (m_molar_mass != aMaterial.m_molar_mass) return false;
     if (m_density    != aMaterial.m_density)    return false;

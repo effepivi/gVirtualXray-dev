@@ -85,12 +85,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 
 
-//------------------------------------------------------------------------------
-/// The number of elements in a material
-//------------------------------------------------------------------------------
-#define NUMBER_OF_ELEMENTS_PER_MATERIAL 19
-
-
 //******************************************************************************
 //  namespace
 //******************************************************************************
@@ -175,6 +169,11 @@ public:
     static void registerElementSet(const ElementSet* apElementSet);
 
 
+    void reset();
+
+    void addElement(const std::string& aName, double aPercentage);
+
+
     //--------------------------------------------------------------------------
     /// Normalise the weight set.
     //--------------------------------------------------------------------------
@@ -205,7 +204,7 @@ public:
     *   @return the atomic element weights
     */
     //--------------------------------------------------------------------------
-    const double* getWeightSet() const;
+    //const double* getWeightSet() const;
 
 
     //--------------------------------------------------------------------------
@@ -343,7 +342,7 @@ private:
     
     
     // The weight of each element in the material
-    double m_p_weight_set[NUMBER_OF_ELEMENTS_PER_MATERIAL];
+    std::map<int, double> m_p_weight_set; // First: Atomic number; Second: Weight in percentage
     
     
     // The molar mass of the material

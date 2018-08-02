@@ -69,6 +69,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <cstring>
 
+#ifndef __ConstantValues_h
+#include "gVirtualXRay/ConstantValues.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -105,30 +109,31 @@ inline TissueMaterial::TissueMaterial(short aMinHUValue,
         m_density(-1)
 //------------------------------------------------------
 {
-    m_p_weight_set[0]  =  H;
-    m_p_weight_set[1]  =  C;
-    m_p_weight_set[2]  =  N;
-    m_p_weight_set[3]  =  O;
-    m_p_weight_set[4]  = Na;
-    m_p_weight_set[5]  = Mg;
-    m_p_weight_set[6]  =  P;
-    m_p_weight_set[7]  =  S;
-    m_p_weight_set[8]  = Cl;
-    m_p_weight_set[9]  = Ar;
-    m_p_weight_set[10] =  K;
-    m_p_weight_set[11] = Ca;
-    m_p_weight_set[12] = Ti;
-    m_p_weight_set[13] = Cu;
-    m_p_weight_set[14] = Zn;
-    m_p_weight_set[15] = Ag;
-    m_p_weight_set[16] = Sn;
-    m_p_weight_set[17] = Fe;
-    m_p_weight_set[18] = I;
+    m_p_weight_set[Z_H]  =  H;
+    m_p_weight_set[Z_C]  =  C;
+    m_p_weight_set[Z_N]  =  N;
+    m_p_weight_set[Z_O]  =  O;
+    m_p_weight_set[Z_Na]  = Na;
+    m_p_weight_set[Z_Mg]  = Mg;
+    m_p_weight_set[Z_P]  =  P;
+    m_p_weight_set[Z_S]  =  S;
+    m_p_weight_set[Z_Cl]  = Cl;
+    m_p_weight_set[Z_Ar]  = Ar;
+    m_p_weight_set[Z_K] =  K;
+    m_p_weight_set[Z_Ca] = Ca;
+    m_p_weight_set[Z_Ti] = Ti;
+    m_p_weight_set[Z_Cu] = Cu;
+    m_p_weight_set[Z_Zn] = Zn;
+    m_p_weight_set[Z_Ag] = Ag;
+    m_p_weight_set[Z_Sn] = Sn;
+    m_p_weight_set[Z_Fe] = Fe;
+    m_p_weight_set[Z_I] = I;
 
 	normaliseWeightSet();
 	
 	m_molar_mass = computeMolarMass();
 }
+
 
 //---------------------------------------------------------------------
 inline TissueMaterial::TissueMaterial(const TissueMaterial& aMaterial):
@@ -136,10 +141,18 @@ inline TissueMaterial::TissueMaterial(const TissueMaterial& aMaterial):
         m_min_HU_value(aMaterial.m_min_HU_value),
         m_max_HU_value(aMaterial.m_max_HU_value),
         m_molar_mass(aMaterial.m_molar_mass),
-        m_density(aMaterial.m_density)
+        m_density(aMaterial.m_density),
+        m_p_weight_set(aMaterial.m_p_weight_set)
 //---------------------------------------------------------------------
 {
-	std::memcpy(m_p_weight_set, aMaterial.m_p_weight_set, sizeof(m_p_weight_set));
+}
+
+
+//---------------------------------
+inline void TissueMaterial::reset()
+//---------------------------------
+{
+	m_p_weight_set.clear();
 }
 
 
@@ -158,14 +171,14 @@ inline short TissueMaterial::getMaxHUValue() const
 	return (m_max_HU_value);
 }
 	
-	
+/*
 //-------------------------------------------------------
 inline const double* TissueMaterial::getWeightSet() const
 //-------------------------------------------------------
 {
 	return (m_p_weight_set);
 }
-
+*/
 
 //-----------------------------------------------
 inline double TissueMaterial::getMolarMass() const
@@ -218,7 +231,15 @@ inline TissueMaterial& TissueMaterial::operator=(const TissueMaterial& aMaterial
 	m_max_HU_value = aMaterial.m_max_HU_value;
     m_molar_mass   = aMaterial.m_molar_mass;
     m_density      = aMaterial.m_density;
-	memcpy(m_p_weight_set, aMaterial.m_p_weight_set, sizeof(m_p_weight_set));
+
+    m_p_weight_set.clear();
+    for (std::map<int, double>::const_iterator ite = aMaterial.m_p_weight_set.begin();
+    		ite != aMaterial.m_p_weight_set.end();
+    		++ite)
+    {
+    	m_p_weight_set[ite->first] = ite->second;
+    }
+    //m_p_weight_set = aMaterial.m_p_weight_set;
 
 	return (*this);
 }
@@ -232,25 +253,13 @@ inline std::ostream & operator << (std::ostream& anOutputSream,
 	anOutputSream << aTissueMaterial.m_min_HU_value     << "\t";
 	anOutputSream << aTissueMaterial.m_max_HU_value     << "\t";
 	anOutputSream << aTissueMaterial.m_molar_mass << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 0] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 1] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 2] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 3] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 4] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 5] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 6] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 7] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 8] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[ 9] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[10] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[11] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[12] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[13] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[14] << "\t";
-    anOutputSream << aTissueMaterial.m_p_weight_set[15] << "\t";
-    anOutputSream << aTissueMaterial.m_p_weight_set[16] << "\t";
-    anOutputSream << aTissueMaterial.m_p_weight_set[17] << "\t";
-	anOutputSream << aTissueMaterial.m_p_weight_set[18] << std::endl;
+	
+	for (std::map<int, double>::const_iterator ite = aTissueMaterial.m_p_weight_set.begin();
+			ite != aTissueMaterial.m_p_weight_set.end();
+			++ite)
+	{
+		anOutputSream << ite->second << "\t";
+	}
 	
 	return (anOutputSream);
 }
@@ -263,25 +272,25 @@ inline std::istream & operator >> (std::istream& anInputSream,
 {
 	anInputSream >> aTissueMaterial.m_min_HU_value;
 	anInputSream >> aTissueMaterial.m_max_HU_value;
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 0];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 1];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 2];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 3];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 4];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 5];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 6];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 7];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 8];
-	anInputSream >> aTissueMaterial.m_p_weight_set[ 9];
-	anInputSream >> aTissueMaterial.m_p_weight_set[10];
-	anInputSream >> aTissueMaterial.m_p_weight_set[11];
-	anInputSream >> aTissueMaterial.m_p_weight_set[12];
-	anInputSream >> aTissueMaterial.m_p_weight_set[13];
-	anInputSream >> aTissueMaterial.m_p_weight_set[14];
-	anInputSream >> aTissueMaterial.m_p_weight_set[15];
-    anInputSream >> aTissueMaterial.m_p_weight_set[16];
-    anInputSream >> aTissueMaterial.m_p_weight_set[17];
-    anInputSream >> aTissueMaterial.m_p_weight_set[18];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_H];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_C];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_N];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_O];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Na];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Mg];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_P];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_S];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Cl];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Ar];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_K];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Ca];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Ti];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Cu];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Zn];
+	anInputSream >> aTissueMaterial.m_p_weight_set[Z_Ag];
+    anInputSream >> aTissueMaterial.m_p_weight_set[Z_Sn];
+    anInputSream >> aTissueMaterial.m_p_weight_set[Z_Fe];
+    anInputSream >> aTissueMaterial.m_p_weight_set[Z_I];	
 	
 	aTissueMaterial.normaliseWeightSet();
 	
