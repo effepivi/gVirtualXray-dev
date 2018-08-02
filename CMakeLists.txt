@@ -143,7 +143,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/XRayRenderer.cxx
 
     # Graphics
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/CylinderMesh.cxx
+    #${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/CylinderMesh.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/framebufferObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Image.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImplicitSurface.cxx
@@ -156,6 +156,11 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/StereoHelper.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/VBO.cxx
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SceneGraphBinder.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/AssimpSceneGraphBinder.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenSceneGraphBinder.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/GeodeFinder.cxx
     
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/AnatomicalMesh.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/InternalOrganMesh.cxx 
@@ -232,6 +237,10 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.inl
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphBinder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenSceneGraphBinder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AssimpSceneGraphBinder.h
+
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AnatomicalMesh.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/InternalOrganMesh.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SoftTissueMesh.h
@@ -306,6 +315,39 @@ IF (NOT APPLE)
 ENDIF (NOT APPLE)
 
 #SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
+
+
+
+# Check if ASSIMP is available #################################################
+FIND_PACKAGE( assimp   REQUIRED )
+INCLUDE_DIRECTORIES(${ASSIMP_INCLUDE_DIRS})
+SET(requiredLibs ${requiredLibs} ${ASSIMP_LIBRARIES})
+
+
+# ASSIMP #######################################################################
+OPTION(USE_assimp "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
+
+FIND_PACKAGE(assimp)
+IF (assimp_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
+    SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
+ELSE (assimp_FOUND)
+    MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disable.")
+ENDIF (assimp_FOUND)
+
+
+# OpenSceneGraph ###############################################################
+OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" ON)
+
+FIND_PACKAGE(OpenSceneGraph COMPONENTS osgViewer osgGA)
+IF (OPENSCENEGRAPH_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENSCENEGRAPH_INCLUDE_DIRS}")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENSCENEGRAPH")
+    SET (optionalLibs ${optionalLibs} ${OPENSCENEGRAPH_LIBRARIES})
+ELSE (OPENSCENEGRAPH_FOUND)
+    MESSAGE (WARNING "OpenSceneGraph not found, the use of OpenSceneGraph will be disable.")
+ENDIF (OPENSCENEGRAPH_FOUND)
 
 
 # OpenMP ######################################################################
@@ -705,6 +747,8 @@ IF (XCOM_PATH)
 
         ${XCOM_PATH}/MDATX3.011
         ${XCOM_PATH}/MDATX3.012
+        ${XCOM_PATH}/MDATX3.013
+        ${XCOM_PATH}/MDATX3.014
         ${XCOM_PATH}/MDATX3.015
         ${XCOM_PATH}/MDATX3.016
         ${XCOM_PATH}/MDATX3.017
@@ -712,8 +756,9 @@ IF (XCOM_PATH)
         ${XCOM_PATH}/MDATX3.019
 
         ${XCOM_PATH}/MDATX3.020
-        ${XCOM_PATH}/MDATX3.026
         ${XCOM_PATH}/MDATX3.022
+        ${XCOM_PATH}/MDATX3.023
+        ${XCOM_PATH}/MDATX3.026
         ${XCOM_PATH}/MDATX3.029
 
         ${XCOM_PATH}/MDATX3.030
@@ -722,6 +767,7 @@ IF (XCOM_PATH)
 
         ${XCOM_PATH}/MDATX3.050
         ${XCOM_PATH}/MDATX3.053
+        ${XCOM_PATH}/MDATX3.074
     )
 
     CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")
