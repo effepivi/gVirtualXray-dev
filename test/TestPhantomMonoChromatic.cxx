@@ -173,7 +173,7 @@ VEC3 g_source_position(   0.0, 0.0, -50.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  50.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-CylinderMesh g_cylinder;
+CylinderMesh<GLdouble> g_cylinder;
 SphereMesh g_sphere_0;
 SphereMesh g_sphere_1;
 SphereMesh g_sphere_2;

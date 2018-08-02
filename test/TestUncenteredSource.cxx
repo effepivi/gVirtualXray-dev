@@ -164,7 +164,7 @@ VEC3 g_source_position(   0.5 * cm, 0.5 * cm, -15.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, -1.0,   0.0);
 
-CylinderMesh g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
+CylinderMesh<GLdouble> g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
 CubeMesh<GLdouble> g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
