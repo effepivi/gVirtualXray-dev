@@ -94,7 +94,7 @@ namespace gVirtualXRay {
 *   @brief  CylinderMesh is a class to handle 3D meshes of cylinders.
 */
 //==============================================================================
-class CylinderMesh: public PolygonMesh
+template<typename T> class CylinderMesh: public PolygonMesh
 //------------------------------------------------------------------------------
 {
 //******************************************************************************
@@ -107,8 +107,9 @@ public:
      */
     //--------------------------------------------------------------------------
     CylinderMesh(unsigned int aNumberOfSectors = 10,
-               float aHeight = 1.0 * cm,
-               float aRadius = 0.5 * cm);
+               double aHeight = 1.0 * cm,
+               double aRadius = 0.5 * cm,
+			   int anIndexDataType = 0);
 
 
     //--------------------------------------------------------------------------
@@ -119,14 +120,15 @@ public:
      */
     //--------------------------------------------------------------------------
     void create(unsigned int aNumberOfSectors = 10,
-            float aHeight = 1.0 * cm,
-            float aRadius = 0.5 * cm);
+            double aHeight = 1.0 * cm,
+            double aRadius = 0.5 * cm,
+			int anIndexDataType = 0);
 
 
 private:
     void subdivision();
-    float m_height;
-    float m_radius;
+    double m_height;
+    double m_radius;
 };
 
 

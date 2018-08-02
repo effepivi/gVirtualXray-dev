@@ -66,14 +66,259 @@ namespace gVirtualXRay {
 
 
 //--------------------------------------------------------------
-inline CylinderMesh::CylinderMesh(unsigned int aNumberOfSectors,
-                                  float aHeight,
-                                  float aRadius):
+template<typename T> CylinderMesh<T>::CylinderMesh(unsigned int aNumberOfSectors,
+                                  double aHeight,
+                                  double aRadius,
+						  		  int anIndexDataType):
 //--------------------------------------------------------------
         PolygonMesh()
 //--------------------------------------------------------------
 {
-    create(aNumberOfSectors, aHeight, aRadius);
+    create(aNumberOfSectors, aHeight, aRadius, anIndexDataType);
+}
+
+
+//------------------------------------------------------
+template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
+                          double aHeight,
+                          double aRadius,
+				  		  int anIndexDataType)
+//------------------------------------------------------
+{
+    if (aNumberOfSectors < 3)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid parameter, the number of sectors should be at least 3");
+    }
+
+	// Reset the mesh
+	reset();
+	m_external_data_flag = false;
+
+	m_radius = aRadius;
+
+	m_min_corner = VEC3(-aRadius, -aHeight / 2.0, -aRadius);
+    m_max_corner = VEC3( aRadius,  aHeight / 2.0,  aRadius);
+
+    std::vector<T> p_vertex_set;
+    std::vector<T> p_normal_set;
+    std::vector<unsigned int> p_index_set;
+
+    double theta(0);
+    double angle(M_PI * 2.0 / aNumberOfSectors);
+
+    p_vertex_set.push_back(0);
+    p_vertex_set.push_back(-aHeight / 2.0);
+    p_vertex_set.push_back(0);
+
+    p_vertex_set.push_back(0);
+    p_vertex_set.push_back(aHeight / 2.0);
+    p_vertex_set.push_back(0);
+
+
+    // The side of the cylinder
+    for(unsigned int s(0); s < aNumberOfSectors; ++s, theta += angle)
+    {
+        double const x = cos(theta);
+        double const z = sin(theta);
+
+        p_vertex_set.push_back(x * aRadius);
+        p_vertex_set.push_back(-aHeight / 2.0);
+        p_vertex_set.push_back(z * aRadius);
+
+        p_normal_set.push_back(x);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(z);
+
+        p_vertex_set.push_back(x * aRadius);
+        p_vertex_set.push_back(aHeight / 2.0);
+        p_vertex_set.push_back(z * aRadius);
+
+        p_normal_set.push_back(x);
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(z);
+
+
+        if (s < aNumberOfSectors - 1)
+        {
+			p_index_set.push_back(2 + s * 2);
+			p_index_set.push_back(2 + s * 2 + 1);
+			p_index_set.push_back(2 + s * 2 + 2);
+
+			p_index_set.push_back(2 + s * 2 + 2);
+			p_index_set.push_back(2 + s * 2 + 1);
+			p_index_set.push_back(2 + s * 2 + 3);
+        }
+        else
+        {
+			p_index_set.push_back(2 + s * 2);
+			p_index_set.push_back(2 + s * 2 + 1);
+			p_index_set.push_back(2 + 0);
+
+			p_index_set.push_back(2 + 0);
+			p_index_set.push_back(2 + s * 2 + 1);
+			p_index_set.push_back(2 + 1);
+        }
+    	}
+
+    // Caps
+    theta = 0;
+    for(unsigned int s(0); s < aNumberOfSectors; ++s, theta += angle)
+    {
+        double const x = cos(theta);
+        double const z = sin(theta);
+
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(-1);
+        p_normal_set.push_back(0);
+
+        p_normal_set.push_back(0);
+        p_normal_set.push_back(1);
+        p_normal_set.push_back(0);
+
+        if (s < aNumberOfSectors - 1)
+        {
+			p_index_set.push_back(0);
+			p_index_set.push_back(2 + s * 2);
+			p_index_set.push_back(2 + s * 2 + 2);
+
+			p_index_set.push_back(1);
+			p_index_set.push_back(2 + s * 2 + 1);
+			p_index_set.push_back(2 + s * 2 + 3);
+        }
+        else
+        {
+			p_index_set.push_back(0);
+			p_index_set.push_back(2 + s * 2);
+			p_index_set.push_back(2);
+
+			p_index_set.push_back(1);
+			p_index_set.push_back(2 + s * 2 + 1);
+			p_index_set.push_back(2 + 1);
+        }
+    	}
+
+    if (anIndexDataType)
+	{
+		// Use vertex normals
+		std::vector<T> p_normal_set2;
+
+		int vertex_id = 0;
+		for (unsigned int vertex_id = 0; vertex_id < p_vertex_set.size() / 3; ++vertex_id)
+		{
+			double x = 0;
+			double y = 0;
+			double z = 0;
+
+			unsigned int counter = 0;
+
+			for (unsigned int face_id = 0; face_id < p_index_set.size() / 3; ++face_id)
+			{
+				if (p_index_set[face_id * 3] == vertex_id ||
+						p_index_set[face_id * 3 + 1] == vertex_id ||
+						p_index_set[face_id * 3 + 2] == vertex_id)
+				{
+					counter++;
+					x += p_normal_set[face_id * 3];
+					y += p_normal_set[face_id * 3 + 1];
+					z += p_normal_set[face_id * 3 + 2];
+				}
+			}
+
+			if (counter > 0)
+			{
+				x /= counter;
+				y /= counter;
+				z /= counter;
+			}
+
+			p_normal_set2.push_back(x);
+			p_normal_set2.push_back(y);
+			p_normal_set2.push_back(z);
+		}
+
+        switch (anIndexDataType)
+            {
+            case GL_UNSIGNED_INT:
+                {
+                    setInternalData(GL_TRIANGLES,
+                            &p_vertex_set,
+                            &p_normal_set2,
+                            &p_index_set,
+                            false,
+                            GL_STATIC_DRAW);
+                }
+                break;
+
+            case GL_UNSIGNED_SHORT:
+                {
+                    std::vector<GLushort> p_ushort_index_set;
+
+                    for (std::vector<GLuint>::const_iterator ite(p_index_set.begin());
+                            ite != p_index_set.end();
+                            ++ite)
+                    {
+                        p_ushort_index_set.push_back(*ite);
+                    }
+
+                    setInternalData(GL_TRIANGLES,
+                            &p_vertex_set,
+                            &p_normal_set2,
+                            &p_ushort_index_set,
+                            false,
+                            GL_STATIC_DRAW);
+                }
+                break;
+
+            case GL_UNSIGNED_BYTE:
+                {
+                    std::vector<GLubyte> p_ubyte_index_set;
+
+                    for (std::vector<GLuint>::const_iterator ite(p_index_set.begin());
+                            ite != p_index_set.end();
+                            ++ite)
+                    {
+                    	p_ubyte_index_set.push_back(*ite);
+                    }
+
+                    setInternalData(GL_TRIANGLES,
+                            &p_vertex_set,
+                            &p_normal_set2,
+                            &p_ubyte_index_set,
+                            false,
+                            GL_STATIC_DRAW);
+                }
+                break;
+
+            default:
+                throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                        "Invalid data type.");
+            }
+	}
+    else
+    {
+        std::vector<T> p_vertex_set2;
+    	std::vector<T> p_normal_set2;
+
+	    int normal_id = 0;
+    	for (std::vector<unsigned int>::const_iterator ite = p_index_set.begin();
+    			ite != p_index_set.end();
+    			++ite, ++normal_id)
+    	{
+    		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 0]);
+    		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 1]);
+    		p_vertex_set2.push_back(p_vertex_set[*ite * 3 + 2]);
+
+    		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 0]);
+    		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 1]);
+    		p_normal_set2.push_back(p_normal_set[3 * (normal_id / 3) + 2]);
+    	}
+
+        setInternalData(GL_TRIANGLES,
+                        &p_vertex_set2,
+                        &p_normal_set2,
+                        false,
+                        GL_STATIC_DRAW);
+    }
 }
 
 
