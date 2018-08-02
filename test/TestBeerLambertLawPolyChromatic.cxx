@@ -37,7 +37,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestBeerLambertLawPolyChromatic.cxx
 *
-*   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case (validation_05).
+*   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case,
+*   			the unit test corresponds to validation_05,
+*   			last date of check: Passed test on 03 Jul 2018.
 *
 *   @version    1.0
 *

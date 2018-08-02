@@ -37,10 +37,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestCubeSource.cxx
 *
-*   @brief      Unit testing: Cube source (validation_07).
+*   @brief      Unit testing: Cube source.
 *               A similar experimental set up is used with a validated
 *               Monte Carlo simulation tool. We compare the results produce with
 *               gVirtualXRay.
+*   			The unit test corresponds to validation_07,
+*   			last date of check: Passed test on 03 Jul 2018.
 *
 *   @version    1.0
 *

@@ -37,7 +37,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestSinogramFromMesh.cxx
 *
-*   @brief      Unit testing: Sinogram (validation_08).
+*   @brief      Unit testing: Sinogram,
+*   			the unit test corresponds to validation_08,
+*   			last date of check: Passed test on 03 Jul 2018.
 *
 *   @version    1.0
 *

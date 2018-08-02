@@ -83,20 +83,42 @@ ELSE ()
 ENDIF ()
 
 if(Boost_FOUND)
+    # Valiation_02
     add_executable(TestDensity                     TestDensity.cxx)
+    
+    # Validation_01
     add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 
 IF (glfw3_FOUND)
+    # Validation_03
     add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
+
+    # Validation_05
     add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
+
+    # Validation_08
     add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
-    add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
+
+    # Validation_??
+    #add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
+
+    # Validation_??
+    #add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
+
+    # Validation_06
     add_executable(TestPointSource                 TestPointSource.cxx)
+
+    # Validation_07
     add_executable(TestCubeSource                  TestCubeSource.cxx)
+
+    # Validation_09
     add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
-    add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
+
+    # Validation_??
+    #add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
 
     IF (FFTW3_LIBRARIES)
+	    # Validation_04
         add_executable(TestFBP                     TestFBP.cxx)
     ENDIF()
 ENDIF()
@@ -107,11 +129,11 @@ IF (glfw3_FOUND)
     target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    #target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
     target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    #target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
     IF (FFTW3_LIBRARIES)
         target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
@@ -125,11 +147,11 @@ IF (glfw3_FOUND)
          ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
          ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
          ADD_DEPENDENCIES(TestSinogramFromMesh              gVirtualXRay)
-         ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay)
+         #ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay)
          ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay)
          ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay)
          ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
-         ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
+         #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
 
     IF (FFTW3_LIBRARIES)
          ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
@@ -143,24 +165,24 @@ IF (glfw3_FOUND)
     add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
     add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
     add_test (TestSinogramFromMesh            TestSinogramFromMesh)
-    add_test (TestSinogramFromVoxels          TestSinogramFromVoxels)
+    #add_test (TestSinogramFromVoxels          TestSinogramFromVoxels)
     add_test (TestPointSource                 TestPointSource)
     add_test (TestCubeSource                  TestCubeSource)
     add_test (TestUncenteredSource            TestUncenteredSource)
-    add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
+    #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
     
     IF (FFTW3_LIBRARIES)
         add_test (TestFBP                     TestFBP)
     ENDIF()
 ENDIF()
-    
-    FILE (MAKE_DIRECTORY data/)
-    FILE (MAKE_DIRECTORY data/point_source)
-    FILE (MAKE_DIRECTORY data/SBP)
-    FILE (MAKE_DIRECTORY data/FBP)
-    FILE (MAKE_DIRECTORY data/ART)
-    FILE (MAKE_DIRECTORY data/MART)
-    FILE (MAKE_DIRECTORY data/SIRT)
+    #MESSAGE(FATAL_ERROR  ${CMAKE_BINARY_DIR})
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/)
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/point_source)
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/SBP)
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/FBP)
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/ART)
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/MART)
+    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/SIRT)
     
     CONFIGURE_FILE (../validation/data/validation_01/bone.csv   data/bone.csv   COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/brain.csv  data/brain.csv  COPYONLY)
@@ -177,11 +199,13 @@ ENDIF()
     CONFIGURE_FILE (../validation/data/validation_07/gate_simulation.raw       data/cube_source/gate_simulation.raw  COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_09/gate_simulation.mhd       data/uncentered_source/gate_simulation.mhd  COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_09/gate_simulation.raw       data/uncentered_source/gate_simulation.raw  COPYONLY)
-    
-    
 
-    
-    
+    CONFIGURE_FILE (../validation/data/validation_04/ct_volume_in_mu_80keV.mhd   data/CT_reconstruction/ct_volume_in_mu_80keV.mhd  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_04/ct_volume_in_mu_80keV.raw   data/CT_reconstruction/ct_volume_in_mu_80keV.raw  COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_04/projection_set.mhd          data/CT_reconstruction/projection_set.mhd         COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_04/projection_set.raw          data/CT_reconstruction/projection_set.raw         COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_04/sinogram.mhd                data/CT_reconstruction/sinogram.mhd               COPYONLY)
+    CONFIGURE_FILE (../validation/data/validation_04/sinogram.raw                data/CT_reconstruction/sinogram.raw               COPYONLY)
     
 
 ENDIF(Boost_FOUND)

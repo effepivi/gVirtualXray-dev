@@ -37,7 +37,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestDensity.cxx
 *
-*   @brief      Unit testing: density (validation_02).
+*   @brief      Unit testing: density,
+*   			the unit test corresponds to validation_02,
+*   			Last date of check: Passed test on 03 Jul 2018.
 *
 *   @version    1.0
 *

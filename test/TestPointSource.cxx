@@ -37,10 +37,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestPointSource.cxx
 *
-*   @brief      Unit testing: Point source (validation_06).
+*   @brief      Unit testing: Point source:
 *               A similar experimental set up is used with a validated
 *               Monte Carlo simulation tool. We compare the results produce with
 *               gVirtualXRay.
+*   			The unit test corresponds to validation_06,
+*   			last date of check: Passed test on 03 Jul 2018.
 *
 *   @version    1.0
 *

@@ -37,7 +37,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @file       TestBeerLambertLawMonoChromatic.cxx
 *
-*   @brief      Unit testing: Beer-Lambert Law, Monochromatism Case (validation_03).
+*   @brief      Unit testing: Beer-Lambert Law, Monochromatism Case,
+*   			the unit test corresponds to validation_03,
+*   			last date of check: Passed test on 03 Jul 2018.
 *
 *   @version    1.0
 *
