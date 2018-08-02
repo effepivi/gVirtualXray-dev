@@ -205,7 +205,7 @@ void runTest(const char* aFileName, short anHounsfieldValue)
         test_vector.push_back(g_xray_renderer.getMassAttenuationFromHU(anHounsfieldValue, energy)  / (cm2 / g));
     }
 
-    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 5.0);
+    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
 }
 
 
