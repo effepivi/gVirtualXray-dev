@@ -31,7 +31,7 @@ do
     echo Run $i >> timing.dat
     date >> timing.dat
 
-    /usr/local/share/gate_v6.2/bin/Gate < ../gate_simulation/benchmarkVRTCT.mac 2>/dev/null >/dev/null
+    Gate < ../gate_simulation/benchmarkVRTCT.mac 2>/dev/null >/dev/null
     date >> timing.dat
     echo Stop >> timing.dat
     echo "********************************************************************************" >> timing.dat

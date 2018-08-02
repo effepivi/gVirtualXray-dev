@@ -198,7 +198,7 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-CylinderMesh g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
+CylinderMesh<GLfloat> g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
 CubeMesh<GLfloat> g_outside_polygon_data(3.0 * cm, GL_UNSIGNED_INT);
 
 #if __cplusplus <= 199711L

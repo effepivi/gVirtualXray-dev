@@ -90,8 +90,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef GVXR_POLYGON_MESH_H
-#include "gVirtualXRay/PolygonMesh.h"
+#ifndef __CylinderMesh_h
+#include "gVirtualXRay/CylinderMesh.h"
 #endif
 
 #ifndef GVXR_CUBE_MESH_H
@@ -170,7 +170,7 @@ VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-PolygonMesh g_inside_polygon_data;
+CylinderMesh<GLdouble> g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
 CubeMesh<GLdouble> g_outside_polygon_data(3.0 * cm);
 
 XRayBeam g_xray_beam;
@@ -371,33 +371,12 @@ void initGL()
 void loadSTLFile()
 //----------------
 {
-    std::string stl_filename("cylinder_bin.stl");
-
-    // Open the file
-    FILE* p_file_descriptor(fopen(stl_filename.data(), "rb"));
-
-    // The file is not in the same directory as the executable
-    if (!p_file_descriptor)
-        {
-        // Use the prefix
-        stl_filename = std::string(PREFIX) + "/../" + stl_filename;
-        }
-    else
-        {
-        fclose(p_file_descriptor);
-        }
-
     // HU values
     double HU_water(0.0);
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
-    // Set geometry
-    g_inside_polygon_data.setFilename(stl_filename.data());
-    g_inside_polygon_data.loadSTLFile(true, true, true, true, cm, GL_STATIC_DRAW);
-    g_inside_polygon_data.mergeVertices();
     g_inside_polygon_data.setHounsfieldValue(HU_bone);
-
     g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
@@ -515,10 +494,6 @@ void loadSTLFile()
     std::cout << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
     std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << g_literature_result / keV << "| keV" << std::endl;
     std::cout << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / keV << " keV" << std::endl << std::endl;
-
-    g_inside_polygon_data.splitFaces(false);
-    g_inside_polygon_data.splitFaces(false);
-    g_inside_polygon_data.splitFaces(false);
 
     g_outside_polygon_data.splitFaces(false);
     g_outside_polygon_data.splitFaces(false);

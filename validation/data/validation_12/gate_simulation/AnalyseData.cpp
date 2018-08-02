@@ -92,11 +92,11 @@ int main(int argc, char* argv[])
 		Double_t last_pixel_x_position(  COLUMN_BOUND);
 		Double_t last_pixel_y_position(  ROW_BOUND);
 
-		for (unsigned int run_id(0); run_id <= 100; ++run_id)
+		for (unsigned int run_id(0); run_id <= 59; ++run_id)
 		{
 			// Store the root file name in 'fileName' variable
 			stringstream FILENAME;
-			FILENAME << "run_" << run_id << "/benchmarkVRTCT.root";
+			FILENAME << "run_" << run_id << "/benchmarkVRTCT_000.root";
 	
 			// Open (check) and read the root file
 			p_input_file = new TFile( FILENAME.str().data() );

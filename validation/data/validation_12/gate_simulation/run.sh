@@ -1,5 +1,6 @@
 TEST_NUMBER=0
 NB_RUN=10
+NB_RUN=1
 
 rm -rf run_*
 rm -f benchmarkVRTCT_*.dat
@@ -31,7 +32,7 @@ do
     echo Run $i >> timing.dat
     date >> timing.dat
 
-    /usr/local/share/gate_v6.2/bin/Gate < benchmarkVRTCT.mac 2>/dev/null >/dev/null
+    Gate < benchmarkVRTCT.mac 2>/dev/null >/dev/null
     date >> timing.dat
     echo Stop >> timing.dat
     echo "********************************************************************************" >> timing.dat
