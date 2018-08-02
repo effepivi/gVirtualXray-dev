@@ -175,6 +175,7 @@ XRayRenderer g_xray_renderer;
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
+void quit();
 void initGL();
 void loadSTLFile();
 void loadDetector();
@@ -287,12 +288,7 @@ int main(int argc, char** argv)
         }
 
     // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
+    quit();
 
     // Return an exit code
     return (EXIT_SUCCESS);
@@ -315,7 +311,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 

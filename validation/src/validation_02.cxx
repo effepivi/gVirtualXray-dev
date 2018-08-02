@@ -104,11 +104,13 @@ GLfloat g_resolution(0.15 * mm); // 1mm per pixel
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
 XRayRenderer g_xray_renderer;
+GLFWwindow* g_p_main_window_id = 0;
 
 
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
+void quit();
 void loadDetector();
 void loadSource();
 void loadXRaySimulator();
@@ -140,13 +142,13 @@ int main(int argc, char** argv)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
         // Create the window
-        GLFWwindow* p_main_window_id(glfwCreateWindow(64,
+        g_p_main_window_id = glfwCreateWindow(64,
             64,
             "gVirtualXRay -- Validation 02",
             0,
-            0));
+            0);
 
-        if (!p_main_window_id)
+        if (!g_p_main_window_id)
             {
             glfwTerminate();
             throw Exception(__FILE__, __FUNCTION__, __LINE__,
@@ -154,7 +156,7 @@ int main(int argc, char** argv)
             }
 
         // Make the window's context current
-        glfwMakeContextCurrent(p_main_window_id);
+        glfwMakeContextCurrent(g_p_main_window_id);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
         // Initialise GLEW
@@ -189,12 +191,7 @@ int main(int argc, char** argv)
             }
 
         // Close the window and shut GLFW
-        if (p_main_window_id)
-            {
-            glfwDestroyWindow(p_main_window_id);
-            p_main_window_id = 0;
-            glfwTerminate();
-            }
+        quit();
         }
     // Catch exception if any
     catch (const std::exception& error)
@@ -203,6 +200,19 @@ int main(int argc, char** argv)
         }
 
     return (EXIT_SUCCESS);
+}
+
+
+//---------
+void quit()
+//---------
+{
+    if (g_p_main_window_id)
+        {
+        glfwDestroyWindow(g_p_main_window_id);
+        g_p_main_window_id = 0;
+        //glfwTerminate();
+        }
 }
 
 

@@ -184,6 +184,7 @@ void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
+void quit();
 
 
 //-----------------------------------
@@ -290,12 +291,7 @@ BOOST_AUTO_TEST_CASE(TestPointSource)
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
 
     // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
+    quit();
 
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> reference_projection_set("data/point_source/gate_simulation.mhd");
@@ -324,7 +320,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 

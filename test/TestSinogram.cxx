@@ -295,6 +295,11 @@ BOOST_AUTO_TEST_CASE(TestSinogram)
     // Save the projection set
     g_xray_renderer.printProjectionSet("TestSinogram_simulation_projection_set.mhd");
 
+    // Close the window
+    glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+
+    // Close the window and shut GLFW
+    quit();
 
     // Load reference sinogram (computed using GNU octave)
     Image<XRayRenderer::PixelType> reference_sinogram("data/phantom_sinogram.mhd");
@@ -374,7 +379,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 

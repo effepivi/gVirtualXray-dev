@@ -183,6 +183,7 @@ void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
+void quit();
 
 
 //---------------------------
@@ -329,13 +330,11 @@ exit(0);
     // Save the projection set
     g_xray_renderer.printProjectionSet("TestFBP_projection_set.mhd");
 
+    // Close the window
+    glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+
     // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
+    quit();
 
     Sinogram<XRayRenderer::PixelType> sinogram(g_xray_renderer.getSinogram());
 
@@ -386,7 +385,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 

@@ -154,6 +154,7 @@ float g_photon_energy(80.0 * keV);
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
+void quit();
 void loadDetector();
 void loadSource();
 void loadXRaySimulator();
@@ -254,12 +255,7 @@ int main(int argc, char** argv)
         }
 
     // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
+    quit();
 
     // Return an exit code
     return (EXIT_SUCCESS);

@@ -176,6 +176,7 @@ void loadDetector();
 void loadSource();
 void loadXRaySimulator();
 void errorCallback(int error, const char* description);
+void quit();
 
 
 //---------------------------------------------------
@@ -284,6 +285,12 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     simulated_result = central_pixel;
     BOOST_CHECK_CLOSE(g_expected_result, simulated_result, 0.0001);
 
+    // Close the window
+    glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
+
+    // Close the window and shut GLFW
+    quit();
+
     std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
 
@@ -293,14 +300,6 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
 
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
-
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
 }
 
 
@@ -320,7 +319,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
