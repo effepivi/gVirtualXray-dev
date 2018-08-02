@@ -62,6 +62,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <memory>
@@ -302,7 +303,7 @@ BOOST_AUTO_TEST_CASE(TestRadonTransformFromMesh)
 
     // Load reference image
     Image<XRayRenderer::PixelType> reference_CT("data/CT_reconstruction/ct_volume_in_mu_80keV.mhd");
-    double range = (reference_CT.getMaxValue() - reference_CT.getMinValue());
+    float range = (reference_CT.getMaxValue() - reference_CT.getMinValue());
 
 
     // SBP
@@ -310,29 +311,31 @@ BOOST_AUTO_TEST_CASE(TestRadonTransformFromMesh)
     reconstruction = sinogram.simpleBackProjection(0, g_angle_step, "data/SBP");
     reconstruction.save("TestFBP_SBP_reconstruction.mhd");
     double sbp_ncc  = reference_CT.computeNCC(reconstruction);
-    double sbp_rmse = reference_CT.computeRMSE(reconstruction);
+    float sbp_rmse = reference_CT.computeRMSE(reconstruction);
     std::cout << "SBP: NCC: " << 100.0 * sbp_ncc<< "\%" << "\tRMSE:" << sbp_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     BOOST_CHECK_CLOSE(sbp_ncc, 1.0, 10.0);
 
     // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK(sbp_rmse < 0.01 * range);
+    BOOST_CHECK(sbp_rmse < 0.01f * std::min(range, reconstruction.getMaxValue() - reconstruction.getMinValue()));
 
 
     // FBP
     reconstruction = sinogram.filteredBackProjection(0, g_angle_step, "hamming", 1.0, "data/FBP");
     reconstruction.save("TestFBP_FBP_reconstruction.mhd");
     double fbp_ncc  = reference_CT.computeNCC(reconstruction);
-    double fbp_rmse = reference_CT.computeRMSE(reconstruction);
+    float fbp_rmse = reference_CT.computeRMSE(reconstruction);
     std::cout << "FBP: NCC: " << 100.0 * fbp_ncc<< "\%" << "\tRMSE:" << fbp_rmse << std::endl;
 
     // Compare reference CT and simulated projection set using NCC
     BOOST_CHECK_CLOSE(fbp_ncc, 1.0, 0.5);
 
     // Compare reference projection set and simulated projection set using RMSE
-    BOOST_CHECK(fbp_rmse < 0.01 * range);
-/*
+    BOOST_CHECK(fbp_rmse < 0.01f * std::min(range, reconstruction.getMaxValue() - reconstruction.getMinValue()));
+
+
+    /*
 
     // ART
     reconstruction = sinogram.art(0, g_angle_step, 25, "data/ART");
