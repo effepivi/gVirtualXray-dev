@@ -294,14 +294,14 @@ BOOST_AUTO_TEST_CASE(TestUncenteredSource)
 
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> reference_projection_set("data/uncentered_source/gate_simulation.mhd");
+    reference_projection_set = reference_projection_set.normalised() * g_incident_energy;
 
     // Compare reference projection set and simulated projection set using NCC
     BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
 
     // Compare reference projection set and simulated projection set using RMSE
     float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
-    float range = (reference_projection_set.getMaxValue() - reference_projection_set.getMinValue());
-    BOOST_CHECK(RMSE < 0.01f * std::min(range, g_xray_renderer.getProjectionSet().getMaxValue() - g_xray_renderer.getProjectionSet().getMinValue()));
+    BOOST_CHECK(RMSE < 0.01f * g_incident_energy);
 }
 
 
