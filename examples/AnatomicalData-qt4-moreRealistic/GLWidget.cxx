@@ -202,6 +202,10 @@ const double g_p_p5_HU_set [] =
 };
 
 
+
+std::string g_label("all");
+
+
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
@@ -577,6 +581,30 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
             m_zoom -= 1.0 * cm;
             resizeGL(width(), height());
             std::cout << "Zoom in cm)" << m_zoom / cm << std::endl;
+            break;
+
+        case Qt::Key_1:
+            g_label = "skin";
+            break;
+
+        case Qt::Key_2:
+            g_label = "liver";
+            break;
+
+        case Qt::Key_3:
+            g_label = "lungs";
+            break;
+
+        case Qt::Key_4:
+            g_label = "diaphragm";
+            break;
+
+        case Qt::Key_5:
+            g_label = "bones";
+            break;
+
+        case Qt::Key_6:
+            g_label = "all";
             break;
 
         default:
@@ -1131,6 +1159,10 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
             ite != apMeshSet.end();
             ++ite)
         {
+
+
+        if ((*ite)->getLabel() == g_label || g_label == "all" && (*ite)->getLabel() != "skin")
+        {
         (*ite)->defineDisplayShaderInput(aShaderID);
 
         if (m_display_wireframe)
@@ -1148,6 +1180,7 @@ void GLWidget::displayPatient(std::vector<AnatomicalMesh*>& apMeshSet,
                 (*ite)->display();
                 }
             }
+        }
         }
     
     if (p_transparent_mesh_set.size())
