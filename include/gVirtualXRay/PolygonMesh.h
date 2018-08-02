@@ -1411,7 +1411,7 @@ protected:
 
 
     /// Array containing the normal vectors (one per triangle)
-    std::vector<RATIONAL_NUMBER> m_p_face_normal_set;
+    //std::vector<RATIONAL_NUMBER> m_p_face_normal_set;
 
 
     /// Array containing the normal vectors (one per vertex)
