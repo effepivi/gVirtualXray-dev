@@ -172,6 +172,26 @@ public:
 
 
     //---------------------------------------------------------------------------
+    /// Get a given element.
+    /*
+    *   @param anAtomicNumber:  the name of the element
+    *   @return the element
+    */
+    //---------------------------------------------------------------------------
+    AtomicElement& getElement(const std::string& aName);
+
+
+    //---------------------------------------------------------------------------
+    /// Get a given element.
+    /*
+    *   @param anAtomicNumber:  the name of the element
+    *   @return the element
+    */
+    //---------------------------------------------------------------------------
+    const AtomicElement& getElement(const std::string& aName) const;
+
+
+    //---------------------------------------------------------------------------
     /// Accessor on the molar mass of the element.
     /*
     *   @param anAtomicNumber:  the atomic number (Z) of the element
