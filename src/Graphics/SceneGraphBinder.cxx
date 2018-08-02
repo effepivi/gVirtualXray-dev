@@ -255,3 +255,27 @@ void SceneGraphBinder::moveToCenter()
 {
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
 }
+
+
+MATRIX4 SceneGraphBinder::getRootNodeTransformationMatrix() const
+{
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+}
+
+
+MATRIX4 SceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
+{
+	return (getTransformationMatrix(aNodeLabel));
+}
+
+
+void SceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
+{
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+}
+
+
+void SceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
+{
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+}
