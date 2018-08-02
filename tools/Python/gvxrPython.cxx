@@ -25,6 +25,12 @@
 // For Numpy
 #include <boost/python/numpy.hpp>
 
+// For tuples
+#include <boost/python/tuple.hpp>
+
+// For operators
+#include <boost/python/operators.hpp>
+
 // For exceptions
 #ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
@@ -70,6 +76,14 @@
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
+#ifndef __CubeMesh_h
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
+#ifndef __CylinderMesh_h
+#include "gVirtualXRay/CylinderMesh.h"
+#endif
+
 // Shaders for rendering
 #include "display_gl2.frag.h"
 #include "display_gl2.vert.h"
@@ -85,6 +99,9 @@ using namespace gVirtualXRay;
 namespace np = boost::python::numpy;
 
 
+class PyPolygonMesh;
+
+
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
@@ -95,16 +112,18 @@ void destroyAllWindows();
 void computeXRayImage();
 void usePointSource();
 void useParallelBeam();
-void setMonoChromatic(RATIONAL_NUMBER anEnergy, const char* aUnitOfEnergy, RATIONAL_NUMBER aNumberOfPhotons = 1);
-void setSourcePosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength);
-void setDetectorPosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength);
-void setDetectorUpVector(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+void resetBeamSpectrum();
+void setMonoChromatic(double anEnergy, const char* aUnitOfEnergy, double aNumberOfPhotons = 1);
+void addEnergyBinToSpectrum(double anEnergy, const char* aUnitOfEnergy,  double aNumberOfPhotons);
+void setSourcePosition(double x, double y, double z, const char* aUnitOfLength);
+void setDetectorPosition(double x, double y, double z, const char* aUnitOfLength);
+void setDetectorUpVector(double x, double y, double z);
 void setDetectorNumberOfPixels(int aWidth, int aHeight);
-void setDetectorPixelSize(RATIONAL_NUMBER aWidth, RATIONAL_NUMBER aHeight, const char* aUnitOfLength);
+void setDetectorPixelSize(double aWidth, double aHeight, const char* aUnitOfLength);
 void saveLastXRayImage(const char* aFileName = 0);
 np::ndarray getNumpyImage();
 void displayScene(int aWindowID = -1);
-void renderLoop(int aWindowID = -1);
+void renderLoop(int aWindowID = -1, PyObject* CallBack = 0);
 
 void loadMeshFile(const char* aLabel,
         const char* aFileName,
@@ -112,21 +131,43 @@ void loadMeshFile(const char* aLabel,
 void loadSceneGraph(const char* aFileName,
         const char* aUnitOfLength);
 void moveToCentre(const char* aLabel = 0);
+void addPolygonMesh(const PyPolygonMesh& aMesh, const std::string& aLabel);
 
-void scaleNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
-void rotateNode(const char* aLabel, RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
-void translateNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+np::ndarray getSceneTransformationMatrix();
+np::ndarray getRootTransformationMatrix();
+np::ndarray getNodeTransformationMatrix(const char* aLabel);
 
-void scaleScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
-void rotateScene(RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
-void translateScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+void setSceneTransformationMatrix(const np::ndarray& aMatrix);
+void setRootTransformationMatrix(const np::ndarray& aMatrix);
+void setNodeTransformationMatrix(const char* aLabel, const np::ndarray& aMatrix);
 
 
+void scaleNode(const char* aLabel, double x, double y, double z,
+        const char* aUnitOfLength);
+void rotateNode(const char* aLabel, double angle, double x, double y, double z);
+void translateNode(const char* aLabel, double x, double y, double z,
+        const char* aUnitOfLength);
 
-void setHU(const char* aLabel, RATIONAL_NUMBER aHU);
+void scaleScene(double x, double y, double z,
+        const char* aUnitOfLength);
+void rotateScene(double angle, double x, double y, double z);
+void translateScene(double x, double y, double z,
+        const char* aUnitOfLength);
+
+
+void setHU(const char* aLabel, double aHU);
 void setAttenuationCoefficient(const char* aLabel,
-        RATIONAL_NUMBER anAttenuationCoefficient);
+        double anAttenuationCoefficient);
 boost::python::tuple getMeshLabelSet();
+
+PyPolygonMesh makeCube(double aLength = 1.0, const char* aUnitOfLength = "cm");
+PyPolygonMesh makeCylinder(unsigned int aNumberOfSectors = 10,
+        float aHeight = 1.0,
+        float aRadius = 0.5,
+		const char* aUnitOfLength = "cm");
+
+
+
 
 void initialiseXRayRenderer();
 
@@ -135,7 +176,8 @@ void quit();
 GLFWwindow* initGLFW(int aWindowID);
 void initGL();
 void errorCallback(int error, const char* description);
-RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength);
+double getUnitOfLength(const char* aUnitOfLength);
+double getUnitOfEnergy(const char* aUnitOfEnergy);
 
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -218,8 +260,178 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads,     setWindowSize,     
 BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads,  setMonoChromatic,  2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
 BOOST_PYTHON_FUNCTION_OVERLOADS(displayScene_overloads,      displayScene,      0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads,        renderLoop,        0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads,        renderLoop,        0, 2)
 BOOST_PYTHON_FUNCTION_OVERLOADS(moveToCentre_overloads,      moveToCentre,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(makeCube_overloads,          makeCube,          0, 2)
+BOOST_PYTHON_FUNCTION_OVERLOADS(makeCylinder_overloads,      makeCylinder,      0, 4)
+
+
+class PyPolygonMesh//: public boost::python::object
+{
+public:
+	PyPolygonMesh();
+	PyPolygonMesh(const PolygonMesh& aMesh);
+
+
+	void setMaterial(const boost::python::list& aMaterial);
+
+	void setDensity(double aDensity, const char* aUnitOfDensity);
+	double getDensity();
+
+	double getMassAttenuationCoefficient(double anEnergy, const char* aUnitOfEnergy) const;
+	double getLinearAttenuationCoefficient(double anEnergy, const char* aUnitOfEnergy) const;
+
+	void setLinearAttenuationCoefficient(double aMu, const char* aUnit);
+
+	const PolygonMesh& getMesh() const;
+	PolygonMesh& getMesh();
+
+	PyPolygonMesh& operator=(const PyPolygonMesh& aMesh);
+
+	PyPolygonMesh operator+(const PyPolygonMesh& aMesh) const;
+	PyPolygonMesh operator-(const PyPolygonMesh& aMesh) const;
+
+	PyPolygonMesh& operator+=(const PyPolygonMesh& aMesh);
+	PyPolygonMesh& operator-=(const PyPolygonMesh& aMesh);
+
+private:
+	PolygonMesh m_polygon_mesh;
+};
+
+
+PyPolygonMesh::PyPolygonMesh()
+{}
+
+
+PyPolygonMesh::PyPolygonMesh(const PolygonMesh& aMesh):
+		//boost::python::object(),
+		m_polygon_mesh(aMesh)
+{}
+
+
+void PyPolygonMesh::setMaterial(const boost::python::list& aMaterial)
+{
+	TissueMaterial gvxr_material;
+	gvxr_material.reset();
+
+    for (int i = 0; i < boost::python::len(aMaterial); ++i)
+    {
+    	// Get the tuple from the list
+    	boost::python::tuple material_compound = boost::python::extract<boost::python::tuple>(aMaterial[i]);
+
+    	// Extract the data from the tuple
+    	std::string material = boost::python::extract<std::string>(material_compound[0]);
+    	double quantity = boost::python::extract<double>(material_compound[1]);
+
+    	// Add compound to gvxr_material
+    	gvxr_material.addElement(material, quantity);
+    }
+
+    // Set the material
+    m_polygon_mesh.setTissueMaterial(gvxr_material);
+}
+
+
+void PyPolygonMesh::setDensity(double aDensity, const char* aUnitOfDensity)
+{
+    if (strcmp(aUnitOfDensity, "g.cm-3") &&
+            strcmp(aUnitOfDensity, "g/cm3") &&
+            strcmp(aUnitOfDensity, "g / cm3"))
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of density.");
+    }
+
+    m_polygon_mesh.setTissueDensity(aDensity * g / cm3);
+}
+
+
+double PyPolygonMesh::getDensity()
+{
+	return (m_polygon_mesh.getTissueDensity() / (g / cm3));
+}
+
+double PyPolygonMesh::getMassAttenuationCoefficient(double anEnergy,
+		                                            const char* aUnitOfEnergy) const
+{
+	return (m_polygon_mesh.getTissueMaterial().getMassAttenuationTotal(anEnergy * getUnitOfEnergy(aUnitOfEnergy)) / (cm2/g));
+}
+
+
+double PyPolygonMesh::getLinearAttenuationCoefficient(double anEnergy,
+		                                              const char* aUnitOfEnergy) const
+{
+	return (m_polygon_mesh.getTissueMaterial().getMU(anEnergy * getUnitOfEnergy(aUnitOfEnergy)) * cm);
+}
+
+
+
+void PyPolygonMesh::setLinearAttenuationCoefficient(double aMu, const char* aUnit)
+{
+    if (strcmp(aUnit, "cm-1"))
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of linear attenuation coefficient.");
+    }
+
+	m_polygon_mesh.setAttenuationCoefficient(aMu / cm);
+}
+
+
+const PolygonMesh& PyPolygonMesh::getMesh() const
+{
+	return (m_polygon_mesh);
+}
+
+
+PolygonMesh& PyPolygonMesh::getMesh()
+{
+	return (m_polygon_mesh);
+}
+
+
+PyPolygonMesh& PyPolygonMesh::operator=(const PyPolygonMesh& aMesh)
+{
+	m_polygon_mesh = aMesh.m_polygon_mesh;
+
+
+	return (*this);
+}
+
+
+PyPolygonMesh PyPolygonMesh::operator+(const PyPolygonMesh& aMesh) const
+{
+	PyPolygonMesh new_mesh = *this;
+	new_mesh.m_polygon_mesh += aMesh.m_polygon_mesh;
+
+	return (new_mesh);
+}
+
+
+PyPolygonMesh PyPolygonMesh::operator-(const PyPolygonMesh& aMesh) const
+{
+	PyPolygonMesh new_mesh = *this;
+	new_mesh.m_polygon_mesh -= aMesh.m_polygon_mesh;
+
+	return (new_mesh);
+}
+
+
+PyPolygonMesh& PyPolygonMesh::operator+=(const PyPolygonMesh& aMesh)
+{
+	m_polygon_mesh += aMesh.m_polygon_mesh;
+
+	return (*this);
+}
+
+
+PyPolygonMesh& PyPolygonMesh::operator-=(const PyPolygonMesh& aMesh)
+{
+	m_polygon_mesh -= aMesh.m_polygon_mesh;
+
+	return (*this);
+}
+
 
 
 //------------------------------
@@ -444,37 +656,37 @@ void useParallelBeam()
 }
 
 
+//----------------------
+void resetBeamSpectrum()
+//----------------------
+{
+    g_xray_beam.clear();
+    g_beam_energy_initialised = false;
+}
+
+
 //-----------------------------------------------------
-void setMonoChromatic(RATIONAL_NUMBER anEnergy,
+void setMonoChromatic(double anEnergy,
 		              const char* aUnitOfEnergy,
-					  RATIONAL_NUMBER aNumberOfPhotons)
+					  double aNumberOfPhotons)
 //-----------------------------------------------------
 {
-    RATIONAL_NUMBER unit = 0;
-
-    if (!strcmp(aUnitOfEnergy, "megaelectronvolt") ||
-            !strcmp(aUnitOfEnergy, "MeV"))
-    {
-    unit = MeV;
-    }
-    else if (!strcmp(aUnitOfEnergy, "kiloelectronvolt") ||
-            !strcmp(aUnitOfEnergy, "keV"))
-    {
-    unit = keV;
-    }
-    else if (!strcmp(aUnitOfEnergy, "electronvolt") ||
-            !strcmp(aUnitOfEnergy, "eV"))
-    {
-    	unit = eV;
-    }
-    else
-    {
-		throw Exception(__FILE__, __FUNCTION__, __LINE__,
-			"ERROR: Unknown unit of energy.");
-    }
-
     g_xray_beam.clear();
-    g_xray_beam.addChannel(aNumberOfPhotons, anEnergy * unit);
+    g_xray_beam.addChannel(aNumberOfPhotons, anEnergy * getUnitOfEnergy(aUnitOfEnergy));
+    g_beam_energy_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//-----------------------------------------------------------
+void addEnergyBinToSpectrum(double anEnergy,
+							const char* aUnitOfEnergy,
+							double aNumberOfPhotons)
+//-----------------------------------------------------------
+{
+    g_xray_beam.addChannel(aNumberOfPhotons, anEnergy * getUnitOfEnergy(aUnitOfEnergy));
     g_beam_energy_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
@@ -483,10 +695,10 @@ void setMonoChromatic(RATIONAL_NUMBER anEnergy,
 
 
 //-----------------------------------------------
-void setSourcePosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength)
+void setSourcePosition(double x, double y, double z, const char* aUnitOfLength)
 //-----------------------------------------------
 {
-	RATIONAL_NUMBER unit_of_length = getUnitOfLength(aUnitOfLength);
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
 
 	g_xray_detector.setXrayPointSource(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
     g_source_position_initialised = true;
@@ -497,10 +709,10 @@ void setSourcePosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, 
 
 
 //-------------------------------------------------
-void setDetectorPosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z, const char* aUnitOfLength)
+void setDetectorPosition(double x, double y, double z, const char* aUnitOfLength)
 //-------------------------------------------------
 {
-	RATIONAL_NUMBER unit_of_length = getUnitOfLength(aUnitOfLength);
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
 
     g_xray_detector.setDetectorPosition(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
     g_detector_position_initialised = true;
@@ -511,7 +723,7 @@ void setDetectorPosition(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z
 
 
 //-------------------------------------------------
-void setDetectorUpVector(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+void setDetectorUpVector(double x, double y, double z)
 //-------------------------------------------------
 {
     g_xray_detector.setUpVector(VEC3(x, y, z).normal());
@@ -535,12 +747,12 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 
 
 //--------------------------------------------------
-void setDetectorPixelSize(RATIONAL_NUMBER aWidth,
-						  RATIONAL_NUMBER aHeight,
+void setDetectorPixelSize(double aWidth,
+						  double aHeight,
 						  const char* aUnitOfLength)
 //--------------------------------------------------
 {
-	RATIONAL_NUMBER unit_of_length = getUnitOfLength(aUnitOfLength);
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
     g_xray_detector.setResolutionInUnitsOfLengthPerPixel(VEC2(aWidth * unit_of_length, aHeight * unit_of_length));
     g_detector_pixel_size_initialised = true;
 
@@ -668,7 +880,110 @@ void moveToCentre(const char* aLabel)
 }
 
 
-void scaleNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+//---------------------------------------------
+void addPolygonMesh(const PyPolygonMesh& aMesh, const std::string& aLabel)
+//---------------------------------------------
+{
+	// Add the polygon mesh to the X-ray renderer
+	g_xray_renderer.addInnerSurface(&aMesh.getMesh());
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	// Add the polygon mesh to the scenegraph
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh.getMesh();
+}
+
+
+MATRIX4 Numpy2gvxrMatrix(const np::ndarray& aNumpyMatrix)
+{
+	if (aNumpyMatrix.shape(0) != 16 ||
+			aNumpyMatrix.shape(1) != 1 ||
+			aNumpyMatrix.get_dtype() != np::dtype::get_builtin<double>())
+	{
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible type.");
+
+	}
+
+	return MATRIX4((float*)aNumpyMatrix.get_data());
+}
+
+
+np::ndarray gvxrMatrix2Numpy(const MATRIX4& aMatrix4)
+{
+	boost::python::object own;
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(float)*16,sizeof(float));
+    boost::python::tuple shape = boost::python::make_tuple(16, 1);
+	np::dtype dtype = np::dtype::get_builtin<double>();
+
+	return np::ndarray(np::from_data(aMatrix4.get4x4(), dtype, shape, stride,own));
+}
+
+
+np::ndarray getSceneTransformationMatrix()
+{
+	return gvxrMatrix2Numpy(g_sample_rotation_matrix);
+}
+
+
+np::ndarray getRootTransformationMatrix()
+{
+	if (!g_p_scene_graph.get())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The scenegraph is empty.");
+	}
+
+	return (gvxrMatrix2Numpy(g_p_scene_graph->getRootNodeTransformationMatrix()));
+}
+
+
+np::ndarray getNodeTransformationMatrix(const char* aLabel)
+{
+	if (!g_p_scene_graph.get())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The scenegraph is empty.");
+	}
+
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has not been found
+		if(search_mesh == g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, string("The PolygonMesh ") + string(aLabel) + string(" not found in g_p_polygon_mesh_set."));
+		}
+	}
+
+	return (gvxrMatrix2Numpy(g_p_scene_graph->getNodeTransformationMatrix(aLabel)));
+}
+
+
+void setSceneTransformationMatrix(const np::ndarray& aMatrix)
+{
+	g_sample_rotation_matrix = Numpy2gvxrMatrix(aMatrix);
+}
+
+
+void setRootTransformationMatrix(const np::ndarray& aMatrix)
+{
+	if (g_p_scene_graph.get())
+	{
+		g_p_scene_graph->setRootNodeTransformationMatrix(Numpy2gvxrMatrix(aMatrix));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void setNodeTransformationMatrix(const char* aLabel, const np::ndarray& aMatrix)
 {
 	if (g_p_scene_graph.get())
 	{
@@ -678,7 +993,33 @@ void scaleNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONA
 		// It has been found
 		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
 		{
-			g_p_scene_graph->scale(aLabel, VEC3(x, y, z));
+			g_p_scene_graph->setNodeTransformationMatrix(aLabel, Numpy2gvxrMatrix(aMatrix));
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void scaleNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			double unit_of_length = getUnitOfLength(aUnitOfLength);
+			g_p_scene_graph->scale(aLabel, VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
 			g_p_scene_graph->updateMatrices();
 		}
 		// It has not been found
@@ -694,7 +1035,7 @@ void scaleNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONA
 }
 
 
-void rotateNode(const char* aLabel, RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+void rotateNode(const char* aLabel, double angle, double x, double y, double z)
 {
 	if (g_p_scene_graph.get())
 	{
@@ -720,7 +1061,7 @@ void rotateNode(const char* aLabel, RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RA
 }
 
 
-void translateNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+void translateNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
 {
 	if (g_p_scene_graph.get())
 	{
@@ -730,7 +1071,8 @@ void translateNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RAT
 		// It has been found
 		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
 		{
-			g_p_scene_graph->translate(aLabel, VEC3(x, y, z));
+			double unit_of_length = getUnitOfLength(aUnitOfLength);
+			g_p_scene_graph->translate(aLabel, VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
 			g_p_scene_graph->updateMatrices();
 		}
 		// It has not been found
@@ -747,12 +1089,13 @@ void translateNode(const char* aLabel, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RAT
 
 
 
-void scaleScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+void scaleScene(double x, double y, double z, const char* aUnitOfLength)
 {
 	if (g_p_scene_graph.get())
 	{
 		// Move the scenegraph
-		g_sample_rotation_matrix *= MATRIX4::buildScaleMatrix(x, y, z);
+		double unit_of_length = getUnitOfLength(aUnitOfLength);
+		g_sample_rotation_matrix *= MATRIX4::buildScaleMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
 	}
 	else
 	{
@@ -761,7 +1104,7 @@ void scaleScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
 }
 
 
-void rotateScene(RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+void rotateScene(double angle, double x, double y, double z)
 {
 	if (g_p_scene_graph.get())
 	{
@@ -775,12 +1118,13 @@ void rotateScene(RATIONAL_NUMBER angle, RATIONAL_NUMBER x, RATIONAL_NUMBER y, RA
 }
 
 
-void translateScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+void translateScene(double x, double y, double z, const char* aUnitOfLength)
 {
 	if (g_p_scene_graph.get())
 	{
 		// Move the scenegraph
-		g_sample_rotation_matrix *= MATRIX4::buildTranslationMatrix(x, y, z);
+		double unit_of_length = getUnitOfLength(aUnitOfLength);
+		g_sample_rotation_matrix *= MATRIX4::buildTranslationMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
 	}
 	else
 	{
@@ -790,7 +1134,7 @@ void translateScene(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
 
 
 //-------------------------------------------------
-void setHU(const char* aLabel, RATIONAL_NUMBER aHU)
+void setHU(const char* aLabel, double aHU)
 //-------------------------------------------------
 {
     // Find the mesh
@@ -812,7 +1156,7 @@ void setHU(const char* aLabel, RATIONAL_NUMBER aHU)
 
 //----------------------------------------------------------------------
 void setAttenuationCoefficient(const char* aLabel,
-                               RATIONAL_NUMBER anAttenuationCoefficient)
+                               double anAttenuationCoefficient)
 //----------------------------------------------------------------------
 {
     // Find the mesh
@@ -850,6 +1194,24 @@ boost::python::tuple getMeshLabelSet()
 
 	// Bind the list to Python
 	return (boost::python::tuple(py_label_set));
+}
+
+
+PyPolygonMesh makeCube(double aLength, const char* aUnitOfLength)
+{
+	return PyPolygonMesh(CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT));
+}
+
+
+PyPolygonMesh makeCylinder(unsigned int aNumberOfSectors,
+        float aHeight,
+        float aRadius,
+		const char* aUnitOfLength)
+{
+	return PyPolygonMesh(CylinderMesh<double>(aNumberOfSectors,
+	        aHeight  * getUnitOfLength(aUnitOfLength),
+	        aRadius  * getUnitOfLength(aUnitOfLength),
+			GL_UNSIGNED_INT));
 }
 
 
@@ -1025,11 +1387,42 @@ void errorCallback(int error, const char* description)
 }
 
 
+//-----------------------------------------------
+double getUnitOfEnergy(const char* aUnitOfEnergy)
+//-----------------------------------------------
+{
+	double unit_of_energy = 0;
+
+    if (!strcmp(aUnitOfEnergy, "megaelectronvolt") ||
+            !strcmp(aUnitOfEnergy, "MeV"))
+    {
+    	unit_of_energy = MeV;
+    }
+    else if (!strcmp(aUnitOfEnergy, "kiloelectronvolt") ||
+            !strcmp(aUnitOfEnergy, "keV"))
+    {
+    	unit_of_energy = keV;
+    }
+    else if (!strcmp(aUnitOfEnergy, "electronvolt") ||
+            !strcmp(aUnitOfEnergy, "eV"))
+    {
+    	unit_of_energy = eV;
+    }
+    else
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of energy.");
+    }
+
+	return (unit_of_energy);
+}
+
+
 //--------------------------------------------------------
-RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength)
+double getUnitOfLength(const char* aUnitOfLength)
 //--------------------------------------------------------
 {
-	RATIONAL_NUMBER unit_of_length = 0;
+	double unit_of_length = 0;
 
 	if (!strcmp(aUnitOfLength, "kilometer") ||
 			!strcmp(aUnitOfLength, "kilometre") ||
@@ -1093,6 +1486,8 @@ RATIONAL_NUMBER getUnitOfLength(const char* aUnitOfLength)
 np::ndarray getNumpyImage()
 //-------------------------
 {
+	g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
+
 	boost::python::object own;
 	boost::python::tuple stride = boost::python::make_tuple(sizeof(RATIONAL_NUMBER)*g_xray_detector.getNumberOfPixels().getX(),sizeof(RATIONAL_NUMBER));
 
@@ -1102,7 +1497,7 @@ np::ndarray getNumpyImage()
 	//np::ndarray a = np::zeros(shape, dtype);
 
 
-	np::ndarray a = np::from_data(g_xray_renderer.getEnergyFluenceRawData(), dtype, shape, stride,own);
+	np::ndarray a = np::from_data(g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID), dtype, shape, stride,own);
 
 
 
@@ -1166,9 +1561,9 @@ void displayScene(int aWindowID)
 }
 
 
-//----------------------------
-void renderLoop(int aWindowID)
-//----------------------------
+//-------------------------------------------------
+void renderLoop(int aWindowID, PyObject* aCallBack)
+//-------------------------------------------------
 {
     // Display in the last window that has been created
     if (aWindowID == -1)
@@ -1202,6 +1597,19 @@ void renderLoop(int aWindowID)
             	// Launch the event loop
                 while (!glfwWindowShouldClose(search_window->second) && g_run_loop)
                 {
+                	// There is a callback
+                	if (aCallBack)
+                	{
+                		// Ensure that the current thread is ready to call the Python C API
+                		PyGILState_STATE state = PyGILState_Ensure();
+
+                		// Invoke the python function
+                		boost::python::call<void>(aCallBack);
+
+                		// Release the global interpreter lock so other threads can resume execution
+                		PyGILState_Release(state);
+                	}
+
                 	// Udate the X-ray image
                 	computeXRayImage();
 
@@ -1531,6 +1939,21 @@ void render()
 				ite->second.display();
 			}
 
+			int line_width;
+			glGetIntegerv(GL_LINE_WIDTH, &line_width);
+			glLineWidth(3);
+
+			if (ite->second.getVertexNormalNumber())
+			{
+				ite->second.displayVertexNormal();
+			}
+
+			if (ite->second.getFaceNormalNumber())
+			{
+				ite->second.displayFaceNormal();
+			}
+			glLineWidth(line_width);
+
 			// Restore the current transformation matrix
 			popModelViewMatrix();
         }
@@ -1656,6 +2079,9 @@ BOOST_PYTHON_MODULE(gvxrPython)
     // Initialise Numpy
     np::initialize();
 
+	// Initialize and acquire the global interpreter lock
+    PyEval_InitThreads();
+
     // Make sure all the windows are destroyed
     atexit(quit);
 
@@ -1680,9 +2106,12 @@ BOOST_PYTHON_MODULE(gvxrPython)
     
     boost::python::def("usePointSource",  usePointSource);
     boost::python::def("useParallelBeam", useParallelBeam);
+    boost::python::def("useParallelSource", useParallelBeam);
 
-    boost::python::def("setMonoChromatic", setMonoChromatic, setMonoChromatic_overloads());
-           
+    boost::python::def("resetBeamSpectrum",         resetBeamSpectrum);
+    boost::python::def("setMonoChromatic",          setMonoChromatic, setMonoChromatic_overloads());
+    boost::python::def("addEnergyBinToSpectrum",    addEnergyBinToSpectrum);
+
     boost::python::def("setSourcePosition",         setSourcePosition);
     boost::python::def("setDetectorPosition",       setDetectorPosition);
     boost::python::def("setDetectorUpVector",       setDetectorUpVector);
@@ -1693,6 +2122,15 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("loadSceneGraph",            loadSceneGraph);
     boost::python::def("moveToCenter",              moveToCentre, moveToCentre_overloads());
     boost::python::def("moveToCentre",              moveToCentre, moveToCentre_overloads());
+    boost::python::def("addPolygonMesh",            addPolygonMesh);
+
+    boost::python::def("getSceneTransformationMatrix", getSceneTransformationMatrix);
+    boost::python::def("getRootTransformationMatrix",  getRootTransformationMatrix);
+    boost::python::def("getNodeTransformationMatrix",  getNodeTransformationMatrix);
+    boost::python::def("setSceneTransformationMatrix", setSceneTransformationMatrix);
+    boost::python::def("setRootTransformationMatrix",  setRootTransformationMatrix);
+    boost::python::def("setNodeTransformationMatrix",  setNodeTransformationMatrix);
+
     boost::python::def("scaleNode",                 scaleNode);
     boost::python::def("rotateNode",                rotateNode);
     boost::python::def("translateNode",             translateNode);
@@ -1704,10 +2142,34 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("setAttenuationCoefficient", setAttenuationCoefficient);
     boost::python::def("getMeshLabelSet",           getMeshLabelSet);
         
+    boost::python::def("makeCube",     makeCube,     makeCube_overloads());
+    boost::python::def("makeCylinder", makeCylinder, makeCylinder_overloads());
+
     boost::python::def("getNumpyImage", getNumpyImage);
     boost::python::def("saveLastXRayImage", saveLastXRayImage, saveLastXRayImage_overloads());
 
     boost::python::def("displayScene", displayScene, displayScene_overloads());
     boost::python::def("renderLoop",   renderLoop,   renderLoop_overloads());
+
+
+    boost::python::def("getUnitOfLength",                     getUnitOfLength);
+    boost::python::def("getUnitOfEnergy",                     getUnitOfEnergy);
+
+    boost::python::class_<PyPolygonMesh>("PyPolygonMesh")
+                .def("setMaterial", &PyPolygonMesh::setMaterial)
+		        .def("setDensity", &PyPolygonMesh::setDensity)
+		        .def("getDensity", &PyPolygonMesh::getDensity)
+		        .def("getMassAttenuationCoefficient", &PyPolygonMesh::getMassAttenuationCoefficient)
+		        .def("getLinearAttenuationCoefficient", &PyPolygonMesh::getLinearAttenuationCoefficient)
+				.def("setLinearAttenuationCoefficient", &PyPolygonMesh::setLinearAttenuationCoefficient)
+		        .def(boost::python::self +  boost::python::self)
+		        .def(boost::python::self -  boost::python::self)
+		        .def(boost::python::self += boost::python::self)
+		        .def(boost::python::self - boost::python::self)
+/*		        .def("operator-", &PyPolygonMesh::operator-)
+		        .def("operator+=", &PyPolygonMesh::operator+=)
+		        .def("operator-=", &PyPolygonMesh::operator-=)
+*/
+    ;
 }
 
