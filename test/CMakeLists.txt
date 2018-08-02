@@ -89,106 +89,106 @@ if(Boost_FOUND)
     # Validation_01
     add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 
-IF (glfw3_FOUND)
-    # Validation_03
-    add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
-
-    # Validation_05
-    add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
-
-    # Validation_08
-    add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
-
-    # Validation_??
-    #add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
-
-    # Validation_??
-    #add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
-
-    # Validation_06
-    add_executable(TestPointSource                 TestPointSource.cxx)
-
-    # Validation_07
-    add_executable(TestCubeSource                  TestCubeSource.cxx)
-
-    # Validation_09
-    add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
-
-    # Validation_??
-    #add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
-
-    # Validation_04
-    add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
-
-    IF (FFTW3_LIBRARIES)
+	IF (glfw3_FOUND)
+	    # Validation_03
+	    add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
+	
+	    # Validation_05
+	    add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
+	
+	    # Validation_08
+	    add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
+	
+	    # Validation_??
+	    #add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
+	
+	    # Validation_??
+	    #add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
+	
+	    # Validation_06
+	    add_executable(TestPointSource                 TestPointSource.cxx)
+	
+	    # Validation_07
+	    add_executable(TestCubeSource                  TestCubeSource.cxx)
+	
+	    # Validation_09
+	    add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
+	
+	    # Validation_??
+	    #add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
+	
 	    # Validation_04
-        add_executable(TestFBP                     TestFBP.cxx)
-    ENDIF()
-ENDIF()
+	    add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
+	
+	    IF (FFTW3_LIBRARIES)
+		    # Validation_04
+	        add_executable(TestFBP                     TestFBP.cxx)
+	    ENDIF()
+	ENDIF()
+	
+	    target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	IF (glfw3_FOUND)
+	    target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    #target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    #target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	
+	    IF (FFTW3_LIBRARIES)
+	        target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    ENDIF()
+	ENDIF()
+	
+	    if (gVirtualXRay_BINARY_DIR)
+	         ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
+	         ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
+	IF (glfw3_FOUND)
+	         ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
+	         ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
+	         ADD_DEPENDENCIES(TestSinogramFromMesh              gVirtualXRay)
+	         #ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay)
+	         ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay)
+	         ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay)
+	         ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
+	         #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
+	         ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay)
+	
+	    IF (FFTW3_LIBRARIES)
+	         ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
+	    ENDIF()
+	ENDIF()
+	    endif (gVirtualXRay_BINARY_DIR)
+	
+	    add_test (TestDensity TestDensity)
+	    add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
+	IF (glfw3_FOUND)
+	    add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
+	    add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
+	    add_test (TestSinogramFromMesh            TestSinogramFromMesh)
+	    #add_test (TestSinogramFromVoxels          TestSinogramFromVoxels)
+	    add_test (TestPointSource                 TestPointSource)
+	    add_test (TestCubeSource                  TestCubeSource)
+	    add_test (TestUncenteredSource            TestUncenteredSource)
+	    #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
+	    add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
+	    
+	    IF (FFTW3_LIBRARIES)
+	        add_test (TestFBP                     TestFBP)
+	    ENDIF()
+	ENDIF()
 
-    target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-IF (glfw3_FOUND)
-    target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    #target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    #target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-
-    IF (FFTW3_LIBRARIES)
-        target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-    ENDIF()
-ENDIF()
-
-    if (gVirtualXRay_BINARY_DIR)
-         ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
-         ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
-IF (glfw3_FOUND)
-         ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
-         ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
-         ADD_DEPENDENCIES(TestSinogramFromMesh              gVirtualXRay)
-         #ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay)
-         ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay)
-         ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay)
-         ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
-         #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
-         ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay)
-
-    IF (FFTW3_LIBRARIES)
-         ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
-    ENDIF()
-ENDIF()
-    endif (gVirtualXRay_BINARY_DIR)
-
-    add_test (TestDensity TestDensity)
-    add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
-IF (glfw3_FOUND)
-    add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
-    add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
-    add_test (TestSinogramFromMesh            TestSinogramFromMesh)
-    #add_test (TestSinogramFromVoxels          TestSinogramFromVoxels)
-    add_test (TestPointSource                 TestPointSource)
-    add_test (TestCubeSource                  TestCubeSource)
-    add_test (TestUncenteredSource            TestUncenteredSource)
-    #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
-    add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
-    
-    IF (FFTW3_LIBRARIES)
-        add_test (TestFBP                     TestFBP)
-    ENDIF()
-ENDIF()
-    #MESSAGE(FATAL_ERROR  ${CMAKE_BINARY_DIR})
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/)
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/point_source)
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/SBP)
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/FBP)
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/ART)
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/MART)
-    #FILE (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/SIRT)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SBP)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/FBP)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/ART)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/MART)
+    FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
     
     CONFIGURE_FILE (../validation/data/validation_01/bone.csv   data/bone.csv   COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/brain.csv  data/brain.csv  COPYONLY)
@@ -212,7 +212,6 @@ ENDIF()
     CONFIGURE_FILE (../validation/data/validation_04/projection_set.raw          data/CT_reconstruction/projection_set.raw         COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_04/sinogram.mhd                data/CT_reconstruction/sinogram.mhd               COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_04/sinogram.raw                data/CT_reconstruction/sinogram.raw               COPYONLY)
-    
 
 ENDIF(Boost_FOUND)
 
