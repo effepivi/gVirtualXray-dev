@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
     RATIONAL_NUMBER simulated_result(central_pixel);
-    BOOST_CHECK_CLOSE(g_expected_result, simulated_result, 1);
+    BOOST_CHECK_CLOSE(g_expected_result, simulated_result, 0.05);
 
     std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
