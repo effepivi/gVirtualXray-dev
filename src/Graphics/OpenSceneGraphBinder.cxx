@@ -481,6 +481,31 @@ void OpenSceneGraphBinder::moveToCenter()
 	moveToCentre();
 }
 
+
+MATRIX4 OpenSceneGraphBinder::getRootNodeTransformationMatrix() const
+{
+	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+}
+
+
+MATRIX4 OpenSceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
+{
+	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+}
+
+
+void OpenSceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
+{
+	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+}
+
+
+void OpenSceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
+{
+	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+}
+
+
 #ifdef HAS_OPENSCENEGRAPH
 
 //---------------------------------------------------------------------------

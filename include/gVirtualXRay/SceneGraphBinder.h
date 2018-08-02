@@ -90,6 +90,11 @@ public:
 	virtual void moveToCentre();
 	virtual void moveToCenter();
 
+	virtual MATRIX4 getRootNodeTransformationMatrix() const;
+	virtual MATRIX4 getNodeTransformationMatrix(const char* aNodeLabel) const;
+
+	virtual void setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix);
+	virtual void setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix);
 
 protected:
 	std::map<std::string, PolygonMesh> m_p_polygon_mesh_set;

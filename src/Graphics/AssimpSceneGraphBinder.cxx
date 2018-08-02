@@ -309,10 +309,95 @@ void AssimpSceneGraphBinder::translate(const char* aNodeLabel,
 MATRIX4 AssimpSceneGraphBinder::getTransformationMatrix(const char* aNodeLabel) const
 //-------------------------------------------------------------------------------------------------
 {
-	// Delete next line and add code here to update the transformation matrices in m_p_polygon_mesh_set
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+	return (getNodeTransformationMatrix(aNodeLabel));
+}
 
-	return (MATRIX4());
+
+MATRIX4 AssimpSceneGraphBinder::getRootNodeTransformationMatrix() const
+{
+	aiMatrix4x4 temp_matrix = m_p_scene->mRootNode->mTransformation;
+	temp_matrix.Transpose();
+
+	return MATRIX4(
+			temp_matrix.a1, temp_matrix.a2, temp_matrix.a3, temp_matrix.a4,
+			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
+			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
+			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
+}
+
+
+MATRIX4 AssimpSceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
+{
+	aiMatrix4x4 temp_matrix = recursiveFindNode(m_p_scene->mRootNode, aNodeLabel)->mTransformation;
+	temp_matrix.Transpose();
+
+	return MATRIX4(
+			temp_matrix.a1, temp_matrix.a2, temp_matrix.a3, temp_matrix.a4,
+			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
+			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
+			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
+}
+
+
+void AssimpSceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
+{
+	if (m_p_scene)
+	{
+		if (m_p_scene->mRootNode)
+		{
+			m_p_scene->mRootNode->mTransformation.a1 = aTransformationMatrix.get4x4()[ 0];
+			m_p_scene->mRootNode->mTransformation.a2 = aTransformationMatrix.get4x4()[ 4];
+			m_p_scene->mRootNode->mTransformation.a3 = aTransformationMatrix.get4x4()[ 8];
+			m_p_scene->mRootNode->mTransformation.a4 = aTransformationMatrix.get4x4()[12];
+
+			m_p_scene->mRootNode->mTransformation.b1 = aTransformationMatrix.get4x4()[ 1];
+			m_p_scene->mRootNode->mTransformation.b2 = aTransformationMatrix.get4x4()[ 5];
+			m_p_scene->mRootNode->mTransformation.b3 = aTransformationMatrix.get4x4()[ 9];
+			m_p_scene->mRootNode->mTransformation.b4 = aTransformationMatrix.get4x4()[13];
+
+			m_p_scene->mRootNode->mTransformation.c1 = aTransformationMatrix.get4x4()[ 2];
+			m_p_scene->mRootNode->mTransformation.c2 = aTransformationMatrix.get4x4()[ 6];
+			m_p_scene->mRootNode->mTransformation.c3 = aTransformationMatrix.get4x4()[10];
+			m_p_scene->mRootNode->mTransformation.c4 = aTransformationMatrix.get4x4()[14];
+
+			m_p_scene->mRootNode->mTransformation.d1 = aTransformationMatrix.get4x4()[ 3];
+			m_p_scene->mRootNode->mTransformation.d2 = aTransformationMatrix.get4x4()[ 7];
+			m_p_scene->mRootNode->mTransformation.d3 = aTransformationMatrix.get4x4()[11];
+			m_p_scene->mRootNode->mTransformation.d4 = aTransformationMatrix.get4x4()[15];
+		}
+	}
+}
+
+
+void AssimpSceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
+{
+	if (m_p_scene)
+	{
+		aiNode* p_node = recursiveFindNode(m_p_scene->mRootNode, aNodeLabel);
+
+		if (p_node)
+		{
+			p_node->mTransformation.a1 = aTransformationMatrix.get4x4()[ 0];
+			p_node->mTransformation.a2 = aTransformationMatrix.get4x4()[ 4];
+			p_node->mTransformation.a3 = aTransformationMatrix.get4x4()[ 8];
+			p_node->mTransformation.a4 = aTransformationMatrix.get4x4()[12];
+
+			p_node->mTransformation.b1 = aTransformationMatrix.get4x4()[ 1];
+			p_node->mTransformation.b2 = aTransformationMatrix.get4x4()[ 5];
+			p_node->mTransformation.b3 = aTransformationMatrix.get4x4()[ 9];
+			p_node->mTransformation.b4 = aTransformationMatrix.get4x4()[13];
+
+			p_node->mTransformation.c1 = aTransformationMatrix.get4x4()[ 2];
+			p_node->mTransformation.c2 = aTransformationMatrix.get4x4()[ 6];
+			p_node->mTransformation.c3 = aTransformationMatrix.get4x4()[10];
+			p_node->mTransformation.c4 = aTransformationMatrix.get4x4()[14];
+
+			p_node->mTransformation.d1 = aTransformationMatrix.get4x4()[ 3];
+			p_node->mTransformation.d2 = aTransformationMatrix.get4x4()[ 7];
+			p_node->mTransformation.d3 = aTransformationMatrix.get4x4()[11];
+			p_node->mTransformation.d4 = aTransformationMatrix.get4x4()[15];
+		}
+	}
 }
 
 

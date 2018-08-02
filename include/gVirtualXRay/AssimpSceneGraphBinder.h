@@ -66,6 +66,12 @@ public:
 	virtual void moveToCentre();
 	virtual void moveToCenter();
 
+	virtual MATRIX4 getRootNodeTransformationMatrix() const;
+	virtual MATRIX4 getNodeTransformationMatrix(const char* aNodeLabel) const;
+
+	virtual void setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix);
+	virtual void setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix);
+
 
 #ifdef HAS_ASSIMP
 	const aiNode* findNode(const char* aNodeLabel) const;
