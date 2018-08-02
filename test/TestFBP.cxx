@@ -170,8 +170,8 @@ XRayRenderer g_xray_renderer;
 RATIONAL_NUMBER g_literature_result(0.0);
 RATIONAL_NUMBER g_expected_result(0.0);
 
-unsigned int g_angle_number(360 / 4.0);
-RATIONAL_NUMBER g_angle_step(0.5 * 4.0);
+unsigned int g_angle_number(360);
+RATIONAL_NUMBER g_angle_step(0.5);
 
 
 //******************************************************************************
@@ -232,34 +232,6 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         glfwTerminate();
         BOOST_FAIL("Cannot create a GLFW windowed mode window and its OpenGL context.");
         }
-
-    // Open CT data
-    Image<float> CT_data_set("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");
-
-    // Compute a sinogram from the CT data
-    //Sinogram<float> sinogram(CT_data_set.radonTransform(0, 1, 179));
-
-    // Compute a projection set from the sinogram
-    //Image<float> projection_set(sinogram.getProjectionSet());
-
-    // Save a slice of the CT data set
-    Image<float> middle_ct_slice(CT_data_set.setCanvasSize(CT_data_set.getWidth(), CT_data_set.getHeight(), 1));
-    middle_ct_slice.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_slice_80keV.mhd");
-
-    // Compute the sinogram of the CT slice
-    Sinogram<float> ct_slice_sinogram(middle_ct_slice.radonTransform(0, 1, 179));
-    ct_slice_sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_slice_80keV.mhd");
-
-exit(0);
-
-//#ifndef NDEBUG
-   // CT_data_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data_80keV.mhd");
-   // sinogram.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/sinogram.mhd");
-   // projection_set.save("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/projection.mhd");
-//#endif
-
-
-
 
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
@@ -336,12 +308,38 @@ exit(0);
     // Close the window and shut GLFW
     quit();
 
+
+    /********** Projection set **********/
+
+    // Load reference image (computed using GNU Octave)
+    Image<XRayRenderer::PixelType> reference_projection_set("data/CT_reconstruction/projection_set.mhd");
+
+    // Compare reference projection set and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    BOOST_CHECK_CLOSE(reference_projection_set.normalised().computeRMSE(g_xray_renderer.getProjectionSet().normalised()) + 1.0, 0.0 + 1.0, 0.25);
+
+
+    /********** Sinogram **********/
+
+    // Load reference image (computed using GNU Octave)
+    Image<XRayRenderer::PixelType> reference_sinogram("data/CT_reconstruction/sinogram.mhd");
+
+    // Compare reference projection set and simulated projection set using NCC
+    BOOST_CHECK_CLOSE(reference_sinogram.computeNCC(g_xray_renderer.getSinogram()), 1.0, 0.5);
+
+    // Compare reference projection set and simulated projection set using RMSE
+    BOOST_CHECK_CLOSE(reference_sinogram.normalised().computeRMSE(g_xray_renderer.getSinogram().normalised()) + 1.0, 0.0 + 1.0, 0.25);
+
+
+
     Sinogram<XRayRenderer::PixelType> sinogram(g_xray_renderer.getSinogram());
 
     Image<XRayRenderer::PixelType> reconstruction;
 
     // SBP
-    reconstruction = sinogram.simpleBackProjection(0, g_angle_step, "data/SBP");
+    /*reconstruction = sinogram.simpleBackProjection(0, g_angle_step, "data/SBP");
     reconstruction.save("data/TestFBP_SBP_reconstruction.mhd");
 
     // FBP
@@ -360,7 +358,7 @@ exit(0);
     // SIRT
     reconstruction = sinogram.sirt(0, g_angle_step, 25, "data/SIRT");
     reconstruction.save("data/TestFBP_SIRT_reconstruction.mhd");
-
+*/
     // Compare reference projection set and simulated projection set using NCC
     //BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
 
