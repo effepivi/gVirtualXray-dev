@@ -315,7 +315,8 @@ inline unsigned int PolygonMesh::getFaceNormalNumber() const
 {
     // Return the number of normal vectors
     // There are 3 GLfloat values per normal
-    return (m_p_face_normal_set.size() / 3);
+    //return (m_p_face_normal_set.size() / 3);
+	return 0;
 }
 
 
@@ -349,6 +350,8 @@ inline unsigned int PolygonMesh::getIndexNumber() const
 inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
 //----------------------------------------------------------------
 {
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
+/*
     if (getFaceNormalNumber() <= anIndex)
     {
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
@@ -356,7 +359,7 @@ inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
 
     return (VEC3(m_p_face_normal_set[anIndex * 3 + 0],
             m_p_face_normal_set[anIndex * 3 + 1],
-            m_p_face_normal_set[anIndex * 3 + 2]));
+            m_p_face_normal_set[anIndex * 3 + 2]));*/
 }
 
 
@@ -457,6 +460,8 @@ inline void PolygonMesh::setFaceNormal(unsigned int anIndex,
                                        const VEC3& aVertex)
 //----------------------------------------------------------
 {
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
+/*
     if (getFaceNormalNumber() <= anIndex && m_p_face_normal_set.size())
         {
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
@@ -464,7 +469,7 @@ inline void PolygonMesh::setFaceNormal(unsigned int anIndex,
 
     m_p_face_normal_set[anIndex * 3 + 0] = aVertex.getX();
     m_p_face_normal_set[anIndex * 3 + 1] = aVertex.getY();
-    m_p_face_normal_set[anIndex * 3 + 2] = aVertex.getZ();
+    m_p_face_normal_set[anIndex * 3 + 2] = aVertex.getZ();*/
 }
 
 
@@ -598,7 +603,7 @@ inline void PolygonMesh::invertNormalVectors()
         *ite = -(*ite);
         }
 
-
+/*
     for (std::vector<RATIONAL_NUMBER>::iterator ite(
                         m_p_face_normal_set.begin());
             ite != m_p_face_normal_set.end();
@@ -606,6 +611,7 @@ inline void PolygonMesh::invertNormalVectors()
         {
         *ite = -(*ite);
         }
+*/
 }
 
 

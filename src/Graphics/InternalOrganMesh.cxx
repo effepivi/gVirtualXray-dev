@@ -968,7 +968,7 @@ void InternalOrganMesh::shareNormalVectors()
 		m_p_vertex_normal_set[i*3+2] =  current_normal.getZ();
 	}
 
-	m_p_face_normal_set.clear();
+	//m_p_face_normal_set.clear();
 
 	normaliseNormals();
 }
@@ -981,7 +981,7 @@ void InternalOrganMesh::deleteIndices()
 		m_p_vertex_normal_set.clear();
 
 		// Reset the normal per face set
-		m_p_face_normal_set.clear();
+		//m_p_face_normal_set.clear();
 
 		// Store the new vertices
 		std::vector<double> p_new_vertex_set;
@@ -1016,9 +1016,9 @@ void InternalOrganMesh::deleteIndices()
 
 			for (unsigned int j(0); j < 3; ++j)
 			{
-				m_p_face_normal_set.push_back(normal.getX());
-				m_p_face_normal_set.push_back(normal.getY());
-				m_p_face_normal_set.push_back(normal.getZ());
+				m_p_vertex_normal_set.push_back(normal.getX());
+				m_p_vertex_normal_set.push_back(normal.getY());
+				m_p_vertex_normal_set.push_back(normal.getZ());
 			}
 		}
 

@@ -152,7 +152,7 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
         m_min_corner(aPolygonMesh.m_min_corner),
         m_max_corner(aPolygonMesh.m_max_corner),
-        m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
+        //m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
         m_p_vertex_normal_set(aPolygonMesh.m_p_vertex_normal_set),
         m_p_vertex_set(0),
         m_p_index_set(0),
@@ -211,7 +211,7 @@ void PolygonMesh::reset()
     m_min_corner = VEC3();
     m_max_corner = VEC3();
 
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
     m_p_vertex_normal_set.clear();
 
     destroyIndexData();
@@ -609,7 +609,7 @@ void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
     m_vertex_data_type = GL_FLOAT;
     m_p_vertex_set = p_vertex_set;
 
-    m_p_face_normal_set.resize(m_number_of_vertices * 3);
+    //m_p_face_normal_set.resize(m_number_of_vertices * 3);
     m_p_vertex_normal_set.resize(m_number_of_vertices * 3);
 
 
@@ -617,34 +617,36 @@ void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
     for (unsigned int i(0); i < getFaceNumber(); i++)
         {
         // Read normals
-        memcpy(&m_p_face_normal_set[9 * i], p_input_data, sizeof(float) * 3);
-        p_input_data += sizeof(float) * 3;
+        //memcpy(&m_p_face_normal_set[9 * i], p_input_data, sizeof(float) * 3);
 
         // Copy one normal per vertex
         if (!anAutoComputeNormalFlag)
             {
+        	const float* p_normal = (const float*)p_input_data;
             for (unsigned int k=1; k<3; k++)
                 {
-                m_p_face_normal_set[9 * i + 3 * k]     =
-                        m_p_face_normal_set[9 * i];
+                //m_p_face_normal_set[9 * i + 3 * k]     =
+                //        p_normal[0];
 
-                m_p_face_normal_set[9 * i + 3 * k + 1] =
-                        m_p_face_normal_set[9 * i + 1];
+                //m_p_face_normal_set[9 * i + 3 * k + 1] =
+                //        p_normal[1];
 
-                m_p_face_normal_set[9 * i + 3 * k + 2] =
-                        m_p_face_normal_set[9 * i + 2];
+                //m_p_face_normal_set[9 * i + 3 * k + 2] =
+                //        p_normal[2];
 
 
                 m_p_vertex_normal_set[9 * i + 3 * k]     =
-                        m_p_face_normal_set[9 * i];
+                		p_normal[0];
 
                 m_p_vertex_normal_set[9 * i + 3 * k + 1] =
-                        m_p_face_normal_set[9 * i + 1];
+                		p_normal[1];
 
                 m_p_vertex_normal_set[9 * i + 3 * k + 2] =
-                        m_p_face_normal_set[9 * i + 2];
+                		p_normal[2];
                 }
             }
+
+        p_input_data += sizeof(float) * 3;
 
         // Read vertices
         memcpy(&p_vertex_set[9 * i], p_input_data, sizeof(float) * 3 * 3);
@@ -793,8 +795,9 @@ void PolygonMesh::writeSTLFile()
         for (unsigned int i(0); i < getFaceNumber(); i++)
             {
             // Write normals
-            output_stream.write((char*) &m_p_face_normal_set[9 * i],
-                    sizeof(float) * 3);
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
+            //output_stream.write((char*) &m_p_face_normal_set[9 * i],
+            //        sizeof(float) * 3);
 
             // Write vertices
             output_stream.write((char*) &p_vertex_set[9 * i],
@@ -815,7 +818,7 @@ void PolygonMesh::writeSTLFile()
 void PolygonMesh::computeNormalVectors()
 //--------------------------------------
 {
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
     m_p_vertex_normal_set.clear();
 
     switch (m_polygon_type)
@@ -883,7 +886,7 @@ void PolygonMesh::computeNormalVectors()
                 }
 
             // Allocate the memory
-            m_p_face_normal_set.resize(m_number_of_vertices * 3, 0.0);
+            //m_p_face_normal_set.resize(m_number_of_vertices * 3, 0.0);
             m_p_vertex_normal_set.resize(m_number_of_vertices * 3, 0.0);
 
             // Process every triangle
@@ -906,7 +909,7 @@ void PolygonMesh::computeNormalVectors()
                 normal.normalize();
 
                 // Add the new normal
-                m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
+                /*m_p_face_normal_set[id_0 * 3 + 0] = normal.getX();
                 m_p_face_normal_set[id_0 * 3 + 1] = normal.getY();
                 m_p_face_normal_set[id_0 * 3 + 2] = normal.getZ();
 
@@ -916,7 +919,7 @@ void PolygonMesh::computeNormalVectors()
 
                 m_p_face_normal_set[id_2 * 3 + 0] = normal.getX();
                 m_p_face_normal_set[id_2 * 3 + 1] = normal.getY();
-                m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();
+                m_p_face_normal_set[id_2 * 3 + 2] = normal.getZ();*/
 
                 m_p_vertex_normal_set[id_0 * 3 + 0] = normal.getX();
                 m_p_vertex_normal_set[id_0 * 3 + 1] = normal.getY();
@@ -949,7 +952,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_bounding_box_diagonal   = aPolygonMesh.m_bounding_box_diagonal;
     m_min_corner              = aPolygonMesh.m_min_corner;
     m_max_corner              = aPolygonMesh.m_max_corner;
-    m_p_face_normal_set       = aPolygonMesh.m_p_face_normal_set;
+    //m_p_face_normal_set       = aPolygonMesh.m_p_face_normal_set;
     m_p_vertex_normal_set     = aPolygonMesh.m_p_vertex_normal_set;
     m_number_of_indices       = aPolygonMesh.m_number_of_indices;
     m_number_of_vertices      = aPolygonMesh.m_number_of_vertices;
@@ -1040,21 +1043,32 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_vertex_data_type = aPolygonMesh.m_vertex_data_type;
     new_polygon_mesh.m_polygon_type     = aPolygonMesh.m_polygon_type;
 
+    // Recopy properties
+    new_polygon_mesh.m_use_hounsfield_value = m_use_hounsfield_value;
+	new_polygon_mesh.m_hounsfield_value = m_hounsfield_value;
+	new_polygon_mesh.m_attenuation_coefficient = m_attenuation_coefficient;
+	new_polygon_mesh.m_use_tissue_properties = m_use_tissue_properties;
+	new_polygon_mesh.m_tissue_properties = m_tissue_properties;
+	new_polygon_mesh.m_display_flag = m_display_flag;
+	new_polygon_mesh.m_material = m_material;
+	new_polygon_mesh.m_local_to_global_transformation = m_local_to_global_transformation;
+
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
 
     // Allocate memory space for the face normal set
-    new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() +
-            aPolygonMesh.m_p_face_normal_set.size());
+    //new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() +
+    //        aPolygonMesh.m_p_face_normal_set.size());
 
     // Add the face normal vectors of the fist polygon mesh
-    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
+    /*for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
                     m_p_face_normal_set.begin());
             ite != m_p_face_normal_set.end();
             ++ite)
         {
         new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
         }
+
 
     // Add the face normal vectors of the second polygon mesh
     for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
@@ -1063,7 +1077,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
             ++ite)
         {
         new_polygon_mesh.m_p_face_normal_set.push_back(*ite);
-        }
+        }*/
 
     // Allocate memory space for the vertex normal set
     new_polygon_mesh.m_p_vertex_normal_set.reserve(
@@ -1286,11 +1300,23 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_vertex_data_type = m_vertex_data_type;
     new_polygon_mesh.m_polygon_type     = m_polygon_type;
 
+    // Recopy properties
+    new_polygon_mesh.m_use_hounsfield_value = m_use_hounsfield_value;
+	new_polygon_mesh.m_hounsfield_value = m_hounsfield_value;
+	new_polygon_mesh.m_attenuation_coefficient = m_attenuation_coefficient;
+	new_polygon_mesh.m_use_tissue_properties = m_use_tissue_properties;
+	new_polygon_mesh.m_tissue_properties = m_tissue_properties;
+	new_polygon_mesh.m_display_flag = m_display_flag;
+	new_polygon_mesh.m_material = m_material;
+	new_polygon_mesh.m_local_to_global_transformation = m_local_to_global_transformation;
+
+
+
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
 
     // Allocate memory space for the face normal set
-    new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() +
+    /*new_polygon_mesh.m_p_face_normal_set.reserve(m_p_face_normal_set.size() +
             aPolygonMesh.m_p_face_normal_set.size());
 
     // Add the face normal vectors of the fist polygon mesh
@@ -1310,7 +1336,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
         {
         // Inverse the normal
         new_polygon_mesh.m_p_face_normal_set.push_back(-*ite);
-        }
+        }*/
 
     // Allocate memory space for the vertex normal set
     new_polygon_mesh.m_p_vertex_normal_set.reserve(
@@ -1333,7 +1359,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
             ++ite)
         {
         // Inverse the normal
-        new_polygon_mesh.m_p_vertex_normal_set.push_back(-*ite);
+        new_polygon_mesh.m_p_vertex_normal_set.push_back(-(*ite));
         }
 
     // Allocate memory to store the vertex data
@@ -1584,7 +1610,7 @@ void PolygonMesh::normaliseNormals()
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
         }
 
-    for (unsigned int i(0); i < getFaceNormalNumber(); ++i)
+    /*for (unsigned int i(0); i < getFaceNormalNumber(); ++i)
         {
         VEC3 normal(m_p_face_normal_set[i * 3 + 0],
                 m_p_face_normal_set[i * 3 + 1],
@@ -1595,7 +1621,7 @@ void PolygonMesh::normaliseNormals()
         m_p_face_normal_set[i * 3 + 0] = normal.getX();
         m_p_face_normal_set[i * 3 + 1] = normal.getY();
         m_p_face_normal_set[i * 3 + 2] = normal.getZ();
-        }
+        }*/
 
     for (unsigned int i(0); i < getVertexNormalNumber(); ++i)
         {
@@ -1873,7 +1899,7 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
                     }
 
                 // Reset the normal per face set
-                m_p_face_normal_set.clear();
+                //m_p_face_normal_set.clear();
 
                 // Create the VBO if needed
                 if (!m_p_vbo.get())
@@ -1948,7 +1974,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
             m_p_vertex_normal_set.clear();
 
             // Reset the normal per face set
-            m_p_face_normal_set.clear();
+            //m_p_face_normal_set.clear();
 
             // Store the new vertices
             std::vector<double> p_new_vertex_set;
@@ -1984,9 +2010,9 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                    m_p_face_normal_set.push_back(normal.getX());
-                    m_p_face_normal_set.push_back(normal.getY());
-                    m_p_face_normal_set.push_back(normal.getZ());
+                    m_p_vertex_normal_set.push_back(normal.getX());
+                    m_p_vertex_normal_set.push_back(normal.getY());
+                    m_p_vertex_normal_set.push_back(normal.getZ());
                     }
 
                 // Add the second triangle
@@ -2002,9 +2028,9 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                    m_p_face_normal_set.push_back(normal.getX());
-                    m_p_face_normal_set.push_back(normal.getY());
-                    m_p_face_normal_set.push_back(normal.getZ());
+                	m_p_vertex_normal_set.push_back(normal.getX());
+                	m_p_vertex_normal_set.push_back(normal.getY());
+                	m_p_vertex_normal_set.push_back(normal.getZ());
                     }
 
                 // Add the third triangle
@@ -2020,9 +2046,9 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                    m_p_face_normal_set.push_back(normal.getX());
-                    m_p_face_normal_set.push_back(normal.getY());
-                    m_p_face_normal_set.push_back(normal.getZ());
+                	m_p_vertex_normal_set.push_back(normal.getX());
+                	m_p_vertex_normal_set.push_back(normal.getY());
+                	m_p_vertex_normal_set.push_back(normal.getZ());
                     }
 
                 // Add the fourth triangle
@@ -2038,9 +2064,9 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
 
                 for (unsigned int j(0); j < 3; ++j)
                     {
-                    m_p_face_normal_set.push_back(normal.getX());
-                    m_p_face_normal_set.push_back(normal.getY());
-                    m_p_face_normal_set.push_back(normal.getZ());
+                	m_p_vertex_normal_set.push_back(normal.getX());
+                    m_p_vertex_normal_set.push_back(normal.getY());
+                    m_p_vertex_normal_set.push_back(normal.getZ());
                     }
                 }
 
@@ -2164,6 +2190,9 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
             }
         else if (getFaceNormalNumber())
             {
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not use face normal.");
+
+/*
             m_p_vbo->setVertexData(aTypeOfPrimitive,
                     m_number_of_vertices,
                     3,
@@ -2176,7 +2205,7 @@ void PolygonMesh::updateVBO(int aTypeOfVBO, int aTypeOfPrimitive)
                     0,
                     0,
                     GL_NONE,
-                    0);
+                    0);*/
             }
         else
             {
@@ -2646,15 +2675,19 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             aTypeOfVBO);
 
     m_p_vertex_normal_set.clear();
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
 
     if (aVertexArray->size() == aNormalArray->size())
     {
         m_p_vertex_normal_set = *aNormalArray;
     }
-    else
+    /*else if (aNormalArray->size() == anIndexArray->size())
     {
         m_p_face_normal_set = *aNormalArray;
+    }*/
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
     }
 
     // Update the VBO
@@ -2703,7 +2736,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             aTypeOfVBO);
 
     m_p_vertex_normal_set.clear();
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
 
     if (aVertexArray->size() == aNormalArray->size())
     {
@@ -2714,7 +2747,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             m_p_vertex_normal_set.push_back(*ite);
         }
     }
-    else
+    /*else if (aNormalArray->size() == anIndexArray->size())
     {
         for (std::vector<double>::const_iterator ite(aNormalArray->begin());
                 ite != aNormalArray->end();
@@ -2722,6 +2755,10 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
         {
             m_p_face_normal_set.push_back(*ite);
         }
+    }*/
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
     }
 
     // Update the VBO
@@ -2792,17 +2829,17 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
-        m_p_face_normal_set.clear();
+        //m_p_face_normal_set.clear();
         m_p_vertex_normal_set.clear();
 
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             m_p_face_normal_set = *aNormalArray;
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -2858,17 +2895,17 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
-        m_p_face_normal_set.clear();
+        ////m_p_face_normal_set.clear();
         m_p_vertex_normal_set.clear();
 
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             m_p_face_normal_set = *aNormalArray;
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -2925,18 +2962,18 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
-        m_p_face_normal_set.clear();
+        //m_p_face_normal_set.clear();
         m_p_vertex_normal_set.clear();
 
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+/*        else if (aNormalArray->size() == anIndexArray->size())
         {
             m_p_face_normal_set = *aNormalArray;
         }
-        else
+ */       else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
         }
@@ -2992,17 +3029,17 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
-        m_p_face_normal_set.clear();
+        //m_p_face_normal_set.clear();
         m_p_vertex_normal_set.clear();
 
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             m_p_face_normal_set = *aNormalArray;
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -3059,17 +3096,17 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
-        m_p_face_normal_set.clear();
+        //m_p_face_normal_set.clear();
         m_p_vertex_normal_set.clear();
 
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             m_p_face_normal_set = *aNormalArray;
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -3126,17 +3163,17 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
 
     if (aNormalArray)
     {
-        m_p_face_normal_set.clear();
+        //m_p_face_normal_set.clear();
         m_p_vertex_normal_set.clear();
 
         if (aNormalArray->size() == aVertexArray->size())
         {
             m_p_vertex_normal_set = *aNormalArray;
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             m_p_face_normal_set = *aNormalArray;
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -3220,7 +3257,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
     
     
     m_p_vertex_normal_set.clear();
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
     
     if (aNormalArray)
     {
@@ -3233,7 +3270,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                 m_p_vertex_normal_set.push_back(*ite);
             }
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             for (std::vector<double>::const_iterator ite(aNormalArray->begin());
                  ite != aNormalArray->end();
@@ -3241,7 +3278,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             {
                 m_p_face_normal_set.push_back(*ite);
             }
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -3277,7 +3314,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
     
     
     m_p_vertex_normal_set.clear();
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
     
     if (aNormalArray)
     {
@@ -3290,7 +3327,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                 m_p_vertex_normal_set.push_back(*ite);
             }
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             for (std::vector<double>::const_iterator ite(aNormalArray->begin());
                  ite != aNormalArray->end();
@@ -3298,7 +3335,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             {
                 m_p_face_normal_set.push_back(*ite);
             }
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -3332,9 +3369,8 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                     aCreateVBOFlag,
                     aTypeOfVBO);
     
-    
     m_p_vertex_normal_set.clear();
-    m_p_face_normal_set.clear();
+    //m_p_face_normal_set.clear();
     
     if (aNormalArray)
     {
@@ -3347,7 +3383,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                 m_p_vertex_normal_set.push_back(*ite);
             }
         }
-        else if (aNormalArray->size() == anIndexArray->size())
+        /*else if (aNormalArray->size() == anIndexArray->size())
         {
             for (std::vector<double>::const_iterator ite(aNormalArray->begin());
                  ite != aNormalArray->end();
@@ -3355,7 +3391,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             {
                 m_p_face_normal_set.push_back(*ite);
             }
-        }
+        }*/
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
@@ -3466,7 +3502,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
                 m_p_vertex_normal_set.clear();
 
                 // Reset the normal per face set
-                m_p_face_normal_set.clear();
+                //m_p_face_normal_set.clear();
 
                 // Store the new vertices
                 std::vector<double> p_new_vertex_set;
@@ -3500,11 +3536,11 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
                     p_new_vertex_set.push_back(vertex_2.getZ());
 
                     for (unsigned int j(0); j < 3; ++j)
-                        {
-                        m_p_face_normal_set.push_back(normal.getX());
-                        m_p_face_normal_set.push_back(normal.getY());
-                        m_p_face_normal_set.push_back(normal.getZ());
-                        }
+						{
+                    	m_p_vertex_normal_set.push_back(normal.getX());
+                    	m_p_vertex_normal_set.push_back(normal.getY());
+                    	m_p_vertex_normal_set.push_back(normal.getZ());
+						}
                     }
 
                 // Set the index in the hash table and
