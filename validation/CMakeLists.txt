@@ -69,7 +69,6 @@ IF (WIN32)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_10/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_11/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/validation_12/)
-    CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/data/cylinder_bin.stl COPYONLY)
     CONFIGURE_FILE (data/validation_10/beam_spectrum.csv ${CMAKE_CURRENT_BINARY_DIR}/data/validation_10/beam_spectrum.csv COPYONLY)
 ELSE (WIN32)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_01/)
@@ -84,7 +83,6 @@ ELSE (WIN32)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_10/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_11/)
     FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_12/)
-    CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/cylinder_bin.stl COPYONLY)
     CONFIGURE_FILE (data/validation_10/beam_spectrum.csv ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_10/beam_spectrum.csv COPYONLY)
 ENDIF (WIN32)
 
@@ -101,13 +99,6 @@ ELSE (glfw3_FOUND)
     MESSAGE(WARNING "GLFW3 not found, (${PROJECT_NAME}) will be disable.")
 ENDIF (glfw3_FOUND)
 
-
-# Copy data files into the build directory (useful for debugging) #############
-IF (WIN32)
-    CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_04/../cylinder_bin.stl COPYONLY)
-ELSE (WIN32)
-    CONFIGURE_FILE (data/cylinder_bin.stl ${CMAKE_CURRENT_BINARY_DIR}/../data/validation_04/../cylinder_bin.stl COPYONLY)
-ENDIF (WIN32)
 
 # Create the main programs #####################################################
 IF (glfw3_FOUND)
@@ -140,7 +131,6 @@ INSTALL(TARGETS validation_03 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INST
 INSTALL(DIRECTORY 
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data/validation_03"
 		DIRECTORY_PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_WRITE GROUP_READ GROUP_EXECUTE WORLD_WRITE WORLD_READ WORLD_EXECUTE)
-INSTALL(FILES data/cylinder_bin.stl DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/validation/data COMPONENT validation)
 
 IF (gVirtualXRay_BINARY_DIR)
      ADD_DEPENDENCIES(validation_03   gVirtualXRay)
