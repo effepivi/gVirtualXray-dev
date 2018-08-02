@@ -212,8 +212,8 @@ typedef enum AcquisitionTypeTag
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-GLsizei g_main_window_width( 512);
-GLsizei g_main_window_height(512);
+GLsizei g_main_window_width( 640);
+GLsizei g_main_window_height(480);
 GLFWwindow* g_p_main_window_id(0);
 GLfloat g_zoom(60.0 * cm);
 GLfloat g_eye_offset(2.0 * cm);
@@ -226,7 +226,7 @@ GLint g_last_y_position(0);
 GLint g_current_x_position(0);
 GLint g_current_y_position(0);
 
-bool g_display_beam(false);
+bool g_beam_on(true);
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
@@ -297,8 +297,7 @@ bool g_run_tomography_acquisition(false);
 
 bool g_use_left_shift(false);
 bool g_use_right_shift(false);
-bool g_display_skin(true);
-bool g_take_screenshot(true);
+bool g_take_screenshot(false);
 
 
 //******************************************************************************
@@ -665,12 +664,12 @@ int main(int argc, char** argv)
 
             // Swap front and back buffers
             glfwSwapBuffers(g_p_main_window_id);
-/*
-            if (updated_image || g_take_screenshot)
+
+            if (/*updated_image ||*/ g_take_screenshot)
                 {
                 //if (g_first_angle == g_current_angle ||
-                        g_current_angle == (g_angle_number - 1) ||
-                        !(g_current_angle % 60))
+                //        g_current_angle == (g_angle_number - 1) ||
+                //        !(g_current_angle % 60))
                     {
                     //std::cout << g_current_angle << std::endl;
 
@@ -685,9 +684,9 @@ int main(int argc, char** argv)
                     takeScreenshot(filename.str());
                     }
 
-                g_take_screenshot = false;
+                //g_take_screenshot = false;
                 }
-*/
+
             // Poll for and process events
             glfwPollEvents();
             }
@@ -1155,7 +1154,7 @@ void render()
         g_xray_renderer.display(true, true, false);
 
         // Display the beam
-        if (g_display_beam)
+        if (g_beam_on)
             {
             const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.1};
             handle = glGetUniformLocation(shader_id, "material_ambient");
@@ -1314,7 +1313,23 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 break;
 
             case GLFW_KEY_B:
-                g_display_beam = !g_display_beam;
+                g_beam_on = !g_beam_on;
+
+                // Beam is on
+                if (g_beam_on)
+                    {
+                    // Set the energy
+                    g_xray_beam.initialise(g_incident_energy);
+                    }
+                // Beam is off
+                else
+                    {
+                    // Set the energy
+                    g_xray_beam.initialise(0.0 * eV);
+                    }
+
+                // Update the X-ray image
+                g_is_xray_image_up_to_date = false;
                 break;
 
             case GLFW_KEY_N:
@@ -1324,6 +1339,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
             case GLFW_KEY_W:
                 g_display_wireframe = !g_display_wireframe;
+                break;
+
+            case GLFW_KEY_T:
+                g_take_screenshot = !g_take_screenshot;
                 break;
 
             case GLFW_KEY_KP_ADD:
@@ -1363,18 +1382,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 g_use_right_shift = true;
                 break;
 
-            case GLFW_KEY_S:
-                if (g_display_skin)
-                    {
-                    takeScreenshot("screenshot_with_skin.tga");
-                    }
-                else
-                    {
-                    takeScreenshot("screenshot_without_skin.tga");
-                    }
-                g_display_skin = !g_display_skin;
-                break;
-
             default:
                 break;
             }
@@ -1392,8 +1399,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 break;
             }
         }
-
-    g_take_screenshot = true;
 }
 
 
@@ -1499,7 +1504,7 @@ void mouseButtonCallback(GLFWwindow* apWindow,
     g_current_x_position = xpos;
     g_current_y_position = ypos;
 
-    g_take_screenshot = true;
+//    g_take_screenshot = true;
 }
 
 
@@ -1513,7 +1518,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
     // Update the rotation matrix if needed
     computeRotation(g_scene_rotation_matrix);
 
-    g_take_screenshot = true;
+    //g_take_screenshot = true;
 }
 
 
@@ -1532,7 +1537,7 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
             g_main_window_height);
         }
 
-    g_take_screenshot = true;
+    //g_take_screenshot = true;
 }
 
 
@@ -2116,8 +2121,17 @@ void updateRawSinogram()
     );
 
     // Convert the projection into a sinogram
-    Sinogram<float> raw_sinogram(scaling_factor *
-        (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
+    Sinogram<float> raw_sinogram;
+    
+    if (g_beam_on)
+        {
+        raw_sinogram = (scaling_factor *
+            (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
+        }
+    else
+        {
+        raw_sinogram = g_xray_renderer.getEnergyFluence();
+        }
 
     memcpy(&(g_raw_sinogram_data(0, g_current_angle,0)),
             raw_sinogram.getRawData(),
@@ -2151,10 +2165,18 @@ void updateFilteredSinogram()
     );
 
     // Convert the projection into a sinogram
-    Sinogram<float> raw_sinogram(
-        scaling_factor *
-        (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
-    
+    Sinogram<float> raw_sinogram;
+
+    if (g_beam_on)
+        {
+        raw_sinogram = (scaling_factor *
+            (log(total_input_energy / g_xray_renderer.getEnergyFluence())));
+        }
+    else
+        {
+        raw_sinogram = g_xray_renderer.getEnergyFluence();
+        }
+
     // Do not save image
     // raw_sinogram.saveASCII("raw_line.mat");
 
