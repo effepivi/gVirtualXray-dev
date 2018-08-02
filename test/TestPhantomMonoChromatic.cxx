@@ -92,8 +92,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __PolygonMesh_h
-#include "gVirtualXRay/PolygonMesh.h"
+#ifndef __CylinderMesh_h
+#include "gVirtualXRay/CylinderMesh.h"
 #endif
 
 #ifndef __SphereMesh_h
@@ -410,8 +410,6 @@ void initGL()
 void loadSTLFile()
 //----------------
 {
-    std::string stl_filename("data/cylinder_bin.stl");
-
     // HU values
     RATIONAL_NUMBER HU_air(-1000);
     RATIONAL_NUMBER HU_lung(-500);
