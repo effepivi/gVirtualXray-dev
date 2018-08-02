@@ -794,10 +794,30 @@ void PolygonMesh::writeSTLFile()
         {
         for (unsigned int i(0); i < getFaceNumber(); i++)
             {
-            // Write normals
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
-            //output_stream.write((char*) &m_p_face_normal_set[9 * i],
-            //        sizeof(float) * 3);
+            // Compute the normal vector
+
+            // Get the vertex IDs
+            int id_0(i * 3 + 0);
+            int id_1(i * 3 + 1);
+            int id_2(i * 3 + 2);
+
+            // Get the vertices
+            VEC3 vec_A(getVertex(id_0));
+            VEC3 vec_B(getVertex(id_1));
+            VEC3 vec_C(getVertex(id_2));
+
+            // Compute the normal for the triangle
+            VEC3 normal((vec_C - vec_A)^(vec_C - vec_B));
+
+            // Normalise the vector
+            normal.normalize();
+
+			// Write the data
+			float p_normal[3];
+			p_normal[0] = normal.getX();
+			p_normal[1] = normal.getY();
+			p_normal[2] = normal.getZ();
+			output_stream.write((char*) p_normal, sizeof(float) * 3);
 
             // Write vertices
             output_stream.write((char*) &p_vertex_set[9 * i],
