@@ -896,9 +896,13 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 
 				// For each object
 				unsigned int object_number(0);
-				for (std::map<short, std::vector<PolygonMesh*> >::const_iterator ite(m_p_HU_polygon_mesh_set.begin());
-					ite != m_p_HU_polygon_mesh_set.end();
-					++ite, ++object_number)
+				//for (std::map<short, std::vector<PolygonMesh*> >::const_iterator ite(m_p_HU_polygon_mesh_set.begin());
+				//	ite != m_p_HU_polygon_mesh_set.end();
+				//	++ite, ++object_number)
+
+				for (std::vector<PolygonMesh*>::const_iterator ite_meshes(m_p_inner_surface_set.begin());
+						ite_meshes != m_p_inner_surface_set.end();
+						++ite_meshes, ++object_number)
 				{
 				    // Store GPU states
 				    GLint p_viewport[4];
@@ -915,10 +919,10 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
                     TissueMaterial tissue_properties;
                     int tissue_method(3);
 
-                    unsigned int temp_id(0);
-				    for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
-				            ite_meshes != ite->second.end();
-				            ++ite_meshes, ++temp_id)
+                    //unsigned int temp_id(0);
+				    //for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
+				    //        ite_meshes != ite->second.end();
+				    //        ++ite_meshes, ++temp_id)
 				    {
                         // Compute its L-buffer
                         computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
@@ -933,7 +937,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
                         min_corner[1] = std::min(temp[1], min_corner[1]);
                         min_corner[2] = std::min(temp[2], min_corner[2]);
 
-                        if (temp_id == 0)
+                        //if (temp_id == 0)
                         {
                             HU =                      (*ite_meshes)->getHounsfieldValue();
                             attenuation_coefficient = (*ite_meshes)->getAttenuationCoefficient();
@@ -955,12 +959,12 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
                                 }
                             }
                         }
-                        else
-                        {
-                            if (HU != (*ite_meshes)->getHounsfieldValue()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
-                            if (attenuation_coefficient != (*ite_meshes)->getAttenuationCoefficient()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
-                            if (tissue_properties != (*ite_meshes)->getTissueMaterial()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
-                        }
+                        //else
+                        //{
+                        //    if (HU != (*ite_meshes)->getHounsfieldValue()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
+                        //    if (attenuation_coefficient != (*ite_meshes)->getAttenuationCoefficient()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
+                        //    if (tissue_properties != (*ite_meshes)->getTissueMaterial()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
+                        //}
 				    }
 
 				    // Restore GPU states
@@ -2321,11 +2325,11 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
                     // Set the attenuation coefficient
                     //glBlendColor(1.0, 1.0, 1.0, mu);
                     // Convert mu in cm-1
-                    mu /= 1.0 / cm;
+                    mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
                 }
                 else //if (aMaterialFlag == 3)
                 {
-                    mu = anAttenuationCoefficient;
+                    mu = anAttenuationCoefficient / (1.0 / cm); // 1/cm because the unit of mu is cm-1
                 }
 
                 // Bind the corresponding slice of the 3D texture
@@ -3004,8 +3008,11 @@ void XRayRenderer::updateHUPolygonMeshSet()
                 ite != m_p_inner_surface_set.end();
                 ++ite)
         {
-            short hounsfield_value((*ite)->getHounsfieldValue());
-            m_p_HU_polygon_mesh_set[hounsfield_value].push_back(*ite);
+        	if ((*ite)->getUseHounsfieldValueFlag())
+        	{
+				short hounsfield_value((*ite)->getHounsfieldValue());
+				m_p_HU_polygon_mesh_set[hounsfield_value].push_back(*ite);
+        	}
         }
 
         // The list is now up-to-date
