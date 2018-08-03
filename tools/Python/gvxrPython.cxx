@@ -163,8 +163,8 @@ boost::python::tuple getMeshLabelSet();
 
 PyPolygonMesh makeCube(double aLength = 1.0, const char* aUnitOfLength = "cm");
 PyPolygonMesh makeCylinder(unsigned int aNumberOfSectors = 10,
-        float aHeight = 1.0,
-        float aRadius = 0.5,
+        double aHeight = 1.0,
+        double aRadius = 0.5,
 		const char* aUnitOfLength = "cm");
 
 
@@ -287,6 +287,8 @@ public:
 	const PolygonMesh& getMesh() const;
 	PolygonMesh& getMesh();
 
+	void saveSTLFile(const std::string& aFileName);
+
 	PyPolygonMesh& operator=(const PyPolygonMesh& aMesh);
 
 	PyPolygonMesh operator+(const PyPolygonMesh& aMesh) const;
@@ -388,6 +390,15 @@ const PolygonMesh& PyPolygonMesh::getMesh() const
 PolygonMesh& PyPolygonMesh::getMesh()
 {
 	return (m_polygon_mesh);
+}
+
+
+//-----------------------------------------------------------
+void PyPolygonMesh::saveSTLFile(const std::string& aFileName)
+//-----------------------------------------------------------
+{
+	m_polygon_mesh.setFileName(aFileName);
+	m_polygon_mesh.writeSTLFile();
 }
 
 
@@ -1214,8 +1225,8 @@ PyPolygonMesh makeCube(double aLength, const char* aUnitOfLength)
 
 
 PyPolygonMesh makeCylinder(unsigned int aNumberOfSectors,
-        float aHeight,
-        float aRadius,
+        double aHeight,
+        double aRadius,
 		const char* aUnitOfLength)
 {
 	return PyPolygonMesh(CylinderMesh<double>(aNumberOfSectors,
@@ -2173,6 +2184,7 @@ BOOST_PYTHON_MODULE(gvxrPython)
 		        .def("getMassAttenuationCoefficient", &PyPolygonMesh::getMassAttenuationCoefficient)
 		        .def("getLinearAttenuationCoefficient", &PyPolygonMesh::getLinearAttenuationCoefficient)
 				.def("setLinearAttenuationCoefficient", &PyPolygonMesh::setLinearAttenuationCoefficient)
+				.def("saveSTLFile"                    , &PyPolygonMesh::saveSTLFile)
 		        .def(boost::python::self +  boost::python::self)
 		        .def(boost::python::self -  boost::python::self)
 		        .def(boost::python::self += boost::python::self)
