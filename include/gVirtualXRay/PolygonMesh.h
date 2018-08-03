@@ -455,6 +455,18 @@ public:
     
     
     //--------------------------------------------------------------------------
+    /// Scale the polygon mesh given scaling factors, and
+    /// update the VBO if needed.
+    /**
+     * @x: the scaling factor along the X-axis
+     * @y: the scaling factor along the Y-axis
+     * @z: the scaling factor along the Z-axis
+     */
+    //--------------------------------------------------------------------------
+    void scale(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+
+
+    //--------------------------------------------------------------------------
     /// Rotate the polygon mesh given a rotation axis and angle, and
     /// update the VBO if needed.
     /**

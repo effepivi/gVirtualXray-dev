@@ -455,6 +455,37 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
 }
 
     
+//----------------------------------------------------------------
+inline void PolygonMesh::scale(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
+//----------------------------------------------------------------
+{
+    if (m_number_of_vertices)
+        {
+    	VEC3 scaling_factors(x, y, z);
+        for (unsigned int i(0); i < m_number_of_vertices; i++)
+            {
+            VEC3 vertex(getVertex(i).elementWiseProduct(scaling_factors));
+            setVertex(i, vertex);
+            }
+
+        m_min_corner = m_min_corner.elementWiseProduct(scaling_factors);
+        m_max_corner = m_max_corner.elementWiseProduct(scaling_factors);
+
+        // Create the VBO if needed
+        if (!m_p_vbo.get())
+            {
+            m_p_vbo.reset(createVBO());
+            }
+
+        // Update the VBO
+        if (m_p_vbo->isReady())
+            {
+            updateVBO(m_p_vbo->getBufferUsageHint(), m_p_vbo->getPrimitiveType());
+            }
+        }
+}
+
+
 //----------------------------------------------------------
 inline void PolygonMesh::setFaceNormal(unsigned int anIndex,
                                        const VEC3& aVertex)
