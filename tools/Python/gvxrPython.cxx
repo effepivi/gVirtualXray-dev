@@ -132,6 +132,7 @@ void loadSceneGraph(const char* aFileName,
         const char* aUnitOfLength);
 void moveToCentre(const char* aLabel = 0);
 void addPolygonMesh(const PyPolygonMesh& aMesh, const std::string& aLabel);
+void removePolygonMeshes();
 
 np::ndarray getSceneTransformationMatrix();
 np::ndarray getRootTransformationMatrix();
@@ -896,6 +897,15 @@ void addPolygonMesh(const PyPolygonMesh& aMesh, const std::string& aLabel)
 
 	// Add the polygon mesh to the scenegraph
 	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh.getMesh();
+}
+
+
+//------------------------
+void removePolygonMeshes()
+//------------------------
+{
+	g_xray_renderer.removeInnerSurfaces();
+	g_xray_renderer.removeOuterSurface();
 }
 
 
@@ -2123,6 +2133,7 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("moveToCenter",              moveToCentre, moveToCentre_overloads());
     boost::python::def("moveToCentre",              moveToCentre, moveToCentre_overloads());
     boost::python::def("addPolygonMesh",            addPolygonMesh);
+    boost::python::def("removePolygonMeshes",       removePolygonMeshes);
 
     boost::python::def("getSceneTransformationMatrix", getSceneTransformationMatrix);
     boost::python::def("getRootTransformationMatrix",  getRootTransformationMatrix);
