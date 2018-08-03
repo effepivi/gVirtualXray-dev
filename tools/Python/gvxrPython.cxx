@@ -109,7 +109,13 @@ void createWindow(int aWindowID = -1);
 void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
 void destroyWindow(int aWindowID = -1);
 void destroyAllWindows();
-void computeXRayImage();
+np::ndarray computeXRayImage();
+
+np::ndarray computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+                                   unsigned int aNumberOfAngle,
+                                   double anAngleOffset);
+
+
 void usePointSource();
 void useParallelBeam();
 void resetBeamSpectrum();
@@ -121,7 +127,9 @@ void setDetectorUpVector(double x, double y, double z);
 void setDetectorNumberOfPixels(int aWidth, int aHeight);
 void setDetectorPixelSize(double aWidth, double aHeight, const char* aUnitOfLength);
 void saveLastXRayImage(const char* aFileName = 0);
-np::ndarray getNumpyImage();
+
+np::ndarray getNumpyImage(const Image<float>& anImage);
+
 void displayScene(int aWindowID = -1);
 void renderLoop(int aWindowID = -1, PyObject* CallBack = 0);
 
@@ -287,6 +295,10 @@ public:
 	const PolygonMesh& getMesh() const;
 	PolygonMesh& getMesh();
 
+	void translate(double x, double y, double z, const char* aUnit);
+	void scale(double x, double y, double z);
+	void rotate(double aRotationAngleInDegrees);
+
 	void saveSTLFile(const std::string& aFileName);
 
 	PyPolygonMesh& operator=(const PyPolygonMesh& aMesh);
@@ -390,6 +402,25 @@ const PolygonMesh& PyPolygonMesh::getMesh() const
 PolygonMesh& PyPolygonMesh::getMesh()
 {
 	return (m_polygon_mesh);
+}
+
+
+void PyPolygonMesh::translate(double x, double y, double z, const char* aUnit)
+{
+	double unit = getUnitOfLength(aUnit);
+	m_polygon_mesh.translate(VEC3(x * unit, y * unit, z * unit));
+}
+
+
+void PyPolygonMesh::scale(double x, double y, double z)
+{
+	m_polygon_mesh.scale(x, y, z);
+}
+
+
+void PyPolygonMesh::rotate(double x, double y, double z, double aRotationAngleInDegrees)
+{
+	m_polygon_mesh.rotate(VEC3(x, y, z), aRotationAngleInDegrees);
 }
 
 
@@ -617,10 +648,17 @@ void destroyAllWindows()
 }
 
 
-//---------------------
-void computeXRayImage()
-//---------------------
+//----------------------------
+np::ndarray computeXRayImage()
+//----------------------------
 {
+	/*g_xray_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "uncleaned_lbuffer.mha");
+	g_xray_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "cleaned_lbuffer.mha");
+	g_xray_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "sum_MUx_Dx.mha");
+	g_xray_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "cumulated_l-buffers.mha");
+	g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
+*/
+
     // There is no OpenGL context
     if (g_p_window_id_stack.empty() || g_p_window_set.empty())
     {
@@ -633,13 +671,48 @@ void computeXRayImage()
     {
         // Compute the X-ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix /*MATRIX4()*/);
-        g_xray_renderer.printLBuffer("LBuffer.mha");
     }
     // The renderer is not ready
     else
     {
         cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
+
+	return (getNumpyImage(g_xray_renderer.getEnergyFluence()));
+}
+
+
+np::ndarray computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+        unsigned int aNumberOfAngle,
+        double anAngleOffset)
+{
+    // There is no OpenGL context
+    if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        // Compute the X-ray image
+
+    	double unit_of_length = getUnitOfLength(aUnitOfLength);
+    	VEC3 rotation_centre(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+
+        g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
+                rotation_centre,
+                aNumberOfAngle,
+                anAngleOffset);
+    }
+    // The renderer is not ready
+    else
+    {
+        cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    }
+
+	return (getNumpyImage(g_xray_renderer.getSinogram()));
 }
 
 
@@ -1258,6 +1331,8 @@ void initialiseXRayRenderer()
                 &g_xray_detector,
                 &g_xray_beam);
 
+            //g_xray_renderer.disableArtefactFiltering();
+
     		g_renderer_initialised = true;
         }
 	}
@@ -1503,27 +1578,18 @@ double getUnitOfLength(const char* aUnitOfLength)
 }
 
 
-//-------------------------
-np::ndarray getNumpyImage()
-//-------------------------
+//----------------------------------------------------
+np::ndarray getNumpyImage(const Image<float>& anImage)
+//----------------------------------------------------
 {
-	g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
-
 	boost::python::object own;
-	boost::python::tuple stride = boost::python::make_tuple(sizeof(RATIONAL_NUMBER)*g_xray_detector.getNumberOfPixels().getX(),sizeof(RATIONAL_NUMBER));
 
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(RATIONAL_NUMBER)*anImage.getWidth(),sizeof(RATIONAL_NUMBER));
+    boost::python::tuple shape = boost::python::make_tuple(anImage.getHeight(), anImage.getWidth());
 
-    boost::python::tuple shape = boost::python::make_tuple(g_xray_detector.getNumberOfPixels().getY(), g_xray_detector.getNumberOfPixels().getX());
-	np::dtype dtype = np::dtype::get_builtin<RATIONAL_NUMBER>();
-	//np::ndarray a = np::zeros(shape, dtype);
+    np::dtype dtype = np::dtype::get_builtin<RATIONAL_NUMBER>();
 
-
-	np::ndarray a = np::from_data(g_xray_renderer.getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID), dtype, shape, stride,own);
-
-
-
-	//std::cout << a(0,0) << endl;
-	return a;
+	return (np::from_data(anImage.getRawData(), dtype, shape, stride,own));
 }
 
 
@@ -2124,6 +2190,7 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("destroyAllWindows", destroyAllWindows);
 
     boost::python::def("computeXRayImage", computeXRayImage);
+    boost::python::def("computeSinogram",  computeSinogram);
     
     boost::python::def("usePointSource",  usePointSource);
     boost::python::def("useParallelBeam", useParallelBeam);
@@ -2167,7 +2234,6 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("makeCube",     makeCube,     makeCube_overloads());
     boost::python::def("makeCylinder", makeCylinder, makeCylinder_overloads());
 
-    boost::python::def("getNumpyImage", getNumpyImage);
     boost::python::def("saveLastXRayImage", saveLastXRayImage, saveLastXRayImage_overloads());
 
     boost::python::def("displayScene", displayScene, displayScene_overloads());
@@ -2184,6 +2250,9 @@ BOOST_PYTHON_MODULE(gvxrPython)
 		        .def("getMassAttenuationCoefficient", &PyPolygonMesh::getMassAttenuationCoefficient)
 		        .def("getLinearAttenuationCoefficient", &PyPolygonMesh::getLinearAttenuationCoefficient)
 				.def("setLinearAttenuationCoefficient", &PyPolygonMesh::setLinearAttenuationCoefficient)
+				.def("translate"                    , &PyPolygonMesh::translate)
+				.def("scale"                    , &PyPolygonMesh::scale)
+				.def("rotate"                    , &PyPolygonMesh::rotate)
 				.def("saveSTLFile"                    , &PyPolygonMesh::saveSTLFile)
 		        .def(boost::python::self +  boost::python::self)
 		        .def(boost::python::self -  boost::python::self)
