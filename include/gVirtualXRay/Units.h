@@ -87,7 +87,7 @@ const double meter      =    1.0    / 0.001; ///< metre
 const double decimeter  =    0.1    / 0.001; ///< decimetre
 const double centimeter =    0.01   / 0.001; ///< centimetre
 const double millimeter =    0.001  / 0.001; ///< millimetre
-const double micrometer =    0.0001 / 0.001; ///< micrometre
+const double micrometer =    1.0e-6 / 0.001; ///< micrometre
 
 const double kilometre  = kilometer;  ///< kilometre
 const double hectometre = hectometer; ///< hectometre
@@ -140,7 +140,7 @@ const double gram      =    1.0;    ///< gram
 const double decigram  =    0.1;    ///< decigram
 const double centigram =    0.01;   ///< centigram
 const double milligram =    0.001;  ///< milligram
-const double microgram =    0.0001; ///< microgram
+const double microgram =    1e-6; ///< microgram
 
 const double kg  = kilogram;  ///< kilogram
 const double hg  = hectogram; ///< hectogram
