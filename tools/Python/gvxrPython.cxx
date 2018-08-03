@@ -297,7 +297,7 @@ public:
 
 	void translate(double x, double y, double z, const char* aUnit);
 	void scale(double x, double y, double z);
-	void rotate(double aRotationAngleInDegrees);
+	void rotate(double x, double y, double z, double aRotationAngleInDegrees);
 
 	void saveSTLFile(const std::string& aFileName);
 
