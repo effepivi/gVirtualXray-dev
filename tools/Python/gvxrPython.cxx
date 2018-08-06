@@ -476,6 +476,10 @@ PyPolygonMesh& PyPolygonMesh::operator-=(const PyPolygonMesh& aMesh)
 }
 
 
+PyPolygonMesh emptyMesh()
+{
+	return (PyPolygonMesh());
+}
 
 //------------------------------
 void createWindow(int aWindowID)
@@ -652,13 +656,6 @@ void destroyAllWindows()
 np::ndarray computeXRayImage()
 //----------------------------
 {
-	/*g_xray_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "uncleaned_lbuffer.mha");
-	g_xray_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "cleaned_lbuffer.mha");
-	g_xray_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "sum_MUx_Dx.mha");
-	g_xray_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "cumulated_l-buffers.mha");
-	g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
-*/
-
     // There is no OpenGL context
     if (g_p_window_id_stack.empty() || g_p_window_set.empty())
     {
@@ -678,6 +675,12 @@ np::ndarray computeXRayImage()
         cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
 
+	//g_xray_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "uncleaned_lbuffer.mha");
+	//g_xray_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "cleaned_lbuffer.mha");
+	/*g_xray_renderer.printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, "sum_MUx_Dx.mha");
+	g_xray_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "cumulated_l-buffers.mha");
+	g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
+*/
 	return (getNumpyImage(g_xray_renderer.getEnergyFluence()));
 }
 
@@ -1331,7 +1334,8 @@ void initialiseXRayRenderer()
                 &g_xray_detector,
                 &g_xray_beam);
 
-            //g_xray_renderer.disableArtefactFiltering();
+            g_xray_renderer.disableArtifactFilteringOnGPU();
+            g_xray_renderer.enableArtefactFilteringOnCPU();
 
     		g_renderer_initialised = true;
         }
@@ -2242,6 +2246,7 @@ BOOST_PYTHON_MODULE(gvxrPython)
 
     boost::python::def("getUnitOfLength",                     getUnitOfLength);
     boost::python::def("getUnitOfEnergy",                     getUnitOfEnergy);
+    boost::python::def("emptyMesh",                     emptyMesh);
 
     boost::python::class_<PyPolygonMesh>("PyPolygonMesh")
                 .def("setMaterial", &PyPolygonMesh::setMaterial)
