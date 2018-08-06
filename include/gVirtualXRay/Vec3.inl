@@ -177,6 +177,17 @@ template<typename T> double Vec3<T>::dotProduct(const Vec3& aVector) const
     return (m_x * aVector.m_x + m_y * aVector.m_y + m_z * aVector.m_z);
 }
 
+
+//------------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::crossProduct(const Vec3<T>& aVector) const
+//------------------------------------------------------------------------------
+{
+    return (Vec3(  m_y * aVector.m_z - m_z * aVector.m_y,
+                 -(m_x * aVector.m_z - m_z * aVector.m_x),
+                   m_x * aVector.m_y - m_y * aVector.m_x));
+}
+
+
 /*
 //-----------------------------------------------------------------------
 template<typename T> double Vec3<T>::operator*(const Vec3& aVector) const
@@ -207,9 +218,9 @@ template<typename T> double Vec3<T>::distance(const Vec3& aVector) const
 }
 
 
-//-----------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator+(const Vec3& aValue) const
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator+(const Vec3& aValue) const
+//-----------------------------------------------------------------------
 {
     return (Vec3(m_x + aValue.m_x, m_y + aValue.m_y, m_z + aValue.m_z));
 }
@@ -227,9 +238,9 @@ template<typename T> Vec3<T>& Vec3<T>::operator+=(const Vec3& aValue)
 }
 
 
-//-----------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator-(const Vec3& aValue) const
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator-(const Vec3& aValue) const
+//-----------------------------------------------------------------------
 {
     return (Vec3(m_x - aValue.m_x, m_y - aValue.m_y, m_z - aValue.m_z));
 }
@@ -247,10 +258,9 @@ template<typename T> Vec3<T>& Vec3<T>::operator-=(const Vec3& aValue)
 }
 
 
-//-------------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator*(
-        const double& aValue) const
-//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator*(const double& aValue) const
+//-------------------------------------------------------------------------
 {
     return (Vec3(m_x * aValue, m_y * aValue, m_z * aValue));
 }
@@ -268,9 +278,9 @@ template<typename T> Vec3<T>& Vec3<T>::operator*=(const double& aValue)
 }
 
 
-//------------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator*(const float& aValue) const
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator*(const float& aValue) const
+//------------------------------------------------------------------------
 {
     return (Vec3(m_x * aValue, m_y * aValue, m_z * aValue));
 }
@@ -288,9 +298,9 @@ template<typename T> Vec3<T>& Vec3<T>::operator*=(const float& aValue)
 }
 
 
-//-------------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator/(const double& aValue) const
-//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator/(const double& aValue) const
+//-------------------------------------------------------------------------
 {
     return (Vec3(m_x / aValue, m_y / aValue, m_z / aValue));
 }
@@ -308,9 +318,9 @@ template<typename T> Vec3<T>& Vec3<T>::operator/=(const double& aValue)
 }
 
 
-//------------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator/(const float& aValue) const
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator/(const float& aValue) const
+//------------------------------------------------------------------------
 {
     return (Vec3(m_x / aValue, m_y / aValue, m_z / aValue));
 }
@@ -328,18 +338,16 @@ template<typename T> Vec3<T>& Vec3<T>::operator/=(const float& aValue)
 }
 
 
-//-----------------------------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator^(const Vec3& aValue) const
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------
+template<typename T> Vec3<T> Vec3<T>::operator^(const Vec3& aValue) const
+//-----------------------------------------------------------------------
 {
-    return (Vec3(  m_y * aValue.m_z - m_z * aValue.m_y,
-                 -(m_x * aValue.m_z - m_z * aValue.m_x),
-                   m_x * aValue.m_y - m_y * aValue.m_x));
+	return (crossProduct(aValue));
 }
 
 
 //-----------------------------------------------------------
-template<typename T> const Vec3<T> Vec3<T>::operator-() const
+template<typename T> Vec3<T> Vec3<T>::operator-() const
 //-----------------------------------------------------------
 {
     return (Vec3(-m_x, -m_y, -m_z));

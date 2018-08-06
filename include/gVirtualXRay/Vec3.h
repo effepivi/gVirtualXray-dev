@@ -212,6 +212,17 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Cross product between the current vector and
+    /// a given vector.
+    /**
+     *  @param aVector: the other vector
+     *  @return the cross product
+     */
+    //--------------------------------------------------------------------------
+    Vec3 crossProduct(const Vec3& aVector) const;
+
+
+    //--------------------------------------------------------------------------
     /// Get the distance between the 3D position represented
     /// by the current vector and another position.
     /**
@@ -250,7 +261,7 @@ public:
      *  @return the dot product
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator+(const Vec3& aVector) const;
+    Vec3 operator+(const Vec3& aVector) const;
 
 
     //--------------------------------------------------------------------------
@@ -270,7 +281,7 @@ public:
      *  @return the modified vector
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator-(const Vec3& aVector) const;
+    Vec3 operator-(const Vec3& aVector) const;
 
 
     //--------------------------------------------------------------------------
@@ -290,7 +301,7 @@ public:
      *  @return the modified vector
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator*(const double& aValue) const;
+    Vec3 operator*(const double& aValue) const;
 
 
     //--------------------------------------------------------------------------
@@ -311,7 +322,7 @@ public:
      *  @return the modified vector
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator*(const float& aValue) const;
+    Vec3 operator*(const float& aValue) const;
 
 
     //--------------------------------------------------------------------------
@@ -332,7 +343,7 @@ public:
      *  @return the modified vector
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator/(const double& aValue) const;
+    Vec3 operator/(const double& aValue) const;
 
 
     //--------------------------------------------------------------------------
@@ -352,7 +363,7 @@ public:
      *  @return the modified vector
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator/(const float& aValue) const;
+    Vec3 operator/(const float& aValue) const;
 
 
     //--------------------------------------------------------------------------
@@ -373,7 +384,7 @@ public:
      *  @return the cross product
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator^(const Vec3& aVector) const;
+    Vec3 operator^(const Vec3& aVector) const;
 
 
     //--------------------------------------------------------------------------
@@ -382,7 +393,7 @@ public:
      *  @return the opposite vector
      */
     //--------------------------------------------------------------------------
-    const Vec3 operator-() const;
+    Vec3 operator-() const;
 
 
     //--------------------------------------------------------------------------
