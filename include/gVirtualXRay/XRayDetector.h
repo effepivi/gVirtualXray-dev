@@ -449,6 +449,9 @@ public:
     const RATIONAL_NUMBER& getFOVY() const;
 
 
+    const VEC2& getPixelSizeInUnitOfLength() const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------

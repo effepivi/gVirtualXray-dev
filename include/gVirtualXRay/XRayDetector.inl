@@ -521,6 +521,14 @@ inline void XRayDetector::updateSizeInUnitOfLength()
 }
 
 
+//-----------------------------------------------------------------
+inline const VEC2& XRayDetector::getPixelSizeInUnitOfLength() const
+//-----------------------------------------------------------------
+{
+	return (m_resolution_in_unit_of_length_per_pixel);
+}
+
+
 //----------------------------------------------
 inline void XRayDetector::updateInternalValues()
 //----------------------------------------------
