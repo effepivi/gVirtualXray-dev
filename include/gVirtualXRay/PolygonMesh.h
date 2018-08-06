@@ -75,6 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 
 #ifndef __VBO_h
@@ -1334,7 +1335,7 @@ public:
     virtual PolygonMesh& operator-=(const VEC3& aTranslationVector);
 
 
-    std::vector<std::pair<RATIONAL_NUMBER, VEC3> > rayIntersect(
+    std::map<RATIONAL_NUMBER, VEC3> rayIntersect(
     		const VEC3& aRayOrigin,
 			const VEC3& aRayDirection,
 			const MATRIX4& aTransformationMatrix) const;

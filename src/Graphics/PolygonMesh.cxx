@@ -1621,25 +1621,33 @@ PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
 }
 
 
-std::vector<std::pair<RATIONAL_NUMBER, VEC3> > PolygonMesh::rayIntersect(
+std::map<RATIONAL_NUMBER, VEC3> PolygonMesh::rayIntersect(
 		const VEC3& aRayOrigin,
 		const VEC3& aRayDirection,
 		const MATRIX4& aTransformationMatrix) const
 {
-	std::vector<std::pair<RATIONAL_NUMBER, VEC3> > p_intersection_set;
+	// Implements the Möller–Trumbore ray-triangle intersection algorithm
+    // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+	std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+
+	VEC3 v0;
+	VEC3 v1;
+	VEC3 v2;
+	VEC3 N;
+
+    VEC3 edge1, edge2, h, s, q;
+    double a,f,u,v;
 
 	// Process all the triangles of the mesh
 
 	for (unsigned int i = 0; i < getTriangleNumber(); ++i)
 	{
 		// Get the triangle vertices
-		VEC3 v0;
-		VEC3 v1;
-		VEC3 v2;
 	    getTriangleVertices(v0, v1, v2, i);
 
 	    // Get the normal vector
-	    VEC3 N = getFaceNormal(i);
+	    N = getFaceNormal(i);
 
 	    // Transform the vertices and normal vector
 	    v0 = aTransformationMatrix * v0;
@@ -1647,10 +1655,39 @@ std::vector<std::pair<RATIONAL_NUMBER, VEC3> > PolygonMesh::rayIntersect(
 	    v2 = aTransformationMatrix * v2;
 	    N = (aTransformationMatrix * N).normal();
 
+
+	    edge1 = v1 - v0;
+	    edge2 = v2 - v0;
+	    h = aRayDirection.crossProduct(edge2);
+	    a = edge1.dotProduct(h);
+	    if (!(a > -EPSILON && a < EPSILON))
+	    {
+			f = 1.0 / a;
+			s = aRayOrigin - v0;
+			u = f * (s.dotProduct(h));
+			if (!(u < 0.0 || u > 1.0))
+			{
+				q = s.crossProduct(edge1);
+				v = f * aRayDirection.dotProduct(q);
+				if (!(v < 0.0 || u + v > 1.0))
+				{
+					// At this stage we can compute t to find out where the intersection point is on the line.
+					float t = f * edge2.dotProduct(q);
+					if (t > EPSILON) // ray intersection
+					{
+						VEC3 outIntersectionPoint = aRayOrigin + aRayDirection * t;
+						p_intersection_set[t] = N;
+					}
+					//else // This means that there is a line intersection but not a ray intersection.
+					//	return false;
+				}
+			}
+	    }
+
 		// Step 1: finding P
 
 		// check if ray and plane are parallel ?
-	    RATIONAL_NUMBER NdotRayDirection = N.dotProduct(aRayDirection);
+	/*    RATIONAL_NUMBER NdotRayDirection = N.dotProduct(aRayDirection);
 		if (std::abs(NdotRayDirection) >= EPSILON) // almost 0
 		{
 			// compute d parameter using equation 2
@@ -1660,7 +1697,7 @@ std::vector<std::pair<RATIONAL_NUMBER, VEC3> > PolygonMesh::rayIntersect(
 			RATIONAL_NUMBER t = (N.dotProduct(aRayOrigin) + d) / NdotRayDirection;
 
 			// check if the triangle is in behind the ray
-			if (t >= 0)
+			//if (t >= 0)
 			{
 				// compute the intersection point using equation 1
 				VEC3 P = aRayOrigin + t * aRayDirection;
@@ -1691,10 +1728,44 @@ std::vector<std::pair<RATIONAL_NUMBER, VEC3> > PolygonMesh::rayIntersect(
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	return p_intersection_set;
+}
+
+
+void PolygonMesh::getTriangleVertices(VEC3& v0,
+								      VEC3& v1,
+									  VEC3& v2,
+									  unsigned int anIndex) const
+{
+    // The polygon is made of triangles
+    if (m_polygon_type == GL_TRIANGLES)
+    {
+    	if (anIndex >= getFaceNumber())
+		{
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+    	if (m_number_of_indices)
+		{
+    		v0 = getVertex(getIndex(anIndex * 3 + 0));
+    		v1 = getVertex(getIndex(anIndex * 3 + 1));
+    		v2 = getVertex(getIndex(anIndex * 3 + 2));
+		}
+    	else
+		{
+    		v0 = getVertex(anIndex * 3 + 0);
+    		v1 = getVertex(anIndex * 3 + 1);
+    		v2 = getVertex(anIndex * 3 + 2);
+		}
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Polygon type not supported.");
+    }
 }
 
 
