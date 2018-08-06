@@ -350,7 +350,33 @@ inline unsigned int PolygonMesh::getIndexNumber() const
 inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
 //----------------------------------------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
+	if (m_number_of_indices)
+	{
+    	if (anIndex >= getFaceNumber())
+		{
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+    	VEC3 temp = (getVertexNormal(getIndex(anIndex * 3 + 0)) +
+    				getVertexNormal(getIndex(anIndex * 3 + 1)) +
+					getVertexNormal(getIndex(anIndex * 3 + 2))) / 3.0;
+
+        VEC3 normal((getVertex(getIndex(anIndex * 3 + 2)) - getVertex(getIndex(anIndex * 3 + 0)))^(getVertex(getIndex(anIndex * 3 + 2)) - getVertex(getIndex(anIndex * 3 + 1))));
+        normal.normalize();
+
+        if (sgn(normal.dotProduct(temp)) > 0)
+        {
+        	return (normal);
+        }
+        else
+        {
+        	return (-normal);
+        }
+	}
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
+	}
 /*
     if (getFaceNormalNumber() <= anIndex)
     {
