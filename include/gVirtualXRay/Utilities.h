@@ -312,6 +312,9 @@ template<typename T> T degreeToRadian(const T& aAngleInDegree);
 template<typename T> T radianToDegree(const T& aAngleInRadian);
 
 
+template <typename T> int sgn(const T& aValue);
+
+
 } // namespace gVirtualXRay
 
 
