@@ -1952,6 +1952,65 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         // Display the object
         anObject.display();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+
+
+        // CPU computation using ray-tracing
+        Image<PixelType> l_buffer(m_p_detector->getNumberOfPixels().getX(),
+                m_p_detector->getNumberOfPixels().getY(),
+                1);
+
+        VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
+        VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
+        VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
+
+		double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
+		double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
+
+		VEC3 ray_origin;
+		VEC3 ray_direction;
+
+		double u, v;
+
+		std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+		VEC3 pixel_position;
+
+        for (unsigned int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
+        {
+        	for (unsigned int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
+        	{
+        		u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
+        		v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
+
+        		pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
+        		if (!m_p_detector->useParallelBeam())
+        		{
+        			ray_origin = aXRaySourceSampleOffset;
+        			ray_direction = (pixel_position - ray_origin).normal();
+        		}
+        		else
+        		{
+        			// Cast the ray from the pixel position, not the source
+        			ray_direction =  -(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).normal();
+        			ray_origin = pixel_position;
+        		}
+
+        		p_intersection_set = anObject.rayIntersect(
+                		ray_origin,
+						ray_direction,
+						aModellingTransformationMatrix);
+
+                for (std::map<RATIONAL_NUMBER, VEC3>::const_iterator ite = p_intersection_set.begin();
+                		ite != p_intersection_set.end();
+                		++ite)
+                {
+                	l_buffer.getPixel(i, j) += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
+                }
+        	}
+        }
+
+        l_buffer.save("CPU_lbuffer.mha");
 	}
 
     // Restore GPU states
