@@ -215,7 +215,8 @@ XRayRenderer::XRayRenderer():
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
-		m_use_l_buffer_artefact_filtering(true),
+		m_use_l_buffer_artefact_filtering_on_gpu(false),
+		m_use_l_buffer_artefact_filtering_on_cpu(true),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
 		m_HU_polygon_mesh_set_up_to_date(true)
@@ -1602,7 +1603,7 @@ void XRayRenderer::resetLBuffer()
 		case OPENGL:
 			reset2DBuffer(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
 
-			if (m_use_l_buffer_artefact_filtering)
+			if (m_use_l_buffer_artefact_filtering_on_gpu)
 			{
 	            reset2DBuffer(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
 			}
@@ -1917,6 +1918,130 @@ unsigned int XRayRenderer::getID2DTexture()
 }
 
 
+//------------------------------------------------------------------------------
+void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
+                                  const VEC3& aXRaySourceDetectorTranslation,
+                                  const MATRIX4& aModellingTransformationMatrix,
+                                  bool aGPUStateConservationFlag)
+//------------------------------------------------------------------------------
+{
+    // This is an internal mesh
+    if (&anObject != m_p_outer_surface || !m_p_inner_surface_set.size())
+    {
+        computeInnerSurfaceLBuffer(anObject,
+        		aXRaySourceDetectorTranslation,
+				aModellingTransformationMatrix * anObject.getTransformationMatrix(),
+				aGPUStateConservationFlag);
+    }
+    // This is the external mesh
+    else
+    {
+        computeOuterSurfaceLBuffer(anObject,
+        		aXRaySourceDetectorTranslation,
+				aModellingTransformationMatrix * anObject.getTransformationMatrix());
+    }
+
+    if (m_use_l_buffer_artefact_filtering_on_cpu)
+    {
+    	// Get the L-buffer
+    	getFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
+
+		VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
+		VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
+		VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
+
+		double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
+		double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
+
+		VEC3 ray_origin;
+		VEC3 ray_direction;
+
+		double u, v;
+
+		std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+		VEC3 pixel_position;
+
+		bool has_worked(false);
+		float l_buffer_value;
+
+		for (unsigned int j = 0; j < m_temp_raw_data.getHeight(); ++j)
+		{
+			for (unsigned int i = 0; i < m_temp_raw_data.getWidth(); ++i)
+			{
+				if (m_temp_raw_data.getWidth() / 2 == i)
+				{
+					int middle = 0;
+				}
+				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
+				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
+				{
+					l_buffer_value = 0.0;
+
+					if (!has_worked)
+					{
+				        // Store the texturing flags
+				        pushTexture2D();
+
+				        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+
+						has_worked = true;
+					}
+
+					u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
+					v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
+
+					pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
+					if (!m_p_detector->useParallelBeam())
+					{
+						ray_origin = m_p_detector->getXraySourceCentre() + aXRaySourceDetectorTranslation;
+						ray_direction = (pixel_position - ray_origin).normal();
+					}
+					else
+					{
+						// Cast the ray from the pixel position, not the source
+						ray_direction =  -(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).normal();
+						ray_origin = pixel_position;
+					}
+
+					p_intersection_set = anObject.rayIntersect(
+							ray_origin,
+							ray_direction,
+							aModellingTransformationMatrix);
+
+					// There is an even number of intersections
+					if (p_intersection_set.size() && !(p_intersection_set.size() % 2))
+					{
+						for (std::map<RATIONAL_NUMBER, VEC3>::const_iterator ite = p_intersection_set.begin();
+								ite != p_intersection_set.end();
+								++ite)
+						{
+							l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
+						}
+					}
+
+					glTexSubImage2D(GL_TEXTURE_2D,
+							0,
+							i,
+							j,
+							1,
+							1,
+							GL_RED,
+							GL_FLOAT,
+							&l_buffer_value);
+				}
+			}
+		}
+
+		if (has_worked)
+		{
+			// Restore the texturing flags
+			popTexture();
+		}
+	}
+}
+
+
 //------------------------------------------------------------------------------------------
 void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               const VEC3& aXRaySourceSampleOffset,
@@ -1952,66 +2077,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         // Display the object
         anObject.display();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-
-
-        // CPU computation using ray-tracing
-        Image<PixelType> l_buffer(m_p_detector->getNumberOfPixels().getX(),
-                m_p_detector->getNumberOfPixels().getY(),
-                1);
-
-        VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
-        VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
-        VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
-
-		double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
-		double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
-
-		VEC3 ray_origin;
-		VEC3 ray_direction;
-
-		double u, v;
-
-		std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
-
-		VEC3 pixel_position;
-
-        for (unsigned int j = 0; j < m_p_detector->getNumberOfPixels().getY(); ++j)
-        {
-        	for (unsigned int i = 0; i < m_p_detector->getNumberOfPixels().getX(); ++i)
-        	{
-        		u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
-        		v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
-
-        		pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
-        		if (!m_p_detector->useParallelBeam())
-        		{
-        			ray_origin = aXRaySourceSampleOffset;
-        			ray_direction = (pixel_position - ray_origin).normal();
-        		}
-        		else
-        		{
-        			// Cast the ray from the pixel position, not the source
-        			ray_direction =  -(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).normal();
-        			ray_origin = pixel_position;
-        		}
-
-        		p_intersection_set = anObject.rayIntersect(
-                		ray_origin,
-						ray_direction,
-						aModellingTransformationMatrix);
-
-                for (std::map<RATIONAL_NUMBER, VEC3>::const_iterator ite = p_intersection_set.begin();
-                		ite != p_intersection_set.end();
-                		++ite)
-                {
-                	l_buffer.getPixel(i, j) += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
-                }
-        	}
-        }
-
-        l_buffer.save("CPU_lbuffer.mha");
-	}
+    }
 
     // Restore GPU states
     if (aGPUStateConservationFlag)
@@ -2056,7 +2122,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	pushEnableDisableState(GL_BLEND);
 
 	// Bind frame buffer object
-    if (m_use_l_buffer_artefact_filtering)
+    if (m_use_l_buffer_artefact_filtering_on_gpu)
     {
         m_p_fbo_set[XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID]->Bind();
     }
@@ -2202,7 +2268,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    if (m_use_l_buffer_artefact_filtering)
+    if (m_use_l_buffer_artefact_filtering_on_gpu)
     {
         glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
     }
@@ -2321,7 +2387,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
 			// Cumulated L-buffers
 			glActiveTexture(saved_texture);
 
-			if (m_use_l_buffer_artefact_filtering)
+			if (m_use_l_buffer_artefact_filtering_on_gpu)
 			{
 			    glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
 			}
@@ -3197,7 +3263,7 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
 //--------------------------------------------------------------
 {
     // Clean the L-Buffer
-    if (m_use_l_buffer_artefact_filtering)
+    if (m_use_l_buffer_artefact_filtering_on_gpu)
     {
         cleanLBuffer(1.0 * aDiagonal);
     }

@@ -471,71 +471,123 @@ namespace gVirtualXRay {
     }
 
 
-    //-------------------------------------------------
-    inline void XRayRenderer::enableArtefactFiltering()
-    //-------------------------------------------------
+    //------------------------------------------------------
+    inline void XRayRenderer::enableArtefactFilteringOnGPU()
+    //------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering = true;
+        m_use_l_buffer_artefact_filtering_on_gpu = true;
+        m_use_l_buffer_artefact_filtering_on_cpu = false;
     }
 
 
-    //-------------------------------------------------
-    inline void XRayRenderer::enableArtifactFiltering()
-    //-------------------------------------------------
+    //------------------------------------------------------
+    inline void XRayRenderer::enableArtefactFilteringOnCPU()
+    //------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering = true;
+        m_use_l_buffer_artefact_filtering_on_gpu = false;
+        m_use_l_buffer_artefact_filtering_on_cpu = true;
     }
 
 
-    //--------------------------------------------------
-    inline void XRayRenderer::disableArtefactFiltering()
-    //--------------------------------------------------
+    //------------------------------------------------------
+    inline void XRayRenderer::enableArtifactFilteringOnGPU()
+    //------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering = false;
+        m_use_l_buffer_artefact_filtering_on_gpu = true;
+        m_use_l_buffer_artefact_filtering_on_cpu = false;
     }
 
 
-    //--------------------------------------------------
-    inline void XRayRenderer::disableArtifactFiltering()
-    //--------------------------------------------------
+    //------------------------------------------------------
+    inline void XRayRenderer::enableArtifactFilteringOnCPU()
+    //------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering = false;
+        m_use_l_buffer_artefact_filtering_on_gpu = false;
+        m_use_l_buffer_artefact_filtering_on_cpu = true;
     }
 
 
-    //--------------------------------------------------------
-    inline void XRayRenderer::useArtifactFiltering(bool aFlag)
-    //--------------------------------------------------------
+    //-------------------------------------------------------
+    inline void XRayRenderer::disableArtifactFilteringOnGPU()
+    //-------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering = aFlag;
+        m_use_l_buffer_artefact_filtering_on_gpu = false;
     }
 
 
-    //--------------------------------------------------------
-    inline void XRayRenderer::useArtefactFiltering(bool aFlag)
-    //--------------------------------------------------------
+    //-------------------------------------------------------
+    inline void XRayRenderer::disableArtifactFilteringOnCPU()
+    //-------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering = aFlag;
+        m_use_l_buffer_artefact_filtering_on_cpu = false;
     }
 
 
-    //----------------------------------------------------
-    inline bool XRayRenderer::useArtifactFiltering() const
-    //----------------------------------------------------
+    //-------------------------------------------------------------
+    inline void XRayRenderer::useArtifactFilteringOnGPU(bool aFlag)
+    //-------------------------------------------------------------
     {
-        return (m_use_l_buffer_artefact_filtering);
+        m_use_l_buffer_artefact_filtering_on_gpu = aFlag;
     }
 
 
-    //----------------------------------------------------
-    inline bool XRayRenderer::useArtefactFiltering() const
-    //----------------------------------------------------
+    //-------------------------------------------------------------
+    inline void XRayRenderer::useArtifactFilteringOnCPU(bool aFlag)
+    //-------------------------------------------------------------
     {
-        return (m_use_l_buffer_artefact_filtering);
+        m_use_l_buffer_artefact_filtering_on_cpu = aFlag;
+    }
+
+
+    //-------------------------------------------------------------
+    inline void XRayRenderer::useArtefactFilteringOnGPU(bool aFlag)
+    //-------------------------------------------------------------
+    {
+        m_use_l_buffer_artefact_filtering_on_gpu = aFlag;
     }
 
 
     //------------------------------------------------------------
+    inline void XRayRenderer::useArtefactFilteringOnCPU(bool aFlag)
+    //------------------------------------------------------------
+    {
+        m_use_l_buffer_artefact_filtering_on_cpu = aFlag;
+    }
+
+
+    //---------------------------------------------------------
+    inline bool XRayRenderer::useArtifactFilteringOnGPU() const
+    //---------------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering_on_gpu);
+    }
+
+
+    //---------------------------------------------------------
+    inline bool XRayRenderer::useArtifactFilteringOnCPU() const
+    //---------------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering_on_cpu);
+    }
+
+
+    //---------------------------------------------------------
+    inline bool XRayRenderer::useArtefactFilteringOnGPU() const
+    //---------------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering_on_gpu);
+    }
+
+
+    //---------------------------------------------------------
+	inline bool XRayRenderer::useArtefactFilteringOnCPU() const
+	//---------------------------------------------------------
+	{
+		return (m_use_l_buffer_artefact_filtering_on_cpu);
+	}
+
+
+	//------------------------------------------------------------
     inline void XRayRenderer::printSinogram(const char* aFileName)
     //------------------------------------------------------------
     {
@@ -624,36 +676,11 @@ namespace gVirtualXRay {
     }
 
 
-    //-------------------------------------------------------------------------------------
-    inline void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
-                                             const VEC3& aXRaySourceDetectorTranslation,
-                                             const MATRIX4& aModellingTransformationMatrix,
-                                             bool aGPUStateConservationFlag)
-    //-------------------------------------------------------------------------------------
-    {
-        // This is an internal mesh
-        if (&anObject != m_p_outer_surface || !m_p_inner_surface_set.size())
-        {
-            computeInnerSurfaceLBuffer(anObject,
-            		aXRaySourceDetectorTranslation,
-					aModellingTransformationMatrix * anObject.getTransformationMatrix(),
-					aGPUStateConservationFlag);
-        }
-        // This is the external mesh
-        else
-        {
-            computeOuterSurfaceLBuffer(anObject,
-            		aXRaySourceDetectorTranslation,
-					aModellingTransformationMatrix * anObject.getTransformationMatrix());
-        }
-    }
-
-
     //-----------------------------------------------------------
     inline void XRayRenderer::printLBuffer(const char* aFileName)
     //-----------------------------------------------------------
     {
-        if (m_use_l_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
         {
             //print2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID, aFileName);
             printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, aFileName);
@@ -759,7 +786,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::displayLBuffer()
     //----------------------------------------
     {
-        if (m_use_l_buffer_artefact_filtering)
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
         {
             display2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID);
         }

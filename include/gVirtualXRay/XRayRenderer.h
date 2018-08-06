@@ -671,35 +671,42 @@ public:
     //--------------------------------------------------------------------------
     /// Enable artefact filtering.
     //--------------------------------------------------------------------------
-    void enableArtefactFiltering();
+    void enableArtefactFilteringOnGPU();
+    void enableArtefactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
     /// Enable artefact filtering.
     //--------------------------------------------------------------------------
-    void enableArtifactFiltering();
+    void enableArtifactFilteringOnGPU();
+    void enableArtifactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
     /// Disable artefact filtering.
     //--------------------------------------------------------------------------
-    void disableArtefactFiltering();
+    void disableArtefactFilteringOnGPU();
+    void disableArtefactFilteringOnCPU();
 
 
     //--------------------------------------------------------------------------
     /// Disable artefact filtering.
     //--------------------------------------------------------------------------
-    void disableArtifactFiltering();
+    void disableArtifactFilteringOnGPU();
+    void disableArtifactFilteringOnCPU();
 
 
-    void useArtifactFiltering(bool aFlag);
-    void useArtefactFiltering(bool aFlag);
+    void useArtifactFilteringOnGPU(bool aFlag);
+    void useArtifactFilteringOnCPU(bool aFlag);
 
-    bool useArtifactFiltering() const;
-    bool useArtefactFiltering() const;
+    void useArtefactFilteringOnGPU(bool aFlag);
+    void useArtefactFilteringOnCPU(bool aFlag);
 
+    bool useArtifactFilteringOnGPU() const;
+    bool useArtifactFilteringOnCPU() const;
 
-    
+    bool useArtefactFilteringOnGPU() const;
+    bool useArtefactFilteringOnCPU() const;
 
 
 //******************************************************************************
@@ -1007,7 +1014,8 @@ protected:
 
 
     /// Flag set to true to use L-buffer artefact filtering
-    bool m_use_l_buffer_artefact_filtering;
+    bool m_use_l_buffer_artefact_filtering_on_gpu;
+    bool m_use_l_buffer_artefact_filtering_on_cpu;
 
 
     /// Flag use for lazy evaluation of the L-Buffer
