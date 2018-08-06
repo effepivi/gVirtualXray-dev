@@ -1334,6 +1334,16 @@ public:
     virtual PolygonMesh& operator-=(const VEC3& aTranslationVector);
 
 
+    std::vector<std::pair<RATIONAL_NUMBER, VEC3> > rayIntersect(
+    		const VEC3& aRayOrigin,
+			const VEC3& aRayDirection,
+			const MATRIX4& aTransformationMatrix) const;
+
+
+    void getTriangleVertices(VEC3& v0, VEC3& v1, VEC3& v2, unsigned int anIndex) const;
+
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------

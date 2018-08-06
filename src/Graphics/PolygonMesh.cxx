@@ -1621,6 +1621,83 @@ PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
 }
 
 
+std::vector<std::pair<RATIONAL_NUMBER, VEC3> > PolygonMesh::rayIntersect(
+		const VEC3& aRayOrigin,
+		const VEC3& aRayDirection,
+		const MATRIX4& aTransformationMatrix) const
+{
+	std::vector<std::pair<RATIONAL_NUMBER, VEC3> > p_intersection_set;
+
+	// Process all the triangles of the mesh
+
+	for (unsigned int i = 0; i < getTriangleNumber(); ++i)
+	{
+		// Get the triangle vertices
+		VEC3 v0;
+		VEC3 v1;
+		VEC3 v2;
+	    getTriangleVertices(v0, v1, v2, i);
+
+	    // Get the normal vector
+	    VEC3 N = getFaceNormal(i);
+
+	    // Transform the vertices and normal vector
+	    v0 = aTransformationMatrix * v0;
+	    v1 = aTransformationMatrix * v1;
+	    v2 = aTransformationMatrix * v2;
+	    N = (aTransformationMatrix * N).normal();
+
+		// Step 1: finding P
+
+		// check if ray and plane are parallel ?
+	    RATIONAL_NUMBER NdotRayDirection = N.dotProduct(aRayDirection);
+		if (std::abs(NdotRayDirection) >= EPSILON) // almost 0
+		{
+			// compute d parameter using equation 2
+			RATIONAL_NUMBER d = N.dotProduct(v0);
+
+			// compute t (equation 3)
+			RATIONAL_NUMBER t = (N.dotProduct(aRayOrigin) + d) / NdotRayDirection;
+
+			// check if the triangle is in behind the ray
+			if (t >= 0)
+			{
+				// compute the intersection point using equation 1
+				VEC3 P = aRayOrigin + t * aRayDirection;
+
+				// Step 2: inside-outside test
+				VEC3 C; // vector perpendicular to triangle's plane
+
+				// edge 0
+				VEC3 edge0 = v1 - v0;
+				VEC3 vp0 = P - v0;
+				C = edge0.crossProduct(vp0);
+				if (N.dotProduct(C) >= 0)
+				{
+					// edge 1
+					VEC3 edge1 = v2 - v1;
+					VEC3 vp1 = P - v1;
+					C = edge1.crossProduct(vp1);
+					if (N.dotProduct(C) >= 0)
+					{
+						// edge 2
+						VEC3 edge2 = v0 - v2;
+						VEC3 vp2 = P - v2;
+						C = edge2.crossProduct(vp2);
+						if (N.dotProduct(C) >= 0)
+						{
+							p_intersection_set.push_back(std::pair<RATIONAL_NUMBER, VEC3>(t, N));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return p_intersection_set;
+}
+
+
 //----------------------------------
 void PolygonMesh::normaliseNormals()
 //----------------------------------
