@@ -264,17 +264,6 @@ std::shared_ptr<SceneGraphBinder> g_p_scene_graph = 0;
 //******************************************************************************
 
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads,      createWindow,      0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads,     setWindowSize,     2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads,  setMonoChromatic,  2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(displayScene_overloads,      displayScene,      0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads,        renderLoop,        0, 2)
-BOOST_PYTHON_FUNCTION_OVERLOADS(moveToCentre_overloads,      moveToCentre,      0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(makeCube_overloads,          makeCube,          0, 2)
-BOOST_PYTHON_FUNCTION_OVERLOADS(makeCylinder_overloads,      makeCylinder,      0, 4)
-
-
 class PyPolygonMesh//: public boost::python::object
 {
 public:
@@ -312,6 +301,17 @@ public:
 private:
 	PolygonMesh m_polygon_mesh;
 };
+
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads,      createWindow,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads,     setWindowSize,     2, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads,  setMonoChromatic,  2, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(displayScene_overloads,      displayScene,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(renderLoop_overloads,        renderLoop,        0, 2)
+BOOST_PYTHON_FUNCTION_OVERLOADS(moveToCentre_overloads,      moveToCentre,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(makeCube_overloads,          makeCube,          0, 2)
+BOOST_PYTHON_FUNCTION_OVERLOADS(makeCylinder_overloads,      makeCylinder,      0, 4)
 
 
 PyPolygonMesh::PyPolygonMesh()
