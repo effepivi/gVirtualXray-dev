@@ -327,27 +327,31 @@ SET(requiredLibs ${requiredLibs} ${ASSIMP_LIBRARIES})
 # ASSIMP #######################################################################
 OPTION(USE_assimp "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
 
-FIND_PACKAGE(assimp)
-IF (assimp_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
-    SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
-ELSE (assimp_FOUND)
-    MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disable.")
-ENDIF (assimp_FOUND)
+IF (USE_assimp)
+    FIND_PACKAGE(assimp)
+    IF (assimp_FOUND)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
+        SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
+    ELSE (assimp_FOUND)
+        MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disable.")
+    ENDIF (assimp_FOUND)
+ENDIF (USE_assimp)
 
 
 # OpenSceneGraph ###############################################################
 OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" ON)
 
-FIND_PACKAGE(OpenSceneGraph COMPONENTS osgViewer osgGA)
-IF (OPENSCENEGRAPH_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENSCENEGRAPH_INCLUDE_DIRS}")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENSCENEGRAPH")
-    SET (optionalLibs ${optionalLibs} ${OPENSCENEGRAPH_LIBRARIES})
-ELSE (OPENSCENEGRAPH_FOUND)
-    MESSAGE (WARNING "OpenSceneGraph not found, the use of OpenSceneGraph will be disable.")
-ENDIF (OPENSCENEGRAPH_FOUND)
+IF (USE_OPENSCENEGRAPH)
+    FIND_PACKAGE(OpenSceneGraph COMPONENTS osgViewer osgGA)
+    IF (OPENSCENEGRAPH_FOUND)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENSCENEGRAPH_INCLUDE_DIRS}")
+        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENSCENEGRAPH")
+        SET (optionalLibs ${optionalLibs} ${OPENSCENEGRAPH_LIBRARIES})
+    ELSE (OPENSCENEGRAPH_FOUND)
+        MESSAGE (WARNING "OpenSceneGraph not found, the use of OpenSceneGraph will be disable.")
+    ENDIF (OPENSCENEGRAPH_FOUND)
+ENDIF (USE_OPENSCENEGRAPH)
 
 
 # OpenMP ######################################################################
