@@ -324,6 +324,16 @@ INCLUDE_DIRECTORIES(${ASSIMP_INCLUDE_DIRS})
 SET(requiredLibs ${requiredLibs} ${ASSIMP_LIBRARIES})
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenCL REQUIRED)
+IF (OPENCL_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OpenCL_INCLUDE_DIRS}")
+    SET (requiredLibs ${requiredLibs} ${OpenCL_LIBRARIES})
+ELSE(OPENCL_FOUND)
+    MESSAGE(WARNING "OpenCL not found.")
+ENDIF (OPENCL_FOUND)
+
+
 # ASSIMP #######################################################################
 OPTION(USE_assimp "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
 

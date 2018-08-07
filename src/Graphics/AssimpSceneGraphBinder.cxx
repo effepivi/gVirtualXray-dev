@@ -315,6 +315,7 @@ MATRIX4 AssimpSceneGraphBinder::getTransformationMatrix(const char* aNodeLabel) 
 
 MATRIX4 AssimpSceneGraphBinder::getRootNodeTransformationMatrix() const
 {
+#ifdef HAS_ASSIMP
 	aiMatrix4x4 temp_matrix = m_p_scene->mRootNode->mTransformation;
 	temp_matrix.Transpose();
 
@@ -323,11 +324,15 @@ MATRIX4 AssimpSceneGraphBinder::getRootNodeTransformationMatrix() const
 			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
 			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
 			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
+#else
+    return MATRIX4();
+#endif
 }
 
 
 MATRIX4 AssimpSceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
 {
+#ifdef HAS_ASSIMP
 	aiMatrix4x4 temp_matrix = recursiveFindNode(m_p_scene->mRootNode, aNodeLabel)->mTransformation;
 	temp_matrix.Transpose();
 
@@ -336,11 +341,15 @@ MATRIX4 AssimpSceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLab
 			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
 			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
 			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
+#else
+    return MATRIX4();
+#endif
 }
 
 
 void AssimpSceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
 {
+#ifdef HAS_ASSIMP       
 	if (m_p_scene)
 	{
 		if (m_p_scene->mRootNode)
@@ -366,11 +375,13 @@ void AssimpSceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTra
 			m_p_scene->mRootNode->mTransformation.d4 = aTransformationMatrix.get4x4()[15];
 		}
 	}
+#endif
 }
 
 
 void AssimpSceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
 {
+#ifdef HAS_ASSIMP       
 	if (m_p_scene)
 	{
 		aiNode* p_node = recursiveFindNode(m_p_scene->mRootNode, aNodeLabel);
@@ -398,11 +409,13 @@ void AssimpSceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel,
 			p_node->mTransformation.d4 = aTransformationMatrix.get4x4()[15];
 		}
 	}
+#endif
 }
 
 
 void AssimpSceneGraphBinder::moveToCentre()
 {
+#ifdef HAS_ASSIMP       
 	aiMatrix4x4 scaling_to_unit = aiMatrix4x4::Scaling(aiVector3D(m_unit_of_length, m_unit_of_length, m_unit_of_length), scaling_to_unit);
 
 	VEC3 min_corner(std::numeric_limits<RATIONAL_NUMBER>::max(),
@@ -423,6 +436,7 @@ void AssimpSceneGraphBinder::moveToCentre()
 			translation_matrix);
 
 	m_p_scene->mRootNode->mTransformation = translation_matrix * m_p_scene->mRootNode->mTransformation;
+#endif
 }
 
 
