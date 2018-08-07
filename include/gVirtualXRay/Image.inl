@@ -1684,7 +1684,7 @@ template<typename T> void Image<T>::save(const char* aFileName,
 #ifdef HAS_ITK
     	saveUsingITK(aFileName);
 #else
-	    else if (isPGM(aFileName))
+	    if (isPGM(aFileName))
 	    {
 	        savePGM(aFileName);
 	    }
