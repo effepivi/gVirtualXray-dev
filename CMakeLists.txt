@@ -317,13 +317,6 @@ ENDIF (NOT APPLE)
 #SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
 
 
-
-# Check if ASSIMP is available #################################################
-FIND_PACKAGE( assimp   REQUIRED )
-INCLUDE_DIRECTORIES(${ASSIMP_INCLUDE_DIRS})
-SET(requiredLibs ${requiredLibs} ${ASSIMP_LIBRARIES})
-
-
 # OpenGL ######################################################################
 FIND_PACKAGE(OpenCL REQUIRED)
 IF (OPENCL_FOUND)
