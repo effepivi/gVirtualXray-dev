@@ -11,6 +11,9 @@
 #endif
 
 
+#ifdef HAS_OPENSCENEGRAPH
+
+
 //******************************************************************************
 //  Name space
 //******************************************************************************
@@ -21,7 +24,6 @@ using namespace gVirtualXRay;
 //  Implementation
 //******************************************************************************
 
-#ifdef HAS_OPENSCENEGRAPH
 
 GeodeFinder::GeodeFinder ()
    : NodeVisitor (osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
