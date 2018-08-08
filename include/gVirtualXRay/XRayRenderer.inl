@@ -493,8 +493,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::enableArtifactFilteringOnGPU()
     //------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering_on_gpu = true;
-        m_use_l_buffer_artefact_filtering_on_cpu = false;
+    	enableArtefactFilteringOnGPU();
     }
 
 
@@ -502,8 +501,23 @@ namespace gVirtualXRay {
     inline void XRayRenderer::enableArtifactFilteringOnCPU()
     //------------------------------------------------------
     {
+    	enableArtefactFilteringOnCPU();
+    }
+
+
+    //-------------------------------------------------------
+    inline void XRayRenderer::disableArtefactFilteringOnGPU()
+    //-------------------------------------------------------
+    {
         m_use_l_buffer_artefact_filtering_on_gpu = false;
-        m_use_l_buffer_artefact_filtering_on_cpu = true;
+    }
+
+
+    //-------------------------------------------------------
+    inline void XRayRenderer::disableArtefactFilteringOnCPU()
+    //-------------------------------------------------------
+    {
+        m_use_l_buffer_artefact_filtering_on_cpu = false;
     }
 
 
@@ -511,7 +525,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::disableArtifactFilteringOnGPU()
     //-------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering_on_gpu = false;
+    	disableArtefactFilteringOnGPU();
     }
 
 
@@ -519,23 +533,7 @@ namespace gVirtualXRay {
     inline void XRayRenderer::disableArtifactFilteringOnCPU()
     //-------------------------------------------------------
     {
-        m_use_l_buffer_artefact_filtering_on_cpu = false;
-    }
-
-
-    //-------------------------------------------------------------
-    inline void XRayRenderer::useArtifactFilteringOnGPU(bool aFlag)
-    //-------------------------------------------------------------
-    {
-        m_use_l_buffer_artefact_filtering_on_gpu = aFlag;
-    }
-
-
-    //-------------------------------------------------------------
-    inline void XRayRenderer::useArtifactFilteringOnCPU(bool aFlag)
-    //-------------------------------------------------------------
-    {
-        m_use_l_buffer_artefact_filtering_on_cpu = aFlag;
+    	disableArtefactFilteringOnCPU();
     }
 
 
@@ -544,6 +542,11 @@ namespace gVirtualXRay {
     //-------------------------------------------------------------
     {
         m_use_l_buffer_artefact_filtering_on_gpu = aFlag;
+
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
+        {
+        	m_use_l_buffer_artefact_filtering_on_cpu = false;
+        }
     }
 
 
@@ -552,22 +555,27 @@ namespace gVirtualXRay {
     //------------------------------------------------------------
     {
         m_use_l_buffer_artefact_filtering_on_cpu = aFlag;
+
+        if (m_use_l_buffer_artefact_filtering_on_cpu)
+        {
+        	m_use_l_buffer_artefact_filtering_on_gpu = false;
+        }
     }
 
 
-    //---------------------------------------------------------
-    inline bool XRayRenderer::useArtifactFilteringOnGPU() const
-    //---------------------------------------------------------
+    //-------------------------------------------------------------
+    inline void XRayRenderer::useArtifactFilteringOnGPU(bool aFlag)
+    //-------------------------------------------------------------
     {
-        return (m_use_l_buffer_artefact_filtering_on_gpu);
+    	useArtefactFilteringOnGPU(aFlag);
     }
 
 
-    //---------------------------------------------------------
-    inline bool XRayRenderer::useArtifactFilteringOnCPU() const
-    //---------------------------------------------------------
+    //-------------------------------------------------------------
+    inline void XRayRenderer::useArtifactFilteringOnCPU(bool aFlag)
+    //-------------------------------------------------------------
     {
-        return (m_use_l_buffer_artefact_filtering_on_cpu);
+    	useArtefactFilteringOnCPU(aFlag);
     }
 
 
@@ -585,6 +593,22 @@ namespace gVirtualXRay {
 	{
 		return (m_use_l_buffer_artefact_filtering_on_cpu);
 	}
+
+
+	//---------------------------------------------------------
+    inline bool XRayRenderer::useArtifactFilteringOnGPU() const
+    //---------------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering_on_gpu);
+    }
+
+
+    //---------------------------------------------------------
+    inline bool XRayRenderer::useArtifactFilteringOnCPU() const
+    //---------------------------------------------------------
+    {
+        return (m_use_l_buffer_artefact_filtering_on_cpu);
+    }
 
 
 	//------------------------------------------------------------

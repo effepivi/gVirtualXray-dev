@@ -87,9 +87,9 @@ if (NOT EXISTS "${MY_DOWNLOAD_PATH}")
 endif()
 
 add_custom_command(
-    TARGET VHF-Ankle
+    #TARGET VHF-Ankle
     PRE_BUILD
-    #OUTPUT "${MY_EXTRACTED_FILE}"
+    OUTPUT "${MY_EXTRACTED_FILE}"
     COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_BINARY_DIR}/VHF-Ankle.tar.gz
     DEPENDS "${MY_DOWNLOAD_PATH}"
 )
@@ -99,7 +99,7 @@ add_custom_command(
 add_executable(demo-CT-in-HU-to-simulation CTinHUtoSimulation.cxx)
 target_link_libraries(demo-CT-in-HU-to-simulation ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation CTinHUtoSimulationFiles)
-ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation VHF-Ankle)
+#ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation VHF-Ankle)
 
     if (gVirtualXRay_BINARY_DIR)
          ADD_DEPENDENCIES(demo-CT-in-HU-to-simulation   gVirtualXRay)

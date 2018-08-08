@@ -1084,11 +1084,36 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         {
         switch (key)
             {
-
-            case GLFW_KEY_A:
+            case GLFW_KEY_G:
                 // Enable/Disable artefact filtering
-                g_xray_renderer.useArtifactFiltering(g_xray_renderer.useArtifactFiltering());
+                if (!g_xray_renderer.useArtifactFilteringOnGPU())
+                    {
+                    std::cout << "Enable artefact correction on GPU" << std::endl;
+                    g_xray_renderer.enableArtefactFilteringOnGPU();
+                    }
+                    else
+                    {
+                    std::cout << "Disable artefact correction on GPU" << std::endl;
+                    g_xray_renderer.disableArtefactFilteringOnGPU();
+                    }
 
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_C:
+                // Enable/Disable artefact filtering
+                if (!g_xray_renderer.useArtifactFilteringOnCPU())
+                    {
+                    std::cout << "Enable artefact correction on CPU" << std::endl;
+                    g_xray_renderer.enableArtefactFilteringOnCPU();
+                    }
+                    else
+                    {
+                    std::cout << "Disable artefact correction on CPU" << std::endl;
+                    g_xray_renderer.disableArtefactFilteringOnCPU();
+                    }
+    
                 // The X-ray image is not up-to-date
                 g_is_xray_image_up_to_date = false;
                 break;
@@ -1841,6 +1866,20 @@ void displayHelp()
         g_text_2D_projection_matrix,
         p_background_colour,
         p_font_colour);
+
+    g_font_rendered.renderText(
+            std::string("\'g\': toggle artefact correction on GPU"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+    g_font_rendered.renderText(
+            std::string("\'c\': toggle artefact correction on CPU"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(
         std::string("\'n\': toggle negative image"),

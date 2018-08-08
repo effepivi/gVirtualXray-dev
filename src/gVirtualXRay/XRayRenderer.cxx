@@ -1969,10 +1969,6 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
 		{
 			for (unsigned int i = 0; i < m_temp_raw_data.getWidth(); ++i)
 			{
-				if (m_temp_raw_data.getWidth() / 2 == i)
-				{
-					int middle = 0;
-				}
 				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
 				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
 				{

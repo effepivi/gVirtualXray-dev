@@ -853,29 +853,46 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                         }
             		break;
 
-        	case GLFW_KEY_A:
-            		g_artefact_filtering = !g_artefact_filtering;
-            		if (g_artefact_filtering)
-            		{
-                		std::cout << "Enable artefact correction" << std::endl;
-                		g_xray_renderer.enableArtefactFiltering();
-            		}
-            		else
-            		{
-                		std::cout << "Disable artefact correction" << std::endl;
-                		g_xray_renderer.disableArtefactFiltering();
-            		}
+            case GLFW_KEY_G:
+                // Enable/Disable artefact filtering
+                if (!g_xray_renderer.useArtifactFilteringOnGPU())
+                    {
+                    std::cout << "Enable artefact correction on GPU" << std::endl;
+                    g_xray_renderer.enableArtefactFilteringOnGPU();
+                    }
+                    else
+                    {
+                    std::cout << "Disable artefact correction on GPU" << std::endl;
+                    g_xray_renderer.disableArtefactFilteringOnGPU();
+                    }
 
-            		// The X-ray image is not up-to-date
-            		g_is_xray_image_up_to_date = false;
-            		break;
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+                break;
+
+            case GLFW_KEY_C:
+                // Enable/Disable artefact filtering
+                if (!g_xray_renderer.useArtifactFilteringOnCPU())
+                    {
+                    std::cout << "Enable artefact correction on CPU" << std::endl;
+                    g_xray_renderer.enableArtefactFilteringOnCPU();
+                    }
+                    else
+                    {
+                    std::cout << "Disable artefact correction on CPU" << std::endl;
+                    g_xray_renderer.disableArtefactFilteringOnCPU();
+                    }
+    
+                // The X-ray image is not up-to-date
+                g_is_xray_image_up_to_date = false;
+           		break;
 
         	case GLFW_KEY_Z:
-            		g_xray_renderer.printLBuffer(PREFIX"/data/lbuffer.mhd");
-            		g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
-            		g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
-            		g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
-            		break;
+            	g_xray_renderer.printLBuffer(PREFIX"/data/lbuffer.mhd");
+            	g_xray_renderer.printCumulatedLBuffer(PREFIX"/data/cumulated_lbuffer.mhd");
+        		g_xray_renderer.printEnergyFluence(PREFIX"/data/energy_fluence.mhd");
+        		g_xray_renderer.printSumMuxDx(PREFIX"/data/Mux_Dx.mhd");
+        		break;
 
 		case GLFW_KEY_Q:
 		case GLFW_KEY_ESCAPE:
@@ -1478,6 +1495,20 @@ void displayHelp()
                 g_text_2D_projection_matrix,
                 p_background_colour,
                 p_font_colour);
+
+    g_font_rendered.renderText(
+            std::string("\'g\': toggle artefact correction on GPU"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
+
+    g_font_rendered.renderText(
+            std::string("\'c\': toggle artefact correction on CPU"),
+            40, x_position += offset,
+            g_text_2D_projection_matrix,
+            p_background_colour,
+            p_font_colour);
 
     g_font_rendered.renderText(std::string("\'s\': toggle stereo"),
             40, x_position += offset,
