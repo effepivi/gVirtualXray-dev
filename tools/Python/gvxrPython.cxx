@@ -157,6 +157,7 @@ void rotateNode(const char* aLabel, double angle, double x, double y, double z);
 void translateNode(const char* aLabel, double x, double y, double z,
         const char* aUnitOfLength);
 
+void resetSceneTransformation();
 void scaleScene(double x, double y, double z,
         const char* aUnitOfLength);
 void rotateScene(double angle, double x, double y, double z);
@@ -1186,47 +1187,32 @@ void translateNode(const char* aLabel, double x, double y, double z, const char*
 
 
 
+void resetSceneTransformation()
+{
+	g_sample_rotation_matrix = MATRIX4();
+}
+
+
 void scaleScene(double x, double y, double z, const char* aUnitOfLength)
 {
-	if (g_p_scene_graph.get())
-	{
-		// Move the scenegraph
-		double unit_of_length = getUnitOfLength(aUnitOfLength);
-		g_sample_rotation_matrix *= MATRIX4::buildScaleMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
-	}
-	else
-	{
-		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}
+	// Move the scenegraph
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+	g_sample_rotation_matrix *= MATRIX4::buildScaleMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
 }
 
 
 void rotateScene(double angle, double x, double y, double z)
 {
-	if (g_p_scene_graph.get())
-	{
-		// Move the scenegraph
-		g_sample_rotation_matrix *= MATRIX4::buildRotationMatrix(angle, x, y, z);
-	}
-	else
-	{
-		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}
+	// Move the scenegraph
+	g_sample_rotation_matrix *= MATRIX4::buildRotationMatrix(angle, x, y, z);
 }
 
 
 void translateScene(double x, double y, double z, const char* aUnitOfLength)
 {
-	if (g_p_scene_graph.get())
-	{
-		// Move the scenegraph
-		double unit_of_length = getUnitOfLength(aUnitOfLength);
-		g_sample_rotation_matrix *= MATRIX4::buildTranslationMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
-	}
-	else
-	{
-		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}
+	// Move the scenegraph
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+	g_sample_rotation_matrix *= MATRIX4::buildTranslationMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
 }
 
 
@@ -2227,6 +2213,8 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("scaleNode",                 scaleNode);
     boost::python::def("rotateNode",                rotateNode);
     boost::python::def("translateNode",             translateNode);
+    boost::python::def("resetSceneTransformation", resetSceneTransformation);
+
     boost::python::def("scaleScene",                scaleScene);
     boost::python::def("rotateScene",               rotateScene);
     boost::python::def("translateScene",            translateScene);
