@@ -139,7 +139,8 @@ void loadMeshFile(const char* aLabel,
 void loadSceneGraph(const char* aFileName,
         const char* aUnitOfLength);
 void moveToCentre(const char* aLabel = 0);
-void addPolygonMesh(const PyPolygonMesh& aMesh, const std::string& aLabel);
+void addPolygonMeshAsInnerSurface(const PyPolygonMesh& aMesh, const std::string& aLabel);
+void addPolygonMeshAsOuterSurface(const PyPolygonMesh& aMesh, const std::string& aLabel);
 void removePolygonMeshes();
 
 np::ndarray getSceneTransformationMatrix();
@@ -183,6 +184,7 @@ void initialiseXRayRenderer();
 
 
 void quit();
+void initViewer();
 GLFWwindow* initGLFW(int aWindowID);
 void initGL();
 void errorCallback(int error, const char* description);
@@ -223,11 +225,9 @@ bool g_detector_pixel_size_initialised = false;
 
 
 
-const double g_initial_intraocular_distance(1.5 * cm);        // Intraocular distance
 const double g_initial_fovy(45);                              // Field of view along the y-axis
-const double g_initial_near(5.0 * cm);                        // Near clipping plane
-const double g_initial_far(500.0 * cm);                       // Far clipping plane
-const double g_initial_screen_projection_plane(10000.0 * cm); // Screen projection plane
+double g_initial_near(5.0 * cm);                        // Near clipping plane
+double g_initial_far(500.0 * cm);                       // Far clipping plane
 
 GLfloat g_zoom(120.0 * cm);
 
@@ -243,6 +243,7 @@ bool g_display_beam(true);
 bool g_display_wireframe(false);
 bool g_use_lighing(true);
 bool g_display_detector(true);
+bool g_display_normal_vectors(false);
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
@@ -252,6 +253,7 @@ Matrix4x4<GLfloat> g_sample_rotation_matrix;
 Shader g_display_shader;
 
 bool g_run_loop = false;
+bool g_viewer_initialised = false;
 const GLfloat g_rotation_speed(2.0);
 
 //AssimpSceneGraphBinder g_assimp_scenegraph;
@@ -794,6 +796,7 @@ void setSourcePosition(double x, double y, double z, const char* aUnitOfLength)
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
+    initViewer();
 }
 
 
@@ -808,6 +811,7 @@ void setDetectorPosition(double x, double y, double z, const char* aUnitOfLength
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
+    initViewer();
 }
 
 
@@ -820,6 +824,7 @@ void setDetectorUpVector(double x, double y, double z)
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
+    initViewer();
 }
 
 
@@ -831,6 +836,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
     g_detector_size_initialised = true;
 
     // Initialise the X-ray renderer if needed and if possible
+    g_renderer_initialised = false;
     initialiseXRayRenderer();
 }
 
@@ -970,11 +976,30 @@ void moveToCentre(const char* aLabel)
 
 
 //---------------------------------------------
-void addPolygonMesh(const PyPolygonMesh& aMesh, const std::string& aLabel)
+void addPolygonMeshAsInnerSurface(const PyPolygonMesh& aMesh, const std::string& aLabel)
 //---------------------------------------------
 {
 	// Add the polygon mesh to the X-ray renderer
 	g_xray_renderer.addInnerSurface(&aMesh.getMesh());
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	// Add the polygon mesh to the scenegraph
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh.getMesh();
+}
+
+
+//---------------------------------------------
+void addPolygonMeshAsOuterSurface(const PyPolygonMesh& aMesh, const std::string& aLabel)
+//---------------------------------------------
+{
+	// Add the polygon mesh to the X-ray renderer
+	g_xray_renderer.addOuterSurface(&aMesh.getMesh());
 
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
@@ -1326,6 +1351,7 @@ void initialiseXRayRenderer()
     		g_renderer_initialised = true;
         }
 	}
+	initViewer();
 }
 
 
@@ -1335,6 +1361,29 @@ void quit()
 {
     cout << "gvxrStatus:\tQuit and destroy all the windows" << endl;
     destroyAllWindows();
+}
+
+
+void initViewer()
+{
+	if (!g_viewer_initialised && g_xray_detector.getSourcePositionSet().size())
+	{
+		float distance_source_object   = g_xray_detector.getSourcePositionSet()[0].length();
+		float distance_detector_object = g_xray_detector.getDetectorPosition().length();
+
+		float distance = std::max(distance_detector_object, distance_source_object);
+		float half_fovy = (M_PI * g_initial_fovy / 2.0) / 180.0;
+
+
+		g_zoom = atan(half_fovy) * distance;
+
+		if (g_p_scene_graph.get())
+		{
+			g_initial_near = (g_p_scene_graph->getBoundingBox().second - g_p_scene_graph->getBoundingBox().first).length() / 5.0;
+			g_viewer_initialised = true;
+		}
+		g_initial_far = g_zoom * 5.0;
+	}
 }
 
 
@@ -1616,6 +1665,7 @@ void displayScene(int aWindowID)
             {
         	    // Make the window's context current
         	    glfwMakeContextCurrent(search_window->second);
+        		initViewer();
 
         		// Clear the buffers
         		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1629,6 +1679,9 @@ void displayScene(int aWindowID)
         		// Swap front and back buffers
         		glfwSwapBuffers(search_window->second);
             }
+
+            // Poll for and process events
+            glfwPollEvents();
         }
         else
         {
@@ -1688,13 +1741,10 @@ void renderLoop(int aWindowID, PyObject* aCallBack)
                 	}
 
                 	// Udate the X-ray image
-                	computeXRayImage();
+                	//computeXRayImage();
 
                 	// Render here
                 	displayScene(aWindowID);
-
-                    // Poll for and process events
-                    glfwPollEvents();
                 }
             }
         }
@@ -1720,6 +1770,8 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 
 	double screen_aspect_ratio(double(width) / double(height));
 	glViewport(x, y, w, h);
+
+	initViewer();
 
 	loadPerspectiveProjectionMatrix(g_initial_fovy, screen_aspect_ratio, g_initial_near, g_initial_far);
 
@@ -1761,6 +1813,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
         case GLFW_KEY_D:
             g_display_detector = !g_display_detector;
+            break;
+
+        case GLFW_KEY_V:
+        	g_display_normal_vectors = !g_display_normal_vectors;
             break;
 		}
 	}
@@ -1900,6 +1956,8 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 void draw()
 //---------
 {
+	initViewer();
+
 	// Clear the buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -2016,20 +2074,25 @@ void render()
 				ite->second.display();
 			}
 
-			int line_width;
-			glGetIntegerv(GL_LINE_WIDTH, &line_width);
-			glLineWidth(3);
 
-			if (ite->second.getVertexNormalNumber())
+			if (g_display_normal_vectors)
 			{
-				ite->second.displayVertexNormal();
-			}
+				int line_width;
+				glGetIntegerv(GL_LINE_WIDTH, &line_width);
+				glLineWidth(3);
 
-			if (ite->second.getFaceNormalNumber())
-			{
-				ite->second.displayFaceNormal();
+				if (ite->second.getVertexNormalNumber())
+				{
+					ite->second.displayVertexNormal();
+				}
+
+				if (ite->second.getFaceNormalNumber())
+				{
+					ite->second.displayFaceNormal();
+				}
+				glLineWidth(line_width);
+
 			}
-			glLineWidth(line_width);
 
 			// Restore the current transformation matrix
 			popModelViewMatrix();
@@ -2144,6 +2207,27 @@ void render()
 }
 
 
+void disableArtefactFilteringOnGPU()
+{
+	g_xray_renderer.disableArtifactFilteringOnGPU();
+}
+
+void disableArtefactFilteringOnCPU()
+{
+	g_xray_renderer.disableArtifactFilteringOnCPU();
+}
+
+
+void enableArtefactFilteringOnGPU()
+{
+	g_xray_renderer.enableArtifactFilteringOnGPU();
+}
+
+void enableArtefactFilteringOnCPU()
+{
+	g_xray_renderer.enableArtifactFilteringOnCPU();
+}
+
 
 BOOST_PYTHON_MODULE(gvxrPython)
 {
@@ -2200,7 +2284,8 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("loadSceneGraph",            loadSceneGraph);
     boost::python::def("moveToCenter",              moveToCentre, moveToCentre_overloads());
     boost::python::def("moveToCentre",              moveToCentre, moveToCentre_overloads());
-    boost::python::def("addPolygonMesh",            addPolygonMesh);
+    boost::python::def("addPolygonMeshAsInnerSurface",            addPolygonMeshAsInnerSurface);
+    boost::python::def("addPolygonMeshAsOuterSurface",            addPolygonMeshAsOuterSurface);
     boost::python::def("removePolygonMeshes",       removePolygonMeshes);
 
     boost::python::def("getSceneTransformationMatrix", getSceneTransformationMatrix);
@@ -2235,6 +2320,18 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("getUnitOfLength",                     getUnitOfLength);
     boost::python::def("getUnitOfEnergy",                     getUnitOfEnergy);
     boost::python::def("emptyMesh",                     emptyMesh);
+
+    boost::python::def("disableArtefactFilteringOnGPU",                     disableArtefactFilteringOnGPU);
+    boost::python::def("disableArtifactFilteringOnGPU",                     disableArtefactFilteringOnGPU);
+    boost::python::def("disableArtefactFilteringOnCPU",                     disableArtefactFilteringOnGPU);
+    boost::python::def("disableArtifactFilteringOnCPU",                     disableArtefactFilteringOnGPU);
+    boost::python::def("enableArtefactFilteringOnGPU",                     enableArtefactFilteringOnGPU);
+    boost::python::def("enableArtifactFilteringOnGPU",                     enableArtefactFilteringOnGPU);
+    boost::python::def("enableArtefactFilteringOnCPU",                     enableArtefactFilteringOnGPU);
+    boost::python::def("enableArtifactFilteringOnCPU",                     enableArtefactFilteringOnGPU);
+
+
+
 
     boost::python::class_<PyPolygonMesh>("PyPolygonMesh")
                 .def("setMaterial", &PyPolygonMesh::setMaterial)
