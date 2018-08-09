@@ -279,3 +279,34 @@ void SceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const
 {
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
 }
+
+
+std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox() const
+{
+	VEC3 min_corner;
+	VEC3 max_corner;
+
+	int i = 0;
+	for (std::map<std::string, PolygonMesh>::const_iterator ite = getPolygonMeshSet().begin();
+			ite != getPolygonMeshSet().end();
+			++ite, ++i)
+	{
+		if (i == 0)
+		{
+			min_corner = ite->second.getMinCorner();
+			max_corner = ite->second.getMaxCorner();
+		}
+		else
+		{
+			min_corner[0] = std::min(min_corner[0], ite->second.getMinCorner()[0]);
+			min_corner[1] = std::min(min_corner[1], ite->second.getMinCorner()[1]);
+			min_corner[2] = std::min(min_corner[2], ite->second.getMinCorner()[2]);
+
+			max_corner[0] = std::max(max_corner[0], ite->second.getMaxCorner()[0]);
+			max_corner[1] = std::max(max_corner[1], ite->second.getMaxCorner()[1]);
+			max_corner[2] = std::max(max_corner[2], ite->second.getMaxCorner()[2]);
+		}
+	}
+
+	return std::pair<VEC3, VEC3>(min_corner, max_corner);
+}

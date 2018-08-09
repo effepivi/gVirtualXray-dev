@@ -96,6 +96,8 @@ public:
 	virtual void setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix);
 	virtual void setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix);
 
+	std::pair<VEC3, VEC3> getBoundingBox() const;
+
 protected:
 	std::map<std::string, PolygonMesh> m_p_polygon_mesh_set;
 	RATIONAL_NUMBER m_unit_of_length;
