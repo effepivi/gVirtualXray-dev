@@ -838,6 +838,7 @@ public:
 		unsigned int aTextureVBO,
 		unsigned int anIndexVBO,
 		unsigned int aNumberOfIndices,
+    const void* aIndexArray,
 		int anIndexDataType
 		);
 

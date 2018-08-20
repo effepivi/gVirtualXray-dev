@@ -2731,6 +2731,7 @@ void PolygonMesh::setVBOData(
 	unsigned int aTextureVBO,
 	unsigned int anIndexVBO,
 	unsigned int aNumberOfIndices,
+  const void* aIndexArray,
 	int anIndexDataType)
 	//---------------------------------------------------------------
 {
@@ -2747,7 +2748,7 @@ void PolygonMesh::setVBOData(
 	// There are index data
 	if (anIndexVBO != GL_INVALID_INDEX && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
 	{
-		m_p_index_set = 0;
+    m_p_index_set = const_cast<void*>( aIndexArray );
 		m_number_of_indices = aNumberOfIndices;
 		m_index_data_type = anIndexDataType;
 	}

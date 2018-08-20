@@ -28,6 +28,9 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+
+#include <algorithm> //For std::min and std::max Windows only
+
 #ifdef HAS_GLEW
 #include <GL/glew.h>
 #endif
@@ -49,6 +52,7 @@
 #ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
+
 
 
 
@@ -211,20 +215,20 @@ void SceneGraphBinder::display(GLint aShaderID)
 }
 
 
-void SceneGraphBinder::SceneGraphBinder::updateMatrices()
+void SceneGraphBinder::updateMatrices()
 {
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
 }
 
 
-void SceneGraphBinder::SceneGraphBinder::scale(const char* aNodeLabel,
+void SceneGraphBinder::scale(const char* aNodeLabel,
 		const VEC3& aScalingFactorSet)
 {
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
 }
 
 
-void SceneGraphBinder::SceneGraphBinder::rotate(const char* aNodeLabel,
+void SceneGraphBinder::rotate(const char* aNodeLabel,
 		float aRotationAngleInDegrees,
 		const VEC3& aRotationAxis)
 {
@@ -232,7 +236,7 @@ void SceneGraphBinder::SceneGraphBinder::rotate(const char* aNodeLabel,
 }
 
 
-void SceneGraphBinder::SceneGraphBinder::translate(const char* aNodeLabel,
+void SceneGraphBinder::translate(const char* aNodeLabel,
 		const VEC3& aRotationAxis)
 {
 	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
