@@ -772,6 +772,7 @@ protected:
      *  @param anInternalTextureFormat: the internal format in which OpenGL
      *                                  textures will be stored (GL_RGB16F_ARB,
      *                                  or GL_RGB32F_ARB)
+     *  @param aType: the type (e.g. GL_RGBA)
      */
     //--------------------------------------------------------------------------
     void init2DTextures(int anInternalTextureFormat);
@@ -795,7 +796,7 @@ protected:
      *  @param aTextureIndex:   the texture to attach
      */
     //--------------------------------------------------------------------------
-    void init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex);
+    void init2DFBO(unsigned int aFBOIndex, unsigned int aColourTextureIndex, unsigned int aZBufferTextureIndex = 0);
 
 
     //--------------------------------------------------------------------------
@@ -813,7 +814,8 @@ protected:
      */
     //--------------------------------------------------------------------------
     void create2DTexture(unsigned int* apTextureID,
-                         int anInternalTextureFormat);
+                         int anInternalTextureFormat,
+						 int aType);
 
 
     //--------------------------------------------------------------------------
@@ -1040,6 +1042,9 @@ protected:
 
     /// Flag about the status of m_p_HU_polygon_mesh_set
     bool m_HU_polygon_mesh_set_up_to_date;
+
+
+    unsigned int m_zbuffer_texture_id;
 };
 
 

@@ -98,6 +98,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID 2
 #define XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID     3
 #define XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID         4
+#define XRAY_DETECTOR_ZBUFFER_TEXTURE_NAME_ID            5
 
 
 //******************************************************************************
@@ -266,9 +267,9 @@ namespace gVirtualXRay {
     }
 
 
-    //-------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     inline void XRayRenderer::init2DTextures(int anInternalTextureFormat)
-    //-------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     {
         // Store the texturing flags
         pushTexture2D();
@@ -276,8 +277,10 @@ namespace gVirtualXRay {
         // Initialise textures
         for (int i(0); i < XRAY_DETECTOR_2D_TEXTURE_NUMBER; ++i)
         {
-            create2DTexture(&m_p_texture_name_set[i], anInternalTextureFormat);
+            create2DTexture(&m_p_texture_name_set[i], anInternalTextureFormat, GL_RGBA);
         }
+
+        create2DTexture(&m_zbuffer_texture_id,  GL_DEPTH_COMPONENT32F,  GL_DEPTH_COMPONENT);
 
         // Restore the texturing flags
         popTexture();

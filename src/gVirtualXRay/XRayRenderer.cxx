@@ -219,7 +219,8 @@ XRayRenderer::XRayRenderer():
 		m_use_l_buffer_artefact_filtering_on_cpu(true),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
-		m_HU_polygon_mesh_set_up_to_date(true)
+		m_HU_polygon_mesh_set_up_to_date(true),
+		m_zbuffer_texture_id(0)
 //-------------------------------------------------------------------------------------------------
 {
 }
@@ -302,7 +303,7 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	init3DData(anInternalTextureFormat);
 
 	// Initialise FBOs
-    init2DFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID,  XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID);
+    init2DFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID,  XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID, m_zbuffer_texture_id);
     init2DFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID,    XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID);
 	init2DFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID);
 
@@ -681,6 +682,10 @@ void XRayRenderer::release()
 			std::cerr << e.what() << std::endl;
 		}
 	}
+
+
+	if (m_zbuffer_texture_id) glDeleteTextures(1, &m_zbuffer_texture_id);
+	m_zbuffer_texture_id = 0;
 
 	// Delete the shaders
 	for (std::vector<Shader>::iterator ite(m_shader_set.begin());
@@ -1435,7 +1440,7 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 
 
 //------------------------------------------------------------------------------
-void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex)
+void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aColourTextureIndex, unsigned int aZBufferTextureName)
 //------------------------------------------------------------------------------
 {
 	// Save the current FBO
@@ -1446,8 +1451,20 @@ void XRayRenderer::init2DFBO(unsigned int aFBOIndex, unsigned int aTextureIndex)
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	// Attach color texture to FBO
-	m_p_fbo_set[aFBOIndex]->AttachTexture(GL_TEXTURE_2D, m_p_texture_name_set[aTextureIndex], GL_COLOR_ATTACHMENT0);
-	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	if (!aZBufferTextureName)
+	{
+		m_p_fbo_set[aFBOIndex]->AttachTexture(GL_TEXTURE_2D, m_p_texture_name_set[aColourTextureIndex], GL_COLOR_ATTACHMENT0);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	else
+	{
+		GLenum texTarget[] = {GL_TEXTURE_2D, GL_TEXTURE_2D};
+		GLuint texId[] = {m_p_texture_name_set[aColourTextureIndex], aZBufferTextureName};
+		GLenum attachment[] = {GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT};
+
+		m_p_fbo_set[aFBOIndex]->AttachTextures(2, texTarget, texId, attachment);
+		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
 
 	// Change draw/read buffers
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
@@ -1509,7 +1526,8 @@ void XRayRenderer::init3DFBOs()
 
 //-------------------------------------------------------------
 void XRayRenderer::create2DTexture(GLuint* apTextureID,
-								   int anInternalTextureFormat)
+								   int anInternalTextureFormat,
+								   int aType)
 //-------------------------------------------------------------
 {
 	// Store the texturing flags
@@ -1528,11 +1546,11 @@ void XRayRenderer::create2DTexture(GLuint* apTextureID,
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 	GLint width(0);
-	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), 0, GL_RGBA, GL_FLOAT, 0);
+	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), 0, aType, GL_FLOAT, 0);
 	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 	if ((unsigned int)(width) == m_p_detector->getNumberOfPixels().getX())
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), 0, GL_RGBA, GL_FLOAT, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, anInternalTextureFormat, m_p_detector->getNumberOfPixels().getX(), m_p_detector->getNumberOfPixels().getY(), 0, aType, GL_FLOAT, 0);
 	}
 	else
 	{
@@ -1870,6 +1888,7 @@ RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 
 	case XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID:
 	case XRAY_DETECTOR_CUMULATED_LBUFFERS_TEXTURE_NAME_ID:
+	case XRAY_DETECTOR_ZBUFFER_TEXTURE_NAME_ID:
 		glBindTexture(GL_TEXTURE_2D, texture_id);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, m_temp_raw_data.getRawData());
 		break;
