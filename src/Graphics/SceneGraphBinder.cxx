@@ -108,6 +108,12 @@ void SceneGraphBinder::loadSceneGraph(const std::string& aFileName, RATIONAL_NUM
 }
 
 
+void SceneGraphBinder::clear()
+{
+	m_p_polygon_mesh_set.clear();
+}
+
+
 const std::map<std::string, PolygonMesh>& SceneGraphBinder::getPolygonMeshSet() const
 {
 	return (m_p_polygon_mesh_set);

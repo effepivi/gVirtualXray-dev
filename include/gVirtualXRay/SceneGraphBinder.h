@@ -38,6 +38,8 @@ public:
 
 	virtual void loadSceneGraph(const std::string& aFileName, RATIONAL_NUMBER aUnitOfLength);
 
+	void clear();
+
 
 	const std::map<std::string, PolygonMesh>& getPolygonMeshSet() const;
 
