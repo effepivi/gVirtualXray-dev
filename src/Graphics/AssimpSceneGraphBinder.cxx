@@ -482,7 +482,7 @@ aiNode* AssimpSceneGraphBinder::findNode(const std::string& aNodeLabel)
 void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, aiMatrix4x4 tStack)
 {
 	std::string node_label = nd->mName.C_Str();
-	//std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
+	std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
 
 	aiMatrix4x4 m =  nd->mTransformation ;
 	tStack = tStack * m;
@@ -496,49 +496,54 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, aiMatri
 			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
 			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
 
+	std::vector<float> p_vertex_set;
+	std::vector<unsigned int> p_index_array;
+
+	unsigned int index_offset = 0;
+
 	for (unsigned int n=0; n < nd->mNumMeshes; ++n)
 	{
-		std::vector<float> p_vertex_set;
-		std::vector<unsigned int> p_index_array;
-
 		const aiMesh* mesh = m_p_scene->mMeshes[nd->mMeshes[n]];
 
-		for (int t = 0; t < mesh->mNumFaces; ++t)
+		if (mesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE)
 		{
-			const aiFace* face = &mesh->mFaces[t];
-			GLenum face_mode;
+			index_offset += p_vertex_set.size() / 3;
 
-
-			for(int i = 0; i < face->mNumIndices; i++)
+			for (int t = 0; t < mesh->mNumFaces; ++t)
 			{
-				p_index_array.push_back(face->mIndices[i]);
+				const aiFace* face = &mesh->mFaces[t];
+				GLenum face_mode;
+
+				for(int i = 0; i < face->mNumIndices; i++)
+				{
+					p_index_array.push_back(face->mIndices[i] + index_offset);
+				}
 			}
-		}
 
-		for (int t = 0; t < mesh->mNumVertices; ++t)
-		{
-			aiVector3D vertex(mesh->mVertices[t]);
+			for (int t = 0; t < mesh->mNumVertices; ++t)
+			{
+				aiVector3D vertex(mesh->mVertices[t]);
 
-			p_vertex_set.push_back( (vertex.x));
-			p_vertex_set.push_back( (vertex.y));
-			p_vertex_set.push_back( (vertex.z));
-		}
-
-		if (p_vertex_set.size() && p_index_array.size())
-		{
-			m_p_polygon_mesh_set[node_label] = (PolygonMesh());
-
-			m_p_polygon_mesh_set[node_label].setInternalData(GL_TRIANGLES,
-				&p_vertex_set,
-				&p_index_array,
-				true,
-				GL_STATIC_DRAW);
-
-			m_p_polygon_mesh_set[node_label].computeNormalVectors();
-			m_p_polygon_mesh_set[node_label].setTransformationMatrix(modelling_matrix);
+				p_vertex_set.push_back( (vertex.x));
+				p_vertex_set.push_back( (vertex.y));
+				p_vertex_set.push_back( (vertex.z));
+			}
 		}
 	}
 
+	if (p_vertex_set.size() && p_index_array.size())
+	{
+		m_p_polygon_mesh_set[node_label] = (PolygonMesh());
+
+		m_p_polygon_mesh_set[node_label].setInternalData(GL_TRIANGLES,
+			&p_vertex_set,
+			&p_index_array,
+			true,
+			GL_STATIC_DRAW);
+
+		m_p_polygon_mesh_set[node_label].computeNormalVectors();
+		m_p_polygon_mesh_set[node_label].setTransformationMatrix(modelling_matrix);
+	}
 
 	// all children
 	for (unsigned int n=0; n < nd->mNumChildren; ++n)
