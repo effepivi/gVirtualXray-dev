@@ -963,6 +963,32 @@ void PolygonMesh::computeNormalVectors()
 void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
 //---------------------------------------------------------
 {
+    if (m_p_vertex_set)
+    {
+        destroyVertexData();
+    }
+
+    if (m_p_index_set)
+    {
+    	destroyIndexData();
+    }
+
+    // Delete the VBO if needed
+    if (!m_p_vbo.get())
+        {
+        m_p_vbo.reset(0);
+        }
+
+    if (!m_p_face_normal_vbo.get())
+        {
+        m_p_face_normal_vbo.reset(0);
+        }
+
+    if (!m_p_vertex_normal_vbo.get())
+        {
+        m_p_vertex_normal_vbo.reset(0);
+        }
+
     m_filename                = aPolygonMesh.m_filename;
     m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
     m_hounsfield_value        = aPolygonMesh.m_hounsfield_value;
@@ -984,25 +1010,9 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_material                = aPolygonMesh.m_material;
 	m_local_to_global_transformation = aPolygonMesh.m_local_to_global_transformation;
 
-    // Delete the VBO if needed
-    if (!m_p_vbo.get())
-        {
-        m_p_vbo.reset(0);
-        }
-
-    if (!m_p_face_normal_vbo.get())
-        {
-        m_p_face_normal_vbo.reset(0);
-        }
-
-    if (!m_p_vertex_normal_vbo.get())
-        {
-        m_p_vertex_normal_vbo.reset(0);
-        }
-
     if (m_number_of_vertices)
     {
-    	copyVertexSet(aPolygonMesh.m_p_vertex_set);
+    	copyVertexSet(m_p_vertex_set);
     }
 
     if (m_number_of_indices)
@@ -3557,6 +3567,7 @@ void PolygonMesh::destroyVertexData()
                             "Invalid data type.");
                 }
 
+            m_vertex_data_type = 0;
             m_p_vertex_set = 0;
             }
         }
@@ -3599,6 +3610,7 @@ void PolygonMesh::destroyIndexData()
                             "Invalid data type.");
                 }
 
+            m_index_data_type =0;
             m_p_index_set = 0;
             }
         }
