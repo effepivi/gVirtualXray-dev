@@ -1,4 +1,4 @@
-macro(build_vcg staging_prefix)
+macro(build_vcg staging_prefix build_prefix)
 
 
 # make a custom VCG configuration file
@@ -19,13 +19,11 @@ SET (XCOM_VERSION_MINOR  0)
             INSTALL_COMMAND ""
         )
 
-
-
-SET(VCG_PATH ${staging_prefix}/VCG)
+SET(VCG_PATH ${build_prefix}/VCG)
 SET(VCG_INCLUDE_DIR ${VCG_PATH} )
 
 # copy libraries into install tree
-install(DIRECTORY ${staging_prefix}/VCG     DESTINATION ${INSTALL_DIR}/third_party     COMPONENT Development)
+install(DIRECTORY ${VCG_PATH}     DESTINATION ${INSTALL_DIR}/third_party     COMPONENT Development)
 
 endmacro(build_vcg)
 
