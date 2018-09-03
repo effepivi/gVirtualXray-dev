@@ -1017,6 +1017,13 @@ void addPolygonMeshAsOuterSurface(const PyPolygonMesh& aMesh, const std::string&
 void removePolygonMeshes()
 //------------------------
 {
+	// The scenegraph exists
+	if (g_p_scene_graph.get())
+	{
+		// Empty it
+		g_p_scene_graph->clear();
+	}
+
 	g_xray_renderer.removeInnerSurfaces();
 	g_xray_renderer.removeOuterSurface();
 }
@@ -1382,7 +1389,7 @@ void initViewer()
 			g_initial_near = (g_p_scene_graph->getBoundingBox().second - g_p_scene_graph->getBoundingBox().first).length() / 5.0;
 			g_viewer_initialised = true;
 		}
-		g_initial_far = g_zoom * 5.0;
+		g_initial_far = g_zoom * 50.0;
 	}
 }
 
