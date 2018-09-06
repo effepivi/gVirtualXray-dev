@@ -105,11 +105,13 @@ class PyPolygonMesh;
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void createWindow(int aWindowID = -1);
+void createWindow(int aWindowID = -1, bool aVisibilityFlag = false);
+void createOpenGLContext(int aWindowID = -1);
 void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
 void destroyWindow(int aWindowID = -1);
 void destroyAllWindows();
 np::ndarray computeXRayImage();
+np::ndarray computeLBuffer(const char* aLabel);
 
 np::ndarray computeSinogram(double x, double y, double z, const char* aUnitOfLength,
                                    unsigned int aNumberOfAngle,
@@ -185,7 +187,7 @@ void initialiseXRayRenderer();
 
 void quit();
 void initViewer();
-GLFWwindow* initGLFW(int aWindowID);
+GLFWwindow* initGLFW(int aWindowID, bool aVisibilityFlag);
 void initGL();
 void errorCallback(int error, const char* description);
 double getUnitOfLength(const char* aUnitOfLength);
@@ -306,7 +308,8 @@ private:
 };
 
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads,      createWindow,      0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads,      createWindow,      0, 2)
+BOOST_PYTHON_FUNCTION_OVERLOADS(createOpenGLContext_overloads,      createOpenGLContext,      0, 1)
 BOOST_PYTHON_FUNCTION_OVERLOADS(setWindowSize_overloads,     setWindowSize,     2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(setMonoChromatic_overloads,  setMonoChromatic,  2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(saveLastXRayImage_overloads, saveLastXRayImage, 0, 1)
@@ -484,9 +487,10 @@ PyPolygonMesh emptyMesh()
 	return (PyPolygonMesh());
 }
 
-//------------------------------
-void createWindow(int aWindowID)
-//------------------------------
+//-------------------------------------
+void createWindow(int aWindowID,
+                  bool aVisibilityFlag)
+//-------------------------------------
 {
     if (aWindowID == -1)
     {
@@ -499,7 +503,7 @@ void createWindow(int aWindowID)
     if (!g_p_window_set[aWindowID])
     {
         // Create the window
-        GLFWwindow* p_window = initGLFW(aWindowID);
+        GLFWwindow* p_window = initGLFW(aWindowID, aVisibilityFlag);
 
         // The window has been created
         if (p_window)
@@ -531,6 +535,14 @@ void createWindow(int aWindowID)
     {
         cerr << "gvxrWarning:\tWindow " << aWindowID << " already exists." << endl;
     }
+}
+
+
+//-------------------------------------
+void createOpenGLContext(int aWindowID)
+//-------------------------------------
+{
+    createWindow(aWindowID, false);
 }
 
 
@@ -685,6 +697,58 @@ np::ndarray computeXRayImage()
 	g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
 */
 	return (getNumpyImage(g_xray_renderer.getEnergyFluence()));
+}
+
+
+//--------------------------------------------
+np::ndarray computeLBuffer(const char* aLabel)
+//--------------------------------------------
+{
+    // There is no OpenGL context
+    if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+    {
+        // Create a window
+        createWindow();
+    }
+    
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        if (g_p_scene_graph.get())
+        {
+            // Find the mesh
+            auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+            
+            // It has been found
+            if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+            {
+                // Compute the L-buffer
+                g_xray_renderer.computeLBuffer(search_mesh->second, VEC3(), g_sample_rotation_matrix, false);
+            }
+            // It has not been found
+            else
+            {
+                cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+            }
+        }
+        else
+        {
+            cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        }
+    }
+    // The renderer is not ready
+    else
+    {
+        cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    }
+    
+    //g_xray_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "uncleaned_lbuffer.mha");
+    //g_xray_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "cleaned_lbuffer.mha");
+     //g_xray_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "cumulated_l-buffers.mha");
+    // g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
+    
+    // Compute its L-buffer
+    return (getNumpyImage(g_xray_renderer.getLBuffer()));
 }
 
 
@@ -1394,9 +1458,10 @@ void initViewer()
 }
 
 
-//---------------------------------
-GLFWwindow* initGLFW(int aWindowID)
-//---------------------------------
+//----------------------------------------
+GLFWwindow* initGLFW(int aWindowID,
+                     bool aVisibilityFlag)
+//----------------------------------------
 {
     string window_title = "gVirtualXRay -- Window " + to_string(aWindowID);
     GLFWwindow* p_window = 0;
@@ -1405,6 +1470,15 @@ GLFWwindow* initGLFW(int aWindowID)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
+    if (aVisibilityFlag)
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+    }
+    else
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    }
+    
 	// Enable anti-aliasing
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
@@ -1774,7 +1848,7 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 	}
 
 	int x(0), y(0), w(width), h(height);
-
+    std::cout << x << " " << y << " " << w << " " << h << std::endl;
 	double screen_aspect_ratio(double(width) / double(height));
 	glViewport(x, y, w, h);
 
@@ -2271,6 +2345,7 @@ BOOST_PYTHON_MODULE(gvxrPython)
     boost::python::def("destroyAllWindows", destroyAllWindows);
 
     boost::python::def("computeXRayImage", computeXRayImage);
+    boost::python::def("computeLBuffer",   computeLBuffer);
     boost::python::def("computeSinogram",  computeSinogram);
     
     boost::python::def("usePointSource",  usePointSource);

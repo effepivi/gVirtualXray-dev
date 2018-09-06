@@ -659,6 +659,13 @@ public:
 
     const PixelType* getEnergyFluenceRawData();
 
+    
+    const Image<XRayRenderer::PixelType>& getLBuffer() const;
+    Image<XRayRenderer::PixelType>& getLBuffer();
+    
+    
+    const PixelType* getLBufferRawData();
+
     //--------------------------------------------------------------------------
     /// Returns the actual Beam
     /**

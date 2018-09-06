@@ -474,6 +474,78 @@ namespace gVirtualXRay {
     }
 
 
+    //---------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getLBuffer() const
+    //---------------------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(const_cast<RATIONAL_NUMBER*>(m_l_buffer_image.getRawData()));
+        RATIONAL_NUMBER* p_source = 0;
+        
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
+        {
+            p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
+        }
+        else
+        {
+            p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
+        }
+        
+        memcpy(p_target,
+               p_source,
+               sizeof(RATIONAL_NUMBER) * m_l_buffer_image.getWidth() * m_l_buffer_image.getHeight());
+        
+        return (m_l_buffer_image);
+    }
+    
+    
+    //---------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getLBuffer()
+    //---------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(m_l_buffer_image.getRawData());
+        RATIONAL_NUMBER* p_source = 0;
+        
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
+        {
+            p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
+        }
+        else
+        {
+            p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
+        }
+
+        memcpy(p_target,
+               p_source,
+               sizeof(RATIONAL_NUMBER) * m_l_buffer_image.getWidth() * m_l_buffer_image.getHeight());
+
+        return (m_l_buffer_image);
+    }
+    
+    
+    //---------------------------------------------------------------------
+    inline const XRayRenderer::PixelType* XRayRenderer::getLBufferRawData()
+    //---------------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(m_l_buffer_image.getRawData());
+        RATIONAL_NUMBER* p_source = 0;
+        
+        if (m_use_l_buffer_artefact_filtering_on_gpu)
+        {
+            p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
+        }
+        else
+        {
+            p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
+        }
+        
+        memcpy(p_target,
+               p_source,
+               sizeof(RATIONAL_NUMBER) * m_l_buffer_image.getWidth() * m_l_buffer_image.getHeight());
+        
+        return (m_l_buffer_image.getRawData());
+    }
+
+
     //------------------------------------------------------
     inline void XRayRenderer::enableArtefactFilteringOnGPU()
     //------------------------------------------------------
