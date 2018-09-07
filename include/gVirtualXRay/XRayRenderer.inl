@@ -76,6 +76,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Utilities.h"
 #endif
 
+#ifndef __ElementSet_h
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
 #ifndef __MaterialSet_h
 #include "gVirtualXRay/MaterialSet.h"
 #endif
@@ -304,8 +308,8 @@ namespace gVirtualXRay {
     {
         return (MaterialSet::getInstance().getMaterial(HU).getMU(HU, anEnergy));
     }
-
-
+    
+    
     //--------------------------------------------------------------------------------------------
     inline RATIONAL_NUMBER XRayRenderer::getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
                                                                   const RATIONAL_NUMBER& anEnergy)
@@ -313,16 +317,42 @@ namespace gVirtualXRay {
     {
         return (MaterialSet::getInstance().getMaterial(HU).getMassAttenuationTotal(anEnergy));
     }
-
-
+    
+    
     //------------------------------------------------------------------------------
     inline RATIONAL_NUMBER XRayRenderer::getDensityFromHU(const RATIONAL_NUMBER& HU)
     //------------------------------------------------------------------------------
     {
         return (TissueMaterial::getDensity(HU));
     }
-
-
+    
+    
+    //-------------------------------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getElementMu(const char* anElementSymbol,
+                                                     const RATIONAL_NUMBER& anEnergy)
+    //-------------------------------------------------------------------------------
+    {
+        return (ElementSet::getInstance().getElement(anElementSymbol).getMU(anEnergy));
+    }
+    
+    
+    //--------------------------------------------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getElementMassAttenuation(const char* anElementSymbol,
+                                                                  const RATIONAL_NUMBER& anEnergy)
+    //--------------------------------------------------------------------------------------------
+    {
+        return (ElementSet::getInstance().getElement(anElementSymbol).getMassAttenuationTotal(anEnergy));
+    }
+    
+    
+    //------------------------------------------------------------------------------
+    inline RATIONAL_NUMBER XRayRenderer::getElementDensity(const char* anElementSymbol)
+    //------------------------------------------------------------------------------
+    {
+        return (ElementSet::getInstance().getElement(anElementSymbol).getDensity());
+    }
+    
+    
     //----------------------------------------------------------------
     inline unsigned int XRayRenderer::getNumberOfInnerSurfaces() const
     //----------------------------------------------------------------

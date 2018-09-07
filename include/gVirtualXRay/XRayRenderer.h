@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -83,27 +83,27 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Sinogram.h"
 #endif
 
-#ifndef GVXR_POLYGON_MESH_H
+#ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
 
-#ifndef GVXR_XRAY_DETECTOR_H
+#ifndef __XRayDetector_h
 #include "gVirtualXRay/XRayDetector.h"
 #endif
 
-#ifndef GVXR_XRAY_BEAM_H
+#ifndef __XRayBeam_h
 #include "gVirtualXRay/XRayBeam.h"
 #endif
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_ATTENUATION_COEFFICIENT_H
+#ifndef __AttenuationCoefficient_h
 #include "gVirtualXRay/AttenuationCoefficient.h"
 #endif
 
-#ifndef GVXR_VBO_H
+#ifndef __VBO_h
 #include "gVirtualXRay/VBO.h"
 #endif
 
@@ -520,8 +520,8 @@ public:
     //--------------------------------------------------------------------------
     RATIONAL_NUMBER getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
                                              const RATIONAL_NUMBER& anEnergy);
-
-
+    
+    
     //--------------------------------------------------------------------------
     /// Get the density (rho) of a tissue given a Hounsfield value.
     /**
@@ -530,8 +530,42 @@ public:
      */
     //--------------------------------------------------------------------------
     RATIONAL_NUMBER getDensityFromHU(const RATIONAL_NUMBER& HU);
-
-
+    
+    
+    //--------------------------------------------------------------------------
+    /// Convert a Hounsfield value into a linear attenuation coefficient.
+    /**
+     *  @param HU:  the Hounsfield value to convert
+     *  @param anEnergy:    a given energy
+     *  @return the corresponding attenuation coefficient
+     */
+    //--------------------------------------------------------------------------
+    static RATIONAL_NUMBER getElementMu(const char* anElementSymbolHU,
+                                       const RATIONAL_NUMBER& anEnergy);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Convert a Hounsfield value into a mass attenuation coefficient.
+    /**
+     *  @param HU:  the Hounsfield value to convert
+     *  @param anEnergy:    a given energy
+     *  @return the corresponding attenuation coefficient
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getElementMassAttenuation(const char* anElementSymbolHU,
+                                             const RATIONAL_NUMBER& anEnergy);
+    
+    
+    //--------------------------------------------------------------------------
+    /// Get the density (rho) of a tissue given an element symbol.
+    /**
+     *  @param HU:  the Hounsfield value to consider
+     *  @return the corresponding density
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getElementDensity(const char* anElementSymbol);
+    
+    
     //--------------------------------------------------------------------------
     /// Display the final image in negative or not.
     /**
