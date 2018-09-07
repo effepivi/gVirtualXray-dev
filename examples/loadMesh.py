@@ -2,6 +2,9 @@
 
 import sys # For the command line arguments
 import gvxrPython as gvxr
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 try:
     # No file name given, or unit of length
@@ -47,6 +50,12 @@ try:
     # Compute an X-ray image and retrieve the image in Numpy's 2D array format
     print("Compute an X-ray image");
     np_image = gvxr.computeXRayImage();
+
+    gvxr.displayScene();
+
+    plt.imshow(np.log(np_image), cmap="gray");
+    plt.show()
+    np.savetxt("xray_image.txt", np_image);
 
     # Display the 3D scene (no event loop)
     # Run an interactive loop 
