@@ -335,6 +335,9 @@ public:
     void loadDataFromXCOM();
     
 
+    double getEnergyChannel(unsigned int i) const;
+    double getMassAttenuationCoefficientChannel(unsigned int i) const;
+
 //*****************************************************************************
 protected:
 

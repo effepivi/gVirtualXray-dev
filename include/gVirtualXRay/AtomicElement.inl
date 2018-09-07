@@ -64,6 +64,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include <cmath>
 
+#ifndef __OutOfBoundsException_h
+#include "gVirtualXRay/OutOfBoundsException.h"
+#endif
+
 
 //******************************************************************************
 //  namespace
@@ -283,6 +287,29 @@ inline AtomicElement& AtomicElement::operator=(const AtomicElement& anElement)
 
 	return (*this);
 }
+
+    
+    inline double AtomicElement::getEnergyChannel(unsigned int i) const
+    {
+        if (i >= m_p_energy_set.size())
+        {
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+        
+        return m_p_energy_set[i];
+    }
+    
+    
+    inline double AtomicElement::getMassAttenuationCoefficientChannel(unsigned int i) const
+    {
+        if (i >= m_p_mass_attenuation_coefficient_set.size())
+        {
+            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+        }
+        
+
+        return m_p_mass_attenuation_coefficient_set[i];
+    }
 
 
 } // namespace gVirtualXRay
