@@ -114,6 +114,7 @@ using namespace gVirtualXRay;
 //  Function declaration
 //******************************************************************************
 void runTest(const char* aFileName, short anHounsfieldValue);
+void runTest(const char* aFileName, const char* anElementSymbol);
 double getSum(const std::vector<double>& aVector);
 double getAverage(const std::vector<double>& aVector);
 double getVariance(const std::vector<double>& aVector);
@@ -131,11 +132,152 @@ const short HU_soft_tissue(52);
 const short HU_water(0);
 
 
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestHydrogenMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/hydrogen.tsv", "H");
+}
+
+/*
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestCarbonMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/carbon.tsv", "C");
+}
+
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestNitrogenMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/nitrogen.tsv", "N");
+}
+
+
+//---------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestOxygenMassAttenuationCoefficients)
+//---------------------------------------------------------
+{
+    runTest("data/oxygen.tsv", "O");
+}
+
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestSodiumMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/sodium.tsv", "Na");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/magnesium.tsv", "Mg");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestPhosphorMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/phosphor.tsv", "P");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestSulfurMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/sulfur.tsv", "S");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestClorineMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/clorine.tsv", "Cl");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestArgonMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/argon.tsv", "Ar");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/potassium.tsv", "K");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestCalciumMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/calcium.tsv", "Ca");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestTitatiumMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/titanium.tsv", "Ti");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestCopperMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/copper.tsv", "Cu");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestZincMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/zinc.tsv", "Zn");
+}
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestSilverMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/silver.tsv", "Ag");
+}
+
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestTinMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/tin.tsv", "Sn");
+}
+
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestIronMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/iron.tsv", "Fe");
+}
+
+
+//-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestIodineMassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTest("data/iodine.tsv", "I");
+}
+*/
+
 //-------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
 //-------------------------------------------------------
 {
-    runTest("data/bone.csv", HU_bone);
+    runTest("data/bone.tsv", HU_bone);
 }
 
 
@@ -143,7 +285,7 @@ BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestBrainMassAttenuationCoefficients)
 //--------------------------------------------------------
 {
-    runTest("data/brain.csv", HU_brain);
+    runTest("data/brain.tsv", HU_brain);
 }
 
 
@@ -151,7 +293,7 @@ BOOST_AUTO_TEST_CASE(TestBrainMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestGasMassAttenuationCoefficients)
 //------------------------------------------------------
 {
-    runTest("data/gas.csv", HU_gas);
+    runTest("data/gas.tsv", HU_gas);
 }
 
 
@@ -159,7 +301,7 @@ BOOST_AUTO_TEST_CASE(TestGasMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestTissueMassAttenuationCoefficients)
 //--------------------------------------------------------
 {
-    runTest("data/tissue.csv", HU_soft_tissue);
+    runTest("data/tissue.tsv", HU_soft_tissue);
 }
 
 
@@ -167,9 +309,17 @@ BOOST_AUTO_TEST_CASE(TestTissueMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestWaterMassAttenuationCoefficients)
 //--------------------------------------------------------
 {
-    runTest("data/water.csv", HU_water);
+    runTest("data/water.tsv", HU_water);
 }
 
+/*
+//------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
+//------------------------------------------------------
+{
+    runTest("data/water.tsv", "H2O");
+}
+*/
 
 //----------------------------------------------------------
 void runTest(const char* aFileName, short anHounsfieldValue)
@@ -208,6 +358,61 @@ void runTest(const char* aFileName, short anHounsfieldValue)
         test_vector.push_back(g_xray_renderer.getMassAttenuationFromHU(anHounsfieldValue, energy)  / (cm2 / g));
     }
 
+    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
+}
+
+
+//--------------------------------------------------------------
+void runTest(const char* aFileName, const char* anElementSymbol)
+//--------------------------------------------------------------
+{
+    std::cout << "***********************" << std::endl;
+    std::cout << anElementSymbol << std::endl;
+    std::cout << "***********************" << std::endl;
+
+    // Open the file
+    std::ifstream reference_data_stream(aFileName);
+    
+    // The file is not open
+    if (!reference_data_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aFileName;
+        error_message += "\" does not exist";
+        
+        BOOST_FAIL(error_message);
+    }
+    
+    // Initialise the X-ray renderer
+    XRayRenderer g_xray_renderer;
+    
+    std::vector<double> reference_vector;
+    std::vector<double> test_vector;
+    
+    double energy;
+    double mass_attenuation_coefficient;
+    
+    // Skip header
+    char line[1024];
+    reference_data_stream.getline(line, 1024);
+    reference_data_stream.getline(line, 1024);
+    reference_data_stream.getline(line, 1024);
+
+    int i = 0;
+    while (reference_data_stream.good())
+    {
+        reference_data_stream >> energy >> mass_attenuation_coefficient;
+        energy *= MeV;
+        
+        reference_vector.push_back(mass_attenuation_coefficient);
+        test_vector.push_back(g_xray_renderer.getElementMassAttenuation(anElementSymbol, energy)  / (cm2 / g));
+        
+        std::cout << energy / MeV << "\t" << ElementSet::getInstance().getElement(anElementSymbol).getEnergyChannel(i) / MeV << "\t" << reference_vector.back() << "\t" << test_vector.back() << "\t" << ElementSet::getInstance().getElement(anElementSymbol).getMassAttenuationCoefficientChannel(i) / (cm2 / g) << std::endl;
+        
+        ++i;
+    }
+    
     BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
 }
 
