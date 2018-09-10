@@ -1012,7 +1012,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
 
     if (m_number_of_vertices)
     {
-    	copyVertexSet(m_p_vertex_set);
+    	copyVertexSet(aPolygonMesh.m_p_vertex_set);
     }
 
     if (m_number_of_indices)
