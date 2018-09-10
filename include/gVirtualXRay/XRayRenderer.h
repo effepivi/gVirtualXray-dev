@@ -1086,6 +1086,8 @@ protected:
 
 
     unsigned int m_zbuffer_texture_id;
+
+    unsigned int m_precision;
 };
 
 

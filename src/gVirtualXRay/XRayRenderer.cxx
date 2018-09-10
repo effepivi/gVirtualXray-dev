@@ -220,7 +220,8 @@ XRayRenderer::XRayRenderer():
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
 		m_HU_polygon_mesh_set_up_to_date(true),
-		m_zbuffer_texture_id(0)
+		m_zbuffer_texture_id(0),
+		m_precision(0)
 //-------------------------------------------------------------------------------------------------
 {
 }
@@ -239,6 +240,11 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
     {
         throw InvalidInternalFormalException(__FILE__, __FUNCTION__, __LINE__);
     }
+
+    if (anInternalTextureFormat == GL_RGB16F)
+    	m_precision = 16;
+    else
+    	m_precision = 32;
 
     // There is no detector
 	if (!apDetector)
@@ -1621,7 +1627,7 @@ void XRayRenderer::resetLBuffer()
 		case OPENGL:
 			reset2DBuffer(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
 
-			if (m_use_l_buffer_artefact_filtering_on_gpu)
+			if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
 			{
 	            reset2DBuffer(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID);
 			}
@@ -1959,101 +1965,6 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
         		aXRaySourceDetectorTranslation,
 				aModellingTransformationMatrix * anObject.getTransformationMatrix());
     }
-
-    if (m_use_l_buffer_artefact_filtering_on_cpu)
-    {
-    	// Get the L-buffer
-    	getFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID);
-
-		VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
-		VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
-		VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
-
-		double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
-		double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
-
-		VEC3 ray_origin;
-		VEC3 ray_direction;
-
-		double u, v;
-
-		std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
-
-		VEC3 pixel_position;
-
-		bool has_worked(false);
-		float l_buffer_value;
-
-		for (unsigned int j = 0; j < m_temp_raw_data.getHeight(); ++j)
-		{
-			for (unsigned int i = 0; i < m_temp_raw_data.getWidth(); ++i)
-			{
-				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
-				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
-				{
-					l_buffer_value = 0.0;
-
-					if (!has_worked)
-					{
-				        // Store the texturing flags
-				        pushTexture2D();
-
-				        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
-
-						has_worked = true;
-					}
-
-					u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
-					v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
-
-					pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
-					if (!m_p_detector->useParallelBeam())
-					{
-						ray_origin = m_p_detector->getXraySourceCentre() + aXRaySourceDetectorTranslation;
-						ray_direction = (pixel_position - ray_origin).normal();
-					}
-					else
-					{
-						// Cast the ray from the pixel position, not the source
-						ray_direction =  -(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).normal();
-						ray_origin = pixel_position;
-					}
-
-					p_intersection_set = anObject.rayIntersect(
-							ray_origin,
-							ray_direction,
-							aModellingTransformationMatrix);
-
-					// There is an even number of intersections
-					if (p_intersection_set.size() && !(p_intersection_set.size() % 2))
-					{
-						for (std::map<RATIONAL_NUMBER, VEC3>::const_iterator ite = p_intersection_set.begin();
-								ite != p_intersection_set.end();
-								++ite)
-						{
-							l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
-						}
-					}
-
-					glTexSubImage2D(GL_TEXTURE_2D,
-							0,
-							i,
-							j,
-							1,
-							1,
-							GL_RED,
-							GL_FLOAT,
-							&l_buffer_value);
-				}
-			}
-		}
-
-		if (has_worked)
-		{
-			// Restore the texturing flags
-			popTexture();
-		}
-	}
 }
 
 
@@ -2093,6 +2004,144 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         anObject.display();
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
     }
+
+    if (m_use_l_buffer_artefact_filtering_on_cpu)
+    {
+    	// Get the L-buffer
+    	get2DTexture(XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID);
+
+		VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
+		VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
+		VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
+
+		double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
+		double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
+
+		VEC3 ray_origin;
+		VEC3 ray_direction;
+
+		double u, v;
+
+		std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+		VEC3 pixel_position;
+
+		bool has_worked(false);
+		float l_buffer_value;
+
+		float* p_temp = new float[m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight()];
+		if (!p_temp)
+		{
+			throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		for (unsigned int j = 0; j < m_temp_raw_data.getHeight(); ++j)
+		{
+			for (unsigned int i = 0; i < m_temp_raw_data.getWidth(); ++i)
+			{
+				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
+				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
+				{
+					l_buffer_value = 0.0;
+
+					if (!has_worked)
+					{
+				        // Store the texturing flags
+				        //pushTexture2D();
+
+				        //glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+
+						has_worked = true;
+					}
+
+					u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
+					v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
+
+					pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
+					if (!m_p_detector->useParallelBeam())
+					{
+						ray_origin = m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset;
+						ray_direction = (pixel_position - ray_origin).normal();
+					}
+					else
+					{
+						// Cast the ray from the pixel position, not the source
+						ray_direction =  -(m_p_detector->getDetectorPosition() - m_p_detector->getXraySourceCentre()).normal();
+						ray_origin = pixel_position;
+					}
+
+					p_intersection_set = anObject.rayIntersect(
+							ray_origin,
+							ray_direction,
+							aModellingTransformationMatrix);
+
+					// There is an even number of intersections
+					if (p_intersection_set.size() && !(p_intersection_set.size() % 2))
+					{
+						for (std::map<RATIONAL_NUMBER, VEC3>::const_iterator ite = p_intersection_set.begin();
+								ite != p_intersection_set.end();
+								++ite)
+						{
+							l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
+						}
+					}
+
+					/*glTexSubImage2D(GL_TEXTURE_2D,
+							0,
+							i,
+							j,
+							1,
+							1,
+							GL_RED,
+							GL_FLOAT,
+							&l_buffer_value);*/
+
+					p_temp[i + j * m_temp_raw_data.getHeight()] = l_buffer_value;
+				}
+				else
+				{
+					p_temp[i + j * m_temp_raw_data.getHeight()] = m_temp_raw_data.getPixel(i, j, 0);
+				}
+			}
+		}
+
+		//if (has_worked)
+		{
+	        // Store the texturing flags
+	        pushTexture2D();
+
+	        glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
+
+	        if (m_precision == 16)
+	        {
+				glTexImage2D(GL_TEXTURE_2D,
+						0,
+						GL_R16F,
+						m_temp_raw_data.getWidth(),
+						m_temp_raw_data.getHeight(),
+						0,
+						GL_RED,
+						GL_FLOAT,
+						p_temp);
+	        }
+	        else
+	        {
+				glTexImage2D(GL_TEXTURE_2D,
+						0,
+						GL_R32F,
+						m_temp_raw_data.getWidth(),
+						m_temp_raw_data.getHeight(),
+						0,
+						GL_RED,
+						GL_FLOAT,
+						p_temp);
+	        }
+			// Restore the texturing flags
+			popTexture();
+		}
+
+		delete [] p_temp;
+	}
 
     // Restore GPU states
     if (aGPUStateConservationFlag)
@@ -2137,7 +2186,7 @@ void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 	pushEnableDisableState(GL_BLEND);
 
 	// Bind frame buffer object
-    if (m_use_l_buffer_artefact_filtering_on_gpu)
+    if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
     {
         m_p_fbo_set[XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID]->Bind();
     }
@@ -2283,7 +2332,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 	glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    if (m_use_l_buffer_artefact_filtering_on_gpu)
+    if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
     {
         glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
     }
@@ -2402,7 +2451,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
 			// Cumulated L-buffers
 			glActiveTexture(saved_texture);
 
-			if (m_use_l_buffer_artefact_filtering_on_gpu)
+			if (m_use_l_buffer_artefact_filtering_on_gpu || m_use_l_buffer_artefact_filtering_on_cpu)
 			{
 			    glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID]);
 			}
