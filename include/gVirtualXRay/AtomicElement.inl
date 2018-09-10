@@ -104,7 +104,16 @@ inline AtomicElement::AtomicElement(const AtomicElement& anElement):
         m_atomic_number(anElement.m_atomic_number),
         m_molar_mass(anElement.m_molar_mass),
         m_density(anElement.m_density),
-        m_state(anElement.m_state)
+        m_state(anElement.m_state),
+		m_p_energy_set(anElement.m_p_energy_set),
+	    m_p_mass_attenuation_coefficient_set(anElement.m_p_mass_attenuation_coefficient_set),
+	    m_p_coherent_scattering_set(anElement.m_p_coherent_scattering_set),
+	    m_p_incoherent_scattering_set(anElement.m_p_incoherent_scattering_set),
+	    m_p_photo_electric_absorption_set(anElement.m_p_photo_electric_absorption_set),
+	    m_p_pair_production_in_nuclear_field_set(anElement.m_p_pair_production_in_nuclear_field_set),
+	    m_p_pair_production_in_electron_field_set(anElement.m_p_pair_production_in_electron_field_set),
+	    m_p_total_attenuation_without_coherent_scattering(anElement.m_p_total_attenuation_without_coherent_scattering)
+
 //------------------------------------------------------------------
 {
 }
@@ -201,7 +210,7 @@ inline double AtomicElement::getMassAttenuationTotal(double anEnergy)
         double max_mass_attenuation_coefficient(m_p_mass_attenuation_coefficient_set[0]);
         double min_mass_attenuation_coefficient(max_mass_attenuation_coefficient);
 
-        int i(1);
+        int i(0);
         while (max_energy < anEnergy)
         {
             min_energy = max_energy;
@@ -278,12 +287,21 @@ inline unsigned int AtomicElement::getEnergyChannelNumber() const
 inline AtomicElement& AtomicElement::operator=(const AtomicElement& anElement)
 //----------------------------------------------------------------------------
 {
-	m_name = anElement.m_name;
-	m_symbol = anElement.m_symbol;
+	m_name          = anElement.m_name;
+	m_symbol        = anElement.m_symbol;
 	m_atomic_number = anElement.m_atomic_number;
-	m_molar_mass = anElement.m_molar_mass;
-	m_density = anElement.m_density;
-	m_state = anElement.m_state;
+	m_molar_mass    = anElement.m_molar_mass;
+	m_density       = anElement.m_density;
+	m_state         = anElement.m_state;
+
+	m_p_energy_set                                    = anElement.m_p_energy_set;
+    m_p_mass_attenuation_coefficient_set              = anElement.m_p_mass_attenuation_coefficient_set;
+    m_p_coherent_scattering_set                       = anElement.m_p_coherent_scattering_set;
+    m_p_incoherent_scattering_set                     = anElement.m_p_incoherent_scattering_set;
+    m_p_photo_electric_absorption_set                 = anElement.m_p_photo_electric_absorption_set;
+    m_p_pair_production_in_nuclear_field_set          = anElement.m_p_pair_production_in_nuclear_field_set;
+    m_p_pair_production_in_electron_field_set         = anElement.m_p_pair_production_in_electron_field_set;
+    m_p_total_attenuation_without_coherent_scattering = anElement.m_p_total_attenuation_without_coherent_scattering;
 
 	return (*this);
 }

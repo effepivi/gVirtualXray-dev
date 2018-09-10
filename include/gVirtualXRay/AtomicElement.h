@@ -337,6 +337,8 @@ public:
 
     double getEnergyChannel(unsigned int i) const;
     double getMassAttenuationCoefficientChannel(unsigned int i) const;
+    void printSummary() const;
+
 
 //*****************************************************************************
 protected:
@@ -353,6 +355,13 @@ protected:
 
     /// The mass attenuation coefficient set corresponding to the energy set
     std::vector<double> m_p_mass_attenuation_coefficient_set;
+
+    std::vector<double> m_p_coherent_scattering_set;
+    std::vector<double> m_p_incoherent_scattering_set;
+    std::vector<double> m_p_photo_electric_absorption_set;
+    std::vector<double> m_p_pair_production_in_nuclear_field_set;
+    std::vector<double> m_p_pair_production_in_electron_field_set;
+    std::vector<double> m_p_total_attenuation_without_coherent_scattering;
 };
 
 

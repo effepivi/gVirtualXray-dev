@@ -325,9 +325,10 @@ void AtomicElement::loadDataFromXCOM()
                 int temp_int;
                 double temp_double;
                 std::string temp_string;
-                double molar_mass;
 
-                input_stream >> atomic_number >> molar_mass;
+                input_stream >> atomic_number >> m_molar_mass;
+                m_molar_mass *= g / mole;
+
                 input_stream >> repeat >> energy_channel_number;
 
                 if (atomic_number != m_atomic_number)
@@ -337,12 +338,12 @@ void AtomicElement::loadDataFromXCOM()
                     throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
                 }
 
-                std::vector<double> coherent_scattering_set(energy_channel_number);
-                std::vector<double> incoherent_scattering_set(energy_channel_number);
-                std::vector<double> photo_electric_absorption_set(energy_channel_number);
-                std::vector<double> pair_production_in_nuclear_field_set(energy_channel_number);
-                std::vector<double> pair_production_in_electron_field_set(energy_channel_number);
-                std::vector<double> total_attenuation_without_coherent_scattering(energy_channel_number);
+                m_p_coherent_scattering_set.resize(energy_channel_number);
+                m_p_incoherent_scattering_set.resize(energy_channel_number);
+                m_p_photo_electric_absorption_set.resize(energy_channel_number);
+                m_p_pair_production_in_nuclear_field_set.resize(energy_channel_number);
+                m_p_pair_production_in_electron_field_set.resize(energy_channel_number);
+                m_p_total_attenuation_without_coherent_scattering.resize(energy_channel_number);
 
                 m_p_energy_set.clear();
                 m_p_mass_attenuation_coefficient_set.clear();
@@ -377,56 +378,50 @@ void AtomicElement::loadDataFromXCOM()
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    input_stream >> coherent_scattering_set[i];
+                    input_stream >> m_p_coherent_scattering_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    input_stream >> incoherent_scattering_set[i];
+                    input_stream >> m_p_incoherent_scattering_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    input_stream >> photo_electric_absorption_set[i];
+                    input_stream >> m_p_photo_electric_absorption_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    input_stream >> pair_production_in_nuclear_field_set[i];
+                    input_stream >> m_p_pair_production_in_nuclear_field_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
-                    input_stream >> pair_production_in_electron_field_set[i];
-                }
-
-                for (unsigned int i(0); i < energy_channel_number; ++i)
-                {
-                    // Attenuation in b/atom
-                    double attenuation =
-                            incoherent_scattering_set[i] +
-                            photo_electric_absorption_set[i] +
-                            pair_production_in_nuclear_field_set[i] +
-                            pair_production_in_electron_field_set[i];
-
-                    // Attenuation in cm2/g
-                    total_attenuation_without_coherent_scattering[i] = attenuation * ((N_Avogadro / molar_mass) * 1.0E-24);
+                    input_stream >> m_p_pair_production_in_electron_field_set[i];
                 }
 
                 for (unsigned int i(0); i < energy_channel_number; ++i)
                 {
                     // Attenuation in b/atom
-                    double attenuation =
-                            coherent_scattering_set[i] +
-                            incoherent_scattering_set[i] +
-                            photo_electric_absorption_set[i] +
-                            pair_production_in_nuclear_field_set[i] +
-                            pair_production_in_electron_field_set[i];
+                	m_p_total_attenuation_without_coherent_scattering[i] =
+                    		m_p_incoherent_scattering_set[i] +
+							m_p_photo_electric_absorption_set[i] +
+							m_p_pair_production_in_nuclear_field_set[i] +
+							m_p_pair_production_in_electron_field_set[i];
+
+                	m_p_mass_attenuation_coefficient_set[i] = m_p_total_attenuation_without_coherent_scattering[i] +
+                    		m_p_coherent_scattering_set[i];
 
                     // Attenuation in cm2/g
-                    attenuation *= (N_Avogadro / molar_mass) * 1.0E-24;
-                    attenuation *= cm2 / g;
-                    m_p_mass_attenuation_coefficient_set[i] = attenuation;
+                    m_p_total_attenuation_without_coherent_scattering[i] *= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+                    m_p_mass_attenuation_coefficient_set[i]              *= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+               		m_p_coherent_scattering_set[i]*= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+            		m_p_incoherent_scattering_set[i]*= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+					m_p_photo_electric_absorption_set[i] *= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+					m_p_pair_production_in_nuclear_field_set[i] *= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+					m_p_pair_production_in_electron_field_set[i]*= 1.0E-24 * (N_Avogadro / m_molar_mass) * (cm2/g);
+
                 }
             }
             // The file is not open
@@ -438,6 +433,36 @@ void AtomicElement::loadDataFromXCOM()
             }
         }
     }
+}
+
+
+void AtomicElement::printSummary() const
+{
+	std::cout << "	gVirtualXRay: " << m_name << std::endl;
+	std::cout << "	Constituents (Atomic Number : Fraction by Weight)" << std::endl;
+	std::cout << std::endl;
+	std::cout << "	    Z=" << m_atomic_number << " : 1.000000" << std::endl;
+	std::cout << "" << std::endl;
+	std::cout << "\tPHOTON\tSCATTERING\tPHOTO-\tPAIR PRODUCTION\tTOTAL ATTENUATION" << std::endl;
+	std::cout << "\tENERGY\tCOHERENT INCOHER.\tELECTRIC\tIN\tIN\tWITH\tWITHOUT" << std::endl;
+	std::cout << "	                                 ABSORPTION\tNUCLEAR\tELECTRON\tCOHERENT\tCOHERENT" << std::endl;
+	std::cout << "	                                             FIELD\tFIELD\tSCATT.\tSCATT." << std::endl;
+	std::cout << "\t(MeV)\t(cm2/g)\t(cm2/g)\t(cm2/g)\t(cm2/g)\t(cm2/g)\t(cm2/g)\t(cm2/g)" << std::endl;
+	for (unsigned int i = 0; i < getEnergyChannelNumber(); ++i)
+	{
+		std::cout.precision(3);
+		std::cout << std::scientific <<
+				"\t" <<
+				m_p_energy_set[i] / MeV << "\t" <<
+				m_p_coherent_scattering_set[i] / (cm2/g) << "\t" <<
+				m_p_incoherent_scattering_set[i] / (cm2/g) << "\t" <<
+				m_p_photo_electric_absorption_set[i] / (cm2/g) << "\t" <<
+				m_p_pair_production_in_nuclear_field_set[i] / (cm2/g) << "\t" <<
+				m_p_pair_production_in_electron_field_set[i] / (cm2/g) << "\t" <<
+				m_p_mass_attenuation_coefficient_set[i] / (cm2/g) << "\t" <<
+				m_p_total_attenuation_without_coherent_scattering[i] / (cm2/g) << "\t" <<
+				std::endl;
+	}
 }
 
 
