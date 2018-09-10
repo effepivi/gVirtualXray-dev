@@ -39,12 +39,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: mass attenuation coefficients,
 *   			the unit test corresponds to validation_01,
-*   			last date of check: Passed test on 03 Jul 2018.
+*   			last date of check: Passed test on 10 Sept 2018.
 *
 *
 *   @version    1.0
 *
-*   @date       22/03/2017
+*   @date       10/09/2018
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(TestHydrogenMassAttenuationCoefficients)
     runTest("data/hydrogen.tsv", "H");
 }
 
-/*
+
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestCarbonMassAttenuationCoefficients)
 //-----------------------------------------------------------
@@ -171,6 +171,7 @@ BOOST_AUTO_TEST_CASE(TestSodiumMassAttenuationCoefficients)
     runTest("data/sodium.tsv", "Na");
 }
 
+
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
 //-----------------------------------------------------------
@@ -178,12 +179,14 @@ BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
     runTest("data/magnesium.tsv", "Mg");
 }
 
+
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestPhosphorMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
     runTest("data/phosphor.tsv", "P");
 }
+
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestSulfurMassAttenuationCoefficients)
@@ -199,12 +202,15 @@ BOOST_AUTO_TEST_CASE(TestClorineMassAttenuationCoefficients)
     runTest("data/clorine.tsv", "Cl");
 }
 
+
+
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestArgonMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
     runTest("data/argon.tsv", "Ar");
 }
+
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
@@ -213,12 +219,14 @@ BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
     runTest("data/potassium.tsv", "K");
 }
 
+
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestCalciumMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
     runTest("data/calcium.tsv", "Ca");
 }
+
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestTitatiumMassAttenuationCoefficients)
@@ -233,6 +241,7 @@ BOOST_AUTO_TEST_CASE(TestCopperMassAttenuationCoefficients)
 {
     runTest("data/copper.tsv", "Cu");
 }
+
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestZincMassAttenuationCoefficients)
@@ -271,7 +280,7 @@ BOOST_AUTO_TEST_CASE(TestIodineMassAttenuationCoefficients)
 {
     runTest("data/iodine.tsv", "I");
 }
-*/
+
 
 //-------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
@@ -318,13 +327,17 @@ BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
 //------------------------------------------------------
 {
     runTest("data/water.tsv", "H2O");
-}
-*/
+}*/
+
 
 //----------------------------------------------------------
 void runTest(const char* aFileName, short anHounsfieldValue)
 //----------------------------------------------------------
 {
+    std::cout << "***********************" << std::endl;
+    std::cout << "HU: " << anHounsfieldValue << std::endl;
+    std::cout << "***********************" << std::endl;
+
     // Open the file
     std::ifstream reference_data_stream(aFileName);
 
@@ -345,17 +358,23 @@ void runTest(const char* aFileName, short anHounsfieldValue)
     std::vector<double> reference_vector;
     std::vector<double> test_vector;
 
-    double energy;
+    double current_energy = 0;
+    double last_energy    = 0;
     double mass_attenuation_coefficient;
     double temp;
 
     while (reference_data_stream.good())
     {
-        reference_data_stream >> energy >> mass_attenuation_coefficient >> temp;
-        energy *= MeV;
+        reference_data_stream >> current_energy >> mass_attenuation_coefficient >> temp;
+        current_energy *= MeV;
 
-        reference_vector.push_back(mass_attenuation_coefficient);
-        test_vector.push_back(g_xray_renderer.getMassAttenuationFromHU(anHounsfieldValue, energy)  / (cm2 / g));
+        if (current_energy != last_energy)
+        {
+        	last_energy = current_energy;
+
+            reference_vector.push_back(mass_attenuation_coefficient);
+            test_vector.push_back(g_xray_renderer.getMassAttenuationFromHU(anHounsfieldValue, current_energy)  / (cm2 / g));
+        }
     }
 
     BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
@@ -390,7 +409,8 @@ void runTest(const char* aFileName, const char* anElementSymbol)
     std::vector<double> reference_vector;
     std::vector<double> test_vector;
     
-    double energy;
+    double current_energy = 0;
+    double last_energy    = 0;
     double mass_attenuation_coefficient;
     
     // Skip header
@@ -402,15 +422,21 @@ void runTest(const char* aFileName, const char* anElementSymbol)
     int i = 0;
     while (reference_data_stream.good())
     {
-        reference_data_stream >> energy >> mass_attenuation_coefficient;
-        energy *= MeV;
+        reference_data_stream >> current_energy >> mass_attenuation_coefficient;
+        current_energy *= MeV;
         
-        reference_vector.push_back(mass_attenuation_coefficient);
-        test_vector.push_back(g_xray_renderer.getElementMassAttenuation(anElementSymbol, energy)  / (cm2 / g));
-        
-        std::cout << energy / MeV << "\t" << ElementSet::getInstance().getElement(anElementSymbol).getEnergyChannel(i) / MeV << "\t" << reference_vector.back() << "\t" << test_vector.back() << "\t" << ElementSet::getInstance().getElement(anElementSymbol).getMassAttenuationCoefficientChannel(i) / (cm2 / g) << std::endl;
-        
-        ++i;
+        if (current_energy != last_energy)
+        {
+        	last_energy = current_energy;
+
+        	if (std::abs(current_energy - ElementSet::getInstance().getElement(anElementSymbol).getEnergyChannel(i) / MeV) < 0.00001)
+        	{
+				reference_vector.push_back(mass_attenuation_coefficient);
+				test_vector.push_back(g_xray_renderer.getElementMassAttenuation(anElementSymbol, current_energy)  / (cm2 / g));
+
+	        	++i;
+			}
+        }
     }
     
     BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
