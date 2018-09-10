@@ -2200,9 +2200,15 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
                     }
                 }
 
+            // Store the data type
+            int old_m_vertex_data_type = m_vertex_data_type;
+
             // Set the index in the hash table and create the list of vertices
             destroyVertexData();
             m_number_of_vertices = p_new_vertex_set.size() / 3;
+
+            // Restore the datatype
+            m_vertex_data_type = old_m_vertex_data_type;
 
             GLfloat* p_float_vertex_set(0);
             GLdouble* p_double_vertex_set(0);
