@@ -354,13 +354,13 @@ inline unsigned int PolygonMesh::getIndexNumber() const
 inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
 //----------------------------------------------------------------
 {
+	if (anIndex >= getFaceNumber())
+	{
+        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	}
+
 	if (m_number_of_indices)
 	{
-    	if (anIndex >= getFaceNumber())
-		{
-            throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-		}
-
     	VEC3 temp = (getVertexNormal(getIndex(anIndex * 3 + 0)) +
     				getVertexNormal(getIndex(anIndex * 3 + 1)) +
 					getVertexNormal(getIndex(anIndex * 3 + 2))) / 3.0;
@@ -379,17 +379,21 @@ inline VEC3 PolygonMesh::getFaceNormal(unsigned int anIndex) const
 	}
 	else
 	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do Not Use Face Normal");
-	}
-/*
-    if (getFaceNormalNumber() <= anIndex)
-    {
-        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
+        VEC3 normal((getVertex(anIndex * 3 + 2) - getVertex(anIndex * 3 + 0)) ^ (getVertex(anIndex * 3 + 2) - getVertex(3 + 1)));
+        normal.normalize();
 
-    return (VEC3(m_p_face_normal_set[anIndex * 3 + 0],
-            m_p_face_normal_set[anIndex * 3 + 1],
-            m_p_face_normal_set[anIndex * 3 + 2]));*/
+/*        if (sgn(normal.dotProduct(temp)) > 0)
+        {
+        	return (normal);
+        }
+        else
+        {
+        	return (-normal);
+        }
+*/
+
+    	return (-normal);
+	}
 }
 
 
