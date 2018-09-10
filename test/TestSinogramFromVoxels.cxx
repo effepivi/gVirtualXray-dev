@@ -115,25 +115,25 @@ BOOST_AUTO_TEST_CASE(TestSinogramFromVoxels)
     Image<float> middle_ct_slice_in_HU(CT_data_set_in_HU.setCanvasSize(512, 512, 1));
     Image<float> middle_ct_slice_in_mu(CT_data_set_in_mu.setCanvasSize(512, 512, 1));
 
-    middle_ct_slice_in_HU.save("HU_ct_slice.mhd");
-    middle_ct_slice_in_mu.save("mu_ct_slice.mhd");
+    middle_ct_slice_in_HU.save("HU_ct_slice.mha");
+    middle_ct_slice_in_mu.save("mu_ct_slice.mha");
 
     // Compute the Radon transform of the CT slice
     Sinogram<float> sinogram_in_HU(middle_ct_slice_in_HU.radonTransform(0, 1, 179));
     Sinogram<float> sinogram_in_mu(middle_ct_slice_in_mu.radonTransform(0, 1, 179));
-    sinogram_in_HU.save("HU_test_sinogram_set.mhd");
-    sinogram_in_mu.save("mu_test_sinogram_set.mhd");
+    sinogram_in_HU.save("HU_test_sinogram_set.mha");
+    sinogram_in_mu.save("mu_test_sinogram_set.mha");
 
     // Compute a projection set from the sinogram
     Image<float> projection_set_in_HU(sinogram_in_HU.getProjectionSet());
     Image<float> projection_set_in_mu(sinogram_in_mu.getProjectionSet());
-    projection_set_in_HU.save("HU_test_projection_set.mhd");
-    projection_set_in_mu.save("mu_test_projection_set.mhd");
+    projection_set_in_HU.save("HU_test_projection_set.mha");
+    projection_set_in_mu.save("mu_test_projection_set.mha");
 
 #ifndef NDEBUG
-    //CT_data_set.save("ct_data_80keV.mhd");
-    //sinogram.save("sinogram.mhd");
-    //projection_set.save("projection.mhd");
+    //CT_data_set.save("ct_data_80keV.mha");
+    //sinogram.save("sinogram.mha");
+    //projection_set.save("projection.mha");
 #endif
 
 

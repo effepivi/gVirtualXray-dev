@@ -39,7 +39,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case,
 *   			the unit test corresponds to validation_05,
-*   			last date of check: Passed test on 03 Jul 2018.
+*   			last date of check: Passed test on 10 Sep 2018.
 *
 *   @version    1.0
 *
@@ -217,6 +217,7 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);

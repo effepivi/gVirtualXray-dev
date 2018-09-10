@@ -39,7 +39,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Sinogram,
 *   			the unit test corresponds to validation_08,
-*   			last date of check: Passed test on 03 Jul 2018.
+*   			last date of check: Passed test on 10 Sep 2018.
 *
 *   @version    1.0
 *
@@ -222,6 +222,7 @@ BOOST_AUTO_TEST_CASE(TestSinogramFromMesh)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -279,13 +280,14 @@ BOOST_AUTO_TEST_CASE(TestSinogramFromMesh)
         "] degrees" << std::endl;
 
     // Compute the sinogram
+    g_xray_renderer.useArtefactFilteringOnGPU(true);
     g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
         VEC3(),
         g_angle_number,
         g_angle_step);
 
     // Save the sinogram
-    g_xray_renderer.printSinogram("TestSinogram_simulation_sinogram.mhd");
+    g_xray_renderer.printSinogram("TestSinogram_simulation_sinogram.mha");
 
     // Compute the projection set
     g_xray_renderer.computeProjectionSet(
@@ -295,7 +297,7 @@ BOOST_AUTO_TEST_CASE(TestSinogramFromMesh)
         g_angle_step);
 
     // Save the projection set
-    g_xray_renderer.printProjectionSet("TestSinogram_simulation_projection_set.mhd");
+    g_xray_renderer.printProjectionSet("TestSinogram_simulation_projection_set.mha");
 
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
@@ -358,7 +360,7 @@ void createPhantom()
             }
         }
 
-    phantom.save("TestSinogram_phantom.mhd");
+    phantom.save("TestSinogram_phantom.mha");
 
     // Extract the isosurface
     g_polygon_mesh = phantom.marchingCubes(-500);

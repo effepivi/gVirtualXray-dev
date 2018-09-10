@@ -42,7 +42,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               Monte Carlo simulation tool. We compare the results produce with
 *               gVirtualXRay.
 *   			The unit test corresponds to validation_09,
-*   			last date of check: Passed test on 03 Jul 2018.
+*   			last date of check: Passed test on 10 Sep 2018.
 *
 *   @version    1.0
 *
@@ -215,6 +215,7 @@ BOOST_AUTO_TEST_CASE(TestUncenteredSource)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -278,13 +279,15 @@ BOOST_AUTO_TEST_CASE(TestUncenteredSource)
         " degrees" << std::endl;
 
     // Compute the projection set
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
         1,
         0);
 
     // Save the projection set
-    g_xray_renderer.printProjectionSet("TestUncenteredSource_single_projection.mhd");
+    g_xray_renderer.printProjectionSet("TestUncenteredSource_single_projection.mha");
 
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);

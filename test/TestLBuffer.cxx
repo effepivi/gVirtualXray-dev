@@ -39,7 +39,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Test the L-buffer calculations,
 *   			the unit test corresponds to validation_??,
-*   			last date of check: Passed test on ?? ??? 2018.
+*   			last date of check: Passed test on 10 Sep 2018.
 *
 *   @version    1.0
 *
@@ -212,6 +212,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer1)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);

@@ -39,7 +39,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: density,
 *   			the unit test corresponds to validation_02,
-*   			Last date of check: Passed test on 03 Jul 2018.
+*   			Last date of check: Passed test on 10 Sep 2018.
 *
 *   @version    1.0
 *

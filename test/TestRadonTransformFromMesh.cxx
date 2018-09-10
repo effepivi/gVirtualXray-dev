@@ -40,7 +40,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @brief      Unit testing: Radon transform.
 *               We compare the results produced with gVirtualXRay and GNU Octave.
 *   			The unit test corresponds to parts of validation_04,
-*   			last date of check: Passed test on 03 Jul 2018.
+*   			last date of check: Passed test on 10 Sep 2018.
 *
 *   @version    1.0
 *
@@ -189,9 +189,9 @@ void errorCallback(int error, const char* description);
 void quit();
 
 
-//---------------------------
-BOOST_AUTO_TEST_CASE(TestFBP)
-//---------------------------
+//----------------------------------------------
+BOOST_AUTO_TEST_CASE(TestRadonTransformFromMesh)
+//----------------------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
@@ -218,6 +218,7 @@ BOOST_AUTO_TEST_CASE(TestFBP)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -288,13 +289,14 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         "] degrees" << std::endl;
 
     // Compute the sinogram
+    g_xray_renderer.useArtefactFilteringOnGPU(true);
     g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
         VEC3(),
         g_angle_number,
         g_angle_step);
 
     // Save the sinogram
-    g_xray_renderer.printSinogram("TestRadonTransformFromMesh_sinogram.mhd");
+    g_xray_renderer.printSinogram("TestRadonTransformFromMesh_sinogram.mha");
 
     // Compute the projection set
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
@@ -303,7 +305,7 @@ BOOST_AUTO_TEST_CASE(TestFBP)
         g_angle_step);
 
     // Save the projection set
-    g_xray_renderer.printProjectionSet("TestRadonTransformFromMesh_projection_set.mhd");
+    g_xray_renderer.printProjectionSet("TestRadonTransformFromMesh_projection_set.mha");
 
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
