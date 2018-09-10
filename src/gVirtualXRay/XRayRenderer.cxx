@@ -2010,24 +2010,15 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
     	// Get the L-buffer
     	get2DTexture(XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID);
 
-		VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
-		VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
-		VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
+		const VEC3 detector_up_vector    = m_p_detector->getRotationMatrix() * m_p_detector->getUpVector();
+		const VEC3 detector_centre       = m_p_detector->getRotationMatrix() * m_p_detector->getDetectorPosition();
+		const VEC3 detector_right_vector =  m_p_detector->getRotationMatrix() * m_p_detector->getRightVector();
 
-		double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
-		double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
+		const unsigned int width  = m_temp_raw_data.getWidth();
+		const unsigned int height = m_temp_raw_data.getHeight();
 
-		VEC3 ray_origin;
-		VEC3 ray_direction;
-
-		double u, v;
-
-		std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
-
-		VEC3 pixel_position;
-
-		bool has_worked(false);
-		float l_buffer_value;
+		const double half_width_in_px  = m_p_detector->getSizeInUnitOfLength()[0] / 2.0;
+		const double half_height_in_px = m_p_detector->getSizeInUnitOfLength()[1] / 2.0;
 
 		float* p_temp = new float[m_temp_raw_data.getWidth() * m_temp_raw_data.getHeight()];
 		if (!p_temp)
@@ -2035,29 +2026,31 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 			throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
 		}
 
-		for (unsigned int j = 0; j < m_temp_raw_data.getHeight(); ++j)
+#ifdef NDEBUG
+#ifdef WIN32
+        #pragma omp parallel for
+#else
+        #pragma omp parallel for collapse(2)
+#endif
+#endif
+		for (unsigned int j = 0; j < height; ++j)
 		{
-			for (unsigned int i = 0; i < m_temp_raw_data.getWidth(); ++i)
+			for (unsigned int i = 0; i < width; ++i)
 			{
+				std::map<RATIONAL_NUMBER, VEC3> p_intersection_set;
+
+				VEC3 ray_origin;
+				VEC3 ray_direction;
+
+				double l_buffer_value = 0.0;
+
 				PixelType sign_accumulator = m_temp_raw_data.getPixel(i, j, 1);
 				if (sign_accumulator < -0.5 || sign_accumulator > 0.5)
 				{
-					l_buffer_value = 0.0;
+					double u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
+					double v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
 
-					if (!has_worked)
-					{
-				        // Store the texturing flags
-				        //pushTexture2D();
-
-				        //glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
-
-						has_worked = true;
-					}
-
-					u = -half_width_in_px  + m_p_detector->getPixelSizeInUnitOfLength()[0] * (0.5 + i);
-					v = -half_height_in_px + m_p_detector->getPixelSizeInUnitOfLength()[1] * (0.5 + j);
-
-					pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
+					VEC3 pixel_position = detector_centre + detector_up_vector * v + detector_right_vector * u;
 					if (!m_p_detector->useParallelBeam())
 					{
 						ray_origin = m_p_detector->getXraySourceCentre() + aXRaySourceSampleOffset;
@@ -2085,23 +2078,13 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 							l_buffer_value += ite->first * sgn(ite->second.dotProduct(ray_direction)) / cm;
 						}
 					}
-
-					/*glTexSubImage2D(GL_TEXTURE_2D,
-							0,
-							i,
-							j,
-							1,
-							1,
-							GL_RED,
-							GL_FLOAT,
-							&l_buffer_value);*/
-
-					p_temp[i + j * m_temp_raw_data.getHeight()] = l_buffer_value;
 				}
 				else
 				{
-					p_temp[i + j * m_temp_raw_data.getHeight()] = m_temp_raw_data.getPixel(i, j, 0);
+					l_buffer_value = m_temp_raw_data.getPixel(i, j, 0);
 				}
+
+				p_temp[i + j * m_temp_raw_data.getHeight()] = l_buffer_value;
 			}
 		}
 
