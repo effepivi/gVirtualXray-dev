@@ -1742,6 +1742,7 @@ void displayScene(int aWindowID)
             if (search_window->second)
             {
         	    // Make the window's context current
+                glfwShowWindow(search_window->second);
         	    glfwMakeContextCurrent(search_window->second);
         		initViewer();
 
@@ -1822,6 +1823,7 @@ void renderLoop(int aWindowID, PyObject* aCallBack)
                 	//computeXRayImage();
 
                 	// Render here
+                    glfwShowWindow(search_window->second);
                 	displayScene(aWindowID);
                 }
             }
