@@ -653,14 +653,11 @@ void destroyAllWindows()
     cout << "gvxrStatus:\tDestroy all the windows" << endl;
 
     // Process all the windows
-    for (auto& window_ite: g_p_window_set)
+    while (g_p_window_set.size())
     {
         // Destroy the window if possible
-        destroyWindow(window_ite.first);
+        destroyWindow(g_p_window_set.begin()->first);
     }
-
-    // Empty the set of windows
-    g_p_window_set.clear();
 
     // Terminate GLFW
     //glfwTerminate();    
@@ -1947,10 +1944,10 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 		g_use_arc_ball = false;
 		g_zoom += yoffset * cm;
 
-		int width, height;
-		glfwGetWindowSize(apWindow, &width, &height);
 
-		framebufferSizeCallback(apWindow, width, height);
+        loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                  0.0, 0.0, 0.0,
+                                  0.0, 1.0, 0.0);
 	}
 }
 
