@@ -20,7 +20,11 @@
 #include <memory>
 
 #include <Python.h>
+// For Python
+#include <boost/python.hpp>
 
+// For Numpy
+#include <boost/python/numpy.hpp>
 
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
@@ -110,129 +114,22 @@
 */
 using namespace std;
 using namespace gVirtualXRay;
-/*namespace np = boost::python::numpy;
-*/
+namespace np = boost::python::numpy;
 
 
 
 
 
-class PyPolygonMesh;
+#ifndef __gvxrWrapper_h
+#include "gvxrWrapper.h"
+#endif
 
-
-void createWindow(int aWindowID = -1, bool aVisibilityFlag = false);
-void createOpenGLContext(int aWindowID = -1);
-void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
-void destroyWindow(int aWindowID = -1);
-
-
-void destroyAllWindows(void);
-//np::ndarray computeXRayImage();
-//np::ndarray computeLBuffer(const char* aLabel);
-
-//np::ndarray computeSinogram(double x, double y, double z, const char* aUnitOfLength,
-//                                   unsigned int aNumberOfAngle,
-//                                   double anAngleOffset);
-
-
-void usePointSource(void);
-void useParallelBeam(void);
-void useParallelSource(void);
-void resetBeamSpectrum(void);
-//void setMonoChromatic(double anEnergy, const char* aUnitOfEnergy, double aNumberOfPhotons = 1);
-void addEnergyBinToSpectrum(double anEnergy, const char* aUnitOfEnergy,  double aNumberOfPhotons);
-void setSourcePosition(double x, double y, double z, const char* aUnitOfLength);
-void setDetectorPosition(double x, double y, double z, const char* aUnitOfLength);
-void setDetectorUpVector(double x, double y, double z);
-void setDetectorNumberOfPixels(int aWidth, int aHeight);
-void setDetectorPixelSize(double aWidth, double aHeight, const char* aUnitOfLength);
-//void saveLastXRayImage(const char* aFileName = 0);
-
-//np::ndarray getNumpyImage(const Image<float>& anImage);
-
-void displayScene(int aWindowID = -1);
-//void renderLoop(int aWindowID = -1, PyObject* CallBack = 0);
-
-void loadMeshFile(const char* aLabel,
-        const char* aFileName,
-        const char* aUnitOfLength);
-void loadSceneGraph(const char* aFileName,
-        const char* aUnitOfLength);
-void moveToCentre(const char* aLabel = 0);
-void addPolygonMeshAsInnerSurface(const PyPolygonMesh& aMesh, const std::string& aLabel);
-void addPolygonMeshAsOuterSurface(const PyPolygonMesh& aMesh, const std::string& aLabel);
-void removePolygonMeshes();
-
-//np::ndarray getSceneTransformationMatrix();
-//np::ndarray getRootTransformationMatrix();
-//np::ndarray getNodeTransformationMatrix(const char* aLabel);
-
-//void setSceneTransformationMatrix(const np::ndarray& aMatrix);
-//void setRootTransformationMatrix(const np::ndarray& aMatrix);
-//void setNodeTransformationMatrix(const char* aLabel, const np::ndarray& aMatrix);
-
-
-void scaleNode(const char* aLabel, double x, double y, double z,
-        const char* aUnitOfLength);
-void rotateNode(const char* aLabel, double angle, double x, double y, double z);
-void translateNode(const char* aLabel, double x, double y, double z,
-        const char* aUnitOfLength);
-
-void resetSceneTransformation();
-void scaleScene(double x, double y, double z,
-        const char* aUnitOfLength);
-void rotateScene(double angle, double x, double y, double z);
-void translateScene(double x, double y, double z,
-        const char* aUnitOfLength);
-
-
-void setHU(const char* aLabel, double aHU);
-void setMassAttenuationCoefficient(const char* aLabel,
-        double anAttenuationCoefficient);
-void setLinearAttenuationCoefficient(const char* aLabel,
-        double anAttenuationCoefficient);
-//boost::python::tuple getMeshLabelSet();
-
-PyPolygonMesh makeCube(double aLength = 1.0, const char* aUnitOfLength = "cm");
-PyPolygonMesh makeCylinder(unsigned int aNumberOfSectors = 10,
-        double aHeight = 1.0,
-        double aRadius = 0.5,
-		const char* aUnitOfLength = "cm");
-
-
-
-
-void initialiseXRayRenderer();
-
-
-void quit();
-void initViewer();
 GLFWwindow* initGLFW(int aWindowID, bool aVisibilityFlag);
-void initGL();
-void errorCallback(int error, const char* description);
-
 void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void draw();
-void render();
-
-
-
-double getUnitOfLength(const char* aUnitOfLength);
-double getUnitOfEnergy(const char* aUnitOfEnergy);
-
-void disableArtefactFilteringOnGPU(void);
-void disableArtifactFilteringOnGPU(void);
-void disableArtefactFilteringOnCPU(void);
-void disableArtifactFilteringOnCPU(void);
-void enableArtefactFilteringOnGPU(void);
-void enableArtifactFilteringOnGPU(void);
-void enableArtefactFilteringOnCPU(void);
-void enableArtifactFilteringOnCPU(void);
-
 
 std::map<int, GLFWwindow*> g_p_window_set;
 std::vector<int> g_p_window_id_stack;
@@ -334,6 +231,7 @@ public:
 private:
 	PolygonMesh m_polygon_mesh;
 };
+
 
 /*
 BOOST_PYTHON_FUNCTION_OVERLOADS(createWindow_overloads,      createWindow,      0, 2)
@@ -521,7 +419,8 @@ PyPolygonMesh emptyMesh()
 {
 	return (PyPolygonMesh());
 }
-/*
+
+
 //-------------------------------------
 void createWindow(int aWindowID,
                   bool aVisibilityFlag)
@@ -622,7 +521,7 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
         }
     }
 }
-*/
+
 
 //-------------------------------
 void destroyWindow(int aWindowID)
@@ -2397,19 +2296,8 @@ void enableArtifactFilteringOnCPU(void)
 }
 
 
-void initPython(void)
-{
-    // Initialise Python
-    Py_Initialize();
-}
 
 
-void program_init(void)
-{
-    // Initialise Python
-    Py_Initialize();
-
-}
 
 /*
 BOOST_PYTHON_MODULE(gvxrPython)

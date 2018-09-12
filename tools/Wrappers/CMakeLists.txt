@@ -55,35 +55,38 @@ IF (SWIG_FOUND)
 
     INCLUDE (${SWIG_USE_FILE})
 
-    SET_PROPERTY(SOURCE gvxrWrapper.i PROPERTY CPLUSPLUS ON)
+    #SET_PROPERTY(SOURCE gvxrWrapper.i PROPERTY CPLUSPLUS ON)
 
     option(BUILD_PYTHON2 "Build Python2 SWIG module" ON)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" ON)
     option(BUILD_OCTAVE "Build Octave SWIG module" ON)
 
-    #IF (BUILD_PYTHON2)
+    IF (BUILD_PYTHON2)
+        add_subdirectory(python2)
     #    find_package(PythonLibs 2 REQUIRED)
     #    include_directories(${PYTHON_INCLUDE_PATH})
     #    SWIG_ADD_LIBRARY(gvxrPythonWrapper2 LANGUAGE python SOURCES gvxrWrapper.i gvxrWrapper.cxx)
     #    SWIG_LINK_LIBRARIES(gvxrPythonWrapper2 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES})
 	#	ADD_DEPENDENCIES(gvxrPythonWrapper2 BinaryWrapper)
-    #ENDIF (BUILD_PYTHON2)
+    ENDIF (BUILD_PYTHON2)
     
     IF (BUILD_PYTHON3)
-        find_package(PythonLibs 3 REQUIRED)
-        include_directories(${PYTHON_INCLUDE_PATH})
-        SWIG_ADD_LIBRARY(gvxrPythonWrapper3 LANGUAGE python SOURCES gvxrWrapper.i gvxrWrapper.cxx)
-        SWIG_LINK_LIBRARIES(gvxrPythonWrapper3 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES})
+        add_subdirectory(python3)
+        #find_package(PythonLibs 3 REQUIRED)
+        #include_directories(${PYTHON_INCLUDE_PATH})
+        #SWIG_ADD_LIBRARY(gvxrPythonWrapper3 LANGUAGE python SOURCES gvxrWrapper.i gvxrWrapper.cxx)
+        #SWIG_LINK_LIBRARIES(gvxrPythonWrapper3 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES})
 		#ADD_DEPENDENCIES(gvxrPythonWrapper3 BinaryWrapper)
     ENDIF (BUILD_PYTHON3)
 
-    #IF (BUILD_OCTAVE)
+    IF (BUILD_OCTAVE)
+        add_subdirectory(octave)
     #    find_package(Octave REQUIRED)
     #    include_directories(${OCTAVE_INCLUDE_DIRS})
     #    SWIG_ADD_LIBRARY(gvxrOctaveWrapper LANGUAGE octave SOURCES gvxrWrapper.i gvxrWrapper.cxx)
     #    SWIG_LINK_LIBRARIES(gvxrOctaveWrapper ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${OCTAVE_LIBRARIES})
 	#	ADD_DEPENDENCIES(gvxrOctaveWrapper BinaryWrapper)
-    #ENDIF (BUILD_OCTAVE)
+    ENDIF (BUILD_OCTAVE)
 
 
 
