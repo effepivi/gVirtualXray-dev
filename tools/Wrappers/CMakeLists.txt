@@ -48,14 +48,35 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 FIND_PACKAGE(SWIG)
 
 IF (SWIG_FOUND)
+    INCLUDE (${SWIG_USE_FILE})
+
 	# Create the RESOURCES ###########################################################
 	INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
 	SET (RESOURCES_SOURCES display_gl2.vert display_gl2.frag display_gl3.vert display_gl3.frag)
 	CreateHeaderFiles("cmake" "BinaryWrapper" "${RESOURCES_SOURCES}")
 
-    INCLUDE (${SWIG_USE_FILE})
+    # Create main and link to liba
+    add_library(gvxrWrappers gvxrWrapper.cxx)
+    target_link_libraries(gvxrWrappers ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
-    #SET_PROPERTY(SOURCE gvxrWrapper.i PROPERTY CPLUSPLUS ON)
+    # Set up public headers for swig-example
+    set_target_properties(gvxrWrappers PROPERTIES PUBLIC_HEADER "gvxrWrappers.h")
+
+	ADD_DEPENDENCIES(gvxrWrappers BinaryWrapper)
+
+	IF (gVirtualXRay_BINARY_DIR)
+	     ADD_DEPENDENCIES (gvxrWrappers   gVirtualXRay)
+	ENDIF (gVirtualXRay_BINARY_DIR)
+
+    install(TARGETS gvxrWrappers
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib/static
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include)
+
+
+    set(CMAKE_SWIG_FLAGS "")
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
     option(BUILD_PYTHON2 "Build Python2 SWIG module" ON)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" ON)
@@ -123,9 +144,6 @@ ENDIF (SWIG_FOUND)
 #	            FILE(COPY gvxrPythonLoadSceneGraphFile.py            DESTINATION .)
 #	            FILE(COPY ../../examples/data/welsh-dragon-small.stl DESTINATION .)
 
-#				IF (gVirtualXRay_BINARY_DIR)
-#				     ADD_DEPENDENCIES (gvxrPython   gVirtualXRay)
-#				ENDIF (gVirtualXRay_BINARY_DIR)
 
 #            ELSE ()
 #                message(WARNING "Boost (${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}) is too old. Use at least 1.63")
@@ -149,7 +167,7 @@ ENDIF (SWIG_FOUND)
 #IF (glfw3_FOUND)
 #    ADD_DEFINITIONS(-DHAS_GLFW)
 #ELSE (glfw3_FOUND)
-#	MESSAGE (WARNING "GLFW3 not found, the tool (${PROJECT_NAME}) will be disable.")
+#	MESSAGE (WARNING "GLFW3 not found, the tool (gvxrWrappers) will be disable.")
 #ENDIF (glfw3_FOUND)
 
 
