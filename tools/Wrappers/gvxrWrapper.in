@@ -5,5 +5,12 @@
 #include "gvxrWrapper.h"
 %}
 
+/*%include "numpy.i"
+
+%init %{
+import_array(); // This is essential. We will get a crash in Python without it.
+%}
+*/
+
 // Process symbols in header
 %include "gvxrWrapper.h"

@@ -52,6 +52,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
+void render();
 void quit();
 void errorCallback(int error, const char* description);
 void initGL();
@@ -109,6 +110,201 @@ Shader g_display_shader;
 std::shared_ptr<SceneGraphBinder> g_p_scene_graph = 0;
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
+Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
+
+//--------------------------------------------------
+void setSourcePosition(double x, double y, double z,
+                       const char* aUnitOfLength)
+//--------------------------------------------------
+{
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+	g_xray_detector.setXrayPointSource(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+    g_source_position_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+    initViewer();
+}
+
+
+//----------------------------------------------------
+void setDetectorPosition(double x, double y, double z,
+                         const char* aUnitOfLength)
+//----------------------------------------------------
+{
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+    g_xray_detector.setDetectorPosition(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+    g_detector_position_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+    initViewer();
+}
+
+
+//----------------------------------------------------
+void setDetectorUpVector(double x, double y, double z)
+//----------------------------------------------------
+{
+    g_xray_detector.setUpVector(VEC3(x, y, z).normal());
+    g_detector_up_vector_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+    initViewer();
+}
+
+
+//-----------------------------------------------------
+void setDetectorNumberOfPixels(int aWidth, int aHeight)
+//-----------------------------------------------------
+{
+    g_xray_detector.setNumberOfPixels(Vec2ui(aWidth, aHeight));
+    g_detector_size_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    g_renderer_initialised = false;
+    initialiseXRayRenderer();
+}
+
+
+//--------------------------------------------------
+void setDetectorPixelSize(double aWidth,
+						  double aHeight,
+						  const char* aUnitOfLength)
+//--------------------------------------------------
+{
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(VEC2(aWidth * unit_of_length, aHeight * unit_of_length));
+    g_detector_pixel_size_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//------------------------------------------
+void loadMeshFile(const char* aLabel,
+                  const char* aFileName,
+                  const char* aUnitOfLength)
+//------------------------------------------
+{
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+
+    SceneGraphBinder* p_temp = g_p_scene_graph.get();
+    if (!p_temp)
+    {
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+    }
+
+    // Set the file name
+    g_p_scene_graph->getPolygonMeshSet()[aLabel].setFileName(aFileName);
+    
+    // Load the file
+    g_p_scene_graph->getPolygonMeshSet()[aLabel].loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
+
+    // Add the geometry to the X-ray renderer
+    g_xray_renderer.addInnerSurface(&g_p_scene_graph->getPolygonMeshSet()[aLabel]);
+}
+
+
+//-----------------------------------
+void moveToCentre(const char* aLabel)
+//-----------------------------------
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		if (aLabel)
+		{
+			auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+			// It has been found
+			if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+			{
+				// Move the mesh to the centre
+				g_p_scene_graph->getPolygonMeshSet()[aLabel].moveToCentre ();
+			}
+			// It has not been found
+			else
+			{
+				cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+			}
+		}
+		// Move the scenegraph
+		else
+		{
+			g_p_scene_graph->moveToCentre();
+			g_p_scene_graph->updateMatrices();
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+//-----------------------------------
+void moveToCenter(const char* aLabel)
+//-----------------------------------
+{
+    moveToCentre(aLabel);
+}
+
+
+//-------------------------------------------------
+void setHU(const char* aLabel, double aHU)
+//-------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+    	g_p_scene_graph->getPolygonMeshSet()[aLabel].setHounsfieldValue (aHU);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+void setMassAttenuationCoefficient(const char* aLabel,
+                               double anAttenuationCoefficient)
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "TODO: mass vs liner attenuation coefficient");
+}
+
+
+//----------------------------------------------------------------------
+void setLinearAttenuationCoefficient(const char* aLabel,
+                               double anAttenuationCoefficient)
+//----------------------------------------------------------------------
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "TODO: mass vs liner attenuation coefficient");
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setAttenuationCoefficient (anAttenuationCoefficient);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
 
 
 //-------------------------------------
@@ -235,6 +431,132 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
             cerr << "gvxrWarning:\tWindow " << aWindowID << " not found." << endl;
         }
     }
+}
+
+
+//------------------------------
+void displayScene(int aWindowID)
+//------------------------------
+{
+    // Display in the last window that has been created
+    if (aWindowID == -1)
+    {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+        {
+            cerr << "gvxrWarning:\tNo active window to destroy." << endl;
+        }
+        // Destroy the last created window
+        else
+        {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+        }
+    }
+
+    // There is a window to use
+    if (aWindowID != -1)
+    {
+        // Find the window
+        auto search_window = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if(search_window != g_p_window_set.end())
+        {
+            if (search_window->second)
+            {
+        	    // Make the window's context current
+                glfwShowWindow(search_window->second);
+        	    glfwMakeContextCurrent(search_window->second);
+        		initViewer();
+
+        		// Clear the buffers
+        		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        		// Display the 3D scene
+        		render();
+
+        		// Make sure all the OpenGL code is done
+        		glFinish();
+
+        		// Swap front and back buffers
+        		glfwSwapBuffers(search_window->second);
+            }
+
+            // Poll for and process events
+            glfwPollEvents();
+        }
+        else
+        {
+            cerr << "gvxrWarning:\tWindow " << aWindowID << " not found in g_p_window_set." << endl;
+        }
+	}
+}
+
+
+//-------------------------------------------------
+void renderLoop(int aWindowID/*, PyObject* aCallBack*/)
+//-------------------------------------------------
+{
+    // Display in the last window that has been created
+    if (aWindowID == -1)
+    {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+        {
+            cerr << "gvxrWarning:\tNo active window to destroy." << endl;
+        }
+        // Destroy the last created window
+        else
+        {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+        }
+    }
+
+    // There is a window to use
+    if (aWindowID != -1)
+    {
+        // Find the window
+        auto search_window = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if(search_window != g_p_window_set.end())
+        {
+            if (search_window->second)
+            {
+            	g_run_loop = true;
+
+            	// Launch the event loop
+                while (!glfwWindowShouldClose(search_window->second) && g_run_loop)
+                {
+                	// There is a callback
+                	/*if (aCallBack)
+                	{
+                		// Ensure that the current thread is ready to call the Python C API
+                		PyGILState_STATE state = PyGILState_Ensure();
+
+                		// Invoke the python function
+                		boost::python::call<void>(aCallBack);
+
+                		// Release the global interpreter lock so other threads can resume execution
+                		PyGILState_Release(state);
+                	}*/
+
+                	// Udate the X-ray image
+                	//computeXRayImage();
+
+                	// Render here
+                    glfwShowWindow(search_window->second);
+                	displayScene(aWindowID);
+                }
+            }
+        }
+        else
+        {
+            cerr << "gvxrWarning:\tWindow " << aWindowID << " not found in g_p_window_set." << endl;
+        }
+	}
 }
 
 
@@ -529,6 +851,125 @@ void disableArtifactFiltering(void)
 }
 
 
+//----------------------------
+void computeXRayImage()
+//----------------------------
+{
+    // There is no OpenGL context
+    if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        // Compute the X-ray image
+        g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    }
+    // The renderer is not ready
+    else
+    {
+        cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    }
+
+	//return (getNumpyImage(g_xray_renderer.getEnergyFluence()));
+}
+
+
+//--------------------------------------------
+void computeLBuffer(const char* aLabel)
+//--------------------------------------------
+{
+    // There is no OpenGL context
+    if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+    {
+        // Create a window
+        createWindow();
+    }
+    
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        if (g_p_scene_graph.get())
+        {
+            // Find the mesh
+            auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+            
+            // It has been found
+            if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+            {
+                // Compute the L-buffer
+                g_xray_renderer.computeLBuffer(search_mesh->second, VEC3(), g_sample_rotation_matrix, false);
+            }
+            // It has not been found
+            else
+            {
+                cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+            }
+        }
+        else
+        {
+            cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        }
+    }
+    // The renderer is not ready
+    else
+    {
+        cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    }
+    
+    //g_xray_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "uncleaned_lbuffer.mha");
+    //g_xray_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "cleaned_lbuffer.mha");
+     //g_xray_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "cumulated_l-buffers.mha");
+    // g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
+    
+    // Compute its L-buffer
+    //return (getNumpyImage(g_xray_renderer.getLBuffer()));
+}
+
+
+void computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+        unsigned int aNumberOfAngle,
+        double anAngleOffset)
+{
+    // There is no OpenGL context
+    if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+    {
+        // Create a window
+        createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady())
+    {
+        // Compute the X-ray image
+
+    	double unit_of_length = getUnitOfLength(aUnitOfLength);
+    	VEC3 rotation_centre(VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+
+        g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
+                rotation_centre,
+                aNumberOfAngle,
+                anAngleOffset);
+    }
+    // The renderer is not ready
+    else
+    {
+        cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    }
+
+	//return (getNumpyImage(g_xray_renderer.getSinogram()));
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -718,6 +1159,244 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
         loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
                                   0.0, 0.0, 0.0,
                                   0.0, 1.0, 0.0);
+	}
+}
+
+
+//-----------
+void render()
+//-----------
+{
+	try
+	{
+        // Enable back face culling
+        pushEnableDisableState(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
+        // Enable the shader
+        pushShaderProgram();
+        g_display_shader.enable();
+        GLint shader_id(g_display_shader.getProgramHandle());
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Store the current transformation matrix
+        pushModelViewMatrix();
+
+        // Rotate the sample
+        g_current_modelview_matrix *= g_scene_rotation_matrix;
+
+        GLuint handle(0);
+        handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        MATRIX4 normal_matrix(g_current_modelview_matrix);
+        handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+        glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        GLint lighting;
+        if (g_use_lighing)
+        {
+            lighting = 1;
+        }
+        else
+        {
+            lighting = 0;
+        }
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        // Set the colour of the sample
+        {
+            const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
+            const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
+            const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        // Store the current transformation matrix
+        pushModelViewMatrix();
+
+        g_current_modelview_matrix *= g_sample_rotation_matrix;
+
+
+
+        for (std::map<string, PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+        		ite != g_p_scene_graph->getPolygonMeshSet().end();
+        		++ite)
+        {
+            // Store the current transformation matrix
+            pushModelViewMatrix();
+
+            g_current_modelview_matrix *= ite->second.getTransformationMatrix();
+
+			applyModelViewMatrix();
+
+			// Display the sample
+			if (g_display_wireframe)
+			{
+				ite->second.displayWireFrame();
+			}
+			else
+			{
+				ite->second.display();
+			}
+
+
+			if (g_display_normal_vectors)
+			{
+				int line_width;
+				glGetIntegerv(GL_LINE_WIDTH, &line_width);
+				glLineWidth(3);
+
+				if (ite->second.getVertexNormalNumber())
+				{
+					ite->second.displayVertexNormal();
+				}
+
+				if (ite->second.getFaceNormalNumber())
+				{
+					ite->second.displayFaceNormal();
+				}
+				glLineWidth(line_width);
+
+			}
+
+			// Restore the current transformation matrix
+			popModelViewMatrix();
+        }
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Set the colour of the source
+        {
+            const GLfloat material_ambient[]  = {0.0, 0.39225,  0.39225,  1.0};
+            const GLfloat material_diffuse[]  = {0.0, 0.70754,  0.70754,  1.0};
+            const GLfloat material_specular[] = {0.0, 0.708273, 0.708273, 1.0};
+            const GLfloat material_shininess = 50.2;
+
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &material_diffuse[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &material_specular[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1fv(handle, 1, &material_shininess);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        }
+
+        {
+			// Define the light colours here
+			GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+			GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+			GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+			GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+			handle = glGetUniformLocation(shader_id, "light_global_ambient");
+			glUniform4fv(handle, 1, &light_global_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "light_ambient");
+			glUniform4fv(handle, 1, &light_ambient[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "light_diffuse");
+			glUniform4fv(handle, 1, &light_diffuse[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			handle = glGetUniformLocation(shader_id, "light_specular");
+			glUniform4fv(handle, 1, &light_specular[0]);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+			VEC3 light_position(0, 0, g_zoom);
+			handle = glGetUniformLocation(shader_id, "light_position");
+			glUniform4f(handle,
+				light_position.getX(),
+				light_position.getY(),
+				light_position.getZ(),
+				1.0);
+			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+        // Display the source
+        g_xray_detector.displaySource();
+
+        // Disable back face culling
+        glDisable(GL_CULL_FACE);
+
+        // Display the X-Ray image
+        if (g_display_detector)
+        {
+            g_xray_renderer.display(true, true, false);
+        }
+
+        // Display the beam
+        if (g_display_beam)
+        {
+            const GLfloat material_ambient[]  = {0.75, 0, 0.5, 0.3};
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &material_ambient[0]);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            lighting = 0;
+            handle = glGetUniformLocation(shader_id,"g_use_lighting");
+            glUniform1iv(handle, 1, &lighting);
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+            g_xray_detector.displayBeam();
+        }
+
+        // Disable the shader
+        popShaderProgram();
+
+        // Restore the current transformation matrix
+        popModelViewMatrix();
+
+        // Restore the attributes
+        popEnableDisableState();
+
+        // Check the status of OpenGL and of the current FBO
+        checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	}
+	// Catch exception if any
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << std::endl;
 	}
 }
 
