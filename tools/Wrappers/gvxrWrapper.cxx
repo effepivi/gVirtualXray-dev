@@ -1,3 +1,5 @@
+#ifdef TOTO
+
 #ifdef HAS_GLEW
 #include <GL/glew.h>
 #endif
@@ -19,12 +21,12 @@
 #include <algorithm>
 #include <memory>
 
-#include <Python.h>
+//#include <Python.h>
 // For Python
-#include <boost/python.hpp>
+//#include <boost/python.hpp>
 
 // For Numpy
-#include <boost/python/numpy.hpp>
+//#include <boost/python/numpy.hpp>
 
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
@@ -114,7 +116,7 @@
 */
 using namespace std;
 using namespace gVirtualXRay;
-namespace np = boost::python::numpy;
+//namespace np = boost::python::numpy;
 
 
 
@@ -2330,3 +2332,20 @@ BOOST_PYTHON_MODULE(gvxrPython)
 
 }
 */
+
+
+#else
+#include <iostream>
+
+void toto(void)
+{
+    std::cout << "Hello toto" << std::endl;
+}
+
+void titi(void)
+{
+    std::cout << "Hello titi" << std::endl;
+}
+
+#endif
+

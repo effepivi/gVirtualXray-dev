@@ -2,6 +2,8 @@
 #define __gvxrWrapper_h
 
 
+#ifdef TOTO
+
 
 /*
 
@@ -114,10 +116,10 @@
 
 
 
-*/
+
 //using namespace std;
 //using namespace gVirtualXRay;
-/*namespace np = boost::python::numpy;
+//namespace np = boost::python::numpy;
 */
 
 
@@ -126,10 +128,10 @@
 
 
 
-void createWindow(int aWindowID = -1, bool aVisibilityFlag = false);
-void createOpenGLContext(int aWindowID = -1);
-void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
-void destroyWindow(int aWindowID = -1);
+void createWindow(int aWindowID, int aVisibilityFlag);
+void createOpenGLContext(int aWindowID);
+void setWindowSize(int aWidth, int aHeight, int aWindowID);
+void destroyWindow(int aWindowID);
 
 
 void destroyAllWindows(void);
@@ -156,7 +158,7 @@ void setDetectorPixelSize(double aWidth, double aHeight, const char* aUnitOfLeng
 
 //np::ndarray getNumpyImage(const Image<float>& anImage);
 
-void displayScene(int aWindowID = -1);
+void displayScene(int aWindowID);
 //void renderLoop(int aWindowID = -1, PyObject* CallBack = 0);
 
 void loadMeshFile(const char* aLabel,
@@ -164,7 +166,7 @@ void loadMeshFile(const char* aLabel,
         const char* aUnitOfLength);
 void loadSceneGraph(const char* aFileName,
         const char* aUnitOfLength);
-void moveToCentre(const char* aLabel = 0);
+void moveToCentre(const char* aLabel);
 //void addPolygonMeshAsInnerSurface(const PyPolygonMesh& aMesh, const std::string& aLabel);
 //void addPolygonMeshAsOuterSurface(const PyPolygonMesh& aMesh, const std::string& aLabel);
 void removePolygonMeshes();
@@ -231,7 +233,12 @@ void enableArtefactFilteringOnGPU(void);
 void enableArtifactFilteringOnGPU(void);
 void enableArtefactFilteringOnCPU(void);
 void enableArtifactFilteringOnCPU(void);
+#else
 
+void toto(void);
+void titi(void);
+
+#endif
 
 #endif
 
