@@ -65,7 +65,7 @@ IF (SWIG_FOUND)
 	ADD_DEPENDENCIES(gvxrWrappers BinaryWrapper)
 
 	IF (gVirtualXRay_BINARY_DIR)
-	     ADD_DEPENDENCIES (gvxrWrappers   gVirtualXRay)
+	     ADD_DEPENDENCIES (gVirtualXRay gvxrWrappers)
 	ENDIF (gVirtualXRay_BINARY_DIR)
 
     install(TARGETS gvxrWrappers

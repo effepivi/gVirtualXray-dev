@@ -38,26 +38,30 @@ gvxr.setHU("dragon", 1000)
 
 # Compute an X-ray image
 print("Compute an X-ray image");
-gvxr.computeXRayImage();
+gvxr.disableArtefactFiltering();
+# Not working anymore gvxr.enableArtefactFilteringOnGPU();
+# Not working anymore gvxr.enableArtefactFilteringOnCPU();
+x_ray_image = gvxr.computeXRayImage();
 
 # Save the last image into a file
 print("Save the last image into a file");
 gvxr.saveLastXRayImage();
+gvxr.saveLastLBuffer();
 
 # Retrieve the image in Numpy's 2D array format
-#np_image = gvxr.getNumpyImage();
+np_image = np.array(x_ray_image);
 
 # Normalise the image between 0 and 255 (this is for PIL)
-#np_normalised_image = (255 * (np_image-np_image.min())/np_image.max()).astype(np.int8);
+np_normalised_image = (255 * (np_image-np_image.min())/np_image.max()).astype(np.int8);
 
 # Convert the Numpy array into a PIL image
-#img = Image.fromarray(np_normalised_image.astype(np.ubyte));
+img = Image.fromarray(np_normalised_image.astype(np.ubyte));
 
 # Save the PIL image
-#img.save('my.png')
+img.save('my.png')
 
 # Show the image
-#img.show()
+img.show()
 
 # Display the 3D scene (no event loop)
 gvxr.displayScene();

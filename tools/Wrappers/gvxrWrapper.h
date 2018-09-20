@@ -1,6 +1,46 @@
 #ifndef __gvxrWrapper_h
 #define __gvxrWrapper_h
 
+#include <vector>
+
+
+
+/*
+    // Expose C++ to Python
+
+    boost::python::def("addPolygonMeshAsInnerSurface",            addPolygonMeshAsInnerSurface);
+    boost::python::def("addPolygonMeshAsOuterSurface",            addPolygonMeshAsOuterSurface);
+    boost::python::def("removePolygonMeshes",       removePolygonMeshes);
+
+    boost::python::def("getSceneTransformationMatrix", getSceneTransformationMatrix);
+    boost::python::def("getRootTransformationMatrix",  getRootTransformationMatrix);
+    boost::python::def("getNodeTransformationMatrix",  getNodeTransformationMatrix);
+    boost::python::def("setSceneTransformationMatrix", setSceneTransformationMatrix);
+    boost::python::def("setRootTransformationMatrix",  setRootTransformationMatrix);
+    boost::python::def("setNodeTransformationMatrix",  setNodeTransformationMatrix);
+
+    boost::python::def("scaleNode",                 scaleNode);
+    boost::python::def("rotateNode",                rotateNode);
+    boost::python::def("translateNode",             translateNode);
+    boost::python::def("resetSceneTransformation", resetSceneTransformation);
+
+    boost::python::def("scaleScene",                scaleScene);
+    boost::python::def("rotateScene",               rotateScene);
+    boost::python::def("translateScene",            translateScene);
+
+    boost::python::def("getMeshLabelSet",           getMeshLabelSet);
+
+    boost::python::def("makeCube",     makeCube,     makeCube_overloads());
+    boost::python::def("makeCylinder", makeCylinder, makeCylinder_overloads());
+
+    boost::python::def("displayScene", displayScene, displayScene_overloads());
+    boost::python::def("renderLoop",   renderLoop,   renderLoop_overloads());
+
+
+    boost::python::def("emptyMesh",                     emptyMesh);
+
+*/
+
 
 void setSourcePosition(double x, double y, double z, const char* aUnitOfLength);
 void setDetectorPosition(double x, double y, double z, const char* aUnitOfLength);
@@ -12,8 +52,10 @@ void setDetectorPixelSize(double aWidth,
 void loadMeshFile(const char* aLabel,
                   const char* aFileName,
                   const char* aUnitOfLength);
-void moveToCentre(const char* aLabel);
-void moveToCenter(const char* aLabel);
+void loadSceneGraph(const char* aFileName,
+        			const char* aUnitOfLength);
+void moveToCentre(const char* aLabel = 0);
+void moveToCenter(const char* aLabel = 0);
 void setHU(const char* aLabel, double aHU);
 void setMassAttenuationCoefficient(const char* aLabel,
                                    double anAttenuationCoefficient);
@@ -39,6 +81,8 @@ void addEnergyBinToSpectrum(double anEnergy,
 							const char* aUnitOfEnergy,
 							double aNumberOfPhotons);
 void saveLastXRayImage(const char* aFileName = 0);
+void saveLastLBuffer(const char* aFileName = 0);
+void saveLastSinogram(const char* aFileName = 0);
 void enableArtefactFilteringOnGPU(void);
 void enableArtifactFilteringOnGPU(void);
 void enableArtefactFilteringOnCPU(void);
@@ -46,9 +90,9 @@ void enableArtifactFilteringOnCPU(void);
 void disableArtefactFiltering(void);
 void disableArtifactFiltering(void);
 
-void computeXRayImage();
-void computeLBuffer(const char* aLabel);
-void computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+std::vector<std::vector<float> > computeXRayImage();
+std::vector<std::vector<float> > computeLBuffer(const char* aLabel);
+std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const char* aUnitOfLength,
         unsigned int aNumberOfAngle,
         double anAngleOffset);
 

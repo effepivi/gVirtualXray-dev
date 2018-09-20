@@ -1,23 +1,27 @@
 # Include python
-find_package(PythonLibs 3 REQUIRED)
-include_directories(${PYTHON_INCLUDE_PATH})
 
 FIND_PACKAGE(Boost COMPONENTS python-py3 numpy-py3)
+find_package(PythonLibs 3 REQUIRED)
+
+
+#FIND_PACKAGE(FindNumPy)
+
 
 IF (Boost_FOUND)
     IF (NOT "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" VERSION_LESS "1.63")
 	    message(STATUS "Build bindings for Python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
-	    message(STATUS "Boost_INCLUDE_DIRS   ${Boost_INCLUDE_DIRS}")
-	    message(STATUS "PYTHON_INCLUDE_DIRS  ${PYTHON_INCLUDE_DIRS}")
 	    
-        INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+	    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+		INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+	    
+
         SET (module gvxrPython3)
         configure_file(../gvxrWrapper.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
         SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i PROPERTY CPLUSPLUS ON)
 
         # Add swig module
         SWIG_ADD_LIBRARY(gvxrPython3 LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
-        swig_link_libraries(gvxrPython3 gvxrWrappers ${PYTHON_LIBRARIES})
+        swig_link_libraries(gvxrPython3 gvxrWrappers ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
 
 	            FILE(COPY test.py                   DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 	            FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

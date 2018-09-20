@@ -5,12 +5,16 @@
 #include "gvxrWrapper.h"
 %}
 
-/*%include "numpy.i"
+%include "std_vector.i"
 
-%init %{
-import_array(); // This is essential. We will get a crash in Python without it.
-%}
-*/
+
+namespace std {
+    %template(vectorf) vector<float>;
+    %template(vectord) vector<double>;
+    %template(vectorff) vector<vector<float> >;
+    %template(vectordd) vector<vector<double> >;
+}; 
+
 
 // Process symbols in header
 %include "gvxrWrapper.h"

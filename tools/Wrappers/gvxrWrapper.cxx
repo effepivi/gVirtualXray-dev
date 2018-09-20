@@ -1,6 +1,8 @@
 #include <iostream>
+#include <sstream>
 #include <map>
 #include <vector>
+
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -10,7 +12,7 @@
 
 #include <GLFW/glfw3.h>
 
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -27,6 +29,20 @@
 // To load a scenegraph
 #ifndef __SceneGraphBinder_h
 #include "gVirtualXRay/SceneGraphBinder.h"
+#endif
+
+// To load a scenegraph using ASSIMP
+#ifndef __AssimpSceneGraphBinder_h
+#include "gVirtualXRay/AssimpSceneGraphBinder.h"
+#endif
+
+// To load a scenegraph using OpenSceneGraph
+#ifndef __OpenSceneGraphBinder_h
+#include "gVirtualXRay/OpenSceneGraphBinder.h"
+#endif
+
+#ifndef __OutOfBoundsException_h
+#include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
 #ifndef __gvxrWrapper_h
@@ -63,6 +79,7 @@ Vec3<GLfloat> getArcballVector(GLFWwindow* apWindow, int x, int y);
 float radian2degree(float anAngle);
 double getUnitOfEnergy(const char* aUnitOfEnergy);
 double getUnitOfLength(const char* aUnitOfLength);
+std::vector<std::vector<float> > getVectorImage(const Image<float>& anImage);
 
 
 const GLfloat ROTATION_SPEED(2.0);
@@ -209,6 +226,47 @@ void loadMeshFile(const char* aLabel,
 
     // Add the geometry to the X-ray renderer
     g_xray_renderer.addInnerSurface(&g_p_scene_graph->getPolygonMeshSet()[aLabel]);
+}
+
+
+//--------------------------------------------
+void loadSceneGraph(const char* aFileName,
+        			const char* aUnitOfLength)
+//--------------------------------------------
+{
+	bool scene_graph_loaded = false;
+
+#ifdef HAS_ASSIMP
+	if (!scene_graph_loaded)
+	{
+		g_p_scene_graph.reset(new AssimpSceneGraphBinder(aFileName, getUnitOfLength(aUnitOfLength)));
+		scene_graph_loaded = true;
+	}
+#endif
+
+#ifdef HAS_OPENSCENEGRAPH
+	if (!scene_graph_loaded)
+	{
+		g_p_scene_graph.reset(new OpenSceneGraphBinder(aFileName, getUnitOfLength(aUnitOfLength)));
+		scene_graph_loaded = true;
+	}
+#endif
+
+	if (!scene_graph_loaded)
+	{
+        cerr << "gvxrWarning:\tGraphScene " << aFileName << " not loaded." << endl;
+	}
+    // Add the geometry to the X-ray renderer
+	else
+	{
+		// Look for all the meshes in the scenegraph
+		for (std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+				ite != g_p_scene_graph->getPolygonMeshSet().end();
+				++ite)
+		{
+			g_xray_renderer.addInnerSurface(&ite->second);
+		}
+	}
 }
 
 
@@ -798,7 +856,39 @@ void saveLastXRayImage(const char* aFileName)
     else
         file_name = "xray_image-" + to_string(file_counter++) + ".mha";
 
-    g_xray_renderer.printXRayImage(file_name);
+    g_xray_renderer.getEnergyFluence().save(file_name);
+}
+
+
+//-----------------------------------------
+void saveLastLBuffer(const char* aFileName)
+//-----------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName)
+        file_name = aFileName;
+    else
+        file_name = "lbuffer-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getLBuffer().save(file_name);
+}
+
+
+//------------------------------------------
+void saveLastSinogram(const char* aFileName)
+//------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName)
+        file_name = aFileName;
+    else
+        file_name = "sinogram-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getSinogram().save(file_name);
 }
 
 
@@ -852,7 +942,7 @@ void disableArtifactFiltering(void)
 
 
 //----------------------------
-void computeXRayImage()
+std::vector<std::vector<float> > computeXRayImage()
 //----------------------------
 {
     // There is no OpenGL context
@@ -874,12 +964,12 @@ void computeXRayImage()
         cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
 
-	//return (getNumpyImage(g_xray_renderer.getEnergyFluence()));
+	return (getVectorImage(g_xray_renderer.getEnergyFluence()));
 }
 
 
 //--------------------------------------------
-void computeLBuffer(const char* aLabel)
+std::vector<std::vector<float> > computeLBuffer(const char* aLabel)
 //--------------------------------------------
 {
     // There is no OpenGL context
@@ -926,11 +1016,11 @@ void computeLBuffer(const char* aLabel)
     // g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
     
     // Compute its L-buffer
-    //return (getNumpyImage(g_xray_renderer.getLBuffer()));
+    return (getVectorImage(g_xray_renderer.getLBuffer()));
 }
 
 
-void computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const char* aUnitOfLength,
         unsigned int aNumberOfAngle,
         double anAngleOffset)
 {
@@ -960,7 +1050,7 @@ void computeSinogram(double x, double y, double z, const char* aUnitOfLength,
         cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
 
-	//return (getNumpyImage(g_xray_renderer.getSinogram()));
+	return (getVectorImage(g_xray_renderer.getSinogram()));
 }
 
 
@@ -1722,3 +1812,18 @@ double getUnitOfLength(const char* aUnitOfLength)
 	return (unit_of_length);
 }
 
+
+std::vector<std::vector<float> > getVectorImage(const Image<float>& anImage)
+{
+	std::vector<std::vector<float> > output;
+
+	for (unsigned int j = 0; j < anImage.getHeight(); ++j)
+	{
+		std::vector<float> row;
+		row.insert(row.end(), anImage.getRawData() + j * anImage.getWidth(), anImage.getRawData() + (j + 1) * anImage.getWidth());
+
+		output.push_back(row);
+	}
+
+	return output;
+}
