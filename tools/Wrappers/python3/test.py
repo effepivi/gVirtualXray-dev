@@ -29,14 +29,17 @@ gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 # Load the data
 print("Load the data");
 gvxr.loadSceneGraph("welsh-dragon-small.stl", "mm");
-print("Move the mesh to the centre");
-gvxr.moveToCentre("<STL_BINARY>");
-print("Move the mesh to the center");
-gvxr.moveToCenter("<STL_BINARY>");
-print("Set the mesh's Hounsfield unit");
-gvxr.setHU("<STL_BINARY>", 1000)
 
-print(gvxr.getMeshLabelSet());
+for label in gvxr.getMeshLabelSet():
+    print("Move ", label, " to the centre");
+    gvxr.moveToCentre(label);
+    
+    #print("Move the mesh to the center");
+    #gvxr.moveToCenter(label);
+    
+    print("Set ", label, "'s Hounsfield unit");
+    gvxr.setHU(label, 1000)
+
 
 # Compute an X-ray image
 print("Compute an X-ray image");
