@@ -46,6 +46,14 @@
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
+#ifndef __CubeMesh_h
+#include "gVirtualXRay/CubeMesh.h"
+#endif
+
+#ifndef __CylinderMesh_h
+#include "gVirtualXRay/CylinderMesh.h"
+#endif
+
 #ifndef __OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
@@ -85,6 +93,8 @@ float radian2degree(float anAngle);
 double getUnitOfEnergy(const char* aUnitOfEnergy);
 double getUnitOfLength(const char* aUnitOfLength);
 std::vector<std::vector<float> > getVectorImage(const Image<float>& anImage);
+MATRIX4 Vector2gvxrMatrix(const std::vector<std::vector<float> >& aNumpyMatrix);
+std::vector<std::vector<float> > gvxrMatrix2Vector(const MATRIX4& aMatrix4);
 
 
 const GLfloat ROTATION_SPEED(2.0);
@@ -269,10 +279,54 @@ void loadSceneGraph(const char* aFileName,
 				ite != g_p_scene_graph->getPolygonMeshSet().end();
 				++ite)
 		{
-			cout << "Adding " << ite->first << " to the X-ray simulation." << endl;
 			g_xray_renderer.addInnerSurface(&ite->second);
 		}
 	}
+}
+
+
+PolygonMesh emptyMesh()
+{
+	return (PolygonMesh());
+}
+
+
+PolygonMesh makeCube(double aLength, const char* aUnitOfLength)
+{
+	return (CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT));
+}
+
+
+PolygonMesh makeCylinder(unsigned int aNumberOfSectors,
+        double aHeight,
+        double aRadius,
+		const char* aUnitOfLength)
+{
+	return (CylinderMesh<double>(aNumberOfSectors,
+	        aHeight  * getUnitOfLength(aUnitOfLength),
+	        aRadius  * getUnitOfLength(aUnitOfLength),
+			GL_UNSIGNED_INT));
+}
+
+
+//------------------------------
+vector<string> getMeshLabelSet()
+//------------------------------
+{
+	// Create a Python list
+	vector<string> p_label_set;
+
+	// Look for all the meshes in the scenegraph
+	for (std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+			ite != g_p_scene_graph->getPolygonMeshSet().end();
+			++ite)
+	{
+		// Add the name of the node to the Python list
+		p_label_set.push_back(ite->first);
+	}
+
+	// Bind the list to Python
+	return (p_label_set);
 }
 
 
@@ -372,6 +426,199 @@ void moveToCenter(const char* aLabel)
 //-----------------------------------
 {
     moveToCentre(aLabel);
+}
+
+
+void scaleNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			double unit_of_length = getUnitOfLength(aUnitOfLength);
+			g_p_scene_graph->scale(aLabel, VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+			g_p_scene_graph->updateMatrices();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void rotateNode(const char* aLabel, double angle, double x, double y, double z)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			g_p_scene_graph->rotate(aLabel, angle, VEC3(x, y, z));
+			g_p_scene_graph->updateMatrices();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void translateNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			double unit_of_length = getUnitOfLength(aUnitOfLength);
+			g_p_scene_graph->translate(aLabel, VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
+			g_p_scene_graph->updateMatrices();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void resetSceneTransformation()
+{
+	g_sample_rotation_matrix = MATRIX4();
+}
+
+
+void scaleScene(double x, double y, double z, const char* aUnitOfLength)
+{
+	// Move the scenegraph
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+	g_sample_rotation_matrix *= MATRIX4::buildScaleMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
+}
+
+
+void rotateScene(double angle, double x, double y, double z)
+{
+	// Move the scenegraph
+	g_sample_rotation_matrix *= MATRIX4::buildRotationMatrix(angle, x, y, z);
+}
+
+
+void translateScene(double x, double y, double z, const char* aUnitOfLength)
+{
+	// Move the scenegraph
+	double unit_of_length = getUnitOfLength(aUnitOfLength);
+	g_sample_rotation_matrix *= MATRIX4::buildTranslationMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
+}
+
+
+std::vector<std::vector<float> > getSceneTransformationMatrix()
+{
+	return gvxrMatrix2Vector(g_sample_rotation_matrix);
+}
+
+
+std::vector<std::vector<float> > getRootTransformationMatrix()
+{
+	if (!g_p_scene_graph.get())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The scenegraph is empty.");
+	}
+
+	return (gvxrMatrix2Vector(g_p_scene_graph->getRootNodeTransformationMatrix()));
+}
+
+
+std::vector<std::vector<float> > getNodeTransformationMatrix(const char* aLabel)
+{
+	if (!g_p_scene_graph.get())
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The scenegraph is empty.");
+	}
+
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has not been found
+		if(search_mesh == g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, string("The PolygonMesh ") + string(aLabel) + string(" not found in g_p_polygon_mesh_set."));
+		}
+	}
+
+	return (gvxrMatrix2Vector(g_p_scene_graph->getNodeTransformationMatrix(aLabel)));
+}
+
+
+void setSceneTransformationMatrix(const std::vector<std::vector<float> >& aMatrix)
+{
+	g_sample_rotation_matrix = Vector2gvxrMatrix(aMatrix);
+}
+
+
+void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix)
+{
+	if (g_p_scene_graph.get())
+	{
+		g_p_scene_graph->setRootNodeTransformationMatrix(Vector2gvxrMatrix(aMatrix));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix)
+{
+	if (g_p_scene_graph.get())
+	{
+		// Find the mesh
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			g_p_scene_graph->setNodeTransformationMatrix(aLabel, Vector2gvxrMatrix(aMatrix));
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		}
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
 }
 
 
@@ -1884,6 +2131,55 @@ std::vector<std::vector<float> > getVectorImage(const Image<float>& anImage)
 
 		output.push_back(row);
 	}
+
+	return output;
+}
+
+
+MATRIX4 Vector2gvxrMatrix(const std::vector<std::vector<float> >& aSTLMatrix)
+{
+	if (aSTLMatrix.size() == 4)
+	{
+		if (aSTLMatrix[0].size() == 4 &&
+				aSTLMatrix[1].size() == 4 &&
+				aSTLMatrix[2].size() == 4 &&
+				aSTLMatrix[3].size() == 4)
+		{
+			return MATRIX4(aSTLMatrix[0][0], aSTLMatrix[0][1], aSTLMatrix[0][2], aSTLMatrix[0][3],
+					aSTLMatrix[1][0], aSTLMatrix[1][1], aSTLMatrix[1][2], aSTLMatrix[1][3],
+					aSTLMatrix[2][0], aSTLMatrix[2][1], aSTLMatrix[2][2], aSTLMatrix[2][3],
+					aSTLMatrix[3][0], aSTLMatrix[3][1], aSTLMatrix[3][2], aSTLMatrix[3][3]);
+		}
+	}
+
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Wrong matrix size");
+}
+
+
+std::vector<std::vector<float> > gvxrMatrix2Vector(const MATRIX4& aMatrix4)
+{
+	std::vector<std::vector<float> > output;
+	output.push_back(std::vector<float>(4));
+	output.push_back(std::vector<float>(4));
+	output.push_back(std::vector<float>(4));
+	output.push_back(std::vector<float>(4));
+
+	output[0][0] = aMatrix4.get4x4()[ 0];
+	output[0][1] = aMatrix4.get4x4()[ 1];
+	output[0][2] = aMatrix4.get4x4()[ 2];
+	output[0][3] = aMatrix4.get4x4()[ 3];
+	output[1][0] = aMatrix4.get4x4()[ 4];
+	output[1][1] = aMatrix4.get4x4()[ 5];
+	output[1][2] = aMatrix4.get4x4()[ 6];
+	output[1][3] = aMatrix4.get4x4()[ 7];
+	output[2][0] = aMatrix4.get4x4()[ 8];
+	output[2][1] = aMatrix4.get4x4()[ 9];
+	output[2][2] = aMatrix4.get4x4()[10];
+	output[2][3] = aMatrix4.get4x4()[11];
+	output[3][0] = aMatrix4.get4x4()[12];
+	output[3][1] = aMatrix4.get4x4()[13];
+	output[3][2] = aMatrix4.get4x4()[14];
+	output[3][3] = aMatrix4.get4x4()[15];
 
 	return output;
 }

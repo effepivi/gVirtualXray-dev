@@ -2,83 +2,12 @@
 #define __gvxrWrapper_h
 
 #include <vector>
+#include <string>
 
 // For polygon meshes
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
-
-
-/*
-class PyPolygonMesh//: public boost::python::object
-{
-public:
-	PyPolygonMesh();
-	PyPolygonMesh(const PolygonMesh& aMesh);
-
-
-	//void setMaterial(const boost::python::list& aMaterial);
-
-	void setDensity(double aDensity, const char* aUnitOfDensity);
-	double getDensity();
-
-	double getMassAttenuationCoefficient(double anEnergy, const char* aUnitOfEnergy) const;
-	double getLinearAttenuationCoefficient(double anEnergy, const char* aUnitOfEnergy) const;
-
-	void setLinearAttenuationCoefficient(double aMu, const char* aUnit);
-
-	const void* getMesh() const;
-	void* getMesh();
-
-	void translate(double x, double y, double z, const char* aUnit);
-	void scale(double x, double y, double z);
-	void rotate(double x, double y, double z, double aRotationAngleInDegrees);
-
-	void saveSTLFile(const std::string& aFileName);
-
-	/*PyPolygonMesh& operator=(const PyPolygonMesh& aMesh);
-
-	PyPolygonMesh operator+(const PyPolygonMesh& aMesh) const;
-	PyPolygonMesh operator-(const PyPolygonMesh& aMesh) const;
-
-	PyPolygonMesh& operator+=(const PyPolygonMesh& aMesh);
-	PyPolygonMesh& operator-=(const PyPolygonMesh& aMesh);
-
-private:
-	PolygonMesh* m_p_polygon_mesh;
-};
-*/
-/*
-    // Expose C++ to Python
-
-    boost::python::def("getSceneTransformationMatrix", getSceneTransformationMatrix);
-    boost::python::def("getRootTransformationMatrix",  getRootTransformationMatrix);
-    boost::python::def("getNodeTransformationMatrix",  getNodeTransformationMatrix);
-    boost::python::def("setSceneTransformationMatrix", setSceneTransformationMatrix);
-    boost::python::def("setRootTransformationMatrix",  setRootTransformationMatrix);
-    boost::python::def("setNodeTransformationMatrix",  setNodeTransformationMatrix);
-
-    boost::python::def("scaleNode",                 scaleNode);
-    boost::python::def("rotateNode",                rotateNode);
-    boost::python::def("translateNode",             translateNode);
-    boost::python::def("resetSceneTransformation", resetSceneTransformation);
-
-    boost::python::def("scaleScene",                scaleScene);
-    boost::python::def("rotateScene",               rotateScene);
-    boost::python::def("translateScene",            translateScene);
-
-    boost::python::def("getMeshLabelSet",           getMeshLabelSet);
-
-    boost::python::def("makeCube",     makeCube,     makeCube_overloads());
-    boost::python::def("makeCylinder", makeCylinder, makeCylinder_overloads());
-
-    boost::python::def("displayScene", displayScene, displayScene_overloads());
-    boost::python::def("renderLoop",   renderLoop,   renderLoop_overloads());
-
-
-    boost::python::def("emptyMesh",                     emptyMesh);
-
-*/
 
 
 void setSourcePosition(double x, double y, double z, const char* aUnitOfLength);
@@ -88,16 +17,47 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight);
 void setDetectorPixelSize(double aWidth,
 						  double aHeight,
 						  const char* aUnitOfLength);
+
 void loadMeshFile(const char* aLabel,
                   const char* aFileName,
                   const char* aUnitOfLength);
 void loadSceneGraph(const char* aFileName,
         			const char* aUnitOfLength);
+
+gVirtualXRay::PolygonMesh emptyMesh();
+gVirtualXRay::PolygonMesh makeCube(double aLength = 1.0, const char* aUnitOfLength = "cm");
+gVirtualXRay::PolygonMesh makeCylinder(unsigned int aNumberOfSectors = 10,
+        double aHeight = 1.0,
+        double aRadius = 0.5,
+		const char* aUnitOfLength = "cm");
+
+std::vector<std::string> getMeshLabelSet();
+
 void addPolygonMeshAsInnerSurface(const gVirtualXRay::PolygonMesh& aMesh, const std::string& aLabel);
 void addPolygonMeshAsOuterSurface(const gVirtualXRay::PolygonMesh& aMesh, const std::string& aLabel);
 void removePolygonMeshes();
+
 void moveToCentre(const char* aLabel = 0);
 void moveToCenter(const char* aLabel = 0);
+
+void scaleNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength);
+void rotateNode(const char* aLabel, double angle, double x, double y, double z);
+void translateNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength);
+
+void resetSceneTransformation();
+void scaleScene(double x, double y, double z, const char* aUnitOfLength);
+void rotateScene(double angle, double x, double y, double z);
+void translateScene(double x, double y, double z, const char* aUnitOfLength);
+
+std::vector<std::vector<float> > getSceneTransformationMatrix();
+std::vector<std::vector<float> > getRootTransformationMatrix();
+std::vector<std::vector<float> > getNodeTransformationMatrix(const char* aLabel);
+
+void setSceneTransformationMatrix(const std::vector<std::vector<float> >& aMatrix);
+void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix);
+void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix);
+
+
 void setHU(const char* aLabel, double aHU);
 void setMassAttenuationCoefficient(const char* aLabel,
                                    double anAttenuationCoefficient);

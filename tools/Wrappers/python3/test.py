@@ -36,6 +36,8 @@ gvxr.moveToCenter("<STL_BINARY>");
 print("Set the mesh's Hounsfield unit");
 gvxr.setHU("<STL_BINARY>", 1000)
 
+print(gvxr.getMeshLabelSet());
+
 # Compute an X-ray image
 print("Compute an X-ray image");
 gvxr.disableArtefactFiltering();
