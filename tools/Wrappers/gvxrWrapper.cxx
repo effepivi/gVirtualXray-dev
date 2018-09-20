@@ -90,8 +90,6 @@ void initViewer();
 void computeRotation(GLFWwindow* apWindow, MATRIX4& aRotationMatrix);
 Vec3<GLfloat> getArcballVector(GLFWwindow* apWindow, int x, int y);
 float radian2degree(float anAngle);
-double getUnitOfEnergy(const char* aUnitOfEnergy);
-double getUnitOfLength(const char* aUnitOfLength);
 std::vector<std::vector<float> > getVectorImage(const Image<float>& anImage);
 MATRIX4 Vector2gvxrMatrix(const std::vector<std::vector<float> >& aNumpyMatrix);
 std::vector<std::vector<float> > gvxrMatrix2Vector(const MATRIX4& aMatrix4);
@@ -285,27 +283,49 @@ void loadSceneGraph(const char* aFileName,
 }
 
 
-PolygonMesh emptyMesh()
+void emptyMesh(const std::string& aLabel)
 {
-	return (PolygonMesh());
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = PolygonMesh();
 }
 
 
-PolygonMesh makeCube(double aLength, const char* aUnitOfLength)
+void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLength)
 {
-	return (CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT));
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT);
 }
 
 
-PolygonMesh makeCylinder(unsigned int aNumberOfSectors,
+void makeCylinder(const std::string& aLabel,
+		unsigned int aNumberOfSectors,
         double aHeight,
         double aRadius,
 		const char* aUnitOfLength)
 {
-	return (CylinderMesh<double>(aNumberOfSectors,
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = CylinderMesh<double>(aNumberOfSectors,
 	        aHeight  * getUnitOfLength(aUnitOfLength),
 	        aRadius  * getUnitOfLength(aUnitOfLength),
-			GL_UNSIGNED_INT));
+			GL_UNSIGNED_INT);
 }
 
 
@@ -331,12 +351,9 @@ vector<string> getMeshLabelSet()
 
 
 //---------------------------------------------
-void addPolygonMeshAsInnerSurface(const PolygonMesh& aMesh, const std::string& aLabel)
+void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 //---------------------------------------------
 {
-	// Add the polygon mesh to the X-ray renderer
-	g_xray_renderer.addInnerSurface(&aMesh);
-
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
 	{
@@ -344,18 +361,24 @@ void addPolygonMeshAsInnerSurface(const PolygonMesh& aMesh, const std::string& a
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	// Add the polygon mesh to the scenegraph
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh;
+	std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+	// Add the polygon mesh to the X-ray renderer
+	if (ite != g_p_scene_graph->getPolygonMeshSet().end())
+	{
+		g_xray_renderer.addInnerSurface(&(ite->second));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
 }
 
 
 //---------------------------------------------
-void addPolygonMeshAsOuterSurface(const PolygonMesh& aMesh, const std::string& aLabel)
+void addPolygonMeshAsOuterSurface(const std::string& aLabel)
 //---------------------------------------------
 {
-	// Add the polygon mesh to the X-ray renderer
-	g_xray_renderer.addOuterSurface(&aMesh);
-
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
 	{
@@ -363,8 +386,17 @@ void addPolygonMeshAsOuterSurface(const PolygonMesh& aMesh, const std::string& a
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	// Add the polygon mesh to the scenegraph
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh;
+	std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+	// Add the polygon mesh to the X-ray renderer
+	if (ite != g_p_scene_graph->getPolygonMeshSet().end())
+	{
+		g_xray_renderer.addOuterSurface(&(ite->second));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
 }
 
 
@@ -643,7 +675,8 @@ void setHU(const char* aLabel, double aHU)
 }
 
 void setMassAttenuationCoefficient(const char* aLabel,
-                               double anAttenuationCoefficient)
+                               double anAttenuationCoefficient,
+							   const char* aUnit)
 {
     throw Exception(__FILE__, __FUNCTION__, __LINE__, "TODO: mass vs liner attenuation coefficient");
 }
@@ -651,10 +684,16 @@ void setMassAttenuationCoefficient(const char* aLabel,
 
 //----------------------------------------------------------------------
 void setLinearAttenuationCoefficient(const char* aLabel,
-                               double anAttenuationCoefficient)
+                               double anAttenuationCoefficient,
+							   const char* aUnit)
 //----------------------------------------------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "TODO: mass vs liner attenuation coefficient");
+    if (strcmp(aUnit, "cm-1"))
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of linear attenuation coefficient.");
+    }
+
     // Find the mesh
     auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
     
@@ -662,7 +701,7 @@ void setLinearAttenuationCoefficient(const char* aLabel,
     if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
     {
         // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setAttenuationCoefficient (anAttenuationCoefficient);
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setAttenuationCoefficient (anAttenuationCoefficient / cm);
     }
     // It has not been found
     else

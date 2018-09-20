@@ -24,17 +24,17 @@ void loadMeshFile(const char* aLabel,
 void loadSceneGraph(const char* aFileName,
         			const char* aUnitOfLength);
 
-gVirtualXRay::PolygonMesh emptyMesh();
-gVirtualXRay::PolygonMesh makeCube(double aLength = 1.0, const char* aUnitOfLength = "cm");
-gVirtualXRay::PolygonMesh makeCylinder(unsigned int aNumberOfSectors = 10,
+void emptyMesh(const std::string& aLabel);
+void makeCube(const std::string& aLabel, double aLength = 1.0, const char* aUnitOfLength = "cm");
+void makeCylinder(const std::string& aLabel, unsigned int aNumberOfSectors = 10,
         double aHeight = 1.0,
         double aRadius = 0.5,
 		const char* aUnitOfLength = "cm");
 
 std::vector<std::string> getMeshLabelSet();
 
-void addPolygonMeshAsInnerSurface(const gVirtualXRay::PolygonMesh& aMesh, const std::string& aLabel);
-void addPolygonMeshAsOuterSurface(const gVirtualXRay::PolygonMesh& aMesh, const std::string& aLabel);
+void addPolygonMeshAsInnerSurface(const std::string& aLabel);
+void addPolygonMeshAsOuterSurface(const std::string& aLabel);
 void removePolygonMeshes();
 
 void moveToCentre(const char* aLabel = 0);
@@ -60,9 +60,11 @@ void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vect
 
 void setHU(const char* aLabel, double aHU);
 void setMassAttenuationCoefficient(const char* aLabel,
-                                   double anAttenuationCoefficient);
+                                   double anAttenuationCoefficient,
+								   const char* aUnit);
 void setLinearAttenuationCoefficient(const char* aLabel,
-                                     double anAttenuationCoefficient);
+                                     double anAttenuationCoefficient,
+									 const char* aUnit);
 void createOpenGLContext(int aWindowID = -1);
 void createWindow(int aWindowID = -1, int aVisibilityFlag = 0);
 void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
@@ -91,6 +93,9 @@ void enableArtefactFilteringOnCPU(void);
 void enableArtifactFilteringOnCPU(void);
 void disableArtefactFiltering(void);
 void disableArtifactFiltering(void);
+
+double getUnitOfEnergy(const char* aUnitOfEnergy);
+double getUnitOfLength(const char* aUnitOfLength);
 
 std::vector<std::vector<float> > computeXRayImage();
 std::vector<std::vector<float> > computeLBuffer(const char* aLabel);
