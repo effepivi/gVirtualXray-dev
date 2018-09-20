@@ -21,6 +21,11 @@
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+// For polygon meshes
+#ifndef __PolygonMesh_h
+#include "gVirtualXRay/PolygonMesh.h"
+#endif
+
 // To initialise GLEW, to define matrix stacks, to define state stacks, etc.
 #ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
@@ -260,13 +265,67 @@ void loadSceneGraph(const char* aFileName,
 	else
 	{
 		// Look for all the meshes in the scenegraph
-		for (std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+		for (std::map<string, gVirtualXRay::PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
 				ite != g_p_scene_graph->getPolygonMeshSet().end();
 				++ite)
 		{
 			g_xray_renderer.addInnerSurface(&ite->second);
 		}
 	}
+}
+
+
+//---------------------------------------------
+void addPolygonMeshAsInnerSurface(const PolygonMesh& aMesh, const std::string& aLabel)
+//---------------------------------------------
+{
+	// Add the polygon mesh to the X-ray renderer
+	g_xray_renderer.addInnerSurface(&aMesh);
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	// Add the polygon mesh to the scenegraph
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh;
+}
+
+
+//---------------------------------------------
+void addPolygonMeshAsOuterSurface(const PolygonMesh& aMesh, const std::string& aLabel)
+//---------------------------------------------
+{
+	// Add the polygon mesh to the X-ray renderer
+	g_xray_renderer.addOuterSurface(&aMesh);
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	// Add the polygon mesh to the scenegraph
+	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh;
+}
+
+
+//------------------------
+void removePolygonMeshes()
+//------------------------
+{
+	// The scenegraph exists
+	if (g_p_scene_graph.get())
+	{
+		// Empty it
+		g_p_scene_graph->clear();
+	}
+
+	g_xray_renderer.removeInnerSurfaces();
+	g_xray_renderer.removeOuterSurface();
 }
 
 
@@ -1337,7 +1396,7 @@ void render()
 
 
 
-        for (std::map<string, PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+        for (std::map<string, gVirtualXRay::PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
         		ite != g_p_scene_graph->getPolygonMeshSet().end();
         		++ite)
         {

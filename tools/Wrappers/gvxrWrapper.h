@@ -3,14 +3,53 @@
 
 #include <vector>
 
+// For polygon meshes
+#ifndef __PolygonMesh_h
+#include "gVirtualXRay/PolygonMesh.h"
+#endif
 
 
 /*
-    // Expose C++ to Python
+class PyPolygonMesh//: public boost::python::object
+{
+public:
+	PyPolygonMesh();
+	PyPolygonMesh(const PolygonMesh& aMesh);
 
-    boost::python::def("addPolygonMeshAsInnerSurface",            addPolygonMeshAsInnerSurface);
-    boost::python::def("addPolygonMeshAsOuterSurface",            addPolygonMeshAsOuterSurface);
-    boost::python::def("removePolygonMeshes",       removePolygonMeshes);
+
+	//void setMaterial(const boost::python::list& aMaterial);
+
+	void setDensity(double aDensity, const char* aUnitOfDensity);
+	double getDensity();
+
+	double getMassAttenuationCoefficient(double anEnergy, const char* aUnitOfEnergy) const;
+	double getLinearAttenuationCoefficient(double anEnergy, const char* aUnitOfEnergy) const;
+
+	void setLinearAttenuationCoefficient(double aMu, const char* aUnit);
+
+	const void* getMesh() const;
+	void* getMesh();
+
+	void translate(double x, double y, double z, const char* aUnit);
+	void scale(double x, double y, double z);
+	void rotate(double x, double y, double z, double aRotationAngleInDegrees);
+
+	void saveSTLFile(const std::string& aFileName);
+
+	/*PyPolygonMesh& operator=(const PyPolygonMesh& aMesh);
+
+	PyPolygonMesh operator+(const PyPolygonMesh& aMesh) const;
+	PyPolygonMesh operator-(const PyPolygonMesh& aMesh) const;
+
+	PyPolygonMesh& operator+=(const PyPolygonMesh& aMesh);
+	PyPolygonMesh& operator-=(const PyPolygonMesh& aMesh);
+
+private:
+	PolygonMesh* m_p_polygon_mesh;
+};
+*/
+/*
+    // Expose C++ to Python
 
     boost::python::def("getSceneTransformationMatrix", getSceneTransformationMatrix);
     boost::python::def("getRootTransformationMatrix",  getRootTransformationMatrix);
@@ -54,6 +93,9 @@ void loadMeshFile(const char* aLabel,
                   const char* aUnitOfLength);
 void loadSceneGraph(const char* aFileName,
         			const char* aUnitOfLength);
+void addPolygonMeshAsInnerSurface(const gVirtualXRay::PolygonMesh& aMesh, const std::string& aLabel);
+void addPolygonMeshAsOuterSurface(const gVirtualXRay::PolygonMesh& aMesh, const std::string& aLabel);
+void removePolygonMeshes();
 void moveToCentre(const char* aLabel = 0);
 void moveToCenter(const char* aLabel = 0);
 void setHU(const char* aLabel, double aHU);
