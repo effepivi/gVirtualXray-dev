@@ -269,6 +269,7 @@ void loadSceneGraph(const char* aFileName,
 				ite != g_p_scene_graph->getPolygonMeshSet().end();
 				++ite)
 		{
+			cout << "Adding " << ite->first << " to the X-ray simulation." << endl;
 			g_xray_renderer.addInnerSurface(&ite->second);
 		}
 	}

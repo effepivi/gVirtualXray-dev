@@ -28,13 +28,13 @@ gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 
 # Load the data
 print("Load the data");
-gvxr.loadMeshFile("dragon", "welsh-dragon-small.stl", "mm");
+gvxr.loadSceneGraph("welsh-dragon-small.stl", "mm");
 print("Move the mesh to the centre");
-gvxr.moveToCentre("dragon");
+gvxr.moveToCentre("<STL_BINARY>");
 print("Move the mesh to the center");
-gvxr.moveToCenter("dragon");
+gvxr.moveToCenter("<STL_BINARY>");
 print("Set the mesh's Hounsfield unit");
-gvxr.setHU("dragon", 1000)
+gvxr.setHU("<STL_BINARY>", 1000)
 
 # Compute an X-ray image
 print("Compute an X-ray image");
