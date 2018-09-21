@@ -329,6 +329,64 @@ void makeCylinder(const std::string& aLabel,
 }
 
 
+void addMesh(const std::string& aDestination, const std::string& aSource)
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	std::map<string, PolygonMesh>::const_iterator ite_source = g_p_scene_graph->getPolygonMeshSet().find(aSource);
+	if (ite_source == g_p_scene_graph->getPolygonMeshSet().end())
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aSource << " not found in g_p_polygon_mesh_set." << endl;
+	}
+	else
+	{
+		std::map<string, PolygonMesh>::iterator ite_destination = g_p_scene_graph->getPolygonMeshSet().find(aDestination);
+		if (ite_destination == g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aDestination << " not found in g_p_polygon_mesh_set." << endl;
+		}
+		else
+		{
+			ite_destination->second += ite_source->second;
+		}
+	}
+}
+
+
+void subtractMesh(const std::string& aDestination, const std::string& aSource)
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	std::map<string, PolygonMesh>::const_iterator ite_source = g_p_scene_graph->getPolygonMeshSet().find(aSource);
+	if (ite_source == g_p_scene_graph->getPolygonMeshSet().end())
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aSource << " not found in g_p_polygon_mesh_set." << endl;
+	}
+	else
+	{
+		std::map<string, PolygonMesh>::iterator ite_destination = g_p_scene_graph->getPolygonMeshSet().find(aDestination);
+		if (ite_destination == g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aDestination << " not found in g_p_polygon_mesh_set." << endl;
+		}
+		else
+		{
+			ite_destination->second -= ite_source->second;
+		}
+	}
+}
+
+
 //------------------------------
 vector<string> getMeshLabelSet()
 //------------------------------
@@ -400,9 +458,9 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
 }
 
 
-//------------------------
-void removePolygonMeshes()
-//------------------------
+//--------------------------------------
+void removePolygonMeshesFromSceneGraph()
+//--------------------------------------
 {
 	// The scenegraph exists
 	if (g_p_scene_graph.get())
@@ -410,7 +468,13 @@ void removePolygonMeshes()
 		// Empty it
 		g_p_scene_graph->clear();
 	}
+}
 
+
+//----------------------------------------
+void removePolygonMeshesFromXRayRenderer()
+//----------------------------------------
+{
 	g_xray_renderer.removeInnerSurfaces();
 	g_xray_renderer.removeOuterSurface();
 }

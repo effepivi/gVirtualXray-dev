@@ -30,12 +30,15 @@ void makeCylinder(const std::string& aLabel, unsigned int aNumberOfSectors = 10,
         double aHeight = 1.0,
         double aRadius = 0.5,
 		const char* aUnitOfLength = "cm");
+void addMesh(const std::string& aDestination, const std::string& aSource);
+void subtractMesh(const std::string& aDestination, const std::string& aSource);
 
 std::vector<std::string> getMeshLabelSet();
 
 void addPolygonMeshAsInnerSurface(const std::string& aLabel);
 void addPolygonMeshAsOuterSurface(const std::string& aLabel);
-void removePolygonMeshes();
+void removePolygonMeshesFromSceneGraph();
+void removePolygonMeshesFromXRayRenderer();
 
 void moveToCentre(const char* aLabel = 0);
 void moveToCenter(const char* aLabel = 0);
