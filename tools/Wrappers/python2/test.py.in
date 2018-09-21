@@ -28,7 +28,7 @@ gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 
 # Load the data
 print("Load the data");
-gvxr.loadSceneGraph("welsh-dragon-small.stl", "mm");
+gvxr.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
 for label in gvxr.getMeshLabelSet():
     print("Move ", label, " to the centre");
