@@ -80,8 +80,11 @@ IF (SWIG_FOUND)
 
     option(BUILD_PYTHON2 "Build Python2 SWIG module" ON)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" ON)
-    option(BUILD_OCTAVE "Build Octave SWIG module" ON)
-
+    option(BUILD_OCTAVE  "Build Octave SWIG module" ON)
+    option(BUILD_R      "Build R SWIG module" ON)
+    option(BUILD_RUBY   "Build Ruby SWIG module" ON)
+    option(BUILD_SCILAB "Build Scilab SWIG module" ON)
+    
     IF (BUILD_PYTHON2)
         add_subdirectory(python2)
     ENDIF (BUILD_PYTHON2)
@@ -90,8 +93,21 @@ IF (SWIG_FOUND)
         add_subdirectory(python3)
     ENDIF (BUILD_PYTHON3)
 
+    IF (BUILD_R)
+        #add_subdirectory(R)
+    ENDIF (BUILD_R)
+
+    IF (BUILD_RUBY)
+        add_subdirectory(ruby)
+    ENDIF (BUILD_RUBY)
+
+    IF (BUILD_SCILAB)
+        #add_subdirectory(scilab)
+    ENDIF (BUILD_SCILAB)
+
+
     IF (BUILD_OCTAVE)
-        add_subdirectory(octave)
+        #add_subdirectory(octave)
     #    find_package(Octave REQUIRED)
     #    include_directories(${OCTAVE_INCLUDE_DIRS})
     #    SWIG_ADD_LIBRARY(gvxrOctaveWrapper LANGUAGE octave SOURCES gvxrWrapper.i gvxrWrapper.cxx)

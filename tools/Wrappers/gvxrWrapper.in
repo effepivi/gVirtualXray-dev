@@ -10,11 +10,11 @@
 
 
 namespace std {
-    %template(vectors) vector<std::string>;
-    %template(vectorf) vector<float>;
-    %template(vectord) vector<double>;
-    %template(vectorff) vector<vector<float> >;
-    %template(vectordd) vector<vector<double> >;
+    %template(Vectors) vector<std::string>;
+    %template(Vectorf) vector<float>;
+    %template(Vectord) vector<double>;
+    %template(Vectorff) vector<vector<float> >;
+    %template(Vectordd) vector<vector<double> >;
 }; 
 
 
