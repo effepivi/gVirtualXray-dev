@@ -1,0 +1,78 @@
+% Load module
+dyn.load(paste("gvxrR", .Platform$dynlib.ext, sep=""))
+source('gvxrR.R')
+cacheMetaData(1)
+
+% Create an OpenGL context
+print("Create an OpenGL context");
+gvxrR.createWindow();
+gvxrR.setWindowSize(512, 512);
+
+% Set up the beam
+print("Set up the beam")
+gvxrR.setSourcePosition(-40.0,  0.0, 0.0, "cm");
+gvxrR.usePointSource();
+%gvxrR.useParallelBeam();
+gvxrR.setMonoChromatic(0.08, "MeV", 1000);
+
+% Set up the detector
+print("Set up the detector");
+gvxrR.setDetectorPosition(10.0, 0.0, 0.0, "cm");
+gvxrR.setDetectorUpVector(0, 1, 0);
+gvxrR.setDetectorNumberOfPixels(640, 320);
+gvxrR.setDetectorPixelSize(0.5, 0.5, "mm");
+
+% Load the data
+print("Load the data");
+gvxrR.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
+
+for i = size(gvxrR.getMeshLabelSet(), 1)
+    label = gvxrR.getMeshLabelSet()(i);
+    print(strcat("Move ", label, " to the centre"));
+    gvxrR.moveToCentre(label);
+    
+    %print("Move the mesh to the center");
+    %gvxrR.moveToCenter(label);
+    
+    print(strcat("Set ", label, "'s Hounsfield unit"));
+    gvxrR.setHU(label, 1000)
+endfor
+
+% Compute an X-ray image
+print("Compute an X-ray image");
+gvxrR.disableArtefactFiltering();
+% Not working anymore gvxrR.enableArtefactFilteringOnGPU();
+% Not working anymore gvxrR.enableArtefactFilteringOnCPU();
+temp_x_ray_image = gvxrR.computeXRayImage();
+x_ray_image = cell2mat(cell2mat(temp_x_ray_image'(1,:)));
+
+% Save the last image into a file
+print("Save the last image into a file");
+gvxrR.saveLastXRayImage();
+gvxrR.saveLastLBuffer();
+
+% Normalise the image between 0 and 1
+np_normalised_image = ((x_ray_image-min(x_ray_image(:)))/max(x_ray_image(:)));
+
+% Save the normalised image
+imwrite(np_normalised_image', 'x_ray_image.png', "png");
+
+% Show the image
+imagesc(x_ray_image);
+colormap "gray";
+set(gca,'dataAspectRatio',[1 1 1]);
+
+% Display the 3D scene (no event loop)
+gvxrR.printlayScene();
+
+
+% Display the 3D scene (no event loop)
+% Run an interactive loop 
+% (can rotate the 3D scene and zoom-in)
+% Keys are:
+% Q/Escape: to quit the event loop (does not close the window)
+% B: printlay/hide the X-ray beam
+% W: printlay the polygon meshes in solid or wireframe
+% N: printlay the X-ray image in negative or positive
+% H: printlay/hide the X-ray detector
+gvxrR.renderLoop();
