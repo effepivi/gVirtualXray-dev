@@ -4,54 +4,54 @@
 #from PIL import Image
 #import numpy as np
 
+require 'gvxrRuby'
 #import gvxrPython3 as gvxr
 
 # Create an OpenGL context
 puts "Create an OpenGL context"
-gvxr.createWindow();
-gvxr.setWindowSize(512, 512);
+GvxrRuby.createWindow();
+GvxrRuby.setWindowSize(512, 512);
 
 
 # Set up the beam
 puts "Set up the beam"
-gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm");
-gvxr.usePointSource();
-#gvxr.useParallelBeam();
-gvxr.setMonoChromatic(0.08, "MeV", 1000);
+GvxrRuby.setSourcePosition(-40.0,  0.0, 0.0, "cm");
+GvxrRuby.usePointSource();
+#GvxrRuby.useParallelBeam();
+GvxrRuby.setMonoChromatic(0.08, "MeV", 1000);
 
 # Set up the detector
 puts "Set up the detector";
-gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm");
-gvxr.setDetectorUpVector(0, 1, 0);
-gvxr.setDetectorNumberOfPixels(640, 320);
-gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
+GvxrRuby.setDetectorPosition(10.0, 0.0, 0.0, "cm");
+GvxrRuby.setDetectorUpVector(0, 1, 0);
+GvxrRuby.setDetectorNumberOfPixels(640, 320);
+GvxrRuby.setDetectorPixelSize(0.5, 0.5, "mm");
 
 # Load the data
 puts "Load the data";
-gvxr.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
+GvxrRuby.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
-for label in gvxr.getMeshLabelSet():
+#def each
+for label in GvxrRuby.getMeshLabelSet() do
     puts "Move ", label, " to the centre";
-    gvxr.moveToCentre(label);
-    
-    #puts "Move the mesh to the center";
-    #gvxr.moveToCenter(label);
-    
-    puts "Set ", label, "'s Hounsfield unit";
-    gvxr.setHU(label, 1000)
+    GvxrRuby.moveToCentre(label);
+    #GvxrRuby.moveToCenter(label);
 
+    puts "Set ", label, "'s Hounsfield unit";
+    GvxrRuby.setHU(label, 1000);
+end
 
 # Compute an X-ray image
-puts "Compute an X-ray image";
-gvxr.disableArtefactFiltering();
-# Not working anymore gvxr.enableArtefactFilteringOnGPU();
-# Not working anymore gvxr.enableArtefactFilteringOnCPU();
-x_ray_image = gvxr.computeXRayImage();
+print("Compute an X-ray image");
+GvxrRuby.disableArtefactFiltering();
+# Not working anymore GvxrRuby.enableArtefactFilteringOnGPU();
+# Not working anymore GvxrRuby.enableArtefactFilteringOnCPU();
+x_ray_image = GvxrRuby.computeXRayImage();
 
 # Save the last image into a file
-puts "Save the last image into a file";
-gvxr.saveLastXRayImage();
-gvxr.saveLastLBuffer();
+print("Save the last image into a file");
+GvxrRuby.saveLastXRayImage();
+GvxrRuby.saveLastLBuffer();
 
 # Retrieve the image in Numpy's 2D array format
 #np_image = np.array(x_ray_image);
@@ -69,11 +69,11 @@ gvxr.saveLastLBuffer();
 #img.show()
 
 # Display the 3D scene (no event loop)
-gvxr.displayScene();
+GvxrRuby.displayScene();
 
 
 # Display the 3D scene (no event loop)
-# Run an interactive loop 
+# Run an interactive loop
 # (can rotate the 3D scene and zoom-in)
 # Keys are:
 # Q/Escape: to quit the event loop (does not close the window)
@@ -81,4 +81,4 @@ gvxr.displayScene();
 # W: display the polygon meshes in solid or wireframe
 # N: display the X-ray image in negative or positive
 # H: display/hide the X-ray detector
-gvxr.renderLoop();
+GvxrRuby.renderLoop();

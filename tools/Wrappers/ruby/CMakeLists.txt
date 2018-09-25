@@ -3,7 +3,7 @@ find_package(Ruby REQUIRED)
 INCLUDE_DIRECTORIES(${RUBY_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${RUBY_INCLUDE_DIRS})
 
-SET (module gvxrPython3)
+SET (module gvxrRuby)
 
 
 configure_file(../gvxrWrapper.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrRuby.i)
