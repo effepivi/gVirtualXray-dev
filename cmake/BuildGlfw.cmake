@@ -2,9 +2,9 @@
 macro(build_glfw install_prefix staging_prefix)
 
 if (NOT TARGET GLFW)
-    SET (GLFW_VERSION_STRING 3.2)
-    SET (GLFW_VERSION_MAJOR  3.2)
-    SET (GLFW_VERSION_MINOR  0)
+    SET (GLFW3_VERSION_STRING 3.2 FORCE)
+    SET (GLFW3_VERSION_MAJOR  3.2 FORCE)
+    SET (GLFW3_VERSION_MINOR  0   FORCE)
 
     set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
     if(APPLE)
@@ -37,15 +37,15 @@ if (NOT TARGET GLFW)
            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
     )
 
-    SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include )
-    SET (GLFW3_DIR         ${staging_prefix}/${install_prefix}-install)
-    SET (glfw3_FOUND ON)
+    SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include CACHE PATH "Where to find GLFW3 header files" FORCE)
+    SET (glfw3_DIR         ${staging_prefix}/${install_prefix}-install/lib/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
+    SET (glfw3_FOUND ON FORCE)
     SET (GLFW3_LIBRARY_DIR "${staging_prefix}/${install_prefix}-install/lib")
-    SET (GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a )
+    SET (GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
 
     IF (WIN32)
         IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-            SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib )
+            SET(GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/glfw3.lib CACHE FILEPATH "Path to the GLFW3 library" FORCE)
         ENDIF ()
     ENDIF (WIN32)
 

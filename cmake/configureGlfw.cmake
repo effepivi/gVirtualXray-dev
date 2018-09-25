@@ -75,7 +75,7 @@ IF (USE_GLFW)
 	    ENDIF(UNIX)
 
         INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
-	SET(optionalLibs ${optionalLibs} glfw3)
+	SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
 
     ELSE(glfw3_FOUND)
         MESSAGE(WARNING "GLFW3 not found.")
