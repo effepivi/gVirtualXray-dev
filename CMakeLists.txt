@@ -124,8 +124,12 @@ option(BUILD_TESTING      "Build unit tests."       OFF)
 
 IF (WIN32 OR MSVC)
     OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
+    OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
+    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
 ELSE (WIN32 OR MSVC)
     OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       ON)
+    OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      ON)
+    OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON) 
 ENDIF (WIN32 OR MSVC)
 
 
@@ -175,12 +179,14 @@ ELSE ()
     SET (USE_QT5 OFF)
 ENDIF ()
 
-OPTION(USE_SYSTEM_GLEW    "Use System GLEW"       ON)
-OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
 OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
 
 IF (USE_GLFW)
-    OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       ON)
+    IF (WIN32 OR MSVC)
+        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
+    ELSE (WIN32 OR MSVC)
+        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       ON)
+    ENDIF (WIN32 OR MSVC)
 ENDIF (USE_GLFW)
 
 IF (USE_FFTW3)
