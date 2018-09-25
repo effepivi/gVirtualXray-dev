@@ -107,6 +107,99 @@ INCLUDE(ExternalProject)
 INCLUDE(ConfigureExternalProjects)
 
 
+# The options ##################################################################
+OPTION(USE_assimp         "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
+OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" OFF)
+OPTION(USE_ITK            "Use ITK"                 OFF)
+OPTION(USE_FFTW3          "Use FFTW3"               OFF)
+OPTION(USE_FREETYPE       "Use FreeType"            OFF)
+OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
+
+OPTION(USE_GLFW "Build the programs (demos, tutorials, wrappers, validation programs, and unit tests) that make use of GLFW" ON)
+    
+option(BUILD_EXAMPLES     "Build examples."         OFF)
+option(BUILD_TUTORIALS    "Build tutorials."        OFF)
+option(BUILD_VALIDATION   "Build validation tests." OFF)
+option(BUILD_TESTING      "Build unit tests."       OFF)
+
+IF (WIN32 OR MSVC)
+    OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
+ELSE (WIN32 OR MSVC)
+    OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       ON)
+ENDIF (WIN32 OR MSVC)
+
+
+IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
+
+    IF (NOT APPLE)
+        OPTION(USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
+    ELSE (NOT APPLE)
+        OPTION(USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" OFF)
+    ENDIF (NOT APPLE)
+
+    IF (USE_FLTK)
+        IF (WIN32 OR MSVC)
+            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
+        ELSE (WIN32 OR MSVC)
+            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       ON)
+        ENDIF (WIN32 OR MSVC)
+    ENDIF (USE_FLTK)
+
+    OPTION(USE_GLUT "Build the programs (demos, and tutorials) that make use of the OpenGL Utility Toolkit (GLUT)" ON)
+    IF (USE_GLUT)
+        IF (NOT APPLE)
+            OPTION(USE_SYSTEM_GLUT   "Use System GLUT"       OFF)
+        ELSE (NOT APPLE)
+            OPTION(USE_SYSTEM_GLUT   "Use System GLUT"       ON)
+        ENDIF (NOT APPLE)
+    ENDIF (USE_GLUT)
+
+    IF (NOT APPLE)
+	OPTION(USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
+    ELSE (NOT APPLE)
+        OPTION(USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
+    ENDIF (NOT APPLE)
+
+    OPTION(USE_QT5  "Build the programs (demos, and tutorials) that make use of Qt5" ON)
+
+    IF (WIN32)
+        IF (EX_PLATFORM EQUAL 32)
+            OPTION(USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
+        ENDIF ()
+    ENDIF (WIN32)
+            
+ELSE ()
+    SET (USE_FLTK OFF)
+    SET (USE_GLUT OFF)
+    SET (USE_QT4 OFF)
+    SET (USE_QT5 OFF)
+ENDIF ()
+
+OPTION(USE_SYSTEM_GLEW    "Use System GLEW"       ON)
+OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       ON)
+OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
+
+IF (USE_GLFW)
+    OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       ON)
+ENDIF (USE_GLFW)
+
+IF (USE_FFTW3)
+    OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       ON)
+ENDIF (USE_FFTW3)
+
+IF (USE_FREETYPE)
+    OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       ON)
+ENDIF (USE_FREETYPE)
+    
+IF (USE_GDCM)
+    IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+        OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       ON)
+    ELSE ()
+        OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       OFF)
+   ENDIF ()
+ENDIF (USE_GDCM)
+
+
 # Libraries ####################################################################
 SET (optionalLibs)
 SET (requiredLibs)
@@ -328,8 +421,6 @@ ENDIF (OPENCL_FOUND)
 
 
 # ASSIMP #######################################################################
-OPTION(USE_assimp "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
-
 IF (USE_assimp)
     FIND_PACKAGE(assimp)
     IF (assimp_FOUND)
@@ -346,8 +437,6 @@ ENDIF (USE_assimp)
 
 
 # OpenSceneGraph ###############################################################
-OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" ON)
-
 IF (USE_OPENSCENEGRAPH)
     FIND_PACKAGE(OpenSceneGraph COMPONENTS osgViewer osgGA)
     IF (OPENSCENEGRAPH_FOUND)
@@ -406,8 +495,6 @@ ENDIF ()
 
 # GLEW ########################################################################
 # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
-OPTION(USE_SYSTEM_GLEW       "Use System GLEW"       OFF)
-
 IF (USE_SYSTEM_GLEW)
   FIND_PACKAGE(GLEW REQUIRED)
 ELSE(USE_SYSTEM_GLEW)
@@ -438,12 +525,6 @@ ENDIF (OPENGL_FOUND)
 
 
 # ITK #########################################################################
-IF (WIN32 OR MSVC)
-    OPTION(USE_ITK       "Use ITK"       OFF)
-ELSE (WIN32 OR MSVC)
-    OPTION(USE_ITK       "Use ITK"       ON)
-ENDIF (WIN32 OR MSVC)
-
 IF (USE_ITK)
     FIND_PACKAGE(ITK)
     
@@ -463,12 +544,6 @@ ENDIF (USE_ITK)
 
 
 # ZLIB #########################################################################
-IF (WIN32 OR MSVC)
-    OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       OFF)
-ELSE (WIN32 OR MSVC)
-    OPTION(USE_SYSTEM_ZLIB       "Use System ZLIB "       ON)
-ENDIF (WIN32 OR MSVC)
-
 IF (USE_SYSTEM_ZLIB)
     FIND_PACKAGE( ZLIB   REQUIRED )
 ELSE(USE_SYSTEM_ZLIB)
@@ -495,14 +570,7 @@ SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
 
 
 # FFTW3 ########################################################################
-IF (WIN32 OR MSVC)
-    OPTION(USE_FFTW3       "Use FFTW3"       OFF)
-ELSE (WIN32 OR MSVC)
-    OPTION(USE_FFTW3       "Use FFTW3"       ON)
-ENDIF (WIN32 OR MSVC)
-
 IF (USE_FFTW3)
-    OPTION(USE_SYSTEM_FFTW3       "Use System FFTW3 "       OFF)
 
     IF (USE_SYSTEM_FFTW3)
 
@@ -531,17 +599,11 @@ IF (USE_FFTW3)
         MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
     ENDIF ()
 
-ELSE (USE_FFTW3)
-    SET (USE_SYSTEM_FFTW3 OFF)
 ENDIF (USE_FFTW3)
 
 
 # FREETYPE ####################################################################
-OPTION(USE_FREETYPE       "Use FreeType"       ON)
-
 IF (USE_FREETYPE)
-
-    OPTION(USE_SYSTEM_FREETYPE       "Use System FreeType "       OFF)
 
     IF (USE_SYSTEM_FREETYPE)
         FIND_PACKAGE(Freetype)
@@ -582,24 +644,10 @@ IF (USE_FREETYPE)
         MESSAGE (WARNING "FreeType not found, the use of FreeType will be disable.")
     ENDIF (FREETYPE_FOUND)
 
-ELSE (USE_FREETYPE)
-    SET (USE_SYSTEM_FREETYPE OFF)
 ENDIF (USE_FREETYPE)
 
 
 # GDCM #########################################################################
-
-OPTION (USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" ON)
-IF (USE_GDCM)
-    IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-        OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       ON)
-    ELSE ()
-        OPTION(USE_SYSTEM_GDCM       "Use System GDCM"       OFF)
-   ENDIF ()
-ELSE (USE_GDCM)
-    SET (USE_SYSTEM_GDCM OFF)
-ENDIF (USE_GDCM)
-
 IF (USE_GDCM)
     IF (USE_SYSTEM_GDCM)
         FIND_PACKAGE( GDCM   REQUIRED )
@@ -621,19 +669,11 @@ ENDIF (GDCM_FOUND)
 
 
 # TIFF #########################################################################
-
-OPTION(USE_SYSTEM_LIBTIFF       "Use System LibTiff"       OFF)
-
 IF (USE_SYSTEM_LIBTIFF)
     FIND_PACKAGE( TIFF   REQUIRED )
 ELSE(USE_SYSTEM_LIBTIFF)
     INCLUDE(BuildLibTIFF)
-
-    # Missing file on MV VC++ 2010
-#    IF (NOT MSVC10)
-        build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
-#    ENDIF (NOT MSVC10)
-
+    build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
 ENDIF (USE_SYSTEM_LIBTIFF)
 
 IF (TIFF_FOUND)
@@ -678,8 +718,6 @@ ENDIF (WIN32 AND MSVC)
 # http://www.nist.gov/pml/data/xcom/
 
 # http://physics.nist.gov/PhysRefData/Xcom/Text/download.html
-
-OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
 
 IF (USE_SYSTEM_XCOM)
     find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
@@ -937,10 +975,7 @@ install(FILES
 
 
 # Options ######################################################################
-option(BUILD_EXAMPLES   "Build examples." ON)
-option(BUILD_TUTORIALS  "Build tutorials." ON)
-option(BUILD_VALIDATION "Build validation tests." ON)
-option(BUILD_TESTING    "Build unit tests." OFF)
+
 
 
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -952,59 +987,6 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
     SET( EX_PLATFORM 32 )
     SET( EX_PLATFORM_NAME "x86" )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-
-
-    OPTION (USE_GLFW "Build the programs (demos, tutorials, and validation tests) that make use of GLFW" ON)
-    IF (USE_GLFW)
-        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
-    ENDIF (USE_GLFW)
-
-
-IF (BUILD_EXAMPLES OR BUILD_TUTORIALS)
-
-    IF (NOT APPLE)
-        OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" ON)
-    ELSE (NOT APPLE)
-        OPTION (USE_FLTK "Build the programs (demos, and tutorials) that make use of the Fast Light Toolkit (FLTK)" OFF)
-    ENDIF (NOT APPLE)
-
-    IF (USE_FLTK)
-        IF (WIN32 OR MSVC)
-            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       OFF)
-        ELSE (WIN32 OR MSVC)
-            OPTION(USE_SYSTEM_FLTK   "Use System FLTK"       ON)
-        ENDIF (WIN32 OR MSVC)
-    ENDIF (USE_FLTK)
-
-    OPTION (USE_GLUT "Build the programs (demos, and tutorials) that make use of the OpenGL Utility Toolkit (GLUT)" ON)
-    IF (USE_GLUT)
-        IF (NOT APPLE)
-            OPTION(USE_SYSTEM_GLUT   "Use System GLUT"       OFF)
-        ELSE (NOT APPLE)
-            OPTION(USE_SYSTEM_GLUT   "Use System GLUT"       ON)
-        ENDIF (NOT APPLE)
-    ENDIF (USE_GLUT)
-
-    IF (NOT APPLE)
-	OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
-    ELSE (NOT APPLE)
-        OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
-    ENDIF (NOT APPLE)
-
-    OPTION (USE_QT5  "Build the programs (demos, and tutorials) that make use of Qt5" ON)
-
-    IF (WIN32)
-        IF (EX_PLATFORM EQUAL 32)
-            OPTION (USE_QT4  "Build the programs (demos, and tutorials) that make use of Qt4" OFF)
-        ENDIF ()
-    ENDIF (WIN32)
-            
-ELSE ()
-    SET (USE_FLTK OFF)
-    SET (USE_GLUT OFF)
-    SET (USE_QT4 OFF)
-    SET (USE_QT5 OFF)
-ENDIF ()
 
 
 IF (USE_GLFW)
