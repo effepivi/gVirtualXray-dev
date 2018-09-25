@@ -1,8 +1,10 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <iostream>
 #include <sstream>
 #include <map>
 #include <vector>
-
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
