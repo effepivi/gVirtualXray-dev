@@ -42,11 +42,12 @@
 #include <cstdio>
 
 // ASSIMP to load Collada files
+#ifdef HAS_ASSIMP
 #include <assimp/scene.h>
 #include <assimp/matrix4x4.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
-
+#endif
 
 #ifndef __AssimpSceneGraphBinder_h
 #include "gVirtualXRay/AssimpSceneGraphBinder.h"
