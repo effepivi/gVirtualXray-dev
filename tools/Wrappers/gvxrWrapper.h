@@ -34,6 +34,8 @@ void addMesh(const std::string& aDestination, const std::string& aSource);
 void subtractMesh(const std::string& aDestination, const std::string& aSource);
 
 std::vector<std::string> getMeshLabelSet();
+unsigned int getMeshLabelSetSize();
+std::string getMeshLabel(unsigned int i);
 
 void addPolygonMeshAsInnerSurface(const std::string& aLabel);
 void addPolygonMeshAsOuterSurface(const std::string& aLabel);

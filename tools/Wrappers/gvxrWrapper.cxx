@@ -408,6 +408,38 @@ vector<string> getMeshLabelSet()
 }
 
 
+unsigned int getMeshLabelSetSize()
+{
+    return (g_p_scene_graph->getPolygonMeshSet().size());
+}
+
+
+std::string getMeshLabel(unsigned int i)
+{
+    if (i >= getMeshLabelSetSize())
+    {
+        throw (OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__));
+    }
+
+	// Look for all the meshes in the scenegraph
+    int id = 0;
+    string output;
+
+	for (std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
+			ite != g_p_scene_graph->getPolygonMeshSet().end();
+			++ite, ++id)
+	{
+        if (id == i)
+        {
+		    output = ite->first;
+            break;
+        }
+	}
+
+    return (output);
+}
+
+
 //---------------------------------------------
 void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 //---------------------------------------------
