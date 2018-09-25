@@ -360,7 +360,7 @@ int main(int argc, char** argv)
 	    glfwWindowHint(GLFW_SAMPLES, 16);
 
 		// Offscreen rendering
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_VISIBLE, false);
 		
 		// Create the window title
 		std::stringstream window_title;

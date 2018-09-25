@@ -1036,58 +1036,7 @@ void moveToCentre(const char* aLabel)
 }
 
 
-//---------------------------------------------
-void addPolygonMeshAsInnerSurface(const PyPolygonMesh& aMesh, const std::string& aLabel)
-//---------------------------------------------
-{
-	// Add the polygon mesh to the X-ray renderer
-	g_xray_renderer.addInnerSurface(&aMesh.getMesh());
 
-	// The scenegraph does not exist
-	if (!g_p_scene_graph.get())
-	{
-		// Create a scenegraph
-    	g_p_scene_graph.reset(new SceneGraphBinder());
-	}
-
-	// Add the polygon mesh to the scenegraph
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh.getMesh();
-}
-
-
-//---------------------------------------------
-void addPolygonMeshAsOuterSurface(const PyPolygonMesh& aMesh, const std::string& aLabel)
-//---------------------------------------------
-{
-	// Add the polygon mesh to the X-ray renderer
-	g_xray_renderer.addOuterSurface(&aMesh.getMesh());
-
-	// The scenegraph does not exist
-	if (!g_p_scene_graph.get())
-	{
-		// Create a scenegraph
-    	g_p_scene_graph.reset(new SceneGraphBinder());
-	}
-
-	// Add the polygon mesh to the scenegraph
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = aMesh.getMesh();
-}
-
-
-//------------------------
-void removePolygonMeshes()
-//------------------------
-{
-	// The scenegraph exists
-	if (g_p_scene_graph.get())
-	{
-		// Empty it
-		g_p_scene_graph->clear();
-	}
-
-	g_xray_renderer.removeInnerSurfaces();
-	g_xray_renderer.removeOuterSurface();
-}
 
 
 MATRIX4 Numpy2gvxrMatrix(const np::ndarray& aNumpyMatrix)

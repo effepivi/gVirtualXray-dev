@@ -1496,11 +1496,11 @@ GLFWwindow* initGLFW(int aWindowID,
 
     if (aVisibilityFlag)
     {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_VISIBLE, true);
     }
     else
     {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE, false);
     }
     
 	// Enable anti-aliasing
