@@ -78,16 +78,41 @@ IF (SWIG_FOUND)
     set(CMAKE_SWIG_FLAGS "")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+    option(BUILD_JAVA    "Build Java SWIG module" OFF)
+    #option(BUILD_LUA    "Build Lua SWIG module" OFF)
+    #option(BUILD_MATLAB    "Build Matlab SWIG module" OFF)
+    option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
+    #option(BUILD_PERL    "Build Perl SWIG module" OFF)
+    #option(BUILD_PHP7    "Build PHP7 SWIG module" OFF)
     option(BUILD_PYTHON2 "Build Python2 SWIG module" OFF)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" OFF)
-    option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
     option(BUILD_R       "Build R SWIG module" OFF)
     option(BUILD_RUBY    "Build Ruby SWIG module" OFF)
     #option(BUILD_SCILAB  "Build Scilab SWIG module" ON)
+    #option(BUILD_TCL    "Build TCL SWIG module" OFF)
     
+    #    FindTCL.cmake
+    #    FindPerl.cmake
+    #    FindPerlLibs.cmake
+    #    FindLua.cmake
+    #    FindMatlab.cmake
+    #    FindJava.cmake
+
     IF (BUILD_PYTHON2 AND BUILD_PYTHON3)
         MESSAGE(FATAL_ERROR "Both variables BUILD_PYTHON2 and BUILD_PYTHON3 are ON. Choose either Python2 or Python3, not both.")
     ENDIF (BUILD_PYTHON2 AND BUILD_PYTHON3)
+
+    IF (BUILD_JAVA)
+        add_subdirectory(java)
+    ENDIF (BUILD_JAVA)
+
+    IF (BUILD_OCTAVE)
+        add_subdirectory(octave)
+    ENDIF (BUILD_OCTAVE)
+
+    IF (BUILD_PHP7)
+    #    add_subdirectory(php7)
+    ENDIF (BUILD_PHP7)
 
     IF (BUILD_PYTHON2)
         add_subdirectory(python2)
@@ -110,9 +135,6 @@ IF (SWIG_FOUND)
     ENDIF (BUILD_SCILAB)
 
 
-    IF (BUILD_OCTAVE)
-        add_subdirectory(octave)
-    ENDIF (BUILD_OCTAVE)
 
 
 
