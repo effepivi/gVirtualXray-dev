@@ -107,12 +107,7 @@ IF (SWIG_FOUND)
 
 
     IF (BUILD_OCTAVE)
-        #add_subdirectory(octave)
-    #    find_package(Octave REQUIRED)
-    #    include_directories(${OCTAVE_INCLUDE_DIRS})
-    #    SWIG_ADD_LIBRARY(gvxrOctaveWrapper LANGUAGE octave SOURCES gvxrWrapper.i gvxrWrapper.cxx)
-    #    SWIG_LINK_LIBRARIES(gvxrOctaveWrapper ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${OCTAVE_LIBRARIES})
-	#	ADD_DEPENDENCIES(gvxrOctaveWrapper BinaryWrapper)
+        add_subdirectory(octave)
     ENDIF (BUILD_OCTAVE)
 
 
