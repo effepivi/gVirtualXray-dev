@@ -2033,7 +2033,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         #pragma omp parallel for collapse(2)
 #endif
 #endif
-		for (unsigned int j = 0; j < height; ++j)
+		for (int j = 0; j < height; ++j)
 		{
 			for (unsigned int i = 0; i < width; ++i)
 			{
