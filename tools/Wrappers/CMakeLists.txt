@@ -82,7 +82,7 @@ IF (SWIG_FOUND)
     #option(BUILD_LUA    "Build Lua SWIG module" OFF)
     #option(BUILD_MATLAB    "Build Matlab SWIG module" OFF)
     option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
-    #option(BUILD_PERL    "Build Perl SWIG module" OFF)
+    option(BUILD_PERL    "Build Perl SWIG module" OFF)
     #option(BUILD_PHP7    "Build PHP7 SWIG module" OFF)
     option(BUILD_PYTHON2 "Build Python2 SWIG module" OFF)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" OFF)
@@ -92,8 +92,6 @@ IF (SWIG_FOUND)
     #option(BUILD_TCL    "Build TCL SWIG module" OFF)
     
     #    FindTCL.cmake
-    #    FindPerl.cmake
-    #    FindPerlLibs.cmake
     #    FindLua.cmake
     #    FindMatlab.cmake
     #    FindJava.cmake
@@ -109,6 +107,10 @@ IF (SWIG_FOUND)
     IF (BUILD_OCTAVE)
         add_subdirectory(octave)
     ENDIF (BUILD_OCTAVE)
+
+    IF (BUILD_PERL)
+        add_subdirectory(perl)
+    ENDIF (BUILD_PERL)
 
     IF (BUILD_PHP7)
     #    add_subdirectory(php7)
