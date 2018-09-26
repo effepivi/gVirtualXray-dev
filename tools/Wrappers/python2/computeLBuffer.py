@@ -72,7 +72,7 @@ if not args.detector_position_unit:
 	exit();
 	
 if not args.source_position_unit:
-	print "No unit of length given for the source positino";
+	print "No unit of length given for the source position";
 	exit();
 	
 if not args.output_image:
