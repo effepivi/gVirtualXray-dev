@@ -1498,6 +1498,24 @@ std::vector<std::vector<float> > computeSinogram(double x, double y, double z, c
 }
 
 
+std::vector<std::vector<float> > getLastXRayImage()
+{
+	return (getVectorImage(g_xray_renderer.getEnergyFluence()));
+}
+
+
+std::vector<std::vector<float> > getLastLBuffer()
+{
+	return (getVectorImage(g_xray_renderer.getLBuffer()));
+}
+
+
+std::vector<std::vector<float> > getLastSinogram()
+{
+	return (getVectorImage(g_xray_renderer.getSinogram()));
+}
+
+
 int getImageWidth(const std::vector<std::vector<float> >& anImage)
 {
 	int image_width = 0;
