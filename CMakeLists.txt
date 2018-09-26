@@ -495,7 +495,7 @@ IF (NOT SWIG_FOUND)
         ENDIF (NOT SWIG_FOUND)
 
     ELSE (WIN32)
-        MESSAGE(FATAL_ERROR "GZIP not found.")
+        MESSAGE(WARNING "SWIG not found.")
     ENDIF (WIN32)
 ENDIF (NOT SWIG_FOUND)
 
