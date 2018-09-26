@@ -14,11 +14,13 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i PROPERTY CPLUSPLUS
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrPython2 LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i)
 swig_link_libraries(gvxrPython2 gvxrWrappers ${PYTHON_LIBRARIES})
-ADD_DEPENDENCIES(_gvxrPython2 gvxrWrappers)
+#ADD_DEPENDENCIES(_gvxrPython2 gvxrWrappers)
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
 
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+FILE(COPY computeLBuffer.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Files to install with Python
 set(PYTHON_INSTALL_FILES
