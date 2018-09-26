@@ -487,7 +487,7 @@ IF (NOT SWIG_FOUND)
 			WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 			
 		SET (SWIG_EXECUTABLE ${PROJECT_BINARY_DIR}/swigwin-3.0.12/swig.exe CACHE FILEPATH "Where swig.exe is" FORCE)
-		SET (SWIG_DIR        ${PROJECT_BINARY_DIR}/swigwin-3.0.12          CACHE PATH     "Where Swig is"     FORCE)
+		SET (SWIG_DIR        ${PROJECT_BINARY_DIR}/swigwin-3.0.12/Lib      CACHE PATH     "Where Swig is"     FORCE)
 
         FIND_PACKAGE(SWIG REQUIRED)
         IF (NOT SWIG_FOUND)

@@ -37,37 +37,42 @@ ExternalProject_Add(assimp
       -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
 )
 
-SET(ASSIMP_INCLUDE_DIRS  ${ASSIMP_INSTALL_DIR}/include/)
-SET(ASSIMP_LIBRARY_DIRS  ${ASSIMP_INSTALL_DIR}/lib)
+SET(ASSIMP_ROOT_DIR      ${ASSIMP_INSTALL_DIR}          CACHE PATH "Where ASSIMP is."   FORCE)
+SET(ASSIMP_INCLUDE_DIRS  ${ASSIMP_INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
+SET(ASSIMP_LIBRARY_DIRS  ${ASSIMP_INSTALL_DIR}/lib      CACHE PATH "Where ASSIMP's libraries are." FORCE)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     SET(ASSIMP_LIBRARIES   
         ${ASSIMP_INSTALL_DIR}/lib/assimp-vc140-mt.lib
         ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
         ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
+		CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 else ()
     SET(ASSIMP_LIBRARIES 
         ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
+		CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 
     IF (NOT WIN32)
         SET(ASSIMP_LIBRARIES  
             ${ASSIMP_LIBRARIES} 
             ${ASSIMP_INSTALL_DIR}/lib/libassimp.a 
-            dl
+			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ELSE (NOT WIN32)
         SET(ASSIMP_LIBRARIES  
             ${ASSIMP_LIBRARIES} 
-            ${ASSIMP_INSTALL_DIR}/lib/libassimp.a  
+            ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
+			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ENDIF (NOT WIN32)
 
 endif ()
 
-SET (ASSIMP_LIBRARY ${ASSIMP_LIBRARIES})
+SET (ASSIMP_LIBRARY ${ASSIMP_LIBRARIES} CACHE FILEPATH "ASSIMP's libraries." FORCE)
 
+SET(assimp_FOUND ON)
 SET(ASSIMP_FOUND ON)
 
 
