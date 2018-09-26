@@ -21,7 +21,7 @@ SET (ASSIMP_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(assimp
   URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
-  #URL_MD5 "878d389466d37cb5808efe24e6d17f9b"
+  URL_MD5 "e98a03f9496ff761e67f29b645e04316"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   BINARY_DIR  ${staging_prefix}/${install_prefix}-build
