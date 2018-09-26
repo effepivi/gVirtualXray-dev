@@ -114,6 +114,7 @@ OPTION(USE_ITK            "Use ITK"                 OFF)
 OPTION(USE_FFTW3          "Use FFTW3"               OFF)
 OPTION(USE_FREETYPE       "Use FreeType"            OFF)
 OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
+OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
 
 OPTION(USE_GLFW "Build the programs (demos, tutorials, wrappers, validation programs, and unit tests) that make use of GLFW" ON)
     
@@ -428,18 +429,25 @@ ENDIF (OPENCL_FOUND)
 
 # ASSIMP #######################################################################
 IF (USE_assimp)
-    FIND_PACKAGE(assimp)
-    IF (assimp_FOUND)
-	MESSAGE(STATUS "Use ASSIMP.")
+    IF (USE_SYSTEM_ASSIMP)
+        FIND_PACKAGE( assimp   REQUIRED )
+    ELSE(USE_SYSTEM_ASSIMP)
+        INCLUDE(BuildASSIMP)
 
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
-        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
-        SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ASSIMP_LIBRARY_DIRS})
-        SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
-    ELSE (assimp_FOUND)
-        MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disable.")
-    ENDIF (assimp_FOUND)
-ENDIF (USE_assimp)
+        build_assimp( assimp ${PROJECT_BINARY_DIR} )
+    ENDIF (USE_SYSTEM_ASSIMP)
+ENDIF(USE_assimp)
+
+IF (assimp_FOUND)
+MESSAGE(STATUS "Use ASSIMP.")
+
+	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
+	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
+	SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ASSIMP_LIBRARY_DIRS})
+	SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
+ELSE (assimp_FOUND)
+	MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disable.")
+ENDIF (assimp_FOUND)
 
 
 # OpenSceneGraph ###############################################################
@@ -468,7 +476,31 @@ ELSE (OPENMP_FOUND)
 ENDIF (OPENMP_FOUND)
 
 
-# GZIP ########################################################################
+# SWIG ########################################################################
+FIND_PACKAGE(SWIG)
+IF (NOT SWIG_FOUND)
+    IF (WIN32)
+        file(DOWNLOAD https://kent.dl.sourceforge.net/project/swig/swigwin/swigwin-3.0.12/swigwin-3.0.12.zip ${PROJECT_BINARY_DIR}/swigwin-3.0.12.zip)
+        
+        # Unzip swigwin-3.0.12.zip
+		execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/swigwin-3.0.12.zip
+			WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+			
+		SET (SWIG_EXECUTABLE ${PROJECT_BINARY_DIR}/swigwin-3.0.12/swig.exe CACHE FILEPATH "Where swig.exe is" FORCE)
+		SET (SWIG_DIR        ${PROJECT_BINARY_DIR}/swigwin-3.0.12          CACHE PATH     "Where Swig is"     FORCE)
+
+        FIND_PACKAGE(SWIG REQUIRED)
+        IF (NOT SWIG_FOUND)
+            MESSAGE(FATAL_ERROR "SWIG not found. You can find it on Swig's website at: http://www.swig.org/download.html")
+        ENDIF (NOT SWIG_FOUND)
+
+    ELSE (WIN32)
+        MESSAGE(FATAL_ERROR "GZIP not found.")
+    ENDIF (WIN32)
+ENDIF (NOT SWIG_FOUND)
+
+
+# SWIG ########################################################################
 FIND_PACKAGE(GZIP)
 IF (NOT GZIP_FOUND)
     IF (WIN32)
@@ -675,12 +707,14 @@ ENDIF (GDCM_FOUND)
 
 
 # TIFF #########################################################################
-IF (USE_SYSTEM_LIBTIFF)
-    FIND_PACKAGE( TIFF   REQUIRED )
-ELSE(USE_SYSTEM_LIBTIFF)
-    INCLUDE(BuildLibTIFF)
-    build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_LIBTIFF)
+IF (USE_LIBTIFF)
+	IF (USE_SYSTEM_LIBTIFF)
+		FIND_PACKAGE( TIFF   REQUIRED )
+	ELSE(USE_SYSTEM_LIBTIFF)
+		INCLUDE(BuildLibTIFF)
+		build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
+	ENDIF (USE_SYSTEM_LIBTIFF)
+ENDIF (USE_LIBTIFF)
 
 IF (TIFF_FOUND)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF" "-DHAS_TIFF")
@@ -782,50 +816,19 @@ TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
 
 IF (XCOM_PATH)
-    #foreach(xcom_file RANGE 1 100)
+    foreach(xcom_file RANGE 1 100)
 
-    #    if (${xcom_file} LESS 10)
-    #        SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
-    #    else ()
-    #        if (${xcom_file} LESS 100)
-    #            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
-    #        else ()
-    #            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
-    #        endif ()
-    #    endif ()
+        if (${xcom_file} LESS 10)
+            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
+        else ()
+            if (${xcom_file} LESS 100)
+                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
+            else ()
+                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
+            endif ()
+        endif ()
 
-    #endforeach(xcom_file)
-
-    SET (XCOM_SOURCES 
-        ${XCOM_PATH}/MDATX3.001
-        ${XCOM_PATH}/MDATX3.006
-        ${XCOM_PATH}/MDATX3.007
-        ${XCOM_PATH}/MDATX3.008
-
-        ${XCOM_PATH}/MDATX3.011
-        ${XCOM_PATH}/MDATX3.012
-        ${XCOM_PATH}/MDATX3.013
-        ${XCOM_PATH}/MDATX3.014
-        ${XCOM_PATH}/MDATX3.015
-        ${XCOM_PATH}/MDATX3.016
-        ${XCOM_PATH}/MDATX3.017
-        ${XCOM_PATH}/MDATX3.018
-        ${XCOM_PATH}/MDATX3.019
-
-        ${XCOM_PATH}/MDATX3.020
-        ${XCOM_PATH}/MDATX3.022
-        ${XCOM_PATH}/MDATX3.023
-        ${XCOM_PATH}/MDATX3.026
-        ${XCOM_PATH}/MDATX3.029
-
-        ${XCOM_PATH}/MDATX3.030
-
-        ${XCOM_PATH}/MDATX3.047
-
-        ${XCOM_PATH}/MDATX3.050
-        ${XCOM_PATH}/MDATX3.053
-        ${XCOM_PATH}/MDATX3.074
-    )
+    endforeach(xcom_file)
 
     CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")
     ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
