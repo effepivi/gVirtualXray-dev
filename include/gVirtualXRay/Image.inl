@@ -1975,7 +1975,7 @@ template<typename T> void Image<T>::saveASCII(const char* aFileName) const
                 }
 
             // This is not the last line
-            if (j < m_height - 1)
+            if (j < m_height - 1 || k < m_number_of_slices - 1)
                 {
                 output_file << std::endl;
                 }
