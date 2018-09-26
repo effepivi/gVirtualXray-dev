@@ -1,6 +1,6 @@
 # Include python
-find_package(PythonInterp REQUIRED)
-find_package(PythonLibs ${PYTHON_VERSION_STRING} REQUIRED)
+#find_package(PythonInterp REQUIRED)
+find_package(PythonLibs 2 REQUIRED)
 
 
 include_directories(${PYTHON_INCLUDE_PATH})
@@ -14,6 +14,7 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i PROPERTY CPLUSPLUS
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrPython2 LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i)
 swig_link_libraries(gvxrPython2 gvxrWrappers ${PYTHON_LIBRARIES})
+ADD_DEPENDENCIES(_gvxrPython2 gvxrWrappers)
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
 
