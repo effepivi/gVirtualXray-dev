@@ -51,6 +51,7 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 else ()
     SET(ASSIMP_LIBRARIES 
         ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
+        ${ASSIMP_INSTALL_DIR}/libIrrXML.a
 		CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 
@@ -58,12 +59,14 @@ else ()
         SET(ASSIMP_LIBRARIES  
             ${ASSIMP_LIBRARIES} 
             ${ASSIMP_INSTALL_DIR}/lib/libassimp.a 
+            ${ASSIMP_INSTALL_DIR}/libIrrXML.a
 			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ELSE (NOT WIN32)
         SET(ASSIMP_LIBRARIES  
             ${ASSIMP_LIBRARIES} 
             ${ASSIMP_INSTALL_DIR}/lib/libassimp.a
+            ${ASSIMP_INSTALL_DIR}/libIrrXML.a
 			CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     ENDIF (NOT WIN32)
