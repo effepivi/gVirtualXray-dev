@@ -108,6 +108,10 @@ std::vector<std::vector<float> > computeSinogram(double x, double y, double z, c
         unsigned int aNumberOfAngle,
         double anAngleOffset);
 
+int getImageWidth(const std::vector<std::vector<float> >& anImage);
+int getImageHeght(const std::vector<std::vector<float> >& anImage);
+std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage, int j);
+
 #endif
 
 

@@ -1498,6 +1498,34 @@ std::vector<std::vector<float> > computeSinogram(double x, double y, double z, c
 }
 
 
+int getImageWidth(const std::vector<std::vector<float> >& anImage)
+{
+	int image_width = 0;
+	
+	if (getImageHeght(anImage))
+	{
+		image_width = anImage[0].size();
+	}
+
+	return (image_width);
+}
+
+
+int getImageHeght(const std::vector<std::vector<float> >& anImage)
+{
+	return (anImage.size());
+}
+
+
+std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage, int j)
+{
+	if (j >= getImageHeght(anImage))
+	{
+		throw (OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__));
+	}
+
+	return (anImage[j]);
+}
 
 
 
