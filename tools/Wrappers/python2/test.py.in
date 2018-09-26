@@ -26,7 +26,7 @@ gvxr.setMonoChromatic(0.08, "MeV", 1000);
 # Set up the detector
 print("Set up the detector");
 gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm");
-gvxr.setDetectorUpVector(0, 1, 0);
+gvxr.setDetectorUpVector(0, 0, -1);
 gvxr.setDetectorNumberOfPixels(640, 320);
 gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 
