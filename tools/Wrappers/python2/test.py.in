@@ -8,7 +8,7 @@ import matplotlib.image as mpimg
 
 import numpy as np
 
-import gvxrPython3 as gvxr
+import gvxrPython2 as gvxr
 
 # Create an OpenGL context
 print("Create an OpenGL context")
