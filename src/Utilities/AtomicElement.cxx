@@ -95,12 +95,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef gVirtualXRay_XCOM_PATH
 #include "MDATX3.001.h"
+#include "MDATX3.002.h"
+#include "MDATX3.003.h"
+#include "MDATX3.004.h"
+#include "MDATX3.005.h"
 #include "MDATX3.006.h"
 #include "MDATX3.007.h"
 #include "MDATX3.008.h"
+#include "MDATX3.009.h"
 
+#include "MDATX3.010.h"
 #include "MDATX3.011.h"
 #include "MDATX3.012.h"
+#include "MDATX3.013.h"
+#include "MDATX3.014.h"
 #include "MDATX3.015.h"
 #include "MDATX3.016.h"
 #include "MDATX3.017.h"
@@ -108,8 +116,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MDATX3.019.h"
 
 #include "MDATX3.020.h"
-#include "MDATX3.026.h"
+#include "MDATX3.021.h"
 #include "MDATX3.022.h"
+#include "MDATX3.023.h"
+#include "MDATX3.024.h"
+#include "MDATX3.025.h"
+#include "MDATX3.026.h"
+#include "MDATX3.027.h"
+#include "MDATX3.028.h"
 #include "MDATX3.029.h"
 
 #include "MDATX3.030.h"
