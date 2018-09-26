@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
 
-from PIL import Image
+#from PIL import Image
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 import numpy as np
 
 import gvxrPython3 as gvxr
@@ -57,16 +61,20 @@ gvxr.saveLastLBuffer();
 np_image = np.array(x_ray_image);
 
 # Normalise the image between 0 and 255 (this is for PIL)
-np_normalised_image = (255 * (np_image-np_image.min())/np_image.max()).astype(np.int8);
+#np_normalised_image = (255 * (np_image-np_image.min())/np_image.max()).astype(np.int8);
 
 # Convert the Numpy array into a PIL image
-img = Image.fromarray(np_normalised_image.astype(np.ubyte));
+#img = Image.fromarray(np_normalised_image.astype(np.ubyte));
 
 # Save the PIL image
-img.save('my.png')
+#img.save('my.png')
 
 # Show the image
-img.show()
+#img.show()
+
+# Display the image with Matplotlib
+plt.imshow(np.log(np_image), cmap="gray");
+plt.show();
 
 # Display the 3D scene (no event loop)
 gvxr.displayScene();
