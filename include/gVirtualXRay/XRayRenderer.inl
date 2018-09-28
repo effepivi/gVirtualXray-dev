@@ -306,7 +306,7 @@ namespace gVirtualXRay {
                                                      const RATIONAL_NUMBER& anEnergy)
     //-------------------------------------------------------------------------------
     {
-        return (MaterialSet::getInstance().getMaterial(HU).getMU(HU, anEnergy));
+        return (MaterialSet::getInstance().getMaterial(HU).getMu(HU, anEnergy));
     }
     
     
