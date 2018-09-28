@@ -2288,7 +2288,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
         // Set the image height
         TIFF_UINT32_T image_height(m_height);
 
-        if (TIFFSetField(p_file, TIFFTAG_IMAGELENGTH, m_height) != 1)
+        if (TIFFSetField(p_file, TIFFTAG_IMAGELENGTH, image_height) != 1)
             {
                 std::string error_message("Could not set the image height in the TIFF file (");
                 error_message += aFileName;
@@ -2430,7 +2430,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
     tsize_t number_of_bytes_per_line(number_of_samples_per_pixel * m_width);
 
     // We set the strip size of the file to be size of one row of pixels
-    TIFFSetField(p_file, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(p_file, m_width * number_of_samples_per_pixel));
+    TIFFSetField(p_file, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(p_file, number_of_bytes_per_line));
 
 
         // Write the image data, line by line

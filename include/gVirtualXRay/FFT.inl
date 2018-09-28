@@ -117,7 +117,7 @@ template<typename T> FFT<T> FFT<T>::computeFFT(const Image<T>& anImage)
         p_forw = fftw_plan_dft_2d(width_power_of_two, height_power_of_two, in_src, out_src, FFTW_FORWARD, FFTW_ESTIMATE);
     }
 
-    float max_value(anImage.getMaxValue());
+    //float max_value(anImage.getMaxValue());
     bool y_forward_copy(false);
     int j2(0);
 

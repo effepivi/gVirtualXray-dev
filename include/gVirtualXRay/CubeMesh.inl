@@ -248,7 +248,6 @@ template<typename T> void CubeMesh<T>::create(double aLength,
     	// Use vertex normals
     	std::vector<T> p_normal_set2;
 
-	    int vertex_id = 0;
     	for (unsigned int vertex_id = 0; vertex_id < p_vertex_set.size() / 3; ++vertex_id)
     	{
     		double x = 0;

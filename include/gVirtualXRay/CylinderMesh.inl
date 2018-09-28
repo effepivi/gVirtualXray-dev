@@ -158,15 +158,12 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
 			p_index_set.push_back(2 + s * 2 + 1);
 			p_index_set.push_back(2 + 1);
         }
-    	}
+    }
 
     // Caps
     theta = 0;
     for(unsigned int s(0); s < aNumberOfSectors; ++s, theta += angle)
     {
-        double const x = cos(theta);
-        double const z = sin(theta);
-
         p_normal_set.push_back(0);
         p_normal_set.push_back(-1);
         p_normal_set.push_back(0);
@@ -195,14 +192,13 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
 			p_index_set.push_back(2 + s * 2 + 1);
 			p_index_set.push_back(2 + 1);
         }
-    	}
+    }
 
     if (anIndexDataType)
 	{
 		// Use vertex normals
 		std::vector<T> p_normal_set2;
 
-		int vertex_id = 0;
 		for (unsigned int vertex_id = 0; vertex_id < p_vertex_set.size() / 3; ++vertex_id)
 		{
 			double x = 0;
