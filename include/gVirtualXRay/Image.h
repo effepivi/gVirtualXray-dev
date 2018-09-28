@@ -1028,12 +1028,12 @@ protected:
     unsigned int m_number_of_slices;
 
 
-    /// The pixel data
-    T* m_p_image;
-
-
     /// The space between two successive pixels
     VEC3 m_spacing;
+
+    
+    /// The pixel data
+    T* m_p_image;
 
     
     static unsigned int g_mesh_type;
