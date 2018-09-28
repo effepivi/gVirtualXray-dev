@@ -210,7 +210,7 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_VISIBLE, false);
 
     // Enable anti-aliasing
     glfwWindowHint(GLFW_SAMPLES, 4);
