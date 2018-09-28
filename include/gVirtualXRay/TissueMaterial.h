@@ -75,6 +75,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
+#ifndef __Mixture_h
+#include "gVirtualXRay/Mixture.h"
+#endif
+
 #include <iostream>
 #include <map>
 #include <string>
@@ -166,20 +170,15 @@ public:
     TissueMaterial(const TissueMaterial& aMaterial);
 
 
-    static void registerElementSet(const ElementSet* apElementSet);
+    void clear();
+    
+    
+    void setMixture(const std::map<int, double>& );
 
 
-    void reset();
-
-    void addElement(const std::string& aName, double aPercentage);
-
-
-    //--------------------------------------------------------------------------
-    /// Normalise the weight set.
-    //--------------------------------------------------------------------------
-    void normaliseWeightSet();
-
-
+    const std::map<int, double>& getWeightSet() const;
+    
+    
     //--------------------------------------------------------------------------
     /// Accessor on the minimum HU.
     /*
@@ -196,24 +195,6 @@ public:
     */
     //--------------------------------------------------------------------------
     short getMaxHUValue() const;
-
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the atomic element weights.
-    /*
-    *   @return the atomic element weights
-    */
-    //--------------------------------------------------------------------------
-    //const double* getWeightSet() const;
-
-
-    //--------------------------------------------------------------------------
-    /// Update the value of the molar mass of the material.
-    /*
-    *   @return the molar mass of the material
-    */
-    //--------------------------------------------------------------------------
-    double computeMolarMass();
 
 
     //--------------------------------------------------------------------------
@@ -236,17 +217,9 @@ public:
 
 
     void setDensity(double aDensity);
-
-
-    //--------------------------------------------------------------------------
-    /// Get the density of the material.
-    /*
-    *   @return the material density
-    */
-    //--------------------------------------------------------------------------
     double getDensity() const;
 
-
+    
     //--------------------------------------------------------------------------
     /// Get the mass attenuation coefficient at a given energy
     /// (values are interpolated).
@@ -263,12 +236,36 @@ public:
     /// Get the linear attenuation coefficient at a given energy (in mm-1)
     /// (values are interpolated).
     /*
+     *  @param aHounsfieldValue:     the material (HU) value
+     *  @param anEnergy:             the energy
+     *  @return the corresponding linear attenuation coefficient
+     */
+    //--------------------------------------------------------------------------
+    double getLinearAttenuationTotal(short aHounsfieldValue, double anEnergy) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Get the linear attenuation coefficient at a given energy (in mm-1)
+    /// (values are interpolated).
+    /*
     *  @param aHounsfieldValue:     the material (HU) value
     *  @param anEnergy:             the energy
     *  @return the corresponding linear attenuation coefficient
     */
     //--------------------------------------------------------------------------
-    double getMU(short aHounsfieldValue, double anEnergy) const;
+    double getMu(short aHounsfieldValue, double anEnergy) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Get the linear attenuation coefficient at a given energy
+    /// (values are interpolated).
+    /*
+     *   @param aHounsfieldValue:    the material (HU) value
+     *   @param anEnergy:    the energy
+     *   @return the corresponding linear attenuation coefficient
+     */
+    //--------------------------------------------------------------------------
+    double getLinearAttenuationTotal(double anEnergy) const;
 
 
     //--------------------------------------------------------------------------
@@ -279,7 +276,7 @@ public:
     *  @return the corresponding linear attenuation coefficient
     */
     //--------------------------------------------------------------------------
-    double getMU(double anEnergy) const;
+    double getMu(double anEnergy) const;
 
 
     //--------------------------------------------------------------------------
@@ -340,17 +337,9 @@ private:
     // The maximum HU value of the material
     short m_max_HU_value;
     
-    
-    // The weight of each element in the material
-    std::map<int, double> m_p_weight_set; // First: Atomic number; Second: Weight in percentage
-    
-    
-    // The molar mass of the material
-    double m_molar_mass;
 
-    // The density (a negative value means that it is computed automatically from the HU number
-    // A positive value means that is is set by the user
-    double m_density;
+    // The mixture
+    Mixture m_mixture;
 };
 
 

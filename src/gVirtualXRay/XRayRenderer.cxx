@@ -2467,7 +2467,7 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
 
 				if (aMaterialFlag == 1)
 				{
-                    mu = aMaterial.getMU(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+                    mu = aMaterial.getMu(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
 
                     // Set the attenuation coefficient
                     //glBlendColor(1.0, 1.0, 1.0, mu);

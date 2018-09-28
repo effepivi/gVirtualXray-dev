@@ -103,56 +103,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace gVirtualXRay;
 
 
-void TissueMaterial::addElement(const std::string& aName, double aPercentage)
-{
-	m_p_weight_set[ElementSet::getInstance().getElement(aName).getAtomicNumber()] = aPercentage;
-	m_molar_mass = computeMolarMass();
-}
-
-
-//---------------------------------------
-void TissueMaterial::normaliseWeightSet()
-//---------------------------------------
-{
-    double sum(0.0);
-
-	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
-			ite != m_p_weight_set.end();
-			++ite)
-	{
-		sum += ite->second;
-	}
-
-    if (sum > EPSILON)
-    {
-    	for (std::map<int, double>::iterator ite = m_p_weight_set.begin();
-    			ite != m_p_weight_set.end();
-    			++ite)
-    	{
-    		ite->second /= sum;
-    	}
-    }
-    m_molar_mass = computeMolarMass();
-}
-
-
-//---------------------------------------
-double TissueMaterial::computeMolarMass()
-//---------------------------------------
-{
-    m_molar_mass = 0.0;
-
-	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
-			ite != m_p_weight_set.end();
-			++ite)
-	{
-		m_molar_mass += ite->second * ElementSet::getInstance().getElement(ite->first).getMolarMass();
-	}
-
-    return (m_molar_mass);
-}
-
-
 //-------------------------------------------------------
 double TissueMaterial::getDensity(short aHounsfieldValue)
 //-------------------------------------------------------
@@ -196,16 +146,7 @@ double TissueMaterial::getDensity(short aHounsfieldValue)
 double TissueMaterial::getMassAttenuationTotal(double anEnergy) const
 //-------------------------------------------------------------------
 {
-	double mass_attenuation_coefficient = 0.0;
-
-	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
-			ite != m_p_weight_set.end();
-			++ite)
-	{
-		mass_attenuation_coefficient += ite->second * ElementSet::getInstance().getElement(ite->first).getMassAttenuationTotal(anEnergy);
-	}
-
-    return (mass_attenuation_coefficient);
+    return (m_mixture.getMassAttenuationTotal(anEnergy));
 }
 
 
@@ -215,26 +156,8 @@ bool TissueMaterial::operator==(const TissueMaterial& aMaterial) const
 {
     if (m_min_HU_value != aMaterial.m_min_HU_value) return false;
     if (m_max_HU_value != aMaterial.m_max_HU_value) return false;
+    if (m_mixture      != aMaterial.m_mixture)      return false;
 
-	for (std::map<int, double>::const_iterator ite = aMaterial.m_p_weight_set.begin();
-			ite != aMaterial.m_p_weight_set.end();
-			++ite)
-	{
-		if (m_p_weight_set.find(ite->first) == m_p_weight_set.end()) return false;
-        if (m_p_weight_set.find(ite->first)->second != ite->second) return false;
-	}
-
-	for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
-			ite != m_p_weight_set.end();
-			++ite)
-	{
-		if (aMaterial.m_p_weight_set.find(ite->first) == aMaterial.m_p_weight_set.end()) return false;
-        if (aMaterial.m_p_weight_set.find(ite->first)->second != ite->second) return false;
-	}
-
-    if (m_molar_mass != aMaterial.m_molar_mass) return false;
-    if (m_density    != aMaterial.m_density)    return false;
-
-    return true;
+    return (true);
 }
 

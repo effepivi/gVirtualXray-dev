@@ -140,7 +140,6 @@ void MaterialSet::loadFromFile(const std::string& aFileName)
 		// Add the material to the table
 		if (!(tissue_material.getMinHUValue() == 0 && tissue_material.getMaxHUValue() == 0))
 		{
-			tissue_material.normaliseWeightSet();
 			m_material_set.insert(std::pair<std::pair<short, short>, TissueMaterial>(std::pair<short, short>(tissue_material.getMinHUValue(), tissue_material.getMaxHUValue()), tissue_material));
 		}
 	}
