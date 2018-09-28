@@ -83,26 +83,31 @@ IF (SWIG_FOUND)
     #option(BUILD_MATLAB    "Build Matlab SWIG module" OFF)
     option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
     option(BUILD_PERL    "Build Perl SWIG module" OFF)
-    #option(BUILD_PHP7    "Build PHP7 SWIG module" OFF)
     option(BUILD_PYTHON2 "Build Python2 SWIG module" OFF)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" OFF)
     option(BUILD_R       "Build R SWIG module" OFF)
     option(BUILD_RUBY    "Build Ruby SWIG module" OFF)
-    #option(BUILD_SCILAB  "Build Scilab SWIG module" ON)
     #option(BUILD_TCL    "Build TCL SWIG module" OFF)
     
     #    FindTCL.cmake
     #    FindLua.cmake
     #    FindMatlab.cmake
-    #    FindJava.cmake
 
     IF (BUILD_PYTHON2 AND BUILD_PYTHON3)
         MESSAGE(FATAL_ERROR "Both variables BUILD_PYTHON2 and BUILD_PYTHON3 are ON. Choose either Python2 or Python3, not both.")
     ENDIF (BUILD_PYTHON2 AND BUILD_PYTHON3)
 
+    IF (BUILD_LUA)
+        add_subdirectory(lua)
+    ENDIF (BUILD_LUA)
+
     IF (BUILD_JAVA)
         add_subdirectory(java)
     ENDIF (BUILD_JAVA)
+
+    IF (BUILD_MATLAB)
+        add_subdirectory(matlab)
+    ENDIF (BUILD_MATLAB)
 
     IF (BUILD_OCTAVE)
         add_subdirectory(octave)
@@ -111,10 +116,6 @@ IF (SWIG_FOUND)
     IF (BUILD_PERL)
         add_subdirectory(perl)
     ENDIF (BUILD_PERL)
-
-    IF (BUILD_PHP7)
-    #    add_subdirectory(php7)
-    ENDIF (BUILD_PHP7)
 
     IF (BUILD_PYTHON2)
         add_subdirectory(python2)
@@ -132,82 +133,8 @@ IF (SWIG_FOUND)
         add_subdirectory(ruby)
     ENDIF (BUILD_RUBY)
 
-    IF (BUILD_SCILAB)
-        #add_subdirectory(scilab)
-    ENDIF (BUILD_SCILAB)
-
-
-
-
-
-    #FIND_PACKAGE(PythonLibs)
-    #INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
-
-    #INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
-    #SET(CMAKE_SWIG_FLAGS "")
-
-    #SWIG_LINK_LIBRARIES(gvxrPythonWrapper ${PYTHON_LIBRARIES})
+    IF (BUILD_TCL)
+        #add_subdirectory(tcl)
+    ENDIF (BUILD_TCL)
 ENDIF (SWIG_FOUND)
 
-#FIND_PACKAGE(PythonInterp 3)
-
-#if (PYTHONINTERP_FOUND)
-#    FIND_PACKAGE(Boost COMPONENTS python-py3 numpy-py3)
-#    FIND_PACKAGE(PythonLibs 3)
-
-#    IF (PythonLibs_FOUND)
-#        IF (Boost_FOUND)
-#        	IF (NOT "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" VERSION_LESS "1.63")
-        
-#	            message(STATUS "Build bindings for Python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
-	
-	
-#	            INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-	            
-#	            PYTHON_ADD_MODULE(gvxrPython gvxrPython.cxx)
-#	            target_link_libraries(gvxrPython ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES}
-#	)
-	
-#	            FILE(COPY gvxrPythonLoadStlFile.py                   DESTINATION .)
-#	            FILE(COPY gvxrPythonLoadSceneGraphFile.py            DESTINATION .)
-#	            FILE(COPY ../../examples/data/welsh-dragon-small.stl DESTINATION .)
-
-
-#            ELSE ()
-#                message(WARNING "Boost (${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}) is too old. Use at least 1.63")
-#            ENDIF ()
-#        ELSE (Boost_FOUND)
-#            message(WARNING "Boost::Python not found")
-#        ENDIF (Boost_FOUND)
-#    ELSE (PythonLibs_FOUND)
-#        message(WARNING "PythonLibs not found")
-#    ENDIF (PythonLibs_FOUND)
-# else (PYTHONINTERP_FOUND)
-#    message(WARNING "Python not found")
-#endif(PYTHONINTERP_FOUND)
-
-#message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
-#message(STATUS "PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
-#message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
-#message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
-
-# Check if GLFW is enable #####################################################
-#IF (glfw3_FOUND)
-#    ADD_DEFINITIONS(-DHAS_GLFW)
-#ELSE (glfw3_FOUND)
-#	MESSAGE (WARNING "GLFW3 not found, the tool (gvxrWrappers) will be disable.")
-#ENDIF (glfw3_FOUND)
-
-
-# Create the main program ######################################################
-#ADD_EXECUTABLE (gvxrDicomSeriesToVolume gvxrDicomSeriesToVolume.cxx cmdline.h cmdline.c)
-#TARGET_LINK_LIBRARIES (gvxrDicomSeriesToVolume ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-
-
-#INSTALL (TARGETS gvxrDicomSeriesToVolume RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin  COMPONENT tools)
-#INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin/ COMPONENT tools)
-
-#SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE.txt)
-
-#INCLUDE (CPack)
