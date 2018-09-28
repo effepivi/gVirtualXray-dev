@@ -280,6 +280,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Mixture.cxx
+    #${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/PhotonCrossSection.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLUtilities.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/TissueMaterial.cxx
@@ -384,6 +385,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfBoundsException.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfMemoryException.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OutOfMemoryException.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PhotonCrossSection.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/PhotonCrossSection.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TissueMaterial.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TissueMaterial.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Types.h
