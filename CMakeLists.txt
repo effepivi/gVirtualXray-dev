@@ -279,6 +279,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Mixture.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLUtilities.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/TissueMaterial.cxx
@@ -374,6 +375,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Mixture.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Mixture.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLException.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLUtilities.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenGLUtilities.inl
