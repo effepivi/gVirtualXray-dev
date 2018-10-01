@@ -215,8 +215,7 @@ if(Boost_FOUND)
     CONFIGURE_FILE (data/tin.tsv	data/tin.tsv	COPYONLY)
     CONFIGURE_FILE (data/iron.tsv	data/iron.tsv	COPYONLY)
     CONFIGURE_FILE (data/iodine.tsv	data/iodine.tsv	COPYONLY)
-
-
+    CONFIGURE_FILE (data/Ti90Al6V4.tsv	data/Ti90Al6V4.tsv	COPYONLY)
 
     CONFIGURE_FILE (../validation/data/validation_01/bone.csv   data/bone.tsv   COPYONLY)
     CONFIGURE_FILE (../validation/data/validation_01/brain.csv  data/brain.tsv  COPYONLY)
