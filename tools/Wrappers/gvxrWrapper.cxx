@@ -799,7 +799,7 @@ void setLinearAttenuationCoefficient(const char* aLabel,
     if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
     {
         // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setAttenuationCoefficient (anAttenuationCoefficient / cm);
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setLinearAttenuationCoefficient (anAttenuationCoefficient / cm);
     }
     // It has not been found
     else

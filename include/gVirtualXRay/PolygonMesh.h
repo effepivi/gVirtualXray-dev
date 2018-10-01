@@ -94,8 +94,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Material.h"
 #endif
 
-#ifndef __TissueMaterial_h
-#include "gVirtualXRay/TissueMaterial.h"
+#ifndef __PhotonCrossSection_h
+#include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
 
@@ -336,96 +336,21 @@ public:
     bool useVBO(int aBufferUsageHing, int aTypeOfPrimitive);
 
 
-    //--------------------------------------------------------------------------
-    /// Set the Hounsfield value of the object material.
-    /**
-     * @param aHounsfieldValue:    the Hounsfield value of the object material
-     */
-    //--------------------------------------------------------------------------
-    void setHounsfieldValue(short aHounsfieldValue);
-
-
-    //--------------------------------------------------------------------------
-    /// Set the attenuation coefficient of the object material.
-    /**
-     * @param anAttenuationCoefficient: the attenuation coefficient of
-     *                                  the object material
-     */
-    //--------------------------------------------------------------------------
-    void setAttenuationCoefficient(const RATIONAL_NUMBER&
-            anAttenuationCoefficient);
-
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the flag about the use of the Hounsfield value or
-    /// attenuation coefficient.
-    /**
-     * @return true the Hounsfield value is used,
-     *          false if the attenuation coefficient is used
-     */
-    //--------------------------------------------------------------------------
-    bool getUseHounsfieldValueFlag() const;
-
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the Hounsfield value.
-    /**
-     * @return the Hounsfield value
-     */
-    //--------------------------------------------------------------------------
-    short getHounsfieldValue() const;
-
-
-    //--------------------------------------------------------------------------
-    /// Set the tissue material for the polygon.
-    /**
-    * @param TissueMaterial
-    */
-    //--------------------------------------------------------------------------
-    void setTissueMaterial(const TissueMaterial& aMaterial);
-
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the density value of the tissue material if exits.
-    /**
-    * @param the density value
-    */
-    //--------------------------------------------------------------------------
-    void setTissueDensity( double density );
+    void setHU(short HU);
+    void setHounsfieldUnit(short HU);
+    void setHounsfieldValue(short HU);
+    void setElement(unsigned short Z);
+    void setElement(const std::string& aName);
+    void setMixture(const Mixture& aMixture);
+    void setMixture(const std::map<int, double>& aMixture);
+    void setMixture(const std::string& aName);
+    void setMassAttenuationCoefficient(double aCoefficient);
+    void setLinearAttenuationCoefficient(double aCoefficient);
+    void setDensity(double aDensity);
+    double getDensity();
     
-    //--------------------------------------------------------------------------
-    /// Accessor on the density value of the tissue material if exits.
-    /**
-    * @return the density value
-    */
-    //--------------------------------------------------------------------------
-    double getTissueDensity( );
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the flag about the use of the tissue Material
-    /**
-    * @return the tissueMaterial flag value
-    */
-    //--------------------------------------------------------------------------
-    bool getUseTissueMaterialFlag() const;
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the Tissue Material
-    /**
-    * @return the Hounsfield value
-    */
-    //--------------------------------------------------------------------------
-    const TissueMaterial& getTissueMaterial() const;
-
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the attenuation coefficient.
-    /**
-     * @return the attenuation coefficient
-     */
-    //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getAttenuationCoefficient() const;
-
+    PhotonCrossSection& getPhotonCrossSection();
+    
 
     //--------------------------------------------------------------------------
     /// Accessor on the bounding box lower corner.
@@ -1405,22 +1330,10 @@ protected:
     std::unique_ptr<PolygonMesh>    m_p_vertex_normal_vbo;
 #endif
 
-    /// Flag about the use of the Hounsfield value or attenuation coefficient
-    bool m_use_hounsfield_value;
 
-
-    /// Hounsfield value
-    short m_hounsfield_value;
-
-
-    /// Attenuation coefficient
-    RATIONAL_NUMBER m_attenuation_coefficient;
-
-
-    bool m_use_tissue_properties;
-
-    TissueMaterial m_tissue_properties;
-
+    /// Material properties, with respect to X-ray
+    PhotonCrossSection m_photon_cross_section;
+    
 
     /// Length of the bounding box diagonal
     RATIONAL_NUMBER m_bounding_box_diagonal;

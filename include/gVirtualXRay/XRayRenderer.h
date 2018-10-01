@@ -940,11 +940,8 @@ protected:
      *  @param anObjectID:
      */
     //--------------------------------------------------------------------------
-    void computeSumMUxDx(GLfloat aHUValue,
-            GLfloat anAttenuationCoefficient,
-            const TissueMaterial& aMaterial,
-            int aMaterialFlag,
-            int anObjectID);
+    void computeSumMUxDx(int anObjectID,
+                         PhotonCrossSection& aPhotonCrossSection);
 
 
     //--------------------------------------------------------------------------
@@ -963,13 +960,6 @@ protected:
     /// Update the VBO of the geometry.
     //--------------------------------------------------------------------------
     void updateVBO();
-
-
-    //--------------------------------------------------------------------------
-    /// Update the list of all the HU values and corresponding polygon meshes
-    /// when a new mesh is added.
-    //--------------------------------------------------------------------------
-    void updateHUPolygonMeshSet();
 
 
     void preComputeLBuffer(GLint* apViewport, const VEC3& aXRaySourceSampleOffset);
@@ -1075,15 +1065,6 @@ protected:
 #else
     std::unique_ptr<VBO> m_detector_temporary_geometry;
 #endif
-
-
-    /// A list of all the HU values and corresponding polygon meshes
-    std::map<short, std::vector<PolygonMesh*> > m_p_HU_polygon_mesh_set;
-
-
-    /// Flag about the status of m_p_HU_polygon_mesh_set
-    bool m_HU_polygon_mesh_set_up_to_date;
-
 
     unsigned int m_zbuffer_texture_id;
 

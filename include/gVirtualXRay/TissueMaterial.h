@@ -173,7 +173,7 @@ public:
     void clear();
     
     
-    void setMixture(const std::map<int, double>& );
+    void setMixture(const std::map<int, double>& aWeightSet);
 
 
     const std::map<int, double>& getWeightSet() const;
@@ -217,7 +217,6 @@ public:
 
 
     void setDensity(double aDensity);
-    double getDensity() const;
 
     
     //--------------------------------------------------------------------------

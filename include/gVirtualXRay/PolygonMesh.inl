@@ -187,111 +187,83 @@ inline bool PolygonMesh::useVBO(int aTypeOfVBO, int aTypeOfPrimitive)
 }
 
 
-//-----------------------------------------------------------------
-inline void PolygonMesh::setHounsfieldValue(short aHounsfieldValue)
-//-----------------------------------------------------------------
+inline void PolygonMesh::setHU(short HU)
 {
-    // Set the Hounsfield value
-    m_hounsfield_value = aHounsfieldValue;
-
-    // The HU value will be used instead of tissue material properties or attenuation coefficient
-    m_use_hounsfield_value = true;
-    m_use_tissue_properties = false;
+    m_photon_cross_section.useHU(HU);
 }
 
 
-//-------------------------------------------------------------------------
-inline void PolygonMesh::setTissueMaterial(const TissueMaterial& aMaterial)
-//-------------------------------------------------------------------------
+inline void PolygonMesh::setHounsfieldUnit(short HU)
 {
-    // Set the tissue material properties
-    m_tissue_properties = aMaterial;
-
-    // The tissue material properties will be used instead of HU or attenuation coefficient
-    m_use_hounsfield_value = false;
-    m_use_tissue_properties = true;
-}
-
-//-------------------------------------------------------------------------
-inline void PolygonMesh::setTissueDensity( double density )
-//-------------------------------------------------------------------------
-{
-  //Only if there is one
-  if ( m_use_tissue_properties )
-    // Set the tissue material properties
-    m_tissue_properties.setDensity( density );
-}
-
-//-------------------------------------------------------------------------
-inline double PolygonMesh::getTissueDensity( )
-//-------------------------------------------------------------------------
-{
-  //Only if there is one
-  if ( m_use_tissue_properties )
-    // Set the tissue material properties
-    return m_tissue_properties.getDensity(  );
-
-  return 1;
+    setHU(HU);
 }
 
 
-//-----------------------------------------------------------------------
-inline void PolygonMesh::setAttenuationCoefficient(const RATIONAL_NUMBER&
-        anAttenuationCoefficient)
-//-----------------------------------------------------------------------
+inline void PolygonMesh::setHounsfieldValue(short HU)
 {
-    // Set the attenuation coefficient
-    m_attenuation_coefficient = anAttenuationCoefficient;
-
-    // The attenuation coefficient will be used instead of HU or tissue material properties
-    m_use_hounsfield_value = false;
-    m_use_tissue_properties = false;
+    setHU(HU);
 }
 
 
-//--------------------------------------------------------
-inline bool PolygonMesh::getUseHounsfieldValueFlag() const
-//--------------------------------------------------------
+inline void PolygonMesh::setElement(unsigned short Z)
 {
-    // Return true if the Hounsfield value is used,
-    // false if the attenuation coefficient is used
-    return (m_use_hounsfield_value);
+    m_photon_cross_section.useElement(Z);
 }
 
 
-//--------------------------------------------------------
-inline bool PolygonMesh::getUseTissueMaterialFlag() const
-//--------------------------------------------------------
+inline void PolygonMesh::setElement(const std::string& aName)
 {
-    // Return true if the Hounsfield value is used,
-    // false if the attenuation coefficient is used
-    return (m_use_tissue_properties);
+    m_photon_cross_section.useElement(aName);
 }
 
 
-//--------------------------------------------------
-inline short PolygonMesh::getHounsfieldValue() const
-//--------------------------------------------------
+inline void PolygonMesh::setMixture(const Mixture& aMixture)
 {
-    // Return the Hounsfield value
-    return (m_hounsfield_value);
-}
-
-//-----------------------------------------------------------------
-inline const TissueMaterial& PolygonMesh::getTissueMaterial() const
-//-----------------------------------------------------------------
-{
-    // Return the Hounsfield value
-    return (m_tissue_properties);
+    m_photon_cross_section.useMixture(aMixture);
 }
 
 
-//-------------------------------------------------------------------
-inline RATIONAL_NUMBER PolygonMesh::getAttenuationCoefficient() const
-//-------------------------------------------------------------------
+inline void PolygonMesh::setMixture(const std::map<int, double>& aMixture)
 {
-    // Return the attenuation coefficient
-    return (m_attenuation_coefficient);
+    m_photon_cross_section.useMixture(aMixture);
+}
+
+
+inline void PolygonMesh::setMixture(const std::string& aName)
+{
+    m_photon_cross_section.useMixture(aName);
+}
+
+
+inline void PolygonMesh::setMassAttenuationCoefficient(double aCoefficient)
+{
+    m_photon_cross_section.useMassAttenuationCoefficient(aCoefficient);
+}
+
+
+inline void PolygonMesh::setLinearAttenuationCoefficient(double aCoefficient)
+{
+    m_photon_cross_section.useLinearAttenuationCoefficient(aCoefficient);
+}
+
+
+inline void PolygonMesh::setDensity(double aDensity)
+{
+    m_photon_cross_section.setDensity(aDensity);
+}
+
+
+inline PhotonCrossSection& PolygonMesh::getPhotonCrossSection()
+{
+    return (m_photon_cross_section);
+}
+
+
+//-------------------------------------
+inline double PolygonMesh::getDensity()
+//-------------------------------------
+{
+    return (m_photon_cross_section.getDensity());
 }
 
 

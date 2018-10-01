@@ -125,10 +125,6 @@ using namespace gVirtualXRay;
 //-----------------------------------
 PolygonMesh::PolygonMesh():
 //-----------------------------------
-        m_use_hounsfield_value(true),
-        m_hounsfield_value(0),
-        m_use_tissue_properties(false),
-        m_attenuation_coefficient(0),
         m_bounding_box_diagonal(0),
         m_p_vertex_set(0),
         m_p_index_set(0),
@@ -148,11 +144,7 @@ PolygonMesh::PolygonMesh():
 PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
 //------------------------------------------------------------------------
         m_filename(aPolygonMesh.m_filename),
-        m_use_hounsfield_value(aPolygonMesh.m_use_hounsfield_value),
-        m_hounsfield_value(aPolygonMesh.m_hounsfield_value),
-        m_attenuation_coefficient(aPolygonMesh.m_attenuation_coefficient),
-        m_use_tissue_properties(aPolygonMesh.m_use_tissue_properties),
-        m_tissue_properties(aPolygonMesh.m_tissue_properties),
+        m_photon_cross_section(aPolygonMesh.m_photon_cross_section),
         m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
         m_min_corner(aPolygonMesh.m_min_corner),
         m_max_corner(aPolygonMesh.m_max_corner),
@@ -203,12 +195,7 @@ void PolygonMesh::reset()
         m_p_face_normal_vbo->reset();
         }
 
-    m_use_hounsfield_value = true;
-    m_hounsfield_value = 0;
-
-    m_use_tissue_properties = false;
-
-    m_attenuation_coefficient = 0;
+    m_photon_cross_section.reset();
 
     m_bounding_box_diagonal = 0;
 
@@ -994,11 +981,7 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
         }
 
     m_filename                = aPolygonMesh.m_filename;
-    m_use_hounsfield_value    = aPolygonMesh.m_use_hounsfield_value;
-    m_hounsfield_value        = aPolygonMesh.m_hounsfield_value;
-    m_attenuation_coefficient = aPolygonMesh.m_attenuation_coefficient;
-    m_use_tissue_properties   = aPolygonMesh.m_use_tissue_properties;
-    m_tissue_properties       = aPolygonMesh.m_tissue_properties;
+    m_photon_cross_section    = aPolygonMesh.m_photon_cross_section;
     m_bounding_box_diagonal   = aPolygonMesh.m_bounding_box_diagonal;
     m_min_corner              = aPolygonMesh.m_min_corner;
     m_max_corner              = aPolygonMesh.m_max_corner;
@@ -1078,13 +1061,9 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_polygon_type     = aPolygonMesh.m_polygon_type;
 
     // Recopy properties
-    new_polygon_mesh.m_use_hounsfield_value = m_use_hounsfield_value;
-	new_polygon_mesh.m_hounsfield_value = m_hounsfield_value;
-	new_polygon_mesh.m_attenuation_coefficient = m_attenuation_coefficient;
-	new_polygon_mesh.m_use_tissue_properties = m_use_tissue_properties;
-	new_polygon_mesh.m_tissue_properties = m_tissue_properties;
-	new_polygon_mesh.m_display_flag = m_display_flag;
-	new_polygon_mesh.m_material = m_material;
+    new_polygon_mesh.m_photon_cross_section = m_photon_cross_section;
+	new_polygon_mesh.m_display_flag         = m_display_flag;
+	new_polygon_mesh.m_material             = m_material;
 	new_polygon_mesh.m_local_to_global_transformation = m_local_to_global_transformation;
 
     // The data is held by the instance
@@ -1335,11 +1314,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_polygon_type     = m_polygon_type;
 
     // Recopy properties
-    new_polygon_mesh.m_use_hounsfield_value = m_use_hounsfield_value;
-	new_polygon_mesh.m_hounsfield_value = m_hounsfield_value;
-	new_polygon_mesh.m_attenuation_coefficient = m_attenuation_coefficient;
-	new_polygon_mesh.m_use_tissue_properties = m_use_tissue_properties;
-	new_polygon_mesh.m_tissue_properties = m_tissue_properties;
+    new_polygon_mesh.m_photon_cross_section = m_photon_cross_section;
 	new_polygon_mesh.m_display_flag = m_display_flag;
 	new_polygon_mesh.m_material = m_material;
 	new_polygon_mesh.m_local_to_global_transformation = m_local_to_global_transformation;
@@ -1689,7 +1664,7 @@ std::map<RATIONAL_NUMBER, VEC3> PolygonMesh::rayIntersect(
 					float t = f * edge2.dotProduct(q);
 					if (t > EPSILON) // ray intersection
 					{
-						VEC3 outIntersectionPoint = aRayOrigin + aRayDirection * t;
+						//VEC3 outIntersectionPoint = aRayOrigin + aRayDirection * t;
 						p_intersection_set[t] = N;
 					}
 				}

@@ -126,10 +126,12 @@ namespace gVirtualXRay {
     //******************************************************************************
     public:
         PhotonCrossSection();
-        PhotonCrossSection(short HU);
         PhotonCrossSection(const std::string& aName);
-        PhotonCrossSection(const std::vector<std::pair<int, double> >& aMixture);
+        PhotonCrossSection(const std::map<int, double>& aWeightSet);
+        PhotonCrossSection(const Mixture& aMixture);
 
+        void reset();
+        
         void useHU(short HU);
         void useHounsfieldUnit(short HU);
         void useHounsfieldValue(short HU);
@@ -138,24 +140,35 @@ namespace gVirtualXRay {
         void useElement(const std::string& aName);
         
         void useMixture(const Mixture& aMixture);
-        void useMixture(const std::vector<std::pair<int, double> >& aMixture);
+        void useMixture(const std::map<int, double>& aMixture);
+        void useMixture(const std::string& aName);
+
+        void useMassAttenuationCoefficient(double aCoefficient);
+        void useLinearAttenuationCoefficient(double aCoefficient);
 
         void setDensity(double aDensity);
         
         double getMassAttenuationCoefficient(double anEnergy) const;
         double getLinearAttenuationCoefficient(double anEnergy) const;
         double getMu(double anEnergy) const;
-        double getDensity(double anEnergy) const;
+        double getDensity() const;
         double getMolarMass() const;
         
         
     //*****************************************************************************
     protected:
+        short getElement(const std::string& aName) const;
+        std::map<int, double> getWeightSet(const std::string& aName) const;
+        
         bool  m_use_HU;
         bool  m_use_element;
         bool  m_use_mixture;
+        bool  m_use_mass_attenuation_coefficient;
+        bool  m_use_linear_attenuation_coefficient;
         short m_HU;
         unsigned short m_Z_number;
+        double m_mass_attenuation_coefficient;
+        double m_linear_attenuation_coefficient;
         Mixture m_mixture;
         double m_density;
     };

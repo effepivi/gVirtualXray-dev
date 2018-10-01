@@ -63,6 +63,13 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef __MaterialSet_h
+#include "gVirtualXRay/MaterialSet.h"
+#endif
+
+#ifndef __ElementSet_h
+#include "gVirtualXRay/ElementSet.h"
+#endif
 
 
 //******************************************************************************
@@ -74,92 +81,299 @@
 //  namespace
 //******************************************************************************
 namespace gVirtualXRay {
-/*
-    bool  m_use_HU;
-    bool  m_use_element;
-    bool  m_use_mixture;
-    short m_HU;
-    std::vector<std::pair<int, double> > m_p_weight_set;
-    double m_density;
-*/
-    double PhotonCrossSection::getMassAttenuationCoefficient(double anEnergy) const
+
+
+inline PhotonCrossSection::PhotonCrossSection():
+        m_use_HU(false),
+        m_use_element(false),
+        m_use_mixture(false),
+        m_use_mass_attenuation_coefficient(false),
+        m_use_linear_attenuation_coefficient(false),
+        m_HU(0),
+        m_Z_number(0),
+        m_mass_attenuation_coefficient(0.0),
+        m_linear_attenuation_coefficient(0.0),
+        m_density(-1.0)
+{}
+
+
+inline PhotonCrossSection::PhotonCrossSection(const std::string& aName):
+        m_use_HU(false),
+        m_use_element(false),
+        m_use_mixture(false),
+        m_use_mass_attenuation_coefficient(false),
+        m_use_linear_attenuation_coefficient(false),
+        m_HU(0),
+        m_Z_number(0),
+        m_mass_attenuation_coefficient(0.0),
+        m_linear_attenuation_coefficient(0.0),
+        m_density(-1.0)
+{
+    m_Z_number = getElement(aName);
+    
+    if (m_Z_number)
+    {
+        m_use_element = true;
+    }
+    else
+    {
+        std::map<int, double> weight_set = getWeightSet(aName);
+        if (weight_set.size())
+        {
+            m_mixture.setMixture(weight_set);
+            m_use_mixture = true;
+        }
+        else
+        {
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
+        }
+    }
+}
+
+
+inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeightSet):
+        m_use_HU(false),
+        m_use_element(false),
+        m_use_mixture(true),
+        m_use_mass_attenuation_coefficient(false),
+        m_use_linear_attenuation_coefficient(false),
+        m_HU(0),
+        m_Z_number(0),
+        m_mass_attenuation_coefficient(0.0),
+        m_linear_attenuation_coefficient(0.0),
+        m_mixture(aWeightSet),
+        m_density(-1.0)
+{}
+
+
+inline PhotonCrossSection::PhotonCrossSection(const Mixture& aMixture):
+        m_use_HU(false),
+        m_use_element(false),
+        m_use_mixture(true),
+        m_use_mass_attenuation_coefficient(false),
+        m_use_linear_attenuation_coefficient(false),
+        m_HU(0),
+        m_Z_number(0),
+        m_mass_attenuation_coefficient(0.0),
+        m_linear_attenuation_coefficient(0.0),
+        m_mixture(aMixture),
+        m_density(-1.0)
+{}
+
+
+inline void PhotonCrossSection::reset()
+{
+    m_use_HU      = false;
+    m_use_element = false;
+    m_use_mixture = false;
+    m_use_mass_attenuation_coefficient   = false;
+    m_use_linear_attenuation_coefficient = false;
+
+    m_density = -1.0;
+}
+
+
+inline void PhotonCrossSection::useHU(short HU)
+{
+    reset();
+    m_use_HU      = true;
+    m_HU = HU;
+}
+
+
+inline void PhotonCrossSection::useHounsfieldUnit(short HU)
+{
+    useHU(HU);
+}
+
+
+inline void PhotonCrossSection::useHounsfieldValue(short HU)
+{
+    useHU(HU);
+}
+
+
+inline void PhotonCrossSection::useElement(unsigned short Z)
+{
+    reset();
+    m_use_element = true;
+    m_Z_number = Z;
+}
+
+
+inline void PhotonCrossSection::useElement(const std::string& aName)
+{
+    reset();
+    m_use_element = true;
+    m_Z_number = getElement(aName);
+
+    if (!m_Z_number)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
+    }
+}
+
+
+inline void PhotonCrossSection::useMixture(const Mixture& aMixture)
+{
+    reset();
+    m_use_mixture = true;
+    m_mixture = aMixture;
+}
+
+
+inline void PhotonCrossSection::useMixture(const std::map<int, double>& aMixture)
+{
+    reset();
+    m_use_mixture = true;
+    m_mixture.setMixture(aMixture);
+}
+
+
+inline void PhotonCrossSection::useMixture(const std::string& aName)
+{
+    reset();
+    m_use_mixture = true;
+    std::map<int, double> weight_set = getWeightSet(aName);
+
+    if (weight_set.size())
+    {
+        m_mixture.setMixture(weight_set);
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
+    }
+}
+
+
+inline void PhotonCrossSection::useMassAttenuationCoefficient(double aCoefficient)
+{
+    reset();
+    m_use_mass_attenuation_coefficient   = true;
+    m_mass_attenuation_coefficient = aCoefficient;
+}
+
+
+inline void PhotonCrossSection::useLinearAttenuationCoefficient(double aCoefficient)
+{
+    reset();
+    m_use_linear_attenuation_coefficient = true;
+    m_linear_attenuation_coefficient = aCoefficient;
+}
+
+
+inline void PhotonCrossSection::setDensity(double aDensity)
+{
+    m_density = aDensity;
+}
+
+
+inline double PhotonCrossSection::getMassAttenuationCoefficient(double anEnergy) const
+{
+    if (m_use_HU)
+    {
+        return (MaterialSet::getInstance().getMaterial(m_HU).getMassAttenuationTotal(anEnergy));
+    }
+    else if (m_use_element)
+    {
+        return (ElementSet::getInstance().getElement(m_Z_number).getMassAttenuationTotal(anEnergy));
+    }
+    else if (m_use_mixture)
+    {
+        return (m_mixture.getMassAttenuationTotal(anEnergy));
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
+    }
+}
+
+
+inline double PhotonCrossSection::getLinearAttenuationCoefficient(double anEnergy) const
+{
+    if (m_use_linear_attenuation_coefficient)
+    {
+        return (m_linear_attenuation_coefficient);
+    }
+    
+    double density = getDensity();
+    
+    if (density < 0.0)
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Cannot compute the value without knowing the density");
+    }
+    
+    return (getMassAttenuationCoefficient(anEnergy) * density);
+}
+
+
+inline double PhotonCrossSection::getMu(double anEnergy) const
+{
+    return (getLinearAttenuationCoefficient(anEnergy));
+}
+
+
+inline double PhotonCrossSection::getDensity() const
+{
+    if (m_density < -0.5)
     {
         if (m_use_HU)
         {
-            return (MaterialSet::getInstance().getMaterial(m_HU).getMassAttenuationCoefficient(anEnergy));
+            return (MaterialSet::getInstance().getMaterial(m_HU).getDensity(m_HU));
         }
         else if (m_use_element)
         {
-            return (ElementSet::getInstance().getElement(m_Z_number).getMassAttenuationCoefficient(anEnergy));
+            return (ElementSet::getInstance().getElement(m_Z_number).getDensity());
         }
         else if (m_use_mixture)
         {
-            return (m_mixture.getMassAttenuationCoefficient(anEnergy));
+            return (m_mixture.getDensity());
         }
         else
         {
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
         }
     }
-    
-    
-    double PhotonCrossSection::getLinearAttenuationCoefficient(double anEnergy) const
+    else
     {
-        if (m_use_HU)
-        {
-            return (MaterialSet::getInstance().getMaterial(m_HU).getLinearAttenuationCoefficient(anEnergy));
-        }
-        else if (m_use_element)
-        {
-            return (ElementSet::getInstance().getElement(m_Z_number).getLinearAttenuationCoefficient(anEnergy));
-        }
-        else if (m_use_mixture)
-        {
-            return (m_mixture.getLinearAttenuationCoefficient(anEnergy));
-        }
-        else
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
-        }
+        return (m_density);
     }
-    
-    
-    double PhotonCrossSection::getMu(double anEnergy) const
+}
+
+
+inline double PhotonCrossSection::getMolarMass() const
+{
+    if (m_use_HU)
     {
-        return (getLinearAttenuationCoefficient(anEnergy));
+        return (MaterialSet::getInstance().getMaterial(m_HU).getMolarMass());
     }
-    
-    
-    double PhotonCrossSection::getDensity(double anEnergy) const
+    else if (m_use_element)
     {
-        if (m_density < -0.5)
-        {
-            if (m_use_HU)
-            {
-                return (MaterialSet::getInstance().getMaterial(m_HU).getDensity());
-            }
-            else if (m_use_element)
-            {
-                return (ElementSet::getInstance().getElement(m_Z_number).getDensity());
-            }
-            else if (m_use_mixture)
-            {
-                return (m_mixture.getDensity());
-            }
-            else
-            {
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
-            }
-        }
-        else
-        {
-            return (m_density);
-        }
+        return (ElementSet::getInstance().getElement(m_Z_number).getMolarMass());
     }
-    
-    
-    double PhotonCrossSection::getMolarMass() const
+    else if (m_use_mixture)
     {
-        
+        return (m_mixture.getMolarMass());
     }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
+    }
+}
+
+
+inline short PhotonCrossSection::getElement(const std::string& aName) const
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+}
+
+
+inline std::map<int, double> PhotonCrossSection::getWeightSet(const std::string& aName) const
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+}
+
+
 } // namespace gVirtualXRay

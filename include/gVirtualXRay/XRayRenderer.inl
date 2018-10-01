@@ -140,8 +140,6 @@ namespace gVirtualXRay {
     //---------------------------------------------------------------------
     {
         m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
-
-        m_HU_polygon_mesh_set_up_to_date = false;
     }
 
 
@@ -158,7 +156,6 @@ namespace gVirtualXRay {
     //---------------------------------------------
     {
         m_p_inner_surface_set.clear();
-        m_p_HU_polygon_mesh_set.clear();
     }
 
 

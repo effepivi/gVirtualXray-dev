@@ -219,7 +219,6 @@ XRayRenderer::XRayRenderer():
 		m_use_l_buffer_artefact_filtering_on_cpu(true),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
-		m_HU_polygon_mesh_set_up_to_date(true),
 		m_zbuffer_texture_id(0),
 		m_precision(0)
 //-------------------------------------------------------------------------------------------------
@@ -863,10 +862,6 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 	// The renderer is ready
 	if (isReady())
 	{
-	    // Make sure the list of all the HU values and corresponding polygon
-	    // meshes is up-to-date
-	    updateHUPolygonMeshSet();
-
 		// Wait for all OpenGL execution to be completed
 		glFinish();
 
@@ -926,11 +921,6 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 
                     VEC3 temp;
 
-                    RATIONAL_NUMBER HU;
-                    RATIONAL_NUMBER attenuation_coefficient;
-                    TissueMaterial tissue_properties;
-                    int tissue_method(3);
-
                     //unsigned int temp_id(0);
 				    //for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
 				    //        ite_meshes != ite->second.end();
@@ -948,42 +938,13 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
                         min_corner[0] = std::min(temp[0], min_corner[0]);
                         min_corner[1] = std::min(temp[1], min_corner[1]);
                         min_corner[2] = std::min(temp[2], min_corner[2]);
-
-                        //if (temp_id == 0)
-                        {
-                            HU =                      (*ite_meshes)->getHounsfieldValue();
-                            attenuation_coefficient = (*ite_meshes)->getAttenuationCoefficient();
-                            tissue_properties       = (*ite_meshes)->getTissueMaterial();
-
-                            if ((*ite_meshes)->getUseTissueMaterialFlag())
-                            {
-                                tissue_method = 1;
-                            }
-                            else
-                            {
-                                if ((*ite_meshes)->getUseHounsfieldValueFlag())
-                                {
-                                    tissue_method = 2;
-                                }
-                                else
-                                {
-                                    tissue_method = 3;
-                                }
-                            }
-                        }
-                        //else
-                        //{
-                        //    if (HU != (*ite_meshes)->getHounsfieldValue()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
-                        //    if (attenuation_coefficient != (*ite_meshes)->getAttenuationCoefficient()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
-                        //    if (tissue_properties != (*ite_meshes)->getTissueMaterial()) throw Exception(__FILE__, __FUNCTION__, __LINE__, "Incompatible tissue properties in polygon set.");
-                        //}
 				    }
 
 				    // Restore GPU states
 				    postComputeLBuffer(p_viewport, (max_corner - min_corner).length() / cm);
 
                     // Integrate the energy for every channel
-				    computeSumMUxDx(HU, attenuation_coefficient, tissue_properties, tissue_method, object_number);
+				    computeSumMUxDx(object_number, (*ite_meshes)->getPhotonCrossSection());
 
                     // Only update the cummulated L-buffers if the outer surface exists
                     if (m_p_outer_surface)
@@ -999,24 +960,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					computeLBuffer(*m_p_outer_surface, xray_source_detector_translation, aModellingTransformationMatrix);
 
 					// Integrate the energy for every channel
-					RATIONAL_NUMBER HU(                     m_p_outer_surface->getHounsfieldValue());
-                    RATIONAL_NUMBER attenuation_coefficient(m_p_outer_surface->getAttenuationCoefficient());
-                    TissueMaterial tissue_properties(       m_p_outer_surface->getTissueMaterial());
-
-                    int tissue_method(3);
-                    if (m_p_outer_surface->getUseTissueMaterialFlag())
-                    {
-                        tissue_method = 1;
-                    }
-                    else
-                    {
-                        if (m_p_outer_surface->getUseHounsfieldValueFlag())
-                        {
-                            tissue_method = 2;
-                        }
-                    }
-
-					computeSumMUxDx(HU, attenuation_coefficient, tissue_properties, tissue_method, m_p_inner_surface_set.size());
+					computeSumMUxDx(m_p_inner_surface_set.size(), m_p_outer_surface->getPhotonCrossSection());
 				}
 
 				computeIntegratedEnergy();
@@ -2363,13 +2307,10 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 }
 
 
-//---------------------------------------------------------------------
-void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
-                                   GLfloat anAttenuationCoefficient,
-                                   const TissueMaterial& aMaterial,
-                                   int aMaterialFlag,
-                                   int anObjectID)
-//---------------------------------------------------------------------
+//------------------------------------------------
+void XRayRenderer::computeSumMUxDx(int anObjectID,
+                                   PhotonCrossSection& aPhotonCrossSection)
+//------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -2463,46 +2404,12 @@ void XRayRenderer::computeSumMUxDx(GLfloat aHUValue,
 					++current_slice)
 			{
 				// Get the energy and the corresponding attenuation coefficient
-				RATIONAL_NUMBER mu;
+                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+				RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
-				if (aMaterialFlag == 1)
-				{
-                    mu = aMaterial.getMu(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
-
-                    // Set the attenuation coefficient
-                    //glBlendColor(1.0, 1.0, 1.0, mu);
-                    // Convert mu in cm-1
-                    mu /= 1.0 / cm;
-				}
-				else if (aMaterialFlag == 2)
-				{
-                    bool mu_values_loaded(false);
-
-#ifdef gVirtualXRay_XCOM_PATH
-                    if (MaterialSet::getInstance().getMaterialNumber() &&
-                            std::string(gVirtualXRay_XCOM_PATH) != "XCOM_PATH-NOTFOUND")
-                    {
-                        mu = getMuFromHU(aHUValue, m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
-                        mu_values_loaded = true;
-                    }
-#endif
-
-                    if (!mu_values_loaded)
-                    {
-                        RATIONAL_NUMBER mu_water(getMuWaterLogLinearInterpolation(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy()));
-                        mu = getMuFromHUAndMuWater(aHUValue, mu_water);
-                    }
-
-
-                    // Set the attenuation coefficient
-                    //glBlendColor(1.0, 1.0, 1.0, mu);
-                    // Convert mu in cm-1
-                    mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
-                }
-                else //if (aMaterialFlag == 3)
-                {
-                    mu = anAttenuationCoefficient / (1.0 / cm); // 1/cm because the unit of mu is cm-1
-                }
+                // Set the attenuation coefficient
+                // Convert mu in cm-1
+                mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
                 // Bind the corresponding slice of the 3D texture
                 if (m_p_xray_beam->getEnergyChannelNumber() > 1)
@@ -3142,54 +3049,6 @@ void XRayRenderer::cleanLBuffer(const RATIONAL_NUMBER& aCutoffDistance)
 
     // Restore the texturing flags
     popTexture();
-}
-
-
-//-----------------------------------------
-void XRayRenderer::updateHUPolygonMeshSet()
-//-----------------------------------------
-{
-    // It things it is up-to-date, but is it? really?
-    if (m_HU_polygon_mesh_set_up_to_date)
-        {
-        // Detect local changes
-        for (std::map<short, std::vector<PolygonMesh*> >::const_iterator ite(m_p_HU_polygon_mesh_set.begin());
-            ite != m_p_HU_polygon_mesh_set.end() && m_HU_polygon_mesh_set_up_to_date;
-            ++ite)
-            {
-            for (std::vector<PolygonMesh*>::const_iterator ite_mesh(ite->second.begin());
-                    ite_mesh != ite->second.end();
-                    ++ite_mesh)
-                {
-                if ((*ite_mesh)->getHounsfieldValue() != ite->first)
-                    {
-                    m_HU_polygon_mesh_set_up_to_date = false;
-                    }
-                }
-            }
-        }
-
-    // The list is not up-to-date (a mesh has been added
-    if (!m_HU_polygon_mesh_set_up_to_date)
-    {
-        // Make sure the list is empty
-        m_p_HU_polygon_mesh_set.clear();
-
-        // Add all the internal structure meshes
-        for (std::vector<PolygonMesh*>::iterator ite(m_p_inner_surface_set.begin());
-                ite != m_p_inner_surface_set.end();
-                ++ite)
-        {
-        	if ((*ite)->getUseHounsfieldValueFlag())
-        	{
-				short hounsfield_value((*ite)->getHounsfieldValue());
-				m_p_HU_polygon_mesh_set[hounsfield_value].push_back(*ite);
-        	}
-        }
-
-        // The list is now up-to-date
-        m_HU_polygon_mesh_set_up_to_date = true;
-    }
 }
 
 
