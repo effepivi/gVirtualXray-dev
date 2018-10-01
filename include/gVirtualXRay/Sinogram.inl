@@ -367,10 +367,6 @@ template<typename T> Image<T> Sinogram<T>::simpleBackProjection(double aFirstAng
             angle_id < this->m_height;
             ++angle_id, angle += anAngleStep)
     {
-        if (angle_id == 130)
-        {
-            int itr=0;
-        }
         Image<T> back_projection(sinogram.getWidth(), sinogram.getWidth(), sinogram.getDepth());
 
 #ifdef NDEBUG
