@@ -342,6 +342,22 @@ inline bool isLittleEndian()
 }
 
 
+//-------------------------------
+inline bool isLetter(char aValue)
+//-------------------------------
+{
+	return ('a' <= aValue && aValue <= 'z' || 'A' <= aValue && aValue <= 'Z');
+}
+
+
+//-------------------------------
+inline bool isNumber(char aValue)
+//-------------------------------
+{
+	return ('0' <= aValue && aValue <= '9');
+}
+
+
 //--------------------------------------------
 template<typename T> void swapBytes(T& aValue)
 //--------------------------------------------

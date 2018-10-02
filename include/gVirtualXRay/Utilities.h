@@ -303,6 +303,12 @@ bool isBigEndian();
 bool isLittleEndian();
 
 
+inline bool isLetter(char aValue);
+
+
+bool isNumber(char aValue);
+
+
 template<typename T> void swapBytes(T& aValue);
 
     
