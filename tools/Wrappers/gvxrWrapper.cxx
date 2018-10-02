@@ -752,9 +752,9 @@ void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vect
 }
 
 
-//-------------------------------------------------
-void setHU(const char* aLabel, double aHU)
-//-------------------------------------------------
+//--------------------------------------
+void setHU(const char* aLabel, short HU)
+//--------------------------------------
 {
     // Find the mesh
     auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
@@ -763,7 +763,7 @@ void setHU(const char* aLabel, double aHU)
     if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
     {
         // Set its properties
-    	g_p_scene_graph->getPolygonMeshSet()[aLabel].setHounsfieldValue (aHU);
+    	g_p_scene_graph->getPolygonMeshSet()[aLabel].setHounsfieldValue (HU);
     }
     // It has not been found
     else
@@ -772,19 +772,140 @@ void setHU(const char* aLabel, double aHU)
     }
 }
 
-void setMassAttenuationCoefficient(const char* aLabel,
-                               double anAttenuationCoefficient,
-							   const char* aUnit)
+
+//--------------------------------------------------
+void setHounsfieldUnit(const char* aLabel, short HU)
+//--------------------------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "TODO: mass vs liner attenuation coefficient");
+	setHU(aLabel, HU);
 }
 
 
-//----------------------------------------------------------------------
+//---------------------------------------------------
+void setHounsfieldValue(const char* aLabel, short HU)
+//---------------------------------------------------
+{
+	setHU(aLabel, HU);
+}
+
+
+//---------------------------------------------------
+void setElement(const char* aLabel, unsigned short Z)
+//---------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setElement(Z);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//-----------------------------------------------------------
+void setElement(const char* aLabel, const std::string& aName)
+//-----------------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setElement(aName);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//-----------------------------------------------------------
+void setMixture(const char* aLabel, const std::string& aName)
+//-----------------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setMixture(aName);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//------------------------------------------------------------
+void setCompound(const char* aLabel, const std::string& aName)
+//------------------------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setCompound(aName);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//-----------------------------------------------------
+void setMassAttenuationCoefficient(const char* aLabel,
+		                           double aCoefficient,
+		                           const char* aUnit)
+//-----------------------------------------------------
+{
+    if (strcmp(aUnit, "cm2/g"))
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of mass attenuation coefficient.");
+    }
+
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setMassAttenuationCoefficient (aCoefficient * cm2 / g);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }}
+
+
+//-------------------------------------------------------
 void setLinearAttenuationCoefficient(const char* aLabel,
-                               double anAttenuationCoefficient,
-							   const char* aUnit)
-//----------------------------------------------------------------------
+                                     double aCoefficient,
+		                             const char* aUnit)
+//-------------------------------------------------------
 {
     if (strcmp(aUnit, "cm-1"))
     {
@@ -794,12 +915,51 @@ void setLinearAttenuationCoefficient(const char* aLabel,
 
     // Find the mesh
     auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
-    
+
     // It has been found
     if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
     {
         // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setLinearAttenuationCoefficient (anAttenuationCoefficient / cm);
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setLinearAttenuationCoefficient (aCoefficient / cm);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//-----------------------------
+void setMu(const char* aLabel,
+		   double aCoefficient,
+		   const char* aUnit)
+//-----------------------------
+{
+	setLinearAttenuationCoefficient(aLabel, aCoefficient, aUnit);
+}
+
+
+//---------------------------------
+void setDensity(const char* aLabel,
+		        double aDensity,
+		        const char* aUnit)
+//---------------------------------
+{
+    if (strcmp(aUnit, "g/cm3"))
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+			"ERROR: Unknown unit of linear attenuation coefficient.");
+    }
+
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        // Set its properties
+        g_p_scene_graph->getPolygonMeshSet()[aLabel].setDensity(aDensity * g / cm3);
     }
     // It has not been found
     else

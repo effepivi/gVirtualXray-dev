@@ -63,13 +63,27 @@ void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix
 void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix);
 
 
-void setHU(const char* aLabel, double aHU);
-void setMassAttenuationCoefficient(const char* aLabel,
-                                   double anAttenuationCoefficient,
-								   const char* aUnit);
-void setLinearAttenuationCoefficient(const char* aLabel,
-                                     double anAttenuationCoefficient,
-									 const char* aUnit);
+
+void setHU(const char* aLabel, short HU);
+void setHounsfieldUnit(const char* aLabel, short HU);
+void setHounsfieldValue(const char* aLabel, short HU);
+
+void setElement(const char* aLabel, unsigned short Z);
+void setElement(const char* aLabel, const std::string& aName);
+
+void setMixture(const char* aLabel, const std::string& aName);
+
+void setCompound(const char* aLabel, const std::string& aName);
+
+void setMassAttenuationCoefficient(const char* aLabel, double aCoefficient,
+		   const char* aUnit);
+void setLinearAttenuationCoefficient(const char* aLabel, double aCoefficient,
+		   const char* aUnit);
+void setMu(const char* aLabel, double aCoefficient,
+		   const char* aUnit);
+void setDensity(const char* aLabel, double aDensity,
+		   const char* aUnit);
+
 void createOpenGLContext(int aWindowID = -1);
 void createWindow(int aWindowID = -1, int aVisibilityFlag = 0);
 void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
