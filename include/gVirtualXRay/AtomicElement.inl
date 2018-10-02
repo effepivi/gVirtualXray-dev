@@ -252,6 +252,22 @@ inline unsigned short AtomicElement::getAtomicNumber() const
 
 
 //-----------------------------------------------
+inline unsigned short AtomicElement::getZ() const
+//-----------------------------------------------
+{
+    return (m_atomic_number);
+}
+
+
+//--------------------------------------------
+inline unsigned short AtomicElement::Z() const
+//--------------------------------------------
+{
+    return (m_atomic_number);
+}
+
+
+//-----------------------------------------------
 inline double AtomicElement::getMolarMass() const
 //-----------------------------------------------
 {

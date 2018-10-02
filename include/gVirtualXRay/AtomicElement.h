@@ -271,7 +271,25 @@ public:
     */
     //--------------------------------------------------------------------------
     unsigned short getAtomicNumber() const;
-    
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the atomic number (Z) of the element.
+    /*
+    *   @return the atomic number (Z) of the element
+    */
+    //--------------------------------------------------------------------------
+    unsigned short getZ() const;
+
+
+    //--------------------------------------------------------------------------
+    /// Accessor on the atomic number (Z) of the element.
+    /*
+    *   @return the atomic number (Z) of the element
+    */
+    //--------------------------------------------------------------------------
+    unsigned short Z() const;
+
     
     //--------------------------------------------------------------------------
     /// Accessor on the molar mass of the element.
