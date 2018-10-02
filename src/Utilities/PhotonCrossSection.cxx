@@ -95,43 +95,6 @@
 using namespace gVirtualXRay;
 
 
-//---------------------------------------------------------------
-PhotonCrossSection::PhotonCrossSection(const std::string& aName):
-//---------------------------------------------------------------
-        m_use_HU(false),
-        m_use_element(false),
-        m_use_mixture(false),
-        m_use_mass_attenuation_coefficient(false),
-        m_use_linear_attenuation_coefficient(false),
-        m_HU(0),
-        m_Z_number(0),
-        m_mass_attenuation_coefficient(0.0),
-        m_linear_attenuation_coefficient(0.0),
-        m_density(-1.0)
-//---------------------------------------------------------------
-{
-    m_Z_number = ElementSet::getInstance().getElement(aName).Z();
-
-    if (m_Z_number)
-    {
-        m_use_element = true;
-    }
-    else
-    {
-        std::map<int, double> weight_set = getWeightSet(aName);
-        if (weight_set.size())
-        {
-            m_mixture.setMixture(weight_set);
-            m_use_mixture = true;
-        }
-        else
-        {
-            throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
-        }
-    }
-}
-
-
 //-----------------------------------------------------------
 void PhotonCrossSection::useElement(const std::string& aName)
 //-----------------------------------------------------------
@@ -151,7 +114,24 @@ void PhotonCrossSection::useMixture(const std::string& aName)
 {
     reset();
     m_use_mixture = true;
-    std::map<int, double> weight_set = getWeightSet(aName);
+    std::map<int, double> weight_set = getMixtureWeightSet(aName);
+
+    if (weight_set.size())
+    {
+        m_mixture.setMixture(weight_set);
+    }
+    else
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__, "Did not recognise the material " + aName);
+    }
+}
+
+
+void PhotonCrossSection::useCompound(const std::string& aName)
+{
+    reset();
+    m_use_mixture = true;
+    std::map<int, double> weight_set = getCompoundWeightSet(aName);
 
     if (weight_set.size())
     {
@@ -253,13 +233,12 @@ double PhotonCrossSection::getMolarMass() const
 }
 
 
-std::map<int, double> PhotonCrossSection::getWeightSet(const std::string& aName)
+std::map<int, double> PhotonCrossSection::getMixtureWeightSet(const std::string& aName)
 {
 	std::map<int, double> weight_set;
 
 	std::string symbol_string;
 	std::string weight_string;
-	bool added_number = false;
 
 	for (unsigned int i = 0; i < aName.size(); ++i)
 	{
@@ -287,6 +266,73 @@ std::map<int, double> PhotonCrossSection::getWeightSet(const std::string& aName)
 	if (symbol_string.size() && symbol_string.size())
 	{
 		processElement(symbol_string, weight_string, weight_set);
+	}
+
+	return (weight_set);
+}
+
+
+std::map<int, double> PhotonCrossSection::getCompoundWeightSet(const std::string& aName)
+{
+	std::map<int, double> weight_set;
+	std::map<int, double> molar_mass_set;
+
+	std::string symbol_string;
+	std::string number_string;
+
+	double compound_molar_mass = 0.0;
+
+	for (unsigned int i = 0; i < aName.size(); ++i)
+	{
+		if (isUpperCase(aName[i]) && symbol_string.size())
+		{
+			int atom_number = 1;
+			if (number_string.size())
+			{
+				atom_number = atof(number_string.data());
+			}
+			int Z = ElementSet::getInstance().getElement(symbol_string).Z();
+			molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
+			compound_molar_mass += molar_mass_set[Z];
+
+			symbol_string.clear();
+			number_string.clear();
+		}
+
+		if (isUpperCase(aName[i]))
+		{
+			symbol_string += aName[i];
+		}
+		else if (isLowerCase(aName[i]))
+		{
+			symbol_string += aName[i];
+		}
+		else if (isNumber(aName[i]))
+		{
+			number_string += aName[i];
+		}
+	}
+
+	if (symbol_string.size())
+	{
+		int atom_number = 1;
+		if (number_string.size())
+		{
+			atom_number = atof(number_string.data());
+		}
+		int Z = ElementSet::getInstance().getElement(symbol_string).Z();
+		molar_mass_set[Z] = atom_number * ElementSet::getInstance().getElement(Z).getMolarMass();
+		compound_molar_mass += molar_mass_set[Z];
+
+		symbol_string.clear();
+		number_string.clear();
+	}
+
+	for (std::map<int, double>::const_iterator ite = molar_mass_set.begin();
+			ite != molar_mass_set.end();
+			++ite)
+	{
+		weight_set[ite->first] = ite->second / compound_molar_mass;
 	}
 
 	return (weight_set);

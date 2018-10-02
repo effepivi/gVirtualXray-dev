@@ -1,27 +1,5 @@
 /*
  
- Element
-
-Compound: e.g. H2O
-(Fraction by Weight)
-Z=1    : 0.111898
-Z=8    : 0.888102
-
-CO2
-(Fraction by Weight)
-Z=6    : 0.272916
-Z=8    : 0.727084
-
-Mixture: e.g. Ti90Al6V4
-(Fraction by Weight)
-Z=13    : 0.060000
-Z=22    : 0.900000
-Z=23    : 0.040000
-*/
-
-
-/*
- 
  Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
  http://www.fpvidal.net/
  All rights reserved.
@@ -126,7 +104,6 @@ namespace gVirtualXRay {
     //******************************************************************************
     public:
         PhotonCrossSection();
-        PhotonCrossSection(const std::string& aName);
         PhotonCrossSection(const std::map<int, double>& aWeightSet);
         PhotonCrossSection(const Mixture& aMixture);
 
@@ -143,6 +120,8 @@ namespace gVirtualXRay {
         void useMixture(const std::map<int, double>& aMixture);
         void useMixture(const std::string& aName);
 
+        void useCompound(const std::string& aName);
+
         void useMassAttenuationCoefficient(double aCoefficient);
         void useLinearAttenuationCoefficient(double aCoefficient);
 
@@ -154,7 +133,8 @@ namespace gVirtualXRay {
         double getDensity() const;
         double getMolarMass() const;
         
-        static std::map<int, double> getWeightSet(const std::string& aName);
+        static std::map<int, double> getMixtureWeightSet(const std::string& aName);
+        static std::map<int, double> getCompoundWeightSet(const std::string& aName);
 
         
     //*****************************************************************************
