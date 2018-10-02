@@ -120,6 +120,7 @@ using namespace gVirtualXRay;
 void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnuplotScriptFileName = 0);
 void runTestElement(const char* aFileName, const char* anElementSymbol, const char* aGnuplotScriptFileName = 0);
 void runTestMixture(const char* aFileName, const char* aMixture, const char* aGnuplotScriptFileName = 0);
+void runTestCompound(const char* aFileName, const char* aMixture, const char* aGnuplotScriptFileName = 0);
 double getSum(const std::vector<double>& aVector);
 double getAverage(const std::vector<double>& aVector);
 double getVariance(const std::vector<double>& aVector);
@@ -380,6 +381,22 @@ BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
 {
     runTest("data/water.tsv", "H2O");
 }*/
+
+
+//-------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
+//-------------------------------------------------------
+{
+    runTestCompound("data/H2O.tsv", "H2O", "H2O");
+}
+
+
+//--------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestSiCMassAttenuationCoefficients)
+//--------------------------------------------------------
+{
+    runTestCompound("data/SiC.tsv", "SiC", "SiC");
+}
 
 
 //------------------------------------------------------------
@@ -726,6 +743,123 @@ void runTestMixture(const char* aFileName,
     
     BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
 	BOOST_REQUIRE_SMALL(maxRelativeError(reference_vector, test_vector), 0.04);
+}
+
+
+//------------------------------------------------------
+void runTestCompound(const char* aFileName,
+		             const char* aCompound,
+					 const char* aGnuplotScriptFileName)
+//------------------------------------------------------
+{
+    std::cout << "***********************" << std::endl;
+    std::cout << aCompound << std::endl;
+    std::cout << "***********************" << std::endl;
+
+    // Open the files
+    std::ifstream reference_data_stream(aFileName);
+    std::ofstream gnuplot_stream;
+    std::ofstream temp_stream;
+    std::string temp_file_name;
+
+    if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + "_tmp.tsv";
+
+    if (aGnuplotScriptFileName)
+	{
+    	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+    	temp_stream.open(temp_file_name.data());
+	}
+
+    // The file is not open
+    if (!reference_data_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+
+    if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else if (aGnuplotScriptFileName && !temp_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else
+    {
+    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+
+    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
+    			               "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 3" << std::endl;
+    }
+
+    // Initialise the photon cross-section
+    PhotonCrossSection photon_cross_section;
+    photon_cross_section.useCompound(aCompound);
+
+    std::vector<double> reference_vector;
+    std::vector<double> test_vector;
+    std::vector<double> energy_set;
+
+    double current_energy = 0;
+    double last_energy    = 0;
+    double mass_attenuation_coefficient;
+
+    // Skip header
+    char line[1024];
+    reference_data_stream.getline(line, 1024);
+
+    while (reference_data_stream.good())
+    {
+        reference_data_stream >> current_energy >> mass_attenuation_coefficient;
+        current_energy *= MeV;
+
+        if (current_energy == last_energy)
+        {
+        	current_energy += 4.0 * eV;
+
+        	test_vector.pop_back();
+			energy_set.pop_back();
+
+			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(last_energy - 4.0 * eV)  / (cm2 / g));
+			energy_set.push_back(last_energy - 4.0 * eV);
+        }
+
+        if (current_energy != last_energy)
+        {
+        	last_energy = current_energy;
+
+			reference_vector.push_back(mass_attenuation_coefficient);
+			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+			energy_set.push_back(current_energy);
+        }
+    }
+
+	if (temp_stream.is_open())
+	{
+		for (unsigned int i = 0; i < test_vector.size(); ++i)
+		{
+			temp_stream << energy_set[i] << "\t" << test_vector[i] << std::endl;
+		}
+	}
+
+    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
+	BOOST_REQUIRE_SMALL(maxRelativeError(reference_vector, test_vector), 0.02);
 }
 
 
