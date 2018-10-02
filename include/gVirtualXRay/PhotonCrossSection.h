@@ -154,11 +154,15 @@ namespace gVirtualXRay {
         double getDensity() const;
         double getMolarMass() const;
         
+        static std::map<int, double> getWeightSet(const std::string& aName);
+
         
     //*****************************************************************************
     protected:
-        short getElement(const std::string& aName) const;
-        std::map<int, double> getWeightSet(const std::string& aName) const;
+        static void processElement(std::string& aSymbol,
+			    std::string& aWeight,
+				std::map<int, double>& aWeightSet);
+
         
         bool  m_use_HU;
         bool  m_use_element;

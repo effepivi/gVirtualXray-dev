@@ -280,7 +280,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Mixture.cxx
-    #${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/PhotonCrossSection.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/PhotonCrossSection.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/OpenGLUtilities.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/TissueMaterial.cxx
