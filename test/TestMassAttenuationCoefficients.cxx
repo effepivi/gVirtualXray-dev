@@ -90,6 +90,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
+#ifndef __PhotonCrossSection_h
+#include "gVirtualXRay/PhotonCrossSection.h"
+#endif
+
 #ifndef __InvalidImageSizeException_h
 #include "gVirtualXRay/InvalidImageSizeException.h"
 #endif
@@ -113,13 +117,15 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void runTest(const char* aFileName, short anHounsfieldValue);
-void runTest(const char* aFileName, const char* anElementSymbol);
+void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnuplotScriptFileName = 0);
+void runTestElement(const char* aFileName, const char* anElementSymbol, const char* aGnuplotScriptFileName = 0);
+void runTestMixture(const char* aFileName, const char* aMixture, const char* aGnuplotScriptFileName = 0);
 double getSum(const std::vector<double>& aVector);
 double getAverage(const std::vector<double>& aVector);
 double getVariance(const std::vector<double>& aVector);
 double getStdDev(const std::vector<double>& aVector);
 double getNCC(const std::vector<double>& aVector1, const std::vector<double>& aVector2);
+void buildGnuplotHeader(std::ofstream& anOutputStream, const char* aTest);
 
 
 //******************************************************************************
@@ -133,10 +139,20 @@ const short HU_water(0);
 
 
 //-----------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TestTi90Al6V4MassAttenuationCoefficients)
+//-----------------------------------------------------------
+{
+    runTestMixture("data/Ti90Al6V4.tsv", "Ti90Al6V4", "Ti90Al6V4");
+}
+
+
+//-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestHydrogenMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/hydrogen.tsv", "H");
+    runTestElement("data/hydrogen.tsv", "H");
+    runTestElement("data/hydrogen.tsv", "hydrogen", "hydrogen");
+    runTestElement("data/hydrogen.tsv", "HYDROGEN");
 }
 
 
@@ -144,7 +160,9 @@ BOOST_AUTO_TEST_CASE(TestHydrogenMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestCarbonMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/carbon.tsv", "C");
+    runTestElement("data/carbon.tsv", "C");
+    runTestElement("data/carbon.tsv", "carbon", "carbon");
+    runTestElement("data/carbon.tsv", "CARBON");
 }
 
 
@@ -152,7 +170,9 @@ BOOST_AUTO_TEST_CASE(TestCarbonMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestNitrogenMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/nitrogen.tsv", "N");
+    runTestElement("data/nitrogen.tsv", "N");
+    runTestElement("data/nitrogen.tsv", "nitrogen", "nitrogen");
+    runTestElement("data/nitrogen.tsv", "NITROGEN");
 }
 
 
@@ -160,7 +180,9 @@ BOOST_AUTO_TEST_CASE(TestNitrogenMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestOxygenMassAttenuationCoefficients)
 //---------------------------------------------------------
 {
-    runTest("data/oxygen.tsv", "O");
+    runTestElement("data/oxygen.tsv", "O");
+    runTestElement("data/oxygen.tsv", "oxygen", "oxygen");
+    runTestElement("data/oxygen.tsv", "OXYGEN");
 }
 
 
@@ -168,7 +190,9 @@ BOOST_AUTO_TEST_CASE(TestOxygenMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestSodiumMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/sodium.tsv", "Na");
+    runTestElement("data/sodium.tsv", "Na");
+    runTestElement("data/sodium.tsv", "sodium", "sodium");
+    runTestElement("data/sodium.tsv", "SODIUM");
 }
 
 
@@ -176,7 +200,9 @@ BOOST_AUTO_TEST_CASE(TestSodiumMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/magnesium.tsv", "Mg");
+    runTestElement("data/magnesium.tsv", "Mg");
+    runTestElement("data/magnesium.tsv", "magnesium", "magnesium");
+    runTestElement("data/magnesium.tsv", "MAGNESIUM");
 }
 
 
@@ -184,7 +210,9 @@ BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestPhosphorMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/phosphor.tsv", "P");
+    runTestElement("data/phosphor.tsv", "P");
+    runTestElement("data/phosphor.tsv", "phosphor", "phosphor");
+    runTestElement("data/phosphor.tsv", "PHOSPHOR");
 }
 
 
@@ -192,31 +220,38 @@ BOOST_AUTO_TEST_CASE(TestPhosphorMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestSulfurMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/sulfur.tsv", "S");
+    runTestElement("data/sulfur.tsv", "S");
+    runTestElement("data/sulfur.tsv", "sulfur", "sulfur");
+    runTestElement("data/sulfur.tsv", "SULFUR");
 }
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestClorineMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/clorine.tsv", "Cl");
+    runTestElement("data/clorine.tsv", "Cl");
+    runTestElement("data/clorine.tsv", "chlorine", "chlorine");
+    runTestElement("data/clorine.tsv", "CHLORINE");
 }
 
-
-
+/*
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestArgonMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/argon.tsv", "Ar");
-}
+    runTestElement("data/argon.tsv", "Ar");
+    runTestElement("data/argon.tsv", "argon", "argon");
+    runTestElement("data/argon.tsv", "ARGON");
+}*/
 
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/potassium.tsv", "K");
+    runTestElement("data/potassium.tsv", "K");
+    runTestElement("data/potassium.tsv", "potassium", "potassium");
+    runTestElement("data/potassium.tsv", "POTASSIUM");
 }
 
 
@@ -224,7 +259,9 @@ BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestCalciumMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/calcium.tsv", "Ca");
+    runTestElement("data/calcium.tsv", "Ca");
+    runTestElement("data/calcium.tsv", "calcium", "calcium");
+    runTestElement("data/calcium.tsv", "CALCIUM");
 }
 
 
@@ -232,14 +269,18 @@ BOOST_AUTO_TEST_CASE(TestCalciumMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestTitatiumMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/titanium.tsv", "Ti");
+    runTestElement("data/titanium.tsv", "Ti");
+    runTestElement("data/titanium.tsv", "titanium", "titanium");
+    runTestElement("data/titanium.tsv", "TITANIUM");
 }
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestCopperMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/copper.tsv", "Cu");
+    runTestElement("data/copper.tsv", "Cu");
+    runTestElement("data/copper.tsv", "copper", "copper");
+    runTestElement("data/copper.tsv", "COPPER");
 }
 
 
@@ -247,14 +288,18 @@ BOOST_AUTO_TEST_CASE(TestCopperMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestZincMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/zinc.tsv", "Zn");
+    runTestElement("data/zinc.tsv", "Zn");
+    runTestElement("data/zinc.tsv", "zinc", "zinc");
+    runTestElement("data/zinc.tsv", "ZINC");
 }
 
 //-----------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TestSilverMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/silver.tsv", "Ag");
+    runTestElement("data/silver.tsv", "Ag");
+    runTestElement("data/silver.tsv", "silver", "silver");
+    runTestElement("data/silver.tsv", "SILVER");
 }
 
 
@@ -262,7 +307,9 @@ BOOST_AUTO_TEST_CASE(TestSilverMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestTinMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/tin.tsv", "Sn");
+    runTestElement("data/tin.tsv", "Sn");
+    runTestElement("data/tin.tsv", "tin", "tin");
+    runTestElement("data/tin.tsv", "TIN");
 }
 
 
@@ -270,7 +317,9 @@ BOOST_AUTO_TEST_CASE(TestTinMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestIronMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/iron.tsv", "Fe");
+    runTestElement("data/iron.tsv", "Fe");
+    runTestElement("data/iron.tsv", "iron", "iron");
+    runTestElement("data/iron.tsv", "IRON");
 }
 
 
@@ -278,7 +327,9 @@ BOOST_AUTO_TEST_CASE(TestIronMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestIodineMassAttenuationCoefficients)
 //-----------------------------------------------------------
 {
-    runTest("data/iodine.tsv", "I");
+    runTestElement("data/iodine.tsv", "I");
+    runTestElement("data/iodine.tsv", "iodine", "iodine");
+    runTestElement("data/iodine.tsv", "IODINE");
 }
 
 
@@ -286,7 +337,7 @@ BOOST_AUTO_TEST_CASE(TestIodineMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
 //-------------------------------------------------------
 {
-    runTest("data/bone.tsv", HU_bone);
+    runTestHU("data/bone.tsv", HU_bone, "bone");
 }
 
 
@@ -294,7 +345,7 @@ BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestBrainMassAttenuationCoefficients)
 //--------------------------------------------------------
 {
-    runTest("data/brain.tsv", HU_brain);
+    runTestHU("data/brain.tsv", HU_brain, "brain");
 }
 
 
@@ -302,7 +353,7 @@ BOOST_AUTO_TEST_CASE(TestBrainMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestGasMassAttenuationCoefficients)
 //------------------------------------------------------
 {
-    runTest("data/gas.tsv", HU_gas);
+    runTestHU("data/gas.tsv", HU_gas, "gas");
 }
 
 
@@ -310,7 +361,7 @@ BOOST_AUTO_TEST_CASE(TestGasMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestTissueMassAttenuationCoefficients)
 //--------------------------------------------------------
 {
-    runTest("data/tissue.tsv", HU_soft_tissue);
+    runTestHU("data/tissue.tsv", HU_soft_tissue, "soft_tissue");
 }
 
 
@@ -318,7 +369,7 @@ BOOST_AUTO_TEST_CASE(TestTissueMassAttenuationCoefficients)
 BOOST_AUTO_TEST_CASE(TestWaterMassAttenuationCoefficients)
 //--------------------------------------------------------
 {
-    runTest("data/water.tsv", HU_water);
+    runTestHU("data/water.tsv", HU_water, "water");
 }
 
 /*
@@ -330,16 +381,27 @@ BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
 }*/
 
 
-//----------------------------------------------------------
-void runTest(const char* aFileName, short anHounsfieldValue)
-//----------------------------------------------------------
+//------------------------------------------------------------
+void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnuplotScriptFileName)
+//------------------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
     std::cout << "HU: " << anHounsfieldValue << std::endl;
     std::cout << "***********************" << std::endl;
 
-    // Open the file
+    // Open the files
     std::ifstream reference_data_stream(aFileName);
+    std::ofstream gnuplot_stream;
+    std::ofstream temp_stream;
+    std::string temp_file_name;
+
+    if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + ".tmp";
+
+    if (aGnuplotScriptFileName)
+	{
+    	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+    	temp_stream.open(temp_file_name.data());
+	}
 
     // The file is not open
     if (!reference_data_stream.is_open())
@@ -352,8 +414,36 @@ void runTest(const char* aFileName, short anHounsfieldValue)
         BOOST_FAIL(error_message);
     }
 
-    // Initialise the X-ray renderer
-    XRayRenderer g_xray_renderer;
+    if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else if (aGnuplotScriptFileName && !temp_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else
+    {
+    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+
+    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
+    			               "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 3" << std::endl;
+    }
+
+    // Initialise the photon cross-section
+    PhotonCrossSection photon_cross_section;
+    photon_cross_section.useHU(anHounsfieldValue);
     
     std::vector<double> reference_vector;
     std::vector<double> test_vector;
@@ -373,7 +463,12 @@ void runTest(const char* aFileName, short anHounsfieldValue)
         	last_energy = current_energy;
 
             reference_vector.push_back(mass_attenuation_coefficient);
-            test_vector.push_back(g_xray_renderer.getMassAttenuationFromHU(anHounsfieldValue, current_energy)  / (cm2 / g));
+            test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+
+			if (temp_stream.is_open())
+			{
+				temp_stream << current_energy << "\t" << photon_cross_section.getMassAttenuationCoefficient(current_energy) / (cm2 / g) << std::endl;
+			}
         }
     }
 
@@ -381,16 +476,141 @@ void runTest(const char* aFileName, short anHounsfieldValue)
 }
 
 
-//--------------------------------------------------------------
-void runTest(const char* aFileName, const char* anElementSymbol)
-//--------------------------------------------------------------
+//-----------------------------------------------------
+void runTestElement(const char* aFileName,
+		            const char* anElementSymbol,
+		            const char* aGnuplotScriptFileName)
+//-----------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
     std::cout << anElementSymbol << std::endl;
     std::cout << "***********************" << std::endl;
 
-    // Open the file
+    // Open the files
     std::ifstream reference_data_stream(aFileName);
+    std::ofstream gnuplot_stream;
+    std::ofstream temp_stream;
+    std::string temp_file_name;
+
+    if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + ".tmp";
+
+    if (aGnuplotScriptFileName)
+	{
+    	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+    	temp_stream.open(temp_file_name.data());
+	}
+
+    // The file is not open
+    if (!reference_data_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+
+    if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else if (aGnuplotScriptFileName && !temp_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else
+    {
+    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+
+    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
+    			               "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 3" << std::endl;
+    }
+
+    // Initialise the photon cross-section
+    PhotonCrossSection photon_cross_section;
+    photon_cross_section.useElement(anElementSymbol);
+
+    std::vector<double> reference_vector;
+    std::vector<double> test_vector;
+
+    double current_energy = 0;
+    double last_energy    = 0;
+    double mass_attenuation_coefficient;
+
+    // Skip header
+    char line[1024];
+    reference_data_stream.getline(line, 1024);
+
+    int i = 0;
+    while (reference_data_stream.good())
+    {
+        reference_data_stream >> current_energy >> mass_attenuation_coefficient;
+        current_energy *= MeV;
+
+        if (current_energy != last_energy)
+        {
+        	last_energy = current_energy;
+
+        	//if (std::abs(current_energy - photon_cross_section.getEnergyChannel(i) / MeV) < 0.00001)
+        	{
+				reference_vector.push_back(mass_attenuation_coefficient);
+				test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+
+				/*if (std::abs(mass_attenuation_coefficient - photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g)) / mass_attenuation_coefficient >
+					0.05)
+				{
+					std::cout << current_energy / MeV << "\t" << mass_attenuation_coefficient << "\t" << photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g) << std::endl;
+				}*/
+
+				if (temp_stream.is_open())
+				{
+					temp_stream << current_energy << "\t" << photon_cross_section.getMassAttenuationCoefficient(current_energy) / (cm2 / g) << std::endl;
+				}
+
+	        	++i;
+			}
+        }
+    }
+
+    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
+}
+
+
+//-----------------------------------------------------
+void runTestMixture(const char* aFileName,
+		            const char* aMixture,
+					const char* aGnuplotScriptFileName)
+//-----------------------------------------------------
+{
+    std::cout << "***********************" << std::endl;
+    std::cout << aMixture << std::endl;
+    std::cout << "***********************" << std::endl;
+
+    // Open the files
+    std::ifstream reference_data_stream(aFileName);
+    std::ofstream gnuplot_stream;
+    std::ofstream temp_stream;
+    std::string temp_file_name;
+
+    if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + ".tmp";
+
+    if (aGnuplotScriptFileName)
+	{
+    	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+    	temp_stream.open(temp_file_name.data());
+	}
     
     // The file is not open
     if (!reference_data_stream.is_open())
@@ -403,8 +623,36 @@ void runTest(const char* aFileName, const char* anElementSymbol)
         BOOST_FAIL(error_message);
     }
     
-    // Initialise the X-ray renderer
-    XRayRenderer g_xray_renderer;
+    if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else if (aGnuplotScriptFileName && !temp_stream.is_open())
+    {
+        std::string error_message;
+        error_message += "\"";
+        error_message += aGnuplotScriptFileName;
+        error_message += "\" does not exist";
+
+        BOOST_FAIL(error_message);
+    }
+    else
+    {
+    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+
+    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
+    			               "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 3" << std::endl;
+    }
+
+    // Initialise the photon cross-section
+    PhotonCrossSection photon_cross_section;
+    photon_cross_section.useMixture(aMixture);
     
     std::vector<double> reference_vector;
     std::vector<double> test_vector;
@@ -415,8 +663,6 @@ void runTest(const char* aFileName, const char* anElementSymbol)
     
     // Skip header
     char line[1024];
-    reference_data_stream.getline(line, 1024);
-    reference_data_stream.getline(line, 1024);
     reference_data_stream.getline(line, 1024);
 
     int i = 0;
@@ -429,11 +675,15 @@ void runTest(const char* aFileName, const char* anElementSymbol)
         {
         	last_energy = current_energy;
 
-        	if (std::abs(current_energy - ElementSet::getInstance().getElement(anElementSymbol).getEnergyChannel(i) / MeV) < 0.00001)
+        	//if (std::abs(current_energy - photon_cross_section.getEnergyChannel(i) / MeV) < 0.00001)
         	{
 				reference_vector.push_back(mass_attenuation_coefficient);
-				test_vector.push_back(g_xray_renderer.getElementMassAttenuation(anElementSymbol, current_energy)  / (cm2 / g));
+				test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
 
+				if (temp_stream.is_open())
+				{
+					temp_stream << current_energy << "\t" << photon_cross_section.getMassAttenuationCoefficient(current_energy) / (cm2 / g) << std::endl;
+				}
 	        	++i;
 			}
         }
@@ -511,4 +761,28 @@ double getNCC(const std::vector<double>& aVector1,
     ncc /= aVector1.size();
 
     return (ncc);
+}
+
+
+//-----------------------------------------------------------------------
+void buildGnuplotHeader(std::ofstream& anOutputStream, const char* aTest)
+//-----------------------------------------------------------------------
+{
+	anOutputStream << "#!/usr/bin/env gnuplot" << std::endl;
+	anOutputStream << std::endl;
+	anOutputStream << "set term post eps enhanced color 'Helvetica' 32 size 9in,7in" << std::endl;
+	anOutputStream << "set output '" << aTest << ".eps'" << std::endl;
+	anOutputStream << std::endl;
+	anOutputStream << "set grid" << std::endl;
+	anOutputStream << std::endl;
+	anOutputStream << "#set key bottom" << std::endl;
+	anOutputStream << std::endl;
+	anOutputStream << "set log xy" << std::endl;
+	anOutputStream << "set format xy '10^{%T}'" << std::endl;
+	anOutputStream << std::endl;
+	anOutputStream << "set title '" << aTest << "'" << std::endl;
+	anOutputStream << "set ylabel 'Mass attenuation coefficient ({/Symbol m}/{/Symbol r}) in cm^2/g'" << std::endl;
+	anOutputStream << "set xlabel 'Photon energy in MeV'" << std::endl;
+	anOutputStream << std::endl;
+	anOutputStream << "set key autotitle columnhead" << std::endl;
 }
