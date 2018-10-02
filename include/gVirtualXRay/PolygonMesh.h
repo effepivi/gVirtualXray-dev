@@ -344,6 +344,7 @@ public:
     void setMixture(const Mixture& aMixture);
     void setMixture(const std::map<int, double>& aMixture);
     void setMixture(const std::string& aName);
+    void setCompound(const std::string& aName);
     void setMassAttenuationCoefficient(double aCoefficient);
     void setLinearAttenuationCoefficient(double aCoefficient);
     void setDensity(double aDensity);

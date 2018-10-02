@@ -235,6 +235,12 @@ inline void PolygonMesh::setMixture(const std::string& aName)
 }
 
 
+inline void PolygonMesh::setCompound(const std::string& aName)
+{
+    m_photon_cross_section.useCompound(aName);
+}
+
+
 inline void PolygonMesh::setMassAttenuationCoefficient(double aCoefficient)
 {
     m_photon_cross_section.useMassAttenuationCoefficient(aCoefficient);
