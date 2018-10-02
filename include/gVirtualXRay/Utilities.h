@@ -303,7 +303,13 @@ bool isBigEndian();
 bool isLittleEndian();
 
 
-inline bool isLetter(char aValue);
+bool isLetter(char aValue);
+
+
+bool isUpperCase(char aValue);
+
+
+bool isLowerCase(char aValue);
 
 
 bool isNumber(char aValue);

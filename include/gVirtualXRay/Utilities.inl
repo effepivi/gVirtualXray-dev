@@ -350,6 +350,22 @@ inline bool isLetter(char aValue)
 }
 
 
+//----------------------------------
+inline bool isUpperCase(char aValue)
+//----------------------------------
+{
+	return ('A' <= aValue && aValue <= 'Z');
+}
+
+
+//----------------------------------
+inline bool isLowerCase(char aValue)
+//----------------------------------
+{
+	return ('a' <= aValue && aValue <= 'z');
+}
+
+
 //-------------------------------
 inline bool isNumber(char aValue)
 //-------------------------------
