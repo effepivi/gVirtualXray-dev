@@ -223,14 +223,27 @@ void SceneGraphBinder::display(GLint aShaderID)
 
 void SceneGraphBinder::updateMatrices()
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	//throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
 }
 
 
 void SceneGraphBinder::scale(const char* aNodeLabel,
 		const VEC3& aScalingFactorSet)
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	// Find the node
+	std::map<std::string, PolygonMesh>::iterator ite = m_p_polygon_mesh_set.find(aNodeLabel);
+
+	// The node has been found
+	if (ite != m_p_polygon_mesh_set.end())
+	{
+		ite->second.scale(aScalingFactorSet[0], aScalingFactorSet[1], aScalingFactorSet[2]);
+		updateMatrices();
+	}
+	// The node has not been found
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
+	}
 }
 
 
@@ -238,14 +251,40 @@ void SceneGraphBinder::rotate(const char* aNodeLabel,
 		float aRotationAngleInDegrees,
 		const VEC3& aRotationAxis)
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	// Find the node
+	std::map<std::string, PolygonMesh>::iterator ite = m_p_polygon_mesh_set.find(aNodeLabel);
+
+	// The node has been found
+	if (ite != m_p_polygon_mesh_set.end())
+	{
+		ite->second.rotate(aRotationAxis, aRotationAngleInDegrees);
+		updateMatrices();
+	}
+	// The node has not been found
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
+	}
 }
 
 
 void SceneGraphBinder::translate(const char* aNodeLabel,
-		const VEC3& aRotationAxis)
+		const VEC3& aTranslationVector)
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	// Find the node
+	std::map<std::string, PolygonMesh>::iterator ite = m_p_polygon_mesh_set.find(aNodeLabel);
+
+	// The node has been found
+	if (ite != m_p_polygon_mesh_set.end())
+	{
+		ite->second.translate(aTranslationVector);
+		updateMatrices();
+	}
+	// The node has not been found
+	else
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
+	}
 }
 
 
