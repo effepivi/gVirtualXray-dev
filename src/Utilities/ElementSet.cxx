@@ -68,6 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <fstream>
+#include <algorithm>
 
 #ifndef __ElementSet_h
 #include "gVirtualXRay/ElementSet.h"
@@ -256,11 +257,21 @@ const AtomicElement& ElementSet::getElement(unsigned short anAtomicNumber) const
 AtomicElement& ElementSet::getElement(const std::string& aName)
 //-------------------------------------------------------------
 {
+	// Convert the name to upper case
+	std::string name_in_upper_case = aName;
+	std::transform(name_in_upper_case.begin(), name_in_upper_case.end(),name_in_upper_case.begin(), ::toupper);
+
     for (std::map<unsigned short, AtomicElement>::iterator element_ite(m_element_set.begin());
     		element_ite != m_element_set.end();
     		++element_ite)
     {
-    	if (element_ite->second.getSymbol() == aName) return (element_ite->second);
+		// Get the symbol and name from the iterator and convert them to upper case
+		std::string symbol =  element_ite->second.getSymbol();
+		std::string name   =  element_ite->second.getName();
+		std::transform(symbol.begin(), symbol.end(), symbol.begin(), ::toupper);
+		std::transform(  name.begin(),   name.end(),   name.begin(), ::toupper);
+
+    	if (symbol == name_in_upper_case || name == name_in_upper_case) return (element_ite->second);
     }
 
     std::stringstream error_message;
@@ -273,15 +284,26 @@ AtomicElement& ElementSet::getElement(const std::string& aName)
 const AtomicElement& ElementSet::getElement(const std::string& aName) const
 //-------------------------------------------------------------------------
 {
+	// Convert the name to upper case
+	std::string name_in_upper_case = aName;
+	std::transform(name_in_upper_case.begin(), name_in_upper_case.end(),name_in_upper_case.begin(), ::toupper);
+
     for (std::map<unsigned short, AtomicElement>::const_iterator element_ite(m_element_set.begin());
     		element_ite != m_element_set.end();
     		++element_ite)
     {
-    	if (element_ite->second.getSymbol() == aName) return (element_ite->second);
+		// Get the symbol and name from the iterator and convert them to upper case
+		std::string symbol =  element_ite->second.getSymbol();
+		std::string name   =  element_ite->second.getName();
+		std::transform(symbol.begin(), symbol.end(), symbol.begin(), ::toupper);
+		std::transform(  name.begin(),   name.end(),   name.begin(), ::toupper);
+
+    	if (symbol == name_in_upper_case || name == name_in_upper_case) return (element_ite->second);
     }
 
     std::stringstream error_message;
     error_message << "ERROR: Element (name: " << aName << ") not found.";
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 }
 
 
