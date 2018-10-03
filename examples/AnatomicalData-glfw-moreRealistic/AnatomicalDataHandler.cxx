@@ -264,6 +264,7 @@ AnatomicalDataHandler::AnatomicalDataHandler(unsigned int aWidth,
     m_light_direction(-1, 3, 1)
 //-----------------------------------------------------------------
 {
+	m_xray_renderer.enableArtefactFilteringOnGPU();
 }
 
 
