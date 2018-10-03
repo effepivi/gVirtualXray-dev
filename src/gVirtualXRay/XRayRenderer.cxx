@@ -911,50 +911,56 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				//	ite != m_p_HU_polygon_mesh_set.end();
 				//	++ite, ++object_number)
 
-				for (std::vector<PolygonMesh*>::const_iterator ite_meshes(m_p_inner_surface_set.begin());
-						ite_meshes != m_p_inner_surface_set.end();
-						++ite_meshes, ++object_number)
+				//for (std::vector<PolygonMesh*>::const_iterator ite_meshes(m_p_inner_surface_set.begin());
+				//		ite_meshes != m_p_inner_surface_set.end();
+				//		++ite_meshes, ++object_number)
+				for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
+						ite_material != m_p_surface_per_material_set.end();
+						++ite_material)
 				{
-				    // Store GPU states
-				    GLint p_viewport[4];
-				    preComputeLBuffer(p_viewport, xray_source_detector_translation);
+					// Store GPU states
+					GLint p_viewport[4];
+					preComputeLBuffer(p_viewport, xray_source_detector_translation);
 
-				    RATIONAL_NUMBER bbox_diagonal(0.0);
-                    VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
-                    VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+					RATIONAL_NUMBER bbox_diagonal(0.0);
+					VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
+					VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-                    VEC3 temp;
+					VEC3 temp;
 
-                    //unsigned int temp_id(0);
-				    //for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
-				    //        ite_meshes != ite->second.end();
-				    //        ++ite_meshes, ++temp_id)
-				    {
-                        // Compute its L-buffer
-                        computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
+					//unsigned int temp_id(0);
+					//for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
+					//        ite_meshes != ite->second.end();
+					//        ++ite_meshes, ++temp_id)
+					for (std::vector<PolygonMesh*>::const_iterator ite_meshes = ite_material->begin();
+							ite_meshes != ite_material->end();
+							++ite_meshes)
+					{
+						// Compute its L-buffer
+						computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
 
-                        temp = (*ite_meshes)->getMaxCorner();
-                        max_corner[0] = std::max(temp[0], max_corner[0]);
-                        max_corner[1] = std::max(temp[1], max_corner[1]);
-                        max_corner[2] = std::max(temp[2], max_corner[2]);
+						temp = (*ite_meshes)->getMaxCorner();
+						max_corner[0] = std::max(temp[0], max_corner[0]);
+						max_corner[1] = std::max(temp[1], max_corner[1]);
+						max_corner[2] = std::max(temp[2], max_corner[2]);
 
-                        temp = (*ite_meshes)->getMinCorner();
-                        min_corner[0] = std::min(temp[0], min_corner[0]);
-                        min_corner[1] = std::min(temp[1], min_corner[1]);
-                        min_corner[2] = std::min(temp[2], min_corner[2]);
-				    }
+						temp = (*ite_meshes)->getMinCorner();
+						min_corner[0] = std::min(temp[0], min_corner[0]);
+						min_corner[1] = std::min(temp[1], min_corner[1]);
+						min_corner[2] = std::min(temp[2], min_corner[2]);
+					}
 
-				    // Restore GPU states
-				    postComputeLBuffer(p_viewport, (max_corner - min_corner).length() / cm);
+					// Restore GPU states
+					postComputeLBuffer(p_viewport, (max_corner - min_corner).length() / cm);
 
-                    // Integrate the energy for every channel
-				    computeSumMUxDx(object_number, (*ite_meshes)->getPhotonCrossSection());
+					// Integrate the energy for every channel
+					computeSumMUxDx(object_number, ite_material->front()->getPhotonCrossSection());
 
-                    // Only update the cummulated L-buffers if the outer surface exists
-                    if (m_p_outer_surface)
-                    {
-                        updateCumulatedLBuffers(object_number);
-                    }
+					// Only update the cummulated L-buffers if the outer surface exists
+					if (m_p_outer_surface)
+					{
+						updateCumulatedLBuffers(object_number);
+					}
 				}
 
 				// Compute the L-buffer of the outer surface that wraps the inner objects
