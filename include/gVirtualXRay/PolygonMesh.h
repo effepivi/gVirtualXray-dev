@@ -350,7 +350,7 @@ public:
     void setDensity(double aDensity);
     double getDensity();
     
-    PhotonCrossSection& getPhotonCrossSection();
+    const PhotonCrossSection& getPhotonCrossSection() const;
     
 
     //--------------------------------------------------------------------------
