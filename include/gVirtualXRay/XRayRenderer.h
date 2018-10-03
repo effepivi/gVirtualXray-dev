@@ -941,7 +941,7 @@ protected:
      */
     //--------------------------------------------------------------------------
     void computeSumMUxDx(int anObjectID,
-                         PhotonCrossSection& aPhotonCrossSection);
+                         const PhotonCrossSection& aPhotonCrossSection);
 
 
     //--------------------------------------------------------------------------
@@ -965,6 +965,7 @@ protected:
     void preComputeLBuffer(GLint* apViewport, const VEC3& aXRaySourceSampleOffset);
     void postComputeLBuffer(const GLint* apViewport, RATIONAL_NUMBER aDiagonal);
 
+    void updateSurfacePerMaterialSet();
 
     /// The X-ray detector
     XRayDetector* m_p_detector;
@@ -980,6 +981,10 @@ protected:
 
     /// The 3D geometry that will wrap the ones in m_p_inner_surface_set
     PolygonMesh* m_p_outer_surface;
+
+
+    std::vector<std::vector<PolygonMesh*> > m_p_surface_per_material_set;
+    bool m_surface_per_material_set_needs_update;
 
 
     /// The computing mode (OPENGL, CUDA, or OPENCL)

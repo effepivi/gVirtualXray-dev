@@ -209,6 +209,7 @@ XRayRenderer::XRayRenderer():
 		m_p_xray_beam(0),
 		m_p_outer_surface(0),
 		m_computing_mode(OPENGL),
+		m_surface_per_material_set_needs_update(false),
 		m_p_pbo_set(XRAY_DETECTOR_PBO_NUMBER, 0),
 		m_p_texture_name_set(XRAY_DETECTOR_2D_TEXTURE_NUMBER + XRAY_DETECTOR_3D_TEXTURE_NUMBER, 0),
 		m_shader_set(XRAY_DETECTOR_SHADER_NUMBER),
@@ -883,6 +884,9 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 
 		// Clear the FBO
 		resetSumMuxDx();
+
+		// Update m_p_surface_per_material_set if needed
+		updateSurfacePerMaterialSet();
 
 		// Process every sample of the X-ray source
 		for (unsigned int sample_id(0);
@@ -2309,7 +2313,7 @@ void XRayRenderer::updateCumulatedLBuffers(unsigned int anObjectID)
 
 //------------------------------------------------
 void XRayRenderer::computeSumMUxDx(int anObjectID,
-                                   PhotonCrossSection& aPhotonCrossSection)
+                                   const PhotonCrossSection& aPhotonCrossSection)
 //------------------------------------------------
 {
 	// Save the current FBO
@@ -3197,4 +3201,39 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
 
     // Wait for all OpenGL execution to be completed
     glFinish();
+}
+
+
+//----------------------------------------------
+void XRayRenderer::updateSurfacePerMaterialSet()
+//----------------------------------------------
+{
+	if (m_surface_per_material_set_needs_update)
+	{
+		m_p_surface_per_material_set.clear();
+		m_surface_per_material_set_needs_update = false;
+
+		// Look at all the meshes
+		for (std::vector<PolygonMesh*>::const_iterator ite = m_p_inner_surface_set.begin();
+				ite != m_p_inner_surface_set.end();
+				++ite)
+		{
+			int i = 0;
+			bool added = false;
+			while (!added && i < m_p_surface_per_material_set.size())
+			{
+				if (m_p_surface_per_material_set[i].front()->getPhotonCrossSection() == (*ite)->getPhotonCrossSection())
+				{
+					added = true;
+					m_p_surface_per_material_set[i].push_back(*ite);
+				}
+				++i;
+			}
+
+			if (!added)
+			{
+				m_p_surface_per_material_set.push_back(std::vector<PolygonMesh*>(1, *ite));
+			}
+		}
+	}
 }
