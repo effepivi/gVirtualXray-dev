@@ -39,7 +39,8 @@ class gvxrJavaExample
             //gvxrJava.moveToCenter(label);
             
             System.out.println("Set " + label + "'s Hounsfield unit");
-            gvxrJava.setHU(label, 1000);
+            short HU = 1000;
+            gvxrJava.setHU(label, HU);
         }
 
         // Compute an X-ray image
