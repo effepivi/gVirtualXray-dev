@@ -172,19 +172,19 @@ bool Mixture::operator==(const Mixture& aMixture) const
 //-----------------------------------------------------
 {
      for (std::map<int, double>::const_iterator ite = aMixture.m_p_weight_set.begin();
-     ite != aMixture.m_p_weight_set.end();
-     ++ite)
+			 ite != aMixture.m_p_weight_set.end();
+			 ++ite)
      {
-     if (m_p_weight_set.find(ite->first) == m_p_weight_set.end()) return false;
-     if (m_p_weight_set.find(ite->first)->second != ite->second) return false;
+		 if (m_p_weight_set.find(ite->first) == m_p_weight_set.end()) return false;
+		 if (m_p_weight_set.find(ite->first)->second != ite->second) return false;
      }
      
      for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
-     ite != m_p_weight_set.end();
-     ++ite)
+			 ite != m_p_weight_set.end();
+			 ++ite)
      {
-     if (aMixture.m_p_weight_set.find(ite->first) == aMixture.m_p_weight_set.end()) return false;
-     if (aMixture.m_p_weight_set.find(ite->first)->second != ite->second) return false;
+		 if (aMixture.m_p_weight_set.find(ite->first) == aMixture.m_p_weight_set.end()) return false;
+		 if (aMixture.m_p_weight_set.find(ite->first)->second != ite->second) return false;
      }
     
      if (m_molar_mass != aMixture.m_molar_mass) return false;
