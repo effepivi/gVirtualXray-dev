@@ -879,7 +879,7 @@ void setMassAttenuationCoefficient(const char* aLabel,
 		                           const char* aUnit)
 //-----------------------------------------------------
 {
-    if (strcmp(aUnit, "cm2/g"))
+    if (strcmp(aUnit, "cm2/g") && strcmp(aUnit, "cm2.g-1"))
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of mass attenuation coefficient.");
@@ -946,7 +946,7 @@ void setDensity(const char* aLabel,
 		        const char* aUnit)
 //---------------------------------
 {
-    if (strcmp(aUnit, "g/cm3"))
+    if (strcmp(aUnit, "g/cm3") && strcmp(aUnit, "g.cm-3"))
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of linear attenuation coefficient.");
