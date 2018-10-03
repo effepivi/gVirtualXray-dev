@@ -5,13 +5,13 @@ INCLUDE_DIRECTORIES(${R_INCLUDE_DIR})
 SET (module gvxrR)
 
 
-configure_file(../gvxrWrapper.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrR.i)
+configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrR.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrR.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrR LANGUAGE r SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrR.i)
-swig_link_libraries(gvxrR gvxrWrappers ${R_LIBRARIES})
-#ADD_DEPENDENCIES(_gvxrR gvxrWrappers)
+swig_link_libraries(gvxrR SimpleGVXR ${R_LIBRARIES})
+#ADD_DEPENDENCIES(_gvxrR SimpleGVXR)
 
 configure_file(test.R.in ${CMAKE_CURRENT_BINARY_DIR}/test.R)
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -60,8 +60,8 @@
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef __gvxrWrapper_h
-#include "gvxrWrapper.h"
+#ifndef __SimpleGVXR_h
+#include "SimpleGVXR.h"
 #endif
 
 

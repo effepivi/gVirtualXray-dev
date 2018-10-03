@@ -8,13 +8,13 @@ INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 SET (module gvxrJava)
 
 
-configure_file(../gvxrWrapper.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
+configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrJava LANGUAGE java SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
-swig_link_libraries(gvxrJava gvxrWrappers ${JNI_LIBRARIES})
-#ADD_DEPENDENCIES(_gvxrJava gvxrWrappers)
+swig_link_libraries(gvxrJava SimpleGVXR ${JNI_LIBRARIES})
+#ADD_DEPENDENCIES(_gvxrJava SimpleGVXR)
 
 configure_file(test.java.in ${CMAKE_CURRENT_BINARY_DIR}/test.java)
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -1,5 +1,5 @@
-#ifndef __gvxrWrapper_h
-#define __gvxrWrapper_h
+#ifndef __SimpleGVXR_h
+#define __SimpleGVXR_h
 
 #include <vector>
 #include <string>

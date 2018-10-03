@@ -30,7 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-PROJECT (gvxrWrappers)
+PROJECT (SimpleGVXR)
 
 # Initialise some states by default ############################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
@@ -56,19 +56,19 @@ IF (SWIG_FOUND)
 	CreateHeaderFiles("cmake" "BinaryWrapper" "${RESOURCES_SOURCES}")
 
     # Create main and link to liba
-    add_library(gvxrWrappers gvxrWrapper.cxx)
-    target_link_libraries(gvxrWrappers ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+    add_library(SimpleGVXR SimpleGVXR.cxx)
+    target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
     # Set up public headers for swig-example
-    set_target_properties(gvxrWrappers PROPERTIES PUBLIC_HEADER "gvxrWrappers.h")
+    set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER "SimpleGVXR.h")
 
-	ADD_DEPENDENCIES(gvxrWrappers BinaryWrapper)
+	ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
 
 	IF (gVirtualXRay_BINARY_DIR)
-	     ADD_DEPENDENCIES (gVirtualXRay gvxrWrappers)
+	     ADD_DEPENDENCIES (gVirtualXRay SimpleGVXR)
 	ENDIF (gVirtualXRay_BINARY_DIR)
 
-    install(TARGETS gvxrWrappers
+    install(TARGETS SimpleGVXR
         RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
         ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib/static
@@ -133,8 +133,8 @@ IF (SWIG_FOUND)
         add_subdirectory(ruby)
     ENDIF (BUILD_RUBY)
 
-    IF (BUILD_TCL)
+    #IF (BUILD_TCL)
         #add_subdirectory(tcl)
-    ENDIF (BUILD_TCL)
+    #ENDIF (BUILD_TCL)
 ENDIF (SWIG_FOUND)
 

@@ -8,13 +8,13 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 SET (module gvxrPython3)
 
 
-configure_file(../gvxrWrapper.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
+configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrPython3 LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
-swig_link_libraries(gvxrPython3 gvxrWrappers ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
-#ADD_DEPENDENCIES(_gvxrPython3 gvxrWrappers)
+swig_link_libraries(gvxrPython3 SimpleGVXR ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+#ADD_DEPENDENCIES(_gvxrPython3 SimpleGVXR)
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
 
