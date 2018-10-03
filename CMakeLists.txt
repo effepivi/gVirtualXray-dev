@@ -123,6 +123,8 @@ option(BUILD_TUTORIALS    "Build tutorials."        OFF)
 option(BUILD_VALIDATION   "Build validation tests." OFF)
 option(BUILD_TESTING      "Build unit tests."       OFF)
 
+OPTION(USE_SYSTEM_ASSIMP   "Use System ASSIMP"      OFF)
+
 IF (WIN32 OR MSVC)
     OPTION(USE_SYSTEM_ZLIB       "Use system ZLIB "       OFF)
     OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
