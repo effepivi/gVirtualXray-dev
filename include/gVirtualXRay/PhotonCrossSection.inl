@@ -235,4 +235,12 @@ inline double PhotonCrossSection::getMu(double anEnergy) const
 }
 
 
+//-----------------------------------------------------------------------------------
+inline bool PhotonCrossSection::operator!=(const PhotonCrossSection& aTestData) const
+//-----------------------------------------------------------------------------------
+{
+	return (!((*this) == aTestData));
+}
+
+
 } // namespace gVirtualXRay

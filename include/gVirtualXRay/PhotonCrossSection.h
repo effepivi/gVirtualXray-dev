@@ -133,6 +133,9 @@ namespace gVirtualXRay {
         double getDensity() const;
         double getMolarMass() const;
         
+        bool operator==(const PhotonCrossSection& aTestData) const;
+        bool operator!=(const PhotonCrossSection& aTestData) const;
+
         static std::map<int, double> getMixtureWeightSet(const std::string& aName);
         static std::map<int, double> getCompoundWeightSet(const std::string& aName);
 

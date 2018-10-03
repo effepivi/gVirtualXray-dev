@@ -233,6 +233,40 @@ double PhotonCrossSection::getMolarMass() const
 }
 
 
+//----------------------------------------------------------------------------
+bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
+//----------------------------------------------------------------------------
+{
+	if (m_density != aTestData.m_density)
+	{
+		return (false);
+	}
+
+	if (m_use_HU == aTestData.m_use_HU)
+	{
+		return (m_HU == aTestData.m_HU);
+	}
+	else if (m_use_element == aTestData.m_use_element)
+	{
+		return (m_Z_number == aTestData.m_Z_number);
+	}
+	else if (m_use_mixture == aTestData.m_use_mixture)
+	{
+		return (m_mixture == aTestData.m_mixture);
+	}
+	else if (m_use_mass_attenuation_coefficient == aTestData.m_use_mass_attenuation_coefficient)
+	{
+		return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
+	}
+	else if (m_use_linear_attenuation_coefficient == aTestData.m_use_linear_attenuation_coefficient)
+	{
+		return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
+	}
+
+    return (false);
+}
+
+
 std::map<int, double> PhotonCrossSection::getMixtureWeightSet(const std::string& aName)
 {
 	std::map<int, double> weight_set;
