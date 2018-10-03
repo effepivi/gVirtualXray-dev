@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(${PERL_INCLUDE_PATH})
 SET (module gvxrPerl)
 
 
-configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPerl.i)
+configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPerl.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPerl.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module

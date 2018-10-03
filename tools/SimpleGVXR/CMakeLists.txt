@@ -55,6 +55,7 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 
     # Set up public headers for swig-example
     set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER "SimpleGVXR.h")
+    SET_PROPERTY(SOURCE SimpleGVXR-doc.i PROPERTY CPLUSPLUS ON)
 
 	ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
 

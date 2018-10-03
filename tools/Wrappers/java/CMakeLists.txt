@@ -8,7 +8,7 @@ INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 SET (module gvxrJava)
 
 
-configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
+configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module

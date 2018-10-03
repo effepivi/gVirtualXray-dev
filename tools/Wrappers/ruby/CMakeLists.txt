@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(${RUBY_INCLUDE_DIRS})
 SET (module gvxrRuby)
 
 
-configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrRuby.i)
+configure_file(../gvxrWrapper-nodoc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrRuby.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrRuby.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module

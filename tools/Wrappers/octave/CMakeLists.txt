@@ -5,7 +5,7 @@ INCLUDE_DIRECTORIES(${OCTAVE_INCLUDE_DIRS})
 SET (module gvxrOctave)
 
 
-configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrOctave.i)
+configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrOctave.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrOctave.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module

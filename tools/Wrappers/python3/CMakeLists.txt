@@ -8,7 +8,7 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 SET (module gvxrPython3)
 
 
-configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
+configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython3.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module

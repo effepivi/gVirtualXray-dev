@@ -7,7 +7,7 @@ include_directories(${PYTHON_INCLUDE_PATH})
 
 SET (module gvxrPython2)
 
-configure_file(../SimpleGVXR.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i)
+configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i)
 
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrPython2.i PROPERTY CPLUSPLUS ON)
 

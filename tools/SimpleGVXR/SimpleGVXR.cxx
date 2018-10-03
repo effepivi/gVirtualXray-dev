@@ -1,4 +1,39 @@
-#define _USE_MATH_DEFINES
+/**
+********************************************************************************
+*
+*   @file       SimpleGVXR.h
+*
+*   @brief      SimpleGVXR is an API to the bulk functionalities and classes of
+*               gVirtualXRay. SimpleGVXR is used as the basis for
+*               the language bindings generated using SWIG.
+*
+*   @version    1.0
+*
+*   @date       03/10/2018
+*
+*   @author     Dr Franck P. Vidal
+*
+*   License
+*   BSD 3-Clause License.
+*
+*   For details on use and redistribution please refer
+*   to http://opensource.org/licenses/BSD-3-Clause
+*
+*   Copyright
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*   http://www.fpvidal.net/, Oct 2018, 2018, version 1.1, BSD 3-Clause License
+*
+********************************************************************************
+*/
+
+
+//******************************************************************************
+//  Include
+//******************************************************************************
+#ifndef __gVirtualXRayConfig_h
+#include "gVirtualXRay/gVirtualXRayConfig.h"
+#endif
+
 #include <cmath>
 
 #include <iostream>
@@ -13,10 +48,6 @@
 #define GLFW_INCLUDE_GLCOREARB 1
 
 #include <GLFW/glfw3.h>
-
-#ifndef __gVirtualXRayConfig_h
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
 
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
@@ -143,6 +174,46 @@ std::shared_ptr<SceneGraphBinder> g_p_scene_graph = 0;
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
+
+
+//-------------------------------
+int getMajorVersionOfSimpleGVXR()
+//-------------------------------
+{
+	return (atoi(gVirtualXRay_VERSION_MAJOR));
+}
+
+
+//-------------------------------
+int getMinorVersionOfSimpleGVXR()
+//-------------------------------
+{
+	return (atoi(gVirtualXRay_VERSION_MINOR));
+}
+
+
+//-------------------------------
+int getPatchVersionOfSimpleGVXR()
+//-------------------------------
+{
+	return (atoi(gVirtualXRay_VERSION_PATCH));
+}
+
+
+//----------------------------------
+std::string getVersionOfSimpleGVXR()
+//----------------------------------
+{
+	std::string version;
+
+	version += gVirtualXRay_VERSION_MAJOR;
+	version += ".";
+	version += gVirtualXRay_VERSION_MINOR;
+	version += ".";
+	version += gVirtualXRay_VERSION_PATCH;
+
+	return (version);
+}
 
 
 //--------------------------------------------------
@@ -502,6 +573,8 @@ void removePolygonMeshesFromSceneGraph()
 		// Empty it
 		g_p_scene_graph->clear();
 	}
+
+	removePolygonMeshesFromXRayRenderer();
 }
 
 
@@ -514,34 +587,48 @@ void removePolygonMeshesFromXRayRenderer()
 }
 
 
+//-----------------
+void moveToCentre()
+//-----------------
+{
+	if (g_p_scene_graph.get())
+	{
+		g_p_scene_graph->moveToCentre();
+		g_p_scene_graph->updateMatrices();
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
+}
+
+
+//-----------------
+void moveToCenter()
+//-----------------
+{
+    moveToCentre();
+}
+
+
 //-----------------------------------
 void moveToCentre(const char* aLabel)
 //-----------------------------------
 {
 	if (g_p_scene_graph.get())
 	{
-		// Find the mesh
-		if (aLabel)
-		{
-			auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
 
-			// It has been found
-			if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-			{
-				// Move the mesh to the centre
-				g_p_scene_graph->getPolygonMeshSet()[aLabel].moveToCentre ();
-			}
-			// It has not been found
-			else
-			{
-				cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-			}
+		// It has been found
+		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		{
+			// Move the mesh to the centre
+			g_p_scene_graph->getPolygonMeshSet()[aLabel].moveToCentre ();
 		}
-		// Move the scenegraph
+		// It has not been found
 		else
 		{
-			g_p_scene_graph->moveToCentre();
-			g_p_scene_graph->updateMatrices();
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
 		}
 	}
 	else
@@ -2436,19 +2523,19 @@ double getUnitOfLength(const char* aUnitOfLength)
 		unit_of_length = dm;
 	}
 	else if (!strcmp(aUnitOfLength, "centimeter") ||
-			!strcmp(aUnitOfLength, "centimeter") ||
+			!strcmp(aUnitOfLength, "centimetre") ||
 			!strcmp(aUnitOfLength, "cm"))
 	{
 		unit_of_length = cm;
 	}
 	else if (!strcmp(aUnitOfLength, "millimeter") ||
-			!strcmp(aUnitOfLength, "millimeter") ||
+			!strcmp(aUnitOfLength, "millimetre") ||
 			!strcmp(aUnitOfLength, "mm"))
 	{
 		unit_of_length = mm;
 	}
 	else if (!strcmp(aUnitOfLength, "micrometer") ||
-			!strcmp(aUnitOfLength, "micrometer") ||
+			!strcmp(aUnitOfLength, "micrometre") ||
 			!strcmp(aUnitOfLength, "um"))
 	{
 		unit_of_length = um;

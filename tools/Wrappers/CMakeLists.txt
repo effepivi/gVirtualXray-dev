@@ -44,27 +44,31 @@ IF (SWIG_FOUND)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../SimpleGVXR)
 
+    option(BUILD_CSHARP  "Build C# SWIG module" OFF)
+    option(BUILD_LUA     "Build Lua SWIG module" OFF)
     option(BUILD_JAVA    "Build Java SWIG module" OFF)
-    #option(BUILD_LUA    "Build Lua SWIG module" OFF)
-    #option(BUILD_MATLAB    "Build Matlab SWIG module" OFF)
+    option(BUILD_MATLAB  "Build Matlab SWIG module" OFF)
     option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
     option(BUILD_PERL    "Build Perl SWIG module" OFF)
     option(BUILD_PYTHON2 "Build Python2 SWIG module" OFF)
     option(BUILD_PYTHON3 "Build Python3 SWIG module" OFF)
     option(BUILD_R       "Build R SWIG module" OFF)
     option(BUILD_RUBY    "Build Ruby SWIG module" OFF)
-    #option(BUILD_TCL    "Build TCL SWIG module" OFF)
-    
-    #    FindTCL.cmake
-    #    FindLua.cmake
-    #    FindMatlab.cmake
+    option(BUILD_SCILAB  "Build Matlab SWIG module" OFF)
+    option(BUILD_TCL     "Build TCL SWIG module" OFF)
 
     IF (BUILD_PYTHON2 AND BUILD_PYTHON3)
         MESSAGE(FATAL_ERROR "Both variables BUILD_PYTHON2 and BUILD_PYTHON3 are ON. Choose either Python2 or Python3, not both.")
     ENDIF (BUILD_PYTHON2 AND BUILD_PYTHON3)
 
+    IF (BUILD_CSHARP)
+        MESSAGE(STATUS "C# wrapper not implemented as yet, Franck is working on it.")
+        #add_subdirectory(csharp)
+    ENDIF (BUILD_CSHARP)
+
     IF (BUILD_LUA)
-        add_subdirectory(lua)
+        MESSAGE(STATUS "Lua wrapper not implemented as yet, Franck is working on it.")
+        #add_subdirectory(lua)
     ENDIF (BUILD_LUA)
 
     IF (BUILD_JAVA)
@@ -72,7 +76,8 @@ IF (SWIG_FOUND)
     ENDIF (BUILD_JAVA)
 
     IF (BUILD_MATLAB)
-        add_subdirectory(matlab)
+        MESSAGE(STATUS "Matlab wrapper not implemented as yet, Franck is working on it.")
+        #add_subdirectory(matlab)
     ENDIF (BUILD_MATLAB)
 
     IF (BUILD_OCTAVE)
@@ -99,8 +104,14 @@ IF (SWIG_FOUND)
         add_subdirectory(ruby)
     ENDIF (BUILD_RUBY)
 
-    #IF (BUILD_TCL)
+    IF (BUILD_SCILAB)
+        MESSAGE(STATUS "Scilab wrapper not implemented as yet, Franck is working on it.")
         #add_subdirectory(tcl)
-    #ENDIF (BUILD_TCL)
+    ENDIF (BUILD_SCILAB)
+
+    IF (BUILD_TCL)
+        MESSAGE(STATUS "TCL wrapper not implemented as yet, Franck is working on it.")
+        #add_subdirectory(tcl)
+    ENDIF (BUILD_TCL)
 ENDIF (SWIG_FOUND)
 
