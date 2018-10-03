@@ -30,19 +30,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-PROJECT (SimpleGVXR)
-
-# Initialise some states by default ############################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/version.cmake)
-SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-
-# Configure the project ########################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/configureGlfw.cmake)
-
-
-# Headers of the project #######################################################
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
+PROJECT (gvxrWrappers)
 
 
 FIND_PACKAGE(SWIG)
@@ -50,33 +38,11 @@ FIND_PACKAGE(SWIG)
 IF (SWIG_FOUND)
     INCLUDE (${SWIG_USE_FILE})
 
-	# Create the RESOURCES ###########################################################
-	INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
-	SET (RESOURCES_SOURCES display_gl2.vert display_gl2.frag display_gl3.vert display_gl3.frag)
-	CreateHeaderFiles("cmake" "BinaryWrapper" "${RESOURCES_SOURCES}")
-
-    # Create main and link to liba
-    add_library(SimpleGVXR SimpleGVXR.cxx)
-    target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
-
-    # Set up public headers for swig-example
-    set_target_properties(SimpleGVXR PROPERTIES PUBLIC_HEADER "SimpleGVXR.h")
-
-	ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
-
-	IF (gVirtualXRay_BINARY_DIR)
-	     ADD_DEPENDENCIES (gVirtualXRay SimpleGVXR)
-	ENDIF (gVirtualXRay_BINARY_DIR)
-
-    install(TARGETS SimpleGVXR
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/lib/static
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/include)
-
+    SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
     set(CMAKE_SWIG_FLAGS "")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../SimpleGVXR)
 
     option(BUILD_JAVA    "Build Java SWIG module" OFF)
     #option(BUILD_LUA    "Build Lua SWIG module" OFF)
