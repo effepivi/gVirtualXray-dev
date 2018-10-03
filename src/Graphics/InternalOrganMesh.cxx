@@ -949,7 +949,7 @@ void InternalOrganMesh::shareNormalVectors()
 	for (unsigned int i(0); i < m_number_of_vertices; ++i)
 	{
 		VEC3 current_vertex(getVertex(i));
-		VEC3 normal(getFaceNormal(i));
+		VEC3 normal(getVertexNormal(i));
 
 		hash_table[current_vertex].m_normal += normal;
 	}

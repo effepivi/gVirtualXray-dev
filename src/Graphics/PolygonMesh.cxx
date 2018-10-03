@@ -1895,7 +1895,7 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
                 for (unsigned int i(0); i < number_of_vertices; ++i)
                     {
                     VEC3 current_vertex(getVertex(i));
-                    VEC3 normal(getFaceNormal(i));
+                    VEC3 normal(getVertexNormal(i));
 
                     hash_table[current_vertex].m_normal += normal;
                     }
@@ -1952,7 +1952,15 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
 
                 // Set the index in the hash table and
                 // create the list of vertices
+
+                // Store vertex data type
+                int old_type = m_vertex_data_type;
                 destroyVertexData();
+
+                // Restore the type
+                m_vertex_data_type = old_type;
+
+                // Set the number of vertices
                 m_number_of_vertices = hash_table.size();
 
                 GLfloat* p_float_vertex_set(0);
