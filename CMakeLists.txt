@@ -510,13 +510,14 @@ ENDIF (NOT SWIG_FOUND)
 
 # SWIG ########################################################################
 FIND_PACKAGE(GZIP)
+
 IF (NOT GZIP_FOUND)
     IF (WIN32)
-        file(DOWNLOAD http://www.gzip.org/gzip124xN.exe ${PROJECT_BINARY_DIR}/gzip124xN.exe)
         
-        # Execute gzip124xN.exe to extract gzip.exe
-        execute_process(COMMAND ${PROJECT_BINARY_DIR}/gzip124xN.exe WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-
+        file(DOWNLOAD http://gnuwin32.sourceforge.net/downlinks/gzip-bin-zip.php ${PROJECT_BINARY_DIR}/gzip/gzip-bin.zip)
+		execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/gzip/gzip-bin.zip WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/gzip)
+        SET (GZIP ${PROJECT_BINARY_DIR}/gzip/bin/gzip.exe)
+        SET (GZIP_TOOL ${GZIP})
 
         FIND_PACKAGE(GZIP REQUIRED)
         IF (NOT GZIP_FOUND)
