@@ -30,6 +30,10 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include <GL/glew.h>
+#endif
+
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
@@ -40,10 +44,6 @@
 #include <sstream>
 #include <map>
 #include <vector>
-
-#ifdef HAS_GLEW
-#include <GL/glew.h>
-#endif
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
