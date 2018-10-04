@@ -32,8 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef GVXR_CONFIG_H
-#define GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
+#define __gVirtualXRayConfig_h
 
 // the configured options and settings for gVirtualXRay
 #define gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@"
@@ -81,4 +81,4 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#endif // GVXR_CONFIG_H
+#endif // __gVirtualXRayConfig_h
