@@ -3,8 +3,7 @@
 find_package(PythonLibs 3 REQUIRED)
 find_package(PythonInterp REQUIRED)
 
-
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 	    
 
 SET (module gvxrPython3)
@@ -15,7 +14,7 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS O
 
 # Add swig module
 SWIG_ADD_LIBRARY(${module} LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
-swig_link_libraries(${module} SimpleGVXR ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+swig_link_libraries(${module} SimpleGVXR ${PYTHON_LIBRARIES})
 #ADD_DEPENDENCIES(_${module} SimpleGVXR)
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
@@ -24,8 +23,8 @@ FILE(COPY computeLBuffer.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Files to install with Python
 set(PYTHON_INSTALL_FILES
-		${CMAKE_CURRENT_BINARY_DIR}/${module}.py
-		${CMAKE_CURRENT_BINARY_DIR}/_${module}.so)
+        ${CMAKE_CURRENT_BINARY_DIR}/${module}.py
+        ${CMAKE_CURRENT_BINARY_DIR}/_${module}.so)
 
 # Configure setup.py and copy to output directory
 set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in)
