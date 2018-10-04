@@ -2,6 +2,7 @@ import setuptools.command.install
 import shutil
 from distutils.sysconfig import get_python_lib
 
+license="";
 
 class CompiledLibInstall(setuptools.command.install.install):
     """
@@ -14,7 +15,7 @@ class CompiledLibInstall(setuptools.command.install.install):
         :return:
         """
         # Get filenames from CMake variable
-        filenames = '${PYTHON_INSTALL_FILES}'.split(';')
+        filenames = '@PYTHON_INSTALL_FILES@'.split(';')
 
         # Directory to install to
         install_dir = get_python_lib()
@@ -22,14 +23,18 @@ class CompiledLibInstall(setuptools.command.install.install):
         # Install files
         [shutil.copy(filename, install_dir) for filename in filenames]
 
+with open('@CPACK_RESOURCE_FILE_LICENSE@') as f:
+    license = f.read()
 
 if __name__ == '__main__':
     setuptools.setup(
-        name='gvxrPython3',
-        version='1.0.0-dev',
-        packages=['gvxrPython3'],
-        license='Apache License 2.0',
-        author='Franck Vidal',
-        author_email='franck.p.vidal@fpvidal.net',
-        cmdclass={'install': CompiledLibInstall}
+        name='@module@',
+        version='@gVirtualXRay_VERSION_STRING@',
+        description='gVirtualXRay, the library for the simulation of X-ray images from polygon meshes on the GPU',
+        packages=['@module@'],
+        license=license,   # Read file: CPACK_RESOURCE_FILE_LICENSE
+        author='@COPYRIGHT_STRING@',
+        author_email='@EMAIL@',
+        cmdclass={'install': CompiledLibInstall},
+        keywords='X-ray simulation,OpenGL,GLSL'
     )

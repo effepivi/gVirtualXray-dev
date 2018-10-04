@@ -33,7 +33,9 @@
 SET (gVirtualXRay_VERSION_MAJOR 1)
 SET (gVirtualXRay_VERSION_MINOR 1)
 SET (gVirtualXRay_VERSION_PATCH 0)
+SET (gVirtualXRay_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
 
+SET (gVirtualXRay_LICENSE )
 SET (PROJECT_NAME         "gVirtualXRay")
 SET (PROJECT_DESCRIPTION  "Virtual X-Ray Imaging Library on GPU")
 SET (EMAIL                "franck.p.vidal@fpvidal.net")
@@ -54,5 +56,5 @@ SET (CPACK_PACKAGE_INSTALL_DIRECTORY "gVirtualXRay")
     
 SET (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt)
 
-SET (COPYRIGHT_STRING "(C) 2017 Dr Franck P. Vidal")
+SET (COPYRIGHT_STRING "(C) 2018 Dr Franck P. Vidal")
 
