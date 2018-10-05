@@ -911,12 +911,9 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				//	ite != m_p_HU_polygon_mesh_set.end();
 				//	++ite, ++object_number)
 
-				//for (std::vector<PolygonMesh*>::const_iterator ite_meshes(m_p_inner_surface_set.begin());
-				//		ite_meshes != m_p_inner_surface_set.end();
-				//		++ite_meshes, ++object_number)
-				for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
-						ite_material != m_p_surface_per_material_set.end();
-						++ite_material)
+				//for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
+				//		ite_material != m_p_surface_per_material_set.end();
+				//		++ite_material)
 				{
 					// Store GPU states
 					GLint p_viewport[4];
@@ -934,7 +931,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					//        ++ite_meshes, ++temp_id)
 					for (std::vector<PolygonMesh*>::const_iterator ite_meshes = ite_material->begin();
 							ite_meshes != ite_material->end();
-							++ite_meshes)
+							++ite_meshes, ++object_number)
 					{
 						// Compute its L-buffer
 						computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
