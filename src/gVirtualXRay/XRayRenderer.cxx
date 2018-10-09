@@ -911,9 +911,9 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				//	ite != m_p_HU_polygon_mesh_set.end();
 				//	++ite, ++object_number)
 
-				//for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
-				//		ite_material != m_p_surface_per_material_set.end();
-				//		++ite_material)
+				for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
+						ite_material != m_p_surface_per_material_set.end();
+						++ite_material)
 				{
 					// Store GPU states
 					GLint p_viewport[4];
