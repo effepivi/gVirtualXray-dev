@@ -750,6 +750,12 @@ public:
     bool useArtefactFilteringOnCPU() const;
 
 
+	//--------------------------------------------------------------------------
+	/// If a surface changes material, it is needed update surfacepermaterial list 
+	//--------------------------------------------------------------------------
+	void needUpdateSurfacePerMaterial();
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -966,6 +972,8 @@ protected:
     void postComputeLBuffer(const GLint* apViewport, RATIONAL_NUMBER aDiagonal);
 
     void updateSurfacePerMaterialSet();
+
+	
 
     /// The X-ray detector
     XRayDetector* m_p_detector;

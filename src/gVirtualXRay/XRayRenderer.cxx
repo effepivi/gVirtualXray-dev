@@ -3208,6 +3208,13 @@ void XRayRenderer::postComputeLBuffer(const GLint* apViewport,
 
 
 //----------------------------------------------
+void XRayRenderer::needUpdateSurfacePerMaterial()
+//----------------------------------------------
+{
+	m_surface_per_material_set_needs_update = true;
+}
+
+//----------------------------------------------
 void XRayRenderer::updateSurfacePerMaterialSet()
 //----------------------------------------------
 {
