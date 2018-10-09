@@ -2734,8 +2734,10 @@ void PolygonMesh::setVBOData(
 	unsigned int aTextureVBO,
 	unsigned int anIndexVBO,
 	unsigned int aNumberOfIndices,
-  const void* aIndexArray,
-	int anIndexDataType)
+	int anIndexDataType,
+    const void* aIndexArray,
+	const void* aNormalArray
+	)
 	//---------------------------------------------------------------
 {
 	reset();
@@ -2743,15 +2745,27 @@ void PolygonMesh::setVBOData(
 	m_external_data_flag = true;
 
 	m_p_vertex_set = const_cast<void*>(aVertexArray);
+
+
 	m_number_of_vertices = aNumberOfVertices;
 	m_vertex_data_type = GL_FLOAT;
 	m_polygon_type = GL_TRIANGLES;
+
+	// Compute the normal vectors
+	if (aNormalVBO == GL_INVALID_INDEX || aNormalArray == NULL)
+		computeNormalVectors();
+	else
+	{
+		m_p_vertex_normal_set = std::vector< RATIONAL_NUMBER>((float*)aNormalArray, (float*)aNormalArray + (aNumberOfVertices*3));
+		
+	}
+		
 
 
 	// There are index data
 	if (anIndexVBO != GL_INVALID_INDEX && anIndexDataType != GL_NONE && aNumberOfIndices != 0)
 	{
-    m_p_index_set = const_cast<void*>( aIndexArray );
+		m_p_index_set = const_cast<void*>( aIndexArray );
 		m_number_of_indices = aNumberOfIndices;
 		m_index_data_type = anIndexDataType;
 	}
@@ -2765,9 +2779,7 @@ void PolygonMesh::setVBOData(
 	// Compute the bounding box
 	computeBoundingBox();
 
-	// Compute the normal vectors
-	if (aNormalVBO == GL_INVALID_INDEX)
-		computeNormalVectors();
+	
 
 	// Update the VBO
 

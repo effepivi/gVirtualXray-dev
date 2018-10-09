@@ -754,6 +754,8 @@ public:
 	*  @param anIndexDataType:     data type of the index data; valid values
 	*                              are GL_UNSIGNED_INT, GL_UNSIGNED_SHORT,
 	*                              GL_UNSIGNED_BYTE and GL_NONE
+	*  @param aIndexArray:		   array containing the index data
+	*  @param aNormalArray:        array containing the normal data
 	*/
 	//--------------------------------------------------------------------------
 	void setVBOData(
@@ -764,8 +766,9 @@ public:
 		unsigned int aTextureVBO,
 		unsigned int anIndexVBO,
 		unsigned int aNumberOfIndices,
-    const void* aIndexArray,
-		int anIndexDataType
+		int anIndexDataType,
+		const void* aIndexArray = NULL,
+		const void* aNormalArray = NULL
 		);
 
 
