@@ -426,13 +426,13 @@ ENDIF (NOT APPLE)
 
 
 # OpenGL ######################################################################
-FIND_PACKAGE(OpenCL REQUIRED)
-IF (OPENCL_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OpenCL_INCLUDE_DIRS}")
-    SET (requiredLibs ${requiredLibs} ${OpenCL_LIBRARIES})
-ELSE(OPENCL_FOUND)
-    MESSAGE(WARNING "OpenCL not found.")
-ENDIF (OPENCL_FOUND)
+#FIND_PACKAGE(OpenCL REQUIRED)
+#IF (OPENCL_FOUND)
+#    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OpenCL_INCLUDE_DIRS}")
+#    SET (requiredLibs ${requiredLibs} ${OpenCL_LIBRARIES})
+#ELSE(OPENCL_FOUND)
+#    MESSAGE(WARNING "OpenCL not found.")
+#ENDIF (OPENCL_FOUND)
 
 
 # ASSIMP #######################################################################
@@ -517,7 +517,7 @@ IF (NOT GZIP_FOUND)
         file(DOWNLOAD http://gnuwin32.sourceforge.net/downlinks/gzip-bin-zip.php ${PROJECT_BINARY_DIR}/gzip/gzip-bin.zip)
 		execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/gzip/gzip-bin.zip WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/gzip)
         SET (GZIP ${PROJECT_BINARY_DIR}/gzip/bin/gzip.exe)
-        SET (GZIP_TOOL ${GZIP})
+        SET (GZIP_TOOL ${GZIP} CACHE FILEPATH "Where gzip.exe is." FORCE)
 
         FIND_PACKAGE(GZIP REQUIRED)
         IF (NOT GZIP_FOUND)
@@ -735,28 +735,39 @@ ENDIF (TIFF_FOUND)
 
 # getopt ######################################################################
 IF (WIN32 AND MSVC)
-    INCLUDE (ExternalProject)
-    ExternalProject_Add(getopt
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
-        #DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/getopt
-        GIT_REPOSITORY "https://github.com/skandhurkat/Getopt-for-Visual-Studio.git"
-        CONFIGURE_COMMAND ""
-        UPDATE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-    )
 
-    INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt")
+    FIND_PACKAGE(Git)
+    
+    IF (GIT_FOUND)
+        INCLUDE (ExternalProject)
+        ExternalProject_Add(getopt
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
+            #DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/getopt
+            GIT_REPOSITORY "https://github.com/skandhurkat/Getopt-for-Visual-Studio.git"
+            CONFIGURE_COMMAND ""
+            UPDATE_COMMAND ""
+            BUILD_COMMAND ""
+            INSTALL_COMMAND ""
+        )
 
-    # copy libraries into install tree
-    INSTALL (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt
-        DESTINATION ${INSTALL_DIR}/third_party
-        COMPONENT Development)
+        INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt")
 
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
+        # copy libraries into install tree
+        INSTALL (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt
+            DESTINATION ${INSTALL_DIR}/third_party
+            COMPONENT Development)
 
-    SET (USE_EXTERNAL_GETOPT ON)
+        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
+
+        SET (USE_EXTERNAL_GETOPT ON)
+        SET (HAS_GETOPT ON)
+    ELSE (GIT_FOUND)
+        SET (HAS_GETOPT OFF)
+        MESSAGE (WARNING "Install Git to download Getopt (it is not available in MS Visual Studio). If you don't (which is fine) command line tools won't be built.")
+    ENDIF (GIT_FOUND)
+ELSE (WIN32 AND MSVC)
+    SET (HAS_GETOPT ON)
 ENDIF (WIN32 AND MSVC)
 
 
@@ -946,9 +957,9 @@ IF (NOT USE_SYSTEM_ASSIMP)
     ENDIF (NOT USE_SYSTEM_ASSIMP)
 ENDIF (USE_assimp)
 
-#IF (NOT USE_SYSTEM_LIBTIFF)
-#    ADD_DEPENDENCIES(gVirtualXRay libtiff)
-#ENDIF (NOT USE_SYSTEM_LIBTIFF)
+IF (NOT USE_SYSTEM_LIBTIFF)
+    ADD_DEPENDENCIES(gVirtualXRay libtiff)
+ENDIF (NOT USE_SYSTEM_LIBTIFF)
 
 IF (USE_GDCM)
     IF (NOT USE_SYSTEM_GDCM)
