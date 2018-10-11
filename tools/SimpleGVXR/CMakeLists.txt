@@ -60,7 +60,7 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
 	ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
 
 	IF (gVirtualXRay_BINARY_DIR)
-	     ADD_DEPENDENCIES (gVirtualXRay SimpleGVXR)
+	     ADD_DEPENDENCIES (SimpleGVXR gVirtualXRay)
 	ENDIF (gVirtualXRay_BINARY_DIR)
 
     install(TARGETS SimpleGVXR

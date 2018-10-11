@@ -15,7 +15,10 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS O
 # Add swig module
 SWIG_ADD_LIBRARY(${module} LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 swig_link_libraries(${module} SimpleGVXR ${PYTHON_LIBRARIES})
-#ADD_DEPENDENCIES(_${module} SimpleGVXR)
+
+IF (MSVC)
+	ADD_DEPENDENCIES(_${module} SimpleGVXR)
+ENDIF (MSVC)
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

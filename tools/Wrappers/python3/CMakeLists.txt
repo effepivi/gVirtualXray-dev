@@ -15,7 +15,10 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS O
 # Add swig module
 SWIG_ADD_LIBRARY(${module} LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 swig_link_libraries(${module} SimpleGVXR ${PYTHON_LIBRARIES})
-#ADD_DEPENDENCIES(_${module} SimpleGVXR)
+
+IF (MSVC)
+	ADD_DEPENDENCIES(_${module} SimpleGVXR)
+ENDIF (MSVC)
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -24,7 +27,19 @@ FILE(COPY computeLBuffer.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Files to install with Python
 set(PYTHON_INSTALL_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${module}.py
-        ${CMAKE_CURRENT_BINARY_DIR}/_${module}.so)
+)
+
+IF (WIN32 AND MSVC)
+	set(PYTHON_INSTALL_FILES
+		${PYTHON_INSTALL_FILES}
+		${CMAKE_CURRENT_BINARY_DIR}/Release/_${module}.pyc)
+
+ELSE (WIN32 AND MSVC)
+ 	set(PYTHON_INSTALL_FILES
+		${PYTHON_INSTALL_FILES}
+		${CMAKE_CURRENT_BINARY_DIR}/_${module}.so)
+
+ENDIF (WIN32 AND MSVC)
 
 # Configure setup.py and copy to output directory
 set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in)

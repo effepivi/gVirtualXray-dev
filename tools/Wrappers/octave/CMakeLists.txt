@@ -11,7 +11,10 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrOctave.i PROPERTY CPLUSPLUS 
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrOctave LANGUAGE octave SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrOctave.i)
 swig_link_libraries(gvxrOctave SimpleGVXR ${OCTAVE_LIBRARIES})
-#ADD_DEPENDENCIES(_gvxrOctave SimpleGVXR)
+
+IF (MSVC)
+	ADD_DEPENDENCIES(_${module} SimpleGVXR)
+ENDIF (MSVC)
 
 configure_file(test.m.in ${CMAKE_CURRENT_BINARY_DIR}/test.m)
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

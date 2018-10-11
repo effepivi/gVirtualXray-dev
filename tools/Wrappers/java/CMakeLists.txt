@@ -14,7 +14,10 @@ SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i PROPERTY CPLUSPLUS ON
 # Add swig module
 SWIG_ADD_LIBRARY(gvxrJava LANGUAGE java SOURCES ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
 swig_link_libraries(gvxrJava SimpleGVXR ${JNI_LIBRARIES})
-#ADD_DEPENDENCIES(_gvxrJava SimpleGVXR)
+
+IF (MSVC)
+	ADD_DEPENDENCIES(_${module} SimpleGVXR)
+ENDIF (MSVC)
 
 configure_file(test.java.in ${CMAKE_CURRENT_BINARY_DIR}/test.java)
 FILE(COPY ../../../examples/data/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
