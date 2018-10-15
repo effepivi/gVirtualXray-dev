@@ -43,7 +43,7 @@ SET(ASSIMP_LIBRARY_DIRS  ${ASSIMP_INSTALL_DIR}/lib      CACHE PATH "Where ASSIMP
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     SET(ASSIMP_LIBRARIES   
-        ${ASSIMP_INSTALL_DIR}/lib/assimp-vc140-mt.lib
+        ${ASSIMP_INSTALL_DIR}/lib/assimp-vc${MSVC_TOOLSET_VERSION}-mt.lib
         ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
         ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
 		CACHE FILEPATH "ASSIMP's libraries." FORCE
