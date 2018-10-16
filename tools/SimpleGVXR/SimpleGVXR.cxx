@@ -356,7 +356,8 @@ void loadSceneGraph(const char* aFileName,
 }
 
 
-void emptyMesh(const std::string& aLabel)
+void emptyMesh(const std::string& aLabel,
+        const std::string& aParent)
 {
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
@@ -366,10 +367,16 @@ void emptyMesh(const std::string& aLabel)
 	}
 
 	g_p_scene_graph->getPolygonMeshSet()[aLabel] = PolygonMesh();
+
+	g_p_scene_graph->addPolygonMesh(aLabel,
+	        g_p_scene_graph->getPolygonMeshSet()[aLabel],
+	        VEC3(),
+	        aParent);
 }
 
 
-void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLength)
+void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLength,
+        const std::string& aParent)
 {
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
@@ -379,6 +386,11 @@ void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLeng
 	}
 
 	g_p_scene_graph->getPolygonMeshSet()[aLabel] = CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT);
+
+    g_p_scene_graph->addPolygonMesh(aLabel,
+            g_p_scene_graph->getPolygonMeshSet()[aLabel],
+            VEC3(),
+            aParent);
 }
 
 
@@ -386,7 +398,8 @@ void makeCylinder(const std::string& aLabel,
 		unsigned int aNumberOfSectors,
         double aHeight,
         double aRadius,
-		const char* aUnitOfLength)
+		const char* aUnitOfLength,
+		const std::string& aParent)
 {
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
@@ -399,6 +412,11 @@ void makeCylinder(const std::string& aLabel,
 	        aHeight  * getUnitOfLength(aUnitOfLength),
 	        aRadius  * getUnitOfLength(aUnitOfLength),
 			GL_UNSIGNED_INT);
+
+    g_p_scene_graph->addPolygonMesh(aLabel,
+            g_p_scene_graph->getPolygonMeshSet()[aLabel],
+            VEC3(),
+            aParent);
 }
 
 

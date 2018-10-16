@@ -245,9 +245,11 @@ void loadSceneGraph(const char* aFileName,
 /// (i.e. identifier). Note that it is not added to the X-ray renderer.
 /**
  *  @param aLabel:		the label in the scenegraph
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
  */
 //------------------------------------------------------------------------------
-void emptyMesh(const std::string& aLabel);
+void emptyMesh(const std::string& aLabel,
+        const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
@@ -267,9 +269,13 @@ void emptyMesh(const std::string& aLabel);
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
  *                          (default value: "cm")
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
  */
 //------------------------------------------------------------------------------
-void makeCube(const std::string& aLabel, double aLength = 1.0, const char* aUnitOfLength = "cm");
+void makeCube(const std::string& aLabel,
+        double aLength = 1.0,
+        const char* aUnitOfLength = "cm",
+        const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
@@ -291,13 +297,15 @@ void makeCube(const std::string& aLabel, double aLength = 1.0, const char* aUnit
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
  *                          (default value: "cm")
+ *  @param aParent: the parent of the node in the scenegraph (default: "root")
  */
 //------------------------------------------------------------------------------
 void makeCylinder(const std::string& aLabel,
 		unsigned int aNumberOfSectors = 10,
         double aHeight = 1.0,
         double aRadius = 0.5,
-		const char* aUnitOfLength = "cm");
+		const char* aUnitOfLength = "cm",
+        const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
