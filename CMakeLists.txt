@@ -114,7 +114,7 @@ OPTION(USE_ITK            "Use ITK"                 OFF)
 OPTION(USE_FFTW3          "Use FFTW3"               OFF)
 OPTION(USE_FREETYPE       "Use FreeType"            OFF)
 OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
-OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
+OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" OFF)
 
 OPTION(USE_GLFW "Build the programs (demos, tutorials, wrappers, validation programs, and unit tests) that make use of GLFW" ON)
     
@@ -185,11 +185,7 @@ ENDIF ()
 OPTION(USE_SYSTEM_XCOM       "Use System XCOM database"       OFF)
 
 IF (USE_GLFW)
-    IF (WIN32 OR MSVC)
-        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
-    ELSE (WIN32 OR MSVC)
-        OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       ON)
-    ENDIF (WIN32 OR MSVC)
+    OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
 ENDIF (USE_GLFW)
 
 IF (USE_FFTW3)
