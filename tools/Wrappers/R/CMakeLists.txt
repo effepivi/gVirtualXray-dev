@@ -9,11 +9,15 @@ configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS ON)
 
 # Add swig module
-SWIG_ADD_LIBRARY(${module} LANGUAGE r SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+IF(${CMAKE_VERSION} VERSION_LESS "3.8.0") 
+    SWIG_ADD_MODULE(${module} r ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0") 
+    SWIG_ADD_LIBRARY(${module} LANGUAGE r SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0") 
 swig_link_libraries(${module} SimpleGVXR ${R_LIBRARIES})
 
 IF (MSVC)
-	ADD_DEPENDENCIES(_${module} SimpleGVXR)
+    ADD_DEPENDENCIES(_${module} SimpleGVXR)
 ENDIF (MSVC)
 
 configure_file(test.R.in ${CMAKE_CURRENT_BINARY_DIR}/test.R)
