@@ -33,6 +33,10 @@
 PROJECT (gvxrWrappers)
 
 
+if(${CMAKE_VERSION} VERSION_LESS "3.8.0") 
+    message("Please consider to switch to CMake 3.8.0")
+endif()
+
 FIND_PACKAGE(SWIG)
 
 IF (SWIG_FOUND)
