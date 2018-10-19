@@ -4265,7 +4265,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         }
         else if (info_type == "TransformMatrix")
         {
-            for (unsigned int i(0); i < number_of_dimensions; ++i)
+            for (unsigned int j(0); j < number_of_dimensions; ++j)
             {
                 for (unsigned int i(0); i < number_of_dimensions; ++i)
                 {
