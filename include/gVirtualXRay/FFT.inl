@@ -105,8 +105,8 @@ template<typename T> FFT<T> FFT<T>::computeFFT(const Image<T>& anImage)
     fftw_complex *in_src, *out_src;
     fftw_plan p_forw;
 
-    in_src = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * width_power_of_two * height_power_of_two);
-    out_src = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * width_power_of_two * height_power_of_two);
+    in_src  = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * width_power_of_two * height_power_of_two));
+    out_src = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * width_power_of_two * height_power_of_two));
 
     if (width_power_of_two == 1 ||  height_power_of_two == 1)
     {
@@ -218,8 +218,8 @@ template<typename T> Image<T> FFT<T>::getInverseFFT() const
     fftw_complex *in_src, *out_src;
     fftw_plan p_back;
 
-    in_src = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * m_real.getWidth() * m_real.getHeight());
-    out_src = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * m_real.getWidth() * m_real.getHeight());
+    in_src  = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * m_real.getWidth() * m_real.getHeight()));
+    out_src = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * m_real.getWidth() * m_real.getHeight()));
 
 
     if (m_real.getWidth() == 1 ||  m_real.getHeight() == 1)
