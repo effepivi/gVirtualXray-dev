@@ -273,6 +273,14 @@ inline double PolygonMesh::getDensity()
 }
 
 
+//-------------------------------------------------------------
+inline const std::string& PolygonMesh::getMaterialLabel() const
+//-------------------------------------------------------------
+{
+    return (m_photon_cross_section.getLabel());
+}
+
+
 //--------------------------------------------------
 inline const VEC3& PolygonMesh::getMinCorner() const
 //--------------------------------------------------

@@ -96,6 +96,8 @@ inline Mixture::Mixture(const std::map<int, double>& aWeightSet):
 	normaliseWeightSet();
 	
 	m_molar_mass = computeMolarMass();
+
+    setLabel();
 }
 
 
@@ -104,7 +106,8 @@ inline Mixture::Mixture(const Mixture& aMixture):
 //-----------------------------------------------
         m_p_weight_set(aMixture.m_p_weight_set),
         m_molar_mass(aMixture.m_molar_mass),
-        m_density(aMixture.m_density)
+        m_density(aMixture.m_density),
+        m_label(aMixture.m_label)
 //-----------------------------------------------
 {
 }
@@ -125,6 +128,8 @@ inline void Mixture::setMixture(const std::map<int, double>& aWeightSet)
     m_p_weight_set = aWeightSet;
     normaliseWeightSet();
     m_molar_mass = computeMolarMass();
+
+    setLabel();    
 }
 
 
@@ -169,6 +174,14 @@ inline double Mixture::getMu(double anEnergy) const
 }
 
 
+//-------------------------------------------------
+inline const std::string& Mixture::getLabel() const
+//-------------------------------------------------
+{
+    return (m_label);
+}
+
+
 //---------------------------------------------------------
 inline Mixture& Mixture::operator=(const Mixture& aMixture)
 //---------------------------------------------------------
@@ -176,6 +189,7 @@ inline Mixture& Mixture::operator=(const Mixture& aMixture)
     m_molar_mass   = aMixture.m_molar_mass;
     m_density      = aMixture.m_density;
     m_p_weight_set = aMixture.m_p_weight_set;
+    m_label        = aMixture.m_label;
 
 	return (*this);
 }

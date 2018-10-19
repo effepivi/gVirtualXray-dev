@@ -349,7 +349,8 @@ public:
     void setLinearAttenuationCoefficient(double aCoefficient);
     void setDensity(double aDensity);
     double getDensity();
-    
+    const std::string& getMaterialLabel() const;
+
     const PhotonCrossSection& getPhotonCrossSection() const;
     
 

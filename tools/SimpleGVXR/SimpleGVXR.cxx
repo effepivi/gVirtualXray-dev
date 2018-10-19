@@ -531,9 +531,58 @@ std::string getMeshLabel(unsigned int i)
 }
 
 
-//---------------------------------------------
+unsigned int getNumberOfChildren(const std::string& aLabel)
+{
+    // Not the final implementation, because the scenegraph is not implemented as yet
+    if (aLabel == "root")
+    {
+        return (getMeshLabelSetSize());
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+std::string getChildLabel(const std::string& aLabel, unsigned int i)
+{
+    // Not the final implementation, because the scenegraph is not implemented as yet
+    if (aLabel == "root")
+    {
+        return (getMeshLabel(i));
+    }
+    
+    return std::string();
+}
+
+
+//-------------------------------------------------
+void invertNormalVectors(const std::string& aLabel)
+//-------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	std::map<string, PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+	// Add the polygon mesh to the X-ray renderer
+	if (ite != g_p_scene_graph->getPolygonMeshSet().end())
+	{
+		ite->second.invertNormalVectors();
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}}
+
+//----------------------------------------------------------
 void addPolygonMeshAsInnerSurface(const std::string& aLabel)
-//---------------------------------------------
+//----------------------------------------------------------
 {
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
@@ -1065,6 +1114,26 @@ void setDensity(const char* aLabel,
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setDensity(aDensity * g / cm3);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//----------------------------------------------
+std::string getMaterialLabel(const char* aLabel)
+//----------------------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        return g_p_scene_graph->getPolygonMeshSet()[aLabel].getMaterialLabel();
     }
     // It has not been found
     else

@@ -63,6 +63,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <string>
 
 
 //******************************************************************************
@@ -106,9 +107,11 @@ inline PhotonCrossSection::PhotonCrossSection(const std::map<int, double>& aWeig
         m_mass_attenuation_coefficient(0.0),
         m_linear_attenuation_coefficient(0.0),
         m_mixture(aWeightSet),
-        m_density(-1.0)
+        m_density(-1.0),
+        m_label(m_mixture.getLabel())
 //-------------------------------------------------------------------------------------
-{}
+{
+}
 
 
 //---------------------------------------------------------------------
@@ -124,7 +127,8 @@ inline PhotonCrossSection::PhotonCrossSection(const Mixture& aMixture):
         m_mass_attenuation_coefficient(0.0),
         m_linear_attenuation_coefficient(0.0),
         m_mixture(aMixture),
-        m_density(-1.0)
+        m_density(-1.0),
+        m_label(m_mixture.getLabel())
 //---------------------------------------------------------------------
 {}
 
@@ -140,6 +144,7 @@ inline void PhotonCrossSection::reset()
     m_use_linear_attenuation_coefficient = false;
 
     m_density = -1.0;
+    m_label.clear();
 }
 
 
@@ -150,6 +155,9 @@ inline void PhotonCrossSection::useHU(short HU)
     reset();
     m_use_HU      = true;
     m_HU = HU;
+
+    m_label = "HU: ";
+    m_label += std::to_string(HU);   
 }
 
 
@@ -169,15 +177,6 @@ inline void PhotonCrossSection::useHounsfieldValue(short HU)
 }
 
 
-//----------------------------------------------------------
-inline void PhotonCrossSection::useElement(unsigned short Z)
-//----------------------------------------------------------
-{
-    reset();
-    m_use_element = true;
-    m_Z_number = Z;
-}
-
 
 //-----------------------------------------------------------------
 inline void PhotonCrossSection::useMixture(const Mixture& aMixture)
@@ -186,6 +185,8 @@ inline void PhotonCrossSection::useMixture(const Mixture& aMixture)
     reset();
     m_use_mixture = true;
     m_mixture = aMixture;
+
+    m_label = m_mixture.getLabel();
 }
 
 
@@ -196,6 +197,8 @@ inline void PhotonCrossSection::useMixture(const std::map<int, double>& aMixture
     reset();
     m_use_mixture = true;
     m_mixture.setMixture(aMixture);
+
+    m_label = m_mixture.getLabel();
 }
 
 
@@ -206,6 +209,9 @@ inline void PhotonCrossSection::useMassAttenuationCoefficient(double aCoefficien
     reset();
     m_use_mass_attenuation_coefficient   = true;
     m_mass_attenuation_coefficient = aCoefficient;
+
+    m_label = "mu/rho: ";
+    m_label += std::to_string(aCoefficient);   
 }
 
 
@@ -216,6 +222,9 @@ inline void PhotonCrossSection::useLinearAttenuationCoefficient(double aCoeffici
     reset();
     m_use_linear_attenuation_coefficient = true;
     m_linear_attenuation_coefficient = aCoefficient;
+
+    m_label = "mu: ";
+    m_label += std::to_string(aCoefficient);       
 }
 
 
@@ -232,6 +241,14 @@ inline double PhotonCrossSection::getMu(double anEnergy) const
 //------------------------------------------------------------
 {
     return (getLinearAttenuationCoefficient(anEnergy));
+}
+
+
+//------------------------------------------------------------
+inline const std::string& PhotonCrossSection::getLabel() const
+//------------------------------------------------------------
+{
+    return (m_label);
 }
 
 

@@ -363,6 +363,36 @@ std::string getMeshLabel(unsigned int i);
 
 
 //------------------------------------------------------------------------------
+/// Get the number of children of a node in the scenegraph.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @return the number of chidren
+ */
+//------------------------------------------------------------------------------
+unsigned int getNumberOfChildren(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the i-th child's label in the list of children of a given node in the scenegraph.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @param i:	the ID of the child
+ *  @return the label corresponding to the i-th child
+ */
+//------------------------------------------------------------------------------
+std::string getChildLabel(const std::string& aLabel, unsigned int i);
+
+
+//------------------------------------------------------------------------------
+/// Invert the normal vectors of a given polygon mesh.
+/**
+ *  @param aLabel:	the label of the polygon mesh
+ */
+//------------------------------------------------------------------------------
+void invertNormalVectors(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.
 /**
  *  @param aLabel:	the label of the polygon mesh in the scenegraph
@@ -731,6 +761,16 @@ void setMu(const char* aLabel, double aCoefficient,
 //------------------------------------------------------------------------------
 void setDensity(const char* aLabel, double aDensity,
 		   const char* aUnit);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the material label of a polygon mesh.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ *  @return the label of the material
+ */
+//------------------------------------------------------------------------------
+std::string getMaterialLabel(const char* aLabel);
 
 
 //------------------------------------------------------------------------------

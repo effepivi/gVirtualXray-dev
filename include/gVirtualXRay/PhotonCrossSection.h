@@ -132,6 +132,7 @@ namespace gVirtualXRay {
         double getMu(double anEnergy) const;
         double getDensity() const;
         double getMolarMass() const;
+        const std::string& getLabel() const;
         
         bool operator==(const PhotonCrossSection& aTestData) const;
         bool operator!=(const PhotonCrossSection& aTestData) const;
@@ -158,6 +159,7 @@ namespace gVirtualXRay {
         double m_linear_attenuation_coefficient;
         Mixture m_mixture;
         double m_density;
+        std::string m_label;
     };
     
     
