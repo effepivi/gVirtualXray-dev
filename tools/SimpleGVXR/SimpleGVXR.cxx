@@ -1301,8 +1301,11 @@ void displayScene(int aWindowID)
         {
             if (search_window->second)
             {
+            	// Show the window if needed
+            	if (!glfwGetWindowAttrib(search_window->second, GLFW_VISIBLE))
+            		glfwShowWindow(search_window->second);
+
         	    // Make the window's context current
-                glfwShowWindow(search_window->second);
         	    glfwMakeContextCurrent(search_window->second);
         		initViewer();
 
@@ -1382,8 +1385,11 @@ void renderLoop(int aWindowID/*, PyObject* aCallBack*/)
                 	// Udate the X-ray image
                 	//computeXRayImage();
 
+                	// Show the window if needed
+                	if (!glfwGetWindowAttrib(search_window->second, GLFW_VISIBLE))
+                		glfwShowWindow(search_window->second);
+
                 	// Render here
-                    glfwShowWindow(search_window->second);
                 	displayScene(aWindowID);
                 }
             }
