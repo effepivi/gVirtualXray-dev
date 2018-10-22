@@ -215,16 +215,21 @@ SET (gVirtualXRay_INSTALL_PREFIX ${PROJECT_BINARY_DIR})
 
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 
-IF (APPLE)
 
-    SET (requiredLibs ${requiredLibs} "-framework CoreFoundation")
-
-    IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
-        SET (gVirtualXRay_LIBRARY 
-            optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
-            debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
-        )
-    ENDIF ()
+IF (UNIX)
+	IF (APPLE)
+	
+	    SET (requiredLibs ${requiredLibs} "-framework CoreFoundation")
+	
+	    IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+	        SET (gVirtualXRay_LIBRARY 
+	            optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
+	            debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
+	        )
+	    ENDIF ()
+	ELSE (APPLE)
+		SET (requiredLibs ${requiredLibs} dl)
+	ENDIF (APPLE)
 ENDIF ()
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
