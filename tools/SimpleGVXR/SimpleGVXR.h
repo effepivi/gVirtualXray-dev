@@ -1159,4 +1159,36 @@ int getImageHeght(const std::vector<std::vector<float> >& anImage);
 std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage, int j);
 
 
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's name depending on its Z number.
+/*
+ *  @param Z:	the atomic number of the element
+ *  @return the name of the corresponding element
+ */
+//------------------------------------------------------------------------------
+std::string getElementName(unsigned short Z);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element' symbol depending on its Z number.
+/*
+ *  @param Z:	the atomic number of the element
+ *  @return the name of the corresponding element
+ */
+//------------------------------------------------------------------------------
+std::string getElementSymbol(unsigned short Z);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's Z number.
+/*
+ *  @param anElement:	the name or symbol of the element
+ *  @return the Z number of the corresponding element
+ */
+//------------------------------------------------------------------------------
+unsigned short getElementAtomicNumber(const std::string& anElement);
+
+
+
 #endif

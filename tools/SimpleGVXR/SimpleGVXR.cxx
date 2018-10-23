@@ -91,6 +91,10 @@
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifndef __ElementSet_h
+#include "gVirtualXRay/ElementSet.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -2705,4 +2709,28 @@ std::vector<std::vector<float> > gvxrMatrix2Vector(const MATRIX4& aMatrix4)
 	output[3][3] = aMatrix4.get4x4()[15];
 
 	return output;
+}
+
+
+//------------------------------------------
+std::string getElementName(unsigned short Z)
+//------------------------------------------
+{
+	return (ElementSet::getInstance().getElement(Z).getName());
+}
+
+
+//--------------------------------------------
+std::string getElementSymbol(unsigned short Z)
+//--------------------------------------------
+{
+	return (ElementSet::getInstance().getElement(Z).getSymbol());
+}
+
+
+//-----------------------------------------------------------------
+unsigned short getElementAtomicNumber(const std::string& anElement)
+//-----------------------------------------------------------------
+{
+	return (ElementSet::getInstance().getElement(anElement).getZ());
 }
