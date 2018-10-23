@@ -103,7 +103,8 @@ void PhotonCrossSection::useElement(unsigned short Z)
     m_use_element = true;
     m_Z_number = Z;
 
-    m_label = ElementSet::getInstance().getElement(Z).getName();
+    m_label  = "Element: ";
+    m_label += ElementSet::getInstance().getElement(Z).getName();
 }
 
 
@@ -115,7 +116,8 @@ void PhotonCrossSection::useElement(const std::string& aName)
     m_use_element = true;
     m_Z_number = ElementSet::getInstance().getElement(aName).Z();
 
-    m_label = aName;
+    m_label  = "Element: ";
+    m_label += aName;
 
     if (!m_Z_number)
     {
@@ -130,7 +132,8 @@ void PhotonCrossSection::useMixture(const std::string& aName)
     m_use_mixture = true;
     std::map<int, double> weight_set = getMixtureWeightSet(aName);
 
-    m_label = aName;
+    m_label  = "Mixture: ";
+    m_label += aName;
 
     if (weight_set.size())
     {
@@ -149,7 +152,9 @@ void PhotonCrossSection::useCompound(const std::string& aName)
     m_use_mixture = true;
     std::map<int, double> weight_set = getCompoundWeightSet(aName);
 
-    m_label = aName;
+    m_label  = "Compound: ";
+    m_label += aName;
+
 
     if (weight_set.size())
     {
