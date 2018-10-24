@@ -753,7 +753,7 @@ void setMu(const char* aLabel, double aCoefficient,
 /// Set the density corresponding to the material properties of a polygon mesh.
 /*
  *  @param aLabel:			the label of the polygon mesh
- *  @param aDensity:	the liner attenuation coefficient
+ *  @param aDensity:		the density
  *  @param aUnit:			the unit corresponding to aDensity.
  *                          Acceptable values are:
  *                          "g/cm3" and "g.cm-3"
@@ -761,6 +761,16 @@ void setMu(const char* aLabel, double aCoefficient,
 //------------------------------------------------------------------------------
 void setDensity(const char* aLabel, double aDensity,
 		   const char* aUnit);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the density corresponding to the material properties of a polygon mesh.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ *  @return the density of the polygon mesh's material in g/cm3
+ */
+//------------------------------------------------------------------------------
+double getDensity(const char* aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -1189,6 +1199,11 @@ std::string getElementSymbol(unsigned short Z);
 //------------------------------------------------------------------------------
 unsigned short getElementAtomicNumber(const std::string& anElement);
 
+
+void setShiftFilter(double aValue);
+void setScaleFilter(double aValue);
+double getShiftFilter();
+double getScaleFilter();
 
 
 #endif

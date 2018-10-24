@@ -179,6 +179,9 @@ std::shared_ptr<SceneGraphBinder> g_p_scene_graph = 0;
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
+double g_shift_filter = 0;
+double g_scale_filter = 1;
+
 
 //-------------------------------
 int getMajorVersionOfSimpleGVXR()
@@ -1118,6 +1121,26 @@ void setDensity(const char* aLabel,
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setDensity(aDensity * g / cm3);
+    }
+    // It has not been found
+    else
+    {
+        cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+    }
+}
+
+
+//-----------------------------------
+double getDensity(const char* aLabel)
+//-----------------------------------
+{
+    // Find the mesh
+    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+
+    // It has been found
+    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    {
+        return g_p_scene_graph->getPolygonMeshSet()[aLabel].getDensity() / (g / cm3);
     }
     // It has not been found
     else
@@ -2285,7 +2308,7 @@ void render()
         // Display the X-Ray image
         if (g_display_detector)
         {
-            g_xray_renderer.display(true, true, false);
+            g_xray_renderer.display(true, true, false, g_shift_filter, g_scale_filter);
         }
 
         // Display the beam
@@ -2452,7 +2475,7 @@ void initialiseXRayRenderer()
 
             g_xray_renderer.disableArtifactFilteringOnGPU();
             g_xray_renderer.enableArtefactFilteringOnCPU();
-
+            g_xray_renderer.useNegativeFilteringFlag(false);
     		g_renderer_initialised = true;
         }
 	}
@@ -2734,3 +2757,29 @@ unsigned short getElementAtomicNumber(const std::string& anElement)
 {
 	return (ElementSet::getInstance().getElement(anElement).getZ());
 }
+
+
+void setShiftFilter(double aValue)
+{
+	g_shift_filter = aValue;
+}
+
+
+void setScaleFilter(double aValue)
+{
+	g_scale_filter = aValue;
+}
+
+
+double getShiftFilter()
+{
+	return (g_shift_filter);
+}
+
+
+double getScaleFilter()
+{
+	return (g_scale_filter);
+}
+
+
