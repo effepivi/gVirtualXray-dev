@@ -2654,6 +2654,8 @@ void XRayRenderer::getEnergyFluenceMinMax()
 			m_min_value_in_simulated_xray_image = 0;
 		}
 	}
+
+	m_max_value_in_simulated_xray_image = std::min(m_max_value_in_simulated_xray_image, m_p_xray_beam->getTotalEnergy());
 }
 
 
@@ -2727,6 +2729,9 @@ void XRayRenderer::display(bool useNormalisation,
             scale_filter = 1.0 / (std::pow(m_max_value_in_simulated_xray_image, gamma) - std::pow(m_min_value_in_simulated_xray_image, gamma));
         }
     }
+
+    //std::cout << shift << "  " << scale << std::endl;
+    //std::cout << shift_filter << "  " << scale_filter << std::endl;
 
     // Pass the incident energy to the shader
     handle = glGetUniformLocation(program_handle, "g_incident_energy");
