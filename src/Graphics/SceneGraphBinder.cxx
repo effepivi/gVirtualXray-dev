@@ -80,6 +80,12 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
 {}
 
 
+SceneGraphNode::~SceneGraphNode()
+{
+	std::cout << "Delete node: " << m_label << std::endl;
+}
+
+
 const SceneGraphNode* SceneGraphNode::getParent() const
 {
     return (m_p_parent);
@@ -121,6 +127,12 @@ const std::string& SceneGraphNode::getLabel() const
 }
 
 
+PolygonMesh& SceneGraphNode::getPolygonMesh()
+{
+    return (m_geometry);
+}
+
+
 const PolygonMesh& SceneGraphNode::getPolygonMesh() const
 {
     return (m_geometry);
@@ -145,6 +157,12 @@ void SceneGraphNode::applyLocalTransformation(const MATRIX4& aMatrix)
 }
 
 
+void SceneGraphNode::addChild(const std::string& aLabel)
+{
+	m_p_children.push_back(SceneGraphNode(aLabel, this));
+}
+
+
 void SceneGraphNode::addChild(const std::string& aLabel,
                               const PolygonMesh& aPolygonMesh,
                               const VEC3& aPosition)
@@ -153,8 +171,63 @@ void SceneGraphNode::addChild(const std::string& aLabel,
 }
 
 
+SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel)
+{
+    for (std::vector<SceneGraphNode>::iterator ite = m_p_children.begin();
+    		ite != m_p_children.end();
+    		++ite)
+    {
+    	if (ite->m_label == aLabel)
+    	{
+    		return *ite;
+    	}
+    }
+
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Node not found");
+}
 
 
+const SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel) const
+{
+    for (std::vector<SceneGraphNode>::const_iterator ite = m_p_children.begin();
+    		ite != m_p_children.end();
+    		++ite)
+    {
+    	if (ite->m_label == aLabel)
+    	{
+    		return *ite;
+    	}
+    }
+
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Node not found");
+}
+
+/*
+SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)
+{
+	// The current node has children
+	// They need to be deleted
+	if (m_p_children.size())
+	{
+		// Add all the children of the node to the temp list
+		std::vector<SceneGraphNode*> p_temp_pool_of_nodes;
+		for (std::vector<SceneGraphNode>::iterator ite = m_p_children.begin();
+				ite != m_p_children.end();
+				++ite)
+		{
+			p_temp_pool_of_nodes.push_back(&(*ite));
+		}
+
+		// Process until the list is empty
+		while (p_temp_pool_of_nodes.size())
+		{
+
+		}
+	}
+
+	return (*this);
+}
+*/
 
 
 
@@ -221,9 +294,8 @@ void SceneGraphBinder::loadSceneGraph(const std::string& aFileName, RATIONAL_NUM
 void SceneGraphBinder::clear()
 {
 	m_p_polygon_mesh_set.clear();
-	m_root_node.m_partial_local_transformation = MATRIX4();
-	m_root_node.m_position = VEC3();
-	m_root_node.m_p_children.clear();
+
+	m_root_node = SceneGraphNode("root");
 }
 
 
