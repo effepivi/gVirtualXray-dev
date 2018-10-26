@@ -1200,6 +1200,9 @@ std::string getElementSymbol(unsigned short Z);
 unsigned short getElementAtomicNumber(const std::string& anElement);
 
 
+double getElementDensity(const std::string& anElement);
+double getElementDensity(unsigned short Z);
+
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);
 double getShiftFilter();

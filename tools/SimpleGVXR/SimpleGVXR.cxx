@@ -540,27 +540,52 @@ std::string getMeshLabel(unsigned int i)
 
 unsigned int getNumberOfChildren(const std::string& aLabel)
 {
-    // Not the final implementation, because the scenegraph is not implemented as yet
-    if (aLabel == "root")
-    {
-        return (getMeshLabelSetSize());
-    }
-    else
-    {
-        return 0;
-    }
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	const SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	if (p_node)
+	{
+		return p_node->getNumberOfChildren();
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 
 std::string getChildLabel(const std::string& aLabel, unsigned int i)
 {
-    // Not the final implementation, because the scenegraph is not implemented as yet
-    if (aLabel == "root")
-    {
-        return (getMeshLabel(i));
-    }
-    
-    return std::string();
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+	const SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	if (p_node)
+	{
+		if (p_node->getNumberOfChildren())
+		{
+			return p_node->getChild(i).getLabel();
+		}
+		else
+		{
+			return std::string();
+		}
+	}
+	else
+	{
+		return std::string();
+	}
 }
 
 
@@ -925,6 +950,7 @@ void setHU(const char* aLabel, short HU)
     {
         // Set its properties
     	g_p_scene_graph->getPolygonMeshSet()[aLabel].setHounsfieldValue (HU);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -962,6 +988,7 @@ void setElement(const char* aLabel, unsigned short Z)
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setElement(Z);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -983,6 +1010,7 @@ void setElement(const char* aLabel, const std::string& aName)
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setElement(aName);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -1004,6 +1032,7 @@ void setMixture(const char* aLabel, const std::string& aName)
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setMixture(aName);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -1025,6 +1054,7 @@ void setCompound(const char* aLabel, const std::string& aName)
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setCompound(aName);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -1054,6 +1084,7 @@ void setMassAttenuationCoefficient(const char* aLabel,
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setMassAttenuationCoefficient (aCoefficient * cm2 / g);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -1082,6 +1113,7 @@ void setLinearAttenuationCoefficient(const char* aLabel,
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setLinearAttenuationCoefficient (aCoefficient / cm);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -1121,6 +1153,7 @@ void setDensity(const char* aLabel,
     {
         // Set its properties
         g_p_scene_graph->getPolygonMeshSet()[aLabel].setDensity(aDensity * g / cm3);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
@@ -2756,6 +2789,19 @@ unsigned short getElementAtomicNumber(const std::string& anElement)
 //-----------------------------------------------------------------
 {
 	return (ElementSet::getInstance().getElement(anElement).getZ());
+}
+
+
+double getElementDensity(const std::string& anElement)
+{
+	unsigned short Z = getElementAtomicNumber(anElement);
+	return (getElementDensity(Z));
+}
+
+
+double getElementDensity(unsigned short Z)
+{
+	return (ElementSet::getInstance().getElement(Z).getDensity() / (g / cm3));
 }
 
 
