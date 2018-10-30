@@ -349,7 +349,8 @@ public:
     void setLinearAttenuationCoefficient(double aCoefficient);
     void setDensity(double aDensity);
     double getDensity();
-    
+    const std::string& getMaterialLabel() const;
+
     const PhotonCrossSection& getPhotonCrossSection() const;
     
 
@@ -359,7 +360,7 @@ public:
      * @return the bounding box lower corner
      */
     //--------------------------------------------------------------------------
-    const VEC3& getMinCorner() const;
+    const VEC3& getLocalMinCorner() const;
 
 
     //--------------------------------------------------------------------------
@@ -368,7 +369,7 @@ public:
      * @return the bounding box upper corner
      */
     //--------------------------------------------------------------------------
-    const VEC3& getMaxCorner() const;
+    const VEC3& getLocalMaxCorner() const;
 
 
     //--------------------------------------------------------------------------
@@ -378,7 +379,7 @@ public:
      * @param aTranslationVector:  the translation vector
      */
     //--------------------------------------------------------------------------
-    void translate(const VEC3& aTranslationVector);
+    void applyTranslation(const VEC3& aTranslationVector);
     
     
     //--------------------------------------------------------------------------
@@ -390,7 +391,7 @@ public:
      * @z: the scaling factor along the Z-axis
      */
     //--------------------------------------------------------------------------
-    void scale(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
+    void applyScaling(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z);
 
 
     //--------------------------------------------------------------------------
@@ -401,7 +402,7 @@ public:
      * @param aRotationAngleInDegrees:  the rotation angle in degrees
      */
     //--------------------------------------------------------------------------
-    void rotate(const VEC3& aRotationAxis,
+    void applyRotation(const VEC3& aRotationAxis,
                 RATIONAL_NUMBER aRotationAngleInDegrees);
     
     
@@ -412,7 +413,7 @@ public:
      * @param aTransformationMatrix:  the transformation matrix
      */
     //--------------------------------------------------------------------------
-    void transform(const MATRIX4& aTransformationMatrix);
+    void applyTransform(const MATRIX4& aTransformationMatrix);
     
     
     //--------------------------------------------------------------------------
@@ -1161,11 +1162,6 @@ public:
     Material& getMaterial();
 
 
-    void setTransformationMatrix(const MATRIX4& aTransformationMatrix);
-    const MATRIX4& getTransformationMatrix() const;
-    MATRIX4& getTransformationMatrix();
-
-
     //--------------------------------------------------------------------------
     /// Copy.
     /**
@@ -1339,16 +1335,12 @@ protected:
     PhotonCrossSection m_photon_cross_section;
     
 
-    /// Length of the bounding box diagonal
-    RATIONAL_NUMBER m_bounding_box_diagonal;
-
-
     /// Lower corner of the bounding box
-    VEC3 m_min_corner;
+    VEC3 m_local_min_corner;
 
 
     /// Upper corner of the bounding box
-    VEC3 m_max_corner;
+    VEC3 m_local_max_corner;
 
 
     /// Array containing the normal vectors (one per triangle)
@@ -1402,10 +1394,6 @@ protected:
 
     /// Material of the object
     Material m_material;
-
-
-    /// Transformation matrix
-    MATRIX4 m_local_to_global_transformation;
 };
 
 

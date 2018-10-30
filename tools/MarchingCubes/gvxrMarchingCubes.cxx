@@ -93,6 +93,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 
 #ifdef HAS_GLFW
 
@@ -160,7 +164,7 @@ GLint g_current_x_position(0);
 GLint g_current_y_position(0);
 #endif
 
-PolygonMesh g_iso_surface;
+SceneGraphNode g_iso_surface("root", NULL);
 
 
 //******************************************************************************
@@ -290,15 +294,21 @@ int main(int argc, char** argv)
 
         if (ai.threshold_given == 1)
             {
-            g_iso_surface = image.marchingCubes(p_threshold_set[0]);
+            g_iso_surface = SceneGraphNode("root",
+            		image.marchingCubes(p_threshold_set[0]),
+					VEC3(),
+					NULL);
             }
         else
             {
-            g_iso_surface = image.marchingCubes(p_threshold_set[0], p_threshold_set[1], true);
+            g_iso_surface = SceneGraphNode("root",
+            		image.marchingCubes(p_threshold_set[0], p_threshold_set[1]),
+					VEC3(),
+					NULL);
             }
 
-        g_iso_surface.setFileName(output_file);
-        g_iso_surface.writeSTLFile();
+        g_iso_surface.getPolygonMesh().setFileName(output_file);
+        g_iso_surface.getPolygonMesh().writeSTLFile();
 
 #ifdef HAS_GLFW
 
@@ -369,7 +379,7 @@ int main(int argc, char** argv)
 
         g_scene_rotation_matrix.rotate(90, VEC3(1.0, 0.0, 0.0));
 
-        g_iso_surface.moveToCentre();
+        g_iso_surface.getPolygonMesh().moveToCentre();
 
         // Launch the event loop
         while (!glfwWindowShouldClose(g_p_main_window_id))
@@ -492,8 +502,8 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 
     glViewport(0, 0, g_main_window_width, g_main_window_height);
 
-    VEC3 min_corner(g_iso_surface.getMinCorner());
-    VEC3 max_corner(g_iso_surface.getMaxCorner());
+    VEC3 min_corner(g_iso_surface.getWorldMinCorner());
+    VEC3 max_corner(g_iso_surface.getWorldMaxCorner());
     VEC3 range(max_corner - min_corner);
     VEC3 middle(min_corner + range / 2.0);
 

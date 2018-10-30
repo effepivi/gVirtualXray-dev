@@ -250,7 +250,7 @@ void InternalOrganMesh::generate3DTexture(Shader const& shader,
 
 		square_filler.display();
 
-		square_filler.translate(VEC3(0,0,1.f/m_texture_size_3d));
+		square_filler.applyTranslation(VEC3(0,0,1.f/m_texture_size_3d));
 	}
 
 	// Check the OpenGL error status

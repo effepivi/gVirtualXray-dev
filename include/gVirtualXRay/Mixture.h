@@ -211,6 +211,9 @@ public:
     double getS(double x) const;
 
 
+    const std::string& getLabel() const;
+
+
     //--------------------------------------------------------------------------
     /// Copy operator.
     /*
@@ -226,8 +229,12 @@ public:
     
     bool operator!=(const Mixture& aMixture) const;
 
+
 //******************************************************************************
 private:
+    void setLabel();
+
+
     // The weight of each element in the material
     std::map<int, double> m_p_weight_set; // First: Atomic number; Second: Weight in percentage
     
@@ -238,6 +245,9 @@ private:
     // The density (a negative value means that it is computed automatically from the HU number
     // A positive value means that is is set by the user
     double m_density;
+
+
+    std::string m_label;
 };
 
 

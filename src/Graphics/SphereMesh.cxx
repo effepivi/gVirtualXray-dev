@@ -102,8 +102,8 @@ void SphereMesh::create(unsigned int aNumberOfRings,
 
 	m_radius = aRadius;
 
-	m_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
-    m_max_corner = VEC3( aRadius,  aRadius,  aRadius);
+	m_local_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
+    m_local_max_corner = VEC3( aRadius,  aRadius,  aRadius);
 
 	const float R(1.0 / float(aNumberOfRings   - 1));
 	const float S(1.0 / float(aNumberOfSectors - 1));
@@ -175,8 +175,8 @@ void SphereMesh::create(unsigned int aNumberOfSubdivision, float aRadius)
 
     m_radius = aRadius;
 
-    m_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
-    m_max_corner = VEC3( aRadius,  aRadius,  aRadius);
+    m_local_min_corner = VEC3(-aRadius, -aRadius, -aRadius);
+    m_local_max_corner = VEC3( aRadius,  aRadius,  aRadius);
 
     m_number_of_vertices = 12;
 
@@ -354,8 +354,8 @@ void SphereMesh::subdivision()
         next_added_vertex_id += 3;
     }
 
-    VEC3 min_corner(m_min_corner);
-    VEC3 max_corner(m_max_corner);
+    VEC3 min_corner(m_local_min_corner);
+    VEC3 max_corner(m_local_max_corner);
 
   //  number_of_vertices = m_number_of_vertices;
   //  number_of_indices = m_number_of_indices;
@@ -364,8 +364,8 @@ void SphereMesh::subdivision()
 
     m_external_data_flag = false;
 
-    m_min_corner = min_corner;
-    m_max_corner = max_corner;
+    m_local_min_corner = min_corner;
+    m_local_max_corner = max_corner;
 
     m_number_of_vertices = number_of_vertices;
     m_number_of_indices = number_of_indices;

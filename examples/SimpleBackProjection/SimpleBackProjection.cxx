@@ -94,6 +94,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -219,7 +223,7 @@ VEC3 g_translation_vector;
 std::vector<float> g_p_vertex_data;
 std::vector<unsigned int> g_p_index_data;
 
-PolygonMesh g_polygon_mesh;
+SceneGraphNode g_polygon_mesh;
 
 #if __cplusplus <= 199711L
 std::auto_ptr<VBO> g_sinogram_rectangle;
@@ -708,12 +712,12 @@ void createPhantom()
     sphere.invertNormalVectors();
 //    sphere.moveToCentre();
     
-    g_polygon_mesh = iso_surface;// + sphere;
-    g_polygon_mesh.moveToCentre();
+    g_polygon_mesh.getPolygonMesh() = iso_surface;// + sphere;
+    g_polygon_mesh.getPolygonMesh().moveToCentre();
     
-    g_polygon_mesh.setHounsfieldValue(-500);
+    g_polygon_mesh.getPolygonMesh().setHounsfieldValue(-500);
     //g_polygon_mesh.computeNormalVectors();
-    g_polygon_mesh.useVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
+    g_polygon_mesh.getPolygonMesh().useVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
 }
 
 
@@ -1068,7 +1072,7 @@ void render()
         //glCullFace(GL_BACK);
 
         // Get the material
-        Material& material(g_polygon_mesh.getMaterial());
+        Material& material(g_polygon_mesh.getPolygonMesh().getMaterial());
 
         // Define colours inshader
         handle = glGetUniformLocation(shader_id, "material_ambient");
@@ -1493,7 +1497,12 @@ void loadSTLFile()
 //----------------
 {
     // Set geometry
-    g_polygon_mesh.setHounsfieldValue(0);
+	g_polygon_mesh = SceneGraphNode("root",
+			PolygonMesh(),
+			VEC3(),
+			NULL);
+
+    g_polygon_mesh.getPolygonMesh().setHounsfieldValue(0);
 
     float red((float(rand()) / (RAND_MAX)) + 1);
     float green((float(rand()) / (RAND_MAX)) + 1);
@@ -1503,29 +1512,29 @@ void loadSTLFile()
     VEC3 base_colour(red, green, blue);
     base_colour.normalise();
 
-    g_polygon_mesh.getMaterial().setAmbientColour(
+    g_polygon_mesh.getPolygonMesh().getMaterial().setAmbientColour(
             base_colour.getX() * 0.19225,
             base_colour.getY() * 0.19225,
             base_colour.getZ() * 0.19225,
             alpha);
         
-    g_polygon_mesh.getMaterial().setDiffuseColour(
+    g_polygon_mesh.getPolygonMesh().getMaterial().setDiffuseColour(
             base_colour.getX() * 0.50754,
             base_colour.getY() * 0.50754,
             base_colour.getZ() * 0.50754,
             alpha);
     
-    g_polygon_mesh.getMaterial().setSpecularColour(
+    g_polygon_mesh.getPolygonMesh().getMaterial().setSpecularColour(
             base_colour.getX() * 0.50827,
             base_colour.getY() * 0.50827,
             base_colour.getZ() * 0.50827,
             alpha);
     
-    g_polygon_mesh.getMaterial().setShininess(50);
+    g_polygon_mesh.getPolygonMesh().getMaterial().setShininess(50);
 
     // Compute the translation vector
-    g_translation_vector = g_polygon_mesh.getMinCorner() +
-        (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0;
+    g_translation_vector = g_polygon_mesh.getWorldMinCorner() +
+        (g_polygon_mesh.getWorldMaxCorner() - g_polygon_mesh.getWorldMinCorner()) / 2.0;
     
     g_sample_rotation_matrix =
         Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);

@@ -78,11 +78,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  namespace
 //******************************************************************************
-namespace gVirtualXRay {
 
 
 //----------------------------------------------------
-int inflate(const void *src, int srcLen, char** apDst)
+int gVirtualXRay::inflate(const void *src, int srcLen, char** apDst)
 //----------------------------------------------------
 {
     // See http://stackoverflow.com/questions/4901842/
@@ -137,7 +136,7 @@ int inflate(const void *src, int srcLen, char** apDst)
 
 
 //-------------------------------------------------
-bool checkExtension(const std::string& aFileName,
+bool gVirtualXRay::checkExtension(const std::string& aFileName,
                     const std::string& anExtension)
 //-------------------------------------------------
 {
@@ -157,6 +156,3 @@ bool checkExtension(const std::string& aFileName,
 
     return (file_extension == extension_plus_dot);
 }
-
-
-};

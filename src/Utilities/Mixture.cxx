@@ -192,3 +192,17 @@ bool Mixture::operator==(const Mixture& aMixture) const
     
     return true;
 }
+
+
+void Mixture::setLabel()
+{
+    m_label.clear();
+    for (std::map<int, double>::const_iterator ite = m_p_weight_set.begin();
+			 ite != m_p_weight_set.end();
+			 ++ite)
+    {
+        m_label += ElementSet::getInstance().getElement(ite->first).getSymbol();
+        m_label += std::to_string(ite->second);
+    }
+}
+

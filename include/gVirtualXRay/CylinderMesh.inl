@@ -96,8 +96,8 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
 
 	m_radius = aRadius;
 
-	m_min_corner = VEC3(-aRadius, -aHeight / 2.0, -aRadius);
-    m_max_corner = VEC3( aRadius,  aHeight / 2.0,  aRadius);
+	m_local_min_corner = VEC3(-aRadius, -aHeight / 2.0, -aRadius);
+    m_local_max_corner = VEC3( aRadius,  aHeight / 2.0,  aRadius);
 
     std::vector<T> p_vertex_set;
     std::vector<T> p_normal_set;

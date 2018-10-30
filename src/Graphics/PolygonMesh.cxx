@@ -125,7 +125,6 @@ using namespace gVirtualXRay;
 //-----------------------------------
 PolygonMesh::PolygonMesh():
 //-----------------------------------
-        m_bounding_box_diagonal(0),
         m_p_vertex_set(0),
         m_p_index_set(0),
         m_number_of_indices(0),
@@ -145,9 +144,8 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
 //------------------------------------------------------------------------
         m_filename(aPolygonMesh.m_filename),
         m_photon_cross_section(aPolygonMesh.m_photon_cross_section),
-        m_bounding_box_diagonal(aPolygonMesh.m_bounding_box_diagonal),
-        m_min_corner(aPolygonMesh.m_min_corner),
-        m_max_corner(aPolygonMesh.m_max_corner),
+        m_local_min_corner(aPolygonMesh.m_local_min_corner),
+        m_local_max_corner(aPolygonMesh.m_local_max_corner),
         //m_p_face_normal_set(aPolygonMesh.m_p_face_normal_set),
         m_p_vertex_normal_set(aPolygonMesh.m_p_vertex_normal_set),
         m_p_vertex_set(0),
@@ -159,8 +157,7 @@ PolygonMesh::PolygonMesh(const PolygonMesh& aPolygonMesh):
         m_polygon_type(aPolygonMesh.m_polygon_type),
         m_external_data_flag(aPolygonMesh.m_external_data_flag),
 		m_display_flag(aPolygonMesh.m_display_flag),
-        m_material(aPolygonMesh.m_material),
-		m_local_to_global_transformation(aPolygonMesh.m_local_to_global_transformation)
+        m_material(aPolygonMesh.m_material)
 //------------------------------------------------------------------------
 {
     if (aPolygonMesh.m_p_vertex_set)
@@ -197,10 +194,8 @@ void PolygonMesh::reset()
 
     m_photon_cross_section.reset();
 
-    m_bounding_box_diagonal = 0;
-
-    m_min_corner = VEC3();
-    m_max_corner = VEC3();
+    m_local_min_corner = VEC3();
+    m_local_max_corner = VEC3();
 
     //m_p_face_normal_set.clear();
     m_p_vertex_normal_set.clear();
@@ -215,8 +210,6 @@ void PolygonMesh::reset()
     m_vertex_data_type = GL_NONE;
 
     m_external_data_flag = false;
-    
-	m_local_to_global_transformation = MATRIX4();
 }
 
 
@@ -671,12 +664,12 @@ void PolygonMesh::loadSTLDataFromStream(const char* apInputData,
                 "\tnb_faces:\t" << getFaceNumber() <<
                 "\tnb_vertices:\t" << m_number_of_vertices <<
                 "\tbounding_box (in cm):\t(" <<
-                        m_min_corner.getX() / cm << ", " <<
-                        m_min_corner.getY() / cm << ", " <<
-                        m_min_corner.getZ() / cm << ")\t(" <<
-                        m_max_corner.getX() / cm << ", " <<
-                        m_max_corner.getY() / cm << ", " <<
-                        m_max_corner.getZ() / cm << ")" << std::endl;
+                        m_local_min_corner.getX() / cm << ", " <<
+                        m_local_min_corner.getY() / cm << ", " <<
+                        m_local_min_corner.getZ() / cm << ")\t(" <<
+                        m_local_max_corner.getX() / cm << ", " <<
+                        m_local_max_corner.getY() / cm << ", " <<
+                        m_local_max_corner.getZ() / cm << ")" << std::endl;
         }
 
     // Create the VBO
@@ -982,9 +975,8 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
 
     m_filename                = aPolygonMesh.m_filename;
     m_photon_cross_section    = aPolygonMesh.m_photon_cross_section;
-    m_bounding_box_diagonal   = aPolygonMesh.m_bounding_box_diagonal;
-    m_min_corner              = aPolygonMesh.m_min_corner;
-    m_max_corner              = aPolygonMesh.m_max_corner;
+    m_local_min_corner              = aPolygonMesh.m_local_min_corner;
+    m_local_max_corner              = aPolygonMesh.m_local_max_corner;
     //m_p_face_normal_set       = aPolygonMesh.m_p_face_normal_set;
     m_p_vertex_normal_set     = aPolygonMesh.m_p_vertex_normal_set;
     m_number_of_indices       = aPolygonMesh.m_number_of_indices;
@@ -995,7 +987,6 @@ void PolygonMesh::copyFrom(const PolygonMesh& aPolygonMesh)
     m_external_data_flag      = aPolygonMesh.m_external_data_flag;
     m_display_flag            = aPolygonMesh.m_display_flag;
     m_material                = aPolygonMesh.m_material;
-	m_local_to_global_transformation = aPolygonMesh.m_local_to_global_transformation;
 
     if (m_number_of_vertices)
     {
@@ -1064,7 +1055,6 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_photon_cross_section = m_photon_cross_section;
 	new_polygon_mesh.m_display_flag         = m_display_flag;
 	new_polygon_mesh.m_material             = m_material;
-	new_polygon_mesh.m_local_to_global_transformation = m_local_to_global_transformation;
 
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
@@ -1317,9 +1307,6 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
     new_polygon_mesh.m_photon_cross_section = m_photon_cross_section;
 	new_polygon_mesh.m_display_flag = m_display_flag;
 	new_polygon_mesh.m_material = m_material;
-	new_polygon_mesh.m_local_to_global_transformation = m_local_to_global_transformation;
-
-
 
     // The data is held by the instance
     new_polygon_mesh.m_external_data_flag = false;
@@ -1564,7 +1551,7 @@ PolygonMesh PolygonMesh::operator+(const VEC3& aTranslationVector) const
     PolygonMesh new_polygon_mesh(*this);
 
     // Translate all the vertices
-    new_polygon_mesh.translate(aTranslationVector);
+    new_polygon_mesh.applyTranslation(aTranslationVector);
 
     // Return the new polygon mesh
     return (new_polygon_mesh);
@@ -1579,7 +1566,7 @@ PolygonMesh PolygonMesh::operator-(const VEC3& aTranslationVector) const
     PolygonMesh new_polygon_mesh(*this);
 
     // Translate all the vertices
-    new_polygon_mesh.translate(-aTranslationVector);
+    new_polygon_mesh.applyTranslation(-aTranslationVector);
 
     // Return the new polygon mesh
     return (new_polygon_mesh);
@@ -1591,7 +1578,7 @@ PolygonMesh& PolygonMesh::operator+=(const VEC3& aTranslationVector)
 //------------------------------------------------------------------
 {
     // Translate all the vertices
-    translate(aTranslationVector);
+	applyTranslation(aTranslationVector);
 
     // Return the current instance
     return (*this);
@@ -1603,7 +1590,7 @@ PolygonMesh& PolygonMesh::operator-=(const VEC3& aTranslationVector)
 //------------------------------------------------------------------
 {
     // Translate all the vertices
-    translate(-aTranslationVector);
+	applyTranslation(-aTranslationVector);
 
     // Return the current instance
     return (*this);
@@ -1839,15 +1826,13 @@ void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScaleX,
         }
 
         // Update the bounding box
-        m_min_corner[0] *= aScaleX;
-        m_min_corner[1] *= aScaleY;
-        m_min_corner[2] *= aScaleZ;
+        m_local_min_corner[0] *= aScaleX;
+        m_local_min_corner[1] *= aScaleY;
+        m_local_min_corner[2] *= aScaleZ;
 
-        m_max_corner[0] *= aScaleX;
-        m_max_corner[1] *= aScaleY;
-        m_max_corner[2] *= aScaleZ;
-
-        m_bounding_box_diagonal = (m_max_corner - m_min_corner).length();
+        m_local_max_corner[0] *= aScaleX;
+        m_local_max_corner[1] *= aScaleY;
+        m_local_max_corner[2] *= aScaleZ;
 
         // Create the VBO if needed
         /*if (!m_p_vbo.get())
@@ -2038,12 +2023,12 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
                             "\tnb_faces:\t" << getFaceNumber() <<
                             "\tnb_vertices:\t" << m_number_of_vertices <<
                             "\tbounding_box (in cm):\t(" <<
-                                m_min_corner.getX() / cm << ", " <<
-                                m_min_corner.getY() / cm << ", " <<
-                                m_min_corner.getZ() / cm << ")\t(" <<
-                                m_max_corner.getX() / cm << ", " <<
-                                m_max_corner.getY() / cm << ", " <<
-                                m_max_corner.getZ() / cm << ")" << std::endl;
+                                m_local_min_corner.getX() / cm << ", " <<
+                                m_local_min_corner.getY() / cm << ", " <<
+                                m_local_min_corner.getZ() / cm << ")\t(" <<
+                                m_local_max_corner.getX() / cm << ", " <<
+                                m_local_max_corner.getY() / cm << ", " <<
+                                m_local_max_corner.getZ() / cm << ")" << std::endl;
                     }
                 }
             // Not supported
@@ -2257,12 +2242,12 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
                         "\tnb_faces:\t" << getFaceNumber() <<
                         "\tnb_vertices:\t" << m_number_of_vertices <<
                         "\tbounding_box (in cm):\t(" <<
-                        m_min_corner.getX() / cm << ", " <<
-                        m_min_corner.getY() / cm << ", " <<
-                        m_min_corner.getZ() / cm << ")\t(" <<
-                        m_max_corner.getX() / cm << ", " <<
-                        m_max_corner.getY() / cm << ", " <<
-                        m_max_corner.getZ() / cm << ")" << std::endl;
+                        m_local_min_corner.getX() / cm << ", " <<
+                        m_local_min_corner.getY() / cm << ", " <<
+                        m_local_min_corner.getZ() / cm << ")\t(" <<
+                        m_local_max_corner.getX() / cm << ", " <<
+                        m_local_max_corner.getY() / cm << ", " <<
+                        m_local_max_corner.getZ() / cm << ")" << std::endl;
                 }
             }
         // Not supported
@@ -3741,12 +3726,12 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
                             "\tnb_faces:\t" << getFaceNumber() <<
                             "\tnb_vertices:\t" << m_number_of_vertices <<
                             "\tbounding_box (in cm):\t(" <<
-                            m_min_corner.getX() / cm << ", " <<
-                            m_min_corner.getY() / cm << ", " <<
-                            m_min_corner.getZ() / cm << ")\t(" <<
-                            m_max_corner.getX() / cm << ", " <<
-                            m_max_corner.getY() / cm << ", " <<
-                            m_max_corner.getZ() / cm << ")" << std::endl;
+                            m_local_min_corner.getX() / cm << ", " <<
+                            m_local_min_corner.getY() / cm << ", " <<
+                            m_local_min_corner.getZ() / cm << ")\t(" <<
+                            m_local_max_corner.getX() / cm << ", " <<
+                            m_local_max_corner.getY() / cm << ", " <<
+                            m_local_max_corner.getZ() / cm << ")" << std::endl;
                     }
                 }
             // Not supported

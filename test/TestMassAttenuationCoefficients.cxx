@@ -72,7 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <numeric>
 
 #define BOOST_TEST_MODULE TestMassAttenuationCoefficients
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>

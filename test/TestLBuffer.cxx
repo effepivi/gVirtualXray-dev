@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 
 #define BOOST_TEST_MODULE TestLBuffer
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -89,6 +89,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __Units_h
 #include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
 #ifndef __CylinderMesh_h
@@ -162,8 +166,7 @@ RATIONAL_NUMBER g_cube_side_in_cm(3.0);
 RATIONAL_NUMBER g_cylinder_height_in_cm(3.0);
 RATIONAL_NUMBER g_cylinder_radius_in_cm(1.0);
 
-CylinderMesh<GLdouble> g_inside_polygon_data(500, g_cylinder_height_in_cm * cm, g_cylinder_radius_in_cm * cm, GL_UNSIGNED_INT);
-CubeMesh<GLdouble> g_outside_polygon_data(g_cube_side_in_cm * cm);
+SceneGraphNode g_scene_graph("root", NULL);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -250,10 +253,10 @@ BOOST_AUTO_TEST_CASE(TestLBuffer1)
 
     // Add the geometry to the X-ray renderer
     loadSTLFile();
-    g_xray_half_precision_renderer.addInnerSurface(&g_inside_polygon_data);
-    g_xray_half_precision_renderer.addOuterSurface(&g_outside_polygon_data);
-    g_xray_full_precision_renderer.addInnerSurface(&g_inside_polygon_data);
-    g_xray_full_precision_renderer.addOuterSurface(&g_outside_polygon_data);
+    g_xray_half_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+    g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+    g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+    g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Set the projection matrix
     GLint width(0);
@@ -261,12 +264,12 @@ BOOST_AUTO_TEST_CASE(TestLBuffer1)
     glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_outside_polygon_data,
+    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
-    g_xray_full_precision_renderer.computeLBuffer(g_outside_polygon_data,
+    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
@@ -316,12 +319,12 @@ BOOST_AUTO_TEST_CASE(TestLBuffer2)
 //--------------------------------
 {
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_inside_polygon_data,
+    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
-    g_xray_full_precision_renderer.computeLBuffer(g_inside_polygon_data,
+    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
@@ -374,12 +377,12 @@ BOOST_AUTO_TEST_CASE(TestLBuffer3)
     g_sample_rotation_matrix.rotate(45.0, g_detector_up_vector);
     
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_outside_polygon_data,
+    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
-    g_xray_full_precision_renderer.computeLBuffer(g_outside_polygon_data,
+    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
@@ -430,12 +433,12 @@ BOOST_AUTO_TEST_CASE(TestLBuffer4)
 //--------------------------------
 {
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_inside_polygon_data,
+    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
-    g_xray_full_precision_renderer.computeLBuffer(g_inside_polygon_data,
+    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
@@ -487,12 +490,12 @@ BOOST_AUTO_TEST_CASE(TestLBuffer5)
     g_sample_rotation_matrix.rotate(45.0, VEC3(0.0, 0.0, 1.0));
     
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_outside_polygon_data,
+    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
-    g_xray_full_precision_renderer.computeLBuffer(g_outside_polygon_data,
+    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
@@ -593,23 +596,28 @@ void initGL()
 void loadSTLFile()
 //----------------
 {
+	// Set the geometry
+    g_scene_graph.addChild( "inside", CylinderMesh<GLdouble>(500, g_cylinder_height_in_cm * cm, g_cylinder_radius_in_cm * cm, GL_UNSIGNED_INT));
+    g_scene_graph.addChild("outside", CubeMesh<GLdouble>(g_cube_side_in_cm * cm));
+
+
     // HU values
     RATIONAL_NUMBER HU_water(0.0);
     RATIONAL_NUMBER HU_bone(1329.885683);
     RATIONAL_NUMBER HU_soft_tissue(51.714752);
 
-    g_inside_polygon_data.setHounsfieldValue(HU_bone);
-    g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
+    g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
+    g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
     std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
     std::cout << "- Inside, a cylinder is inserted. " <<
             "It is made of bone (HU = " << std::floor(HU_bone + 0.5) << "), its height is 3 cm and its diameter is 2 cm." << std::endl;
 
-    //g_outside_polygon_data.splitFaces(false);
-    //g_outside_polygon_data.splitFaces(false);
-    //g_outside_polygon_data.splitFaces(false);
-    //g_outside_polygon_data.splitFaces(false);
+    //g_scene_graph.getChild("outside").splitFaces(false);
+    //g_scene_graph.getChild("outside").splitFaces(false);
+    //g_scene_graph.getChild("outside").splitFaces(false);
+    //g_scene_graph.getChild("outside").splitFaces(false);
 }
 
 

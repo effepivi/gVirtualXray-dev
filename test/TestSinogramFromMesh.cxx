@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 
 #define BOOST_TEST_MODULE TestSinogramFromMesh
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -91,8 +91,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __PolygonMesh_h
-#include "gVirtualXRay/PolygonMesh.h"
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
 #ifndef __CubeMesh_h
@@ -165,7 +165,7 @@ Matrix4x4<GLfloat> g_sample_rotation_matrix;
 std::vector<float> g_p_vertex_data;
 std::vector<unsigned int> g_p_index_data;
 
-PolygonMesh g_polygon_mesh;
+SceneGraphNode g_polygon_mesh;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -363,9 +363,9 @@ void createPhantom()
     phantom.save("TestSinogram_phantom.mha");
 
     // Extract the isosurface
-    g_polygon_mesh = phantom.marchingCubes(-500);
-    g_polygon_mesh.setFileName("step_wedge.stl");
-    g_polygon_mesh.writeSTLFile();
+    g_polygon_mesh = SceneGraphNode("root", phantom.marchingCubes(-500), VEC3(), NULL);
+    g_polygon_mesh.getPolygonMesh().setFileName("step_wedge.stl");
+    g_polygon_mesh.getPolygonMesh().writeSTLFile();
 }
 
 
@@ -395,7 +395,7 @@ void loadSTLFile()
 //----------------
 {
     // Set geometry
-    g_polygon_mesh.setHounsfieldValue(0);
+    g_polygon_mesh.getPolygonMesh().setHounsfieldValue(0);
 
     float red((float(rand()) / (RAND_MAX)) + 1);
     float green((float(rand()) / (RAND_MAX)) + 1);
@@ -405,26 +405,26 @@ void loadSTLFile()
     VEC3 base_colour(red, green, blue);
     base_colour.normalise();
 
-    g_polygon_mesh.getMaterial().setAmbientColour(base_colour.getX() * 0.19225,
+    g_polygon_mesh.getPolygonMesh().getMaterial().setAmbientColour(base_colour.getX() * 0.19225,
         base_colour.getY() * 0.19225,
         base_colour.getZ() * 0.19225,
         alpha);
 
-    g_polygon_mesh.getMaterial().setDiffuseColour(base_colour.getX() * 0.50754,
+    g_polygon_mesh.getPolygonMesh().getMaterial().setDiffuseColour(base_colour.getX() * 0.50754,
         base_colour.getY() * 0.50754,
         base_colour.getZ() * 0.50754,
         alpha);
 
-    g_polygon_mesh.getMaterial().setSpecularColour(base_colour.getX() * 0.50827,
+    g_polygon_mesh.getPolygonMesh().getMaterial().setSpecularColour(base_colour.getX() * 0.50827,
         base_colour.getY() * 0.50827,
         base_colour.getZ() * 0.50827,
         alpha);
 
-    g_polygon_mesh.getMaterial().setShininess(50);
+    g_polygon_mesh.getPolygonMesh().getMaterial().setShininess(50);
 
     // Compute the translation vector
-    VEC3 translation_vector(g_polygon_mesh.getMinCorner() +
-        (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0);
+    VEC3 translation_vector(g_polygon_mesh.getWorldMinCorner() +
+        (g_polygon_mesh.getWorldMaxCorner() - g_polygon_mesh.getWorldMinCorner()) / 2.0);
 
     g_sample_rotation_matrix =
         MATRIX4::buildTranslationMatrix(-translation_vector);

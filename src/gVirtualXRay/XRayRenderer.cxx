@@ -911,7 +911,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				//	ite != m_p_HU_polygon_mesh_set.end();
 				//	++ite, ++object_number)
 
-				for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
+				for (std::vector<std::vector<SceneGraphNode*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
 						ite_material != m_p_surface_per_material_set.end();
 						++ite_material)
 				{
@@ -929,19 +929,19 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					//for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
 					//        ite_meshes != ite->second.end();
 					//        ++ite_meshes, ++temp_id)
-					for (std::vector<PolygonMesh*>::const_iterator ite_meshes = ite_material->begin();
+					for (std::vector<SceneGraphNode*>::const_iterator ite_meshes = ite_material->begin();
 							ite_meshes != ite_material->end();
 							++ite_meshes, ++object_number)
 					{
 						// Compute its L-buffer
 						computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
 
-						temp = (*ite_meshes)->getMaxCorner();
+						temp = (*ite_meshes)->getWorldMaxCorner();
 						max_corner[0] = std::max(temp[0], max_corner[0]);
 						max_corner[1] = std::max(temp[1], max_corner[1]);
 						max_corner[2] = std::max(temp[2], max_corner[2]);
 
-						temp = (*ite_meshes)->getMinCorner();
+						temp = (*ite_meshes)->getWorldMinCorner();
 						min_corner[0] = std::min(temp[0], min_corner[0]);
 						min_corner[1] = std::min(temp[1], min_corner[1]);
 						min_corner[2] = std::min(temp[2], min_corner[2]);
@@ -1895,7 +1895,7 @@ unsigned int XRayRenderer::getID2DTexture()
 
 
 //------------------------------------------------------------------------------
-void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
+void XRayRenderer::computeLBuffer(SceneGraphNode& anObject,
                                   const VEC3& aXRaySourceDetectorTranslation,
                                   const MATRIX4& aModellingTransformationMatrix,
                                   bool aGPUStateConservationFlag)
@@ -1906,7 +1906,7 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
     {
         computeInnerSurfaceLBuffer(anObject,
         		aXRaySourceDetectorTranslation,
-				aModellingTransformationMatrix * anObject.getTransformationMatrix(),
+				aModellingTransformationMatrix * anObject.getWorldTransformationMatrix(),
 				aGPUStateConservationFlag);
     }
     // This is the external mesh
@@ -1914,13 +1914,13 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
     {
         computeOuterSurfaceLBuffer(anObject,
         		aXRaySourceDetectorTranslation,
-				aModellingTransformationMatrix * anObject.getTransformationMatrix());
+				aModellingTransformationMatrix * anObject.getWorldTransformationMatrix());
     }
 }
 
 
 //------------------------------------------------------------------------------------------
-void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
+void XRayRenderer::computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
                                               const VEC3& aXRaySourceSampleOffset,
                                               const MATRIX4& aModellingTransformationMatrix,
                                               bool aGPUStateConservationFlag)
@@ -1934,7 +1934,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
         }
 
     // The 3D object is not empty
-    if (anObject.getVertexNumber())
+    if (anObject.getPolygonMesh().getVertexNumber())
     {
         // Load uniform variables to the GPU
         GLint program_handle(0);
@@ -2081,7 +2081,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
     if (aGPUStateConservationFlag)
         {
 
-        RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
+        RATIONAL_NUMBER bbox_diagonal((anObject.getLocalMaxCorner() - anObject.getLocalMinCorner()).length() / cm);
         postComputeLBuffer(p_viewport, bbox_diagonal);
         }
 
@@ -2091,7 +2091,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
 
 
 //------------------------------------------------------------------------------------
-void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
+void XRayRenderer::computeOuterSurfaceLBuffer(SceneGraphNode& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------
@@ -2654,6 +2654,8 @@ void XRayRenderer::getEnergyFluenceMinMax()
 			m_min_value_in_simulated_xray_image = 0;
 		}
 	}
+
+	m_max_value_in_simulated_xray_image = std::min(m_max_value_in_simulated_xray_image, m_p_xray_beam->getTotalEnergy());
 }
 
 
@@ -2727,6 +2729,9 @@ void XRayRenderer::display(bool useNormalisation,
             scale_filter = 1.0 / (std::pow(m_max_value_in_simulated_xray_image, gamma) - std::pow(m_min_value_in_simulated_xray_image, gamma));
         }
     }
+
+    //std::cout << shift << "  " << scale << std::endl;
+    //std::cout << shift_filter << "  " << scale_filter << std::endl;
 
     // Pass the incident energy to the shader
     handle = glGetUniformLocation(program_handle, "g_incident_energy");
@@ -3224,7 +3229,7 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 		m_surface_per_material_set_needs_update = false;
 
 		// Look at all the meshes
-		for (std::vector<PolygonMesh*>::const_iterator ite = m_p_inner_surface_set.begin();
+		for (std::vector<SceneGraphNode*>::const_iterator ite = m_p_inner_surface_set.begin();
 				ite != m_p_inner_surface_set.end();
 				++ite)
 		{
@@ -3242,7 +3247,7 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 
 			if (!added)
 			{
-				m_p_surface_per_material_set.push_back(std::vector<PolygonMesh*>(1, *ite));
+				m_p_surface_per_material_set.push_back(std::vector<SceneGraphNode*>(1, *ite));
 			}
 		}
 	}

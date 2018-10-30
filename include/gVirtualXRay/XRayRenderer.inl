@@ -135,20 +135,20 @@ namespace gVirtualXRay {
     }
 
 
-    //---------------------------------------------------------------------
-    inline void XRayRenderer::addInnerSurface(const PolygonMesh* apSurface)
-    //---------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    inline void XRayRenderer::addInnerSurface(const SceneGraphNode* apSurface)
+    //------------------------------------------------------------------------
     {
-        m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
+        m_p_inner_surface_set.push_back(const_cast<SceneGraphNode*>(apSurface));
         m_surface_per_material_set_needs_update = true;
     }
 
 
-    //---------------------------------------------------------------------
-    inline void XRayRenderer::addOuterSurface(const PolygonMesh* apSurface)
-    //---------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    inline void XRayRenderer::addOuterSurface(const SceneGraphNode* apSurface)
+    //------------------------------------------------------------------------
     {
-        m_p_outer_surface = const_cast<PolygonMesh*>(apSurface);
+        m_p_outer_surface = const_cast<SceneGraphNode*>(apSurface);
     }
 
 

@@ -84,7 +84,7 @@ public:
 private:
 
 #ifdef HAS_ASSIMP
-	void recursivePolygonMeshBuild (const aiNode* nd, aiMatrix4x4 tStack);
+	void recursivePolygonMeshBuild (const aiNode* nd, SceneGraphNode* apParent, aiMatrix4x4 tStack);
 	void recursiveUpdateMatrices (const aiNode* nd, aiMatrix4x4 tStack);
 
 	const aiNode* recursiveFindNode(const aiNode* nd, const char* aNodeLabel) const;

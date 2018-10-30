@@ -208,7 +208,7 @@ VEC3 g_detector_position( 0.0, 0.0,  20.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-PolygonMesh* g_p_polygon_data;
+SceneGraphNode g_scene_graph_node;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -736,11 +736,11 @@ void render()
         // Display the sample
         if (g_display_wireframe)
             {
-            g_p_polygon_data->displayWireFrame();
+        	g_scene_graph_node.displayWireFrame();
             }
         else
             {
-            g_p_polygon_data->display();
+        	g_scene_graph_node.display();
             }
 
         // Restore the current transformation matrix
@@ -1411,7 +1411,7 @@ void updateXRayImage()
     if (!g_is_xray_image_up_to_date)
         {
         // Make sure the polygon data is updated
-        g_xray_renderer.addOuterSurface(g_p_polygon_data);
+        g_xray_renderer.addOuterSurface(&g_scene_graph_node);
 
         // Compute the X-Ray image
         g_xray_renderer.computeImage(g_sample_rotation_matrix);
@@ -1567,15 +1567,21 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_sphere_1.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_sphere_1.getPolygonMesh();
-            break;
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_sphere_1.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
+			break;
 
         case 1:
             g_sphere_2.voxelise(g_number_of_voxel,
                     centre,
                     voxel_size);
             g_sphere_2.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_sphere_2.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_sphere_2.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
 
         // Blobby molecule
@@ -1584,7 +1590,10 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_blobby_molecule_1.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_blobby_molecule_1.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_blobby_molecule_1.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
 
         case 3:
@@ -1592,7 +1601,10 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_blobby_molecule_2.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_blobby_molecule_2.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_blobby_molecule_2.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
 
         // Meta ball
@@ -1601,7 +1613,10 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_meta_ball_1.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_meta_ball_1.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_meta_ball_1.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
 
         case 5:
@@ -1609,7 +1624,10 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_meta_ball_2.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_meta_ball_2.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_meta_ball_2.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
 
         // Soft object
@@ -1618,7 +1636,10 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_soft_object_1.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_soft_object_1.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_soft_object_1.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
 
         case 7:
@@ -1626,18 +1647,21 @@ void extractIsoSurface()
                     centre,
                     voxel_size);
             g_soft_object_2.extractIsoSurface(g_threshold);
-            g_p_polygon_data = &g_soft_object_2.getPolygonMesh();
+            g_scene_graph_node = SceneGraphNode("root",
+            		g_soft_object_2.getPolygonMesh(),
+            		VEC3(),
+            		NULL);
             break;
         }
 
     // Set geometry
-    g_p_polygon_data->moveToCentre();
-    g_p_polygon_data->applyScale(15);
+    g_scene_graph_node.getPolygonMesh().moveToCentre();
+    g_scene_graph_node.getPolygonMesh().applyScaling(15, 15, 15);
 
     // Updat ethe VBO
-    g_p_polygon_data->updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
+    g_scene_graph_node.getPolygonMesh().updateVBO(GL_DYNAMIC_DRAW, GL_TRIANGLES);
 
-    g_p_polygon_data->setHounsfieldValue(500.0);
+    g_scene_graph_node.getPolygonMesh().setHounsfieldValue(500.0);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

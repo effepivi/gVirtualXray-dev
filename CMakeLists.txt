@@ -215,16 +215,21 @@ SET (gVirtualXRay_INSTALL_PREFIX ${PROJECT_BINARY_DIR})
 
 SET (gVirtualXRay_LIBRARY ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 
-IF (APPLE)
 
-    SET (requiredLibs ${requiredLibs} "-framework CoreFoundation")
-
-    IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
-        SET (gVirtualXRay_LIBRARY 
-            optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
-            debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
-        )
-    ENDIF ()
+IF (UNIX)
+	IF (APPLE)
+	
+	    SET (requiredLibs ${requiredLibs} "-framework CoreFoundation")
+	
+	    IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+	        SET (gVirtualXRay_LIBRARY 
+	            optimized ${PROJECT_BINARY_DIR}/Release/libgVirtualXRay.a
+	            debug     ${PROJECT_BINARY_DIR}/Debug/libgVirtualXRay.a
+	        )
+	    ENDIF ()
+	ELSE (APPLE)
+		SET (requiredLibs ${requiredLibs} dl)
+	ENDIF (APPLE)
 ENDIF ()
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
@@ -255,6 +260,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/VBO.cxx
     
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SceneGraphNode.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SceneGraphBinder.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/AssimpSceneGraphBinder.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/OpenSceneGraphBinder.cxx
@@ -337,6 +343,7 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.inl
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphNode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphBinder.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/OpenSceneGraphBinder.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AssimpSceneGraphBinder.h

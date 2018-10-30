@@ -147,8 +147,6 @@ void AssimpSceneGraphBinder::setSceneGraph(const aiScene* apSceneGraph,
 //-----------------------------------------------------------------------
 {
 	// Empty the scenegraph
-	m_p_polygon_mesh_set.clear();
-
 	if (m_p_scene != apSceneGraph)
 	{
 		m_p_scene = const_cast<aiScene*>(apSceneGraph);
@@ -158,7 +156,7 @@ void AssimpSceneGraphBinder::setSceneGraph(const aiScene* apSceneGraph,
 
 	aiMatrix4x4 scaling_to_unit = aiMatrix4x4::Scaling(aiVector3D(m_unit_of_length, m_unit_of_length, m_unit_of_length), scaling_to_unit);
 
-	recursivePolygonMeshBuild(m_p_scene->mRootNode, scaling_to_unit);
+	recursivePolygonMeshBuild(m_p_scene->mRootNode, &m_root_node, scaling_to_unit);
 }
 #endif
 
@@ -480,7 +478,7 @@ aiNode* AssimpSceneGraphBinder::findNode(const std::string& aNodeLabel)
 }
 
 
-void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, aiMatrix4x4 tStack)
+void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGraphNode* apParent, aiMatrix4x4 tStack)
 {
 	std::string node_label = nd->mName.C_Str();
 	std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
@@ -532,30 +530,38 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, aiMatri
 		}
 	}
 
+	SceneGraphNode* p_parent = apParent;
+
 	if (p_vertex_set.size() && p_index_array.size())
 	{
-		m_p_polygon_mesh_set[node_label] = (PolygonMesh());
+		apParent->addChild(node_label);
+		SceneGraphNode& node = apParent->getChild(node_label);
+		p_parent = &node;
 
-		m_p_polygon_mesh_set[node_label].setInternalData(GL_TRIANGLES,
+		node.getPolygonMesh() = (PolygonMesh());
+
+		node.getPolygonMesh().setInternalData(GL_TRIANGLES,
 			&p_vertex_set,
 			&p_index_array,
 			true,
 			GL_STATIC_DRAW);
 
-		m_p_polygon_mesh_set[node_label].computeNormalVectors();
-		m_p_polygon_mesh_set[node_label].setTransformationMatrix(modelling_matrix);
+		node.getPolygonMesh().computeNormalVectors();
+		node.setLocalTransformation(modelling_matrix);
 	}
 
 	// all children
 	for (unsigned int n=0; n < nd->mNumChildren; ++n)
 	{
-		recursivePolygonMeshBuild(nd->mChildren[n], tStack);
+		recursivePolygonMeshBuild(nd->mChildren[n], p_parent, tStack);
 	}
 }
 
 
 void AssimpSceneGraphBinder::recursiveUpdateMatrices(const aiNode* nd, aiMatrix4x4 tStack)
 {
+	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+/*
 	std::string node_label = nd->mName.C_Str();
 	//std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
 
@@ -585,7 +591,7 @@ void AssimpSceneGraphBinder::recursiveUpdateMatrices(const aiNode* nd, aiMatrix4
 	for (unsigned int n=0; n < nd->mNumChildren; ++n)
 	{
 		recursiveUpdateMatrices(nd->mChildren[n], tStack);
-	}
+	}*/
 }
 
 

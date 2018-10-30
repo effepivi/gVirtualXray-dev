@@ -340,7 +340,7 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource);
  *  @return the list of labels
  */
 //------------------------------------------------------------------------------
-std::vector<std::string> getMeshLabelSet();
+//std::vector<std::string> getMeshLabelSet();
 
 
 //------------------------------------------------------------------------------
@@ -349,7 +349,7 @@ std::vector<std::string> getMeshLabelSet();
  *  @return the number of polygon meshes in the scenegraph
  */
 //------------------------------------------------------------------------------
-unsigned int getMeshLabelSetSize();
+//unsigned int getMeshLabelSetSize();
 
 
 //------------------------------------------------------------------------------
@@ -359,7 +359,37 @@ unsigned int getMeshLabelSetSize();
  *  @return the label corresponding to the i-th polygon mesh
  */
 //------------------------------------------------------------------------------
-std::string getMeshLabel(unsigned int i);
+//std::string getMeshLabel(unsigned int i);
+
+
+//------------------------------------------------------------------------------
+/// Get the number of children of a node in the scenegraph.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @return the number of chidren
+ */
+//------------------------------------------------------------------------------
+unsigned int getNumberOfChildren(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the i-th child's label in the list of children of a given node in the scenegraph.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @param i:	the ID of the child
+ *  @return the label corresponding to the i-th child
+ */
+//------------------------------------------------------------------------------
+std::string getChildLabel(const std::string& aLabel, unsigned int i);
+
+
+//------------------------------------------------------------------------------
+/// Invert the normal vectors of a given polygon mesh.
+/**
+ *  @param aLabel:	the label of the polygon mesh
+ */
+//------------------------------------------------------------------------------
+void invertNormalVectors(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -723,7 +753,7 @@ void setMu(const char* aLabel, double aCoefficient,
 /// Set the density corresponding to the material properties of a polygon mesh.
 /*
  *  @param aLabel:			the label of the polygon mesh
- *  @param aDensity:	the liner attenuation coefficient
+ *  @param aDensity:		the density
  *  @param aUnit:			the unit corresponding to aDensity.
  *                          Acceptable values are:
  *                          "g/cm3" and "g.cm-3"
@@ -731,6 +761,26 @@ void setMu(const char* aLabel, double aCoefficient,
 //------------------------------------------------------------------------------
 void setDensity(const char* aLabel, double aDensity,
 		   const char* aUnit);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the density corresponding to the material properties of a polygon mesh.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ *  @return the density of the polygon mesh's material in g/cm3
+ */
+//------------------------------------------------------------------------------
+double getDensity(const char* aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the material label of a polygon mesh.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ *  @return the label of the material
+ */
+//------------------------------------------------------------------------------
+std::string getMaterialLabel(const char* aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -1117,6 +1167,46 @@ int getImageHeght(const std::vector<std::vector<float> >& anImage);
  */
 //------------------------------------------------------------------------------
 std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage, int j);
+
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's name depending on its Z number.
+/*
+ *  @param Z:	the atomic number of the element
+ *  @return the name of the corresponding element
+ */
+//------------------------------------------------------------------------------
+std::string getElementName(unsigned short Z);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element' symbol depending on its Z number.
+/*
+ *  @param Z:	the atomic number of the element
+ *  @return the name of the corresponding element
+ */
+//------------------------------------------------------------------------------
+std::string getElementSymbol(unsigned short Z);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's Z number.
+/*
+ *  @param anElement:	the name or symbol of the element
+ *  @return the Z number of the corresponding element
+ */
+//------------------------------------------------------------------------------
+unsigned short getElementAtomicNumber(const std::string& anElement);
+
+
+double getElementDensity(const std::string& anElement);
+double getElementDensity(unsigned short Z);
+
+void setShiftFilter(double aValue);
+void setScaleFilter(double aValue);
+double getShiftFilter();
+double getScaleFilter();
 
 
 #endif

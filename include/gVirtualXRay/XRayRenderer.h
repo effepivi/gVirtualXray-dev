@@ -83,6 +83,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Sinogram.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -207,7 +211,7 @@ public:
      *  @param apSurface:   the 3D object
      */
     //--------------------------------------------------------------------------
-    void addInnerSurface(const PolygonMesh* apSurface);
+    void addInnerSurface(const SceneGraphNode* apSurface);
 
 
     //--------------------------------------------------------------------------
@@ -216,7 +220,7 @@ public:
      *  @param apSurface:   the 3D object
      */
     //--------------------------------------------------------------------------
-    void addOuterSurface(const PolygonMesh* apSurface);
+    void addOuterSurface(const SceneGraphNode* apSurface);
 
 
     //--------------------------------------------------------------------------
@@ -242,7 +246,7 @@ public:
      *                                          the 3D object
      */
     //--------------------------------------------------------------------------
-    void computeLBuffer(PolygonMesh& anObject,
+    void computeLBuffer(SceneGraphNode& anObject,
                         const VEC3& aXRaySourceDetectorTranslation,
                         const MATRIX4& aModellingTransformationMatrix,
                         bool aGPUStateConservationFlag = true);
@@ -903,7 +907,7 @@ protected:
      *                                          the 3D object
      */
     //--------------------------------------------------------------------------
-    void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
+    void computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
             const VEC3& aXRaySourceSampleOffset,
             const MATRIX4& aModellingTransformationMatrix,
             bool aGPUStateConservationFlag);
@@ -920,7 +924,7 @@ protected:
      *                                          the 3D object
      */
     //--------------------------------------------------------------------------
-    void computeOuterSurfaceLBuffer(PolygonMesh& anObject,
+    void computeOuterSurfaceLBuffer(SceneGraphNode& anObject,
             const VEC3& aXRaySourceSampleOffset,
             const MATRIX4& aModellingTransformationMatrix);
 
@@ -984,14 +988,14 @@ protected:
 
 
     /// Set of 3D geometries
-    std::vector<PolygonMesh*> m_p_inner_surface_set;
+    std::vector<SceneGraphNode*> m_p_inner_surface_set;
 
 
     /// The 3D geometry that will wrap the ones in m_p_inner_surface_set
-    PolygonMesh* m_p_outer_surface;
+    SceneGraphNode* m_p_outer_surface;
 
 
-    std::vector<std::vector<PolygonMesh*> > m_p_surface_per_material_set;
+    std::vector<std::vector<SceneGraphNode*> > m_p_surface_per_material_set;
     bool m_surface_per_material_set_needs_update;
 
 
