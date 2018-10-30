@@ -30,6 +30,7 @@
 //******************************************************************************
 
 #include <algorithm> //For std::min and std::max Windows only
+#include <cfloat> //For FLT_MAX
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -378,32 +379,43 @@ void SceneGraphBinder::setNodeLocalTransformationMatrix(const char* aNodeLabel, 
 
 std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox() const
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+	VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
+	VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-	VEC3 min_corner;
-	VEC3 max_corner;
+	// Create a waiting list
+    std::vector<const SceneGraphNode*> p_waiting_list;
 
-	/*int i = 0;
-	for (std::map<std::string, PolygonMesh>::const_iterator ite = getPolygonMeshSet().begin();
-			ite != getPolygonMeshSet().end();
-			++ite, ++i)
-	{
-		if (i == 0)
-		{
-			min_corner = ite->second.getMinCorner();
-			max_corner = ite->second.getMaxCorner();
-		}
-		else
-		{
-			min_corner[0] = std::min(min_corner[0], ite->second.getMinCorner()[0]);
-			min_corner[1] = std::min(min_corner[1], ite->second.getMinCorner()[1]);
-			min_corner[2] = std::min(min_corner[2], ite->second.getMinCorner()[2]);
+    // Add the root node to the waiting list
+    p_waiting_list.push_back(&m_root_node);
 
-			max_corner[0] = std::max(max_corner[0], ite->second.getMaxCorner()[0]);
-			max_corner[1] = std::max(max_corner[1], ite->second.getMaxCorner()[1]);
-			max_corner[2] = std::max(max_corner[2], ite->second.getMaxCorner()[2]);
-		}
-	}*/
+    // The waiting list is not empty
+    while (p_waiting_list.size())
+    {
+    	// Get the last element of the list
+    	const SceneGraphNode* p_node = p_waiting_list.back();
+
+    	// Remove the last element of the list
+    	p_waiting_list.pop_back();
+
+    	// It is not NULL
+    	if (p_node)
+    	{
+    	    // Add its children to the waiting list
+			for (int i = 0; i < p_node->getNumberOfChildren(); ++i)
+			{
+				p_waiting_list.push_back(&p_node->getChild(i));
+			}
+
+			// Process the node
+			min_corner[0] = std::min(min_corner[0], p_node->getWorldMinCorner()[0]);
+			min_corner[1] = std::min(min_corner[1], p_node->getWorldMinCorner()[1]);
+			min_corner[2] = std::min(min_corner[2], p_node->getWorldMinCorner()[2]);
+
+			max_corner[0] = std::max(max_corner[0], p_node->getWorldMaxCorner()[0]);
+			max_corner[1] = std::max(max_corner[1], p_node->getWorldMaxCorner()[1]);
+			max_corner[2] = std::max(max_corner[2], p_node->getWorldMaxCorner()[2]);
+    	}
+    }
 
 	return std::pair<VEC3, VEC3>(min_corner, max_corner);
 }
