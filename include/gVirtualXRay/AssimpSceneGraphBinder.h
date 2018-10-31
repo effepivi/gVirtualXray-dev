@@ -47,50 +47,10 @@ public:
 
 
 
-	virtual void updateMatrices();
-
-
-	virtual void scale(const char* aNodeLabel,
-			const VEC3& aScalingFactorSet);
-
-	virtual void rotate(const char* aNodeLabel,
-			float aRotationAngleInDegrees,
-			const VEC3& aRotationAxis);
-
-	virtual void translate(const char* aNodeLabel,
-			const VEC3& aTranslationVector);
-
-
-	virtual MATRIX4 getTransformationMatrix(const char* aNodeLabel) const;
-
-	virtual void moveToCentre();
-	virtual void moveToCenter();
-
-	virtual MATRIX4 getRootNodeTransformationMatrix() const;
-	virtual MATRIX4 getNodeTransformationMatrix(const char* aNodeLabel) const;
-
-	virtual void setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix);
-	virtual void setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix);
-
-
-#ifdef HAS_ASSIMP
-	const aiNode* findNode(const char* aNodeLabel) const;
-	const aiNode* findNode(const std::string& aNodeLabel) const;
-
-	aiNode* findNode(const char* aNodeLabel);
-	aiNode* findNode(const std::string& aNodeLabel);
-#endif
-
 private:
 
 #ifdef HAS_ASSIMP
 	void recursivePolygonMeshBuild (const aiNode* nd, SceneGraphNode* apParent, aiMatrix4x4 tStack);
-	void recursiveUpdateMatrices (const aiNode* nd, aiMatrix4x4 tStack);
-
-	const aiNode* recursiveFindNode(const aiNode* nd, const char* aNodeLabel) const;
-	aiNode* recursiveFindNode(aiNode* nd, const char* aNodeLabel);
-
-	void recursiveBoundingBoxBuild(const aiNode* nd, aiMatrix4x4 tStack, VEC3& aMinCorner, VEC3& aMaxCorner);
 
 	Assimp::Importer m_importer;
 	aiScene* m_p_scene;
