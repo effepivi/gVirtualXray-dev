@@ -1242,6 +1242,64 @@ double getDensity(const char* aLabel)
 }
 
 
+//-------------------------------------------------------------
+double getMassAttenuationCoefficient(const char* aLabel,
+									 double anEnergy,
+									 const char* aUnitOfEnergy)
+//-------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		return (p_node->getPolygonMesh().getPhotonCrossSection().getMassAttenuationCoefficient(anEnergy * getUnitOfEnergy(aUnitOfEnergy)) / (cm2 / g));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		return (0);
+	}
+}
+
+
+//---------------------------------------------------------------
+double getLinearAttenuationCoefficient(const char* aLabel,
+									   double anEnergy,
+									   const char* aUnitOfEnergy)
+//---------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		return (p_node->getPolygonMesh().getPhotonCrossSection().getLinearAttenuationCoefficient(anEnergy * getUnitOfEnergy(aUnitOfEnergy)) / (1.0 / cm));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		return (0);
+	}
+}
+
+
 //----------------------------------------------
 std::string getMaterialLabel(const char* aLabel)
 //----------------------------------------------

@@ -774,6 +774,44 @@ double getDensity(const char* aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the mass attenuation coefficient at a given energy
+/// corresponding to the material properties of a polygon mesh.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ *  @param anEnergy:		the photon energy of interest
+ *  @param aUnitOfEnergy:	the unit of energy corresponding to anEnergy.
+ *  						Acceptable values are:
+ *  						"electronvolt", "eV",
+ *  						"kiloelectronvolt", "keV",
+ *  						"megaelectronvolt", "MeV"
+ *  @return the mass attenuation coefficient of the polygon mesh's material in cm2/g
+ */
+//------------------------------------------------------------------------------
+double getMassAttenuationCoefficient(const char* aLabel,
+		double anEnergy,
+		const char* aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the linear attenuation coefficient at a given energy
+/// corresponding to the material properties of a polygon mesh.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ *  @param anEnergy:		the photon energy of interest
+ *  @param aUnitOfEnergy:	the unit of energy corresponding to anEnergy.
+ *  						Acceptable values are:
+ *  						"electronvolt", "eV",
+ *  						"kiloelectronvolt", "keV",
+ *  						"megaelectronvolt", "MeV"
+ *  @return the linear attenuation coefficient of the polygon mesh's material in cm-1
+ */
+//------------------------------------------------------------------------------
+double getLinearAttenuationCoefficient(const char* aLabel,
+		double anEnergy,
+		const char* aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the material label of a polygon mesh.
 /*
  *  @param aLabel:			the label of the polygon mesh
@@ -1200,8 +1238,25 @@ std::string getElementSymbol(unsigned short Z);
 unsigned short getElementAtomicNumber(const std::string& anElement);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's density.
+/*
+ *  @param anElement:	the name or symbol of the element
+ *  @return the density of the corresponding element (in g / cm3)
+ */
+//------------------------------------------------------------------------------
 double getElementDensity(const std::string& anElement);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's density.
+/*
+ *  @param anElement:	the Z number of the element
+ *  @return the density of the corresponding element (in g / cm3)
+ */
+//------------------------------------------------------------------------------
 double getElementDensity(unsigned short Z);
+
 
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);
