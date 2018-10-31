@@ -10,30 +10,42 @@ using namespace gVirtualXRay;
 
 
 SceneGraphNode::SceneGraphNode(const std::string& aLabel,
-                               const SceneGraphNode* apParent):
+                               SceneGraphNode* apParent):
         m_label(aLabel),
-        m_p_parent(apParent)
+        m_p_parent(apParent),
+		m_world_properties_up_to_date(false)
 {
-	updateWorldMatrix();
 }
 
 
 SceneGraphNode::SceneGraphNode(const std::string& aLabel,
                                const PolygonMesh& aPolygonMesh,
                                const VEC3& aPosition,
-                               const SceneGraphNode* apParent):
+                               SceneGraphNode* apParent):
         m_label(aLabel),
         m_geometry(aPolygonMesh),
         m_position(aPosition),
-        m_p_parent(apParent)
+        m_p_parent(apParent),
+		m_world_properties_up_to_date(false)
 {
-	updateWorldMatrix();
 }
 
 
 SceneGraphNode::~SceneGraphNode()
 {
 	std::cout << "Delete node: " << m_label << std::endl;
+
+    for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = m_p_children.begin();
+    		ite != m_p_children.end();
+    		++ite)
+    {
+    	if (*ite)
+    	{
+    		delete *ite;
+    	}
+    }
+
+    m_p_children.clear();
 }
 
 
@@ -67,7 +79,7 @@ SceneGraphNode& SceneGraphNode::getChild(unsigned int i)
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
     }
 
-    return (m_p_children[i]);
+    return (*m_p_children[i]);
 }
 
 
@@ -78,7 +90,7 @@ const SceneGraphNode& SceneGraphNode::getChild(unsigned int i) const
         throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
     }
 
-    return (m_p_children[i]);
+    return (*m_p_children[i]);
 }
 
 
@@ -107,8 +119,13 @@ MATRIX4 SceneGraphNode::getLocalTransformationMatrix() const
 }
 
 
-MATRIX4 SceneGraphNode::getWorldTransformationMatrix() const
+MATRIX4 SceneGraphNode::getWorldTransformationMatrix()
 {
+	if (!m_world_properties_up_to_date)
+	{
+		updateWorldMatrix();
+	}
+
     return (m_global_transformation);
 }
 
@@ -116,7 +133,7 @@ MATRIX4 SceneGraphNode::getWorldTransformationMatrix() const
 std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersect(
 		const VEC3& aRayOrigin,
 		const VEC3& aRayDirection,
-		const MATRIX4& aTransformationMatrix) const
+		const MATRIX4& aTransformationMatrix)
 {
 	return m_geometry.rayIntersect(
 			aRayOrigin,
@@ -128,20 +145,55 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersect(
 void SceneGraphNode::setLocalTransformation(const MATRIX4& aMatrix)
 {
 	m_local_transformation = aMatrix;
-	updateWorldMatrix();
+
+
+	std::vector<SceneGraphNode*> p_waiting_list;
+	p_waiting_list.push_back(this);
+
+	while (p_waiting_list.size())
+	{
+		SceneGraphNode* p_node = p_waiting_list.back();
+		p_node->m_world_properties_up_to_date = false;
+		p_waiting_list.pop_back();
+
+		// Add children
+		for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = p_node->m_p_children.begin();
+				ite != p_node->m_p_children.end();
+				++ite)
+		{
+			p_waiting_list.push_back(*ite);
+		}
+	}
 }
 
 
 void SceneGraphNode::applyLocalTransformation(const MATRIX4& aMatrix)
 {
-    m_local_transformation = aMatrix * m_local_transformation;
-	updateWorldMatrix();
+    m_local_transformation = m_local_transformation * aMatrix;
+
+	std::vector<SceneGraphNode*> p_waiting_list;
+	p_waiting_list.push_back(this);
+
+	while (p_waiting_list.size())
+	{
+		SceneGraphNode* p_node = p_waiting_list.back();
+		p_node->m_world_properties_up_to_date = false;
+		p_waiting_list.pop_back();
+
+		// Add children
+		for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = p_node->m_p_children.begin();
+				ite != p_node->m_p_children.end();
+				++ite)
+		{
+			p_waiting_list.push_back(*ite);
+		}
+	}
 }
 
 
 void SceneGraphNode::addChild(const std::string& aLabel)
 {
-	m_p_children.push_back(SceneGraphNode(aLabel, this));
+	m_p_children.push_back(new SceneGraphNode(aLabel, this));
 }
 
 
@@ -149,7 +201,7 @@ void SceneGraphNode::addChild(const std::string& aLabel,
                               const PolygonMesh& aPolygonMesh,
                               const VEC3& aPosition)
 {
-    m_p_children.push_back(SceneGraphNode(aLabel, aPolygonMesh, aPosition, this));
+    m_p_children.push_back(new SceneGraphNode(aLabel, aPolygonMesh, aPosition, this));
 }
 
 
@@ -165,15 +217,15 @@ VEC3 SceneGraphNode::getLocalMaxCorner() const
 }
 
 
-VEC3 SceneGraphNode::getWorldMinCorner() const
+VEC3 SceneGraphNode::getWorldMinCorner()
 {
-	return (m_global_transformation * getLocalMinCorner());
+	return (getWorldTransformationMatrix() * getLocalMinCorner());
 }
 
 
-VEC3 SceneGraphNode::getWorldMaxCorner() const
+VEC3 SceneGraphNode::getWorldMaxCorner()
 {
-	return (m_global_transformation * getLocalMaxCorner());
+	return (getWorldTransformationMatrix() * getLocalMaxCorner());
 }
 
 
@@ -185,13 +237,13 @@ const PhotonCrossSection& SceneGraphNode::getPhotonCrossSection() const
 
 SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel)
 {
-    for (std::vector<SceneGraphNode>::iterator ite = m_p_children.begin();
+    for (std::vector<SceneGraphNode*>::iterator ite = m_p_children.begin();
     		ite != m_p_children.end();
     		++ite)
     {
-    	if (ite->m_label == aLabel)
+    	if ((*ite)->m_label == aLabel)
     	{
-    		return *ite;
+    		return **ite;
     	}
     }
 
@@ -201,13 +253,13 @@ SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel)
 
 const SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel) const
 {
-    for (std::vector<SceneGraphNode>::const_iterator ite = m_p_children.begin();
+    for (std::vector<SceneGraphNode*>::const_iterator ite = m_p_children.begin();
     		ite != m_p_children.end();
     		++ite)
     {
-    	if (ite->m_label == aLabel)
+    	if ((*ite)->m_label == aLabel)
     	{
-    		return *ite;
+    		return **ite;
     	}
     }
 
@@ -217,16 +269,21 @@ const SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel) const
 
 void SceneGraphNode::updateWorldMatrix()
 {
-	m_global_transformation = getLocalTransformationMatrix();
-
-	const SceneGraphNode* p_parent = m_p_parent;
-
-	while (p_parent)
+	if 	(!m_world_properties_up_to_date)
 	{
-		m_global_transformation = p_parent->getLocalTransformationMatrix() * m_global_transformation;
-		p_parent = p_parent->m_p_parent;
+		m_global_transformation = getLocalTransformationMatrix();
+
+		if (m_p_parent)
+		{
+			m_global_transformation = m_p_parent->getWorldTransformationMatrix() * m_global_transformation;
+		}
+
+		m_world_properties_up_to_date = true;
 	}
 }
+
+
+
 
 /*
 SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)

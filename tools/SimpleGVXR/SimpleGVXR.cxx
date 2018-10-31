@@ -832,17 +832,15 @@ void scaleNode(const char* aLabel, double x, double y, double z, const char* aUn
 
 void rotateNode(const char* aLabel, double angle, double x, double y, double z)
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-/*	if (g_p_scene_graph.get())
+	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
 		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		if(p_node)
 		{
-			g_p_scene_graph->rotate(aLabel, angle, VEC3(x, y, z));
-			g_p_scene_graph->updateMatrices();
+			p_node->applyLocalTransformation(MATRIX4::buildRotationMatrix(angle, x, y, z));
 		}
 		// It has not been found
 		else
@@ -853,7 +851,7 @@ void rotateNode(const char* aLabel, double angle, double x, double y, double z)
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}*/
+	}
 }
 
 

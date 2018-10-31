@@ -377,13 +377,13 @@ void SceneGraphBinder::setNodeLocalTransformationMatrix(const char* aNodeLabel, 
 }
 
 
-std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox() const
+std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox()
 {
 	VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
 	VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
 	// Create a waiting list
-    std::vector<const SceneGraphNode*> p_waiting_list;
+    std::vector<SceneGraphNode*> p_waiting_list;
 
     // Add the root node to the waiting list
     p_waiting_list.push_back(&m_root_node);
@@ -392,7 +392,7 @@ std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox() const
     while (p_waiting_list.size())
     {
     	// Get the last element of the list
-    	const SceneGraphNode* p_node = p_waiting_list.back();
+    	SceneGraphNode* p_node = p_waiting_list.back();
 
     	// Remove the last element of the list
     	p_waiting_list.pop_back();

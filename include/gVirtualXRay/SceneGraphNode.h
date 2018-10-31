@@ -31,13 +31,13 @@ class SceneGraphNode
 {
 public:
     SceneGraphNode(const std::string& aLabel = "",
-			const SceneGraphNode* apParent = 0);
+			SceneGraphNode* apParent = 0);
 
 
     SceneGraphNode(const std::string& aLabel,
     		const PolygonMesh& aPolygonMesh,
 			const VEC3& aPosition,
-			const SceneGraphNode* apParent);
+			SceneGraphNode* apParent);
 
 
     ~SceneGraphNode();
@@ -76,7 +76,7 @@ public:
     MATRIX4 getLocalTransformationMatrix() const;
 
 
-    MATRIX4 getWorldTransformationMatrix() const;
+    MATRIX4 getWorldTransformationMatrix();
 
 
     void setLocalTransformation(const MATRIX4& aMatrix);
@@ -93,15 +93,15 @@ public:
 
     VEC3 getLocalMinCorner() const;
     VEC3 getLocalMaxCorner() const;
-    VEC3 getWorldMinCorner() const;
-    VEC3 getWorldMaxCorner() const;
+    VEC3 getWorldMinCorner();
+    VEC3 getWorldMaxCorner();
 
     const PhotonCrossSection& getPhotonCrossSection() const;
 
     std::map<RATIONAL_NUMBER, VEC3> rayIntersect(
     		const VEC3& aRayOrigin,
 			const VEC3& aRayDirection,
-			const MATRIX4& aTransformationMatrix) const;
+			const MATRIX4& aTransformationMatrix);
 
 
     //SceneGraphNode& operator=(const SceneGraphNode& aNode);
@@ -122,9 +122,11 @@ protected:
 
     VEC3     m_position;
 
-    const gVirtualXRay::SceneGraphNode* m_p_parent;
+    gVirtualXRay::SceneGraphNode* m_p_parent;
 
-    std::vector<gVirtualXRay::SceneGraphNode> m_p_children;
+    std::vector<gVirtualXRay::SceneGraphNode*> m_p_children;
+
+    bool m_world_properties_up_to_date;
 };
 
 

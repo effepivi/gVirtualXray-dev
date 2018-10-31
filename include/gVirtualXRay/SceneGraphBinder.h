@@ -92,7 +92,7 @@ public:
 	virtual void setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix);
 	virtual void setNodeLocalTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix);
 
-	std::pair<VEC3, VEC3> getBoundingBox() const;
+	std::pair<VEC3, VEC3> getBoundingBox();
 
 
     void addPolygonMesh(const std::string& aLabel, const PolygonMesh& aPolygonMesh, const VEC3& aPosition, const std::string& aParent = "root");
