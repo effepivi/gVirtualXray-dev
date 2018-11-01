@@ -825,7 +825,17 @@ void rotateNode(const char* aLabel, double angle, double x, double y, double z)
 		// It has been found
 		if(p_node)
 		{
-			p_node->applyLocalTransformation(MATRIX4::buildRotationMatrix(angle, x, y, z));
+			MATRIX4 rotation_matrix = MATRIX4::buildRotationMatrix(angle, x, y, z);
+
+			// Root node
+			if (p_node->getLabel() == "root")
+			{
+				p_node->setLocalTransformation(rotation_matrix * p_node->getLocalTransformationMatrix());
+			}
+			else
+			{
+				p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * rotation_matrix);
+			}
 		}
 		// It has not been found
 		else
