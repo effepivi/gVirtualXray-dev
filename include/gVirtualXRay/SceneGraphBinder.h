@@ -47,8 +47,6 @@ public:
 	//PolygonMesh& getPolygonMesh(const char* aLabel);
 
 
-	virtual void updateMatrices();
-
 
 	void display(GLint aShaderID);
 
@@ -81,9 +79,13 @@ public:
 	MATRIX4 getWorldTransformationMatrix(const std::string& aNodeLabel) const;
 	MATRIX4 getWorldTransformationMatrix(const char* aNodeLabel) const;
 
+	void moveToCentre(const std::string& aNodeLabel);
+	void moveToCentre(const char* aNodeLabel);
+	void moveToCenter(const std::string& aNodeLabel);
+	void moveToCenter(const char* aNodeLabel);
 
-	virtual void moveToCentre();
-	virtual void moveToCenter();
+	void moveToCentre();
+	void moveToCenter();
 
 	virtual MATRIX4 getRootNodeTransformationMatrix() const;
 	virtual MATRIX4 getNodeLocalTransformationMatrix(const char* aNodeLabel) const;

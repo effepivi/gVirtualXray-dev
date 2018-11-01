@@ -936,12 +936,12 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 						// Compute its L-buffer
 						computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
 
-						temp = (*ite_meshes)->getWorldMaxCorner();
+						temp = (*ite_meshes)->getBranchWorldMaxCorner();
 						max_corner[0] = std::max(temp[0], max_corner[0]);
 						max_corner[1] = std::max(temp[1], max_corner[1]);
 						max_corner[2] = std::max(temp[2], max_corner[2]);
 
-						temp = (*ite_meshes)->getWorldMinCorner();
+						temp = (*ite_meshes)->getBranchWorldMinCorner();
 						min_corner[0] = std::min(temp[0], min_corner[0]);
 						min_corner[1] = std::min(temp[1], min_corner[1]);
 						min_corner[2] = std::min(temp[2], min_corner[2]);
@@ -2081,7 +2081,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
     if (aGPUStateConservationFlag)
         {
 
-        RATIONAL_NUMBER bbox_diagonal((anObject.getLocalMaxCorner() - anObject.getLocalMinCorner()).length() / cm);
+        RATIONAL_NUMBER bbox_diagonal((anObject.getBranchWorldMaxCorner() - anObject.getBranchWorldMinCorner()).length() / cm);
         postComputeLBuffer(p_viewport, bbox_diagonal);
         }
 

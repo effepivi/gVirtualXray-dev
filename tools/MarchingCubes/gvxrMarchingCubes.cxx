@@ -502,8 +502,8 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 
     glViewport(0, 0, g_main_window_width, g_main_window_height);
 
-    VEC3 min_corner(g_iso_surface.getWorldMinCorner());
-    VEC3 max_corner(g_iso_surface.getWorldMaxCorner());
+    VEC3 min_corner(g_iso_surface.getBranchWorldMinCorner());
+    VEC3 max_corner(g_iso_surface.getBranchWorldMaxCorner());
     VEC3 range(max_corner - min_corner);
     VEC3 middle(min_corner + range / 2.0);
 

@@ -748,7 +748,6 @@ void moveToCentre()
 	if (g_p_scene_graph.get())
 	{
 		g_p_scene_graph->moveToCentre();
-		g_p_scene_graph->updateMatrices();
 	}
 	else
 	{
@@ -769,28 +768,14 @@ void moveToCenter()
 void moveToCentre(const char* aLabel)
 //-----------------------------------
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-/*
 	if (g_p_scene_graph.get())
 	{
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
-
-		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-		{
-			// Move the mesh to the centre
-			g_p_scene_graph->getPolygonMeshSet()[aLabel].moveToCentre ();
-		}
-		// It has not been found
-		else
-		{
-			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-		}
+		g_p_scene_graph->moveToCentre(aLabel);
 	}
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}*/
+	}
 }
 
 

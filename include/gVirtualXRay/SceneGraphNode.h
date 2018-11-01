@@ -91,10 +91,12 @@ public:
     void addChild(const std::string& aLabel, const PolygonMesh& aPolygonMesh, const VEC3& aPosition = VEC3());
 
 
-    VEC3 getLocalMinCorner() const;
-    VEC3 getLocalMaxCorner() const;
-    VEC3 getWorldMinCorner();
-    VEC3 getWorldMaxCorner();
+    //VEC3 getLocalMinCorner() const;
+    //VEC3 getLocalMaxCorner() const;
+    //VEC3 getWorldMinCorner();
+    //VEC3 getWorldMaxCorner();
+    VEC3 getBranchWorldMinCorner();
+    VEC3 getBranchWorldMaxCorner();
 
     const PhotonCrossSection& getPhotonCrossSection() const;
 

@@ -1,3 +1,5 @@
+#include <cfloat>
+
 #ifndef __SceneGraphNode_h
 #include "gVirtualXRay/SceneGraphNode.h"
 #endif
@@ -205,6 +207,80 @@ void SceneGraphNode::addChild(const std::string& aLabel,
 }
 
 
+VEC3 SceneGraphNode::getBranchWorldMinCorner()
+{
+	VEC3 min_bbox(FLT_MAX, FLT_MAX, FLT_MAX);
+
+	std::vector<SceneGraphNode*> p_waiting_list;
+	p_waiting_list.push_back(this);
+
+	while (p_waiting_list.size())
+	{
+		SceneGraphNode* p_node = p_waiting_list.back();
+		p_waiting_list.pop_back();
+
+
+		if (p_node->getPolygonMesh().getVertexNumber())
+		{
+			// Process the node
+			VEC3 node_min_bbox = p_node->getWorldTransformationMatrix() * p_node->getPolygonMesh().getLocalMinCorner();
+
+			if (min_bbox[0] > node_min_bbox[0]) min_bbox[0] = node_min_bbox[0];
+			if (min_bbox[1] > node_min_bbox[1]) min_bbox[1] = node_min_bbox[1];
+			if (min_bbox[2] > node_min_bbox[2]) min_bbox[2] = node_min_bbox[2];
+			}
+
+		// Add children
+		for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = p_node->m_p_children.begin();
+				ite != p_node->m_p_children.end();
+				++ite)
+		{
+			p_waiting_list.push_back(*ite);
+		}
+	}
+
+	return (min_bbox);
+}
+
+
+VEC3 SceneGraphNode::getBranchWorldMaxCorner()
+{
+	VEC3 max_bbox(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	std::vector<SceneGraphNode*> p_waiting_list;
+	p_waiting_list.push_back(this);
+
+	while (p_waiting_list.size())
+	{
+		SceneGraphNode* p_node = p_waiting_list.back();
+		p_waiting_list.pop_back();
+
+		if (p_node->getPolygonMesh().getVertexNumber())
+		{
+			// Process the node
+			VEC3 node_max_bbox = p_node->getWorldTransformationMatrix() * p_node->getPolygonMesh().getLocalMaxCorner();
+
+			if (max_bbox[0] < node_max_bbox[0]) max_bbox[0] = node_max_bbox[0];
+			if (max_bbox[1] < node_max_bbox[1]) max_bbox[1] = node_max_bbox[1];
+			if (max_bbox[2] < node_max_bbox[2]) max_bbox[2] = node_max_bbox[2];
+		}
+
+		// Add children
+		for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = p_node->m_p_children.begin();
+				ite != p_node->m_p_children.end();
+				++ite)
+		{
+			p_waiting_list.push_back(*ite);
+		}
+	}
+
+	return (max_bbox);
+}
+
+
+
+
+/*
 VEC3 SceneGraphNode::getLocalMinCorner() const
 {
 	return (getLocalTransformationMatrix() * m_geometry.getLocalMinCorner());
@@ -226,7 +302,7 @@ VEC3 SceneGraphNode::getWorldMinCorner()
 VEC3 SceneGraphNode::getWorldMaxCorner()
 {
 	return (getWorldTransformationMatrix() * getLocalMaxCorner());
-}
+}*/
 
 
 const PhotonCrossSection& SceneGraphNode::getPhotonCrossSection() const
