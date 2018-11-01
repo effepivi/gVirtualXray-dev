@@ -925,25 +925,30 @@ std::vector<std::vector<float> > getRootTransformationMatrix()
 
 std::vector<std::vector<float> > getNodeTransformationMatrix(const char* aLabel)
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-/*	if (!g_p_scene_graph.get())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The scenegraph is empty.");
-	}
+	MATRIX4 transformation;
 
 	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-		// It has not been found
-		if(search_mesh == g_p_scene_graph->getPolygonMeshSet().end())
+		// It has been found
+		if(p_node)
 		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, string("The PolygonMesh ") + string(aLabel) + string(" not found in g_p_polygon_mesh_set."));
+			transformation = p_node->getLocalTransformationMatrix();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
 		}
 	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
 
-	return (gvxrMatrix2Vector(g_p_scene_graph->getNodeTransformationMatrix(aLabel)));*/
+	return (gvxrMatrix2Vector(transformation));
 }
 
 
@@ -968,16 +973,15 @@ void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix
 
 void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix)
 {
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-/*	if (g_p_scene_graph.get())
+	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
 		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		if(p_node)
 		{
-			g_p_scene_graph->setNodeTransformationMatrix(aLabel, Vector2gvxrMatrix(aMatrix));
+			p_node->setLocalTransformation(Vector2gvxrMatrix(aMatrix));
 		}
 		// It has not been found
 		else
@@ -988,7 +992,7 @@ void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vect
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}*/
+	}
 }
 
 
