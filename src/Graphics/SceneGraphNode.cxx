@@ -14,9 +14,32 @@ using namespace gVirtualXRay;
 SceneGraphNode::SceneGraphNode(const std::string& aLabel,
                                SceneGraphNode* apParent):
         m_label(aLabel),
+		m_p_geometry(0),
         m_p_parent(apParent),
 		m_world_properties_up_to_date(false)
 {
+}
+
+
+SceneGraphNode::SceneGraphNode(const SceneGraphNode& aNode):
+		m_label(aNode.m_label),
+		m_local_geometry(aNode.m_local_geometry),
+		m_p_geometry(0),
+		m_local_transformation(aNode.m_local_transformation),
+		m_global_transformation(aNode.m_global_transformation),
+		m_position(aNode.m_position),
+		m_p_parent(aNode.m_p_parent),
+		m_p_children(aNode.m_p_children),
+		m_world_properties_up_to_date(aNode.m_world_properties_up_to_date)
+{
+	if (aNode.m_p_geometry != &aNode.m_local_geometry)
+	{
+		m_p_geometry = aNode.m_p_geometry;
+	}
+	else
+	{
+		m_p_geometry = &m_local_geometry;
+	}
 }
 
 
@@ -25,7 +48,21 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
                                const VEC3& aPosition,
                                SceneGraphNode* apParent):
         m_label(aLabel),
-        m_geometry(aPolygonMesh),
+        m_local_geometry(aPolygonMesh),
+		m_p_geometry(&m_local_geometry),
+        m_position(aPosition),
+        m_p_parent(apParent),
+		m_world_properties_up_to_date(false)
+{
+}
+
+
+SceneGraphNode::SceneGraphNode(const std::string& aLabel,
+                               PolygonMesh* apPolygonMesh,
+                               const VEC3& aPosition,
+                               SceneGraphNode* apParent):
+        m_label(aLabel),
+		m_p_geometry(apPolygonMesh),
         m_position(aPosition),
         m_p_parent(apParent),
 		m_world_properties_up_to_date(false)
@@ -51,15 +88,38 @@ SceneGraphNode::~SceneGraphNode()
 }
 
 
+SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)
+{
+	m_label = aNode.m_label;
+	m_local_geometry = aNode.m_local_geometry;
+
+	if (aNode.m_p_geometry != &aNode.m_local_geometry)
+	{
+		m_p_geometry = aNode.m_p_geometry;
+	}
+	else
+	{
+		m_p_geometry = &m_local_geometry;
+	}
+
+	m_local_transformation = aNode.m_local_transformation;
+	m_global_transformation = aNode.m_global_transformation;
+	m_position = aNode.m_position;
+	m_p_parent = aNode.m_p_parent;
+	m_p_children = aNode.m_p_children;
+	m_world_properties_up_to_date = aNode.m_world_properties_up_to_date;
+}
+
+
 void SceneGraphNode::display()
 {
-	m_geometry.display();
+	if (m_p_geometry) m_p_geometry->display();
 }
 
 
 void SceneGraphNode::displayWireFrame()
 {
-	m_geometry.displayWireFrame();
+	if (m_p_geometry) m_p_geometry->displayWireFrame();
 }
 
 const SceneGraphNode* SceneGraphNode::getParent() const
@@ -103,15 +163,42 @@ const std::string& SceneGraphNode::getLabel() const
 }
 
 
+void SceneGraphNode::setGeometry(const PolygonMesh& aPolygonMesh)
+{
+	m_local_geometry = aPolygonMesh;
+	m_p_geometry = &m_local_geometry;
+}
+
+
+void SceneGraphNode::setGeometry(PolygonMesh* apPolygonMesh)
+{
+	m_p_geometry = apPolygonMesh;
+}
+
+
 PolygonMesh& SceneGraphNode::getPolygonMesh()
 {
-    return (m_geometry);
+	if (m_p_geometry)
+		{
+		return (*m_p_geometry);
+		}
+	else
+		{
+		return (m_local_geometry);
+		}
 }
 
 
 const PolygonMesh& SceneGraphNode::getPolygonMesh() const
 {
-    return (m_geometry);
+	if (m_p_geometry)
+		{
+		return (*m_p_geometry);
+		}
+	else
+		{
+		return (m_local_geometry);
+		}
 }
 
 
@@ -137,7 +224,7 @@ std::map<RATIONAL_NUMBER, VEC3> SceneGraphNode::rayIntersect(
 		const VEC3& aRayDirection,
 		const MATRIX4& aTransformationMatrix)
 {
-	return m_geometry.rayIntersect(
+	return getPolygonMesh().rayIntersect(
 			aRayOrigin,
 			aRayDirection,
 			getWorldTransformationMatrix() * aTransformationMatrix);
@@ -204,6 +291,14 @@ void SceneGraphNode::addChild(const std::string& aLabel,
                               const VEC3& aPosition)
 {
     m_p_children.push_back(new SceneGraphNode(aLabel, aPolygonMesh, aPosition, this));
+}
+
+
+void SceneGraphNode::addChild(const std::string& aLabel,
+		PolygonMesh* apPolygonMesh,
+		const VEC3& aPosition)
+{
+    m_p_children.push_back(new SceneGraphNode(aLabel, apPolygonMesh, aPosition, this));
 }
 
 
@@ -307,7 +402,7 @@ VEC3 SceneGraphNode::getWorldMaxCorner()
 
 const PhotonCrossSection& SceneGraphNode::getPhotonCrossSection() const
 {
-	return (m_geometry.getPhotonCrossSection());
+	return (getPolygonMesh().getPhotonCrossSection());
 }
 
 

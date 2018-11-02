@@ -34,14 +34,25 @@ public:
 			SceneGraphNode* apParent = 0);
 
 
+    SceneGraphNode(const SceneGraphNode& aNode);
+
+
     SceneGraphNode(const std::string& aLabel,
     		const PolygonMesh& aPolygonMesh,
 			const VEC3& aPosition,
 			SceneGraphNode* apParent);
 
 
+    SceneGraphNode(const std::string& aLabel,
+    		PolygonMesh* apPolygonMesh,
+			const VEC3& aPosition,
+			SceneGraphNode* apParent);
+
+
     ~SceneGraphNode();
 
+
+    SceneGraphNode& operator= (const SceneGraphNode& aNode);
 
     void display();
     void displayWireFrame();
@@ -67,6 +78,12 @@ public:
     const std::string& getLabel() const;
 
 
+    void setGeometry(const PolygonMesh& aPolygonMesh);
+
+
+    void setGeometry(PolygonMesh* apPolygonMesh);
+
+
     PolygonMesh& getPolygonMesh();
 
 
@@ -89,6 +106,9 @@ public:
 
 
     void addChild(const std::string& aLabel, const PolygonMesh& aPolygonMesh, const VEC3& aPosition = VEC3());
+
+
+    void addChild(const std::string& aLabel, PolygonMesh* apPolygonMesh, const VEC3& aPosition = VEC3());
 
 
     //VEC3 getLocalMinCorner() const;
@@ -117,7 +137,8 @@ protected:
 
     std::string m_label;
 
-    PolygonMesh  m_geometry;
+    PolygonMesh   m_local_geometry;
+    PolygonMesh*  m_p_geometry;
 
     MATRIX4     m_local_transformation;
     MATRIX4     m_global_transformation;
