@@ -100,7 +100,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // how to set the projection matrix, etc.
 #include "gVirtualXRay/OpenGLUtilities.h"
 
-#include "gVirtualXRay/PolygonMesh.h"  // Handle 3D triangle meshes
+#include "gVirtualXRay/SceneGraphNode.h"  // Handle 3D triangle meshes
 #include "gVirtualXRay/Shader.h"       // Handle GLSL programs
 
 #include "gVirtualXRay/Utilities.h" // Handle decompression using the Z library
@@ -142,8 +142,10 @@ extern GLsizei g_window_height;
 
 // Shader program used to display the 3D scene
 Shader g_display_shader;
+680
 
 // 3D object as VAO and VBO
+SceneGraphNode g_root_node("root");
 PolygonMesh g_final_polygon_mesh;
 
 // Transformation matrices
@@ -683,7 +685,8 @@ void setSimulator()
             &g_xray_beam);
 
     // Add the geometry to the X-ray renderer
-    g_xray_simulator.addInnerSurface(&g_final_polygon_mesh);
+    g_root_node.setGeometry(&g_final_polygon_mesh);
+    g_xray_simulator.addInnerSurface(&g_root_node);
 }
 
 

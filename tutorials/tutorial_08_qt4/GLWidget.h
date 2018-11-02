@@ -81,6 +81,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Matrix4x4.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef GVXR_SHADER_H
 #include "gVirtualXRay/Shader.h"
 #endif
@@ -186,6 +190,10 @@ private:
 
     /// GLSL shader
     Shader m_display_shader;
+
+
+    /// The scene graph
+    SceneGraphNode m_root_node;
 
 
     /// polygon mesh for the lung
