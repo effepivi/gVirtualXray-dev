@@ -87,6 +87,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -197,6 +201,7 @@ Matrix4x4<GLfloat> g_sample_rotation_matrix;
 std::vector<float> g_p_vertex_data;
 std::vector<unsigned int> g_p_index_data;
 
+SceneGraphNode g_scene_graph_node("root");
 PolygonMesh g_polygon_mesh;
 
 XRayBeam g_xray_beam;
@@ -344,7 +349,7 @@ int main(int argc, char** argv)
 
         // Add the geometry to the X-ray renderer
         loadSTLFile();
-        g_xray_renderer.addInnerSurface(&g_polygon_mesh);
+        g_xray_renderer.addInnerSurface(&g_scene_graph_node.getChild("inside"));
 
         // Update the X-ray image
         updateXRayImage();
@@ -1110,14 +1115,16 @@ void loadSTLFile()
     g_polygon_mesh.getMaterial().setShininess(50);
 
     // Compute the translation vector
-    VEC3 translation_vector(g_polygon_mesh.getMinCorner() +
-        (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0);
+    VEC3 translation_vector(g_polygon_mesh.getLocalMinCorner() +
+        (g_polygon_mesh.getLocalMaxCorner() - g_polygon_mesh.getLocalMinCorner()) / 2.0);
 
     g_sample_rotation_matrix =
         MATRIX4::buildTranslationMatrix(-translation_vector);
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
+
+    g_scene_graph_node.addChild( "inside", &g_polygon_mesh);
 }
 
 

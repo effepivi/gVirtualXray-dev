@@ -91,6 +91,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __CylinderMesh_h
 #include "gVirtualXRay/CylinderMesh.h"
 #endif
@@ -163,6 +167,7 @@ VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
+SceneGraphNode g_scene_graph_node("root");
 CylinderMesh<GLdouble> g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
 CubeMesh<GLdouble> g_outside_polygon_data(3.0 * cm);
 
@@ -259,8 +264,8 @@ int main(int argc, char** argv)
 
         // Add the geometry to the X-ray renderer
         loadSTLFile();
-        g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
-        g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
+        g_xray_renderer.addInnerSurface(&g_scene_graph_node.getChild( "inside"));
+        g_xray_renderer.addOuterSurface(&g_scene_graph_node.getChild("outside"));
 
         // Set the projection matrix
         GLint width(0);
@@ -424,6 +429,9 @@ void loadSTLFile()
     g_outside_polygon_data.splitFaces(false);
     g_outside_polygon_data.splitFaces(false);
     g_outside_polygon_data.splitFaces(false);
+
+    g_scene_graph_node.addChild( "inside", &g_inside_polygon_data);
+    g_scene_graph_node.addChild("outside", &g_outside_polygon_data);
 }
 
 

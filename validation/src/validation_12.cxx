@@ -85,6 +85,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __CubeMesh_h
 #include "gVirtualXRay/CubeMesh.h"
 #endif
@@ -141,6 +145,7 @@ VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
+SceneGraphNode g_scene_graph_node("root");
 RATIONAL_NUMBER g_cube_thickness(1.0 * mm);
 CubeMesh<float> g_inside_polygon_data(g_cube_thickness);
 
@@ -216,7 +221,8 @@ int main(int argc, char** argv)
         loadXRaySimulator();
 
         // Add an empty geometry to the X-ray renderer
-        g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
+        g_scene_graph_node.addChild( "inside", &g_inside_polygon_data);
+        g_xray_renderer.addInnerSurface(&g_scene_graph_node.getChild("inside"));
 
         // Set the projection matrix
         GLint width(0);
