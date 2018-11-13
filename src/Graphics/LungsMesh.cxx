@@ -61,10 +61,10 @@ void LungsMesh::defineBumpMapShaderInput(int shader_id)
 //----------------------------------------------
 {
 	GLuint handle(glGetUniformLocation(shader_id, "g_min_corner"));
-	glUniform3fv(handle, 1,(const GLfloat*) &m_min_corner);
+	glUniform3fv(handle, 1,(const GLfloat*) &m_local_min_corner);
 	checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-	float max_corner[] = {m_max_corner.getX(), m_max_corner.getY(), m_max_corner.getZ()};
+	float max_corner[] = {m_local_max_corner.getX(), m_local_max_corner.getY(), m_local_max_corner.getZ()};
 
 	handle = glGetUniformLocation(shader_id, "g_max_corner");
 	glUniform3fv(handle, 1, &max_corner[0]);
@@ -88,7 +88,7 @@ void LungsMesh::defineBumpMapShaderInput(int shader_id)
 
 
 	//matrix for the bump map (to create the line on the right)
-	VEC3 translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
+	VEC3 translation_vector = getLocalMinCorner() + (getLocalMaxCorner() - getLocalMinCorner()) / 2.0;
 	Matrix4x4<GLfloat> matrix(Matrix4x4<GLfloat>::buildTranslationMatrix(translation_vector));
 	matrix *= rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(10,VEC3(1.,0.,0.));
 	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);
@@ -99,7 +99,7 @@ void LungsMesh::defineBumpMapShaderInput(int shader_id)
 
 
 	//matrix for the bump map (to create the lines on the sides)
-	translation_vector = getMinCorner() + (getMaxCorner() - getMinCorner()) / 2.0;
+	translation_vector = getLocalMinCorner() + (getLocalMaxCorner() - getLocalMinCorner()) / 2.0;
 	matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(translation_vector);
 	matrix *= rotation_matrix*Matrix4x4<GLfloat>::buildRotationMatrix(30,VEC3(1.,0.,0.));
 	matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-translation_vector);

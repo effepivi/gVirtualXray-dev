@@ -89,6 +89,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -155,7 +159,7 @@ unsigned int g_number_of_projections(0);
 Vec2ui g_number_of_pixels;
 GLfloat g_resolution(0.0);
 
-std::vector<PolygonMesh> g_p_polygon_data_set;
+SceneGraphNode g_scene_graph_node;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -193,15 +197,16 @@ void loadSTLFile(const std::string& aFileName, double aHUValue, double aUnit)
 //---------------------------------------------------------------------------
 {
    	// Set geometry
-    PolygonMesh polygon_mesh;
-    
-	polygon_mesh.setFilename(aFileName.data());
-	polygon_mesh.loadSTLFile(false, false, true, true, aUnit, GL_STATIC_DRAW);
-//	polygon_mesh.loadSTLFile(true, false, true, true, aUnit, GL_STATIC_DRAW);
-	polygon_mesh.setHounsfieldValue(aHUValue);
+	g_scene_graph_node = SceneGraphNode("root",
+			PolygonMesh(),
+			VEC3(),
+			NULL);
 
-    g_p_polygon_data_set.push_back(polygon_mesh);
-    g_xray_renderer.addInnerSurface(&(g_p_polygon_data_set.back()));
+	g_scene_graph_node.getPolygonMesh().setFilename(aFileName.data());
+	g_scene_graph_node.getPolygonMesh().loadSTLFile(false, false, true, true, aUnit, GL_STATIC_DRAW);
+	g_scene_graph_node.getPolygonMesh().setHounsfieldValue(aHUValue);
+
+    g_xray_renderer.addInnerSurface(&g_scene_graph_node);
 }
 
 

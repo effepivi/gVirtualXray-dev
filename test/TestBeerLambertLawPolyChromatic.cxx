@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 
 #define BOOST_TEST_MODULE TestBeerLambertLawPolyChromatic
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -89,6 +89,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __Units_h
 #include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
 #ifndef __CylinderMesh_h
@@ -165,8 +169,7 @@ VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
-CylinderMesh<GLdouble> g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
-CubeMesh<GLdouble> g_outside_polygon_data(3.0 * cm);
+SceneGraphNode g_scene_graph("root", NULL);
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -255,10 +258,10 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
 
     // Add the geometry to the X-ray renderer
     loadSTLFile();
-    g_xray_half_precision_renderer.addInnerSurface(&g_inside_polygon_data);
-    g_xray_half_precision_renderer.addOuterSurface(&g_outside_polygon_data);
-    g_xray_full_precision_renderer.addInnerSurface(&g_inside_polygon_data);
-    g_xray_full_precision_renderer.addOuterSurface(&g_outside_polygon_data);
+    g_xray_half_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+    g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+    g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+    g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
     // Set the projection matrix
     GLint width(0);
@@ -360,8 +363,11 @@ void loadSTLFile()
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
-    g_inside_polygon_data.setHounsfieldValue(HU_bone);
-    g_outside_polygon_data.setHounsfieldValue(HU_soft_tissue);
+    g_scene_graph.addChild( "inside", CylinderMesh<GLdouble>(20, 3.0 * cm, 1.0 * cm));
+    g_scene_graph.addChild("outside", CubeMesh<GLdouble>(3.0 * cm));
+
+    g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
+    g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
     std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
@@ -479,10 +485,10 @@ void loadSTLFile()
     std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << g_literature_result / keV << "| keV" << std::endl;
     std::cout << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / keV << " keV" << std::endl << std::endl;
 
-    g_outside_polygon_data.splitFaces(false);
-    g_outside_polygon_data.splitFaces(false);
-    g_outside_polygon_data.splitFaces(false);
-    g_outside_polygon_data.splitFaces(false);
+    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
+    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
+    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
+    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
 }
 
 

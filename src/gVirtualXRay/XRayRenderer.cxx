@@ -707,7 +707,7 @@ void XRayRenderer::release()
 			std::cerr << e.what() << std::endl;
 		}
 	}
-
+/*
 	// Reset values
 	m_p_detector = 0;
 	m_p_xray_beam = 0;
@@ -717,7 +717,7 @@ void XRayRenderer::release()
 	m_mu_water_set.clear();
 	m_p_fbo_set.clear();
 	m_l_buffer_empty = false;
-	m_energy_fluence_empty = false;
+	m_energy_fluence_empty = false;*/
 }
 
 
@@ -911,7 +911,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 				//	ite != m_p_HU_polygon_mesh_set.end();
 				//	++ite, ++object_number)
 
-				for (std::vector<std::vector<PolygonMesh*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
+				for (std::vector<std::vector<SceneGraphNode*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
 						ite_material != m_p_surface_per_material_set.end();
 						++ite_material)
 				{
@@ -929,19 +929,21 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					//for (std::vector<PolygonMesh*>::const_iterator ite_meshes(ite->second.begin());
 					//        ite_meshes != ite->second.end();
 					//        ++ite_meshes, ++temp_id)
-					for (std::vector<PolygonMesh*>::const_iterator ite_meshes = ite_material->begin();
+					for (std::vector<SceneGraphNode*>::const_iterator ite_meshes = ite_material->begin();
 							ite_meshes != ite_material->end();
 							++ite_meshes, ++object_number)
 					{
-						// Compute its L-buffer
-						computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
+						SceneGraphNode* p_node = *ite_meshes;
 
-						temp = (*ite_meshes)->getMaxCorner();
+						// Compute its L-buffer
+						computeLBuffer(*p_node, xray_source_detector_translation, aModellingTransformationMatrix, false);
+
+						temp = p_node->getBranchWorldMaxCorner();
 						max_corner[0] = std::max(temp[0], max_corner[0]);
 						max_corner[1] = std::max(temp[1], max_corner[1]);
 						max_corner[2] = std::max(temp[2], max_corner[2]);
 
-						temp = (*ite_meshes)->getMinCorner();
+						temp = p_node->getBranchWorldMinCorner();
 						min_corner[0] = std::min(temp[0], min_corner[0]);
 						min_corner[1] = std::min(temp[1], min_corner[1]);
 						min_corner[2] = std::min(temp[2], min_corner[2]);
@@ -1335,6 +1337,12 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 	{
 		case OPENGL:
 		{
+			// Delete the texture if it exists
+			if (m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER])
+			{
+				glDeleteTextures(1, &m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
+			}
+
 			// Generate the texture name.
 			glGenTextures(1, &m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -1895,18 +1903,42 @@ unsigned int XRayRenderer::getID2DTexture()
 
 
 //------------------------------------------------------------------------------
+void XRayRenderer::computeLBuffer(SceneGraphNode& anObject,
+                                  const VEC3& aXRaySourceDetectorTranslation,
+                                  const MATRIX4& aModellingTransformationMatrix,
+                                  bool aGPUStateConservationFlag)
+//------------------------------------------------------------------------------
+{
+	computeLBuffer(anObject.getPolygonMesh(),
+			aXRaySourceDetectorTranslation,
+			aModellingTransformationMatrix * anObject.getWorldTransformationMatrix(),
+			aGPUStateConservationFlag);
+}
+
+
+//------------------------------------------------------------------------------
 void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
                                   const VEC3& aXRaySourceDetectorTranslation,
                                   const MATRIX4& aModellingTransformationMatrix,
                                   bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------
 {
+	bool internal_mesh = true;
+
+	if (m_p_outer_surface)
+	{
+		if (&anObject == &m_p_outer_surface->getPolygonMesh())
+		{
+			internal_mesh = false;
+		}
+	}
+
     // This is an internal mesh
-    if (&anObject != m_p_outer_surface || !m_p_inner_surface_set.size())
+    if (internal_mesh)
     {
         computeInnerSurfaceLBuffer(anObject,
         		aXRaySourceDetectorTranslation,
-				aModellingTransformationMatrix * anObject.getTransformationMatrix(),
+				aModellingTransformationMatrix,
 				aGPUStateConservationFlag);
     }
     // This is the external mesh
@@ -1914,7 +1946,7 @@ void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
     {
         computeOuterSurfaceLBuffer(anObject,
         		aXRaySourceDetectorTranslation,
-				aModellingTransformationMatrix * anObject.getTransformationMatrix());
+				aModellingTransformationMatrix);
     }
 }
 
@@ -2081,7 +2113,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
     if (aGPUStateConservationFlag)
         {
 
-        RATIONAL_NUMBER bbox_diagonal((anObject.getMaxCorner() - anObject.getMinCorner()).length() / cm);
+        RATIONAL_NUMBER bbox_diagonal((anObject.getLocalMaxCorner() - anObject.getLocalMinCorner()).length() / cm);
         postComputeLBuffer(p_viewport, bbox_diagonal);
         }
 
@@ -2319,6 +2351,28 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                                    const PhotonCrossSection& aPhotonCrossSection)
 //------------------------------------------------
 {
+	// The number of energy channels has changed since last time
+	if (m_sum_mux_dx_image.getDepth() != m_p_xray_beam->getEnergyChannelNumber())
+	{
+		// Update the image size
+		VEC3 spacing = m_sum_mux_dx_image.getSpacing();
+
+	    m_sum_mux_dx_image = Image<PixelType>(
+	            m_p_detector->getNumberOfPixels().getX(),
+	            m_p_detector->getNumberOfPixels().getY(),
+	            m_p_xray_beam->getEnergyChannelNumber());
+
+	    m_sum_mux_dx_image.setSpacing(spacing);
+
+	    GLenum internal_format = GL_RGB32F;
+
+	    if (m_precision == 16)
+	    	internal_format = GL_RGB16F;
+
+	    init3DData(internal_format);
+		init3DFBOs();
+	}
+
 	// Save the current FBO
 	pushFBO();
 
@@ -3229,25 +3283,34 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 		m_surface_per_material_set_needs_update = false;
 
 		// Look at all the meshes
-		for (std::vector<PolygonMesh*>::const_iterator ite = m_p_inner_surface_set.begin();
+		for (std::vector<SceneGraphNode*>::const_iterator ite = m_p_inner_surface_set.begin();
 				ite != m_p_inner_surface_set.end();
 				++ite)
 		{
-			int i = 0;
 			bool added = false;
-			while (!added && i < m_p_surface_per_material_set.size())
+
+			SceneGraphNode* p_temp1 = *ite;
+
+			if (m_p_surface_per_material_set.size())
 			{
-				if (m_p_surface_per_material_set[i].front()->getPhotonCrossSection() == (*ite)->getPhotonCrossSection())
+				int i = 0;
+
+				while (!added && i < m_p_surface_per_material_set.size())
 				{
-					added = true;
-					m_p_surface_per_material_set[i].push_back(*ite);
+					SceneGraphNode* p_temp2 = m_p_surface_per_material_set[i].front();
+
+					if (p_temp2->getPhotonCrossSection() == p_temp1->getPhotonCrossSection())
+					{
+						added = true;
+						m_p_surface_per_material_set[i].push_back(p_temp1);
+					}
+					++i;
 				}
-				++i;
 			}
 
 			if (!added)
 			{
-				m_p_surface_per_material_set.push_back(std::vector<PolygonMesh*>(1, *ite));
+				m_p_surface_per_material_set.push_back(std::vector<SceneGraphNode*>(1, p_temp1));
 			}
 		}
 	}

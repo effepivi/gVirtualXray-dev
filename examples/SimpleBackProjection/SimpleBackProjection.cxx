@@ -638,14 +638,6 @@ int main(int argc, char** argv)
         std::cerr << error.what() << std::endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -769,7 +761,7 @@ void quit()
 
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
@@ -1524,8 +1516,8 @@ void loadSTLFile()
     g_polygon_mesh.getMaterial().setShininess(50);
 
     // Compute the translation vector
-    g_translation_vector = g_polygon_mesh.getMinCorner() +
-        (g_polygon_mesh.getMaxCorner() - g_polygon_mesh.getMinCorner()) / 2.0;
+    g_translation_vector = g_polygon_mesh.getLocalMinCorner() +
+        (g_polygon_mesh.getLocalMaxCorner() - g_polygon_mesh.getLocalMinCorner()) / 2.0;
     
     g_sample_rotation_matrix =
         Matrix4x4<GLfloat>::buildTranslationMatrix(-g_translation_vector);
@@ -1577,6 +1569,9 @@ void loadXRaySimulator()
             &g_xray_detector,
             &g_xray_beam);
     
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
+
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
 }

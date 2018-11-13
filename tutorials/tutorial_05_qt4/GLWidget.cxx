@@ -226,8 +226,8 @@ void GLWidget::initializeGL()
     m_meshes_model_matrix.loadIdentity();
 
     //translate the cubes
-    m_blue_cube_mesh.translate(VEC3(-2.,-2.,7.));
-    m_red_cube_mesh.translate(VEC3(0.,0.,-5.));
+    m_blue_cube_mesh.applyTranslation(VEC3(-2.,-2.,7.));
+    m_red_cube_mesh.applyTranslation(VEC3(0.,0.,-5.));
 
     m_blue_cube_mesh.splitFaces();
     m_blue_cube_mesh.splitFaces();

@@ -263,6 +263,6 @@ void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold)
 //------------------------------------------------------------------------
 {
     m_mesh_data = m_volume.marchingCubes(aThreshold);
-    m_mesh_data.translate(m_centre);
+    m_mesh_data.applyTranslation(m_centre);
 }
 

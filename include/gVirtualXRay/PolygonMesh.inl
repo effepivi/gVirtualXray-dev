@@ -281,21 +281,21 @@ inline const std::string& PolygonMesh::getMaterialLabel() const
 }
 
 
-//--------------------------------------------------
-inline const VEC3& PolygonMesh::getMinCorner() const
-//--------------------------------------------------
+//-------------------------------------------------------
+inline const VEC3& PolygonMesh::getLocalMinCorner() const
+//-------------------------------------------------------
 {
     // Return the bounding box lower corner
-    return (m_min_corner);
+    return (m_local_min_corner);
 }
 
 
-//--------------------------------------------------
-inline const VEC3& PolygonMesh::getMaxCorner() const
-//--------------------------------------------------
+//-------------------------------------------------------
+inline const VEC3& PolygonMesh::getLocalMaxCorner() const
+//-------------------------------------------------------
 {
     // Return the bounding box upper corner
-    return (m_max_corner);
+    return (m_local_max_corner);
 }
 
 
@@ -405,34 +405,31 @@ inline void PolygonMesh::computeBoundingBox()
     // There are vertices
     if (m_number_of_vertices)
     {
-        m_min_corner = getVertex(0);
-        m_max_corner = getVertex(0);
+        m_local_min_corner = getVertex(0);
+        m_local_max_corner = getVertex(0);
 
         for (unsigned int i(1); i < m_number_of_vertices; ++i)
         {
             VEC3 vertex(getVertex(i));
 
-            if (m_min_corner.getX() > vertex.getX())
-                m_min_corner.setX(vertex.getX());
+            if (m_local_min_corner.getX() > vertex.getX())
+                m_local_min_corner.setX(vertex.getX());
 
-            if (m_max_corner.getX() < vertex.getX())
-                m_max_corner.setX(vertex.getX());
+            if (m_local_max_corner.getX() < vertex.getX())
+                m_local_max_corner.setX(vertex.getX());
 
-            if (m_min_corner.getY() > vertex.getY())
-                m_min_corner.setY(vertex.getY());
+            if (m_local_min_corner.getY() > vertex.getY())
+                m_local_min_corner.setY(vertex.getY());
 
-            if (m_max_corner.getY() < vertex.getY())
-                m_max_corner.setY(vertex.getY());
+            if (m_local_max_corner.getY() < vertex.getY())
+                m_local_max_corner.setY(vertex.getY());
 
-            if (m_min_corner.getZ() > vertex.getZ())
-                m_min_corner.setZ(vertex.getZ());
+            if (m_local_min_corner.getZ() > vertex.getZ())
+                m_local_min_corner.setZ(vertex.getZ());
 
-            if (m_max_corner.getZ() < vertex.getZ())
-                m_max_corner.setZ(vertex.getZ());
+            if (m_local_max_corner.getZ() < vertex.getZ())
+                m_local_max_corner.setZ(vertex.getZ());
         }
-
-        // Compute diagonal size
-        m_bounding_box_diagonal = (m_min_corner - m_max_corner).length();
     }
 }
 
@@ -445,9 +442,9 @@ inline void PolygonMesh::applyScale(const RATIONAL_NUMBER& aScale)
 }
 
 
-//----------------------------------------------------------------
-inline void PolygonMesh::translate(const VEC3& aTranslationVector)
-//----------------------------------------------------------------
+//-----------------------------------------------------------------------
+inline void PolygonMesh::applyTranslation(const VEC3& aTranslationVector)
+//-----------------------------------------------------------------------
 {
     if (m_number_of_vertices)
         {
@@ -457,8 +454,8 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
             setVertex(i, vertex);
             }
 
-        m_min_corner += aTranslationVector;
-        m_max_corner += aTranslationVector;
+        m_local_min_corner += aTranslationVector;
+        m_local_max_corner += aTranslationVector;
 
         // Create the VBO if needed
         if (!m_p_vbo.get())
@@ -475,9 +472,11 @@ inline void PolygonMesh::translate(const VEC3& aTranslationVector)
 }
 
     
-//----------------------------------------------------------------
-inline void PolygonMesh::scale(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NUMBER z)
-//----------------------------------------------------------------
+//------------------------------------------------------
+inline void PolygonMesh::applyScaling(RATIONAL_NUMBER x,
+		                              RATIONAL_NUMBER y,
+									  RATIONAL_NUMBER z)
+//------------------------------------------------------
 {
     if (m_number_of_vertices)
         {
@@ -488,8 +487,8 @@ inline void PolygonMesh::scale(RATIONAL_NUMBER x, RATIONAL_NUMBER y, RATIONAL_NU
             setVertex(i, vertex);
             }
 
-        m_min_corner = m_min_corner.elementWiseProduct(scaling_factors);
-        m_max_corner = m_max_corner.elementWiseProduct(scaling_factors);
+        m_local_min_corner = m_local_min_corner.elementWiseProduct(scaling_factors);
+        m_local_max_corner = m_local_max_corner.elementWiseProduct(scaling_factors);
 
         // Create the VBO if needed
         if (!m_p_vbo.get())
@@ -540,10 +539,10 @@ inline void PolygonMesh::setVertexNormal(unsigned int anIndex,
 }
 
 
-//----------------------------------------------------------------------
-inline void PolygonMesh::rotate(const VEC3& aRotationAxis,
-                                RATIONAL_NUMBER aRotationAngleInDegrees)
-//----------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+inline void PolygonMesh::applyRotation(const VEC3& aRotationAxis,
+                                       RATIONAL_NUMBER aRotationAngleInDegrees)
+//-----------------------------------------------------------------------------
 {
     if (m_number_of_vertices)
         {
@@ -587,9 +586,9 @@ inline void PolygonMesh::rotate(const VEC3& aRotationAxis,
 }
     
     
-//----------------------------------------------------------------------
-inline void PolygonMesh::transform(const MATRIX4& aTransformationMatrix)
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------------
+inline void PolygonMesh::applyTransform(const MATRIX4& aTransformationMatrix)
+//---------------------------------------------------------------------------
 {
     if (m_number_of_vertices)
         {
@@ -635,10 +634,10 @@ inline void PolygonMesh::transform(const MATRIX4& aTransformationMatrix)
 inline void PolygonMesh::moveToCentre()
 //-------------------------------------
 {
-    VEC3 translation_vector(m_min_corner + (m_max_corner - m_min_corner) / 2.0);
+    VEC3 translation_vector(m_local_min_corner + (m_local_max_corner - m_local_min_corner) / 2.0);
     translation_vector *= -1.0;
 
-    translate(translation_vector);
+    applyTranslation(translation_vector);
 }
 
 
@@ -679,24 +678,6 @@ inline Material& PolygonMesh::getMaterial()
 //-----------------------------------------
 {
     return (m_material);
-}
-
-
-inline void PolygonMesh::setTransformationMatrix(const MATRIX4& aTransformationMatrix)
-{
-	m_local_to_global_transformation = aTransformationMatrix;
-}
-
-
-inline const MATRIX4& PolygonMesh::getTransformationMatrix() const
-{
-	return (m_local_to_global_transformation);
-}
-
-
-inline MATRIX4& PolygonMesh::getTransformationMatrix()
-{
-	return (m_local_to_global_transformation);
 }
 
 

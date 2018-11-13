@@ -758,9 +758,9 @@ void GLWidget::loadPatient(PatientID aPatientID)
     switch (aPatientID)
         {
         case P4:
-            m_p4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
-                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
-                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            m_p4_translation_vector = (*p_mesh_set)[SKIN_ID].getLocalMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getLocalMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getLocalMinCorner()) / 2.0;
             
             m_p4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
                 180, VEC3(1, 0, 0));
@@ -770,9 +770,9 @@ void GLWidget::loadPatient(PatientID aPatientID)
             break;
 
         case P5:
-            m_p5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
-                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
-                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            m_p5_translation_vector = (*p_mesh_set)[SKIN_ID].getLocalMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getLocalMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getLocalMinCorner()) / 2.0;
             
             m_p5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(
                 -m_p5_translation_vector);

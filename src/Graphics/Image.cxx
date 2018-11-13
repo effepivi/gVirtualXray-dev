@@ -127,7 +127,7 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
     base_cube.applyScale(m_spacing.getX() / cm, m_spacing.getY() / cm, m_spacing.getZ() / cm);
     
     // Translate the cube so that its lower corner is on (0, 0, 0)
-    base_cube.translate(m_spacing / 2.0);
+    base_cube.applyTranslation(m_spacing / 2.0);
     
     // Process every voxel
     for (unsigned int k(0); k < m_number_of_slices; ++k)
@@ -144,7 +144,7 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
                     {
                     // Copy the cube and translate it to the position of the voxel
                     PolygonMesh translated_cube(base_cube);
-                    translated_cube.translate(VEC3(m_spacing[0] * i, m_spacing[1] * j, m_spacing[2] * k));
+                    translated_cube.applyTranslation(VEC3(m_spacing[0] * i, m_spacing[1] * j, m_spacing[2] * k));
                     
                     // Add the voxel
                     aPolygonMeshSet[voxel_value] += translated_cube;

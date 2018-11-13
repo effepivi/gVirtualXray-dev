@@ -3,9 +3,9 @@ macro(build_fltk install_prefix staging_prefix)
 
 # make a custom fltk configuration file
 
-SET (fltk_VERSION_STRING 1.2)
-SET (fltk_VERSION_MAJOR  1.2)
-SET (fltk_VERSION_MINOR  8)
+SET (fltk_VERSION_STRING 1.2 FORCE)
+SET (fltk_VERSION_MAJOR  1.2 FORCE)
+SET (fltk_VERSION_MINOR  8 FORCE)
 
 set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
 if(APPLE)
@@ -17,9 +17,9 @@ if(APPLE)
   )
 endif()
 
-SET (FLTK_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
+SET (FLTK_INSTALL_DIR ${staging_prefix}/${install_prefix}-install FORCE)
 
-SET (LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
+SET (LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} FORCE)
 
 IF (UNIX)
     IF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -55,20 +55,20 @@ if(APPLE)
     FIND_LIBRARY(AGL_LIBRARY AGL)
     FIND_LIBRARY(CARBON_LIBRARY Carbon)
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-    SET (FLTK_PLATFORM_DEPENDENT_LIBS ${FLTK_PLATFORM_DEPENDENT_LIBS} ${AGL_LIBRARY} ${CARBON_LIBRARY} ${COCOA_LIBRARY})
+    SET (FLTK_PLATFORM_DEPENDENT_LIBS ${FLTK_PLATFORM_DEPENDENT_LIBS} ${AGL_LIBRARY} ${CARBON_LIBRARY} ${COCOA_LIBRARY} FORCE)
 
 #  set( FLTK_PLATFORM_DEPENDENT_LIBS  "-framework Carbon -framework Cocoa -framework ApplicationServices -lz")
 endif()
 
 IF (WIN32)
-    SET (FLTK_FLUID_EXECUTABLE ${FLTK_INSTALL_DIR}/bin/fluid.exe)
+    SET (FLTK_FLUID_EXECUTABLE ${FLTK_INSTALL_DIR}/bin/fluid.exe FORCE)
 ELSE (WIN32)
-    SET (FLTK_FLUID_EXECUTABLE ${FLTK_INSTALL_DIR}/bin/fluid)
+    SET (FLTK_FLUID_EXECUTABLE ${FLTK_INSTALL_DIR}/bin/fluid FORCE)
 ENDIF (WIN32)
 
-SET (FLTK_INCLUDE_DIR ${staging_prefix}/${install_prefix})
-set (FLTK_INCLUDE_DIRS ${FLTK_INSTALL_DIR} ${FLTK_INCLUDE_DIR})
-SET (FLTK_FOUND ON)
+SET (FLTK_INCLUDE_DIR ${staging_prefix}/${install_prefix} FORCE)
+set (FLTK_INCLUDE_DIRS ${FLTK_INSTALL_DIR} ${FLTK_INCLUDE_DIR} FORCE)
+SET (FLTK_FOUND ON FORCE)
 
 IF (UNIX)
     IF (NOT APPLE)
@@ -96,6 +96,7 @@ IF (UNIX)
         ${FLTK_INSTALL_DIR}/lib/libfltk_gl.a
         ${FLTK_INSTALL_DIR}/lib/libfltk_images.a
         ${FLTK_PLATFORM_DEPENDENT_LIBS}
+         FORCE
     )
 ELSE (UNIX)
     IF (WIN32)
@@ -111,12 +112,13 @@ ELSE (UNIX)
 
             optimized ${FLTK_INSTALL_DIR}/lib/fltk_images.lib
             debug     ${FLTK_INSTALL_DIR}/lib/fltk_imagesd.lib
+             FORCE
         )
     ENDIF(WIN32)
 ENDIF (UNIX)
 
 
-SET (FLTK_DIR ${staging_prefix}/${install_prefix})
+SET (FLTK_DIR ${staging_prefix}/${install_prefix} FORCE)
 
 # copy libraries into install tree
 install(DIRECTORY ${FLTK_INSTALL_DIR}/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")

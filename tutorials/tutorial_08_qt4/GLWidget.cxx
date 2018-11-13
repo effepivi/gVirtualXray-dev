@@ -103,23 +103,24 @@ using namespace gVirtualXRay;
 //******************************************************************************
 
 
-//----------------------------------
+//------------------------------------
 GLWidget::GLWidget(QWidget *parent):
-//----------------------------------
-    QGLWidget(parent),
-	m_light_direction(-1., 1., 1.)
-//----------------------------------
+//------------------------------------
+        QGLWidget(parent),
+        m_root_node("root"),
+	    m_light_direction(-1., 1., 1.)
+//------------------------------------
 {
 }
 
 
-//----------------------------------
+//--------------------------------------------------------
 GLWidget::GLWidget(QGLFormat& aGLFormat, QWidget *parent):
-//----------------------------------
-    QGLWidget(aGLFormat, parent),
-	m_light_direction(-1., 1., 1.)
-
-//----------------------------------
+//--------------------------------------------------------
+        QGLWidget(aGLFormat, parent),
+        m_root_node("root"),
+        m_light_direction(-1., 1., 1.)
+//--------------------------------------------------------
 {
 }
 
@@ -293,7 +294,7 @@ void GLWidget::loadSTLFile()
 	}
 
 	// Compute the translation vector
-	VEC3 lung_translation_vector = m_lung_mesh.getMinCorner() + (m_lung_mesh.getMaxCorner() - m_lung_mesh.getMinCorner()) / 2.0;
+	VEC3 lung_translation_vector = m_lung_mesh.getLocalMinCorner() + (m_lung_mesh.getLocalMaxCorner() - m_lung_mesh.getLocalMinCorner()) / 2.0;
 	m_lung_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(180, VEC3(1, 0, 0));
 	m_lung_rotation_matrix *= Matrix4x4<GLfloat>::buildTranslationMatrix(-lung_translation_vector);
 

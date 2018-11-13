@@ -93,7 +93,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // how to set the projection matrix, etc.
 #include "gVirtualXRay/OpenGLUtilities.h"
 
-#include "gVirtualXRay/PolygonMesh.h"  // Handle 3D triangle meshes
+#include "gVirtualXRay/SceneGraphNode.h"  // Handle 3D triangle meshes
 #include "gVirtualXRay/Shader.h"       // Handle GLSL programs
 
 #include "gVirtualXRay/Utilities.h" // Handle decompression using the Z library
@@ -137,6 +137,7 @@ GLsizei g_window_height(480);
 Shader g_display_shader;
 
 // 3D objects as VAOs and VBOs
+SceneGraphNode g_root_node("root");
 PolygonMesh g_polygon_mesh_1;
 PolygonMesh g_polygon_mesh_2;
 
@@ -454,7 +455,7 @@ void GLWidget::draw()
 void GLWidget::animate(void* apWidget)
 //------------------------------------
 {
-    if (apWidget)
+    if (apWidget && !(reinterpret_cast<GLWidget*>(apWidget)->m_is_first_time))
     {
         // Rotate the objects
         g_sample_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0));
@@ -806,7 +807,9 @@ void setSimulator()
             &g_xray_beam);
 
     // Add the geometry to the X-ray renderer
-    g_xray_simulator.addInnerSurface(&g_polygon_mesh_1);
-    g_xray_simulator.addOuterSurface(&g_polygon_mesh_2);
+    g_root_node.addChild("mesh1", &g_polygon_mesh_1);
+    g_root_node.addChild("mesh2", &g_polygon_mesh_2);
+    g_xray_simulator.addInnerSurface(&(g_root_node.getChild("mesh1")));
+    g_xray_simulator.addOuterSurface(&(g_root_node.getChild("mesh2")));
 }
 

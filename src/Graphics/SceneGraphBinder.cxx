@@ -30,6 +30,7 @@
 //******************************************************************************
 
 #include <algorithm> //For std::min and std::max Windows only
+#include <cfloat> //For FLT_MAX
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -61,173 +62,6 @@
 //******************************************************************************
 using namespace gVirtualXRay;
 
-
-SceneGraphNode::SceneGraphNode(const std::string& aLabel,
-                               const SceneGraphNode* apParent):
-        m_label(aLabel),
-        m_p_parent(apParent)
-{}
-
-
-SceneGraphNode::SceneGraphNode(const std::string& aLabel,
-                               const PolygonMesh& aPolygonMesh,
-                               const VEC3& aPosition,
-                               const SceneGraphNode* apParent):
-        m_label(aLabel),
-        m_geometry(aPolygonMesh),
-        m_position(aPosition),
-        m_p_parent(apParent)
-{}
-
-
-SceneGraphNode::~SceneGraphNode()
-{
-	std::cout << "Delete node: " << m_label << std::endl;
-}
-
-
-const SceneGraphNode* SceneGraphNode::getParent() const
-{
-    return (m_p_parent);
-}
-
-
-unsigned int SceneGraphNode::getNumberOfChildren() const
-{
-    return (m_p_children.size());
-}
-
-
-SceneGraphNode& SceneGraphNode::getChild(unsigned int i)
-{
-    if (i >= m_p_children.size())
-    {
-        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    return (m_p_children[i]);
-}
-
-
-const SceneGraphNode& SceneGraphNode::getChild(unsigned int i) const
-{
-    if (i >= m_p_children.size())
-    {
-        throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
-    }
-
-    return (m_p_children[i]);
-}
-
-
-
-const std::string& SceneGraphNode::getLabel() const
-{
-    return (m_label);
-}
-
-
-PolygonMesh& SceneGraphNode::getPolygonMesh()
-{
-    return (m_geometry);
-}
-
-
-const PolygonMesh& SceneGraphNode::getPolygonMesh() const
-{
-    return (m_geometry);
-}
-
-
-MATRIX4 SceneGraphNode::getLocalTransformationMatrix() const
-{
-    return (MATRIX4::buildTranslationMatrix(m_position) * m_partial_local_transformation);
-}
-
-
-MATRIX4 SceneGraphNode::getWorldTransformationMatrix() const
-{
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
-}
-
-
-void SceneGraphNode::applyLocalTransformation(const MATRIX4& aMatrix)
-{
-    m_partial_local_transformation = aMatrix * m_partial_local_transformation;
-}
-
-
-void SceneGraphNode::addChild(const std::string& aLabel)
-{
-	m_p_children.push_back(SceneGraphNode(aLabel, this));
-}
-
-
-void SceneGraphNode::addChild(const std::string& aLabel,
-                              const PolygonMesh& aPolygonMesh,
-                              const VEC3& aPosition)
-{
-    m_p_children.push_back(SceneGraphNode(aLabel, aPolygonMesh, aPosition, this));
-}
-
-
-SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel)
-{
-    for (std::vector<SceneGraphNode>::iterator ite = m_p_children.begin();
-    		ite != m_p_children.end();
-    		++ite)
-    {
-    	if (ite->m_label == aLabel)
-    	{
-    		return *ite;
-    	}
-    }
-
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Node not found");
-}
-
-
-const SceneGraphNode& SceneGraphNode::getChild(const std::string& aLabel) const
-{
-    for (std::vector<SceneGraphNode>::const_iterator ite = m_p_children.begin();
-    		ite != m_p_children.end();
-    		++ite)
-    {
-    	if (ite->m_label == aLabel)
-    	{
-    		return *ite;
-    	}
-    }
-
-    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Node not found");
-}
-
-/*
-SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)
-{
-	// The current node has children
-	// They need to be deleted
-	if (m_p_children.size())
-	{
-		// Add all the children of the node to the temp list
-		std::vector<SceneGraphNode*> p_temp_pool_of_nodes;
-		for (std::vector<SceneGraphNode>::iterator ite = m_p_children.begin();
-				ite != m_p_children.end();
-				++ite)
-		{
-			p_temp_pool_of_nodes.push_back(&(*ite));
-		}
-
-		// Process until the list is empty
-		while (p_temp_pool_of_nodes.size())
-		{
-
-		}
-	}
-
-	return (*this);
-}
-*/
 
 
 
@@ -293,21 +127,7 @@ void SceneGraphBinder::loadSceneGraph(const std::string& aFileName, RATIONAL_NUM
 
 void SceneGraphBinder::clear()
 {
-	m_p_polygon_mesh_set.clear();
-
 	m_root_node = SceneGraphNode("root");
-}
-
-
-const std::map<std::string, PolygonMesh>& SceneGraphBinder::getPolygonMeshSet() const
-{
-	return (m_p_polygon_mesh_set);
-}
-
-
-std::map<std::string, PolygonMesh>& SceneGraphBinder::getPolygonMeshSet()
-{
-	return (m_p_polygon_mesh_set);
 }
 
 /*
@@ -339,12 +159,6 @@ void SceneGraphBinder::scale(const std::string& aNodeLabel,
 		const VEC3& aScalingFactorSet)
 {
 	scale(aNodeLabel.data(), aScalingFactorSet);
-
-	SceneGraphNode* p_node = getNode(aNodeLabel);
-	if (p_node)
-	{
-	    p_node->applyLocalTransformation(MATRIX4::buildScaleMatrix(aScalingFactorSet));
-	}
 }
 
 
@@ -355,12 +169,6 @@ void SceneGraphBinder::rotate(const std::string& aNodeLabel,
 //--------------------------------------------------------------------
 {
 	rotate(aNodeLabel.data(), aRotationAngleInDegrees, aRotationAxis);
-
-    SceneGraphNode* p_node = getNode(aNodeLabel);
-    if (p_node)
-    {
-        p_node->applyLocalTransformation(MATRIX4::buildRotationMatrix(aRotationAngleInDegrees, aRotationAxis));
-    }
 }
 
 
@@ -368,24 +176,25 @@ void SceneGraphBinder::translate(const std::string& aNodeLabel,
 									 const VEC3& aTranslationVector)
 {
 	translate(aNodeLabel.data(), aTranslationVector);
-
-    SceneGraphNode* p_node = getNode(aNodeLabel);
-    if (p_node)
-    {
-        p_node->applyLocalTransformation(MATRIX4::buildTranslationMatrix(aTranslationVector));
-    }
 }
 
 
-MATRIX4 SceneGraphBinder::getTransformationMatrix(const std::string& aNodeLabel) const
+MATRIX4 SceneGraphBinder::getLocalTransformationMatrix(const std::string& aNodeLabel) const
 {
-	return (getTransformationMatrix(aNodeLabel.data()));
+	return (getLocalTransformationMatrix(aNodeLabel.data()));
+}
+
+
+MATRIX4 SceneGraphBinder::getWorldTransformationMatrix(const std::string& aNodeLabel) const
+{
+	return (getWorldTransformationMatrix(aNodeLabel.data()));
 }
 
 
 void SceneGraphBinder::display(GLint aShaderID)
 {
-	for (std::map<std::string, PolygonMesh>::iterator ite = getPolygonMeshSet().begin();
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+	/*for (std::map<std::string, PolygonMesh>::iterator ite = getPolygonMeshSet().begin();
 			ite != getPolygonMeshSet().end();
 			++ite)
 	{
@@ -420,32 +229,17 @@ void SceneGraphBinder::display(GLint aShaderID)
 
 		// Restore the current transformation matrix
 		popModelViewMatrix();
-	}
-}
-
-
-void SceneGraphBinder::updateMatrices()
-{
-	//throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	}*/
 }
 
 
 void SceneGraphBinder::scale(const char* aNodeLabel,
 		const VEC3& aScalingFactorSet)
 {
-	// Find the node
-	std::map<std::string, PolygonMesh>::iterator ite = m_p_polygon_mesh_set.find(aNodeLabel);
-
-	// The node has been found
-	if (ite != m_p_polygon_mesh_set.end())
+	SceneGraphNode* p_node = getNode(aNodeLabel);
+	if (p_node)
 	{
-		ite->second.scale(aScalingFactorSet[0], aScalingFactorSet[1], aScalingFactorSet[2]);
-		updateMatrices();
-	}
-	// The node has not been found
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
+	    p_node->applyLocalTransformation(MATRIX4::buildScaleMatrix(aScalingFactorSet));
 	}
 }
 
@@ -454,111 +248,151 @@ void SceneGraphBinder::rotate(const char* aNodeLabel,
 		float aRotationAngleInDegrees,
 		const VEC3& aRotationAxis)
 {
-	// Find the node
-	std::map<std::string, PolygonMesh>::iterator ite = m_p_polygon_mesh_set.find(aNodeLabel);
-
-	// The node has been found
-	if (ite != m_p_polygon_mesh_set.end())
-	{
-		ite->second.rotate(aRotationAxis, aRotationAngleInDegrees);
-		updateMatrices();
-	}
-	// The node has not been found
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
-	}
+    SceneGraphNode* p_node = getNode(aNodeLabel);
+    if (p_node)
+    {
+        p_node->applyLocalTransformation(MATRIX4::buildRotationMatrix(aRotationAngleInDegrees, aRotationAxis));
+    }
 }
 
 
 void SceneGraphBinder::translate(const char* aNodeLabel,
 		const VEC3& aTranslationVector)
 {
-	// Find the node
-	std::map<std::string, PolygonMesh>::iterator ite = m_p_polygon_mesh_set.find(aNodeLabel);
-
-	// The node has been found
-	if (ite != m_p_polygon_mesh_set.end())
-	{
-		ite->second.translate(aTranslationVector);
-		updateMatrices();
-	}
-	// The node has not been found
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
-	}
+    SceneGraphNode* p_node = getNode(aNodeLabel);
+    if (p_node)
+    {
+        p_node->applyLocalTransformation(MATRIX4::buildTranslationMatrix(aTranslationVector));
+    }
 }
 
 
-MATRIX4 SceneGraphBinder::getTransformationMatrix(const char* aNodeLabel) const
+MATRIX4 SceneGraphBinder::getLocalTransformationMatrix(const char* aNodeLabel) const
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+}
+
+
+MATRIX4 SceneGraphBinder::getWorldTransformationMatrix(const char* aNodeLabel) const
+{
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
+}
+
+
+void SceneGraphBinder::moveToCentre(const std::string& aNodeLabel)
+{
+	moveToCentre(aNodeLabel.data());
+}
+
+
+void SceneGraphBinder::moveToCentre(const char* aNodeLabel)
+{
+    SceneGraphNode* p_node = getNode(aNodeLabel);
+    if (p_node)
+    {
+    	VEC3 min_bbox = p_node->getBranchWorldMinCorner();
+    	VEC3 max_bbox = p_node->getBranchWorldMaxCorner();
+
+    	VEC3 translation_vector = -min_bbox;
+    	translation_vector -= (max_bbox - min_bbox) / 2.0;
+    	translate(aNodeLabel, translation_vector);
+    }
+}
+
+
+void SceneGraphBinder::moveToCenter(const std::string& aNodeLabel)
+{
+	moveToCenter(aNodeLabel.data());
+}
+
+
+void SceneGraphBinder::moveToCenter(const char* aNodeLabel)
+{
+	moveToCentre(aNodeLabel);
 }
 
 
 void SceneGraphBinder::moveToCentre()
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	moveToCentre("root");
 }
 
 
 void SceneGraphBinder::moveToCenter()
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+	moveToCentre();
 }
 
 
 MATRIX4 SceneGraphBinder::getRootNodeTransformationMatrix() const
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
 }
 
 
-MATRIX4 SceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
+MATRIX4 SceneGraphBinder::getNodeLocalTransformationMatrix(const char* aNodeLabel) const
 {
-	return (getTransformationMatrix(aNodeLabel));
+	return (getLocalTransformationMatrix(aNodeLabel));
+}
+
+
+MATRIX4 SceneGraphBinder::getNodeWorldTransformationMatrix(const char* aNodeLabel) const
+{
+	return (getWorldTransformationMatrix(aNodeLabel));
 }
 
 
 void SceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
 }
 
 
-void SceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
+void SceneGraphBinder::setNodeLocalTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
 {
-	throw Exception(__FILE__, __FUNCTION__, __LINE__, "Do not call");
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented, Franck is working on it");
 }
 
 
-std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox() const
+std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox()
 {
-	VEC3 min_corner;
-	VEC3 max_corner;
+	VEC3 min_corner( FLT_MAX,  FLT_MAX,  FLT_MAX);
+	VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-	int i = 0;
-	for (std::map<std::string, PolygonMesh>::const_iterator ite = getPolygonMeshSet().begin();
-			ite != getPolygonMeshSet().end();
-			++ite, ++i)
-	{
-		if (i == 0)
-		{
-			min_corner = ite->second.getMinCorner();
-			max_corner = ite->second.getMaxCorner();
-		}
-		else
-		{
-			min_corner[0] = std::min(min_corner[0], ite->second.getMinCorner()[0]);
-			min_corner[1] = std::min(min_corner[1], ite->second.getMinCorner()[1]);
-			min_corner[2] = std::min(min_corner[2], ite->second.getMinCorner()[2]);
+	// Create a waiting list
+    std::vector<SceneGraphNode*> p_waiting_list;
 
-			max_corner[0] = std::max(max_corner[0], ite->second.getMaxCorner()[0]);
-			max_corner[1] = std::max(max_corner[1], ite->second.getMaxCorner()[1]);
-			max_corner[2] = std::max(max_corner[2], ite->second.getMaxCorner()[2]);
-		}
-	}
+    // Add the root node to the waiting list
+    p_waiting_list.push_back(&m_root_node);
+
+    // The waiting list is not empty
+    while (p_waiting_list.size())
+    {
+    	// Get the last element of the list
+    	SceneGraphNode* p_node = p_waiting_list.back();
+
+    	// Remove the last element of the list
+    	p_waiting_list.pop_back();
+
+    	// It is not NULL
+    	if (p_node)
+    	{
+    	    // Add its children to the waiting list
+			for (int i = 0; i < p_node->getNumberOfChildren(); ++i)
+			{
+				p_waiting_list.push_back(&p_node->getChild(i));
+			}
+
+			// Process the node
+			min_corner[0] = std::min(min_corner[0], p_node->getBranchWorldMinCorner()[0]);
+			min_corner[1] = std::min(min_corner[1], p_node->getBranchWorldMinCorner()[1]);
+			min_corner[2] = std::min(min_corner[2], p_node->getBranchWorldMinCorner()[2]);
+
+			max_corner[0] = std::max(max_corner[0], p_node->getBranchWorldMaxCorner()[0]);
+			max_corner[1] = std::max(max_corner[1], p_node->getBranchWorldMaxCorner()[1]);
+			max_corner[2] = std::max(max_corner[2], p_node->getBranchWorldMaxCorner()[2]);
+    	}
+    }
 
 	return std::pair<VEC3, VEC3>(min_corner, max_corner);
 }

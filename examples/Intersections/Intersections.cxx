@@ -441,14 +441,6 @@ int main(int argc, char** argv)
         cerr << error.what() << endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -470,7 +462,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
@@ -746,7 +738,7 @@ void render()
         glDisable(GL_CULL_FACE);
 
         // Display the X-Ray image
-        g_xray_renderer.display(true, false, true);
+        g_xray_renderer.display(true, true, false);
 
         // Display the intersections
         g_intersection_box_detector_vbo->display();
@@ -1378,8 +1370,8 @@ void loadSTLFile()
     g_inside_polygon_data.setHounsfieldValue(0.0);
     g_outside_polygon_data.setHounsfieldValue(500.0);
 
-    g_inside_polygon_data.translate( VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
-    g_outside_polygon_data.translate(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+    g_inside_polygon_data.applyTranslation( VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+    g_outside_polygon_data.applyTranslation(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1427,6 +1419,8 @@ void loadXRaySimulator()
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

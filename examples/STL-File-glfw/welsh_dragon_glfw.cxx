@@ -90,6 +90,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
+#endif
+
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -212,7 +216,7 @@ VEC3 g_detector_position(0.0*cm, 0.0*cm,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-PolygonMesh g_polygon_data;
+SceneGraphNode g_scene_graph_node;
 
 XRayBeam g_xray_beam;
 XRayDetector g_xray_detector;
@@ -392,7 +396,7 @@ int main(int argc, char** argv)
 		loadSTLFile(prefix);
 		checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-		g_xray_renderer.addInnerSurface(&g_polygon_data);
+	    g_xray_renderer.addInnerSurface(&g_scene_graph_node);
 
 		// Rotate the sample
 		g_sample_rotation_matrix.rotate( 180, VEC3(0, 1, 0));
@@ -435,14 +439,6 @@ int main(int argc, char** argv)
 		std::cerr << error.what() << std::endl;
 	}
 
-	// Close the window and shut GLFW
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-		g_p_main_window_id = 0;
-		glfwTerminate();
-	}
-
 	// Return an exit code
 	return (EXIT_SUCCESS);
 }
@@ -456,7 +452,7 @@ void quit()
 	{
 		glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
 	}
 }
 
@@ -662,11 +658,11 @@ void render()
         // Display the sample
         if (g_display_wireframe)
         {
-            g_polygon_data.displayWireFrame();
+        	g_scene_graph_node.displayWireFrame();
         }
         else
         {
-            g_polygon_data.display();
+        	g_scene_graph_node.display();
         }
 
         // Restore the current transformation matrix
@@ -1289,10 +1285,15 @@ void loadSTLFile(const std::string& aPrefix)
 	}
 
    	// Set geometry
-	g_polygon_data.setFilename(stl_filename.data());
-	g_polygon_data.loadSTLFile(true, true, true, true, mm, GL_STATIC_DRAW);
-	g_polygon_data.mergeVertices(true);
-	g_polygon_data.setHounsfieldValue(500.0);
+	g_scene_graph_node = SceneGraphNode("root",
+			PolygonMesh(),
+			VEC3(),
+			NULL);
+
+	g_scene_graph_node.getPolygonMesh().setFilename(stl_filename.data());
+	g_scene_graph_node.getPolygonMesh().loadSTLFile(true, true, true, true, mm, GL_STATIC_DRAW);
+	g_scene_graph_node.getPolygonMesh().mergeVertices(true);
+	g_scene_graph_node.getPolygonMesh().setHounsfieldValue(500);
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;
@@ -1341,6 +1342,9 @@ void loadXRaySimulator()
             &g_xray_beam);
 
 	g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;

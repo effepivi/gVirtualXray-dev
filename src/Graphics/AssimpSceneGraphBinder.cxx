@@ -147,8 +147,6 @@ void AssimpSceneGraphBinder::setSceneGraph(const aiScene* apSceneGraph,
 //-----------------------------------------------------------------------
 {
 	// Empty the scenegraph
-	m_p_polygon_mesh_set.clear();
-
 	if (m_p_scene != apSceneGraph)
 	{
 		m_p_scene = const_cast<aiScene*>(apSceneGraph);
@@ -199,294 +197,17 @@ void AssimpSceneGraphBinder::loadSceneGraph(const char* aFileName,
 }
 
 
-//-------------------------------------------
-void AssimpSceneGraphBinder::updateMatrices()
-//-------------------------------------------
-{
 #ifdef HAS_ASSIMP
-	aiMatrix4x4 scaling_to_unit = aiMatrix4x4::Scaling(aiVector3D(m_unit_of_length, m_unit_of_length, m_unit_of_length), scaling_to_unit);
-
-	recursiveUpdateMatrices(m_p_scene->mRootNode, scaling_to_unit);
-#endif
-}
-
-
-//-----------------------------------------------------------------------------
-void AssimpSceneGraphBinder::scale(const char* aNodeLabel,
-                                   const VEC3& aScalingFactorSet)
-//-----------------------------------------------------------------------------
-{
-#ifdef HAS_ASSIMP
-	// Find the node
-	aiNode* p_node = findNode(aNodeLabel);
-
-	// The node has been found
-	if (p_node)
-	{
-		// Create the transformation matrix
-		aiMatrix4x4 scaling_matrix;
-
-		scaling_matrix = aiMatrix4x4::Scaling(
-				aiVector3t<float>(aScalingFactorSet[0], aScalingFactorSet[1], aScalingFactorSet[2]),
-				scaling_matrix);
-
-		// Update the node's transformation matrix
-		p_node->mTransformation = scaling_matrix * p_node->mTransformation;
-	}
-	// The node has not been found
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
-	}
-#endif
-}
-
-
-//--------------------------------------------------------------------------
-void AssimpSceneGraphBinder::rotate(const char* aNodeLabel,
-								    float aRotationAngleInDegrees,
-							        const VEC3& aRotationAxis)
-//--------------------------------------------------------------------------
-{
-#ifdef HAS_ASSIMP
-	// Find the node
-	aiNode* p_node = findNode(aNodeLabel);
-
-	// The node has been found
-	if (p_node)
-	{
-		// Create the rotation matrix
-		aiMatrix4x4 rotation_matrix;
-
-		rotation_matrix = aiMatrix4x4::Rotation(
-				M_PI * aRotationAngleInDegrees /180.0,
-				aiVector3t<float>(aRotationAxis[0], aRotationAxis[1], aRotationAxis[2]),
-				rotation_matrix);
-
-		// Update the node's transformation matrix
-		p_node->mTransformation = p_node->mTransformation * rotation_matrix;
-	}
-	// The node has not been found
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
-	}
-#endif
-}
-
-
-//--------------------------------------------------------------------------
-void AssimpSceneGraphBinder::translate(const char* aNodeLabel,
-							        const VEC3& aTranslationVector)
-//--------------------------------------------------------------------------
-{
-#ifdef HAS_ASSIMP
-	// Find the node
-	aiNode* p_node = findNode(aNodeLabel);
-
-	// The node has been found
-	if (p_node)
-	{
-		// Create the rotation matrix
-		aiMatrix4x4 translation_matrix;
-
-		translation_matrix = aiMatrix4x4::Translation(
-				aiVector3t<float>(aTranslationVector[0], aTranslationVector[1], aTranslationVector[2]),
-				translation_matrix);
-
-		// Update the node's transformation matrix
-		p_node->mTransformation = p_node->mTransformation * translation_matrix;
-	}
-	// The node has not been found
-	else
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown node");
-	}
-#endif
-}
-
-
-//-------------------------------------------------------------------------------------------------
-MATRIX4 AssimpSceneGraphBinder::getTransformationMatrix(const char* aNodeLabel) const
-//-------------------------------------------------------------------------------------------------
-{
-	return (getNodeTransformationMatrix(aNodeLabel));
-}
-
-
-MATRIX4 AssimpSceneGraphBinder::getRootNodeTransformationMatrix() const
-{
-#ifdef HAS_ASSIMP
-	aiMatrix4x4 temp_matrix = m_p_scene->mRootNode->mTransformation;
-	temp_matrix.Transpose();
-
-	return MATRIX4(
-			temp_matrix.a1, temp_matrix.a2, temp_matrix.a3, temp_matrix.a4,
-			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
-			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
-			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
-#else
-    return MATRIX4();
-#endif
-}
-
-
-MATRIX4 AssimpSceneGraphBinder::getNodeTransformationMatrix(const char* aNodeLabel) const
-{
-#ifdef HAS_ASSIMP
-	aiMatrix4x4 temp_matrix = recursiveFindNode(m_p_scene->mRootNode, aNodeLabel)->mTransformation;
-	temp_matrix.Transpose();
-
-	return MATRIX4(
-			temp_matrix.a1, temp_matrix.a2, temp_matrix.a3, temp_matrix.a4,
-			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
-			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
-			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
-#else
-    return MATRIX4();
-#endif
-}
-
-
-void AssimpSceneGraphBinder::setRootNodeTransformationMatrix(const MATRIX4& aTransformationMatrix)
-{
-#ifdef HAS_ASSIMP       
-	if (m_p_scene)
-	{
-		if (m_p_scene->mRootNode)
-		{
-			m_p_scene->mRootNode->mTransformation.a1 = aTransformationMatrix.get4x4()[ 0];
-			m_p_scene->mRootNode->mTransformation.a2 = aTransformationMatrix.get4x4()[ 4];
-			m_p_scene->mRootNode->mTransformation.a3 = aTransformationMatrix.get4x4()[ 8];
-			m_p_scene->mRootNode->mTransformation.a4 = aTransformationMatrix.get4x4()[12];
-
-			m_p_scene->mRootNode->mTransformation.b1 = aTransformationMatrix.get4x4()[ 1];
-			m_p_scene->mRootNode->mTransformation.b2 = aTransformationMatrix.get4x4()[ 5];
-			m_p_scene->mRootNode->mTransformation.b3 = aTransformationMatrix.get4x4()[ 9];
-			m_p_scene->mRootNode->mTransformation.b4 = aTransformationMatrix.get4x4()[13];
-
-			m_p_scene->mRootNode->mTransformation.c1 = aTransformationMatrix.get4x4()[ 2];
-			m_p_scene->mRootNode->mTransformation.c2 = aTransformationMatrix.get4x4()[ 6];
-			m_p_scene->mRootNode->mTransformation.c3 = aTransformationMatrix.get4x4()[10];
-			m_p_scene->mRootNode->mTransformation.c4 = aTransformationMatrix.get4x4()[14];
-
-			m_p_scene->mRootNode->mTransformation.d1 = aTransformationMatrix.get4x4()[ 3];
-			m_p_scene->mRootNode->mTransformation.d2 = aTransformationMatrix.get4x4()[ 7];
-			m_p_scene->mRootNode->mTransformation.d3 = aTransformationMatrix.get4x4()[11];
-			m_p_scene->mRootNode->mTransformation.d4 = aTransformationMatrix.get4x4()[15];
-		}
-	}
-#endif
-}
-
-
-void AssimpSceneGraphBinder::setNodeTransformationMatrix(const char* aNodeLabel, const MATRIX4& aTransformationMatrix)
-{
-#ifdef HAS_ASSIMP       
-	if (m_p_scene)
-	{
-		aiNode* p_node = recursiveFindNode(m_p_scene->mRootNode, aNodeLabel);
-
-		if (p_node)
-		{
-			p_node->mTransformation.a1 = aTransformationMatrix.get4x4()[ 0];
-			p_node->mTransformation.a2 = aTransformationMatrix.get4x4()[ 4];
-			p_node->mTransformation.a3 = aTransformationMatrix.get4x4()[ 8];
-			p_node->mTransformation.a4 = aTransformationMatrix.get4x4()[12];
-
-			p_node->mTransformation.b1 = aTransformationMatrix.get4x4()[ 1];
-			p_node->mTransformation.b2 = aTransformationMatrix.get4x4()[ 5];
-			p_node->mTransformation.b3 = aTransformationMatrix.get4x4()[ 9];
-			p_node->mTransformation.b4 = aTransformationMatrix.get4x4()[13];
-
-			p_node->mTransformation.c1 = aTransformationMatrix.get4x4()[ 2];
-			p_node->mTransformation.c2 = aTransformationMatrix.get4x4()[ 6];
-			p_node->mTransformation.c3 = aTransformationMatrix.get4x4()[10];
-			p_node->mTransformation.c4 = aTransformationMatrix.get4x4()[14];
-
-			p_node->mTransformation.d1 = aTransformationMatrix.get4x4()[ 3];
-			p_node->mTransformation.d2 = aTransformationMatrix.get4x4()[ 7];
-			p_node->mTransformation.d3 = aTransformationMatrix.get4x4()[11];
-			p_node->mTransformation.d4 = aTransformationMatrix.get4x4()[15];
-		}
-	}
-#endif
-}
-
-
-void AssimpSceneGraphBinder::moveToCentre()
-{
-#ifdef HAS_ASSIMP       
-	aiMatrix4x4 scaling_to_unit = aiMatrix4x4::Scaling(aiVector3D(m_unit_of_length, m_unit_of_length, m_unit_of_length), scaling_to_unit);
-
-	VEC3 min_corner(std::numeric_limits<RATIONAL_NUMBER>::max(),
-			std::numeric_limits<RATIONAL_NUMBER>::max(),
-			std::numeric_limits<RATIONAL_NUMBER>::max());
-	VEC3 max_corner(-std::numeric_limits<RATIONAL_NUMBER>::max(),
-			-std::numeric_limits<RATIONAL_NUMBER>::max(),
-			-std::numeric_limits<RATIONAL_NUMBER>::max());
-
-	recursiveBoundingBoxBuild(m_p_scene->mRootNode, scaling_to_unit, min_corner, max_corner);
-
-	VEC3 translation_vector = -min_corner - (max_corner - min_corner) / 2.0;
-
-	aiMatrix4x4 translation_matrix;
-
-	translation_matrix = aiMatrix4x4::Translation(
-			aiVector3t<float>(translation_vector[0], translation_vector[1], translation_vector[2]),
-			translation_matrix);
-
-	m_p_scene->mRootNode->mTransformation = translation_matrix * m_p_scene->mRootNode->mTransformation;
-#endif
-}
-
-
-void AssimpSceneGraphBinder::moveToCenter()
-{
-	moveToCentre();
-}
-
-
-#ifdef HAS_ASSIMP
-//--------------------------------------------------------------------------
-const aiNode* AssimpSceneGraphBinder::findNode(const char* aNodeLabel) const
-//--------------------------------------------------------------------------
-{
-	return (recursiveFindNode(m_p_scene->mRootNode, aNodeLabel));
-}
-
-
-//---------------------------------------------------------------------------------
-const aiNode* AssimpSceneGraphBinder::findNode(const std::string& aNodeLabel) const
-//---------------------------------------------------------------------------------
-{
-	return (findNode(aNodeLabel.data()));
-}
-
-
-//--------------------------------------------------------------
-aiNode* AssimpSceneGraphBinder::findNode(const char* aNodeLabel)
-//--------------------------------------------------------------
-{
-	return (recursiveFindNode(m_p_scene->mRootNode, aNodeLabel));
-}
-
-
-//---------------------------------------------------------------------
-aiNode* AssimpSceneGraphBinder::findNode(const std::string& aNodeLabel)
-//---------------------------------------------------------------------
-{
-	return (findNode(aNodeLabel.data()));
-}
-
 
 void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGraphNode* apParent, aiMatrix4x4 tStack)
 {
 	std::string node_label = nd->mName.C_Str();
 	std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
 
+	// Keep track of the transformation matrices of parents without geometry
 	aiMatrix4x4 m =  nd->mTransformation ;
 	tStack = tStack * m;
+	m.Transpose();
 
 	aiMatrix4x4 temp_matrix = tStack;
 	temp_matrix.Transpose();
@@ -549,13 +270,14 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGr
 			GL_STATIC_DRAW);
 
 		node.getPolygonMesh().computeNormalVectors();
-		node.getPolygonMesh().setTransformationMatrix(modelling_matrix);
 
-		m_p_polygon_mesh_set[node_label] = node.getPolygonMesh();
+		node.setLocalTransformation(modelling_matrix);
+
+		// Keep track of the transformation matrices of parents without geometry
+		// => the transformation has been taken into account
+		// => reset the stack to the identity matrix
+		tStack = aiMatrix4x4();
 	}
-
-
-	//m_p_polygon_mesh_set[node_label] = node.getPolygonMesh();
 
 	// all children
 	for (unsigned int n=0; n < nd->mNumChildren; ++n)
@@ -565,138 +287,6 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGr
 }
 
 
-void AssimpSceneGraphBinder::recursiveUpdateMatrices(const aiNode* nd, aiMatrix4x4 tStack)
-{
-	std::string node_label = nd->mName.C_Str();
-	//std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
-
-	aiMatrix4x4 m =  nd->mTransformation ;
-	tStack = tStack * m;
-
-	aiMatrix4x4 temp_matrix = tStack;
-	temp_matrix.Transpose();
-
-	MATRIX4 modelling_matrix(
-			temp_matrix.a1, temp_matrix.a2, temp_matrix.a3, temp_matrix.a4,
-			temp_matrix.b1, temp_matrix.b2, temp_matrix.b3, temp_matrix.b4,
-			temp_matrix.c1, temp_matrix.c2, temp_matrix.c3, temp_matrix.c4,
-			temp_matrix.d1, temp_matrix.d2, temp_matrix.d3, temp_matrix.d4);
-
-	std::vector<float> p_vertex_set;
-
-	for (unsigned int n=0; n < nd->mNumMeshes; ++n)
-	{
-		if (nd->mMeshes)
-		{
-			m_p_polygon_mesh_set[node_label].setTransformationMatrix(modelling_matrix);
-		}
-	}
-
-	// all children
-	for (unsigned int n=0; n < nd->mNumChildren; ++n)
-	{
-		recursiveUpdateMatrices(nd->mChildren[n], tStack);
-	}
-}
-
-
-//-----------------------------------------------------------------------------
-const aiNode* AssimpSceneGraphBinder::recursiveFindNode(const aiNode* nd,
-														const char* aNodeLabel) const
-//-----------------------------------------------------------------------------
-{
-	const aiNode* p_node = 0;
-
-
-	//std::cout << nd->mName.C_Str() << "\t" <<  std::endl;
-
-	// The node has been found
-	if (!strcmp(nd->mName.C_Str(), aNodeLabel))
-	{
-		p_node = nd;
-	}
-	// The node has not been found
-	else
-	{
-		// all children
-		for (unsigned int n=0; n < nd->mNumChildren; ++n)
-		{
-			if (!p_node)
-			{
-				p_node = recursiveFindNode(nd->mChildren[n], aNodeLabel);
-			}
-		}
-	}
-
-	return (p_node);
-}
-
-
-//-----------------------------------------------------------------------
-aiNode* AssimpSceneGraphBinder::recursiveFindNode(aiNode* nd,
-												  const char* aNodeLabel)
-//-----------------------------------------------------------------------
-{
-	aiNode* p_node = 0;
-
-
-	//std::cout << nd->mName.C_Str() << "\t" <<  std::endl;
-
-	// The node has been found
-	if (!strcmp(nd->mName.C_Str(), aNodeLabel))
-	{
-		p_node = nd;
-	}
-	// The node has not been found
-	else
-	{
-		// all children
-		for (unsigned int n=0; n < nd->mNumChildren; ++n)
-		{
-			if (!p_node)
-			{
-				p_node = recursiveFindNode(nd->mChildren[n], aNodeLabel);
-			}
-		}
-	}
-
-	return (p_node);
-}
-
-
-void AssimpSceneGraphBinder::recursiveBoundingBoxBuild(const aiNode* nd, aiMatrix4x4 tStack, VEC3& aMinCorner, VEC3& aMaxCorner)
-{
-	std::string node_label = nd->mName.C_Str();
-	//std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
-
-	aiMatrix4x4 m =  nd->mTransformation ;
-	tStack = tStack * m;
-
-	for (unsigned int n=0; n < nd->mNumMeshes; ++n)
-	{
-		const aiMesh* mesh = m_p_scene->mMeshes[nd->mMeshes[n]];
-
-		for (int t = 0; t < mesh->mNumVertices; ++t)
-		{
-			aiVector3D vertex(tStack * mesh->mVertices[t]);
-
-			if (aMinCorner[0] > vertex.x) aMinCorner[0] = vertex.x;
-			if (aMinCorner[1] > vertex.y) aMinCorner[1] = vertex.y;
-			if (aMinCorner[2] > vertex.z) aMinCorner[2] = vertex.z;
-
-			if (aMaxCorner[0] < vertex.x) aMaxCorner[0] = vertex.x;
-			if (aMaxCorner[1] < vertex.y) aMaxCorner[1] = vertex.y;
-			if (aMaxCorner[2] < vertex.z) aMaxCorner[2] = vertex.z;
-		}
-	}
-
-
-	// all children
-	for (unsigned int n=0; n < nd->mNumChildren; ++n)
-	{
-		recursiveBoundingBoxBuild(nd->mChildren[n], tStack, aMinCorner, aMaxCorner);
-	}
-}
 
 #endif
 

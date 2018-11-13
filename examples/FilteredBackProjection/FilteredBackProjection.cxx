@@ -696,14 +696,6 @@ int main(int argc, char** argv)
         std::cerr << error.what() << std::endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -779,7 +771,7 @@ void quit()
 
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
@@ -1589,34 +1581,34 @@ void loadSTLFile()
     
         ite->getMaterial().setShininess(50);
 
-        if (min_corner.getX() > ite->getMinCorner().getX())
+        if (min_corner.getX() > ite->getLocalMinCorner().getX())
             {
-            min_corner.setX(ite->getMinCorner().getX());
+            min_corner.setX(ite->getLocalMinCorner().getX());
             }
 
-        if (min_corner.getY() > ite->getMinCorner().getY())
+        if (min_corner.getY() > ite->getLocalMinCorner().getY())
             {
-            min_corner.setY(ite->getMinCorner().getY());
+            min_corner.setY(ite->getLocalMinCorner().getY());
             }
 
-        if (min_corner.getZ() > ite->getMinCorner().getZ())
+        if (min_corner.getZ() > ite->getLocalMinCorner().getZ())
             {
-            min_corner.setZ(ite->getMinCorner().getZ());
+            min_corner.setZ(ite->getLocalMinCorner().getZ());
             }
 
-        if (max_corner.getX() < ite->getMaxCorner().getX())
+        if (max_corner.getX() < ite->getLocalMaxCorner().getX())
             {
-            max_corner.setX(ite->getMaxCorner().getX());
+            max_corner.setX(ite->getLocalMaxCorner().getX());
             }
 
-        if (max_corner.getY() < ite->getMaxCorner().getY())
+        if (max_corner.getY() < ite->getLocalMaxCorner().getY())
             {
-            max_corner.setY(ite->getMaxCorner().getY());
+            max_corner.setY(ite->getLocalMaxCorner().getY());
             }
 
-        if (max_corner.getZ() < ite->getMaxCorner().getZ())
+        if (max_corner.getZ() < ite->getLocalMaxCorner().getZ())
             {
-            max_corner.setZ(ite->getMaxCorner().getZ());
+            max_corner.setZ(ite->getLocalMaxCorner().getZ());
             }
         }
 
@@ -1710,6 +1702,9 @@ void loadXRaySimulator()
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

@@ -225,7 +225,7 @@ std::string getVersionOfSimpleGVXR()
 
 //--------------------------------------------------
 void setSourcePosition(double x, double y, double z,
-                       const char* aUnitOfLength)
+                       const std::string& aUnitOfLength)
 //--------------------------------------------------
 {
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -241,7 +241,7 @@ void setSourcePosition(double x, double y, double z,
 
 //----------------------------------------------------
 void setDetectorPosition(double x, double y, double z,
-                         const char* aUnitOfLength)
+                         const std::string& aUnitOfLength)
 //----------------------------------------------------
 {
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -284,7 +284,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 //--------------------------------------------------
 void setDetectorPixelSize(double aWidth,
 						  double aHeight,
-						  const char* aUnitOfLength)
+						  const std::string& aUnitOfLength)
 //--------------------------------------------------
 {
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -297,9 +297,9 @@ void setDetectorPixelSize(double aWidth,
 
 
 //------------------------------------------
-void loadMeshFile(const char* aLabel,
-                  const char* aFileName,
-                  const char* aUnitOfLength)
+void loadMeshFile(const std::string& aLabel,
+                  const std::string& aFileName,
+                  const std::string& aUnitOfLength)
 //------------------------------------------
 {
     // Initialise the X-ray renderer if needed and if possible
@@ -311,20 +311,23 @@ void loadMeshFile(const char* aLabel,
     	g_p_scene_graph.reset(new SceneGraphBinder());
     }
 
+    // Add a new node to the scenegraph
+    g_p_scene_graph->getNode("root")->addChild(aLabel);
+
     // Set the file name
-    g_p_scene_graph->getPolygonMeshSet()[aLabel].setFileName(aFileName);
+    g_p_scene_graph->getNode(aLabel)->getPolygonMesh().setFileName(aFileName);
     
     // Load the file
-    g_p_scene_graph->getPolygonMeshSet()[aLabel].loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
+    g_p_scene_graph->getNode(aLabel)->getPolygonMesh().loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
-    g_xray_renderer.addInnerSurface(&g_p_scene_graph->getPolygonMeshSet()[aLabel]);
+    g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
 }
 
 
 //--------------------------------------------
-void loadSceneGraph(const char* aFileName,
-        			const char* aUnitOfLength)
+void loadSceneGraph(const std::string& aFileName,
+        			const std::string& aUnitOfLength)
 //--------------------------------------------
 {
 	bool scene_graph_loaded = false;
@@ -353,11 +356,28 @@ void loadSceneGraph(const char* aFileName,
 	else
 	{
 		// Look for all the meshes in the scenegraph
-		for (std::map<string, gVirtualXRay::PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
-				ite != g_p_scene_graph->getPolygonMeshSet().end();
-				++ite)
+		std::vector<SceneGraphNode*> p_temp_pull;
+		p_temp_pull.push_back(g_p_scene_graph->getNode("root"));
+
+		while (p_temp_pull.size())
 		{
-			g_xray_renderer.addInnerSurface(&ite->second);
+			// Get the last node
+			SceneGraphNode* p_node = p_temp_pull.back();
+
+			// Remove the node
+			p_temp_pull.pop_back();
+
+			// Add its children
+			for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
+			{
+				p_temp_pull.push_back(&p_node->getChild(i));
+			}
+
+			// Add its geometry
+			if (p_node->getPolygonMesh().getVertexNumber())
+			{
+				g_xray_renderer.addInnerSurface(p_node);
+			}
 		}
 	}
 }
@@ -373,16 +393,23 @@ void emptyMesh(const std::string& aLabel,
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = PolygonMesh();
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-	g_p_scene_graph->addPolygonMesh(aLabel,
-	        g_p_scene_graph->getPolygonMeshSet()[aLabel],
-	        VEC3(),
-	        aParent);
+	if (p_node)
+	{
+		p_node->getPolygonMesh() = PolygonMesh();
+	}
+	else
+	{
+		g_p_scene_graph->addPolygonMesh(aLabel,
+				PolygonMesh(),
+		        VEC3(),
+		        aParent);
+	}
 }
 
 
-void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLength,
+void makeCube(const std::string& aLabel, double aLength, const std::string& aUnitOfLength,
         const std::string& aParent)
 {
 	// The scenegraph does not exist
@@ -392,12 +419,19 @@ void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLeng
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    g_p_scene_graph->addPolygonMesh(aLabel,
-            g_p_scene_graph->getPolygonMeshSet()[aLabel],
-            VEC3(),
-            aParent);
+	if (p_node)
+	{
+		p_node->getPolygonMesh() = CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT);
+	}
+	else
+	{
+		g_p_scene_graph->addPolygonMesh(aLabel,
+				CubeMesh<double>(aLength * getUnitOfLength(aUnitOfLength), GL_UNSIGNED_INT),
+		        VEC3(),
+		        aParent);
+	}
 }
 
 
@@ -405,7 +439,7 @@ void makeCylinder(const std::string& aLabel,
 		unsigned int aNumberOfSectors,
         double aHeight,
         double aRadius,
-		const char* aUnitOfLength,
+		const std::string& aUnitOfLength,
 		const std::string& aParent)
 {
 	// The scenegraph does not exist
@@ -415,21 +449,32 @@ void makeCylinder(const std::string& aLabel,
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	g_p_scene_graph->getPolygonMeshSet()[aLabel] = CylinderMesh<double>(aNumberOfSectors,
-	        aHeight  * getUnitOfLength(aUnitOfLength),
-	        aRadius  * getUnitOfLength(aUnitOfLength),
-			GL_UNSIGNED_INT);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    g_p_scene_graph->addPolygonMesh(aLabel,
-            g_p_scene_graph->getPolygonMeshSet()[aLabel],
-            VEC3(),
-            aParent);
+	if (p_node)
+	{
+		p_node->getPolygonMesh() = CylinderMesh<double>(aNumberOfSectors,
+		        aHeight  * getUnitOfLength(aUnitOfLength),
+		        aRadius  * getUnitOfLength(aUnitOfLength),
+				GL_UNSIGNED_INT);
+	}
+	else
+	{
+		g_p_scene_graph->addPolygonMesh(aLabel,
+				CylinderMesh<double>(aNumberOfSectors,
+					        aHeight  * getUnitOfLength(aUnitOfLength),
+					        aRadius  * getUnitOfLength(aUnitOfLength),
+							GL_UNSIGNED_INT),
+		        VEC3(),
+		        aParent);
+	}
 }
 
 
 void addMesh(const std::string& aDestination, const std::string& aSource)
 {
-	// The scenegraph does not exist
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+/*	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
 	{
 		// Create a scenegraph
@@ -452,12 +497,14 @@ void addMesh(const std::string& aDestination, const std::string& aSource)
 		{
 			ite_destination->second += ite_source->second;
 		}
-	}
+	}*/
 }
 
 
 void subtractMesh(const std::string& aDestination, const std::string& aSource)
 {
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+/*
 	// The scenegraph does not exist
 	if (!g_p_scene_graph.get())
 	{
@@ -481,10 +528,10 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource)
 		{
 			ite_destination->second -= ite_source->second;
 		}
-	}
+	}*/
 }
 
-
+/*
 //------------------------------
 vector<string> getMeshLabelSet()
 //------------------------------
@@ -536,7 +583,7 @@ std::string getMeshLabel(unsigned int i)
 
     return (output);
 }
-
+*/
 
 unsigned int getNumberOfChildren(const std::string& aLabel)
 {
@@ -600,17 +647,21 @@ void invertNormalVectors(const std::string& aLabel)
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	std::map<string, PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-	// Add the polygon mesh to the X-ray renderer
-	if (ite != g_p_scene_graph->getPolygonMeshSet().end())
+	// It has been found
+	if (p_node)
 	{
-		ite->second.invertNormalVectors();
+		// Invert the normal vectors
+		p_node->getPolygonMesh().invertNormalVectors();
 	}
 	else
 	{
 		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-	}}
+	}
+}
+
 
 //----------------------------------------------------------
 void addPolygonMeshAsInnerSurface(const std::string& aLabel)
@@ -623,12 +674,14 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-	// Add the polygon mesh to the X-ray renderer
-	if (ite != g_p_scene_graph->getPolygonMeshSet().end())
+	// It has been found
+	if (p_node)
 	{
-		g_xray_renderer.addInnerSurface(&(ite->second));
+		// Add the polygon mesh to the X-ray renderer
+		g_xray_renderer.addInnerSurface(p_node);
 	}
 	else
 	{
@@ -648,12 +701,14 @@ void addPolygonMeshAsOuterSurface(const std::string& aLabel)
     	g_p_scene_graph.reset(new SceneGraphBinder());
 	}
 
-	std::map<string, PolygonMesh>::const_iterator ite = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-	// Add the polygon mesh to the X-ray renderer
-	if (ite != g_p_scene_graph->getPolygonMeshSet().end())
+	// It has been found
+	if (p_node)
 	{
-		g_xray_renderer.addOuterSurface(&(ite->second));
+		// Add the polygon mesh to the X-ray renderer
+		g_xray_renderer.addOuterSurface(p_node);
 	}
 	else
 	{
@@ -693,7 +748,6 @@ void moveToCentre()
 	if (g_p_scene_graph.get())
 	{
 		g_p_scene_graph->moveToCentre();
-		g_p_scene_graph->updateMatrices();
 	}
 	else
 	{
@@ -711,24 +765,12 @@ void moveToCenter()
 
 
 //-----------------------------------
-void moveToCentre(const char* aLabel)
+void moveToCentre(const std::string& aLabel)
 //-----------------------------------
 {
 	if (g_p_scene_graph.get())
 	{
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
-
-		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-		{
-			// Move the mesh to the centre
-			g_p_scene_graph->getPolygonMeshSet()[aLabel].moveToCentre ();
-		}
-		// It has not been found
-		else
-		{
-			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-		}
+		g_p_scene_graph->moveToCentre(aLabel);
 	}
 	else
 	{
@@ -738,16 +780,17 @@ void moveToCentre(const char* aLabel)
 
 
 //-----------------------------------
-void moveToCenter(const char* aLabel)
+void moveToCenter(const std::string& aLabel)
 //-----------------------------------
 {
     moveToCentre(aLabel);
 }
 
 
-void scaleNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+void scaleNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength)
 {
-	if (g_p_scene_graph.get())
+    throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
+/*	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
 		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
@@ -768,22 +811,31 @@ void scaleNode(const char* aLabel, double x, double y, double z, const char* aUn
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}
+	}*/
 }
 
 
-void rotateNode(const char* aLabel, double angle, double x, double y, double z)
+void rotateNode(const std::string& aLabel, double angle, double x, double y, double z)
 {
 	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
 		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		if(p_node)
 		{
-			g_p_scene_graph->rotate(aLabel, angle, VEC3(x, y, z));
-			g_p_scene_graph->updateMatrices();
+			MATRIX4 rotation_matrix = MATRIX4::buildRotationMatrix(angle, x, y, z);
+
+			// Root node
+			if (p_node->getLabel() == "root")
+			{
+				p_node->setLocalTransformation(rotation_matrix * p_node->getLocalTransformationMatrix());
+			}
+			else
+			{
+				p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * rotation_matrix);
+			}
 		}
 		// It has not been found
 		else
@@ -798,9 +850,9 @@ void rotateNode(const char* aLabel, double angle, double x, double y, double z)
 }
 
 
-void translateNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+void translateNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength)
 {
-	if (g_p_scene_graph.get())
+/*	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
 		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
@@ -821,7 +873,7 @@ void translateNode(const char* aLabel, double x, double y, double z, const char*
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}
+	}*/
 }
 
 
@@ -831,7 +883,7 @@ void resetSceneTransformation()
 }
 
 
-void scaleScene(double x, double y, double z, const char* aUnitOfLength)
+void scaleScene(double x, double y, double z, const std::string& aUnitOfLength)
 {
 	// Move the scenegraph
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -846,7 +898,7 @@ void rotateScene(double angle, double x, double y, double z)
 }
 
 
-void translateScene(double x, double y, double z, const char* aUnitOfLength)
+void translateScene(double x, double y, double z, const std::string& aUnitOfLength)
 {
 	// Move the scenegraph
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -871,26 +923,32 @@ std::vector<std::vector<float> > getRootTransformationMatrix()
 }
 
 
-std::vector<std::vector<float> > getNodeTransformationMatrix(const char* aLabel)
+std::vector<std::vector<float> > getNodeTransformationMatrix(const std::string& aLabel)
 {
-	if (!g_p_scene_graph.get())
-	{
-		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The scenegraph is empty.");
-	}
+	MATRIX4 transformation;
 
 	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-		// It has not been found
-		if(search_mesh == g_p_scene_graph->getPolygonMeshSet().end())
+		// It has been found
+		if(p_node)
 		{
-			throw Exception(__FILE__, __FUNCTION__, __LINE__, string("The PolygonMesh ") + string(aLabel) + string(" not found in g_p_polygon_mesh_set."));
+			transformation = p_node->getLocalTransformationMatrix();
+		}
+		// It has not been found
+		else
+		{
+			cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
 		}
 	}
+	else
+	{
+		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+	}
 
-	return (gvxrMatrix2Vector(g_p_scene_graph->getNodeTransformationMatrix(aLabel)));
+	return (gvxrMatrix2Vector(transformation));
 }
 
 
@@ -913,17 +971,17 @@ void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix
 }
 
 
-void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix)
+void setNodeTransformationMatrix(const std::string& aLabel, const std::vector<std::vector<float> >& aMatrix)
 {
 	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+		SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
 		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		if(p_node)
 		{
-			g_p_scene_graph->setNodeTransformationMatrix(aLabel, Vector2gvxrMatrix(aMatrix));
+			p_node->setLocalTransformation(Vector2gvxrMatrix(aMatrix));
 		}
 		// It has not been found
 		else
@@ -939,17 +997,17 @@ void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vect
 
 
 //--------------------------------------
-void setHU(const char* aLabel, short HU)
+void setHU(const std::string& aLabel, short HU)
 //--------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
-    
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-    	g_p_scene_graph->getPolygonMeshSet()[aLabel].setHounsfieldValue (HU);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		// Set its properties
+		p_node->getPolygonMesh().setHounsfieldValue (HU);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -961,7 +1019,7 @@ void setHU(const char* aLabel, short HU)
 
 
 //--------------------------------------------------
-void setHounsfieldUnit(const char* aLabel, short HU)
+void setHounsfieldUnit(const std::string& aLabel, short HU)
 //--------------------------------------------------
 {
 	setHU(aLabel, HU);
@@ -969,7 +1027,7 @@ void setHounsfieldUnit(const char* aLabel, short HU)
 
 
 //---------------------------------------------------
-void setHounsfieldValue(const char* aLabel, short HU)
+void setHounsfieldValue(const std::string& aLabel, short HU)
 //---------------------------------------------------
 {
 	setHU(aLabel, HU);
@@ -977,17 +1035,17 @@ void setHounsfieldValue(const char* aLabel, short HU)
 
 
 //---------------------------------------------------
-void setElement(const char* aLabel, unsigned short Z)
+void setElement(const std::string& aLabel, unsigned short Z)
 //---------------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setElement(Z);
+	// It has been found
+	if (p_node)
+	{
+		// Set its properties
+		p_node->getPolygonMesh().setElement(Z);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -999,17 +1057,17 @@ void setElement(const char* aLabel, unsigned short Z)
 
 
 //-----------------------------------------------------------
-void setElement(const char* aLabel, const std::string& aName)
+void setElement(const std::string& aLabel, const std::string& aName)
 //-----------------------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setElement(aName);
+	// It has been found
+	if (p_node)
+	{
+		// Set its properties
+		p_node->getPolygonMesh().setElement(aName);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -1021,17 +1079,17 @@ void setElement(const char* aLabel, const std::string& aName)
 
 
 //-----------------------------------------------------------
-void setMixture(const char* aLabel, const std::string& aName)
+void setMixture(const std::string& aLabel, const std::string& aName)
 //-----------------------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setMixture(aName);
+	// It has been found
+	if (p_node)
+	{
+		// Set its properties
+		p_node->getPolygonMesh().setMixture(aName);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -1043,17 +1101,17 @@ void setMixture(const char* aLabel, const std::string& aName)
 
 
 //------------------------------------------------------------
-void setCompound(const char* aLabel, const std::string& aName)
+void setCompound(const std::string& aLabel, const std::string& aName)
 //------------------------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setCompound(aName);
+	// It has been found
+	if (p_node)
+	{
+		// Set its properties
+		p_node->getPolygonMesh().setCompound(aName);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -1065,54 +1123,55 @@ void setCompound(const char* aLabel, const std::string& aName)
 
 
 //-----------------------------------------------------
-void setMassAttenuationCoefficient(const char* aLabel,
+void setMassAttenuationCoefficient(const std::string& aLabel,
 		                           double aCoefficient,
-		                           const char* aUnit)
+		                           const std::string& aUnit)
 //-----------------------------------------------------
 {
-    if (strcmp(aUnit, "cm2/g") && strcmp(aUnit, "cm2.g-1"))
+    if (aUnit != "cm2/g" && aUnit != "cm2.g-1")
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of mass attenuation coefficient.");
     }
 
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setMassAttenuationCoefficient (aCoefficient * cm2 / g);
+        // It has been found
+        if (p_node)
+        {
+            // Set its properties
+        	p_node->getPolygonMesh().setMassAttenuationCoefficient (aCoefficient * cm2 / g);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
     else
     {
         cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-    }}
+    }
+}
 
 
 //-------------------------------------------------------
-void setLinearAttenuationCoefficient(const char* aLabel,
+void setLinearAttenuationCoefficient(const std::string& aLabel,
                                      double aCoefficient,
-		                             const char* aUnit)
+		                             const std::string& aUnit)
 //-------------------------------------------------------
 {
-    if (strcmp(aUnit, "cm-1"))
+    if (aUnit != "cm-1")
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of linear attenuation coefficient.");
     }
 
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+    SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
-    // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setLinearAttenuationCoefficient (aCoefficient / cm);
+        // It has been found
+        if (p_node)
+        {
+            // Set its properties
+        	p_node->getPolygonMesh().setLinearAttenuationCoefficient (aCoefficient / cm);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -1124,9 +1183,9 @@ void setLinearAttenuationCoefficient(const char* aLabel,
 
 
 //-----------------------------
-void setMu(const char* aLabel,
+void setMu(const std::string& aLabel,
 		   double aCoefficient,
-		   const char* aUnit)
+		   const std::string& aUnit)
 //-----------------------------
 {
 	setLinearAttenuationCoefficient(aLabel, aCoefficient, aUnit);
@@ -1134,25 +1193,25 @@ void setMu(const char* aLabel,
 
 
 //---------------------------------
-void setDensity(const char* aLabel,
+void setDensity(const std::string& aLabel,
 		        double aDensity,
-		        const char* aUnit)
+		        const std::string& aUnit)
 //---------------------------------
 {
-    if (strcmp(aUnit, "g/cm3") && strcmp(aUnit, "g.cm-3"))
+    if (aUnit != "g/cm3" && aUnit != "g.cm-3")
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of linear attenuation coefficient.");
     }
 
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
     // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    if (p_node)
     {
         // Set its properties
-        g_p_scene_graph->getPolygonMeshSet()[aLabel].setDensity(aDensity * g / cm3);
+    	p_node->getPolygonMesh().setDensity(aDensity * g / cm3);
         g_xray_renderer.needUpdateSurfacePerMaterial();
     }
     // It has not been found
@@ -1164,16 +1223,16 @@ void setDensity(const char* aLabel,
 
 
 //-----------------------------------
-double getDensity(const char* aLabel)
+double getDensity(const std::string& aLabel)
 //-----------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
     // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    if (p_node)
     {
-        return g_p_scene_graph->getPolygonMeshSet()[aLabel].getDensity() / (g / cm3);
+        return p_node->getPolygonMesh().getDensity() / (g / cm3);
     }
     // It has not been found
     else
@@ -1183,17 +1242,75 @@ double getDensity(const char* aLabel)
 }
 
 
+//-------------------------------------------------------------
+double getMassAttenuationCoefficient(const std::string& aLabel,
+									 double anEnergy,
+									 const std::string& aUnitOfEnergy)
+//-------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		return (p_node->getPolygonMesh().getPhotonCrossSection().getMassAttenuationCoefficient(anEnergy * getUnitOfEnergy(aUnitOfEnergy)) / (cm2 / g));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		return (0);
+	}
+}
+
+
+//---------------------------------------------------------------
+double getLinearAttenuationCoefficient(const std::string& aLabel,
+									   double anEnergy,
+									   const std::string& aUnitOfEnergy)
+//---------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		return (p_node->getPolygonMesh().getPhotonCrossSection().getLinearAttenuationCoefficient(anEnergy * getUnitOfEnergy(aUnitOfEnergy)) / (1.0 / cm));
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		return (0);
+	}
+}
+
+
 //----------------------------------------------
-std::string getMaterialLabel(const char* aLabel)
+std::string getMaterialLabel(const std::string& aLabel)
 //----------------------------------------------
 {
     // Find the mesh
-    auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
     // It has been found
-    if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+    if (p_node)
     {
-        return g_p_scene_graph->getPolygonMeshSet()[aLabel].getMaterialLabel();
+        return p_node->getPolygonMesh().getMaterialLabel();
     }
     // It has not been found
     else
@@ -1665,7 +1782,7 @@ void resetBeamSpectrum()
 
 //----------------------------------------------
 void setMonoChromatic(double anEnergy,
-		              const char* aUnitOfEnergy,
+		              const std::string& aUnitOfEnergy,
 					  double aNumberOfPhotons)
 //----------------------------------------------
 {
@@ -1676,7 +1793,7 @@ void setMonoChromatic(double anEnergy,
 
 //----------------------------------------------------
 void addEnergyBinToSpectrum(double anEnergy,
-							const char* aUnitOfEnergy,
+							const std::string& aUnitOfEnergy,
 							double aNumberOfPhotons)
 //----------------------------------------------------
 {
@@ -1688,14 +1805,71 @@ void addEnergyBinToSpectrum(double anEnergy,
 }
 
 
-//-------------------------------------------
-void saveLastXRayImage(const char* aFileName)
-//-------------------------------------------
+//--------------------------------------------------------
+void loadSpectrumFromTSV(const std::string& aFileName,
+						 const std::string& aUnitOfEnergy,
+						 bool aNormalisationFlag)
+//--------------------------------------------------------
+{
+    g_xray_beam.clear();
+
+    g_xray_beam.initialise(aFileName.c_str(),
+    		getUnitOfEnergy(aUnitOfEnergy));
+
+    if (aNormalisationFlag)
+    {
+    	g_xray_beam.normalise();
+    }
+
+    g_beam_energy_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//-----------------------------------------------------------------
+std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
+//-----------------------------------------------------------------
+{
+	std::vector<double> p_temp;
+
+	for (unsigned int i = 0;
+			i < g_xray_beam.getEnergyChannelNumber();
+			++i)
+	{
+		p_temp.push_back(g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / getUnitOfEnergy(aUnitOfEnergy));
+	}
+
+	return (p_temp);
+}
+
+
+//---------------------------------------------
+std::vector<double> getPhtotonCountEnergyBins()
+//---------------------------------------------
+{
+	std::vector<double> p_temp;
+
+	for (unsigned int i = 0;
+			i < g_xray_beam.getEnergyChannelNumber();
+			++i)
+	{
+		p_temp.push_back(g_xray_beam.getEnergyChannel(i).getPhotonNumber());
+	}
+
+	return (p_temp);
+}
+
+
+//--------------------------------------------------
+void saveLastXRayImage(const std::string& aFileName)
+//--------------------------------------------------
 {
     static int file_counter = 0;
     string file_name;
 
-    if (aFileName)
+    if (aFileName.size())
         file_name = aFileName;
     else
         file_name = "xray_image-" + to_string(file_counter++) + ".mha";
@@ -1704,14 +1878,14 @@ void saveLastXRayImage(const char* aFileName)
 }
 
 
-//-----------------------------------------
-void saveLastLBuffer(const char* aFileName)
-//-----------------------------------------
+//------------------------------------------------
+void saveLastLBuffer(const std::string& aFileName)
+//------------------------------------------------
 {
     static int file_counter = 0;
     string file_name;
 
-    if (aFileName)
+    if (aFileName.size())
         file_name = aFileName;
     else
         file_name = "lbuffer-" + to_string(file_counter++) + ".mha";
@@ -1720,14 +1894,14 @@ void saveLastLBuffer(const char* aFileName)
 }
 
 
-//------------------------------------------
-void saveLastSinogram(const char* aFileName)
-//------------------------------------------
+//-------------------------------------------------
+void saveLastSinogram(const std::string& aFileName)
+//-------------------------------------------------
 {
     static int file_counter = 0;
     string file_name;
 
-    if (aFileName)
+    if (aFileName.size())
         file_name = aFileName;
     else
         file_name = "sinogram-" + to_string(file_counter++) + ".mha";
@@ -1813,7 +1987,7 @@ std::vector<std::vector<float> > computeXRayImage()
 
 
 //--------------------------------------------
-std::vector<std::vector<float> > computeLBuffer(const char* aLabel)
+std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 //--------------------------------------------
 {
     // There is no OpenGL context
@@ -1829,13 +2003,13 @@ std::vector<std::vector<float> > computeLBuffer(const char* aLabel)
         if (g_p_scene_graph.get())
         {
             // Find the mesh
-            auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+        	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
             
             // It has been found
-            if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+            if (p_node)
             {
                 // Compute the L-buffer
-                g_xray_renderer.computeLBuffer(search_mesh->second, VEC3(), g_sample_rotation_matrix, false);
+                g_xray_renderer.computeLBuffer(*p_node, VEC3(), g_sample_rotation_matrix, false);
             }
             // It has not been found
             else
@@ -1864,7 +2038,7 @@ std::vector<std::vector<float> > computeLBuffer(const char* aLabel)
 }
 
 
-std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const std::string& aUnitOfLength,
         unsigned int aNumberOfAngle,
         double anAngleOffset)
 {
@@ -2227,50 +2401,69 @@ void render()
 
 
 
-        for (std::map<string, gVirtualXRay::PolygonMesh>::iterator ite = g_p_scene_graph->getPolygonMeshSet().begin();
-        		ite != g_p_scene_graph->getPolygonMeshSet().end();
-        		++ite)
-        {
-            // Store the current transformation matrix
-            pushModelViewMatrix();
+		// Look for all the meshes in the scenegraph
+		std::vector<SceneGraphNode*> p_temp_pull;
+		p_temp_pull.push_back(g_p_scene_graph->getNode("root"));
 
-            g_current_modelview_matrix *= ite->second.getTransformationMatrix();
+		while (p_temp_pull.size())
+		{
+			// Get the last node
+			SceneGraphNode* p_node = p_temp_pull.back();
 
-			applyModelViewMatrix();
+			// Remove the node
+			p_temp_pull.pop_back();
 
-			// Display the sample
-			if (g_display_wireframe)
+			// Add its children
+			for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
 			{
-				ite->second.displayWireFrame();
-			}
-			else
-			{
-				ite->second.display();
+				p_temp_pull.push_back(&p_node->getChild(i));
 			}
 
-
-			if (g_display_normal_vectors)
+			// Add its geometry
+			PolygonMesh& mesh = p_node->getPolygonMesh();
+			if (mesh.getVertexNumber())
 			{
-				int line_width;
-				glGetIntegerv(GL_LINE_WIDTH, &line_width);
-				glLineWidth(3);
+	            // Store the current transformation matrix
+	            pushModelViewMatrix();
 
-				if (ite->second.getVertexNormalNumber())
+	            g_current_modelview_matrix *= p_node->getWorldTransformationMatrix();
+
+				applyModelViewMatrix();
+
+				// Display the sample
+				if (g_display_wireframe)
 				{
-					ite->second.displayVertexNormal();
+					mesh.displayWireFrame();
+				}
+				else
+				{
+					mesh.display();
 				}
 
-				if (ite->second.getFaceNormalNumber())
+
+				if (g_display_normal_vectors)
 				{
-					ite->second.displayFaceNormal();
+					int line_width;
+					glGetIntegerv(GL_LINE_WIDTH, &line_width);
+					glLineWidth(3);
+
+					if (mesh.getVertexNormalNumber())
+					{
+						mesh.displayVertexNormal();
+					}
+
+					if (mesh.getFaceNormalNumber())
+					{
+						mesh.displayFaceNormal();
+					}
+					glLineWidth(line_width);
+
 				}
-				glLineWidth(line_width);
 
+				// Restore the current transformation matrix
+				popModelViewMatrix();
 			}
-
-			// Restore the current transformation matrix
-			popModelViewMatrix();
-        }
+		}
 
         // Restore the current transformation matrix
         popModelViewMatrix();
@@ -2609,23 +2802,23 @@ float radian2degree(float anAngle)
 
 
 //-----------------------------------------------
-double getUnitOfEnergy(const char* aUnitOfEnergy)
+double getUnitOfEnergy(const std::string& aUnitOfEnergy)
 //-----------------------------------------------
 {
 	double unit_of_energy = 0;
 
-    if (!strcmp(aUnitOfEnergy, "megaelectronvolt") ||
-            !strcmp(aUnitOfEnergy, "MeV"))
+    if (aUnitOfEnergy == "megaelectronvolt" ||
+            aUnitOfEnergy == "MeV")
     {
     	unit_of_energy = MeV;
     }
-    else if (!strcmp(aUnitOfEnergy, "kiloelectronvolt") ||
-            !strcmp(aUnitOfEnergy, "keV"))
+    else if (aUnitOfEnergy == "kiloelectronvolt" ||
+            aUnitOfEnergy == "keV")
     {
     	unit_of_energy = keV;
     }
-    else if (!strcmp(aUnitOfEnergy, "electronvolt") ||
-            !strcmp(aUnitOfEnergy, "eV"))
+    else if (aUnitOfEnergy == "electronvolt" ||
+            aUnitOfEnergy == "eV")
     {
     	unit_of_energy = eV;
     }
@@ -2640,56 +2833,57 @@ double getUnitOfEnergy(const char* aUnitOfEnergy)
 
 
 //-----------------------------------------------
-double getUnitOfLength(const char* aUnitOfLength)
+double getUnitOfLength(const std::string& aUnitOfLength)
 //-----------------------------------------------
 {
 	double unit_of_length = 0;
 
-	if (!strcmp(aUnitOfLength, "kilometer") ||
-			!strcmp(aUnitOfLength, "kilometre") ||
-			!strcmp(aUnitOfLength, "km"))
+
+	if ((aUnitOfLength == "kilometer") ||
+			(aUnitOfLength == "kilometre") ||
+			(aUnitOfLength == "km"))
 	{
 		unit_of_length = km;
 	}
-	else if (!strcmp(aUnitOfLength, "hectometer") ||
-			!strcmp(aUnitOfLength, "hectometre") ||
-			!strcmp(aUnitOfLength, "hm"))
+	else if ((aUnitOfLength == "hectometer") ||
+			(aUnitOfLength == "hectometre") ||
+			(aUnitOfLength == "hm"))
 	{
 		unit_of_length = hm;
 	}
-	else if (!strcmp(aUnitOfLength, "decameter") ||
-			!strcmp(aUnitOfLength, "decametre") ||
-			!strcmp(aUnitOfLength, "dam"))
+	else if ((aUnitOfLength == "decameter") ||
+			(aUnitOfLength == "decametre") ||
+			(aUnitOfLength == "dam"))
 	{
 		unit_of_length = dam;
 	}
-	else if (!strcmp(aUnitOfLength, "meter") ||
-			!strcmp(aUnitOfLength, "metre") ||
-			!strcmp(aUnitOfLength, "m"))
+	else if ((aUnitOfLength == "meter") ||
+			(aUnitOfLength == "metre") ||
+			(aUnitOfLength == "m"))
 	{
 		unit_of_length = m;
 	}
-	else if (!strcmp(aUnitOfLength, "decimeter") ||
-			!strcmp(aUnitOfLength, "decimetre") ||
-			!strcmp(aUnitOfLength, "dm"))
+	else if ((aUnitOfLength == "decimeter") ||
+			(aUnitOfLength == "decimetre") ||
+			(aUnitOfLength == "dm"))
 	{
 		unit_of_length = dm;
 	}
-	else if (!strcmp(aUnitOfLength, "centimeter") ||
-			!strcmp(aUnitOfLength, "centimetre") ||
-			!strcmp(aUnitOfLength, "cm"))
+	else if ((aUnitOfLength == "centimeter") ||
+			(aUnitOfLength == "centimetre") ||
+			(aUnitOfLength == "cm"))
 	{
 		unit_of_length = cm;
 	}
-	else if (!strcmp(aUnitOfLength, "millimeter") ||
-			!strcmp(aUnitOfLength, "millimetre") ||
-			!strcmp(aUnitOfLength, "mm"))
+	else if ((aUnitOfLength == "millimeter") ||
+			(aUnitOfLength == "millimetre") ||
+			(aUnitOfLength == "mm"))
 	{
 		unit_of_length = mm;
 	}
-	else if (!strcmp(aUnitOfLength, "micrometer") ||
-			!strcmp(aUnitOfLength, "micrometre") ||
-			!strcmp(aUnitOfLength, "um"))
+	else if ((aUnitOfLength == "micrometer") ||
+			(aUnitOfLength == "micrometre") ||
+			(aUnitOfLength == "um"))
 	{
 		unit_of_length = um;
 	}

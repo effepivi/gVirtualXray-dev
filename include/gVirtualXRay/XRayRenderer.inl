@@ -135,11 +135,44 @@ namespace gVirtualXRay {
     }
 
 
+    //------------------------------------------------------------------------
+    inline void XRayRenderer::addInnerSurface(const SceneGraphNode* apSurface)
+    //------------------------------------------------------------------------
+    {
+        m_p_inner_surface_set.push_back(const_cast<SceneGraphNode*>(apSurface));
+        m_surface_per_material_set_needs_update = true;
+    }
+
+
+    //------------------------------------------------------------------------
+    inline void XRayRenderer::addOuterSurface(const SceneGraphNode* apSurface)
+    //------------------------------------------------------------------------
+    {
+        m_p_outer_surface = const_cast<SceneGraphNode*>(apSurface);
+        m_surface_per_material_set_needs_update = true;
+    }
+
+
     //---------------------------------------------------------------------
     inline void XRayRenderer::addInnerSurface(const PolygonMesh* apSurface)
     //---------------------------------------------------------------------
     {
-        m_p_inner_surface_set.push_back(const_cast<PolygonMesh*>(apSurface));
+    	// Create a node label
+    	std::stringstream label;
+    	label << "node_" << m_p_internal_data_storage.size();
+
+    	// Add a new SceneGraphNode into the internal storage of the instance
+    	// (not an actual SceneGraphNode, but it allows backward compatibility)
+    	m_p_internal_data_storage.push_back(
+    			new SceneGraphNode(label.str(),
+    					const_cast<PolygonMesh*>(apSurface),
+						VEC3(),
+						NULL));
+
+    	// Use the node as an inner surface
+        m_p_inner_surface_set.push_back(m_p_internal_data_storage.back());
+
+        // Make sure the grouping per material is up-to-date when needed
         m_surface_per_material_set_needs_update = true;
     }
 
@@ -148,7 +181,23 @@ namespace gVirtualXRay {
     inline void XRayRenderer::addOuterSurface(const PolygonMesh* apSurface)
     //---------------------------------------------------------------------
     {
-        m_p_outer_surface = const_cast<PolygonMesh*>(apSurface);
+    	// Create a node label
+    	std::stringstream label;
+    	label << "node_" << m_p_internal_data_storage.size();
+
+    	// Add a new SceneGraphNode into the internal storage of the instance
+    	// (not an actual SceneGraphNode, but it allows backward compatibility)
+    	m_p_internal_data_storage.push_back(
+    			new SceneGraphNode(label.str(),
+    					const_cast<PolygonMesh*>(apSurface),
+						VEC3(),
+						NULL));
+
+    	// Use the node as an outer surface
+    	m_p_outer_surface = m_p_internal_data_storage.back();
+
+        // Make sure the grouping per material is up-to-date when needed
+        m_surface_per_material_set_needs_update = true;
     }
 
 
@@ -158,6 +207,26 @@ namespace gVirtualXRay {
     {
         m_p_inner_surface_set.clear();
         m_surface_per_material_set_needs_update = true;
+
+        std::vector<std::vector<SceneGraphNode*>::iterator> waiting_list;
+
+        for (std::vector<SceneGraphNode*>::iterator ite = m_p_internal_data_storage.begin();
+        		ite != m_p_internal_data_storage.end();
+        		++ite)
+        {
+        	if (*ite != m_p_outer_surface)
+        	{
+        		delete *ite;
+        		waiting_list.push_back(ite);
+        	}
+        }
+
+        for (std::vector<std::vector<SceneGraphNode*>::iterator>::reverse_iterator ite = waiting_list.rbegin();
+        		ite != waiting_list.rend();
+        		++ite)
+        {
+        	m_p_internal_data_storage.erase(*ite);
+        }
     }
 
 
@@ -165,6 +234,26 @@ namespace gVirtualXRay {
     inline void XRayRenderer::removeOuterSurface()
     //--------------------------------------------
     {
+        std::vector<std::vector<SceneGraphNode*>::iterator> waiting_list;
+
+        for (std::vector<SceneGraphNode*>::iterator ite = m_p_internal_data_storage.begin();
+        		ite != m_p_internal_data_storage.end();
+        		++ite)
+        {
+        	if (*ite == m_p_outer_surface)
+        	{
+        		delete *ite;
+        		waiting_list.push_back(ite);
+        	}
+        }
+
+        for (std::vector<std::vector<SceneGraphNode*>::iterator>::reverse_iterator ite = waiting_list.rbegin();
+        		ite != waiting_list.rend();
+        		++ite)
+        {
+        	m_p_internal_data_storage.erase(*ite);
+        }
+
         m_p_outer_surface = 0;
     }
 

@@ -71,7 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 
 #define BOOST_TEST_MODULE TestPhantomMonoChromatic
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -90,6 +90,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __Units_h
 #include "gVirtualXRay/Units.h"
+#endif
+
+#ifndef __SceneGraphNode_h
+#include "gVirtualXRay/SceneGraphNode.h"
 #endif
 
 #ifndef __CylinderMesh_h
@@ -173,6 +177,7 @@ VEC3 g_source_position(   0.0, 0.0, -50.0 * cm);
 VEC3 g_detector_position( 0.0, 0.0,  50.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 
+SceneGraphNode g_scene_graph("root", NULL);
 CylinderMesh<GLdouble> g_cylinder;
 SphereMesh g_sphere_0;
 SphereMesh g_sphere_1;

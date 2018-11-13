@@ -206,30 +206,6 @@ inline void XRayBeam::initialise(const char* aFileName,
 		// Store the new spectrum
 		m_beam_spectrum = new_beam_spectrum;
 	}
-	
-	// Get the min and max energy
-	double min_energy(FLT_MAX);
-	double max_energy(-FLT_MAX);
-	for (std::vector<SpectrumRecord>::const_iterator ite(m_beam_spectrum.begin());
-		ite != m_beam_spectrum.end();
-		++ite)
-	{
-		double photon_number(ite->m_photon_number);
-		double photon_energy(ite->m_energy);
-		double bin_energy(photon_energy * photon_number);
-		
-		if (min_energy > bin_energy) min_energy = bin_energy;
-		if (max_energy < bin_energy) max_energy = bin_energy;
-	}
-	
-	// Normalise the beam energy
-	double range(max_energy - min_energy);
-	for (std::vector<SpectrumRecord>::iterator ite(m_beam_spectrum.begin());
-		ite != m_beam_spectrum.end();
-		++ite)
-	{
-		ite->m_photon_number /= range;
-	}
 }
 
 
