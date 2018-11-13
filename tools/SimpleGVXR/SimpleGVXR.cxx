@@ -225,7 +225,7 @@ std::string getVersionOfSimpleGVXR()
 
 //--------------------------------------------------
 void setSourcePosition(double x, double y, double z,
-                       const char* aUnitOfLength)
+                       const std::string& aUnitOfLength)
 //--------------------------------------------------
 {
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -241,7 +241,7 @@ void setSourcePosition(double x, double y, double z,
 
 //----------------------------------------------------
 void setDetectorPosition(double x, double y, double z,
-                         const char* aUnitOfLength)
+                         const std::string& aUnitOfLength)
 //----------------------------------------------------
 {
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -284,7 +284,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 //--------------------------------------------------
 void setDetectorPixelSize(double aWidth,
 						  double aHeight,
-						  const char* aUnitOfLength)
+						  const std::string& aUnitOfLength)
 //--------------------------------------------------
 {
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -297,9 +297,9 @@ void setDetectorPixelSize(double aWidth,
 
 
 //------------------------------------------
-void loadMeshFile(const char* aLabel,
-                  const char* aFileName,
-                  const char* aUnitOfLength)
+void loadMeshFile(const std::string& aLabel,
+                  const std::string& aFileName,
+                  const std::string& aUnitOfLength)
 //------------------------------------------
 {
     // Initialise the X-ray renderer if needed and if possible
@@ -326,8 +326,8 @@ void loadMeshFile(const char* aLabel,
 
 
 //--------------------------------------------
-void loadSceneGraph(const char* aFileName,
-        			const char* aUnitOfLength)
+void loadSceneGraph(const std::string& aFileName,
+        			const std::string& aUnitOfLength)
 //--------------------------------------------
 {
 	bool scene_graph_loaded = false;
@@ -409,7 +409,7 @@ void emptyMesh(const std::string& aLabel,
 }
 
 
-void makeCube(const std::string& aLabel, double aLength, const char* aUnitOfLength,
+void makeCube(const std::string& aLabel, double aLength, const std::string& aUnitOfLength,
         const std::string& aParent)
 {
 	// The scenegraph does not exist
@@ -439,7 +439,7 @@ void makeCylinder(const std::string& aLabel,
 		unsigned int aNumberOfSectors,
         double aHeight,
         double aRadius,
-		const char* aUnitOfLength,
+		const std::string& aUnitOfLength,
 		const std::string& aParent)
 {
 	// The scenegraph does not exist
@@ -765,7 +765,7 @@ void moveToCenter()
 
 
 //-----------------------------------
-void moveToCentre(const char* aLabel)
+void moveToCentre(const std::string& aLabel)
 //-----------------------------------
 {
 	if (g_p_scene_graph.get())
@@ -780,14 +780,14 @@ void moveToCentre(const char* aLabel)
 
 
 //-----------------------------------
-void moveToCenter(const char* aLabel)
+void moveToCenter(const std::string& aLabel)
 //-----------------------------------
 {
     moveToCentre(aLabel);
 }
 
 
-void scaleNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+void scaleNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength)
 {
     throw Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
 /*	if (g_p_scene_graph.get())
@@ -815,7 +815,7 @@ void scaleNode(const char* aLabel, double x, double y, double z, const char* aUn
 }
 
 
-void rotateNode(const char* aLabel, double angle, double x, double y, double z)
+void rotateNode(const std::string& aLabel, double angle, double x, double y, double z)
 {
 	if (g_p_scene_graph.get())
 	{
@@ -850,7 +850,7 @@ void rotateNode(const char* aLabel, double angle, double x, double y, double z)
 }
 
 
-void translateNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength)
+void translateNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength)
 {
 /*	if (g_p_scene_graph.get())
 	{
@@ -883,7 +883,7 @@ void resetSceneTransformation()
 }
 
 
-void scaleScene(double x, double y, double z, const char* aUnitOfLength)
+void scaleScene(double x, double y, double z, const std::string& aUnitOfLength)
 {
 	// Move the scenegraph
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -898,7 +898,7 @@ void rotateScene(double angle, double x, double y, double z)
 }
 
 
-void translateScene(double x, double y, double z, const char* aUnitOfLength)
+void translateScene(double x, double y, double z, const std::string& aUnitOfLength)
 {
 	// Move the scenegraph
 	double unit_of_length = getUnitOfLength(aUnitOfLength);
@@ -923,7 +923,7 @@ std::vector<std::vector<float> > getRootTransformationMatrix()
 }
 
 
-std::vector<std::vector<float> > getNodeTransformationMatrix(const char* aLabel)
+std::vector<std::vector<float> > getNodeTransformationMatrix(const std::string& aLabel)
 {
 	MATRIX4 transformation;
 
@@ -971,7 +971,7 @@ void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix
 }
 
 
-void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix)
+void setNodeTransformationMatrix(const std::string& aLabel, const std::vector<std::vector<float> >& aMatrix)
 {
 	if (g_p_scene_graph.get())
 	{
@@ -997,7 +997,7 @@ void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vect
 
 
 //--------------------------------------
-void setHU(const char* aLabel, short HU)
+void setHU(const std::string& aLabel, short HU)
 //--------------------------------------
 {
     // Find the mesh
@@ -1019,7 +1019,7 @@ void setHU(const char* aLabel, short HU)
 
 
 //--------------------------------------------------
-void setHounsfieldUnit(const char* aLabel, short HU)
+void setHounsfieldUnit(const std::string& aLabel, short HU)
 //--------------------------------------------------
 {
 	setHU(aLabel, HU);
@@ -1027,7 +1027,7 @@ void setHounsfieldUnit(const char* aLabel, short HU)
 
 
 //---------------------------------------------------
-void setHounsfieldValue(const char* aLabel, short HU)
+void setHounsfieldValue(const std::string& aLabel, short HU)
 //---------------------------------------------------
 {
 	setHU(aLabel, HU);
@@ -1035,7 +1035,7 @@ void setHounsfieldValue(const char* aLabel, short HU)
 
 
 //---------------------------------------------------
-void setElement(const char* aLabel, unsigned short Z)
+void setElement(const std::string& aLabel, unsigned short Z)
 //---------------------------------------------------
 {
     // Find the mesh
@@ -1057,7 +1057,7 @@ void setElement(const char* aLabel, unsigned short Z)
 
 
 //-----------------------------------------------------------
-void setElement(const char* aLabel, const std::string& aName)
+void setElement(const std::string& aLabel, const std::string& aName)
 //-----------------------------------------------------------
 {
     // Find the mesh
@@ -1079,7 +1079,7 @@ void setElement(const char* aLabel, const std::string& aName)
 
 
 //-----------------------------------------------------------
-void setMixture(const char* aLabel, const std::string& aName)
+void setMixture(const std::string& aLabel, const std::string& aName)
 //-----------------------------------------------------------
 {
     // Find the mesh
@@ -1101,7 +1101,7 @@ void setMixture(const char* aLabel, const std::string& aName)
 
 
 //------------------------------------------------------------
-void setCompound(const char* aLabel, const std::string& aName)
+void setCompound(const std::string& aLabel, const std::string& aName)
 //------------------------------------------------------------
 {
     // Find the mesh
@@ -1123,12 +1123,12 @@ void setCompound(const char* aLabel, const std::string& aName)
 
 
 //-----------------------------------------------------
-void setMassAttenuationCoefficient(const char* aLabel,
+void setMassAttenuationCoefficient(const std::string& aLabel,
 		                           double aCoefficient,
-		                           const char* aUnit)
+		                           const std::string& aUnit)
 //-----------------------------------------------------
 {
-    if (strcmp(aUnit, "cm2/g") && strcmp(aUnit, "cm2.g-1"))
+    if (aUnit != "cm2/g" && aUnit != "cm2.g-1")
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of mass attenuation coefficient.");
@@ -1148,16 +1148,17 @@ void setMassAttenuationCoefficient(const char* aLabel,
     else
     {
         cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
-    }}
+    }
+}
 
 
 //-------------------------------------------------------
-void setLinearAttenuationCoefficient(const char* aLabel,
+void setLinearAttenuationCoefficient(const std::string& aLabel,
                                      double aCoefficient,
-		                             const char* aUnit)
+		                             const std::string& aUnit)
 //-------------------------------------------------------
 {
-    if (strcmp(aUnit, "cm-1"))
+    if (aUnit != "cm-1")
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of linear attenuation coefficient.");
@@ -1182,9 +1183,9 @@ void setLinearAttenuationCoefficient(const char* aLabel,
 
 
 //-----------------------------
-void setMu(const char* aLabel,
+void setMu(const std::string& aLabel,
 		   double aCoefficient,
-		   const char* aUnit)
+		   const std::string& aUnit)
 //-----------------------------
 {
 	setLinearAttenuationCoefficient(aLabel, aCoefficient, aUnit);
@@ -1192,12 +1193,12 @@ void setMu(const char* aLabel,
 
 
 //---------------------------------
-void setDensity(const char* aLabel,
+void setDensity(const std::string& aLabel,
 		        double aDensity,
-		        const char* aUnit)
+		        const std::string& aUnit)
 //---------------------------------
 {
-    if (strcmp(aUnit, "g/cm3") && strcmp(aUnit, "g.cm-3"))
+    if (aUnit != "g/cm3" && aUnit != "g.cm-3")
     {
 		throw Exception(__FILE__, __FUNCTION__, __LINE__,
 			"ERROR: Unknown unit of linear attenuation coefficient.");
@@ -1222,7 +1223,7 @@ void setDensity(const char* aLabel,
 
 
 //-----------------------------------
-double getDensity(const char* aLabel)
+double getDensity(const std::string& aLabel)
 //-----------------------------------
 {
     // Find the mesh
@@ -1242,9 +1243,9 @@ double getDensity(const char* aLabel)
 
 
 //-------------------------------------------------------------
-double getMassAttenuationCoefficient(const char* aLabel,
+double getMassAttenuationCoefficient(const std::string& aLabel,
 									 double anEnergy,
-									 const char* aUnitOfEnergy)
+									 const std::string& aUnitOfEnergy)
 //-------------------------------------------------------------
 {
 	// The scenegraph does not exist
@@ -1271,9 +1272,9 @@ double getMassAttenuationCoefficient(const char* aLabel,
 
 
 //---------------------------------------------------------------
-double getLinearAttenuationCoefficient(const char* aLabel,
+double getLinearAttenuationCoefficient(const std::string& aLabel,
 									   double anEnergy,
-									   const char* aUnitOfEnergy)
+									   const std::string& aUnitOfEnergy)
 //---------------------------------------------------------------
 {
 	// The scenegraph does not exist
@@ -1300,7 +1301,7 @@ double getLinearAttenuationCoefficient(const char* aLabel,
 
 
 //----------------------------------------------
-std::string getMaterialLabel(const char* aLabel)
+std::string getMaterialLabel(const std::string& aLabel)
 //----------------------------------------------
 {
     // Find the mesh
@@ -1781,7 +1782,7 @@ void resetBeamSpectrum()
 
 //----------------------------------------------
 void setMonoChromatic(double anEnergy,
-		              const char* aUnitOfEnergy,
+		              const std::string& aUnitOfEnergy,
 					  double aNumberOfPhotons)
 //----------------------------------------------
 {
@@ -1792,7 +1793,7 @@ void setMonoChromatic(double anEnergy,
 
 //----------------------------------------------------
 void addEnergyBinToSpectrum(double anEnergy,
-							const char* aUnitOfEnergy,
+							const std::string& aUnitOfEnergy,
 							double aNumberOfPhotons)
 //----------------------------------------------------
 {
@@ -1804,14 +1805,37 @@ void addEnergyBinToSpectrum(double anEnergy,
 }
 
 
-//-------------------------------------------
-void saveLastXRayImage(const char* aFileName)
-//-------------------------------------------
+//--------------------------------------------------------
+void loadSpectrumFromTSV(const std::string& aFileName,
+						 const std::string& aUnitOfEnergy,
+						 bool aNormalisationFlag)
+//--------------------------------------------------------
+{
+    g_xray_beam.clear();
+
+    g_xray_beam.initialise(aFileName.c_str(),
+    		getUnitOfEnergy(aUnitOfEnergy));
+
+    if (aNormalisationFlag)
+    {
+    	g_xray_beam.normalise();
+    }
+
+    g_beam_energy_initialised = true;
+
+    // Initialise the X-ray renderer if needed and if possible
+    initialiseXRayRenderer();
+}
+
+
+//--------------------------------------------------
+void saveLastXRayImage(const std::string& aFileName)
+//--------------------------------------------------
 {
     static int file_counter = 0;
     string file_name;
 
-    if (aFileName)
+    if (aFileName.size())
         file_name = aFileName;
     else
         file_name = "xray_image-" + to_string(file_counter++) + ".mha";
@@ -1820,14 +1844,14 @@ void saveLastXRayImage(const char* aFileName)
 }
 
 
-//-----------------------------------------
-void saveLastLBuffer(const char* aFileName)
-//-----------------------------------------
+//------------------------------------------------
+void saveLastLBuffer(const std::string& aFileName)
+//------------------------------------------------
 {
     static int file_counter = 0;
     string file_name;
 
-    if (aFileName)
+    if (aFileName.size())
         file_name = aFileName;
     else
         file_name = "lbuffer-" + to_string(file_counter++) + ".mha";
@@ -1836,14 +1860,14 @@ void saveLastLBuffer(const char* aFileName)
 }
 
 
-//------------------------------------------
-void saveLastSinogram(const char* aFileName)
-//------------------------------------------
+//-------------------------------------------------
+void saveLastSinogram(const std::string& aFileName)
+//-------------------------------------------------
 {
     static int file_counter = 0;
     string file_name;
 
-    if (aFileName)
+    if (aFileName.size())
         file_name = aFileName;
     else
         file_name = "sinogram-" + to_string(file_counter++) + ".mha";
@@ -1929,7 +1953,7 @@ std::vector<std::vector<float> > computeXRayImage()
 
 
 //--------------------------------------------
-std::vector<std::vector<float> > computeLBuffer(const char* aLabel)
+std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 //--------------------------------------------
 {
     // There is no OpenGL context
@@ -1980,7 +2004,7 @@ std::vector<std::vector<float> > computeLBuffer(const char* aLabel)
 }
 
 
-std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const std::string& aUnitOfLength,
         unsigned int aNumberOfAngle,
         double anAngleOffset)
 {
@@ -2744,23 +2768,23 @@ float radian2degree(float anAngle)
 
 
 //-----------------------------------------------
-double getUnitOfEnergy(const char* aUnitOfEnergy)
+double getUnitOfEnergy(const std::string& aUnitOfEnergy)
 //-----------------------------------------------
 {
 	double unit_of_energy = 0;
 
-    if (!strcmp(aUnitOfEnergy, "megaelectronvolt") ||
-            !strcmp(aUnitOfEnergy, "MeV"))
+    if (aUnitOfEnergy == "megaelectronvolt" ||
+            aUnitOfEnergy == "MeV")
     {
     	unit_of_energy = MeV;
     }
-    else if (!strcmp(aUnitOfEnergy, "kiloelectronvolt") ||
-            !strcmp(aUnitOfEnergy, "keV"))
+    else if (aUnitOfEnergy == "kiloelectronvolt" ||
+            aUnitOfEnergy == "keV")
     {
     	unit_of_energy = keV;
     }
-    else if (!strcmp(aUnitOfEnergy, "electronvolt") ||
-            !strcmp(aUnitOfEnergy, "eV"))
+    else if (aUnitOfEnergy == "electronvolt" ||
+            aUnitOfEnergy == "eV")
     {
     	unit_of_energy = eV;
     }
@@ -2775,56 +2799,57 @@ double getUnitOfEnergy(const char* aUnitOfEnergy)
 
 
 //-----------------------------------------------
-double getUnitOfLength(const char* aUnitOfLength)
+double getUnitOfLength(const std::string& aUnitOfLength)
 //-----------------------------------------------
 {
 	double unit_of_length = 0;
 
-	if (!strcmp(aUnitOfLength, "kilometer") ||
-			!strcmp(aUnitOfLength, "kilometre") ||
-			!strcmp(aUnitOfLength, "km"))
+
+	if ((aUnitOfLength == "kilometer") ||
+			(aUnitOfLength == "kilometre") ||
+			(aUnitOfLength == "km"))
 	{
 		unit_of_length = km;
 	}
-	else if (!strcmp(aUnitOfLength, "hectometer") ||
-			!strcmp(aUnitOfLength, "hectometre") ||
-			!strcmp(aUnitOfLength, "hm"))
+	else if ((aUnitOfLength == "hectometer") ||
+			(aUnitOfLength == "hectometre") ||
+			(aUnitOfLength == "hm"))
 	{
 		unit_of_length = hm;
 	}
-	else if (!strcmp(aUnitOfLength, "decameter") ||
-			!strcmp(aUnitOfLength, "decametre") ||
-			!strcmp(aUnitOfLength, "dam"))
+	else if ((aUnitOfLength == "decameter") ||
+			(aUnitOfLength == "decametre") ||
+			(aUnitOfLength == "dam"))
 	{
 		unit_of_length = dam;
 	}
-	else if (!strcmp(aUnitOfLength, "meter") ||
-			!strcmp(aUnitOfLength, "metre") ||
-			!strcmp(aUnitOfLength, "m"))
+	else if ((aUnitOfLength == "meter") ||
+			(aUnitOfLength == "metre") ||
+			(aUnitOfLength == "m"))
 	{
 		unit_of_length = m;
 	}
-	else if (!strcmp(aUnitOfLength, "decimeter") ||
-			!strcmp(aUnitOfLength, "decimetre") ||
-			!strcmp(aUnitOfLength, "dm"))
+	else if ((aUnitOfLength == "decimeter") ||
+			(aUnitOfLength == "decimetre") ||
+			(aUnitOfLength == "dm"))
 	{
 		unit_of_length = dm;
 	}
-	else if (!strcmp(aUnitOfLength, "centimeter") ||
-			!strcmp(aUnitOfLength, "centimetre") ||
-			!strcmp(aUnitOfLength, "cm"))
+	else if ((aUnitOfLength == "centimeter") ||
+			(aUnitOfLength == "centimetre") ||
+			(aUnitOfLength == "cm"))
 	{
 		unit_of_length = cm;
 	}
-	else if (!strcmp(aUnitOfLength, "millimeter") ||
-			!strcmp(aUnitOfLength, "millimetre") ||
-			!strcmp(aUnitOfLength, "mm"))
+	else if ((aUnitOfLength == "millimeter") ||
+			(aUnitOfLength == "millimetre") ||
+			(aUnitOfLength == "mm"))
 	{
 		unit_of_length = mm;
 	}
-	else if (!strcmp(aUnitOfLength, "micrometer") ||
-			!strcmp(aUnitOfLength, "micrometre") ||
-			!strcmp(aUnitOfLength, "um"))
+	else if ((aUnitOfLength == "micrometer") ||
+			(aUnitOfLength == "micrometre") ||
+			(aUnitOfLength == "um"))
 	{
 		unit_of_length = um;
 	}

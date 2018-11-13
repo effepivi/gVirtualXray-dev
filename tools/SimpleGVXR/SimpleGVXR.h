@@ -129,7 +129,7 @@ std::string getVersionOfSimpleGVXR();
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void setSourcePosition(double x, double y, double z, const char* aUnitOfLength);
+void setSourcePosition(double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void setSourcePosition(double x, double y, double z, const char* aUnitOfLength);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void setDetectorPosition(double x, double y, double z, const char* aUnitOfLength);
+void setDetectorPosition(double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight);
 //------------------------------------------------------------------------------
 void setDetectorPixelSize(double aWidth,
 						  double aHeight,
-						  const char* aUnitOfLength);
+						  const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -214,9 +214,9 @@ void setDetectorPixelSize(double aWidth,
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void loadMeshFile(const char* aLabel,
-                  const char* aFileName,
-                  const char* aUnitOfLength);
+void loadMeshFile(const std::string& aLabel,
+                  const std::string& aFileName,
+                  const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -236,8 +236,8 @@ void loadMeshFile(const char* aLabel,
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void loadSceneGraph(const char* aFileName,
-        			const char* aUnitOfLength);
+void loadSceneGraph(const std::string& aFileName,
+        			const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ void emptyMesh(const std::string& aLabel,
 //------------------------------------------------------------------------------
 void makeCube(const std::string& aLabel,
         double aLength = 1.0,
-        const char* aUnitOfLength = "cm",
+        const std::string& aUnitOfLength = "cm",
         const std::string& aParent = "root");
 
 
@@ -304,7 +304,7 @@ void makeCylinder(const std::string& aLabel,
 		unsigned int aNumberOfSectors = 10,
         double aHeight = 1.0,
         double aRadius = 0.5,
-		const char* aUnitOfLength = "cm",
+		const std::string& aUnitOfLength = "cm",
         const std::string& aParent = "root");
 
 
@@ -441,7 +441,7 @@ void moveToCentre();
  *  @param aLabel:	the label of the polygon mesh in the scenegraph
  */
 //------------------------------------------------------------------------------
-void moveToCenter(const char* aLabel);
+void moveToCenter(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -450,7 +450,7 @@ void moveToCenter(const char* aLabel);
  *  @param aLabel:	the label of the polygon mesh in the scenegraph
  */
 //------------------------------------------------------------------------------
-void moveToCentre(const char* aLabel);
+void moveToCentre(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -472,7 +472,7 @@ void moveToCentre(const char* aLabel);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void scaleNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength);
+void scaleNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -485,7 +485,7 @@ void scaleNode(const char* aLabel, double x, double y, double z, const char* aUn
  *  @param z:   the component of the rotation vector along the Z-axis
  */
 //------------------------------------------------------------------------------
-void rotateNode(const char* aLabel, double anAngle, double x, double y, double z);
+void rotateNode(const std::string& aLabel, double anAngle, double x, double y, double z);
 
 
 //------------------------------------------------------------------------------
@@ -507,7 +507,7 @@ void rotateNode(const char* aLabel, double anAngle, double x, double y, double z
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void translateNode(const char* aLabel, double x, double y, double z, const char* aUnitOfLength);
+void translateNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -534,7 +534,7 @@ void resetSceneTransformation();
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void scaleScene(double x, double y, double z, const char* aUnitOfLength);
+void scaleScene(double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -567,7 +567,7 @@ void rotateScene(double anAngle, double x, double y, double z);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void translateScene(double x, double y, double z, const char* aUnitOfLength);
+void translateScene(double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -595,7 +595,7 @@ std::vector<std::vector<float> > getRootTransformationMatrix();
  *  @return the scengraph's root node transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > getNodeTransformationMatrix(const char* aLabel);
+std::vector<std::vector<float> > getNodeTransformationMatrix(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -623,7 +623,7 @@ void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix
  *  @param aMatrix: the transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vector<float> >& aMatrix);
+void setNodeTransformationMatrix(const std::string& aLabel, const std::vector<std::vector<float> >& aMatrix);
 
 
 //------------------------------------------------------------------------------
@@ -633,19 +633,7 @@ void setNodeTransformationMatrix(const char* aLabel, const std::vector<std::vect
  *  @param HU:		the Hounsfield value
  */
 //------------------------------------------------------------------------------
-void setHU(const char* aLabel, short HU);
-
-
-
-
-//------------------------------------------------------------------------------
-/// Set the Hounsfield value corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh
- *  @param HU:		the Hounsfield value
- */
-//------------------------------------------------------------------------------
-void setHounsfieldUnit(const char* aLabel, short HU);
+void setHU(const std::string& aLabel, short HU);
 
 
 
@@ -657,7 +645,17 @@ void setHounsfieldUnit(const char* aLabel, short HU);
  *  @param HU:		the Hounsfield value
  */
 //------------------------------------------------------------------------------
-void setHounsfieldValue(const char* aLabel, short HU);
+void setHounsfieldUnit(const std::string& aLabel, short HU);
+
+
+//------------------------------------------------------------------------------
+/// Set the Hounsfield value corresponding to the material properties of a polygon mesh.
+/*
+ *  @param aLabel:	the label of the polygon mesh
+ *  @param HU:		the Hounsfield value
+ */
+//------------------------------------------------------------------------------
+void setHounsfieldValue(const std::string& aLabel, short HU);
 
 
 //------------------------------------------------------------------------------
@@ -667,7 +665,7 @@ void setHounsfieldValue(const char* aLabel, short HU);
  *  @param Z:		the atomic number (or Z number) corresponding to the element
  */
 //------------------------------------------------------------------------------
-void setElement(const char* aLabel, unsigned short Z);
+void setElement(const std::string& aLabel, unsigned short Z);
 
 
 //------------------------------------------------------------------------------
@@ -677,7 +675,7 @@ void setElement(const char* aLabel, unsigned short Z);
  *  @param aName:	the symbol or name corresponding to the element
  */
 //------------------------------------------------------------------------------
-void setElement(const char* aLabel, const std::string& aName);
+void setElement(const std::string& aLabel, const std::string& aName);
 
 
 //------------------------------------------------------------------------------
@@ -690,7 +688,7 @@ void setElement(const char* aLabel, const std::string& aName);
  *  					Ti90Al6V4.
  */
 //------------------------------------------------------------------------------
-void setMixture(const char* aLabel, const std::string& aMixture);
+void setMixture(const std::string& aLabel, const std::string& aMixture);
 
 
 //------------------------------------------------------------------------------
@@ -703,7 +701,7 @@ void setMixture(const char* aLabel, const std::string& aMixture);
  *  					H2O for water and SiC for silicon carbide.
  */
 //------------------------------------------------------------------------------
-void setCompound(const char* aLabel, const std::string& aCompound);
+void setCompound(const std::string& aLabel, const std::string& aCompound);
 
 
 //------------------------------------------------------------------------------
@@ -717,8 +715,8 @@ void setCompound(const char* aLabel, const std::string& aCompound);
  *                          "cm2/g" and "cm2.g-1"
  */
 //------------------------------------------------------------------------------
-void setMassAttenuationCoefficient(const char* aLabel, double aCoefficient,
-		   const char* aUnit);
+void setMassAttenuationCoefficient(const std::string& aLabel, double aCoefficient,
+		   const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
@@ -731,8 +729,8 @@ void setMassAttenuationCoefficient(const char* aLabel, double aCoefficient,
  *                          "cm-1"
  */
 //------------------------------------------------------------------------------
-void setLinearAttenuationCoefficient(const char* aLabel, double aCoefficient,
-		   const char* aUnit);
+void setLinearAttenuationCoefficient(const std::string& aLabel, double aCoefficient,
+		   const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
@@ -745,8 +743,8 @@ void setLinearAttenuationCoefficient(const char* aLabel, double aCoefficient,
  *                          "cm-1"
  */
 //------------------------------------------------------------------------------
-void setMu(const char* aLabel, double aCoefficient,
-		   const char* aUnit);
+void setMu(const std::string& aLabel, double aCoefficient,
+		   const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
@@ -759,8 +757,8 @@ void setMu(const char* aLabel, double aCoefficient,
  *                          "g/cm3" and "g.cm-3"
  */
 //------------------------------------------------------------------------------
-void setDensity(const char* aLabel, double aDensity,
-		   const char* aUnit);
+void setDensity(const std::string& aLabel, double aDensity,
+		   const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
@@ -770,7 +768,7 @@ void setDensity(const char* aLabel, double aDensity,
  *  @return the density of the polygon mesh's material in g/cm3
  */
 //------------------------------------------------------------------------------
-double getDensity(const char* aLabel);
+double getDensity(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -787,9 +785,9 @@ double getDensity(const char* aLabel);
  *  @return the mass attenuation coefficient of the polygon mesh's material in cm2/g
  */
 //------------------------------------------------------------------------------
-double getMassAttenuationCoefficient(const char* aLabel,
+double getMassAttenuationCoefficient(const std::string& aLabel,
 		double anEnergy,
-		const char* aUnitOfEnergy);
+		const std::string& aUnitOfEnergy);
 
 
 //------------------------------------------------------------------------------
@@ -806,9 +804,9 @@ double getMassAttenuationCoefficient(const char* aLabel,
  *  @return the linear attenuation coefficient of the polygon mesh's material in cm-1
  */
 //------------------------------------------------------------------------------
-double getLinearAttenuationCoefficient(const char* aLabel,
+double getLinearAttenuationCoefficient(const std::string& aLabel,
 		double anEnergy,
-		const char* aUnitOfEnergy);
+		const std::string& aUnitOfEnergy);
 
 
 //------------------------------------------------------------------------------
@@ -818,7 +816,7 @@ double getLinearAttenuationCoefficient(const char* aLabel,
  *  @return the label of the material
  */
 //------------------------------------------------------------------------------
-std::string getMaterialLabel(const char* aLabel);
+std::string getMaterialLabel(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -952,7 +950,7 @@ void resetBeamSpectrum();
  */
 //------------------------------------------------------------------------------
 void setMonoChromatic(double anEnergy,
-		              const char* aUnitOfEnergy,
+		              const std::string& aUnitOfEnergy,
 					  double aNumberOfPhotons);
 
 
@@ -969,32 +967,49 @@ void setMonoChromatic(double anEnergy,
  */
 //------------------------------------------------------------------------------
 void addEnergyBinToSpectrum(double anEnergy,
-							const char* aUnitOfEnergy,
+							const std::string& aUnitOfEnergy,
 							double aNumberOfPhotons);
+
+
+//------------------------------------------------------------------------------
+/// Load the incident beam energy spectrum from a TSV file.
+/*
+ *  @param aFileName:			name of the file to load
+ *  @param aUnitOfEnergy:		the unit of energy corresponding to anEnergy.
+ *  							Acceptable values are:
+ *  							"electronvolt", "eV",
+ *  							"kiloelectronvolt", "keV",
+ *  							"megaelectronvolt", "MeV"
+ *  @param aNormalisationFlag:	true to normalise the total energy to 1, false otherwise
+ */
+//------------------------------------------------------------------------------
+void loadSpectrumFromTSV(const std::string& aFileName,
+							const std::string& aUnitOfEnergy,
+							bool aNormalisationFlag);
 
 
 //------------------------------------------------------------------------------
 /// Save the last X-ray image that has been computed.
 /*
  *  @param aFileName:	the name of the output file
- *  					(default: 0 means that the filename will be
+ *  					(default: means that the filename will be
  *  					automatically generated and the file saved in
  *  					the current path)
  */
 //------------------------------------------------------------------------------
-void saveLastXRayImage(const char* aFileName = 0);
+void saveLastXRayImage(const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
 /// Save the last L-buffer that has been computed.
 /*
  *  @param aFileName:	the name of the output file
- *  					(default: 0 means that the filename will be
+ *  					(default: means that the filename will be
  *  					automatically generated and the file saved in
  *  					the current path)
  */
 //------------------------------------------------------------------------------
-void saveLastLBuffer(const char* aFileName = 0);
+void saveLastLBuffer(const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
@@ -1006,7 +1021,7 @@ void saveLastLBuffer(const char* aFileName = 0);
  *  					the current path)
  */
 //------------------------------------------------------------------------------
-void saveLastSinogram(const char* aFileName = 0);
+void saveLastSinogram(const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
@@ -1056,7 +1071,7 @@ void disableArtifactFiltering(void);
  *  @return the corresponding numerical value
  */
 //------------------------------------------------------------------------------
-double getUnitOfEnergy(const char* aUnitOfEnergy);
+double getUnitOfEnergy(const std::string& aUnitOfEnergy);
 
 
 //------------------------------------------------------------------------------
@@ -1075,7 +1090,7 @@ double getUnitOfEnergy(const char* aUnitOfEnergy);
  *  @return the corresponding numerical value
  */
 //------------------------------------------------------------------------------
-double getUnitOfLength(const char* aUnitOfLength);
+double getUnitOfLength(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -1110,7 +1125,7 @@ std::vector<std::vector<float> > computeXRayImage();
  *  @return the corresponding L-buffer
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeLBuffer(const char* aLabel);
+std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
@@ -1144,7 +1159,7 @@ std::vector<std::vector<float> > computeLBuffer(const char* aLabel);
  *  @return the corresponding sinogram
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const char* aUnitOfLength,
+std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const std::string& aUnitOfLength,
         unsigned int aNumberOfAngle,
         double anAngleOffset);
 
