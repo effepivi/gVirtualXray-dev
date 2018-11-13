@@ -142,7 +142,6 @@ extern GLsizei g_window_height;
 
 // Shader program used to display the 3D scene
 Shader g_display_shader;
-680
 
 // 3D object as VAO and VBO
 SceneGraphNode g_root_node("root");
