@@ -535,14 +535,6 @@ int main(int argc, char** argv)
         std::cerr << error << std::endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -564,7 +556,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
@@ -1615,9 +1607,9 @@ void loadPatient(PatientID aPatientID)
     switch (aPatientID)
         {
         case P4:
-            g_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
-                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
-                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            g_P4_translation_vector = (*p_mesh_set)[SKIN_ID].getLocalMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getLocalMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getLocalMinCorner()) / 2.0;
             
             g_P4_rotation_matrix = Matrix4x4<GLfloat>::buildRotationMatrix(
                 180, VEC3(1, 0, 0));
@@ -1627,9 +1619,9 @@ void loadPatient(PatientID aPatientID)
             break;
 
         case P5:
-            g_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getMinCorner() +
-                ((*p_mesh_set)[SKIN_ID].getMaxCorner() -
-                    (*p_mesh_set)[SKIN_ID].getMinCorner()) / 2.0;
+            g_P5_translation_vector = (*p_mesh_set)[SKIN_ID].getLocalMinCorner() +
+                ((*p_mesh_set)[SKIN_ID].getLocalMaxCorner() -
+                    (*p_mesh_set)[SKIN_ID].getLocalMinCorner()) / 2.0;
             
             g_P5_rotation_matrix = Matrix4x4<GLfloat>::buildTranslationMatrix(
                 -g_P5_translation_vector);
@@ -1696,6 +1688,9 @@ void loadXRaySimulator()
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

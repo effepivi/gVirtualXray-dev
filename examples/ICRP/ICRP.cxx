@@ -250,14 +250,6 @@ int main(int argc, char** argv)
         std::cerr << error << std::endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -460,7 +452,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 

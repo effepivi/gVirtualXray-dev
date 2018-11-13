@@ -443,7 +443,7 @@ int main(int argc, char** argv)
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 
     // Return an exit code
@@ -1247,6 +1247,9 @@ void loadXRaySimulator()
             &g_xray_beam);
 
     g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+
+    // Use GPU artefact filtering by default
+    m_xray_renderer.enableArtefactFilteringOnGPU();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

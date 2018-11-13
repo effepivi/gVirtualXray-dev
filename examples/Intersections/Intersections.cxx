@@ -198,8 +198,6 @@ VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
 VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
 const VEC3 g_background_colour(0.5, 0.5, 0.5);
 
-SceneGraphNode g_scene_graph_node("root");
-
 CylinderMesh<GLfloat> g_inside_polygon_data(20, 3.0 * cm, 1.0 * cm);
 CubeMesh<GLfloat> g_outside_polygon_data(3.0 * cm, GL_UNSIGNED_INT);
 
@@ -401,8 +399,8 @@ int main(int argc, char** argv)
 
         // Add the geometry to the X-ray renderer
         loadSTLFile();
-        g_xray_renderer.addInnerSurface(&g_scene_graph_node.getChild("inside"));
-        g_xray_renderer.addOuterSurface(&g_scene_graph_node.getChild("outside"));
+        g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
+        g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
 
         // Update the X-ray image
         updateXRayImage();
@@ -443,14 +441,6 @@ int main(int argc, char** argv)
         cerr << error.what() << endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -472,7 +462,7 @@ void quit()
         {
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
@@ -748,7 +738,7 @@ void render()
         glDisable(GL_CULL_FACE);
 
         // Display the X-Ray image
-        g_xray_renderer.display(true, false, true);
+        g_xray_renderer.display(true, true, false);
 
         // Display the intersections
         g_intersection_box_detector_vbo->display();
@@ -986,9 +976,9 @@ void keyCallback(GLFWwindow* window,
 
             case GLFW_KEY_L:
                 g_xray_renderer.computeLBuffer(
-                		g_scene_graph_node.getChild("inside"),
-						VEC3(),
-						g_sample_rotation_matrix);
+                    g_inside_polygon_data,
+                    VEC3(),
+                    g_sample_rotation_matrix);
 
                 g_xray_renderer.printLBuffer(PREFIX"/data/inside_lbuffer.mhd");
 
@@ -1002,7 +992,7 @@ void keyCallback(GLFWwindow* window,
 
                 g_xray_renderer.removeInnerSurfaces();
                 g_xray_renderer.removeOuterSurface();
-                g_xray_renderer.addOuterSurface(&g_scene_graph_node.getChild("outside"));
+                g_xray_renderer.addOuterSurface(&g_outside_polygon_data);
 
                 g_xray_renderer.computeLBuffer(
                     g_outside_polygon_data,
@@ -1012,7 +1002,7 @@ void keyCallback(GLFWwindow* window,
                 g_xray_renderer.printLBuffer(
                     PREFIX"/data/outside_lbuffer1.mhd");
 
-                g_xray_renderer.addOuterSurface(&g_scene_graph_node.getChild("inside"));
+                g_xray_renderer.addInnerSurface(&g_inside_polygon_data);
                 break;
 
             case GLFW_KEY_C:
@@ -1377,11 +1367,11 @@ void loadSTLFile()
 //----------------
 {
     // Set geometry
-	g_scene_graph_node.getChild( "inside").getPolygonMesh().setHounsfieldValue(0.0);
-	g_scene_graph_node.getChild("outside").getPolygonMesh().setHounsfieldValue(500.0);
+    g_inside_polygon_data.setHounsfieldValue(0.0);
+    g_outside_polygon_data.setHounsfieldValue(500.0);
 
-	g_scene_graph_node.getChild( "inside").getPolygonMesh().applyTranslation(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
-	g_scene_graph_node.getChild("outside").getPolygonMesh().applyTranslation(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+    g_inside_polygon_data.applyTranslation( VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
+    g_outside_polygon_data.applyTranslation(VEC3(3.0 * cm, 3.0 * cm, 3.0 * cm));
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
@@ -1429,6 +1419,8 @@ void loadXRaySimulator()
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

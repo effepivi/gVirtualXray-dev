@@ -100,10 +100,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifndef __SceneGraphNode_h
-#include "gVirtualXRay/SceneGraphNode.h"
-#endif
-
 #ifndef __PolygonMesh_h
 #include "gVirtualXRay/PolygonMesh.h"
 #endif
@@ -240,7 +236,7 @@ VEC3 g_translation_vector;
 
 std::vector<float> g_p_HU_set;
 
-SceneGraphNode g_scene_graph_node;
+std::vector<PolygonMesh> g_p_polygon_mesh_set;
 
 #if __cplusplus <= 199711L
     std::auto_ptr<VBO> g_sinogram_rectangle;
@@ -535,29 +531,12 @@ int main(int argc, char** argv)
         // Add the geometry to the X-ray renderer
         loadSTLFile();
 
-    	// Look for all the meshes in the scenegraph
-    	std::vector<SceneGraphNode*> p_temp_pull;
-    	p_temp_pull.push_back(&g_scene_graph_node);
-
-    	while (p_temp_pull.size())
-    	{
-    		// Get the last node
-    		SceneGraphNode* p_node = p_temp_pull.back();
-
-    		// Remove the node
-    		p_temp_pull.pop_back();
-
-    		// Add its children
-    		for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
-    		{
-    			p_temp_pull.push_back(&p_node->getChild(i));
-    		}
-
-    		if (p_node->getPolygonMesh().getVertexNumber())
-			{
-    			g_xray_renderer.addInnerSurface(p_node);
-			}
-    	}
+        for (std::vector<PolygonMesh>::const_iterator ite(g_p_polygon_mesh_set.begin());
+                ite != g_p_polygon_mesh_set.end();
+                ++ite)
+            {
+            g_xray_renderer.addInnerSurface(&(*ite));
+            }
 
         // Set the projection matrix
         GLint width(0);
@@ -717,14 +696,6 @@ int main(int argc, char** argv)
         std::cerr << error.what() << std::endl;
         }
 
-    // Close the window and shut GLFW
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        glfwTerminate();
-        }
-
     // Return an exit code
     return (EXIT_SUCCESS);
 }
@@ -742,9 +713,10 @@ void createPhantom()
     cube_1 += VEC3( 10 * mm, -10.0 * mm, 0.0);
     cube_2 += VEC3(-20 * mm,  20.0 * mm, 0.0);
 
-    g_scene_graph_node.addChild("cube_1", cube_1);
-    g_scene_graph_node.addChild("cube_2", cube_2);
-    g_scene_graph_node.addChild("cube_3", cube_3 - cube_1 - cube_2);
+    g_p_polygon_mesh_set.clear();
+    g_p_polygon_mesh_set.push_back(cube_1);
+    g_p_polygon_mesh_set.push_back(cube_2);
+    g_p_polygon_mesh_set.push_back(cube_3 - cube_1 - cube_2);
 
     g_p_HU_set.clear();
     g_p_HU_set.push_back(1000);
@@ -799,7 +771,7 @@ void quit()
 
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
         }
 }
 
@@ -1105,60 +1077,42 @@ void render()
 
         g_rotation_axis_geometry.display();
 
-    	// Look for all the meshes in the scenegraph
-    	std::vector<SceneGraphNode*> p_temp_pull;
-    	p_temp_pull.push_back(&g_scene_graph_node);
+        for (std::vector<PolygonMesh>::iterator ite(g_p_polygon_mesh_set.begin());
+                ite != g_p_polygon_mesh_set.end();
+                ++ite)
+            {
+            // Get the material
+            const Material& material(ite->getMaterial());
 
-    	while (p_temp_pull.size())
-    	{
-    		// Get the last node
-    		SceneGraphNode* p_node = p_temp_pull.back();
+            // Define colours inshader
+            handle = glGetUniformLocation(shader_id, "material_ambient");
+            glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    		// Remove the node
-    		p_temp_pull.pop_back();
+            handle = glGetUniformLocation(shader_id, "material_diffuse");
+            glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    		// Add its children
-    		for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
-    		{
-    			p_temp_pull.push_back(&p_node->getChild(i));
-    		}
+            handle = glGetUniformLocation(shader_id, "material_specular");
+            glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-    		if (p_node->getPolygonMesh().getVertexNumber())
-    		{
-				// Get the material
-				const Material& material(p_node->getPolygonMesh().getMaterial());
+            handle = glGetUniformLocation(shader_id, "material_shininess");
+            glUniform1f(handle, material.getShininess());
+            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-				// Define colours inshader
-				handle = glGetUniformLocation(shader_id, "material_ambient");
-				glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
-				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+            if (g_display_wireframe)
+                {
+                ite->displayWireFrame();
+                }
+            else
+                {
+                ite->display();
+                }
+            }
 
-				handle = glGetUniformLocation(shader_id, "material_diffuse");
-				glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
-				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-				handle = glGetUniformLocation(shader_id, "material_specular");
-				glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
-				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-				handle = glGetUniformLocation(shader_id, "material_shininess");
-				glUniform1f(handle, material.getShininess());
-				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-				if (g_display_wireframe)
-					{
-					p_node->displayWireFrame();
-					}
-				else
-					{
-					p_node->display();
-					}
-    		}
-        }
-
-    // Restore the current transformation matrix
-    popModelViewMatrix();
-
+        // Restore the current transformation matrix
+        popModelViewMatrix();
 
         // Define colours
             {
@@ -1587,97 +1541,76 @@ void loadSTLFile()
     VEC3 max_corner(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
     unsigned int i(0);
+    for (std::vector<PolygonMesh>::iterator ite(g_p_polygon_mesh_set.begin());
+            ite != g_p_polygon_mesh_set.end();
+            ++ite, ++i)
+        {
+        // Set geometry
+        ite->setHounsfieldValue(g_p_HU_set[i]);
 
-	// Look for all the meshes in the scenegraph
-	std::vector<SceneGraphNode*> p_temp_pull;
-	p_temp_pull.push_back(&g_scene_graph_node);
+        float red((float(rand()) / (RAND_MAX)) + 1);
+        float green((float(rand()) / (RAND_MAX)) + 1);
+        float blue((float(rand()) / (RAND_MAX)) + 1);
+        float alpha(1.0);
 
-	while (p_temp_pull.size())
-	{
-		// Get the last node
-		SceneGraphNode* p_node = p_temp_pull.back();
+        if (i == g_p_polygon_mesh_set.size() - 1)
+            {
+            alpha = 1.0 / 3.0;
+            }
 
-		// Remove the node
-		p_temp_pull.pop_back();
+        VEC3 base_colour(red, green, blue);
+        base_colour.normalise();
 
-		// Add its children
-		for (unsigned int i = 0; i < p_node->getNumberOfChildren(); ++i)
-		{
-			p_temp_pull.push_back(&p_node->getChild(i));
-		}
+        ite->getMaterial().setAmbientColour(
+            base_colour.getX() * 0.19225,
+            base_colour.getY() * 0.19225,
+            base_colour.getZ() * 0.19225,
+            alpha);
+    
+        ite->getMaterial().setDiffuseColour(
+            base_colour.getX() * 0.50754,
+            base_colour.getY() * 0.50754,
+            base_colour.getZ() * 0.50754,
+            alpha);
+    
+        ite->getMaterial().setSpecularColour(
+            base_colour.getX() * 0.50827,
+            base_colour.getY() * 0.50827,
+            base_colour.getZ() * 0.50827,
+            alpha);
+    
+        ite->getMaterial().setShininess(50);
 
-		if (p_node->getPolygonMesh().getVertexNumber())
-		{
-			// Set geometry
-			p_node->getPolygonMesh().setHounsfieldValue(g_p_HU_set[i]);
+        if (min_corner.getX() > ite->getLocalMinCorner().getX())
+            {
+            min_corner.setX(ite->getLocalMinCorner().getX());
+            }
 
-			float red((float(rand()) / (RAND_MAX)) + 1);
-			float green((float(rand()) / (RAND_MAX)) + 1);
-			float blue((float(rand()) / (RAND_MAX)) + 1);
-			float alpha(1.0);
+        if (min_corner.getY() > ite->getLocalMinCorner().getY())
+            {
+            min_corner.setY(ite->getLocalMinCorner().getY());
+            }
 
-			if (i == 2)
-				{
-				alpha = 1.0 / 3.0;
-				}
+        if (min_corner.getZ() > ite->getLocalMinCorner().getZ())
+            {
+            min_corner.setZ(ite->getLocalMinCorner().getZ());
+            }
 
-			VEC3 base_colour(red, green, blue);
-			base_colour.normalise();
+        if (max_corner.getX() < ite->getLocalMaxCorner().getX())
+            {
+            max_corner.setX(ite->getLocalMaxCorner().getX());
+            }
 
-			p_node->getPolygonMesh().getMaterial().setAmbientColour(
-				base_colour.getX() * 0.19225,
-				base_colour.getY() * 0.19225,
-				base_colour.getZ() * 0.19225,
-				alpha);
+        if (max_corner.getY() < ite->getLocalMaxCorner().getY())
+            {
+            max_corner.setY(ite->getLocalMaxCorner().getY());
+            }
 
-			p_node->getPolygonMesh().getMaterial().setDiffuseColour(
-				base_colour.getX() * 0.50754,
-				base_colour.getY() * 0.50754,
-				base_colour.getZ() * 0.50754,
-				alpha);
-
-			p_node->getPolygonMesh().getMaterial().setSpecularColour(
-				base_colour.getX() * 0.50827,
-				base_colour.getY() * 0.50827,
-				base_colour.getZ() * 0.50827,
-				alpha);
-
-			p_node->getPolygonMesh().getMaterial().setShininess(50);
-
-			if (min_corner.getX() > p_node->getWorldMinCorner().getX())
-				{
-				min_corner.setX(p_node->getWorldMinCorner().getX());
-				}
-
-			if (min_corner.getY() > p_node->getWorldMinCorner().getY())
-				{
-				min_corner.setY(p_node->getWorldMinCorner().getY());
-				}
-
-			if (min_corner.getZ() > p_node->getWorldMinCorner().getZ())
-				{
-				min_corner.setZ(p_node->getWorldMinCorner().getZ());
-				}
-
-			if (max_corner.getX() < p_node->getWorldMaxCorner().getX())
-				{
-				max_corner.setX(p_node->getWorldMaxCorner().getX());
-				}
-
-			if (max_corner.getY() < p_node->getWorldMaxCorner().getY())
-				{
-				max_corner.setY(p_node->getWorldMaxCorner().getY());
-				}
-
-			if (max_corner.getZ() < p_node->getWorldMaxCorner().getZ())
-				{
-				max_corner.setZ(p_node->getWorldMaxCorner().getZ());
-				}
-			}
-
-			++i;
-		}
-	}
+        if (max_corner.getZ() < ite->getLocalMaxCorner().getZ())
+            {
+            max_corner.setZ(ite->getLocalMaxCorner().getZ());
+            }
+        }
 
     g_rotation_axis_geometry.getMaterial().setAmbientColour(0.0, 0.0, 0.0, 1.0);
     g_rotation_axis_geometry.getMaterial().setDiffuseColour(0.0, 0.0, 0.0, 1.0);
@@ -1769,6 +1702,9 @@ void loadXRaySimulator()
         GL_RGB32F,
         &g_xray_detector,
         &g_xray_beam);
+
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;

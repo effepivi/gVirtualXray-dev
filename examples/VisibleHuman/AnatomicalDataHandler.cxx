@@ -628,6 +628,9 @@ void AnatomicalDataHandler::loadXRaySimulator()
         GL_RGB32F,
         &m_xray_detector,
         &m_xray_beam);
+
+    // Use GPU artefact filtering by default
+    m_xray_renderer.enableArtefactFilteringOnGPU();
 }
 
 

@@ -439,14 +439,6 @@ int main(int argc, char** argv)
 		std::cerr << error.what() << std::endl;
 	}
 
-	// Close the window and shut GLFW
-	if (g_p_main_window_id)
-	{
-		glfwDestroyWindow(g_p_main_window_id);
-		g_p_main_window_id = 0;
-		glfwTerminate();
-	}
-
 	// Return an exit code
 	return (EXIT_SUCCESS);
 }
@@ -460,7 +452,7 @@ void quit()
 	{
 		glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
-        glfwTerminate();
+        //glfwTerminate();
 	}
 }
 
@@ -1350,6 +1342,9 @@ void loadXRaySimulator()
             &g_xray_beam);
 
 	g_xray_renderer.useNegativeFilteringFlag(!g_xray_renderer.getNegativeFilteringFlag());
+
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
 
 	// The X-ray image is not up-to-date
 	g_is_xray_image_up_to_date = false;

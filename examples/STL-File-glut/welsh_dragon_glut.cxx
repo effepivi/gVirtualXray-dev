@@ -1400,6 +1400,9 @@ void loadXRaySimulator()
     g_xray_renderer.useNegativeFilteringFlag(
             !g_xray_renderer.getNegativeFilteringFlag());
 
+    // Use GPU artefact filtering by default
+    g_xray_renderer.enableArtefactFilteringOnGPU();
+
     // The X-ray image is not up-to-date
     g_is_xray_image_up_to_date = false;
 }
