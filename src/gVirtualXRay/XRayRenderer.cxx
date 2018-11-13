@@ -707,7 +707,7 @@ void XRayRenderer::release()
 			std::cerr << e.what() << std::endl;
 		}
 	}
-
+/*
 	// Reset values
 	m_p_detector = 0;
 	m_p_xray_beam = 0;
@@ -717,7 +717,7 @@ void XRayRenderer::release()
 	m_mu_water_set.clear();
 	m_p_fbo_set.clear();
 	m_l_buffer_empty = false;
-	m_energy_fluence_empty = false;
+	m_energy_fluence_empty = false;*/
 }
 
 
@@ -1337,6 +1337,12 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 	{
 		case OPENGL:
 		{
+			// Delete the texture if it exists
+			if (m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER])
+			{
+				glDeleteTextures(1, &m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
+			}
+
 			// Generate the texture name.
 			glGenTextures(1, &m_p_texture_name_set[XRAY_DETECTOR_2D_TEXTURE_NUMBER]);
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
@@ -2345,6 +2351,28 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
                                    const PhotonCrossSection& aPhotonCrossSection)
 //------------------------------------------------
 {
+	// The number of energy channels has changed since last time
+	if (m_sum_mux_dx_image.getDepth() != m_p_xray_beam->getEnergyChannelNumber())
+	{
+		// Update the image size
+		VEC3 spacing = m_sum_mux_dx_image.getSpacing();
+
+	    m_sum_mux_dx_image = Image<PixelType>(
+	            m_p_detector->getNumberOfPixels().getX(),
+	            m_p_detector->getNumberOfPixels().getY(),
+	            m_p_xray_beam->getEnergyChannelNumber());
+
+	    m_sum_mux_dx_image.setSpacing(spacing);
+
+	    GLenum internal_format = GL_RGB32F;
+
+	    if (m_precision == 16)
+	    	internal_format = GL_RGB16F;
+
+	    init3DData(internal_format);
+		init3DFBOs();
+	}
+
 	// Save the current FBO
 	pushFBO();
 
