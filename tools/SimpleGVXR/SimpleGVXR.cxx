@@ -1828,6 +1828,40 @@ void loadSpectrumFromTSV(const std::string& aFileName,
 }
 
 
+//-----------------------------------------------------------------
+std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
+//-----------------------------------------------------------------
+{
+	std::vector<double> p_temp;
+
+	for (unsigned int i = 0;
+			i < g_xray_beam.getEnergyChannelNumber();
+			++i)
+	{
+		p_temp.push_back(g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / getUnitOfEnergy(aUnitOfEnergy));
+	}
+
+	return (p_temp);
+}
+
+
+//---------------------------------------------
+std::vector<double> getPhtotonCountEnergyBins()
+//---------------------------------------------
+{
+	std::vector<double> p_temp;
+
+	for (unsigned int i = 0;
+			i < g_xray_beam.getEnergyChannelNumber();
+			++i)
+	{
+		p_temp.push_back(g_xray_beam.getEnergyChannel(i).getPhotonNumber());
+	}
+
+	return (p_temp);
+}
+
+
 //--------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName)
 //--------------------------------------------------

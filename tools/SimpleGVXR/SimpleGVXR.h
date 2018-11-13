@@ -335,34 +335,6 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource);
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the list of labels of polygon meshes in the scenegraph.
-/**
- *  @return the list of labels
- */
-//------------------------------------------------------------------------------
-//std::vector<std::string> getMeshLabelSet();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the number of polygon meshes in the scenegraph.
-/**
- *  @return the number of polygon meshes in the scenegraph
- */
-//------------------------------------------------------------------------------
-//unsigned int getMeshLabelSetSize();
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the i-th label in the list of polygon meshes in the scenegraph.
-/**
- *  @param i:	the ID of the polygon mesh
- *  @return the label corresponding to the i-th polygon mesh
- */
-//------------------------------------------------------------------------------
-//std::string getMeshLabel(unsigned int i);
-
-
-//------------------------------------------------------------------------------
 /// Get the number of children of a node in the scenegraph.
 /**
  *  @param aLabel:	the label in the scenegraph
@@ -989,6 +961,29 @@ void loadSpectrumFromTSV(const std::string& aFileName,
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the energy bins of the beam spectrum.
+/*
+ *  @param aUnitOfEnergy:		the unit of energy corresponding to returned vector.
+ *  							Acceptable values are:
+ *  							"electronvolt", "eV",
+ *  							"kiloelectronvolt", "keV",
+ *  							"megaelectronvolt", "MeV"
+ *  @return the list of energy bins in aUnitOfEnergy
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the number of photons per energy bin of the beam spectrum.
+/*
+ *  @return the list of number of photons
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getPhtotonCountEnergyBins();
+
+
+//------------------------------------------------------------------------------
 /// Save the last X-ray image that has been computed.
 /*
  *  @param aFileName:	the name of the output file
@@ -1273,10 +1268,11 @@ double getElementDensity(const std::string& anElement);
 double getElementDensity(unsigned short Z);
 
 
+/*
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);
 double getShiftFilter();
 double getScaleFilter();
-
+*/
 
 #endif

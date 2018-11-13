@@ -176,9 +176,6 @@ the minor version number
 Close and destroy all the windows and OpenGL contexts that have been created.  
 ";
 
-%feature("docstring") setShiftFilter "
-";
-
 %feature("docstring") getElementSymbol "
 
 Accessor on the chemical element' symbol depending on its Z number.  
@@ -349,6 +346,11 @@ Parameters
 Accessor on the last sinogram that has been computed.  
 ";
 
+%feature("docstring") getPhtotonCountEnergyBins "
+
+Accessor on the number of photons per energy bin of the beam spectrum.  
+";
+
 %feature("docstring") subtractMesh "
 
 Subtract a polygon mesh (aSource) from another one (aDestination). It
@@ -389,9 +391,6 @@ Disable artefact filtering altogether.
 Scale the 3-D scene (all the polygon meshes will be affected but not modified).  
 ";
 
-%feature("docstring") getScaleFilter "
-";
-
 %feature("docstring") saveLastXRayImage "
 
 Save the last X-ray image that has been computed.  
@@ -401,9 +400,6 @@ Save the last X-ray image that has been computed.
 
 Use a parallel source (e.g. to mimic a source that is extremely far from the
 scanned object and detector).  
-";
-
-%feature("docstring") setScaleFilter "
 ";
 
 %feature("docstring") hideWindow "
@@ -527,9 +523,6 @@ Parameters
 Use a point source.  
 ";
 
-%feature("docstring") getShiftFilter "
-";
-
 %feature("docstring") setWindowSize "
 
 Create an OpenGL context and display it in a window.  
@@ -573,26 +566,7 @@ tracing).
 
 %feature("docstring") getNumberOfChildren "
 
-Accessor on the list of labels of polygon meshes in the scenegraph.  
-
-Returns
--------
-the list of labelsAccessor on the number of polygon meshes in the scenegraph.  
-
-Returns
--------
-the number of polygon meshes in the scenegraphAccessor on the i-th label in the
-list of polygon meshes in the scenegraph.  
-
-Parameters
-----------
-* `i` :  
-    the ID of the polygon mesh  
-
-Returns
--------
-the label corresponding to the i-th polygon meshGet the number of children of a
-node in the scenegraph.  
+Get the number of children of a node in the scenegraph.  
 
 Parameters
 ----------
@@ -688,6 +662,16 @@ Accessor on the linear attenuation coefficient at a given energy corresponding
 to the material properties of a polygon mesh.  
 ";
 
+%feature("docstring") addPolygonMeshAsInnerSurface "
+
+Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh in the scenegraph  
+";
+
 %feature("docstring") translateScene "
 
 Translate the 3-D scene (all the polygon meshes will be affected but not
@@ -762,14 +746,9 @@ set, i.e.
 Accessor on the chemical element's Z number.  
 ";
 
-%feature("docstring") addPolygonMeshAsInnerSurface "
+%feature("docstring") getEnergyBins "
 
-Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.  
-
-Parameters
-----------
-* `aLabel` :  
-    the label of the polygon mesh in the scenegraph  
+Accessor on the energy bins of the beam spectrum.  
 ";
 
 %feature("docstring") showWindow "
