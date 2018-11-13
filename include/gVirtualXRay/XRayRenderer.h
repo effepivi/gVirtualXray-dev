@@ -224,6 +224,24 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Add a 3D object to be rendered. It will be used as an internal surface.
+    /**
+     *  @param apSurface:   the 3D object
+     */
+    //--------------------------------------------------------------------------
+    void addInnerSurface(const PolygonMesh* apSurface);
+
+
+    //--------------------------------------------------------------------------
+    /// Add a 3D object to be rendered. It will be used as an external surface.
+    /**
+     *  @param apSurface:   the 3D object
+     */
+    //--------------------------------------------------------------------------
+    void addOuterSurface(const PolygonMesh* apSurface);
+
+
+    //--------------------------------------------------------------------------
     /// Remove the external surface from the renderer if any.
     //--------------------------------------------------------------------------
     void removeInnerSurfaces();
@@ -247,6 +265,23 @@ public:
      */
     //--------------------------------------------------------------------------
     void computeLBuffer(SceneGraphNode& anObject,
+                        const VEC3& aXRaySourceDetectorTranslation,
+                        const MATRIX4& aModellingTransformationMatrix,
+                        bool aGPUStateConservationFlag = true);
+
+
+    //--------------------------------------------------------------------------
+    /// Compute the L-buffer of a 3D object
+    /**
+     *  @param anObject:                        the 3D object to process
+     *  @param aXRaySourceDetectorTranslation:  the translation vector to use
+     *                                          when the source is not aligned
+     *                                          with the detector
+     *  @param aModellingTransformationMatrix:  the transformation matrix of
+     *                                          the 3D object
+     */
+    //--------------------------------------------------------------------------
+    void computeLBuffer(PolygonMesh& anObject,
                         const VEC3& aXRaySourceDetectorTranslation,
                         const MATRIX4& aModellingTransformationMatrix,
                         bool aGPUStateConservationFlag = true);
@@ -907,11 +942,10 @@ protected:
      *                                          the 3D object
      */
     //--------------------------------------------------------------------------
-    void computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
+    void computeInnerSurfaceLBuffer(PolygonMesh& anObject,
             const VEC3& aXRaySourceSampleOffset,
             const MATRIX4& aModellingTransformationMatrix,
             bool aGPUStateConservationFlag);
-
 
     //--------------------------------------------------------------------------
     /// Compute the L-buffer of an external object.
@@ -924,7 +958,7 @@ protected:
      *                                          the 3D object
      */
     //--------------------------------------------------------------------------
-    void computeOuterSurfaceLBuffer(SceneGraphNode& anObject,
+    void computeOuterSurfaceLBuffer(PolygonMesh& anObject,
             const VEC3& aXRaySourceSampleOffset,
             const MATRIX4& aModellingTransformationMatrix);
 
@@ -993,6 +1027,9 @@ protected:
 
     /// The 3D geometry that will wrap the ones in m_p_inner_surface_set
     SceneGraphNode* m_p_outer_surface;
+
+
+    std::vector<SceneGraphNode*> m_p_internal_data_storage;
 
 
     std::vector<std::vector<SceneGraphNode*> > m_p_surface_per_material_set;

@@ -933,15 +933,17 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 							ite_meshes != ite_material->end();
 							++ite_meshes, ++object_number)
 					{
-						// Compute its L-buffer
-						computeLBuffer(*(*ite_meshes), xray_source_detector_translation, aModellingTransformationMatrix, false);
+						SceneGraphNode* p_node = *ite_meshes;
 
-						temp = (*ite_meshes)->getBranchWorldMaxCorner();
+						// Compute its L-buffer
+						computeLBuffer(*p_node, xray_source_detector_translation, aModellingTransformationMatrix, false);
+
+						temp = p_node->getBranchWorldMaxCorner();
 						max_corner[0] = std::max(temp[0], max_corner[0]);
 						max_corner[1] = std::max(temp[1], max_corner[1]);
 						max_corner[2] = std::max(temp[2], max_corner[2]);
 
-						temp = (*ite_meshes)->getBranchWorldMinCorner();
+						temp = p_node->getBranchWorldMinCorner();
 						min_corner[0] = std::min(temp[0], min_corner[0]);
 						min_corner[1] = std::min(temp[1], min_corner[1]);
 						min_corner[2] = std::min(temp[2], min_corner[2]);
@@ -1901,12 +1903,36 @@ void XRayRenderer::computeLBuffer(SceneGraphNode& anObject,
                                   bool aGPUStateConservationFlag)
 //------------------------------------------------------------------------------
 {
+	computeLBuffer(anObject.getPolygonMesh(),
+			aXRaySourceDetectorTranslation,
+			aModellingTransformationMatrix * anObject.getWorldTransformationMatrix(),
+			aGPUStateConservationFlag);
+}
+
+
+//------------------------------------------------------------------------------
+void XRayRenderer::computeLBuffer(PolygonMesh& anObject,
+                                  const VEC3& aXRaySourceDetectorTranslation,
+                                  const MATRIX4& aModellingTransformationMatrix,
+                                  bool aGPUStateConservationFlag)
+//------------------------------------------------------------------------------
+{
+	bool internal_mesh = true;
+
+	if (m_p_outer_surface)
+	{
+		if (&anObject == &m_p_outer_surface->getPolygonMesh())
+		{
+			internal_mesh = false;
+		}
+	}
+
     // This is an internal mesh
-    if (&anObject != m_p_outer_surface || !m_p_inner_surface_set.size())
+    if (internal_mesh)
     {
         computeInnerSurfaceLBuffer(anObject,
         		aXRaySourceDetectorTranslation,
-				aModellingTransformationMatrix * anObject.getWorldTransformationMatrix(),
+				aModellingTransformationMatrix,
 				aGPUStateConservationFlag);
     }
     // This is the external mesh
@@ -1914,13 +1940,13 @@ void XRayRenderer::computeLBuffer(SceneGraphNode& anObject,
     {
         computeOuterSurfaceLBuffer(anObject,
         		aXRaySourceDetectorTranslation,
-				aModellingTransformationMatrix * anObject.getWorldTransformationMatrix());
+				aModellingTransformationMatrix);
     }
 }
 
 
 //------------------------------------------------------------------------------------------
-void XRayRenderer::computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
+void XRayRenderer::computeInnerSurfaceLBuffer(PolygonMesh& anObject,
                                               const VEC3& aXRaySourceSampleOffset,
                                               const MATRIX4& aModellingTransformationMatrix,
                                               bool aGPUStateConservationFlag)
@@ -1934,7 +1960,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
         }
 
     // The 3D object is not empty
-    if (anObject.getPolygonMesh().getVertexNumber())
+    if (anObject.getVertexNumber())
     {
         // Load uniform variables to the GPU
         GLint program_handle(0);
@@ -2081,7 +2107,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
     if (aGPUStateConservationFlag)
         {
 
-        RATIONAL_NUMBER bbox_diagonal((anObject.getBranchWorldMaxCorner() - anObject.getBranchWorldMinCorner()).length() / cm);
+        RATIONAL_NUMBER bbox_diagonal((anObject.getLocalMaxCorner() - anObject.getLocalMinCorner()).length() / cm);
         postComputeLBuffer(p_viewport, bbox_diagonal);
         }
 
@@ -2091,7 +2117,7 @@ void XRayRenderer::computeInnerSurfaceLBuffer(SceneGraphNode& anObject,
 
 
 //------------------------------------------------------------------------------------
-void XRayRenderer::computeOuterSurfaceLBuffer(SceneGraphNode& anObject,
+void XRayRenderer::computeOuterSurfaceLBuffer(PolygonMesh& anObject,
 											  const VEC3& aXRaySourceSampleOffset,
 											  const MATRIX4& aModellingTransformationMatrix)
 //------------------------------------------------------------------------------------
@@ -3233,21 +3259,30 @@ void XRayRenderer::updateSurfacePerMaterialSet()
 				ite != m_p_inner_surface_set.end();
 				++ite)
 		{
-			int i = 0;
 			bool added = false;
-			while (!added && i < m_p_surface_per_material_set.size())
+
+			SceneGraphNode* p_temp1 = *ite;
+
+			if (m_p_surface_per_material_set.size())
 			{
-				if (m_p_surface_per_material_set[i].front()->getPhotonCrossSection() == (*ite)->getPhotonCrossSection())
+				int i = 0;
+
+				while (!added && i < m_p_surface_per_material_set.size())
 				{
-					added = true;
-					m_p_surface_per_material_set[i].push_back(*ite);
+					SceneGraphNode* p_temp2 = m_p_surface_per_material_set[i].front();
+
+					if (p_temp2->getPhotonCrossSection() == p_temp1->getPhotonCrossSection())
+					{
+						added = true;
+						m_p_surface_per_material_set[i].push_back(p_temp1);
+					}
+					++i;
 				}
-				++i;
 			}
 
 			if (!added)
 			{
-				m_p_surface_per_material_set.push_back(std::vector<SceneGraphNode*>(1, *ite));
+				m_p_surface_per_material_set.push_back(std::vector<SceneGraphNode*>(1, p_temp1));
 			}
 		}
 	}
