@@ -365,6 +365,38 @@ void invertNormalVectors(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
+/// Set the color of a given polygon mesh.
+/**
+ *  @param aLabel:	the label of the polygon mesh
+ *  @param R:	the red channel
+ *  @param G:	the green channel
+ *  @param B:	the blue channel
+ *  @param A:	the alpha channel
+ */
+//------------------------------------------------------------------------------
+void setColor(const std::string& aLabel, float R, float G, float B, float A);
+
+
+//------------------------------------------------------------------------------
+/// Set the colour of a given polygon mesh.
+/**
+ *  @param aLabel:	the label of the polygon mesh
+ *  @param R:	the red channel
+ *  @param G:	the green channel
+ *  @param B:	the blue channel
+ *  @param A:	the alpha channel
+ */
+//------------------------------------------------------------------------------
+void setColour(const std::string& aLabel, float R, float G, float B, float A);
+
+
+std::vector<float> getAmbientColour(const std::string& aLabel);
+std::vector<float> getDiffuseColour(const std::string& aLabel);
+std::vector<float> getSpecularColour(const std::string& aLabel);
+float getShininess(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.
 /**
  *  @param aLabel:	the label of the polygon mesh in the scenegraph

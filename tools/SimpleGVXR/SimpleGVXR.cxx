@@ -663,6 +663,169 @@ void invertNormalVectors(const std::string& aLabel)
 }
 
 
+//-------------------------------------------------------------------------
+void setColor(const std::string& aLabel, float R, float G, float B, float A)
+//-------------------------------------------------------------------------
+{
+	setColour(aLabel, R, G, B, A);
+}
+
+
+//---------------------------------------------------------------------------
+void setColour(const std::string& aLabel, float R, float G, float B, float A)
+//---------------------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		// Set the colour
+		p_node->getPolygonMesh().getMaterial().setAmbientColour(R, G, B, A);
+		p_node->getPolygonMesh().getMaterial().setDiffuseColour(R, G, B, A);
+		p_node->getPolygonMesh().getMaterial().setSpecularColour(1.0, 1.0, 1.0, 1.0);
+		p_node->getPolygonMesh().getMaterial().setShininess(50.0);
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
+}
+
+
+std::vector<float> getAmbientColour(const std::string& aLabel)
+{
+	std::vector<float> colour(4, 1.0);
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		// Get the colour
+		colour[0] = p_node->getPolygonMesh().getMaterial().getAmbientColour()[0];
+		colour[1] = p_node->getPolygonMesh().getMaterial().getAmbientColour()[1];
+		colour[2] = p_node->getPolygonMesh().getMaterial().getAmbientColour()[2];
+		colour[3] = p_node->getPolygonMesh().getMaterial().getAmbientColour()[3];
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
+
+	return colour;
+}
+
+
+std::vector<float> getDiffuseColour(const std::string& aLabel)
+{
+	std::vector<float> colour(4, 1.0);
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		// Get the colour
+		colour[0] = p_node->getPolygonMesh().getMaterial().getDiffuseColour()[0];
+		colour[1] = p_node->getPolygonMesh().getMaterial().getDiffuseColour()[1];
+		colour[2] = p_node->getPolygonMesh().getMaterial().getDiffuseColour()[2];
+		colour[3] = p_node->getPolygonMesh().getMaterial().getDiffuseColour()[3];
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
+
+	return colour;
+}
+
+
+std::vector<float> getSpecularColour(const std::string& aLabel)
+{
+	std::vector<float> colour(4, 1.0);
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		// Get the colour
+		colour[0] = p_node->getPolygonMesh().getMaterial().getSpecularColour()[0];
+		colour[1] = p_node->getPolygonMesh().getMaterial().getSpecularColour()[1];
+		colour[2] = p_node->getPolygonMesh().getMaterial().getSpecularColour()[2];
+		colour[3] = p_node->getPolygonMesh().getMaterial().getSpecularColour()[3];
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
+
+	return colour;
+}
+
+
+float getShininess(const std::string& aLabel)
+{
+	float shininess = 0.0;
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+		// Get the colour
+		shininess = p_node->getPolygonMesh().getMaterial().getShininess();
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
+
+	return shininess;
+}
+
+
 //----------------------------------------------------------
 void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 //----------------------------------------------------------
@@ -2370,29 +2533,6 @@ void render()
         glUniform1iv(handle, 1, &lighting);
         checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-        // Set the colour of the sample
-        {
-            const GLfloat material_ambient[]  = {0.19225,  0.0, 0.0, 1.0};
-            const GLfloat material_diffuse[]  = {0.50754,  0.0, 0.0, 1.0};
-            const GLfloat material_specular[] = {0.508273, 0.0, 0.0, 1.0};
-            const GLfloat material_shininess = 50.2;
-
-            handle = glGetUniformLocation(shader_id, "material_ambient");
-            glUniform4fv(handle, 1, &material_ambient[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_diffuse");
-            glUniform4fv(handle, 1, &material_diffuse[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_specular");
-            glUniform4fv(handle, 1, &material_specular[0]);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-            handle = glGetUniformLocation(shader_id, "material_shininess");
-            glUniform1fv(handle, 1, &material_shininess);
-            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-        }
 
         // Store the current transformation matrix
         pushModelViewMatrix();
@@ -2429,6 +2569,24 @@ void render()
 	            g_current_modelview_matrix *= p_node->getWorldTransformationMatrix();
 
 				applyModelViewMatrix();
+
+		        // Set the colour of the sample
+				handle = glGetUniformLocation(shader_id, "material_ambient");
+				glUniform4fv(handle, 1, mesh.getMaterial().getAmbientColour());
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				handle = glGetUniformLocation(shader_id, "material_diffuse");
+				glUniform4fv(handle, 1, mesh.getMaterial().getDiffuseColour());
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				handle = glGetUniformLocation(shader_id, "material_specular");
+				glUniform4fv(handle, 1, mesh.getMaterial().getSpecularColour());
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+				handle = glGetUniformLocation(shader_id, "material_shininess");
+				GLfloat shininess = mesh.getMaterial().getShininess();
+				glUniform1fv(handle, 1, &shininess);
+				checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 				// Display the sample
 				if (g_display_wireframe)
