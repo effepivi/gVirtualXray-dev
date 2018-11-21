@@ -1401,6 +1401,7 @@ double getDensity(const std::string& aLabel)
     else
     {
         cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+		return (0);
     }
 }
 
@@ -1479,6 +1480,7 @@ std::string getMaterialLabel(const std::string& aLabel)
     else
     {
         cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+        return std::string();
     }
 }
 
