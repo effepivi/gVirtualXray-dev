@@ -41,11 +41,24 @@ SET(ASSIMP_ROOT_DIR      ${ASSIMP_INSTALL_DIR}          CACHE PATH "Where ASSIMP
 SET(ASSIMP_INCLUDE_DIRS  ${ASSIMP_INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
 SET(ASSIMP_LIBRARY_DIRS  ${ASSIMP_INSTALL_DIR}/lib      CACHE PATH "Where ASSIMP's libraries are." FORCE)
 
+
+IF (MSVC12)
+    SET(ASSIMP_MSVC_VERSION "vc120")
+ELSEIF (MSVC14)
+    SET(ASSIMP_MSVC_VERSION "vc140")
+ENDIF (MSVC12)
+
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    SET(ASSIMP_LIBRARIES   
-        ${ASSIMP_INSTALL_DIR}/lib/assimp-vc${MSVC_TOOLSET_VERSION}-mt.lib
+	FILE (WRITE ${staging_prefix}/${install_prefix}-build/code/Debug/assimp-${ASSIMP_MSVC_VERSION}-mt.pdb "Create a file to pass the install process")
+
+    SET(ASSIMP_LIBRARIES
+        ${ASSIMP_INSTALL_DIR}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib
         ${ASSIMP_INSTALL_DIR}/lib/IrrXML.lib
+	    optimized
         ${ASSIMP_INSTALL_DIR}/lib/zlibstatic.lib
+	    debug
+        ${ASSIMP_INSTALL_DIR}/lib/zlibstaticd.lib
+
 		CACHE FILEPATH "ASSIMP's libraries." FORCE
     )
 else ()
