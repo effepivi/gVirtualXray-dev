@@ -108,6 +108,8 @@ SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)
 	m_p_parent = aNode.m_p_parent;
 	m_p_children = aNode.m_p_children;
 	m_world_properties_up_to_date = aNode.m_world_properties_up_to_date;
+
+	return (*this);
 }
 
 
