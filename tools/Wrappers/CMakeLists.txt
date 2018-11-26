@@ -66,8 +66,7 @@ IF (SWIG_FOUND)
     ENDIF (BUILD_PYTHON2 AND BUILD_PYTHON3)
 
     IF (BUILD_CSHARP)
-        MESSAGE(STATUS "C# wrapper not implemented as yet, Franck is working on it.")
-        #add_subdirectory(csharp)
+        add_subdirectory(csharp)
     ENDIF (BUILD_CSHARP)
 
     IF (BUILD_LUA)
