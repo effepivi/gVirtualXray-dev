@@ -24,8 +24,8 @@ gvxrOctave.setDetectorPixelSize(0.5, 0.5, "mm");
 disp("Load the data");
 gvxrOctave.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
-for i = size(gvxrOctave.getMeshLabelSet(), 1)
-    label = gvxrOctave.getMeshLabelSet()(i);
+for i = gvxrOctave.getNumberOfChildren("root")
+    label = gvxrOctave.getChildLabel("root", i);
     disp(strcat("Move ", label, " to the centre"));
     gvxrOctave.moveToCentre(label);
     

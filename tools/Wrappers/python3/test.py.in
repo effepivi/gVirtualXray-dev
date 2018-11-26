@@ -34,15 +34,19 @@ gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 print("Load the data");
 gvxr.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
-for label in gvxr.getMeshLabelSet():
+# Process every node
+for i in range(gvxr.getNumberOfChildren('root')):
+    # Get the label
+    label = gvxr.getChildLabel('root', i);
+
     print("Move ", label, " to the centre");
     gvxr.moveToCentre(label);
-    
+
     #print("Move the mesh to the center");
     #gvxr.moveToCenter(label);
-    
+
     print("Set ", label, "'s Hounsfield unit");
-    gvxr.setHU(label, 1000)
+    gvxr.setHU(label, 1000);
 
 
 # Compute an X-ray image

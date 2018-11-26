@@ -29,18 +29,20 @@ class gvxrJavaExample
         System.out.println("Load the data");
         gvxrJava.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
         
-        for (int i = 0; i < gvxrJava.getMeshLabelSet().size(); ++i)
-        {
-            String label = gvxrJava.getMeshLabelSet().get(i);
+        // Process every node
+		for (int i = 0; i < gvxrJava.getNumberOfChildren("root"); ++i)
+		{
+		    // Get the label
+    		String label = gvxrJava.getChildLabel("root", i);
+
             System.out.println("Move " + label + " to the centre");
-            gvxrJava.moveToCentre(label);
-            
+		    gvxrJava.moveToCentre(label);
+		
             //System.out.println("Move the mesh to the center");
             //gvxrJava.moveToCenter(label);
-            
+		
             System.out.println("Set " + label + "'s Hounsfield unit");
-            short HU = 1000;
-            gvxrJava.setHU(label, HU);
+		    gvxrJava.setHU(label, (short) 1000);
         }
 
         // Compute an X-ray image

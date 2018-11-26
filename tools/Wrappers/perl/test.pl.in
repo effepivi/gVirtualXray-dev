@@ -26,16 +26,19 @@ gvxrPerl::setDetectorPixelSize(0.5, 0.5, "mm");
 print "Load the data\n";
 gvxrPerl::loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
-for ($count = 0 ; $count < gvxrPerl::getMeshLabelSetSize(); $count++)
+# Process every node
+for ($count = 0 ; $count < gvxrPerl.getNumberOfChildren("root"); $count++)
 {
-    $label = gvxrPerl::getMeshLabel($count);
+    $label =gvxrPerl.getChildLabel("root", $count);
+
     print "Move ", $label, " to the centre\n";
-    
-    gvxrPerl::moveToCentre($label);
-    #gvxrPerl::moveToCenter($label);
+    gvxrPerl.moveToCentre(l$abel);
+
+    #print "Move ", $label, " to the center\n";
+    #gvxrPerl.moveToCenter($label);
 
     print "Set ", $label, "'s Hounsfield unit\n";
-    gvxrPerl::setHU($label, 1000);   
+    gvxrPerl.setHU($label, 1000);
 }
 
 # Compute an X-ray image

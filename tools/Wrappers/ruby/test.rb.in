@@ -32,7 +32,10 @@ puts "Load the data";
 GvxrRuby.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
 #def each
-for label in GvxrRuby.getMeshLabelSet() do
+for i in 0..GvxrRuby.etNumberOfChildren("root") do
+    # Get the label
+    label = GvxrRuby.getChildLabel("root", i);
+
     puts "Move ", label, " to the centre";
     GvxrRuby.moveToCentre(label);
     #GvxrRuby.moveToCenter(label);
