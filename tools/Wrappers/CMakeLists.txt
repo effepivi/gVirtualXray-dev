@@ -33,7 +33,7 @@
 PROJECT (gvxrWrappers)
 
 
-if(${CMAKE_VERSION} VERSION_LESS "3.8.0") 
+if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     message("Please consider to switch to CMake 3.8.0")
 endif()
 
@@ -94,7 +94,7 @@ IF (SWIG_FOUND)
     IF (BUILD_PYTHON2)
         add_subdirectory(python2)
     ENDIF (BUILD_PYTHON2)
-    
+
     IF (BUILD_PYTHON3)
         add_subdirectory(python3)
     ENDIF (BUILD_PYTHON3)
@@ -113,8 +113,6 @@ IF (SWIG_FOUND)
     ENDIF (BUILD_SCILAB)
 
     IF (BUILD_TCL)
-        MESSAGE(STATUS "TCL wrapper not implemented as yet, Franck is working on it.")
-        #add_subdirectory(tcl)
+        add_subdirectory(Tcl)
     ENDIF (BUILD_TCL)
 ENDIF (SWIG_FOUND)
-
