@@ -7,6 +7,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.colors import LogNorm
+from matplotlib.colors import PowerNorm
 
 import gvxrPython3 as gvxr
 
@@ -62,15 +63,20 @@ gvxr.saveLastXRayImage();
 gvxr.saveLastLBuffer();
 
 # Display the image with Matplotlib
-plt.subplot(211)
+plt.subplot(131)
+plt.imshow(x_ray_image, cmap="gray");
+plt.colorbar(orientation='horizontal');
+plt.title("Using a linear colour scale");
+
+plt.subplot(132)
 plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray");
-plt.colorbar();
+plt.colorbar(orientation='horizontal');
 plt.title("Using a log colour scale");
 
-plt.subplot(212)
-plt.imshow(x_ray_image, cmap="gray");
-plt.colorbar();
-plt.title("Using a linear colour scale");
+plt.subplot(133)
+plt.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray");
+plt.colorbar(orientation='horizontal');
+plt.title("Using a Power-law colour scale");
 
 plt.show();
 
