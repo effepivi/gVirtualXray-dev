@@ -1,5 +1,6 @@
 % Load module
 gvxrOctave
+pkg load image
 
 % Create an OpenGL context
 disp("Create an OpenGL context");
@@ -25,13 +26,13 @@ disp("Load the data");
 gvxrOctave.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
 for i = gvxrOctave.getNumberOfChildren("root")
-    label = gvxrOctave.getChildLabel("root", i);
+    label = gvxrOctave.getChildLabel("root", i - 1);
     disp(strcat("Move ", label, " to the centre"));
     gvxrOctave.moveToCentre(label);
-    
+
     %disp("Move the mesh to the center");
     %gvxrOctave.moveToCenter(label);
-    
+
     disp(strcat("Set ", label, "'s Hounsfield unit"));
     gvxrOctave.setHU(label, 1000)
 endfor
@@ -42,7 +43,7 @@ gvxrOctave.disableArtefactFiltering();
 % Not working anymore gvxrOctave.enableArtefactFilteringOnGPU();
 % Not working anymore gvxrOctave.enableArtefactFilteringOnCPU();
 temp_x_ray_image = gvxrOctave.computeXRayImage();
-x_ray_image = cell2mat(cell2mat(temp_x_ray_image'(1,:)));
+x_ray_image = flipud(cell2mat(cell2mat(temp_x_ray_image'(1,:))));
 
 % Save the last image into a file
 disp("Save the last image into a file");
@@ -53,11 +54,12 @@ gvxrOctave.saveLastLBuffer();
 np_normalised_image = ((x_ray_image-min(x_ray_image(:)))/max(x_ray_image(:)));
 
 % Save the normalised image
-imwrite(np_normalised_image', 'x_ray_image.png', "png");
+imwrite(np_normalised_image, 'x_ray_image.png', "png");
 
 % Show the image
 imagesc(x_ray_image);
-colormap "gray";
+colorbar("location", "South");
+colormap("gray");
 set(gca,'dataAspectRatio',[1 1 1]);
 
 % Display the 3D scene (no event loop)
@@ -65,7 +67,7 @@ gvxrOctave.displayScene();
 
 
 % Display the 3D scene (no event loop)
-% Run an interactive loop 
+% Run an interactive loop
 % (can rotate the 3D scene and zoom-in)
 % Keys are:
 % Q/Escape: to quit the event loop (does not close the window)
@@ -74,3 +76,5 @@ gvxrOctave.displayScene();
 % N: display the X-ray image in negative or positive
 % H: display/hide the X-ray detector
 gvxrOctave.renderLoop();
+
+exit;
