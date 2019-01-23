@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 
-
-#from PIL import Image
-
+# Use Matplotlib
 import matplotlib
 matplotlib.use("TkAgg")
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
-import numpy as np
+from matplotlib.colors import LogNorm
 
 import gvxrPython3 as gvxr
 
@@ -64,28 +61,21 @@ print("Save the last image into a file");
 gvxr.saveLastXRayImage();
 gvxr.saveLastLBuffer();
 
-# Retrieve the image in Numpy's 2D array format
-np_image = np.array(x_ray_image);
-
-# Normalise the image between 0 and 255 (this is for PIL)
-#np_normalised_image = (255 * (np_image-np_image.min())/np_image.max()).astype(np.int8);
-
-# Convert the Numpy array into a PIL image
-#img = Image.fromarray(np_normalised_image.astype(np.ubyte));
-
-# Save the PIL image
-#img.save('my.png')
-
-# Show the image
-#img.show()
-
 # Display the image with Matplotlib
-plt.imshow(np.log(np_image), cmap="gray");
+plt.subplot(211)
+plt.imshow(x_ray_image, norm=LogNorm(), cmap="gray");
+plt.colorbar();
+plt.title("Using a log colour scale");
+
+plt.subplot(212)
+plt.imshow(x_ray_image, cmap="gray");
+plt.colorbar();
+plt.title("Using a linear colour scale");
+
 plt.show();
 
 # Display the 3D scene (no event loop)
 gvxr.displayScene();
-
 
 # Display the 3D scene (no event loop)
 # Run an interactive loop
