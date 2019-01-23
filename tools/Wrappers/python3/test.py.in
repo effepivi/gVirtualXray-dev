@@ -3,6 +3,9 @@
 
 #from PIL import Image
 
+import matplotlib
+matplotlib.use("TkAgg")
+
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
@@ -85,7 +88,7 @@ gvxr.displayScene();
 
 
 # Display the 3D scene (no event loop)
-# Run an interactive loop 
+# Run an interactive loop
 # (can rotate the 3D scene and zoom-in)
 # Keys are:
 # Q/Escape: to quit the event loop (does not close the window)
