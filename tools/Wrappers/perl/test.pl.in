@@ -27,18 +27,18 @@ print "Load the data\n";
 gvxrPerl::loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
 # Process every node
-for ($count = 0 ; $count < gvxrPerl.getNumberOfChildren("root"); $count++)
+for ($count = 0 ; $count < gvxrPerl::getNumberOfChildren("root"); $count++)
 {
-    $label =gvxrPerl.getChildLabel("root", $count);
+    $label = gvxrPerl::getChildLabel("root", $count);
 
     print "Move ", $label, " to the centre\n";
-    gvxrPerl.moveToCentre(l$abel);
+    gvxrPerl::moveToCentre($label);
 
     #print "Move ", $label, " to the center\n";
-    #gvxrPerl.moveToCenter($label);
+    #gvxrPerl::moveToCenter($label);
 
     print "Set ", $label, "'s Hounsfield unit\n";
-    gvxrPerl.setHU($label, 1000);
+    gvxrPerl::setHU($label, 1000);
 }
 
 # Compute an X-ray image
@@ -51,24 +51,8 @@ print("Save the last image into a file\n");
 gvxrPerl::saveLastXRayImage();
 gvxrPerl::saveLastLBuffer();
 
-# Retrieve the image in Numpy's 2D array format
-#np_image = np.array(x_ray_image);
-
-# Normalise the image between 0 and 255 (this is for PIL)
-#np_normalised_image = (255 * (np_image-np_image.min())/np_image.max()).astype(np.int8);
-
-# Convert the Numpy array into a PIL image
-#img = Image.fromarray(np_normalised_image.astype(np.ubyte));
-
-# Save the PIL image
-#img.save('my.png')
-
-# Show the image
-#img.show()
-
 # Display the 3D scene (no event loop)
 gvxrPerl::displayScene();
-
 
 # Display the 3D scene (no event loop)
 # Run an interactive loop
