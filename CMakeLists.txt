@@ -54,13 +54,12 @@ IF (UNIX)
     ENDIF (NOT APPLE)
 ENDIF (UNIX)
 
-
-#IF (COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-    cmake_policy(SET CMP0011 NEW)
-    cmake_policy(SET CMP0013 NEW)
-    cmake_policy(SET CMP0053 NEW)
-#ENDIF (COMMAND cmake_policy)
+cmake_policy(SET CMP0072 NEW) # OpenGL
+cmake_policy(SET CMP0078 NEW) # SWIG
+cmake_policy(SET CMP0003 NEW)
+cmake_policy(SET CMP0011 NEW)
+cmake_policy(SET CMP0013 NEW)
+cmake_policy(SET CMP0053 NEW)
 
 IF (APPLE)
     cmake_policy(SET CMP0042 NEW)
