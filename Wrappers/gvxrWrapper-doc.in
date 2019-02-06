@@ -8,7 +8,7 @@
 %include "std_vector.i"
 %include "std_string.i"
 
-%include "@CMAKE_CURRENT_SOURCE_DIR@/../../SimpleGVXR/SimpleGVXR-doc.i"
+%include "@SimpleGVXR_DOC_I_FILE@"
 
 namespace std {
     %template(Vectors) vector<std::string>;
@@ -16,7 +16,7 @@ namespace std {
     %template(Vectord) vector<double>;
     %template(Vectorff) vector<vector<float> >;
     %template(Vectordd) vector<vector<double> >;
-}; 
+};
 
 
 // Process symbols in header
