@@ -191,6 +191,7 @@ configure_file(SimpleGVXRConfig.cmake.in CMakeFiles/SimpleGVXRConfig.cmake @ONLY
 
 install(FILES
 		${CMAKE_CURRENT_SOURCE_DIR}/UseSimpleGVXR.cmake
+		${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR-doc.i
 		${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/SimpleGVXRConfig.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
     COMPONENT Development)
