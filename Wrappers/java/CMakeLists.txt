@@ -1,0 +1,39 @@
+find_package(Java COMPONENTS Development REQUIRED)
+include(UseJava)
+
+find_package(JNI REQUIRED)
+INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
+
+
+SET (module gvxrJava)
+
+
+configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i)
+SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.i PROPERTY CPLUSPLUS ON)
+
+# Add swig module
+IF(${CMAKE_VERSION} VERSION_LESS "3.8.0")
+    SWIG_ADD_MODULE(${module} java ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+    SWIG_ADD_LIBRARY(${module} LANGUAGE java SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
+ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${JNI_LIBRARIES})
+
+IF (MSVC)
+    ADD_DEPENDENCIES(_${module} SimpleGVXR)
+ENDIF (MSVC)
+
+configure_file(test.java.in ${CMAKE_CURRENT_BINARY_DIR}/test.java)
+FILE(COPY ../welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+FILE(COPY runJavaTest.sh
+		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+		FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+  			GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+add_jar(testJava ${CMAKE_CURRENT_BINARY_DIR}/test.java)
+
+
+# Files to install with Python
+#set(PYTHON_INSTALL_FILES
+#                ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.java
+#                ${CMAKE_CURRENT_BINARY_DIR}/_gvxrJava.jar)

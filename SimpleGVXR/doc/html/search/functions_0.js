@@ -1,0 +1,7 @@
+var searchData=
+[
+  ['addenergybintospectrum',['addEnergyBinToSpectrum',['../_simple_g_v_x_r_8h.html#aba774aa741a1824df3e79bac35d7f2e1',1,'SimpleGVXR.h']]],
+  ['addmesh',['addMesh',['../_simple_g_v_x_r_8h.html#a7439a61c9cb4e6118810ec4fa5e40d01',1,'SimpleGVXR.h']]],
+  ['addpolygonmeshasinnersurface',['addPolygonMeshAsInnerSurface',['../_simple_g_v_x_r_8h.html#a193db9e9eab8b3205d126387789e6907',1,'SimpleGVXR.h']]],
+  ['addpolygonmeshasoutersurface',['addPolygonMeshAsOuterSurface',['../_simple_g_v_x_r_8h.html#a71f514bb1ae0ca2e9fd19b3423685cb3',1,'SimpleGVXR.h']]]
+];
