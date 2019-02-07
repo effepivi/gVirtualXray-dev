@@ -1,9 +1,0 @@
-version "1.1.0"
-package "gVirtualXRay"
-purpose "Command line tool to a DICOM series of 2D slices into a 3D volume."
-description "See http://gvirtualxray.sourceforge.net/"
-versiontext "(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), http://www.fpvidal.net/, Nov 2016, 2016, version 1.1, BSD 3-Clause License"
-
-# Options
-option "directory"    d "Path of the DICOM directory" required string
-option "output"       o "Output file name"            required string
