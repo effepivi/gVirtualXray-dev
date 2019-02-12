@@ -5,6 +5,6 @@ var searchData=
   ['renderloop',['renderLoop',['../_simple_g_v_x_r_8h.html#ad5f2ad0bc3d3a8faec876665b38e98e7',1,'SimpleGVXR.h']]],
   ['resetbeamspectrum',['resetBeamSpectrum',['../_simple_g_v_x_r_8h.html#a82f5d828b75f302d2ccdfba39d2f16b9',1,'SimpleGVXR.h']]],
   ['resetscenetransformation',['resetSceneTransformation',['../_simple_g_v_x_r_8h.html#ae80cfca75f6e77016d9c32ed152e763b',1,'SimpleGVXR.h']]],
-  ['rotatenode',['rotateNode',['../_simple_g_v_x_r_8h.html#aa4b1803e22f3f7f1deeb25435549780d',1,'SimpleGVXR.h']]],
+  ['rotatenode',['rotateNode',['../_simple_g_v_x_r_8h.html#a3a13d0e42ff6a485f0617afc565fbdb7',1,'SimpleGVXR.h']]],
   ['rotatescene',['rotateScene',['../_simple_g_v_x_r_8h.html#a7fe19b103fe00ede3c5e8077ffeb518a',1,'SimpleGVXR.h']]]
 ];

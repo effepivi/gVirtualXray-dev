@@ -29,6 +29,11 @@ Parameters
     the parent of the node in the scenegraph (default: \"root\")  
 ";
 
+%feature("docstring") disableArtefactFiltering "
+
+Disable artefact filtering altogether.  
+";
+
 %feature("docstring") addEnergyBinToSpectrum "
 
 Add an energy bin to the beam spectrum (useful to generate polychromatism).  
@@ -176,6 +181,25 @@ the minor version number
 Close and destroy all the windows and OpenGL contexts that have been created.  
 ";
 
+%feature("docstring") getDetectorPosition "
+
+Accessor on the position of the X-ray detector.  
+
+Parameters
+----------
+* `aUnitOfLength` :  
+    the unit of length corresponding to the returned value. Acceptable values
+    are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
+
+Returns
+-------
+the source position in a given unit of length  
+";
+
 %feature("docstring") getElementSymbol "
 
 Accessor on the chemical element' symbol depending on its Z number.  
@@ -217,9 +241,23 @@ Accessor on the mass attenuation coefficient at a given energy corresponding to
 the material properties of a polygon mesh.  
 ";
 
-%feature("docstring") translateNode "
+%feature("docstring") getSourcePosition "
 
-Translate a polygon mesh.  
+Accessor on the position of the X-ray source.  
+
+Parameters
+----------
+* `aUnitOfLength` :  
+    the unit of length corresponding to the returned value. Acceptable values
+    are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
+
+Returns
+-------
+the source position in a given unit of length  
 ";
 
 %feature("docstring") setMonoChromatic "
@@ -227,10 +265,19 @@ Translate a polygon mesh.
 Use a monochromatic beam spectrum (i.e. one single energy).  
 ";
 
-%feature("docstring") displayScene "
+%feature("docstring") computeXRayImage "
 
-3-D visualisation of the 3-D scene (source, detector, and scanned objects). Note
-that there is no interactive loop running.  
+Compute the X-ray projection corresponding to the environment that has
+previously been set, i.e.  
+
+*   Detector position  
+*   Detector orientation  
+*   Detector size and resolution  
+*   Source position  
+*   Source shape  
+*   Beam spectrum  
+*   Scanned object geometries  
+*   Scanned object material properties  
 ";
 
 %feature("docstring") setDetectorNumberOfPixels "
@@ -305,19 +352,10 @@ Parameters
     the polygon mesh that is going to be added to aDestination  
 ";
 
-%feature("docstring") computeXRayImage "
+%feature("docstring") displayScene "
 
-Compute the X-ray projection corresponding to the environment that has
-previously been set, i.e.  
-
-*   Detector position  
-*   Detector orientation  
-*   Detector size and resolution  
-*   Source position  
-*   Source shape  
-*   Beam spectrum  
-*   Scanned object geometries  
-*   Scanned object material properties  
+3-D visualisation of the 3-D scene (source, detector, and scanned objects). Note
+that there is no interactive loop running.  
 ";
 
 %feature("docstring") setDetectorPosition "
@@ -339,6 +377,15 @@ Parameters
     \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
     \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
     \"km\", \"kilometre\", \"kilometer\"  
+";
+
+%feature("docstring") getDiffuseColour "
+
+Accessor on the diffuse colour of the material of a given polygon mesh.  
+
+Returns
+-------
+the diffuse colour  
 ";
 
 %feature("docstring") getLastSinogram "
@@ -365,9 +412,14 @@ Parameters
     the polygon mesh that is going to be subtracted from aDestination  
 ";
 
-%feature("docstring") disableArtefactFiltering "
+%feature("docstring") addPolygonMeshAsOuterSurface "
 
-Disable artefact filtering altogether.  
+Add a polygon mesh, given its label, to the X-ray renderer as an outer surface.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh in the scenegraph  
 ";
 
 %feature("docstring") getElementName "
@@ -384,6 +436,24 @@ mesh.
 %feature("docstring") disableArtifactFiltering "
 
 Disable artefact filtering altogether.  
+";
+
+%feature("docstring") setColor "
+
+Set the color of a given polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `R` :  
+    the red channel  
+* `G` :  
+    the green channel  
+* `B` :  
+    the blue channel  
+* `A` :  
+    the alpha channel  
 ";
 
 %feature("docstring") scaleScene "
@@ -415,6 +485,25 @@ Accessor on the 3-D scene transformation matrix.
 %feature("docstring") getNodeTransformationMatrix "
 
 Accessor on the transformation matrix of a given node.  
+";
+
+%feature("docstring") getDetectorSize "
+
+Accessor on the size of the X-ray detector.  
+
+Parameters
+----------
+* `aUnitOfLength` :  
+    the unit of length corresponding to the returned value. Acceptable values
+    are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
+
+Returns
+-------
+the size in a given unit of length  
 ";
 
 %feature("docstring") setHU "
@@ -508,19 +597,54 @@ Parameters
     the parent of the node in the scenegraph (default: \"root\")  
 ";
 
-%feature("docstring") addPolygonMeshAsOuterSurface "
+%feature("docstring") getShininess "
 
-Add a polygon mesh, given its label, to the X-ray renderer as an outer surface.  
+Accessor on the shininess of the material of a given polygon mesh.  
 
-Parameters
-----------
-* `aLabel` :  
-    the label of the polygon mesh in the scenegraph  
+Returns
+-------
+the shininess coefficient  
 ";
 
 %feature("docstring") usePointSource "
 
 Use a point source.  
+";
+
+%feature("docstring") getDetectorUpVector "
+
+Accessor on the up-vector defining the orientation of the X-ray detector.  
+
+Returns
+-------
+the up-vector  
+";
+
+%feature("docstring") setColour "
+
+Set the colour of a given polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `R` :  
+    the red channel  
+* `G` :  
+    the green channel  
+* `B` :  
+    the blue channel  
+* `A` :  
+    the alpha channel  
+";
+
+%feature("docstring") getAmbientColour "
+
+Accessor on the ambient colour of the material of a given polygon mesh.  
+
+Returns
+-------
+the ambient colour  
 ";
 
 %feature("docstring") setWindowSize "
@@ -592,6 +716,11 @@ matrix.
 %feature("docstring") getMaterialLabel "
 
 Accessor on the material label of a polygon mesh.  
+";
+
+%feature("docstring") translateNode "
+
+Translate a polygon mesh.  
 ";
 
 %feature("docstring") computeLBuffer "
@@ -710,6 +839,15 @@ Set the Hounsfield value corresponding to the material properties of a polygon
 mesh.  
 ";
 
+%feature("docstring") getSpecularColour "
+
+Accessor on the specular colour of the material of a given polygon mesh.  
+
+Returns
+-------
+the specular colour  
+";
+
 %feature("docstring") destroyWindow "
 
 Close and destroy a given window or OpenGL context.  
@@ -718,6 +856,15 @@ Close and destroy a given window or OpenGL context.
 %feature("docstring") setRootTransformationMatrix "
 
 Set the transformation matrix of the scengraph's root node.  
+";
+
+%feature("docstring") getDetectorNumberOfPixels "
+
+Accessor on the number of pixels of the X-ray detector.  
+
+Returns
+-------
+the size of the detector in number of pixels  
 ";
 
 %feature("docstring") getRootTransformationMatrix "
