@@ -133,6 +133,25 @@ void setSourcePosition(double x, double y, double z, const std::string& aUnitOfL
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the position of the X-ray source.
+/**
+ *  @param aUnitOfLength:	the unit of length corresponding to the returned value.
+ *												Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *	@return the source position in a given unit of length
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getSourcePosition(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
 /// Set the position of the X-ray detector.
 /**
  *  @param x:   the position along the X-axis
@@ -154,6 +173,25 @@ void setDetectorPosition(double x, double y, double z, const std::string& aUnitO
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the position of the X-ray detector.
+/**
+ *  @param aUnitOfLength:	the unit of length corresponding to the returned value.
+ *												Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *	@return the source position in a given unit of length
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
 /// Set the up-vector defining the orientation of the X-ray detector.
 /**
  *  @param x:   the component of the vector along the X-axis
@@ -165,6 +203,15 @@ void setDetectorUpVector(double x, double y, double z);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the up-vector defining the orientation of the X-ray detector.
+/**
+ *	@return the up-vector
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorUpVector();
+
+
+//------------------------------------------------------------------------------
 /// Set the number of pixels of the X-ray detector.
 /**
  *  @param aWidth:  the number of pixels along the X-axis
@@ -172,6 +219,15 @@ void setDetectorUpVector(double x, double y, double z);
  */
 //------------------------------------------------------------------------------
 void setDetectorNumberOfPixels(int aWidth, int aHeight);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the number of pixels of the X-ray detector.
+/**
+ *  @return the size of the detector in number of pixels
+ */
+//------------------------------------------------------------------------------
+std::vector<int> getDetectorNumberOfPixels();
 
 
 //------------------------------------------------------------------------------
@@ -194,6 +250,25 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight);
 void setDetectorPixelSize(double aWidth,
 						  double aHeight,
 						  const std::string& aUnitOfLength);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the size of the X-ray detector.
+/**
+ *  @param aUnitOfLength:	the unit of length corresponding to the returned value.
+ *												Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *	@return the size in a given unit of length
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
@@ -390,9 +465,39 @@ void setColor(const std::string& aLabel, float R, float G, float B, float A);
 void setColour(const std::string& aLabel, float R, float G, float B, float A);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the ambient colour of the material of a given polygon mesh.
+/**
+ *  @return the ambient colour
+ */
+//------------------------------------------------------------------------------
 std::vector<float> getAmbientColour(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the diffuse colour of the material of a given polygon mesh.
+/**
+ *  @return the diffuse colour
+ */
+//------------------------------------------------------------------------------
 std::vector<float> getDiffuseColour(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the specular colour of the material of a given polygon mesh.
+/**
+ *  @return the specular colour
+ */
+//------------------------------------------------------------------------------
 std::vector<float> getSpecularColour(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the shininess of the material of a given polygon mesh.
+/**
+ *  @return the shininess coefficient
+ */
+//------------------------------------------------------------------------------
 float getShininess(const std::string& aLabel);
 
 

@@ -239,6 +239,22 @@ void setSourcePosition(double x, double y, double z,
 }
 
 
+//---------------------------------------------------------------------
+std::vector<double> getSourcePosition(const std::string& aUnitOfLength)
+//---------------------------------------------------------------------
+{
+		double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+		std::vector<double> position(3);
+
+		position[0] = g_xray_detector.getXraySourceCentre()[0] / unit_of_length;
+		position[1] = g_xray_detector.getXraySourceCentre()[1] / unit_of_length;
+		position[2] = g_xray_detector.getXraySourceCentre()[2] / unit_of_length;
+
+		return (position);
+}
+
+
 //----------------------------------------------------
 void setDetectorPosition(double x, double y, double z,
                          const std::string& aUnitOfLength)
@@ -255,6 +271,22 @@ void setDetectorPosition(double x, double y, double z,
 }
 
 
+//-----------------------------------------------------------------------
+std::vector<double> getDetectorPosition(const std::string& aUnitOfLength)
+//-----------------------------------------------------------------------
+{
+		double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+		std::vector<double> position(3);
+
+		position[0] = g_xray_detector.getDetectorPosition()[0] / unit_of_length;
+		position[1] = g_xray_detector.getDetectorPosition()[1] / unit_of_length;
+		position[2] = g_xray_detector.getDetectorPosition()[2] / unit_of_length;
+
+		return (position);
+}
+
+
 //----------------------------------------------------
 void setDetectorUpVector(double x, double y, double z)
 //----------------------------------------------------
@@ -265,6 +297,20 @@ void setDetectorUpVector(double x, double y, double z)
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
     initViewer();
+}
+
+
+//---------------------------------------
+std::vector<double> getDetectorUpVector()
+//---------------------------------------
+{
+		std::vector<double> up_vector(3);
+
+		up_vector[0] = g_xray_detector.getUpVector()[0];
+		up_vector[1] = g_xray_detector.getUpVector()[1];
+		up_vector[2] = g_xray_detector.getUpVector()[2];
+
+		return (up_vector);
 }
 
 
@@ -281,6 +327,19 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight)
 }
 
 
+//------------------------------------------
+std::vector<int> getDetectorNumberOfPixels()
+//------------------------------------------
+{
+		std::vector<int> number_of_pixels(2);
+
+		number_of_pixels[0] = g_xray_detector.getNumberOfPixels()[0];
+		number_of_pixels[1] = g_xray_detector.getNumberOfPixels()[1];
+
+		return (number_of_pixels);
+}
+
+
 //--------------------------------------------------
 void setDetectorPixelSize(double aWidth,
 						  double aHeight,
@@ -293,6 +352,21 @@ void setDetectorPixelSize(double aWidth,
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
+}
+
+
+//-------------------------------------------------------------------
+std::vector<double> getDetectorSize(const std::string& aUnitOfLength)
+//-------------------------------------------------------------------
+{
+		double unit_of_length = getUnitOfLength(aUnitOfLength);
+
+		std::vector<double> detector_size(2);
+
+		detector_size[0] = g_xray_detector.getSizeInUnitOfLength()[0] / unit_of_length;
+		detector_size[1] = g_xray_detector.getSizeInUnitOfLength()[1] / unit_of_length;
+
+		return (detector_size);
 }
 
 
@@ -316,7 +390,7 @@ void loadMeshFile(const std::string& aLabel,
 
     // Set the file name
     g_p_scene_graph->getNode(aLabel)->getPolygonMesh().setFileName(aFileName);
-    
+
     // Load the file
     g_p_scene_graph->getNode(aLabel)->getPolygonMesh().loadSTLFile(false, true, true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
@@ -1535,7 +1609,7 @@ void createWindow(int aWindowID,
 
             // Register its ID
             g_p_window_id_stack.push_back(aWindowID);
-            
+
             // Initialise GLEW
             initialiseGLEW();
 
@@ -1550,7 +1624,7 @@ void createWindow(int aWindowID,
         {
             // Display a warning
             cerr << "gvxrWarning:\tWindow " << aWindowID << " cannot be created." << endl;
-            
+
             // Delete the empty record that may have been created in g_p_window_set
             std::map<int, GLFWwindow*>::iterator it;
             it = g_p_window_set.find(aWindowID);
@@ -1594,7 +1668,7 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
     {
         // Find the window
         auto search = g_p_window_set.find(aWindowID);
-        
+
         // It has been found
         if(search != g_p_window_set.end())
         {
@@ -1769,7 +1843,7 @@ void showWindow(int aWindowID)
     {
         // Find the window
         auto search = g_p_window_set.find(aWindowID);
-        
+
         // It has been found
         if(search != g_p_window_set.end())
         {
@@ -1811,7 +1885,7 @@ void hideWindow(int aWindowID)
     {
         // Find the window
         auto search = g_p_window_set.find(aWindowID);
-        
+
         // It has been found
         if(search != g_p_window_set.end())
         {
@@ -1853,7 +1927,7 @@ void destroyWindow(int aWindowID)
     {
         // Find the window
         auto search_window = g_p_window_set.find(aWindowID);
-        
+
         // It has been found
         if(search_window != g_p_window_set.end())
         {
@@ -1899,7 +1973,7 @@ void destroyAllWindows()
     }
 
     // Terminate GLFW
-    //glfwTerminate();    
+    //glfwTerminate();
 }
 
 
@@ -2161,7 +2235,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
         // Create a window
         createWindow();
     }
-    
+
     // The renderer is ready
     if (g_xray_renderer.isReady())
     {
@@ -2169,7 +2243,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
         {
             // Find the mesh
         	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
-            
+
             // It has been found
             if (p_node)
             {
@@ -2192,12 +2266,12 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
     {
         cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
-    
+
     //g_xray_renderer.printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, "uncleaned_lbuffer.mha");
     //g_xray_renderer.printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, "cleaned_lbuffer.mha");
      //g_xray_renderer.printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, "cumulated_l-buffers.mha");
     // g_xray_renderer.printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, "energy_fluence.mha");
-    
+
     // Compute its L-buffer
     return (getVectorImage(g_xray_renderer.getLBuffer()));
 }
@@ -2258,7 +2332,7 @@ std::vector<std::vector<float> > getLastSinogram()
 int getImageWidth(const std::vector<std::vector<float> >& anImage)
 {
 	int image_width = 0;
-	
+
 	if (getImageHeght(anImage))
 	{
 		image_width = anImage[0].size();
@@ -2321,7 +2395,7 @@ GLFWwindow* initGLFW(int aWindowID,
     {
         glfwWindowHint(GLFW_VISIBLE, false);
     }
-    
+
 	// Enable anti-aliasing
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
@@ -3181,5 +3255,3 @@ double getScaleFilter()
 {
 	return (g_scale_filter);
 }
-
-
