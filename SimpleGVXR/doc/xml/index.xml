@@ -24,6 +24,7 @@
     <member refid="_simple_g_v_x_r_8h_1aa2d38b8483e2ca9fe23259b383859314" kind="function"><name>subtractMesh</name></member>
     <member refid="_simple_g_v_x_r_8h_1ac4faad08043c8b6b16e23ee7e772efb3" kind="function"><name>getNumberOfChildren</name></member>
     <member refid="_simple_g_v_x_r_8h_1a2540ae0646c910ba1c68f468d71770f8" kind="function"><name>getChildLabel</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a0cc80f5ef79f06b447bec495f5c97c68" kind="function"><name>displayNode</name></member>
     <member refid="_simple_g_v_x_r_8h_1a7dac7c6d68422b7e86944435a9a035f4" kind="function"><name>invertNormalVectors</name></member>
     <member refid="_simple_g_v_x_r_8h_1aed64e5b84cf09a952cafb0e24a86d693" kind="function"><name>setColor</name></member>
     <member refid="_simple_g_v_x_r_8h_1aa4ed78a91448f99ee23c4cf7f3845213" kind="function"><name>setColour</name></member>

@@ -431,6 +431,15 @@ std::string getChildLabel(const std::string& aLabel, unsigned int i);
 
 
 //------------------------------------------------------------------------------
+/// Display the scenegraph node using OpenGL.
+/*
+ *  @param aLabel:			the label of the polygon mesh
+ */
+//------------------------------------------------------------------------------
+void displayNode(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Invert the normal vectors of a given polygon mesh.
 /**
  *  @param aLabel:	the label of the polygon mesh

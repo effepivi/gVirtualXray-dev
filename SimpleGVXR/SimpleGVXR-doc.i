@@ -136,6 +136,11 @@ Don't forget to set the density of the material.
 Set the transformation matrix of a given node.  
 ";
 
+%feature("docstring") displayNode "
+
+Display the scenegraph node using OpenGL.  
+";
+
 %feature("docstring") createWindow "
 
 Create an OpenGL context and display it in a window.  

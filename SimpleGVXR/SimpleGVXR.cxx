@@ -710,6 +710,34 @@ std::string getChildLabel(const std::string& aLabel, unsigned int i)
 }
 
 
+//-----------------------------------------
+void displayNode(const std::string& aLabel)
+//-----------------------------------------
+{
+	std::vector<float> colour(4, 1.0);
+
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new SceneGraphBinder());
+	}
+
+    // Find the mesh
+	SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// It has been found
+	if (p_node)
+	{
+			p_node->display();
+	}
+	else
+	{
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
+}
+
+
 //-------------------------------------------------
 void invertNormalVectors(const std::string& aLabel)
 //-------------------------------------------------
