@@ -52,7 +52,9 @@ if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
 endif()
 
 
-cmake_policy(SET CMP0078 NEW) # SWIG
+if(${CMAKE_VERSION} VERSION_MORE "3.12.0")
+    cmake_policy(SET CMP0078 NEW) # SWIG
+endif()
 
 
 OPTION(USE_SYSTEM_SimpleGVXR   "Use System SimpleGVXR"      OFF)
@@ -84,11 +86,20 @@ IF (NOT USE_SYSTEM_SimpleGVXR)
 
 		message(STATUS "SimpleGVXR config result: ${gvxr_config_result}")
 
-		execute_process(
-		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR -- -j12
-		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
-				RESULT_VARIABLE gvxr_build_result
-				)
+
+    IF (MSVC)
+    		execute_process(
+    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR
+    		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
+    				RESULT_VARIABLE gvxr_build_result
+    				)
+    ELSE (MSVC)
+        execute_process(
+    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR -- -j12
+    		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
+    				RESULT_VARIABLE gvxr_build_result
+    				)
+    ENDIF (MSVC)
 
 				message(STATUS "SimpleGVXR build result: ${gvxr_build_result}")
 
