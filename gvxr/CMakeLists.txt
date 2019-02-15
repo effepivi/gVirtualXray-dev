@@ -41,7 +41,9 @@ SET (BUILD_SHARED_LIBS OFF)
 
 # Minimum CMake version ########################################################
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-set (CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11) # C++11
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
+set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
 
 # Flag required for shared libraries
