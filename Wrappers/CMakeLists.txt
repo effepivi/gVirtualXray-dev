@@ -52,7 +52,7 @@ if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
 endif()
 
 
-if(${CMAKE_VERSION} VERSION_MORE "3.12.0")
+if(${CMAKE_VERSION} VERSION_GREATER "3.12.0")
     cmake_policy(SET CMP0078 NEW) # SWIG
 endif()
 
