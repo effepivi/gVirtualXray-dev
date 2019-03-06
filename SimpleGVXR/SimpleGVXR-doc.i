@@ -81,9 +81,15 @@ Parameters
     the parent of the node in the scenegraph (default: \"root\")  
 ";
 
-%feature("docstring") getImageRow "
+%feature("docstring") autoCreateOpenGLContext "
 
-Accessor on the j-th row of pixels of a given image.  
+Create an OpenGL context automatically.  
+
+Parameters
+----------
+* `aFlag` :  
+    true to create the OpenGL context automatically, false otherwise (default
+    value: true)  
 ";
 
 %feature("docstring") loadMeshFile "
@@ -136,6 +142,11 @@ Don't forget to set the density of the material.
 Set the transformation matrix of a given node.  
 ";
 
+%feature("docstring") initShader "
+
+Initialise visualisation shader.  
+";
+
 %feature("docstring") displayNode "
 
 Display the scenegraph node using OpenGL.  
@@ -146,9 +157,23 @@ Display the scenegraph node using OpenGL.
 Create an OpenGL context and display it in a window.  
 ";
 
+%feature("docstring") initialiseGLEW "
+
+Initialise GLEW if it is supported.  
+";
+
 %feature("docstring") saveLastLBuffer "
 
 Save the last L-buffer that has been computed.  
+";
+
+%feature("docstring") getDetectorRightVector "
+
+Accessor on the right-vector defining the orientation of the X-ray detector.  
+
+Returns
+-------
+the right-vector  
 ";
 
 %feature("docstring") invertNormalVectors "
@@ -210,6 +235,11 @@ the source position in a given unit of length
 Accessor on the chemical element' symbol depending on its Z number.  
 ";
 
+%feature("docstring") getImageRow "
+
+Accessor on the j-th row of pixels of a given image.  
+";
+
 %feature("docstring") loadSpectrumFromTSV "
 
 Load the incident beam energy spectrum from a TSV file.  
@@ -238,6 +268,12 @@ Parameters
 
 Set the mass attenuation coefficient corresponding to the material properties of
 a polygon mesh. Don't forget to set the density of the material.  
+";
+
+%feature("docstring") lookAt "
+";
+
+%feature("docstring") perspective "
 ";
 
 %feature("docstring") getMassAttenuationCoefficient "
@@ -492,23 +528,10 @@ Accessor on the 3-D scene transformation matrix.
 Accessor on the transformation matrix of a given node.  
 ";
 
-%feature("docstring") getDetectorSize "
+%feature("docstring") getDensity "
 
-Accessor on the size of the X-ray detector.  
-
-Parameters
-----------
-* `aUnitOfLength` :  
-    the unit of length corresponding to the returned value. Acceptable values
-    are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
-    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
-    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
-    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
-    \"km\", \"kilometre\", \"kilometer\"  
-
-Returns
--------
-the size in a given unit of length  
+Accessor on the density corresponding to the material properties of a polygon
+mesh.  
 ";
 
 %feature("docstring") setHU "
@@ -641,6 +664,11 @@ Parameters
     the blue channel  
 * `A` :  
     the alpha channel  
+";
+
+%feature("docstring") initializeGLEW "
+
+Initialise GLEW if it is supported.  
 ";
 
 %feature("docstring") getAmbientColour "
@@ -796,14 +824,9 @@ Accessor on the linear attenuation coefficient at a given energy corresponding
 to the material properties of a polygon mesh.  
 ";
 
-%feature("docstring") addPolygonMeshAsInnerSurface "
+%feature("docstring") getEnergyBins "
 
-Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.  
-
-Parameters
-----------
-* `aLabel` :  
-    the label of the polygon mesh in the scenegraph  
+Accessor on the energy bins of the beam spectrum.  
 ";
 
 %feature("docstring") translateScene "
@@ -826,10 +849,23 @@ that there is interactive loop running. Keys are:
 *   V: display/hide normal vectors  
 ";
 
-%feature("docstring") getDensity "
+%feature("docstring") getDetectorSize "
 
-Accessor on the density corresponding to the material properties of a polygon
-mesh.  
+Accessor on the size of the X-ray detector.  
+
+Parameters
+----------
+* `aUnitOfLength` :  
+    the unit of length corresponding to the returned value. Acceptable values
+    are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
+
+Returns
+-------
+the size in a given unit of length  
 ";
 
 %feature("docstring") removePolygonMeshesFromXRayRenderer "
@@ -898,9 +934,14 @@ set, i.e.
 Accessor on the chemical element's Z number.  
 ";
 
-%feature("docstring") getEnergyBins "
+%feature("docstring") addPolygonMeshAsInnerSurface "
 
-Accessor on the energy bins of the beam spectrum.  
+Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh in the scenegraph  
 ";
 
 %feature("docstring") showWindow "

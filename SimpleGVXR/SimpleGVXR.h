@@ -112,6 +112,50 @@ std::string getVersionOfSimpleGVXR();
 
 
 //------------------------------------------------------------------------------
+/// Initialise GLEW if it is supported.
+//------------------------------------------------------------------------------
+void initialiseGLEW();
+
+
+//------------------------------------------------------------------------------
+/// Initialise GLEW if it is supported.
+//------------------------------------------------------------------------------
+void initializeGLEW();
+
+
+//------------------------------------------------------------------------------
+/// Initialise visualisation shader.
+//------------------------------------------------------------------------------
+void initShader();
+
+
+
+void perspective(double initial_fovy, double screen_aspect_ratio, double  initial_near, double  initial_far);
+
+void lookAt(double eye_x, double eye_y, double eye_z,
+		double lookAtX, double lookAtY, double lookAtZ,
+		double upX, double upY, double upZ);
+
+
+void pushModelViewMatrix();
+
+
+void popModelViewMatrix();
+
+
+void rotateModelView(double anAngle, double x, double y, double z);
+
+
+//------------------------------------------------------------------------------
+/// Create an OpenGL context automatically.
+/**
+ *  @param aFlag:   true to create the OpenGL context automatically, false otherwise (default value: true)
+ */
+//------------------------------------------------------------------------------
+void autoCreateOpenGLContext(bool aFlag = true);
+
+
+//------------------------------------------------------------------------------
 /// Set the position of the X-ray source.
 /**
  *  @param x:   the position along the X-axis
@@ -209,6 +253,15 @@ void setDetectorUpVector(double x, double y, double z);
  */
 //------------------------------------------------------------------------------
 std::vector<double> getDetectorUpVector();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the right-vector defining the orientation of the X-ray detector.
+/**
+ *	@return the right-vector
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getDetectorRightVector();
 
 
 //------------------------------------------------------------------------------

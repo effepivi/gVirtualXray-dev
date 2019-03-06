@@ -5,6 +5,7 @@ var searchData=
   ['getdensity',['getDensity',['../_simple_g_v_x_r_8h.html#a3b6bafe5b7184365b01f8d4dd7719f0b',1,'SimpleGVXR.h']]],
   ['getdetectornumberofpixels',['getDetectorNumberOfPixels',['../_simple_g_v_x_r_8h.html#a8d620fd4519309c6f0b8f48353b90fee',1,'SimpleGVXR.h']]],
   ['getdetectorposition',['getDetectorPosition',['../_simple_g_v_x_r_8h.html#a401a61a44333c2c037ead73ffdf9c2a3',1,'SimpleGVXR.h']]],
+  ['getdetectorrightvector',['getDetectorRightVector',['../_simple_g_v_x_r_8h.html#a02d5273c7f657bbac64a7e7b1373f522',1,'SimpleGVXR.h']]],
   ['getdetectorsize',['getDetectorSize',['../_simple_g_v_x_r_8h.html#ac1fa465088ff594d76917fb4a6f13f5e',1,'SimpleGVXR.h']]],
   ['getdetectorupvector',['getDetectorUpVector',['../_simple_g_v_x_r_8h.html#ab669679c11642ce61ac12479ddc82252',1,'SimpleGVXR.h']]],
   ['getdiffusecolour',['getDiffuseColour',['../_simple_g_v_x_r_8h.html#a17824de8c345642821db10247482e5e1',1,'SimpleGVXR.h']]],
