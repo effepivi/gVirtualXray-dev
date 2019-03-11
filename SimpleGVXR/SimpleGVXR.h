@@ -141,9 +141,9 @@ void initShader();
 *                   clipping plane
 *   @param  top:    Specify the coordinates for the top horizontal
 *                   clipping plane
-*   @param  near:   Specify the distances to the near clipping plane.
+*   @param  zNear:  Specify the distances to the near clipping plane.
 *                   The value must be positive
-*   @param  far:    Specify the distances to the far clipping plane.
+*   @param  zFar:   Specify the distances to the far clipping plane.
 *                   The value must be positive
 */
 //------------------------------------------------------------------------------
@@ -151,8 +151,8 @@ void orthographic(double left,
         double right,
         double bottom,
         double top,
-        double near,
-        double far);
+        double zNear,
+        double zFar);
 
 
 //------------------------------------------------------------------------------

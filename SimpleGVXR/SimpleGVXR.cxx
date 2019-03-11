@@ -3019,13 +3019,12 @@ void orthographic(double left,
         double right,
         double bottom,
         double top,
-        double near,
-        double far)
+        double nearZ,
+        double farZ)
 //----------------------------
 {
     gVirtualXRay::loadOrthoProjectionMatrix(left, right,
-        bottom, top,
-        near, far);
+        bottom, top, nearZ, farZ);
 }
 
 
