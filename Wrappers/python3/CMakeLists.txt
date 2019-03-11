@@ -60,5 +60,6 @@ add_custom_target(install-${module}
         DEPENDS ${module}
         COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY_OUT} install --skip-build --root ${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_DEPENDENCIES(install-${module} ${module})
-
+IF (WIN32 AND MSVC)
+    ADD_DEPENDENCIES(install-${module} _${module})
+ENDIF (WIN32 AND MSVC)
