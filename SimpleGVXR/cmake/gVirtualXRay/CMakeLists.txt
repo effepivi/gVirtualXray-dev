@@ -23,6 +23,7 @@ SET (gVirtualXRay_INSTALL_DIR ${CMAKE_BINARY_DIR}/install)
 
 ExternalProject_Add(gVirtualXRay
   SVN_REPOSITORY "https://svn.code.sf.net/p/gvirtualxray/code/trunk/gvxr/"
+  SVN_TRUST_CERT TRUE
   UPDATE_COMMAND ""
   SOURCE_DIR  source
   BINARY_DIR  build
