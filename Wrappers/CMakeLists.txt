@@ -47,12 +47,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
-if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
-    message("Please consider to switch to CMake 3.8.0")
+if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
+    message("Please consider to switch to CMake 3.13.0")
 endif()
 
 
-if(${CMAKE_VERSION} VERSION_GREATER "3.12.0")
+if(${CMAKE_VERSION} VERSION_GREATER "3.13.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.13.0")
     cmake_policy(SET CMP0078 NEW) # SWIG
 endif()
 
