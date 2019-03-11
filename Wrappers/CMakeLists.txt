@@ -89,13 +89,13 @@ IF (NOT USE_SYSTEM_SimpleGVXR)
 
     IF (MSVC)
     		execute_process(
-    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR
+    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --config Release --clean-first --target SimpleGVXR
     		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
     				RESULT_VARIABLE gvxr_build_result
     				)
     ELSE (MSVC)
         execute_process(
-    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --target SimpleGVXR -- -j12
+    		    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/SimpleGVXR --config Release --clean-first --target SimpleGVXR -- -j12
     		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
     				RESULT_VARIABLE gvxr_build_result
     				)

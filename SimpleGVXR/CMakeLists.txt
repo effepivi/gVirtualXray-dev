@@ -76,13 +76,13 @@ IF (NOT USE_SYSTEM_gVirtualXRay)
 
 		IF (MSVC)
 				execute_process(
-				    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/gVirtualXRay --target gVirtualXRay
+				    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/gVirtualXRay --config Release --clean-first --target gVirtualXRay
 				    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gVirtualXRay
 						RESULT_VARIABLE gvxr_build_result
 						)
 		ELSE (MSVC)
 				execute_process(
-				    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/gVirtualXRay --target gVirtualXRay -- -j12
+				    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/gVirtualXRay --config Release --clean-first --target gVirtualXRay -- -j12
 				    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gVirtualXRay
 						RESULT_VARIABLE gvxr_build_result
 						)
