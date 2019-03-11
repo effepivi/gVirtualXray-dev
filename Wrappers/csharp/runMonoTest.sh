@@ -1,4 +1,4 @@
-mcs  -out:test.exe test.cs  gvxrCSharp.cs Vectorf.cs Vectorff.cs Vectord.cs gvxrCSharpPINVOKE.cs
+mcs  -out:test.exe test.cs  gvxrCSharp.cs Vectori.cs Vectorf.cs Vectorff.cs Vectord.cs gvxrCSharpPINVOKE.cs
 
 if [ ! -f gvxrCSharp ]; then
     echo Create link
