@@ -2646,7 +2646,9 @@ void popModelViewMatrix()
 }
 
 
+//----------------------------------------------------------------
 void rotateModelView(double anAngle, double x, double y, double z)
+//----------------------------------------------------------------
 {
 	gVirtualXRay::Matrix4x4<GLfloat> rotation_matrix;
 	rotation_matrix.rotate(anAngle, gVirtualXRay::Vec3<GLfloat>(x, y, z));
@@ -3012,15 +3014,34 @@ void initShader()
 }
 
 
+//----------------------------
+void orthographic(double left,
+        double right,
+        double bottom,
+        double top,
+        double near,
+        double far)
+//----------------------------
+{
+    gVirtualXRay::loadOrthoProjectionMatrix(left, right,
+        bottom, top,
+        near, far);
+}
+
+
+//----------------------------------------------------------------------------------------------------------
 void perspective(double initial_fovy, double screen_aspect_ratio, double  initial_near, double  initial_far)
+//----------------------------------------------------------------------------------------------------------
 {
 	gVirtualXRay::loadPerspectiveProjectionMatrix(initial_fovy, screen_aspect_ratio, initial_near, initial_far);
 }
 
 
+//------------------------------------------------------
 void lookAt(double eye_x, double eye_y, double eye_z,
 		double lookAtX, double lookAtY, double lookAtZ,
 		double upX, double upY, double upZ)
+//------------------------------------------------------
 {
 	gVirtualXRay::loadLookAtModelViewMatrix(eye_x, eye_y, eye_z,
 			lookAtX, lookAtY, lookAtZ,

@@ -130,19 +130,102 @@ void initShader();
 
 
 
-void perspective(double initial_fovy, double screen_aspect_ratio, double  initial_near, double  initial_far);
+//------------------------------------------------------------------------------
+/// Replace the projection matrix by a orthographic projection matrix.
+/// It behaves as the old glOrtho function.
+/**
+*   @param  left:   Specify the coordinates for the left vertical clipping plane
+*   @param  right:  Specify the coordinates for the right vertical
+*                   clipping plane
+*   @param  bottom: Specify the coordinates for the bottom horizontal
+*                   clipping plane
+*   @param  top:    Specify the coordinates for the top horizontal
+*                   clipping plane
+*   @param  near:   Specify the distances to the near clipping plane.
+*                   The value must be positive
+*   @param  far:    Specify the distances to the far clipping plane.
+*                   The value must be positive
+*/
+//------------------------------------------------------------------------------
+void orthographic(double left,
+        double right,
+        double bottom,
+        double top,
+        double near,
+        double far);
 
+
+//------------------------------------------------------------------------------
+/// Replace the projection matrix by a perspective projection matrix.
+/// It behaves as the old gluPerspective function.
+/**
+*   @param  fovy:   specifies the field of view angle, in degrees, in
+*                   the y-direction.
+*   @param  aspect: Specifies the aspect ratio that determines
+*                   the field of view in the x direction.
+*                   The aspect ratio is the ratio of x (width) to y (height).
+*   @param  zNear:  Specifies the distance from the viewer to the near
+*                   clipping plane (always positive)
+*   @param  zFar:   Specifies the distance from the viewer to the far
+*                   clipping plane (always positive).
+*/
+//------------------------------------------------------------------------------
+void perspective(double fovy, double aspect, double  zNear, double  zFar);
+
+
+//------------------------------------------------------------------------------
+/// Replace the modelling-viewing matrix by a viewing transformation matrix.
+/// It behaves as the old gluLookAt function.
+/**
+*   @param  eyeX:       Specifies the position of the eye point along the X-axis
+*   @param  eyeY:       Specifies the position of the eye point along the Y-axis
+*   @param  eyeZ:       Specifies the position of the eye point along the Z-axis
+*   @param  centreX:    Specifies the position of the reference point along
+*                       the X-axis
+*   @param  centreY:    Specifies the position of the reference point along
+*                       the Y-axis
+*   @param  centreZ:    Specifies the position of the reference point along
+*                       the Z-axis
+*   @param  upX         Specifies the direction of the up vector along
+*                       the X-axis
+*   @param  upY         Specifies the direction of the up vector along
+*                       the Y-axis
+*   @param  upZ         Specifies the direction of the up vector along
+*                       the Z-axis
+*/
+//------------------------------------------------------------------------------
 void lookAt(double eye_x, double eye_y, double eye_z,
 		double lookAtX, double lookAtY, double lookAtZ,
 		double upX, double upY, double upZ);
 
 
+//------------------------------------------------------------------------------
+/// Add the current matrix to the model/view matrix stack.
+/// It behaves as the combination of the old 
+/// glMatrixMode(GL_MODELVIEW);glPushMatrix() functions.
+//------------------------------------------------------------------------------
 void pushModelViewMatrix();
 
 
+//------------------------------------------------------------------------------
+/// Restore the matrix from the model/view matrix stack,
+/// and remove the last matrix of the stack.
+/// glMatrixMode(GL_MODELVIEW);glPopMatrix() functions.
+//------------------------------------------------------------------------------
 void popModelViewMatrix();
 
 
+//------------------------------------------------------------------------------
+/// Restore the matrix from the model/view matrix stack,
+/// and remove the last matrix of the stack.
+/// glMatrixMode(GL_MODELVIEW);glRotate() functions.
+/**
+ *   @param  anAngle:   the angle of rotation in degrees
+ *   @param  x: the coordinate of the rotation axis along the X-axis
+ *   @param  y: the coordinate of the rotation axis along the Y-axis
+ *   @param  z: the coordinate of the rotation axis along the Z-axis
+ */
+//------------------------------------------------------------------------------
 void rotateModelView(double anAngle, double x, double y, double z);
 
 
