@@ -16,10 +16,6 @@ ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${OCTAVE_LIBRARIES})
 
-IF (MSVC)
-    ADD_DEPENDENCIES(_${module} SimpleGVXR)
-ENDIF (MSVC)
-
 configure_file(test.m.in ${CMAKE_CURRENT_BINARY_DIR}/test.m)
 FILE(COPY ../welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY runOctaveTest.sh

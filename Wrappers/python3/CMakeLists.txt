@@ -19,7 +19,6 @@ ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
     SWIG_ADD_LIBRARY(${module} LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PYTHON_LIBRARIES})
-#MESSAGE(FATAL_ERROR ${SimpleGVXR_LIBRARIES})
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py)
 FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py
@@ -61,6 +60,5 @@ add_custom_target(install-${module}
         DEPENDS ${module}
         COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY_OUT} install --skip-build --root ${CMAKE_CURRENT_BINARY_DIR})
 
-IF (MSVC)
-    ADD_DEPENDENCIES(install-${module} _${module})
-ENDIF (MSVC)
+ADD_DEPENDENCIES(install-${module} ${module})
+

@@ -20,10 +20,6 @@ ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 ENDif (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PYTHON_LIBRARIES})
 
-IF (MSVC)
-    ADD_DEPENDENCIES(_${module} SimpleGVXR)
-ENDIF (MSVC)
-
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py)
 FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py
 		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
@@ -40,7 +36,19 @@ FILE(COPY computeLBuffer.py
 # Files to install with Python
 set(PYTHON_INSTALL_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${module}.py
-        ${CMAKE_CURRENT_BINARY_DIR}/_${module}.so)
+)
+
+IF (WIN32 AND MSVC)
+	set(PYTHON_INSTALL_FILES
+		${PYTHON_INSTALL_FILES}
+		${CMAKE_CURRENT_BINARY_DIR}/Release/_${module}.pyd)
+
+ELSE (WIN32 AND MSVC)
+ 	set(PYTHON_INSTALL_FILES
+		${PYTHON_INSTALL_FILES}
+		${CMAKE_CURRENT_BINARY_DIR}/_${module}.so)
+
+ENDIF (WIN32 AND MSVC)
 
 # Configure setup.py and copy to output directory
 set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in)
@@ -49,5 +57,8 @@ configure_file(${SETUP_PY_IN} ${SETUP_PY_OUT})
 
 # Install target to call setup.py
 add_custom_target(install-${module}
-        DEPENDS _${module}
+        DEPENDS ${module}
         COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY_OUT} install --skip-build --root ${CMAKE_CURRENT_BINARY_DIR})
+
+ADD_DEPENDENCIES(install-${module} ${module})
+

@@ -19,10 +19,6 @@ ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${JNI_LIBRARIES})
 
-IF (MSVC)
-    ADD_DEPENDENCIES(_${module} SimpleGVXR)
-ENDIF (MSVC)
-
 configure_file(test.java.in ${CMAKE_CURRENT_BINARY_DIR}/test.java)
 FILE(COPY ../welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY runJavaTest.sh
@@ -32,8 +28,3 @@ FILE(COPY runJavaTest.sh
 
 add_jar(testJava ${CMAKE_CURRENT_BINARY_DIR}/test.java)
 
-
-# Files to install with Python
-#set(PYTHON_INSTALL_FILES
-#                ${CMAKE_CURRENT_BINARY_DIR}/gvxrJava.java
-#                ${CMAKE_CURRENT_BINARY_DIR}/_gvxrJava.jar)
