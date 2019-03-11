@@ -202,7 +202,7 @@ void popProjectionMatrix();
 
 
 //------------------------------------------------------------------------------
-/// Restore the matrix from the model.view matrix stack,
+/// Restore the matrix from the model/view matrix stack,
 /// and remove the last matrix of the stack.
 //------------------------------------------------------------------------------
 void popModelViewMatrix();
