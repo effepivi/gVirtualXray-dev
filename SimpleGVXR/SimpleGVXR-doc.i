@@ -117,6 +117,23 @@ Parameters
 Accessor on the last X-ray image that has been computed.  
 ";
 
+%feature("docstring") rotateModelView "
+
+Restore the matrix from the model/view matrix stack, and remove the last matrix
+of the stack. glMatrixMode(GL_MODELVIEW);glRotate() functions.  
+
+Parameters
+----------
+* `anAngle` :  
+    the angle of rotation in degrees  
+* `x` :  
+    the coordinate of the rotation axis along the X-axis  
+* `y` :  
+    the coordinate of the rotation axis along the Y-axis  
+* `z` :  
+    the coordinate of the rotation axis along the Z-axis  
+";
+
 %feature("docstring") setDetectorUpVector "
 
 Set the up-vector defining the orientation of the X-ray detector.  
@@ -235,9 +252,21 @@ the source position in a given unit of length
 Accessor on the chemical element' symbol depending on its Z number.  
 ";
 
-%feature("docstring") getImageRow "
+%feature("docstring") loadSceneGraph "
 
-Accessor on the j-th row of pixels of a given image.  
+Load a scenegraph from a file and add its polygon meshes to the X-ray renderer.  
+
+Parameters
+----------
+* `aFileName` :  
+    the file where the polygon mesh data is stored  
+* `aUnitOfLength` :  
+    the unit of length corresponding to the data stored in the file. Acceptable
+    values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
 ";
 
 %feature("docstring") loadSpectrumFromTSV "
@@ -271,9 +300,50 @@ a polygon mesh. Don't forget to set the density of the material.
 ";
 
 %feature("docstring") lookAt "
+
+Replace the modelling-viewing matrix by a viewing transformation matrix. It
+behaves as the old gluLookAt function.  
+
+Parameters
+----------
+* `eyeX` :  
+    Specifies the position of the eye point along the X-axis  
+* `eyeY` :  
+    Specifies the position of the eye point along the Y-axis  
+* `eyeZ` :  
+    Specifies the position of the eye point along the Z-axis  
+* `centreX` :  
+    Specifies the position of the reference point along the X-axis  
+* `centreY` :  
+    Specifies the position of the reference point along the Y-axis  
+* `centreZ` :  
+    Specifies the position of the reference point along the Z-axis  
+* `upX` :  
+    Specifies the direction of the up vector along the X-axis  
+* `upY` :  
+    Specifies the direction of the up vector along the Y-axis  
+* `upZ` :  
+    Specifies the direction of the up vector along the Z-axis  
 ";
 
 %feature("docstring") perspective "
+
+Replace the projection matrix by a perspective projection matrix. It behaves as
+the old gluPerspective function.  
+
+Parameters
+----------
+* `fovy` :  
+    specifies the field of view angle, in degrees, in the y-direction.  
+* `aspect` :  
+    Specifies the aspect ratio that determines the field of view in the x
+    direction. The aspect ratio is the ratio of x (width) to y (height).  
+* `zNear` :  
+    Specifies the distance from the viewer to the near clipping plane (always
+    positive)  
+* `zFar` :  
+    Specifies the distance from the viewer to the far clipping plane (always
+    positive).  
 ";
 
 %feature("docstring") getMassAttenuationCoefficient "
@@ -304,6 +374,12 @@ the source position in a given unit of length
 %feature("docstring") setMonoChromatic "
 
 Use a monochromatic beam spectrum (i.e. one single energy).  
+";
+
+%feature("docstring") pushModelViewMatrix "
+
+Add the current matrix to the model/view matrix stack. It behaves as the
+combination of the old glMatrixMode(GL_MODELVIEW);glPushMatrix() functions.  
 ";
 
 %feature("docstring") computeXRayImage "
@@ -453,14 +529,13 @@ Parameters
     the polygon mesh that is going to be subtracted from aDestination  
 ";
 
-%feature("docstring") addPolygonMeshAsOuterSurface "
+%feature("docstring") getShininess "
 
-Add a polygon mesh, given its label, to the X-ray renderer as an outer surface.  
+Accessor on the shininess of the material of a given polygon mesh.  
 
-Parameters
-----------
-* `aLabel` :  
-    the label of the polygon mesh in the scenegraph  
+Returns
+-------
+the shininess coefficient  
 ";
 
 %feature("docstring") getElementName "
@@ -590,21 +665,31 @@ Use a parallel source (e.g. to mimic a source that is extremely far from the
 scanned object and detector).  
 ";
 
-%feature("docstring") loadSceneGraph "
+%feature("docstring") orthographic "
 
-Load a scenegraph from a file and add its polygon meshes to the X-ray renderer.  
+Replace the projection matrix by a orthographic projection matrix. It behaves as
+the old glOrtho function.  
 
 Parameters
 ----------
-* `aFileName` :  
-    the file where the polygon mesh data is stored  
-* `aUnitOfLength` :  
-    the unit of length corresponding to the data stored in the file. Acceptable
-    values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
-    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
-    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
-    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
-    \"km\", \"kilometre\", \"kilometer\"  
+* `left` :  
+    Specify the coordinates for the left vertical clipping plane  
+* `right` :  
+    Specify the coordinates for the right vertical clipping plane  
+* `bottom` :  
+    Specify the coordinates for the bottom horizontal clipping plane  
+* `top` :  
+    Specify the coordinates for the top horizontal clipping plane  
+* `near` :  
+    Specify the distances to the near clipping plane. The value must be positive  
+* `far` :  
+    Specify the distances to the far clipping plane. The value must be positive  
+";
+
+%feature("docstring") popModelViewMatrix "
+
+Restore the matrix from the model/view matrix stack, and remove the last matrix
+of the stack. glMatrixMode(GL_MODELVIEW);glPopMatrix() functions.  
 ";
 
 %feature("docstring") getLastLBuffer "
@@ -625,13 +710,14 @@ Parameters
     the parent of the node in the scenegraph (default: \"root\")  
 ";
 
-%feature("docstring") getShininess "
+%feature("docstring") addPolygonMeshAsOuterSurface "
 
-Accessor on the shininess of the material of a given polygon mesh.  
+Add a polygon mesh, given its label, to the X-ray renderer as an outer surface.  
 
-Returns
--------
-the shininess coefficient  
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh in the scenegraph  
 ";
 
 %feature("docstring") usePointSource "
@@ -678,6 +764,11 @@ Accessor on the ambient colour of the material of a given polygon mesh.
 Returns
 -------
 the ambient colour  
+";
+
+%feature("docstring") getImageRow "
+
+Accessor on the j-th row of pixels of a given image.  
 ";
 
 %feature("docstring") setWindowSize "
@@ -899,13 +990,9 @@ Close and destroy a given window or OpenGL context.
 Set the transformation matrix of the scengraph's root node.  
 ";
 
-%feature("docstring") getDetectorNumberOfPixels "
+%feature("docstring") resetBeamSpectrum "
 
-Accessor on the number of pixels of the X-ray detector.  
-
-Returns
--------
-the size of the detector in number of pixels  
+Empty the beam spectrum.  
 ";
 
 %feature("docstring") getRootTransformationMatrix "
@@ -949,8 +1036,12 @@ Parameters
 Make an OpenGL context visible and display a window.  
 ";
 
-%feature("docstring") resetBeamSpectrum "
+%feature("docstring") getDetectorNumberOfPixels "
 
-Empty the beam spectrum.  
+Accessor on the number of pixels of the X-ray detector.  
+
+Returns
+-------
+the size of the detector in number of pixels  
 ";
 

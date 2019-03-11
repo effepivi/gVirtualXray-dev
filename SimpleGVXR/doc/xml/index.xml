@@ -8,8 +8,12 @@
     <member refid="_simple_g_v_x_r_8h_1a45e23d4270816359f47a4c90b9c8f14f" kind="function"><name>initialiseGLEW</name></member>
     <member refid="_simple_g_v_x_r_8h_1a9c13ac5f130aef628570ce7ee4f66e3c" kind="function"><name>initializeGLEW</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3b738e400ed178dfdfbfc94a8fe604e1" kind="function"><name>initShader</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a60285021033fcdce462ef3872a696f01" kind="function"><name>perspective</name></member>
+    <member refid="_simple_g_v_x_r_8h_1aed5f4b418b434f0da477fccbc42f9251" kind="function"><name>orthographic</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ae0caff488cca64709dd47735deb1b1fb" kind="function"><name>perspective</name></member>
     <member refid="_simple_g_v_x_r_8h_1a1328f93e0304d2585641dcf63cb494b6" kind="function"><name>lookAt</name></member>
+    <member refid="_simple_g_v_x_r_8h_1af6fba4396ebad0fd10547e96633ed37e" kind="function"><name>pushModelViewMatrix</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a05fee3d93fc0abc59e50cdb7aec10b95" kind="function"><name>popModelViewMatrix</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a41c8baa5a9730a24877ceb363651c9d0" kind="function"><name>rotateModelView</name></member>
     <member refid="_simple_g_v_x_r_8h_1acd2c465191789a84abd9e511e6e15d86" kind="function"><name>autoCreateOpenGLContext</name></member>
     <member refid="_simple_g_v_x_r_8h_1ac1d17ed7feb9636b0b6de18a7762c1e7" kind="function"><name>setSourcePosition</name></member>
     <member refid="_simple_g_v_x_r_8h_1a149733f58dadc43516fd74d35bbcd670" kind="function"><name>getSourcePosition</name></member>

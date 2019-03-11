@@ -101,12 +101,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a3b738e400ed178dfdfbfc94a8fe604e1">initShader</a> ()</td></tr>
 <tr class="memdesc:a3b738e400ed178dfdfbfc94a8fe604e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialise visualisation shader. <br /></td></tr>
 <tr class="separator:a3b738e400ed178dfdfbfc94a8fe604e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60285021033fcdce462ef3872a696f01"><td class="memItemLeft" align="right" valign="top"><a id="a60285021033fcdce462ef3872a696f01"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>perspective</b> (double initial_fovy, double screen_aspect_ratio, double initial_near, double initial_far)</td></tr>
-<tr class="separator:a60285021033fcdce462ef3872a696f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1328f93e0304d2585641dcf63cb494b6"><td class="memItemLeft" align="right" valign="top"><a id="a1328f93e0304d2585641dcf63cb494b6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>lookAt</b> (double eye_x, double eye_y, double eye_z, double lookAtX, double lookAtY, double lookAtZ, double upX, double upY, double upZ)</td></tr>
+<tr class="memitem:aed5f4b418b434f0da477fccbc42f9251"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#aed5f4b418b434f0da477fccbc42f9251">orthographic</a> (double left, double right, double bottom, double top, double near, double far)</td></tr>
+<tr class="separator:aed5f4b418b434f0da477fccbc42f9251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0caff488cca64709dd47735deb1b1fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#ae0caff488cca64709dd47735deb1b1fb">perspective</a> (double fovy, double aspect, double zNear, double zFar)</td></tr>
+<tr class="separator:ae0caff488cca64709dd47735deb1b1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1328f93e0304d2585641dcf63cb494b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a1328f93e0304d2585641dcf63cb494b6">lookAt</a> (double eye_x, double eye_y, double eye_z, double lookAtX, double lookAtY, double lookAtZ, double upX, double upY, double upZ)</td></tr>
 <tr class="separator:a1328f93e0304d2585641dcf63cb494b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6fba4396ebad0fd10547e96633ed37e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#af6fba4396ebad0fd10547e96633ed37e">pushModelViewMatrix</a> ()</td></tr>
+<tr class="separator:af6fba4396ebad0fd10547e96633ed37e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05fee3d93fc0abc59e50cdb7aec10b95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a05fee3d93fc0abc59e50cdb7aec10b95">popModelViewMatrix</a> ()</td></tr>
+<tr class="separator:a05fee3d93fc0abc59e50cdb7aec10b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41c8baa5a9730a24877ceb363651c9d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a41c8baa5a9730a24877ceb363651c9d0">rotateModelView</a> (double anAngle, double x, double y, double z)</td></tr>
+<tr class="separator:a41c8baa5a9730a24877ceb363651c9d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd2c465191789a84abd9e511e6e15d86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#acd2c465191789a84abd9e511e6e15d86">autoCreateOpenGLContext</a> (bool aFlag=true)</td></tr>
 <tr class="memdesc:acd2c465191789a84abd9e511e6e15d86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an OpenGL context automatically.  <a href="#acd2c465191789a84abd9e511e6e15d86">More...</a><br /></td></tr>
 <tr class="separator:acd2c465191789a84abd9e511e6e15d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1316,6 +1322,91 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_s
 
 </div>
 </div>
+<a id="a1328f93e0304d2585641dcf63cb494b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1328f93e0304d2585641dcf63cb494b6">&#9670;&nbsp;</a></span>lookAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void lookAt </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>eye_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>eye_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>eye_z</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lookAtX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lookAtY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lookAtZ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>upX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>upY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>upZ</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Replace the modelling-viewing matrix by a viewing transformation matrix. It behaves as the old gluLookAt function. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eyeX</td><td>Specifies the position of the eye point along the X-axis </td></tr>
+    <tr><td class="paramname">eyeY</td><td>Specifies the position of the eye point along the Y-axis </td></tr>
+    <tr><td class="paramname">eyeZ</td><td>Specifies the position of the eye point along the Z-axis </td></tr>
+    <tr><td class="paramname">centreX</td><td>Specifies the position of the reference point along the X-axis </td></tr>
+    <tr><td class="paramname">centreY</td><td>Specifies the position of the reference point along the Y-axis </td></tr>
+    <tr><td class="paramname">centreZ</td><td>Specifies the position of the reference point along the Z-axis </td></tr>
+    <tr><td class="paramname">upX</td><td>Specifies the direction of the up vector along the X-axis </td></tr>
+    <tr><td class="paramname">upY</td><td>Specifies the direction of the up vector along the Y-axis </td></tr>
+    <tr><td class="paramname">upZ</td><td>Specifies the direction of the up vector along the Z-axis </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a594ed6d5c8639db4c65c44bf1d149752"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a594ed6d5c8639db4c65c44bf1d149752">&#9670;&nbsp;</a></span>makeCube()</h2>
 
@@ -1430,6 +1521,156 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_s
 
 </div>
 </div>
+<a id="aed5f4b418b434f0da477fccbc42f9251"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed5f4b418b434f0da477fccbc42f9251">&#9670;&nbsp;</a></span>orthographic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void orthographic </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>left</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>right</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>bottom</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>top</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>near</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>far</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Replace the projection matrix by a orthographic projection matrix. It behaves as the old glOrtho function. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">left</td><td>Specify the coordinates for the left vertical clipping plane </td></tr>
+    <tr><td class="paramname">right</td><td>Specify the coordinates for the right vertical clipping plane </td></tr>
+    <tr><td class="paramname">bottom</td><td>Specify the coordinates for the bottom horizontal clipping plane </td></tr>
+    <tr><td class="paramname">top</td><td>Specify the coordinates for the top horizontal clipping plane </td></tr>
+    <tr><td class="paramname">near</td><td>Specify the distances to the near clipping plane. The value must be positive </td></tr>
+    <tr><td class="paramname">far</td><td>Specify the distances to the far clipping plane. The value must be positive </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae0caff488cca64709dd47735deb1b1fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0caff488cca64709dd47735deb1b1fb">&#9670;&nbsp;</a></span>perspective()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void perspective </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>fovy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>aspect</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>zNear</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>zFar</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Replace the projection matrix by a perspective projection matrix. It behaves as the old gluPerspective function. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fovy</td><td>specifies the field of view angle, in degrees, in the y-direction. </td></tr>
+    <tr><td class="paramname">aspect</td><td>Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height). </td></tr>
+    <tr><td class="paramname">zNear</td><td>Specifies the distance from the viewer to the near clipping plane (always positive) </td></tr>
+    <tr><td class="paramname">zFar</td><td>Specifies the distance from the viewer to the far clipping plane (always positive). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a05fee3d93fc0abc59e50cdb7aec10b95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05fee3d93fc0abc59e50cdb7aec10b95">&#9670;&nbsp;</a></span>popModelViewMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void popModelViewMatrix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. glMatrixMode(GL_MODELVIEW);glPopMatrix() functions. </p>
+
+</div>
+</div>
+<a id="af6fba4396ebad0fd10547e96633ed37e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6fba4396ebad0fd10547e96633ed37e">&#9670;&nbsp;</a></span>pushModelViewMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pushModelViewMatrix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Add the current matrix to the model/view matrix stack. It behaves as the combination of the old glMatrixMode(GL_MODELVIEW);glPushMatrix() functions. </p>
+
+</div>
+</div>
 <a id="abb5ac6fa1e360fb8db58f63fc1453f20"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abb5ac6fa1e360fb8db58f63fc1453f20">&#9670;&nbsp;</a></span>removePolygonMeshesFromXRayRenderer()</h2>
 
@@ -1472,6 +1713,56 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_s
 <li>D: display/hide the X-ray detector</li>
 <li>V: display/hide normal vectors </li>
 </ul>
+
+</div>
+</div>
+<a id="a41c8baa5a9730a24877ceb363651c9d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41c8baa5a9730a24877ceb363651c9d0">&#9670;&nbsp;</a></span>rotateModelView()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rotateModelView </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>anAngle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. glMatrixMode(GL_MODELVIEW);glRotate() functions. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">anAngle</td><td>the angle of rotation in degrees </td></tr>
+    <tr><td class="paramname">x</td><td>the coordinate of the rotation axis along the X-axis </td></tr>
+    <tr><td class="paramname">y</td><td>the coordinate of the rotation axis along the Y-axis </td></tr>
+    <tr><td class="paramname">z</td><td>the coordinate of the rotation axis along the Z-axis </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -27,11 +27,17 @@ void \mbox{\hyperlink{_simple_g_v_x_r_8h_a9c13ac5f130aef628570ce7ee4f66e3c}{init
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a3b738e400ed178dfdfbfc94a8fe604e1}\label{_simple_g_v_x_r_8h_a3b738e400ed178dfdfbfc94a8fe604e1}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a3b738e400ed178dfdfbfc94a8fe604e1}{init\+Shader}} ()
 \begin{DoxyCompactList}\small\item\em Initialise visualisation shader. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{_simple_g_v_x_r_8h_a60285021033fcdce462ef3872a696f01}\label{_simple_g_v_x_r_8h_a60285021033fcdce462ef3872a696f01}} 
-void {\bfseries perspective} (double initial\+\_\+fovy, double screen\+\_\+aspect\+\_\+ratio, double initial\+\_\+near, double initial\+\_\+far)
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_aed5f4b418b434f0da477fccbc42f9251}{orthographic}} (double left, double right, double bottom, double top, double near, double far)
 \item 
-\mbox{\Hypertarget{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}\label{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}} 
-void {\bfseries look\+At} (double eye\+\_\+x, double eye\+\_\+y, double eye\+\_\+z, double look\+AtX, double look\+AtY, double look\+AtZ, double upX, double upY, double upZ)
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_ae0caff488cca64709dd47735deb1b1fb}{perspective}} (double fovy, double aspect, double z\+Near, double z\+Far)
+\item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}{look\+At}} (double eye\+\_\+x, double eye\+\_\+y, double eye\+\_\+z, double look\+AtX, double look\+AtY, double look\+AtZ, double upX, double upY, double upZ)
+\item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_af6fba4396ebad0fd10547e96633ed37e}{push\+Model\+View\+Matrix}} ()
+\item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a05fee3d93fc0abc59e50cdb7aec10b95}{pop\+Model\+View\+Matrix}} ()
+\item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a41c8baa5a9730a24877ceb363651c9d0}{rotate\+Model\+View}} (double an\+Angle, double x, double y, double z)
 \item 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_acd2c465191789a84abd9e511e6e15d86}{auto\+Create\+Open\+G\+L\+Context}} (bool a\+Flag=true)
 \begin{DoxyCompactList}\small\item\em Create an Open\+GL context automatically. \end{DoxyCompactList}\item 
@@ -745,6 +751,34 @@ Load a scenegraph from a file and add its polygon meshes to the X-\/ray renderer
 {\em a\+Unit\+Of\+Length} & the unit of length corresponding to the data stored in the file. Acceptable values are\+: \char`\"{}um\char`\"{}, \char`\"{}micrometre\char`\"{}, \char`\"{}micrometer\char`\"{}, \char`\"{}mm\char`\"{}, \char`\"{}millimetre\char`\"{}, \char`\"{}millimeter\char`\"{}, \char`\"{}cm\char`\"{}, \char`\"{}centimetre\char`\"{}, \char`\"{}centimeter\char`\"{}, \char`\"{}dm\char`\"{}, \char`\"{}decimetre\char`\"{}, \char`\"{}decimeter\char`\"{}, \char`\"{}m\char`\"{}, \char`\"{}metre\char`\"{}, \char`\"{}meter\char`\"{}, \char`\"{}dam\char`\"{}, \char`\"{}decametre\char`\"{}, \char`\"{}decameter\char`\"{}, \char`\"{}hm\char`\"{}, \char`\"{}hectometre\char`\"{}, \char`\"{}hectometer\char`\"{}, \char`\"{}km\char`\"{}, \char`\"{}kilometre\char`\"{}, \char`\"{}kilometer\char`\"{} \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}\label{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!look\+At@{look\+At}}
+\index{look\+At@{look\+At}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{look\+At()}{lookAt()}}
+{\footnotesize\ttfamily void look\+At (\begin{DoxyParamCaption}\item[{double}]{eye\+\_\+x,  }\item[{double}]{eye\+\_\+y,  }\item[{double}]{eye\+\_\+z,  }\item[{double}]{look\+AtX,  }\item[{double}]{look\+AtY,  }\item[{double}]{look\+AtZ,  }\item[{double}]{upX,  }\item[{double}]{upY,  }\item[{double}]{upZ }\end{DoxyParamCaption})}
+
+Replace the modelling-\/viewing matrix by a viewing transformation matrix. It behaves as the old glu\+Look\+At function. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em eyeX} & Specifies the position of the eye point along the X-\/axis \\
+\hline
+{\em eyeY} & Specifies the position of the eye point along the Y-\/axis \\
+\hline
+{\em eyeZ} & Specifies the position of the eye point along the Z-\/axis \\
+\hline
+{\em centreX} & Specifies the position of the reference point along the X-\/axis \\
+\hline
+{\em centreY} & Specifies the position of the reference point along the Y-\/axis \\
+\hline
+{\em centreZ} & Specifies the position of the reference point along the Z-\/axis \\
+\hline
+{\em upX} & Specifies the direction of the up vector along the X-\/axis \\
+\hline
+{\em upY} & Specifies the direction of the up vector along the Y-\/axis \\
+\hline
+{\em upZ} & Specifies the direction of the up vector along the Z-\/axis \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a594ed6d5c8639db4c65c44bf1d149752}\label{_simple_g_v_x_r_8h_a594ed6d5c8639db4c65c44bf1d149752}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!make\+Cube@{make\+Cube}}
 \index{make\+Cube@{make\+Cube}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
@@ -785,7 +819,59 @@ Create a cylinder and set its label in the scenegraph (i.\+e. identifier). Note 
 {\em a\+Parent} & the parent of the node in the scenegraph (default\+: \char`\"{}root\char`\"{}) \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{_simple_g_v_x_r_8h_abb5ac6fa1e360fb8db58f63fc1453f20}\label{_simple_g_v_x_r_8h_abb5ac6fa1e360fb8db58f63fc1453f20}} 
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_aed5f4b418b434f0da477fccbc42f9251}\label{_simple_g_v_x_r_8h_aed5f4b418b434f0da477fccbc42f9251}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!orthographic@{orthographic}}
+\index{orthographic@{orthographic}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{orthographic()}{orthographic()}}
+{\footnotesize\ttfamily void orthographic (\begin{DoxyParamCaption}\item[{double}]{left,  }\item[{double}]{right,  }\item[{double}]{bottom,  }\item[{double}]{top,  }\item[{double}]{near,  }\item[{double}]{far }\end{DoxyParamCaption})}
+
+Replace the projection matrix by a orthographic projection matrix. It behaves as the old gl\+Ortho function. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em left} & Specify the coordinates for the left vertical clipping plane \\
+\hline
+{\em right} & Specify the coordinates for the right vertical clipping plane \\
+\hline
+{\em bottom} & Specify the coordinates for the bottom horizontal clipping plane \\
+\hline
+{\em top} & Specify the coordinates for the top horizontal clipping plane \\
+\hline
+{\em near} & Specify the distances to the near clipping plane. The value must be positive \\
+\hline
+{\em far} & Specify the distances to the far clipping plane. The value must be positive \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_ae0caff488cca64709dd47735deb1b1fb}\label{_simple_g_v_x_r_8h_ae0caff488cca64709dd47735deb1b1fb}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!perspective@{perspective}}
+\index{perspective@{perspective}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{perspective()}{perspective()}}
+{\footnotesize\ttfamily void perspective (\begin{DoxyParamCaption}\item[{double}]{fovy,  }\item[{double}]{aspect,  }\item[{double}]{z\+Near,  }\item[{double}]{z\+Far }\end{DoxyParamCaption})}
+
+Replace the projection matrix by a perspective projection matrix. It behaves as the old glu\+Perspective function. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em fovy} & specifies the field of view angle, in degrees, in the y-\/direction. \\
+\hline
+{\em aspect} & Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height). \\
+\hline
+{\em z\+Near} & Specifies the distance from the viewer to the near clipping plane (always positive) \\
+\hline
+{\em z\+Far} & Specifies the distance from the viewer to the far clipping plane (always positive). \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a05fee3d93fc0abc59e50cdb7aec10b95}\label{_simple_g_v_x_r_8h_a05fee3d93fc0abc59e50cdb7aec10b95}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!pop\+Model\+View\+Matrix@{pop\+Model\+View\+Matrix}}
+\index{pop\+Model\+View\+Matrix@{pop\+Model\+View\+Matrix}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{pop\+Model\+View\+Matrix()}{popModelViewMatrix()}}
+{\footnotesize\ttfamily void pop\+Model\+View\+Matrix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Pop\+Matrix() functions. \mbox{\Hypertarget{_simple_g_v_x_r_8h_af6fba4396ebad0fd10547e96633ed37e}\label{_simple_g_v_x_r_8h_af6fba4396ebad0fd10547e96633ed37e}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!push\+Model\+View\+Matrix@{push\+Model\+View\+Matrix}}
+\index{push\+Model\+View\+Matrix@{push\+Model\+View\+Matrix}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{push\+Model\+View\+Matrix()}{pushModelViewMatrix()}}
+{\footnotesize\ttfamily void push\+Model\+View\+Matrix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Add the current matrix to the model/view matrix stack. It behaves as the combination of the old gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Push\+Matrix() functions. \mbox{\Hypertarget{_simple_g_v_x_r_8h_abb5ac6fa1e360fb8db58f63fc1453f20}\label{_simple_g_v_x_r_8h_abb5ac6fa1e360fb8db58f63fc1453f20}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer@{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer}}
 \index{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer@{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
 \subsubsection{\texorpdfstring{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer()}{removePolygonMeshesFromXRayRenderer()}}
@@ -806,7 +892,25 @@ Empty the X-\/ray renderer from all its meshes. Note that the meshes are kept in
 \item L\+: switch lighting on/off
 \item D\+: display/hide the X-\/ray detector
 \item V\+: display/hide normal vectors 
-\end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_aed64e5b84cf09a952cafb0e24a86d693}\label{_simple_g_v_x_r_8h_aed64e5b84cf09a952cafb0e24a86d693}} 
+\end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a41c8baa5a9730a24877ceb363651c9d0}\label{_simple_g_v_x_r_8h_a41c8baa5a9730a24877ceb363651c9d0}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!rotate\+Model\+View@{rotate\+Model\+View}}
+\index{rotate\+Model\+View@{rotate\+Model\+View}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{rotate\+Model\+View()}{rotateModelView()}}
+{\footnotesize\ttfamily void rotate\+Model\+View (\begin{DoxyParamCaption}\item[{double}]{an\+Angle,  }\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z }\end{DoxyParamCaption})}
+
+Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Rotate() functions. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em an\+Angle} & the angle of rotation in degrees \\
+\hline
+{\em x} & the coordinate of the rotation axis along the X-\/axis \\
+\hline
+{\em y} & the coordinate of the rotation axis along the Y-\/axis \\
+\hline
+{\em z} & the coordinate of the rotation axis along the Z-\/axis \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_aed64e5b84cf09a952cafb0e24a86d693}\label{_simple_g_v_x_r_8h_aed64e5b84cf09a952cafb0e24a86d693}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Color@{set\+Color}}
 \index{set\+Color@{set\+Color}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
 \subsubsection{\texorpdfstring{set\+Color()}{setColor()}}
