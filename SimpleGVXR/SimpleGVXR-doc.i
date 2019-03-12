@@ -680,9 +680,9 @@ Parameters
     Specify the coordinates for the bottom horizontal clipping plane  
 * `top` :  
     Specify the coordinates for the top horizontal clipping plane  
-* `near` :  
+* `zNear` :  
     Specify the distances to the near clipping plane. The value must be positive  
-* `far` :  
+* `zFar` :  
     Specify the distances to the far clipping plane. The value must be positive  
 ";
 
