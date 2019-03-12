@@ -11,6 +11,11 @@ from matplotlib.colors import PowerNorm
 
 import gvxrPython3 as gvxr
 
+
+# Create the subplot first
+# If called later, it crashes on my Macbook Pro
+plt.subplot(131)
+
 # Create an OpenGL context
 print("Create an OpenGL context")
 gvxr.createWindow();
@@ -63,7 +68,6 @@ gvxr.saveLastXRayImage();
 gvxr.saveLastLBuffer();
 
 # Display the image with Matplotlib
-plt.subplot(131)
 plt.imshow(x_ray_image, cmap="gray");
 plt.colorbar(orientation='horizontal');
 plt.title("Using a linear colour scale");
