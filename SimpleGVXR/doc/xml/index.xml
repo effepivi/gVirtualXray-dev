@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.14">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.15">
   <compound refid="_simple_g_v_x_r_8h" kind="file"><name>SimpleGVXR.h</name>
     <member refid="_simple_g_v_x_r_8h_1a1495a8a83ee7a799ed9375bc540286cc" kind="function"><name>getMajorVersionOfSimpleGVXR</name></member>
     <member refid="_simple_g_v_x_r_8h_1a8dda75e417383f05f8a67d0d805a7ee4" kind="function"><name>getMinorVersionOfSimpleGVXR</name></member>
@@ -8,7 +8,7 @@
     <member refid="_simple_g_v_x_r_8h_1a45e23d4270816359f47a4c90b9c8f14f" kind="function"><name>initialiseGLEW</name></member>
     <member refid="_simple_g_v_x_r_8h_1a9c13ac5f130aef628570ce7ee4f66e3c" kind="function"><name>initializeGLEW</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3b738e400ed178dfdfbfc94a8fe604e1" kind="function"><name>initShader</name></member>
-    <member refid="_simple_g_v_x_r_8h_1aed5f4b418b434f0da477fccbc42f9251" kind="function"><name>orthographic</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ad0c720c908987332d7133d32060525e1" kind="function"><name>orthographic</name></member>
     <member refid="_simple_g_v_x_r_8h_1ae0caff488cca64709dd47735deb1b1fb" kind="function"><name>perspective</name></member>
     <member refid="_simple_g_v_x_r_8h_1a1328f93e0304d2585641dcf63cb494b6" kind="function"><name>lookAt</name></member>
     <member refid="_simple_g_v_x_r_8h_1af6fba4396ebad0fd10547e96633ed37e" kind="function"><name>pushModelViewMatrix</name></member>

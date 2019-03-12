@@ -1,5 +1,5 @@
 \hypertarget{_simple_g_v_x_r_8h}{}\section{Simple\+G\+V\+X\+R.\+h File Reference}
-\label{_simple_g_v_x_r_8h}\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\label{_simple_g_v_x_r_8h}\index{SimpleGVXR.h@{SimpleGVXR.h}}
 
 
 Simple\+G\+V\+XR is an A\+PI to the bulk functionalities and classes of g\+Virtual\+X\+Ray. Simple\+G\+V\+XR is used as the basis for the language bindings generated using S\+W\+IG.  
@@ -27,7 +27,7 @@ void \mbox{\hyperlink{_simple_g_v_x_r_8h_a9c13ac5f130aef628570ce7ee4f66e3c}{init
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a3b738e400ed178dfdfbfc94a8fe604e1}\label{_simple_g_v_x_r_8h_a3b738e400ed178dfdfbfc94a8fe604e1}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a3b738e400ed178dfdfbfc94a8fe604e1}{init\+Shader}} ()
 \begin{DoxyCompactList}\small\item\em Initialise visualisation shader. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{_simple_g_v_x_r_8h_aed5f4b418b434f0da477fccbc42f9251}{orthographic}} (double left, double right, double bottom, double top, double near, double far)
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_ad0c720c908987332d7133d32060525e1}{orthographic}} (double left, double right, double bottom, double top, double z\+Near, double z\+Far)
 \item 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_ae0caff488cca64709dd47735deb1b1fb}{perspective}} (double fovy, double aspect, double z\+Near, double z\+Far)
 \item 
@@ -336,21 +336,20 @@ Simple\+G\+V\+XR is an A\+PI to the bulk functionalities and classes of g\+Virtu
 \begin{DoxyAuthor}{Author}
 Dr Franck P. Vidal
 \end{DoxyAuthor}
-License B\+SD 3-\/\+Clause License.
+License B\+SD 3-\/Clause License.
 
-For details on use and redistribution please refer to \href{http://opensource.org/licenses/BSD-3-Clause}{\tt http\+://opensource.\+org/licenses/\+B\+S\+D-\/3-\/\+Clause}
+For details on use and redistribution please refer to \href{http://opensource.org/licenses/BSD-3-Clause}{\texttt{ http\+://opensource.\+org/licenses/\+B\+S\+D-\/3-\/\+Clause}}
 
-Copyright (c) by Dr Franck P. Vidal (\href{mailto:franck.p.vidal@fpvidal.net}{\tt franck.\+p.\+vidal@fpvidal.\+net}), \href{http://www.fpvidal.net/,}{\tt http\+://www.\+fpvidal.\+net/,} Oct 2018, 2018, version 1.\+1, B\+SD 3-\/\+Clause License 
+Copyright (c) by Dr Franck P. Vidal (\href{mailto:franck.p.vidal@fpvidal.net}{\texttt{ franck.\+p.\+vidal@fpvidal.\+net}}), \href{http://www.fpvidal.net/,}{\texttt{ http\+://www.\+fpvidal.\+net/,}} Oct 2018, 2018, version 1.\+1, B\+SD 3-\/Clause License 
 
 \subsection{Function Documentation}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a7439a61c9cb4e6118810ec4fa5e40d01}\label{_simple_g_v_x_r_8h_a7439a61c9cb4e6118810ec4fa5e40d01}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!add\+Mesh@{add\+Mesh}}
-\index{add\+Mesh@{add\+Mesh}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{add\+Mesh()}{addMesh()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!addMesh@{addMesh}}
+\index{addMesh@{addMesh}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{addMesh()}{addMesh()}}
 {\footnotesize\ttfamily void add\+Mesh (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Destination,  }\item[{const std\+::string \&}]{a\+Source }\end{DoxyParamCaption})}
 
-Add a polygon mesh (a\+Source) to another one (a\+Destination). It corresponds to the operation as follows\+: a\+Destination += a\+Source. Both a\+Source and a\+Destination have to already exist in the scenegraph. ~\newline
-
+Add a polygon mesh (a\+Source) to another one (a\+Destination). It corresponds to the operation as follows\+: a\+Destination += a\+Source. Both a\+Source and a\+Destination have to already exist in the scenegraph. 
 \begin{DoxyParams}{Parameters}
 {\em a\+Destination} & the polygon mesh that is going to be modified \\
 \hline
@@ -358,9 +357,9 @@ Add a polygon mesh (a\+Source) to another one (a\+Destination). It corresponds t
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a193db9e9eab8b3205d126387789e6907}\label{_simple_g_v_x_r_8h_a193db9e9eab8b3205d126387789e6907}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!add\+Polygon\+Mesh\+As\+Inner\+Surface@{add\+Polygon\+Mesh\+As\+Inner\+Surface}}
-\index{add\+Polygon\+Mesh\+As\+Inner\+Surface@{add\+Polygon\+Mesh\+As\+Inner\+Surface}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{add\+Polygon\+Mesh\+As\+Inner\+Surface()}{addPolygonMeshAsInnerSurface()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!addPolygonMeshAsInnerSurface@{addPolygonMeshAsInnerSurface}}
+\index{addPolygonMeshAsInnerSurface@{addPolygonMeshAsInnerSurface}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{addPolygonMeshAsInnerSurface()}{addPolygonMeshAsInnerSurface()}}
 {\footnotesize\ttfamily void add\+Polygon\+Mesh\+As\+Inner\+Surface (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -373,9 +372,9 @@ Add a polygon mesh, given its label, to the X-\/ray renderer as an inner surface
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a71f514bb1ae0ca2e9fd19b3423685cb3}\label{_simple_g_v_x_r_8h_a71f514bb1ae0ca2e9fd19b3423685cb3}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!add\+Polygon\+Mesh\+As\+Outer\+Surface@{add\+Polygon\+Mesh\+As\+Outer\+Surface}}
-\index{add\+Polygon\+Mesh\+As\+Outer\+Surface@{add\+Polygon\+Mesh\+As\+Outer\+Surface}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{add\+Polygon\+Mesh\+As\+Outer\+Surface()}{addPolygonMeshAsOuterSurface()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!addPolygonMeshAsOuterSurface@{addPolygonMeshAsOuterSurface}}
+\index{addPolygonMeshAsOuterSurface@{addPolygonMeshAsOuterSurface}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{addPolygonMeshAsOuterSurface()}{addPolygonMeshAsOuterSurface()}}
 {\footnotesize\ttfamily void add\+Polygon\+Mesh\+As\+Outer\+Surface (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -388,9 +387,9 @@ Add a polygon mesh, given its label, to the X-\/ray renderer as an outer surface
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_acd2c465191789a84abd9e511e6e15d86}\label{_simple_g_v_x_r_8h_acd2c465191789a84abd9e511e6e15d86}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!auto\+Create\+Open\+G\+L\+Context@{auto\+Create\+Open\+G\+L\+Context}}
-\index{auto\+Create\+Open\+G\+L\+Context@{auto\+Create\+Open\+G\+L\+Context}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{auto\+Create\+Open\+G\+L\+Context()}{autoCreateOpenGLContext()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!autoCreateOpenGLContext@{autoCreateOpenGLContext}}
+\index{autoCreateOpenGLContext@{autoCreateOpenGLContext}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{autoCreateOpenGLContext()}{autoCreateOpenGLContext()}}
 {\footnotesize\ttfamily void auto\+Create\+Open\+G\+L\+Context (\begin{DoxyParamCaption}\item[{bool}]{a\+Flag = {\ttfamily true} }\end{DoxyParamCaption})}
 
 
@@ -403,9 +402,9 @@ Create an Open\+GL context automatically.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a3fd962d97691068b4a0686570a06c147}\label{_simple_g_v_x_r_8h_a3fd962d97691068b4a0686570a06c147}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!compute\+L\+Buffer@{compute\+L\+Buffer}}
-\index{compute\+L\+Buffer@{compute\+L\+Buffer}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{compute\+L\+Buffer()}{computeLBuffer()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!computeLBuffer@{computeLBuffer}}
+\index{computeLBuffer@{computeLBuffer}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{computeLBuffer()}{computeLBuffer()}}
 {\footnotesize\ttfamily std\+::vector$<$std\+::vector$<$float$>$ $>$ compute\+L\+Buffer (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 Compute the L-\/buffer of a polygon mesh corresponding to the environment that has previously been set, i.\+e.
@@ -417,9 +416,9 @@ Compute the L-\/buffer of a polygon mesh corresponding to the environment that h
 \item Source shape
 \item Scanned object geometry 
 \end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a296cfff31e4c95d04b7d8fdee1a43752}\label{_simple_g_v_x_r_8h_a296cfff31e4c95d04b7d8fdee1a43752}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!compute\+Sinogram@{compute\+Sinogram}}
-\index{compute\+Sinogram@{compute\+Sinogram}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{compute\+Sinogram()}{computeSinogram()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!computeSinogram@{computeSinogram}}
+\index{computeSinogram@{computeSinogram}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{computeSinogram()}{computeSinogram()}}
 {\footnotesize\ttfamily std\+::vector$<$std\+::vector$<$float$>$ $>$ compute\+Sinogram (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length,  }\item[{unsigned int}]{a\+Number\+Of\+Angle,  }\item[{double}]{an\+Angle\+Offset }\end{DoxyParamCaption})}
 
 Compute the sinogram corresponding to the environment that has previously been set, i.\+e.
@@ -433,9 +432,9 @@ Compute the sinogram corresponding to the environment that has previously been s
 \item Scanned object geometries
 \item Scanned object material properties Note that the rotation vector is the same as the up-\/vector of the detector. 
 \end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a5451b6f54339116e72cba6cc58e01be4}\label{_simple_g_v_x_r_8h_a5451b6f54339116e72cba6cc58e01be4}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!compute\+X\+Ray\+Image@{compute\+X\+Ray\+Image}}
-\index{compute\+X\+Ray\+Image@{compute\+X\+Ray\+Image}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{compute\+X\+Ray\+Image()}{computeXRayImage()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!computeXRayImage@{computeXRayImage}}
+\index{computeXRayImage@{computeXRayImage}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{computeXRayImage()}{computeXRayImage()}}
 {\footnotesize\ttfamily std\+::vector$<$std\+::vector$<$float$>$ $>$ compute\+X\+Ray\+Image (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 Compute the X-\/ray projection corresponding to the environment that has previously been set, i.\+e.
@@ -449,19 +448,18 @@ Compute the X-\/ray projection corresponding to the environment that has previou
 \item Scanned object geometries
 \item Scanned object material properties 
 \end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a107a2ab7ffc8f12ddf0059da92cac177}\label{_simple_g_v_x_r_8h_a107a2ab7ffc8f12ddf0059da92cac177}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!display\+Scene@{display\+Scene}}
-\index{display\+Scene@{display\+Scene}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{display\+Scene()}{displayScene()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!displayScene@{displayScene}}
+\index{displayScene@{displayScene}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{displayScene()}{displayScene()}}
 {\footnotesize\ttfamily void display\+Scene (\begin{DoxyParamCaption}\item[{int}]{a\+Window\+ID = {\ttfamily -\/1} }\end{DoxyParamCaption})}
 
 3-\/D visualisation of the 3-\/D scene (source, detector, and scanned objects). Note that there is no interactive loop running. \mbox{\Hypertarget{_simple_g_v_x_r_8h_ae7477b096b052fcd05997d7bd625d8b4}\label{_simple_g_v_x_r_8h_ae7477b096b052fcd05997d7bd625d8b4}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!empty\+Mesh@{empty\+Mesh}}
-\index{empty\+Mesh@{empty\+Mesh}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{empty\+Mesh()}{emptyMesh()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!emptyMesh@{emptyMesh}}
+\index{emptyMesh@{emptyMesh}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{emptyMesh()}{emptyMesh()}}
 {\footnotesize\ttfamily void empty\+Mesh (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{const std\+::string \&}]{a\+Parent = {\ttfamily \char`\"{}root\char`\"{}} }\end{DoxyParamCaption})}
 
-Create an empty polygon mesh and set its label in the scenegraph (i.\+e. identifier). Note that it is not added to the X-\/ray renderer. ~\newline
-
+Create an empty polygon mesh and set its label in the scenegraph (i.\+e. identifier). Note that it is not added to the X-\/ray renderer. 
 \begin{DoxyParams}{Parameters}
 {\em a\+Label} & the label in the scenegraph \\
 \hline
@@ -469,9 +467,9 @@ Create an empty polygon mesh and set its label in the scenegraph (i.\+e. identif
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a1097bcfbeecaf9ed43bfdc0024a48c70}\label{_simple_g_v_x_r_8h_a1097bcfbeecaf9ed43bfdc0024a48c70}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Ambient\+Colour@{get\+Ambient\+Colour}}
-\index{get\+Ambient\+Colour@{get\+Ambient\+Colour}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Ambient\+Colour()}{getAmbientColour()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getAmbientColour@{getAmbientColour}}
+\index{getAmbientColour@{getAmbientColour}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getAmbientColour()}{getAmbientColour()}}
 {\footnotesize\ttfamily std\+::vector$<$float$>$ get\+Ambient\+Colour (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -482,9 +480,9 @@ Accessor on the ambient colour of the material of a given polygon mesh.
 the ambient colour 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a2540ae0646c910ba1c68f468d71770f8}\label{_simple_g_v_x_r_8h_a2540ae0646c910ba1c68f468d71770f8}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Child\+Label@{get\+Child\+Label}}
-\index{get\+Child\+Label@{get\+Child\+Label}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Child\+Label()}{getChildLabel()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getChildLabel@{getChildLabel}}
+\index{getChildLabel@{getChildLabel}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getChildLabel()}{getChildLabel()}}
 {\footnotesize\ttfamily std\+::string get\+Child\+Label (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{unsigned int}]{i }\end{DoxyParamCaption})}
 
 
@@ -502,9 +500,9 @@ Accessor on the i-\/th child\textquotesingle{}s label in the list of children of
 the label corresponding to the i-\/th child 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a8d620fd4519309c6f0b8f48353b90fee}\label{_simple_g_v_x_r_8h_a8d620fd4519309c6f0b8f48353b90fee}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Detector\+Number\+Of\+Pixels@{get\+Detector\+Number\+Of\+Pixels}}
-\index{get\+Detector\+Number\+Of\+Pixels@{get\+Detector\+Number\+Of\+Pixels}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Detector\+Number\+Of\+Pixels()}{getDetectorNumberOfPixels()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getDetectorNumberOfPixels@{getDetectorNumberOfPixels}}
+\index{getDetectorNumberOfPixels@{getDetectorNumberOfPixels}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getDetectorNumberOfPixels()}{getDetectorNumberOfPixels()}}
 {\footnotesize\ttfamily std\+::vector$<$int$>$ get\+Detector\+Number\+Of\+Pixels (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
@@ -515,9 +513,9 @@ Accessor on the number of pixels of the X-\/ray detector.
 the size of the detector in number of pixels 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a401a61a44333c2c037ead73ffdf9c2a3}\label{_simple_g_v_x_r_8h_a401a61a44333c2c037ead73ffdf9c2a3}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Detector\+Position@{get\+Detector\+Position}}
-\index{get\+Detector\+Position@{get\+Detector\+Position}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Detector\+Position()}{getDetectorPosition()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getDetectorPosition@{getDetectorPosition}}
+\index{getDetectorPosition@{getDetectorPosition}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getDetectorPosition()}{getDetectorPosition()}}
 {\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Detector\+Position (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
 
@@ -533,9 +531,9 @@ Accessor on the position of the X-\/ray detector.
 the source position in a given unit of length 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a02d5273c7f657bbac64a7e7b1373f522}\label{_simple_g_v_x_r_8h_a02d5273c7f657bbac64a7e7b1373f522}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Detector\+Right\+Vector@{get\+Detector\+Right\+Vector}}
-\index{get\+Detector\+Right\+Vector@{get\+Detector\+Right\+Vector}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Detector\+Right\+Vector()}{getDetectorRightVector()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getDetectorRightVector@{getDetectorRightVector}}
+\index{getDetectorRightVector@{getDetectorRightVector}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getDetectorRightVector()}{getDetectorRightVector()}}
 {\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Detector\+Right\+Vector (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
@@ -546,9 +544,9 @@ Accessor on the right-\/vector defining the orientation of the X-\/ray detector.
 the right-\/vector 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ac1fa465088ff594d76917fb4a6f13f5e}\label{_simple_g_v_x_r_8h_ac1fa465088ff594d76917fb4a6f13f5e}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Detector\+Size@{get\+Detector\+Size}}
-\index{get\+Detector\+Size@{get\+Detector\+Size}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Detector\+Size()}{getDetectorSize()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getDetectorSize@{getDetectorSize}}
+\index{getDetectorSize@{getDetectorSize}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getDetectorSize()}{getDetectorSize()}}
 {\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Detector\+Size (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
 
@@ -564,9 +562,9 @@ Accessor on the size of the X-\/ray detector.
 the size in a given unit of length 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ab669679c11642ce61ac12479ddc82252}\label{_simple_g_v_x_r_8h_ab669679c11642ce61ac12479ddc82252}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Detector\+Up\+Vector@{get\+Detector\+Up\+Vector}}
-\index{get\+Detector\+Up\+Vector@{get\+Detector\+Up\+Vector}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Detector\+Up\+Vector()}{getDetectorUpVector()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getDetectorUpVector@{getDetectorUpVector}}
+\index{getDetectorUpVector@{getDetectorUpVector}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getDetectorUpVector()}{getDetectorUpVector()}}
 {\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Detector\+Up\+Vector (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
@@ -577,9 +575,9 @@ Accessor on the up-\/vector defining the orientation of the X-\/ray detector.
 the up-\/vector 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a17824de8c345642821db10247482e5e1}\label{_simple_g_v_x_r_8h_a17824de8c345642821db10247482e5e1}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Diffuse\+Colour@{get\+Diffuse\+Colour}}
-\index{get\+Diffuse\+Colour@{get\+Diffuse\+Colour}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Diffuse\+Colour()}{getDiffuseColour()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getDiffuseColour@{getDiffuseColour}}
+\index{getDiffuseColour@{getDiffuseColour}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getDiffuseColour()}{getDiffuseColour()}}
 {\footnotesize\ttfamily std\+::vector$<$float$>$ get\+Diffuse\+Colour (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -590,41 +588,39 @@ Accessor on the diffuse colour of the material of a given polygon mesh.
 the diffuse colour 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a5f2a0cb6b7cbd23890f9376b8fd4c1ff}\label{_simple_g_v_x_r_8h_a5f2a0cb6b7cbd23890f9376b8fd4c1ff}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Linear\+Attenuation\+Coefficient@{get\+Linear\+Attenuation\+Coefficient}}
-\index{get\+Linear\+Attenuation\+Coefficient@{get\+Linear\+Attenuation\+Coefficient}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Linear\+Attenuation\+Coefficient()}{getLinearAttenuationCoefficient()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getLinearAttenuationCoefficient@{getLinearAttenuationCoefficient}}
+\index{getLinearAttenuationCoefficient@{getLinearAttenuationCoefficient}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getLinearAttenuationCoefficient()}{getLinearAttenuationCoefficient()}}
 {\footnotesize\ttfamily double get\+Linear\+Attenuation\+Coefficient (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{double}]{an\+Energy,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Energy }\end{DoxyParamCaption})}
 
 Accessor on the linear attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. \mbox{\Hypertarget{_simple_g_v_x_r_8h_a1495a8a83ee7a799ed9375bc540286cc}\label{_simple_g_v_x_r_8h_a1495a8a83ee7a799ed9375bc540286cc}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Major\+Version\+Of\+Simple\+G\+V\+XR@{get\+Major\+Version\+Of\+Simple\+G\+V\+XR}}
-\index{get\+Major\+Version\+Of\+Simple\+G\+V\+XR@{get\+Major\+Version\+Of\+Simple\+G\+V\+XR}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Major\+Version\+Of\+Simple\+G\+V\+X\+R()}{getMajorVersionOfSimpleGVXR()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getMajorVersionOfSimpleGVXR@{getMajorVersionOfSimpleGVXR}}
+\index{getMajorVersionOfSimpleGVXR@{getMajorVersionOfSimpleGVXR}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getMajorVersionOfSimpleGVXR()}{getMajorVersionOfSimpleGVXR()}}
 {\footnotesize\ttfamily int get\+Major\+Version\+Of\+Simple\+G\+V\+XR (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-Accessor on the major version of Simple\+G\+V\+XR. This number is changed when incompatible A\+PI changes have been made. ~\newline
-\begin{DoxyReturn}{Returns}
+Accessor on the major version of Simple\+G\+V\+XR. This number is changed when incompatible A\+PI changes have been made. \begin{DoxyReturn}{Returns}
 the major version number 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ac856bc9af62ef66b7ecf7d9db884b490}\label{_simple_g_v_x_r_8h_ac856bc9af62ef66b7ecf7d9db884b490}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Mass\+Attenuation\+Coefficient@{get\+Mass\+Attenuation\+Coefficient}}
-\index{get\+Mass\+Attenuation\+Coefficient@{get\+Mass\+Attenuation\+Coefficient}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Mass\+Attenuation\+Coefficient()}{getMassAttenuationCoefficient()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getMassAttenuationCoefficient@{getMassAttenuationCoefficient}}
+\index{getMassAttenuationCoefficient@{getMassAttenuationCoefficient}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getMassAttenuationCoefficient()}{getMassAttenuationCoefficient()}}
 {\footnotesize\ttfamily double get\+Mass\+Attenuation\+Coefficient (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{double}]{an\+Energy,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Energy }\end{DoxyParamCaption})}
 
 Accessor on the mass attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. \mbox{\Hypertarget{_simple_g_v_x_r_8h_a8dda75e417383f05f8a67d0d805a7ee4}\label{_simple_g_v_x_r_8h_a8dda75e417383f05f8a67d0d805a7ee4}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Minor\+Version\+Of\+Simple\+G\+V\+XR@{get\+Minor\+Version\+Of\+Simple\+G\+V\+XR}}
-\index{get\+Minor\+Version\+Of\+Simple\+G\+V\+XR@{get\+Minor\+Version\+Of\+Simple\+G\+V\+XR}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Minor\+Version\+Of\+Simple\+G\+V\+X\+R()}{getMinorVersionOfSimpleGVXR()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getMinorVersionOfSimpleGVXR@{getMinorVersionOfSimpleGVXR}}
+\index{getMinorVersionOfSimpleGVXR@{getMinorVersionOfSimpleGVXR}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getMinorVersionOfSimpleGVXR()}{getMinorVersionOfSimpleGVXR()}}
 {\footnotesize\ttfamily int get\+Minor\+Version\+Of\+Simple\+G\+V\+XR (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-Accessor on the minor version of Simple\+G\+V\+XR. This number is changed when new functionalities have been added in a backwards-\/compatible manner. ~\newline
-\begin{DoxyReturn}{Returns}
+Accessor on the minor version of Simple\+G\+V\+XR. This number is changed when new functionalities have been added in a backwards-\/compatible manner. \begin{DoxyReturn}{Returns}
 the minor version number 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ac4faad08043c8b6b16e23ee7e772efb3}\label{_simple_g_v_x_r_8h_ac4faad08043c8b6b16e23ee7e772efb3}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Number\+Of\+Children@{get\+Number\+Of\+Children}}
-\index{get\+Number\+Of\+Children@{get\+Number\+Of\+Children}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Number\+Of\+Children()}{getNumberOfChildren()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getNumberOfChildren@{getNumberOfChildren}}
+\index{getNumberOfChildren@{getNumberOfChildren}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getNumberOfChildren()}{getNumberOfChildren()}}
 {\footnotesize\ttfamily unsigned int get\+Number\+Of\+Children (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -640,19 +636,18 @@ Get the number of children of a node in the scenegraph.
 the number of chidren 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a434fed454c84dfebf5d5df27389f38f5}\label{_simple_g_v_x_r_8h_a434fed454c84dfebf5d5df27389f38f5}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Patch\+Version\+Of\+Simple\+G\+V\+XR@{get\+Patch\+Version\+Of\+Simple\+G\+V\+XR}}
-\index{get\+Patch\+Version\+Of\+Simple\+G\+V\+XR@{get\+Patch\+Version\+Of\+Simple\+G\+V\+XR}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Patch\+Version\+Of\+Simple\+G\+V\+X\+R()}{getPatchVersionOfSimpleGVXR()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getPatchVersionOfSimpleGVXR@{getPatchVersionOfSimpleGVXR}}
+\index{getPatchVersionOfSimpleGVXR@{getPatchVersionOfSimpleGVXR}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getPatchVersionOfSimpleGVXR()}{getPatchVersionOfSimpleGVXR()}}
 {\footnotesize\ttfamily int get\+Patch\+Version\+Of\+Simple\+G\+V\+XR (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-Accessor on the minor version of Simple\+G\+V\+XR. This number is changed when bug fixes have been added in a backwards-\/compatible manner. ~\newline
-\begin{DoxyReturn}{Returns}
+Accessor on the minor version of Simple\+G\+V\+XR. This number is changed when bug fixes have been added in a backwards-\/compatible manner. \begin{DoxyReturn}{Returns}
 the patch version number 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a842dfc01ad06ac6c3bf08ab78b4dc288}\label{_simple_g_v_x_r_8h_a842dfc01ad06ac6c3bf08ab78b4dc288}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Shininess@{get\+Shininess}}
-\index{get\+Shininess@{get\+Shininess}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Shininess()}{getShininess()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getShininess@{getShininess}}
+\index{getShininess@{getShininess}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getShininess()}{getShininess()}}
 {\footnotesize\ttfamily float get\+Shininess (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -663,9 +658,9 @@ Accessor on the shininess of the material of a given polygon mesh.
 the shininess coefficient 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a149733f58dadc43516fd74d35bbcd670}\label{_simple_g_v_x_r_8h_a149733f58dadc43516fd74d35bbcd670}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Source\+Position@{get\+Source\+Position}}
-\index{get\+Source\+Position@{get\+Source\+Position}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Source\+Position()}{getSourcePosition()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getSourcePosition@{getSourcePosition}}
+\index{getSourcePosition@{getSourcePosition}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getSourcePosition()}{getSourcePosition()}}
 {\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Source\+Position (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
 
@@ -681,9 +676,9 @@ Accessor on the position of the X-\/ray source.
 the source position in a given unit of length 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a6e76db5ab1162a9c09ab0f1d4a3073ab}\label{_simple_g_v_x_r_8h_a6e76db5ab1162a9c09ab0f1d4a3073ab}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Specular\+Colour@{get\+Specular\+Colour}}
-\index{get\+Specular\+Colour@{get\+Specular\+Colour}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Specular\+Colour()}{getSpecularColour()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getSpecularColour@{getSpecularColour}}
+\index{getSpecularColour@{getSpecularColour}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getSpecularColour()}{getSpecularColour()}}
 {\footnotesize\ttfamily std\+::vector$<$float$>$ get\+Specular\+Colour (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -694,9 +689,9 @@ Accessor on the specular colour of the material of a given polygon mesh.
 the specular colour 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_aadc6cf5b2124f80f1e41bdb967aafab9}\label{_simple_g_v_x_r_8h_aadc6cf5b2124f80f1e41bdb967aafab9}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Version\+Of\+Simple\+G\+V\+XR@{get\+Version\+Of\+Simple\+G\+V\+XR}}
-\index{get\+Version\+Of\+Simple\+G\+V\+XR@{get\+Version\+Of\+Simple\+G\+V\+XR}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{get\+Version\+Of\+Simple\+G\+V\+X\+R()}{getVersionOfSimpleGVXR()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!getVersionOfSimpleGVXR@{getVersionOfSimpleGVXR}}
+\index{getVersionOfSimpleGVXR@{getVersionOfSimpleGVXR}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{getVersionOfSimpleGVXR()}{getVersionOfSimpleGVXR()}}
 {\footnotesize\ttfamily std\+::string get\+Version\+Of\+Simple\+G\+V\+XR (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
@@ -707,9 +702,9 @@ Accessor on the full string version of Simple\+G\+V\+XR.
 the full version number 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a7dac7c6d68422b7e86944435a9a035f4}\label{_simple_g_v_x_r_8h_a7dac7c6d68422b7e86944435a9a035f4}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!invert\+Normal\+Vectors@{invert\+Normal\+Vectors}}
-\index{invert\+Normal\+Vectors@{invert\+Normal\+Vectors}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{invert\+Normal\+Vectors()}{invertNormalVectors()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!invertNormalVectors@{invertNormalVectors}}
+\index{invertNormalVectors@{invertNormalVectors}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{invertNormalVectors()}{invertNormalVectors()}}
 {\footnotesize\ttfamily void invert\+Normal\+Vectors (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
 
 
@@ -722,13 +717,12 @@ Invert the normal vectors of a given polygon mesh.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_af35d83a0cd47a4962e2a6602a0793b74}\label{_simple_g_v_x_r_8h_af35d83a0cd47a4962e2a6602a0793b74}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!load\+Mesh\+File@{load\+Mesh\+File}}
-\index{load\+Mesh\+File@{load\+Mesh\+File}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{load\+Mesh\+File()}{loadMeshFile()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!loadMeshFile@{loadMeshFile}}
+\index{loadMeshFile@{loadMeshFile}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{loadMeshFile()}{loadMeshFile()}}
 {\footnotesize\ttfamily void load\+Mesh\+File (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{const std\+::string \&}]{a\+File\+Name,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
-Load a polygon mesh from a file, set its label in the scenegraph (i.\+e. identifier) and add it to the X-\/ray renderer. ~\newline
-
+Load a polygon mesh from a file, set its label in the scenegraph (i.\+e. identifier) and add it to the X-\/ray renderer. 
 \begin{DoxyParams}{Parameters}
 {\em a\+Label} & the label in the scenegraph \\
 \hline
@@ -738,13 +732,12 @@ Load a polygon mesh from a file, set its label in the scenegraph (i.\+e. identif
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ad4e61b0de43e487532d574148e52ffd0}\label{_simple_g_v_x_r_8h_ad4e61b0de43e487532d574148e52ffd0}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!load\+Scene\+Graph@{load\+Scene\+Graph}}
-\index{load\+Scene\+Graph@{load\+Scene\+Graph}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{load\+Scene\+Graph()}{loadSceneGraph()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!loadSceneGraph@{loadSceneGraph}}
+\index{loadSceneGraph@{loadSceneGraph}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{loadSceneGraph()}{loadSceneGraph()}}
 {\footnotesize\ttfamily void load\+Scene\+Graph (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+File\+Name,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
-Load a scenegraph from a file and add its polygon meshes to the X-\/ray renderer. ~\newline
-
+Load a scenegraph from a file and add its polygon meshes to the X-\/ray renderer. 
 \begin{DoxyParams}{Parameters}
 {\em a\+File\+Name} & the file where the polygon mesh data is stored \\
 \hline
@@ -752,13 +745,12 @@ Load a scenegraph from a file and add its polygon meshes to the X-\/ray renderer
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}\label{_simple_g_v_x_r_8h_a1328f93e0304d2585641dcf63cb494b6}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!look\+At@{look\+At}}
-\index{look\+At@{look\+At}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{look\+At()}{lookAt()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!lookAt@{lookAt}}
+\index{lookAt@{lookAt}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{lookAt()}{lookAt()}}
 {\footnotesize\ttfamily void look\+At (\begin{DoxyParamCaption}\item[{double}]{eye\+\_\+x,  }\item[{double}]{eye\+\_\+y,  }\item[{double}]{eye\+\_\+z,  }\item[{double}]{look\+AtX,  }\item[{double}]{look\+AtY,  }\item[{double}]{look\+AtZ,  }\item[{double}]{upX,  }\item[{double}]{upY,  }\item[{double}]{upZ }\end{DoxyParamCaption})}
 
-Replace the modelling-\/viewing matrix by a viewing transformation matrix. It behaves as the old glu\+Look\+At function. ~\newline
-
+Replace the modelling-\/viewing matrix by a viewing transformation matrix. It behaves as the old glu\+Look\+At function. 
 \begin{DoxyParams}{Parameters}
 {\em eyeX} & Specifies the position of the eye point along the X-\/axis \\
 \hline
@@ -780,13 +772,12 @@ Replace the modelling-\/viewing matrix by a viewing transformation matrix. It be
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a594ed6d5c8639db4c65c44bf1d149752}\label{_simple_g_v_x_r_8h_a594ed6d5c8639db4c65c44bf1d149752}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!make\+Cube@{make\+Cube}}
-\index{make\+Cube@{make\+Cube}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{make\+Cube()}{makeCube()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!makeCube@{makeCube}}
+\index{makeCube@{makeCube}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{makeCube()}{makeCube()}}
 {\footnotesize\ttfamily void make\+Cube (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{double}]{a\+Length = {\ttfamily 1.0},  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length = {\ttfamily \char`\"{}cm\char`\"{}},  }\item[{const std\+::string \&}]{a\+Parent = {\ttfamily \char`\"{}root\char`\"{}} }\end{DoxyParamCaption})}
 
-Create a cube and set its label in the scenegraph (i.\+e. identifier). Note that it is not added to the X-\/ray renderer. ~\newline
-
+Create a cube and set its label in the scenegraph (i.\+e. identifier). Note that it is not added to the X-\/ray renderer. 
 \begin{DoxyParams}{Parameters}
 {\em a\+Label} & the label in the scenegraph \\
 \hline
@@ -798,13 +789,12 @@ Create a cube and set its label in the scenegraph (i.\+e. identifier). Note that
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a767e3795a7f184c5bcb41f6e10de842e}\label{_simple_g_v_x_r_8h_a767e3795a7f184c5bcb41f6e10de842e}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!make\+Cylinder@{make\+Cylinder}}
-\index{make\+Cylinder@{make\+Cylinder}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{make\+Cylinder()}{makeCylinder()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!makeCylinder@{makeCylinder}}
+\index{makeCylinder@{makeCylinder}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{makeCylinder()}{makeCylinder()}}
 {\footnotesize\ttfamily void make\+Cylinder (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{unsigned int}]{a\+Number\+Of\+Sectors = {\ttfamily 10},  }\item[{double}]{a\+Height = {\ttfamily 1.0},  }\item[{double}]{a\+Radius = {\ttfamily 0.5},  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length = {\ttfamily \char`\"{}cm\char`\"{}},  }\item[{const std\+::string \&}]{a\+Parent = {\ttfamily \char`\"{}root\char`\"{}} }\end{DoxyParamCaption})}
 
-Create a cylinder and set its label in the scenegraph (i.\+e. identifier). Note that it is not added to the X-\/ray renderer. ~\newline
-
+Create a cylinder and set its label in the scenegraph (i.\+e. identifier). Note that it is not added to the X-\/ray renderer. 
 \begin{DoxyParams}{Parameters}
 {\em a\+Label} & the label in the scenegraph \\
 \hline
@@ -819,14 +809,13 @@ Create a cylinder and set its label in the scenegraph (i.\+e. identifier). Note 
 {\em a\+Parent} & the parent of the node in the scenegraph (default\+: \char`\"{}root\char`\"{}) \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{_simple_g_v_x_r_8h_aed5f4b418b434f0da477fccbc42f9251}\label{_simple_g_v_x_r_8h_aed5f4b418b434f0da477fccbc42f9251}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!orthographic@{orthographic}}
-\index{orthographic@{orthographic}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_ad0c720c908987332d7133d32060525e1}\label{_simple_g_v_x_r_8h_ad0c720c908987332d7133d32060525e1}} 
+\index{SimpleGVXR.h@{SimpleGVXR.h}!orthographic@{orthographic}}
+\index{orthographic@{orthographic}!SimpleGVXR.h@{SimpleGVXR.h}}
 \subsubsection{\texorpdfstring{orthographic()}{orthographic()}}
-{\footnotesize\ttfamily void orthographic (\begin{DoxyParamCaption}\item[{double}]{left,  }\item[{double}]{right,  }\item[{double}]{bottom,  }\item[{double}]{top,  }\item[{double}]{near,  }\item[{double}]{far }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void orthographic (\begin{DoxyParamCaption}\item[{double}]{left,  }\item[{double}]{right,  }\item[{double}]{bottom,  }\item[{double}]{top,  }\item[{double}]{z\+Near,  }\item[{double}]{z\+Far }\end{DoxyParamCaption})}
 
-Replace the projection matrix by a orthographic projection matrix. It behaves as the old gl\+Ortho function. ~\newline
-
+Replace the projection matrix by a orthographic projection matrix. It behaves as the old gl\+Ortho function. 
 \begin{DoxyParams}{Parameters}
 {\em left} & Specify the coordinates for the left vertical clipping plane \\
 \hline
@@ -836,19 +825,18 @@ Replace the projection matrix by a orthographic projection matrix. It behaves as
 \hline
 {\em top} & Specify the coordinates for the top horizontal clipping plane \\
 \hline
-{\em near} & Specify the distances to the near clipping plane. The value must be positive \\
+{\em z\+Near} & Specify the distances to the near clipping plane. The value must be positive \\
 \hline
-{\em far} & Specify the distances to the far clipping plane. The value must be positive \\
+{\em z\+Far} & Specify the distances to the far clipping plane. The value must be positive \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ae0caff488cca64709dd47735deb1b1fb}\label{_simple_g_v_x_r_8h_ae0caff488cca64709dd47735deb1b1fb}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!perspective@{perspective}}
-\index{perspective@{perspective}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!perspective@{perspective}}
+\index{perspective@{perspective}!SimpleGVXR.h@{SimpleGVXR.h}}
 \subsubsection{\texorpdfstring{perspective()}{perspective()}}
 {\footnotesize\ttfamily void perspective (\begin{DoxyParamCaption}\item[{double}]{fovy,  }\item[{double}]{aspect,  }\item[{double}]{z\+Near,  }\item[{double}]{z\+Far }\end{DoxyParamCaption})}
 
-Replace the projection matrix by a perspective projection matrix. It behaves as the old glu\+Perspective function. ~\newline
-
+Replace the projection matrix by a perspective projection matrix. It behaves as the old glu\+Perspective function. 
 \begin{DoxyParams}{Parameters}
 {\em fovy} & specifies the field of view angle, in degrees, in the y-\/direction. \\
 \hline
@@ -860,27 +848,27 @@ Replace the projection matrix by a perspective projection matrix. It behaves as 
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a05fee3d93fc0abc59e50cdb7aec10b95}\label{_simple_g_v_x_r_8h_a05fee3d93fc0abc59e50cdb7aec10b95}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!pop\+Model\+View\+Matrix@{pop\+Model\+View\+Matrix}}
-\index{pop\+Model\+View\+Matrix@{pop\+Model\+View\+Matrix}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{pop\+Model\+View\+Matrix()}{popModelViewMatrix()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!popModelViewMatrix@{popModelViewMatrix}}
+\index{popModelViewMatrix@{popModelViewMatrix}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{popModelViewMatrix()}{popModelViewMatrix()}}
 {\footnotesize\ttfamily void pop\+Model\+View\+Matrix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Pop\+Matrix() functions. \mbox{\Hypertarget{_simple_g_v_x_r_8h_af6fba4396ebad0fd10547e96633ed37e}\label{_simple_g_v_x_r_8h_af6fba4396ebad0fd10547e96633ed37e}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!push\+Model\+View\+Matrix@{push\+Model\+View\+Matrix}}
-\index{push\+Model\+View\+Matrix@{push\+Model\+View\+Matrix}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{push\+Model\+View\+Matrix()}{pushModelViewMatrix()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!pushModelViewMatrix@{pushModelViewMatrix}}
+\index{pushModelViewMatrix@{pushModelViewMatrix}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{pushModelViewMatrix()}{pushModelViewMatrix()}}
 {\footnotesize\ttfamily void push\+Model\+View\+Matrix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 Add the current matrix to the model/view matrix stack. It behaves as the combination of the old gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Push\+Matrix() functions. \mbox{\Hypertarget{_simple_g_v_x_r_8h_abb5ac6fa1e360fb8db58f63fc1453f20}\label{_simple_g_v_x_r_8h_abb5ac6fa1e360fb8db58f63fc1453f20}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer@{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer}}
-\index{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer@{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer()}{removePolygonMeshesFromXRayRenderer()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!removePolygonMeshesFromXRayRenderer@{removePolygonMeshesFromXRayRenderer}}
+\index{removePolygonMeshesFromXRayRenderer@{removePolygonMeshesFromXRayRenderer}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{removePolygonMeshesFromXRayRenderer()}{removePolygonMeshesFromXRayRenderer()}}
 {\footnotesize\ttfamily void remove\+Polygon\+Meshes\+From\+X\+Ray\+Renderer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 Empty the X-\/ray renderer from all its meshes. Note that the meshes are kept in the scenegraph. \mbox{\Hypertarget{_simple_g_v_x_r_8h_ad5f2ad0bc3d3a8faec876665b38e98e7}\label{_simple_g_v_x_r_8h_ad5f2ad0bc3d3a8faec876665b38e98e7}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!render\+Loop@{render\+Loop}}
-\index{render\+Loop@{render\+Loop}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{render\+Loop()}{renderLoop()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!renderLoop@{renderLoop}}
+\index{renderLoop@{renderLoop}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{renderLoop()}{renderLoop()}}
 {\footnotesize\ttfamily void render\+Loop (\begin{DoxyParamCaption}\item[{int}]{a\+Window\+ID = {\ttfamily -\/1} }\end{DoxyParamCaption})}
 
 3-\/D visualisation of the 3-\/D scene (source, detector, and scanned objects). Note that there is interactive loop running. Keys are\+:
@@ -893,13 +881,12 @@ Empty the X-\/ray renderer from all its meshes. Note that the meshes are kept in
 \item D\+: display/hide the X-\/ray detector
 \item V\+: display/hide normal vectors 
 \end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a41c8baa5a9730a24877ceb363651c9d0}\label{_simple_g_v_x_r_8h_a41c8baa5a9730a24877ceb363651c9d0}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!rotate\+Model\+View@{rotate\+Model\+View}}
-\index{rotate\+Model\+View@{rotate\+Model\+View}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{rotate\+Model\+View()}{rotateModelView()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!rotateModelView@{rotateModelView}}
+\index{rotateModelView@{rotateModelView}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{rotateModelView()}{rotateModelView()}}
 {\footnotesize\ttfamily void rotate\+Model\+View (\begin{DoxyParamCaption}\item[{double}]{an\+Angle,  }\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z }\end{DoxyParamCaption})}
 
-Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Rotate() functions. ~\newline
-
+Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. gl\+Matrix\+Mode(\+G\+L\+\_\+\+M\+O\+D\+E\+L\+V\+I\+E\+W);gl\+Rotate() functions. 
 \begin{DoxyParams}{Parameters}
 {\em an\+Angle} & the angle of rotation in degrees \\
 \hline
@@ -911,9 +898,9 @@ Restore the matrix from the model/view matrix stack, and remove the last matrix 
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_aed64e5b84cf09a952cafb0e24a86d693}\label{_simple_g_v_x_r_8h_aed64e5b84cf09a952cafb0e24a86d693}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Color@{set\+Color}}
-\index{set\+Color@{set\+Color}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Color()}{setColor()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setColor@{setColor}}
+\index{setColor@{setColor}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setColor()}{setColor()}}
 {\footnotesize\ttfamily void set\+Color (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{float}]{R,  }\item[{float}]{G,  }\item[{float}]{B,  }\item[{float}]{A }\end{DoxyParamCaption})}
 
 
@@ -934,9 +921,9 @@ Set the color of a given polygon mesh.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_aa4ed78a91448f99ee23c4cf7f3845213}\label{_simple_g_v_x_r_8h_aa4ed78a91448f99ee23c4cf7f3845213}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Colour@{set\+Colour}}
-\index{set\+Colour@{set\+Colour}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Colour()}{setColour()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setColour@{setColour}}
+\index{setColour@{setColour}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setColour()}{setColour()}}
 {\footnotesize\ttfamily void set\+Colour (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{float}]{R,  }\item[{float}]{G,  }\item[{float}]{B,  }\item[{float}]{A }\end{DoxyParamCaption})}
 
 
@@ -957,15 +944,15 @@ Set the colour of a given polygon mesh.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a7667215c4b257434c1fdb46b8278f830}\label{_simple_g_v_x_r_8h_a7667215c4b257434c1fdb46b8278f830}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Compound@{set\+Compound}}
-\index{set\+Compound@{set\+Compound}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Compound()}{setCompound()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setCompound@{setCompound}}
+\index{setCompound@{setCompound}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setCompound()}{setCompound()}}
 {\footnotesize\ttfamily void set\+Compound (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{const std\+::string \&}]{a\+Compound }\end{DoxyParamCaption})}
 
 Set the compound corresponding to the material properties of a polygon mesh. Don\textquotesingle{}t forget to set the density of the material. \mbox{\Hypertarget{_simple_g_v_x_r_8h_a83bbebef7177c94a6211a39694ef83fc}\label{_simple_g_v_x_r_8h_a83bbebef7177c94a6211a39694ef83fc}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Detector\+Number\+Of\+Pixels@{set\+Detector\+Number\+Of\+Pixels}}
-\index{set\+Detector\+Number\+Of\+Pixels@{set\+Detector\+Number\+Of\+Pixels}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Detector\+Number\+Of\+Pixels()}{setDetectorNumberOfPixels()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setDetectorNumberOfPixels@{setDetectorNumberOfPixels}}
+\index{setDetectorNumberOfPixels@{setDetectorNumberOfPixels}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setDetectorNumberOfPixels()}{setDetectorNumberOfPixels()}}
 {\footnotesize\ttfamily void set\+Detector\+Number\+Of\+Pixels (\begin{DoxyParamCaption}\item[{int}]{a\+Width,  }\item[{int}]{a\+Height }\end{DoxyParamCaption})}
 
 
@@ -980,9 +967,9 @@ Set the number of pixels of the X-\/ray detector.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a84e7693e266b248474229eb6bf4e2a0d}\label{_simple_g_v_x_r_8h_a84e7693e266b248474229eb6bf4e2a0d}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Detector\+Pixel\+Size@{set\+Detector\+Pixel\+Size}}
-\index{set\+Detector\+Pixel\+Size@{set\+Detector\+Pixel\+Size}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Detector\+Pixel\+Size()}{setDetectorPixelSize()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setDetectorPixelSize@{setDetectorPixelSize}}
+\index{setDetectorPixelSize@{setDetectorPixelSize}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setDetectorPixelSize()}{setDetectorPixelSize()}}
 {\footnotesize\ttfamily void set\+Detector\+Pixel\+Size (\begin{DoxyParamCaption}\item[{double}]{a\+Width,  }\item[{double}]{a\+Height,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
 
@@ -999,9 +986,9 @@ Set the pixel size.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a87e072eb89286a901da750cc8d7b7eeb}\label{_simple_g_v_x_r_8h_a87e072eb89286a901da750cc8d7b7eeb}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Detector\+Position@{set\+Detector\+Position}}
-\index{set\+Detector\+Position@{set\+Detector\+Position}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Detector\+Position()}{setDetectorPosition()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setDetectorPosition@{setDetectorPosition}}
+\index{setDetectorPosition@{setDetectorPosition}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setDetectorPosition()}{setDetectorPosition()}}
 {\footnotesize\ttfamily void set\+Detector\+Position (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
 
@@ -1020,9 +1007,9 @@ Set the position of the X-\/ray detector.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a5a72f299c3609e4d76eeeea958ea65c2}\label{_simple_g_v_x_r_8h_a5a72f299c3609e4d76eeeea958ea65c2}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Detector\+Up\+Vector@{set\+Detector\+Up\+Vector}}
-\index{set\+Detector\+Up\+Vector@{set\+Detector\+Up\+Vector}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Detector\+Up\+Vector()}{setDetectorUpVector()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setDetectorUpVector@{setDetectorUpVector}}
+\index{setDetectorUpVector@{setDetectorUpVector}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setDetectorUpVector()}{setDetectorUpVector()}}
 {\footnotesize\ttfamily void set\+Detector\+Up\+Vector (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z }\end{DoxyParamCaption})}
 
 
@@ -1039,21 +1026,21 @@ Set the up-\/vector defining the orientation of the X-\/ray detector.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a5f456fc99da9709f5af260c7f7c2c722}\label{_simple_g_v_x_r_8h_a5f456fc99da9709f5af260c7f7c2c722}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Mass\+Attenuation\+Coefficient@{set\+Mass\+Attenuation\+Coefficient}}
-\index{set\+Mass\+Attenuation\+Coefficient@{set\+Mass\+Attenuation\+Coefficient}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Mass\+Attenuation\+Coefficient()}{setMassAttenuationCoefficient()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setMassAttenuationCoefficient@{setMassAttenuationCoefficient}}
+\index{setMassAttenuationCoefficient@{setMassAttenuationCoefficient}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setMassAttenuationCoefficient()}{setMassAttenuationCoefficient()}}
 {\footnotesize\ttfamily void set\+Mass\+Attenuation\+Coefficient (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{double}]{a\+Coefficient,  }\item[{const std\+::string \&}]{a\+Unit }\end{DoxyParamCaption})}
 
 Set the mass attenuation coefficient corresponding to the material properties of a polygon mesh. Don\textquotesingle{}t forget to set the density of the material. \mbox{\Hypertarget{_simple_g_v_x_r_8h_a6cc34fdb74aec791b764c42f3452087a}\label{_simple_g_v_x_r_8h_a6cc34fdb74aec791b764c42f3452087a}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Mixture@{set\+Mixture}}
-\index{set\+Mixture@{set\+Mixture}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Mixture()}{setMixture()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setMixture@{setMixture}}
+\index{setMixture@{setMixture}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setMixture()}{setMixture()}}
 {\footnotesize\ttfamily void set\+Mixture (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{const std\+::string \&}]{a\+Mixture }\end{DoxyParamCaption})}
 
 Set the mixture corresponding to the material properties of a polygon mesh. Don\textquotesingle{}t forget to set the density of the material. \mbox{\Hypertarget{_simple_g_v_x_r_8h_ac1d17ed7feb9636b0b6de18a7762c1e7}\label{_simple_g_v_x_r_8h_ac1d17ed7feb9636b0b6de18a7762c1e7}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Source\+Position@{set\+Source\+Position}}
-\index{set\+Source\+Position@{set\+Source\+Position}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{set\+Source\+Position()}{setSourcePosition()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!setSourcePosition@{setSourcePosition}}
+\index{setSourcePosition@{setSourcePosition}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{setSourcePosition()}{setSourcePosition()}}
 {\footnotesize\ttfamily void set\+Source\+Position (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Length }\end{DoxyParamCaption})}
 
 
@@ -1072,13 +1059,12 @@ Set the position of the X-\/ray source.
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_aa2d38b8483e2ca9fe23259b383859314}\label{_simple_g_v_x_r_8h_aa2d38b8483e2ca9fe23259b383859314}} 
-\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!subtract\+Mesh@{subtract\+Mesh}}
-\index{subtract\+Mesh@{subtract\+Mesh}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
-\subsubsection{\texorpdfstring{subtract\+Mesh()}{subtractMesh()}}
+\index{SimpleGVXR.h@{SimpleGVXR.h}!subtractMesh@{subtractMesh}}
+\index{subtractMesh@{subtractMesh}!SimpleGVXR.h@{SimpleGVXR.h}}
+\subsubsection{\texorpdfstring{subtractMesh()}{subtractMesh()}}
 {\footnotesize\ttfamily void subtract\+Mesh (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Destination,  }\item[{const std\+::string \&}]{a\+Source }\end{DoxyParamCaption})}
 
-Subtract a polygon mesh (a\+Source) from another one (a\+Destination). It corresponds to the operation as follows\+: a\+Destination -\/= a\+Source. Both a\+Source and a\+Destination have to already exist in the scenegraph. ~\newline
-
+Subtract a polygon mesh (a\+Source) from another one (a\+Destination). It corresponds to the operation as follows\+: a\+Destination -\/= a\+Source. Both a\+Source and a\+Destination have to already exist in the scenegraph. 
 \begin{DoxyParams}{Parameters}
 {\em a\+Destination} & the polygon mesh that is going to be modified \\
 \hline

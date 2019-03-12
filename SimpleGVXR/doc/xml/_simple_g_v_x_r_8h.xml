@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.15">
   <compounddef id="_simple_g_v_x_r_8h" kind="file" language="C++">
     <compoundname>SimpleGVXR.h</compoundname>
     <includes local="no">vector</includes>
@@ -8,9 +8,6 @@
       <node id="2">
         <label>string</label>
       </node>
-      <node id="1">
-        <label>vector</label>
-      </node>
       <node id="0">
         <label>SimpleGVXR.h</label>
         <link refid="_simple_g_v_x_r_8h"/>
@@ -18,6 +15,9 @@
         </childnode>
         <childnode refid="2" relation="include">
         </childnode>
+      </node>
+      <node id="1">
+        <label>vector</label>
       </node>
     </incdepgraph>
       <sectiondef kind="func">
@@ -29,9 +29,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Accessor on the major version of SimpleGVXR. This number is changed when incompatible API changes have been made. <linebreak/>
-<simplesect kind="return"><para>the major version number </para></simplesect>
-</para>        </detaileddescription>
+<para>Accessor on the major version of SimpleGVXR. This number is changed when incompatible API changes have been made. <simplesect kind="return"><para>the major version number </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="82" column="1"/>
@@ -44,9 +45,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Accessor on the minor version of SimpleGVXR. This number is changed when new functionalities have been added in a backwards-compatible manner. <linebreak/>
-<simplesect kind="return"><para>the minor version number </para></simplesect>
-</para>        </detaileddescription>
+<para>Accessor on the minor version of SimpleGVXR. This number is changed when new functionalities have been added in a backwards-compatible manner. <simplesect kind="return"><para>the minor version number </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="92" column="1"/>
@@ -59,9 +61,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Accessor on the minor version of SimpleGVXR. This number is changed when bug fixes have been added in a backwards-compatible manner. <linebreak/>
-<simplesect kind="return"><para>the patch version number </para></simplesect>
-</para>        </detaileddescription>
+<para>Accessor on the minor version of SimpleGVXR. This number is changed when bug fixes have been added in a backwards-compatible manner. <simplesect kind="return"><para>the patch version number </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="102" column="1"/>
@@ -72,10 +75,13 @@
         <argsstring>()</argsstring>
         <name>getVersionOfSimpleGVXR</name>
         <briefdescription>
-<para>Accessor on the full string version of SimpleGVXR. </para>        </briefdescription>
+<para>Accessor on the full string version of SimpleGVXR. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the full version number </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the full version number </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="111" column="1"/>
@@ -86,7 +92,8 @@
         <argsstring>()</argsstring>
         <name>initialiseGLEW</name>
         <briefdescription>
-<para>Initialise GLEW if it is supported. </para>        </briefdescription>
+<para>Initialise GLEW if it is supported. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -99,7 +106,8 @@
         <argsstring>()</argsstring>
         <name>initializeGLEW</name>
         <briefdescription>
-<para>Initialise GLEW if it is supported. </para>        </briefdescription>
+<para>Initialise GLEW if it is supported. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -112,17 +120,18 @@
         <argsstring>()</argsstring>
         <name>initShader</name>
         <briefdescription>
-<para>Initialise visualisation shader. </para>        </briefdescription>
+<para>Initialise visualisation shader. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="129" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1aed5f4b418b434f0da477fccbc42f9251" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ad0c720c908987332d7133d32060525e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void orthographic</definition>
-        <argsstring>(double left, double right, double bottom, double top, double near, double far)</argsstring>
+        <argsstring>(double left, double right, double bottom, double top, double zNear, double zFar)</argsstring>
         <name>orthographic</name>
         <param>
           <type>double</type>
@@ -142,60 +151,66 @@
         </param>
         <param>
           <type>double</type>
-          <declname>near</declname>
+          <declname>zNear</declname>
         </param>
         <param>
           <type>double</type>
-          <declname>far</declname>
+          <declname>zFar</declname>
         </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Replace the projection matrix by a orthographic projection matrix. It behaves as the old glOrtho function. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Replace the projection matrix by a orthographic projection matrix. It behaves as the old glOrtho function. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>left</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specify the coordinates for the left vertical clipping plane </para></parameterdescription>
+<para>Specify the coordinates for the left vertical clipping plane </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>right</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specify the coordinates for the right vertical clipping plane </para></parameterdescription>
+<para>Specify the coordinates for the right vertical clipping plane </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bottom</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specify the coordinates for the bottom horizontal clipping plane </para></parameterdescription>
+<para>Specify the coordinates for the bottom horizontal clipping plane </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>top</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specify the coordinates for the top horizontal clipping plane </para></parameterdescription>
+<para>Specify the coordinates for the top horizontal clipping plane </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
-<parametername>near</parametername>
+<parametername>zNear</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specify the distances to the near clipping plane. The value must be positive </para></parameterdescription>
+<para>Specify the distances to the near clipping plane. The value must be positive </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
-<parametername>far</parametername>
+<parametername>zFar</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specify the distances to the far clipping plane. The value must be positive </para></parameterdescription>
+<para>Specify the distances to the far clipping plane. The value must be positive </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="150" column="1"/>
@@ -224,37 +239,41 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Replace the projection matrix by a perspective projection matrix. It behaves as the old gluPerspective function. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Replace the projection matrix by a perspective projection matrix. It behaves as the old gluPerspective function. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>fovy</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>specifies the field of view angle, in degrees, in the y-direction. </para></parameterdescription>
+<para>specifies the field of view angle, in degrees, in the y-direction. </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aspect</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height). </para></parameterdescription>
+<para>Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height). </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>zNear</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the distance from the viewer to the near clipping plane (always positive) </para></parameterdescription>
+<para>Specifies the distance from the viewer to the near clipping plane (always positive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>zFar</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the distance from the viewer to the far clipping plane (always positive). </para></parameterdescription>
+<para>Specifies the distance from the viewer to the far clipping plane (always positive). </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="173" column="1"/>
@@ -303,72 +322,81 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Replace the modelling-viewing matrix by a viewing transformation matrix. It behaves as the old gluLookAt function. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Replace the modelling-viewing matrix by a viewing transformation matrix. It behaves as the old gluLookAt function. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>eyeX</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the position of the eye point along the X-axis </para></parameterdescription>
+<para>Specifies the position of the eye point along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>eyeY</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the position of the eye point along the Y-axis </para></parameterdescription>
+<para>Specifies the position of the eye point along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>eyeZ</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the position of the eye point along the Z-axis </para></parameterdescription>
+<para>Specifies the position of the eye point along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>centreX</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the position of the reference point along the X-axis </para></parameterdescription>
+<para>Specifies the position of the reference point along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>centreY</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the position of the reference point along the Y-axis </para></parameterdescription>
+<para>Specifies the position of the reference point along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>centreZ</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the position of the reference point along the Z-axis </para></parameterdescription>
+<para>Specifies the position of the reference point along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>upX</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the direction of the up vector along the X-axis </para></parameterdescription>
+<para>Specifies the direction of the up vector along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>upY</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the direction of the up vector along the Y-axis </para></parameterdescription>
+<para>Specifies the direction of the up vector along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>upZ</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Specifies the direction of the up vector along the Z-axis </para></parameterdescription>
+<para>Specifies the direction of the up vector along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="197" column="1"/>
@@ -381,7 +409,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Add the current matrix to the model/view matrix stack. It behaves as the combination of the old glMatrixMode(GL_MODELVIEW);glPushMatrix() functions. </para>        </detaileddescription>
+<para>Add the current matrix to the model/view matrix stack. It behaves as the combination of the old glMatrixMode(GL_MODELVIEW);glPushMatrix() functions. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="207" column="1"/>
@@ -394,7 +423,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. glMatrixMode(GL_MODELVIEW);glPopMatrix() functions. </para>        </detaileddescription>
+<para>Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. glMatrixMode(GL_MODELVIEW);glPopMatrix() functions. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="215" column="1"/>
@@ -423,37 +453,41 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. glMatrixMode(GL_MODELVIEW);glRotate() functions. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Restore the matrix from the model/view matrix stack, and remove the last matrix of the stack. glMatrixMode(GL_MODELVIEW);glRotate() functions. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>anAngle</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the angle of rotation in degrees </para></parameterdescription>
+<para>the angle of rotation in degrees </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the coordinate of the rotation axis along the X-axis </para></parameterdescription>
+<para>the coordinate of the rotation axis along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the coordinate of the rotation axis along the Y-axis </para></parameterdescription>
+<para>the coordinate of the rotation axis along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>z</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the coordinate of the rotation axis along the Z-axis </para></parameterdescription>
+<para>the coordinate of the rotation axis along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="229" column="1"/>
@@ -469,17 +503,20 @@
           <defval>true</defval>
         </param>
         <briefdescription>
-<para>Create an OpenGL context automatically. </para>        </briefdescription>
+<para>Create an OpenGL context automatically. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aFlag</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>true to create the OpenGL context automatically, false otherwise (default value: true) </para></parameterdescription>
+<para>true to create the OpenGL context automatically, false otherwise (default value: true) </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="238" column="1"/>
@@ -506,38 +543,44 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Set the position of the X-ray source. </para>        </briefdescription>
+<para>Set the position of the X-ray source. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the position along the X-axis </para></parameterdescription>
+<para>the position along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the position along the Y-axis </para></parameterdescription>
+<para>the position along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>z</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the position along the Z-axis </para></parameterdescription>
+<para>the position along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the x, y and z parameters. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the x, y and z parameters. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="259" column="1"/>
@@ -552,18 +595,22 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Accessor on the position of the X-ray source. </para>        </briefdescription>
+<para>Accessor on the position of the X-ray source. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the returned value. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the returned value. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>the source position in a given unit of length </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>the source position in a given unit of length </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="278" column="1"/>
@@ -590,38 +637,44 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Set the position of the X-ray detector. </para>        </briefdescription>
+<para>Set the position of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the position along the X-axis </para></parameterdescription>
+<para>the position along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the position along the Y-axis </para></parameterdescription>
+<para>the position along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>z</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the position along the Z-axis </para></parameterdescription>
+<para>the position along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the x, y and z parameters. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the x, y and z parameters. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="299" column="1"/>
@@ -636,18 +689,22 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Accessor on the position of the X-ray detector. </para>        </briefdescription>
+<para>Accessor on the position of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the returned value. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the returned value. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>the source position in a given unit of length </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>the source position in a given unit of length </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="318" column="1"/>
@@ -670,31 +727,36 @@
           <declname>z</declname>
         </param>
         <briefdescription>
-<para>Set the up-vector defining the orientation of the X-ray detector. </para>        </briefdescription>
+<para>Set the up-vector defining the orientation of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the component of the vector along the X-axis </para></parameterdescription>
+<para>the component of the vector along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the component of the vector along the Y-axis </para></parameterdescription>
+<para>the component of the vector along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>z</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the component of the vector along the Z-axis </para></parameterdescription>
+<para>the component of the vector along the Z-axis </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="329" column="1"/>
@@ -705,10 +767,13 @@
         <argsstring>()</argsstring>
         <name>getDetectorUpVector</name>
         <briefdescription>
-<para>Accessor on the up-vector defining the orientation of the X-ray detector. </para>        </briefdescription>
+<para>Accessor on the up-vector defining the orientation of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the up-vector </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the up-vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="338" column="1"/>
@@ -719,10 +784,13 @@
         <argsstring>()</argsstring>
         <name>getDetectorRightVector</name>
         <briefdescription>
-<para>Accessor on the right-vector defining the orientation of the X-ray detector. </para>        </briefdescription>
+<para>Accessor on the right-vector defining the orientation of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the right-vector </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the right-vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="347" column="1"/>
@@ -741,24 +809,28 @@
           <declname>aHeight</declname>
         </param>
         <briefdescription>
-<para>Set the number of pixels of the X-ray detector. </para>        </briefdescription>
+<para>Set the number of pixels of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aWidth</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the number of pixels along the X-axis </para></parameterdescription>
+<para>the number of pixels along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aHeight</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the number of pixels along the Y-axis </para></parameterdescription>
+<para>the number of pixels along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="357" column="1"/>
@@ -769,10 +841,13 @@
         <argsstring>()</argsstring>
         <name>getDetectorNumberOfPixels</name>
         <briefdescription>
-<para>Accessor on the number of pixels of the X-ray detector. </para>        </briefdescription>
+<para>Accessor on the number of pixels of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the size of the detector in number of pixels </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the size of the detector in number of pixels </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="366" column="1"/>
@@ -795,31 +870,36 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Set the pixel size. </para>        </briefdescription>
+<para>Set the pixel size. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aWidth</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the pixel size along the X-axis </para></parameterdescription>
+<para>the pixel size along the X-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aHeight</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the pixel size along the Y-axis </para></parameterdescription>
+<para>the pixel size along the Y-axis </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the aWidth and aHeight parameters. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the aWidth and aHeight parameters. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="386" column="1"/>
@@ -834,18 +914,22 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Accessor on the size of the X-ray detector. </para>        </briefdescription>
+<para>Accessor on the size of the X-ray detector. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the returned value. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the returned value. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>the size in a given unit of length </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>the size in a given unit of length </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="407" column="1"/>
@@ -870,30 +954,33 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Load a polygon mesh from a file, set its label in the scenegraph (i.e. identifier) and add it to the X-ray renderer. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Load a polygon mesh from a file, set its label in the scenegraph (i.e. identifier) and add it to the X-ray renderer. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label in the scenegraph </para></parameterdescription>
+<para>the label in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aFileName</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the file where the polygon mesh data is stored </para></parameterdescription>
+<para>the file where the polygon mesh data is stored </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the data stored in the file. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the data stored in the file. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="428" column="1"/>
@@ -914,23 +1001,25 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Load a scenegraph from a file and add its polygon meshes to the X-ray renderer. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Load a scenegraph from a file and add its polygon meshes to the X-ray renderer. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aFileName</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the file where the polygon mesh data is stored </para></parameterdescription>
+<para>the file where the polygon mesh data is stored </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to the data stored in the file. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para></parameterdescription>
+<para>the unit of length corresponding to the data stored in the file. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="450" column="1"/>
@@ -952,23 +1041,25 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Create an empty polygon mesh and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Create an empty polygon mesh and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label in the scenegraph </para></parameterdescription>
+<para>the label in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aParent</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the parent of the node in the scenegraph (default: &quot;root&quot;) </para></parameterdescription>
+<para>the parent of the node in the scenegraph (default: &quot;root&quot;) </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="462" column="1"/>
@@ -1000,37 +1091,41 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Create a cube and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Create a cube and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label in the scenegraph </para></parameterdescription>
+<para>the label in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the size of an edge of the cube </para></parameterdescription>
+<para>the size of an edge of the cube </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to aLength. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; (default value: &quot;cm&quot;) </para></parameterdescription>
+<para>the unit of length corresponding to aLength. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; (default value: &quot;cm&quot;) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aParent</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the parent of the node in the scenegraph (default: &quot;root&quot;) </para></parameterdescription>
+<para>the parent of the node in the scenegraph (default: &quot;root&quot;) </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="486" column="1"/>
@@ -1072,51 +1167,57 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Create a cylinder and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Create a cylinder and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label in the scenegraph </para></parameterdescription>
+<para>the label in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aNumberOfSectors</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the number of sector defining the mesh </para></parameterdescription>
+<para>the number of sector defining the mesh </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aHeight</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the height of the cylinder </para></parameterdescription>
+<para>the height of the cylinder </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aRadius</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the radius of the cylinder </para></parameterdescription>
+<para>the radius of the cylinder </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aUnitOfLength</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the unit of length corresponding to aHeight and aRadius. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; (default value: &quot;cm&quot;) </para></parameterdescription>
+<para>the unit of length corresponding to aHeight and aRadius. Acceptable values are: &quot;um&quot;, &quot;micrometre&quot;, &quot;micrometer&quot;, &quot;mm&quot;, &quot;millimetre&quot;, &quot;millimeter&quot;, &quot;cm&quot;, &quot;centimetre&quot;, &quot;centimeter&quot;, &quot;dm&quot;, &quot;decimetre&quot;, &quot;decimeter&quot;, &quot;m&quot;, &quot;metre&quot;, &quot;meter&quot;, &quot;dam&quot;, &quot;decametre&quot;, &quot;decameter&quot;, &quot;hm&quot;, &quot;hectometre&quot;, &quot;hectometer&quot;, &quot;km&quot;, &quot;kilometre&quot;, &quot;kilometer&quot; (default value: &quot;cm&quot;) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aParent</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the parent of the node in the scenegraph (default: &quot;root&quot;) </para></parameterdescription>
+<para>the parent of the node in the scenegraph (default: &quot;root&quot;) </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="514" column="1"/>
@@ -1137,23 +1238,25 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Add a polygon mesh (aSource) to another one (aDestination). It corresponds to the operation as follows: aDestination += aSource. Both aSource and aDestination have to already exist in the scenegraph. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Add a polygon mesh (aSource) to another one (aDestination). It corresponds to the operation as follows: aDestination += aSource. Both aSource and aDestination have to already exist in the scenegraph. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aDestination</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the polygon mesh that is going to be modified </para></parameterdescription>
+<para>the polygon mesh that is going to be modified </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aSource</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the polygon mesh that is going to be added to aDestination </para></parameterdescription>
+<para>the polygon mesh that is going to be added to aDestination </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="532" column="1"/>
@@ -1174,23 +1277,25 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Subtract a polygon mesh (aSource) from another one (aDestination). It corresponds to the operation as follows: aDestination -= aSource. Both aSource and aDestination have to already exist in the scenegraph. <linebreak/>
-<parameterlist kind="param"><parameteritem>
+<para>Subtract a polygon mesh (aSource) from another one (aDestination). It corresponds to the operation as follows: aDestination -= aSource. Both aSource and aDestination have to already exist in the scenegraph. <parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aDestination</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the polygon mesh that is going to be modified </para></parameterdescription>
+<para>the polygon mesh that is going to be modified </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>aSource</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the polygon mesh that is going to be subtracted from aDestination </para></parameterdescription>
+<para>the polygon mesh that is going to be subtracted from aDestination </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="545" column="1"/>
@@ -1205,18 +1310,22 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Get the number of children of a node in the scenegraph. </para>        </briefdescription>
+<para>Get the number of children of a node in the scenegraph. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label in the scenegraph </para></parameterdescription>
+<para>the label in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>the number of chidren </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>the number of chidren </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="555" column="1"/>
@@ -1235,25 +1344,30 @@
           <declname>i</declname>
         </param>
         <briefdescription>
-<para>Accessor on the i-th child&apos;s label in the list of children of a given node in the scenegraph. </para>        </briefdescription>
+<para>Accessor on the i-th child&apos;s label in the list of children of a given node in the scenegraph. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label in the scenegraph </para></parameterdescription>
+<para>the label in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>i</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the ID of the child </para></parameterdescription>
+<para>the ID of the child </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>the label corresponding to the i-th child </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>the label corresponding to the i-th child </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="566" column="1"/>
@@ -1268,7 +1382,8 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Display the scenegraph node using OpenGL. </para>        </briefdescription>
+<para>Display the scenegraph node using OpenGL. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1285,17 +1400,20 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Invert the normal vectors of a given polygon mesh. </para>        </briefdescription>
+<para>Invert the normal vectors of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label of the polygon mesh </para></parameterdescription>
+<para>the label of the polygon mesh </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="584" column="1"/>
@@ -1326,45 +1444,52 @@
           <declname>A</declname>
         </param>
         <briefdescription>
-<para>Set the color of a given polygon mesh. </para>        </briefdescription>
+<para>Set the color of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label of the polygon mesh </para></parameterdescription>
+<para>the label of the polygon mesh </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>R</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the red channel </para></parameterdescription>
+<para>the red channel </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>G</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the green channel </para></parameterdescription>
+<para>the green channel </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the blue channel </para></parameterdescription>
+<para>the blue channel </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the alpha channel </para></parameterdescription>
+<para>the alpha channel </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="597" column="1"/>
@@ -1395,45 +1520,52 @@
           <declname>A</declname>
         </param>
         <briefdescription>
-<para>Set the colour of a given polygon mesh. </para>        </briefdescription>
+<para>Set the colour of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label of the polygon mesh </para></parameterdescription>
+<para>the label of the polygon mesh </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>R</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the red channel </para></parameterdescription>
+<para>the red channel </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>G</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the green channel </para></parameterdescription>
+<para>the green channel </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the blue channel </para></parameterdescription>
+<para>the blue channel </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the alpha channel </para></parameterdescription>
+<para>the alpha channel </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="610" column="1"/>
@@ -1448,10 +1580,13 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the ambient colour of the material of a given polygon mesh. </para>        </briefdescription>
+<para>Accessor on the ambient colour of the material of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the ambient colour </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the ambient colour </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="619" column="1"/>
@@ -1466,10 +1601,13 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the diffuse colour of the material of a given polygon mesh. </para>        </briefdescription>
+<para>Accessor on the diffuse colour of the material of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the diffuse colour </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the diffuse colour </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="628" column="1"/>
@@ -1484,10 +1622,13 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the specular colour of the material of a given polygon mesh. </para>        </briefdescription>
+<para>Accessor on the specular colour of the material of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the specular colour </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the specular colour </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="637" column="1"/>
@@ -1502,10 +1643,13 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the shininess of the material of a given polygon mesh. </para>        </briefdescription>
+<para>Accessor on the shininess of the material of a given polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>the shininess coefficient </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>the shininess coefficient </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="646" column="1"/>
@@ -1520,17 +1664,20 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Add a polygon mesh, given its label, to the X-ray renderer as an inner surface. </para>        </briefdescription>
+<para>Add a polygon mesh, given its label, to the X-ray renderer as an inner surface. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label of the polygon mesh in the scenegraph </para></parameterdescription>
+<para>the label of the polygon mesh in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="655" column="1"/>
@@ -1545,17 +1692,20 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Add a polygon mesh, given its label, to the X-ray renderer as an outer surface. </para>        </briefdescription>
+<para>Add a polygon mesh, given its label, to the X-ray renderer as an outer surface. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>aLabel</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the label of the polygon mesh in the scenegraph </para></parameterdescription>
+<para>the label of the polygon mesh in the scenegraph </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="664" column="1"/>
@@ -1566,7 +1716,8 @@
         <argsstring>()</argsstring>
         <name>removePolygonMeshesFromSceneGraph</name>
         <briefdescription>
-<para>Empty the scenegraph. Note that it also empties the X-ray renderer from all its meshes. </para>        </briefdescription>
+<para>Empty the scenegraph. Note that it also empties the X-ray renderer from all its meshes. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1581,7 +1732,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Empty the X-ray renderer from all its meshes. Note that the meshes are kept in the scenegraph. </para>        </detaileddescription>
+<para>Empty the X-ray renderer from all its meshes. Note that the meshes are kept in the scenegraph. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="677" column="1"/>
@@ -1592,7 +1744,8 @@
         <argsstring>()</argsstring>
         <name>moveToCenter</name>
         <briefdescription>
-<para>Move the scenegraph to the centre. </para>        </briefdescription>
+<para>Move the scenegraph to the centre. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1605,7 +1758,8 @@
         <argsstring>()</argsstring>
         <name>moveToCentre</name>
         <briefdescription>
-<para>Move the scenegraph to the centre. </para>        </briefdescription>
+<para>Move the scenegraph to the centre. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1622,7 +1776,8 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Move a polygon mesh to the centre. </para>        </briefdescription>
+<para>Move a polygon mesh to the centre. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1639,7 +1794,8 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Move a polygon mesh to the centre. </para>        </briefdescription>
+<para>Move a polygon mesh to the centre. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1672,7 +1828,8 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Scale a polygon mesh. </para>        </briefdescription>
+<para>Scale a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1705,7 +1862,8 @@
           <declname>z</declname>
         </param>
         <briefdescription>
-<para>Rotate a polygon mesh. </para>        </briefdescription>
+<para>Rotate a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1738,7 +1896,8 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Translate a polygon mesh. </para>        </briefdescription>
+<para>Translate a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1751,7 +1910,8 @@
         <argsstring>()</argsstring>
         <name>resetSceneTransformation</name>
         <briefdescription>
-<para>Replace the 3-D transformation matrix of the overall 3-D scene by an identity matrix. </para>        </briefdescription>
+<para>Replace the 3-D transformation matrix of the overall 3-D scene by an identity matrix. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1780,7 +1940,8 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Scale the 3-D scene (all the polygon meshes will be affected but not modified). </para>        </briefdescription>
+<para>Scale the 3-D scene (all the polygon meshes will be affected but not modified). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1809,7 +1970,8 @@
           <declname>z</declname>
         </param>
         <briefdescription>
-<para>Rotate the 3-D scene (all the polygon meshes will be affected but not modified). </para>        </briefdescription>
+<para>Rotate the 3-D scene (all the polygon meshes will be affected but not modified). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1838,7 +2000,8 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Translate the 3-D scene (all the polygon meshes will be affected but not modified). </para>        </briefdescription>
+<para>Translate the 3-D scene (all the polygon meshes will be affected but not modified). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1851,7 +2014,8 @@
         <argsstring>()</argsstring>
         <name>getSceneTransformationMatrix</name>
         <briefdescription>
-<para>Accessor on the 3-D scene transformation matrix. </para>        </briefdescription>
+<para>Accessor on the 3-D scene transformation matrix. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1864,7 +2028,8 @@
         <argsstring>()</argsstring>
         <name>getRootTransformationMatrix</name>
         <briefdescription>
-<para>Accessor on the transformation matrix of the scengraph&apos;s root node. </para>        </briefdescription>
+<para>Accessor on the transformation matrix of the scengraph&apos;s root node. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1881,7 +2046,8 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the transformation matrix of a given node. </para>        </briefdescription>
+<para>Accessor on the transformation matrix of a given node. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1898,7 +2064,8 @@
           <declname>aMatrix</declname>
         </param>
         <briefdescription>
-<para>Set the 3-D scene transformation matrix. </para>        </briefdescription>
+<para>Set the 3-D scene transformation matrix. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1915,7 +2082,8 @@
           <declname>aMatrix</declname>
         </param>
         <briefdescription>
-<para>Set the transformation matrix of the scengraph&apos;s root node. </para>        </briefdescription>
+<para>Set the transformation matrix of the scengraph&apos;s root node. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1936,7 +2104,8 @@
           <declname>aMatrix</declname>
         </param>
         <briefdescription>
-<para>Set the transformation matrix of a given node. </para>        </briefdescription>
+<para>Set the transformation matrix of a given node. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1957,7 +2126,8 @@
           <declname>HU</declname>
         </param>
         <briefdescription>
-<para>Set the Hounsfield value corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the Hounsfield value corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1978,7 +2148,8 @@
           <declname>HU</declname>
         </param>
         <briefdescription>
-<para>Set the Hounsfield value corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the Hounsfield value corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1999,7 +2170,8 @@
           <declname>HU</declname>
         </param>
         <briefdescription>
-<para>Set the Hounsfield value corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the Hounsfield value corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2020,7 +2192,8 @@
           <declname>Z</declname>
         </param>
         <briefdescription>
-<para>Set the chemical element (or element) corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the chemical element (or element) corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2041,7 +2214,8 @@
           <declname>aName</declname>
         </param>
         <briefdescription>
-<para>Set the chemical element (or element) corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the chemical element (or element) corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2064,7 +2238,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Set the mixture corresponding to the material properties of a polygon mesh. Don&apos;t forget to set the density of the material. </para>        </detaileddescription>
+<para>Set the mixture corresponding to the material properties of a polygon mesh. Don&apos;t forget to set the density of the material. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="945" column="1"/>
@@ -2085,7 +2260,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Set the compound corresponding to the material properties of a polygon mesh. Don&apos;t forget to set the density of the material. </para>        </detaileddescription>
+<para>Set the compound corresponding to the material properties of a polygon mesh. Don&apos;t forget to set the density of the material. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="958" column="1"/>
@@ -2110,7 +2286,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Set the mass attenuation coefficient corresponding to the material properties of a polygon mesh. Don&apos;t forget to set the density of the material. </para>        </detaileddescription>
+<para>Set the mass attenuation coefficient corresponding to the material properties of a polygon mesh. Don&apos;t forget to set the density of the material. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="972" column="1"/>
@@ -2133,7 +2310,8 @@
           <declname>aUnit</declname>
         </param>
         <briefdescription>
-<para>Set the linear attenuation coefficient corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the linear attenuation coefficient corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2158,7 +2336,8 @@
           <declname>aUnit</declname>
         </param>
         <briefdescription>
-<para>Set the linear attenuation coefficient corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the linear attenuation coefficient corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2183,7 +2362,8 @@
           <declname>aUnit</declname>
         </param>
         <briefdescription>
-<para>Set the density corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Set the density corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2200,7 +2380,8 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the density corresponding to the material properties of a polygon mesh. </para>        </briefdescription>
+<para>Accessor on the density corresponding to the material properties of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2227,7 +2408,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Accessor on the mass attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. </para>        </detaileddescription>
+<para>Accessor on the mass attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1042" column="1"/>
@@ -2252,7 +2434,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Accessor on the linear attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. </para>        </detaileddescription>
+<para>Accessor on the linear attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1061" column="1"/>
@@ -2267,7 +2450,8 @@
           <declname>aLabel</declname>
         </param>
         <briefdescription>
-<para>Accessor on the material label of a polygon mesh. </para>        </briefdescription>
+<para>Accessor on the material label of a polygon mesh. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2285,7 +2469,8 @@
           <defval>-1</defval>
         </param>
         <briefdescription>
-<para>Create an OpenGL context (the window won&apos;t be shown). </para>        </briefdescription>
+<para>Create an OpenGL context (the window won&apos;t be shown). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2308,7 +2493,8 @@
           <defval>0</defval>
         </param>
         <briefdescription>
-<para>Create an OpenGL context and display it in a window. </para>        </briefdescription>
+<para>Create an OpenGL context and display it in a window. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2334,7 +2520,8 @@
           <defval>-1</defval>
         </param>
         <briefdescription>
-<para>Create an OpenGL context and display it in a window. </para>        </briefdescription>
+<para>Create an OpenGL context and display it in a window. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2354,7 +2541,8 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>3-D visualisation of the 3-D scene (source, detector, and scanned objects). Note that there is no interactive loop running. </para>        </detaileddescription>
+<para>3-D visualisation of the 3-D scene (source, detector, and scanned objects). Note that there is no interactive loop running. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1116" column="1"/>
@@ -2373,8 +2561,16 @@
         </briefdescription>
         <detaileddescription>
 <para>3-D visualisation of the 3-D scene (source, detector, and scanned objects). Note that there is interactive loop running. Keys are:<itemizedlist>
-<listitem><para>Q/Escape: to quit the event loop (does not close the window)</para></listitem><listitem><para>B: display/hide the X-ray beam</para></listitem><listitem><para>W: display the polygon meshes in solid or wireframe</para></listitem><listitem><para>N: display the X-ray image in negative or positive</para></listitem><listitem><para>L: switch lighting on/off</para></listitem><listitem><para>D: display/hide the X-ray detector</para></listitem><listitem><para>V: display/hide normal vectors </para></listitem></itemizedlist>
-</para>        </detaileddescription>
+<listitem><para>Q/Escape: to quit the event loop (does not close the window)</para>
+</listitem><listitem><para>B: display/hide the X-ray beam</para>
+</listitem><listitem><para>W: display the polygon meshes in solid or wireframe</para>
+</listitem><listitem><para>N: display the X-ray image in negative or positive</para>
+</listitem><listitem><para>L: switch lighting on/off</para>
+</listitem><listitem><para>D: display/hide the X-ray detector</para>
+</listitem><listitem><para>V: display/hide normal vectors </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1135" column="1"/>
@@ -2390,7 +2586,8 @@
           <defval>-1</defval>
         </param>
         <briefdescription>
-<para>Make an OpenGL context visible and display a window. </para>        </briefdescription>
+<para>Make an OpenGL context visible and display a window. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2408,7 +2605,8 @@
           <defval>-1</defval>
         </param>
         <briefdescription>
-<para>Hide a window. </para>        </briefdescription>
+<para>Hide a window. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2426,7 +2624,8 @@
           <defval>-1</defval>
         </param>
         <briefdescription>
-<para>Close and destroy a given window or OpenGL context. </para>        </briefdescription>
+<para>Close and destroy a given window or OpenGL context. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2442,7 +2641,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Close and destroy all the windows and OpenGL contexts that have been created. </para>        </briefdescription>
+<para>Close and destroy all the windows and OpenGL contexts that have been created. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2455,7 +2655,8 @@
         <argsstring>()</argsstring>
         <name>usePointSource</name>
         <briefdescription>
-<para>Use a point source. </para>        </briefdescription>
+<para>Use a point source. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2468,7 +2669,8 @@
         <argsstring>()</argsstring>
         <name>useParallelBeam</name>
         <briefdescription>
-<para>Use a parallel source (e.g. to mimic a source that is extremely far from the scanned object and detector). </para>        </briefdescription>
+<para>Use a parallel source (e.g. to mimic a source that is extremely far from the scanned object and detector). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2481,7 +2683,8 @@
         <argsstring>()</argsstring>
         <name>useParallelSource</name>
         <briefdescription>
-<para>Use a parallel source (e.g. to mimic a source that is extremely far from the scanned object and detector). </para>        </briefdescription>
+<para>Use a parallel source (e.g. to mimic a source that is extremely far from the scanned object and detector). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2494,7 +2697,8 @@
         <argsstring>()</argsstring>
         <name>resetBeamSpectrum</name>
         <briefdescription>
-<para>Empty the beam spectrum. </para>        </briefdescription>
+<para>Empty the beam spectrum. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2519,7 +2723,8 @@
           <declname>aNumberOfPhotons</declname>
         </param>
         <briefdescription>
-<para>Use a monochromatic beam spectrum (i.e. one single energy). </para>        </briefdescription>
+<para>Use a monochromatic beam spectrum (i.e. one single energy). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2544,7 +2749,8 @@
           <declname>aNumberOfPhotons</declname>
         </param>
         <briefdescription>
-<para>Add an energy bin to the beam spectrum (useful to generate polychromatism). </para>        </briefdescription>
+<para>Add an energy bin to the beam spectrum (useful to generate polychromatism). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2569,7 +2775,8 @@
           <declname>aNormalisationFlag</declname>
         </param>
         <briefdescription>
-<para>Load the incident beam energy spectrum from a TSV file. </para>        </briefdescription>
+<para>Load the incident beam energy spectrum from a TSV file. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2586,7 +2793,8 @@
           <declname>aUnitOfEnergy</declname>
         </param>
         <briefdescription>
-<para>Accessor on the energy bins of the beam spectrum. </para>        </briefdescription>
+<para>Accessor on the energy bins of the beam spectrum. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2599,7 +2807,8 @@
         <argsstring>()</argsstring>
         <name>getPhtotonCountEnergyBins</name>
         <briefdescription>
-<para>Accessor on the number of photons per energy bin of the beam spectrum. </para>        </briefdescription>
+<para>Accessor on the number of photons per energy bin of the beam spectrum. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2617,7 +2826,8 @@
           <defval>std::string()</defval>
         </param>
         <briefdescription>
-<para>Save the last X-ray image that has been computed. </para>        </briefdescription>
+<para>Save the last X-ray image that has been computed. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2635,7 +2845,8 @@
           <defval>std::string()</defval>
         </param>
         <briefdescription>
-<para>Save the last L-buffer that has been computed. </para>        </briefdescription>
+<para>Save the last L-buffer that has been computed. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2653,7 +2864,8 @@
           <defval>std::string()</defval>
         </param>
         <briefdescription>
-<para>Save the last sinogram that has been computed. </para>        </briefdescription>
+<para>Save the last sinogram that has been computed. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2669,7 +2881,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Enable artefact filtering on GPU (it is fast but can be inaccurate). </para>        </briefdescription>
+<para>Enable artefact filtering on GPU (it is fast but can be inaccurate). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2685,7 +2898,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Enable artefact filtering on GPU (it is fast but can be inaccurate). </para>        </briefdescription>
+<para>Enable artefact filtering on GPU (it is fast but can be inaccurate). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2701,7 +2915,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing). </para>        </briefdescription>
+<para>Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2717,7 +2932,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing). </para>        </briefdescription>
+<para>Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing). </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2733,7 +2949,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Disable artefact filtering altogether. </para>        </briefdescription>
+<para>Disable artefact filtering altogether. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2749,7 +2966,8 @@
           <type>void</type>
         </param>
         <briefdescription>
-<para>Disable artefact filtering altogether. </para>        </briefdescription>
+<para>Disable artefact filtering altogether. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2766,7 +2984,8 @@
           <declname>aUnitOfEnergy</declname>
         </param>
         <briefdescription>
-<para>Accessor on the numerical value corresponding to a unit of energy. </para>        </briefdescription>
+<para>Accessor on the numerical value corresponding to a unit of energy. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2783,7 +3002,8 @@
           <declname>aUnitOfLength</declname>
         </param>
         <briefdescription>
-<para>Accessor on the numerical value corresponding to a unit of length. </para>        </briefdescription>
+<para>Accessor on the numerical value corresponding to a unit of length. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2799,8 +3019,17 @@
         </briefdescription>
         <detaileddescription>
 <para>Compute the X-ray projection corresponding to the environment that has previously been set, i.e.<itemizedlist>
-<listitem><para>Detector position</para></listitem><listitem><para>Detector orientation</para></listitem><listitem><para>Detector size and resolution</para></listitem><listitem><para>Source position</para></listitem><listitem><para>Source shape</para></listitem><listitem><para>Beam spectrum</para></listitem><listitem><para>Scanned object geometries</para></listitem><listitem><para>Scanned object material properties </para></listitem></itemizedlist>
-</para>        </detaileddescription>
+<listitem><para>Detector position</para>
+</listitem><listitem><para>Detector orientation</para>
+</listitem><listitem><para>Detector size and resolution</para>
+</listitem><listitem><para>Source position</para>
+</listitem><listitem><para>Source shape</para>
+</listitem><listitem><para>Beam spectrum</para>
+</listitem><listitem><para>Scanned object geometries</para>
+</listitem><listitem><para>Scanned object material properties </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1388" column="1"/>
@@ -2818,8 +3047,15 @@
         </briefdescription>
         <detaileddescription>
 <para>Compute the L-buffer of a polygon mesh corresponding to the environment that has previously been set, i.e.<itemizedlist>
-<listitem><para>Detector position</para></listitem><listitem><para>Detector orientation</para></listitem><listitem><para>Detector size and resolution</para></listitem><listitem><para>Source position</para></listitem><listitem><para>Source shape</para></listitem><listitem><para>Scanned object geometry </para></listitem></itemizedlist>
-</para>        </detaileddescription>
+<listitem><para>Detector position</para>
+</listitem><listitem><para>Detector orientation</para>
+</listitem><listitem><para>Detector size and resolution</para>
+</listitem><listitem><para>Source position</para>
+</listitem><listitem><para>Source shape</para>
+</listitem><listitem><para>Scanned object geometry </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1405" column="1"/>
@@ -2857,8 +3093,17 @@
         </briefdescription>
         <detaileddescription>
 <para>Compute the sinogram corresponding to the environment that has previously been set, i.e.<itemizedlist>
-<listitem><para>Detector position</para></listitem><listitem><para>Detector orientation</para></listitem><listitem><para>Detector size and resolution</para></listitem><listitem><para>Source position</para></listitem><listitem><para>Source shape</para></listitem><listitem><para>Beam spectrum</para></listitem><listitem><para>Scanned object geometries</para></listitem><listitem><para>Scanned object material properties Note that the rotation vector is the same as the up-vector of the detector. </para></listitem></itemizedlist>
-</para>        </detaileddescription>
+<listitem><para>Detector position</para>
+</listitem><listitem><para>Detector orientation</para>
+</listitem><listitem><para>Detector size and resolution</para>
+</listitem><listitem><para>Source position</para>
+</listitem><listitem><para>Source shape</para>
+</listitem><listitem><para>Beam spectrum</para>
+</listitem><listitem><para>Scanned object geometries</para>
+</listitem><listitem><para>Scanned object material properties Note that the rotation vector is the same as the up-vector of the detector. </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1439" column="1"/>
@@ -2869,7 +3114,8 @@
         <argsstring>()</argsstring>
         <name>getLastXRayImage</name>
         <briefdescription>
-<para>Accessor on the last X-ray image that has been computed. </para>        </briefdescription>
+<para>Accessor on the last X-ray image that has been computed. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2882,7 +3128,8 @@
         <argsstring>()</argsstring>
         <name>getLastLBuffer</name>
         <briefdescription>
-<para>Accessor on the last L-buffer that has been computed. </para>        </briefdescription>
+<para>Accessor on the last L-buffer that has been computed. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2895,7 +3142,8 @@
         <argsstring>()</argsstring>
         <name>getLastSinogram</name>
         <briefdescription>
-<para>Accessor on the last sinogram that has been computed. </para>        </briefdescription>
+<para>Accessor on the last sinogram that has been computed. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2912,7 +3160,8 @@
           <declname>anImage</declname>
         </param>
         <briefdescription>
-<para>Accessor on the width of a given image. </para>        </briefdescription>
+<para>Accessor on the width of a given image. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2929,7 +3178,8 @@
           <declname>anImage</declname>
         </param>
         <briefdescription>
-<para>Accessor on the height of a given image. </para>        </briefdescription>
+<para>Accessor on the height of a given image. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2950,7 +3200,8 @@
           <declname>j</declname>
         </param>
         <briefdescription>
-<para>Accessor on the j-th row of pixels of a given image. </para>        </briefdescription>
+<para>Accessor on the j-th row of pixels of a given image. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2967,7 +3218,8 @@
           <declname>Z</declname>
         </param>
         <briefdescription>
-<para>Accessor on the chemical element&apos;s name depending on its Z number. </para>        </briefdescription>
+<para>Accessor on the chemical element&apos;s name depending on its Z number. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -2984,7 +3236,8 @@
           <declname>Z</declname>
         </param>
         <briefdescription>
-<para>Accessor on the chemical element&apos; symbol depending on its Z number. </para>        </briefdescription>
+<para>Accessor on the chemical element&apos; symbol depending on its Z number. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -3001,7 +3254,8 @@
           <declname>anElement</declname>
         </param>
         <briefdescription>
-<para>Accessor on the chemical element&apos;s Z number. </para>        </briefdescription>
+<para>Accessor on the chemical element&apos;s Z number. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -3018,7 +3272,8 @@
           <declname>anElement</declname>
         </param>
         <briefdescription>
-<para>Accessor on the chemical element&apos;s density. </para>        </briefdescription>
+<para>Accessor on the chemical element&apos;s density. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -3035,7 +3290,8 @@
           <declname>Z</declname>
         </param>
         <briefdescription>
-<para>Accessor on the chemical element&apos;s density. </para>        </briefdescription>
+<para>Accessor on the chemical element&apos;s density. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -3044,12 +3300,19 @@
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>SimpleGVXR is an API to the bulk functionalities and classes of gVirtualXRay. SimpleGVXR is used as the basis for the language bindings generated using SWIG. </para>    </briefdescription>
+<para>SimpleGVXR is an API to the bulk functionalities and classes of gVirtualXRay. SimpleGVXR is used as the basis for the language bindings generated using SWIG. </para>
+    </briefdescription>
     <detaileddescription>
-<para><simplesect kind="version"><para>1.0</para></simplesect>
-<simplesect kind="date"><para>03/10/2018</para></simplesect>
-<simplesect kind="author"><para>Dr Franck P. Vidal</para></simplesect>
-License BSD 3-Clause License.</para><para>For details on use and redistribution please refer to <ulink url="http://opensource.org/licenses/BSD-3-Clause">http://opensource.org/licenses/BSD-3-Clause</ulink></para><para>Copyright (c) by Dr Franck P. Vidal (<ulink url="mailto:franck.p.vidal@fpvidal.net">franck.p.vidal@fpvidal.net</ulink>), <ulink url="http://www.fpvidal.net/,">http://www.fpvidal.net/,</ulink> Oct 2018, 2018, version 1.1, BSD 3-Clause License </para>    </detaileddescription>
+<para><simplesect kind="version"><para>1.0</para>
+</simplesect>
+<simplesect kind="date"><para>03/10/2018</para>
+</simplesect>
+<simplesect kind="author"><para>Dr Franck P. Vidal</para>
+</simplesect>
+License BSD 3-Clause License.</para>
+<para>For details on use and redistribution please refer to <ulink url="http://opensource.org/licenses/BSD-3-Clause">http://opensource.org/licenses/BSD-3-Clause</ulink></para>
+<para>Copyright (c) by Dr Franck P. Vidal (<ulink url="mailto:franck.p.vidal@fpvidal.net">franck.p.vidal@fpvidal.net</ulink>), <ulink url="http://www.fpvidal.net/,">http://www.fpvidal.net/,</ulink> Oct 2018, 2018, version 1.1, BSD 3-Clause License </para>
+    </detaileddescription>
     <programlisting>
 <codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
 <codeline lineno="2"><highlight class="comment"></highlight></codeline>
@@ -3139,12 +3402,12 @@ License BSD 3-Clause License.</para><para>For details on use and redistribution 
 <codeline lineno="133"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="136"><highlight class="comment"></highlight></codeline>
 <codeline lineno="149"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="150"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1aed5f4b418b434f0da477fccbc42f9251" kindref="member">orthographic</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>left,</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1ad0c720c908987332d7133d32060525e1" kindref="member">orthographic</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>left,</highlight></codeline>
 <codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>right,</highlight></codeline>
 <codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>bottom,</highlight></codeline>
 <codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>top,</highlight></codeline>
-<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>near,</highlight></codeline>
-<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>far);</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>zNear,</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>zFar);</highlight></codeline>
 <codeline lineno="156"><highlight class="normal"></highlight></codeline>
 <codeline lineno="157"><highlight class="normal"></highlight></codeline>
 <codeline lineno="158"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
