@@ -41,25 +41,36 @@
 # (you may change it if you want)
 DESTINATION=$PWD/install
 
+echo ************************
+echo Install the libraries in $DESTINATION
+echo ************************
+
+
 # Delete previous build if needed
-rm -dfi gvxr-build/ SimpleGVXR-build/ Wrappers-build/ $DESTINATION/
+rm -rf gvxr-build/ SimpleGVXR-build/ Wrappers-build/ $DESTINATION/
 
 # Create the build directories if needed
 if [ ! -d gvxr-build ]
 then
+    echo *******************************
     echo Create the gvxr-build directory
+    echo *******************************
     mkdir gvxr-build
 fi
 
 if [ ! -d SimpleGVXR-build ]
 then
+    echo *************************************
     echo Create the SimpleGVXR-build directory
+    echo *************************************
     mkdir SimpleGVXR-build
 fi
 
 if [ ! -d Wrappers-build ]
 then
+    echo ***********************************
     echo Create the Wrappers-build directory
+    echo ***********************************
     mkdir Wrappers-build
 fi
 
