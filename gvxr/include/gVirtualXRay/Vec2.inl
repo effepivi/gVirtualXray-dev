@@ -335,6 +335,7 @@ template<typename T> T& Vec2<T>::operator[](unsigned int i)
     else
         {
         OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	return (0);
         }
 }
 
@@ -354,6 +355,7 @@ template<typename T> const T& Vec2<T>::operator[](unsigned int i) const
     else
         {
         OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+	return (0);
         }
 }
 

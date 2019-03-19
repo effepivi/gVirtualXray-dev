@@ -346,7 +346,8 @@ inline bool isLittleEndian()
 inline bool isLetter(char aValue)
 //-------------------------------
 {
-	return ('a' <= aValue && aValue <= 'z' || 'A' <= aValue && aValue <= 'Z');
+    return (('a' <= aValue && aValue <= 'z') ||
+        ('A' <= aValue && aValue <= 'Z'));
 }
 
 
