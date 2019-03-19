@@ -68,7 +68,7 @@ ENDIF (APPLE)
 
 
 # Support for the CTest dashboard testing system
-#INCLUDE(CTest)
+INCLUDE(CTest)
 
 
 # Set a default build type if none was specified
@@ -117,6 +117,7 @@ OPTION(USE_GDCM "Use GDCM (Grassroots DICOM library) to save DICOM files" OFF)
 OPTION(USE_LIBTIFF "Use LibTIFF to save TIFF files" ON)
 
 
+OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
 OPTION(USE_SYSTEM_ASSIMP   "Use System ASSIMP"      OFF)
 OPTION(USE_SYSTEM_GLEW    "Use System GLEW"      OFF)
 
@@ -406,6 +407,10 @@ ELSE(WIN32)
 ENDIF (WIN32)
 
 
+# Create the library ###########################################################
+ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
+
+
 # Headers of the project #######################################################
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PROJECT_BINARY_DIR}")
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -506,6 +511,19 @@ IF (FFTW3_LIBRARIES)
 ELSE ()
     MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
 ENDIF ()
+
+
+# GLFW ########################################################################
+IF (NOT USE_SYSTEM_GLFW)
+		SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+		INCLUDE(cmake/BuildGlfw)
+		build_glfw( glfw ${PROJECT_BINARY_DIR} )
+		ADD_DEPENDENCIES(gVirtualXRay glfw)
+
+ENDIF (NOT USE_SYSTEM_GLFW)
+
+
+include(cmake/configureGlfw.cmake)
 
 
 # GLEW ########################################################################
@@ -789,10 +807,6 @@ INCLUDE_DIRECTORIES(${gVirtualXRay_INCLUDE_DIRS})
 LINK_DIRECTORIES(${gVirtualXRay_LIBRARY_DIRS})
 
 
-# Create the library ###########################################################
-ADD_LIBRARY (gVirtualXRay STATIC ${SOURCES})
-
-
 # Linkage of the target ########################################################
 set_target_properties(gVirtualXRay PROPERTIES LINK_SEARCH_START_STATIC ON)
 SET (gVirtualXRay_LIBRARIES ${requiredLibs} ${optionalLibs} ${gVirtualXRay_LIBRARY})
@@ -1011,49 +1025,49 @@ ENDIF(BUILD_DOCUMENTATION)
 
 
 # Tools ########################################################################
-IF (BUILD_TOOLS)
-    MESSAGE(STATUS "Build tools.")
-    ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/tools ${CMAKE_CURRENT_BINARY_DIR}/tools_bin)
-ELSE (BUILD_TOOLS)
-       MESSAGE("Do not build tools.")
-ENDIF (BUILD_TOOLS)
+#IF (BUILD_TOOLS)
+#    MESSAGE(STATUS "Build tools.")
+#    ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/tools ${CMAKE_CURRENT_BINARY_DIR}/tools_bin)
+#ELSE (BUILD_TOOLS)
+#       MESSAGE("Do not build tools.")
+#ENDIF (BUILD_TOOLS)
 
 
 # Examples #####################################################################
-IF (BUILD_EXAMPLES)
-    MESSAGE(STATUS "Build examples.")
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
-ELSE (BUILD_EXAMPLES)
-       MESSAGE("Do not build examples.")
-ENDIF (BUILD_EXAMPLES)
+#IF (BUILD_EXAMPLES)
+#    MESSAGE(STATUS "Build examples.")
+#    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples ${CMAKE_CURRENT_BINARY_DIR}/examples_bin)
+#ELSE (BUILD_EXAMPLES)
+#       MESSAGE("Do not build examples.")
+#ENDIF (BUILD_EXAMPLES)
 
 
 # Tutorials ####################################################################
-IF (BUILD_TUTORIALS)
-       MESSAGE(STATUS "Build tutorials.")
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
-ELSE (BUILD_TUTORIALS)
-       MESSAGE("Do not build tutorials.")
-ENDIF (BUILD_TUTORIALS)
+#IF (BUILD_TUTORIALS)
+#       MESSAGE(STATUS "Build tutorials.")
+#    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorials ${CMAKE_CURRENT_BINARY_DIR}/tutorials_bin)
+#ELSE (BUILD_TUTORIALS)
+#       MESSAGE("Do not build tutorials.")
+#ENDIF (BUILD_TUTORIALS)
 
 
 # Unit tests ###################################################################
 IF(BUILD_TESTING)
     ENABLE_TESTING()
     MESSAGE(STATUS "Build unit tests.")
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
 ELSE (BUILD_TESTING)
        MESSAGE("Do not build unit tests.")
 ENDIF(BUILD_TESTING)
 
 
 # Validation tests #############################################################
-IF (BUILD_VALIDATION)
-       MESSAGE(STATUS "Build validation tests.")
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
-ELSE (BUILD_VALIDATION)
-       MESSAGE("Do not build validation tests.")
-ENDIF (BUILD_VALIDATION)
+#IF (BUILD_VALIDATION)
+#       MESSAGE(STATUS "Build validation tests.")
+#    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/validation ${CMAKE_CURRENT_BINARY_DIR}/validation_bin)
+#ELSE (BUILD_VALIDATION)
+#       MESSAGE("Do not build validation tests.")
+#ENDIF (BUILD_VALIDATION)
 
 
 # Installation packs ###########################################################
@@ -1074,7 +1088,7 @@ LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/incl
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/src       src)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/resources resources)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/examples  examples)
-LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/test      test)
+LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/tests      tests)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/tutorials tutorials)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/doc/dist_doc1    .)
 LIST( APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/doc/dist_doc2   doc)

@@ -105,7 +105,6 @@ INCLUDE(${gVirtualXRay_USE_FILE})
 
 
 
-OPTION(USE_SYSTEM_GLFW       "Use System GLFW"       OFF)
 
 
 
@@ -141,21 +140,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 add_library(SimpleGVXR SimpleGVXR.cxx)
 
 
-
-
-IF (NOT USE_SYSTEM_GLFW)
-		SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-		INCLUDE(cmake/BuildGlfw)
-		build_glfw( glfw ${PROJECT_BINARY_DIR} )
-		ADD_DEPENDENCIES(SimpleGVXR glfw)
-
-ENDIF (NOT USE_SYSTEM_GLFW)
-
-
-include(cmake/configureGlfw)
-
-
-target_link_libraries(SimpleGVXR ${GLFW3_LIBRARY} ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
+target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
 
 ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
 
