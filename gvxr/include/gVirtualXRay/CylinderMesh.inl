@@ -179,8 +179,8 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
 			p_index_set.push_back(2 + s * 2 + 2);
 
 			p_index_set.push_back(1);
-			p_index_set.push_back(2 + s * 2 + 1);
 			p_index_set.push_back(2 + s * 2 + 3);
+            p_index_set.push_back(2 + s * 2 + 1);
         }
         else
         {
@@ -189,8 +189,8 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
 			p_index_set.push_back(2);
 
 			p_index_set.push_back(1);
-			p_index_set.push_back(2 + s * 2 + 1);
 			p_index_set.push_back(2 + 1);
+            p_index_set.push_back(2 + s * 2 + 1);
         }
     }
 
