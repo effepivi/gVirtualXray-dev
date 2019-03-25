@@ -1792,6 +1792,10 @@ void displayScene(int aWindowID)
 
 					// Make the window's context current
 					glfwMakeContextCurrent(search_window->second);
+
+            		// Clear the buffers
+            		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 					initViewer();
             	}
 
@@ -1858,29 +1862,6 @@ void renderLoop(int aWindowID/*, PyObject* aCallBack*/)
             	// Launch the event loop
                 while (!glfwWindowShouldClose(search_window->second) && g_run_loop)
                 {
-                	// There is a callback
-                	/*if (aCallBack)
-                	{
-                		// Ensure that the current thread is ready to call the Python C API
-                		PyGILState_STATE state = PyGILState_Ensure();
-
-                		// Invoke the python function
-                		boost::python::call<void>(aCallBack);
-
-                		// Release the global interpreter lock so other threads can resume execution
-                		PyGILState_Release(state);
-                	}*/
-
-                	// Udate the X-ray image
-                	//computeXRayImage();
-
-                	// Show the window if needed
-                	if (!glfwGetWindowAttrib(search_window->second, GLFW_VISIBLE))
-                		glfwShowWindow(search_window->second);
-
-            		// Clear the buffers
-            		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
                 	// Render here
                 	displayScene(aWindowID);
                 }
@@ -2462,6 +2443,7 @@ GLFWwindow* initGLFW(int aWindowID,
 	// Set the version of OpenGL that is required
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
     if (aVisibilityFlag)
     {
