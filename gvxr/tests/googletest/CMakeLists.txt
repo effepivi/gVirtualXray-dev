@@ -7,6 +7,7 @@ find_package(Threads REQUIRED)
 include(ExternalProject)
 
 set(GTEST_DISABLE_PTHREADS ON)
+set(GTEST_FORCE_SHARED_CRT ON)
 
 FIND_PACKAGE(Git)
 IF (GIT_FOUND)
@@ -30,6 +31,8 @@ IF (GIT_FOUND)
             -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
             -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
             -DBUILD_GTEST=ON
+            -DBUILD_GMOCK=OFF
+            -DBUILD_UTILS=OFF
         PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
         # Disable install step
         INSTALL_COMMAND ""
@@ -67,4 +70,9 @@ set(GTEST_INCLUDE_DIRS ${source_dir}/googletest/include PARENT_SCOPE)
 
 # Specify MainTest's link libraries
 ExternalProject_Get_Property(googletest binary_dir)
-set(GTEST_LIBS_DIR ${binary_dir}/lib PARENT_SCOPE)
+
+IF (MSVC)
+    SET(GTEST_LIBS_DIR ${binary_dir}/googlemock/gtest/ReleaseLibs PARENT_SCOPE)
+ELSE ()
+    set(GTEST_LIBS_DIR ${binary_dir}/lib PARENT_SCOPE)
+ENDIF ()

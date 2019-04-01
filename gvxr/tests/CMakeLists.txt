@@ -52,7 +52,6 @@ enable_testing()
 include_directories(${GTEST_INCLUDE_DIRS})
 link_directories(${GTEST_LIBS_DIR})
 
-
 # Functions needed
 # does this system provide the log and exp functions?
 SET(CMAKE_REQUIRED_LIBRARIES m)
