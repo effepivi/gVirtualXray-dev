@@ -40,6 +40,13 @@ set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 add_subdirectory(googletest)
 
 
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.14.0")
+    cmake_policy(SET CMP0075 NEW)
+endif()
+
+
+
+
 # Enable unit testing
 enable_testing()
 include_directories(${GTEST_INCLUDE_DIRS})
@@ -261,4 +268,3 @@ install (TARGETS TestOrtho             DESTINATION test)
 IF (FFTW3_LIBRARIES)
     install (TARGETS TestFBP             DESTINATION test)
 ENDIF()
-
