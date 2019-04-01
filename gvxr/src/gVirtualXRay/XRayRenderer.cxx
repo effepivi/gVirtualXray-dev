@@ -3172,6 +3172,24 @@ void XRayRenderer::preComputeLBuffer(GLint* apViewport,
     glUniform3f(handle, source_sample_position.getX(), source_sample_position.getY(), source_sample_position.getZ());
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
+    if (!m_p_detector->useParallelBeam())
+    {
+        handle = glGetUniformLocation(program_handle, "g_projection_type");
+        glUniform1i(handle, 0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+    else
+    {
+        handle = glGetUniformLocation(program_handle, "g_projection_type");
+        glUniform1i(handle, 1);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        VEC3 ray_direction((m_p_detector->getDetectorPosition() - source_sample_position).normal());
+        handle = glGetUniformLocation(program_handle, "g_ray_direction");
+        glUniform3f(handle, ray_direction.getX(), ray_direction.getY(), ray_direction.getZ());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    }
+
     // Load uniform variables to the GPU
     GLfloat p_float_4[4];
     m_p_detector->getPlaneEquation(p_float_4[0], p_float_4[1], p_float_4[2], p_float_4[3]);
