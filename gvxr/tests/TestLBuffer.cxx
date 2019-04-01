@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -39,11 +39,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Test the L-buffer calculations,
 *   			the unit test corresponds to validation_??,
-*   			last date of check: Passed test on 10 Sep 2018.
+*   			last date of check: Passed test on 01 Apr 2019.
 *
 *   @version    1.0
 *
-*   @date       06/09/2018
+*   @date       01/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Mar 2018, 2017, version 1.0,
+*               http://www.fpvidal.net/, Apr 2019, 2019, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
@@ -69,10 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestLBuffer
-
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -188,9 +185,9 @@ void errorCallback(int error, const char* description);
 void quit();
 
 
-//--------------------------------
-BOOST_AUTO_TEST_CASE(TestLBuffer1)
-//--------------------------------
+//------------------------------
+TEST (TestLBuffer, TestLBuffer1)
+//------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
@@ -208,10 +205,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer1)
     glfwSetErrorCallback(errorCallback);
 
     // Initialize GLFW
-    if (!glfwInit())
-        {
-        BOOST_FAIL("Cannot initialise GLFW.");
-        }
+    ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -233,8 +227,8 @@ BOOST_AUTO_TEST_CASE(TestLBuffer1)
     if (!g_p_main_window_id)
         {
         glfwTerminate();
-        BOOST_FAIL("Cannot create a GLFW windowed mode window and its OpenGL context.");
         }
+    ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
 
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
@@ -270,11 +264,12 @@ BOOST_AUTO_TEST_CASE(TestLBuffer1)
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
 
-    g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
     g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
                                                   g_sample_rotation_matrix);
-g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
+
+    g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
+    g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
 
 
     RATIONAL_NUMBER* l_buffer(
@@ -284,7 +279,7 @@ g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt"
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.05);
+    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
     std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
@@ -302,7 +297,7 @@ g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt"
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.0001);
+    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -316,9 +311,9 @@ g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt"
 }
 
 
-//--------------------------------
-BOOST_AUTO_TEST_CASE(TestLBuffer2)
-//--------------------------------
+//------------------------------
+TEST (TestLBuffer, TestLBuffer2)
+//------------------------------
 {
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
@@ -339,7 +334,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer2)
 
     RATIONAL_NUMBER expected_value = 2.0 * g_cylinder_radius_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.1);
+    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
     std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
@@ -357,7 +352,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer2)
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.0001);
+    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -371,9 +366,9 @@ BOOST_AUTO_TEST_CASE(TestLBuffer2)
 }
 
 
-//--------------------------------
-BOOST_AUTO_TEST_CASE(TestLBuffer3)
-//--------------------------------
+//------------------------------
+TEST (TestLBuffer, TestLBuffer3)
+//------------------------------
 {
     // Rotate by 45%
     g_sample_rotation_matrix.rotate(45.0, g_detector_up_vector);
@@ -397,7 +392,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer3)
 
     RATIONAL_NUMBER expected_value = std::sqrt(2.0 * (g_cube_side_in_cm * g_cube_side_in_cm));
     RATIONAL_NUMBER simulated_result(central_pixel);
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.1);
+    ASSERT_NEAR(expected_value, simulated_result, 0.1 / expected_value);
 
     std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
@@ -415,7 +410,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer3)
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.0001);
+    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
@@ -430,9 +425,9 @@ BOOST_AUTO_TEST_CASE(TestLBuffer3)
 }
 
 
-//--------------------------------
-BOOST_AUTO_TEST_CASE(TestLBuffer4)
-//--------------------------------
+//------------------------------
+TEST (TestLBuffer, TestLBuffer4)
+//------------------------------
 {
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
@@ -453,7 +448,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer4)
 
     RATIONAL_NUMBER expected_value = 2.0 * g_cylinder_radius_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 1);
+    ASSERT_NEAR(expected_value, simulated_result, 0.1 / expected_value);
 
     std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
@@ -471,7 +466,7 @@ BOOST_AUTO_TEST_CASE(TestLBuffer4)
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    BOOST_CHECK_CLOSE(expected_value, simulated_result, 0.01);
+    ASSERT_NEAR(expected_value, simulated_result, 0.1 / expected_value);
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -484,9 +479,9 @@ BOOST_AUTO_TEST_CASE(TestLBuffer4)
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
 }
 /*
-//--------------------------------
-BOOST_AUTO_TEST_CASE(TestLBuffer5)
-//--------------------------------
+//------------------------------
+TEST (TestLBuffer, TestLBuffer5)
+//------------------------------
 {
     // Rotate by 45%
     g_sample_rotation_matrix.rotate(45.0, VEC3(0.0, 0.0, 1.0));
@@ -543,9 +538,9 @@ BOOST_AUTO_TEST_CASE(TestLBuffer5)
 }
 */
 
-//--------------------------------
-BOOST_AUTO_TEST_CASE(TestLBuffer6)
-//--------------------------------
+//------------------------------
+TEST (TestLBuffer, TestLBuffer6)
+//------------------------------
 {
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);

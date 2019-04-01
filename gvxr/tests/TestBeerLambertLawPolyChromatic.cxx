@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -39,11 +39,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case,
 *   			the unit test corresponds to validation_05,
-*   			last date of check: Passed test on 10 Sep 2018.
+*   			last date of check: Passed test on 01 Apr 2019.
 *
 *   @version    1.0
 *
-*   @date       22/03/2017
+*   @date       01/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
+*               http://www.fpvidal.net/, Apr 2019, 2019, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
@@ -69,10 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestBeerLambertLawPolyChromatic
-
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -193,9 +190,9 @@ void errorCallback(int error, const char* description);
 void quit();
 
 
-//---------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
-//---------------------------------------------------
+//---------------------------------------------------------------------
+TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
+//---------------------------------------------------------------------
 {
     // Make sure the detector has an odd number of columns
     if ((g_number_of_pixels.getX() % 2) == 0)
@@ -213,10 +210,7 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     glfwSetErrorCallback(errorCallback);
 
     // Initialize GLFW
-    if (!glfwInit())
-        {
-        BOOST_FAIL("Cannot initialise GLFW.");
-        }
+    ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -238,8 +232,8 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     if (!g_p_main_window_id)
         {
         glfwTerminate();
-        BOOST_FAIL("Cannot create a GLFW windowed mode window and its OpenGL context.");
         }
+    ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
 
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
@@ -280,7 +274,7 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
 
     double simulated_result(central_pixel);
-    BOOST_CHECK_CLOSE(g_expected_result, simulated_result, 0.05);
+    ASSERT_NEAR(g_expected_result, simulated_result, 0.01 / g_expected_result);
 
     std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
@@ -296,7 +290,7 @@ BOOST_AUTO_TEST_CASE(TestBeerLambertLawPolyChromatic)
     central_pixel = energy_fluence[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    BOOST_CHECK_CLOSE(g_expected_result, simulated_result, 0.0001);
+    ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
 
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);

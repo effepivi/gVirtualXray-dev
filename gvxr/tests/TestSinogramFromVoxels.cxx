@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -41,7 +41,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       03/04/2017
+*   @date       01/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
+*               http://www.fpvidal.net/, Apr 2019, 2019, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
@@ -67,10 +67,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestSinogramFromVoxels
-
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
@@ -103,9 +100,9 @@ double g_incident_energy = 80.0 * keV;
 //******************************************************************************
 
 
-//------------------------------------------
-BOOST_AUTO_TEST_CASE(TestSinogramFromVoxels)
-//------------------------------------------
+//--------------------------------------------------
+TEST(TestSinogramFromVoxels, TestSinogramFromVoxels)
+//--------------------------------------------------
 {
     // Open CT data in HU
     Image<float> CT_data_set_in_HU("/home/fpvidal/Documents/MEDICAL_DATA/Visible Human/head/ct_data.mhd");

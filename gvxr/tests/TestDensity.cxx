@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -39,11 +39,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: density,
 *   			the unit test corresponds to validation_02,
-*   			Last date of check: Passed test on 10 Sep 2018.
+*   			Last date of check: Passed test on 01 Apr 2019.
 *
 *   @version    1.0
 *
-*   @date       22/03/2017
+*   @date       01/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -54,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
+*               http://www.fpvidal.net/, Apr 201, 20179, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
@@ -64,11 +64,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestDensity
-
-#include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
+#include "gtest/gtest.h"
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -116,9 +112,9 @@ const short HU_soft_tissue(52);
 const short HU_water(0);
 
 
-//-------------------------------
-BOOST_AUTO_TEST_CASE(TestDensity)
-//-------------------------------
+//----------------------------
+TEST(TestDensity, TestDensity)
+//----------------------------
 {
     // Initialise the X-ray renderer
     XRayRenderer g_xray_renderer;
@@ -132,74 +128,74 @@ BOOST_AUTO_TEST_CASE(TestDensity)
     rho_reference = 0.26 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 4.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = -98;
     rho_reference = 0.93 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = -77;
     rho_reference = 0.95 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = -55;
     rho_reference = 0.97 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 36;
     rho_reference = 1.04 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 40;
     rho_reference = 1.045 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 46;
     rho_reference = 1.05 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     // Soft tissues
     HU = 49;
     rho_reference = 1.07 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
 
     HU = 54;
     rho_reference = 1.06 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 63;
     rho_reference = 1.07 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 77;
     rho_reference = 1.09 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
     HU = 100;
     rho_reference = 1.12 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
 
     // Skeletal tissues
@@ -207,53 +203,53 @@ BOOST_AUTO_TEST_CASE(TestDensity)
     rho_reference = 0.98 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = -22;
     rho_reference = 1.00 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 11;
     rho_reference = 1.03 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 102;
     rho_reference = 1.10 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 3.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 385;
     rho_reference = 1.25 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 454;
     rho_reference = 1.29 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 466;
     rho_reference = 1.3 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 1239;
     rho_reference = 1.75 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 
     HU = 1524;
     rho_reference = 1.92 * (g/cm3);
     rho_test = g_xray_renderer.getDensityFromHU(HU);
 
-    BOOST_CHECK_CLOSE(rho_reference, rho_test, 1.0);
+    ASSERT_NEAR(rho_reference, rho_test, 1e-6 / rho_reference);
 }

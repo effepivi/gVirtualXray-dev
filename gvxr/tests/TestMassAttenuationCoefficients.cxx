@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -39,12 +39,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: mass attenuation coefficients,
 *   			the unit test corresponds to validation_01,
-*   			last date of check: Passed test on 10 Sept 2018.
+*   			last date of check: Passed test on 01 Apr 2019.
 *
 *
 *   @version    1.0
 *
-*   @date       10/09/2018
+*   @date       01/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -55,7 +55,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
+*               http://www.fpvidal.net/, Apr 2019, 2019, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
@@ -71,10 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <numeric>
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestMassAttenuationCoefficients
-
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -142,17 +139,17 @@ const short HU_soft_tissue(52);
 const short HU_water(0);
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestTi90Al6V4MassAttenuationCoefficients)
-//-----------------------------------------------------------
+//-----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestTi90Al6V4MassAttenuationCoefficients)
+//-----------------------------------------------------------------------------
 {
     runTestMixture("data/Ti90Al6V4.tsv", "Ti90Al6V4", "Ti90Al6V4");
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestHydrogenMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestHydrogenMassAttenuationCoefficients)
+//----------------------------------------------------------------------------
 {
     runTestElement("data/hydrogen.tsv", "hydrogen", "hydrogen");
     runTestElement("data/hydrogen.tsv", "HYDROGEN");
@@ -160,9 +157,9 @@ BOOST_AUTO_TEST_CASE(TestHydrogenMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestCarbonMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestCarbonMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/carbon.tsv", "carbon", "carbon");
     runTestElement("data/carbon.tsv", "CARBON");
@@ -170,9 +167,9 @@ BOOST_AUTO_TEST_CASE(TestCarbonMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestNitrogenMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestNitrogenMassAttenuationCoefficients)
+//----------------------------------------------------------------------------
 {
     runTestElement("data/nitrogen.tsv", "nitrogen", "nitrogen");
     runTestElement("data/nitrogen.tsv", "NITROGEN");
@@ -180,9 +177,9 @@ BOOST_AUTO_TEST_CASE(TestNitrogenMassAttenuationCoefficients)
 }
 
 
-//---------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestOxygenMassAttenuationCoefficients)
-//---------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestOxygenMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/oxygen.tsv", "oxygen", "oxygen");
     runTestElement("data/oxygen.tsv", "OXYGEN");
@@ -190,9 +187,9 @@ BOOST_AUTO_TEST_CASE(TestOxygenMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestSodiumMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestSodiumMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/sodium.tsv", "sodium", "sodium");
     runTestElement("data/sodium.tsv", "SODIUM");
@@ -200,9 +197,9 @@ BOOST_AUTO_TEST_CASE(TestSodiumMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//-----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestMagnesiumMassAttenuationCoefficients)
+//-----------------------------------------------------------------------------
 {
     runTestElement("data/magnesium.tsv", "magnesium", "magnesium");
     runTestElement("data/magnesium.tsv", "MAGNESIUM");
@@ -210,9 +207,9 @@ BOOST_AUTO_TEST_CASE(TestMagnesiumMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestPhosphorMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestPhosphorMassAttenuationCoefficients)
+//----------------------------------------------------------------------------
 {
     runTestElement("data/phosphor.tsv", "phosphor", "phosphor");
     runTestElement("data/phosphor.tsv", "PHOSPHOR");
@@ -220,18 +217,18 @@ BOOST_AUTO_TEST_CASE(TestPhosphorMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestSulfurMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestSulfurMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/sulfur.tsv", "sulfur", "sulfur");
     runTestElement("data/sulfur.tsv", "SULFUR");
     runTestElement("data/sulfur.tsv", "S");
 }
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestClorineMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//---------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestClorineMassAttenuationCoefficients)
+//---------------------------------------------------------------------------
 {
     runTestElement("data/clorine.tsv", "chlorine", "chlorine");
     runTestElement("data/clorine.tsv", "CHLORINE");
@@ -239,9 +236,9 @@ BOOST_AUTO_TEST_CASE(TestClorineMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestArgonMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//-------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestArgonMassAttenuationCoefficients)
+//-------------------------------------------------------------------------
 {
     runTestElement("data/argon.tsv", "argon", "argon");
     runTestElement("data/argon.tsv", "ARGON");
@@ -249,9 +246,9 @@ BOOST_AUTO_TEST_CASE(TestArgonMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//-----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestPotassiumMassAttenuationCoefficients)
+//-----------------------------------------------------------------------------
 {
     runTestElement("data/potassium.tsv", "potassium", "potassium");
     runTestElement("data/potassium.tsv", "POTASSIUM");
@@ -259,9 +256,9 @@ BOOST_AUTO_TEST_CASE(TestPotassiumMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestCalciumMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//---------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestCalciumMassAttenuationCoefficients)
+//---------------------------------------------------------------------------
 {
     runTestElement("data/calcium.tsv", "calcium", "calcium");
     runTestElement("data/calcium.tsv", "CALCIUM");
@@ -269,18 +266,18 @@ BOOST_AUTO_TEST_CASE(TestCalciumMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestTitatiumMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//----------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestTitatiumMassAttenuationCoefficients)
+//----------------------------------------------------------------------------
 {
     runTestElement("data/titanium.tsv", "titanium", "titanium");
     runTestElement("data/titanium.tsv", "TITANIUM");
     runTestElement("data/titanium.tsv", "Ti");
 }
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestCopperMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestCopperMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/copper.tsv", "copper", "copper");
     runTestElement("data/copper.tsv", "COPPER");
@@ -288,18 +285,18 @@ BOOST_AUTO_TEST_CASE(TestCopperMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestZincMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestZincMassAttenuationCoefficients)
+//------------------------------------------------------------------------
 {
     runTestElement("data/zinc.tsv", "zinc", "zinc");
     runTestElement("data/zinc.tsv", "ZINC");
     runTestElement("data/zinc.tsv", "Zn");
 }
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestSilverMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestSilverMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/silver.tsv", "silver", "silver");
     runTestElement("data/silver.tsv", "SILVER");
@@ -307,9 +304,9 @@ BOOST_AUTO_TEST_CASE(TestSilverMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestTinMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//-----------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestTinMassAttenuationCoefficients)
+//-----------------------------------------------------------------------
 {
     runTestElement("data/tin.tsv", "tin", "tin");
     runTestElement("data/tin.tsv", "TIN");
@@ -317,9 +314,9 @@ BOOST_AUTO_TEST_CASE(TestTinMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestIronMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestIronMassAttenuationCoefficients)
+//------------------------------------------------------------------------
 {
     runTestElement("data/iron.tsv", "iron", "iron");
     runTestElement("data/iron.tsv", "IRON");
@@ -327,9 +324,9 @@ BOOST_AUTO_TEST_CASE(TestIronMassAttenuationCoefficients)
 }
 
 
-//-----------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestIodineMassAttenuationCoefficients)
-//-----------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestIodineMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestElement("data/iodine.tsv", "iodine", "iodine");
     runTestElement("data/iodine.tsv", "IODINE");
@@ -337,73 +334,75 @@ BOOST_AUTO_TEST_CASE(TestIodineMassAttenuationCoefficients)
 }
 
 
-//-------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestBoneMassAttenuationCoefficients)
-//-------------------------------------------------------
+//------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestBoneMassAttenuationCoefficients)
+//------------------------------------------------------------------------
 {
     runTestHU("data/bone.tsv", HU_bone, "bone");
 }
 
 
-//--------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestBrainMassAttenuationCoefficients)
-//--------------------------------------------------------
+//-------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestBrainMassAttenuationCoefficients)
+//-------------------------------------------------------------------------
 {
     runTestHU("data/brain.tsv", HU_brain, "brain");
 }
 
 /*
-//------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestGasMassAttenuationCoefficients)
-//------------------------------------------------------
+//-----------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestGasMassAttenuationCoefficients)
+//-----------------------------------------------------------------------
 {
     runTestHU("data/gas.tsv", HU_gas, "gas");
 }
 */
 
-//--------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestTissueMassAttenuationCoefficients)
-//--------------------------------------------------------
+//--------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestTissueMassAttenuationCoefficients)
+//--------------------------------------------------------------------------
 {
     runTestHU("data/tissue.tsv", HU_soft_tissue, "soft_tissue");
 }
 
 /*
-//--------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestWaterMassAttenuationCoefficients)
-//--------------------------------------------------------
+//-------------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestWaterMassAttenuationCoefficients)
+//-------------------------------------------------------------------------
 {
     runTestHU("data/water.tsv", HU_water, "water");
 }*/
 
 /*
-//------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
-//------------------------------------------------------
+//-----------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestH2OMassAttenuationCoefficients)
+//-----------------------------------------------------------------------
 {
     runTest("data/water.tsv", "H2O");
 }*/
 
 
-//-------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestH2OMassAttenuationCoefficients)
-//-------------------------------------------------------
+//----------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestH2OMassAttenuationCoefficients)
+//----------------------------------------------------------------------
 {
     runTestCompound("data/H2O.tsv", "H2O", "H2O");
 }
 
 
-//--------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TestSiCMassAttenuationCoefficients)
-//--------------------------------------------------------
+//-----------------------------------------------------------------------
+TEST(TestMassAttenuationCoefficients, TestSiCMassAttenuationCoefficients)
+//-----------------------------------------------------------------------
 {
     runTestCompound("data/SiC.tsv", "SiC", "SiC");
 }
 
 
-//------------------------------------------------------------
-void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnuplotScriptFileName)
-//------------------------------------------------------------
+//------------------------------------------------
+void runTestHU(const char* aFileName,
+               short anHounsfieldValue,
+			   const char* aGnuplotScriptFileName)
+//------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
     std::cout << "HU: " << anHounsfieldValue << std::endl;
@@ -431,7 +430,7 @@ void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnup
         error_message += aFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
 
     if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
@@ -441,7 +440,7 @@ void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnup
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else if (aGnuplotScriptFileName && !temp_stream.is_open())
     {
@@ -450,7 +449,7 @@ void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnup
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else
     {
@@ -508,9 +507,8 @@ void runTestHU(const char* aFileName, short anHounsfieldValue, const char* aGnup
 		}
 	}
 
-	BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
-	BOOST_REQUIRE_SMALL(maxRelativeError(reference_vector, test_vector), 0.1);
-
+	ASSERT_NEAR(getNCC(reference_vector, test_vector), 1.0, 1e-3);
+	ASSERT_NEAR(maxRelativeError(reference_vector, test_vector), 0.0, 0.1);
 }
 
 
@@ -546,7 +544,7 @@ void runTestElement(const char* aFileName,
         error_message += aFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
 
     if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
@@ -556,7 +554,7 @@ void runTestElement(const char* aFileName,
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else if (aGnuplotScriptFileName && !temp_stream.is_open())
     {
@@ -565,7 +563,7 @@ void runTestElement(const char* aFileName,
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else if (temp_stream.is_open())
     {
@@ -626,8 +624,8 @@ void runTestElement(const char* aFileName,
 		}
 	}
 
-    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
-	BOOST_REQUIRE_SMALL(maxRelativeError(reference_vector, test_vector), 0.03);
+	ASSERT_NEAR(getNCC(reference_vector, test_vector), 1.0, 1e-3);
+	ASSERT_NEAR(maxRelativeError(reference_vector, test_vector), 0.0, 0.1);
 }
 
 
@@ -663,7 +661,7 @@ void runTestMixture(const char* aFileName,
         error_message += aFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
 
     if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
@@ -673,7 +671,7 @@ void runTestMixture(const char* aFileName,
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else if (aGnuplotScriptFileName && !temp_stream.is_open())
     {
@@ -682,7 +680,7 @@ void runTestMixture(const char* aFileName,
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else
     {
@@ -743,8 +741,8 @@ void runTestMixture(const char* aFileName,
 		}
 	}
 
-    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
-	BOOST_REQUIRE_SMALL(maxRelativeError(reference_vector, test_vector), 0.04);
+	ASSERT_NEAR(getNCC(reference_vector, test_vector), 1.0, 1e-3);
+	ASSERT_NEAR(maxRelativeError(reference_vector, test_vector), 0.0, 0.1);
 }
 
 
@@ -780,7 +778,7 @@ void runTestCompound(const char* aFileName,
         error_message += aFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
 
     if (aGnuplotScriptFileName && !gnuplot_stream.is_open())
@@ -790,7 +788,7 @@ void runTestCompound(const char* aFileName,
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else if (aGnuplotScriptFileName && !temp_stream.is_open())
     {
@@ -799,7 +797,7 @@ void runTestCompound(const char* aFileName,
         error_message += aGnuplotScriptFileName;
         error_message += "\" does not exist";
 
-        BOOST_FAIL(error_message);
+        FAIL() << error_message;
     }
     else
     {
@@ -860,8 +858,8 @@ void runTestCompound(const char* aFileName,
 		}
 	}
 
-    BOOST_CHECK_CLOSE(getNCC(reference_vector, test_vector), 1.0, 0.5);
-	BOOST_REQUIRE_SMALL(maxRelativeError(reference_vector, test_vector), 0.02);
+	ASSERT_NEAR(getNCC(reference_vector, test_vector), 1.0, 1e-3);
+	ASSERT_NEAR(maxRelativeError(reference_vector, test_vector), 0.0, 0.1);
 }
 
 

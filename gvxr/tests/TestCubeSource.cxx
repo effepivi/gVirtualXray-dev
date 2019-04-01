@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -46,7 +46,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @version    1.0
 *
-*   @date       23/03/2017
+*   @date       01/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -57,7 +57,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @section    Copyright
 *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Mar 2017, 2017, version 1.0,
+*               http://www.fpvidal.net/, Apr 2019, 2019, version 1.0,
 *               BSD 3-Clause License
 *
 ********************************************************************************
@@ -72,10 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE TestCubeSource
-
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 
 #ifdef HAS_GLEW
 #include <GL/glew.h>
@@ -193,7 +190,7 @@ void quit();
 
 
 //----------------------------------
-BOOST_AUTO_TEST_CASE(TestCubeSource)
+TEST(TestCubeSource, TestCubeSource)
 //----------------------------------
 {
     // Make sure the detector has an odd number of columns
@@ -212,10 +209,7 @@ BOOST_AUTO_TEST_CASE(TestCubeSource)
     glfwSetErrorCallback(errorCallback);
 
     // Initialize GLFW
-    if (!glfwInit())
-        {
-        BOOST_FAIL("Cannot initialise GLFW.");
-        }
+    ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -237,8 +231,8 @@ BOOST_AUTO_TEST_CASE(TestCubeSource)
     if (!g_p_main_window_id)
         {
         glfwTerminate();
-        BOOST_FAIL("Cannot create a GLFW windowed mode window and its OpenGL context.");
         }
+    ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
 
     // Make the window's context current
     glfwMakeContextCurrent(g_p_main_window_id);
@@ -306,11 +300,12 @@ BOOST_AUTO_TEST_CASE(TestCubeSource)
     reference_projection_set = reference_projection_set.normalised() * g_incident_energy;
 
     // Compare reference projection set and simulated projection set using NCC
-    BOOST_CHECK_CLOSE(reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet()), 1.0, 0.5);
+    double ZNCC = reference_projection_set.computeNCC(g_xray_renderer.getProjectionSet());
+    ASSERT_NEAR(ZNCC, 1, 1e-2);
 
     // Compare reference projection set and simulated projection set using RMSE
     float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
-    BOOST_CHECK(RMSE < 0.01f * g_incident_energy);
+    ASSERT_NEAR(RMSE, 0.0, 1e-3 * g_incident_energy);
 }
 
 
