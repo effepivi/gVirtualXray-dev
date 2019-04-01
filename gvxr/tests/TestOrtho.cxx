@@ -63,13 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include <cmath>
-#include <iomanip>
-#include <memory>
-#include <cstdlib>
-
-#include "gtest/gtest.h"
-
 #ifdef HAS_GLEW
 #include <GL/glew.h>
 #endif
@@ -77,6 +70,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
+
+#include <cmath>
+#include <iomanip>
+#include <memory>
+#include <cstdlib>
+
+#include "gtest/gtest.h"
 
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <GLFW/glfw3.h>
