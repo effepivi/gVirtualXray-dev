@@ -24,19 +24,28 @@ macro(build_glfw install_prefix staging_prefix)
         URL_MD5 "d51fa09602abce26a65096ce97b4831c"
         UPDATE_COMMAND ""
         SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-	BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
         INSTALL_DIR ${staging_prefix}/${install_prefix}-install
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=OFF
             -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
-	    #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-	    #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-	    -DGLFW_BUILD_DOCS:BOOL=OFF
-	    -DGLFW_BUILD_EXAMPLES:BOOL=OFF
-	    -DGLFW_BUILD_TESTS:BOOL=OFF
-           -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+            -DMACOSX_RPATH:BOOL=ON
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+            -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
+            -DGLFW_BUILD_DOCS:BOOL=OFF
+            -DGLFW_BUILD_EXAMPLES:BOOL=OFF
+            -DGLFW_BUILD_TESTS:BOOL=OFF
     )
 
     SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include CACHE PATH "Where to find GLFW3 header files" FORCE)

@@ -26,14 +26,21 @@ ExternalProject_Add(gdcm
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   BINARY_DIR  ${staging_prefix}/${install_prefix}-build
   INSTALL_DIR ${GDCM_INSTALL_DIR}
-  LIST_SEPARATOR :::  
+  LIST_SEPARATOR :::
   CMAKE_GENERATOR ${CMAKE_GEN}
   CMAKE_ARGS
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
       -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DCMAKE_INSTALL_PREFIX:PATH=${GDCM_INSTALL_DIR}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-      #-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      #-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+      -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+      -DMACOSX_RPATH:BOOL=ON
+      -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+      -DCMAKE_INSTALL_PREFIX:PATH=${GDCM_INSTALL_DIR}
       -DGDCM_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
 )
 
@@ -42,7 +49,7 @@ SET(GDCM_INCLUDE_DIRS ${GDCM_INCLUDE_DIR})
 SET(GDCM_LIBRARY_DIR  ${GDCM_INSTALL_DIR}/lib)
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    SET(GDCM_LIBRARIES   
+    SET(GDCM_LIBRARIES
         ${GDCM_INSTALL_DIR}/lib/gdcmcharls.lib
         ${GDCM_INSTALL_DIR}/lib/gdcmCommon.lib
         ${GDCM_INSTALL_DIR}/lib/gdcmDICT.lib
@@ -57,7 +64,7 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         ${GDCM_INSTALL_DIR}/lib/gdcmMSFF.lib
         #${GDCM_INSTALL_DIR}/lib/gdcmopenjpeg.lib
         ${GDCM_INSTALL_DIR}/lib/gdcmzlib.lib
-        ${GDCM_INSTALL_DIR}/lib/socketxx.lib 
+        ${GDCM_INSTALL_DIR}/lib/socketxx.lib
 	#${GDCM_INSTALL_DIR}/bin/gdcmCommon.lib
 	#${GDCM_INSTALL_DIR}/bin/gdcmDICT.lib
 	#${GDCM_INSTALL_DIR}/bin/gdcmDSED.lib
@@ -68,7 +75,7 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 	Ws2_32
     )
 else ()
-    SET(GDCM_LIBRARIES 
+    SET(GDCM_LIBRARIES
         ${GDCM_INSTALL_DIR}/lib/libgdcmcharls.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmCommon.a
         ${GDCM_INSTALL_DIR}/lib/libgdcmDICT.a
@@ -88,28 +95,28 @@ else ()
     )
 
     IF (NOT WIN32)
-        SET(GDCM_LIBRARIES  
-            ${GDCM_LIBRARIES} 
-            ${GDCM_INSTALL_DIR}/lib/libgdcmuuid.a 
+        SET(GDCM_LIBRARIES
+            ${GDCM_LIBRARIES}
+            ${GDCM_INSTALL_DIR}/lib/libgdcmuuid.a
             dl
         )
     ELSE (NOT WIN32)
-        SET(GDCM_LIBRARIES  
-            ${GDCM_LIBRARIES} 
-            ${GDCM_INSTALL_DIR}/lib/libgdcmcharls.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmDICT.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmexpat.a   
-            ${GDCM_INSTALL_DIR}/lib/libgdcmIOD.a     
-            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg16.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmMEXD.a  
+        SET(GDCM_LIBRARIES
+            ${GDCM_LIBRARIES}
+            ${GDCM_INSTALL_DIR}/lib/libgdcmcharls.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmDICT.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmexpat.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmIOD.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg16.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmMEXD.a
             #${GDCM_INSTALL_DIR}/lib/libgdcmopenjpeg.a
             ${GDCM_INSTALL_DIR}/lib/libsocketxx.a
-            ${GDCM_INSTALL_DIR}/lib/libgdcmCommon.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmDSED.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmgetopt.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg12.a  
-            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg8.a   
-            ${GDCM_INSTALL_DIR}/lib/libgdcmMSFF.a  
+            ${GDCM_INSTALL_DIR}/lib/libgdcmCommon.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmDSED.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmgetopt.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg12.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmjpeg8.a
+            ${GDCM_INSTALL_DIR}/lib/libgdcmMSFF.a
             ${GDCM_INSTALL_DIR}/lib/libgdcmzlib.a
 
 	        rpcrt4
