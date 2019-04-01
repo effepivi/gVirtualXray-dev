@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -85,6 +85,8 @@ if(Boost_FOUND)
 	    # Validation_04
 	    add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
 
+	    add_executable(TestOrtho                        TestOrtho.cxx)
+
 	    IF (FFTW3_LIBRARIES)
 		    # Validation_04
 	        add_executable(TestFBP                     TestFBP.cxx)
@@ -106,6 +108,7 @@ if(Boost_FOUND)
 	    target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 	    #target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 	    target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
+	    target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
 
 	    IF (FFTW3_LIBRARIES)
 	        target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs})
@@ -128,6 +131,7 @@ if(Boost_FOUND)
 	         ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
 	         #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
 	         ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay)
+	         ADD_DEPENDENCIES(TestOrtho                         gVirtualXRay)
 
 	    IF (FFTW3_LIBRARIES)
 	         ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
@@ -150,6 +154,7 @@ if(Boost_FOUND)
 	    add_test (TestUncenteredSource            TestUncenteredSource)
 	    #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
 	    #add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
+	    add_test (TestOrtho                       TestOrtho)
 
 	    #IF (FFTW3_LIBRARIES)
 	    #    add_test (TestFBP                     TestFBP)
