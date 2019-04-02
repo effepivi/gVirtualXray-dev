@@ -223,7 +223,7 @@ TEST(TestCubeSource, TestCubeSource)
     // Create a windowed mode window and its OpenGL context
     g_p_main_window_id = glfwCreateWindow(g_main_window_width,
         g_main_window_height,
-        "gVirtualXRay -- Unit testing: Uncentred source.",
+        "gVirtualXRay -- Unit testing: Cube source.",
         0,
         0);
 
