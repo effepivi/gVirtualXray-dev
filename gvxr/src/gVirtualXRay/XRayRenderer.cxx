@@ -913,7 +913,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 
 				for (std::vector<std::vector<SceneGraphNode*> >::const_iterator ite_material = m_p_surface_per_material_set.begin();
 						ite_material != m_p_surface_per_material_set.end();
-						++ite_material)
+						++ite_material, ++object_number)
 				{
 					// Store GPU states
 					GLint p_viewport[4];
@@ -931,7 +931,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					//        ++ite_meshes, ++temp_id)
 					for (std::vector<SceneGraphNode*>::const_iterator ite_meshes = ite_material->begin();
 							ite_meshes != ite_material->end();
-							++ite_meshes, ++object_number)
+							++ite_meshes)
 					{
 						SceneGraphNode* p_node = *ite_meshes;
 
