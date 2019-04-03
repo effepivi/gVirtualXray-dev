@@ -62,7 +62,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.14.0" OR ${CMAKE_VERSION} VERSION_EQUAL "
 endif()
 
 
-OPTION(USE_SYSTEM_SimpleGVXR   "Use System SimpleGVXR"      OFF)
+OPTION(USE_SYSTEM_SimpleGVXR   "Use System SimpleGVXR"      ON)
 
 
 # for superbuild ###############################################################
@@ -84,7 +84,7 @@ IF (NOT USE_SYSTEM_SimpleGVXR)
 		file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR)
 
 		execute_process(
-		    COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}/cmake/SimpleGVXR
+		    COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}/cmake/SimpleGVXR -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
 		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/SimpleGVXR
 				RESULT_VARIABLE gvxr_config_result
 				)

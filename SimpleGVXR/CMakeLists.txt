@@ -45,7 +45,7 @@ set(CMAKE_CXX_STANDARD 11) # C++11
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
-OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      OFF)
+OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
 
 
 # for superbuild ###############################################################
