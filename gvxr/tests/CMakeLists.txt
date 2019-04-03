@@ -147,6 +147,8 @@ ENDIF()
 
 # Add dependencies
 if (gVirtualXRay_BINARY_DIR)
+     ADD_DEPENDENCIES(gVirtualXRay googletest)
+     
      ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
      ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay googletest)
 
