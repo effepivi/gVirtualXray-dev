@@ -29,9 +29,13 @@ Parameters
     the parent of the node in the scenegraph (default: \"root\")  
 ";
 
-%feature("docstring") disableArtefactFiltering "
+%feature("docstring") getVersionOfCoreGVXR "
 
-Disable artefact filtering altogether.  
+Accessor on the full string version of the core gVirtualXRay library (gvxr).  
+
+Returns
+-------
+the full version number  
 ";
 
 %feature("docstring") addEnergyBinToSpectrum "
@@ -52,6 +56,11 @@ Move a polygon mesh to the centre.
 %feature("docstring") saveLastSinogram "
 
 Save the last sinogram that has been computed.  
+";
+
+%feature("docstring") getNodeTransformationMatrix "
+
+Accessor on the transformation matrix of a given node.  
 ";
 
 %feature("docstring") setSceneTransformationMatrix "
@@ -167,6 +176,17 @@ Initialise visualisation shader.
 %feature("docstring") displayNode "
 
 Display the scenegraph node using OpenGL.  
+";
+
+%feature("docstring") getPatchVersionOfCoreGVXR "
+
+Accessor on the minor version of the core gVirtualXRay library (gvxr). This
+number is changed when bug fixes have been added in a backwards-compatible
+manner.  
+
+Returns
+-------
+the patch version number  
 ";
 
 %feature("docstring") createWindow "
@@ -312,11 +332,11 @@ Parameters
     Specifies the position of the eye point along the Y-axis  
 * `eyeZ` :  
     Specifies the position of the eye point along the Z-axis  
-* `centreX` :  
+* `lookAtX` :  
     Specifies the position of the reference point along the X-axis  
-* `centreY` :  
+* `lookAtY` :  
     Specifies the position of the reference point along the Y-axis  
-* `centreZ` :  
+* `lookAtZ` :  
     Specifies the position of the reference point along the Z-axis  
 * `upX` :  
     Specifies the direction of the up vector along the X-axis  
@@ -450,6 +470,11 @@ Move the scenegraph to the centre.
 Move a polygon mesh to the centre.  
 ";
 
+%feature("docstring") disableArtefactFiltering "
+
+Disable artefact filtering altogether.  
+";
+
 %feature("docstring") rotateScene "
 
 Rotate the 3-D scene (all the polygon meshes will be affected but not modified).  
@@ -549,6 +574,16 @@ Set the Hounsfield value corresponding to the material properties of a polygon
 mesh.  
 ";
 
+%feature("docstring") getMajorVersionOfCoreGVXR "
+
+Accessor on the major version of the core gVirtualXRay library (gvxr). This
+number is changed when incompatible API changes have been made.  
+
+Returns
+-------
+the major version number  
+";
+
 %feature("docstring") disableArtifactFiltering "
 
 Disable artefact filtering altogether.  
@@ -598,9 +633,15 @@ Hide a window.
 Accessor on the 3-D scene transformation matrix.  
 ";
 
-%feature("docstring") getNodeTransformationMatrix "
+%feature("docstring") getMinorVersionOfCoreGVXR "
 
-Accessor on the transformation matrix of a given node.  
+Accessor on the minor version of the core gVirtualXRay library (gvxr). This
+number is changed when new functionalities have been added in a backwards-
+compatible manner.  
+
+Returns
+-------
+the minor version number  
 ";
 
 %feature("docstring") getDensity "

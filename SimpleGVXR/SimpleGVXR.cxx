@@ -183,11 +183,43 @@ double g_scale_filter = 1;
 bool g_has_own_gl_context = false;
 
 
+//-----------------------------
+int getMajorVersionOfCoreGVXR()
+//-----------------------------
+{
+	return (atoi(gVirtualXRay_VERSION_MAJOR));
+}
+
+
+//-----------------------------
+int getMinorVersionOfCoreGVXR()
+//-----------------------------
+{
+	return (atoi(gVirtualXRay_VERSION_MINOR));
+}
+
+
+//-----------------------------
+int getPatchVersionOfCoreGVXR()
+//-----------------------------
+{
+	return (atoi(gVirtualXRay_VERSION_PATCH));
+}
+
+
+//--------------------------------
+std::string getVersionOfCoreGVXR()
+//--------------------------------
+{
+	return (std::string(gvxr_VERSION));
+}
+
+
 //-------------------------------
 int getMajorVersionOfSimpleGVXR()
 //-------------------------------
 {
-	return (atoi(gVirtualXRay_VERSION_MAJOR));
+	return (SimpleGVXR_VERSION_MAJOR);
 }
 
 
@@ -195,7 +227,7 @@ int getMajorVersionOfSimpleGVXR()
 int getMinorVersionOfSimpleGVXR()
 //-------------------------------
 {
-	return (atoi(gVirtualXRay_VERSION_MINOR));
+	return (SimpleGVXR_VERSION_MINOR);
 }
 
 
@@ -203,7 +235,7 @@ int getMinorVersionOfSimpleGVXR()
 int getPatchVersionOfSimpleGVXR()
 //-------------------------------
 {
-	return (atoi(gVirtualXRay_VERSION_PATCH));
+	return (SimpleGVXR_VERSION_PATCH);
 }
 
 
@@ -211,15 +243,7 @@ int getPatchVersionOfSimpleGVXR()
 std::string getVersionOfSimpleGVXR()
 //----------------------------------
 {
-	std::string version;
-
-	version += gVirtualXRay_VERSION_MAJOR;
-	version += ".";
-	version += gVirtualXRay_VERSION_MINOR;
-	version += ".";
-	version += gVirtualXRay_VERSION_PATCH;
-
-	return (version);
+	return (std::string(SimpleGVXR_VERSION_STRING));
 }
 
 

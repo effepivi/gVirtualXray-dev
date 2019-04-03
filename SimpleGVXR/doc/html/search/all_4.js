@@ -21,12 +21,15 @@ var searchData=
   ['getlastsinogram',['getLastSinogram',['../_simple_g_v_x_r_8h.html#a31cac5db95d54fc7013ef6da1d9ae0bb',1,'SimpleGVXR.h']]],
   ['getlastxrayimage',['getLastXRayImage',['../_simple_g_v_x_r_8h.html#ab0814f041176d63ce590dc46e8721f5d',1,'SimpleGVXR.h']]],
   ['getlinearattenuationcoefficient',['getLinearAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#a5f2a0cb6b7cbd23890f9376b8fd4c1ff',1,'SimpleGVXR.h']]],
+  ['getmajorversionofcoregvxr',['getMajorVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#a78353c7c2c0cd41cbe00f34da798c4f6',1,'SimpleGVXR.h']]],
   ['getmajorversionofsimplegvxr',['getMajorVersionOfSimpleGVXR',['../_simple_g_v_x_r_8h.html#a1495a8a83ee7a799ed9375bc540286cc',1,'SimpleGVXR.h']]],
   ['getmassattenuationcoefficient',['getMassAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#ac856bc9af62ef66b7ecf7d9db884b490',1,'SimpleGVXR.h']]],
   ['getmateriallabel',['getMaterialLabel',['../_simple_g_v_x_r_8h.html#aa4a8e041850ca152eefb166521a14029',1,'SimpleGVXR.h']]],
+  ['getminorversionofcoregvxr',['getMinorVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#a82e1b817d082570de9d2836810cbc52e',1,'SimpleGVXR.h']]],
   ['getminorversionofsimplegvxr',['getMinorVersionOfSimpleGVXR',['../_simple_g_v_x_r_8h.html#a8dda75e417383f05f8a67d0d805a7ee4',1,'SimpleGVXR.h']]],
   ['getnodetransformationmatrix',['getNodeTransformationMatrix',['../_simple_g_v_x_r_8h.html#a3e7103cf57db663192b25daf5ba96d42',1,'SimpleGVXR.h']]],
   ['getnumberofchildren',['getNumberOfChildren',['../_simple_g_v_x_r_8h.html#ac4faad08043c8b6b16e23ee7e772efb3',1,'SimpleGVXR.h']]],
+  ['getpatchversionofcoregvxr',['getPatchVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#ae604df51718fa67dfabcdb9922283779',1,'SimpleGVXR.h']]],
   ['getpatchversionofsimplegvxr',['getPatchVersionOfSimpleGVXR',['../_simple_g_v_x_r_8h.html#a434fed454c84dfebf5d5df27389f38f5',1,'SimpleGVXR.h']]],
   ['getphtotoncountenergybins',['getPhtotonCountEnergyBins',['../_simple_g_v_x_r_8h.html#ab91cd940da30ef9f429eb4494ca25a00',1,'SimpleGVXR.h']]],
   ['getroottransformationmatrix',['getRootTransformationMatrix',['../_simple_g_v_x_r_8h.html#aa4aa9748df310aea560042330f573502',1,'SimpleGVXR.h']]],
@@ -36,5 +39,6 @@ var searchData=
   ['getspecularcolour',['getSpecularColour',['../_simple_g_v_x_r_8h.html#a6e76db5ab1162a9c09ab0f1d4a3073ab',1,'SimpleGVXR.h']]],
   ['getunitofenergy',['getUnitOfEnergy',['../_simple_g_v_x_r_8h.html#a2bff58abee8cc5cd98e6a17c34e9af74',1,'SimpleGVXR.h']]],
   ['getunitoflength',['getUnitOfLength',['../_simple_g_v_x_r_8h.html#a61e8cc31f2f3caa5ea89e019eec5e559',1,'SimpleGVXR.h']]],
+  ['getversionofcoregvxr',['getVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#ab052d10d27f0b8ee1c856eafaab570c8',1,'SimpleGVXR.h']]],
   ['getversionofsimplegvxr',['getVersionOfSimpleGVXR',['../_simple_g_v_x_r_8h.html#aadc6cf5b2124f80f1e41bdb967aafab9',1,'SimpleGVXR.h']]]
 ];

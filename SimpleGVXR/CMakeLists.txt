@@ -136,6 +136,12 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
+ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MAJOR=${SimpleGVXR_VERSION_MAJOR}")
+ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MINOR=${SimpleGVXR_VERSION_MINOR}")
+ADD_DEFINITIONS("-DSimpleGVXR_VERSION_PATCH=${SimpleGVXR_VERSION_PATCH}")
+ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_VERSION}\"")
+
+
 # Create the library ###########################################################
 add_library(SimpleGVXR SimpleGVXR.cxx)
 

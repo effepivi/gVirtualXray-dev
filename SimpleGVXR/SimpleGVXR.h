@@ -73,6 +73,45 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the major version of the core gVirtualXRay library (gvxr). This number is changed
+/// when incompatible API changes have been made.
+/**
+ *  @return the major version number
+ */
+//------------------------------------------------------------------------------
+int getMajorVersionOfCoreGVXR();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the minor version of the core gVirtualXRay library (gvxr). This number is changed when
+/// new functionalities have been added in a backwards-compatible manner.
+/**
+ *  @return the minor version number
+ */
+//------------------------------------------------------------------------------
+int getMinorVersionOfCoreGVXR();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the minor version of the core gVirtualXRay library (gvxr). This number is changed when
+/// bug fixes have been added in a backwards-compatible manner.
+/**
+ *  @return the patch version number
+ */
+//------------------------------------------------------------------------------
+int getPatchVersionOfCoreGVXR();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the full string version of the core gVirtualXRay library (gvxr).
+/**
+ *  @return the full version number
+ */
+//------------------------------------------------------------------------------
+std::string getVersionOfCoreGVXR();
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the major version of SimpleGVXR. This number is changed
 /// when incompatible API changes have been made.
 /**
@@ -180,11 +219,11 @@ void perspective(double fovy, double aspect, double  zNear, double  zFar);
 *   @param  eyeX:       Specifies the position of the eye point along the X-axis
 *   @param  eyeY:       Specifies the position of the eye point along the Y-axis
 *   @param  eyeZ:       Specifies the position of the eye point along the Z-axis
-*   @param  centreX:    Specifies the position of the reference point along
+*   @param  lookAtX:    Specifies the position of the reference point along
 *                       the X-axis
-*   @param  centreY:    Specifies the position of the reference point along
+*   @param  lookAtY:    Specifies the position of the reference point along
 *                       the Y-axis
-*   @param  centreZ:    Specifies the position of the reference point along
+*   @param  lookAtZ:    Specifies the position of the reference point along
 *                       the Z-axis
 *   @param  upX         Specifies the direction of the up vector along
 *                       the X-axis
@@ -194,14 +233,14 @@ void perspective(double fovy, double aspect, double  zNear, double  zFar);
 *                       the Z-axis
 */
 //------------------------------------------------------------------------------
-void lookAt(double eye_x, double eye_y, double eye_z,
+void lookAt(double eyeX, double eyeY, double eyeZ,
 		double lookAtX, double lookAtY, double lookAtZ,
 		double upX, double upY, double upZ);
 
 
 //------------------------------------------------------------------------------
 /// Add the current matrix to the model/view matrix stack.
-/// It behaves as the combination of the old 
+/// It behaves as the combination of the old
 /// glMatrixMode(GL_MODELVIEW);glPushMatrix() functions.
 //------------------------------------------------------------------------------
 void pushModelViewMatrix();
