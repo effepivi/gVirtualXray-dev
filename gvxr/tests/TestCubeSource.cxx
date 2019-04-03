@@ -42,11 +42,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *               Monte Carlo simulation tool. We compare the results produce with
 *               gVirtualXRay.
 *   			The unit test corresponds to validation_07,
-*   			last date of check: Passed test on 10 Sep 2018.
+*   			last date of check: Passed test on 03 Apr 2019.
 *
 *   @version    1.0
 *
-*   @date       01/04/2019
+*   @date       03/04/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -305,7 +305,7 @@ TEST(TestCubeSource, TestCubeSource)
 
     // Compare reference projection set and simulated projection set using RMSE
     float RMSE = reference_projection_set.computeRMSE(g_xray_renderer.getProjectionSet());
-    ASSERT_NEAR(RMSE, 0.0, 1e-3 * g_incident_energy);
+    ASSERT_NEAR(RMSE, 0.0, 1e-2 * g_incident_energy);
 }
 
 
