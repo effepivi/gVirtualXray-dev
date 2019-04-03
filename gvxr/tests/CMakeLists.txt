@@ -40,7 +40,7 @@ set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 add_subdirectory(googletest)
 
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.14.0")
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.13.0")
     cmake_policy(SET CMP0075 NEW)
 endif()
 
