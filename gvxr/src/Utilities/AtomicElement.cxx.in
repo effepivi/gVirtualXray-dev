@@ -93,118 +93,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Units.h"
 #endif
 
-#ifdef gVirtualXRay_XCOM_PATH
-#include "MDATX3.001.h"
-#include "MDATX3.002.h"
-#include "MDATX3.003.h"
-#include "MDATX3.004.h"
-#include "MDATX3.005.h"
-#include "MDATX3.006.h"
-#include "MDATX3.007.h"
-#include "MDATX3.008.h"
-#include "MDATX3.009.h"
-
-#include "MDATX3.010.h"
-#include "MDATX3.011.h"
-#include "MDATX3.012.h"
-#include "MDATX3.013.h"
-#include "MDATX3.014.h"
-#include "MDATX3.015.h"
-#include "MDATX3.016.h"
-#include "MDATX3.017.h"
-#include "MDATX3.018.h"
-#include "MDATX3.019.h"
-
-#include "MDATX3.020.h"
-#include "MDATX3.021.h"
-#include "MDATX3.022.h"
-#include "MDATX3.023.h"
-#include "MDATX3.024.h"
-#include "MDATX3.025.h"
-#include "MDATX3.026.h"
-#include "MDATX3.027.h"
-#include "MDATX3.028.h"
-#include "MDATX3.029.h"
-
-#include "MDATX3.030.h"
-#include "MDATX3.031.h"
-#include "MDATX3.032.h"
-#include "MDATX3.033.h"
-#include "MDATX3.034.h"
-#include "MDATX3.035.h"
-#include "MDATX3.036.h"
-#include "MDATX3.037.h"
-#include "MDATX3.038.h"
-#include "MDATX3.039.h"
-
-#include "MDATX3.040.h"
-#include "MDATX3.041.h"
-#include "MDATX3.042.h"
-#include "MDATX3.043.h"
-#include "MDATX3.044.h"
-#include "MDATX3.045.h"
-#include "MDATX3.046.h"
-#include "MDATX3.047.h"
-#include "MDATX3.048.h"
-#include "MDATX3.049.h"
-
-#include "MDATX3.050.h"
-#include "MDATX3.051.h"
-#include "MDATX3.052.h"
-#include "MDATX3.053.h"
-#include "MDATX3.054.h"
-#include "MDATX3.055.h"
-#include "MDATX3.056.h"
-#include "MDATX3.057.h"
-#include "MDATX3.058.h"
-#include "MDATX3.059.h"
-
-#include "MDATX3.060.h"
-#include "MDATX3.061.h"
-#include "MDATX3.062.h"
-#include "MDATX3.063.h"
-#include "MDATX3.064.h"
-#include "MDATX3.065.h"
-#include "MDATX3.066.h"
-#include "MDATX3.067.h"
-#include "MDATX3.068.h"
-#include "MDATX3.069.h"
-
-#include "MDATX3.070.h"
-#include "MDATX3.071.h"
-#include "MDATX3.072.h"
-#include "MDATX3.073.h"
-#include "MDATX3.074.h"
-#include "MDATX3.075.h"
-#include "MDATX3.076.h"
-#include "MDATX3.077.h"
-#include "MDATX3.078.h"
-#include "MDATX3.079.h"
-
-#include "MDATX3.080.h"
-#include "MDATX3.081.h"
-#include "MDATX3.082.h"
-#include "MDATX3.083.h"
-#include "MDATX3.084.h"
-#include "MDATX3.085.h"
-#include "MDATX3.086.h"
-#include "MDATX3.087.h"
-#include "MDATX3.088.h"
-#include "MDATX3.089.h"
-
-#include "MDATX3.090.h"
-#include "MDATX3.091.h"
-#include "MDATX3.092.h"
-#include "MDATX3.093.h"
-#include "MDATX3.094.h"
-#include "MDATX3.095.h"
-#include "MDATX3.096.h"
-#include "MDATX3.097.h"
-#include "MDATX3.098.h"
-#include "MDATX3.099.h"
-
-#include "MDATX3.100.h"
-
+#if defined(gVirtualXRay_XCOM_BUILD_PATH) || defined(gVirtualXRay_XCOM_INSTALL_PATH)
+#include "gVirtualXRay/XCOM.h"
 #endif
 
 
@@ -224,8 +114,25 @@ void AtomicElement::loadDataFromXCOM()
         std::string xcom_database_path;
 
         // The XCOM database path is set
-#ifdef gVirtualXRay_XCOM_PATH
-        xcom_database_path = gVirtualXRay_XCOM_PATH;
+#if defined(gVirtualXRay_XCOM_BUILD_PATH) || defined(gVirtualXRay_XCOM_INSTALL_PATH)
+        xcom_database_path = gVirtualXRay_XCOM_INSTALL_PATH;
+        
+        // Check that the data is installed in gVirtualXRay_XCOM_INSTALL_PATH rather than
+        // gVirtualXRay_XCOM_BUILD_PATH
+        
+        // Set the file name
+        std::stringstream file_name;
+        file_name << xcom_database_path << "/" << "MDATX3." << std::setw(3) << std::setfill('0') << m_atomic_number;
+        
+        // Open the file
+        std::ifstream file_stream(file_name.str().data());
+        
+        // The file is not open
+        if (!file_stream.is_open())
+        {
+            // Use gVirtualXRay_XCOM_BUILD_PATH instead of gVirtualXRay_XCOM_INSTALL_PATH
+            xcom_database_path = gVirtualXRay_XCOM_BUILD_PATH;
+        }
 #endif
 
         // The environment variable may overwrite gVirtualXRay_XCOM_PATH
@@ -277,7 +184,7 @@ void AtomicElement::loadDataFromXCOM()
             }
             // The file is not open
             // Find the data from the header file is possible
-#ifdef gVirtualXRay_XCOM_PATH
+#if defined(gVirtualXRay_XCOM_BUILD_PATH) || defined(gVirtualXRay_XCOM_INSTALL_PATH)
             if (!open_stream)
             {
                 // Initialise the buffer
@@ -292,95 +199,7 @@ void AtomicElement::loadDataFromXCOM()
 
                 switch (m_atomic_number)
                 {
-                    case 1:
-                        p_compressed_data = g_MDATX3_001;
-                        p_compressed_size = sizeof(g_MDATX3_001);
-                        break;
-
-                    case 6:
-                        p_compressed_data = g_MDATX3_006;
-                        p_compressed_size = sizeof(g_MDATX3_006);
-                        break;
-
-                    case 7:
-                        p_compressed_data = g_MDATX3_007;
-                        p_compressed_size = sizeof(g_MDATX3_007);
-                        break;
-
-                    case 8:
-                        p_compressed_data = g_MDATX3_008;
-                        p_compressed_size = sizeof(g_MDATX3_008);
-                        break;
-
-                    case 11:
-                        p_compressed_data = g_MDATX3_011;
-                        p_compressed_size = sizeof(g_MDATX3_011);
-                        break;
-
-                    case 12:
-                        p_compressed_data = g_MDATX3_012;
-                        p_compressed_size = sizeof(g_MDATX3_012);
-                        break;
-
-                    case 15:
-                        p_compressed_data = g_MDATX3_015;
-                        p_compressed_size = sizeof(g_MDATX3_015);
-                        break;
-
-                    case 16:
-                        p_compressed_data = g_MDATX3_016;
-                        p_compressed_size = sizeof(g_MDATX3_016);
-                        break;
-
-                    case 17:
-                        p_compressed_data = g_MDATX3_017;
-                        p_compressed_size = sizeof(g_MDATX3_017);
-                        break;
-
-                    case 18:
-                        p_compressed_data = g_MDATX3_018;
-                        p_compressed_size = sizeof(g_MDATX3_018);
-                        break;
-
-                    case 19:
-                        p_compressed_data = g_MDATX3_019;
-                        p_compressed_size = sizeof(g_MDATX3_019);
-                        break;
-
-                    case 20:
-                        p_compressed_data = g_MDATX3_020;
-                        p_compressed_size = sizeof(g_MDATX3_020);
-                        break;
-
-                    case 22:
-                        p_compressed_data = g_MDATX3_022;
-                        p_compressed_size = sizeof(g_MDATX3_022);
-                        break;
-
-                    case 26:
-                        p_compressed_data = g_MDATX3_026;
-                        p_compressed_size = sizeof(g_MDATX3_026);
-                        break;
-
-                    case 29:
-                        p_compressed_data = g_MDATX3_029;
-                        p_compressed_size = sizeof(g_MDATX3_029);
-                        break;
-
-                    case 30:
-                        p_compressed_data = g_MDATX3_030;
-                        p_compressed_size = sizeof(g_MDATX3_030);
-                        break;
-
-                    case 47:
-                        p_compressed_data = g_MDATX3_047;
-                        p_compressed_size = sizeof(g_MDATX3_047);
-                        break;
-
-                    case 50:
-                        p_compressed_data = g_MDATX3_050;
-                        p_compressed_size = sizeof(g_MDATX3_050);
-                        break;
+                    @PROCESS_XCOM_CASE@
 
                     default:
                         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unknown element.");
@@ -402,7 +221,7 @@ void AtomicElement::loadDataFromXCOM()
 
                 open_stream = true;
             }
-#endif // gVirtualXRay_XCOM_PATH
+#endif // defined(gVirtualXRay_XCOM_BUILD_PATH) || defined(gVirtualXRay_XCOM_INSTALL_PATH)
 
             // The strem is open
             if (open_stream)

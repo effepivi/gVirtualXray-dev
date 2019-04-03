@@ -40,7 +40,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@"
 #define gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@"
 
-#define gVirtualXRay_XCOM_PATH "@XCOM_PATH@"
+#define gVirtualXRay_XCOM_BUILD_PATH   "\"@XCOM_PATH@\""
+#define gVirtualXRay_XCOM_INSTALL_PATH "\"@gVirtualXRay_INSTALL_PREFIX@/third_party/XCOM\""
 
 #if defined(_WIN32) || defined(_WIN64)
 #define _USE_MATH_DEFINES
@@ -79,6 +80,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define isnan(x) _isnan(x)
 #define isinf(x) (!_finite(x))
 #endif
+
+
+#define gvxr_VERSION "gVirtualXRay core library (gvxr) @gVirtualXRay_VERSION_MAJOR@.@gVirtualXRay_VERSION_MINOR@.@gVirtualXRay_VERSION_PATCH@ (@TIMESTAMP@) [Compiler: @COMPILER@] on @CMAKE_SYSTEM_NAME@"
 
 
 #endif // __gVirtualXRayConfig_h

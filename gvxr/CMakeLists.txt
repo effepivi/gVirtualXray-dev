@@ -269,7 +269,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DepthMap.cxx
 
     # Utilities
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/AtomicElement.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
@@ -817,16 +817,43 @@ TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
 
+
+FILE (REMOVE "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h")
+SET (PROCESS_XCOM_CASE "")
 IF (XCOM_PATH)
+    FILE (TOUCH "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h")
+
     foreach(xcom_file RANGE 1 100)
 
         if (${xcom_file} LESS 10)
+            FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.00${xcom_file}.h\"\n")
             SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
+            
+            
+            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
+            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_00${xcom_file};")
+            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_00${xcom_file});")
+            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
+            
         else ()
             if (${xcom_file} LESS 100)
+                FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.0${xcom_file}.h\"\n")
                 SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
+
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_0${xcom_file};")
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_0${xcom_file});")
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
+            
             else ()
+                FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.${xcom_file}.h\"\n")
                 SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
+
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_${xcom_file};")
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_${xcom_file});")
+                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
+                
             endif ()
         endif ()
 
@@ -835,7 +862,10 @@ IF (XCOM_PATH)
     CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")
     ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
 ENDIF (XCOM_PATH)
-
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx.in 
+    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/AtomicElement.cxx @ONLY)
+    
+    
 SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.vert
