@@ -28,9 +28,10 @@ Monte Carlo (MC) simulation is known as the state-of-the-art technique in term o
 
 It can be used in various application contexts, including
 
-- real-time medical simulations for training purposes [[5](#cite4),[6](#cite6),[7](#cite7)],
-- medical physics, e.g. realistic data acquisition simulation in medical computed tomography (CT) with patient respiration [[8](#cite8)], and enhancing real clinical X-ray radiographs to provide densitometric images [[9](#cite9)], and
-- material science to investigate the source of artefacts in CT in dense metallic objects [[1](#cite1),[10](#cite10)]. We are also investigating the use of [gVirtualXRay] to teach X-ray imaging principles to students in mechanics (for the use of X- and γ-rays in non-destructive testing) and in medical physics.
+- __real-time medical simulations__ for training purposes [[5](#cite4),[6](#cite6),[7](#cite7)],
+- __medical physics__, e.g. realistic data acquisition simulation in medical computed tomography (CT) with patient respiration [[8](#cite8)], and enhancing real clinical X-ray radiographs to provide densitometric images [[9](#cite9)], and
+- __material science__ to investigate the source of artefacts in CT in dense metallic objects [[1](#cite1),[10](#cite10)].
+- in __teaching__ X-ray imaging principles to students in mechanics (for the use of X- and γ-rays in non-destructive testing) and in medical physics.
 
 The use of GPU computing opens up new perspectives. A simulated X-ray projection can be simulated in a few microseconds. It makes it possible to combine [gVirtualXRay] with an optimisation and machine learning framework, which would not have been possible a few years ago. For example, this approach can be used in 3D volume to 3D meshes registration [[10](#cite10)].
 
