@@ -88,7 +88,7 @@ _Computerized Medical Imaging and Graphics_, 49:1-15, April 2016.
 DOI: [10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002).
 PMID: [26773644](https://www.ncbi.nlm.nih.gov/m/pubmed/26773644)
 - Franck P. Vidal, Manuel Garnier, Nicolas Freud, Jean Michel Létang, and Nigel W. John. "Accelerated deterministic simulation of X-ray attenuation using graphics hardware". In _Eurographics 2010 - Poster_, page Poster 5011, Norrköping, Sweden, May 2010. Eurographics Association. DOI: [10.2312/egp.20101026](http://dx.doi.org/10.2312/egp.20101026).
-- Franck P. Vidal, Manuel Garnier, Nicolas Freud, Jean Michel Létang, and Nigel W. John. "Simulation of X-ray attenuation on the GPU". In _Proceedings of Theory and Practice of Computer Graphics 2009_, pages 25-32, Cardiff (UK), June 2009. Eurographics Association. __Winner of Ken Brodlie Prize for Best Paper.__ DOI : [10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032).
+- Franck P. Vidal, Manuel Garnier, Nicolas Freud, Jean Michel Létang, and Nigel W. John. "Simulation of X-ray attenuation on the GPU". In _Proceedings of Theory and Practice of Computer Graphics 2009_, pages 25-32, Cardiff (UK), June 2009. Eurographics Association. __Winner of Ken Brodlie Prize for Best Paper.__ DOI: [10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032).
 
 There are other scientific papers of interest. For more details, visit our [http://gvirtualxray.sourceforge.net/publications.php](publication page)
 
@@ -104,9 +104,9 @@ References
 
 <a id="cite1"/>[1] F. P. Vidal, J. M. Létang, G. Peix, and P. Clœtens. "Investigation of artefact sources in synchrotron microtomography via virtual X-ray imaging". _Nuclear Instruments and Methods in Physics Research B_, 234(3):333-348, June 2005. DOI: [10.1016/j.nimb.2005.02.003](http://dx.doi.org/10.1016/j.nimb.2005.02.003).  
 
-<a id="cite2"/>[2] F. P. Vidal, M. Garnier, N. Freud, J. M. Létang, and N. W. John. "Simulation of X-ray attenuation on the GPU". In _Proceedings of Theory and Practice of Computer Graphics 2009_, pages 25-32, Cardiff (UK), June 2009. Eurographics Association. __Winner of Ken Brodlie Prize for Best Paper.__ DOI : [10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032).
+<a id="cite2"/>[2] F. P. Vidal, M. Garnier, N. Freud, J. M. Létang, and N. W. John. "Simulation of X-ray attenuation on the GPU". In _Proceedings of Theory and Practice of Computer Graphics 2009_, pages 25-32, Cardiff (UK), June 2009. Eurographics Association. __Winner of Ken Brodlie Prize for Best Paper.__ DOI: [10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032).
 
-<a id="cite3"/>[3] F. P. Vidal, and P.-F. Villard. "Development and validation of real-time simulation of X-ray imaging with respiratory motion". _Computerized Medical Imaging and Graphics_, 49:1-15, April 2016. DOI : [10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002).
+<a id="cite3"/>[3] F. P. Vidal, and P.-F. Villard. "Development and validation of real-time simulation of X-ray imaging with respiratory motion". _Computerized Medical Imaging and Graphics_, 49:1-15, April 2016. DOI: [10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002).
 
 <a id="cite4"/>[4] F. P. Vidal, M. Garnier, N. Freud, J. M. Létang, and N. W. John. "Accelerated deterministic simulation of X-ray attenuation using graphics hardware". In _Eurographics 2010 - Poster_, page Poster 5011, Norrköping, Sweden, May 2010. Eurographics Association. DOI: [10.2312/egp.20101026](http://dx.doi.org/10.2312/egp.20101026).
 
@@ -119,7 +119,7 @@ References
 <a id="cite8"/>[8] F. P. Vidal, and P.-F. Villard. "Simulated Motion Artefact in Computed Tomography". In _Eurographics Workshop on Visual Computing for Biology and Medicine_, pages 213-214, Chester (UK), September 2015. Eurographics Association. DOI: [10.2312/vcbm.20151228](http://dx.doi.org/10.2312/vcbm.20151228).
 
 <a id="cite9"/>[9] F. Albiol, A. Corbi, and A. Albiol. "
-Densitometric Radiographic Imaging With Contour Sensors". _IEEE Access_, 7:18902-18914, January 2019. DOI : [10.1109/ACCESS.2019.2895925](http://dx.doi.org/10.1109/ACCESS.2019.2895925).
+Densitometric Radiographic Imaging With Contour Sensors". _IEEE Access_, 7:18902-18914, January 2019. DOI: [10.1109/ACCESS.2019.2895925](http://dx.doi.org/10.1109/ACCESS.2019.2895925).
 
 <a id="cite10"/>[10] F. P. Vidal, "gVirtualXRay – Fast X-ray simulation on GPU", in _Workshop on Image-Based Finite Element Method for Industry 2018 (IBFEM-4i 2018)_, Invited talk, Swansea (UK), September 2018. DOI: [10.5281/zenodo.1452506](http://dx.doi.org/10.5281/zenodo.1452506).
 
