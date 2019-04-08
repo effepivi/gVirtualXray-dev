@@ -101,7 +101,6 @@ void main (void)
 	//float dot_product_sign = sign(dot_product);
 
 	float dot_product_sign = -sign(float(gl_FrontFacing) - 0.5);
-fsfd
     
     // The dot product value is too small
 	/*if (abs(dot_product) < EPSILON)
@@ -121,7 +120,7 @@ fsfd
 	float distance_intersection_detector = (dot(transformed_vertex.xyz, g_detector_plane.xyz) + g_detector_plane.w) / dot(-viewing_vector, g_detector_plane.xyz);
 
 	//float value = dot_product_sign * distance_source_vertex * g_to_cm_scale;
-	float value = dot_product_sign * distandistance_intersection_detectorce_source_vertex * g_to_cm_scale;
+	float value = dot_product_sign * distance_intersection_detector * g_to_cm_scale;
 
 	//if (abs(distance_source_vertex) < EPSILON) value = 0.0;
 	if (abs(distance_intersection_detector) < EPSILON) value = 0.0;
