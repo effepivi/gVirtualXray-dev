@@ -62,13 +62,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //	Include
 //******************************************************************************
-#ifndef GVXR_CONSTANT_VALUES_H
+#ifndef __ConstantValues_h
 #include "gVirtualXRay/ConstantValues.h"
 #endif
 
 #include <iostream>
 #include <cmath>
 #include <cstring>
+
+#ifndef __Exception_h
+#include "gVirtualXRay/Exception.h"
+#endif
 
 
 //******************************************************************************
@@ -213,9 +217,6 @@ template<typename T> void Matrix4x4<T>::translate(T x, T y, T z)
 
 	m_small_matrix_up_to_date = false;
 }
-
-
-
 
 
 //-------------------------------------------------------------------
