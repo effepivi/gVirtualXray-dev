@@ -9,6 +9,10 @@ Matplotlib.use("TkAgg")
 require 'matplotlib/pyplot'
 plt = Matplotlib::Pyplot
 
+# Print the libraries' version
+puts(GvxrRuby.getVersionOfSimpleGVXR())
+puts(GvxrRuby.getVersionOfCoreGVXR())
+
 # Create an OpenGL context
 puts("Create an OpenGL context")
 GvxrRuby.createWindow();

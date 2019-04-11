@@ -2,6 +2,10 @@
 
 use gvxrPerl;
 
+# Print the libraries' version
+print gvxrPerl::getVersionOfCoreGVXR(), "\n";
+print gvxrPerl::getVersionOfSimpleGVXR(), "\n";
+
 # Create an OpenGL context
 print "Create an OpenGL context\n";
 gvxrPerl::createWindow();

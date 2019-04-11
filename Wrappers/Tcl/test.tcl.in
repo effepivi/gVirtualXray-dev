@@ -2,6 +2,10 @@
 
 load ./gvxrTcl.so
 
+# Print the libraries' version
+puts [getVersionOfSimpleGVXR]
+puts [getVersionOfCoreGVXR]
+
 # Create an OpenGL context
 puts "Create an OpenGL context"
 createWindow

@@ -17,7 +17,7 @@ except ImportError:
 import gvxrPython2 as gvxr
 
 
-# Print the library versions
+# Print the libraries' version
 print (gvxr.getVersionOfSimpleGVXR())
 print (gvxr.getVersionOfCoreGVXR())
 

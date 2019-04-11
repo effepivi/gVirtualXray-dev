@@ -5,6 +5,10 @@ dyn.load(paste("gvxrR", .Platform$dynlib.ext, sep=""))
 source('gvxrR.R')
 cacheMetaData(1)
 
+# Print the libraries' version
+print(getVersionOfSimpleGVXR())
+print(getVersionOfCoreGVXR())
+
 # Create an OpenGL context
 print("Create an OpenGL context");
 createWindow();

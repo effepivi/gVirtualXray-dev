@@ -2,6 +2,10 @@
 gvxrOctave
 pkg load image
 
+% Print the libraries' version
+disp(gvxrOctave.getVersionOfCoreGVXR());
+disp(gvxrOctave.getVersionOfSimpleGVXR());
+
 % Create an OpenGL context
 disp("Create an OpenGL context");
 gvxrOctave.createWindow();
