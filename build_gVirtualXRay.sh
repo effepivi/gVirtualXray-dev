@@ -39,7 +39,7 @@
 # (you may change it if you want)
 DESTINATION=$PWD/install
 
-PROMPT HERE TO ASK WHERE THE INSTALL PATH IS
+#####PROMPT HERE TO ASK WHERE THE INSTALL PATH IS
 
 echo "************************"
 echo "Temporarily install the libraries in $DESTINATION"
@@ -47,14 +47,129 @@ echo "************************"
 
 
 # Delete previous build if needed
-read -p "Do you want to delete the previous builds? (I recommend Y) (Y/N)" -n 1 -r
-echo    # (optional) move to a new line
+read -p "Do you want to delete the previous builds? (Y/N)  " -n 1 -r
+echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo "Delete the previous builds"
     rm -rf gvxr-build/ SimpleGVXR-build/ Wrappers-build/ $DESTINATION/
 fi
+echo
 
+
+BUILD_WRAPPER="0"
+read -p "Build C# wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_CSHARP="ON"
+    BUILD_WRAPPER="1"
+else
+    BUILD_CSHARP="OFF"
+fi
+
+
+read -p "Build Java wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_JAVA="ON"
+    BUILD_WRAPPER="1"
+else
+    BUILD_JAVA="OFF"
+fi
+
+
+read -p "Build GNU Octave wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_OCTAVE="ON"
+    BUILD_WRAPPER="1"
+else
+    BUILD_OCTAVE="OFF"
+fi
+
+
+read -p "Build Perl wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_PERL="ON"
+    BUILD_WRAPPER="1"
+else
+    BUILD_PERL="OFF"
+fi
+
+
+read -p "Build Python 3 wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_WRAPPER="1"
+    BUILD_PYTHON3="ON"
+    BUILD_PYTHON2="OFF"
+else
+    BUILD_PYTHON3="OFF"
+
+    read -p "Build Python 2 wrapper? (Y/N)  " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        BUILD_WRAPPER="1"
+        BUILD_PYTHON2="ON"
+    else
+        BUILD_PYTHON2="OFF"
+    fi
+fi
+
+
+read -p "Build R wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_WRAPPER="1"
+    BUILD_R="ON"
+else
+    BUILD_R="OFF"
+fi
+
+
+read -p "Build Ruby wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_WRAPPER="1"
+    BUILD_RUBY="ON"
+else
+    BUILD_RUBY="OFF"
+fi
+
+
+read -p "Build Tcl wrapper? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_WRAPPER="1"
+    BUILD_TCL="ON"
+else
+    BUILD_TCL="OFF"
+fi
+echo
+
+echo "***************************"
+echo "* Build wrappers (summary):"
+echo "***************************"
+echo Build C# wrapper: $BUILD_CSHARP
+echo Build Java wrapper: $BUILD_JAVA
+echo Build GNU Octave wrapper: $BUILD_OCTAVE
+echo Build Perl wrapper: $BUILD_PERL
+echo Build Python 2 wrapper: $BUILD_PYTHON2
+echo Build Python 3 wrapper: $BUILD_PYTHON3
+echo Build R wrapper: $BUILD_R
+echo Build Ruby wrapper: $BUILD_RUBY
+echo Build Tcl wrapper: $BUILD_TCL
+echo
 
 # Create the build directories if needed
 if [[ ! -d gvxr-build ]]
@@ -62,6 +177,7 @@ then
     echo "*******************************"
     echo "Create the gvxr-build directory"
     echo "*******************************"
+    echo
     mkdir gvxr-build
 fi
 
@@ -70,6 +186,7 @@ then
     echo "*************************************"
     echo "Create the SimpleGVXR-build directory"
     echo "*************************************"
+    echo
     mkdir SimpleGVXR-build
 fi
 
@@ -82,23 +199,34 @@ then
 fi
 
 
-
 # Build and install the core library
 cd gvxr-build
 
 echo "Configure gvxr using CMake"
+echo "Please wait"
+echo
+
 cmake ../gvxr \
-  -DCMAKE_INSTALL_PREFIX=$DESTINATION \
-  > ../gvxr_cmake.out.log 2> ../gvxr_cmake.err.log
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=$DESTINATION \
+    > ../gvxr_cmake.out.log 2> ../gvxr_cmake.err.log
 
-PROMPT HERE TO ASK IF USER WANT TO CONFIGURE GVXR USING CCMAKE
-
+read -p "Do you want to review (and tweak) gvxr build settings using ccmake (for advanced users)? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    ccmake .
+fi
 
 echo "Build gvxr using make"
+echo "Please wait (or go and make some coffee, it'll take a while...)"
+echo
+
 make -j6 > ../gvxr_make.out.log 2> ../gvxr_make.err.log
 
 echo "Install gvxr in $DESTINATION"
-make install > /dev/null
+echo
+make install > install.log 2> ../install.err.log
 
 
 
@@ -106,51 +234,91 @@ make install > /dev/null
 cd ../SimpleGVXR-build
 
 echo "Configure SimpleGVXR using CMake"
+echo
 cmake ../SimpleGVXR \
-  -DCMAKE_INSTALL_PREFIX=$DESTINATION \
-  -DUSE_SYSTEM_gVirtualXRay=ON \
-  -DgVirtualXRay_DIR=$DESTINATION/gVirtualXRay-1.1.0 \
-  > ../SimpleGVXR_cmake.out.log 2> ../SimpleGVXR_cmake.err.log
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=$DESTINATION \
+      -DUSE_SYSTEM_gVirtualXRay=ON \
+      -DgVirtualXRay_DIR=$DESTINATION/gVirtualXRay-1.1.0 \
+      > ../SimpleGVXR_cmake.out.log 2> ../SimpleGVXR_cmake.err.log
 
-PROMPT HERE TO ASK IF USER WANT TO CONFIGURE SimpleGVXR USING CCMAKE
+read -p "Do you want to review (and tweak) SimpleGVXR build settings using ccmake (for advanced users)? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    ccmake .
+fi
 
 echo "Build SimpleGVXR using make"
+echo
 make > ../SimpleGVXR_make.out.log 2> ../SimpleGVXR_make.err.log
 
 echo "Install SimpleGVXR in $DESTINATION"
-make install > /dev/null
+echo
+make install >> install.log 2>> ../install.err.log
 
 
 
 # Build and install the Python3 package
 cd ../Wrappers-build
 
-echo "Configure Wrappers using CMake"
-cmake ../Wrappers \
-    -DCMAKE_INSTALL_PREFIX=$DESTINATION \
-    -DUSE_SYSTEM_gVirtualXRay=ON \
-    -DgVirtualXRay_DIR=$DESTINATION/gVirtualXRay-1.1.0 \
-    -DUSE_SYSTEM_SimpleGVXR=ON \
-    -DSimpleGVXR_DIR=$DESTINATION//SimpleGVXR-1.0.0 \
-    -DBUILD_PYTHON3=ON \
-> ../Wrappers_cmake.out.log 2> ../Wrappers_cmake.err.log
-
-PROMPT HERE TO ASK IF USER WANT TO CONFIGURE Wrappers USING CCMAKE
-
-echo "Build Wrappers using make"
-make > ../Wrappers_make.out.log 2> ../Wrappers_make.err.log
 
 
-read -p "Install gvxrPython3 for all users (Y/N)" -n 1 -r
-echo    # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $BUILD_WRAPPER == "0" ]]
 then
-    echo "Install gvxrPython3"
-    sudo make install-gvxrPython3
+    echo "No wrapper to build."
+    echo
+else
+    echo "Configure Wrappers using CMake"
+    echo
+    cmake ../Wrappers \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$DESTINATION \
+        -DUSE_SYSTEM_gVirtualXRay=ON \
+        -DgVirtualXRay_DIR=$DESTINATION/gVirtualXRay-1.1.0 \
+        -DUSE_SYSTEM_SimpleGVXR=ON \
+        -DSimpleGVXR_DIR=$DESTINATION//SimpleGVXR-1.0.0 \
+        -DBUILD_CSHARP=$BUILD_CSHARP \
+        -DBUILD_JAVA=$BUILD_JAVA \
+        -DBUILD_OCTAVE=$BUILD_OCTAVE \
+        -DBUILD_PERL=$BUILD_PERL \
+        -DBUILD_PYTHON2=$BUILD_PYTHON2 \
+        -DBUILD_PYTHON3=$BUILD_PYTHON3 \
+        -DBUILD_R=$BUILD_R \
+        -DBUILD_RUBY=$BUILD_RUBY \
+        -DBUILD_TCL=$BUILD_TCL \
+    > ../Wrappers_cmake.out.log 2> ../Wrappers_cmake.err.log
+
+
+    read -p "Do you want to review (and tweak) Wrappers build settings using ccmake (for advanced users)? (Y/N)  " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        ccmake .
+    fi
+
+
+    echo "Build Wrappers using make"
+    echo
+    make > ../Wrappers_make.out.log 2> ../Wrappers_make.err.log
+
+    echo "Install Wrappers in $DESTINATION"
+    echo
+    make install >> install.log 2>> ../install.err.log
+
+    if [ $BUILD_PYTHON3 == "ON"]
+    then
+        read -p "Install gvxrPython3 for all users? (Y/N)  " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            echo "Install gvxrPython3"
+            sudo make install-gvxrPython3
+        fi
+    fi
 fi
 
 
-# Test the python3 package
-cd python3
-echo "Test the python3 package"
-python3 test.py
+
+# Run make test
+# Run wrappers' test
