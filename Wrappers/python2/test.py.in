@@ -17,6 +17,10 @@ except ImportError:
 import gvxrPython2 as gvxr
 
 
+# Print the library versions
+print (gvxr.getVersionOfSimpleGVXR())
+print (gvxr.getVersionOfCoreGVXR())
+
 # Create the subplot first
 # If called later, it crashes on my Macbook Pro
 if use_matplotlib:
