@@ -39,6 +39,8 @@
     <member refid="_simple_g_v_x_r_8h_1aa2d38b8483e2ca9fe23259b383859314" kind="function"><name>subtractMesh</name></member>
     <member refid="_simple_g_v_x_r_8h_1ac4faad08043c8b6b16e23ee7e772efb3" kind="function"><name>getNumberOfChildren</name></member>
     <member refid="_simple_g_v_x_r_8h_1a2540ae0646c910ba1c68f468d71770f8" kind="function"><name>getChildLabel</name></member>
+    <member refid="_simple_g_v_x_r_8h_1af48d8fdac5cd08f999ac53317bea21d2" kind="function"><name>getLocalTransformationMatrix</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a9647a01539f7e68416e8dc7a1f332dff" kind="function"><name>setLocalTransformationMatrix</name></member>
     <member refid="_simple_g_v_x_r_8h_1a0cc80f5ef79f06b447bec495f5c97c68" kind="function"><name>displayNode</name></member>
     <member refid="_simple_g_v_x_r_8h_1a7dac7c6d68422b7e86944435a9a035f4" kind="function"><name>invertNormalVectors</name></member>
     <member refid="_simple_g_v_x_r_8h_1aed64e5b84cf09a952cafb0e24a86d693" kind="function"><name>setColor</name></member>
@@ -88,6 +90,10 @@
     <member refid="_simple_g_v_x_r_8h_1a43893e298d8b93bf427b2ada57fe859d" kind="function"><name>setWindowSize</name></member>
     <member refid="_simple_g_v_x_r_8h_1a107a2ab7ffc8f12ddf0059da92cac177" kind="function"><name>displayScene</name></member>
     <member refid="_simple_g_v_x_r_8h_1ad5f2ad0bc3d3a8faec876665b38e98e7" kind="function"><name>renderLoop</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a3198dbf5a2a5db26f3ff660bc096623e" kind="function"><name>startArcBallRotation</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a9f3c730eb6d54b2ccbfe188b1f0e8d48" kind="function"><name>stopArcBallRotation</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a63a0fc9976892d417b8d0adb40f80e9e" kind="function"><name>cursorPositionCallback</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ae4b6f4d3fd3cd18f74f002d5a7ce9224" kind="function"><name>scrollCallback</name></member>
     <member refid="_simple_g_v_x_r_8h_1ad83afb6f214408b967c83f16674e1ceb" kind="function"><name>showWindow</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3f6fb7d5c610d87e677add575fb901fd" kind="function"><name>hideWindow</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3998fea4e05c76a1fd2d37974a645ad0" kind="function"><name>destroyWindow</name></member>

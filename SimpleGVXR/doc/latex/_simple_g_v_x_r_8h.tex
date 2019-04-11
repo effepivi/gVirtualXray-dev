@@ -89,6 +89,10 @@ unsigned int \mbox{\hyperlink{_simple_g_v_x_r_8h_ac4faad08043c8b6b16e23ee7e772ef
 \begin{DoxyCompactList}\small\item\em Get the number of children of a node in the scenegraph. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{_simple_g_v_x_r_8h_a2540ae0646c910ba1c68f468d71770f8}{get\+Child\+Label}} (const std\+::string \&a\+Label, unsigned int i)
 \begin{DoxyCompactList}\small\item\em Accessor on the i-\/th child\textquotesingle{}s label in the list of children of a given node in the scenegraph. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{_simple_g_v_x_r_8h_af48d8fdac5cd08f999ac53317bea21d2}{get\+Local\+Transformation\+Matrix}} (const std\+::string \&a\+Label)
+\item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a9647a01539f7e68416e8dc7a1f332dff}{set\+Local\+Transformation\+Matrix}} (const std\+::string \&a\+Label, const std\+::vector$<$ double $>$ \&a\+Matrix)
+\begin{DoxyCompactList}\small\item\em Set the local transformation matrix of a given node in the scenegraph. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a0cc80f5ef79f06b447bec495f5c97c68}\label{_simple_g_v_x_r_8h_a0cc80f5ef79f06b447bec495f5c97c68}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a0cc80f5ef79f06b447bec495f5c97c68}{display\+Node}} (const std\+::string \&a\+Label)
 \begin{DoxyCompactList}\small\item\em Display the scenegraph node using Open\+GL. \end{DoxyCompactList}\item 
@@ -219,6 +223,16 @@ void \mbox{\hyperlink{_simple_g_v_x_r_8h_a107a2ab7ffc8f12ddf0059da92cac177}{disp
 \item 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_ad5f2ad0bc3d3a8faec876665b38e98e7}{render\+Loop}} (int a\+Window\+ID=-\/1)
 \item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a3198dbf5a2a5db26f3ff660bc096623e}{start\+Arc\+Ball\+Rotation}} (double x, double y)
+\item 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a9f3c730eb6d54b2ccbfe188b1f0e8d48}{stop\+Arc\+Ball\+Rotation}} ()
+\item 
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a63a0fc9976892d417b8d0adb40f80e9e}\label{_simple_g_v_x_r_8h_a63a0fc9976892d417b8d0adb40f80e9e}} 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a63a0fc9976892d417b8d0adb40f80e9e}{cursor\+Position\+Callback}} (double x, double y, int a\+Viewport\+Width, int a\+Viewport\+Height)
+\begin{DoxyCompactList}\small\item\em Call this function when the user moves the mouse. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_ae4b6f4d3fd3cd18f74f002d5a7ce9224}\label{_simple_g_v_x_r_8h_ae4b6f4d3fd3cd18f74f002d5a7ce9224}} 
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_ae4b6f4d3fd3cd18f74f002d5a7ce9224}{scroll\+Callback}} (double xoffset, double yoffset)
+\begin{DoxyCompactList}\small\item\em Call this function when the user scrolls. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ad83afb6f214408b967c83f16674e1ceb}\label{_simple_g_v_x_r_8h_ad83afb6f214408b967c83f16674e1ceb}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_ad83afb6f214408b967c83f16674e1ceb}{show\+Window}} (int a\+Window\+ID=-\/1)
 \begin{DoxyCompactList}\small\item\em Make an Open\+GL context visible and display a window. \end{DoxyCompactList}\item 
@@ -603,7 +617,22 @@ the diffuse colour
 \subsubsection{\texorpdfstring{get\+Linear\+Attenuation\+Coefficient()}{getLinearAttenuationCoefficient()}}
 {\footnotesize\ttfamily double get\+Linear\+Attenuation\+Coefficient (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{double}]{an\+Energy,  }\item[{const std\+::string \&}]{a\+Unit\+Of\+Energy }\end{DoxyParamCaption})}
 
-Accessor on the linear attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. \mbox{\Hypertarget{_simple_g_v_x_r_8h_a78353c7c2c0cd41cbe00f34da798c4f6}\label{_simple_g_v_x_r_8h_a78353c7c2c0cd41cbe00f34da798c4f6}} 
+Accessor on the linear attenuation coefficient at a given energy corresponding to the material properties of a polygon mesh. \mbox{\Hypertarget{_simple_g_v_x_r_8h_af48d8fdac5cd08f999ac53317bea21d2}\label{_simple_g_v_x_r_8h_af48d8fdac5cd08f999ac53317bea21d2}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Local\+Transformation\+Matrix@{get\+Local\+Transformation\+Matrix}}
+\index{get\+Local\+Transformation\+Matrix@{get\+Local\+Transformation\+Matrix}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{get\+Local\+Transformation\+Matrix()}{getLocalTransformationMatrix()}}
+{\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Local\+Transformation\+Matrix (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
+
+Accessor on the local transformation matrix of a given node in the scenegraph. If the node does not exist, the identity matrix is returned. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em a\+Label} & the label in the scenegraph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the corresponding local transformation matrix 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a78353c7c2c0cd41cbe00f34da798c4f6}\label{_simple_g_v_x_r_8h_a78353c7c2c0cd41cbe00f34da798c4f6}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Major\+Version\+Of\+Core\+G\+V\+XR@{get\+Major\+Version\+Of\+Core\+G\+V\+XR}}
 \index{get\+Major\+Version\+Of\+Core\+G\+V\+XR@{get\+Major\+Version\+Of\+Core\+G\+V\+XR}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
 \subsubsection{\texorpdfstring{get\+Major\+Version\+Of\+Core\+G\+V\+X\+R()}{getMajorVersionOfCoreGVXR()}}
@@ -1089,6 +1118,23 @@ Set the up-\/vector defining the orientation of the X-\/ray detector.
 {\em z} & the component of the vector along the Z-\/axis \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a9647a01539f7e68416e8dc7a1f332dff}\label{_simple_g_v_x_r_8h_a9647a01539f7e68416e8dc7a1f332dff}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Local\+Transformation\+Matrix@{set\+Local\+Transformation\+Matrix}}
+\index{set\+Local\+Transformation\+Matrix@{set\+Local\+Transformation\+Matrix}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{set\+Local\+Transformation\+Matrix()}{setLocalTransformationMatrix()}}
+{\footnotesize\ttfamily void set\+Local\+Transformation\+Matrix (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label,  }\item[{const std\+::vector$<$ double $>$ \&}]{a\+Matrix }\end{DoxyParamCaption})}
+
+
+
+Set the local transformation matrix of a given node in the scenegraph. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a\+Label} & the label in the scenegraph \\
+\hline
+{\em a\+Matrix} & the local transformation matrix \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a5f456fc99da9709f5af260c7f7c2c722}\label{_simple_g_v_x_r_8h_a5f456fc99da9709f5af260c7f7c2c722}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!set\+Mass\+Attenuation\+Coefficient@{set\+Mass\+Attenuation\+Coefficient}}
 \index{set\+Mass\+Attenuation\+Coefficient@{set\+Mass\+Attenuation\+Coefficient}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
@@ -1122,7 +1168,19 @@ Set the position of the X-\/ray source.
 {\em a\+Unit\+Of\+Length} & the unit of length corresponding to the x, y and z parameters. Acceptable values are\+: \char`\"{}um\char`\"{}, \char`\"{}micrometre\char`\"{}, \char`\"{}micrometer\char`\"{}, \char`\"{}mm\char`\"{}, \char`\"{}millimetre\char`\"{}, \char`\"{}millimeter\char`\"{}, \char`\"{}cm\char`\"{}, \char`\"{}centimetre\char`\"{}, \char`\"{}centimeter\char`\"{}, \char`\"{}dm\char`\"{}, \char`\"{}decimetre\char`\"{}, \char`\"{}decimeter\char`\"{}, \char`\"{}m\char`\"{}, \char`\"{}metre\char`\"{}, \char`\"{}meter\char`\"{}, \char`\"{}dam\char`\"{}, \char`\"{}decametre\char`\"{}, \char`\"{}decameter\char`\"{}, \char`\"{}hm\char`\"{}, \char`\"{}hectometre\char`\"{}, \char`\"{}hectometer\char`\"{}, \char`\"{}km\char`\"{}, \char`\"{}kilometre\char`\"{}, \char`\"{}kilometer\char`\"{} \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{_simple_g_v_x_r_8h_aa2d38b8483e2ca9fe23259b383859314}\label{_simple_g_v_x_r_8h_aa2d38b8483e2ca9fe23259b383859314}} 
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a3198dbf5a2a5db26f3ff660bc096623e}\label{_simple_g_v_x_r_8h_a3198dbf5a2a5db26f3ff660bc096623e}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!start\+Arc\+Ball\+Rotation@{start\+Arc\+Ball\+Rotation}}
+\index{start\+Arc\+Ball\+Rotation@{start\+Arc\+Ball\+Rotation}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{start\+Arc\+Ball\+Rotation()}{startArcBallRotation()}}
+{\footnotesize\ttfamily void start\+Arc\+Ball\+Rotation (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption})}
+
+Call this function when the user starts an arc-\/ball rotation (e.\+g. left-\/mouse button click in the 3-\/D visualisation window). \mbox{\Hypertarget{_simple_g_v_x_r_8h_a9f3c730eb6d54b2ccbfe188b1f0e8d48}\label{_simple_g_v_x_r_8h_a9f3c730eb6d54b2ccbfe188b1f0e8d48}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!stop\+Arc\+Ball\+Rotation@{stop\+Arc\+Ball\+Rotation}}
+\index{stop\+Arc\+Ball\+Rotation@{stop\+Arc\+Ball\+Rotation}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{stop\+Arc\+Ball\+Rotation()}{stopArcBallRotation()}}
+{\footnotesize\ttfamily void stop\+Arc\+Ball\+Rotation (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Call this function when the user stops an arc-\/ball rotation (e.\+g. release the left-\/mouse button click in the 3-\/D visualisation window). \mbox{\Hypertarget{_simple_g_v_x_r_8h_aa2d38b8483e2ca9fe23259b383859314}\label{_simple_g_v_x_r_8h_aa2d38b8483e2ca9fe23259b383859314}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!subtract\+Mesh@{subtract\+Mesh}}
 \index{subtract\+Mesh@{subtract\+Mesh}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
 \subsubsection{\texorpdfstring{subtract\+Mesh()}{subtractMesh()}}

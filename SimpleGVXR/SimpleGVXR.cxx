@@ -122,8 +122,8 @@ void quit();
 void errorCallback(int error, const char* description);
 void initialiseXRayRenderer();
 void initViewer();
-void computeRotation(GLFWwindow* apWindow, gVirtualXRay::MATRIX4& aRotationMatrix);
-gVirtualXRay::Vec3<GLfloat> getArcballVector(GLFWwindow* apWindow, int x, int y);
+void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix, int aViewportWidth, int aViewportHeight);
+gVirtualXRay::Vec3<GLfloat> getArcballVector(int x, int y, int aViewportWidth, int aViewportHeight);
 float radian2degree(float anAngle);
 std::vector<std::vector<float> > getVectorImage(const gVirtualXRay::Image<float>& anImage);
 gVirtualXRay::MATRIX4 Vector2gvxrMatrix(const std::vector<std::vector<float> >& aNumpyMatrix);
@@ -770,6 +770,61 @@ std::string getChildLabel(const std::string& aLabel, unsigned int i)
 	}
 }
 
+
+//-------------------------------------------------------------------------
+std::vector<double> getLocalTransformationMatrix(const std::string& aLabel)
+//-------------------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+	}
+
+	const gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// The node exists
+	if (p_node)
+	{
+		// Return its local transformation matrix
+		return p_node->getLocalTransformationMatrix().getAsVector();
+	}
+	// The node does not exist
+	else
+	{
+		// Return the identity matrix
+		return gVirtualXRay::MATRIX4().getAsVector();
+	}
+}
+
+
+//-------------------------------------------------------------------
+void setLocalTransformationMatrix(const std::string& aLabel,
+		                          const std::vector<double>& aMatrix)
+//-------------------------------------------------------------------
+{
+	// The scenegraph does not exist
+	if (!g_p_scene_graph.get())
+	{
+		// Create a scenegraph
+    	g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+	}
+
+	gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+	// The node exists
+	if (p_node)
+	{
+		// Set its local transformation matrix
+		p_node->setLocalTransformation(gVirtualXRay::MATRIX4(aMatrix));
+	}
+	// The node does not exist
+	//else
+	//{
+		// Do nothing
+	//}
+}
 
 //-----------------------------------------
 void displayNode(const std::string& aLabel)
@@ -2575,6 +2630,50 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 
+void startArcBallRotation(double x, double y)
+{
+	g_last_x_position = x;
+	g_last_y_position = y;
+
+	g_current_x_position = x;
+	g_current_y_position = y;
+
+	g_use_arc_ball = true;
+}
+
+
+void stopArcBallRotation()
+{
+	g_use_arc_ball = false;
+}
+
+
+void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight)
+{
+	g_current_x_position = x;
+	g_current_y_position = y;
+
+	computeRotation(g_scene_rotation_matrix, aViewportWidth, aViewportHeight);
+}
+
+
+void scrollCallback(double xoffset, double yoffset)
+{
+	// Scrolling along the Y-axis
+	if (fabs(yoffset) > EPSILON)
+	{
+		g_use_arc_ball = false;
+		g_zoom += yoffset * gVirtualXRay::cm;
+
+
+		gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                  0.0, 0.0, 0.0,
+                                  0.0, 1.0, 0.0);
+	}
+}
+
+
+
 //--------------------------------------------
 void mouseButtonCallback(GLFWwindow* apWindow,
 						 int aButton,
@@ -2588,23 +2687,17 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 	// Use the arc ball
 	if (g_button_state == GLFW_PRESS)
 	{
-		g_use_arc_ball = true;
+		double xpos(0);
+		double ypos(0);
+		glfwGetCursorPos (apWindow, &xpos, &ypos);
+
+		startArcBallRotation(xpos, ypos);
 	}
 	// Stop using the arc ball
 	else
 	{
-		g_use_arc_ball = false;
+		stopArcBallRotation();
 	}
-
-	double xpos(0);
-	double ypos(0);
-	glfwGetCursorPos (apWindow, &xpos, &ypos);
-
-	g_last_x_position = xpos;
-	g_last_y_position = ypos;
-
-	g_current_x_position = xpos;
-	g_current_y_position = ypos;
 }
 
 
@@ -2612,11 +2705,11 @@ void mouseButtonCallback(GLFWwindow* apWindow,
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 //--------------------------------------------------------------
 {
-	g_current_x_position = x;
-	g_current_y_position = y;
+	int viewport_width, viewport_height;
+	glfwGetWindowSize(apWindow, &viewport_width, &viewport_height);
 
 	// Compute the rotation
-	computeRotation(apWindow, g_scene_rotation_matrix);
+	cursorPositionCallback(x, y, viewport_width, viewport_height);
 }
 
 
@@ -2624,17 +2717,7 @@ void cursorPosCallback(GLFWwindow* apWindow, double x, double y)
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset)
 //-----------------------------------------------------------------------
 {
-	// Scrolling along the Y-axis
-	if (fabs(yoffset) > EPSILON)
-	{
-		g_use_arc_ball = false;
-		g_zoom += yoffset * gVirtualXRay::cm;
-
-
-		gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
-                                  0.0, 0.0, 0.0,
-                                  0.0, 1.0, 0.0);
-	}
+	scrollCallback(xoffset, yoffset);
 }
 
 
@@ -3111,16 +3194,15 @@ void initViewer()
 
 
 //--------------------------------------------
-void computeRotation(GLFWwindow* apWindow,
-		gVirtualXRay::MATRIX4& aRotationMatrix)
+void computeRotation(gVirtualXRay::MATRIX4& aRotationMatrix, int aViewportWidth, int aViewportHeight)
 //--------------------------------------------
 {
 	if (g_use_arc_ball)
 	{
 		if (g_current_x_position != g_last_x_position || g_current_y_position != g_last_y_position)
 		{
-			gVirtualXRay::Vec3<GLfloat> va(getArcballVector(apWindow, g_last_x_position,    g_last_y_position));
-			gVirtualXRay::Vec3<GLfloat> vb(getArcballVector(apWindow, g_current_x_position, g_current_y_position));
+			gVirtualXRay::Vec3<GLfloat> va(getArcballVector(g_last_x_position,    g_last_y_position, aViewportWidth, aViewportHeight));
+			gVirtualXRay::Vec3<GLfloat> vb(getArcballVector(g_current_x_position, g_current_y_position, aViewportWidth, aViewportHeight));
 
 			float angle(ROTATION_SPEED * radian2degree(acos(std::min(1.0, va.dotProduct(vb)))));
 
@@ -3142,16 +3224,12 @@ void computeRotation(GLFWwindow* apWindow,
 }
 
 
-//--------------------------------------------------
-gVirtualXRay::Vec3<GLfloat> getArcballVector(GLFWwindow* apWindow,
-                               int x, int y)
-//--------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+gVirtualXRay::Vec3<GLfloat> getArcballVector(int x, int y, int aViewportWidth, int aViewportHeight)
+//-------------------------------------------------------------------------------------------------
 {
-	int width, height;
-	glfwGetWindowSize(apWindow, &width, &height);
-
-	gVirtualXRay::Vec3<GLfloat> P(2.0 * float(x) / float(width) - 1.0,
-			2.0 * float(y) / float(height) - 1.0,
+	gVirtualXRay::Vec3<GLfloat> P(2.0 * float(x) / float(aViewportWidth) - 1.0,
+			2.0 * float(y) / float(aViewportHeight) - 1.0,
 			0);
 
 	P.setY(-P.getY());

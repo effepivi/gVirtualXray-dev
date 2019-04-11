@@ -213,6 +213,11 @@ Returns
 the right-vector  
 ";
 
+%feature("docstring") scrollCallback "
+
+Call this function when the user scrolls.  
+";
+
 %feature("docstring") invertNormalVectors "
 
 Invert the normal vectors of a given polygon mesh.  
@@ -679,6 +684,12 @@ Returns
 the label corresponding to the i-th child  
 ";
 
+%feature("docstring") stopArcBallRotation "
+
+Call this function when the user stops an arc-ball rotation (e.g. release the
+left-mouse button click in the 3-D visualisation window).  
+";
+
 %feature("docstring") setSourcePosition "
 
 Set the position of the X-ray source.  
@@ -793,6 +804,18 @@ Parameters
     the alpha channel  
 ";
 
+%feature("docstring") setLocalTransformationMatrix "
+
+Set the local transformation matrix of a given node in the scenegraph.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label in the scenegraph  
+* `aMatrix` :  
+    the local transformation matrix  
+";
+
 %feature("docstring") initializeGLEW "
 
 Initialise GLEW if it is supported.  
@@ -805,6 +828,21 @@ Accessor on the ambient colour of the material of a given polygon mesh.
 Returns
 -------
 the ambient colour  
+";
+
+%feature("docstring") getLocalTransformationMatrix "
+
+Accessor on the local transformation matrix of a given node in the scenegraph.
+If the node does not exist, the identity matrix is returned.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label in the scenegraph  
+
+Returns
+-------
+the corresponding local transformation matrix  
 ";
 
 %feature("docstring") getImageRow "
@@ -901,6 +939,11 @@ previously been set, i.e.
 *   Scanned object geometry  
 ";
 
+%feature("docstring") cursorPositionCallback "
+
+Call this function when the user moves the mouse.  
+";
+
 %feature("docstring") enableArtifactFilteringOnCPU "
 
 Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-
@@ -965,6 +1008,12 @@ Accessor on the energy bins of the beam spectrum.
 
 Translate the 3-D scene (all the polygon meshes will be affected but not
 modified).  
+";
+
+%feature("docstring") startArcBallRotation "
+
+Call this function when the user starts an arc-ball rotation (e.g. left-mouse
+button click in the 3-D visualisation window).  
 ";
 
 %feature("docstring") renderLoop "

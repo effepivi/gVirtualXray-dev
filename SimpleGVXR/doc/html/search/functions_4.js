@@ -21,6 +21,7 @@ var searchData=
   ['getlastsinogram',['getLastSinogram',['../_simple_g_v_x_r_8h.html#a31cac5db95d54fc7013ef6da1d9ae0bb',1,'SimpleGVXR.h']]],
   ['getlastxrayimage',['getLastXRayImage',['../_simple_g_v_x_r_8h.html#ab0814f041176d63ce590dc46e8721f5d',1,'SimpleGVXR.h']]],
   ['getlinearattenuationcoefficient',['getLinearAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#a5f2a0cb6b7cbd23890f9376b8fd4c1ff',1,'SimpleGVXR.h']]],
+  ['getlocaltransformationmatrix',['getLocalTransformationMatrix',['../_simple_g_v_x_r_8h.html#af48d8fdac5cd08f999ac53317bea21d2',1,'SimpleGVXR.h']]],
   ['getmajorversionofcoregvxr',['getMajorVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#a78353c7c2c0cd41cbe00f34da798c4f6',1,'SimpleGVXR.h']]],
   ['getmajorversionofsimplegvxr',['getMajorVersionOfSimpleGVXR',['../_simple_g_v_x_r_8h.html#a1495a8a83ee7a799ed9375bc540286cc',1,'SimpleGVXR.h']]],
   ['getmassattenuationcoefficient',['getMassAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#ac856bc9af62ef66b7ecf7d9db884b490',1,'SimpleGVXR.h']]],

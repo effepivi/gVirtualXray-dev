@@ -606,6 +606,27 @@ std::string getChildLabel(const std::string& aLabel, unsigned int i);
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the local transformation matrix of a given node in the scenegraph.
+/// If the node does not exist, the identity matrix is returned.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @return the corresponding local transformation matrix
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getLocalTransformationMatrix(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Set the local transformation matrix of a given node in the scenegraph.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @param aMatrix:	the local transformation matrix
+ */
+//------------------------------------------------------------------------------
+void setLocalTransformationMatrix(const std::string& aLabel, const std::vector<double>& aMatrix);
+
+
+//------------------------------------------------------------------------------
 /// Display the scenegraph node using OpenGL.
 /*
  *  @param aLabel:			the label of the polygon mesh
@@ -1172,6 +1193,46 @@ void displayScene(int aWindowID = -1);
  */
 //------------------------------------------------------------------------------
 void renderLoop(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Call this function when the user starts an arc-ball rotation
+/// (e.g. left-mouse button click in the 3-D visualisation window).
+/*
+ *  @param x:	the cursor x-axis position in the viewport coordinate system
+ *  @param y:	the cursor y-axis position in the viewport coordinate system
+ */
+//------------------------------------------------------------------------------
+void startArcBallRotation(double x, double y);
+
+
+//------------------------------------------------------------------------------
+/// Call this function when the user stops an arc-ball rotation
+/// (e.g. release the left-mouse button click in the 3-D visualisation window).
+//------------------------------------------------------------------------------
+void stopArcBallRotation();
+
+
+//------------------------------------------------------------------------------
+/// Call this function when the user moves the mouse
+/*
+ *  @param x:	the cursor x-axis position in the viewport coordinate system
+ *  @param y:	the cursor y-axis position in the viewport coordinate system
+ *  @param aViewportWidth:	the size of the viewport along the x-axis
+ *  @param aViewportHeight:	the size of the viewport along the y-axis
+ */
+//------------------------------------------------------------------------------
+void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight);
+
+
+//------------------------------------------------------------------------------
+/// Call this function when the user scrolls
+/*
+ *  @param xoffset:	the scroll offset along the x-axis (not used)
+ *  @param yoffset:	the scroll offset along the y-axis (used for zooming in and out)
+ */
+//------------------------------------------------------------------------------
+void scrollCallback(double xoffset, double yoffset);
 
 
 //------------------------------------------------------------------------------

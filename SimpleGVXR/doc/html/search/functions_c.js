@@ -5,6 +5,7 @@ var searchData=
   ['savelastxrayimage',['saveLastXRayImage',['../_simple_g_v_x_r_8h.html#aebd71734841339eef86eafecc291a272',1,'SimpleGVXR.h']]],
   ['scalenode',['scaleNode',['../_simple_g_v_x_r_8h.html#a6c702a3df32eee4e0a0c8033e5cbd6aa',1,'SimpleGVXR.h']]],
   ['scalescene',['scaleScene',['../_simple_g_v_x_r_8h.html#a099498a73392a1b97d4feb8d44fdba6b',1,'SimpleGVXR.h']]],
+  ['scrollcallback',['scrollCallback',['../_simple_g_v_x_r_8h.html#ae4b6f4d3fd3cd18f74f002d5a7ce9224',1,'SimpleGVXR.h']]],
   ['setcolor',['setColor',['../_simple_g_v_x_r_8h.html#aed64e5b84cf09a952cafb0e24a86d693',1,'SimpleGVXR.h']]],
   ['setcolour',['setColour',['../_simple_g_v_x_r_8h.html#aa4ed78a91448f99ee23c4cf7f3845213',1,'SimpleGVXR.h']]],
   ['setcompound',['setCompound',['../_simple_g_v_x_r_8h.html#a7667215c4b257434c1fdb46b8278f830',1,'SimpleGVXR.h']]],
@@ -18,6 +19,7 @@ var searchData=
   ['sethounsfieldvalue',['setHounsfieldValue',['../_simple_g_v_x_r_8h.html#a745f0f88e63e0c61d85bafd05b3c8c16',1,'SimpleGVXR.h']]],
   ['sethu',['setHU',['../_simple_g_v_x_r_8h.html#a666f02786b381f6674403e3cd0ea0701',1,'SimpleGVXR.h']]],
   ['setlinearattenuationcoefficient',['setLinearAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#a40b33ab5dc57354052c2c8503034b3d7',1,'SimpleGVXR.h']]],
+  ['setlocaltransformationmatrix',['setLocalTransformationMatrix',['../_simple_g_v_x_r_8h.html#a9647a01539f7e68416e8dc7a1f332dff',1,'SimpleGVXR.h']]],
   ['setmassattenuationcoefficient',['setMassAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#a5f456fc99da9709f5af260c7f7c2c722',1,'SimpleGVXR.h']]],
   ['setmixture',['setMixture',['../_simple_g_v_x_r_8h.html#a6cc34fdb74aec791b764c42f3452087a',1,'SimpleGVXR.h']]],
   ['setmonochromatic',['setMonoChromatic',['../_simple_g_v_x_r_8h.html#a1e10a1493cd2fd2d3299abc9c519b3e9',1,'SimpleGVXR.h']]],
@@ -28,5 +30,7 @@ var searchData=
   ['setsourceposition',['setSourcePosition',['../_simple_g_v_x_r_8h.html#ac1d17ed7feb9636b0b6de18a7762c1e7',1,'SimpleGVXR.h']]],
   ['setwindowsize',['setWindowSize',['../_simple_g_v_x_r_8h.html#a43893e298d8b93bf427b2ada57fe859d',1,'SimpleGVXR.h']]],
   ['showwindow',['showWindow',['../_simple_g_v_x_r_8h.html#ad83afb6f214408b967c83f16674e1ceb',1,'SimpleGVXR.h']]],
+  ['startarcballrotation',['startArcBallRotation',['../_simple_g_v_x_r_8h.html#a3198dbf5a2a5db26f3ff660bc096623e',1,'SimpleGVXR.h']]],
+  ['stoparcballrotation',['stopArcBallRotation',['../_simple_g_v_x_r_8h.html#a9f3c730eb6d54b2ccbfe188b1f0e8d48',1,'SimpleGVXR.h']]],
   ['subtractmesh',['subtractMesh',['../_simple_g_v_x_r_8h.html#aa2d38b8483e2ca9fe23259b383859314',1,'SimpleGVXR.h']]]
 ];
