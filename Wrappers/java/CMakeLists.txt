@@ -17,6 +17,11 @@ IF(${CMAKE_VERSION} VERSION_LESS "3.8.0")
 ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
     SWIG_ADD_LIBRARY(${module} LANGUAGE java SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+
+set_property(
+    SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i
+    PROPERTY SWIG_MODULE_NAME ${module})
+
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${JNI_LIBRARIES})
 
 configure_file(test.java.in ${CMAKE_CURRENT_BINARY_DIR}/test.java)
@@ -27,4 +32,3 @@ FILE(COPY runJavaTest.sh
   			GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 add_jar(testJava ${CMAKE_CURRENT_BINARY_DIR}/test.java)
-

@@ -18,6 +18,11 @@ IF(${CMAKE_VERSION} VERSION_LESS "3.8.0")
 ELSE (${CMAKE_VERSION} VERSION_LESS "3.8.0")
     SWIG_ADD_LIBRARY(${module} LANGUAGE python SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 ENDIF (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+
+set_property(
+    SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i
+    PROPERTY SWIG_MODULE_NAME ${module})
+
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PYTHON_LIBRARIES})
 
 configure_file(test.py.in ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.py)
