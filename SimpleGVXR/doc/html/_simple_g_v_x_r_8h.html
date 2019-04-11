@@ -350,14 +350,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a43893e298d8b93bf427b2ada57fe859d">setWindowSize</a> (int aWidth, int aHeight, int aWindowID=-1)</td></tr>
 <tr class="memdesc:a43893e298d8b93bf427b2ada57fe859d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an OpenGL context and display it in a window. <br /></td></tr>
 <tr class="separator:a43893e298d8b93bf427b2ada57fe859d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a107a2ab7ffc8f12ddf0059da92cac177"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a107a2ab7ffc8f12ddf0059da92cac177">displayScene</a> (int aWindowID=-1)</td></tr>
-<tr class="separator:a107a2ab7ffc8f12ddf0059da92cac177"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70b00d6fbffedb6332cbf300fae03a6c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a70b00d6fbffedb6332cbf300fae03a6c">displayScene</a> (bool aSceneRotationFlag=true, int aWindowID=-1)</td></tr>
+<tr class="separator:a70b00d6fbffedb6332cbf300fae03a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5f2ad0bc3d3a8faec876665b38e98e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#ad5f2ad0bc3d3a8faec876665b38e98e7">renderLoop</a> (int aWindowID=-1)</td></tr>
 <tr class="separator:ad5f2ad0bc3d3a8faec876665b38e98e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3198dbf5a2a5db26f3ff660bc096623e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a3198dbf5a2a5db26f3ff660bc096623e">startArcBallRotation</a> (double x, double y)</td></tr>
 <tr class="separator:a3198dbf5a2a5db26f3ff660bc096623e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f3c730eb6d54b2ccbfe188b1f0e8d48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a9f3c730eb6d54b2ccbfe188b1f0e8d48">stopArcBallRotation</a> ()</td></tr>
 <tr class="separator:a9f3c730eb6d54b2ccbfe188b1f0e8d48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7b6643d296278d52d44e31e27333f96"><td class="memItemLeft" align="right" valign="top"><a id="af7b6643d296278d52d44e31e27333f96"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#af7b6643d296278d52d44e31e27333f96">usingArcBallRotation</a> ()</td></tr>
+<tr class="memdesc:af7b6643d296278d52d44e31e27333f96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if arc-ball rotation is currently in use. <br /></td></tr>
+<tr class="separator:af7b6643d296278d52d44e31e27333f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63a0fc9976892d417b8d0adb40f80e9e"><td class="memItemLeft" align="right" valign="top"><a id="a63a0fc9976892d417b8d0adb40f80e9e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a63a0fc9976892d417b8d0adb40f80e9e">cursorPositionCallback</a> (double x, double y, int aViewportWidth, int aViewportHeight)</td></tr>
 <tr class="memdesc:a63a0fc9976892d417b8d0adb40f80e9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call this function when the user moves the mouse. <br /></td></tr>
@@ -751,8 +755,8 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_s
 
 </div>
 </div>
-<a id="a107a2ab7ffc8f12ddf0059da92cac177"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a107a2ab7ffc8f12ddf0059da92cac177">&#9670;&nbsp;</a></span>displayScene()</h2>
+<a id="a70b00d6fbffedb6332cbf300fae03a6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70b00d6fbffedb6332cbf300fae03a6c">&#9670;&nbsp;</a></span>displayScene()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -760,9 +764,19 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_s
         <tr>
           <td class="memname">void displayScene </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>aWindowID</em> = <code>-1</code></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>aSceneRotationFlag</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>aWindowID</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

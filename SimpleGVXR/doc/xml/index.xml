@@ -88,10 +88,11 @@
     <member refid="_simple_g_v_x_r_8h_1a17e1064097a6183115c1fe81822e32ff" kind="function"><name>createOpenGLContext</name></member>
     <member refid="_simple_g_v_x_r_8h_1a1015e854787d4aac76ce7bd0778684ca" kind="function"><name>createWindow</name></member>
     <member refid="_simple_g_v_x_r_8h_1a43893e298d8b93bf427b2ada57fe859d" kind="function"><name>setWindowSize</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a107a2ab7ffc8f12ddf0059da92cac177" kind="function"><name>displayScene</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a70b00d6fbffedb6332cbf300fae03a6c" kind="function"><name>displayScene</name></member>
     <member refid="_simple_g_v_x_r_8h_1ad5f2ad0bc3d3a8faec876665b38e98e7" kind="function"><name>renderLoop</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3198dbf5a2a5db26f3ff660bc096623e" kind="function"><name>startArcBallRotation</name></member>
     <member refid="_simple_g_v_x_r_8h_1a9f3c730eb6d54b2ccbfe188b1f0e8d48" kind="function"><name>stopArcBallRotation</name></member>
+    <member refid="_simple_g_v_x_r_8h_1af7b6643d296278d52d44e31e27333f96" kind="function"><name>usingArcBallRotation</name></member>
     <member refid="_simple_g_v_x_r_8h_1a63a0fc9976892d417b8d0adb40f80e9e" kind="function"><name>cursorPositionCallback</name></member>
     <member refid="_simple_g_v_x_r_8h_1ae4b6f4d3fd3cd18f74f002d5a7ce9224" kind="function"><name>scrollCallback</name></member>
     <member refid="_simple_g_v_x_r_8h_1ad83afb6f214408b967c83f16674e1ceb" kind="function"><name>showWindow</name></member>

@@ -1169,11 +1169,13 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
 /// 3-D visualisation of the 3-D scene (source, detector, and scanned objects).
 /// Note that there is no interactive loop running.
 /*
+ *  @param aSceneRotationFlag:	true if the 3-D scene has to be rotated with the arc-ball method, false otherwise
+ *                      (default value: true)
  *  @param aWindowID:	the numerical ID of the corresponding context
  *                      (default value: -1, means that the active context will be used)
  */
 //------------------------------------------------------------------------------
-void displayScene(int aWindowID = -1);
+void displayScene(bool aSceneRotationFlag = true, int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
@@ -1211,6 +1213,15 @@ void startArcBallRotation(double x, double y);
 /// (e.g. release the left-mouse button click in the 3-D visualisation window).
 //------------------------------------------------------------------------------
 void stopArcBallRotation();
+
+
+//------------------------------------------------------------------------------
+/// Check if arc-ball rotation is currently in use.
+/*
+ *  @return true if arc-ball rotation is currently in use, false otherwise
+ */
+//------------------------------------------------------------------------------
+bool usingArcBallRotation();
 
 
 //------------------------------------------------------------------------------

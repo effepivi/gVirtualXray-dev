@@ -921,6 +921,11 @@ matrix.
 Accessor on the material label of a polygon mesh.  
 ";
 
+%feature("docstring") usingArcBallRotation "
+
+Check if arc-ball rotation is currently in use.  
+";
+
 %feature("docstring") translateNode "
 
 Translate a polygon mesh.  

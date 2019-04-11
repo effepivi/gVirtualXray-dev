@@ -117,7 +117,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void mouseButtonCallback(GLFWwindow* apWindow, int aButton, int aButtonState, int aModifierKey);
 void cursorPosCallback(GLFWwindow* apWindow, double x, double y);
 void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
-void render();
+void render(bool aSceneRotationFlag);
 void quit();
 void errorCallback(int error, const char* description);
 void initialiseXRayRenderer();
@@ -737,6 +737,9 @@ unsigned int getNumberOfChildren(const std::string& aLabel)
 	}
 	else
 	{
+		// Show warning message
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+
 		return 0;
 	}
 }
@@ -793,6 +796,9 @@ std::vector<double> getLocalTransformationMatrix(const std::string& aLabel)
 	// The node does not exist
 	else
 	{
+		// Show warning message
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+
 		// Return the identity matrix
 		return gVirtualXRay::MATRIX4().getAsVector();
 	}
@@ -820,10 +826,11 @@ void setLocalTransformationMatrix(const std::string& aLabel,
 		p_node->setLocalTransformation(gVirtualXRay::MATRIX4(aMatrix));
 	}
 	// The node does not exist
-	//else
-	//{
-		// Do nothing
-	//}
+	else
+	{
+		// Show warning message
+		cerr << "gvxrWarning:\tPolygonMesh " << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+	}
 }
 
 //-----------------------------------------
@@ -1830,9 +1837,9 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID)
 }
 
 
-//------------------------------
-void displayScene(int aWindowID)
-//------------------------------
+//-------------------------------------------------------
+void displayScene(bool aSceneRotationFlag, int aWindowID)
+//-------------------------------------------------------
 {
     // Display in the last window that has been created
     if (aWindowID == -1 && !g_has_own_gl_context)
@@ -1879,7 +1886,7 @@ void displayScene(int aWindowID)
             	}
 
         		// Display the 3D scene
-        		render();
+        		render(aSceneRotationFlag);
 
         		// Make sure all the OpenGL code is done
         		glFinish();
@@ -1942,7 +1949,7 @@ void renderLoop(int aWindowID/*, PyObject* aCallBack*/)
                 while (!glfwWindowShouldClose(search_window->second) && g_run_loop)
                 {
                 	// Render here
-                	displayScene(aWindowID);
+                	displayScene(true, aWindowID);
                 }
             }
         }
@@ -2648,6 +2655,12 @@ void stopArcBallRotation()
 }
 
 
+bool usingArcBallRotation()
+{
+	return (g_use_arc_ball);
+}
+
+
 void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight)
 {
 	g_current_x_position = x;
@@ -2746,9 +2759,9 @@ void rotateModelView(double anAngle, double x, double y, double z)
 }
 
 
-//-----------
-void render()
-//-----------
+//----------------------------------
+void render(bool aSceneRotationFlag)
+//----------------------------------
 {
 	try
 	{
@@ -2770,7 +2783,10 @@ void render()
         gVirtualXRay::pushModelViewMatrix();
 
         // Rotate the sample
-        gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
+        if (aSceneRotationFlag)
+        {
+        	gVirtualXRay::g_current_modelview_matrix *= g_scene_rotation_matrix;
+        }
 
         GLuint handle(0);
         handle = glGetUniformLocation(shader_id, "g_projection_matrix");

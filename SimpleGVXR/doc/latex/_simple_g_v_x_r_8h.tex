@@ -219,7 +219,7 @@ void \mbox{\hyperlink{_simple_g_v_x_r_8h_a1015e854787d4aac76ce7bd0778684ca}{crea
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a43893e298d8b93bf427b2ada57fe859d}\label{_simple_g_v_x_r_8h_a43893e298d8b93bf427b2ada57fe859d}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a43893e298d8b93bf427b2ada57fe859d}{set\+Window\+Size}} (int a\+Width, int a\+Height, int a\+Window\+ID=-\/1)
 \begin{DoxyCompactList}\small\item\em Create an Open\+GL context and display it in a window. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{_simple_g_v_x_r_8h_a107a2ab7ffc8f12ddf0059da92cac177}{display\+Scene}} (int a\+Window\+ID=-\/1)
+void \mbox{\hyperlink{_simple_g_v_x_r_8h_a70b00d6fbffedb6332cbf300fae03a6c}{display\+Scene}} (bool a\+Scene\+Rotation\+Flag=true, int a\+Window\+ID=-\/1)
 \item 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_ad5f2ad0bc3d3a8faec876665b38e98e7}{render\+Loop}} (int a\+Window\+ID=-\/1)
 \item 
@@ -227,6 +227,9 @@ void \mbox{\hyperlink{_simple_g_v_x_r_8h_a3198dbf5a2a5db26f3ff660bc096623e}{star
 \item 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a9f3c730eb6d54b2ccbfe188b1f0e8d48}{stop\+Arc\+Ball\+Rotation}} ()
 \item 
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_af7b6643d296278d52d44e31e27333f96}\label{_simple_g_v_x_r_8h_af7b6643d296278d52d44e31e27333f96}} 
+bool \mbox{\hyperlink{_simple_g_v_x_r_8h_af7b6643d296278d52d44e31e27333f96}{using\+Arc\+Ball\+Rotation}} ()
+\begin{DoxyCompactList}\small\item\em Check if arc-\/ball rotation is currently in use. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a63a0fc9976892d417b8d0adb40f80e9e}\label{_simple_g_v_x_r_8h_a63a0fc9976892d417b8d0adb40f80e9e}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a63a0fc9976892d417b8d0adb40f80e9e}{cursor\+Position\+Callback}} (double x, double y, int a\+Viewport\+Width, int a\+Viewport\+Height)
 \begin{DoxyCompactList}\small\item\em Call this function when the user moves the mouse. \end{DoxyCompactList}\item 
@@ -470,11 +473,11 @@ Compute the X-\/ray projection corresponding to the environment that has previou
 \item Beam spectrum
 \item Scanned object geometries
 \item Scanned object material properties 
-\end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a107a2ab7ffc8f12ddf0059da92cac177}\label{_simple_g_v_x_r_8h_a107a2ab7ffc8f12ddf0059da92cac177}} 
+\end{DoxyItemize}\mbox{\Hypertarget{_simple_g_v_x_r_8h_a70b00d6fbffedb6332cbf300fae03a6c}\label{_simple_g_v_x_r_8h_a70b00d6fbffedb6332cbf300fae03a6c}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!display\+Scene@{display\+Scene}}
 \index{display\+Scene@{display\+Scene}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
 \subsubsection{\texorpdfstring{display\+Scene()}{displayScene()}}
-{\footnotesize\ttfamily void display\+Scene (\begin{DoxyParamCaption}\item[{int}]{a\+Window\+ID = {\ttfamily -\/1} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void display\+Scene (\begin{DoxyParamCaption}\item[{bool}]{a\+Scene\+Rotation\+Flag = {\ttfamily true},  }\item[{int}]{a\+Window\+ID = {\ttfamily -\/1} }\end{DoxyParamCaption})}
 
 3-\/D visualisation of the 3-\/D scene (source, detector, and scanned objects). Note that there is no interactive loop running. \mbox{\Hypertarget{_simple_g_v_x_r_8h_ae7477b096b052fcd05997d7bd625d8b4}\label{_simple_g_v_x_r_8h_ae7477b096b052fcd05997d7bd625d8b4}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!empty\+Mesh@{empty\+Mesh}}
