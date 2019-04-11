@@ -125,6 +125,22 @@ template<typename T> Matrix4x4<T>::Matrix4x4(const T* apMatrix):
 }
 
 
+//--------------------------------------------------------------------------------
+template<typename T> Matrix4x4<T>::Matrix4x4(const std::vector<double>& apMatrix):
+//--------------------------------------------------------------------------------
+		m_small_matrix_up_to_date(false)
+//--------------------------------------------------------------------------------
+{
+	if (apMatrix.size() != 16)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The input matrix is not 4x4.");
+	}
+
+	for (unsigned int i = 0; i < 16; ++i)
+		m_p_4x4_data[i] = apMatrix[i];
+}
+
+
 //----------------------------------------------------
 template<typename T> void Matrix4x4<T>::loadIdentity()
 //----------------------------------------------------
@@ -150,6 +166,22 @@ template<typename T> void Matrix4x4<T>::loadIdentity()
 	m_p_4x4_data[15] = 1.0;
 	
 	m_small_matrix_up_to_date = false;
+}
+
+
+//----------------------------------------------------------------------------------------
+template<typename T>void  Matrix4x4<T>::setFromVector(const std::vector<double>& apMatrix)
+//----------------------------------------------------------------------------------------
+{
+	if (apMatrix.size() != 16)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "The input matrix is not 4x4.");
+	}
+
+	m_small_matrix_up_to_date = false;
+
+	for (unsigned int i = 0; i < 16; ++i)
+		m_p_4x4_data[i] = apMatrix[i];
 }
 
 
@@ -465,6 +497,21 @@ template<typename T> const T* Matrix4x4<T>::get3x3()
 	}
 
 	return (&m_p_3x3_data[0]);
+}
+
+
+//------------------------------------------------------------------------
+template<typename T> std::vector<double> Matrix4x4<T>::getAsVector() const
+//------------------------------------------------------------------------
+{
+	std::vector<double> temp;
+
+	for (unsigned int i = 0; i < 16; ++i)
+	{
+		temp.push_back(m_p_4x4_data[i]);
+	}
+
+	return (temp);
 }
 
 
