@@ -199,9 +199,31 @@ then
 fi
 
 
+echo "***********************************"
+echo "* Unit testing                    *"
+echo "***********************************"
+read -p "Will you want to run the unit tests? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    UNIT_TEST="ON"
+fi
+
+read -p "Will you want to run the wrapper tests? (Y/N)  " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    WRAPPER_TEST="ON"
+fi
+
 # Build and install the core library
 cd gvxr-build
 
+echo "*************************************"
+echo "* Configure, build and install gvxr *"
+echo "* (run the unit test, optional)     *"
+echo "*************************************"
+echo
 echo "Configure gvxr using CMake"
 echo "Please wait"
 echo
@@ -228,11 +250,21 @@ echo "Install gvxr in $DESTINATION"
 echo
 make install > install.log 2> ../install.err.log
 
+if [[ $UNIT_TEST == "ON" ]]
+then
+    echo "Run the unit tests"
+    echo
+    make test > test.log 2> test.err
+fi
 
 
 # Build and install the SimpleGVXR library
 cd ../SimpleGVXR-build
 
+echo "*******************************************"
+echo "* Configure, build and install SimpleGVXR *"
+echo "*******************************************"
+echo
 echo "Configure SimpleGVXR using CMake"
 echo
 cmake ../SimpleGVXR \
@@ -269,6 +301,10 @@ then
     echo "No wrapper to build."
     echo
 else
+    echo "*****************************************"
+    echo "* Configure, build and install Wrappers *"
+    echo "*****************************************"
+    echo
     echo "Configure Wrappers using CMake"
     echo
     cmake ../Wrappers \
@@ -306,7 +342,14 @@ else
     echo
     make install >> install.log 2>> ../install.err.log
 
-    if [ $BUILD_PYTHON3 == "ON"]
+    if [[ $UNIT_TEST == "ON" ]]
+    then
+        echo "Test the wrappers"
+        echo
+        #make test > test.log 2> test.err
+    fi
+
+    if [[ $BUILD_PYTHON3 == "ON" ]]
     then
         read -p "Install gvxrPython3 for all users? (Y/N)  " -n 1 -r
         echo
@@ -320,5 +363,4 @@ fi
 
 
 
-# Run make test
 # Run wrappers' test
