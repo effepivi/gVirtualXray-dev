@@ -32,3 +32,19 @@ FILE(COPY runJavaTest.sh
   			GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 add_jar(testJava ${CMAKE_CURRENT_BINARY_DIR}/test.java)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/testJava.jar
+    ${CMAKE_CURRENT_BINARY_DIR}/${module}.java
+    ../welsh-dragon-small.stl
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/${module}
+    COMPONENT Development)
+
+IF (UNIX)
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/runJavaTest.sh
+        ${CMAKE_CURRENT_BINARY_DIR}/lib${module}.so
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/${module}
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        COMPONENT Development)
+ENDIF (UNIX)
