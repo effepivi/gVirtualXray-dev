@@ -145,6 +145,13 @@ IF (NOT SWIG_FOUND)
     ENDIF (WIN32)
 ENDIF (NOT SWIG_FOUND)
 
+
+file(WRITE
+    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+    "echo Run all the tests.\n"
+)
+
+
 # SWIG has been found
 IF (SWIG_FOUND)
     INCLUDE (${SWIG_USE_FILE})
@@ -167,12 +174,21 @@ IF (SWIG_FOUND)
     option(BUILD_RUBY    "Build Ruby SWIG module" OFF)
     option(BUILD_TCL     "Build TCL SWIG module" OFF)
 
+
+
     IF (BUILD_PYTHON2 AND BUILD_PYTHON3)
         MESSAGE(FATAL_ERROR "Both variables BUILD_PYTHON2 and BUILD_PYTHON3 are ON. Choose either Python2 or Python3, not both.")
     ENDIF (BUILD_PYTHON2 AND BUILD_PYTHON3)
 
     IF (BUILD_CSHARP)
         add_subdirectory(csharp)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run C# test.\n"
+            "cd csharp;./runMonoTest.sh;cd ..\n"
+        )
+
     ENDIF (BUILD_CSHARP)
 
     IF (BUILD_LUA)
@@ -182,6 +198,12 @@ IF (SWIG_FOUND)
 
     IF (BUILD_JAVA)
         add_subdirectory(java)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run Java test.\n"
+            "cd java;./runJavaTest.sh;cd ..\n"
+        )
     ENDIF (BUILD_JAVA)
 
     IF (BUILD_MATLAB)
@@ -191,29 +213,87 @@ IF (SWIG_FOUND)
 
     IF (BUILD_OCTAVE)
         add_subdirectory(octave)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run GNU Octave test.\n"
+            "cd octave;./runOctaveTest.sh;cd ..\n"
+        )
     ENDIF (BUILD_OCTAVE)
 
     IF (BUILD_PERL)
         add_subdirectory(perl)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run Perl test.\n"
+            "cd perl;./runPerlTest.sh;cd ..\n"
+        )
     ENDIF (BUILD_PERL)
 
     IF (BUILD_PYTHON2)
         add_subdirectory(python2)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run Python 2 test.\n"
+            "cd python2;./test.py;cd ..\n"
+        )
     ENDIF (BUILD_PYTHON2)
 
     IF (BUILD_PYTHON3)
         add_subdirectory(python3)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run Python 3 test.\n"
+            "cd python3;./test.py;cd ..\n"
+        )
     ENDIF (BUILD_PYTHON3)
 
     IF (BUILD_R)
         add_subdirectory(R)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run R test.\n"
+            "cd R;./test.R;cd ..\n"
+        )
     ENDIF (BUILD_R)
 
     IF (BUILD_RUBY)
         add_subdirectory(ruby)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run ruby test.\n"
+            "cd ruby;./runRubyTest.sh;cd ..\n"
+        )
     ENDIF (BUILD_RUBY)
 
     IF (BUILD_TCL)
         add_subdirectory(Tcl)
+
+        file(APPEND
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+            "echo Run Tcl test.\n"
+            "cd Tcl;./test.tcl;cd ..\n"
+        )
     ENDIF (BUILD_TCL)
 ENDIF (SWIG_FOUND)
+
+
+
+
+IF (UNIX)
+    FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/runAll.sh
+    		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+    		FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+      			GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/runAll.sh
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        COMPONENT Development)
+ENDIF (UNIX)
