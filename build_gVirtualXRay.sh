@@ -209,12 +209,17 @@ then
     UNIT_TEST="ON"
 fi
 
-read -p "Will you want to run the wrapper tests? (Y/N)  " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+
+if [[ $BUILD_WRAPPER == "1" ]]
 then
-    WRAPPER_TEST="ON"
+    read -p "Will you want to run the wrapper tests? (Y/N)  " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        WRAPPER_TEST="ON"
+    fi
 fi
+
 
 # Build and install the core library
 cd gvxr-build
@@ -248,13 +253,13 @@ make -j6 > ../gvxr_make.out.log 2> ../gvxr_make.err.log
 
 echo "Install gvxr in $DESTINATION"
 echo
-make install > install.log 2> ../install.err.log
+make install > ../install.log 2> ../install.err.log
 
 if [[ $UNIT_TEST == "ON" ]]
 then
     echo "Run the unit tests"
     echo
-    make test > test.log 2> test.err
+    make test > ../unit_test.log 2> ../unit_test.err
 fi
 
 
@@ -287,7 +292,7 @@ make > ../SimpleGVXR_make.out.log 2> ../SimpleGVXR_make.err.log
 
 echo "Install SimpleGVXR in $DESTINATION"
 echo
-make install >> install.log 2>> ../install.err.log
+make install >> ../install.log 2>> ../install.err.log
 
 
 
@@ -340,13 +345,24 @@ else
 
     echo "Install Wrappers in $DESTINATION"
     echo
-    make install >> install.log 2>> ../install.err.log
+    make install >> ../install.log 2>> ../install.err.log
 
-    if [[ $UNIT_TEST == "ON" ]]
+    if [[ $WRAPPER_TEST == "ON" ]]
     then
         echo "Test the wrappers"
         echo
-        #make test > test.log 2> test.err
+        ./runAll.sh > ../wrapper_test.log 2> ../wrapper_test.err.log
+    fi
+
+    if [[ $BUILD_PYTHON2 == "ON" ]]
+    then
+        read -p "Install gvxrPython2 for all users? (Y/N)  " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            echo "Install gvxrPython2"
+            sudo make install-gvxrPython2
+        fi
     fi
 
     if [[ $BUILD_PYTHON3 == "ON" ]]
@@ -359,6 +375,7 @@ else
             sudo make install-gvxrPython3
         fi
     fi
+
 fi
 
 
