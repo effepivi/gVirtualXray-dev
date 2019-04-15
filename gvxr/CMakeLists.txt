@@ -68,6 +68,7 @@ ENDIF (APPLE)
 
 
 # Support for the CTest dashboard testing system
+ENABLE_TESTING()
 INCLUDE(CTest)
 
 
@@ -1083,7 +1084,6 @@ ENDIF(BUILD_DOCUMENTATION)
 
 # Unit tests ###################################################################
 IF(BUILD_TESTING)
-    ENABLE_TESTING()
     MESSAGE(STATUS "Build unit tests.")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
 ELSE (BUILD_TESTING)
