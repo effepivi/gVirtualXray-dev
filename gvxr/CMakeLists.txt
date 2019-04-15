@@ -68,8 +68,8 @@ ENDIF (APPLE)
 
 
 # Support for the CTest dashboard testing system
-ENABLE_TESTING()
 INCLUDE(CTest)
+ENABLE_TESTING()
 
 
 # Set a default build type if none was specified
