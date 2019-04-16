@@ -851,8 +851,8 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel)
 	if (p_node)
 	{
 		// Get its bounding box in world transformation
-		gVirtualXRay::VEC3 min_corner = p_node->getBranchWorldMinCorner();
-		gVirtualXRay::VEC3 max_corner = p_node->getBranchWorldMaxCorner();
+		gVirtualXRay::VEC3 min_corner = p_node->getNodeAndChildrenWorldMinCorner();
+		gVirtualXRay::VEC3 max_corner = p_node->getNodeAndChildrenWorldMaxCorner();
 
 		bbox.push_back(min_corner[0]);
 		bbox.push_back(min_corner[1]);
@@ -890,8 +890,8 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel)
 	if (p_node)
 	{
 		// Get its bounding box in world transformation
-		gVirtualXRay::VEC3 min_corner = p_node->getBranchWorldMinCorner();
-		gVirtualXRay::VEC3 max_corner = p_node->getBranchWorldMaxCorner();
+		gVirtualXRay::VEC3 min_corner = p_node->getNodeOnlyWorldMinCorner();
+		gVirtualXRay::VEC3 max_corner = p_node->getNodeOnlyWorldMaxCorner();
 
 		bbox.push_back(min_corner[0]);
 		bbox.push_back(min_corner[1]);
