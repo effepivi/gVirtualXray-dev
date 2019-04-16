@@ -5,4 +5,7 @@ set(CTEST_DROP_METHOD "http")
 set(CTEST_DROP_SITE "my.cdash.org")
 set(CTEST_DROP_LOCATION "/submit.php?project=gVirtualXRay")
 set(CTEST_DROP_SITE_CDASH TRUE)
-## #set(CTEST_USE_LAUNCHERS 1)
+set(CTEST_LABELS_FOR_SUBPROJECTS gvxr-core)
+
+#set(CTEST_USE_LAUNCHERS 1)
+#set(ENV{CTEST_USE_LAUNCHERS_DEFAULT} 1)

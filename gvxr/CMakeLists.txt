@@ -39,6 +39,7 @@ if(POLICY CMP0048)
 else ()
     PROJECT(gVirtualXRay)
 endif()
+set(CMAKE_DIRECTORY_LABELS "gvxr-core")
 
 
 # Minimum CMake version ########################################################
