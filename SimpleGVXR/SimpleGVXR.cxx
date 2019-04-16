@@ -834,7 +834,8 @@ void setLocalTransformationMatrix(const std::string& aLabel,
 }
 
 
-std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel)
+std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
+                                                  const std::string& aUnitOfLength)
 {
 	std::vector<double> bbox;
 
@@ -850,9 +851,11 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel)
 	// The node exists
 	if (p_node)
 	{
+    	double unit_of_length = getUnitOfLength(aUnitOfLength);
+
 		// Get its bounding box in world transformation
-		gVirtualXRay::VEC3 min_corner = p_node->getNodeAndChildrenWorldMinCorner();
-		gVirtualXRay::VEC3 max_corner = p_node->getNodeAndChildrenWorldMaxCorner();
+		gVirtualXRay::VEC3 min_corner = p_node->getNodeAndChildrenWorldMinCorner() / unit_of_length;
+		gVirtualXRay::VEC3 max_corner = p_node->getNodeAndChildrenWorldMaxCorner() / unit_of_length;
 
 		bbox.push_back(min_corner[0]);
 		bbox.push_back(min_corner[1]);
@@ -873,7 +876,8 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel)
 }
 
 
-std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel)
+std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
+                                           const std::string& aUnitOfLength)
 {
 	std::vector<double> bbox;
 
@@ -889,9 +893,11 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel)
 	// The node exists
 	if (p_node)
 	{
+    	double unit_of_length = getUnitOfLength(aUnitOfLength);
+
 		// Get its bounding box in world transformation
-		gVirtualXRay::VEC3 min_corner = p_node->getNodeOnlyWorldMinCorner();
-		gVirtualXRay::VEC3 max_corner = p_node->getNodeOnlyWorldMaxCorner();
+		gVirtualXRay::VEC3 min_corner = p_node->getNodeOnlyWorldMinCorner() / unit_of_length;
+		gVirtualXRay::VEC3 max_corner = p_node->getNodeOnlyWorldMaxCorner() / unit_of_length;
 
 		bbox.push_back(min_corner[0]);
 		bbox.push_back(min_corner[1]);

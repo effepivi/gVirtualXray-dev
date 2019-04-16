@@ -631,10 +631,22 @@ void setLocalTransformationMatrix(const std::string& aLabel, const std::vector<d
 /// The bounding box is given in the world coordinate system.
 /**
  *  @param aLabel:	the label in the scenegraph
+ *  @param aUnitOfLength:	the unit of length corresponding to the bounding box.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
  *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
  */
 //------------------------------------------------------------------------------
-std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel);
+std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
+    const std::string& aUnitOfLength = "cm");
 
 
 //------------------------------------------------------------------------------
@@ -642,10 +654,22 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel);
 /// The bounding box is given in the world coordinate system.
 /**
  *  @param aLabel:	the label in the scenegraph
+ *  @param aUnitOfLength:	the unit of length corresponding to the bounding box.
+ *                          Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *                          (default value: "cm")
  *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
  */
 //------------------------------------------------------------------------------
-std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel);
+std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
+    const std::string& aUnitOfLength = "cm");
 
 
 //------------------------------------------------------------------------------
