@@ -189,6 +189,21 @@ Returns
 the patch version number  
 ";
 
+%feature("docstring") getNodeAndChildrenBoundingBox "
+
+Access the bounding box of a given node and all its children (if any). The
+bounding box is given in the world coordinate system.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label in the scenegraph  
+
+Returns
+-------
+the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z  
+";
+
 %feature("docstring") createWindow "
 
 Create an OpenGL context and display it in a window.  
@@ -246,6 +261,21 @@ functionalities have been added in a backwards-compatible manner.
 Returns
 -------
 the minor version number  
+";
+
+%feature("docstring") getNodeOnlyBoundingBox "
+
+Access the bounding box of a given node (without its children). The bounding box
+is given in the world coordinate system.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label in the scenegraph  
+
+Returns
+-------
+the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z  
 ";
 
 %feature("docstring") destroyAllWindows "

@@ -115,8 +115,11 @@ public:
     //VEC3 getLocalMaxCorner() const;
     //VEC3 getWorldMinCorner();
     //VEC3 getWorldMaxCorner();
-    VEC3 getBranchWorldMinCorner();
-    VEC3 getBranchWorldMaxCorner();
+    VEC3 getNodeAndChildrenWorldMinCorner();
+    VEC3 getNodeAndChildrenWorldMaxCorner();
+
+    VEC3 getNodeOnlyWorldMinCorner();
+    VEC3 getNodeOnlyWorldMaxCorner();
 
     const PhotonCrossSection& getPhotonCrossSection() const;
 

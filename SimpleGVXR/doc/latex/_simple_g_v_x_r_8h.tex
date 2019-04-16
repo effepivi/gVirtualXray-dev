@@ -93,6 +93,10 @@ std\+::vector$<$ double $>$ \mbox{\hyperlink{_simple_g_v_x_r_8h_af48d8fdac5cd08f
 \item 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a9647a01539f7e68416e8dc7a1f332dff}{set\+Local\+Transformation\+Matrix}} (const std\+::string \&a\+Label, const std\+::vector$<$ double $>$ \&a\+Matrix)
 \begin{DoxyCompactList}\small\item\em Set the local transformation matrix of a given node in the scenegraph. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{_simple_g_v_x_r_8h_a34e8240a680d434abd6814a2c1625359}{get\+Node\+And\+Children\+Bounding\+Box}} (const std\+::string \&a\+Label)
+\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{_simple_g_v_x_r_8h_ae4d366b99a14da7c041aa51753be8312}{get\+Node\+Only\+Bounding\+Box}} (const std\+::string \&a\+Label)
+\item 
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_a0cc80f5ef79f06b447bec495f5c97c68}\label{_simple_g_v_x_r_8h_a0cc80f5ef79f06b447bec495f5c97c68}} 
 void \mbox{\hyperlink{_simple_g_v_x_r_8h_a0cc80f5ef79f06b447bec495f5c97c68}{display\+Node}} (const std\+::string \&a\+Label)
 \begin{DoxyCompactList}\small\item\em Display the scenegraph node using Open\+GL. \end{DoxyCompactList}\item 
@@ -680,6 +684,36 @@ the minor version number
 Accessor on the minor version of Simple\+G\+V\+XR. This number is changed when new functionalities have been added in a backwards-\/compatible manner. ~\newline
 \begin{DoxyReturn}{Returns}
 the minor version number 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_a34e8240a680d434abd6814a2c1625359}\label{_simple_g_v_x_r_8h_a34e8240a680d434abd6814a2c1625359}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Node\+And\+Children\+Bounding\+Box@{get\+Node\+And\+Children\+Bounding\+Box}}
+\index{get\+Node\+And\+Children\+Bounding\+Box@{get\+Node\+And\+Children\+Bounding\+Box}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{get\+Node\+And\+Children\+Bounding\+Box()}{getNodeAndChildrenBoundingBox()}}
+{\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Node\+And\+Children\+Bounding\+Box (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
+
+Access the bounding box of a given node and all its children (if any). The bounding box is given in the world coordinate system. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em a\+Label} & the label in the scenegraph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the bounding box as\+: min\+\_\+x, min\+\_\+y, min\+\_\+z, max\+\_\+x, max\+\_\+y, max\+\_\+z 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_simple_g_v_x_r_8h_ae4d366b99a14da7c041aa51753be8312}\label{_simple_g_v_x_r_8h_ae4d366b99a14da7c041aa51753be8312}} 
+\index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Node\+Only\+Bounding\+Box@{get\+Node\+Only\+Bounding\+Box}}
+\index{get\+Node\+Only\+Bounding\+Box@{get\+Node\+Only\+Bounding\+Box}!Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}}
+\subsubsection{\texorpdfstring{get\+Node\+Only\+Bounding\+Box()}{getNodeOnlyBoundingBox()}}
+{\footnotesize\ttfamily std\+::vector$<$double$>$ get\+Node\+Only\+Bounding\+Box (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{a\+Label }\end{DoxyParamCaption})}
+
+Access the bounding box of a given node (without its children). The bounding box is given in the world coordinate system. ~\newline
+
+\begin{DoxyParams}{Parameters}
+{\em a\+Label} & the label in the scenegraph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the bounding box as\+: min\+\_\+x, min\+\_\+y, min\+\_\+z, max\+\_\+x, max\+\_\+y, max\+\_\+z 
 \end{DoxyReturn}
 \mbox{\Hypertarget{_simple_g_v_x_r_8h_ac4faad08043c8b6b16e23ee7e772efb3}\label{_simple_g_v_x_r_8h_ac4faad08043c8b6b16e23ee7e772efb3}} 
 \index{Simple\+G\+V\+X\+R.\+h@{Simple\+G\+V\+X\+R.\+h}!get\+Number\+Of\+Children@{get\+Number\+Of\+Children}}

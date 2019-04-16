@@ -30,16 +30,54 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-# Project name #################################################################
-PROJECT(gVirtualXRay)
-
+# Project name and version #####################################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
+
+if(POLICY CMP0048)
+    cmake_policy (SET CMP0048 NEW)
+    PROJECT(gVirtualXRay VERSION ${gVirtualXRay_VERSION_STRING})
+else ()
+    PROJECT(gVirtualXRay)
+endif()
+
+
+# Minimum CMake version ########################################################
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
+
+
+# Support for the CTest dashboard testing system
+INCLUDE(CTest)
+
+
+# Tell CMake to be quiet
+cmake_policy (SET CMP0003 NEW)
+if(POLICY CMP0054)
+    cmake_policy (SET CMP0054 NEW)
+endif()
+
+# Set a default build type if none was specified
+IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+      message(STATUS "Setting build type to 'Release' as none was specified.")
+      SET (CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+
+      # Set the possible values of build type for cmake-gui
+      set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+ENDIF ()
+
+
+# Enable the unit tests
+if (BUILD_TESTING)
+    ENABLE_TESTING()
+endif()
+
+
+
 
 # Initialise some states by default ############################################
 SET (BUILD_SHARED_LIBS OFF)
 
 
-# Minimum CMake version ########################################################
+# C++ version ##################################################################
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 11) # C++11
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
@@ -67,19 +105,6 @@ IF (APPLE)
 ENDIF (APPLE)
 
 
-# Support for the CTest dashboard testing system
-INCLUDE(CTest)
-ENABLE_TESTING()
-
-
-# Set a default build type if none was specified
-IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'Release' as none was specified.")
-  SET (CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-ENDIF ()
 
 
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -829,13 +854,13 @@ IF (XCOM_PATH)
         if (${xcom_file} LESS 10)
             FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.00${xcom_file}.h\"\n")
             SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
-            
-            
+
+
             SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
             SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_00${xcom_file};")
             SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_00${xcom_file});")
             SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
-            
+
         else ()
             if (${xcom_file} LESS 100)
                 FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.0${xcom_file}.h\"\n")
@@ -845,7 +870,7 @@ IF (XCOM_PATH)
                 SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_0${xcom_file};")
                 SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_0${xcom_file});")
                 SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
-            
+
             else ()
                 FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.${xcom_file}.h\"\n")
                 SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
@@ -854,7 +879,7 @@ IF (XCOM_PATH)
                 SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_${xcom_file};")
                 SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_${xcom_file});")
                 SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
-                
+
             endif ()
         endif ()
 
@@ -863,10 +888,10 @@ IF (XCOM_PATH)
     CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")
     ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
 ENDIF (XCOM_PATH)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx.in 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx.in
     ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/AtomicElement.cxx @ONLY)
-    
-    
+
+
 SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.vert
@@ -1042,6 +1067,11 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
     SET( EX_PLATFORM 32 )
     SET( EX_PLATFORM_NAME "x86" )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
+
+################################################################################
+# gVirtualXRay uses KWStyle for checking the coding style
+include(cmake/KWStyle/KWStyle.cmake)
 
 
 # Doxygen documentation ########################################################

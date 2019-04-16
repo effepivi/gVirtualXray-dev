@@ -304,7 +304,7 @@ void SceneGraphNode::addChild(const std::string& aLabel,
 }
 
 
-VEC3 SceneGraphNode::getBranchWorldMinCorner()
+VEC3 SceneGraphNode::getNodeAndChildrenWorldMinCorner()
 {
 	VEC3 min_bbox(FLT_MAX, FLT_MAX, FLT_MAX);
 
@@ -340,7 +340,7 @@ VEC3 SceneGraphNode::getBranchWorldMinCorner()
 }
 
 
-VEC3 SceneGraphNode::getBranchWorldMaxCorner()
+VEC3 SceneGraphNode::getNodeAndChildrenWorldMaxCorner()
 {
 	VEC3 max_bbox(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
@@ -375,6 +375,40 @@ VEC3 SceneGraphNode::getBranchWorldMaxCorner()
 }
 
 
+VEC3 SceneGraphNode::getNodeOnlyWorldMinCorner()
+{
+	VEC3 min_bbox(FLT_MAX, FLT_MAX, FLT_MAX);
+
+	if (getPolygonMesh().getVertexNumber())
+	{
+		// Process the node
+		VEC3 node_min_bbox = getWorldTransformationMatrix() * getPolygonMesh().getLocalMinCorner();
+
+		if (min_bbox[0] > node_min_bbox[0]) min_bbox[0] = node_min_bbox[0];
+		if (min_bbox[1] > node_min_bbox[1]) min_bbox[1] = node_min_bbox[1];
+		if (min_bbox[2] > node_min_bbox[2]) min_bbox[2] = node_min_bbox[2];
+    }
+
+	return (min_bbox);
+}
+
+
+VEC3 SceneGraphNode::getNodeOnlyWorldMaxCorner()
+{
+	VEC3 max_bbox(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	if (getPolygonMesh().getVertexNumber())
+	{
+		// Process the node
+		VEC3 node_max_bbox = getWorldTransformationMatrix() * getPolygonMesh().getLocalMaxCorner();
+
+		if (max_bbox[0] < node_max_bbox[0]) max_bbox[0] = node_max_bbox[0];
+		if (max_bbox[1] < node_max_bbox[1]) max_bbox[1] = node_max_bbox[1];
+		if (max_bbox[2] < node_max_bbox[2]) max_bbox[2] = node_max_bbox[2];
+	}
+
+	return (max_bbox);
+}
 
 
 /*
@@ -484,4 +518,3 @@ SceneGraphNode& SceneGraphNode::operator=(const SceneGraphNode& aNode)
 	return (*this);
 }
 */
-

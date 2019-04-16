@@ -28,6 +28,8 @@ var searchData=
   ['getmateriallabel',['getMaterialLabel',['../_simple_g_v_x_r_8h.html#aa4a8e041850ca152eefb166521a14029',1,'SimpleGVXR.h']]],
   ['getminorversionofcoregvxr',['getMinorVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#a82e1b817d082570de9d2836810cbc52e',1,'SimpleGVXR.h']]],
   ['getminorversionofsimplegvxr',['getMinorVersionOfSimpleGVXR',['../_simple_g_v_x_r_8h.html#a8dda75e417383f05f8a67d0d805a7ee4',1,'SimpleGVXR.h']]],
+  ['getnodeandchildrenboundingbox',['getNodeAndChildrenBoundingBox',['../_simple_g_v_x_r_8h.html#a34e8240a680d434abd6814a2c1625359',1,'SimpleGVXR.h']]],
+  ['getnodeonlyboundingbox',['getNodeOnlyBoundingBox',['../_simple_g_v_x_r_8h.html#ae4d366b99a14da7c041aa51753be8312',1,'SimpleGVXR.h']]],
   ['getnodetransformationmatrix',['getNodeTransformationMatrix',['../_simple_g_v_x_r_8h.html#a3e7103cf57db663192b25daf5ba96d42',1,'SimpleGVXR.h']]],
   ['getnumberofchildren',['getNumberOfChildren',['../_simple_g_v_x_r_8h.html#ac4faad08043c8b6b16e23ee7e772efb3',1,'SimpleGVXR.h']]],
   ['getpatchversionofcoregvxr',['getPatchVersionOfCoreGVXR',['../_simple_g_v_x_r_8h.html#ae604df51718fa67dfabcdb9922283779',1,'SimpleGVXR.h']]],

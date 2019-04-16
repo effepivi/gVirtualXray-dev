@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.2)
 
-project(googletest-download NONE)
+if(POLICY CMP0048)
+    cmake_policy (SET CMP0048 NEW)
+    PROJECT(googletest-dow VERSION 1.0.0)
+else ()
+    PROJECT(googletest-dow)
+endif()
+
 
 find_package(Threads REQUIRED)
 

@@ -290,8 +290,8 @@ void SceneGraphBinder::moveToCentre(const char* aNodeLabel)
     SceneGraphNode* p_node = getNode(aNodeLabel);
     if (p_node)
     {
-    	VEC3 min_bbox = p_node->getBranchWorldMinCorner();
-    	VEC3 max_bbox = p_node->getBranchWorldMaxCorner();
+    	VEC3 min_bbox = p_node->getNodeAndChildrenWorldMinCorner();
+    	VEC3 max_bbox = p_node->getNodeAndChildrenWorldMaxCorner();
 
     	VEC3 translation_vector = -min_bbox;
     	translation_vector -= (max_bbox - min_bbox) / 2.0;
@@ -384,13 +384,13 @@ std::pair<VEC3, VEC3> SceneGraphBinder::getBoundingBox()
 			}
 
 			// Process the node
-			min_corner[0] = std::min(min_corner[0], p_node->getBranchWorldMinCorner()[0]);
-			min_corner[1] = std::min(min_corner[1], p_node->getBranchWorldMinCorner()[1]);
-			min_corner[2] = std::min(min_corner[2], p_node->getBranchWorldMinCorner()[2]);
+			min_corner[0] = std::min(min_corner[0], p_node->getNodeAndChildrenWorldMinCorner()[0]);
+			min_corner[1] = std::min(min_corner[1], p_node->getNodeAndChildrenWorldMinCorner()[1]);
+			min_corner[2] = std::min(min_corner[2], p_node->getNodeAndChildrenWorldMinCorner()[2]);
 
-			max_corner[0] = std::max(max_corner[0], p_node->getBranchWorldMaxCorner()[0]);
-			max_corner[1] = std::max(max_corner[1], p_node->getBranchWorldMaxCorner()[1]);
-			max_corner[2] = std::max(max_corner[2], p_node->getBranchWorldMaxCorner()[2]);
+			max_corner[0] = std::max(max_corner[0], p_node->getNodeAndChildrenWorldMaxCorner()[0]);
+			max_corner[1] = std::max(max_corner[1], p_node->getNodeAndChildrenWorldMaxCorner()[1]);
+			max_corner[2] = std::max(max_corner[2], p_node->getNodeAndChildrenWorldMaxCorner()[2]);
     	}
     }
 

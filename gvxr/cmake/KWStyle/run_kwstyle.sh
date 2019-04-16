@@ -5,23 +5,24 @@ rm -f filelist.txt
 FILES=`ls ../../include/gVirtualXRay/*.h \
           ../../include/gVirtualXRay/*.inl \
           ../../src/*/*.cxx \
-          ../../examples/*/*.h \
-          ../../examples/*/*.inl \
-          ../../examples/*/*.cxx \
-          ../../examples/*/*.vert \
-          ../../examples/*/*.frag \
+          #../../examples/*/*.h \
+          #../../examples/*/*.inl \
+          #../../examples/*/*.cxx \
+          #../../examples/*/*.vert \
+          #../../examples/*/*.frag \
           ../../resources/*.vert \
           ../../resources/*.frag \
-          ../../test/*.cxx \
-          ../../tutorials/*/*.h \
-          ../../tutorials/*/*.cxx \
-          ../../validation/src/*.cxx \
-          ../../validation/shaders/*.vert \
-        ../../validation/shaders/*.frag `
+          ../../tests/*.cxx \
+          #../../tutorials/*/*.h \
+          #../../tutorials/*/*.cxx \
+          #../../validation/src/*.cxx \
+          #../../validation/shaders/*.vert \
+          #../../validation/shaders/*.frag \
+          `
 
-FILES=`ls ../../examples/*/*.h ../../examples/*/*.inl ../../examples/*/*.cxx ../../examples/*/*.vert ../../examples/*/*.frag`
+#FILES=`ls ../../examples/*/*.h ../../examples/*/*.inl ../../examples/*/*.cxx ../../examples/*/*.vert ../../examples/*/*.frag`
 
-FILES=`ls ../../include/gVirtualXRay/*.h`
+#FILES=`ls ../../include/gVirtualXRay/*.h`
 
 
 for i in $FILES

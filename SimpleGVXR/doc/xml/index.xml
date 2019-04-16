@@ -41,6 +41,8 @@
     <member refid="_simple_g_v_x_r_8h_1a2540ae0646c910ba1c68f468d71770f8" kind="function"><name>getChildLabel</name></member>
     <member refid="_simple_g_v_x_r_8h_1af48d8fdac5cd08f999ac53317bea21d2" kind="function"><name>getLocalTransformationMatrix</name></member>
     <member refid="_simple_g_v_x_r_8h_1a9647a01539f7e68416e8dc7a1f332dff" kind="function"><name>setLocalTransformationMatrix</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a34e8240a680d434abd6814a2c1625359" kind="function"><name>getNodeAndChildrenBoundingBox</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ae4d366b99a14da7c041aa51753be8312" kind="function"><name>getNodeOnlyBoundingBox</name></member>
     <member refid="_simple_g_v_x_r_8h_1a0cc80f5ef79f06b447bec495f5c97c68" kind="function"><name>displayNode</name></member>
     <member refid="_simple_g_v_x_r_8h_1a7dac7c6d68422b7e86944435a9a035f4" kind="function"><name>invertNormalVectors</name></member>
     <member refid="_simple_g_v_x_r_8h_1aed64e5b84cf09a952cafb0e24a86d693" kind="function"><name>setColor</name></member>

@@ -419,8 +419,8 @@ void loadSTLFile()
     g_polygon_mesh.getPolygonMesh().getMaterial().setShininess(50);
 
     // Compute the translation vector
-    VEC3 translation_vector(g_polygon_mesh.getBranchWorldMinCorner() +
-        (g_polygon_mesh.getBranchWorldMaxCorner() - g_polygon_mesh.getBranchWorldMinCorner()) / 2.0);
+    VEC3 translation_vector(g_polygon_mesh.getNodeAndChildrenWorldMinCorner() +
+        (g_polygon_mesh.getNodeAndChildrenWorldMaxCorner() - g_polygon_mesh.getNodeAndChildrenWorldMinCorner()) / 2.0);
 
     g_sample_rotation_matrix =
         MATRIX4::buildTranslationMatrix(-translation_vector);

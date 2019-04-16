@@ -627,6 +627,28 @@ void setLocalTransformationMatrix(const std::string& aLabel, const std::vector<d
 
 
 //------------------------------------------------------------------------------
+/// Access the bounding box of a given node and all its children (if any).
+/// The bounding box is given in the world coordinate system.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Access the bounding box of a given node (without its children).
+/// The bounding box is given in the world coordinate system.
+/**
+ *  @param aLabel:	the label in the scenegraph
+ *  @return the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
+ */
+//------------------------------------------------------------------------------
+std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Display the scenegraph node using OpenGL.
 /*
  *  @param aLabel:			the label of the polygon mesh

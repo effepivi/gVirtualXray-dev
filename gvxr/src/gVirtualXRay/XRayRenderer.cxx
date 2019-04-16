@@ -938,12 +938,12 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 						// Compute its L-buffer
 						computeLBuffer(*p_node, xray_source_detector_translation, aModellingTransformationMatrix, false);
 
-						temp = p_node->getBranchWorldMaxCorner();
+						temp = p_node->getNodeAndChildrenWorldMaxCorner();
 						max_corner[0] = std::max(temp[0], max_corner[0]);
 						max_corner[1] = std::max(temp[1], max_corner[1]);
 						max_corner[2] = std::max(temp[2], max_corner[2]);
 
-						temp = p_node->getBranchWorldMinCorner();
+						temp = p_node->getNodeAndChildrenWorldMinCorner();
 						min_corner[0] = std::min(temp[0], min_corner[0]);
 						min_corner[1] = std::min(temp[1], min_corner[1]);
 						min_corner[2] = std::min(temp[2], min_corner[2]);
@@ -1379,7 +1379,7 @@ void XRayRenderer::init3DData(int anInternalTextureFormat)
 				error_message << "Cannot create a " << "(" << m_p_detector->getNumberOfPixels().getX() << ", " << m_p_detector->getNumberOfPixels().getY()  << ", " << m_p_xray_beam->getEnergyChannelNumber() << ") floating point render texture.";
 				throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 			}
-			
+
 			// Check if any OpenGL error had occured
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1625,7 +1625,7 @@ void XRayRenderer::printFBO(GLuint aFBOID,
         Image<RATIONAL_NUMBER> temp_image;
         std::string message;
         bool invert_LUT(false);
-    
+
         switch (aFBOID)
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
@@ -1664,7 +1664,7 @@ void XRayRenderer::printFBO(GLuint aFBOID,
             }
             break;
         }
-    
+
         // Save the image
         temp_image.save(aFileName, invert_LUT, message);
 	}
@@ -1685,7 +1685,7 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
         Image<RATIONAL_NUMBER> temp_image;
         std::string message;
         bool invert_LUT(false);
-    
+
         switch (aTextureID)
         {
         case XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID:
@@ -1724,7 +1724,7 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
             }
             break;
         }
-    
+
         // Save the image
         temp_image.save(aFileName, invert_LUT, message);
 	}
@@ -2686,7 +2686,7 @@ void XRayRenderer::getEnergyFluenceMinMax()
 
 #if defined(isinf) && defined(isnan)
 		if (!isinf(pixel_value) && !isnan(pixel_value))
-#else    
+#else
 		if (!std::isinf(pixel_value) && !std::isnan(pixel_value))
 #endif
 		{
@@ -2809,7 +2809,7 @@ void XRayRenderer::display(bool useNormalisation,
     handle = glGetUniformLocation(program_handle, "g_log_epsilon");
     glUniform1f(handle, log_epsilon);
     checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-    
+
     // Pass the flag of the power law filter to the shader
     handle = glGetUniformLocation(program_handle, "g_use_power_law");
     glUniform1i(handle, usePowerLaw);

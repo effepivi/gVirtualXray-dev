@@ -183,6 +183,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="memitem:a9647a01539f7e68416e8dc7a1f332dff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a9647a01539f7e68416e8dc7a1f332dff">setLocalTransformationMatrix</a> (const std::string &amp;aLabel, const std::vector&lt; double &gt; &amp;aMatrix)</td></tr>
 <tr class="memdesc:a9647a01539f7e68416e8dc7a1f332dff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the local transformation matrix of a given node in the scenegraph.  <a href="#a9647a01539f7e68416e8dc7a1f332dff">More...</a><br /></td></tr>
 <tr class="separator:a9647a01539f7e68416e8dc7a1f332dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34e8240a680d434abd6814a2c1625359"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a34e8240a680d434abd6814a2c1625359">getNodeAndChildrenBoundingBox</a> (const std::string &amp;aLabel)</td></tr>
+<tr class="separator:a34e8240a680d434abd6814a2c1625359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4d366b99a14da7c041aa51753be8312"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#ae4d366b99a14da7c041aa51753be8312">getNodeOnlyBoundingBox</a> (const std::string &amp;aLabel)</td></tr>
+<tr class="separator:ae4d366b99a14da7c041aa51753be8312"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cc80f5ef79f06b447bec495f5c97c68"><td class="memItemLeft" align="right" valign="top"><a id="a0cc80f5ef79f06b447bec495f5c97c68"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a0cc80f5ef79f06b447bec495f5c97c68">displayNode</a> (const std::string &amp;aLabel)</td></tr>
 <tr class="memdesc:a0cc80f5ef79f06b447bec495f5c97c68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display the scenegraph node using OpenGL. <br /></td></tr>
@@ -1183,6 +1187,58 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_s
 </div><div class="memdoc">
 <p>Accessor on the minor version of SimpleGVXR. This number is changed when new functionalities have been added in a backwards-compatible manner. <br />
 </p><dl class="section return"><dt>Returns</dt><dd>the minor version number </dd></dl>
+
+</div>
+</div>
+<a id="a34e8240a680d434abd6814a2c1625359"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34e8240a680d434abd6814a2c1625359">&#9670;&nbsp;</a></span>getNodeAndChildrenBoundingBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;double&gt; getNodeAndChildrenBoundingBox </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aLabel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Access the bounding box of a given node and all its children (if any). The bounding box is given in the world coordinate system. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aLabel</td><td>the label in the scenegraph </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z </dd></dl>
+
+</div>
+</div>
+<a id="ae4d366b99a14da7c041aa51753be8312"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4d366b99a14da7c041aa51753be8312">&#9670;&nbsp;</a></span>getNodeOnlyBoundingBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;double&gt; getNodeOnlyBoundingBox </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aLabel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Access the bounding box of a given node (without its children). The bounding box is given in the world coordinate system. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aLabel</td><td>the label in the scenegraph </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z </dd></dl>
 
 </div>
 </div>
