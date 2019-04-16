@@ -1263,18 +1263,26 @@ void moveToCenter(const std::string& aLabel)
 
 void scaleNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength)
 {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "Not implemented");
-/*	if (g_p_scene_graph.get())
+	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
 		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		if(p_node)
 		{
 			double unit_of_length = getUnitOfLength(aUnitOfLength);
-			g_p_scene_graph->scale(aLabel, VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
-			g_p_scene_graph->updateMatrices();
+			gVirtualXRay::MATRIX4 scaling_matrix = gVirtualXRay::MATRIX4::buildScaleMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
+
+			// Root node
+			if (p_node->getLabel() == "root")
+			{
+				p_node->setLocalTransformation(scaling_matrix * p_node->getLocalTransformationMatrix());
+			}
+			else
+			{
+				p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * scaling_matrix);
+			}
 		}
 		// It has not been found
 		else
@@ -1285,7 +1293,7 @@ void scaleNode(const std::string& aLabel, double x, double y, double z, const st
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}*/
+	}
 }
 
 
@@ -1326,17 +1334,26 @@ void rotateNode(const std::string& aLabel, double angle, double x, double y, dou
 
 void translateNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength)
 {
-/*	if (g_p_scene_graph.get())
+	if (g_p_scene_graph.get())
 	{
 		// Find the mesh
-		auto search_mesh = g_p_scene_graph->getPolygonMeshSet().find(aLabel);
+	    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
 		// It has been found
-		if(search_mesh != g_p_scene_graph->getPolygonMeshSet().end())
+		if(p_node)
 		{
 			double unit_of_length = getUnitOfLength(aUnitOfLength);
-			g_p_scene_graph->translate(aLabel, VEC3(x * unit_of_length, y * unit_of_length, z * unit_of_length));
-			g_p_scene_graph->updateMatrices();
+			gVirtualXRay::MATRIX4 translation_matrix = gVirtualXRay::MATRIX4::buildTranslationMatrix(x * unit_of_length, y * unit_of_length, z * unit_of_length);
+
+			// Root node
+			if (p_node->getLabel() == "root")
+			{
+				p_node->setLocalTransformation(translation_matrix * p_node->getLocalTransformationMatrix());
+			}
+			else
+			{
+				p_node->setLocalTransformation(p_node->getLocalTransformationMatrix() * translation_matrix);
+			}
 		}
 		// It has not been found
 		else
@@ -1347,7 +1364,7 @@ void translateNode(const std::string& aLabel, double x, double y, double z, cons
 	else
 	{
 		cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
-	}*/
+	}
 }
 
 
