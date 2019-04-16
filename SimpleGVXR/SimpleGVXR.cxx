@@ -40,10 +40,11 @@
 
 #include <cmath>
 
-#include <iostream>
+#include <iostreamalgorithm>
 #include <sstream>
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
@@ -857,13 +858,13 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
 		gVirtualXRay::VEC3 min_corner = p_node->getNodeAndChildrenWorldMinCorner() / unit_of_length;
 		gVirtualXRay::VEC3 max_corner = p_node->getNodeAndChildrenWorldMaxCorner() / unit_of_length;
 
-		bbox.push_back(min_corner[0]);
-		bbox.push_back(min_corner[1]);
-		bbox.push_back(min_corner[2]);
+		bbox.push_back(std::min(min_corner[0], max_corner[0]));
+		bbox.push_back(std::min(min_corner[1], max_corner[1]));
+		bbox.push_back(std::min(min_corner[2], max_corner[2]));
 
-		bbox.push_back(max_corner[0]);
-		bbox.push_back(max_corner[1]);
-		bbox.push_back(max_corner[2]);
+		bbox.push_back(std::max(min_corner[0], max_corner[0]));
+		bbox.push_back(std::max(min_corner[1], max_corner[1]));
+		bbox.push_back(std::max(min_corner[2], max_corner[2]));
 	}
 	// The node does not exist
 	else
@@ -899,13 +900,13 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
 		gVirtualXRay::VEC3 min_corner = p_node->getNodeOnlyWorldMinCorner() / unit_of_length;
 		gVirtualXRay::VEC3 max_corner = p_node->getNodeOnlyWorldMaxCorner() / unit_of_length;
 
-		bbox.push_back(min_corner[0]);
-		bbox.push_back(min_corner[1]);
-		bbox.push_back(min_corner[2]);
+		bbox.push_back(std::min(min_corner[0], max_corner[0]));
+		bbox.push_back(std::min(min_corner[1], max_corner[1]));
+		bbox.push_back(std::min(min_corner[2], max_corner[2]));
 
-		bbox.push_back(max_corner[0]);
-		bbox.push_back(max_corner[1]);
-		bbox.push_back(max_corner[2]);
+		bbox.push_back(std::max(min_corner[0], max_corner[0]));
+		bbox.push_back(std::max(min_corner[1], max_corner[1]));
+		bbox.push_back(std::max(min_corner[2], max_corner[2]));
 	}
 	// The node does not exist
 	else
