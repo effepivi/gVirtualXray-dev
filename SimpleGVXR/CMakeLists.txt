@@ -30,9 +30,20 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-PROJECT (SimpleGVXR)
-
+# Project name and version #####################################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
+
+if(POLICY CMP0048)
+    cmake_policy (SET CMP0048 NEW)
+    PROJECT(SimpleGVXR VERSION ${SimpleGVXR_VERSION_STRING})
+else ()
+    PROJECT(SimpleGVXR)
+endif()
+set(CMAKE_DIRECTORY_LABELS "SimpleGVXR")
+
+
+# Support for the CTest dashboard testing system
+INCLUDE(CTest)
 
 
 # Initialise some states by default ############################################
@@ -46,6 +57,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
+
+
+# Set a default build type if none was specified
+IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+      message(STATUS "Setting build type to 'Release' as none was specified.")
+      SET (CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+
+      # Set the possible values of build type for cmake-gui
+      set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+ENDIF ()
+
+
+# Enable the unit tests
+if (BUILD_TESTING)
+    ENABLE_TESTING()
+endif()
 
 
 # for superbuild ###############################################################

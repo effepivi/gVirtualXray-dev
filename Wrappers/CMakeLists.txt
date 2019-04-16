@@ -30,11 +30,20 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-PROJECT (gvxrWrappers)
-
-
+# Project name and version #####################################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
 
+if(POLICY CMP0048)
+    cmake_policy (SET CMP0048 NEW)
+    PROJECT(gvxrWrappers VERSION ${gvxrWrappers_VERSION_STRING})
+else ()
+    PROJECT(gvxrWrappers)
+endif()
+set(CMAKE_DIRECTORY_LABELS "gvxrWrappers")
+
+
+# Support for the CTest dashboard testing system
+INCLUDE(CTest)
 
 # Initialise some states by default ############################################
 SET (BUILD_SHARED_LIBS OFF)
@@ -63,6 +72,22 @@ endif()
 
 
 OPTION(USE_SYSTEM_SimpleGVXR   "Use System SimpleGVXR"      ON)
+
+
+# Set a default build type if none was specified
+IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+      message(STATUS "Setting build type to 'Release' as none was specified.")
+      SET (CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+
+      # Set the possible values of build type for cmake-gui
+      set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+ENDIF ()
+
+
+# Enable the unit tests
+if (BUILD_TESTING)
+    ENABLE_TESTING()
+endif()
 
 
 # for superbuild ###############################################################
@@ -165,6 +190,7 @@ IF (SWIG_FOUND)
     option(BUILD_CSHARP  "Build C# SWIG module" OFF)
     #option(BUILD_LUA     "Build Lua SWIG module" OFF)
     option(BUILD_JAVA    "Build Java SWIG module" OFF)
+    option(BUILD_JAVASCRIPT "Build JavaScript SWIG module" OFF)
     option(BUILD_MATLAB  "Build Matlab SWIG module" OFF)
     option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
     option(BUILD_PERL    "Build Perl SWIG module" OFF)
@@ -205,6 +231,11 @@ IF (SWIG_FOUND)
             "cd java;./runJavaTest.sh;cd ..\n"
         )
     ENDIF (BUILD_JAVA)
+
+    IF (BUILD_JAVASCRIPT)
+        MESSAGE(STATUS "JavaScript wrapper not implemented as yet, Franck is working on it.")
+        #add_subdirectory(js)
+    ENDIF (BUILD_JAVASCRIPT)
 
     IF (BUILD_MATLAB)
         MESSAGE(STATUS "Matlab wrapper not implemented as yet, Franck is working on it.")
