@@ -1,0 +1,286 @@
+<html>
+<HEAD>
+<META name="description" content="kitware.com">
+<META name="keywords" content="kwstyle,Kitware,Style,Checker,Dart">
+<META name="author" content="Kitware">
+<META name="revisit-after" content="2 days">
+<META name="robots" content="all">
+<title>KWStyle - results/.._.._tutorials_tutorial_07_qt4_tutorial_07_gl2.vert.html</title>
+</HEAD>
+<table width="100%" border="0">
+ <tr>
+   <td width="15%" height="2"><img src="images/logo.png"></td>
+   <td width="85%" height="2" bgcolor="#0099CC"> 
+     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - .._.._tutorials_tutorial_07_qt4_tutorial_07_gl2.vert</font></b></div>
+   </td>
+ </tr>
+</table>
+<table width="100%" border="0">
+ <tr> 
+   <td width="15%" height="30" >&nbsp;</td>
+   <td height="30" width="12%" bgcolor="#0099CC"> 
+     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>
+   </td>
+   <td width="10%" height="30" bgcolor="#0099CC" >
+ <div align="center"><a href="KWSDescription.html">Description</a></div>
+  </td>
+   <td width="63%" height="30"> 
+     <div align="left"><b></b></div>
+     <div align="right"></div>
+   </td>
+ </tr>
+</table>
+<hr size="1"><table width="100%" border="0" height="1">
+<tr>
+<td height="1">1</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">/*</font></font></td>
+</tr>
+<tr>
+<td height="1">2</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">3</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">Copyright&nbsp;(c)&nbsp;2016,&nbsp;Dr&nbsp;Franck&nbsp;P.&nbsp;Vidal&nbsp;(franck.p.vidal@fpvidal.net),</font></font></td>
+</tr>
+<tr>
+<td height="1">4</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">http:<font color="#009933">//www.fpvidal.net/<font></font></td>
+</tr>
+<tr>
+<td height="1">5</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">All&nbsp;rights&nbsp;reserved.</font></font></td>
+</tr>
+<tr>
+<td height="1">6</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">7</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without&nbsp;modification,</font></font></td>
+</tr>
+<tr>
+<td height="1">8</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:</font></font></td>
+</tr>
+<tr>
+<td height="1">9</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">10</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">1.&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,</font></font></td>
+</tr>
+<tr>
+<td height="1">11</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.</font></font></td>
+</tr>
+<tr>
+<td height="1">12</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">13</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">2.&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,</font></font></td>
+</tr>
+<tr>
+<td height="1">14</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation&nbsp;and/or</font></font></td>
+</tr>
+<tr>
+<td height="1">15</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.</font></font></td>
+</tr>
+<tr>
+<td height="1">16</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">17</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">3.&nbsp;Neither&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;Bangor&nbsp;University&nbsp;nor&nbsp;the&nbsp;names&nbsp;of&nbsp;its&nbsp;contributors</font></font></td>
+</tr>
+<tr>
+<td height="1">18</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">may&nbsp;be&nbsp;used&nbsp;to&nbsp;endorse&nbsp;or&nbsp;promote&nbsp;products&nbsp;derived&nbsp;from&nbsp;this&nbsp;software&nbsp;without</font></font></td>
+</tr>
+<tr>
+<td height="1">19</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">specific&nbsp;prior&nbsp;written&nbsp;permission.</font></font></td>
+</tr>
+<tr>
+<td height="1">20</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr>
+<td height="1">21</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"&nbsp;AND</font></font></td>
+</tr>
+<tr>
+<td height="1">22</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,</font></font></td>
+</tr>
+<tr>
+<td height="1">23</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">THE&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE</font></font></td>
+</tr>
+<tr>
+<td height="1">24</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">ARE&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE</font></font></td>
+</tr>
+<tr>
+<td height="1">25</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL</font></font></td>
+</tr>
+<tr>
+<td height="1">26</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR</font></font></td>
+</tr>
+<tr>
+<td height="1">27</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER</font></font></td>
+</tr>
+<tr>
+<td height="1">28</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,</font></font></td>
+</tr>
+<tr>
+<td height="1">29</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE&nbsp;OF</font></font></td>
+</tr>
+<tr>
+<td height="1">30</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</font></font></td>
+</tr>
+<tr>
+<td height="1">31</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933"></font></font></td>
+</tr>
+<tr bgcolor="#FF3300">
+<td height="1">32</td>
+<td height="1">DEF</td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"><font color="#009933">*/</font></font></font></td>
+</tr>
+<tr>
+<td height="1">33</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">34</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">35</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">#version&nbsp;110</font></td>
+</tr>
+<tr>
+<td height="1">36</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">37</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">varying&nbsp;vec3&nbsp;g_normal;</font></td>
+</tr>
+<tr>
+<td height="1">38</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">varying&nbsp;vec4&nbsp;g_object_position;</font></td>
+</tr>
+<tr>
+<td height="1">39</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">40</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;mat4&nbsp;g_projection_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">41</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;mat4&nbsp;g_modelview_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">42</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">uniform&nbsp;mat3&nbsp;g_normal_matrix;</font></td>
+</tr>
+<tr>
+<td height="1">43</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+<tr>
+<td height="1">44</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">void&nbsp;main(void)</font></td>
+</tr>
+<tr>
+<td height="1">45</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">{</font></td>
+</tr>
+<tr>
+<td height="1">46</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_object_position&nbsp;=&nbsp;g_modelview_matrix&nbsp;*&nbsp;vec4(gl_Vertex.xyz,&nbsp;1.0);</font></td>
+</tr>
+<tr>
+<td height="1">47</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;g_normal&nbsp;=&nbsp;normalize(g_normal_matrix&nbsp;*&nbsp;gl_Normal);</font></td>
+</tr>
+<tr>
+<td height="1">48</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">&nbsp;&nbsp;&nbsp;&nbsp;gl_Position&nbsp;=&nbsp;g_projection_matrix&nbsp;*&nbsp;g_object_position;</font></td>
+</tr>
+<tr>
+<td height="1">49</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2">}</font></td>
+</tr>
+<tr>
+<td height="1">50</td>
+<td height="1"></td>
+<td height="1"><font face="Courier New, Courier, mono" size="2"></font></td>
+</tr>
+</table>
+<hr size="1"><table width="100%" border="0"><tr><td>Generated by <a href="http://public.kitware.com/KWStyle">KWStyle</a> 1.0b on <i>Wednesday August,24 at 03:16:14PM</i></td><td><div align="center"><img src="images/KWSTYleLogo.jpg" height="49"></div>
+</td><td><div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td></tr></table><br></html>
