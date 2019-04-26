@@ -76,10 +76,28 @@ endif()
 
 
 # for superbuild ###############################################################
+SET (SimpleGVXR_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 IF (NOT USE_SYSTEM_gVirtualXRay)
 		SET (USE_SUPERBUILD ON)
 		INCLUDE(ExternalProject)
 ENDIF (NOT USE_SYSTEM_gVirtualXRay)
+
+
+################################################################################
+# gVirtualXRay uses KWStyle for checking the coding style
+include(cmake/KWStyle/KWStyle.cmake)
+
+
+# Doxygen documentation ########################################################
+INCLUDE (${CMAKE_ROOT}/Modules/Documentation.cmake)
+
+IF(BUILD_DOCUMENTATION)
+    ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
+    MESSAGE(STATUS "Build documentation.")
+ELSE (BUILD_DOCUMENTATION)
+       MESSAGE("Do not build documentation.")
+ENDIF(BUILD_DOCUMENTATION)
 
 
 # Find gVirtualXRay ############################################################

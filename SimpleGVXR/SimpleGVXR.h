@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 http://www.fpvidal.net/
 All rights reserved.
 
@@ -73,8 +73,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the major version of the core gVirtualXRay library (gvxr). This number is changed
-/// when incompatible API changes have been made.
+/// Accessor on the major version of the core gVirtualXRay library (gvxr).
+/// This number is changed when incompatible API changes have been made.
 /**
  *  @return the major version number
  */
@@ -83,8 +83,9 @@ int getMajorVersionOfCoreGVXR();
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the minor version of the core gVirtualXRay library (gvxr). This number is changed when
-/// new functionalities have been added in a backwards-compatible manner.
+/// Accessor on the minor version of the core gVirtualXRay library (gvxr).
+/// This number is changed when new functionalities have been added in
+/// a backwards-compatible manner.
 /**
  *  @return the minor version number
  */
@@ -93,8 +94,9 @@ int getMinorVersionOfCoreGVXR();
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the minor version of the core gVirtualXRay library (gvxr). This number is changed when
-/// bug fixes have been added in a backwards-compatible manner.
+/// Accessor on the minor version of the core gVirtualXRay library (gvxr).
+/// This number is changed when bug fixes have been added in
+/// a backwards-compatible manner.
 /**
  *  @return the patch version number
  */
@@ -168,7 +170,6 @@ void initializeGLEW();
 void initShader();
 
 
-
 //------------------------------------------------------------------------------
 /// Replace the projection matrix by a orthographic projection matrix.
 /// It behaves as the old glOrtho function.
@@ -233,9 +234,15 @@ void perspective(double fovy, double aspect, double  zNear, double  zFar);
 *                       the Z-axis
 */
 //------------------------------------------------------------------------------
-void lookAt(double eyeX, double eyeY, double eyeZ,
-		double lookAtX, double lookAtY, double lookAtZ,
-		double upX, double upY, double upZ);
+void lookAt(double eyeX,
+            double eyeY,
+            double eyeZ,
+            double lookAtX,
+            double lookAtY,
+            double lookAtZ,
+            double upX,
+            double upY,
+            double upZ);
 
 
 //------------------------------------------------------------------------------
@@ -271,7 +278,8 @@ void rotateModelView(double anAngle, double x, double y, double z);
 //------------------------------------------------------------------------------
 /// Create an OpenGL context automatically.
 /**
- *  @param aFlag:   true to create the OpenGL context automatically, false otherwise (default value: true)
+ *  @param aFlag:   true to create the OpenGL context automatically,
+ *                  false otherwise (default value: true)
  */
 //------------------------------------------------------------------------------
 void autoCreateOpenGLContext(bool aFlag = true);
@@ -283,7 +291,7 @@ void autoCreateOpenGLContext(bool aFlag = true);
  *  @param x:   the position along the X-axis
  *  @param y:   the position along the Y-axis
  *  @param z:   the position along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -295,14 +303,17 @@ void autoCreateOpenGLContext(bool aFlag = true);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void setSourcePosition(double x, double y, double z, const std::string& aUnitOfLength);
+void setSourcePosition(double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the position of the X-ray source.
 /**
- *  @param aUnitOfLength:	the unit of length corresponding to the returned value.
- *												Acceptable values are:
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the returned value. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
  *                          "cm", "centimetre",  "centimeter",
@@ -311,7 +322,7 @@ void setSourcePosition(double x, double y, double z, const std::string& aUnitOfL
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *	@return the source position in a given unit of length
+ *  @return the source position in a given unit of length
  */
 //------------------------------------------------------------------------------
 std::vector<double> getSourcePosition(const std::string& aUnitOfLength);
@@ -323,7 +334,7 @@ std::vector<double> getSourcePosition(const std::string& aUnitOfLength);
  *  @param x:   the position along the X-axis
  *  @param y:   the position along the Y-axis
  *  @param z:   the position along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -335,14 +346,17 @@ std::vector<double> getSourcePosition(const std::string& aUnitOfLength);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void setDetectorPosition(double x, double y, double z, const std::string& aUnitOfLength);
+void setDetectorPosition(double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the position of the X-ray detector.
 /**
- *  @param aUnitOfLength:	the unit of length corresponding to the returned value.
- *												Acceptable values are:
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the returned value. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
  *                          "cm", "centimetre",  "centimeter",
@@ -351,7 +365,7 @@ void setDetectorPosition(double x, double y, double z, const std::string& aUnitO
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *	@return the source position in a given unit of length
+ *  @return the source position in a given unit of length
  */
 //------------------------------------------------------------------------------
 std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
@@ -362,7 +376,7 @@ std::vector<double> getDetectorPosition(const std::string& aUnitOfLength);
 /**
  *  @param x:   the component of the vector along the X-axis
  *  @param y:   the component of the vector along the Y-axis
- *  @param z:	the component of the vector along the Z-axis
+ *  @param z:   the component of the vector along the Z-axis
  */
 //------------------------------------------------------------------------------
 void setDetectorUpVector(double x, double y, double z);
@@ -371,7 +385,7 @@ void setDetectorUpVector(double x, double y, double z);
 //------------------------------------------------------------------------------
 /// Accessor on the up-vector defining the orientation of the X-ray detector.
 /**
- *	@return the up-vector
+ *  @return the up-vector
  */
 //------------------------------------------------------------------------------
 std::vector<double> getDetectorUpVector();
@@ -380,7 +394,7 @@ std::vector<double> getDetectorUpVector();
 //------------------------------------------------------------------------------
 /// Accessor on the right-vector defining the orientation of the X-ray detector.
 /**
- *	@return the right-vector
+ *  @return the right-vector
  */
 //------------------------------------------------------------------------------
 std::vector<double> getDetectorRightVector();
@@ -390,7 +404,7 @@ std::vector<double> getDetectorRightVector();
 /// Set the number of pixels of the X-ray detector.
 /**
  *  @param aWidth:  the number of pixels along the X-axis
- *  @param aHeight:	the number of pixels along the Y-axis
+ *  @param aHeight: the number of pixels along the Y-axis
  */
 //------------------------------------------------------------------------------
 void setDetectorNumberOfPixels(int aWidth, int aHeight);
@@ -409,9 +423,9 @@ std::vector<int> getDetectorNumberOfPixels();
 /// Set the pixel size.
 /**
  *  @param aWidth:  the pixel size along the X-axis
- *  @param aHeight:	the pixel size along the Y-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the aWidth and aHeight
- *                          parameters. Acceptable values are:
+ *  @param aHeight: the pixel size along the Y-axis
+ *  @param aUnitOfLength:   the unit of length corresponding to the aWidth and
+ *                          aHeight parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
  *                          "cm", "centimetre",  "centimeter",
@@ -423,15 +437,15 @@ std::vector<int> getDetectorNumberOfPixels();
  */
 //------------------------------------------------------------------------------
 void setDetectorPixelSize(double aWidth,
-						  double aHeight,
-						  const std::string& aUnitOfLength);
+    double aHeight,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the size of the X-ray detector.
 /**
- *  @param aUnitOfLength:	the unit of length corresponding to the returned value.
- *												Acceptable values are:
+ *  @param aUnitOfLength:   the unit of length corresponding to
+ *                          the returned value. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
  *                          "cm", "centimetre",  "centimeter",
@@ -440,7 +454,7 @@ void setDetectorPixelSize(double aWidth,
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *	@return the size in a given unit of length
+ *  @return the size in a given unit of length
  */
 //------------------------------------------------------------------------------
 std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
@@ -450,9 +464,9 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 /// Load a polygon mesh from a file, set its label in the scenegraph
 /// (i.e. identifier) and add it to the X-ray renderer.
 /**
- *  @param aLabel:		the label in the scenegraph
- *  @param aFileName:	the file where the polygon mesh data is stored
- *  @param aUnitOfLength:	the unit of length corresponding to the data stored
+ *  @param aLabel:          the label in the scenegraph
+ *  @param aFileName:       the file where the polygon mesh data is stored
+ *  @param aUnitOfLength:   the unit of length corresponding to the data stored
  *                          in the file. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -473,8 +487,8 @@ void loadMeshFile(const std::string& aLabel,
 /// Load a scenegraph from a file and add its polygon meshes
 /// to the X-ray renderer.
 /**
- *  @param aFileName:	the file where the polygon mesh data is stored
- *  @param aUnitOfLength:	the unit of length corresponding to the data stored
+ *  @param aFileName:       the file where the polygon mesh data is stored
+ *  @param aUnitOfLength:   the unit of length corresponding to the data stored
  *                          in the file. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -487,14 +501,14 @@ void loadMeshFile(const std::string& aLabel,
  */
 //------------------------------------------------------------------------------
 void loadSceneGraph(const std::string& aFileName,
-        			const std::string& aUnitOfLength);
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
 /// Create an empty polygon mesh and set its label in the scenegraph
 /// (i.e. identifier). Note that it is not added to the X-ray renderer.
 /**
- *  @param aLabel:		the label in the scenegraph
+ *  @param aLabel:  the label in the scenegraph
  *  @param aParent: the parent of the node in the scenegraph (default: "root")
  */
 //------------------------------------------------------------------------------
@@ -506,9 +520,9 @@ void emptyMesh(const std::string& aLabel,
 /// Create a cube and set its label in the scenegraph (i.e. identifier).
 /// Note that it is not added to the X-ray renderer.
 /**
- *  @param aLabel:	the label in the scenegraph
- *  @param aLength:	the size of an edge of the cube
- *  @param aUnitOfLength:	the unit of length corresponding to aLength.
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aLength: the size of an edge of the cube
+ *  @param aUnitOfLength:   the unit of length corresponding to aLength.
  *                          Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -532,11 +546,11 @@ void makeCube(const std::string& aLabel,
 /// Create a cylinder and set its label in the scenegraph (i.e. identifier).
 /// Note that it is not added to the X-ray renderer.
 /**
- *  @param aLabel:	the label in the scenegraph
- *  @param aNumberOfSectors:	the number of sector defining the mesh
- *  @param aHeight:	the height of the cylinder
- *  @param aRadius:	the radius of the cylinder
- *  @param aUnitOfLength:	the unit of length corresponding to aHeight and
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aNumberOfSectors:    the number of sector defining the mesh
+ *  @param aHeight: the height of the cylinder
+ *  @param aRadius: the radius of the cylinder
+ *  @param aUnitOfLength:   the unit of length corresponding to aHeight and
  *                          aRadius. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -551,11 +565,11 @@ void makeCube(const std::string& aLabel,
  */
 //------------------------------------------------------------------------------
 void makeCylinder(const std::string& aLabel,
-		unsigned int aNumberOfSectors = 10,
-        double aHeight = 1.0,
-        double aRadius = 0.5,
-		const std::string& aUnitOfLength = "cm",
-        const std::string& aParent = "root");
+                  unsigned int aNumberOfSectors = 10,
+                  double aHeight = 1.0,
+                  double aRadius = 0.5,
+                  const std::string& aUnitOfLength = "cm",
+                  const std::string& aParent = "root");
 
 
 //------------------------------------------------------------------------------
@@ -563,9 +577,9 @@ void makeCylinder(const std::string& aLabel,
 /// It corresponds to the operation as follows: aDestination += aSource.
 /// Both aSource and aDestination have to already exist in the scenegraph.
 /**
- *  @param aDestination:	the polygon mesh that is going to be modified
- *  @param aSource:			the polygon mesh that is going to be added
- *   						to aDestination
+ *  @param aDestination:    the polygon mesh that is going to be modified
+ *  @param aSource:         the polygon mesh that is going to be added
+ *                          to aDestination
  */
 //------------------------------------------------------------------------------
 void addMesh(const std::string& aDestination, const std::string& aSource);
@@ -576,9 +590,9 @@ void addMesh(const std::string& aDestination, const std::string& aSource);
 /// It corresponds to the operation as follows: aDestination -= aSource.
 /// Both aSource and aDestination have to already exist in the scenegraph.
 /**
- *  @param aDestination:	the polygon mesh that is going to be modified
- *  @param aSource:			the polygon mesh that is going to be subtracted
- *   						from aDestination
+ *  @param aDestination:    the polygon mesh that is going to be modified
+ *  @param aSource:         the polygon mesh that is going to be subtracted
+ *                          from aDestination
  */
 //------------------------------------------------------------------------------
 void subtractMesh(const std::string& aDestination, const std::string& aSource);
@@ -587,7 +601,7 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource);
 //------------------------------------------------------------------------------
 /// Get the number of children of a node in the scenegraph.
 /**
- *  @param aLabel:	the label in the scenegraph
+ *  @param aLabel:  the label in the scenegraph
  *  @return the number of chidren
  */
 //------------------------------------------------------------------------------
@@ -595,10 +609,11 @@ unsigned int getNumberOfChildren(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the i-th child's label in the list of children of a given node in the scenegraph.
+/// Accessor on the i-th child's label in the list of children of a given node
+/// in the scenegraph.
 /**
- *  @param aLabel:	the label in the scenegraph
- *  @param i:	the ID of the child
+ *  @param aLabel:  the label in the scenegraph
+ *  @param i:   the ID of the child
  *  @return the label corresponding to the i-th child
  */
 //------------------------------------------------------------------------------
@@ -606,10 +621,10 @@ std::string getChildLabel(const std::string& aLabel, unsigned int i);
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the local transformation matrix of a given node in the scenegraph.
-/// If the node does not exist, the identity matrix is returned.
+/// Accessor on the local transformation matrix of a given node in
+/// the scenegraph. If the node does not exist, the identity matrix is returned.
 /**
- *  @param aLabel:	the label in the scenegraph
+ *  @param aLabel:  the label in the scenegraph
  *  @return the corresponding local transformation matrix
  */
 //------------------------------------------------------------------------------
@@ -619,19 +634,20 @@ std::vector<double> getLocalTransformationMatrix(const std::string& aLabel);
 //------------------------------------------------------------------------------
 /// Set the local transformation matrix of a given node in the scenegraph.
 /**
- *  @param aLabel:	the label in the scenegraph
- *  @param aMatrix:	the local transformation matrix
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aMatrix: the local transformation matrix
  */
 //------------------------------------------------------------------------------
-void setLocalTransformationMatrix(const std::string& aLabel, const std::vector<double>& aMatrix);
+void setLocalTransformationMatrix(const std::string& aLabel,
+    const std::vector<double>& aMatrix);
 
 
 //------------------------------------------------------------------------------
 /// Access the bounding box of a given node and all its children (if any).
 /// The bounding box is given in the world coordinate system.
 /**
- *  @param aLabel:	the label in the scenegraph
- *  @param aUnitOfLength:	the unit of length corresponding to the bounding box.
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
  *                          Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -653,8 +669,8 @@ std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
 /// Access the bounding box of a given node (without its children).
 /// The bounding box is given in the world coordinate system.
 /**
- *  @param aLabel:	the label in the scenegraph
- *  @param aUnitOfLength:	the unit of length corresponding to the bounding box.
+ *  @param aLabel:  the label in the scenegraph
+ *  @param aUnitOfLength:   the unit of length corresponding to the bounding box.
  *                          Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -674,8 +690,8 @@ std::vector<double> getNodeOnlyBoundingBox(const std::string& aLabel,
 
 //------------------------------------------------------------------------------
 /// Display the scenegraph node using OpenGL.
-/*
- *  @param aLabel:			the label of the polygon mesh
+/**
+ *  @param aLabel:          the label of the polygon mesh
  */
 //------------------------------------------------------------------------------
 void displayNode(const std::string& aLabel);
@@ -684,7 +700,7 @@ void displayNode(const std::string& aLabel);
 //------------------------------------------------------------------------------
 /// Invert the normal vectors of a given polygon mesh.
 /**
- *  @param aLabel:	the label of the polygon mesh
+ *  @param aLabel:  the label of the polygon mesh
  */
 //------------------------------------------------------------------------------
 void invertNormalVectors(const std::string& aLabel);
@@ -693,11 +709,11 @@ void invertNormalVectors(const std::string& aLabel);
 //------------------------------------------------------------------------------
 /// Set the color of a given polygon mesh.
 /**
- *  @param aLabel:	the label of the polygon mesh
- *  @param R:	the red channel
- *  @param G:	the green channel
- *  @param B:	the blue channel
- *  @param A:	the alpha channel
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param R:   the red channel
+ *  @param G:   the green channel
+ *  @param B:   the blue channel
+ *  @param A:   the alpha channel
  */
 //------------------------------------------------------------------------------
 void setColor(const std::string& aLabel, float R, float G, float B, float A);
@@ -706,11 +722,11 @@ void setColor(const std::string& aLabel, float R, float G, float B, float A);
 //------------------------------------------------------------------------------
 /// Set the colour of a given polygon mesh.
 /**
- *  @param aLabel:	the label of the polygon mesh
- *  @param R:	the red channel
- *  @param G:	the green channel
- *  @param B:	the blue channel
- *  @param A:	the alpha channel
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param R:   the red channel
+ *  @param G:   the green channel
+ *  @param B:   the blue channel
+ *  @param A:   the alpha channel
  */
 //------------------------------------------------------------------------------
 void setColour(const std::string& aLabel, float R, float G, float B, float A);
@@ -753,25 +769,28 @@ float getShininess(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
-/// Add a polygon mesh, given its label, to the X-ray renderer as an inner surface.
+/// Add a polygon mesh, given its label, to the X-ray renderer as
+/// an inner surface.
 /**
- *  @param aLabel:	the label of the polygon mesh in the scenegraph
+ *  @param aLabel:  the label of the polygon mesh in the scenegraph
  */
 //------------------------------------------------------------------------------
 void addPolygonMeshAsInnerSurface(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
-/// Add a polygon mesh, given its label, to the X-ray renderer as an outer surface.
+/// Add a polygon mesh, given its label, to the X-ray renderer as
+/// an outer surface.
 /**
- *  @param aLabel:	the label of the polygon mesh in the scenegraph
+ *  @param aLabel:  the label of the polygon mesh in the scenegraph
  */
 //------------------------------------------------------------------------------
 void addPolygonMeshAsOuterSurface(const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
-/// Empty the scenegraph. Note that it also empties the X-ray renderer from all its meshes.
+/// Empty the scenegraph. Note that it also empties the X-ray renderer
+/// from all its meshes.
 //------------------------------------------------------------------------------
 void removePolygonMeshesFromSceneGraph();
 
@@ -797,8 +816,8 @@ void moveToCentre();
 
 //------------------------------------------------------------------------------
 /// Move a polygon mesh to the centre.
-/*
- *  @param aLabel:	the label of the polygon mesh in the scenegraph
+/**
+ *  @param aLabel:  the label of the polygon mesh in the scenegraph
  */
 //------------------------------------------------------------------------------
 void moveToCenter(const std::string& aLabel);
@@ -806,8 +825,8 @@ void moveToCenter(const std::string& aLabel);
 
 //------------------------------------------------------------------------------
 /// Move a polygon mesh to the centre.
-/*
- *  @param aLabel:	the label of the polygon mesh in the scenegraph
+/**
+ *  @param aLabel:  the label of the polygon mesh in the scenegraph
  */
 //------------------------------------------------------------------------------
 void moveToCentre(const std::string& aLabel);
@@ -815,12 +834,12 @@ void moveToCentre(const std::string& aLabel);
 
 //------------------------------------------------------------------------------
 /// Scale a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh to transform
+/**
+ *  @param aLabel:  the label of the polygon mesh to transform
  *  @param x:   the scaling factor along the X-axis
  *  @param y:   the scaling factor along the Y-axis
  *  @param z:   the scaling factor along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -832,30 +851,38 @@ void moveToCentre(const std::string& aLabel);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void scaleNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength);
+void scaleNode(const std::string& aLabel,
+    double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
 /// Rotate a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh to transform
+/**
+ *  @param aLabel:  the label of the polygon mesh to transform
  *  @param anAngle:   the rotation angle in degrees
  *  @param x:   the component of the rotation vector along the X-axis
  *  @param y:   the component of the rotation vector along the Y-axis
  *  @param z:   the component of the rotation vector along the Z-axis
  */
 //------------------------------------------------------------------------------
-void rotateNode(const std::string& aLabel, double anAngle, double x, double y, double z);
+void rotateNode(const std::string& aLabel,
+    double anAngle,
+    double x,
+    double y,
+    double z);
 
 
 //------------------------------------------------------------------------------
 /// Translate a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh to transform
+/**
+ *  @param aLabel:  the label of the polygon mesh to transform
  *  @param x:   the component of the translation vector along the X-axis
  *  @param y:   the component of the translation vector along the Y-axis
  *  @param z:   the component of the translation vector along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -867,22 +894,28 @@ void rotateNode(const std::string& aLabel, double anAngle, double x, double y, d
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void translateNode(const std::string& aLabel, double x, double y, double z, const std::string& aUnitOfLength);
+void translateNode(const std::string& aLabel,
+    double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
-/// Replace the 3-D transformation matrix of the overall 3-D scene by an identity matrix.
+/// Replace the 3-D transformation matrix of the overall 3-D scene by
+/// an identity matrix.
 //------------------------------------------------------------------------------
 void resetSceneTransformation();
 
 
 //------------------------------------------------------------------------------
-/// Scale the 3-D scene (all the polygon meshes will be affected but not modified).
-/*
+/// Scale the 3-D scene
+/// (all the polygon meshes will be affected but not modified).
+/**
  *  @param x:   the scaling factor along the X-axis
  *  @param y:   the scaling factor along the Y-axis
  *  @param z:   the scaling factor along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -898,8 +931,9 @@ void scaleScene(double x, double y, double z, const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
-/// Rotate the 3-D scene (all the polygon meshes will be affected but not modified).
-/*
+/// Rotate the 3-D scene
+/// (all the polygon meshes will be affected but not modified).
+/**
  *  @param anAngle:   the rotation angle in degrees
  *  @param x:   the component of the rotation vector along the X-axis
  *  @param y:   the component of the rotation vector along the Y-axis
@@ -910,12 +944,13 @@ void rotateScene(double anAngle, double x, double y, double z);
 
 
 //------------------------------------------------------------------------------
-/// Translate the 3-D scene (all the polygon meshes will be affected but not modified).
-/*
+/// Translate the 3-D scene
+/// (all the polygon meshes will be affected but not modified).
+/**
  *  @param x:   the component of the translation vector along the X-axis
  *  @param y:   the component of the translation vector along the Y-axis
  *  @param z:   the component of the translation vector along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -927,12 +962,15 @@ void rotateScene(double anAngle, double x, double y, double z);
  *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
-void translateScene(double x, double y, double z, const std::string& aUnitOfLength);
+void translateScene(double x,
+                    double y,
+                    double z,
+                    const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the 3-D scene transformation matrix.
-/*
+/**
  *  @return the 3-D scene transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
@@ -941,7 +979,7 @@ std::vector<std::vector<float> > getSceneTransformationMatrix();
 
 //------------------------------------------------------------------------------
 /// Accessor on the transformation matrix of the scengraph's root node.
-/*
+/**
  *  @return the scengraph's root node transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
@@ -950,89 +988,97 @@ std::vector<std::vector<float> > getRootTransformationMatrix();
 
 //------------------------------------------------------------------------------
 /// Accessor on the transformation matrix of a given node.
-/*
- *  @param aLabel:	the label of the polygon mesh
+/**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the scengraph's root node transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > getNodeTransformationMatrix(const std::string& aLabel);
+std::vector<std::vector<float> > getNodeTransformationMatrix(
+    const std::string& aLabel);
 
 
 //------------------------------------------------------------------------------
 /// Set the 3-D scene transformation matrix.
-/*
+/**
  *  @param aMatrix: the transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-void setSceneTransformationMatrix(const std::vector<std::vector<float> >& aMatrix);
+void setSceneTransformationMatrix(
+    const std::vector<std::vector<float> >& aMatrix);
 
 
 //------------------------------------------------------------------------------
 /// Set the transformation matrix of the scengraph's root node.
-/*
+/**
  *  @param aMatrix: the transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-void setRootTransformationMatrix(const std::vector<std::vector<float> >& aMatrix);
+void setRootTransformationMatrix(
+    const std::vector<std::vector<float> >& aMatrix);
 
 
 //------------------------------------------------------------------------------
 /// Set the transformation matrix of a given node.
-/*
- *  @param aLabel:	the label of the polygon mesh
+/**
+ *  @param aLabel:  the label of the polygon mesh
  *  @param aMatrix: the transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-void setNodeTransformationMatrix(const std::string& aLabel, const std::vector<std::vector<float> >& aMatrix);
+void setNodeTransformationMatrix(
+    const std::string& aLabel,
+    const std::vector<std::vector<float> >& aMatrix);
 
 
 //------------------------------------------------------------------------------
-/// Set the Hounsfield value corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh
- *  @param HU:		the Hounsfield value
+/// Set the Hounsfield value corresponding to the material properties of
+/// a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param HU:      the Hounsfield value
  */
 //------------------------------------------------------------------------------
 void setHU(const std::string& aLabel, short HU);
 
 
-
-
 //------------------------------------------------------------------------------
-/// Set the Hounsfield value corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh
- *  @param HU:		the Hounsfield value
+/// Set the Hounsfield value corresponding to the material properties of
+/// a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param HU:      the Hounsfield value
  */
 //------------------------------------------------------------------------------
 void setHounsfieldUnit(const std::string& aLabel, short HU);
 
 
 //------------------------------------------------------------------------------
-/// Set the Hounsfield value corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh
- *  @param HU:		the Hounsfield value
+/// Set the Hounsfield value corresponding to the material properties of
+/// a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param HU:      the Hounsfield value
  */
 //------------------------------------------------------------------------------
 void setHounsfieldValue(const std::string& aLabel, short HU);
 
 
 //------------------------------------------------------------------------------
-/// Set the chemical element (or element) corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh
- *  @param Z:		the atomic number (or Z number) corresponding to the element
+/// Set the chemical element (or element) corresponding
+/// to the material properties of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param Z:       the atomic number (or Z number) corresponding to the element
  */
 //------------------------------------------------------------------------------
 void setElement(const std::string& aLabel, unsigned short Z);
 
 
 //------------------------------------------------------------------------------
-/// Set the chemical element (or element) corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:	the label of the polygon mesh
- *  @param aName:	the symbol or name corresponding to the element
+/// Set the chemical element (or element) corresponding
+/// to the material properties of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @param aName:   the symbol or name corresponding to the element
  */
 //------------------------------------------------------------------------------
 void setElement(const std::string& aLabel, const std::string& aName);
@@ -1041,11 +1087,11 @@ void setElement(const std::string& aLabel, const std::string& aName);
 //------------------------------------------------------------------------------
 /// Set the mixture corresponding to the material properties of a polygon mesh.
 /// Don't forget to set the density of the material.
-/*
- *  @param aLabel:		the label of the polygon mesh
- *  @param aMixture:	the details about the mixture. It is given as a sequence
- *  					of element symbol & relative weight, e.g.
- *  					Ti90Al6V4.
+/**
+ *  @param aLabel:      the label of the polygon mesh
+ *  @param aMixture:    the details about the mixture. It is given as a sequence
+ *                      of element symbol & relative weight, e.g.
+ *                      Ti90Al6V4.
  */
 //------------------------------------------------------------------------------
 void setMixture(const std::string& aLabel, const std::string& aMixture);
@@ -1054,77 +1100,85 @@ void setMixture(const std::string& aLabel, const std::string& aMixture);
 //------------------------------------------------------------------------------
 /// Set the compound corresponding to the material properties of a polygon mesh.
 /// Don't forget to set the density of the material.
-/*
- *  @param aLabel:		the label of the polygon mesh
- *  @param aCompound:	the details about the compound. It is given as a sequence
- *  					of element symbol & number of atoms, e.g.
- *  					H2O for water and SiC for silicon carbide.
+/**
+ *  @param aLabel:      the label of the polygon mesh
+ *  @param aCompound:   the details about the compound. It is given as
+ *                      a sequence of element symbol & number of atoms, e.g.
+ *                      H2O for water and SiC for silicon carbide.
  */
 //------------------------------------------------------------------------------
 void setCompound(const std::string& aLabel, const std::string& aCompound);
 
 
 //------------------------------------------------------------------------------
-/// Set the mass attenuation coefficient corresponding to the material properties of a polygon mesh.
+/// Set the mass attenuation coefficient corresponding to
+/// the material properties of a polygon mesh.
 /// Don't forget to set the density of the material.
-/*
- *  @param aLabel:			the label of the polygon mesh
- *  @param aCoefficient:	the mass attenuation coefficient
- *  @param aUnit:			the unit corresponding to aCoefficient.
+/**
+ *  @param aLabel:          the label of the polygon mesh
+ *  @param aCoefficient:    the mass attenuation coefficient
+ *  @param aUnit:           the unit corresponding to aCoefficient.
  *                          Acceptable values are:
  *                          "cm2/g" and "cm2.g-1"
  */
 //------------------------------------------------------------------------------
-void setMassAttenuationCoefficient(const std::string& aLabel, double aCoefficient,
-		   const std::string& aUnit);
+void setMassAttenuationCoefficient(const std::string& aLabel,
+                                   double aCoefficient,
+                                   const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
-/// Set the linear attenuation coefficient corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
- *  @param aCoefficient:	the liner attenuation coefficient
- *  @param aUnit:			the unit corresponding to aCoefficient.
+/// Set the linear attenuation coefficient corresponding
+/// to the material properties of a polygon mesh.
+/**
+ *  @param aLabel:          the label of the polygon mesh
+ *  @param aCoefficient:    the liner attenuation coefficient
+ *  @param aUnit:           the unit corresponding to aCoefficient.
  *                          Acceptable values are:
  *                          "cm-1"
  */
 //------------------------------------------------------------------------------
-void setLinearAttenuationCoefficient(const std::string& aLabel, double aCoefficient,
-		   const std::string& aUnit);
+void setLinearAttenuationCoefficient(const std::string& aLabel,
+                                     double aCoefficient,
+                                     const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
-/// Set the linear attenuation coefficient corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
- *  @param aCoefficient:	the liner attenuation coefficient
- *  @param aUnit:			the unit corresponding to aCoefficient.
+/// Set the linear attenuation coefficient corresponding
+/// to the material properties of a polygon mesh.
+/**
+ *  @param aLabel:          the label of the polygon mesh
+ *  @param aCoefficient:    the liner attenuation coefficient
+ *  @param aUnit:           the unit corresponding to aCoefficient.
  *                          Acceptable values are:
  *                          "cm-1"
  */
 //------------------------------------------------------------------------------
-void setMu(const std::string& aLabel, double aCoefficient,
-		   const std::string& aUnit);
+void setMu(const std::string& aLabel,
+           double aCoefficient,
+           const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
 /// Set the density corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
- *  @param aDensity:		the density
- *  @param aUnit:			the unit corresponding to aDensity.
- *                          Acceptable values are:
- *                          "g/cm3" and "g.cm-3"
+/**
+ *  @param aLabel:      the label of the polygon mesh
+ *  @param aDensity:    the density
+ *  @param aUnit:       the unit corresponding to aDensity.
+ *                      Acceptable values are:
+ *                      "g/cm3" and "g.cm-3"
  */
 //------------------------------------------------------------------------------
-void setDensity(const std::string& aLabel, double aDensity,
-		   const std::string& aUnit);
+void setDensity(const std::string& aLabel,
+                double aDensity,
+                const std::string& aUnit);
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the density corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
+/// Accessor on the density corresponding
+/// to the material properties of a polygon mesh.
+/**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the density of the polygon mesh's material in g/cm3
  */
 //------------------------------------------------------------------------------
@@ -1134,45 +1188,47 @@ double getDensity(const std::string& aLabel);
 //------------------------------------------------------------------------------
 /// Accessor on the mass attenuation coefficient at a given energy
 /// corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
- *  @param anEnergy:		the photon energy of interest
- *  @param aUnitOfEnergy:	the unit of energy corresponding to anEnergy.
- *  						Acceptable values are:
- *  						"electronvolt", "eV",
- *  						"kiloelectronvolt", "keV",
- *  						"megaelectronvolt", "MeV"
- *  @return the mass attenuation coefficient of the polygon mesh's material in cm2/g
+/**
+ *  @param aLabel:          the label of the polygon mesh
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the mass attenuation coefficient of the polygon mesh's material
+ *          in cm2/g
  */
 //------------------------------------------------------------------------------
 double getMassAttenuationCoefficient(const std::string& aLabel,
-		double anEnergy,
-		const std::string& aUnitOfEnergy);
+                                     double anEnergy,
+                                     const std::string& aUnitOfEnergy);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the linear attenuation coefficient at a given energy
 /// corresponding to the material properties of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
- *  @param anEnergy:		the photon energy of interest
- *  @param aUnitOfEnergy:	the unit of energy corresponding to anEnergy.
- *  						Acceptable values are:
- *  						"electronvolt", "eV",
- *  						"kiloelectronvolt", "keV",
- *  						"megaelectronvolt", "MeV"
- *  @return the linear attenuation coefficient of the polygon mesh's material in cm-1
+/**
+ *  @param aLabel:          the label of the polygon mesh
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the linear attenuation coefficient of the polygon mesh's material
+ *          in cm-1
  */
 //------------------------------------------------------------------------------
 double getLinearAttenuationCoefficient(const std::string& aLabel,
-		double anEnergy,
-		const std::string& aUnitOfEnergy);
+                                       double anEnergy,
+                                       const std::string& aUnitOfEnergy);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the material label of a polygon mesh.
-/*
- *  @param aLabel:			the label of the polygon mesh
+/**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the label of the material
  */
 //------------------------------------------------------------------------------
@@ -1181,9 +1237,10 @@ std::string getMaterialLabel(const std::string& aLabel);
 
 //------------------------------------------------------------------------------
 /// Create an OpenGL context (the window won't be shown).
-/*
- *  @param aWindowID:	the numerical ID of the context to create
- *                      (default value: -1, means that the ID will be automatically generated)
+/**
+ *  @param aWindowID:   the numerical ID of the context to create
+ *                      (default value: -1, means that the ID will be
+ *                      automatically generated)
  */
 //------------------------------------------------------------------------------
 void createOpenGLContext(int aWindowID = -1);
@@ -1191,9 +1248,10 @@ void createOpenGLContext(int aWindowID = -1);
 
 //------------------------------------------------------------------------------
 /// Create an OpenGL context and display it in a window
-/*
- *  @param aWindowID:	the numerical ID of the context to create
- *                      (default value: -1, means that the ID will be automatically generated)
+/**
+ *  @param aWindowID:   the numerical ID of the context to create
+ *                      (default value: -1, means that the ID will be
+ *                      automatically generated)
  */
 //------------------------------------------------------------------------------
 void createWindow(int aWindowID = -1, int aVisibilityFlag = 0);
@@ -1201,11 +1259,12 @@ void createWindow(int aWindowID = -1, int aVisibilityFlag = 0);
 
 //------------------------------------------------------------------------------
 /// Create an OpenGL context and display it in a window
-/*
- *  @param aWidth:  	the number of pixels along the X-axis
- *  @param aHeight:		the number of pixels along the Y-axis
- *  @param aWindowID:	the numerical ID of the corresponding context
- *                      (default value: -1, means that the active context will be used)
+/**
+ *  @param aWidth:      the number of pixels along the X-axis
+ *  @param aHeight:     the number of pixels along the Y-axis
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
  */
 //------------------------------------------------------------------------------
 void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
@@ -1214,11 +1273,13 @@ void setWindowSize(int aWidth, int aHeight, int aWindowID = -1);
 //------------------------------------------------------------------------------
 /// 3-D visualisation of the 3-D scene (source, detector, and scanned objects).
 /// Note that there is no interactive loop running.
-/*
- *  @param aSceneRotationFlag:	true if the 3-D scene has to be rotated with the arc-ball method, false otherwise
- *                      (default value: true)
- *  @param aWindowID:	the numerical ID of the corresponding context
- *                      (default value: -1, means that the active context will be used)
+/**
+ *  @param aSceneRotationFlag:  true if the 3-D scene has to be rotated with
+ *                              the arc-ball method, false otherwise
+ *                              (default value: true)
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
  */
 //------------------------------------------------------------------------------
 void displayScene(bool aSceneRotationFlag = true, int aWindowID = -1);
@@ -1228,16 +1289,17 @@ void displayScene(bool aSceneRotationFlag = true, int aWindowID = -1);
 /// 3-D visualisation of the 3-D scene (source, detector, and scanned objects).
 /// Note that there is interactive loop running.
 /// Keys are:
-///		- Q/Escape: to quit the event loop (does not close the window)
-///		- B: display/hide the X-ray beam
-///		- W: display the polygon meshes in solid or wireframe
-///		- N: display the X-ray image in negative or positive
-///		- L: switch lighting on/off
-///		- D: display/hide the X-ray detector
-///		- V: display/hide normal vectors
-/*
- *  @param aWindowID:	the numerical ID of the corresponding context
- *                      (default value: -1, means that the active context will be used)
+/// - Q/Escape: to quit the event loop (does not close the window)
+/// - B: display/hide the X-ray beam
+/// - W: display the polygon meshes in solid or wireframe
+/// - N: display the X-ray image in negative or positive
+/// - L: switch lighting on/off
+/// - D: display/hide the X-ray detector
+/// - V: display/hide normal vectors
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ * will be used)
  */
 //------------------------------------------------------------------------------
 void renderLoop(int aWindowID = -1);
@@ -1246,9 +1308,9 @@ void renderLoop(int aWindowID = -1);
 //------------------------------------------------------------------------------
 /// Call this function when the user starts an arc-ball rotation
 /// (e.g. left-mouse button click in the 3-D visualisation window).
-/*
- *  @param x:	the cursor x-axis position in the viewport coordinate system
- *  @param y:	the cursor y-axis position in the viewport coordinate system
+/**
+ *  @param x:   the cursor x-axis position in the viewport coordinate system
+ *  @param y:   the cursor y-axis position in the viewport coordinate system
  */
 //------------------------------------------------------------------------------
 void startArcBallRotation(double x, double y);
@@ -1263,7 +1325,7 @@ void stopArcBallRotation();
 
 //------------------------------------------------------------------------------
 /// Check if arc-ball rotation is currently in use.
-/*
+/**
  *  @return true if arc-ball rotation is currently in use, false otherwise
  */
 //------------------------------------------------------------------------------
@@ -1272,21 +1334,25 @@ bool usingArcBallRotation();
 
 //------------------------------------------------------------------------------
 /// Call this function when the user moves the mouse
-/*
- *  @param x:	the cursor x-axis position in the viewport coordinate system
- *  @param y:	the cursor y-axis position in the viewport coordinate system
- *  @param aViewportWidth:	the size of the viewport along the x-axis
- *  @param aViewportHeight:	the size of the viewport along the y-axis
+/**
+ *  @param x:   the cursor x-axis position in the viewport coordinate system
+ *  @param y:   the cursor y-axis position in the viewport coordinate system
+ *  @param aViewportWidth:  the size of the viewport along the x-axis
+ *  @param aViewportHeight: the size of the viewport along the y-axis
  */
 //------------------------------------------------------------------------------
-void cursorPositionCallback(double x, double y, int aViewportWidth, int aViewportHeight);
+void cursorPositionCallback(double x,
+                            double y,
+                            int aViewportWidth,
+                            int aViewportHeight);
 
 
 //------------------------------------------------------------------------------
 /// Call this function when the user scrolls
-/*
- *  @param xoffset:	the scroll offset along the x-axis (not used)
- *  @param yoffset:	the scroll offset along the y-axis (used for zooming in and out)
+/**
+ *  @param xoffset: the scroll offset along the x-axis (not used)
+ *  @param yoffset: the scroll offset along the y-axis (used for zooming in
+ *                  and out)
  */
 //------------------------------------------------------------------------------
 void scrollCallback(double xoffset, double yoffset);
@@ -1294,9 +1360,10 @@ void scrollCallback(double xoffset, double yoffset);
 
 //------------------------------------------------------------------------------
 /// Make an OpenGL context visible and display a window.
-/*
- *  @param aWindowID:	the numerical ID of the corresponding context
- *                      (default value: -1, means that the active context will be used)
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
  */
 //------------------------------------------------------------------------------
 void showWindow(int aWindowID = -1);
@@ -1304,9 +1371,10 @@ void showWindow(int aWindowID = -1);
 
 //------------------------------------------------------------------------------
 /// Hide a window.
-/*
- *  @param aWindowID:	the numerical ID of the corresponding context
- *                      (default value: -1, means that the active context will be used)
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
  */
 //------------------------------------------------------------------------------
 void hideWindow(int aWindowID = -1);
@@ -1331,13 +1399,15 @@ void usePointSource();
 
 
 //------------------------------------------------------------------------------
-/// Use a parallel source (e.g. to mimic a source that is extremely far from the scanned object and detector).
+/// Use a parallel source (e.g. to mimic a source that is extremely far from
+/// the scanned object and detector).
 //------------------------------------------------------------------------------
 void useParallelBeam();
 
 
 //------------------------------------------------------------------------------
-/// Use a parallel source (e.g. to mimic a source that is extremely far from the scanned object and detector).
+/// Use a parallel source (e.g. to mimic a source that is extremely far from
+/// the scanned object and detector).
 //------------------------------------------------------------------------------
 void useParallelSource();
 
@@ -1350,63 +1420,64 @@ void resetBeamSpectrum();
 
 //------------------------------------------------------------------------------
 /// Use a monochromatic beam spectrum (i.e. one single energy).
-/*
- *  @param anEnergy:			the incident photon energy
- *  @param aUnitOfEnergy:		the unit of energy corresponding to anEnergy.
- *  							Acceptable values are:
- *  							"electronvolt", "eV",
- *  							"kiloelectronvolt", "keV",
- *  							"megaelectronvolt", "MeV"
- *  @param aNumberOfPhotons:	the number of incident photons
+/**
+ *  @param anEnergy:            the incident photon energy
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNumberOfPhotons:    the number of incident photons
  */
 //------------------------------------------------------------------------------
 void setMonoChromatic(double anEnergy,
-		              const std::string& aUnitOfEnergy,
-					  double aNumberOfPhotons);
+                      const std::string& aUnitOfEnergy,
+                      double aNumberOfPhotons);
 
 
 //------------------------------------------------------------------------------
 /// Add an energy bin to the beam spectrum (useful to generate polychromatism).
-/*
- *  @param anEnergy:			the incident photon energy
- *  @param aUnitOfEnergy:		the unit of energy corresponding to anEnergy.
- *  							Acceptable values are:
- *  							"electronvolt", "eV",
- *  							"kiloelectronvolt", "keV",
- *  							"megaelectronvolt", "MeV"
- *  @param aNumberOfPhotons:	the number of incident photons
+/**
+ *  @param anEnergy:            the incident photon energy
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNumberOfPhotons:    the number of incident photons
  */
 //------------------------------------------------------------------------------
 void addEnergyBinToSpectrum(double anEnergy,
-							const std::string& aUnitOfEnergy,
-							double aNumberOfPhotons);
+                            const std::string& aUnitOfEnergy,
+                            double aNumberOfPhotons);
 
 
 //------------------------------------------------------------------------------
 /// Load the incident beam energy spectrum from a TSV file.
-/*
- *  @param aFileName:			name of the file to load
- *  @param aUnitOfEnergy:		the unit of energy corresponding to anEnergy.
- *  							Acceptable values are:
- *  							"electronvolt", "eV",
- *  							"kiloelectronvolt", "keV",
- *  							"megaelectronvolt", "MeV"
- *  @param aNormalisationFlag:	true to normalise the total energy to 1, false otherwise
+/**
+ *  @param aFileName:           name of the file to load
+ *  @param aUnitOfEnergy:       the unit of energy corresponding to anEnergy.
+ *                              Acceptable values are:
+ *                              "electronvolt", "eV",
+ *                              "kiloelectronvolt", "keV",
+ *                              "megaelectronvolt", "MeV"
+ *  @param aNormalisationFlag:  true to normalise the total energy to 1,
+ *                              false otherwise
  */
 //------------------------------------------------------------------------------
 void loadSpectrumFromTSV(const std::string& aFileName,
-							const std::string& aUnitOfEnergy,
-							bool aNormalisationFlag);
+                         const std::string& aUnitOfEnergy,
+                         bool aNormalisationFlag);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the energy bins of the beam spectrum.
-/*
- *  @param aUnitOfEnergy:		the unit of energy corresponding to returned vector.
- *  							Acceptable values are:
- *  							"electronvolt", "eV",
- *  							"kiloelectronvolt", "keV",
- *  							"megaelectronvolt", "MeV"
+/**
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to
+ *                          the returned vector. Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
  *  @return the list of energy bins in aUnitOfEnergy
  */
 //------------------------------------------------------------------------------
@@ -1415,7 +1486,7 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
 
 //------------------------------------------------------------------------------
 /// Accessor on the number of photons per energy bin of the beam spectrum.
-/*
+/**
  *  @return the list of number of photons
  */
 //------------------------------------------------------------------------------
@@ -1424,11 +1495,11 @@ std::vector<double> getPhtotonCountEnergyBins();
 
 //------------------------------------------------------------------------------
 /// Save the last X-ray image that has been computed.
-/*
- *  @param aFileName:	the name of the output file
- *  					(default: means that the filename will be
- *  					automatically generated and the file saved in
- *  					the current path)
+/**
+ *  @param aFileName:   the name of the output file
+ *  (default: means that the filename will be
+ *  automatically generated and the file saved in
+ *  the current path)
  */
 //------------------------------------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName = std::string());
@@ -1436,11 +1507,11 @@ void saveLastXRayImage(const std::string& aFileName = std::string());
 
 //------------------------------------------------------------------------------
 /// Save the last L-buffer that has been computed.
-/*
- *  @param aFileName:	the name of the output file
- *  					(default: means that the filename will be
- *  					automatically generated and the file saved in
- *  					the current path)
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
  */
 //------------------------------------------------------------------------------
 void saveLastLBuffer(const std::string& aFileName = std::string());
@@ -1448,11 +1519,11 @@ void saveLastLBuffer(const std::string& aFileName = std::string());
 
 //------------------------------------------------------------------------------
 /// Save the last sinogram that has been computed.
-/*
- *  @param aFileName:	the name of the output file
- *  					(default: 0 means that the filename will be
- *  					automatically generated and the file saved in
- *  					the current path)
+/**
+ *  @param aFileName:   the name of the output file
+ *                      (default: 0 means that the filename will be
+ *                      automatically generated and the file saved in
+ *                      the current path)
  */
 //------------------------------------------------------------------------------
 void saveLastSinogram(const std::string& aFileName = std::string());
@@ -1471,13 +1542,15 @@ void enableArtifactFilteringOnGPU(void);
 
 
 //------------------------------------------------------------------------------
-/// Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing).
+/// Enable artefact filtering on CPU (can be extremely slow as it makes use
+/// of ray-tracing).
 //------------------------------------------------------------------------------
 void enableArtefactFilteringOnCPU(void);
 
 
 //------------------------------------------------------------------------------
-/// Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing).
+/// Enable artefact filtering on CPU (can be extremely slow as it makes use
+/// of ray-tracing).
 //------------------------------------------------------------------------------
 void enableArtifactFilteringOnCPU(void);
 
@@ -1496,12 +1569,12 @@ void disableArtifactFiltering(void);
 
 //------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of energy.
-/*
- *  @param aUnitOfEnergy:		the unit of energy.
- *  							Acceptable values are:
- *  							"electronvolt", "eV",
- *  							"kiloelectronvolt", "keV",
- *  							"megaelectronvolt", "MeV"
+/**
+ *  @param aUnitOfEnergy:   the unit of energy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
  *  @return the corresponding numerical value
  */
 //------------------------------------------------------------------------------
@@ -1510,17 +1583,16 @@ double getUnitOfEnergy(const std::string& aUnitOfEnergy);
 
 //------------------------------------------------------------------------------
 /// Accessor on the numerical value corresponding to a unit of length.
-/*
- *  @param aUnitOfLength:		the unit of length.
- *  							Acceptable values are:
- *                          	"um", "micrometre",  "micrometer",
- *                          	"mm", "millimetre",  "millimeter",
- *                          	"cm", "centimetre",  "centimeter",
- *                      	    "dm",  "decimetre",  "decimeter",
- *                     		    "m",   "metre",      "meter",
- *                    	        "dam", "decametre",  "decameter",
- *                   	        "hm",  "hectometre", "hectometer",
- *                              "km",  "kilometre",  "kilometer"
+/**
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
  *  @return the corresponding numerical value
  */
 //------------------------------------------------------------------------------
@@ -1530,15 +1602,15 @@ double getUnitOfLength(const std::string& aUnitOfLength);
 //------------------------------------------------------------------------------
 /// Compute the X-ray projection corresponding to the environment that
 /// has previously been set, i.e.
-/// 	- Detector position
-/// 	- Detector orientation
-/// 	- Detector size and resolution
-/// 	- Source position
-/// 	- Source shape
-///		- Beam spectrum
-///		- Scanned object geometries
-///		- Scanned object material properties
-/*
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
+/**
  *  @return the corresponding X-ray image
  */
 //------------------------------------------------------------------------------
@@ -1548,14 +1620,14 @@ std::vector<std::vector<float> > computeXRayImage();
 //------------------------------------------------------------------------------
 /// Compute the L-buffer of a polygon mesh corresponding to the environment that
 /// has previously been set, i.e.
-/// 	- Detector position
-/// 	- Detector orientation
-/// 	- Detector size and resolution
-/// 	- Source position
-/// 	- Source shape
-///		- Scanned object geometry
-/*
- *  @param aLabel:	the label of the polygon mesh
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Scanned object geometry
+/**
+ *  @param aLabel:  the label of the polygon mesh
  *  @return the corresponding L-buffer
  */
 //------------------------------------------------------------------------------
@@ -1565,20 +1637,20 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel);
 //------------------------------------------------------------------------------
 /// Compute the sinogram corresponding to the environment that
 /// has previously been set, i.e.
-/// 	- Detector position
-/// 	- Detector orientation
-/// 	- Detector size and resolution
-/// 	- Source position
-/// 	- Source shape
-///		- Beam spectrum
-///		- Scanned object geometries
-///		- Scanned object material properties
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
 /// Note that the rotation vector is the same as the up-vector of the detector.
-/*
+/**
  *  @param x:   the position of the rotation centre along the X-axis
  *  @param y:   the position of the rotation centre along the Y-axis
  *  @param z:   the position of the rotation centre along the Z-axis
- *  @param aUnitOfLength:	the unit of length corresponding to the x, y and z
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
  *                          "mm", "millimetre",  "millimeter",
@@ -1588,19 +1660,24 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel);
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
- *  @param aNumberOfAngle:	the total number of projections in the sinogram
- *  @param anAngleOffset:	the angle in degrees between two successive projections
+ *  @param aNumberOfAngle:  the total number of projections in the sinogram
+ *  @param anAngleOffset:   the angle in degrees between
+ *                          two successive projections
  *  @return the corresponding sinogram
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeSinogram(double x, double y, double z, const std::string& aUnitOfLength,
-        unsigned int aNumberOfAngle,
-        double anAngleOffset);
+std::vector<std::vector<float> > computeSinogram(
+    double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength,
+    unsigned int aNumberOfAngle,
+    double anAngleOffset);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the last X-ray image that has been computed.
-/*
+/**
  *  @return the last X-ray image
  */
 //------------------------------------------------------------------------------
@@ -1609,7 +1686,7 @@ std::vector<std::vector<float> > getLastXRayImage();
 
 //------------------------------------------------------------------------------
 /// Accessor on the last L-buffer that has been computed.
-/*
+/**
  *  @return the last L-buffer
  */
 //------------------------------------------------------------------------------
@@ -1618,7 +1695,7 @@ std::vector<std::vector<float> > getLastLBuffer();
 
 //------------------------------------------------------------------------------
 /// Accessor on the last sinogram that has been computed.
-/*
+/**
  *  @return the last sinogram
  */
 //------------------------------------------------------------------------------
@@ -1627,8 +1704,8 @@ std::vector<std::vector<float> > getLastSinogram();
 
 //------------------------------------------------------------------------------
 /// Accessor on the width of a given image.
-/*
- *  @param anImage:	the image
+/**
+ *  @param anImage: the image
  *  @return the width of the image (in number of pixels)
  */
 //------------------------------------------------------------------------------
@@ -1637,8 +1714,8 @@ int getImageWidth(const std::vector<std::vector<float> >& anImage);
 
 //------------------------------------------------------------------------------
 /// Accessor on the height of a given image.
-/*
- *  @param anImage:	the image
+/**
+ *  @param anImage: the image
  *  @return the height of the image (in number of pixels)
  */
 //------------------------------------------------------------------------------
@@ -1647,20 +1724,20 @@ int getImageHeght(const std::vector<std::vector<float> >& anImage);
 
 //------------------------------------------------------------------------------
 /// Accessor on the j-th row of pixels of a given image.
-/*
- *  @param anImage:	the image
- *  @param j:	the row number
+/**
+ *  @param anImage: the image
+ *  @param j:       the row number
  *  @return the j-th row of pixels
  */
 //------------------------------------------------------------------------------
-std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage, int j);
-
+std::vector<float> getImageRow(const std::vector<std::vector<float> >& anImage,
+                               int j);
 
 
 //------------------------------------------------------------------------------
 /// Accessor on the chemical element's name depending on its Z number.
-/*
- *  @param Z:	the atomic number of the element
+/**
+ *  @param Z:   the atomic number of the element
  *  @return the name of the corresponding element
  */
 //------------------------------------------------------------------------------
@@ -1669,8 +1746,8 @@ std::string getElementName(unsigned short Z);
 
 //------------------------------------------------------------------------------
 /// Accessor on the chemical element' symbol depending on its Z number.
-/*
- *  @param Z:	the atomic number of the element
+/**
+ *  @param Z:   the atomic number of the element
  *  @return the name of the corresponding element
  */
 //------------------------------------------------------------------------------
@@ -1679,8 +1756,8 @@ std::string getElementSymbol(unsigned short Z);
 
 //------------------------------------------------------------------------------
 /// Accessor on the chemical element's Z number.
-/*
- *  @param anElement:	the name or symbol of the element
+/**
+ *  @param anElement:   the name or symbol of the element
  *  @return the Z number of the corresponding element
  */
 //------------------------------------------------------------------------------
@@ -1689,8 +1766,8 @@ unsigned short getElementAtomicNumber(const std::string& anElement);
 
 //------------------------------------------------------------------------------
 /// Accessor on the chemical element's density.
-/*
- *  @param anElement:	the name or symbol of the element
+/**
+ *  @param anElement:   the name or symbol of the element
  *  @return the density of the corresponding element (in g / cm3)
  */
 //------------------------------------------------------------------------------
@@ -1699,15 +1776,15 @@ double getElementDensity(const std::string& anElement);
 
 //------------------------------------------------------------------------------
 /// Accessor on the chemical element's density.
-/*
- *  @param anElement:	the Z number of the element
+/**
+ *  @param anElement:   the Z number of the element
  *  @return the density of the corresponding element (in g / cm3)
  */
 //------------------------------------------------------------------------------
 double getElementDensity(unsigned short Z);
 
 
-/*
+/**
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);
 double getShiftFilter();
