@@ -1252,6 +1252,8 @@ void createOpenGLContext(int aWindowID = -1);
  *  @param aWindowID:   the numerical ID of the context to create
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
+ *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
  */
 //------------------------------------------------------------------------------
 void createWindow(int aWindowID = -1, int aVisibilityFlag = 0);
@@ -1777,7 +1779,7 @@ double getElementDensity(const std::string& anElement);
 //------------------------------------------------------------------------------
 /// Accessor on the chemical element's density.
 /**
- *  @param anElement:   the Z number of the element
+ *  @param Z:   the Z number of the element
  *  @return the density of the corresponding element (in g / cm3)
  */
 //------------------------------------------------------------------------------

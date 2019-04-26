@@ -41,6 +41,17 @@ the full version number
 %feature("docstring") addEnergyBinToSpectrum "
 
 Add an energy bin to the beam spectrum (useful to generate polychromatism).  
+
+Parameters
+----------
+* `anEnergy` :  
+    the incident photon energy  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+* `aNumberOfPhotons` :  
+    the number of incident photons  
 ";
 
 %feature("docstring") moveToCenter "
@@ -51,21 +62,46 @@ Move the scenegraph to the centre.
 %feature("docstring") moveToCenter "
 
 Move a polygon mesh to the centre.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh in the scenegraph  
 ";
 
 %feature("docstring") saveLastSinogram "
 
 Save the last sinogram that has been computed.  
+
+Parameters
+----------
+* `aFileName` :  
+    the name of the output file (default: 0 means that the filename will be
+    automatically generated and the file saved in the current path)  
 ";
 
 %feature("docstring") getNodeTransformationMatrix "
 
 Accessor on the transformation matrix of a given node.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+
+Returns
+-------
+the scengraph's root node transformation matrix as a 4x4 array  
 ";
 
 %feature("docstring") setSceneTransformationMatrix "
 
 Set the 3-D scene transformation matrix.  
+
+Parameters
+----------
+* `aMatrix` :  
+    the transformation matrix as a 4x4 array  
 ";
 
 %feature("docstring") makeCube "
@@ -124,6 +160,10 @@ Parameters
 %feature("docstring") getLastXRayImage "
 
 Accessor on the last X-ray image that has been computed.  
+
+Returns
+-------
+the last X-ray image  
 ";
 
 %feature("docstring") rotateModelView "
@@ -161,11 +201,26 @@ Parameters
 
 Set the mixture corresponding to the material properties of a polygon mesh.
 Don't forget to set the density of the material.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aMixture` :  
+    the details about the mixture. It is given as a sequence of element symbol &
+    relative weight, e.g. Ti90Al6V4.  
 ";
 
 %feature("docstring") setNodeTransformationMatrix "
 
 Set the transformation matrix of a given node.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aMatrix` :  
+    the transformation matrix as a 4x4 array  
 ";
 
 %feature("docstring") initShader "
@@ -176,6 +231,11 @@ Initialise visualisation shader.
 %feature("docstring") displayNode "
 
 Display the scenegraph node using OpenGL.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
 ";
 
 %feature("docstring") getPatchVersionOfCoreGVXR "
@@ -214,6 +274,15 @@ the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
 %feature("docstring") createWindow "
 
 Create an OpenGL context and display it in a window.  
+
+Parameters
+----------
+* `aWindowID` :  
+    the numerical ID of the context to create (default value: -1, means that the
+    ID will be automatically generated)  
+* `aVisibilityFlag` :  
+    flag controling if the window should be visible (1) or hidden (0). (default
+    value: 0)  
 ";
 
 %feature("docstring") initialiseGLEW "
@@ -224,6 +293,12 @@ Initialise GLEW if it is supported.
 %feature("docstring") saveLastLBuffer "
 
 Save the last L-buffer that has been computed.  
+
+Parameters
+----------
+* `aFileName` :  
+    the name of the output file (default: means that the filename will be
+    automatically generated and the file saved in the current path)  
 ";
 
 %feature("docstring") getDetectorRightVector "
@@ -238,6 +313,13 @@ the right-vector
 %feature("docstring") scrollCallback "
 
 Call this function when the user scrolls.  
+
+Parameters
+----------
+* `xoffset` :  
+    the scroll offset along the x-axis (not used)  
+* `yoffset` :  
+    the scroll offset along the y-axis (used for zooming in and out)  
 ";
 
 %feature("docstring") invertNormalVectors "
@@ -319,6 +401,15 @@ the source position in a given unit of length
 %feature("docstring") getElementSymbol "
 
 Accessor on the chemical element' symbol depending on its Z number.  
+
+Parameters
+----------
+* `Z` :  
+    the atomic number of the element  
+
+Returns
+-------
+the name of the corresponding element  
 ";
 
 %feature("docstring") loadSceneGraph "
@@ -341,6 +432,17 @@ Parameters
 %feature("docstring") loadSpectrumFromTSV "
 
 Load the incident beam energy spectrum from a TSV file.  
+
+Parameters
+----------
+* `aFileName` :  
+    name of the file to load  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+* `aNormalisationFlag` :  
+    true to normalise the total energy to 1, false otherwise  
 ";
 
 %feature("docstring") setDetectorPixelSize "
@@ -366,6 +468,16 @@ Parameters
 
 Set the mass attenuation coefficient corresponding to the material properties of
 a polygon mesh. Don't forget to set the density of the material.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aCoefficient` :  
+    the mass attenuation coefficient  
+* `aUnit` :  
+    the unit corresponding to aCoefficient. Acceptable values are: \"cm2/g\" and
+    \"cm2.g-1\"  
 ";
 
 %feature("docstring") lookAt "
@@ -419,6 +531,21 @@ Parameters
 
 Accessor on the mass attenuation coefficient at a given energy corresponding to
 the material properties of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the mass attenuation coefficient of the polygon mesh's material in cm2/g  
 ";
 
 %feature("docstring") getSourcePosition "
@@ -443,6 +570,17 @@ the source position in a given unit of length
 %feature("docstring") setMonoChromatic "
 
 Use a monochromatic beam spectrum (i.e. one single energy).  
+
+Parameters
+----------
+* `anEnergy` :  
+    the incident photon energy  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+* `aNumberOfPhotons` :  
+    the number of incident photons  
 ";
 
 %feature("docstring") pushModelViewMatrix "
@@ -464,6 +602,9 @@ previously been set, i.e.
 *   Beam spectrum  
 *   Scanned object geometries  
 *   Scanned object material properties  
+
+    Returns:
+    the corresponding X-ray image  
 ";
 
 %feature("docstring") setDetectorNumberOfPixels "
@@ -481,27 +622,79 @@ Parameters
 %feature("docstring") getUnitOfEnergy "
 
 Accessor on the numerical value corresponding to a unit of energy.  
+
+Parameters
+----------
+* `aUnitOfEnergy` :  
+    the unit of energy. Acceptable values are: \"electronvolt\", \"eV\",
+    \"kiloelectronvolt\", \"keV\", \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the corresponding numerical value  
 ";
 
 %feature("docstring") setLinearAttenuationCoefficient "
 
 Set the linear attenuation coefficient corresponding to the material properties
 of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aCoefficient` :  
+    the liner attenuation coefficient  
+* `aUnit` :  
+    the unit corresponding to aCoefficient. Acceptable values are: \"cm-1\"  
 ";
 
 %feature("docstring") getImageHeght "
 
 Accessor on the height of a given image.  
+
+Parameters
+----------
+* `anImage` :  
+    the image  
+
+Returns
+-------
+the height of the image (in number of pixels)  
 ";
 
 %feature("docstring") createOpenGLContext "
 
 Create an OpenGL context (the window won't be shown).  
+
+Parameters
+----------
+* `aWindowID` :  
+    the numerical ID of the context to create (default value: -1, means that the
+    ID will be automatically generated)  
 ";
 
 %feature("docstring") scaleNode "
 
 Scale a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh to transform  
+* `x` :  
+    the scaling factor along the X-axis  
+* `y` :  
+    the scaling factor along the Y-axis  
+* `z` :  
+    the scaling factor along the Z-axis  
+* `aUnitOfLength` :  
+    the unit of length corresponding to the x, y and z parameters. Acceptable
+    values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
 ";
 
 %feature("docstring") enableArtifactFilteringOnGPU "
@@ -517,6 +710,11 @@ Move the scenegraph to the centre.
 %feature("docstring") moveToCentre "
 
 Move a polygon mesh to the centre.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh in the scenegraph  
 ";
 
 %feature("docstring") disableArtefactFiltering "
@@ -527,6 +725,17 @@ Disable artefact filtering altogether.
 %feature("docstring") rotateScene "
 
 Rotate the 3-D scene (all the polygon meshes will be affected but not modified).  
+
+Parameters
+----------
+* `anAngle` :  
+    the rotation angle in degrees  
+* `x` :  
+    the component of the rotation vector along the X-axis  
+* `y` :  
+    the component of the rotation vector along the Y-axis  
+* `z` :  
+    the component of the rotation vector along the Z-axis  
 ";
 
 %feature("docstring") addMesh "
@@ -547,6 +756,15 @@ Parameters
 
 3-D visualisation of the 3-D scene (source, detector, and scanned objects). Note
 that there is no interactive loop running.  
+
+Parameters
+----------
+* `aSceneRotationFlag` :  
+    true if the 3-D scene has to be rotated with the arc-ball method, false
+    otherwise (default value: true)  
+* `aWindowID` :  
+    the numerical ID of the corresponding context (default value: -1, means that
+    the active context will be used)  
 ";
 
 %feature("docstring") setDetectorPosition "
@@ -582,11 +800,19 @@ the diffuse colour
 %feature("docstring") getLastSinogram "
 
 Accessor on the last sinogram that has been computed.  
+
+Returns
+-------
+the last sinogram  
 ";
 
 %feature("docstring") getPhtotonCountEnergyBins "
 
 Accessor on the number of photons per energy bin of the beam spectrum.  
+
+Returns
+-------
+the list of number of photons  
 ";
 
 %feature("docstring") subtractMesh "
@@ -615,12 +841,28 @@ the shininess coefficient
 %feature("docstring") getElementName "
 
 Accessor on the chemical element's name depending on its Z number.  
+
+Parameters
+----------
+* `Z` :  
+    the atomic number of the element  
+
+Returns
+-------
+the name of the corresponding element  
 ";
 
 %feature("docstring") setHounsfieldValue "
 
 Set the Hounsfield value corresponding to the material properties of a polygon
 mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `HU` :  
+    the Hounsfield value  
 ";
 
 %feature("docstring") getMajorVersionOfCoreGVXR "
@@ -659,11 +901,33 @@ Parameters
 %feature("docstring") scaleScene "
 
 Scale the 3-D scene (all the polygon meshes will be affected but not modified).  
+
+Parameters
+----------
+* `x` :  
+    the scaling factor along the X-axis  
+* `y` :  
+    the scaling factor along the Y-axis  
+* `z` :  
+    the scaling factor along the Z-axis  
+* `aUnitOfLength` :  
+    the unit of length corresponding to the x, y and z parameters. Acceptable
+    values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
 ";
 
 %feature("docstring") saveLastXRayImage "
 
 Save the last X-ray image that has been computed.  
+
+Parameters
+----------
+* `aFileName` :  
+    the name of the output file (default: means that the filename will be
+    automatically generated and the file saved in the current path)  
 ";
 
 %feature("docstring") useParallelBeam "
@@ -675,11 +939,21 @@ scanned object and detector).
 %feature("docstring") hideWindow "
 
 Hide a window.  
+
+Parameters
+----------
+* `aWindowID` :  
+    the numerical ID of the corresponding context (default value: -1, means that
+    the active context will be used)  
 ";
 
 %feature("docstring") getSceneTransformationMatrix "
 
 Accessor on the 3-D scene transformation matrix.  
+
+Returns
+-------
+the 3-D scene transformation matrix as a 4x4 array  
 ";
 
 %feature("docstring") getMinorVersionOfCoreGVXR "
@@ -697,18 +971,43 @@ the minor version number
 
 Accessor on the density corresponding to the material properties of a polygon
 mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+
+Returns
+-------
+the density of the polygon mesh's material in g/cm3  
 ";
 
 %feature("docstring") setHU "
 
 Set the Hounsfield value corresponding to the material properties of a polygon
 mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `HU` :  
+    the Hounsfield value  
 ";
 
 %feature("docstring") setMu "
 
 Set the linear attenuation coefficient corresponding to the material properties
 of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aCoefficient` :  
+    the liner attenuation coefficient  
+* `aUnit` :  
+    the unit corresponding to aCoefficient. Acceptable values are: \"cm-1\"  
 ";
 
 %feature("docstring") getChildLabel "
@@ -791,6 +1090,10 @@ of the stack. glMatrixMode(GL_MODELVIEW);glPopMatrix() functions.
 %feature("docstring") getLastLBuffer "
 
 Accessor on the last L-buffer that has been computed.  
+
+Returns
+-------
+the last L-buffer  
 ";
 
 %feature("docstring") emptyMesh "
@@ -892,11 +1195,32 @@ the corresponding local transformation matrix
 %feature("docstring") getImageRow "
 
 Accessor on the j-th row of pixels of a given image.  
+
+Parameters
+----------
+* `anImage` :  
+    the image  
+* `j` :  
+    the row number  
+
+Returns
+-------
+the j-th row of pixels  
 ";
 
 %feature("docstring") setWindowSize "
 
 Create an OpenGL context and display it in a window.  
+
+Parameters
+----------
+* `aWidth` :  
+    the number of pixels along the X-axis  
+* `aHeight` :  
+    the number of pixels along the Y-axis  
+* `aWindowID` :  
+    the numerical ID of the corresponding context (default value: -1, means that
+    the active context will be used)  
 ";
 
 %feature("docstring") getMajorVersionOfSimpleGVXR "
@@ -912,6 +1236,19 @@ the major version number
 %feature("docstring") rotateNode "
 
 Rotate a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh to transform  
+* `anAngle` :  
+    the rotation angle in degrees  
+* `x` :  
+    the component of the rotation vector along the X-axis  
+* `y` :  
+    the component of the rotation vector along the Y-axis  
+* `z` :  
+    the component of the rotation vector along the Z-axis  
 ";
 
 %feature("docstring") enableArtefactFilteringOnGPU "
@@ -922,11 +1259,29 @@ Enable artefact filtering on GPU (it is fast but can be inaccurate).
 %feature("docstring") getElementDensity "
 
 Accessor on the chemical element's density.  
+
+Parameters
+----------
+* `anElement` :  
+    the name or symbol of the element  
+
+Returns
+-------
+the density of the corresponding element (in g / cm3)  
 ";
 
 %feature("docstring") getElementDensity "
 
 Accessor on the chemical element's density.  
+
+Parameters
+----------
+* `Z` :  
+    the Z number of the element  
+
+Returns
+-------
+the density of the corresponding element (in g / cm3)  
 ";
 
 %feature("docstring") enableArtefactFilteringOnCPU "
@@ -952,6 +1307,16 @@ the number of chidren
 %feature("docstring") setDensity "
 
 Set the density corresponding to the material properties of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aDensity` :  
+    the density  
+* `aUnit` :  
+    the unit corresponding to aDensity. Acceptable values are: \"g/cm3\" and
+    \"g.cm-3\"  
 ";
 
 %feature("docstring") resetSceneTransformation "
@@ -963,16 +1328,47 @@ matrix.
 %feature("docstring") getMaterialLabel "
 
 Accessor on the material label of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+
+Returns
+-------
+the label of the material  
 ";
 
 %feature("docstring") usingArcBallRotation "
 
 Check if arc-ball rotation is currently in use.  
+
+Returns
+-------
+true if arc-ball rotation is currently in use, false otherwise  
 ";
 
 %feature("docstring") translateNode "
 
 Translate a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh to transform  
+* `x` :  
+    the component of the translation vector along the X-axis  
+* `y` :  
+    the component of the translation vector along the Y-axis  
+* `z` :  
+    the component of the translation vector along the Z-axis  
+* `aUnitOfLength` :  
+    the unit of length corresponding to the x, y and z parameters. Acceptable
+    values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
 ";
 
 %feature("docstring") computeLBuffer "
@@ -986,11 +1382,29 @@ previously been set, i.e.
 *   Source position  
 *   Source shape  
 *   Scanned object geometry  
+
+    Parameters:  
+    * `aLabel` :  
+        the label of the polygon mesh  
+
+    Returns:
+    the corresponding L-buffer  
 ";
 
 %feature("docstring") cursorPositionCallback "
 
 Call this function when the user moves the mouse.  
+
+Parameters
+----------
+* `x` :  
+    the cursor x-axis position in the viewport coordinate system  
+* `y` :  
+    the cursor y-axis position in the viewport coordinate system  
+* `aViewportWidth` :  
+    the size of the viewport along the x-axis  
+* `aViewportHeight` :  
+    the size of the viewport along the y-axis  
 ";
 
 %feature("docstring") enableArtifactFilteringOnCPU "
@@ -1003,6 +1417,14 @@ tracing).
 
 Set the compound corresponding to the material properties of a polygon mesh.
 Don't forget to set the density of the material.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aCompound` :  
+    the details about the compound. It is given as a sequence of element symbol
+    & number of atoms, e.g. H2O for water and SiC for silicon carbide.  
 ";
 
 %feature("docstring") getVersionOfSimpleGVXR "
@@ -1017,6 +1439,15 @@ the full version number
 %feature("docstring") getImageWidth "
 
 Accessor on the width of a given image.  
+
+Parameters
+----------
+* `anImage` :  
+    the image  
+
+Returns
+-------
+the width of the image (in number of pixels)  
 ";
 
 %feature("docstring") removePolygonMeshesFromSceneGraph "
@@ -1029,40 +1460,116 @@ meshes.
 
 Set the chemical element (or element) corresponding to the material properties
 of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `Z` :  
+    the atomic number (or Z number) corresponding to the element  
 ";
 
 %feature("docstring") setElement "
 
 Set the chemical element (or element) corresponding to the material properties
 of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aName` :  
+    the symbol or name corresponding to the element  
 ";
 
 %feature("docstring") getUnitOfLength "
 
 Accessor on the numerical value corresponding to a unit of length.  
+
+Parameters
+----------
+* `aUnitOfLength` :  
+    the unit of length. Acceptable values are: \"um\", \"micrometre\",
+    \"micrometer\", \"mm\", \"millimetre\", \"millimeter\", \"cm\",
+    \"centimetre\", \"centimeter\", \"dm\", \"decimetre\", \"decimeter\", \"m\",
+    \"metre\", \"meter\", \"dam\", \"decametre\", \"decameter\", \"hm\",
+    \"hectometre\", \"hectometer\", \"km\", \"kilometre\", \"kilometer\"  
+
+Returns
+-------
+the corresponding numerical value  
 ";
 
 %feature("docstring") getLinearAttenuationCoefficient "
 
 Accessor on the linear attenuation coefficient at a given energy corresponding
 to the material properties of a polygon mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the linear attenuation coefficient of the polygon mesh's material in cm-1  
 ";
 
 %feature("docstring") getEnergyBins "
 
 Accessor on the energy bins of the beam spectrum.  
+
+Parameters
+----------
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to the returned vector. Acceptable values
+    are: \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the list of energy bins in aUnitOfEnergy  
 ";
 
 %feature("docstring") translateScene "
 
 Translate the 3-D scene (all the polygon meshes will be affected but not
 modified).  
+
+Parameters
+----------
+* `x` :  
+    the component of the translation vector along the X-axis  
+* `y` :  
+    the component of the translation vector along the Y-axis  
+* `z` :  
+    the component of the translation vector along the Z-axis  
+* `aUnitOfLength` :  
+    the unit of length corresponding to the x, y and z parameters. Acceptable
+    values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
+    \"millimeter\", \"cm\", \"centimetre\", \"centimeter\", \"dm\",
+    \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\"  
 ";
 
 %feature("docstring") startArcBallRotation "
 
 Call this function when the user starts an arc-ball rotation (e.g. left-mouse
 button click in the 3-D visualisation window).  
+
+Parameters
+----------
+* `x` :  
+    the cursor x-axis position in the viewport coordinate system  
+* `y` :  
+    the cursor y-axis position in the viewport coordinate system  
 ";
 
 %feature("docstring") renderLoop "
@@ -1077,6 +1584,11 @@ that there is interactive loop running. Keys are:
 *   L: switch lighting on/off  
 *   D: display/hide the X-ray detector  
 *   V: display/hide normal vectors  
+
+    Parameters:  
+    * `aWindowID` :  
+        the numerical ID of the corresponding context (default value: -1, means
+        that the active context will be used)  
 ";
 
 %feature("docstring") getDetectorSize "
@@ -1108,6 +1620,13 @@ the scenegraph.
 
 Set the Hounsfield value corresponding to the material properties of a polygon
 mesh.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `HU` :  
+    the Hounsfield value  
 ";
 
 %feature("docstring") getSpecularColour "
@@ -1127,6 +1646,11 @@ Close and destroy a given window or OpenGL context.
 %feature("docstring") setRootTransformationMatrix "
 
 Set the transformation matrix of the scengraph's root node.  
+
+Parameters
+----------
+* `aMatrix` :  
+    the transformation matrix as a 4x4 array  
 ";
 
 %feature("docstring") resetBeamSpectrum "
@@ -1137,6 +1661,10 @@ Empty the beam spectrum.
 %feature("docstring") getRootTransformationMatrix "
 
 Accessor on the transformation matrix of the scengraph's root node.  
+
+Returns
+-------
+the scengraph's root node transformation matrix as a 4x4 array  
 ";
 
 %feature("docstring") computeSinogram "
@@ -1153,11 +1681,42 @@ set, i.e.
 *   Scanned object geometries  
 *   Scanned object material properties Note that the rotation vector is the same
     as the up-vector of the detector.  
+
+    Parameters:  
+    * `x` :  
+        the position of the rotation centre along the X-axis  
+    * `y` :  
+        the position of the rotation centre along the Y-axis  
+    * `z` :  
+        the position of the rotation centre along the Z-axis  
+    * `aUnitOfLength` :  
+        the unit of length corresponding to the x, y and z parameters.
+        Acceptable values are: \"um\", \"micrometre\", \"micrometer\", \"mm\",
+        \"millimetre\", \"millimeter\", \"cm\", \"centimetre\", \"centimeter\",
+        \"dm\", \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\",
+        \"dam\", \"decametre\", \"decameter\", \"hm\", \"hectometre\",
+        \"hectometer\", \"km\", \"kilometre\", \"kilometer\"  
+    * `aNumberOfAngle` :  
+        the total number of projections in the sinogram  
+    * `anAngleOffset` :  
+        the angle in degrees between two successive projections  
+
+    Returns:
+    the corresponding sinogram  
 ";
 
 %feature("docstring") getElementAtomicNumber "
 
 Accessor on the chemical element's Z number.  
+
+Parameters
+----------
+* `anElement` :  
+    the name or symbol of the element  
+
+Returns
+-------
+the Z number of the corresponding element  
 ";
 
 %feature("docstring") addPolygonMeshAsInnerSurface "
@@ -1173,6 +1732,12 @@ Parameters
 %feature("docstring") showWindow "
 
 Make an OpenGL context visible and display a window.  
+
+Parameters
+----------
+* `aWindowID` :  
+    the numerical ID of the corresponding context (default value: -1, means that
+    the active context will be used)  
 ";
 
 %feature("docstring") getDetectorNumberOfPixels "
