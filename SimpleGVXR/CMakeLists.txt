@@ -93,7 +93,7 @@ include(cmake/KWStyle/KWStyle.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/Documentation.cmake)
 
 IF(BUILD_DOCUMENTATION)
-    ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen)
+    ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_BINARY_DIR}/doc)
     MESSAGE(STATUS "Build documentation.")
 ELSE (BUILD_DOCUMENTATION)
        MESSAGE("Do not build documentation.")

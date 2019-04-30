@@ -42,6 +42,7 @@ SET (EMAIL                "franck.p.vidal@fpvidal.net")
 SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
 SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")
 SET (MAIN_PROJECT_VERSION "${SimpleGVXR_VERSION_MAJOR}.${SimpleGVXR_VERSION_MINOR}.${SimpleGVXR_VERSION_PATCH}")
+SET (FULL_PROJECT_DESCRIPTION "Welcome to gVirtualXRay, the library for the simulation of X-ray images from polygon meshes on the GPU. gVirtualXRay is an open-source,cross-platform system. SimpleGVXR is a simplified layer built on top of gVirtualXRay, intended to facilitate its use in rapid prototyping, education, interpreted languages. SimpleGVXR: i) is C++ library, ii) provides a simplified, easy-to-use, procedural interface without templates, iii) provides binders for other programming languages (Python 2 and 3, LUA, Ruby, R, TCL, Java, GNU Octave, Perl, Scilab, C#, php and Matlab).")
 
 STRING(TIMESTAMP TIMESTAMP)
 
