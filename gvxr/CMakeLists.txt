@@ -31,7 +31,10 @@
 
 
 # Project name and version #####################################################
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
+SET (gVirtualXRay_VERSION_MAJOR 1)
+SET (gVirtualXRay_VERSION_MINOR 1)
+SET (gVirtualXRay_VERSION_PATCH 0)
+SET (gVirtualXRay_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
@@ -40,6 +43,9 @@ else ()
     PROJECT(gVirtualXRay)
 endif()
 set(CMAKE_DIRECTORY_LABELS "gvxr-core")
+
+
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
 
 
 # Minimum CMake version ########################################################
