@@ -9,7 +9,7 @@
 <ProjectLogo>../../doc/logo.png</ProjectLogo>
 
 <!-- Location of the KWStyle logo to appear on the HTML pages. (The logo is copied automatically in the HTML/images directory) -->
-<KWStyleLogo>KWSTYleLogo.jpg</KWStyleLogo>
+<KWStyleLogo>@gVirtualXRay_BASE_DIR@/cmake/KWStyle/KWSTYleLogo.jpg</KWStyleLogo>
 
 <!-- If the number of errors for a given test is above the given threshold the errors appears red on the dashboard -->
 <ErrorThreshold>1</ErrorThreshold>
