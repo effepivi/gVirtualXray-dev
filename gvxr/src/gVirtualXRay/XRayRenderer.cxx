@@ -217,7 +217,7 @@ XRayRenderer::XRayRenderer():
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
 		m_use_l_buffer_artefact_filtering_on_gpu(false),
-		m_use_l_buffer_artefact_filtering_on_cpu(true),
+		m_use_l_buffer_artefact_filtering_on_cpu(false),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
 		m_zbuffer_texture_id(0),
