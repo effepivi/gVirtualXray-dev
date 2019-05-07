@@ -31,7 +31,10 @@
 
 
 # Project name and version #####################################################
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
+SET (SimpleGVXR_VERSION_MAJOR 1)
+SET (SimpleGVXR_VERSION_MINOR 0)
+SET (SimpleGVXR_VERSION_PATCH 0)
+SET (SimpleGVXR_VERSION_STRING "${SimpleGVXR_VERSION_MAJOR}.${SimpleGVXR_VERSION_MINOR}.${SimpleGVXR_VERSION_PATCH}")
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
@@ -40,6 +43,8 @@ else ()
     PROJECT(SimpleGVXR)
 endif()
 set(CMAKE_DIRECTORY_LABELS "SimpleGVXR")
+
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 
 
 # Support for the CTest dashboard testing system
@@ -184,7 +189,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MAJOR=${SimpleGVXR_VERSION_MAJOR}")
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MINOR=${SimpleGVXR_VERSION_MINOR}")
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_PATCH=${SimpleGVXR_VERSION_PATCH}")
-ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_VERSION}\"")
+ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 
 
 # Create the library ###########################################################
