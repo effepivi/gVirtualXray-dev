@@ -46,6 +46,31 @@ echo "Temporarily install the libraries in $DESTINATION"
 echo "************************"
 
 
+# Retrieve the code from the trunk on SVN
+if [[ -d .svn ]]
+then
+    read -p "Do you want to update the source code from SVN? (Y/N)" -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        echo "Update the source code from SVN"
+        svn update  > svn_update.out.log 2> svn_update.err.log
+    fi
+else
+    read -p "Do you want to retrieve the source code from SVN? (Y/N)" -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        echo "Get the source code from SVN"
+        svn checkout https://svn.code.sf.net/p/gvirtualxray/code/trunk .  > svn_checkout.out.log 2> svn_checkout.err.log
+    else
+        echo "We can't install gvxrPython3 without the source code."
+        echo "The install script will terminate."
+        exit
+    fi
+fi
+
+
 # Delete previous build if needed
 read -p "Do you want to delete the previous builds? (Y/N)  " -n 1 -r
 echo
