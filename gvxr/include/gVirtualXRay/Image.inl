@@ -1842,7 +1842,7 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
         output_file << m_width << " " << m_height * m_number_of_slices << std::endl;
 
         // The get the max value
-        output_file << "255" << std::endl;
+        output_file << "65535" << std::endl;
 
         // Process every line
         for (unsigned int k = 0; k < m_number_of_slices; ++k)
@@ -1860,11 +1860,11 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
                     }
                     else
                     {
-                        pixel_value = 255.0 * (m_p_image[k * m_width * m_height + j * m_width + i] - min_value) / range_value;
+                        pixel_value = 65535.0 * (m_p_image[k * m_width * m_height + j * m_width + i] - min_value) / range_value;
                     }
 
 					pixel_value = std::max(0, pixel_value);
-                    pixel_value = std::min(255, pixel_value);
+                    pixel_value = std::min(65535, pixel_value);
 
 					output_file << pixel_value;
                     
