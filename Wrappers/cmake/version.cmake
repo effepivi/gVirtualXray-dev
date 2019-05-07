@@ -30,25 +30,25 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-SET (gvxrWrapper_VERSION_MAJOR 1)
-SET (gvxrWrapper_VERSION_MINOR 0)
-SET (gvxrWrapper_VERSION_PATCH 0)
-SET (gvxrWrapper_VERSION_STRING "${gvxrWrapper_VERSION_MAJOR}.${gvxrWrapper_VERSION_MINOR}.${gvxrWrapper_VERSION_PATCH}")
+SET (gvxrWrappers_VERSION_MAJOR 1)
+SET (gvxrWrappers_VERSION_MINOR 0)
+SET (gvxrWrappers_VERSION_PATCH 0)
+SET (gvxrWrappers_VERSION_STRING "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
-SET (gvxrWrapper_LICENSE )
+SET (gvxrWrappers_LICENSE )
 SET (PROJECT_NAME         "gvxrWrapper")
 SET (PROJECT_DESCRIPTION  "SWIG Wrappers to Simple Virtual X-Ray Imaging Library on GPU")
 SET (EMAIL                "franck.p.vidal@fpvidal.net")
 SET (MAIN_WEBSITE         "http://gvirtualxray.sourceforge.net/")
 SET (MAIN_PACKAGE_NAME    "${PROJECT_NAME}")
-SET (MAIN_PROJECT_VERSION "${gvxrWrapper_VERSION_MAJOR}.${gvxrWrapper_VERSION_MINOR}.${gvxrWrapper_VERSION_PATCH}")
+SET (MAIN_PROJECT_VERSION "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
-SET (INSTALL_DIR "${PROJECT_NAME}-${gvxrWrapper_VERSION_MAJOR}.${gvxrWrapper_VERSION_MINOR}.${gvxrWrapper_VERSION_PATCH}")
+SET (INSTALL_DIR "${PROJECT_NAME}-${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
-SET (CPACK_PACKAGE_VERSION_MAJOR ${gvxrWrapper_VERSION_MAJOR})
-SET (CPACK_PACKAGE_VERSION_MINOR ${gvxrWrapper_VERSION_MINOR})
-SET (CPACK_PACKAGE_VERSION_PATCH ${gvxrWrapper_VERSION_PATCH})
-SET (CPACK_PACKAGE_VERSION "${gvxrWrapper_VERSION_MAJOR}.${gvxrWrapper_VERSION_MINOR}.${gvxrWrapper_VERSION_PATCH}")
+SET (CPACK_PACKAGE_VERSION_MAJOR ${gvxrWrappers_VERSION_MAJOR})
+SET (CPACK_PACKAGE_VERSION_MINOR ${gvxrWrappers_VERSION_MINOR})
+SET (CPACK_PACKAGE_VERSION_PATCH ${gvxrWrappers_VERSION_PATCH})
+SET (CPACK_PACKAGE_VERSION "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
 SET (CPACK_PACKAGE_VENDOR "gVirtualXRay team")
 SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "gVirtualXRay - Installation")
