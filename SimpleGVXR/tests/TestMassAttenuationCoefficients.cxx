@@ -568,7 +568,7 @@ void runTestElement(const char* aFileName,
 
 			double temp_energy_in_MeV = last_energy_in_MeV - 4.0 * getUnitOfEnergy("eV");
 			test_vector.push_back(
-					getElementMassAttenuation(std::string(anElementSymbol),
+					getMassAttenuationFromElement(std::string(anElementSymbol),
 							temp_energy_in_MeV,
 							"MeV"));
 			energy_set.push_back(temp_energy_in_MeV);
@@ -580,7 +580,7 @@ void runTestElement(const char* aFileName,
 
 			reference_vector.push_back(mass_attenuation_coefficient);
 			test_vector.push_back(
-					getElementMassAttenuation(std::string(anElementSymbol),
+					getMassAttenuationFromElement(std::string(anElementSymbol),
 							current_energy_in_MeV,
 							"MeV"));
 			energy_set.push_back(current_energy_in_MeV);
@@ -687,7 +687,7 @@ void runTestMixture(const char* aFileName,
 
 			double temp_energy_in_MeV = last_energy_in_MeV - 4.0 * getUnitOfEnergy("eV");
 			test_vector.push_back(
-					getMixtureMassAttenuation(aMixture,
+					getMassAttenuationFromMixture(aMixture,
 							temp_energy_in_MeV,
 							"MeV"));
 			energy_set.push_back(temp_energy_in_MeV);
@@ -699,7 +699,7 @@ void runTestMixture(const char* aFileName,
 
 			reference_vector.push_back(mass_attenuation_coefficient);
 			test_vector.push_back(
-					getMixtureMassAttenuation(aMixture,
+					getMassAttenuationFromMixture(aMixture,
 							current_energy_in_MeV,
 							"MeV"));
 			energy_set.push_back(current_energy_in_MeV);
@@ -806,7 +806,7 @@ void runTestCompound(const char* aFileName,
 
 			double temp_energy_in_MeV = last_energy_in_MeV - 4.0 * getUnitOfEnergy("eV");
 			test_vector.push_back(
-					getCompoundMassAttenuation(aCompound,
+					getMassAttenuationFromCompound(aCompound,
 							temp_energy_in_MeV,
 							"MeV"));
 			energy_set.push_back(temp_energy_in_MeV);
@@ -818,7 +818,7 @@ void runTestCompound(const char* aFileName,
 
 			reference_vector.push_back(mass_attenuation_coefficient);
 			test_vector.push_back(
-					getCompoundMassAttenuation(aCompound,
+					getMassAttenuationFromCompound(aCompound,
 							current_energy_in_MeV,
 							"MeV"));
 			energy_set.push_back(current_energy_in_MeV);
