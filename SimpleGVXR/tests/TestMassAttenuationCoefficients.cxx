@@ -373,7 +373,7 @@ void runTestHU(const char* aFileName,
 			   const char* aGnuplotScriptFileName)
 //------------------------------------------------
 {
-/*    std::cout << "***********************" << std::endl;
+    std::cout << "***********************" << std::endl;
     std::cout << "HU: " << anHounsfieldValue << std::endl;
     std::cout << "***********************" << std::endl;
 
@@ -429,42 +429,48 @@ void runTestHU(const char* aFileName,
     			               "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 3" << std::endl;
     }
 
-    // Initialise the photon cross-section
-    PhotonCrossSection photon_cross_section;
-    photon_cross_section.useHU(anHounsfieldValue);
-
     std::vector<double> reference_vector;
     std::vector<double> test_vector;
     std::vector<double> energy_set;
 
-    double current_energy = 0;
-    double last_energy    = 0;
+    double current_energy_in_MeV = 0;
+    double last_energy_in_MeV    = 0;
     double mass_attenuation_coefficient;
     double temp;
 
+    // Skip header
+    char line[1024];
+    reference_data_stream.getline(line, 1024);
+
     while (reference_data_stream.good())
     {
-        reference_data_stream >> current_energy >> mass_attenuation_coefficient >> temp;
-        current_energy *= MeV;
+        reference_data_stream >> current_energy_in_MeV >> mass_attenuation_coefficient >> temp;
 
-        if (current_energy == last_energy)
+        if (current_energy_in_MeV == last_energy_in_MeV)
         {
-        	current_energy += 4.0 * eV;
+        	current_energy_in_MeV += 4.0 * getUnitOfEnergy("eV");
 
         	test_vector.pop_back();
 			energy_set.pop_back();
 
-			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(last_energy - 4.0 * eV)  / (cm2 / g));
-			energy_set.push_back(last_energy - 4.0 * eV);
+			double temp_energy_in_MeV = last_energy_in_MeV - 4.0 * getUnitOfEnergy("eV");
+			test_vector.push_back(
+					getMassAttenuationFromHU(anHounsfieldValue,
+							temp_energy_in_MeV,
+							"MeV"));
+			energy_set.push_back(temp_energy_in_MeV);
         }
 
-        if (current_energy != last_energy)
+        if (current_energy_in_MeV != last_energy_in_MeV)
         {
-        	last_energy = current_energy;
+        	last_energy_in_MeV = current_energy_in_MeV;
 
 			reference_vector.push_back(mass_attenuation_coefficient);
-			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
-			energy_set.push_back(current_energy);
+			test_vector.push_back(
+					getMassAttenuationFromHU(anHounsfieldValue,
+							current_energy_in_MeV,
+							"MeV"));
+			energy_set.push_back(current_energy_in_MeV);
         }
     }
 
@@ -477,7 +483,7 @@ void runTestHU(const char* aFileName,
 	}
 
 	ASSERT_NEAR(getNCC(reference_vector, test_vector), 1.0, 1e-3);
-	ASSERT_NEAR(maxRelativeError(reference_vector, test_vector), 0.0, 0.1);*/
+	ASSERT_NEAR(maxRelativeError(reference_vector, test_vector), 0.0, 0.1);
 }
 
 
