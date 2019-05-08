@@ -246,6 +246,15 @@ install(FILES
     COMPONENT Development)
 
 
+# Unit tests ###################################################################
+IF(BUILD_TESTING)
+    MESSAGE(STATUS "Build unit tests.")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests_bin)
+ELSE (BUILD_TESTING)
+       MESSAGE("Do not build unit tests.")
+ENDIF(BUILD_TESTING)
+
+
 # Installation #################################################################
 install(TARGETS SimpleGVXR
     RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/bin
