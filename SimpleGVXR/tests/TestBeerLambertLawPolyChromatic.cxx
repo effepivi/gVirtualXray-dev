@@ -153,7 +153,7 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
 
     destroyAllWindows();
 
-    ASSERT_NEAR(g_expected_result_in_keV, simulated_result_in_keV, 0.01 * g_expected_result_in_keV);
+    ASSERT_NEAR(1, simulated_result_in_keV / g_expected_result_in_keV, 0.01);
 }
 
 

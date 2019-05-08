@@ -98,74 +98,74 @@ TEST(TestDensity, TestDensity)
     rho_reference = 0.26;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = -98;
     rho_reference = 0.93;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = -77;
     rho_reference = 0.95;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = -55;
     rho_reference = 0.97;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 36;
     rho_reference = 1.04;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 40;
     rho_reference = 1.045;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 46;
     rho_reference = 1.05;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     // Soft tissues
     HU = 49;
     rho_reference = 1.07;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
 
     HU = 54;
     rho_reference = 1.06;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 63;
     rho_reference = 1.07;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 77;
     rho_reference = 1.09;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
     HU = 100;
     rho_reference = 1.12;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
 
     // Skeletal tissues
@@ -173,53 +173,53 @@ TEST(TestDensity, TestDensity)
     rho_reference = 0.98;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = -22;
     rho_reference = 1.00;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 11;
     rho_reference = 1.03;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 102;
     rho_reference = 1.10;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 385;
     rho_reference = 1.25;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 454;
     rho_reference = 1.29;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 466;
     rho_reference = 1.3;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 1239;
     rho_reference = 1.75;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 
     HU = 1524;
     rho_reference = 1.92;
     rho_test = getDensityFromHU(HU);
 
-    ASSERT_NEAR(rho_reference / 1000, rho_test / 1000, 1e-6 / (rho_reference / 1000));
+    ASSERT_NEAR(1, rho_test/ rho_reference, 0.05);
 }
