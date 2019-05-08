@@ -557,8 +557,8 @@ public:
      *  @return the corresponding attenuation coefficient
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
-                                             const RATIONAL_NUMBER& anEnergy);
+    static RATIONAL_NUMBER getMassAttenuationFromHU(const RATIONAL_NUMBER& HU,
+            const RATIONAL_NUMBER& anEnergy);
     
     
     //--------------------------------------------------------------------------
@@ -568,7 +568,7 @@ public:
      *  @return the corresponding density
      */
     //--------------------------------------------------------------------------
-    RATIONAL_NUMBER getDensityFromHU(const RATIONAL_NUMBER& HU);
+    static RATIONAL_NUMBER getDensityFromHU(const RATIONAL_NUMBER& HU);
     
     
     //--------------------------------------------------------------------------
@@ -735,7 +735,11 @@ public:
     
     const Image<XRayRenderer::PixelType>& getLBuffer() const;
     Image<XRayRenderer::PixelType>& getLBuffer();
+
     
+    const Image<XRayRenderer::PixelType>& getCumulatedLBuffer() const;
+    Image<XRayRenderer::PixelType>& getCumulatedLBuffer();
+
     
     const PixelType* getLBufferRawData();
 

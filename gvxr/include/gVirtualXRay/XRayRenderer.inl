@@ -640,6 +640,42 @@ namespace gVirtualXRay {
     }
     
     
+
+
+    //---------------------------------------------------------------------------
+    inline const Image<XRayRenderer::PixelType>& XRayRenderer::getCumulatedLBuffer() const
+    //---------------------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(const_cast<RATIONAL_NUMBER*>(m_cumulated_lbuffer_image.getRawData()));
+        RATIONAL_NUMBER* p_source = 0;
+
+		p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID);
+
+        memcpy(p_target,
+               p_source,
+               sizeof(RATIONAL_NUMBER) * m_cumulated_lbuffer_image.getWidth() * m_cumulated_lbuffer_image.getHeight());
+
+        return (m_cumulated_lbuffer_image);
+    }
+
+
+    //---------------------------------------------------------------
+    inline Image<XRayRenderer::PixelType>& XRayRenderer::getCumulatedLBuffer()
+    //---------------------------------------------------------------
+    {
+        RATIONAL_NUMBER* p_target(m_cumulated_lbuffer_image.getRawData());
+        RATIONAL_NUMBER* p_source = 0;
+
+		p_source = const_cast<XRayRenderer*>(this)->getFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID);
+
+        memcpy(p_target,
+               p_source,
+               sizeof(RATIONAL_NUMBER) * m_cumulated_lbuffer_image.getWidth() * m_cumulated_lbuffer_image.getHeight());
+
+        return (m_cumulated_lbuffer_image);
+    }
+
+
     //---------------------------------------------------------------------
     inline const XRayRenderer::PixelType* XRayRenderer::getLBufferRawData()
     //---------------------------------------------------------------------
