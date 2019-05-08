@@ -1786,6 +1786,133 @@ double getElementDensity(const std::string& anElement);
 double getElementDensity(unsigned short Z);
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the HU's density.
+/**
+ *  @param HU:   the HU
+ *  @return the density of the corresponding HU (in g / cm3)
+ */
+//------------------------------------------------------------------------------
+double getDensityFromHU(short HU);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the mixture's density.
+/**
+ *  @param aMixture:    the details about the mixture. It is given as a sequence
+ *                      of element symbol & relative weight, e.g.
+ *                      Ti90Al6V4.
+ *  @return the density of the corresponding mixture (in g / cm3)
+ */
+//------------------------------------------------------------------------------
+double getMixtureDensity(const std::string& aMixture);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the compound's density.
+/**
+ *  @param aCompound:   the details about the compound. It is given as
+ *                      a sequence of element symbol & number of atoms, e.g.
+ *                      H2O for water and SiC for silicon carbide.
+ *  @return the density of the corresponding compound (in g / cm3)
+ */
+//------------------------------------------------------------------------------
+double getCompoundDensity(const std::string& aCompound);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's mass attenuation.
+/**
+ *  @param anElement:   the name or symbol of the element
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the mass attenuation of the corresponding element (in cm2/g)
+ */
+//------------------------------------------------------------------------------
+double getElementMassAttenuation(const std::string& anElement,
+		double anEnergy,
+		const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the chemical element's mass attenuation.
+/**
+ *  @param Z:   the Z number of the element
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the mass attenuation of the corresponding element (in cm2/g)
+ */
+//------------------------------------------------------------------------------
+double getElementMassAttenuation(unsigned short Z,
+		double anEnergy,
+		const std::string& aUnitOfEnergy);
+
+
+/// Accessor on the chemical element's mass attenuation.
+/**
+ *  @param HU:   the HU
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the density of the corresponding HU (in cm2/g)
+ */
+//------------------------------------------------------------------------------
+double getHUMassAttenuation(unsigned short Z,
+		double anEnergy,
+		const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the mixture's mass attenuation.
+/**
+ *  @param aMixture:    the details about the mixture. It is given as a sequence
+ *                      of element symbol & relative weight, e.g.
+ *                      Ti90Al6V4.
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the mass attenuation of the corresponding mixture (in cm2/g)
+ */
+//------------------------------------------------------------------------------
+double getMixtureMassAttenuation(const std::string& aMixture,
+		double anEnergy,
+		const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the compound's mass attenuation.
+/**
+ *  @param aCompound:   the details about the compound. It is given as
+ *                      a sequence of element symbol & number of atoms, e.g.
+ *                      H2O for water and SiC for silicon carbide.
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the mass attenuation of the corresponding compound (in cm2/g)
+ */
+//------------------------------------------------------------------------------
+double getCompoundMassAttenuation(const std::string& aCompound,
+		double anEnergy,
+		const std::string& aUnitOfEnergy);
+
+
 /**
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);

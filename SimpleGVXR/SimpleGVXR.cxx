@@ -128,6 +128,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/ElementSet.h"
 #endif
 
+#ifndef __PhotonCrossSection_h
+#include "gVirtualXRay/PhotonCrossSection.h"
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -3691,6 +3695,103 @@ double getElementDensity(unsigned short Z) {
     return (gVirtualXRay::ElementSet::getInstance().getElement(Z).getDensity()
     / (gVirtualXRay::g / gVirtualXRay::cm3));
 }
+
+
+//-------------------------------
+double getDensityFromHU(short HU)
+//-------------------------------
+{
+    return (gVirtualXRay::XRayRenderer::getDensityFromHU(HU)
+    / (gVirtualXRay::g / gVirtualXRay::cm3));
+}
+
+
+//---------------------------------------------------
+double getMixtureDensity(const std::string& aMixture)
+//---------------------------------------------------
+{
+	throw "toto";
+}
+
+
+//-----------------------------------------------------
+double getCompoundDensity(const std::string& aCompound)
+//-----------------------------------------------------
+{
+	throw "toto";
+}
+
+
+//------------------------------------------------------------
+double getElementMassAttenuation(const std::string& anElement,
+		double anEnergy,
+				const std::string& aUnitOfEnergy)
+//------------------------------------------------------------
+{
+    unsigned short Z = getElementAtomicNumber(anElement);
+    return getElementMassAttenuation(Z, anEnergy, aUnitOfEnergy);
+}
+
+
+//------------------------------------------------
+double getElementMassAttenuation(unsigned short Z,
+		double anEnergy,
+				const std::string& aUnitOfEnergy)
+//------------------------------------------------
+{
+    return (gVirtualXRay::ElementSet::getInstance().getElement(Z).getMassAttenuationTotal(anEnergy * getUnitOfEnergy(aUnitOfEnergy))
+    / (gVirtualXRay::cm2 / gVirtualXRay::g));
+}
+
+
+//-------------------------------------------
+double getHUMassAttenuation(short HU,
+		double anEnergy,
+				const std::string& aUnitOfEnergy)
+//-------------------------------------------
+{
+    // Initialise the photon cross-section
+    gVirtualXRay::PhotonCrossSection photon_cross_section;
+    photon_cross_section.useHU(HU);
+
+	return (photon_cross_section.getMassAttenuationCoefficient(
+			anEnergy * getUnitOfEnergy(aUnitOfEnergy)) /
+				(gVirtualXRay::cm2 / gVirtualXRay::g));
+}
+
+
+//-----------------------------------------------------------
+double getMixtureMassAttenuation(const std::string& aMixture,
+		double anEnergy,
+				const std::string& aUnitOfEnergy)
+//-----------------------------------------------------------
+{
+    // Initialise the photon cross-section
+    gVirtualXRay::PhotonCrossSection photon_cross_section;
+    photon_cross_section.useMixture(aMixture);
+
+	return (photon_cross_section.getMassAttenuationCoefficient(
+			anEnergy * getUnitOfEnergy(aUnitOfEnergy)) /
+				(gVirtualXRay::cm2 / gVirtualXRay::g));
+}
+
+
+//-------------------------------------------------------------
+double getCompoundMassAttenuation(const std::string& aCompound,
+		double anEnergy,
+				const std::string& aUnitOfEnergy)
+//-------------------------------------------------------------
+{
+    // Initialise the photon cross-section
+    gVirtualXRay::PhotonCrossSection photon_cross_section;
+    photon_cross_section.useCompound(aCompound);
+
+	return (photon_cross_section.getMassAttenuationCoefficient(
+			anEnergy * getUnitOfEnergy(aUnitOfEnergy)) /
+				(gVirtualXRay::cm2 / gVirtualXRay::g));
+}
+
+
 
 void setShiftFilter(double aValue) {
     g_shift_filter = aValue;
