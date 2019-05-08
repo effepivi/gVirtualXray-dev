@@ -38,12 +38,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @file       TestDensity.cxx
 *
 *   @brief      Unit testing: density,
-*   			the unit test corresponds to validation_02,
-*   			Last date of check: Passed test on 08 May 2019.
+*               the unit test corresponds to validation_02,
+*               Last date of check: Passed test on 08 May 2019.
 *
 *   @version    1.0
 *
-*   @date       01/04/2019
+*   @date       08/05/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
