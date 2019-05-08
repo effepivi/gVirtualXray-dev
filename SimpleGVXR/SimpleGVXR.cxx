@@ -3706,22 +3706,6 @@ double getDensityFromHU(short HU)
 }
 
 
-//---------------------------------------------------
-double getMixtureDensity(const std::string& aMixture)
-//---------------------------------------------------
-{
-	throw "toto";
-}
-
-
-//-----------------------------------------------------
-double getCompoundDensity(const std::string& aCompound)
-//-----------------------------------------------------
-{
-	throw "toto";
-}
-
-
 //------------------------------------------------------------
 double getElementMassAttenuation(const std::string& anElement,
 		double anEnergy,

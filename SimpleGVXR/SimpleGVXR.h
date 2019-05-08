@@ -1797,30 +1797,6 @@ double getDensityFromHU(short HU);
 
 
 //------------------------------------------------------------------------------
-/// Accessor on the mixture's density.
-/**
- *  @param aMixture:    the details about the mixture. It is given as a sequence
- *                      of element symbol & relative weight, e.g.
- *                      Ti90Al6V4.
- *  @return the density of the corresponding mixture (in g / cm3)
- */
-//------------------------------------------------------------------------------
-double getMixtureDensity(const std::string& aMixture);
-
-
-//------------------------------------------------------------------------------
-/// Accessor on the compound's density.
-/**
- *  @param aCompound:   the details about the compound. It is given as
- *                      a sequence of element symbol & number of atoms, e.g.
- *                      H2O for water and SiC for silicon carbide.
- *  @return the density of the corresponding compound (in g / cm3)
- */
-//------------------------------------------------------------------------------
-double getCompoundDensity(const std::string& aCompound);
-
-
-//------------------------------------------------------------------------------
 /// Accessor on the chemical element's mass attenuation.
 /**
  *  @param anElement:   the name or symbol of the element
