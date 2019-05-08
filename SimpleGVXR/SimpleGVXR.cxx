@@ -2550,9 +2550,9 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
     return (p_temp);
 }
 
-//---------------------------------------------
-std::vector<double> getPhtotonCountEnergyBins()
-//---------------------------------------------
+//--------------------------------------------
+std::vector<double> getPhotonCountEnergyBins()
+//--------------------------------------------
 {
     std::vector<double> p_temp;
 
@@ -2592,6 +2592,23 @@ void saveLastLBuffer(const std::string& aFileName)
 
     g_xray_renderer.getLBuffer().save(file_name);
 }
+
+
+//---------------------------------------------------------
+void saveLastCumulatedLBuffer(const std::string& aFileName)
+//---------------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+    file_name = aFileName;
+    else
+    file_name = "cumulated_lbuffer-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getCumulatedLBuffer().save(file_name);
+}
+
 
 //-------------------------------------------------
 void saveLastSinogram(const std::string& aFileName)
@@ -3429,8 +3446,8 @@ void initialiseXRayRenderer()
     g_xray_renderer.initialise(gVirtualXRay::XRayRenderer::OPENGL,
     GL_RGB32F, &g_xray_detector, &g_xray_beam);
 
-    g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.disableArtifactFilteringOnCPU();
+    g_xray_renderer.enableArtifactFilteringOnGPU();
     g_xray_renderer.useNegativeFilteringFlag(false);
     g_renderer_initialised = true;
     }
@@ -3686,19 +3703,19 @@ unsigned short getElementAtomicNumber(const std::string& anElement)
         getZ());
 }
 
-double getElementDensity(const std::string& anElement) {
+double getDensityFromElement(const std::string& anElement) {
     unsigned short Z = getElementAtomicNumber(anElement);
-    return (getElementDensity(Z));
+    return (getDensityFromElement(Z));
 }
 
-double getElementDensity(unsigned short Z) {
+double getDensityFromElement(unsigned short Z) {
     return (gVirtualXRay::ElementSet::getInstance().getElement(Z).getDensity()
     / (gVirtualXRay::g / gVirtualXRay::cm3));
 }
 
 
 //-------------------------------
-double getDensityFromHU(short HU)
+double getDensityFromHU(double HU)
 //-------------------------------
 {
     return (gVirtualXRay::XRayRenderer::getDensityFromHU(HU)
@@ -3707,18 +3724,18 @@ double getDensityFromHU(short HU)
 
 
 //------------------------------------------------------------
-double getElementMassAttenuation(const std::string& anElement,
+double getMassAttenuationFromElement(const std::string& anElement,
 		double anEnergy,
 				const std::string& aUnitOfEnergy)
 //------------------------------------------------------------
 {
     unsigned short Z = getElementAtomicNumber(anElement);
-    return getElementMassAttenuation(Z, anEnergy, aUnitOfEnergy);
+    return getMassAttenuationFromElement(Z, anEnergy, aUnitOfEnergy);
 }
 
 
 //------------------------------------------------
-double getElementMassAttenuation(unsigned short Z,
+double getMassAttenuationFromElement(unsigned short Z,
 		double anEnergy,
 				const std::string& aUnitOfEnergy)
 //------------------------------------------------
@@ -3729,7 +3746,7 @@ double getElementMassAttenuation(unsigned short Z,
 
 
 //-------------------------------------------
-double getHUMassAttenuation(short HU,
+double getMassAttenuationFromHU(double HU,
 		double anEnergy,
 				const std::string& aUnitOfEnergy)
 //-------------------------------------------
@@ -3745,7 +3762,7 @@ double getHUMassAttenuation(short HU,
 
 
 //-----------------------------------------------------------
-double getMixtureMassAttenuation(const std::string& aMixture,
+double getMassAttenuationFromMixture(const std::string& aMixture,
 		double anEnergy,
 				const std::string& aUnitOfEnergy)
 //-----------------------------------------------------------
@@ -3761,7 +3778,7 @@ double getMixtureMassAttenuation(const std::string& aMixture,
 
 
 //-------------------------------------------------------------
-double getCompoundMassAttenuation(const std::string& aCompound,
+double getMassAttenuationFromCompound(const std::string& aCompound,
 		double anEnergy,
 				const std::string& aUnitOfEnergy)
 //-------------------------------------------------------------
@@ -3773,6 +3790,14 @@ double getCompoundMassAttenuation(const std::string& aCompound,
 	return (photon_cross_section.getMassAttenuationCoefficient(
 			anEnergy * getUnitOfEnergy(aUnitOfEnergy)) /
 				(gVirtualXRay::cm2 / gVirtualXRay::g));
+}
+
+
+double getMuFromHU(double HU,
+		double anEnergy,
+		const std::string& aUnitOfEnergy)
+{
+	return (gVirtualXRay::XRayRenderer::getMuFromHU(HU, anEnergy * getUnitOfEnergy(aUnitOfEnergy)) / (1.0 / gVirtualXRay::cm));
 }
 
 

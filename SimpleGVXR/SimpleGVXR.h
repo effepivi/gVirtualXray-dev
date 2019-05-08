@@ -1492,7 +1492,7 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
  *  @return the list of number of photons
  */
 //------------------------------------------------------------------------------
-std::vector<double> getPhtotonCountEnergyBins();
+std::vector<double> getPhotonCountEnergyBins();
 
 
 //------------------------------------------------------------------------------
@@ -1517,6 +1517,18 @@ void saveLastXRayImage(const std::string& aFileName = std::string());
  */
 //------------------------------------------------------------------------------
 void saveLastLBuffer(const std::string& aFileName = std::string());
+
+
+//------------------------------------------------------------------------------
+/// Save the last cumulated L-buffer that has been computed.
+/**
+ *  @param aFileName:   the name of the output file
+ *              (default: means that the filename will be
+ *              automatically generated and the file saved in
+ *              the current path)
+ */
+//------------------------------------------------------------------------------
+void saveLastCumulatedLBuffer(const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
@@ -1773,7 +1785,7 @@ unsigned short getElementAtomicNumber(const std::string& anElement);
  *  @return the density of the corresponding element (in g / cm3)
  */
 //------------------------------------------------------------------------------
-double getElementDensity(const std::string& anElement);
+double getDensityFromElement(const std::string& anElement);
 
 
 //------------------------------------------------------------------------------
@@ -1783,7 +1795,7 @@ double getElementDensity(const std::string& anElement);
  *  @return the density of the corresponding element (in g / cm3)
  */
 //------------------------------------------------------------------------------
-double getElementDensity(unsigned short Z);
+double getDensityFromElement(unsigned short Z);
 
 
 //------------------------------------------------------------------------------
@@ -1793,7 +1805,7 @@ double getElementDensity(unsigned short Z);
  *  @return the density of the corresponding HU (in g / cm3)
  */
 //------------------------------------------------------------------------------
-double getDensityFromHU(short HU);
+double getDensityFromHU(double HU);
 
 
 //------------------------------------------------------------------------------
@@ -1809,7 +1821,7 @@ double getDensityFromHU(short HU);
  *  @return the mass attenuation of the corresponding element (in cm2/g)
  */
 //------------------------------------------------------------------------------
-double getElementMassAttenuation(const std::string& anElement,
+double getMassAttenuationFromElement(const std::string& anElement,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
@@ -1827,7 +1839,7 @@ double getElementMassAttenuation(const std::string& anElement,
  *  @return the mass attenuation of the corresponding element (in cm2/g)
  */
 //------------------------------------------------------------------------------
-double getElementMassAttenuation(unsigned short Z,
+double getMassAttenuationFromElement(unsigned short Z,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
@@ -1844,7 +1856,7 @@ double getElementMassAttenuation(unsigned short Z,
  *  @return the density of the corresponding HU (in cm2/g)
  */
 //------------------------------------------------------------------------------
-double getHUMassAttenuation(unsigned short Z,
+double getMassAttenuationFromHU(double HU,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
@@ -1864,7 +1876,7 @@ double getHUMassAttenuation(unsigned short Z,
  *  @return the mass attenuation of the corresponding mixture (in cm2/g)
  */
 //------------------------------------------------------------------------------
-double getMixtureMassAttenuation(const std::string& aMixture,
+double getMassAttenuationFromMixture(const std::string& aMixture,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
@@ -1884,11 +1896,13 @@ double getMixtureMassAttenuation(const std::string& aMixture,
  *  @return the mass attenuation of the corresponding compound (in cm2/g)
  */
 //------------------------------------------------------------------------------
-double getCompoundMassAttenuation(const std::string& aCompound,
+double getMassAttenuationFromCompound(const std::string& aCompound,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
-
+double getMuFromHU(double HU,
+		double anEnergy,
+		const std::string& aUnitOfEnergy);
 /**
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);
