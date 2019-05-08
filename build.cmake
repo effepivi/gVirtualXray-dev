@@ -98,25 +98,68 @@ MESSAGE ("")
 # The first external project will be built at *configure stage*
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/gvxr-build)
 
+IF (WIN32)
+    MESSAGE ("Configure parallel build on MSVC")
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP -DCMAKE_INSTALL_PREFIX=$DESTINATION -DBUILD_TESTING=${UNIT_TESTS} ${CMAKE_CURRENT_LIST_DIR}/gvxr
+        WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
+        OUTPUT_FILE ../gvxr_cmake.out.log
+        ERROR_FILE ../gvxr_cmake.err.log
+        )
+ELSE (WIN32)
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=$DESTINATION -DBUILD_TESTING=${UNIT_TESTS} --config Release ${CMAKE_CURRENT_LIST_DIR}/gvxr
+        WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
+        OUTPUT_FILE ../gvxr_cmake.out.log
+        ERROR_FILE ../gvxr_cmake.err.log
+        )
+ENDIF (WIN32)
+
+
 execute_process(
-    COMMAND ${CMAKE_COMMAND} ${CMAKE_CURRENT_LIST_DIR}/gvxr
-    WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
-    RESULT_VARIABLE gvxr_config_result
-    )
+    COMMAND ${CMAKE_COMMAND} ${CMAKE_CURRENT_LIST_DIR}/gvxr-build)
 
-message(STATUS "gVirtualXRay config result: ${gvxr_config_result}")
-
-
-IF (MSVC)
+IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr --target gVirtualXRay
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/gvxr
-        RESULT_VARIABLE gvxr_build_result
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release
+        OUTPUT_FILE gvxr_make.out.log
+        ERROR_FILE gvxr_make.err.log
         )
-ELSE (MSVC)
+ELSE (WIN32)
+    MESSAGE ("Run parallel build, but not on MSVC")
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr --target gVirtualXRay -- -j12
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/gvxr
-        RESULT_VARIABLE gvxr_build_result
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release -- -j12
+        OUTPUT_FILE gvxr_make.out.log
+        ERROR_FILE gvxr_make.err.log
         )
-ENDIF (MSVC)
+ENDIF (WIN32)
+
+IF (WIN32)
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target INSTALL
+        OUTPUT_FILE gvxr_install.out.log
+        ERROR_FILE gvxr_install.err.log
+        )
+ELSE (WIN32)
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target install
+        OUTPUT_FILE gvxr_install.out.log
+        ERROR_FILE gvxr_install.err.log
+        )
+ENDIF (WIN32)
+
+IF (UNIT_TESTS)
+    IF (WIN32)
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target RUN_TESTS
+            OUTPUT_FILE gvxr_test.out.log
+            ERROR_FILE gvxr_test.err.log
+            )
+    ELSE (WIN32)
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target test
+            OUTPUT_FILE gvxr_test.out.log
+            ERROR_FILE gvxr_test.err.log
+            )
+    ENDIF (WIN32)
+ENDIF ()
