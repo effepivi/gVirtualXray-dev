@@ -47,6 +47,7 @@ ELSE (GIT_FOUND)
     ExternalProject_Add(googletest
         URL https://github.com/google/googletest/archive/master.zip
         CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE=Release
             -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
             -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
             -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
