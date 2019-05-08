@@ -569,7 +569,7 @@ inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 inline void XRayDetector::updateFOVY()
 //------------------------------------
 {
-    m_fovy = 2.0 * (180.0  / M_PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), m_distance_source_detector);
+    m_fovy = 2.0 * (180.0  / PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), m_distance_source_detector);
 }
 
 

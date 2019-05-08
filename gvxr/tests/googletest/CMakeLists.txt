@@ -78,7 +78,7 @@ set(GTEST_INCLUDE_DIRS ${source_dir}/googletest/include PARENT_SCOPE)
 ExternalProject_Get_Property(googletest binary_dir)
 
 IF (MSVC)
-    SET(GTEST_LIBS_DIR ${binary_dir}/googlemock/gtest/ReleaseLibs PARENT_SCOPE)
+    SET(GTEST_LIBS_DIR ${binary_dir}/googletest/ReleaseLibs PARENT_SCOPE)
 ELSE ()
     set(GTEST_LIBS_DIR ${binary_dir}/lib PARENT_SCOPE)
 ENDIF ()

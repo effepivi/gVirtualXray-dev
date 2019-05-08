@@ -104,7 +104,7 @@ template<typename T> void CylinderMesh<T>::create(unsigned int aNumberOfSectors,
     std::vector<unsigned int> p_index_set;
 
     double theta(0);
-    double angle(M_PI * 2.0 / aNumberOfSectors);
+    double angle(PI * 2.0 / aNumberOfSectors);
 
     p_vertex_set.push_back(0);
     p_vertex_set.push_back(-aHeight / 2.0);
