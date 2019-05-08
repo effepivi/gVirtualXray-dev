@@ -39,11 +39,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *   @brief      Unit testing: Beer-Lambert Law, Polychromatism Case,
 *   			the unit test corresponds to validation_05,
-*   			last date of check: Passed test on 01 Apr 2019.
+*   			last date of check: Passed test on 08 May 2019.
 *
 *   @version    1.0
 *
-*   @date       01/04/2019
+*   @date       08/05/2019
 *   @author     Dr Franck P. Vidal
 *
 *   @section    License
@@ -68,126 +68,40 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GL/glew.h>
 #endif
 
-#ifndef __gVirtualXRayConfig_h
-#include "gVirtualXRay/gVirtualXRayConfig.h"
-#endif
-
 #include <cmath>
-#include <iomanip>
-#include <memory>
-#include <cstdlib>
-
 #include "gtest/gtest.h"
 
-#define GLFW_INCLUDE_GLCOREARB 1
-#include <GLFW/glfw3.h>
-
-#ifndef __Types_h
-#include "gVirtualXRay/Types.h"
+#ifndef __SimpleGVXR_h
+#include "SimpleGVXR.h"
 #endif
-
-#ifndef __Units_h
-#include "gVirtualXRay/Units.h"
-#endif
-
-#ifndef __SceneGraphNode_h
-#include "gVirtualXRay/SceneGraphNode.h"
-#endif
-
-#ifndef __CylinderMesh_h
-#include "gVirtualXRay/CylinderMesh.h"
-#endif
-
-#ifndef __CubeMesh_h
-#include "gVirtualXRay/CubeMesh.h"
-#endif
-
-#ifndef __XRayBeam_h
-#include "gVirtualXRay/XRayBeam.h"
-#endif
-
-#ifndef __XRayDetector_h
-#include "gVirtualXRay/XRayDetector.h"
-#endif
-
-#ifndef __OpenGLUtilities_h
-#include "gVirtualXRay/OpenGLUtilities.h"
-#endif
-
-#ifndef __Matrix4x4_h
-#include "gVirtualXRay/Matrix4x4.h"
-#endif
-
-#ifndef __XRayRenderer_h
-#include "gVirtualXRay/XRayRenderer.h"
-#endif
-
-#ifndef __Shader_h
-#include "gVirtualXRay/Shader.h"
-#endif
-
-#ifndef __Utilities_h
-#include "gVirtualXRay/Utilities.h"
-#endif
-
-#ifndef __Exception_h
-#include "gVirtualXRay/Exception.h"
-#endif
-
-
-//******************************************************************************
-//  Name space
-//******************************************************************************
-using namespace gVirtualXRay;
-//using namespace std;
 
 
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-GLsizei g_main_window_width(1280 / 2.0);
-GLsizei g_main_window_height(800 / 2.0);
-GLFWwindow* g_p_main_window_id(0);
+int g_main_window_width(1280 / 2.0);
+int g_main_window_height(800 / 2.0);
 
-Matrix4x4<GLfloat> g_scene_rotation_matrix;
-Matrix4x4<GLfloat> g_detector_rotation_matrix;
-Matrix4x4<GLfloat> g_sample_rotation_matrix;
+double g_incident_energy_in_keV[] = {100.0, 200.0, 300.0};
+double g_number_of_photon_in_energy_channel[] = { 10.0, 20.0, 10.0};
 
-GLfloat g_incident_energy_0(100.0 * keV);
-GLfloat g_incident_energy_1(200.0 * keV);
-GLfloat g_incident_energy_2(300.0 * keV);
+const double g_scaling_factor(2.0);
+double g_resolution_in_mm = (0.15 * g_scaling_factor); // 1mm per pixel
+int g_number_of_pixels[] = {int(600 / g_scaling_factor), 1};
+double g_source_position_in_cm[]   = {0.0, 0.0, -10.0};
+double g_detector_position_in_cm[] = {0.0, 0.0,  10.0};
+double g_detector_up_vector[]      = {0.0, 1.0,  0.0};
 
-GLfloat g_number_of_photon_in_energy_channel_0(10.0);
-GLfloat g_number_of_photon_in_energy_channel_1(20.0);
-GLfloat g_number_of_photon_in_energy_channel_2(10.0);
+double g_literature_result_in_keV(0.0);
+double g_expected_result_in_keV(0.0);
 
-const GLfloat g_scaling_factor(2.0);
-GLfloat g_resolution(0.15 * mm * g_scaling_factor); // 1mm per pixel
-Vec2ui g_number_of_pixels(600 / g_scaling_factor, 1);
-VEC3 g_source_position(   0.0, 0.0, -10.0 * cm);
-VEC3 g_detector_position( 0.0, 0.0,  10.0 * cm);
-VEC3 g_detector_up_vector(0.0, 1.0,   0.0);
-
-SceneGraphNode g_scene_graph("root", NULL);
-
-XRayBeam g_xray_beam;
-XRayDetector g_xray_detector;
-XRayRenderer g_xray_half_precision_renderer;
-XRayRenderer g_xray_full_precision_renderer;
-
-RATIONAL_NUMBER g_literature_result(0.0);
-RATIONAL_NUMBER g_expected_result(0.0);
 
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
-void initGL();
 void loadSTLFile();
 void loadDetector();
 void loadSource();
-void loadXRaySimulator();
-void errorCallback(int error, const char* description);
-void quit();
 
 
 //---------------------------------------------------------------------
@@ -195,158 +109,51 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
 //---------------------------------------------------------------------
 {
     // Make sure the detector has an odd number of columns
-    if ((g_number_of_pixels.getX() % 2) == 0)
+    if ((g_number_of_pixels[0] % 2) == 0)
         {
-        g_number_of_pixels.setX(g_number_of_pixels.getX() + 1);
+        g_number_of_pixels[0] = g_number_of_pixels[0] + 1;
         }
 
     // Make sure the detector has an odd number of rows
-    if ((g_number_of_pixels.getY() % 2) == 0)
+    if ((g_number_of_pixels[1] % 2) == 0)
         {
-        g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
+        g_number_of_pixels[1] = g_number_of_pixels[1] + 1;
     }
 
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
-
-    // Initialize GLFW
-    ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, false);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
     // Create a windowed mode window and its OpenGL context
-    g_p_main_window_id = glfwCreateWindow(g_main_window_width,
-        g_main_window_height,
-        "gVirtualXRay -- Unit testing: Beer-Lambert Law, Polychromatism Case.",
-        0,
-        0);
-
-    // Window cannot be created
-    if (!g_p_main_window_id)
-        {
-        glfwTerminate();
-        }
-    ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
-
-    // Make the window's context current
-    glfwMakeContextCurrent(g_p_main_window_id);
-
-    // Initialise GLEW
-    initialiseGLEW();
-
-    // Initialise OpenGL
-    initGL();
-
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    createWindow();
+    setWindowSize(g_main_window_width, g_main_window_height);
 
     // Load the data
     loadDetector();
     loadSource();
-    loadXRaySimulator();
 
     // Add the geometry to the X-ray renderer
     loadSTLFile();
-    g_xray_half_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
-    g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-    g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
-    g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-
-    // Set the projection matrix
-    GLint width(0);
-    GLint height(0);
-    glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+    addPolygonMeshAsInnerSurface("inside");
+    addPolygonMeshAsOuterSurface("outside");
 
     // Compute the X-ray image
-    g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
-    g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
+    std::vector<std::vector<float> > x_ray_image = computeXRayImage();
 
-    RATIONAL_NUMBER* energy_fluence(
-        g_xray_half_precision_renderer.getEnergyFluence().getRawData());
+    std::vector<float> row = x_ray_image[x_ray_image.size() / 2];
+    float central_pixel = row[row.size() / 2];
 
-    RATIONAL_NUMBER central_pixel(energy_fluence[g_number_of_pixels.getX() / 2]);
-
-    double simulated_result(central_pixel);
-    ASSERT_NEAR(g_expected_result, simulated_result, 0.01 / g_expected_result);
-
-    std::cout << "On GPU, with half precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
-
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
-
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
-
-    energy_fluence = g_xray_full_precision_renderer.getEnergyFluence().getRawData();
-    central_pixel = energy_fluence[g_number_of_pixels.getX() / 2];
-
-    simulated_result = central_pixel;
-    ASSERT_FLOAT_EQ(g_expected_result, simulated_result);
-
-    // Close the window
-    glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-
-    // Close the window and shut GLFW
-    quit();
+    float simulated_result_in_keV = central_pixel / getUnitOfEnergy("keV");
 
     std::cout << "On GPU, with full precision, the energy (in keV) transmitted orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result / keV << " keV" << std::endl << std::endl;
+    std::cout << "\t\t           = " << /*std::scientific <<*/ simulated_result_in_keV << " keV" << std::endl << std::endl;
 
     std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << simulated_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - simulated_result) / keV << " keV" << std::endl << std::endl;
+    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << simulated_result_in_keV << "| keV" << std::endl;
+    std::cout << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - simulated_result_in_keV) << " keV" << std::endl << std::endl;
 
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result - simulated_result) / g_expected_result << " \%" << std::endl;
-}
+    std::cout << "                     : " << std::fixed << 100.0 * std::abs(g_expected_result_in_keV - simulated_result_in_keV) / g_expected_result_in_keV << " \%" << std::endl;
 
+    destroyAllWindows();
 
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
-{
-    std::cerr << "GLFW error: " << description << std::endl;
-}
-
-
-//---------
-void quit()
-//---------
-{
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        //glfwTerminate();
-        }
-}
-
-
-//-----------
-void initGL()
-//-----------
-{
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Enable the Z-buffer
-    glEnable(GL_DEPTH_TEST);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    glEnable(GL_MULTISAMPLE);
-    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+    ASSERT_NEAR(g_expected_result_in_keV, simulated_result_in_keV, 0.01 * g_expected_result_in_keV);
 }
 
 
@@ -354,16 +161,26 @@ void initGL()
 void loadSTLFile()
 //----------------
 {
+	// Set the geometry
+	makeCube("outside",
+	        3.0,
+	        "cm",
+	        "root");
+
+	makeCylinder("inside",
+			20,
+	        3.0,
+	        1.0,
+			"cm",
+	        "root");
+
     // HU values
     double HU_water(0.0);
     double HU_bone(1329.885683);
     double HU_soft_tissue(51.714752);
 
-    g_scene_graph.addChild( "inside", CylinderMesh<GLdouble>(20, 3.0 * cm, 1.0 * cm));
-    g_scene_graph.addChild("outside", CubeMesh<GLdouble>(3.0 * cm));
-
-    g_scene_graph.getChild( "inside").getPolygonMesh().setHounsfieldValue(HU_bone);
-    g_scene_graph.getChild("outside").getPolygonMesh().setHounsfieldValue(HU_soft_tissue);
+    setHU( "inside", HU_bone);
+    setHU("outside", HU_soft_tissue);
 
     std::cout << "We run the simulation as follows:" << std::endl;
     std::cout << "- A cube, which has edge length of 3 cm, is made of soft tissue (HU = " << std::floor(HU_soft_tissue + 0.5) << "). " << std::endl;
@@ -372,119 +189,119 @@ void loadSTLFile()
     std::cout << "- We consider the energy of the incident beam as follows: " << std::endl;
 
     double total_energy(0);
-    for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
-        {
-        std::cout << g_xray_beam.getEnergyChannel(i).getPhotonNumber() << " photons of " <<  g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV (i.e. " << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV). " << std::endl;
-        total_energy += g_xray_beam.getEnergyChannel(i).getPhotonNumber() * g_xray_beam.getEnergyChannel(i).getPhotonEnergy();
-        }
+    for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
+    {
+    	std::cout << g_number_of_photon_in_energy_channel[i] << " photons of " <<  g_incident_energy_in_keV[i] << " keV (i.e. " << g_incident_energy_in_keV[i] << " keV). " << std::endl;
+		total_energy += g_number_of_photon_in_energy_channel[i] * g_incident_energy_in_keV[i];
+    }
     std::cout << std::endl;
 
-    std::cout << "Total input energy = " << total_energy / keV << std::endl << std::endl;
+    std::cout << "Total input energy = " << total_energy << std::endl << std::endl;
 
     std::cout << "From the literature, we know:" << std::endl;
     std::cout.precision(4);
+
+    for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
+    {
+    }
+
     std::cout <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
-        "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
-        "energy = " << std::fixed      << 1.000E-01 * MeV / keV<< " keV,\t" <<
+        "rho = "    << std::scientific << (getDensityFromHU(HU_bone)) << " g/cm3,\t" <<
+        "energy = " << std::fixed      << g_incident_energy_in_keV[0] << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.855E-01 << " cm2/g,\t" <<
-        "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01 << " cm-1" << std::endl;
+        "mu = "     << std::scientific << (getDensityFromHU(HU_bone)) * 1.855E-01 << " cm-1" << std::endl;
 
     std::cout <<
         "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
-        "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
-        "energy = " << std::fixed      << 1.000E-01 * MeV / keV << " keV,\t" <<
+        "rho = "    << std::scientific << (getDensityFromHU(HU_soft_tissue)) << " g/cm3,\t" <<
+        "energy = " << std::fixed      << g_incident_energy_in_keV[0] << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.693E-01 << " cm2/g,\t" <<
-        "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01 << " cm-1" << std::endl << std::endl;
+        "mu = "     << std::scientific << (getDensityFromHU(HU_soft_tissue)) * 1.693E-01 << " cm-1" << std::endl << std::endl;
 
     std::cout <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
-        "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
-        "energy = " << std::fixed      << 2.000E-01 * MeV / keV << " keV,\t" <<
+        "rho = "    << std::scientific << (getDensityFromHU(HU_bone)) << " g/cm3,\t" <<
+        "energy = " << std::fixed      << g_incident_energy_in_keV[1]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.309E-01 << " cm2/g,\t" <<
-        "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01 << " cm-1" << std::endl;
+        "mu = "     << std::scientific << (getDensityFromHU(HU_bone)) * 1.309E-01 << " cm-1" << std::endl;
 
     std::cout <<
         "HU =   "     << std::fixed    << HU_soft_tissue << "\t" <<
-        "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
-        "energy = " << std::fixed      << 2.000E-01 * MeV / keV << " keV,\t" <<
+        "rho = "    << std::scientific << (getDensityFromHU(HU_soft_tissue)) << " g/cm3,\t" <<
+        "energy = " << std::fixed      << g_incident_energy_in_keV[1]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.358E-01 << " cm2/g,\t" <<
-        "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01 << " cm-1" << std::endl << std::endl;
+        "mu = "     << std::scientific << (getDensityFromHU(HU_soft_tissue)) * 1.358E-01 << " cm-1" << std::endl << std::endl;
 
     std::cout <<
         "HU = "     << std::fixed      << HU_bone << "\t" <<
-        "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) << " g/cm3,\t" <<
-        "energy = " << std::fixed      << 3.000E-01 * MeV / keV << " keV,\t" <<
+        "rho = "    << std::scientific << (getDensityFromHU(HU_bone)) << " g/cm3,\t" <<
+        "energy = " << std::fixed      << g_incident_energy_in_keV[2]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.113E-01 << " cm2/g,\t" <<
-        "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01 << " cm-1" << std::endl;
+        "mu = "     << std::scientific << (getDensityFromHU(HU_bone)) * 1.113E-01 << " cm-1" << std::endl;
 
     std::cout <<
         "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
-        "rho = "    << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) << " g/cm3,\t" <<
-        "energy = " << std::fixed      << 3.000E-01 * MeV / keV << " keV,\t" <<
+        "rho = "    << std::scientific << (getDensityFromHU(HU_soft_tissue)) << " g/cm3,\t" <<
+        "energy = " << std::fixed      << g_incident_energy_in_keV[2]  << " keV,\t" <<
         "mu/rho = " << std::scientific << 1.175E-01 << " cm2/g,\t" <<
-        "mu = "     << std::scientific << (g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01 << " cm-1" << std::endl << std::endl;
+        "mu = "     << std::scientific << (getDensityFromHU(HU_soft_tissue)) * 1.175E-01 << " cm-1" << std::endl << std::endl;
 
-    //g_literature_result = g_incident_energy * exp(-(4.280e-01 * 2 + 1.932e-01 * 1));
+    //g_literature_result_in_keV = g_incident_energy * exp(-(4.280e-01 * 2 + 1.932e-01 * 1));
 
-    g_literature_result = 0.0;
-    g_literature_result += (g_number_of_photon_in_energy_channel_0 * g_incident_energy_0) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.855E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.693E-01) * 1.0));
-    g_literature_result += (g_number_of_photon_in_energy_channel_1 * g_incident_energy_1) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.309E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.358E-01) * 1.0));
-    g_literature_result += (g_number_of_photon_in_energy_channel_2 * g_incident_energy_2) * exp(-(((g_xray_half_precision_renderer.getDensityFromHU(HU_bone) / (g/cm3)) * 1.113E-01) * 2.0 + ((g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue) / (g/cm3)) * 1.175E-01) * 1.0));
+    g_literature_result_in_keV = 0.0;
+    g_literature_result_in_keV += (g_number_of_photon_in_energy_channel[0] * g_incident_energy_in_keV[0]) * exp(-(((getDensityFromHU(HU_bone)) * 1.855E-01) * 2.0 + ((getDensityFromHU(HU_soft_tissue)) * 1.693E-01) * 1.0));
+    g_literature_result_in_keV += (g_number_of_photon_in_energy_channel[1] * g_incident_energy_in_keV[1]) * exp(-(((getDensityFromHU(HU_bone)) * 1.309E-01) * 2.0 + ((getDensityFromHU(HU_soft_tissue)) * 1.358E-01) * 1.0));
+    g_literature_result_in_keV += (g_number_of_photon_in_energy_channel[2] * g_incident_energy_in_keV[2]) * exp(-(((getDensityFromHU(HU_bone)) * 1.113E-01) * 2.0 + ((getDensityFromHU(HU_soft_tissue)) * 1.175E-01) * 1.0));
 
     std::cout.precision(3);
     std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
     std::cout << "\t\tI_reference = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\t            = " << std::scientific << g_literature_result / keV << " keV" << std::endl << std::endl;
+    std::cout << "\t\t            = " << std::scientific << g_literature_result_in_keV << " keV" << std::endl << std::endl;
 
     std::cout << "To obtain linear attenuation coefficients (mu values) in our implementation, densities (rho values) and mass attenuation coefficients (mu/rho values) are estimated as follows:" << std::endl;
 
     std::cout.precision(4);
-    for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
+    for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
         {
         std::cout <<
             "HU = "     << std::fixed      << HU_bone << "\t" <<
-            "rho = "    << std::scientific << g_xray_half_precision_renderer.getDensityFromHU(HU_bone)  / (g/cm3) << " g/cm3,\t" <<
-            "energy = " << std::fixed      << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV,\t" <<
-            "mu/rho = " << std::scientific << g_xray_half_precision_renderer.getMassAttenuationFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
-            "mu = "     << std::scientific << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl;
+            "rho = "    << std::scientific << getDensityFromHU(HU_bone) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << g_incident_energy_in_keV[i] << " keV,\t" <<
+            "mu/rho = " << std::scientific << getMassAttenuationFromHU(HU_bone, g_incident_energy_in_keV[i], "keV") << " cm2/g,\t" <<
+            "mu = "     << std::scientific << getMuFromHU(HU_bone, g_incident_energy_in_keV[i], "keV") << " cm-1" << std::endl;
 
         std::cout <<
             "HU =   "   << std::fixed      << HU_soft_tissue << "\t" <<
-            "rho = "    << std::scientific << g_xray_half_precision_renderer.getDensityFromHU(HU_soft_tissue)  / (g/cm3) << " g/cm3,\t" <<
-            "energy = " << std::fixed      << g_xray_beam.getEnergyChannel(i).getPhotonEnergy() / keV << " keV,\t" <<
-            "mu/rho = " << std::scientific << g_xray_half_precision_renderer.getMassAttenuationFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(i).getPhotonEnergy())  / (cm2/g) << " cm2/g,\t" <<
-            "mu = "     << std::scientific << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(i).getPhotonEnergy()) / (1.0 / cm) << " cm-1" << std::endl << std::endl;
+            "rho = "    << std::scientific << getDensityFromHU(HU_soft_tissue) << " g/cm3,\t" <<
+            "energy = " << std::fixed      << g_incident_energy_in_keV[i] << " keV,\t" <<
+            "mu/rho = " << std::scientific << getMassAttenuationFromHU(HU_soft_tissue, g_incident_energy_in_keV[i], "keV") << " cm2/g,\t" <<
+            "mu = "     << std::scientific << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[i], "keV") << " cm-1" << std::endl << std::endl;
         }
 
-    g_expected_result = 0.0;
-    for (unsigned int i(0); i < g_xray_beam.getEnergyChannelNumber(); ++i)
+    g_expected_result_in_keV = 0.0;
+    for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
         {
-        double photon_number(g_xray_beam.getEnergyChannel(i).getPhotonNumber());
-        double incident_energy(g_xray_beam.getEnergyChannel(i).getPhotonEnergy());
+        double photon_number(g_number_of_photon_in_energy_channel[i]);
+        double incident_energy(g_incident_energy_in_keV[i]);
 
-        g_expected_result += (photon_number * incident_energy) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, incident_energy) / (1.0 / cm) * 2 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, incident_energy) / (1.0 / cm) * 1));
+        g_expected_result_in_keV += (photon_number * incident_energy) * exp(-(getMuFromHU(HU_bone, incident_energy, "keV") * 2 + getMuFromHU(HU_soft_tissue, incident_energy, "keV") * 1));
         }
 
     std::cout << "The energy (in keV) transmitted orthogonally throw the middle of cube and cylinder should be:" << std::endl;
     std::cout << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
-    std::cout << "\t\tI_expected = " << "(" << std::fixed << g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(0).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
-    std::cout << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(1).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) << " x 1)) +" << std::endl;
-    std::cout << "\t\t             " << "(" << std::fixed << g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV << " x " << g_xray_beam.getEnergyChannel(2).getPhotonNumber() << ") x exp(-(" << g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 2 + " << g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) << " x 1))" << std::endl;
+    std::cout << "\t\tI_expected = " << "(" << std::fixed << g_incident_energy_in_keV[0] << " x " << g_number_of_photon_in_energy_channel[0] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[0], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[0], "keV") << " x 1)) +" << std::endl;
+    std::cout << "\t\t             " << "(" << std::fixed << g_incident_energy_in_keV[1] << " x " << g_number_of_photon_in_energy_channel[1] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[1], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[1], "keV") << " x 1)) +" << std::endl;
+    std::cout << "\t\t             " << "(" << std::fixed << g_incident_energy_in_keV[2] << " x " << g_number_of_photon_in_energy_channel[2] << ") x exp(-(" << getMuFromHU(HU_bone, g_incident_energy_in_keV[2], "keV") << " x 2 + " << getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[2], "keV") << " x 1))" << std::endl;
     std::cout.precision(3);
-    std::cout << "\t\tI_expected = " << (g_xray_beam.getEnergyChannel(0).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(0).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(0).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
-    std::cout << "\t\t             " << (g_xray_beam.getEnergyChannel(1).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(1).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(1).getPhotonEnergy()) / (1.0 / cm) * 1.0)) << " +" << std::endl;
-    std::cout << "\t\t             " << (g_xray_beam.getEnergyChannel(2).getPhotonEnergy() / keV * g_xray_beam.getEnergyChannel(2).getPhotonNumber()) * exp(-(g_xray_half_precision_renderer.getMuFromHU(HU_bone, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 2.0 + g_xray_half_precision_renderer.getMuFromHU(HU_soft_tissue, g_xray_beam.getEnergyChannel(2).getPhotonEnergy()) / (1.0 / cm) * 1.0))         << std::endl;
-    std::cout << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result / keV << " keV" << std::endl << std::endl;
+    std::cout << "\t\tI_expected = " << (g_incident_energy_in_keV[0] * g_number_of_photon_in_energy_channel[0]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[0], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[0], "keV") * 1.0)) << " +" << std::endl;
+    std::cout << "\t\t             " << (g_incident_energy_in_keV[1] * g_number_of_photon_in_energy_channel[1]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[1], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[1], "keV") * 1.0)) << " +" << std::endl;
+    std::cout << "\t\t             " << (g_incident_energy_in_keV[2] * g_number_of_photon_in_energy_channel[2]) * exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV[2], "keV") * 2.0 + getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV[2], "keV") * 1.0))         << std::endl;
+    std::cout << "\t\t           = " << /*std::scientific*/ std::fixed << g_expected_result_in_keV << " keV" << std::endl << std::endl;
 
     std::cout << "The absolute error is: |I_expected - I_reference| keV" << std::endl;
-    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result / keV << " - " << g_literature_result / keV << "| keV" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(g_expected_result - g_literature_result) / keV << " keV" << std::endl << std::endl;
-
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
-    g_scene_graph.getChild("outside").getPolygonMesh().splitFaces(false);
+    std::cout << "                     : |" << /*std::scientific <<*/ g_expected_result_in_keV << " - " << g_literature_result_in_keV << "| keV" << std::endl;
+    std::cout << "                     : " << std::fixed << std::abs(g_expected_result_in_keV - g_literature_result_in_keV) << " keV" << std::endl << std::endl;
 }
 
 
@@ -492,10 +309,10 @@ void loadSTLFile()
 void loadDetector()
 //-----------------
 {
-    g_xray_detector.setResolutionInUnitsOfLengthPerPixel(g_resolution);
-    g_xray_detector.setNumberOfPixels(g_number_of_pixels);
-    g_xray_detector.setDetectorPosition(g_detector_position);
-    g_xray_detector.setUpVector(g_detector_up_vector);
+	setDetectorPixelSize(g_resolution_in_mm, g_resolution_in_mm , "mm");
+    setDetectorNumberOfPixels(g_number_of_pixels[0], g_number_of_pixels[1]);
+    setDetectorPosition(g_detector_position_in_cm[0], g_detector_position_in_cm[1], g_detector_position_in_cm[2], "cm");
+    setDetectorUpVector(g_detector_up_vector[0], g_detector_up_vector[1], g_detector_up_vector[2]);
 }
 
 
@@ -504,32 +321,14 @@ void loadSource()
 //---------------
 {
     // Set the energy
-    g_xray_beam.clear();
-
-    g_xray_beam.addChannel(g_number_of_photon_in_energy_channel_0, g_incident_energy_0);
-    g_xray_beam.addChannel(g_number_of_photon_in_energy_channel_1, g_incident_energy_1);
-    g_xray_beam.addChannel(g_number_of_photon_in_energy_channel_2, g_incident_energy_2);
+    for (unsigned int i = 0; i < sizeof(g_incident_energy_in_keV)/ sizeof(double); ++i)
+    {
+    	addEnergyBinToSpectrum(g_incident_energy_in_keV[i], "keV", g_number_of_photon_in_energy_channel[i]);
+    }
 
     // Set the source position
-    g_xray_detector.setXrayPointSource(g_source_position);
+	setSourcePosition(g_source_position_in_cm[0], g_source_position_in_cm[1], g_source_position_in_cm[2], "cm");
 
     // Use a parallel source
-    g_xray_detector.setParallelBeam();
-}
-
-
-//----------------------
-void loadXRaySimulator()
-//----------------------
-{
-    // Initialise the X-ray renderer
-    g_xray_half_precision_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB16F,
-        &g_xray_detector,
-        &g_xray_beam);
-
-    g_xray_full_precision_renderer.initialise(XRayRenderer::OPENGL,
-        GL_RGB32F,
-        &g_xray_detector,
-        &g_xray_beam);
+	useParallelBeam();
 }
