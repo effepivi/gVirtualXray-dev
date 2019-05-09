@@ -73,14 +73,13 @@ MESSAGE ("Build Python 3 wrapper: ${BUILD_PYTHON3}")
 MESSAGE ("Build R wrapper: ${BUILD_R}")
 MESSAGE ("Build Ruby wrapper: ${BUILD_RUBY}")
 MESSAGE ("Build Tcl wrapper: ${BUILD_TCL}")
-
 MESSAGE ("")
-
 MESSAGE ("Build and run the unit tests: ${UNIT_TESTS}")
 
 IF (BUILD_WRAPPER)
     MESSAGE ("Build and run the wrapper tests: ${WRAPPER_TEST}")
 ENDIF ()
+MESSAGE ("")
 
 
 # Build and install the core library
@@ -98,68 +97,129 @@ MESSAGE ("")
 # The first external project will be built at *configure stage*
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/gvxr-build)
 
+MESSAGE ("Configure gvxr-core")
 IF (WIN32)
-    MESSAGE ("Configure parallel build on MSVC")
     execute_process(
         COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP -DCMAKE_INSTALL_PREFIX=$DESTINATION -DBUILD_TESTING=${UNIT_TESTS} ${CMAKE_CURRENT_LIST_DIR}/gvxr
         WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
         OUTPUT_FILE ../gvxr_cmake.out.log
         ERROR_FILE ../gvxr_cmake.err.log
-        )
+        RESULT_VARIABLE gvxr_cmake_result
+        OUTPUT_VARIABLE gvxr_cmake_output
+        ERROR_VARIABLE  gvxr_cmake_error
+      )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=$DESTINATION -DBUILD_TESTING=${UNIT_TESTS} --config Release ${CMAKE_CURRENT_LIST_DIR}/gvxr
+        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=$DESTINATION -DBUILD_TESTING=${UNIT_TESTS} --config Debug ${CMAKE_CURRENT_LIST_DIR}/gvxr
         WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
         OUTPUT_FILE ../gvxr_cmake.out.log
         ERROR_FILE ../gvxr_cmake.err.log
-        )
+        RESULT_VARIABLE gvxr_cmake_result
+        OUTPUT_VARIABLE gvxr_cmake_output
+        ERROR_VARIABLE  gvxr_cmake_error
+    )
 ENDIF (WIN32)
+MESSAGE ("Configure gvxr-core: DONE")
+MESSAGE ("")
+
+IF (NOT ${gvxr_cmake_result} EQUAL 0 OR
+    NOT ${gvxr_cmake_output} STREQUAL  "" OR
+    NOT ${gvxr_cmake_error} STREQUAL  "")
+
+    MESSAGE (FATAL_ERROR "Error configuring the project, see the log files (gvxr_cmake.out.log and gvxr_cmake.err.log)")
+ENDIF ()
 
 
-execute_process(
-    COMMAND ${CMAKE_COMMAND} ${CMAKE_CURRENT_LIST_DIR}/gvxr-build)
-
+MESSAGE ("Build gvxr-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Debug
         OUTPUT_FILE gvxr_make.out.log
         ERROR_FILE gvxr_make.err.log
-        )
+        RESULT_VARIABLE gvxr_make_result
+        OUTPUT_VARIABLE gvxr_make_output
+        ERROR_VARIABLE  gvxr_make_error
+    )
 ELSE (WIN32)
     MESSAGE ("Run parallel build, but not on MSVC")
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release -- -j12
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Debug -- -j12
         OUTPUT_FILE gvxr_make.out.log
         ERROR_FILE gvxr_make.err.log
-        )
+        RESULT_VARIABLE gvxr_make_result
+        OUTPUT_VARIABLE gvxr_make_output
+        ERROR_VARIABLE  gvxr_make_error
+    )
 ENDIF (WIN32)
+MESSAGE ("Build gvxr-core: DONE")
+MESSAGE ("")
 
+IF (NOT ${gvxr_make_result} EQUAL 0 OR
+    NOT ${gvxr_make_output} STREQUAL  "" OR
+    NOT ${gvxr_make_error} STREQUAL  "")
+
+    MESSAGE (FATAL_ERROR "Error building the project, see the log files (gvxr_make.out.log and gvxr_make.err.log)")
+ENDIF ()
+
+MESSAGE ("Install gvxr-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target INSTALL
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target INSTALL
         OUTPUT_FILE gvxr_install.out.log
         ERROR_FILE gvxr_install.err.log
-        )
+        RESULT_VARIABLE gvxr_install_result
+        OUTPUT_VARIABLE gvxr_install_output
+        ERROR_VARIABLE  gvxr_install_error
+    )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target install
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target install
         OUTPUT_FILE gvxr_install.out.log
         ERROR_FILE gvxr_install.err.log
-        )
+        RESULT_VARIABLE gvxr_install_result
+        OUTPUT_VARIABLE gvxr_install_output
+        ERROR_VARIABLE  gvxr_install_error
+    )
 ENDIF (WIN32)
+MESSAGE ("Install gvxr-core: DONE")
+MESSAGE ("")
+
+IF (NOT ${gvxr_install_result} EQUAL 0 OR
+    NOT ${gvxr_install_output} STREQUAL  "" OR
+    NOT ${gvxr_install_error} STREQUAL  "")
+
+    MESSAGE (FATAL_ERROR "Error installing the project, see the log files (gvxr_install.out.log and gvxr_install.err.log)")
+ENDIF ()
 
 IF (UNIT_TESTS)
+    MESSAGE ("Unit testing gvxr-core")
     IF (WIN32)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target RUN_TESTS
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target RUN_TESTS
             OUTPUT_FILE gvxr_test.out.log
             ERROR_FILE gvxr_test.err.log
-            )
+            RESULT_VARIABLE gvxr_test_result
+            OUTPUT_VARIABLE gvxr_test_output
+            ERROR_VARIABLE  gvxr_test_error
+        )
     ELSE (WIN32)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target test
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target test
             OUTPUT_FILE gvxr_test.out.log
             ERROR_FILE gvxr_test.err.log
-            )
+            RESULT_VARIABLE gvxr_test_result
+            OUTPUT_VARIABLE gvxr_test_output
+            ERROR_VARIABLE  gvxr_test_error
+        )
     ENDIF (WIN32)
+    MESSAGE ("Unit testing gvxr-core")
+    MESSAGE ("")
+
+    IF (NOT ${gvxr_test_result} EQUAL 0 OR
+        NOT ${gvxr_test_output} STREQUAL  "" OR
+        NOT ${gvxr_test_error} STREQUAL  "")
+
+        MESSAGE (FATAL_ERROR "Error testing the project, see the log files (gvxr_test.out.log and gvxr_test.err.log)")
+    ENDIF ()
+
 ENDIF ()
