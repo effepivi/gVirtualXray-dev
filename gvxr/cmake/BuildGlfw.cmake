@@ -29,6 +29,7 @@ macro(build_glfw install_prefix staging_prefix)
         LIST_SEPARATOR :::
         CMAKE_GENERATOR ${CMAKE_GEN}
         CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE:STRING=Release
             -DBUILD_SHARED_LIBS:BOOL=OFF
             -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
             -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
