@@ -47,7 +47,7 @@ ELSE (GIT_FOUND)
     ExternalProject_Add(googletest
         URL https://github.com/google/googletest/archive/master.zip
         CMAKE_ARGS
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
             -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
             -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
@@ -78,8 +78,11 @@ set(GTEST_INCLUDE_DIRS ${source_dir}/googletest/include PARENT_SCOPE)
 # Specify MainTest's link libraries
 ExternalProject_Get_Property(googletest binary_dir)
 
+SET (GTEST_LIBRARIES gtest gtest_main PARENT_SCOPE)
+set (GTEST_LIBS_DIR "${binary_dir}/lib" PARENT_SCOPE)
+
 IF (MSVC)
-    SET(GTEST_LIBS_DIR ${binary_dir}/googletest/ReleaseLibs PARENT_SCOPE)
-ELSE ()
-    set(GTEST_LIBS_DIR ${binary_dir}/lib PARENT_SCOPE)
+    SET(GTEST_LIBS_DIR  "${binary_dir}/googletest/ReleaseLibs" PARENT_SCOPE "${binary_dir}/googletest/DebugLibs" PARENT_SCOPE)
+    SET(GTEST_LIBRARIES optimized gtest optimized gtest_main debug gtestd debug gtest_maind PARENT_SCOPE)
 ENDIF ()
+
