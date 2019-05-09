@@ -151,7 +151,6 @@ GLFWwindow* g_p_main_window_id(0);
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
-Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
 GLfloat g_incident_energy(80.0 * keV);
 const GLfloat g_scaling_factor(2.0);
@@ -176,6 +175,8 @@ XRayRenderer g_xray_full_precision_renderer;
 //******************************************************************************
 //  Function declaration
 //******************************************************************************
+void initWindow();
+void initGVXR();
 void initGL();
 void loadSTLFile();
 void loadDetector();
@@ -185,88 +186,105 @@ void errorCallback(int error, const char* description);
 void quit();
 
 
+void initWindow()
+{
+	// Make sure the detector has an odd number of columns
+	if ((g_number_of_pixels.getX() % 2) == 0)
+	{
+		g_number_of_pixels.setX(g_number_of_pixels.getX() + 1);
+	}
+
+	// Make sure the detector has an odd number of rows
+	if ((g_number_of_pixels.getY() % 2) == 0)
+	{
+		g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
+	}
+
+	// Set an error callback
+	glfwSetErrorCallback(errorCallback);
+
+	// Initialize GLFW
+	ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_VISIBLE, false);
+
+	// Enable anti-aliasing
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
+	// Create a windowed mode window and its OpenGL context
+	g_p_main_window_id = glfwCreateWindow(g_main_window_width,
+		g_main_window_height,
+		"gVirtualXRay -- Unit testing: Beer-Lambert Law, Monochromatism Case.",
+		0,
+		0);
+
+	// Window cannot be created
+	if (!g_p_main_window_id)
+	{
+		glfwTerminate();
+	}
+	ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
+
+	// Make the window's context current
+	glfwMakeContextCurrent(g_p_main_window_id);
+
+	// Initialise GLEW
+	initialiseGLEW();
+
+	// Initialise OpenGL
+	initGL();
+
+	// Check the current FBO
+	checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	// Set the projection matrix
+	GLint width(0);
+	GLint height(0);
+	glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+}
+
+
+
+void initGVXR()
+{
+	g_xray_half_precision_renderer.release();
+	g_xray_full_precision_renderer.release();
+
+	// Load the data
+	loadDetector();
+	loadSource();
+	loadXRaySimulator();
+
+	// Add the geometry to the X-ray renderer
+	loadSTLFile();
+	g_xray_half_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+	g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+	g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
+	g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
+}
+
+
 //------------------------------
 TEST (TestLBuffer, TestLBuffer1)
 //------------------------------
 {
-    // Make sure the detector has an odd number of columns
-    if ((g_number_of_pixels.getX() % 2) == 0)
-        {
-        g_number_of_pixels.setX(g_number_of_pixels.getX() + 1);
-        }
+	initWindow();
+	initGVXR();
 
-    // Make sure the detector has an odd number of rows
-    if ((g_number_of_pixels.getY() % 2) == 0)
-        {
-        g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
-    }
-
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
-
-    // Initialize GLFW
-    ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, false);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_main_window_id = glfwCreateWindow(g_main_window_width,
-        g_main_window_height,
-        "gVirtualXRay -- Unit testing: Beer-Lambert Law, Monochromatism Case.",
-        0,
-        0);
-
-    // Window cannot be created
-    if (!g_p_main_window_id)
-        {
-        glfwTerminate();
-        }
-    ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
-
-    // Make the window's context current
-    glfwMakeContextCurrent(g_p_main_window_id);
-
-    // Initialise GLEW
-    initialiseGLEW();
-
-    // Initialise OpenGL
-    initGL();
-
-    // Check the current FBO
-    checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-
-    // Load the data
-    loadDetector();
-    loadSource();
-    loadXRaySimulator();
-
-    // Add the geometry to the X-ray renderer
-    loadSTLFile();
-    g_xray_half_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
-    g_xray_half_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-    g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
-    g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-
-    // Set the projection matrix
-    GLint width(0);
-    GLint height(0);
-    glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
+	Matrix4x4<GLfloat> sample_rotation_matrix;
 
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
-                                                  g_sample_rotation_matrix);
+                                                  sample_rotation_matrix);
 
     g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
-                                                  g_sample_rotation_matrix);
+                                                  sample_rotation_matrix);
 
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
@@ -312,76 +330,22 @@ TEST (TestLBuffer, TestLBuffer1)
 
 
 //------------------------------
-TEST (TestLBuffer, TestLBuffer2)
-//------------------------------
-{
-    // Compute the X-ray image
-    g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-
-    g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
-    g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
-                                                  VEC3(),
-                                                  g_sample_rotation_matrix);
-    g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
-
-
-    RATIONAL_NUMBER* l_buffer(
-                              g_xray_half_precision_renderer.getLBuffer().getRawData());
-
-    RATIONAL_NUMBER central_pixel(l_buffer[g_number_of_pixels.getX() / 2]);
-
-    RATIONAL_NUMBER expected_value = 2.0 * g_cylinder_radius_in_cm;
-    RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-    std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
-
-    std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
-
-    l_buffer =
-    g_xray_full_precision_renderer.getLBuffer().getRawData();
-
-    central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
-
-    simulated_result = central_pixel;
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
-
-    std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
-    std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
-
-    std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
-    std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
-    std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
-
-    std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
-    std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
-}
-
-
-//------------------------------
 TEST (TestLBuffer, TestLBuffer3)
 //------------------------------
 {
-    // Rotate by 45%
-    g_sample_rotation_matrix.rotate(45.0, g_detector_up_vector);
+	// Rotate by 45deg
+	Matrix4x4<GLfloat> sample_rotation_matrix;
+	sample_rotation_matrix.rotate(45.0, g_detector_up_vector);
 
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
-                                                  g_sample_rotation_matrix);
+                                                  sample_rotation_matrix);
 
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
     g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
-                                                  g_sample_rotation_matrix);
+                                                  sample_rotation_matrix);
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
 
 
@@ -426,18 +390,79 @@ TEST (TestLBuffer, TestLBuffer3)
 
 
 //------------------------------
+TEST(TestLBuffer, TestLBuffer2)
+//------------------------------
+{
+	Matrix4x4<GLfloat> sample_rotation_matrix;
+
+	// Compute the X-ray image
+	g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
+		VEC3(),
+		sample_rotation_matrix);
+
+	g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
+	g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
+		VEC3(),
+		sample_rotation_matrix);
+	g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
+
+
+	RATIONAL_NUMBER* l_buffer(
+		g_xray_half_precision_renderer.getLBuffer().getRawData());
+
+	RATIONAL_NUMBER central_pixel(l_buffer[g_number_of_pixels.getX() / 2]);
+
+	RATIONAL_NUMBER expected_value = 2.0 * g_cylinder_radius_in_cm;
+	RATIONAL_NUMBER simulated_result(central_pixel);
+	ASSERT_FLOAT_EQ(expected_value, simulated_result);
+
+	std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
+	std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+
+	std::cout << "The absolute error is: |I_expected - I_GPU_half_precision| cm" << std::endl;
+	std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+	std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+
+	std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+	std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+
+	l_buffer =
+		g_xray_full_precision_renderer.getLBuffer().getRawData();
+
+	central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
+
+	simulated_result = central_pixel;
+	ASSERT_FLOAT_EQ(expected_value, simulated_result);
+
+	std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
+	std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
+
+	std::cout << "The absolute error is: |I_expected - I_GPU_full_precision| cm" << std::endl;
+	std::cout << "                     : |" << expected_value * cm / mm << " - " << simulated_result * cm / mm << "| mm" << std::endl;
+	std::cout << "                     : " << std::fixed << std::abs(expected_value - simulated_result) * cm / mm << " mm" << std::endl << std::endl;
+
+	std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
+	std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+}
+
+
+//------------------------------
 TEST (TestLBuffer, TestLBuffer4)
 //------------------------------
 {
-    // Compute the X-ray image
+	// Rotate by 45deg
+	Matrix4x4<GLfloat> sample_rotation_matrix;
+	sample_rotation_matrix.rotate(45.0, g_detector_up_vector);
+
+	// Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                                   VEC3(),
-                                                  g_sample_rotation_matrix);
+                                                  sample_rotation_matrix);
 
     g_xray_half_precision_renderer.printLBuffer("g_xray_half_precision_renderer.txt");
     g_xray_full_precision_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                                   VEC3(),
-                                                  g_sample_rotation_matrix);
+                                                  sample_rotation_matrix);
     g_xray_full_precision_renderer.printLBuffer("g_xray_full_precision_renderer.txt");
 
 
@@ -563,6 +588,9 @@ void quit()
 {
     if (g_p_main_window_id)
         {
+		g_xray_half_precision_renderer.release();
+		g_xray_full_precision_renderer.release();
+
         glfwDestroyWindow(g_p_main_window_id);
         g_p_main_window_id = 0;
         //glfwTerminate();
@@ -594,7 +622,8 @@ void loadSTLFile()
 //----------------
 {
 	// Set the geometry
-    g_scene_graph.addChild( "inside", CylinderMesh<GLdouble>(500, g_cylinder_height_in_cm * cm, g_cylinder_radius_in_cm * cm, GL_UNSIGNED_INT));
+	g_scene_graph = SceneGraphNode("root", NULL);
+	g_scene_graph.addChild( "inside", CylinderMesh<GLdouble>(500, g_cylinder_height_in_cm * cm, g_cylinder_radius_in_cm * cm, GL_UNSIGNED_INT));
     g_scene_graph.addChild("outside", CubeMesh<GLdouble>(g_cube_side_in_cm * cm));
 
 
