@@ -297,7 +297,7 @@ TEST (TestLBuffer, TestLBuffer1)
 
     RATIONAL_NUMBER expected_value = g_cube_side_in_cm;
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 
     std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
@@ -315,7 +315,6 @@ TEST (TestLBuffer, TestLBuffer1)
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -326,6 +325,8 @@ TEST (TestLBuffer, TestLBuffer1)
 
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
 
 
@@ -356,7 +357,7 @@ TEST (TestLBuffer, TestLBuffer3)
 
     RATIONAL_NUMBER expected_value = std::sqrt(2.0 * (g_cube_side_in_cm * g_cube_side_in_cm));
     RATIONAL_NUMBER simulated_result(central_pixel);
-    ASSERT_NEAR(expected_value, simulated_result, 0.1 / expected_value);
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 
     std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm<< " mm" << std::endl << std::endl;
@@ -374,7 +375,6 @@ TEST (TestLBuffer, TestLBuffer3)
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
@@ -386,6 +386,8 @@ TEST (TestLBuffer, TestLBuffer3)
 
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
 
 
@@ -414,7 +416,7 @@ TEST(TestLBuffer, TestLBuffer2)
 
 	RATIONAL_NUMBER expected_value = 2.0 * g_cylinder_radius_in_cm;
 	RATIONAL_NUMBER simulated_result(central_pixel);
-	ASSERT_FLOAT_EQ(expected_value, simulated_result);
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 
 	std::cout << "On GPU, with half precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube is:" << std::endl;
 	std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -432,7 +434,6 @@ TEST(TestLBuffer, TestLBuffer2)
 	central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
 	simulated_result = central_pixel;
-	ASSERT_FLOAT_EQ(expected_value, simulated_result);
 
 	std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
 	std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -443,6 +444,8 @@ TEST(TestLBuffer, TestLBuffer2)
 
 	std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
 	std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
 
 
@@ -491,7 +494,6 @@ TEST (TestLBuffer, TestLBuffer4)
     central_pixel = l_buffer[g_number_of_pixels.getX() / 2];
 
     simulated_result = central_pixel;
-    ASSERT_NEAR(expected_value, simulated_result, 0.1 / expected_value);
 
     std::cout << "On GPU, with full precision, the L-Buffer (in mm) computed orthogonally throw the middle of cube and cylinder actually is:" << std::endl;
     std::cout << "\t\t           = " << simulated_result * cm / mm << " mm" << std::endl << std::endl;
@@ -502,6 +504,8 @@ TEST (TestLBuffer, TestLBuffer4)
 
     std::cout << "The relative error is: |I_expected - I_GPU_half_precision| / I_expected" << std::endl;
     std::cout << "                     : " << std::fixed << 100.0 * std::abs(expected_value - simulated_result) / expected_value << " \%" << std::endl;
+
+	ASSERT_NEAR(1.0, simulated_result / expected_value, 0.01);
 }
 /*
 //------------------------------
