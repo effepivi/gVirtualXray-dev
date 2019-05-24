@@ -135,6 +135,64 @@ int gVirtualXRay::inflate(const void *src, int srcLen, char** apDst)
 }
 
 
+//------------------------------------------------------------------
+int gVirtualXRay::deflate(const void *src, int srcLen, char** apDst)
+//------------------------------------------------------------------
+{
+    int dstLen(srcLen);
+    if (*apDst) delete [] *apDst;
+    *apDst = new char[dstLen];
+    memset(*apDst, '\0', dstLen * sizeof(char));
+
+    // zlib struct
+    z_stream strm  = {0};
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+
+    // setup "a" as the input and "b" as the compressed output
+    strm.avail_in  = srcLen; // size of input, string + terminator
+    strm.next_in   = static_cast<unsigned char*>(const_cast<void*>(src)); // input char array
+    strm.avail_out = dstLen; // size of output
+    strm.next_out  = (unsigned char*) *apDst; // output char array
+
+    // the actual compression work.
+    int err = -1;
+    int ret = -1;
+
+
+    deflateEnd(&strm);
+
+    err = deflateInit(&strm, Z_BEST_COMPRESSION);
+    if (err == Z_OK)
+        {
+        err = deflate(&strm, Z_FINISH);
+
+        if (err == Z_STREAM_END)
+            {
+            ret = strm.total_out;
+            }
+        else
+            {
+            deflateEnd(&strm);
+            delete [] *apDst;
+            *apDst = 0;
+            return (err);
+            }
+        }
+    else
+        {
+        deflateEnd(&strm);
+        delete [] *apDst;
+        *apDst = 0;
+        return (err);
+        }
+
+    deflateEnd(&strm);
+    return (ret);
+}
+
+
 //-------------------------------------------------
 bool gVirtualXRay::checkExtension(const std::string& aFileName,
                     const std::string& anExtension)
