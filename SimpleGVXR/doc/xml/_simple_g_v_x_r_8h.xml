@@ -3654,11 +3654,11 @@
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1486" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ab91cd940da30ef9f429eb4494ca25a00" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a71542b762755797939abab386ebbeb3c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; double &gt;</type>
-        <definition>std::vector&lt;double&gt; getPhtotonCountEnergyBins</definition>
+        <definition>std::vector&lt;double&gt; getPhotonCountEnergyBins</definition>
         <argsstring>()</argsstring>
-        <name>getPhtotonCountEnergyBins</name>
+        <name>getPhotonCountEnergyBins</name>
         <briefdescription>
 <para>Accessor on the number of photons per energy bin of the beam spectrum. </para>        </briefdescription>
         <detaileddescription>
@@ -3668,15 +3668,20 @@
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1495" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1aebd71734841339eef86eafecc291a272" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a32e448289291a23d645c301b8c5c6482" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void saveLastXRayImage</definition>
-        <argsstring>(const std::string &amp;aFileName=std::string())</argsstring>
+        <argsstring>(const std::string &amp;aFileName=std::string(), bool useCompression=true)</argsstring>
         <name>saveLastXRayImage</name>
         <param>
           <type>const std::string &amp;</type>
           <declname>aFileName</declname>
           <defval>std::string()</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCompression</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
 <para>Save the last X-ray image that has been computed. </para>        </briefdescription>
@@ -3688,21 +3693,33 @@
 <parameterdescription>
 <para>the name of the output file (default: means that the filename will be automatically generated and the file saved in the current path) </para></parameterdescription>
 </parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useCompression</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>use data compression is possible (default: true) </para></parameterdescription>
+</parameteritem>
 </parameterlist>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1507" column="1"/>
+        <location file="SimpleGVXR.h" line="1508" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1aec57b8fcd3a0f91ca47870f9811f27ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a30e9dcbbe24bc34add2f849655f6e5e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void saveLastLBuffer</definition>
-        <argsstring>(const std::string &amp;aFileName=std::string())</argsstring>
+        <argsstring>(const std::string &amp;aFileName=std::string(), bool useCompression=true)</argsstring>
         <name>saveLastLBuffer</name>
         <param>
           <type>const std::string &amp;</type>
           <declname>aFileName</declname>
           <defval>std::string()</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCompression</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
 <para>Save the last L-buffer that has been computed. </para>        </briefdescription>
@@ -3714,21 +3731,71 @@
 <parameterdescription>
 <para>the name of the output file (default: means that the filename will be automatically generated and the file saved in the current path) </para></parameterdescription>
 </parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useCompression</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>use data compression is possible (default: true) </para></parameterdescription>
+</parameteritem>
 </parameterlist>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1519" column="1"/>
+        <location file="SimpleGVXR.h" line="1522" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ad406620b29ee012d897d8891ac3aa556" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a58a2b9e1ede05451b09797cdb13531ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void saveLastCumulatedLBuffer</definition>
+        <argsstring>(const std::string &amp;aFileName=std::string(), bool useCompression=true)</argsstring>
+        <name>saveLastCumulatedLBuffer</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFileName</declname>
+          <defval>std::string()</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCompression</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Save the last cumulated L-buffer that has been computed. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aFileName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the output file (default: means that the filename will be automatically generated and the file saved in the current path) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useCompression</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>use data compression is possible (default: true) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1536" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1abc0ba9cbdc0fe49d7da46dc8d25afb3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void saveLastSinogram</definition>
-        <argsstring>(const std::string &amp;aFileName=std::string())</argsstring>
+        <argsstring>(const std::string &amp;aFileName=std::string(), bool useCompression=true)</argsstring>
         <name>saveLastSinogram</name>
         <param>
           <type>const std::string &amp;</type>
           <declname>aFileName</declname>
           <defval>std::string()</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCompression</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
 <para>Save the last sinogram that has been computed. </para>        </briefdescription>
@@ -3740,11 +3807,18 @@
 <parameterdescription>
 <para>the name of the output file (default: 0 means that the filename will be automatically generated and the file saved in the current path) </para></parameterdescription>
 </parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useCompression</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>use data compression is possible (default: true) </para></parameterdescription>
+</parameteritem>
 </parameterlist>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1531" column="1"/>
+        <location file="SimpleGVXR.h" line="1550" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1acd097bdd4b2ab5f9b8fc8991b316e533" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -3760,7 +3834,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1537" column="1"/>
+        <location file="SimpleGVXR.h" line="1557" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a5898aa8c45e6c34137f10978b1d49526" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -3776,7 +3850,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1543" column="1"/>
+        <location file="SimpleGVXR.h" line="1563" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1aed410cdfc2b9d1d28d6820e6bfb57324" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -3792,7 +3866,7 @@
 <para>Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1550" column="1"/>
+        <location file="SimpleGVXR.h" line="1570" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a7ef2b71a4bf9d57e06e975de75ba88dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -3808,7 +3882,7 @@
 <para>Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-tracing). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1557" column="1"/>
+        <location file="SimpleGVXR.h" line="1577" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a8825c3ab5571de7f6e665c944149a09f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -3824,7 +3898,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1563" column="1"/>
+        <location file="SimpleGVXR.h" line="1583" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a73f8d211018dc40e3c3f17400230ffc8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -3840,7 +3914,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1569" column="1"/>
+        <location file="SimpleGVXR.h" line="1589" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a2bff58abee8cc5cd98e6a17c34e9af74" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
@@ -3866,7 +3940,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1583" column="1"/>
+        <location file="SimpleGVXR.h" line="1603" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a61e8cc31f2f3caa5ea89e019eec5e559" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
@@ -3892,7 +3966,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1601" column="1"/>
+        <location file="SimpleGVXR.h" line="1621" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a5451b6f54339116e72cba6cc58e01be4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
@@ -3909,7 +3983,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1619" column="1"/>
+        <location file="SimpleGVXR.h" line="1639" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a3fd962d97691068b4a0686570a06c147" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
@@ -3938,7 +4012,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1636" column="1"/>
+        <location file="SimpleGVXR.h" line="1656" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a296cfff31e4c95d04b7d8fdee1a43752" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
@@ -4022,7 +4096,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1671" column="1"/>
+        <location file="SimpleGVXR.h" line="1691" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1ab0814f041176d63ce590dc46e8721f5d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
@@ -4036,7 +4110,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1686" column="1"/>
+        <location file="SimpleGVXR.h" line="1706" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1adefbb2fdefe4ddcd43da3a8cd1c94957" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
@@ -4050,7 +4124,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1695" column="1"/>
+        <location file="SimpleGVXR.h" line="1715" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a31cac5db95d54fc7013ef6da1d9ae0bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
@@ -4064,7 +4138,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1704" column="1"/>
+        <location file="SimpleGVXR.h" line="1724" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a2fd74a1173b58acd49329e6d8f9e4f0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -4090,7 +4164,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1714" column="1"/>
+        <location file="SimpleGVXR.h" line="1734" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a405587a06bb8b4188d32e9c2865ce0f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -4116,7 +4190,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1724" column="1"/>
+        <location file="SimpleGVXR.h" line="1744" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a68e92985a191484817d8c0eb20ae2288" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; float &gt;</type>
@@ -4153,7 +4227,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1735" column="1"/>
+        <location file="SimpleGVXR.h" line="1755" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a4fc536f8abfe8e4da84c3500b277ccca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::string</type>
@@ -4179,7 +4253,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1746" column="1"/>
+        <location file="SimpleGVXR.h" line="1766" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1a2126c53d1d3b3b667b77796c32fc8b6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::string</type>
@@ -4205,7 +4279,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1756" column="1"/>
+        <location file="SimpleGVXR.h" line="1776" column="1"/>
       </memberdef>
       <memberdef kind="function" id="_simple_g_v_x_r_8h_1adaf08e1db28bdc950d3fda4e3c339f11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>unsigned short</type>
@@ -4231,13 +4305,13 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1766" column="1"/>
+        <location file="SimpleGVXR.h" line="1786" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ab1954d02b2e220631046db9133f7df67" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a66250b34d317b34acac80de74ed818b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
-        <definition>double getElementDensity</definition>
+        <definition>double getDensityFromElement</definition>
         <argsstring>(const std::string &amp;anElement)</argsstring>
-        <name>getElementDensity</name>
+        <name>getDensityFromElement</name>
         <param>
           <type>const std::string &amp;</type>
           <declname>anElement</declname>
@@ -4257,13 +4331,13 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1776" column="1"/>
+        <location file="SimpleGVXR.h" line="1796" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a967181228aa7e7e284a2068ed655c0a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ad3b42298ebf0079de61aef0d54ab2d79" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
-        <definition>double getElementDensity</definition>
+        <definition>double getDensityFromElement</definition>
         <argsstring>(unsigned short Z)</argsstring>
-        <name>getElementDensity</name>
+        <name>getDensityFromElement</name>
         <param>
           <type>unsigned short</type>
           <declname>Z</declname>
@@ -4283,7 +4357,321 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="SimpleGVXR.h" line="1786" column="1"/>
+        <location file="SimpleGVXR.h" line="1806" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ad3f273e3fb319d02f61a31d49166b37c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getDensityFromHU</definition>
+        <argsstring>(double HU)</argsstring>
+        <name>getDensityFromHU</name>
+        <param>
+          <type>double</type>
+          <declname>HU</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the HU&apos;s density. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>HU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the HU </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the density of the corresponding HU (in g / cm3) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1816" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a1741bff66bdbc6fb8480b53bc9c0b7bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getMassAttenuationFromElement</definition>
+        <argsstring>(const std::string &amp;anElement, double anEnergy, const std::string &amp;aUnitOfEnergy)</argsstring>
+        <name>getMassAttenuationFromElement</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>anElement</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>anEnergy</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aUnitOfEnergy</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the chemical element&apos;s mass attenuation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>anElement</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name or symbol of the element </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>anEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the photon energy of interest </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aUnitOfEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the unit of energy corresponding to anEnergy. Acceptable values are: &quot;electronvolt&quot;, &quot;eV&quot;, &quot;kiloelectronvolt&quot;, &quot;keV&quot;, &quot;megaelectronvolt&quot;, &quot;MeV&quot; </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the mass attenuation of the corresponding element (in cm2/g) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1832" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a5226e1d6c175c5dee458e744c4710e1a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getMassAttenuationFromElement</definition>
+        <argsstring>(unsigned short Z, double anEnergy, const std::string &amp;aUnitOfEnergy)</argsstring>
+        <name>getMassAttenuationFromElement</name>
+        <param>
+          <type>unsigned short</type>
+          <declname>Z</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>anEnergy</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aUnitOfEnergy</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the chemical element&apos;s mass attenuation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>Z</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the Z number of the element </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>anEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the photon energy of interest </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aUnitOfEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the unit of energy corresponding to anEnergy. Acceptable values are: &quot;electronvolt&quot;, &quot;eV&quot;, &quot;kiloelectronvolt&quot;, &quot;keV&quot;, &quot;megaelectronvolt&quot;, &quot;MeV&quot; </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the mass attenuation of the corresponding element (in cm2/g) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1850" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a5c3cc32cad85894eccd540360af42c50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getMassAttenuationFromHU</definition>
+        <argsstring>(double HU, double anEnergy, const std::string &amp;aUnitOfEnergy)</argsstring>
+        <name>getMassAttenuationFromHU</name>
+        <param>
+          <type>double</type>
+          <declname>HU</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>anEnergy</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aUnitOfEnergy</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the HU&apos;s mass attenuation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>HU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the HU </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>anEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the photon energy of interest </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aUnitOfEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the unit of energy corresponding to anEnergy. Acceptable values are: &quot;electronvolt&quot;, &quot;eV&quot;, &quot;kiloelectronvolt&quot;, &quot;keV&quot;, &quot;megaelectronvolt&quot;, &quot;MeV&quot; </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the density of the corresponding HU (in cm2/g) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1867" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1add3d514ce518f8207a5d16ee809cf5b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getMassAttenuationFromMixture</definition>
+        <argsstring>(const std::string &amp;aMixture, double anEnergy, const std::string &amp;aUnitOfEnergy)</argsstring>
+        <name>getMassAttenuationFromMixture</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aMixture</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>anEnergy</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aUnitOfEnergy</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the mixture&apos;s mass attenuation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMixture</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the details about the mixture. It is given as a sequence of element symbol &amp; relative weight, e.g. Ti90Al6V4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>anEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the photon energy of interest </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aUnitOfEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the unit of energy corresponding to anEnergy. Acceptable values are: &quot;electronvolt&quot;, &quot;eV&quot;, &quot;kiloelectronvolt&quot;, &quot;keV&quot;, &quot;megaelectronvolt&quot;, &quot;MeV&quot; </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the mass attenuation of the corresponding mixture (in cm2/g) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1887" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a4826978ac2240b8aee811ad31464f959" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getMassAttenuationFromCompound</definition>
+        <argsstring>(const std::string &amp;aCompound, double anEnergy, const std::string &amp;aUnitOfEnergy)</argsstring>
+        <name>getMassAttenuationFromCompound</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aCompound</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>anEnergy</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aUnitOfEnergy</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the compound&apos;s mass attenuation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aCompound</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the details about the compound. It is given as a sequence of element symbol &amp; number of atoms, e.g. H2O for water and SiC for silicon carbide. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>anEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the photon energy of interest </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aUnitOfEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the unit of energy corresponding to anEnergy. Acceptable values are: &quot;electronvolt&quot;, &quot;eV&quot;, &quot;kiloelectronvolt&quot;, &quot;keV&quot;, &quot;megaelectronvolt&quot;, &quot;MeV&quot; </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the mass attenuation of the corresponding compound (in cm2/g) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1907" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a3acb9c86309f58436b2c8c0213d705b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double getMuFromHU</definition>
+        <argsstring>(double HU, double anEnergy, const std::string &amp;aUnitOfEnergy)</argsstring>
+        <name>getMuFromHU</name>
+        <param>
+          <type>double</type>
+          <declname>HU</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>anEnergy</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aUnitOfEnergy</declname>
+        </param>
+        <briefdescription>
+<para>Accessor on the HU&apos;s linear attenuation coefficient. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>HU</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the HU </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>anEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the photon energy of interest </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aUnitOfEnergy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the unit of energy corresponding to anEnergy. Acceptable values are: &quot;electronvolt&quot;, &quot;eV&quot;, &quot;kiloelectronvolt&quot;, &quot;keV&quot;, &quot;megaelectronvolt&quot;, &quot;MeV&quot; </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the linear attenuation coefficient (in cm-1) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="1923" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -5050,161 +5438,220 @@ License BSD 3-Clause License.</para><para>For details on use and redistribution 
 <codeline lineno="1489"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1491"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1494"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1495"><highlight class="normal">std::vector&lt;double&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1ab91cd940da30ef9f429eb4494ca25a00" kindref="member">getPhtotonCountEnergyBins</ref>();</highlight></codeline>
+<codeline lineno="1495"><highlight class="normal">std::vector&lt;double&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a71542b762755797939abab386ebbeb3c" kindref="member">getPhotonCountEnergyBins</ref>();</highlight></codeline>
 <codeline lineno="1496"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1497"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1498"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1500"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1506"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1507"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1aebd71734841339eef86eafecc291a272" kindref="member">saveLastXRayImage</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string());</highlight></codeline>
-<codeline lineno="1508"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1509"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1510"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1512"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1518"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1519"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1aec57b8fcd3a0f91ca47870f9811f27ab" kindref="member">saveLastLBuffer</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string());</highlight></codeline>
-<codeline lineno="1520"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1521"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1522"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1524"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1530"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1531"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1ad406620b29ee012d897d8891ac3aa556" kindref="member">saveLastSinogram</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string());</highlight></codeline>
-<codeline lineno="1532"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1533"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1534"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1536"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1537"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1acd097bdd4b2ab5f9b8fc8991b316e533" kindref="member">enableArtefactFilteringOnGPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1507"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1508"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a32e448289291a23d645c301b8c5c6482" kindref="member">saveLastXRayImage</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string(),</highlight></codeline>
+<codeline lineno="1509"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>useCompression<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1510"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1511"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1512"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1514"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1521"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1522"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a30e9dcbbe24bc34add2f849655f6e5e4" kindref="member">saveLastLBuffer</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string(),</highlight></codeline>
+<codeline lineno="1523"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>useCompression<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1524"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1525"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1526"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1528"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1535"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1536"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a58a2b9e1ede05451b09797cdb13531ba" kindref="member">saveLastCumulatedLBuffer</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string(),</highlight></codeline>
+<codeline lineno="1537"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>useCompression<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="1538"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1539"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1540"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1542"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1543"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a5898aa8c45e6c34137f10978b1d49526" kindref="member">enableArtifactFilteringOnGPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="1544"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1545"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1546"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1549"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1550"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1aed410cdfc2b9d1d28d6820e6bfb57324" kindref="member">enableArtefactFilteringOnCPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="1551"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1542"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1549"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1550"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1abc0ba9cbdc0fe49d7da46dc8d25afb3f" kindref="member">saveLastSinogram</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName<sp/>=<sp/>std::string(),</highlight></codeline>
+<codeline lineno="1551"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>useCompression<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="1552"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1553"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1553"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1554"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1556"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1557"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a7ef2b71a4bf9d57e06e975de75ba88dc" kindref="member">enableArtifactFilteringOnCPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1557"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1acd097bdd4b2ab5f9b8fc8991b316e533" kindref="member">enableArtefactFilteringOnGPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="1558"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1559"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1560"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1562"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1563"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a8825c3ab5571de7f6e665c944149a09f" kindref="member">disableArtefactFiltering</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1563"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a5898aa8c45e6c34137f10978b1d49526" kindref="member">enableArtifactFilteringOnGPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="1564"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1565"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1566"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1568"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1569"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a73f8d211018dc40e3c3f17400230ffc8" kindref="member">disableArtifactFiltering</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="1570"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1569"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1570"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1aed410cdfc2b9d1d28d6820e6bfb57324" kindref="member">enableArtefactFilteringOnCPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="1571"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1572"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1574"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1582"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1583"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a2bff58abee8cc5cd98e6a17c34e9af74" kindref="member">getUnitOfEnergy</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1572"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1573"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1576"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1577"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a7ef2b71a4bf9d57e06e975de75ba88dc" kindref="member">enableArtifactFilteringOnCPU</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1578"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1579"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1580"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1582"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1583"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a8825c3ab5571de7f6e665c944149a09f" kindref="member">disableArtefactFiltering</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="1584"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1585"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1586"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1588"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1600"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1601"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a61e8cc31f2f3caa5ea89e019eec5e559" kindref="member">getUnitOfLength</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfLength);</highlight></codeline>
-<codeline lineno="1602"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1603"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1604"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1615"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1618"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1619"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a5451b6f54339116e72cba6cc58e01be4" kindref="member">computeXRayImage</ref>();</highlight></codeline>
-<codeline lineno="1620"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1621"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1622"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1631"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1635"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1636"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a3fd962d97691068b4a0686570a06c147" kindref="member">computeLBuffer</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aLabel);</highlight></codeline>
-<codeline lineno="1637"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1638"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1639"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1588"><highlight class="comment"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1589"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a73f8d211018dc40e3c3f17400230ffc8" kindref="member">disableArtifactFiltering</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1590"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1591"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1592"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1594"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1602"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1603"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a2bff58abee8cc5cd98e6a17c34e9af74" kindref="member">getUnitOfEnergy</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1604"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1605"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1606"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1608"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1620"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1621"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a61e8cc31f2f3caa5ea89e019eec5e559" kindref="member">getUnitOfLength</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfLength);</highlight></codeline>
+<codeline lineno="1622"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1623"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1624"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1635"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1638"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1639"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a5451b6f54339116e72cba6cc58e01be4" kindref="member">computeXRayImage</ref>();</highlight></codeline>
+<codeline lineno="1640"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1641"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1642"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1651"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1670"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1671"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a296cfff31e4c95d04b7d8fdee1a43752" kindref="member">computeSinogram</ref>(</highlight></codeline>
-<codeline lineno="1672"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x,</highlight></codeline>
-<codeline lineno="1673"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>y,</highlight></codeline>
-<codeline lineno="1674"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>z,</highlight></codeline>
-<codeline lineno="1675"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfLength,</highlight></codeline>
-<codeline lineno="1676"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>aNumberOfAngle,</highlight></codeline>
-<codeline lineno="1677"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anAngleOffset);</highlight></codeline>
-<codeline lineno="1678"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1679"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1680"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1682"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1685"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1686"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1ab0814f041176d63ce590dc46e8721f5d" kindref="member">getLastXRayImage</ref>();</highlight></codeline>
-<codeline lineno="1687"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1688"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1689"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1691"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1694"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1695"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1adefbb2fdefe4ddcd43da3a8cd1c94957" kindref="member">getLastLBuffer</ref>();</highlight></codeline>
-<codeline lineno="1696"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1697"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1698"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1700"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1703"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1704"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a31cac5db95d54fc7013ef6da1d9ae0bb" kindref="member">getLastSinogram</ref>();</highlight></codeline>
-<codeline lineno="1705"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1706"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1707"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1709"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1713"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1714"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a2fd74a1173b58acd49329e6d8f9e4f0f" kindref="member">getImageWidth</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;&amp;<sp/>anImage);</highlight></codeline>
-<codeline lineno="1715"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1655"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1656"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a3fd962d97691068b4a0686570a06c147" kindref="member">computeLBuffer</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aLabel);</highlight></codeline>
+<codeline lineno="1657"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1658"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1659"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1671"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1690"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1691"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a296cfff31e4c95d04b7d8fdee1a43752" kindref="member">computeSinogram</ref>(</highlight></codeline>
+<codeline lineno="1692"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x,</highlight></codeline>
+<codeline lineno="1693"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>y,</highlight></codeline>
+<codeline lineno="1694"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>z,</highlight></codeline>
+<codeline lineno="1695"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfLength,</highlight></codeline>
+<codeline lineno="1696"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>aNumberOfAngle,</highlight></codeline>
+<codeline lineno="1697"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anAngleOffset);</highlight></codeline>
+<codeline lineno="1698"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1699"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1700"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1702"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1705"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1706"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1ab0814f041176d63ce590dc46e8721f5d" kindref="member">getLastXRayImage</ref>();</highlight></codeline>
+<codeline lineno="1707"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1708"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1709"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1711"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1714"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1715"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1adefbb2fdefe4ddcd43da3a8cd1c94957" kindref="member">getLastLBuffer</ref>();</highlight></codeline>
 <codeline lineno="1716"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1717"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1719"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1717"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1718"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1720"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1723"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1724"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a405587a06bb8b4188d32e9c2865ce0f0" kindref="member">getImageHeght</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;&amp;<sp/>anImage);</highlight></codeline>
+<codeline lineno="1724"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a31cac5db95d54fc7013ef6da1d9ae0bb" kindref="member">getLastSinogram</ref>();</highlight></codeline>
 <codeline lineno="1725"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1726"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1727"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1729"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1734"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1735"><highlight class="normal">std::vector&lt;float&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a68e92985a191484817d8c0eb20ae2288" kindref="member">getImageRow</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;&amp;<sp/>anImage,</highlight></codeline>
-<codeline lineno="1736"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j);</highlight></codeline>
-<codeline lineno="1737"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1738"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1739"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1741"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1745"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1746"><highlight class="normal">std::string<sp/><ref refid="_simple_g_v_x_r_8h_1a4fc536f8abfe8e4da84c3500b277ccca" kindref="member">getElementName</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z);</highlight></codeline>
-<codeline lineno="1747"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1748"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1749"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
-<codeline lineno="1751"><highlight class="comment"></highlight></codeline>
-<codeline lineno="1755"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1756"><highlight class="normal">std::string<sp/><ref refid="_simple_g_v_x_r_8h_1a2126c53d1d3b3b667b77796c32fc8b6b" kindref="member">getElementSymbol</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z);</highlight></codeline>
+<codeline lineno="1733"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1734"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a2fd74a1173b58acd49329e6d8f9e4f0f" kindref="member">getImageWidth</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;&amp;<sp/>anImage);</highlight></codeline>
+<codeline lineno="1735"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1736"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1737"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1739"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1743"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1744"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a405587a06bb8b4188d32e9c2865ce0f0" kindref="member">getImageHeght</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;&amp;<sp/>anImage);</highlight></codeline>
+<codeline lineno="1745"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1746"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1747"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1749"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1754"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1755"><highlight class="normal">std::vector&lt;float&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a68e92985a191484817d8c0eb20ae2288" kindref="member">getImageRow</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;&amp;<sp/>anImage,</highlight></codeline>
+<codeline lineno="1756"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j);</highlight></codeline>
 <codeline lineno="1757"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1758"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1759"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1761"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1765"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1766"><highlight class="normal"></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1adaf08e1db28bdc950d3fda4e3c339f11" kindref="member">getElementAtomicNumber</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>anElement);</highlight></codeline>
+<codeline lineno="1766"><highlight class="normal">std::string<sp/><ref refid="_simple_g_v_x_r_8h_1a4fc536f8abfe8e4da84c3500b277ccca" kindref="member">getElementName</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z);</highlight></codeline>
 <codeline lineno="1767"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1768"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1769"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1771"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1775"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1776"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1ab1954d02b2e220631046db9133f7df67" kindref="member">getElementDensity</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>anElement);</highlight></codeline>
+<codeline lineno="1776"><highlight class="normal">std::string<sp/><ref refid="_simple_g_v_x_r_8h_1a2126c53d1d3b3b667b77796c32fc8b6b" kindref="member">getElementSymbol</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z);</highlight></codeline>
 <codeline lineno="1777"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1778"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1779"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1781"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1785"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1786"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1ab1954d02b2e220631046db9133f7df67" kindref="member">getElementDensity</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z);</highlight></codeline>
+<codeline lineno="1786"><highlight class="normal"></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1adaf08e1db28bdc950d3fda4e3c339f11" kindref="member">getElementAtomicNumber</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>anElement);</highlight></codeline>
 <codeline lineno="1787"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1788"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1796"><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="1789"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1791"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1795"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1796"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a66250b34d317b34acac80de74ed818b7" kindref="member">getDensityFromElement</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>anElement);</highlight></codeline>
+<codeline lineno="1797"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1798"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1799"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1801"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1805"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1806"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a66250b34d317b34acac80de74ed818b7" kindref="member">getDensityFromElement</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z);</highlight></codeline>
+<codeline lineno="1807"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1808"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1809"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1811"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1815"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1816"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1ad3f273e3fb319d02f61a31d49166b37c" kindref="member">getDensityFromHU</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>HU);</highlight></codeline>
+<codeline lineno="1817"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1818"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1819"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1821"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1831"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1832"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a1741bff66bdbc6fb8480b53bc9c0b7bb" kindref="member">getMassAttenuationFromElement</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>anElement,</highlight></codeline>
+<codeline lineno="1833"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
+<codeline lineno="1834"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1835"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1836"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1837"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1839"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1849"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1850"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a1741bff66bdbc6fb8480b53bc9c0b7bb" kindref="member">getMassAttenuationFromElement</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/>Z,</highlight></codeline>
+<codeline lineno="1851"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
+<codeline lineno="1852"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1853"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1854"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1856"></codeline>
+<codeline lineno="1866"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1867"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a5c3cc32cad85894eccd540360af42c50" kindref="member">getMassAttenuationFromHU</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>HU,</highlight></codeline>
+<codeline lineno="1868"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
+<codeline lineno="1869"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1870"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1871"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1872"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1874"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1886"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1887"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1add3d514ce518f8207a5d16ee809cf5b0" kindref="member">getMassAttenuationFromMixture</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aMixture,</highlight></codeline>
+<codeline lineno="1888"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
+<codeline lineno="1889"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1890"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1891"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1892"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
+<codeline lineno="1894"><highlight class="comment"></highlight></codeline>
+<codeline lineno="1906"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1907"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a4826978ac2240b8aee811ad31464f959" kindref="member">getMassAttenuationFromCompound</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aCompound,</highlight></codeline>
+<codeline lineno="1908"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
+<codeline lineno="1909"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1910"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1911"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1913"></codeline>
+<codeline lineno="1923"><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a3acb9c86309f58436b2c8c0213d705b0" kindref="member">getMuFromHU</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>HU,</highlight></codeline>
+<codeline lineno="1924"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
+<codeline lineno="1925"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
+<codeline lineno="1933"><highlight class="preprocessor">#endif</highlight></codeline>
     </programlisting>
     <location file="SimpleGVXR.h"/>
   </compounddef>

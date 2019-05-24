@@ -78,6 +78,8 @@ Parameters
 * `aFileName` :  
     the name of the output file (default: 0 means that the filename will be
     automatically generated and the file saved in the current path)  
+* `useCompression` :  
+    use data compression is possible (default: true)  
 ";
 
 %feature("docstring") getNodeTransformationMatrix "
@@ -299,6 +301,28 @@ Parameters
 * `aFileName` :  
     the name of the output file (default: means that the filename will be
     automatically generated and the file saved in the current path)  
+* `useCompression` :  
+    use data compression is possible (default: true)  
+";
+
+%feature("docstring") getMassAttenuationFromHU "
+
+Accessor on the HU's mass attenuation.  
+
+Parameters
+----------
+* `HU` :  
+    the HU  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the density of the corresponding HU (in cm2/g)  
 ";
 
 %feature("docstring") getDetectorRightVector "
@@ -350,6 +374,40 @@ functionalities have been added in a backwards-compatible manner.
 Returns
 -------
 the minor version number  
+";
+
+%feature("docstring") getMassAttenuationFromCompound "
+
+Accessor on the compound's mass attenuation.  
+
+Parameters
+----------
+* `aCompound` :  
+    the details about the compound. It is given as a sequence of element symbol
+    & number of atoms, e.g. H2O for water and SiC for silicon carbide.  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the mass attenuation of the corresponding compound (in cm2/g)  
+";
+
+%feature("docstring") saveLastCumulatedLBuffer "
+
+Save the last cumulated L-buffer that has been computed.  
+
+Parameters
+----------
+* `aFileName` :  
+    the name of the output file (default: means that the filename will be
+    automatically generated and the file saved in the current path)  
+* `useCompression` :  
+    use data compression is possible (default: true)  
 ";
 
 %feature("docstring") getNodeOnlyBoundingBox "
@@ -410,6 +468,26 @@ Parameters
 Returns
 -------
 the name of the corresponding element  
+";
+
+%feature("docstring") getMuFromHU "
+
+Accessor on the HU's linear attenuation coefficient.  
+
+Parameters
+----------
+* `HU` :  
+    the HU  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the linear attenuation coefficient (in cm-1)  
 ";
 
 %feature("docstring") loadSceneGraph "
@@ -806,15 +884,6 @@ Returns
 the last sinogram  
 ";
 
-%feature("docstring") getPhtotonCountEnergyBins "
-
-Accessor on the number of photons per energy bin of the beam spectrum.  
-
-Returns
--------
-the list of number of photons  
-";
-
 %feature("docstring") subtractMesh "
 
 Subtract a polygon mesh (aSource) from another one (aDestination). It
@@ -928,12 +997,51 @@ Parameters
 * `aFileName` :  
     the name of the output file (default: means that the filename will be
     automatically generated and the file saved in the current path)  
+* `useCompression` :  
+    use data compression is possible (default: true)  
+";
+
+%feature("docstring") getPhotonCountEnergyBins "
+
+Accessor on the number of photons per energy bin of the beam spectrum.  
+
+Returns
+-------
+the list of number of photons  
 ";
 
 %feature("docstring") useParallelBeam "
 
 Use a parallel source (e.g. to mimic a source that is extremely far from the
 scanned object and detector).  
+";
+
+%feature("docstring") getDensityFromElement "
+
+Accessor on the chemical element's density.  
+
+Parameters
+----------
+* `anElement` :  
+    the name or symbol of the element  
+
+Returns
+-------
+the density of the corresponding element (in g / cm3)  
+";
+
+%feature("docstring") getDensityFromElement "
+
+Accessor on the chemical element's density.  
+
+Parameters
+----------
+* `Z` :  
+    the Z number of the element  
+
+Returns
+-------
+the density of the corresponding element (in g / cm3)  
 ";
 
 %feature("docstring") hideWindow "
@@ -1208,6 +1316,27 @@ Returns
 the j-th row of pixels  
 ";
 
+%feature("docstring") getMassAttenuationFromMixture "
+
+Accessor on the mixture's mass attenuation.  
+
+Parameters
+----------
+* `aMixture` :  
+    the details about the mixture. It is given as a sequence of element symbol &
+    relative weight, e.g. Ti90Al6V4.  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the mass attenuation of the corresponding mixture (in cm2/g)  
+";
+
 %feature("docstring") setWindowSize "
 
 Create an OpenGL context and display it in a window.  
@@ -1256,34 +1385,6 @@ Parameters
 Enable artefact filtering on GPU (it is fast but can be inaccurate).  
 ";
 
-%feature("docstring") getElementDensity "
-
-Accessor on the chemical element's density.  
-
-Parameters
-----------
-* `anElement` :  
-    the name or symbol of the element  
-
-Returns
--------
-the density of the corresponding element (in g / cm3)  
-";
-
-%feature("docstring") getElementDensity "
-
-Accessor on the chemical element's density.  
-
-Parameters
-----------
-* `Z` :  
-    the Z number of the element  
-
-Returns
--------
-the density of the corresponding element (in g / cm3)  
-";
-
 %feature("docstring") enableArtefactFilteringOnCPU "
 
 Enable artefact filtering on CPU (can be extremely slow as it makes use of ray-
@@ -1302,6 +1403,20 @@ Parameters
 Returns
 -------
 the number of chidren  
+";
+
+%feature("docstring") getDensityFromHU "
+
+Accessor on the HU's density.  
+
+Parameters
+----------
+* `HU` :  
+    the HU  
+
+Returns
+-------
+the density of the corresponding HU (in g / cm3)  
 ";
 
 %feature("docstring") setDensity "
@@ -1346,6 +1461,46 @@ Check if arc-ball rotation is currently in use.
 Returns
 -------
 true if arc-ball rotation is currently in use, false otherwise  
+";
+
+%feature("docstring") getMassAttenuationFromElement "
+
+Accessor on the chemical element's mass attenuation.  
+
+Parameters
+----------
+* `anElement` :  
+    the name or symbol of the element  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the mass attenuation of the corresponding element (in cm2/g)  
+";
+
+%feature("docstring") getMassAttenuationFromElement "
+
+Accessor on the chemical element's mass attenuation.  
+
+Parameters
+----------
+* `Z` :  
+    the Z number of the element  
+* `anEnergy` :  
+    the photon energy of interest  
+* `aUnitOfEnergy` :  
+    the unit of energy corresponding to anEnergy. Acceptable values are:
+    \"electronvolt\", \"eV\", \"kiloelectronvolt\", \"keV\",
+    \"megaelectronvolt\", \"MeV\"  
+
+Returns
+-------
+the mass attenuation of the corresponding element (in cm2/g)  
 ";
 
 %feature("docstring") translateNode "

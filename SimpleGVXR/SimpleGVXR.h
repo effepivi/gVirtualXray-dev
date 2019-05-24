@@ -1502,9 +1502,11 @@ std::vector<double> getPhotonCountEnergyBins();
  *  (default: means that the filename will be
  *  automatically generated and the file saved in
  *  the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
  */
 //------------------------------------------------------------------------------
-void saveLastXRayImage(const std::string& aFileName = std::string());
+void saveLastXRayImage(const std::string& aFileName = std::string(),
+    bool useCompression = true);
 
 
 //------------------------------------------------------------------------------
@@ -1514,9 +1516,11 @@ void saveLastXRayImage(const std::string& aFileName = std::string());
  *              (default: means that the filename will be
  *              automatically generated and the file saved in
  *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
  */
 //------------------------------------------------------------------------------
-void saveLastLBuffer(const std::string& aFileName = std::string());
+void saveLastLBuffer(const std::string& aFileName = std::string(),
+    bool useCompression = true);
 
 
 //------------------------------------------------------------------------------
@@ -1526,9 +1530,11 @@ void saveLastLBuffer(const std::string& aFileName = std::string());
  *              (default: means that the filename will be
  *              automatically generated and the file saved in
  *              the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
  */
 //------------------------------------------------------------------------------
-void saveLastCumulatedLBuffer(const std::string& aFileName = std::string());
+void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
+    bool useCompression = true);
 
 
 //------------------------------------------------------------------------------
@@ -1538,9 +1544,11 @@ void saveLastCumulatedLBuffer(const std::string& aFileName = std::string());
  *                      (default: 0 means that the filename will be
  *                      automatically generated and the file saved in
  *                      the current path)
+ *  @param useCompression:  use data compression is possible (default: true)
  */
 //------------------------------------------------------------------------------
-void saveLastSinogram(const std::string& aFileName = std::string());
+void saveLastSinogram(const std::string& aFileName = std::string(),
+    bool useCompression = true);
 
 
 //------------------------------------------------------------------------------
@@ -1844,7 +1852,7 @@ double getMassAttenuationFromElement(unsigned short Z,
 		const std::string& aUnitOfEnergy);
 
 
-/// Accessor on the chemical element's mass attenuation.
+/// Accessor on the HU's mass attenuation.
 /**
  *  @param HU:   the HU
  *  @param anEnergy:        the photon energy of interest
@@ -1900,6 +1908,18 @@ double getMassAttenuationFromCompound(const std::string& aCompound,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
 
+
+/// Accessor on the HU's linear attenuation coefficient.
+/**
+ *  @param HU:   the HU
+ *  @param anEnergy:        the photon energy of interest
+ *  @param aUnitOfEnergy:   the unit of energy corresponding to anEnergy.
+ *                          Acceptable values are:
+ *                          "electronvolt", "eV",
+ *                          "kiloelectronvolt", "keV",
+ *                          "megaelectronvolt", "MeV"
+ *  @return the linear attenuation coefficient (in cm-1)
+ */
 double getMuFromHU(double HU,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);

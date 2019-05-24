@@ -109,10 +109,11 @@
     <member refid="_simple_g_v_x_r_8h_1a8388db9b629c40efe7d6a33180eb0406" kind="function"><name>addEnergyBinToSpectrum</name></member>
     <member refid="_simple_g_v_x_r_8h_1a2163e6fff436eb05debd45d848681d64" kind="function"><name>loadSpectrumFromTSV</name></member>
     <member refid="_simple_g_v_x_r_8h_1a8924b6dcab4674bc33e24825cb7d1ebe" kind="function"><name>getEnergyBins</name></member>
-    <member refid="_simple_g_v_x_r_8h_1ab91cd940da30ef9f429eb4494ca25a00" kind="function"><name>getPhtotonCountEnergyBins</name></member>
-    <member refid="_simple_g_v_x_r_8h_1aebd71734841339eef86eafecc291a272" kind="function"><name>saveLastXRayImage</name></member>
-    <member refid="_simple_g_v_x_r_8h_1aec57b8fcd3a0f91ca47870f9811f27ab" kind="function"><name>saveLastLBuffer</name></member>
-    <member refid="_simple_g_v_x_r_8h_1ad406620b29ee012d897d8891ac3aa556" kind="function"><name>saveLastSinogram</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a71542b762755797939abab386ebbeb3c" kind="function"><name>getPhotonCountEnergyBins</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a32e448289291a23d645c301b8c5c6482" kind="function"><name>saveLastXRayImage</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a30e9dcbbe24bc34add2f849655f6e5e4" kind="function"><name>saveLastLBuffer</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a58a2b9e1ede05451b09797cdb13531ba" kind="function"><name>saveLastCumulatedLBuffer</name></member>
+    <member refid="_simple_g_v_x_r_8h_1abc0ba9cbdc0fe49d7da46dc8d25afb3f" kind="function"><name>saveLastSinogram</name></member>
     <member refid="_simple_g_v_x_r_8h_1acd097bdd4b2ab5f9b8fc8991b316e533" kind="function"><name>enableArtefactFilteringOnGPU</name></member>
     <member refid="_simple_g_v_x_r_8h_1a5898aa8c45e6c34137f10978b1d49526" kind="function"><name>enableArtifactFilteringOnGPU</name></member>
     <member refid="_simple_g_v_x_r_8h_1aed410cdfc2b9d1d28d6820e6bfb57324" kind="function"><name>enableArtefactFilteringOnCPU</name></member>
@@ -133,7 +134,14 @@
     <member refid="_simple_g_v_x_r_8h_1a4fc536f8abfe8e4da84c3500b277ccca" kind="function"><name>getElementName</name></member>
     <member refid="_simple_g_v_x_r_8h_1a2126c53d1d3b3b667b77796c32fc8b6b" kind="function"><name>getElementSymbol</name></member>
     <member refid="_simple_g_v_x_r_8h_1adaf08e1db28bdc950d3fda4e3c339f11" kind="function"><name>getElementAtomicNumber</name></member>
-    <member refid="_simple_g_v_x_r_8h_1ab1954d02b2e220631046db9133f7df67" kind="function"><name>getElementDensity</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a967181228aa7e7e284a2068ed655c0a9" kind="function"><name>getElementDensity</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a66250b34d317b34acac80de74ed818b7" kind="function"><name>getDensityFromElement</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ad3b42298ebf0079de61aef0d54ab2d79" kind="function"><name>getDensityFromElement</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ad3f273e3fb319d02f61a31d49166b37c" kind="function"><name>getDensityFromHU</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a1741bff66bdbc6fb8480b53bc9c0b7bb" kind="function"><name>getMassAttenuationFromElement</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a5226e1d6c175c5dee458e744c4710e1a" kind="function"><name>getMassAttenuationFromElement</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a5c3cc32cad85894eccd540360af42c50" kind="function"><name>getMassAttenuationFromHU</name></member>
+    <member refid="_simple_g_v_x_r_8h_1add3d514ce518f8207a5d16ee809cf5b0" kind="function"><name>getMassAttenuationFromMixture</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a4826978ac2240b8aee811ad31464f959" kind="function"><name>getMassAttenuationFromCompound</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a3acb9c86309f58436b2c8c0213d705b0" kind="function"><name>getMuFromHU</name></member>
   </compound>
 </doxygenindex>

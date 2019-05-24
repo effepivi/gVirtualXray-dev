@@ -2564,7 +2564,8 @@ std::vector<double> getPhotonCountEnergyBins()
 }
 
 //--------------------------------------------------
-void saveLastXRayImage(const std::string& aFileName)
+void saveLastXRayImage(const std::string& aFileName,
+                       bool useCompression)
 //--------------------------------------------------
 {
     static int file_counter = 0;
@@ -2575,11 +2576,13 @@ void saveLastXRayImage(const std::string& aFileName)
     else
     file_name = "xray_image-" + to_string(file_counter++) + ".mha";
 
-    g_xray_renderer.getEnergyFluence().save(file_name);
+    g_xray_renderer.getEnergyFluence().save(
+        file_name, false, "X-ray projection", useCompression);
 }
 
 //------------------------------------------------
-void saveLastLBuffer(const std::string& aFileName)
+void saveLastLBuffer(const std::string& aFileName,
+                     bool useCompression)
 //------------------------------------------------
 {
     static int file_counter = 0;
@@ -2590,12 +2593,14 @@ void saveLastLBuffer(const std::string& aFileName)
     else
     file_name = "lbuffer-" + to_string(file_counter++) + ".mha";
 
-    g_xray_renderer.getLBuffer().save(file_name);
+    g_xray_renderer.getLBuffer().save(
+        file_name, false, "L-buffer", useCompression);
 }
 
 
 //---------------------------------------------------------
-void saveLastCumulatedLBuffer(const std::string& aFileName)
+void saveLastCumulatedLBuffer(const std::string& aFileName,
+                              bool useCompression)
 //---------------------------------------------------------
 {
     static int file_counter = 0;
@@ -2606,12 +2611,14 @@ void saveLastCumulatedLBuffer(const std::string& aFileName)
     else
     file_name = "cumulated_lbuffer-" + to_string(file_counter++) + ".mha";
 
-    g_xray_renderer.getCumulatedLBuffer().save(file_name);
+    g_xray_renderer.getCumulatedLBuffer().save(
+        file_name, false, "Cumulated L-buffer", useCompression);
 }
 
 
 //-------------------------------------------------
-void saveLastSinogram(const std::string& aFileName)
+void saveLastSinogram(const std::string& aFileName,
+                      bool useCompression)
 //-------------------------------------------------
 {
     static int file_counter = 0;
@@ -2622,7 +2629,8 @@ void saveLastSinogram(const std::string& aFileName)
     else
     file_name = "sinogram-" + to_string(file_counter++) + ".mha";
 
-    g_xray_renderer.getSinogram().save(file_name);
+    g_xray_renderer.getSinogram().save(
+        file_name, false, "Sinogram", useCompression);
 }
 
 //-------------------------------------

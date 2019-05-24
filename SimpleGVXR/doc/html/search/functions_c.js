@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['savelastlbuffer',['saveLastLBuffer',['../_simple_g_v_x_r_8h.html#aec57b8fcd3a0f91ca47870f9811f27ab',1,'SimpleGVXR.h']]],
-  ['savelastsinogram',['saveLastSinogram',['../_simple_g_v_x_r_8h.html#ad406620b29ee012d897d8891ac3aa556',1,'SimpleGVXR.h']]],
-  ['savelastxrayimage',['saveLastXRayImage',['../_simple_g_v_x_r_8h.html#aebd71734841339eef86eafecc291a272',1,'SimpleGVXR.h']]],
+  ['savelastcumulatedlbuffer',['saveLastCumulatedLBuffer',['../_simple_g_v_x_r_8h.html#a58a2b9e1ede05451b09797cdb13531ba',1,'SimpleGVXR.h']]],
+  ['savelastlbuffer',['saveLastLBuffer',['../_simple_g_v_x_r_8h.html#a30e9dcbbe24bc34add2f849655f6e5e4',1,'SimpleGVXR.h']]],
+  ['savelastsinogram',['saveLastSinogram',['../_simple_g_v_x_r_8h.html#abc0ba9cbdc0fe49d7da46dc8d25afb3f',1,'SimpleGVXR.h']]],
+  ['savelastxrayimage',['saveLastXRayImage',['../_simple_g_v_x_r_8h.html#a32e448289291a23d645c301b8c5c6482',1,'SimpleGVXR.h']]],
   ['scalenode',['scaleNode',['../_simple_g_v_x_r_8h.html#a6c702a3df32eee4e0a0c8033e5cbd6aa',1,'SimpleGVXR.h']]],
   ['scalescene',['scaleScene',['../_simple_g_v_x_r_8h.html#a099498a73392a1b97d4feb8d44fdba6b',1,'SimpleGVXR.h']]],
   ['scrollcallback',['scrollCallback',['../_simple_g_v_x_r_8h.html#ae4b6f4d3fd3cd18f74f002d5a7ce9224',1,'SimpleGVXR.h']]],
