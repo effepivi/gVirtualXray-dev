@@ -91,6 +91,17 @@ int inflate(const void *src, int srcLen, char** apDst);
 
 
 //------------------------------------------------------------------------------
+/// Compress data using the Zlib.
+/**
+*   @param  src:    uncompressed data
+*   @param  srcLen: length of the uncompressed data
+*   @param  apDst:  compressed data
+*/
+//------------------------------------------------------------------------------
+int deflate(const void *src, int srcLen, char** apDst);
+
+
+//------------------------------------------------------------------------------
 /// Check if the extension of a file name is MAT.
 /**
 *   @param  aFileName:  the file name to check
@@ -291,15 +302,15 @@ bool isTIFF(const std::string& aFileName);
 
 
 bool checkExtension(const char* aFileName, const char* anExtension);
-    
-    
+
+
 bool checkExtension(const std::string& aFileName,
                     const std::string& anExtension);
 
 
 bool isBigEndian();
 
-    
+
 bool isLittleEndian();
 
 
@@ -317,10 +328,10 @@ bool isNumber(char aValue);
 
 template<typename T> void swapBytes(T& aValue);
 
-    
+
 template<typename T> T degreeToRadian(const T& aAngleInDegree);
 
-    
+
 template<typename T> T radianToDegree(const T& aAngleInRadian);
 
 
