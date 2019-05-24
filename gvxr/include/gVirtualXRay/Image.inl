@@ -2618,47 +2618,91 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool use
 //---------------------------------------------------------------------------
 {
 #ifdef HAS_ITK
-    typedef itk::Image< T, 3 >  ImageType;
-    typedef itk::ImageFileWriter<   ImageType > WriterType;
+	// 3D volume
+	if (m_number_of_slices > 1)
+	{
+		typedef itk::Image< T, 3 >  ImageType;
+		typedef itk::ImageFileWriter<   ImageType > WriterType;
 
-    typename ImageType::RegionType region;
-    typename ImageType::IndexType start;
-    start[0] = 0;
-    start[1] = 0;
-    start[2] = 0;
+		typename ImageType::RegionType region;
+		typename ImageType::IndexType start;
+		start[0] = 0;
+		start[1] = 0;
+		start[2] = 0;
 
-    typename ImageType::SizeType size;
-    size[0] = m_width;
-    size[1] = m_height;
-    size[2] = m_number_of_slices;
+		typename ImageType::SizeType size;
+		size[0] = m_width;
+		size[1] = m_height;
+		size[2] = m_number_of_slices;
 
-    region.SetSize(size);
-    region.SetIndex(start);
+		region.SetSize(size);
+		region.SetIndex(start);
 
-    typename ImageType::Pointer p_image(ImageType::New());
-    p_image->SetRegions(region);
-    p_image->Allocate();
+		typename ImageType::Pointer p_image(ImageType::New());
+		p_image->SetRegions(region);
+		p_image->Allocate();
 
 
-    typename ImageType::SpacingType spacing;
-    spacing[0] = m_spacing[0];
-    spacing[1] = m_spacing[1];
-    spacing[2] = m_spacing[2];
-    p_image->SetSpacing(spacing);
+		typename ImageType::SpacingType spacing;
+		spacing[0] = m_spacing[0];
+		spacing[1] = m_spacing[1];
+		spacing[2] = m_spacing[2];
+		p_image->SetSpacing(spacing);
 
-    // Copy the pixel data
-    int number_of_pixels(m_width * m_height * m_number_of_slices);
-    std::copy(m_p_image,
-            m_p_image + number_of_pixels,
-            p_image->GetBufferPointer());
+		// Copy the pixel data
+		int number_of_pixels(m_width * m_height * m_number_of_slices);
+		std::copy(m_p_image,
+				m_p_image + number_of_pixels,
+				p_image->GetBufferPointer());
 
-    // Save the data
-    typename WriterType::Pointer p_writer(WriterType::New());
-    p_writer->SetFileName( aFileName );
-    p_writer->SetInput( p_image );
-    p_writer->SetUseCompression(useDeflateCompressionIfPossible);
-    p_writer->Update();
+		// Save the data
+		typename WriterType::Pointer p_writer(WriterType::New());
+		p_writer->SetFileName( aFileName );
+		p_writer->SetInput( p_image );
+		p_writer->SetUseCompression(useDeflateCompressionIfPossible);
+		p_writer->Update();
+	}
+	// 2D image
+	else
+	{
+		typedef itk::Image< T, 2 >  ImageType;
+		typedef itk::ImageFileWriter<   ImageType > WriterType;
 
+		typename ImageType::RegionType region;
+		typename ImageType::IndexType start;
+		start[0] = 0;
+		start[1] = 0;
+
+		typename ImageType::SizeType size;
+		size[0] = m_width;
+		size[1] = m_height;
+
+		region.SetSize(size);
+		region.SetIndex(start);
+
+		typename ImageType::Pointer p_image(ImageType::New());
+		p_image->SetRegions(region);
+		p_image->Allocate();
+
+
+		typename ImageType::SpacingType spacing;
+		spacing[0] = m_spacing[0];
+		spacing[1] = m_spacing[1];
+		p_image->SetSpacing(spacing);
+
+		// Copy the pixel data
+		int number_of_pixels(m_width * m_height);
+		std::copy(m_p_image,
+				m_p_image + number_of_pixels,
+				p_image->GetBufferPointer());
+
+		// Save the data
+		typename WriterType::Pointer p_writer(WriterType::New());
+		p_writer->SetFileName( aFileName );
+		p_writer->SetInput( p_image );
+		p_writer->SetUseCompression(useDeflateCompressionIfPossible);
+		p_writer->Update();
+	}
 #else
     throw Exception(__FILE__, __FUNCTION__, __LINE__,
             "ITK is not supported.");
