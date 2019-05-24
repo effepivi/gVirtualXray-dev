@@ -43,6 +43,8 @@
 #include <utility>
 #endif
 
+#include <zlib.h>
+
 #ifdef HAS_ITK
 #include <itkImage.h>
 #include <itkImageSeriesReader.h>
@@ -156,7 +158,7 @@ template<typename T> Image<T>::Image(const Image<T>& anImage):
     {
         throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }
-    
+
     // Copy the data
     std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
 }
@@ -600,11 +602,11 @@ template<typename T> void Image<T>::destroy()
         {
         // Release the memory
         delete [] m_p_image;
-    
+
         // Make sure the pointer is reset to NULL
         m_p_image = 0;
         }
-    
+
     // There is no pixel in the image
     m_width  = 0;
     m_height = 0;
@@ -650,7 +652,7 @@ template<typename T> Image<T>& Image<T>::operator=(const Image<T>& anImage)
             {
             throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
             }
-        
+
         // Copy the data
         std::copy(anImage.m_p_image, anImage.m_p_image + m_width * m_height * m_number_of_slices, m_p_image);
         }
@@ -731,7 +733,7 @@ template<typename T> T Image<T>::getMinValue() const
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
         }
-    
+
     return (*std::min_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
 }
 
@@ -745,7 +747,7 @@ template<typename T> T Image<T>::getMaxValue() const
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
         }
-    
+
     return (*std::max_element(&m_p_image[0], &m_p_image[m_width * m_height * m_number_of_slices]));
 }
 
@@ -759,7 +761,7 @@ template<typename T> T Image<T>::getMinValue(unsigned int aSliceID) const
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
         }
-    
+
     return (*std::min_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
 }
 
@@ -773,7 +775,7 @@ template<typename T> T Image<T>::getMaxValue(unsigned int aSliceID) const
         {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
         }
-    
+
     return (*std::max_element(&m_p_image[aSliceID * m_width * m_height], &m_p_image[(aSliceID + 1) * m_width * m_height]));
 }
 
@@ -785,7 +787,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
 {
     // Copy the instance into a temporary variable
     Image<T> temp(*this);
-    
+
     // Process every pixel of the image
 #ifdef NDEBUG
         #pragma omp parallel for
@@ -795,7 +797,7 @@ template<typename T> Image<T> Image<T>::shiftScaleFilter(double aShiftValue,
         // Apply the shilft/scale filter
         temp[i] = (temp[i] + aShiftValue) * aScaleValue;
         }
-    
+
     // Return the result
     return (temp);
 }
@@ -1418,13 +1420,13 @@ template<typename T> void Image<T>::load(const char* aFileName)
     else if (isPGM(aFileName))
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Loading MHA files is not implemented, "
+                "Loading PGM files is not implemented, "
                 "please contact Dr FP Vidal.");
     }
     else if (isRAW(aFileName))
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__,
-                "Loading MHA files is not implemented, "
+                "Loading RAW files is not implemented, "
                 "please contact Dr FP Vidal.");
     }
     else if (isMHD(aFileName))
@@ -1511,7 +1513,7 @@ template<typename T> void Image<T>::loadUsingITK(const char* aFileName)
 
     // Copy the pixel data
     std::copy(p_reader->GetOutput()->GetBufferPointer(),
-            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels, 
+            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels,
             m_p_image);
 
 #else
@@ -1583,7 +1585,7 @@ template<typename T> void Image<T>::loadSeries(const char* aPattern,
 
     // Copy the pixel data
     std::copy(p_reader->GetOutput()->GetBufferPointer(),
-            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels, 
+            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels,
             m_p_image);
 
 #else
@@ -1595,8 +1597,8 @@ template<typename T> void Image<T>::loadSeries(const char* aPattern,
 
 //-------------------------------------------------------------------------
 template<typename T> void Image<T>::loadSeries(const std::string& aPattern,
-                                               int aFirstSliceIndex, 
-                                               int aLastSliceIndex, 
+                                               int aFirstSliceIndex,
+                                               int aLastSliceIndex,
                                                int anIncrementIndex)
 //-------------------------------------------------------------------------
 {
@@ -1650,7 +1652,7 @@ template<typename T> void Image<T>::loadDicomSeries(const char* aDirectory)
 
     // Copy the pixel data
     std::copy(p_reader->GetOutput()->GetBufferPointer(),
-            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels, 
+            p_reader->GetOutput()->GetBufferPointer() + number_of_pixels,
             m_p_image);
 
 #else
@@ -1672,7 +1674,8 @@ template<typename T> void Image<T>::loadDicomSeries(const std::string& aDirector
 //------------------------------------------------------------------
 template<typename T> void Image<T>::save(const char* aFileName,
                                          bool anInvertLUTFlag,
-                                         const char* aComment) const
+                                         const char* aComment,
+                                         bool useDeflateCompressionIfPossible) const
 //------------------------------------------------------------------
 {
     if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
@@ -1690,15 +1693,15 @@ template<typename T> void Image<T>::save(const char* aFileName,
 	    }
 	    else if (isRAW(aFileName))
 	    {
-	        saveRAW(aFileName);
+	        saveRAW(aFileName, useDeflateCompressionIfPossible);
 	    }
 	    else if (isMHD(aFileName))
 	    {
-	        saveMHD(aFileName);
+	        saveMHD(aFileName, useDeflateCompressionIfPossible);
 	    }
 	    else if (isMHA(aFileName))
 	    {
-	        saveMHA(aFileName);
+	        saveMHA(aFileName, useDeflateCompressionIfPossible);
 	    }
 	    else if (isDCM(aFileName))
 	    {
@@ -1780,7 +1783,7 @@ template<typename T> void Image<T>::loadRAW(const char* aFileName,
         // Throw an error
         throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
     }
-    
+
     loadRAW(input, aWidth, aHeight, aNumberOfSlices, aChangeEndianessFlag, aFileName, anElementType);
 }
 
@@ -1800,7 +1803,8 @@ template<typename T> void Image<T>::loadRAW(const std::string& aFileName,
 //-------------------------------------------------------------------------
 template<typename T> void Image<T>::save(const std::string& aFileName,
                                          bool anInvertLUTFlag,
-                                         const std::string& aComment) const
+                                         const std::string& aComment,
+                                     bool useDeflateCompressionIfPossible) const
 //-------------------------------------------------------------------------
 {
     save(aFileName.data(), anInvertLUTFlag, aComment.data());
@@ -1813,14 +1817,14 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
 {
     // Open the file
     std::ofstream output_file(aFileName);
-    
+
     // The file does not exist
     if (!output_file.is_open())
         {
         // Build the error message
         std::stringstream error_message;
         error_message << "Cannot create the file \"" << aFileName << "\"";
-    
+
         // Throw an error
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
         }
@@ -1834,10 +1838,10 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
 
         // Set the image type
         output_file << "P2" << std::endl;
-    
+
         // Print a comment
         output_file << "gVirtualXRay" << std::endl;
-    
+
         // The image size
         output_file << m_width << " " << m_height * m_number_of_slices << std::endl;
 
@@ -1867,14 +1871,14 @@ template<typename T> void Image<T>::savePGM(const char* aFileName) const
                     pixel_value = std::min(65535, pixel_value);
 
 					output_file << pixel_value;
-                    
+
                     // It is not the last pixel of the line
                     if (i < (m_width - 1))
                     {
                         output_file << " ";
                     }
                 }
-            
+
                 // It is not the last line of the image
                 if (j < (m_height - 1))
                 {
@@ -1895,48 +1899,123 @@ template<typename T> void Image<T>::savePGM(const std::string& aFileName) const
 
 
 //----------------------------------------------
-template<typename T> void Image<T>::saveRaw(const char* aFileName) const
+template<typename T> void Image<T>::saveRaw(const char* aFileName, bool useDeflateCompressionIfPossible) const
 //----------------------------------------------
 {
     // Open the file in binary
-    std::ofstream output_file (aFileName, std::ifstream::binary);
+	if (!useDeflateCompressionIfPossible)
+	{
+		std::ofstream output_file (aFileName, std::ifstream::binary);
 
-    // The file is not open
-    if (!output_file.is_open())
-        {
-        std::string error_message("The file (");
-        error_message += aFileName;
-        error_message += ") cannot be created";
+		// The file is not open
+		if (!output_file.is_open())
+			{
+			std::string error_message("The file (");
+			error_message += aFileName;
+			error_message += ") cannot be created";
 
-        throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
-        }
-    
-    // Write content to file
-    output_file.write(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+
+		// Write content to file
+		output_file.write(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+	}
+	else
+	{
+		gzFile output_file = gzopen(aFileName,"wb");
+
+		// The file is not open
+		if (!output_file)
+			{
+			std::string error_message("The file (");
+			error_message += aFileName;
+			error_message += ") cannot be created";
+
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+
+		int write_size = gzwrite( output_file, reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+		int close_err  = gzclose( output_file );
+
+		if (write_size == 0)
+			{
+			std::string error_message("The file (");
+			error_message += aFileName;
+			error_message += ") cannot be written";
+
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+
+		if (close_err == Z_STREAM_ERROR)
+			{
+			std::string error_message("The file (");
+			error_message += aFileName;
+			error_message += ") is not valid";
+
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+
+		if (close_err == Z_ERRNO)
+			{
+			std::string error_message("File operation error on the file (");
+			error_message += aFileName;
+			error_message += ").";
+
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+
+		if (close_err == Z_MEM_ERROR)
+			{
+			std::string error_message("File operation error on the file (");
+			error_message += aFileName;
+			error_message += ").";
+
+			throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
+			}
+
+		if (close_err == Z_BUF_ERROR)
+			{
+			std::string error_message("The last read ended in the middle of a gzip stream when writing the file (");
+			error_message += aFileName;
+			error_message += ").";
+
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+
+		if (close_err != Z_OK)
+			{
+			std::string error_message("Unspecified error when writing the file (");
+			error_message += aFileName;
+			error_message += ").";
+
+			throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+			}
+	}
 }
 
 
 //----------------------------------------------
-template<typename T> void Image<T>::saveRAW(const char* aFileName) const
+template<typename T> void Image<T>::saveRAW(const char* aFileName, bool useDeflateCompressionIfPossible) const
 //----------------------------------------------
 {
-    saveRaw(aFileName);
+    saveRaw(aFileName, useDeflateCompressionIfPossible);
 }
 
 
 //-----------------------------------------------------
-template<typename T> void Image<T>::saveRaw(const std::string& aFileName) const
+template<typename T> void Image<T>::saveRaw(const std::string& aFileName,
+bool useDeflateCompressionIfPossible) const
 //-----------------------------------------------------
 {
-    saveRaw(aFileName.data());
+    saveRaw(aFileName.data(), useDeflateCompressionIfPossible);
 }
 
 
 //-----------------------------------------------------
-template<typename T> void Image<T>::saveRAW(const std::string& aFileName) const
+template<typename T> void Image<T>::saveRAW(const std::string& aFileName, bool useDeflateCompressionIfPossible) const
 //-----------------------------------------------------
 {
-    saveRaw(aFileName);
+    saveRaw(aFileName, useDeflateCompressionIfPossible);
 }
 
 
@@ -1993,29 +2072,29 @@ template<typename T> void Image<T>::saveASCII(const std::string& aFileName) cons
 
 
 //----------------------------------------------------------------------
-template<typename T> void Image<T>::saveMHD(const char* aFileName) const
+template<typename T> void Image<T>::saveMHD(const char* aFileName, bool useDeflateCompressionIfPossible) const
 //----------------------------------------------------------------------
 {
     // Save the header
-    saveMetaHeader(aFileName);
+    saveMetaHeader(aFileName, useDeflateCompressionIfPossible);
 }
 
 
-template<typename T> void Image<T>::saveMHD(const std::string& aFileName) const
+template<typename T> void Image<T>::saveMHD(const std::string& aFileName, bool useDeflateCompressionIfPossible) const
 {
-    saveMHD(aFileName.data());
-}
-
-    
-template<typename T> void Image<T>::saveMHA(const char* aFileName) const
-{
-    saveMetaHeader(aFileName);
+    saveMHD(aFileName.data(), useDeflateCompressionIfPossible);
 }
 
 
-template<typename T> void Image<T>::saveMHA(const std::string& aFileName) const
+template<typename T> void Image<T>::saveMHA(const char* aFileName, bool useDeflateCompressionIfPossible) const
 {
-    saveMHA(aFileName.data());
+    saveMetaHeader(aFileName, useDeflateCompressionIfPossible);
+}
+
+
+template<typename T> void Image<T>::saveMHA(const std::string& aFileName, bool useDeflateCompressionIfPossible) const
+{
+    saveMHA(aFileName.data(), useDeflateCompressionIfPossible);
 }
 
 
@@ -2284,7 +2363,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 error_message += ")";
                 throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
             }
-            
+
         // Set the image height
         TIFF_UINT32_T image_height(m_height);
 
@@ -2326,7 +2405,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 {
                 photometric_interpretation = PHOTOMETRIC_MINISBLACK;
                 }
-      
+
         if (TIFFSetField(p_file, TIFFTAG_PHOTOMETRIC, photometric_interpretation) != 1)
             {
                 std::string error_message("Could not set the photometric interpretation in the TIFF file (");
@@ -2450,14 +2529,14 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 {
                 // Close the file
                 TIFFClose(p_file);
-                
+
                 // Release the memory if necessary
                 if (p_float_data)
                     {
                     delete [] p_float_data;
                     p_float_data = 0;
                     }
-                
+
                 // Generate an error
                 std::stringstream error_message;
                 error_message << "Could not write the pixel data (Line " << j << ") in the TIFF file (";
@@ -2466,7 +2545,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
                 throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
                 }
             }
-            
+
         // Flush the data in the TIFF file
         if (m_number_of_slices > 1)
             {
@@ -2486,7 +2565,7 @@ template<typename T> void Image<T>::saveTIFF(const char* aFileName,
         delete [] p_float_data;
         p_float_data = 0;
         }
-    
+
     // Close the file
     TIFFClose(p_file);
 
@@ -2530,7 +2609,7 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName) const
 
     region.SetSize(size);
     region.SetIndex(start);
- 
+
     typename ImageType::Pointer p_image(ImageType::New());
     p_image->SetRegions(region);
     p_image->Allocate();
@@ -2620,8 +2699,8 @@ template<typename T> double Image<T>::getSum() const
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Empty image");
         }
 
-    return (std::accumulate(&m_p_image[0], 
-                &m_p_image[m_width * m_height * m_number_of_slices], 
+    return (std::accumulate(&m_p_image[0],
+                &m_p_image[m_width * m_height * m_number_of_slices],
                 0.0));
 }
 
@@ -2640,7 +2719,7 @@ template<typename T> double Image<T>::getVariance() const
 {
     double variance(0.0);
     double average(getAverage());
-    
+
 #ifdef NDEBUG
     #pragma omp parallel reduction( + : variance )
 #endif
@@ -2669,7 +2748,7 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The images have different sizes");
     }
-    
+
     double sae(0.0);
 
 #ifdef NDEBUG
@@ -2679,7 +2758,7 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
     {
         sae += std::abs(m_p_image[i] - anImage.m_p_image[i]);
     }
-    
+
     return (sae);
 }
 
@@ -2700,10 +2779,10 @@ template<typename T> double Image<T>::computeSSE(const Image<T>& anImage) const
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The images have different sizes");
     }
-    
+
     double sse(0.0);
     double temp;
-    
+
 #ifdef NDEBUG
     #pragma omp parallel reduction( + : sse ) private(temp)
 #endif
@@ -2711,10 +2790,10 @@ template<typename T> double Image<T>::computeSSE(const Image<T>& anImage) const
     {
         temp = m_p_image[i] - anImage.m_p_image[i];
         temp *= temp;
-        
+
         sse += temp;
     }
-    
+
     return (sse);
 }
 
@@ -2743,10 +2822,10 @@ template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "The images have different sizes");
     }
-    
+
     double average1(getAverage());
     double average2(anImage.getAverage());
-    
+
     double standard_deviation_product(getStandardDeviation() * anImage.getStandardDeviation());
     double ncc(0.0);
 
@@ -2757,7 +2836,7 @@ template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
     {
         ncc += (m_p_image[i] - average1) * (anImage.m_p_image[i] - average2);
     }
-    
+
     return (ncc / (m_width * m_height * standard_deviation_product));
 }
 
@@ -3289,15 +3368,15 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
         {
             for (unsigned i = 0; i < aNewWidth; ++i)
             {
-            
+
                 double x = double(i) * (m_width  - 1) / (aNewWidth  - 1);
                 double y = double(j) * (m_height - 1) / (aNewHeight - 1);
                 double z = double(k) * (m_number_of_slices - 1) / (aNewNumberOfSlices - 1);
-            
+
                 int x1 = floor(x);
                 int y1 = floor(y);
                 int z1 = floor(z);
-            
+
                 if (x1 < 0) x1 = 0;
                 if (y1 < 0) y1 = 0;
                 if (z1 < 0) z1 = 0;
@@ -3315,14 +3394,14 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
                 {
                     y2 = m_height - 1;
                 }
-                
+
                 if (z2 >= m_number_of_slices)
                 {
                     z2 = m_number_of_slices - 1;
                 }
-                
-                
-                
+
+
+
                 double c111 = getPixel(x1, y1, z1);
                 double c121 = getPixel(x1, y2, z1);
                 double c221 = getPixel(x2, y2, z1);
@@ -3341,13 +3420,13 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
                 {
                     cy1 += (cx21 - cx11) * (y - y1) / (y2 - y1);
                 }
-        
-                
+
+
                 double c112 = getPixel(x1, y1, z2);
                 double c122 = getPixel(x1, y2, z2);
                 double c222 = getPixel(x2, y2, z2);
                 double c212 = getPixel(x2, y1, z2);
-                
+
                 double cx12 = c112;
                 double cx22 = c122;
                 if (x1 != x2)
@@ -3355,13 +3434,13 @@ template<typename T> Image<T> Image<T>::resize(unsigned int aNewWidth,
                     cx12 += (c212 - c112) * (x - x1) / (x2 - x1);
                     cx22 += (c222 - c122) * (x - x1) / (x2 - x1);
                 }
-                
+
                 double cy2  = cx12;
                 if (y1 != y2)
                 {
                     cy2 += (cx22 - cx12) * (y - y1) / (y2 - y1);
                 }
-                
+
                 double cz  = cy1;
                 if (z1 != z2)
                 {
@@ -3384,10 +3463,10 @@ template<typename T> Image<T> Image<T>::rotate(float anAngleInDegrees) const
     Image<T> temp(m_width, m_height, m_number_of_slices);
 
     float angle_in_radian(anAngleInDegrees * M_PI / 180);
-    
+
     //double center_x(0.5 * (m_width + 1) /*- 1*/);
     //double center_y(0.5 * (m_height + 1) /*- 1*/);
-    
+
 #ifdef NDEBUG
 #ifdef WIN32
         #pragma omp parallel for
@@ -3459,21 +3538,21 @@ template<typename T> Sinogram<T> Image<T>::radonTransform(double aFirstAngle,
 {
     unsigned int square_width(4 + std::max(m_width, m_height));
     square_width *= square_width;
-    
+
     unsigned int sinogram_width(floor(std::sqrt(2.0 * square_width)));
-    
-    
+
+
     //unsigned int sinogram_width(floor(double(std::max(m_width, m_height)) / 2.0 * (2.0 * std::sqrt(2.0))));
     unsigned int sinogram_height(1);
     if (std::abs(anAngleStep) > EPSILON && std::abs(aLastAngle - aFirstAngle) > EPSILON)
         {
         sinogram_height += floor((aLastAngle - aFirstAngle) / anAngleStep);
         }
-    
+
     double scaling_factor(double(sinogram_width) / double(m_width));
-    
+
     Sinogram<T> sinogram(sinogram_width, sinogram_height, m_number_of_slices);
-    
+
     Image<T> padded_image(setCanvasSize(sinogram_width, scaling_factor * m_height, m_number_of_slices));
 
 #ifndef NDEBUG
@@ -3541,7 +3620,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             float fY;
             float fZ;
     };
-    
+
     //a2fEdgeDirection lists the direction vector (vertex1-vertex0) for each edge in the cube
     static const float a2fEdgeDirection[12][3] =
     {
@@ -3860,7 +3939,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
     };
 
-    
+
     if (m_width && m_height && m_number_of_slices && m_p_image)
         {
             unsigned int max_thread(1);
@@ -3870,7 +3949,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
 
             std::vector<std::vector<float> > p_vertex_set(max_thread);
             std::vector<std::vector<float> > p_normal_vector_set(max_thread);
-    
+
 #ifdef NDEBUG
 #ifdef WIN32
         #pragma omp parallel for
@@ -3896,7 +3975,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                     float afCubeValue[8];
                     GLvector asEdgeVertex[12];
                     GLvector asEdgeNorm[12];
-    
+
                     VEC3 voxel_position(getPixelPosition(i, j, k));
 
                     //Make a local copy of the values at the cube's corners
@@ -3992,7 +4071,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
             {
                 std::vector<float> p_combined_vertex_set;
                 std::vector<float> p_combined_normal_vector_set;
-                
+
                 for (unsigned int i(0); i < max_thread; ++i)
                 {
                     p_combined_vertex_set.insert(p_combined_vertex_set.end(), p_vertex_set[i].begin(), p_vertex_set[i].end());
@@ -4045,7 +4124,7 @@ inline std::string getPixelType(const char* aFileName)
     imageIO->ReadImageInformation();
 
     const ScalarPixelType pixelType = imageIO->GetComponentType();
-    
+
     return (std::string(imageIO->GetComponentTypeAsString(pixelType)));
 #else
     return (std::string("unknown"));
@@ -4153,7 +4232,7 @@ template<typename T> VEC3 Image<T>::VertexInterp(const T& aThresholdValue,
     return (p1 + (p0 - p1) * ratio);
 }
 
-    
+
 //------------------------------------------------------------------------------
 template<typename T> void Image<T>::loadMetaHeader(const std::string& aFileName)
 //------------------------------------------------------------------------------
@@ -4168,14 +4247,14 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
 {
     // Open the meta header
     std::ifstream meta_header(aFileName, std::ios::binary|std::ios::in);
-    
+
     // The file cannot be opened
     if (!meta_header.is_open())
     {
         // Throw an error
         throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
     }
-    
+
     // Parse the meta header
     unsigned int number_of_dimensions(0);
     double spacing[3] = {0.0, 0.0, 0.0};
@@ -4183,13 +4262,14 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
     std::string element_type;
     std::string raw_file_name;
     bool change_endianess(false);
-    
+    bool deflate_compression(false);
+
     std::string info_type;
     while (meta_header >> info_type)
     {
         std::string equal_sign;
         meta_header >> equal_sign;
-        
+
         // Remove the equal sign
         if (equal_sign != "=")
         {
@@ -4198,12 +4278,12 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
             error_message += "\".";
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
         }
-        
+
         if (info_type == "ObjectType")
         {
             std::string object_type;
             meta_header >> object_type;
-            
+
             if (object_type != "Image")
             {
                 std::string error_message("The object type \"");
@@ -4215,7 +4295,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         else if (info_type == "NDims")
         {
             meta_header >> number_of_dimensions;
-            
+
             // number_of_dimensions is always positive as
             // it is an unsigned int
             if (/*number_of_dimensions < 0 ||*/ 3 < number_of_dimensions)
@@ -4230,7 +4310,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         {
             std::string data_type;
             meta_header >> data_type;
-            
+
             if (data_type != "True")
             {
                 std::string error_message("The data type is not binary.");
@@ -4241,12 +4321,12 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         {
             std::string big_endian;
             meta_header >> big_endian;
-            
+
             if (big_endian == "False" && isBigEndian())
             {
                 change_endianess = true;
             }
-            
+
             if (big_endian == "True" && isLittleEndian())
             {
                 change_endianess = true;
@@ -4256,11 +4336,10 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         {
             std::string compression;
             meta_header >> compression;
-            
+
             if (compression == "True")
             {
-                std::string error_message("The data is compressed.");
-                throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
+                deflate_compression = true;
             }
         }
         else if (info_type == "TransformMatrix")
@@ -4313,7 +4392,7 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         {
             std::string data_type_string;
             meta_header >> data_type_string;
-            
+
             if (data_type_string == "MET_DOUBLE")
             {
                 element_type = typeid(double).name();
@@ -4371,10 +4450,15 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
         else if (info_type == "ElementDataFile")
         {
             meta_header >> raw_file_name;
-            
+
             if (raw_file_name == "LOCAL")
             {
-                loadRAW(meta_header, dimensions[0], dimensions[1], dimensions[2], change_endianess, aFileName, element_type.data());
+                loadRAW(meta_header,
+                		dimensions[0], dimensions[1], dimensions[2],
+						change_endianess,
+						aFileName,
+						element_type.data()/*,
+						deflate_compression*/);
             }
             else
             {
@@ -4382,27 +4466,31 @@ template<typename T> void Image<T>::loadMetaHeader(const char* aFileName)
                 size_t index1(meta_header_file_name.find_last_of('\\'));
                 size_t index2(meta_header_file_name.find_last_of('/'));
                 size_t index(0);
-                
+
                 if (index1 == std::string::npos)
                 {
                     index1 = 0;
                 }
-                
+
                 if (index2 == std::string::npos)
                 {
                     index2 = 0;
                 }
-                
+
                 index = std::max(index1, index2);
-                
+
                 if (index)
                 {
                     raw_file_name = meta_header_file_name.substr(0, index) + "/" + raw_file_name;
                 }
 
-                loadRAW(raw_file_name, dimensions[0], dimensions[1], dimensions[2], change_endianess, element_type);
+                loadRAW(raw_file_name,
+                    dimensions[0], dimensions[1], dimensions[2],
+                    change_endianess,
+                    element_type/*,
+                    deflate_compression*/);
             }
-            
+
             setSpacing(spacing[0], spacing[1], spacing[2]);
         }
         else
@@ -4471,7 +4559,8 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
                                             unsigned int aNumberOfSlices,
                                             bool aChangeEndianessFlag,
                                             const char* aFileName,
-                                            const char* anElementType)
+                                            const char* anElementType/*,
+                                            bool aCompressionFlag*/)
 //-----------------------------------------------------------------------
 {
     // Release memory if needed
@@ -4481,7 +4570,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     m_width = aWidth;
     m_height = aHeight;
     m_number_of_slices = aNumberOfSlices;
-    
+
     unsigned int number_of_voxels(m_width * m_height * m_number_of_slices);
 
     // No data to read
@@ -4524,15 +4613,15 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
 
     // Allocate the memory
     /*m_p_image = new T[m_width * m_height * m_number_of_slices];
-    
+
     // Out of memory
     if (m_width && m_height && m_number_of_slices && !m_p_image)
     {
         throw OutOfMemoryException(__FILE__, __FUNCTION__, __LINE__);
     }*/
-    
 
-    
+
+
     // Skip the first byte if needed
     int offset_in_bytes(0);
     anInputStream.read(reinterpret_cast<char*>(p_temp_buffer), 1);
@@ -4540,13 +4629,13 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     {
         offset_in_bytes = 1;
     }
-    
+
     // Read the data
     anInputStream.read(reinterpret_cast<char*>(p_temp_buffer) + offset_in_bytes, requested_length_in_bytes);
-    
+
     // Close the file
     anInputStream.close();
-    
+
     // Change endianess
     if (aChangeEndianessFlag && sizeOf(anElementType) > 1)
     {
@@ -4558,6 +4647,32 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
             swapBytes(p_temp_buffer[i]);
         }
     }
+
+    // Decompress the data
+    /*if (aCompressionFlag)
+    {
+        // Array to store the decompressed data
+        char* p_dest(new char[requested_length_in_bytes]);
+
+        // Decompress the data
+        int z_lib_return_code = inflate(p_temp_buffer,
+                                        requested_length_in_bytes,
+                                        &p_dest);
+
+        // It does not exist
+        if (!z_lib_return_code)
+        {
+            delete [] p_dest;
+            throw Exception(__FILE__, __FUNCTION__, __LINE__, "No image data was decoded.");
+        }
+
+        // Release the compressed data
+        delete [] p_temp_buffer;
+
+        // Keep the decompressed data
+        p_temp_buffer = p_dest;
+    }*/
+
 
     // Same native file format is the same as T
     if (anElementType == typeid(T).name())
@@ -4651,23 +4766,23 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
         delete [] p_temp_buffer;
     }
 }
-    
-  
+
+
 //------------------------------------------------------------------------------------
-template<typename T> void Image<T>::saveMetaHeader(const std::string& aFileName) const
+template<typename T> void Image<T>::saveMetaHeader(const std::string& aFileName, bool useDeflateCompressionIfPossible) const
 //------------------------------------------------------------------------------------
 {
-    saveMetaHeader(aFileName.data());
+    saveMetaHeader(aFileName.data(), useDeflateCompressionIfPossible);
 }
 
 
 //-----------------------------------------------------------------------------
-template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
+template<typename T> void Image<T>::saveMetaHeader(const char* aFileName, bool useDeflateCompressionIfPossible) const
 //-----------------------------------------------------------------------------
 {
     // Open the file which will contain the meta header
     std::ofstream meta_header(aFileName);
-    
+
     // The file is not open
     if (!meta_header.is_open())
     {
@@ -4675,10 +4790,10 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
         error_message = "Cannot create the file (\"";
         error_message += aFileName;
         error_message += "\")";
-        
+
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
     }
-    
+
     meta_header << "ObjectType = Image" << std::endl;
     if (m_number_of_slices == 1)
     {
@@ -4690,7 +4805,7 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
         meta_header << "NDims = 3" << std::endl;
         meta_header << "DimSize = " << m_width << " " << m_height << " " << m_number_of_slices << std::endl;
     }
-    
+
     std::string data_type_string;
     if (typeid(T) == typeid(double))
     {
@@ -4728,9 +4843,9 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
     {
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "Unsupported data type");
     }
-    
+
     meta_header << "ElementType = " << data_type_string << std::endl;
-    
+
     if (m_number_of_slices == 1)
     {
         meta_header << "ElementSize = 1 1" << std::endl;
@@ -4741,15 +4856,12 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
         meta_header << "ElementSize = 1 1 1" << std::endl;
         meta_header << "ElementSpacing = " << m_spacing[0] << " " << m_spacing[1] << " " << m_spacing[2] << std::endl;
     }
-    
-    if (isBigEndian())
-    {
-        meta_header << "ElementByteOrderMSB = True" << std::endl;
-    }
-    else
-    {
-        meta_header << "ElementByteOrderMSB = False" << std::endl;
-    }
+
+    meta_header << "ElementByteOrderMSB = " <<
+        (isBigEndian()? "True":"False") << std::endl;
+
+    meta_header << "CompressedData = " <<
+        (useDeflateCompressionIfPossible? "True":"False") << std::endl;
 
     std::string raw_file_name(aFileName);
     if (isMHD(aFileName))
@@ -4762,11 +4874,15 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
     {
         raw_file_name += ".raw";
     }
-    
+    if (useDeflateCompressionIfPossible)
+    {
+        raw_file_name += ".gz";
+    }
+
     size_t index1(raw_file_name.find_last_of('\\'));
     size_t index2(raw_file_name.find_last_of('/'));
     size_t index(0);
-    
+
     if (index1 != std::string::npos)
     {
         ++index1;
@@ -4775,7 +4891,7 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
     {
         index1 = 0;
     }
-    
+
     if (index2 != std::string::npos)
     {
         ++index2;
@@ -4784,25 +4900,40 @@ template<typename T> void Image<T>::saveMetaHeader(const char* aFileName) const
     {
         index2 = 0;
     }
-    
+
     index = std::max(index1, index2);
-    
-    
+
+
     if (isMHD(aFileName))
     {
         meta_header << "ElementDataFile = " << raw_file_name.substr(index, raw_file_name.size() - index) << std::endl;
-        
-        saveRAW(raw_file_name);
+
+        saveRAW(raw_file_name, useDeflateCompressionIfPossible);
     }
     else
     {
         meta_header << "ElementDataFile = " << "LOCAL\n";// << std::endl;
-        
+
         // Write content to file
-        meta_header.write(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+        // Compressed data
+        if (useDeflateCompressionIfPossible)
+        {
+        	char* compressed_data = new char[m_width * m_height * m_number_of_slices * sizeof(T)];
+        	int data_size = deflate(
+        			reinterpret_cast<char*>(m_p_image),
+					m_width * m_height * m_number_of_slices * sizeof(T),
+					&compressed_data);
+
+            meta_header.write(compressed_data, data_size);
+        	delete [] compressed_data;
+        }
+        // Uncompressed data
+        else
+        {
+            meta_header.write(reinterpret_cast<char*>(m_p_image), m_width * m_height * m_number_of_slices * sizeof(T));
+        }
     }
 }
 
-    
-} // namespace gVirtualXRay
 
+} // namespace gVirtualXRay

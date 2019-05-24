@@ -96,20 +96,20 @@ class PolygonMesh;
 //******************************************************************************
 template<typename T> Image<T> operator*(const T& aValue,
                                         const Image<T>& anImage);
-    
-    
+
+
 template<typename T> Image<T> operator/(const T& aValue,
                                         const Image<T>& anImage);
-    
-    
+
+
 template<typename T> Image<T> operator+(const T& aValue,
                                         const Image<T>& anImage);
-    
-    
+
+
 template<typename T> Image<T> operator-(const T& aValue,
                                         const Image<T>& anImage);
-    
-    
+
+
 template<typename T> Image<T> log(const Image<T>& anImage);
 
 
@@ -146,8 +146,8 @@ public:
      */
     //--------------------------------------------------------------------------
     Image(const Image<T>& anImage);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Constructor.
     /**
@@ -156,7 +156,7 @@ public:
     //--------------------------------------------------------------------------
     Image(const char* aFileName);
 
-    
+
     //--------------------------------------------------------------------------
     /// Constructor.
     /**
@@ -164,8 +164,8 @@ public:
      */
     //--------------------------------------------------------------------------
     Image(const std::string& aFileName);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Constructor from an array.
     /**
@@ -201,8 +201,8 @@ public:
     /// Destructor.
     //--------------------------------------------------------------------------
     ~Image();
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Compute a region of interest (ROI).
     /**
@@ -246,8 +246,8 @@ public:
      */
     //--------------------------------------------------------------------------
     T& getPixel(unsigned int i, unsigned int j, unsigned int k = 0);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on a pixel value.
     /**
@@ -269,7 +269,7 @@ public:
     //--------------------------------------------------------------------------
     T& getPixelValue(unsigned int i, unsigned int j, unsigned int k = 0);
 
-    
+
     //--------------------------------------------------------------------------
     /// Accessor on a pixel value.
     /**
@@ -295,7 +295,7 @@ public:
                           unsigned int j,
                           unsigned int k = 0) const;
 
-    
+
     T& operator[](unsigned anIndex);
 
 
@@ -316,8 +316,8 @@ public:
      */
     //--------------------------------------------------------------------------
     Image<T>& operator=(const Image<T>& anImage);
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Assignment operator (also called copy operator).
     /**
@@ -332,8 +332,8 @@ public:
     /// Release the memory.
     //--------------------------------------------------------------------------
     void destroy();
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Accessor on the raw data.
     /**
@@ -359,7 +359,7 @@ public:
      */
     //--------------------------------------------------------------------------
     unsigned int getWidth() const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Number of pixels along the vertical axis
@@ -368,7 +368,7 @@ public:
      */
     //--------------------------------------------------------------------------
     unsigned int getHeight() const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Number of pixels along the Z axis
@@ -395,7 +395,7 @@ public:
      */
     //--------------------------------------------------------------------------
     T getMinValue() const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Compute the maximum pixel value in the image
@@ -404,7 +404,7 @@ public:
      */
     //--------------------------------------------------------------------------
     T getMaxValue() const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Compute the minimum pixel value in a given slice
@@ -414,7 +414,7 @@ public:
      */
     //--------------------------------------------------------------------------
     T getMinValue(unsigned int aSliceID) const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Compute the maximum pixel value in a given slice
@@ -424,7 +424,7 @@ public:
      */
     //--------------------------------------------------------------------------
     T getMaxValue(unsigned int aSliceID) const;
-    
+
 
     //--------------------------------------------------------------------------
     /// Add aShiftValue to every pixel, then multiply every pixel
@@ -435,8 +435,8 @@ public:
      */
     //--------------------------------------------------------------------------
     Image shiftScaleFilter(double aShiftValue, double aScaleValue) const;
-    
-    
+
+
     Image<unsigned char> threshold(const T& aMinValue, const T& aMaxValue,
             const T& anInValue,
             const T& anOutValue) const;
@@ -452,68 +452,68 @@ public:
     /// Normalise the image between 0 and 1
     //--------------------------------------------------------------------------
     Image normalised() const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Normalize the image between 0 and 1
     //--------------------------------------------------------------------------
     Image normalized() const;
-    
-    
+
+
     void load(const char* aFileName);
-    
-    
+
+
     void load(const std::string& aFileName);
 
-    
+
     void loadUsingITK(const char* aFileName);
-    
-    
+
+
     void loadUsingITK(const std::string& aFileName);
 
-    
+
     void loadSeries(const char* aPattern,
                     int aFirstSliceIndex,
                     int aLastSliceIndex,
                     int anIncrementIndex = 1);
-    
-    
+
+
     void loadSeries(const std::string& aPattern,
                     int aFirstSliceIndex,
                     int aLastSliceIndex,
                     int anIncrementIndex = 1);
 
-    
+
     void loadDicomSeries(const char* aDirectory);
-    
-    
+
+
     void loadDicomSeries(const std::string& aDirectory);
 
-    
+
     void loadASCII(const char* aFileName);
-    
-    
+
+
     void loadASCII(const std::string& aFileName);
 
-    
+
     void loadASCII(const char* aFileName, unsigned int aWidth, unsigned int aHeight, unsigned int aDepth, const VEC3& aVoxelSize);
 
 
     void loadASCII(const std::string& aFileName, unsigned int aWidth, unsigned int aHeight, unsigned int aDepth, const VEC3& aVoxelSize);
-    
-    
+
+
     void loadMHD(const char* aFileName);
-    
-    
+
+
     void loadMHD(const std::string& aFileName);
-    
-    
+
+
     void loadMHA(const char* aFileName);
-    
-    
+
+
     void loadMHA(const std::string& aFileName);
-    
-    
+
+
     unsigned int sizeOf(const char* anElementType) const;
 
 	unsigned int sizeOf(const std::string& anElementType) const;
@@ -525,14 +525,14 @@ public:
                  bool aChangeEndianessFlag = false,
                  const char* anElementType = 0);
 
-    
+
     void loadRAW(const std::string& aFileName,
                  unsigned int aWidth,
                  unsigned int aHeight,
                  unsigned int aNumberOfSlices = 1,
                  bool aChangeEndianessFlag = false,
                  const std::string& anElementType = "");
-    
+
 
     //--------------------------------------------------------------------------
     /// Save the image in a file
@@ -542,7 +542,8 @@ public:
     //--------------------------------------------------------------------------
     void save(const char* aFileName,
               bool anInvertLUTFlag = false,
-              const char* aComment = "") const;
+              const char* aComment = "",
+          bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
@@ -553,7 +554,8 @@ public:
     //--------------------------------------------------------------------------
     void save(const std::string& aFileName,
               bool anInvertLUTFlag = false,
-              const std::string& aComment = "") const;
+              const std::string& aComment = "",
+              bool useDeflateCompressionIfPossible = false) const;
 
 
     //--------------------------------------------------------------------------
@@ -563,8 +565,8 @@ public:
      */
     //--------------------------------------------------------------------------
     void savePGM(const char* aFileName) const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a PGM file
     /**
@@ -572,33 +574,6 @@ public:
      */
     //--------------------------------------------------------------------------
     void savePGM(const std::string& aFileName) const;
-    
-
-    //--------------------------------------------------------------------------
-    /// Save the image in a Raw file
-    /**
-     *  @param aFileName: the name of the file to write
-     */
-    //--------------------------------------------------------------------------
-    void saveRaw(const char* aFileName) const;
-    
-    
-    //--------------------------------------------------------------------------
-    /// Save the image in a Raw file
-    /**
-     *  @param aFileName: the name of the file to write
-     */
-    //--------------------------------------------------------------------------
-    void saveRaw(const std::string& aFileName) const;
-    
-
-    //--------------------------------------------------------------------------
-    /// Save the image in a Raw file
-    /**
-     *  @param aFileName: the name of the file to write
-     */
-    //--------------------------------------------------------------------------
-    void saveRAW(const char* aFileName) const;
 
 
     //--------------------------------------------------------------------------
@@ -607,7 +582,34 @@ public:
      *  @param aFileName: the name of the file to write
      */
     //--------------------------------------------------------------------------
-    void saveRAW(const std::string& aFileName) const;
+    void saveRaw(const char* aFileName, bool useDeflateCompressionIfPossible) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Save the image in a Raw file
+    /**
+     *  @param aFileName: the name of the file to write
+     */
+    //--------------------------------------------------------------------------
+    void saveRaw(const std::string& aFileName,bool useDeflateCompressionIfPossible) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Save the image in a Raw file
+    /**
+     *  @param aFileName: the name of the file to write
+     */
+    //--------------------------------------------------------------------------
+    void saveRAW(const char* aFileName, bool useDeflateCompressionIfPossible) const;
+
+
+    //--------------------------------------------------------------------------
+    /// Save the image in a Raw file
+    /**
+     *  @param aFileName: the name of the file to write
+     */
+    //--------------------------------------------------------------------------
+    void saveRAW(const std::string& aFileName, bool useDeflateCompressionIfPossible) const;
 
 
     //--------------------------------------------------------------------------
@@ -617,8 +619,8 @@ public:
      */
     //--------------------------------------------------------------------------
     void saveASCII(const char* aFileName) const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Save the image in an ASCII file
     /**
@@ -626,44 +628,47 @@ public:
      */
     //--------------------------------------------------------------------------
     void saveASCII(const std::string& aFileName) const;
-   
-   
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a MHD+RAW file
     /**
      *  @param aFileName: the name of the file to write
      */
     //--------------------------------------------------------------------------
-    void saveMHD(const char* aFileName) const;
-    
-    
+    void saveMHD(const char* aFileName, bool useDeflateCompressionIfPossible) const;
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a MHD+RAW file
     /**
      *  @param aFileName: the name of the file to write
      */
     //--------------------------------------------------------------------------
-    void saveMHD(const std::string& aFileName) const;
-    
-    
+    void saveMHD(const std::string& aFileName,
+        bool useDeflateCompressionIfPossible) const;
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a MHA+RAW file
     /**
      *  @param aFileName: the name of the file to write
      */
     //--------------------------------------------------------------------------
-    void saveMHA(const char* aFileName) const;
-    
-    
+    void saveMHA(const char* aFileName,
+        bool useDeflateCompressionIfPossible) const;
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a MHA+RAW file
     /**
      *  @param aFileName: the name of the file to write
      */
     //--------------------------------------------------------------------------
-    void saveMHA(const std::string& aFileName) const;
-    
-    
+    void saveMHA(const std::string& aFileName,
+        bool useDeflateCompressionIfPossible) const;
+
+
     //--------------------------------------------------------------------------
     /// Save the image in a DICOM file
     /**
@@ -919,63 +924,63 @@ public:
 
 
     Image<T> log() const;
-    
-    
+
+
     Image<T> flipVertically() const;
-    
-    
+
+
     Image<T> flipHorizontally() const;
 
 
     double getSum() const;
-    
-    
+
+
     double getAverage() const;
-    
-    
+
+
     double getVariance() const;
-    
-    
+
+
     double getStandardDeviation() const;
-    
-    
+
+
     double computeSAE(const Image<T>& anImage) const;
-    
-    
+
+
     double computeMAE(const Image<T>& anImage) const;
-    
-    
+
+
     double computeSSE(const Image<T>& anImage) const;
-    
-    
+
+
     double computeMSE(const Image<T>& anImage) const;
-    
-    
+
+
     double computeRMSE(const Image<T>& anImage) const;
 
-    
+
     double computeNCC(const Image<T>& anImage) const;
-    
+
 
     gVirtualXRay::FFT<T> getFFT() const;
 
-    
+
     Image<T> transpose() const;
 
 
     Image<T> resize(unsigned int aNewWidth,
                     unsigned int aNewHeightunsigned,
                     unsigned int aNewNumberOfSlices) const;
-    
-    
+
+
     Image<T> rotate(float anAngleInDegrees) const;
-    
-    
+
+
     Image<T> setCanvasSize(unsigned int aNewWidth,
                            unsigned int aNewHeight,
                            unsigned int aNewNumberOfSlices) const;
-    
-    
+
+
     gVirtualXRay::Sinogram<T> radonTransform(double aFirstAngle,
                                              double anAngleStep,
                                              double aLastAngle) const;
@@ -992,8 +997,8 @@ public:
     PolygonMesh marchingCubes(const T& aFirstThresholdValue,
                               const T& aSecondThresholdValue = 0,
                               bool aTwoThresholdFlag = false) const;
-    
-    
+
+
     //--------------------------------------------------------------------------
     /// Convert every voxel into a cube.
     /**
@@ -1002,8 +1007,8 @@ public:
     //--------------------------------------------------------------------------
     void convertVoxelsToCubes(std::map<T, PolygonMesh>& aPolygonMeshSet,
                               T anAirThreshold = -1000) const;
-    
-    
+
+
     Image<T> convertHU2mu(double anEnergy) const;
 
 
@@ -1023,7 +1028,7 @@ protected:
     /// Number of pixel along the vertical axis
     unsigned int m_height;
 
-    
+
     /// Number of slices
     unsigned int m_number_of_slices;
 
@@ -1031,59 +1036,60 @@ protected:
     /// The space between two successive pixels
     VEC3 m_spacing;
 
-    
+
     /// The pixel data
     T* m_p_image;
 
-    
+
     static unsigned int g_mesh_type;
-    
-    
+
+
     static unsigned int g_vbo_type;
 
-    
+
 //******************************************************************************
 private:
     void loadMetaHeader(const char* aFileName);
-    
-    
+
+
     void loadMetaHeader(const std::string& aFileName);
-    
-    
+
+
     void loadRAW(std::ifstream& anInputStream,
                  unsigned int aWidth,
                  unsigned int aHeight,
                  unsigned int aNumberOfSlices,
                  bool aChangeEndianessFlag,
                  const char* aFileName,
-                 const char* anElementType);
-    
-    
-    void saveMetaHeader(const char* aFileName) const;
-    
-    
-    void saveMetaHeader(const std::string& aFileName) const;
-    
-    
+                 const char* anElementType/*,
+                 bool aCompressionFlag*/);
+
+
+    void saveMetaHeader(const char* aFileName, bool useDeflateCompressionIfPossible) const;
+
+
+    void saveMetaHeader(const std::string& aFileName, bool useDeflateCompressionIfPossible) const;
+
+
 #ifdef HAS_GDCM
     void addTag(double aValue,
                 unsigned int anAddress1,
                 unsigned int anAddress2,
                 gdcm::File& aFile) const;
-    
-    
+
+
     void addTag(const char* aValue,
                 unsigned int anAddress1,
                 unsigned int anAddress2,
                 gdcm::File& aFile) const;
-    
-    
+
+
     void addTag(const std::string& aValue,
                 unsigned int anAddress1,
                 unsigned int anAddress2,
                 gdcm::File& aFile) const;
 #endif
-    
+
 };
 
 

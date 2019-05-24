@@ -80,7 +80,8 @@ template<> unsigned int Image<double>::g_vbo_type = GL_STATIC_DRAW;
 
 
 //-----------------------------------------------------------------------
-template<> void Image<float>::saveMHD(const std::string& aFileName) const
+template<> void Image<float>::saveMHD(const std::string& aFileName,
+    bool useDeflateCompressionIfPossible) const
 //-----------------------------------------------------------------------
     {
     std::ofstream header_file(aFileName.data());
@@ -95,7 +96,7 @@ template<> void Image<float>::saveMHD(const std::string& aFileName) const
     header_file << "NDims = 3" << std::endl;
     header_file << "BinaryData = True" << std::endl;
     header_file << "BinaryDataByteOrderMSB = False" << std::endl;
-    header_file << "CompressedData = False" << std::endl;
+    header_file << "CompressedData = " << (useDeflateCompressionIfPossible? "True":"False") << std::endl;
     header_file << "TransformMatrix = 1 0 0 0 1 0 0 0 1" << std::endl;
     header_file << "Offset = 0 0 0" << std::endl;
     header_file << "CenterOfRotation = 0 0 0" << std::endl;
@@ -108,7 +109,8 @@ template<> void Image<float>::saveMHD(const std::string& aFileName) const
     header_file << "ElementDataFile = " << file_name_with_out_extension + ".raw" << std::endl;
 
     // Save the RAW file
-    saveRAW(file_name_with_out_extension + ".raw");
+    saveRAW(file_name_with_out_extension + ".raw",
+        useDeflateCompressionIfPossible);
 }
 
 
@@ -119,16 +121,16 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
 {
     // Make sure there is no data in aPolygonMeshSet
     aPolygonMeshSet.clear();
-    
+
     // Create the base cube
     CubeMesh<float> base_cube(cm);
-    
+
     // The cube size is the same as the voxel size
     base_cube.applyScale(m_spacing.getX() / cm, m_spacing.getY() / cm, m_spacing.getZ() / cm);
-    
+
     // Translate the cube so that its lower corner is on (0, 0, 0)
     base_cube.applyTranslation(m_spacing / 2.0);
-    
+
     // Process every voxel
     for (unsigned int k(0); k < m_number_of_slices; ++k)
         {
@@ -145,7 +147,7 @@ template<> void Image<short>::convertVoxelsToCubes(std::map<short, PolygonMesh>&
                     // Copy the cube and translate it to the position of the voxel
                     PolygonMesh translated_cube(base_cube);
                     translated_cube.applyTranslation(VEC3(m_spacing[0] * i, m_spacing[1] * j, m_spacing[2] * k));
-                    
+
                     // Add the voxel
                     aPolygonMeshSet[voxel_value] += translated_cube;
                     aPolygonMeshSet[voxel_value].setHounsfieldValue(voxel_value);

@@ -1613,7 +1613,8 @@ void XRayRenderer::resetLBuffer()
 
 //------------------------------------------------
 void XRayRenderer::printFBO(GLuint aFBOID,
-							const char* aFileName)
+							const char* aFileName,
+							bool useCompression)
 //------------------------------------------------
 {
 	// Get the image
@@ -1666,14 +1667,15 @@ void XRayRenderer::printFBO(GLuint aFBOID,
         }
 
         // Save the image
-        temp_image.save(aFileName, invert_LUT, message);
+        temp_image.save(aFileName, invert_LUT, message, useCompression);
 	}
 }
 
 
 //------------------------------------------------------
 void XRayRenderer::print2DTexture(GLuint aTextureID,
-								  const char* aFileName)
+								  const char* aFileName,
+								  bool useCompression)
 //------------------------------------------------------
 {
 	// Get the image
@@ -1726,7 +1728,7 @@ void XRayRenderer::print2DTexture(GLuint aTextureID,
         }
 
         // Save the image
-        temp_image.save(aFileName, invert_LUT, message);
+        temp_image.save(aFileName, invert_LUT, message, useCompression);
 	}
 }
 

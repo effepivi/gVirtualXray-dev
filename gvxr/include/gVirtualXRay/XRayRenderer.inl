@@ -260,59 +260,63 @@ namespace gVirtualXRay {
 
     //--------------------------------------------------------------
     inline void XRayRenderer::printFBO(unsigned int aFBOID,
-                                       const std::string& aFileName)
+                                       const std::string& aFileName,
+									   bool useCompression)
     //--------------------------------------------------------------
     {
-        printFBO(aFBOID, aFileName.data());
+        printFBO(aFBOID, aFileName.data(), useCompression);
     }
 
 
     //--------------------------------------------------------------------
     inline void XRayRenderer::print2DTexture(unsigned int aTextureID,
-                                             const std::string& aFileName)
+                                             const std::string& aFileName,
+											 bool useCompression)
     //--------------------------------------------------------------------
     {
-        print2DTexture(aTextureID, aFileName.data());
+        print2DTexture(aTextureID, aFileName.data(), useCompression);
     }
 
 
     //------------------------------------------------------------------
-    inline void XRayRenderer::printLBuffer(const std::string& aFileName)
+    inline void XRayRenderer::printLBuffer(const std::string& aFileName,
+    									   bool useCompression)
     //------------------------------------------------------------------
     {
-        printLBuffer(aFileName.data());
+        printLBuffer(aFileName.data(), useCompression);
     }
 
 
     //---------------------------------------------------------------------------
-    inline void XRayRenderer::printCumulatedLBuffer(const std::string& aFileName)
+    inline void XRayRenderer::printCumulatedLBuffer(const std::string& aFileName,
+    												bool useCompression)
     //---------------------------------------------------------------------------
     {
-        printCumulatedLBuffer(aFileName.data());
+        printCumulatedLBuffer(aFileName.data(), useCompression);
     }
 
 
     //-------------------------------------------------------------------
-    inline void XRayRenderer::printSumMuxDx(const std::string& aFileName)
+    inline void XRayRenderer::printSumMuxDx(const std::string& aFileName, bool useCompression)
     //-------------------------------------------------------------------
     {
-        printSumMuxDx(aFileName.data());
+        printSumMuxDx(aFileName.data(), useCompression);
     }
 
 
     //------------------------------------------------------------------------
-    inline void XRayRenderer::printEnergyFluence(const std::string& aFileName)
+    inline void XRayRenderer::printEnergyFluence(const std::string& aFileName, bool useCompression)
     //------------------------------------------------------------------------
     {
-        printEnergyFluence(aFileName.data());
+        printEnergyFluence(aFileName.data(), useCompression);
     }
 
 
     //--------------------------------------------------------------------
-    inline void XRayRenderer::printXRayImage(const std::string& aFileName)
+    inline void XRayRenderer::printXRayImage(const std::string& aFileName, bool useCompression)
     //--------------------------------------------------------------------
     {
-        printXRayImage(aFileName.data());
+        printXRayImage(aFileName.data(), useCompression);
     }
 
 
@@ -841,34 +845,34 @@ namespace gVirtualXRay {
 
 
 	//------------------------------------------------------------
-    inline void XRayRenderer::printSinogram(const char* aFileName)
+    inline void XRayRenderer::printSinogram(const char* aFileName, bool useCompression)
     //------------------------------------------------------------
     {
-        m_sinogram_image.save(aFileName);
+        m_sinogram_image.save(aFileName, false, "Sinogram", useCompression);
     }
 
 
     //-------------------------------------------------------------------
-    inline void XRayRenderer::printSinogram(const std::string& aFileName)
+    inline void XRayRenderer::printSinogram(const std::string& aFileName, bool useCompression)
     //-------------------------------------------------------------------
     {
-        printSinogram(aFileName.data());
+        printSinogram(aFileName.data(), useCompression);
     }
     
 
     //-----------------------------------------------------------------
-    inline void XRayRenderer::printProjectionSet(const char* aFileName)
+    inline void XRayRenderer::printProjectionSet(const char* aFileName, bool useCompression)
     //-----------------------------------------------------------------
     {
-        m_projection_set.save(aFileName);
+        m_projection_set.save(aFileName, false, "Projection set", useCompression);
     }
 
 
     //------------------------------------------------------------------------
-    inline void XRayRenderer::printProjectionSet(const std::string& aFileName)
+    inline void XRayRenderer::printProjectionSet(const std::string& aFileName, bool useCompression)
     //------------------------------------------------------------------------
     {
-        printProjectionSet(aFileName.data());
+        printProjectionSet(aFileName.data(), useCompression);
     }
     
 
@@ -930,55 +934,55 @@ namespace gVirtualXRay {
 
 
     //-----------------------------------------------------------
-    inline void XRayRenderer::printLBuffer(const char* aFileName)
+    inline void XRayRenderer::printLBuffer(const char* aFileName, bool useCompression)
     //-----------------------------------------------------------
     {
         if (m_use_l_buffer_artefact_filtering_on_gpu)
         {
             //print2DTexture(XRAY_DETECTOR_CLEANED_LBUFFER_TEXTURE_NAME_ID, aFileName);
-            printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, aFileName);
+            printFBO(XRAY_DETECTOR_CLEANED_LBUFFER_FBO_ID, aFileName, useCompression);
         }
         else
         {
             //print2DTexture(XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID, aFileName);
-            printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, aFileName);
+            printFBO(XRAY_DETECTOR_UNCLEANED_LBUFFER_FBO_ID, aFileName, useCompression);
         }
     }
 
 
     //--------------------------------------------------------------------
-    inline void XRayRenderer::printCumulatedLBuffer(const char* aFileName)
+    inline void XRayRenderer::printCumulatedLBuffer(const char* aFileName, bool useCompression)
     //--------------------------------------------------------------------
     {
         //print2DTexture(XRAY_DETECTOR_LBUFFER_TEXTURE_NAME_ID, aFileName);
-        printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, aFileName);
+        printFBO(XRAY_DETECTOR_CUMULATED_LBUFFERS_FBO_ID, aFileName, useCompression);
     }
 
 
     //------------------------------------------------------------
-    inline void XRayRenderer::printSumMuxDx(const char* aFileName)
+    inline void XRayRenderer::printSumMuxDx(const char* aFileName, bool useCompression)
     //------------------------------------------------------------
     {
         //print2DTexture(XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID, aFileName);
-        printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, aFileName);
+        printFBO(XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID, aFileName, useCompression);
     }
 
 
     //-----------------------------------------------------------------
-    inline void XRayRenderer::printEnergyFluence(const char* aFileName)
+    inline void XRayRenderer::printEnergyFluence(const char* aFileName, bool useCompression)
     //-----------------------------------------------------------------
     {
         //print2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID, aFileName);
-        printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName);
+        printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName, useCompression);
     }
 
 
     //-------------------------------------------------------------
-    inline void XRayRenderer::printXRayImage(const char* aFileName)
+    inline void XRayRenderer::printXRayImage(const char* aFileName, bool useCompression)
     //-------------------------------------------------------------
     {
         //print2DTexture(XRAY_DETECTOR_ENERGY_FLUENCE_TEXTURE_NAME_ID, aFileName);
-        printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName);
+        printFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID, aFileName, useCompression);
     }
 
 /*

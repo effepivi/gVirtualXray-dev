@@ -305,7 +305,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printFBO(unsigned int aFBOID, const char* aFileName);
+    void printFBO(unsigned int aFBOID, const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -315,7 +315,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printFBO(unsigned int aFBOID, const std::string& aFileName);
+    void printFBO(unsigned int aFBOID, const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -325,7 +325,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void print2DTexture(unsigned int aTextureID, const char* aFileName);
+    void print2DTexture(unsigned int aTextureID, const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -335,7 +335,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void print2DTexture(unsigned int aTextureID, const std::string& aFileName);
+    void print2DTexture(unsigned int aTextureID, const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -344,7 +344,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printLBuffer(const char* aFileName);
+    void printLBuffer(const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -353,7 +353,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printLBuffer(const std::string& aFileName);
+    void printLBuffer(const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -362,7 +362,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printCumulatedLBuffer(const char* aFileName);
+    void printCumulatedLBuffer(const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -371,7 +371,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printCumulatedLBuffer(const std::string& aFileName);
+    void printCumulatedLBuffer(const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -380,7 +380,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printSumMuxDx(const char* aFileName);
+    void printSumMuxDx(const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -389,7 +389,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printSumMuxDx(const std::string& aFileName);
+    void printSumMuxDx(const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -398,7 +398,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printEnergyFluence(const char* aFileName);
+    void printEnergyFluence(const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -407,7 +407,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printEnergyFluence(const std::string& aFileName);
+    void printEnergyFluence(const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -417,7 +417,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printXRayImage(const char* aFileName);
+    void printXRayImage(const char* aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -427,7 +427,7 @@ public:
      *  @param aFileName:   the file name
      */
     //--------------------------------------------------------------------------
-    void printXRayImage(const std::string& aFileName);
+    void printXRayImage(const std::string& aFileName, bool useCompression = false);
 
 
     //--------------------------------------------------------------------------
@@ -698,8 +698,8 @@ public:
             RATIONAL_NUMBER anAngleOffset = 1.0);
 
 
-    void printSinogram(const char* aFileName);
-    void printSinogram(const std::string& aFileName);
+    void printSinogram(const char* aFileName, bool useCompression = false);
+    void printSinogram(const std::string& aFileName, bool useCompression = false);
 
 
     const Sinogram<XRayRenderer::PixelType>& getSinogram() const;
@@ -715,8 +715,8 @@ public:
             RATIONAL_NUMBER anAngleOffset = 1.0);
 
 
-    void printProjectionSet(const char* aFileName);
-    void printProjectionSet(const std::string& aFileName);
+    void printProjectionSet(const char* aFileName, bool useCompression = false);
+    void printProjectionSet(const std::string& aFileName, bool useCompression = false);
 
 
     const Image<XRayRenderer::PixelType>& getProjectionSet() const;
