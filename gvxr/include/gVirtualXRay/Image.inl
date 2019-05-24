@@ -1678,52 +1678,77 @@ template<typename T> void Image<T>::save(const char* aFileName,
                                          bool useDeflateCompressionIfPossible) const
 //------------------------------------------------------------------
 {
+	bool image_saved = false;
+
     if (isMAT(aFileName) || isDAT(aFileName) || isTXT(aFileName))
     {
         saveASCII(aFileName);
+        image_saved = true;
     }
-	else
+
+	else if (isPGM(aFileName))
 	{
-#ifdef HAS_ITK
-    	saveUsingITK(aFileName);
-#else
-	    if (isPGM(aFileName))
-	    {
-	        savePGM(aFileName);
-	    }
-	    else if (isRAW(aFileName))
-	    {
-	        saveRAW(aFileName, useDeflateCompressionIfPossible);
-	    }
-	    else if (isMHD(aFileName))
-	    {
-	        saveMHD(aFileName, useDeflateCompressionIfPossible);
-	    }
-	    else if (isMHA(aFileName))
-	    {
-	        saveMHA(aFileName, useDeflateCompressionIfPossible);
-	    }
-	    else if (isDCM(aFileName))
-	    {
-	        saveDCM(aFileName, anInvertLUTFlag, aComment);
-	    }
-	    else if (isTIFF(aFileName))
-	    {
-	        saveTIFF(aFileName, anInvertLUTFlag);
-	    }
-	    else if (isJPEG(aFileName))
-	    {
-	        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-	                "Saving JPEG files is not implemented, "
-	                "please contact Dr FP Vidal.");
-	    }
-	    else
-	    {
-	        throw Exception(__FILE__, __FUNCTION__, __LINE__,
-	                "Unknown file format, to get it added to the library, "
-	                "please contact Dr FP Vidal.");
-	    }
+		savePGM(aFileName);
+        image_saved = true;
+	}
+
+	else if (isRAW(aFileName))
+	{
+		saveRAW(aFileName, useDeflateCompressionIfPossible);
+        image_saved = true;
+	}
+
+	else if (isMHD(aFileName))
+	{
+		saveMHD(aFileName, useDeflateCompressionIfPossible);
+        image_saved = true;
+	}
+
+	else if (isMHA(aFileName))
+	{
+		saveMHA(aFileName, useDeflateCompressionIfPossible);
+        image_saved = true;
+	}
+
+#ifdef HAS_TIFF
+    else if (isTIFF(aFileName))
+    {
+        saveTIFF(aFileName, anInvertLUTFlag);
+        image_saved = true;
+    }
 #endif
+
+#ifdef HAS_JPEG
+    else if (isJPEG(aFileName))
+    {
+        throw Exception(__FILE__, __FUNCTION__, __LINE__,
+                "Saving JPEG files is not implemented, "
+                "please contact Dr FP Vidal.");
+        image_saved = true;
+    }
+#endif
+
+#ifdef HAS_GDCM
+    else if (isDCM(aFileName))
+    {
+        saveDCM(aFileName, anInvertLUTFlag, aComment);
+        image_saved = true;
+    }
+#endif
+
+#ifdef HAS_ITK
+    if (!image_saved)
+    {
+    	saveUsingITK(aFileName, useDeflateCompressionIfPossible);
+        image_saved = true;
+    }
+#endif
+
+    if (!image_saved)
+    {
+		throw Exception(__FILE__, __FUNCTION__, __LINE__,
+				"Unknown file format, to get it added to the library, "
+				"please contact Dr FP Vidal.");
 	}
 }
 
@@ -2589,7 +2614,7 @@ template<typename T> void Image<T>::saveTIFF(const std::string& aFileName,
 
 
 //---------------------------------------------------------------------------
-template<typename T> void Image<T>::saveUsingITK(const char* aFileName) const
+template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool useDeflateCompressionIfPossible) const
 //---------------------------------------------------------------------------
 {
 #ifdef HAS_ITK
@@ -2631,6 +2656,7 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName) const
     typename WriterType::Pointer p_writer(WriterType::New());
     p_writer->SetFileName( aFileName );
     p_writer->SetInput( p_image );
+    p_writer->SetUseCompression(useDeflateCompressionIfPossible);
     p_writer->Update();
 
 #else

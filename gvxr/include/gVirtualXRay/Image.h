@@ -717,7 +717,7 @@ public:
      *  @param aFileName: the name of the file to write
      */
     //--------------------------------------------------------------------------
-    void saveUsingITK(const char* aFileName) const;
+    void saveUsingITK(const char* aFileName, bool useDeflateCompressionIfPossible) const;
 
 
     //--------------------------------------------------------------------------
