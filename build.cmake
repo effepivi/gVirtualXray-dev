@@ -1,4 +1,4 @@
-MESSAGE (WARNING "When USE_SYSTEM_GLFW is ON, picking wrong PATH")
+#MESSAGE (WARNING "When USE_SYSTEM_GLFW is ON, picking wrong PATH")
 
 IF (WIN32)
     MESSAGE (STATUS "You're running CMake on Windows.")
@@ -120,7 +120,7 @@ IF (WIN32)
             -DUSE_SYSTEM_ASSIMP:BOOL=${USE_SYSTEM_ASSIMP}
             -DUSE_SYSTEM_GLEW:BOOL=${USE_SYSTEM_GLEW}
             -DUSE_SYSTEM_GLFW:BOOL=${USE_SYSTEM_GLFW}
-            -DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
+	    #-DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
 
             ${CMAKE_CURRENT_LIST_DIR}/gvxr
 
@@ -140,7 +140,7 @@ ELSE (WIN32)
             -DUSE_SYSTEM_ASSIMP:BOOL=${USE_SYSTEM_ASSIMP}
             -DUSE_SYSTEM_GLEW:BOOL=${USE_SYSTEM_GLEW}
             -DUSE_SYSTEM_GLFW:BOOL=${USE_SYSTEM_GLFW}
-            -DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
+	    #-DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
 
             ${CMAKE_CURRENT_LIST_DIR}/gvxr
 
@@ -166,7 +166,7 @@ ENDIF ()
 MESSAGE ("Build gvxr-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Debug
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release
         OUTPUT_FILE gvxr_make.out.log
         ERROR_FILE gvxr_make.err.log
         RESULT_VARIABLE gvxr_make_result
@@ -176,7 +176,7 @@ IF (WIN32)
 ELSE (WIN32)
     MESSAGE ("Run parallel build, but not on MSVC")
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Debug -- -j12
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release -- -j12
         OUTPUT_FILE gvxr_make.out.log
         ERROR_FILE gvxr_make.err.log
         RESULT_VARIABLE gvxr_make_result
@@ -197,7 +197,7 @@ ENDIF ()
 MESSAGE ("Install gvxr-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target INSTALL
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target INSTALL
         OUTPUT_FILE gvxr_install.out.log
         ERROR_FILE gvxr_install.err.log
         RESULT_VARIABLE gvxr_install_result
@@ -206,7 +206,7 @@ IF (WIN32)
     )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target install
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target install
         OUTPUT_FILE gvxr_install.out.log
         ERROR_FILE gvxr_install.err.log
         RESULT_VARIABLE gvxr_install_result
@@ -228,7 +228,7 @@ IF (UNIT_TESTS)
     MESSAGE ("Unit testing gvxr-core")
     IF (WIN32)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target RUN_TESTS
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target RUN_TESTS
             OUTPUT_FILE gvxr_test.out.log
             ERROR_FILE gvxr_test.err.log
             RESULT_VARIABLE gvxr_test_result
@@ -237,7 +237,7 @@ IF (UNIT_TESTS)
         )
     ELSE (WIN32)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Debug --target test
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target test
             OUTPUT_FILE gvxr_test.out.log
             ERROR_FILE gvxr_test.err.log
             RESULT_VARIABLE gvxr_test_result
@@ -276,7 +276,7 @@ COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\
       )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${DESTINATION} -DUSE_SYSTEM_gVirtualXRay:BOOL=ON -DBUILD_TESTING=${UNIT_TESTS} --config Debug ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
+        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${DESTINATION} -DUSE_SYSTEM_gVirtualXRay:BOOL=ON -DBUILD_TESTING=${UNIT_TESTS} --config Release ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
         WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build
         OUTPUT_FILE ../SimpleGVXR_cmake.out.log
         ERROR_FILE ../SimpleGVXR_cmake.err.log
@@ -299,7 +299,7 @@ ENDIF ()
 MESSAGE ("Build SimpleGVXR-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build --config Debug
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build --config Release
         OUTPUT_FILE SimpleGVXR_make.out.log
         ERROR_FILE SimpleGVXR_make.err.log
         RESULT_VARIABLE SimpleGVXR_make_result
@@ -309,7 +309,7 @@ IF (WIN32)
 ELSE (WIN32)
     MESSAGE ("Run parallel build, but not on MSVC")
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build --config Debug -- -j12
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build --config Release -- -j12
         OUTPUT_FILE SimpleGVXR_make.out.log
         ERROR_FILE SimpleGVXR_make.err.log
         RESULT_VARIABLE SimpleGVXR_make_result
@@ -330,7 +330,7 @@ ENDIF ()
 MESSAGE ("Install SimpleGVXR-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Debug --target INSTALL
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Release --target INSTALL
         OUTPUT_FILE SimpleGVXR_install.out.log
         ERROR_FILE SimpleGVXR_install.err.log
         RESULT_VARIABLE SimpleGVXR_install_result
@@ -339,7 +339,7 @@ IF (WIN32)
     )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Debug --target install
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Release --target install
         OUTPUT_FILE SimpleGVXR_install.out.log
         ERROR_FILE SimpleGVXR_install.err.log
         RESULT_VARIABLE SimpleGVXR_install_result
@@ -361,7 +361,7 @@ IF (UNIT_TESTS)
     MESSAGE ("Unit testing SimpleGVXR-core")
     IF (WIN32)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Debug --target RUN_TESTS
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Release --target RUN_TESTS
             OUTPUT_FILE SimpleGVXR_test.out.log
             ERROR_FILE SimpleGVXR_test.err.log
             RESULT_VARIABLE SimpleGVXR_test_result
@@ -370,7 +370,7 @@ IF (UNIT_TESTS)
         )
     ELSE (WIN32)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Debug --target test
+            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build  --config Release --target test
             OUTPUT_FILE SimpleGVXR_test.out.log
             ERROR_FILE SimpleGVXR_test.err.log
             RESULT_VARIABLE SimpleGVXR_test_result
@@ -461,7 +461,7 @@ ENDIF ()
 MESSAGE ("Build Wrappers-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build --config Debug
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build --config Release
         OUTPUT_FILE Wrappers_make.out.log
         ERROR_FILE Wrappers_make.err.log
         RESULT_VARIABLE Wrappers_make_result
@@ -471,7 +471,7 @@ IF (WIN32)
 ELSE (WIN32)
     MESSAGE ("Run parallel build, but not on MSVC")
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build --config Debug -- -j12
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build --config Release -- -j12
         OUTPUT_FILE Wrappers_make.out.log
         ERROR_FILE Wrappers_make.err.log
         RESULT_VARIABLE Wrappers_make_result
@@ -492,7 +492,7 @@ ENDIF ()
 MESSAGE ("Install Wrappers-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build  --config Debug --target INSTALL
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build  --config Release --target INSTALL
         OUTPUT_FILE Wrappers_install.out.log
         ERROR_FILE Wrappers_install.err.log
         RESULT_VARIABLE Wrappers_install_result
@@ -501,7 +501,7 @@ IF (WIN32)
     )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build  --config Debug --target install
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build  --config Release --target install
         OUTPUT_FILE Wrappers_install.out.log
         ERROR_FILE Wrappers_install.err.log
         RESULT_VARIABLE Wrappers_install_result
