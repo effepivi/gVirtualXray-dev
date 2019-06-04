@@ -64,6 +64,7 @@
 #include <itkIdentityTransform.h>
 #include <itkBSplineInterpolateImageFunction.h>
 #include "itkMesh.h"
+#include <itkRescaleIntensityImageFilter.h>
 //#include "itkBinaryThresholdImageFilter.h"
 #include "itkBinaryMask3DMeshSource.h"
 //#include "itkMeshFileWriter.h"
@@ -2619,18 +2620,17 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool use
 {
 #ifdef HAS_ITK
 	// 3D volume
-	if (m_number_of_slices > 1)
+	if (m_number_of_slices > 1 || isDCM(aFileName))
 	{
-		typedef itk::Image< T, 3 >  ImageType;
-		typedef itk::ImageFileWriter<   ImageType > WriterType;
+		typedef itk::Image< T, 3 >  InputImageType;
 
-		typename ImageType::RegionType region;
-		typename ImageType::IndexType start;
+		typename InputImageType::RegionType region;
+		typename InputImageType::IndexType start;
 		start[0] = 0;
 		start[1] = 0;
 		start[2] = 0;
 
-		typename ImageType::SizeType size;
+		typename InputImageType::SizeType size;
 		size[0] = m_width;
 		size[1] = m_height;
 		size[2] = m_number_of_slices;
@@ -2638,12 +2638,12 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool use
 		region.SetSize(size);
 		region.SetIndex(start);
 
-		typename ImageType::Pointer p_image(ImageType::New());
+		typename InputImageType::Pointer p_image(InputImageType::New());
 		p_image->SetRegions(region);
 		p_image->Allocate();
 
 
-		typename ImageType::SpacingType spacing;
+		typename InputImageType::SpacingType spacing;
 		spacing[0] = m_spacing[0];
 		spacing[1] = m_spacing[1];
 		spacing[2] = m_spacing[2];
@@ -2655,37 +2655,57 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool use
 				m_p_image + number_of_pixels,
 				p_image->GetBufferPointer());
 
-		// Save the data
-		typename WriterType::Pointer p_writer(WriterType::New());
-		p_writer->SetFileName( aFileName );
-		p_writer->SetInput( p_image );
-		p_writer->SetUseCompression(useDeflateCompressionIfPossible);
-		p_writer->Update();
+		// Save the data in SHORT
+		if (isDCM(aFileName))
+		{
+			typedef itk::Image< short, 3 >  ShortImageType;
+			typedef itk::ImageFileWriter<   ShortImageType > ShortWriterType;
+
+			typedef itk::RescaleIntensityImageFilter< InputImageType, ShortImageType > RescaleType;
+			typename RescaleType::Pointer rescale = RescaleType::New();
+			rescale->SetInput( p_image );
+			rescale->Update();
+
+			typename ShortWriterType::Pointer p_writer(ShortWriterType::New());
+			p_writer->SetFileName( aFileName );
+			p_writer->SetInput( rescale->GetOutput() );
+			p_writer->SetUseCompression(useDeflateCompressionIfPossible);
+			p_writer->Update();
+		}
+		// Save the data in its native format
+		else
+		{
+			typedef itk::ImageFileWriter< InputImageType > InputWriterType;
+			typename InputWriterType::Pointer p_writer(InputWriterType::New());
+			p_writer->SetFileName( aFileName );
+			p_writer->SetInput( p_image );
+			p_writer->SetUseCompression(useDeflateCompressionIfPossible);
+			p_writer->Update();
+		}
 	}
 	// 2D image
 	else
 	{
-		typedef itk::Image< T, 2 >  ImageType;
-		typedef itk::ImageFileWriter<   ImageType > WriterType;
+		typedef itk::Image< T, 2 >  InputImageType;
 
-		typename ImageType::RegionType region;
-		typename ImageType::IndexType start;
+		typename InputImageType::RegionType region;
+		typename InputImageType::IndexType start;
 		start[0] = 0;
 		start[1] = 0;
 
-		typename ImageType::SizeType size;
+		typename InputImageType::SizeType size;
 		size[0] = m_width;
 		size[1] = m_height;
 
 		region.SetSize(size);
 		region.SetIndex(start);
 
-		typename ImageType::Pointer p_image(ImageType::New());
+		typename InputImageType::Pointer p_image(InputImageType::New());
 		p_image->SetRegions(region);
 		p_image->Allocate();
 
 
-		typename ImageType::SpacingType spacing;
+		typename InputImageType::SpacingType spacing;
 		spacing[0] = m_spacing[0];
 		spacing[1] = m_spacing[1];
 		p_image->SetSpacing(spacing);
@@ -2696,12 +2716,38 @@ template<typename T> void Image<T>::saveUsingITK(const char* aFileName, bool use
 				m_p_image + number_of_pixels,
 				p_image->GetBufferPointer());
 
-		// Save the data
-		typename WriterType::Pointer p_writer(WriterType::New());
-		p_writer->SetFileName( aFileName );
-		p_writer->SetInput( p_image );
-		p_writer->SetUseCompression(useDeflateCompressionIfPossible);
-		p_writer->Update();
+
+		// Save the data in UCHAR
+		if (isJPEG(aFileName) ||
+				checkExtension(aFileName, "PNG") ||
+				checkExtension(aFileName, "BMP"))
+		{
+			typedef itk::Image< unsigned char, 2 >  UByteImageType;
+			typedef itk::ImageFileWriter<   UByteImageType > UByteWriterType;
+
+			typedef itk::RescaleIntensityImageFilter< InputImageType, UByteImageType > RescaleType;
+			typename RescaleType::Pointer rescale = RescaleType::New();
+			rescale->SetInput( p_image );
+			rescale->SetOutputMinimum( 0 );
+			rescale->SetOutputMaximum( 255 );
+			rescale->Update();
+
+			typename UByteWriterType::Pointer p_writer(UByteWriterType::New());
+			p_writer->SetFileName( aFileName );
+			p_writer->SetInput( rescale->GetOutput() );
+			p_writer->SetUseCompression(useDeflateCompressionIfPossible);
+			p_writer->Update();
+		}
+		// Save the data in its native format
+		else
+		{
+			typedef itk::ImageFileWriter<   InputImageType > InputWriterType;
+			typename InputWriterType::Pointer p_writer(InputWriterType::New());
+			p_writer->SetFileName( aFileName );
+			p_writer->SetInput( p_image );
+			p_writer->SetUseCompression(useDeflateCompressionIfPossible);
+			p_writer->Update();
+		}
 	}
 #else
     throw Exception(__FILE__, __FUNCTION__, __LINE__,
