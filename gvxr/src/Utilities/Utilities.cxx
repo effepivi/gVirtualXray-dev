@@ -69,6 +69,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <zlib.h>
 #include <iostream>
+#include <algorithm>
+#include <string>
 
 #ifndef __Utilities_h
 #include "gVirtualXRay/Utilities.h"
@@ -211,6 +213,18 @@ bool gVirtualXRay::checkExtension(const std::string& aFileName,
 
     std::string extension_plus_dot(".");
     extension_plus_dot += anExtension;
+
+    std::transform(
+    		file_extension.begin(),
+			file_extension.end(),
+			file_extension.begin(),
+			::toupper);
+
+    std::transform(
+    		extension_plus_dot.begin(),
+    		extension_plus_dot.end(),
+			extension_plus_dot.begin(),
+			::toupper);
 
     return (file_extension == extension_plus_dot);
 }
