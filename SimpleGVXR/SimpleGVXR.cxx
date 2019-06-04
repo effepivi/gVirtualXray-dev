@@ -1523,15 +1523,22 @@ void resetSceneTransformation()
 
 void scaleScene(double x,
                 double y,
+                double z)
+{
+    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildScaleMatrix(
+        x, y, z);
+}
+
+
+void scaleScene(double x,
+                double y,
                 double z,
                 const std::string& aUnitOfLength)
 {
-    // Move the scenegraph
     double unit_of_length = getUnitOfLength(aUnitOfLength);
-    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildScaleMatrix(
-        x * unit_of_length,
-        y * unit_of_length,
-        z * unit_of_length);
+    scaleScene(x * unit_of_length,
+               y * unit_of_length,
+               z * unit_of_length);
 }
 
 

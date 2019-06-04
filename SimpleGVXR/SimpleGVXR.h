@@ -915,6 +915,18 @@ void resetSceneTransformation();
  *  @param x:   the scaling factor along the X-axis
  *  @param y:   the scaling factor along the Y-axis
  *  @param z:   the scaling factor along the Z-axis
+ */
+//------------------------------------------------------------------------------
+void scaleScene(double x, double y, double z);
+
+
+//------------------------------------------------------------------------------
+/// Scale the 3-D scene
+/// (all the polygon meshes will be affected but not modified).
+/**
+ *  @param x:   the scaling factor along the X-axis
+ *  @param y:   the scaling factor along the Y-axis
+ *  @param z:   the scaling factor along the Z-axis
  *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
  *                          parameters. Acceptable values are:
  *                          "um", "micrometre",  "micrometer",
