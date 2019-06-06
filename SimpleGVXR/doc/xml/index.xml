@@ -62,7 +62,9 @@
     <member refid="_simple_g_v_x_r_8h_1a6c702a3df32eee4e0a0c8033e5cbd6aa" kind="function"><name>scaleNode</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3a13d0e42ff6a485f0617afc565fbdb7" kind="function"><name>rotateNode</name></member>
     <member refid="_simple_g_v_x_r_8h_1a29205bbf002e7aafc7053a992e3c168a" kind="function"><name>translateNode</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a1a8d3be943217700650c800027a44883" kind="function"><name>shearNode</name></member>
     <member refid="_simple_g_v_x_r_8h_1ae80cfca75f6e77016d9c32ed152e763b" kind="function"><name>resetSceneTransformation</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a8cef1100241801fc4f06c414001e3ff2" kind="function"><name>scaleScene</name></member>
     <member refid="_simple_g_v_x_r_8h_1a099498a73392a1b97d4feb8d44fdba6b" kind="function"><name>scaleScene</name></member>
     <member refid="_simple_g_v_x_r_8h_1a7fe19b103fe00ede3c5e8077ffeb518a" kind="function"><name>rotateScene</name></member>
     <member refid="_simple_g_v_x_r_8h_1a45b9f362b177ac5a13342714ab5c01f6" kind="function"><name>translateScene</name></member>

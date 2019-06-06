@@ -1515,6 +1515,58 @@ void translateNode(const std::string& aLabel,
 }
 
 
+void shearNode(const std::string& aLabel,
+               double yx,
+               double zx,
+               double xy,
+               double zy,
+               double xz,
+               double yz)
+{
+    if (g_p_scene_graph.get())
+        {
+        // Find the mesh
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+        // It has been found
+        if (p_node)
+            {
+            gVirtualXRay::MATRIX4 shear_matrix(
+                     1, yx, zx, 0,
+					xy,  1, zy, 0,
+					xz, yz,  1, 0,
+					 0,  0,  0, 1);
+
+            // Root node
+            if (p_node->getLabel() == "root")
+                {
+                p_node->setLocalTransformation(
+                        shear_matrix *
+                        p_node->getLocalTransformationMatrix());
+                }
+            else
+                {
+                p_node->setLocalTransformation(
+                        p_node->getLocalTransformationMatrix() *
+                        shear_matrix);
+                }
+            }
+        // It has not been found
+        else
+            {
+            cerr << "gvxrWarning:\tPolygonMesh " <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+            }
+        }
+    else
+        {
+        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        }
+}
+
+
 void resetSceneTransformation()
 {
     g_sample_rotation_matrix = gVirtualXRay::MATRIX4();

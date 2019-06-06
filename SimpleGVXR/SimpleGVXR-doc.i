@@ -979,6 +979,20 @@ Parameters
     the scaling factor along the Y-axis  
 * `z` :  
     the scaling factor along the Z-axis  
+";
+
+%feature("docstring") scaleScene "
+
+Scale the 3-D scene (all the polygon meshes will be affected but not modified).  
+
+Parameters
+----------
+* `x` :  
+    the scaling factor along the X-axis  
+* `y` :  
+    the scaling factor along the Y-axis  
+* `z` :  
+    the scaling factor along the Z-axis  
 * `aUnitOfLength` :  
     the unit of length corresponding to the x, y and z parameters. Acceptable
     values are: \"um\", \"micrometre\", \"micrometer\", \"mm\", \"millimetre\",
@@ -1438,6 +1452,28 @@ Parameters
 
 Replace the 3-D transformation matrix of the overall 3-D scene by an identity
 matrix.  
+";
+
+%feature("docstring") shearNode "
+
+Use a shear matrix to transform the node.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh to transform  
+* `yx` :  
+    the yx component of the shear matrix  
+* `zx` :  
+    the zx component of the shear matrix  
+* `xy` :  
+    the xy component of the shear matrix  
+* `zy` :  
+    the zy component of the shear matrix  
+* `xz` :  
+    the xz component of the shear matrix  
+* `yz` :  
+    the yz component of the shear matrix  
 ";
 
 %feature("docstring") getMaterialLabel "

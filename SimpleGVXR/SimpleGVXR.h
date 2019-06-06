@@ -902,6 +902,27 @@ void translateNode(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
+/// Use a shear matrix  to transform the node.
+/**
+ *  @param aLabel:  the label of the polygon mesh to transform
+ *  @param yx:   the yx component of the shear matrix
+ *  @param zx:   the zx component of the shear matrix
+ *  @param xy:   the xy component of the shear matrix
+ *  @param zy:   the zy component of the shear matrix
+ *  @param xz:   the xz component of the shear matrix
+ *  @param yz:   the yz component of the shear matrix
+ */
+//------------------------------------------------------------------------------
+void shearNode(const std::string& aLabel,
+               double yx,
+               double zx,
+               double xy,
+               double zy,
+               double xz,
+               double yz);
+
+
+//------------------------------------------------------------------------------
 /// Replace the 3-D transformation matrix of the overall 3-D scene by
 /// an identity matrix.
 //------------------------------------------------------------------------------

@@ -241,8 +241,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="memitem:a29205bbf002e7aafc7053a992e3c168a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a29205bbf002e7aafc7053a992e3c168a">translateNode</a> (const std::string &amp;aLabel, double x, double y, double z, const std::string &amp;aUnitOfLength)</td></tr>
 <tr class="memdesc:a29205bbf002e7aafc7053a992e3c168a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate a polygon mesh.  <a href="#a29205bbf002e7aafc7053a992e3c168a">More...</a><br /></td></tr>
 <tr class="separator:a29205bbf002e7aafc7053a992e3c168a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a8d3be943217700650c800027a44883"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a1a8d3be943217700650c800027a44883">shearNode</a> (const std::string &amp;aLabel, double yx, double zx, double xy, double zy, double xz, double yz)</td></tr>
+<tr class="memdesc:a1a8d3be943217700650c800027a44883"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use a shear matrix to transform the node.  <a href="#a1a8d3be943217700650c800027a44883">More...</a><br /></td></tr>
+<tr class="separator:a1a8d3be943217700650c800027a44883"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae80cfca75f6e77016d9c32ed152e763b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#ae80cfca75f6e77016d9c32ed152e763b">resetSceneTransformation</a> ()</td></tr>
 <tr class="separator:ae80cfca75f6e77016d9c32ed152e763b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cef1100241801fc4f06c414001e3ff2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a8cef1100241801fc4f06c414001e3ff2">scaleScene</a> (double x, double y, double z)</td></tr>
+<tr class="separator:a8cef1100241801fc4f06c414001e3ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a099498a73392a1b97d4feb8d44fdba6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a099498a73392a1b97d4feb8d44fdba6b">scaleScene</a> (double x, double y, double z, const std::string &amp;aUnitOfLength)</td></tr>
 <tr class="separator:a099498a73392a1b97d4feb8d44fdba6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fe19b103fe00ede3c5e8077ffeb518a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a7fe19b103fe00ede3c5e8077ffeb518a">rotateScene</a> (double anAngle, double x, double y, double z)</td></tr>
@@ -3482,8 +3487,51 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 
 </div>
 </div>
+<a id="a8cef1100241801fc4f06c414001e3ff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cef1100241801fc4f06c414001e3ff2">&#9670;&nbsp;</a></span>scaleScene() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void scaleScene </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Scale the 3-D scene (all the polygon meshes will be affected but not modified). <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the scaling factor along the X-axis </td></tr>
+    <tr><td class="paramname">y</td><td>the scaling factor along the Y-axis </td></tr>
+    <tr><td class="paramname">z</td><td>the scaling factor along the Z-axis </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a099498a73392a1b97d4feb8d44fdba6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a099498a73392a1b97d4feb8d44fdba6b">&#9670;&nbsp;</a></span>scaleScene()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a099498a73392a1b97d4feb8d44fdba6b">&#9670;&nbsp;</a></span>scaleScene() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4545,6 +4593,78 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
     <tr><td class="paramname">aWidth</td><td>the number of pixels along the X-axis </td></tr>
     <tr><td class="paramname">aHeight</td><td>the number of pixels along the Y-axis </td></tr>
     <tr><td class="paramname">aWindowID</td><td>the numerical ID of the corresponding context (default value: -1, means that the active context will be used) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1a8d3be943217700650c800027a44883"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a8d3be943217700650c800027a44883">&#9670;&nbsp;</a></span>shearNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shearNode </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aLabel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>yx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>zx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>xy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>zy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>xz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>yz</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Use a shear matrix to transform the node. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aLabel</td><td>the label of the polygon mesh to transform </td></tr>
+    <tr><td class="paramname">yx</td><td>the yx component of the shear matrix </td></tr>
+    <tr><td class="paramname">zx</td><td>the zx component of the shear matrix </td></tr>
+    <tr><td class="paramname">xy</td><td>the xy component of the shear matrix </td></tr>
+    <tr><td class="paramname">zy</td><td>the zy component of the shear matrix </td></tr>
+    <tr><td class="paramname">xz</td><td>the xz component of the shear matrix </td></tr>
+    <tr><td class="paramname">yz</td><td>the yz component of the shear matrix </td></tr>
   </table>
   </dd>
 </dl>
