@@ -1349,9 +1349,9 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
         }
 
     // Add the vertex normal vectors of the second polygon mesh
-    for (std::vector<RATIONAL_NUMBER>::const_iterator ite(
-                    aPolygonMesh.m_p_vertex_normal_set.begin());
-            ite != aPolygonMesh.m_p_vertex_normal_set.end();
+    for (std::vector<RATIONAL_NUMBER>::const_reverse_iterator ite(
+                    aPolygonMesh.m_p_vertex_normal_set.rbegin());
+            ite != aPolygonMesh.m_p_vertex_normal_set.rend();
             ++ite)
         {
         // Inverse the normal
@@ -1396,9 +1396,18 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLfloat) * 3);
 
-            std::memcpy(p_temp + m_number_of_vertices * 3,
-                    aPolygonMesh.m_p_vertex_set,
-                    aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
+            for (int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
+            {
+            	int id1 = i * 3 + m_number_of_vertices * 3;
+            	int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
+
+            	p_temp[id1 + 0] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
+            	p_temp[id1 + 1] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
+            	p_temp[id1 + 2] = ((GLfloat*)aPolygonMesh.m_p_vertex_set)[id2 + 2];
+            }
+            //std::memcpy(p_temp + m_number_of_vertices * 3,
+            //        aPolygonMesh.m_p_vertex_set,
+            //        aPolygonMesh.m_number_of_vertices * sizeof(GLfloat) * 3);
             }
             break;
 
@@ -1410,9 +1419,18 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLdouble) * 3);
 
-            std::memcpy(p_temp + m_number_of_vertices * 3,
-                    aPolygonMesh.m_p_vertex_set,
-                    aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
+            for (int i = 0; i < aPolygonMesh.m_number_of_vertices; ++i)
+            {
+            	int id1 = i * 3 + m_number_of_vertices * 3;
+            	int id2 = (aPolygonMesh.m_number_of_vertices - 1 - i) * 3;
+
+            	p_temp[id1 + 0] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 0];
+            	p_temp[id1 + 1] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 1];
+            	p_temp[id1 + 2] = ((GLdouble*)aPolygonMesh.m_p_vertex_set)[id2 + 2];
+            }
+            //std::memcpy(p_temp + m_number_of_vertices * 3,
+            //        aPolygonMesh.m_p_vertex_set,
+            //        aPolygonMesh.m_number_of_vertices * sizeof(GLdouble) * 3);
             }
             break;
         }
@@ -1465,7 +1483,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                *p_temp1++ = aPolygonMesh.getVertexNumber() - 1- p_temp2[aPolygonMesh.m_number_of_indices - 1 - i] + getVertexNumber();
                 }
             }
             break;
@@ -1486,7 +1504,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                *p_temp1++ = aPolygonMesh.getVertexNumber() - 1 - p_temp2[aPolygonMesh.m_number_of_indices - 1 - i] + getVertexNumber();
                 }
             }
             break;
@@ -1507,7 +1525,7 @@ PolygonMesh PolygonMesh::operator-(const PolygonMesh& aPolygonMesh) const
 
             for (unsigned int i(0); i < aPolygonMesh.m_number_of_indices; ++i)
                 {
-                *p_temp1++ = *p_temp2++ + getVertexNumber();
+                *p_temp1++ = aPolygonMesh.getVertexNumber() - 1- p_temp2[aPolygonMesh.m_number_of_indices - 1 - i] + getVertexNumber();
                 }
             }
             break;
