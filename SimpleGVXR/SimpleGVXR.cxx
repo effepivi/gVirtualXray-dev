@@ -700,52 +700,8 @@ void makeCylinder(const std::string& aLabel,
         }
 }
 
-void addMesh(const std::string& aDestination, const std::string& aSource) {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
-    "Not implemented");
-    /* // The scenegraph does not exist
-    if (!g_p_scene_graph.get())
-    {
-        // Create a scenegraph
-        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
-    }
-
-    std::map<string, PolygonMesh>::const_iterator ite_source =
-        g_p_scene_graph->getPolygonMeshSet().find(aSource);
-
-    if (ite_source == g_p_scene_graph->getPolygonMeshSet().end())
-    {
-        cerr <<
-            "gvxrWarning:\tPolygonMesh " <<
-            aSource <<
-            " not found in g_p_polygon_mesh_set." <<
-            endl;
-    }
-    else
-    {
-        std::map<string, PolygonMesh>::iterator ite_destination =
-            g_p_scene_graph->getPolygonMeshSet().find(aDestination);
-
-        if (ite_destination == g_p_scene_graph->getPolygonMeshSet().end())
-        {
-            cerr <<
-                "gvxrWarning:\tPolygonMesh " <<
-                aDestination <<
-                " not found in g_p_polygon_mesh_set." <<
-                endl;
-        }
-        else
-        {
-            ite_destination->second += ite_source->second;
-        }
-    }*/
-}
-
-
-void subtractMesh(const std::string& aDestination, const std::string& aSource) {
-    throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
-    "Not implemented");
-    /*
+void addMesh(const std::string& aDestination, const std::string& aSource)
+{
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
     {
@@ -753,35 +709,85 @@ void subtractMesh(const std::string& aDestination, const std::string& aSource) {
         g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
     }
 
-    std::map<string, PolygonMesh>::const_iterator ite_source =
-        g_p_scene_graph->getPolygonMeshSet().find(aSource);
+    // Find the source. It must exist
+    const gVirtualXRay::SceneGraphNode* p_source_node =
+        g_p_scene_graph->getNode(aSource);
 
-    if (ite_source == g_p_scene_graph->getPolygonMeshSet().end())
+    // Find the destination. It must exist
+    gVirtualXRay::SceneGraphNode* p_destination_node =
+        g_p_scene_graph->getNode(aDestination);
+
+    // The source does not exist
+    if (!p_source_node)
     {
         cerr <<
             "gvxrWarning:\tPolygonMesh " <<
             aSource <<
             " not found in g_p_polygon_mesh_set." <<
             endl;
-    }
-    else
-    {
-        std::map<string, PolygonMesh>::iterator ite_destination =
-            g_p_scene_graph->getPolygonMeshSet().find(aDestination);
 
-        if (ite_destination == g_p_scene_graph->getPolygonMeshSet().end())
-        {
-            cerr <<
-                "gvxrWarning:\tPolygonMesh " <<
-                aDestination <<
-                " not found in g_p_polygon_mesh_set." <<
-                endl;
-        }
-        else
-        {
-            ite_destination->second -= ite_source->second;
-        }
-    }*/
+        return;
+    }
+
+	// The destination does not exist
+	if (!p_destination_node)
+	{
+		cerr <<
+			"gvxrWarning:\tPolygonMesh " <<
+			aDestination <<
+			" not found in g_p_polygon_mesh_set." <<
+			endl;
+
+		return;
+	}
+
+	// Add the source to the destination
+	p_destination_node->getPolygonMesh() += p_source_node->getPolygonMesh();
+}
+
+
+void subtractMesh(const std::string& aDestination, const std::string& aSource) {
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+    {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+    }
+
+    // Find the source. It must exist
+    const gVirtualXRay::SceneGraphNode* p_source_node =
+        g_p_scene_graph->getNode(aSource);
+
+    // Find the destination. It must exist
+    gVirtualXRay::SceneGraphNode* p_destination_node =
+        g_p_scene_graph->getNode(aDestination);
+
+    // The source does not exist
+    if (!p_source_node)
+    {
+        cerr <<
+            "gvxrWarning:\tPolygonMesh " <<
+            aSource <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+
+        return;
+    }
+
+	// The destination does not exist
+	if (!p_destination_node)
+	{
+		cerr <<
+			"gvxrWarning:\tPolygonMesh " <<
+			aDestination <<
+			" not found in g_p_polygon_mesh_set." <<
+			endl;
+
+		return;
+	}
+
+	// Subtract the source to the destination
+	p_destination_node->getPolygonMesh() -= p_source_node->getPolygonMesh();
 }
 
 
