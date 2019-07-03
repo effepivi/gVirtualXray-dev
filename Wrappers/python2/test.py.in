@@ -27,27 +27,27 @@ if use_matplotlib:
     plt.subplot(131)
 
 # Create an OpenGL context
-print "Create an OpenGL context";
+print("Create an OpenGL context")
 gvxr.createWindow();
 gvxr.setWindowSize(512, 512);
 
 
 # Set up the beam
-print "Set up the beam";
+print("Set up the beam")
 gvxr.setSourcePosition(-40.0,  0.0, 0.0, "cm");
 gvxr.usePointSource();
 #gvxr.useParallelBeam();
 gvxr.setMonoChromatic(0.08, "MeV", 1000);
 
 # Set up the detector
-print "Set up the detector";
+print("Set up the detector");
 gvxr.setDetectorPosition(10.0, 0.0, 0.0, "cm");
 gvxr.setDetectorUpVector(0, 0, -1);
 gvxr.setDetectorNumberOfPixels(640, 320);
 gvxr.setDetectorPixelSize(0.5, 0.5, "mm");
 
 # Load the data
-print "Load the data";
+print("Load the data");
 gvxr.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
 
 # Process every node
@@ -55,25 +55,25 @@ for i in range(gvxr.getNumberOfChildren('root')):
     # Get the label
     label = gvxr.getChildLabel('root', i);
 
-    print "Move ", label, " to the centre";
+    print("Move ", label, " to the centre");
     gvxr.moveToCentre(label);
 
-    #print "Move the mesh to the center");
+    #print("Move the mesh to the center");
     #gvxr.moveToCenter(label);
 
-    print "Set ", label, "'s Hounsfield unit";
+    print("Set ", label, "'s Hounsfield unit");
     gvxr.setHU(label, 1000);
 
 
 # Compute an X-ray image
-print "Compute an X-ray image";
+print("Compute an X-ray image");
 gvxr.disableArtefactFiltering();
 # Not working anymore gvxr.enableArtefactFilteringOnGPU();
 # Not working anymore gvxr.enableArtefactFilteringOnCPU();
 x_ray_image = gvxr.computeXRayImage();
 
 # Save the last image into a file
-print "Save the last image into a file";
+print("Save the last image into a file");
 gvxr.saveLastXRayImage();
 gvxr.saveLastLBuffer();
 

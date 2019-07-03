@@ -56,65 +56,65 @@ parser.set_defaults(source_position_unit="mm")
 args = parser.parse_args()    
 
 if args.gpu_artefact_filtering and args.cpu_artefact_filtering:
-	print "Can't use artefact filtering on both GPU and CPU";
+	print("Can't use artefact filtering on both GPU and CPU");
 	exit();
 	
 if not args.input_mesh:
-	print "No input polygon mesh file name given";
+	print("No input polygon mesh file name given");
 	exit();
 	
 if not args.mesh_unit:
-	print "No unit of length given for the polygon mesh";
+	print("No unit of length given for the polygon mesh");
 	exit();
 	
 if not args.detector_position_unit:
-	print "No unit of length given for the detector position";
+	print("No unit of length given for the detector position");
 	exit();
 	
 if not args.source_position_unit:
-	print "No unit of length given for the source position";
+	print("No unit of length given for the source position");
 	exit();
 	
 if not args.output_image:
-	print "No output image file name given";
+	print("No output image file name given");
 	exit();
 
 if not args.source_position:
-	print "No source position given";
+	print("No source position given");
 	exit();
 
 if not args.detector_position:
-	print "No detector position given";
+	print("No detector position given");
 	exit();	
 	
 if not args.detector_up_vector:
-	print "No up vector of the detector given";
+	print("No up vector of the detector given");
 	exit();	
 	
 if not args.nb_of_pixels:
-	print "No number of pixels of the detector given";
+	print("No number of pixels of the detector given");
 	exit();
 
 if not args.pixel_size:
-	print "No pixel size given";
+	print("No pixel size given");
 	exit();
 
 if not args.pixel_unit:
-	print "No unit of length given for a pixel of the detector";
+	print("No unit of length given for a pixel of the detector");
 	exit();
 
-print "Use artefact filtering on GPU:\n", gvxr.enableArtefactFilteringOnGPU;
-print "Use artefact filtering on CPU:\n", gvxr.enableArtefactFilteringOnCPU;
-print "Input polygon mesh file name given:\t", args.input_mesh;
-print "Unit for the polygon mesh given:\t", args.mesh_unit;
-print "Centre the polygon mesh:\t", args.center;
-print "Output image file name:\t", args.output_image;
-print "Source position:\t", args.source_position, args.source_position_unit;
-print "Detector position:\t", args.detector_position, args.detector_position_unit;
-print "Detector up vector:\t", args.detector_up_vector;
-print "Detector size (in pixels):\t", args.nb_of_pixels;
-print "Pixel size given:\t", args.pixel_size;
-print "Unit for a pixel of the detector given:\t", args.pixel_unit;
+print("Use artefact filtering on GPU:\n", gvxr.enableArtefactFilteringOnGPU);
+print("Use artefact filtering on CPU:\n", gvxr.enableArtefactFilteringOnCPU);
+print("Input polygon mesh file name given:\t", args.input_mesh);
+print("Unit for the polygon mesh given:\t", args.mesh_unit);
+print("Centre the polygon mesh:\t", args.center);
+print("Output image file name:\t", args.output_image);
+print("Source position:\t", args.source_position, args.source_position_unit);
+print("Detector position:\t", args.detector_position, args.detector_position_unit);
+print("Detector up vector:\t", args.detector_up_vector);
+print("Detector size (in pixels):\t", args.nb_of_pixels);
+print("Pixel size given:\t", args.pixel_size);
+print("Unit for a pixel of the detector given:\t", args.pixel_unit);
 
 # Create an OpenGL context
 #print("Create an OpenGL context")
