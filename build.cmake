@@ -112,7 +112,11 @@ ENDIF()
 MESSAGE ("Configure gvxr-core")
 IF (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND}
+        COMMAND ${CMAKE_COMMAND} 
+
+            --graphviz=${CMAKE_CURRENT_LIST_DIR}/gvxr-dependencies.dot
+	
+	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
             -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
             -DCMAKE_INSTALL_PREFIX=${DESTINATION}
             -DBUILD_TESTING=${UNIT_TESTS}
@@ -121,19 +125,23 @@ IF (WIN32)
             -DUSE_SYSTEM_GLEW:BOOL=${USE_SYSTEM_GLEW}
             -DUSE_SYSTEM_GLFW:BOOL=${USE_SYSTEM_GLFW}
 	    #-DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
+	
+	    ${CMAKE_CURRENT_LIST_DIR}/gvxr
 
-            ${CMAKE_CURRENT_LIST_DIR}/gvxr
-
-            WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
-            OUTPUT_FILE ../gvxr_cmake.out.log
-            ERROR_FILE ../gvxr_cmake.err.log
-            RESULT_VARIABLE gvxr_cmake_result
-            OUTPUT_VARIABLE gvxr_cmake_output
-            ERROR_VARIABLE  gvxr_cmake_error
+        WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
+        OUTPUT_FILE ../gvxr_cmake.out.log
+        ERROR_FILE ../gvxr_cmake.err.log
+        RESULT_VARIABLE gvxr_cmake_result
+        OUTPUT_VARIABLE gvxr_cmake_output
+        ERROR_VARIABLE  gvxr_cmake_error
       )
 ELSE (WIN32)
     execute_process(
         COMMAND ${CMAKE_COMMAND}
+
+            --graphviz=${CMAKE_CURRENT_LIST_DIR}/gvxr-dependencies.dot
+	 
+	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
             -DCMAKE_INSTALL_PREFIX=${DESTINATION}
             -DBUILD_TESTING=${UNIT_TESTS}
             -DUSE_SYSTEM_XCOM:BOOL=${USE_SYSTEM_XCOM}
@@ -142,14 +150,16 @@ ELSE (WIN32)
             -DUSE_SYSTEM_GLFW:BOOL=${USE_SYSTEM_GLFW}
 	    #-DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
 
-            ${CMAKE_CURRENT_LIST_DIR}/gvxr
+	    --config Release
 
-            WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
-            OUTPUT_FILE ../gvxr_cmake.out.log
-            ERROR_FILE ../gvxr_cmake.err.log
-            RESULT_VARIABLE gvxr_cmake_result
-            OUTPUT_VARIABLE gvxr_cmake_output
-            ERROR_VARIABLE  gvxr_cmake_error
+	    ${CMAKE_CURRENT_LIST_DIR}/gvxr
+
+        WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
+        OUTPUT_FILE ../gvxr_cmake.out.log
+        ERROR_FILE ../gvxr_cmake.err.log
+        RESULT_VARIABLE gvxr_cmake_result
+        OUTPUT_VARIABLE gvxr_cmake_output
+        ERROR_VARIABLE  gvxr_cmake_error
     )
 ENDIF (WIN32)
 MESSAGE ("Configure gvxr-core: DONE")
@@ -164,26 +174,19 @@ ENDIF ()
 
 
 MESSAGE ("Build gvxr-core")
-IF (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release
-        OUTPUT_FILE gvxr_make.out.log
-        ERROR_FILE gvxr_make.err.log
-        RESULT_VARIABLE gvxr_make_result
-        OUTPUT_VARIABLE gvxr_make_output
-        ERROR_VARIABLE  gvxr_make_error
-    )
-ELSE (WIN32)
-    MESSAGE ("Run parallel build, but not on MSVC")
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build --config Release -- -j12
-        OUTPUT_FILE gvxr_make.out.log
-        ERROR_FILE gvxr_make.err.log
-        RESULT_VARIABLE gvxr_make_result
-        OUTPUT_VARIABLE gvxr_make_output
-        ERROR_VARIABLE  gvxr_make_error
-    )
-ENDIF (WIN32)
+execute_process(
+    COMMAND ${CMAKE_COMMAND}
+        --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build
+	--parallel
+	--clean-first
+	--verbose
+	--config Release
+    OUTPUT_FILE gvxr_make.out.log
+    ERROR_FILE gvxr_make.err.log
+    RESULT_VARIABLE gvxr_make_result
+    OUTPUT_VARIABLE gvxr_make_output
+    ERROR_VARIABLE  gvxr_make_error
+)
 MESSAGE ("Build gvxr-core: DONE")
 MESSAGE ("")
 
@@ -191,10 +194,13 @@ IF (NOT ${gvxr_make_result} EQUAL 0 OR
     NOT ${gvxr_make_output} STREQUAL  "" OR
     NOT ${gvxr_make_error} STREQUAL  "")
 
-    MESSAGE (FATAL_ERROR "Error building the project, see the log files (gvxr_make.out.log and gvxr_make.err.log)")
+    MESSAGE (WARNING "gvxr_make_result = ${gvxr_make_result}")
+    #MESSAGE (WARNING "gvxr_make_output = ${gvxr_make_output}")
+    #MESSAGE (WARNING "gvxr_make_error  = ${gvxr_make_error}")
+    MESSAGE (FATAL_ERROR "Error building the project in ${CMAKE_CURRENT_LIST_DIR}/gvxr-build, see the log files (gvxr_make.out.log and gvxr_make.err.log)")
 ENDIF ()
 
-MESSAGE ("Install gvxr-core")
+#[[MESSAGE ("Install gvxr-core")
 IF (WIN32)
     execute_process(
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_LIST_DIR}/gvxr-build  --config Release --target INSTALL
@@ -265,9 +271,19 @@ ENDIF ()
 MESSAGE ("Configure SimpleGVXR-core")
 IF (WIN32)
     execute_process(
-COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP -DCMAKE_INSTALL_PREFIX=${DESTINATION} -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
- -DBUILD_TESTING=${UNIT_TESTS} ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
-        WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build
+        COMMAND ${CMAKE_COMMAND}
+
+            --graphviz=${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-dependencies.dot
+            
+	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+            -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
+            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
+            -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
+            -DBUILD_TESTING=${UNIT_TESTS}
+
+	    ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
+        
+	WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build
         OUTPUT_FILE ../SimpleGVXR_cmake.out.log
         ERROR_FILE ../SimpleGVXR_cmake.err.log
         RESULT_VARIABLE SimpleGVXR_cmake_result
@@ -276,8 +292,20 @@ COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\
       )
 ELSE (WIN32)
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${DESTINATION} -DUSE_SYSTEM_gVirtualXRay:BOOL=ON -DBUILD_TESTING=${UNIT_TESTS} --config Release ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
-        WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build
+        COMMAND ${CMAKE_COMMAND}
+
+            --graphviz=${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-dependencies.dot
+        
+	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+	    -DCMAKE_INSTALL_PREFIX=${DESTINATION}
+	    -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
+	    -DBUILD_TESTING=${UNIT_TESTS}
+	
+	    --config Release
+	
+	    ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
+        
+	WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR-build
         OUTPUT_FILE ../SimpleGVXR_cmake.out.log
         ERROR_FILE ../SimpleGVXR_cmake.err.log
         RESULT_VARIABLE SimpleGVXR_cmake_result
@@ -398,22 +426,27 @@ ENDIF ()
 
 MESSAGE ("Configure Wrappers-core")
 IF (WIN32)
-    execute_process(COMMAND ${CMAKE_COMMAND}
-        -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
-        -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-        -DUSE_SYSTEM_SimpleGVXR:BOOL=ON
-        -DBUILD_TESTING=${UNIT_TESTS}
-        -DBUILD_CSHARP:BOOL=${BUILD_CSHARP}
-        -DBUILD_JAVA:BOOL=${BUILD_JAVA}
-        -DBUILD_OCTAVE:BOOL=${BUILD_OCTAVE}
-        -DBUILD_PERL:BOOL=${BUILD_PERL}
-        -DBUILD_PYTHON3:BOOL=${BUILD_PYTHON3}
-        -DBUILD_PYTHON2:BOOL=${BUILD_PYTHON2}
-        -DBUILD_R:BOOL=${BUILD_R}
-        -DBUILD_RUBY:BOOL=${BUILD_RUBY}
-        -DBUILD_TCL:BOOL=${BUILD_TCL}
+    execute_process(
+	COMMAND ${CMAKE_COMMAND}
 
-        ${CMAKE_CURRENT_LIST_DIR}/Wrappers
+            --graphviz=${CMAKE_CURRENT_LIST_DIR}/Wrappers-dependencies.dot
+	    
+	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+            -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
+            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
+            -DUSE_SYSTEM_SimpleGVXR:BOOL=ON
+            -DBUILD_TESTING=${UNIT_TESTS}
+            -DBUILD_CSHARP:BOOL=${BUILD_CSHARP}
+            -DBUILD_JAVA:BOOL=${BUILD_JAVA}
+            -DBUILD_OCTAVE:BOOL=${BUILD_OCTAVE}
+            -DBUILD_PERL:BOOL=${BUILD_PERL}
+            -DBUILD_PYTHON3:BOOL=${BUILD_PYTHON3}
+            -DBUILD_PYTHON2:BOOL=${BUILD_PYTHON2}
+            -DBUILD_R:BOOL=${BUILD_R}
+            -DBUILD_RUBY:BOOL=${BUILD_RUBY}
+            -DBUILD_TCL:BOOL=${BUILD_TCL}
+
+	    ${CMAKE_CURRENT_LIST_DIR}/Wrappers
 
         WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build
         OUTPUT_FILE ../Wrappers_cmake.out.log
@@ -423,21 +456,28 @@ IF (WIN32)
         ERROR_VARIABLE  Wrappers_cmake_error
       )
 ELSE (WIN32)
-    execute_process(COMMAND ${CMAKE_COMMAND}
-        -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-        -DUSE_SYSTEM_SimpleGVXR:BOOL=ON
-        -DBUILD_TESTING=${UNIT_TESTS}
-        -DBUILD_CSHARP:BOOL=${BUILD_CSHARP}
-        -DBUILD_JAVA:BOOL=${BUILD_JAVA}
-        -DBUILD_OCTAVE:BOOL=${BUILD_OCTAVE}
-        -DBUILD_PERL:BOOL=${BUILD_PERL}
-        -DBUILD_PYTHON3:BOOL=${BUILD_PYTHON3}
-        -DBUILD_PYTHON2:BOOL=${BUILD_PYTHON2}
-        -DBUILD_R:BOOL=${BUILD_R}
-        -DBUILD_RUBY:BOOL=${BUILD_RUBY}
-        -DBUILD_TCL:BOOL=${BUILD_TCL}
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} 
+	    
+            --graphviz=${CMAKE_CURRENT_LIST_DIR}/Wrappers-dependencies.dot
 
-        ${CMAKE_CURRENT_LIST_DIR}/Wrappers
+	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
+            -DUSE_SYSTEM_SimpleGVXR:BOOL=ON
+            -DBUILD_TESTING=${UNIT_TESTS}
+            -DBUILD_CSHARP:BOOL=${BUILD_CSHARP}
+            -DBUILD_JAVA:BOOL=${BUILD_JAVA}
+            -DBUILD_OCTAVE:BOOL=${BUILD_OCTAVE}
+            -DBUILD_PERL:BOOL=${BUILD_PERL}
+            -DBUILD_PYTHON3:BOOL=${BUILD_PYTHON3}
+            -DBUILD_PYTHON2:BOOL=${BUILD_PYTHON2}
+            -DBUILD_R:BOOL=${BUILD_R}
+            -DBUILD_RUBY:BOOL=${BUILD_RUBY}
+            -DBUILD_TCL:BOOL=${BUILD_TCL}
+
+	    --config Release
+	    
+            ${CMAKE_CURRENT_LIST_DIR}/Wrappers
 
         WORKING_DIRECTORY  ${CMAKE_CURRENT_LIST_DIR}/Wrappers-build
         OUTPUT_FILE ../Wrappers_cmake.out.log
@@ -521,4 +561,4 @@ ENDIF ()
 
 IF (WRAPPER_TEST)
     MESSAGE (STATUS "Franck to do.")
-ENDIF ()
+ENDIF ()]]
