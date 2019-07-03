@@ -10,4 +10,4 @@ cmake \
     -DUSE_SYSTEM_GLEW:BOOL=ON \
     -DUSE_SYSTEM_GLFW:BOOL=ON \
     -DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM \
-    -P build.cmake
+    -P CMakeLists.txt
