@@ -36,9 +36,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
-# Download and install GoogleTest
-add_subdirectory(googletest)
-
 
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.13.0")
     cmake_policy(SET CMP0075 NEW)
@@ -73,121 +70,121 @@ check_function_exists(cbrt HAVE_CBRT)
 
 
 # Valiation_02
-add_executable(TestDensity                     TestDensity.cxx)
+add_executable(SGVXR_TestDensity                     TestDensity.cxx)
 
 # Validation_01
-add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
+add_executable(SGVXR_TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 
-add_executable(TestCubeWithIndex    TestCubeWithIndex)
-add_executable(TestCubeWithoutIndex TestCubeWithoutIndex)
+add_executable(SGVXR_TestCubeWithIndex    TestCubeWithIndex.cxx)
+add_executable(SGVXR_TestCubeWithoutIndex TestCubeWithoutIndex.cxx)
 
 # Validation_??
-add_executable(TestLBuffer TestLBuffer.cxx)
+add_executable(SGVXR_TestLBuffer TestLBuffer.cxx)
 
 # Validation_03
-add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
+add_executable(SGVXR_TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
 
 # Validation_05
-add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
+add_executable(SGVXR_TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
 
 # Validation_08
-add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
+add_executable(SGVXR_TestSinogramFromMesh            TestSinogramFromMesh.cxx)
 
 # Validation_??
-#add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
+#add_executable(SGVXR_TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
 
 # Validation_??
-#add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
+#add_executable(SGVXR_TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
 
 # Validation_06
-add_executable(TestPointSource                 TestPointSource.cxx)
+add_executable(SGVXR_TestPointSource                 TestPointSource.cxx)
 
 # Validation_07
-add_executable(TestCubeSource                  TestCubeSource.cxx)
+add_executable(SGVXR_TestCubeSource                  TestCubeSource.cxx)
 
 # Validation_09
-add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
+add_executable(SGVXR_TestUncenteredSource            TestUncenteredSource.cxx)
 
 # Validation_??
-#add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
+#add_executable(SGVXR_TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
 
 # Validation_04
-add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
+add_executable(SGVXR_TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
 
-add_executable(TestOrtho                        TestOrtho.cxx)
+add_executable(SGVXR_TestOrtho                        TestOrtho.cxx)
 
 IF (FFTW3_LIBRARIES)
     # Validation_04
-    add_executable(TestFBP                     TestFBP.cxx)
+    add_executable(SGVXR_TestFBP                     TestFBP.cxx)
 ENDIF()
 
 
-target_link_libraries(TestDensity                     ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestMassAttenuationCoefficients ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestDensity                     ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestMassAttenuationCoefficients ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
 
-target_link_libraries(TestCubeWithoutIndex            ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestCubeWithIndex               ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestLBuffer                     ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestBeerLambertLawPolyChromatic ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestSinogramFromMesh            ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-#target_link_libraries(TestSinogramFromVoxels          ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestPointSource                 ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestCubeSource                  ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestUncenteredSource            ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-#target_link_libraries(TestPhantomMonoChromatic        ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestRadonTransformFromMesh      ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
-target_link_libraries(TestOrtho                      ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestCubeWithoutIndex            ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestCubeWithIndex               ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestLBuffer                     ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestBeerLambertLawMonoChromatic ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestBeerLambertLawPolyChromatic ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestSinogramFromMesh            ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+#target_link_libraries(SGVXR_TestSinogramFromVoxels          ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestPointSource                 ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestCubeSource                  ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestUncenteredSource            ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+#target_link_libraries(SGVXR_TestPhantomMonoChromatic        ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestRadonTransformFromMesh      ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+target_link_libraries(SGVXR_TestOrtho                      ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
 
 IF (FFTW3_LIBRARIES)
-    target_link_libraries(TestFBP                     ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
+    target_link_libraries(SGVXR_TestFBP                     ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} gtest gtest_main)
 ENDIF()
 
 # Add dependencies
 if (SimpleGVXR_BINARY_DIR)
      ADD_DEPENDENCIES(SimpleGVXR googletest)
 
-     ADD_DEPENDENCIES(TestDensity   SimpleGVXR)
-     ADD_DEPENDENCIES(TestMassAttenuationCoefficients   SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)
+     ADD_DEPENDENCIES(SGVXR_TestMassAttenuationCoefficients   SimpleGVXR googletest)
 
-     ADD_DEPENDENCIES(TestCubeWithoutIndex              SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestCubeWithIndex                 SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestLBuffer                       SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestSinogramFromMesh              SimpleGVXR googletest)
-     #ADD_DEPENDENCIES(TestSinogramFromVoxels            SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestPointSource                   SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestCubeSource                    SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestUncenteredSource              SimpleGVXR googletest)
-     #ADD_DEPENDENCIES(TestPhantomMonoChromatic          SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestRadonTransformFromMesh        SimpleGVXR googletest)
-     ADD_DEPENDENCIES(TestOrtho                         SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestCubeWithoutIndex              SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestCubeWithIndex                 SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestLBuffer                       SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawMonoChromatic   SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestBeerLambertLawPolyChromatic   SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestSinogramFromMesh              SimpleGVXR googletest)
+     #ADD_DEPENDENCIES(SGVXR_TestSinogramFromVoxels            SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestPointSource                   SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestCubeSource                    SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestUncenteredSource              SimpleGVXR googletest)
+     #ADD_DEPENDENCIES(SGVXR_TestPhantomMonoChromatic          SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestRadonTransformFromMesh        SimpleGVXR googletest)
+     ADD_DEPENDENCIES(SGVXR_TestOrtho                         SimpleGVXR googletest)
 
     IF (FFTW3_LIBRARIES)
-         ADD_DEPENDENCIES(TestFBP                           SimpleGVXR googletest)
+         ADD_DEPENDENCIES(SGVXR_TestFBP                           SimpleGVXR googletest)
     ENDIF()
 endif (SimpleGVXR_BINARY_DIR)
 
-add_test (TestDensity TestDensity)
-add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
+add_test(SGVXR_TestDensity TestDensity)
+add_test(SGVXR_TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
 
-#add_test (TestCubeWithoutIndex            TestCubeWithoutIndex)
-#add_test (TestCubeWithIndex               TestCubeWithIndex)
-#add_test (TestLBuffer                     TestLBuffer)
-add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
-add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
-#add_test (TestSinogramFromMesh            TestSinogramFromMesh)
-##add_test (TestSinogramFromVoxels          TestSinogramFromVoxels)
-#add_test (TestPointSource                 TestPointSource)
-#add_test (TestCubeSource                  TestCubeSource)
-#add_test (TestUncenteredSource            TestUncenteredSource)
-##add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
-##add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
-#add_test (TestOrtho                       TestOrtho)
+#add_test(SGVXR_TestCubeWithoutIndex            TestCubeWithoutIndex)
+#add_test(SGVXR_TestCubeWithIndex               TestCubeWithIndex)
+#add_test(SGVXR_TestLBuffer                     TestLBuffer)
+add_test(SGVXR_TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
+add_test(SGVXR_TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
+#add_test(SGVXR_TestSinogramFromMesh            TestSinogramFromMesh)
+##add_test(SGVXR_TestSinogramFromVoxels          TestSinogramFromVoxels)
+#add_test(SGVXR_TestPointSource                 TestPointSource)
+#add_test(SGVXR_TestCubeSource                  TestCubeSource)
+#add_test(SGVXR_TestUncenteredSource            TestUncenteredSource)
+##add_test(SGVXR_TestPhantomMonoChromatic        TestPhantomMonoChromatic)
+##add_test(SGVXR_TestRadonTransformFromMesh      TestRadonTransformFromMesh)
+#add_test(SGVXR_TestOrtho                       TestOrtho)
 
 #IF (FFTW3_LIBRARIES)
-#    add_test (TestFBP                     TestFBP)
+#    add_test(SGVXR_TestFBP                     TestFBP)
 #ENDIF()
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
