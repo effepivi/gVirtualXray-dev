@@ -41,6 +41,7 @@
     <member refid="_simple_g_v_x_r_8h_1a2540ae0646c910ba1c68f468d71770f8" kind="function"><name>getChildLabel</name></member>
     <member refid="_simple_g_v_x_r_8h_1af48d8fdac5cd08f999ac53317bea21d2" kind="function"><name>getLocalTransformationMatrix</name></member>
     <member refid="_simple_g_v_x_r_8h_1a9647a01539f7e68416e8dc7a1f332dff" kind="function"><name>setLocalTransformationMatrix</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a75e208002b5ac068767a99088ba18f9d" kind="function"><name>applyCurrentLocalTransformation</name></member>
     <member refid="_simple_g_v_x_r_8h_1a88e6a78d2f84299bae95b2b1296da9ae" kind="function"><name>getNodeAndChildrenBoundingBox</name></member>
     <member refid="_simple_g_v_x_r_8h_1abbc0ba72376cfd66b63fd6391c71f990" kind="function"><name>getNodeOnlyBoundingBox</name></member>
     <member refid="_simple_g_v_x_r_8h_1a0cc80f5ef79f06b447bec495f5c97c68" kind="function"><name>displayNode</name></member>
@@ -112,6 +113,7 @@
     <member refid="_simple_g_v_x_r_8h_1a2163e6fff436eb05debd45d848681d64" kind="function"><name>loadSpectrumFromTSV</name></member>
     <member refid="_simple_g_v_x_r_8h_1a8924b6dcab4674bc33e24825cb7d1ebe" kind="function"><name>getEnergyBins</name></member>
     <member refid="_simple_g_v_x_r_8h_1a71542b762755797939abab386ebbeb3c" kind="function"><name>getPhotonCountEnergyBins</name></member>
+    <member refid="_simple_g_v_x_r_8h_1abb44c8ba20d31d7bb33afe27b86933be" kind="function"><name>saveSTLfile</name></member>
     <member refid="_simple_g_v_x_r_8h_1a32e448289291a23d645c301b8c5c6482" kind="function"><name>saveLastXRayImage</name></member>
     <member refid="_simple_g_v_x_r_8h_1a30e9dcbbe24bc34add2f849655f6e5e4" kind="function"><name>saveLastLBuffer</name></member>
     <member refid="_simple_g_v_x_r_8h_1a58a2b9e1ede05451b09797cdb13531ba" kind="function"><name>saveLastCumulatedLBuffer</name></member>
