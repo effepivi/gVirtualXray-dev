@@ -661,6 +661,18 @@ Parameters
     the number of incident photons  
 ";
 
+%feature("docstring") applyCurrentLocalTransformation "
+
+Apply the current local transformation to all the vertices of a given node in
+the scenegraph. Note the the local transformation is then reset to the identity
+matrix.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label in the scenegraph  
+";
+
 %feature("docstring") pushModelViewMatrix "
 
 Add the current matrix to the model/view matrix stack. It behaves as the
@@ -1417,6 +1429,19 @@ Parameters
 Returns
 -------
 the number of chidren  
+";
+
+%feature("docstring") saveSTLfile "
+
+Save the polygon mesh of a given node.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label of the polygon mesh  
+* `aFileName` :  
+    the name of the output file (default: means that the filename will be
+    automatically generated and the file saved in the current path)  
 ";
 
 %feature("docstring") getDensityFromHU "

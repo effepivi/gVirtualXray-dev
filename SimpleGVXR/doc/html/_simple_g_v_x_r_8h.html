@@ -182,6 +182,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="memitem:a9647a01539f7e68416e8dc7a1f332dff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a9647a01539f7e68416e8dc7a1f332dff">setLocalTransformationMatrix</a> (const std::string &amp;aLabel, const std::vector&lt; double &gt; &amp;aMatrix)</td></tr>
 <tr class="memdesc:a9647a01539f7e68416e8dc7a1f332dff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the local transformation matrix of a given node in the scenegraph.  <a href="#a9647a01539f7e68416e8dc7a1f332dff">More...</a><br /></td></tr>
 <tr class="separator:a9647a01539f7e68416e8dc7a1f332dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75e208002b5ac068767a99088ba18f9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a75e208002b5ac068767a99088ba18f9d">applyCurrentLocalTransformation</a> (const std::string &amp;aLabel)</td></tr>
+<tr class="separator:a75e208002b5ac068767a99088ba18f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88e6a78d2f84299bae95b2b1296da9ae"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a88e6a78d2f84299bae95b2b1296da9ae">getNodeAndChildrenBoundingBox</a> (const std::string &amp;aLabel, const std::string &amp;aUnitOfLength=&quot;cm&quot;)</td></tr>
 <tr class="separator:a88e6a78d2f84299bae95b2b1296da9ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbc0ba72376cfd66b63fd6391c71f990"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#abbc0ba72376cfd66b63fd6391c71f990">getNodeOnlyBoundingBox</a> (const std::string &amp;aLabel, const std::string &amp;aUnitOfLength=&quot;cm&quot;)</td></tr>
@@ -371,6 +373,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="memitem:a71542b762755797939abab386ebbeb3c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a71542b762755797939abab386ebbeb3c">getPhotonCountEnergyBins</a> ()</td></tr>
 <tr class="memdesc:a71542b762755797939abab386ebbeb3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor on the number of photons per energy bin of the beam spectrum.  <a href="#a71542b762755797939abab386ebbeb3c">More...</a><br /></td></tr>
 <tr class="separator:a71542b762755797939abab386ebbeb3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb44c8ba20d31d7bb33afe27b86933be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#abb44c8ba20d31d7bb33afe27b86933be">saveSTLfile</a> (const std::string &amp;aLabel, const std::string &amp;aFileName=std::string())</td></tr>
+<tr class="memdesc:abb44c8ba20d31d7bb33afe27b86933be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the polygon mesh of a given node.  <a href="#abb44c8ba20d31d7bb33afe27b86933be">More...</a><br /></td></tr>
+<tr class="separator:abb44c8ba20d31d7bb33afe27b86933be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32e448289291a23d645c301b8c5c6482"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a32e448289291a23d645c301b8c5c6482">saveLastXRayImage</a> (const std::string &amp;aFileName=std::string(), bool useCompression=true)</td></tr>
 <tr class="memdesc:a32e448289291a23d645c301b8c5c6482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the last X-ray image that has been computed.  <a href="#a32e448289291a23d645c301b8c5c6482">More...</a><br /></td></tr>
 <tr class="separator:a32e448289291a23d645c301b8c5c6482"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -603,6 +608,31 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">aLabel</td><td>the label of the polygon mesh in the scenegraph </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a75e208002b5ac068767a99088ba18f9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75e208002b5ac068767a99088ba18f9d">&#9670;&nbsp;</a></span>applyCurrentLocalTransformation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void applyCurrentLocalTransformation </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aLabel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Apply the current local transformation to all the vertices of a given node in the scenegraph. Note the the local transformation is then reset to the identity matrix. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aLabel</td><td>the label in the scenegraph </td></tr>
   </table>
   </dd>
 </dl>
@@ -3423,6 +3453,43 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
   <table class="params">
     <tr><td class="paramname">aFileName</td><td>the name of the output file (default: means that the filename will be automatically generated and the file saved in the current path) </td></tr>
     <tr><td class="paramname">useCompression</td><td>use data compression is possible (default: true) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abb44c8ba20d31d7bb33afe27b86933be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb44c8ba20d31d7bb33afe27b86933be">&#9670;&nbsp;</a></span>saveSTLfile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void saveSTLfile </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aLabel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aFileName</em> = <code>std::string()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Save the polygon mesh of a given node. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aLabel</td><td>the label of the polygon mesh </td></tr>
+    <tr><td class="paramname">aFileName</td><td>the name of the output file (default: means that the filename will be automatically generated and the file saved in the current path) </td></tr>
   </table>
   </dd>
 </dl>

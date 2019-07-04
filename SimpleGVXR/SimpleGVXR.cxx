@@ -621,7 +621,7 @@ void emptyMesh(const std::string& aLabel, const std::string& aParent)
 
     if (p_node)
         {
-        p_node->getPolygonMesh() = gVirtualXRay::PolygonMesh();
+        p_node->setGeometry(gVirtualXRay::PolygonMesh());
         }
     else
         {
@@ -647,9 +647,9 @@ void makeCube(const std::string& aLabel,
 
     if (p_node)
         {
-        p_node->getPolygonMesh() = gVirtualXRay::CubeMesh<double>(
+        p_node->setGeometry(gVirtualXRay::CubeMesh<double>(
             aLength * getUnitOfLength(aUnitOfLength),
-            GL_UNSIGNED_INT);
+            GL_UNSIGNED_INT));
         }
     else
         {
@@ -682,10 +682,10 @@ void makeCylinder(const std::string& aLabel,
 
     if (p_node)
         {
-        p_node->getPolygonMesh() = gVirtualXRay::CylinderMesh<double>(
+        p_node->setGeometry(gVirtualXRay::CylinderMesh<double>(
             aNumberOfSectors, aHeight * getUnitOfLength(aUnitOfLength),
             aRadius * getUnitOfLength(aUnitOfLength),
-            GL_UNSIGNED_INT);
+            GL_UNSIGNED_INT));
         }
     else
         {
@@ -907,6 +907,38 @@ void setLocalTransformationMatrix(const std::string& aLabel,
             endl;
         }
 }
+
+
+void applyCurrentLocalTransformation(const std::string& aLabel)
+{
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+        {
+    	p_node->getPolygonMesh().applyTransform(p_node->getLocalTransformationMatrix());
+
+        // Reset its local transformation matrix
+        p_node->setLocalTransformation(gVirtualXRay::MATRIX4());
+        }
+    // The node does not exist
+    else
+        {
+        // Show warning message
+        cerr << "gvxrWarning:\tPolygonMesh " <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
+
 
 std::vector<double> getNodeAndChildrenBoundingBox(const std::string& aLabel,
     const std::string& aUnitOfLength)
@@ -2615,6 +2647,53 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy)
     return (p_temp);
 }
 
+
+//--------------------------------------------
+void saveSTLfile(const std::string& aLabel,
+                 const std::string& aFileName)
+//--------------------------------------------
+{
+	// Create the file name
+	std::string file_name;
+	if (aFileName.size() == 0)
+	{
+		file_name = aLabel + ".stl";
+	}
+	else
+	{
+		file_name = aFileName;
+	}
+
+	// Get the scenegraph
+    gVirtualXRay::SceneGraphBinder* p_temp = g_p_scene_graph.get();
+    if (!p_temp)
+        {
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    // Get the node
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    // The node exists
+    if (p_node)
+        {
+        // Set the file name
+    	p_node->getPolygonMesh().setFileName(file_name);
+
+        // save the file
+    	p_node->getPolygonMesh().writeSTLFile();
+        }
+    // The node does not exist
+    else
+        {
+		cerr <<
+			"gvxrWarning:\tPolygonMesh " <<
+			aLabel <<
+			" not found in g_p_polygon_mesh_set." <<
+			endl;
+        }
+}
+
 //--------------------------------------------
 std::vector<double> getPhotonCountEnergyBins()
 //--------------------------------------------
@@ -2787,7 +2866,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
     if (p_node) {
     // Compute the L-buffer
     g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(),
-    g_sample_rotation_matrix, false);
+    g_sample_rotation_matrix, true);
     }
     // It has not been found
     else {

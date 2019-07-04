@@ -643,6 +643,16 @@ void setLocalTransformationMatrix(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
+/// Apply the current local transformation to all the vertices of a given node in the scenegraph.
+/// Note the the local transformation is then reset to the identity matrix.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ */
+//------------------------------------------------------------------------------
+void applyCurrentLocalTransformation(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Access the bounding box of a given node and all its children (if any).
 /// The bounding box is given in the world coordinate system.
 /**
@@ -1526,6 +1536,20 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
  */
 //------------------------------------------------------------------------------
 std::vector<double> getPhotonCountEnergyBins();
+
+
+//------------------------------------------------------------------------------
+/// Save the polygon mesh of a given node.
+/**
+ *  @param aLabel:          the label of the polygon mesh
+ *  @param aFileName:   the name of the output file
+ *  (default: means that the filename will be
+ *  automatically generated and the file saved in
+ *  the current path)
+ */
+//------------------------------------------------------------------------------
+void saveSTLfile(const std::string& aLabel,
+		const std::string& aFileName = std::string());
 
 
 //------------------------------------------------------------------------------
