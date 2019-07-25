@@ -164,16 +164,19 @@ void ImplicitSurface::voxelise(const Vec3ui& aNumberOfVoxels,
 	m_p_volume->SetOrigin(origin);
 */
 
+	unsigned int width  = aNumberOfVoxels.getX();
+	unsigned int height = aNumberOfVoxels.getY();
+	unsigned int depth  = aNumberOfVoxels.getZ();
 #ifndef WIN32
 	#pragma omp parallel for collapse(3)
 #endif
-	for (unsigned int z = 0; z < aNumberOfVoxels.getZ(); ++z)
+	for (unsigned int z = 0; z < depth; ++z)
 	{
 
-		for (unsigned int y = 0; y < aNumberOfVoxels.getY(); ++y)
+		for (unsigned int y = 0; y < height; ++y)
 		{
 
-			for (unsigned int x = 0; x < aNumberOfVoxels.getX(); ++x)
+			for (unsigned int x = 0; x < width; ++x)
 			{
 				RATIONAL_NUMBER voxel_value(0);
 
@@ -265,4 +268,3 @@ void ImplicitSurface::extractIsoSurface(const RATIONAL_NUMBER& aThreshold)
     m_mesh_data = m_volume.marchingCubes(aThreshold);
     m_mesh_data.applyTranslation(m_centre);
 }
-
