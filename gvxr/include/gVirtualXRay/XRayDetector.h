@@ -131,7 +131,7 @@ public:
     /// Default constructor.
     //--------------------------------------------------------------------------
     XRayDetector();
-    
+
 
     //--------------------------------------------------------------------------
     /// Destructor.
@@ -361,8 +361,8 @@ public:
 
 
     unsigned int getNumberOfSourceSamples()const;
-    
-    
+
+
     const VEC3& getSourceSamplePosition(unsigned int aSampleID) const;
 
 
@@ -408,7 +408,7 @@ public:
      *  @param D: the 4th component of the plane equation
      */
     //--------------------------------------------------------------------------
-    const void getPlaneEquation(RATIONAL_NUMBER& A,
+    void getPlaneEquation(RATIONAL_NUMBER& A,
                                 RATIONAL_NUMBER& B,
                                 RATIONAL_NUMBER& C,
                                 RATIONAL_NUMBER& D);
@@ -498,7 +498,7 @@ protected:
 
      /// The position of the detector centre
     VEC3            m_detector_position;
-    
+
 
     /// The position of the source centre
     VEC3            m_xray_source_centre;
@@ -506,11 +506,11 @@ protected:
 
     /// The sample positions of the source
     std::vector<VEC3> m_p_xray_source_position_set;
-    
+
 
     /// The "up" vector the the detector
     VEC3            m_up_vector;
-    
+
 
     /// The rotation matrix
     MATRIX4         m_rotation_matrix;
@@ -518,15 +518,15 @@ protected:
 
     /// The size of the detector
     VEC2            m_size_in_unit_of_length;
-    
+
 
     /// Resolution (in unit of length per pixel)
     VEC2 m_resolution_in_unit_of_length_per_pixel;
-    
+
 
     /// Distance between the source and the detector
     RATIONAL_NUMBER m_distance_source_detector;
-    
+
 
     /// Size of the detector (in number of pixels)
     Vec2ui          m_size_in_number_of_pixels;

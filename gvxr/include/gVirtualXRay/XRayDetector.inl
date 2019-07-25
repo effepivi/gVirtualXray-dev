@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -174,7 +174,7 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const RATIONAL_NU
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -192,7 +192,7 @@ inline void XRayDetector::setResolutionInUnitsOfLengthPerPixel(const VEC2& aReso
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -207,10 +207,10 @@ inline void XRayDetector::setNumberOfPixels(const Vec2ui& aSizeInPixels)
 
 	// Update the size of the detector
 	updateSizeInUnitOfLength();
-	
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -225,7 +225,7 @@ inline void XRayDetector::setDetectorPosition(const VEC3& aDetectorPosition)
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -245,11 +245,11 @@ inline void XRayDetector::setXrayPointSource(const VEC3& aXraySourcePosition)
 	m_p_xray_source_position_set.push_back(m_xray_source_centre);
 
 	// Save the source type
-	m_source_shape = POINT;	
-	
+	m_source_shape = POINT;
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -260,11 +260,11 @@ inline void XRayDetector::setXrayPointSource()
 //--------------------------------------------
 {
 	// Save the source type
-	m_source_shape = POINT;	
-	
+	m_source_shape = POINT;
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -275,11 +275,11 @@ inline void XRayDetector::setCubicSource()
 //----------------------------------------
 {
 	// Save the source type
-	m_source_shape = CUBE;	
-	
+	m_source_shape = CUBE;
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -290,11 +290,11 @@ inline void XRayDetector::setSquareSource()
 //-----------------------------------------
 {
 	// Save the source type
-	m_source_shape = SQUARE;	
-	
+	m_source_shape = SQUARE;
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -305,11 +305,11 @@ inline void XRayDetector::setLineSource()
 //---------------------------------------
 {
 	// Save the source type
-	m_source_shape = LINE;	
-	
+	m_source_shape = LINE;
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -320,10 +320,10 @@ inline void XRayDetector::setUpVector(const VEC3& anUpVector)
 //-----------------------------------------------------------
 {
 	m_up_vector = anUpVector;
-	
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -334,10 +334,10 @@ inline void XRayDetector::setRotationMatrix(const MATRIX4& aMatrix)
 //-----------------------------------------------------------------
 {
 	m_rotation_matrix = aMatrix;
-	
+
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -349,7 +349,7 @@ inline void XRayDetector::setParallelBeam()
 {
 	// Save the source type
 	m_source_shape = PARALLEL;
-	
+
 	// Clear the sample set
 	m_p_xray_source_position_set.clear();
 
@@ -358,7 +358,7 @@ inline void XRayDetector::setParallelBeam()
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -370,7 +370,7 @@ inline void XRayDetector::setConeBeam()
 {
 	// Save the source type
 	m_source_shape = POINT;
-	
+
 	// Clear the sample set
 	m_p_xray_source_position_set.clear();
 
@@ -379,7 +379,7 @@ inline void XRayDetector::setConeBeam()
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -490,7 +490,7 @@ inline void XRayDetector::setSourcePositions(const std::vector<VEC3>& aSourcePos
 
 	// Update the distance between the source and the detector, etc.
 	updateInternalValues();
-	
+
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
 }
@@ -541,14 +541,14 @@ inline void XRayDetector::updateInternalValues()
 	m_look_at_vector.normalize();
 	m_right_vector = m_look_at_vector ^ m_up_vector;
 	m_normal = m_up_vector ^ m_right_vector;
-	
+
 	// Update the view along the Y-axis
 	updateFOVY();
 }
 
 
 //------------------------------------------------------------------
-inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
+inline void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 												 RATIONAL_NUMBER& B,
 												 RATIONAL_NUMBER& C,
 												 RATIONAL_NUMBER& D)
@@ -556,7 +556,7 @@ inline const void XRayDetector::getPlaneEquation(RATIONAL_NUMBER& A,
 {
 	// Transform the normal
 	VEC3 normal(m_rotation_matrix * m_normal);
-	
+
 	// Compute the plane equation
 	A = normal.getX();
 	B = normal.getY();
