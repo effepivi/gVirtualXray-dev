@@ -190,18 +190,9 @@ IF (SWIG_FOUND)
     #include_directories(${CMAKE_CURRENT_SOURCE_DIR})
     #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../SimpleGVXR)
 
-    option(BUILD_CSHARP  "Build C# SWIG module" OFF)
-    #option(BUILD_LUA     "Build Lua SWIG module" OFF)
-    option(BUILD_JAVA    "Build Java SWIG module" OFF)
-    option(BUILD_JAVASCRIPT "Build JavaScript SWIG module" OFF)
-    option(BUILD_MATLAB  "Build Matlab SWIG module" OFF)
-    option(BUILD_OCTAVE  "Build Octave SWIG module" OFF)
-    option(BUILD_PERL    "Build Perl SWIG module" OFF)
-    option(BUILD_PYTHON2 "Build Python2 SWIG module" OFF)
-    option(BUILD_PYTHON3 "Build Python3 SWIG module" OFF)
-    option(BUILD_R       "Build R SWIG module" OFF)
-    option(BUILD_RUBY    "Build Ruby SWIG module" OFF)
-    option(BUILD_TCL     "Build TCL SWIG module" OFF)
+    # The options ##################################################################
+    INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/options.cmake)
+
 
 
 
