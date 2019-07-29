@@ -1,1 +1,1 @@
-java -XstartOnFirstThread -cp testJava.jar  gvxrJavaExample
+java -cp testJava.jar  gvxrJavaExample
