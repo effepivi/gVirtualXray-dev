@@ -72,7 +72,7 @@ SceneGraphNode::SceneGraphNode(const std::string& aLabel,
 
 SceneGraphNode::~SceneGraphNode()
 {
-	std::cout << "Delete node: " << m_label << std::endl;
+	//std::cout << "Delete node: " << m_label << std::endl;
 
     for (std::vector<gVirtualXRay::SceneGraphNode*>::iterator ite = m_p_children.begin();
     		ite != m_p_children.end();
