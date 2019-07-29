@@ -106,45 +106,6 @@ ENDIF(BUILD_DOCUMENTATION)
 
 
 # Find gVirtualXRay ############################################################
-IF (NOT USE_SYSTEM_gVirtualXRay)
-
-		#INCLUDE(cmake/Build_gVirtualXRay.cmake)
-		#build_gVirtualXRay( gVirtualXRay ${PROJECT_BINARY_DIR} )
-
-
-		message(STATUS ${CMAKE_SOURCE_DIR}/cmake/gVirtualXRay)
-		# The first external project will be built at *configure stage*
-		file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/gVirtualXRay)
-
-		execute_process(
-		    COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}/cmake/gVirtualXRay
-		    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gVirtualXRay
-				RESULT_VARIABLE gvxr_config_result
-				)
-
-		message(STATUS "gVirtualXRay config result: ${gvxr_config_result}")
-
-		IF (MSVC)
-				execute_process(
-				    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/gVirtualXRay --target gVirtualXRay
-				    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gVirtualXRay
-						RESULT_VARIABLE gvxr_build_result
-						)
-		ELSE (MSVC)
-				execute_process(
-				    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/gVirtualXRay --target gVirtualXRay -- -j12
-				    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gVirtualXRay
-						RESULT_VARIABLE gvxr_build_result
-						)
-		ENDIF (MSVC)
-
-		message(STATUS "gVirtualXRay build result: ${gvxr_build_result}")
-
-		SET (gVirtualXRay_DIR ${CMAKE_BINARY_DIR}/gVirtualXRay/install/gVirtualXRay-1.1.0)
-		message(STATUS "gVirtualXRay install: ${gVirtualXRay_DIR}")
-
-ENDIF (NOT USE_SYSTEM_gVirtualXRay)
-
 FIND_PACKAGE(gVirtualXRay REQUIRED)
 INCLUDE(${gVirtualXRay_USE_FILE})
 
