@@ -1,555 +1,136 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.12)
 
-#MESSAGE (WARNING "When USE_SYSTEM_GLFW is ON, picking wrong PATH")
-
-IF (WIN32)
-    MESSAGE (STATUS "You're running CMake on Windows.")
-ENDIF ()
-
-MESSAGE (STATUS "You are running the install script from ${CMAKE_CURRENT_LIST_DIR}")
-
-SET (DESTINATION ${CMAKE_CURRENT_LIST_DIR}/install)
-MESSAGE (STATUS "The builds will be installed in ${DESTINATION}")
-
-OPTION (UNIT_TESTS    "Build and run the unit tests"    ON)
-OPTION (BUILD_CSHARP  "Build C# wrapper? (Y/N)"         OFF)
-OPTION (BUILD_JAVA    "Build Java wrapper? (Y/N)"       OFF)
-OPTION (BUILD_OCTAVE  "Build GNU Octave wrapper? (Y/N)" OFF)
-OPTION (BUILD_PERL    "Build Perl wrapper? (Y/N)"       OFF)
-OPTION (BUILD_PYTHON3 "Build Python 3 wrapper? (Y/N)"   OFF)
-OPTION (BUILD_PYTHON2 "Build Python 2 wrapper? (Y/N)"   OFF)
-OPTION (BUILD_R       "Build R wrapper? (Y/N)"          OFF)
-OPTION (BUILD_RUBY    "Build Ruby wrapper? (Y/N)"       OFF)
-OPTION (BUILD_TCL     "Build Tcl wrapper? (Y/N)"        OFF)
+PROJECT(gVirtualXRay-Superbuild)
 
 
+SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+INCLUDE (gvxrPreverntInSourceBuilds)
+
+# Support for the CTest dashboard testing system
+INCLUDE(CTest)
+
+# C++ version ##################################################################
+set(CMAKE_CXX_STANDARD 11) # C++11
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
+set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
-
-
-SET (BUILD_WRAPPER OFF)
-
-IF (BUILD_CSHARP)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_JAVA)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_OCTAVE)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_PERL)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_PYTHON3)
-    SET (BUILD_WRAPPER ON)
-    SET (BUILD_PYTHON2 OFF)
-ENDIF ()
-
-IF (BUILD_PYTHON2)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_R)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_RUBY)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_TCL)
-    SET (BUILD_WRAPPER ON)
-ENDIF ()
-
-IF (BUILD_WRAPPER)
-    OPTION (WRAPPER_TEST    "Build and run the wrapper tests"    ON)
-ENDIF ()
-
-MESSAGE ("***************************")
-MESSAGE ("* Build wrappers (summary):")
-MESSAGE ("***************************")
-MESSAGE ("Build C# wrapper: ${BUILD_CSHARP}")
-MESSAGE ("Build Java wrapper: ${BUILD_JAVA}")
-MESSAGE ("Build GNU Octave wrapper: ${BUILD_OCTAVE}")
-MESSAGE ("Build Perl wrapper: ${BUILD_PERL}")
-MESSAGE ("Build Python 2 wrapper: ${BUILD_PYTHON2}")
-MESSAGE ("Build Python 3 wrapper: ${BUILD_PYTHON3}")
-MESSAGE ("Build R wrapper: ${BUILD_R}")
-MESSAGE ("Build Ruby wrapper: ${BUILD_RUBY}")
-MESSAGE ("Build Tcl wrapper: ${BUILD_TCL}")
-MESSAGE ("")
-MESSAGE ("Build and run the unit tests: ${UNIT_TESTS}")
-
-IF (BUILD_WRAPPER)
-    MESSAGE ("Build and run the wrapper tests: ${WRAPPER_TEST}")
-ENDIF ()
-MESSAGE ("")
-
-
-# Build and install the core library
-#cd gvxr-build
-
-MESSAGE ("*************************************")
-MESSAGE ("* Configure, build and install gvxr *")
-MESSAGE ("* (run the unit test, optional)     *")
-MESSAGE ("*************************************")
-MESSAGE ("")
-MESSAGE ("Configure gvxr using CMake")
-MESSAGE ("Please wait")
-MESSAGE ("")
-
-# The first external project will be built at *configure stage*
-file(MAKE_DIRECTORY ${DESTINATION})
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build)
-
-IF (BUILD_WRAPPER)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build)
-ENDIF()
+# Flag required for shared libraries
+SET (BUILD_SHARED_LIBS OFF)
+IF (UNIX)
+    IF (NOT APPLE)
+        IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+            SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+            SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+        ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+    ENDIF (NOT APPLE)
+ENDIF (UNIX)
 
 
-
-#[[
-MESSAGE ("Configure gvxr-core")
-IF (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} 
-
-            --graphviz=${CMAKE_CURRENT_BINARY_DIR}/gvxr-dependencies.dot
-	
-	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
-            -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
-            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-            -DBUILD_TESTING=${UNIT_TESTS}
-            -DUSE_SYSTEM_XCOM:BOOL=${USE_SYSTEM_XCOM}
-            -DUSE_SYSTEM_ASSIMP:BOOL=${USE_SYSTEM_ASSIMP}
-            -DUSE_SYSTEM_GLEW:BOOL=${USE_SYSTEM_GLEW}
-            -DUSE_SYSTEM_GLFW:BOOL=${USE_SYSTEM_GLFW}
-	    #-DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
-	
-	    ${CMAKE_CURRENT_LIST_DIR}/gvxr
-
-        WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_cmake.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_cmake.err.log
-        RESULT_VARIABLE gvxr_cmake_result
-        OUTPUT_VARIABLE gvxr_cmake_output
-        ERROR_VARIABLE  gvxr_cmake_error
-      )
-ELSE (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND}
-
-            --graphviz=${CMAKE_CURRENT_BINARY_DIR}/gvxr-dependencies.dot
-	 
-	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
-            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-            -DBUILD_TESTING=${UNIT_TESTS}
-            -DUSE_SYSTEM_XCOM:BOOL=${USE_SYSTEM_XCOM}
-            -DUSE_SYSTEM_ASSIMP:BOOL=${USE_SYSTEM_ASSIMP}
-            -DUSE_SYSTEM_GLEW:BOOL=${USE_SYSTEM_GLEW}
-            -DUSE_SYSTEM_GLFW:BOOL=${USE_SYSTEM_GLFW}
-	    #-DXCOM_PATH:STRING=/Users/eese10/Documents/gvirtualxray-code/XCOM
-
-	    --config Release
-
-	    ${CMAKE_CURRENT_LIST_DIR}/gvxr
-
-        WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_cmake.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_cmake.err.log
-        RESULT_VARIABLE gvxr_cmake_result
-        OUTPUT_VARIABLE gvxr_cmake_output
-        ERROR_VARIABLE  gvxr_cmake_error
-    )
-ENDIF (WIN32)
-MESSAGE ("Configure gvxr-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${gvxr_cmake_result} EQUAL 0 OR
-    NOT ${gvxr_cmake_output} STREQUAL  "" OR
-    NOT ${gvxr_cmake_error} STREQUAL  "")
-
-    MESSAGE (FATAL_ERROR "Error configuring the project, see the log files (gvxr_cmake.out.log and gvxr_cmake.err.log)")
-ENDIF ()
-
-MESSAGE ("Build gvxr-core")
-execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        --build ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build 
-	--config Release
-	--parallel
-	
-    WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build
-
-    OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_make.out.log
-    ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_make.err.log
-    RESULT_VARIABLE gvxr_make_result
-
-    OUTPUT_VARIABLE gvxr_make_output
-    ERROR_VARIABLE  gvxr_make_error
-)
-
-MESSAGE ("Build gvxr-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${gvxr_make_result} EQUAL 0 OR
-    NOT ${gvxr_make_output} STREQUAL  "" OR
-    NOT ${gvxr_make_error} STREQUAL  "")
-
-    MESSAGE (WARNING "gvxr_make_result = ${gvxr_make_result}")
-    MESSAGE (WARNING "gvxr_make_output = ${gvxr_make_output}")
-    MESSAGE (WARNING "gvxr_make_error  = ${gvxr_make_error}")
-    MESSAGE (FATAL_ERROR "Error building the project in ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build, see the log files (gvxr_make.out.log and gvxr_make.err.log)")
-ENDIF ()
-
-MESSAGE ("Install gvxr-core")
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build  --config Release --target install
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_install.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_install.err.log
-        RESULT_VARIABLE gvxr_install_result
-        OUTPUT_VARIABLE gvxr_install_output
-        ERROR_VARIABLE  gvxr_install_error
-    )
-MESSAGE ("Install gvxr-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${gvxr_install_result} EQUAL 0 OR
-    NOT ${gvxr_install_output} STREQUAL  "" OR
-    NOT ${gvxr_install_error} STREQUAL  "")
-
-    MESSAGE (FATAL_ERROR "Error installing the project, see the log files (gvxr_install.out.log and gvxr_install.err.log)")
-ENDIF ()
-
-IF (UNIT_TESTS)
-    MESSAGE ("Unit testing gvxr-core")
-    IF (WIN32)
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build  --config Release --target RUN_TESTS
-            OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_test.out.log
-            ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_test.err.log
-            RESULT_VARIABLE gvxr_test_result
-            OUTPUT_VARIABLE gvxr_test_output
-            ERROR_VARIABLE  gvxr_test_error
-        )
-    ELSE (WIN32)
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/gvxr-build  --config Release --target test
-            OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_test.out.log
-            ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/gvxr_test.err.log
-            RESULT_VARIABLE gvxr_test_result
-            OUTPUT_VARIABLE gvxr_test_output
-            ERROR_VARIABLE  gvxr_test_error
-        )
-    ENDIF (WIN32)
-    MESSAGE ("Unit testing gvxr-core")
-    MESSAGE ("")
-
-    IF (NOT ${gvxr_test_result} EQUAL 0 OR
-        NOT ${gvxr_test_output} STREQUAL  "" OR
-        NOT ${gvxr_test_error} STREQUAL  "")
-
-        MESSAGE (FATAL_ERROR "Error testing the project, see the log files (gvxr_test.out.log and gvxr_test.err.log)")
-    ENDIF ()
-
-ENDIF ()]]
+# for superbuild
+SET (USE_SUPERBUILD ON)
+INCLUDE(ExternalProject)
 
 
-
-
-
-
-MESSAGE ("Configure SimpleGVXR-core")
+# Define NOMINMAX ##############################################################
 IF (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND}
-
-            --graphviz=${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-dependencies.dot
-            
-	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
-            -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
-            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-            -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
-            -DBUILD_TESTING=${UNIT_TESTS}
-
-	    ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
-        
-	WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_cmake.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_cmake.err.log
-        RESULT_VARIABLE SimpleGVXR_cmake_result
-        OUTPUT_VARIABLE SimpleGVXR_cmake_output
-        ERROR_VARIABLE  SimpleGVXR_cmake_error
-      )
-ELSE (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND}
-
-            --graphviz=${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-dependencies.dot
-        
-	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
-	    -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-	    -DUSE_SYSTEM_gVirtualXRay:BOOL=ON
-	    -DBUILD_TESTING=${UNIT_TESTS}
-	
-	    --config Release
-	
-	    ${CMAKE_CURRENT_LIST_DIR}/SimpleGVXR
-        
-	WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_cmake.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_cmake.err.log
-        RESULT_VARIABLE SimpleGVXR_cmake_result
-        OUTPUT_VARIABLE SimpleGVXR_cmake_output
-        ERROR_VARIABLE  SimpleGVXR_cmake_error
-    )
+	SET (ADD_DEFINITIONS -DNOMINMAX)
 ENDIF (WIN32)
-MESSAGE ("Configure SimpleGVXR-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${SimpleGVXR_cmake_result} EQUAL 0 OR
-    NOT ${SimpleGVXR_cmake_output} STREQUAL  "" OR
-    NOT ${SimpleGVXR_cmake_error} STREQUAL  "")
-
-    MESSAGE (FATAL_ERROR "Error configuring the project, see the log files (SimpleGVXR_cmake.out.log and SimpleGVXR_cmake.err.log)")
-ENDIF ()
 
 
-MESSAGE ("Build SimpleGVXR-core")
-execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        --build ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build 
-	--config Release
-	--parallel
-	
-    WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build
+INCLUDE (gvxr/cmake/options.cmake)
+INCLUDE (Wrappers/cmake/options.cmake)
 
-    OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_make.out.log
-    ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_make.err.log
-    RESULT_VARIABLE SimpleGVXR_make_result
 
-    OUTPUT_VARIABLE SimpleGVXR_make_output
-    ERROR_VARIABLE  SimpleGVXR_make_error
-)
-MESSAGE ("Build SimpleGVXR-core: DONE")
-MESSAGE ("")
+# Enable the unit tests
+if (BUILD_TESTING)
+    ENABLE_TESTING()
+endif()
 
-IF (NOT ${SimpleGVXR_make_result} EQUAL 0 OR
-    NOT ${SimpleGVXR_make_output} STREQUAL  "" OR
-    NOT ${SimpleGVXR_make_error} STREQUAL  "")
 
-    MESSAGE (WARNING "SimpleGVXR_make_result = ${SimpleGVXR_make_result}")
-    MESSAGE (WARNING "SimpleGVXR_make_output = ${SimpleGVXR_make_output}")
-    MESSAGE (WARNING "SimpleGVXR_make_error  = ${SimpleGVXR_make_error}")
-    MESSAGE (FATAL_ERROR "Error building the project in ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build, see the log files (SimpleGVXR_make.out.log and SimpleGVXR_make.err.log)")
-ENDIF ()
+IF ( BUILD_WRAPPERS )
+    MESSAGE (STATUS "Build gvxrWrappers(s): ON")
+    MESSAGE (STATUS "SimpleGVXR will be built (needed by gvxrWrappers)")
+ELSE ( BUILD_WRAPPERS )
+    MESSAGE (STATUS "Build Wrapper(s): OFF")
+ENDIF ( BUILD_WRAPPERS )
 
-MESSAGE ("Install SimpleGVXR-core")
-IF (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build  --config Release --target INSTALL
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_install.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_install.err.log
-        RESULT_VARIABLE SimpleGVXR_install_result
-        OUTPUT_VARIABLE SimpleGVXR_install_output
-        ERROR_VARIABLE  SimpleGVXR_install_error
-    )
-ELSE (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build  --config Release --target install
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_install.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_install.err.log
-        RESULT_VARIABLE SimpleGVXR_install_result
-        OUTPUT_VARIABLE SimpleGVXR_install_output
-        ERROR_VARIABLE  SimpleGVXR_install_error
-    )
-ENDIF (WIN32)
-MESSAGE ("Install SimpleGVXR-core: DONE")
-MESSAGE ("")
 
-IF (NOT ${SimpleGVXR_install_result} EQUAL 0 OR
-    NOT ${SimpleGVXR_install_output} STREQUAL  "" OR
-    NOT ${SimpleGVXR_install_error} STREQUAL  "")
+# Google Test ##################################################################
+OPTION ( USE_SYSTEM_GTEST "Use an external version of GoogleTest. " OFF )
+MARK_AS_ADVANCED ( USE_SYSTEM_GTEST )
+IF ( BUILD_TESTING )
+    IF ( USE_SYSTEM_GTEST )
+        FIND_PACKAGE( GTest REQUIRED )
+    ELSE( USE_SYSTEM_GTEST )
+        INCLUDE(External_GTest)
+        MESSAGE (STATUS "Build GTest: ON")
+        list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES GTest)
 
-    MESSAGE (FATAL_ERROR "Error installing the project, see the log files (SimpleGVXR_install.out.log and SimpleGVXR_install.err.log)")
-ENDIF ()
+    ENDIF( USE_SYSTEM_GTEST )
+ENDIF( BUILD_TESTING )
 
-IF (UNIT_TESTS)
-    MESSAGE ("Unit testing SimpleGVXR-core")
-    IF (WIN32)
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build  --config Release --target RUN_TESTS
-            OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_test.out.log
-            ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_test.err.log
-            RESULT_VARIABLE SimpleGVXR_test_result
-            OUTPUT_VARIABLE SimpleGVXR_test_output
-            ERROR_VARIABLE  SimpleGVXR_test_error
-        )
-    ELSE (WIN32)
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR-build  --config Release --target test
-            OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_test.out.log
-            ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/SimpleGVXR_test.err.log
-            RESULT_VARIABLE SimpleGVXR_test_result
-            OUTPUT_VARIABLE SimpleGVXR_test_output
-            ERROR_VARIABLE  SimpleGVXR_test_error
-        )
-    ENDIF (WIN32)
-    MESSAGE ("Unit testing SimpleGVXR-core")
-    MESSAGE ("")
 
-    IF (NOT ${SimpleGVXR_test_result} EQUAL 0 OR
-        NOT ${SimpleGVXR_test_output} STREQUAL  "" OR
-        NOT ${SimpleGVXR_test_error} STREQUAL  "")
+INCLUDE(gvxr/cmake/ConfigureExternalProjects.cmake)
 
-        MESSAGE (FATAL_ERROR "Error testing the project, see the log files (SimpleGVXR_test.out.log and SimpleGVXR_test.err.log)")
+
+# gVirtualXRay #################################################################
+OPTION ( USE_SYSTEM_gVirtualXRay "Use an external version of gVirtualXRay. " OFF )
+MARK_AS_ADVANCED ( USE_SYSTEM_gVirtualXRay )
+IF ( USE_SYSTEM_gVirtualXRay )
+    FIND_PACKAGE( gVirtualXRay REQUIRED )
+ELSE( USE_SYSTEM_gVirtualXRay )
+    INCLUDE(External_gVirtualXRay)
+    MESSAGE (STATUS "Build gVirtualXRay: ON")
+    list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES gVirtualXRay)
+
+    IF ( BUILD_TESTING AND NOT USE_SYSTEM_GTEST )
+        ADD_DEPENDENCIES(gvxr googletest)
     ENDIF ()
 
-ENDIF ()
+ENDIF( USE_SYSTEM_gVirtualXRay )
+
+
+# SimpleGVXR ###################################################################
+OPTION ( USE_SYSTEM_SimpleGVXR "Use an external version of SimpleGVXR. " OFF )
+MARK_AS_ADVANCED ( USE_SYSTEM_SimpleGVXR )
+IF ( USE_SYSTEM_SimpleGVXR )
+    FIND_PACKAGE( SimpleGVXR REQUIRED )
+ELSE( USE_SYSTEM_SimpleGVXR )
+    INCLUDE(External_SimpleGVXR)
+    MESSAGE (STATUS "Build SimpleGVXR: ON")
+
+    list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES SimpleGVXR)
+
+    IF ( BUILD_TESTING AND NOT USE_SYSTEM_GTEST )
+        ADD_DEPENDENCIES(SimpleGVXR googletest)
+    ENDIF ()
+
+    IF ( NOT USE_SYSTEM_gVirtualXRay )
+        ADD_DEPENDENCIES(SimpleGVXR gvxr)
+    ENDIF ()
+
+ENDIF( USE_SYSTEM_SimpleGVXR )
 
 
 
+IF ( BUILD_WRAPPERS )
 
+    INCLUDE(External_Wrappers)
+    MESSAGE (STATUS "Build gvxrWrappers(s): ON")
 
+    list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES Wrappers)
 
+    IF ( BUILD_TESTING AND NOT USE_SYSTEM_GTEST )
+        ADD_DEPENDENCIES(Wrappers googletest)
+    ENDIF ()
 
-MESSAGE ("Configure Wrappers-core")
-IF (WIN32)
-    execute_process(
-	COMMAND ${CMAKE_COMMAND}
+    IF ( NOT USE_SYSTEM_gVirtualXRay )
+        ADD_DEPENDENCIES(Wrappers gvxr)
+    ENDIF ()
 
-            --graphviz=${CMAKE_CURRENT_BINARY_DIR}/Wrappers-dependencies.dot
-	    
-	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
-            -DCMAKE_CXX_FLAGS=/DWIN32\ /D_WINDOWS\ /W3\ /GR\ /EHsc\ /MP
-            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-            -DUSE_SYSTEM_SimpleGVXR:BOOL=ON
-            -DBUILD_TESTING=${UNIT_TESTS}
-            -DBUILD_CSHARP:BOOL=${BUILD_CSHARP}
-            -DBUILD_JAVA:BOOL=${BUILD_JAVA}
-            -DBUILD_OCTAVE:BOOL=${BUILD_OCTAVE}
-            -DBUILD_PERL:BOOL=${BUILD_PERL}
-            -DBUILD_PYTHON3:BOOL=${BUILD_PYTHON3}
-            -DBUILD_PYTHON2:BOOL=${BUILD_PYTHON2}
-            -DBUILD_R:BOOL=${BUILD_R}
-            -DBUILD_RUBY:BOOL=${BUILD_RUBY}
-            -DBUILD_TCL:BOOL=${BUILD_TCL}
+    IF ( NOT USE_SYSTEM_SimpleGVXR )
+        ADD_DEPENDENCIES(Wrappers SimpleGVXR)
+    ENDIF ()
 
-	    ${CMAKE_CURRENT_LIST_DIR}/Wrappers
-
-        WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_cmake.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_cmake.err.log
-        RESULT_VARIABLE Wrappers_cmake_result
-        OUTPUT_VARIABLE Wrappers_cmake_output
-        ERROR_VARIABLE  Wrappers_cmake_error
-      )
-ELSE (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} 
-	    
-            --graphviz=${CMAKE_CURRENT_BINARY_DIR}/Wrappers-dependencies.dot
-
-	    -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
-            -DCMAKE_INSTALL_PREFIX=${DESTINATION}
-            -DUSE_SYSTEM_SimpleGVXR:BOOL=ON
-            -DBUILD_TESTING=${UNIT_TESTS}
-            -DBUILD_CSHARP:BOOL=${BUILD_CSHARP}
-            -DBUILD_JAVA:BOOL=${BUILD_JAVA}
-            -DBUILD_OCTAVE:BOOL=${BUILD_OCTAVE}
-            -DBUILD_PERL:BOOL=${BUILD_PERL}
-            -DBUILD_PYTHON3:BOOL=${BUILD_PYTHON3}
-            -DBUILD_PYTHON2:BOOL=${BUILD_PYTHON2}
-            -DBUILD_R:BOOL=${BUILD_R}
-            -DBUILD_RUBY:BOOL=${BUILD_RUBY}
-            -DBUILD_TCL:BOOL=${BUILD_TCL}
-
-	    --config Release
-	    
-            ${CMAKE_CURRENT_LIST_DIR}/Wrappers
-
-        WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_cmake.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_cmake.err.log
-        RESULT_VARIABLE Wrappers_cmake_result
-        OUTPUT_VARIABLE Wrappers_cmake_output
-        ERROR_VARIABLE  Wrappers_cmake_error
-    )
-ENDIF (WIN32)
-MESSAGE ("Configure Wrappers-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${Wrappers_cmake_result} EQUAL 0 OR
-    NOT ${Wrappers_cmake_output} STREQUAL  "" OR
-    NOT ${Wrappers_cmake_error} STREQUAL  "")
-
-    MESSAGE (FATAL_ERROR "Error configuring the project, see the log files (Wrappers_cmake.out.log and Wrappers_cmake.err.log)")
-ENDIF ()
-
-
-MESSAGE ("Build Wrappers-core")
-execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        --build ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build 
-	--config Release
-	--parallel
-	
-    WORKING_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build
-
-    OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_make.out.log
-    ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_make.err.log
-    RESULT_VARIABLE Wrappers_make_result
-
-    OUTPUT_VARIABLE Wrappers_make_output
-    ERROR_VARIABLE  Wrappers_make_error
-)
-MESSAGE ("Build Wrappers-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${Wrappers_make_result} EQUAL 0 OR
-    NOT ${Wrappers_make_output} STREQUAL  "" OR
-    NOT ${Wrappers_make_error} STREQUAL  "")
-
-    MESSAGE (FATAL_ERROR "Error building the project, see the log files (Wrappers_make.out.log and Wrappers_make.err.log)")
-ENDIF ()
-
-MESSAGE ("Install Wrappers-core")
-IF (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build  --config Release --target INSTALL
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_install.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_install.err.log
-        RESULT_VARIABLE Wrappers_install_result
-        OUTPUT_VARIABLE Wrappers_install_output
-        ERROR_VARIABLE  Wrappers_install_error
-    )
-ELSE (WIN32)
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/Wrappers-build  --config Release --target install
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_install.out.log
-        ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/Wrappers_install.err.log
-        RESULT_VARIABLE Wrappers_install_result
-        OUTPUT_VARIABLE Wrappers_install_output
-        ERROR_VARIABLE  Wrappers_install_error
-    )
-ENDIF (WIN32)
-MESSAGE ("Install Wrappers-core: DONE")
-MESSAGE ("")
-
-IF (NOT ${Wrappers_install_result} EQUAL 0 OR
-    NOT ${Wrappers_install_output} STREQUAL  "" OR
-    NOT ${Wrappers_install_error} STREQUAL  "")
-
-    MESSAGE (FATAL_ERROR "Error installing the project, see the log files (Wrappers_install.out.log and Wrappers_install.err.log)")
-ENDIF ()
-
-IF (WRAPPER_TEST)
-    MESSAGE (STATUS "Franck to do.")
-ENDIF ()
-
+ENDIF ( BUILD_WRAPPERS )
