@@ -61,8 +61,9 @@ set(GTEST_INCLUDE_DIRS ${source_dir}/googletest/include)
 # Specify MainTest's link libraries
 ExternalProject_Get_Property(googletest binary_dir)
 
-SET (GTEST_LIBRARIES gtest gtest_main)
-set (GTEST_LIBS_DIR "${binary_dir}/lib")
+
+list(APPEND GTEST_LIBRARIES gtest gtest_main)
+set (GTEST_LIBS_DIR "${binary_dir}/googletest")
 
 IF (MSVC)
     SET(GTEST_LIBS_DIR  "${binary_dir}/googletest/ReleaseLibs" "${binary_dir}/googletest/DebugLibs")
