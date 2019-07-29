@@ -36,8 +36,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 
-# Download and install GoogleTest
-add_subdirectory(googletest)
 
 
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.13.0")
@@ -124,8 +122,10 @@ IF (glfw3_FOUND)
 ENDIF()
 
 
+list(APPEND GTEST_LIBRARIES gtest gtest_main)
+separate_arguments(GTEST_LIBRARIES)
 
-target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
+target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} "${GTEST_LIBRARIES}")
 target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 
 target_link_libraries(TestCubeWithoutIndex            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
@@ -148,27 +148,25 @@ ENDIF()
 
 # Add dependencies
 if (gVirtualXRay_BINARY_DIR)
-     ADD_DEPENDENCIES(gVirtualXRay googletest)
-     
      ADD_DEPENDENCIES(TestDensity   gVirtualXRay)
-     ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay googletest)
+     ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
 
-     ADD_DEPENDENCIES(TestCubeWithoutIndex              gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestCubeWithIndex                 gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestLBuffer                       gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestSinogramFromMesh              gVirtualXRay googletest)
-     #ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay googletest)
-     #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay googletest)
-     ADD_DEPENDENCIES(TestOrtho                         gVirtualXRay googletest)
+     ADD_DEPENDENCIES(TestCubeWithoutIndex              gVirtualXRay)
+     ADD_DEPENDENCIES(TestCubeWithIndex                 gVirtualXRay)
+     ADD_DEPENDENCIES(TestLBuffer                       gVirtualXRay)
+     ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
+     ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
+     ADD_DEPENDENCIES(TestSinogramFromMesh              gVirtualXRay)
+     #ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay)
+     ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay)
+     ADD_DEPENDENCIES(TestCubeSource                    gVirtualXRay)
+     ADD_DEPENDENCIES(TestUncenteredSource              gVirtualXRay)
+     #ADD_DEPENDENCIES(TestPhantomMonoChromatic          gVirtualXRay)
+     ADD_DEPENDENCIES(TestRadonTransformFromMesh        gVirtualXRay)
+     ADD_DEPENDENCIES(TestOrtho                         gVirtualXRay)
 
     IF (FFTW3_LIBRARIES)
-         ADD_DEPENDENCIES(TestFBP                           gVirtualXRay googletest)
+         ADD_DEPENDENCIES(TestFBP                           gVirtualXRay)
     ENDIF()
 endif (gVirtualXRay_BINARY_DIR)
 
