@@ -98,7 +98,7 @@ ENDIF (NOT USE_SYSTEM_SimpleGVXR)
 
 
 # Find SimpleGVXR ############################################################
-IF (NOT USE_SYSTEM_SimpleGVXR)
+#[[IF (NOT USE_SYSTEM_SimpleGVXR)
 
 		#INCLUDE(cmake/Build_SimpleGVXR.cmake)
 		#build_SimpleGVXR( SimpleGVXR ${PROJECT_BINARY_DIR} )
@@ -137,11 +137,13 @@ IF (NOT USE_SYSTEM_SimpleGVXR)
 		SET (SimpleGVXR_DIR ${CMAKE_BINARY_DIR}/SimpleGVXR/install/SimpleGVXR-1.0.0)
 		message(STATUS "SimpleGVXR install: ${gVirtualXRay_DIR}")
 
-ENDIF (NOT USE_SYSTEM_SimpleGVXR)
+ENDIF (NOT USE_SYSTEM_SimpleGVXR)]]
 
+IF (NOT BUILD_ALL_GVXR)
+    FIND_PACKAGE(SimpleGVXR REQUIRED)
+    include(${SimpleGVXR_USE_FILE})
+ENDIF ()
 
-FIND_PACKAGE(SimpleGVXR REQUIRED)
-include(${SimpleGVXR_USE_FILE})
 
 
 # SWIG ########################################################################
@@ -196,11 +198,11 @@ IF (SWIG_FOUND)
 
 
 
-    IF (BUILD_PYTHON2 AND BUILD_PYTHON3)
-        MESSAGE(FATAL_ERROR "Both variables BUILD_PYTHON2 and BUILD_PYTHON3 are ON. Choose either Python2 or Python3, not both.")
-    ENDIF (BUILD_PYTHON2 AND BUILD_PYTHON3)
+    IF (BUILD_WRAPPER_PYTHON2 AND BUILD_WRAPPER_PYTHON3)
+        MESSAGE(FATAL_ERROR "Both variables BUILD_WRAPPER_PYTHON2 and BUILD_WRAPPER_PYTHON3 are ON. Choose either Python2 or Python3, not both.")
+    ENDIF (BUILD_WRAPPER_PYTHON2 AND BUILD_WRAPPER_PYTHON3)
 
-    IF (BUILD_CSHARP)
+    IF (BUILD_WRAPPER_CSHARP)
         add_subdirectory(csharp)
 
         file(APPEND
@@ -209,14 +211,14 @@ IF (SWIG_FOUND)
             "cd csharp;./runMonoTest.sh;cd ..\n"
         )
 
-    ENDIF (BUILD_CSHARP)
+    ENDIF (BUILD_WRAPPER_CSHARP)
 
-    IF (BUILD_LUA)
+    IF (BUILD_WRAPPER_LUA)
         MESSAGE(STATUS "Lua wrapper not implemented as yet, Franck is working on it.")
         #add_subdirectory(lua)
-    ENDIF (BUILD_LUA)
+    ENDIF (BUILD_WRAPPER_LUA)
 
-    IF (BUILD_JAVA)
+    IF (BUILD_WRAPPER_JAVA)
         add_subdirectory(java)
 
         file(APPEND
@@ -224,19 +226,19 @@ IF (SWIG_FOUND)
             "echo Run Java test.\n"
             "cd java;./runJavaTest.sh;cd ..\n"
         )
-    ENDIF (BUILD_JAVA)
+    ENDIF (BUILD_WRAPPER_JAVA)
 
-    IF (BUILD_JAVASCRIPT)
+    IF (BUILD_WRAPPER_JAVASCRIPT)
         MESSAGE(STATUS "JavaScript wrapper not implemented as yet, Franck is working on it.")
         #add_subdirectory(js)
-    ENDIF (BUILD_JAVASCRIPT)
+    ENDIF (BUILD_WRAPPER_JAVASCRIPT)
 
-    IF (BUILD_MATLAB)
+    IF (BUILD_WRAPPER_MATLAB)
         MESSAGE(STATUS "Matlab wrapper not implemented as yet, Franck is working on it.")
         #add_subdirectory(matlab)
-    ENDIF (BUILD_MATLAB)
+    ENDIF (BUILD_WRAPPER_MATLAB)
 
-    IF (BUILD_OCTAVE)
+    IF (BUILD_WRAPPER_OCTAVE)
         add_subdirectory(octave)
 
         file(APPEND
@@ -244,9 +246,9 @@ IF (SWIG_FOUND)
             "echo Run GNU Octave test.\n"
             "cd octave;./runOctaveTest.sh;cd ..\n"
         )
-    ENDIF (BUILD_OCTAVE)
+    ENDIF (BUILD_WRAPPER_OCTAVE)
 
-    IF (BUILD_PERL)
+    IF (BUILD_WRAPPER_PERL)
         add_subdirectory(perl)
 
         file(APPEND
@@ -254,9 +256,9 @@ IF (SWIG_FOUND)
             "echo Run Perl test.\n"
             "cd perl;./runPerlTest.sh;cd ..\n"
         )
-    ENDIF (BUILD_PERL)
+    ENDIF (BUILD_WRAPPER_PERL)
 
-    IF (BUILD_PYTHON2)
+    IF (BUILD_WRAPPER_PYTHON2)
         add_subdirectory(python2)
 
         file(APPEND
@@ -264,9 +266,9 @@ IF (SWIG_FOUND)
             "echo Run Python 2 test.\n"
             "cd python2;./test.py;cd ..\n"
         )
-    ENDIF (BUILD_PYTHON2)
+    ENDIF (BUILD_WRAPPER_PYTHON2)
 
-    IF (BUILD_PYTHON3)
+    IF (BUILD_WRAPPER_PYTHON3)
         add_subdirectory(python3)
 
         file(APPEND
@@ -274,9 +276,9 @@ IF (SWIG_FOUND)
             "echo Run Python 3 test.\n"
             "cd python3;./test.py;cd ..\n"
         )
-    ENDIF (BUILD_PYTHON3)
+    ENDIF (BUILD_WRAPPER_PYTHON3)
 
-    IF (BUILD_R)
+    IF (BUILD_WRAPPER_R)
         add_subdirectory(R)
 
         file(APPEND
@@ -284,9 +286,9 @@ IF (SWIG_FOUND)
             "echo Run R test.\n"
             "cd R;./test.R;cd ..\n"
         )
-    ENDIF (BUILD_R)
+    ENDIF (BUILD_WRAPPER_R)
 
-    IF (BUILD_RUBY)
+    IF (BUILD_WRAPPER_RUBY)
         add_subdirectory(ruby)
 
         file(APPEND
@@ -294,9 +296,9 @@ IF (SWIG_FOUND)
             "echo Run ruby test.\n"
             "cd ruby;./runRubyTest.sh;cd ..\n"
         )
-    ENDIF (BUILD_RUBY)
+    ENDIF (BUILD_WRAPPER_RUBY)
 
-    IF (BUILD_TCL)
+    IF (BUILD_WRAPPER_TCL)
         add_subdirectory(Tcl)
 
         file(APPEND
@@ -304,7 +306,7 @@ IF (SWIG_FOUND)
             "echo Run Tcl test.\n"
             "cd Tcl;./test.tcl;cd ..\n"
         )
-    ENDIF (BUILD_TCL)
+    ENDIF (BUILD_WRAPPER_TCL)
 ENDIF (SWIG_FOUND)
 
 
