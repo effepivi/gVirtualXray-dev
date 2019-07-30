@@ -21,3 +21,6 @@ ExternalProject_Add(gvxr
         -DCMAKE_INSTALL_PREFIX:PATH=${GVXR_INSTALL_DIR}
     PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
 )
+
+include (gvxr/cmake/version.cmake)
+SET (gVirtualXRay_DIR ${CMAKE_INSTALL_PREFIX}/gVirtualXRay-${gVirtualXRay_VERSION_STRING})

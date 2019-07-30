@@ -15,5 +15,7 @@ ExternalProject_Add(Wrappers
     CMAKE_ARGS
         ${LOCAL_CMAKE_BUILD_OPTIONS}
         ${ENABLED_WRAPPERS}
+        -DgVirtualXRay_DIR:PATH=${gVirtualXRay_DIR}
+        -DSimpleGVXR_DIR:PATH=${SimpleGVXR_DIR}
     PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
 )

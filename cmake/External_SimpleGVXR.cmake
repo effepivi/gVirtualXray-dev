@@ -14,5 +14,9 @@ ExternalProject_Add(SimpleGVXR
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR
     CMAKE_ARGS
         ${LOCAL_CMAKE_BUILD_OPTIONS}
+        -DgVirtualXRay_DIR:PATH=${gVirtualXRay_DIR}
     PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
 )
+
+include (SimpleGVXR/version.cmake)
+SET (SimpleGVXR_DIR ${CMAKE_INSTALL_PREFIX}/SimpleGVXR-${SimpleGVXR_VERSION_STRING})
