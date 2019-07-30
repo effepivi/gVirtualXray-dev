@@ -14,5 +14,6 @@ ExternalProject_Add(Wrappers
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Wrappers
     CMAKE_ARGS
         ${LOCAL_CMAKE_BUILD_OPTIONS}
+        ${ENABLED_WRAPPERS}
     PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
 )
