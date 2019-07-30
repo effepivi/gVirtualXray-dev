@@ -31,10 +31,7 @@
 
 
 # Project name and version #####################################################
-SET (SimpleGVXR_VERSION_MAJOR 1)
-SET (SimpleGVXR_VERSION_MINOR 0)
-SET (SimpleGVXR_VERSION_PATCH 0)
-SET (SimpleGVXR_VERSION_STRING "${SimpleGVXR_VERSION_MAJOR}.${SimpleGVXR_VERSION_MINOR}.${SimpleGVXR_VERSION_PATCH}")
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
@@ -44,7 +41,8 @@ else ()
 endif()
 set(CMAKE_DIRECTORY_LABELS "SimpleGVXR")
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
+
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
 
 
 # Support for the CTest dashboard testing system
