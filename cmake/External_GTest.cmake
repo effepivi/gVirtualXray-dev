@@ -19,12 +19,16 @@ include(ExternalProject)
 set(GTEST_DISABLE_PTHREADS ON)
 set(GTEST_FORCE_SHARED_CRT ON)
 
+get_filename_component(GTEST_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}" REALPATH)
+SET (GTEST_INSTALL_DIR ${GTEST_INSTALL_DIR}/third_party)
+
 FIND_PACKAGE(Git)
 IF (GIT_FOUND)
 
     ExternalProject_Add(googletest
         GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
         GIT_TAG ${GTEST_GIT_TAG}
+	INSTALL_DIR ${GTEST_INSTALL_DIR}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
             -DBUILD_UTILS:BOOL=OFF
@@ -33,13 +37,15 @@ IF (GIT_FOUND)
             -DBUILD_GTEST=ON
             -DBUILD_GMOCK=OFF
             -DBUILD_UTILS=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
         PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
         # Disable install step
-        INSTALL_COMMAND ""
+	#INSTALL_COMMAND ""
     )
 ELSE (GIT_FOUND)
     ExternalProject_Add(googletest
         URL ${GTEST_URL_REPOSITORY}
+	INSTALL_DIR ${GTEST_INSTALL_DIR}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
             -DBUILD_UTILS:BOOL=OFF
@@ -48,24 +54,19 @@ ELSE (GIT_FOUND)
             -DBUILD_GTEST=ON
             -DBUILD_GMOCK=OFF
             -DBUILD_UTILS=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+	    
         PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
         # Disable install step
-        INSTALL_COMMAND ""
+	#INSTALL_COMMAND ""
     )
 ENDIF (GIT_FOUND)
 
 # Specify include dir
 ExternalProject_Get_Property(googletest source_dir)
-set(GTEST_INCLUDE_DIRS ${source_dir}/googletest/include)
+set(GTEST_INCLUDE_DIRS ${GTEST_INSTALL_DIR}/include)
 
 # Specify MainTest's link libraries
-ExternalProject_Get_Property(googletest binary_dir)
-
-
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
-set (GTEST_LIBS_DIR "${binary_dir}/googletest")
+set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib")
 
-IF (MSVC)
-    SET(GTEST_LIBS_DIR  "${binary_dir}/googletest/ReleaseLibs" "${binary_dir}/googletest/DebugLibs")
-    SET(GTEST_LIBRARIES optimized gtest optimized gtest_main debug gtestd debug gtest_maind)
-ENDIF ()
