@@ -173,7 +173,7 @@ add_test(SGVXR_TestMassAttenuationCoefficients SGVXR_TestMassAttenuationCoeffici
 #add_test(SGVXR_TestLBuffer                     SGVXR_TestLBuffer)
 add_test(SGVXR_TestBeerLambertLawMonoChromatic SGVXR_TestBeerLambertLawMonoChromatic)
 add_test(SGVXR_TestBeerLambertLawPolyChromatic SGVXR_TestBeerLambertLawPolyChromatic)
-#add_test(SGVXR_TestSinogramFromMesh            SGVXR_TestSinogramFromMesh)
+add_test(SGVXR_TestSinogramFromMesh            SGVXR_TestSinogramFromMesh)
 ##add_test(SGVXR_TestSinogramFromVoxels          SGVXR_TestSinogramFromVoxels)
 #add_test(SGVXR_TestPointSource                 SGVXR_TestPointSource)
 #add_test(SGVXR_TestCubeSource                  SGVXR_TestCubeSource)
