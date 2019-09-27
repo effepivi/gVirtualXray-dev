@@ -1799,7 +1799,7 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel);
  *  @return the corresponding sinogram
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeSinogram(
+std::vector<std::vector<std::vector<float> > > computeSinogram(
     double x,
     double y,
     double z,
@@ -1840,7 +1840,7 @@ std::vector<std::vector<float> > computeSinogram(
  *  @return the corresponding projection set
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeProjectionSet(
+std::vector<std::vector<std::vector<float> > > computeProjectionSet(
     double x,
     double y,
     double z,
@@ -1873,7 +1873,7 @@ std::vector<std::vector<float> > getLastLBuffer();
  *  @return the last sinogram
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > getLastSinogram();
+std::vector<std::vector<std::vector<float> > > getLastSinogram();
 
 
 //------------------------------------------------------------------------------
@@ -1882,7 +1882,7 @@ std::vector<std::vector<float> > getLastSinogram();
  *  @return the last projection set
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > getLastProjectionSet();
+std::vector<std::vector<std::vector<float> > > getLastProjectionSet();
 
 
 //------------------------------------------------------------------------------
@@ -2090,5 +2090,20 @@ void setScaleFilter(double aValue);
 double getShiftFilter();
 double getScaleFilter();
 */
+
+
+std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
+
+std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName);
+
+double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
+
+
+double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
+
+
+float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
+float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage);
+
 
 #endif

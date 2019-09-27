@@ -130,12 +130,12 @@
     <member refid="_simple_g_v_x_r_8h_1a61e8cc31f2f3caa5ea89e019eec5e559" kind="function"><name>getUnitOfLength</name></member>
     <member refid="_simple_g_v_x_r_8h_1a5451b6f54339116e72cba6cc58e01be4" kind="function"><name>computeXRayImage</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3fd962d97691068b4a0686570a06c147" kind="function"><name>computeLBuffer</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a296cfff31e4c95d04b7d8fdee1a43752" kind="function"><name>computeSinogram</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a590413247bad009229dcb7c537726073" kind="function"><name>computeProjectionSet</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a3a52493fbad0ba16f886fb8f0fec612b" kind="function"><name>computeSinogram</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ace5245156e6abbba7c1e45facd19b86f" kind="function"><name>computeProjectionSet</name></member>
     <member refid="_simple_g_v_x_r_8h_1ab0814f041176d63ce590dc46e8721f5d" kind="function"><name>getLastXRayImage</name></member>
     <member refid="_simple_g_v_x_r_8h_1adefbb2fdefe4ddcd43da3a8cd1c94957" kind="function"><name>getLastLBuffer</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a31cac5db95d54fc7013ef6da1d9ae0bb" kind="function"><name>getLastSinogram</name></member>
-    <member refid="_simple_g_v_x_r_8h_1a53f75f5283a99c9ebdc23e499ad5a4e2" kind="function"><name>getLastProjectionSet</name></member>
+    <member refid="_simple_g_v_x_r_8h_1ad8526de37a0350754af2f8868b50a83d" kind="function"><name>getLastSinogram</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a190d0b62ad7b87b414b6ff25a3236802" kind="function"><name>getLastProjectionSet</name></member>
     <member refid="_simple_g_v_x_r_8h_1a2fd74a1173b58acd49329e6d8f9e4f0f" kind="function"><name>getImageWidth</name></member>
     <member refid="_simple_g_v_x_r_8h_1a405587a06bb8b4188d32e9c2865ce0f0" kind="function"><name>getImageHeght</name></member>
     <member refid="_simple_g_v_x_r_8h_1a68e92985a191484817d8c0eb20ae2288" kind="function"><name>getImageRow</name></member>
@@ -151,5 +151,11 @@
     <member refid="_simple_g_v_x_r_8h_1add3d514ce518f8207a5d16ee809cf5b0" kind="function"><name>getMassAttenuationFromMixture</name></member>
     <member refid="_simple_g_v_x_r_8h_1a4826978ac2240b8aee811ad31464f959" kind="function"><name>getMassAttenuationFromCompound</name></member>
     <member refid="_simple_g_v_x_r_8h_1a3acb9c86309f58436b2c8c0213d705b0" kind="function"><name>getMuFromHU</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a9c93e28cc1b360c09fa1b98fc3eab70b" kind="function"><name>loadImage2D</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a5bccdd725f49630a3f0dd6a98042b0a4" kind="function"><name>loadImage3D</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a8dac31be57c95fd955954336e08f368e" kind="function"><name>computeZNCC</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a58ac54c235a2a0c4c5dd291846eaed68" kind="function"><name>computeRMSE</name></member>
+    <member refid="_simple_g_v_x_r_8h_1aeddf9a558bc0bfbd27cf414284d4074e" kind="function"><name>getMinValue</name></member>
+    <member refid="_simple_g_v_x_r_8h_1a5799a720264d882ca468f08124be656a" kind="function"><name>getMaxValue</name></member>
   </compound>
 </doxygenindex>

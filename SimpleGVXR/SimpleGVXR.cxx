@@ -194,8 +194,15 @@ gVirtualXRay::Vec3<GLfloat> getArcballVector(int x,
 
 float radian2degree(float anAngle);
 
-std::vector<std::vector<float> > getVectorImage(
+std::vector<std::vector<float> > getVectorImage2D(
     const gVirtualXRay::Image<float>& anImage);
+
+std::vector<std::vector<std::vector<float> > > getVectorImage3D(
+    const gVirtualXRay::Image<float>& anImage);
+
+gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage);
+
+gVirtualXRay::Image<float> getImage(const std::vector<std::vector<std::vector<float> > >& anImage);
 
 gVirtualXRay::MATRIX4 Vector2gvxrMatrix(
     const std::vector<std::vector<float> >& aNumpyMatrix);
@@ -2906,7 +2913,7 @@ std::vector<std::vector<float> > computeXRayImage()
     cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
 
-    return (getVectorImage(g_xray_renderer.getEnergyFluence()));
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
 }
 
 //--------------------------------------------
@@ -2948,11 +2955,11 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
     }
 
     // Compute its L-buffer
-    return (getVectorImage(g_xray_renderer.getLBuffer()));
+    return (getVectorImage2D(g_xray_renderer.getLBuffer()));
 }
 
 
-std::vector<std::vector<float> > computeSinogram(double x, double y, double z,
+std::vector<std::vector<std::vector<float> > > computeSinogram(double x, double y, double z,
     const std::string& aUnitOfLength, unsigned int aNumberOfAngle,
     double anAngleOffset) {
     // There is no OpenGL context
@@ -2978,11 +2985,11 @@ std::vector<std::vector<float> > computeSinogram(double x, double y, double z,
     cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
 
-    return (getVectorImage(g_xray_renderer.getSinogram()));
+    return (getVectorImage3D(g_xray_renderer.getSinogram()));
 }
 
 
-std::vector<std::vector<float> > computeProjectionSet(double x, double y, double z,
+std::vector<std::vector<std::vector<float> > > computeProjectionSet(double x, double y, double z,
     const std::string& aUnitOfLength, unsigned int aNumberOfAngle,
     double anAngleOffset) {
     // There is no OpenGL context
@@ -3008,25 +3015,25 @@ std::vector<std::vector<float> > computeProjectionSet(double x, double y, double
     cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
     }
 
-    return (getVectorImage(g_xray_renderer.getProjectionSet()));
+    return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }
 
 
 std::vector<std::vector<float> > getLastXRayImage() {
-    return (getVectorImage(g_xray_renderer.getEnergyFluence()));
+    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
 }
 
 std::vector<std::vector<float> > getLastLBuffer() {
-    return (getVectorImage(g_xray_renderer.getLBuffer()));
+    return (getVectorImage2D(g_xray_renderer.getLBuffer()));
 }
 
-std::vector<std::vector<float> > getLastSinogram() {
-    return (getVectorImage(g_xray_renderer.getSinogram()));
+std::vector<std::vector<std::vector<float> > >  getLastSinogram() {
+    return (getVectorImage3D(g_xray_renderer.getSinogram()));
 }
 
 
-std::vector<std::vector<float> > getLastProjectionSet() {
-    return (getVectorImage(g_xray_renderer.getProjectionSet()));
+std::vector<std::vector<std::vector<float> > > getLastProjectionSet() {
+    return (getVectorImage3D(g_xray_renderer.getProjectionSet()));
 }
 
 
@@ -3874,7 +3881,7 @@ double getUnitOfLength(const std::string& aUnitOfLength)
     return (unit_of_length);
 }
 
-std::vector<std::vector<float> > getVectorImage(
+std::vector<std::vector<float> > getVectorImage2D(
     const gVirtualXRay::Image<float>& anImage) {
     std::vector < std::vector<float> > output;
 
@@ -3888,6 +3895,69 @@ std::vector<std::vector<float> > getVectorImage(
 
     return output;
 }
+
+
+std::vector<std::vector<std::vector<float> > > getVectorImage3D(
+    const gVirtualXRay::Image<float>& anImage)
+{
+	std::vector < std::vector < std::vector<float> > > output;
+
+    for (unsigned int k = 0; k < anImage.getDepth(); ++k)
+    {
+    	std::vector < std::vector<float> > slice;
+        for (unsigned int j = 0; j < anImage.getHeight(); ++j)
+		{
+			std::vector<float> row;
+	        for (unsigned int i = 0; i < anImage.getWidth(); ++i)
+			{
+	        	row.push_back(anImage.getPixel(i, j, k));
+			}
+
+			slice.push_back(row);
+		}
+
+		output.push_back(slice);
+    }
+
+    return output;
+}
+
+
+gVirtualXRay::Image<float> getImage(const std::vector<std::vector<float> >& anImage)
+{
+    gVirtualXRay::Image<float> output(anImage[0].size(), anImage.size());
+
+    for (unsigned int j = 0; j < anImage.size(); ++j)
+    {
+        for (unsigned int i = 0; i < anImage[0].size(); ++i)
+        {
+            output.setPixel(i, j, 0, anImage[j][i]);
+        }
+    }
+
+    return output;
+}
+
+
+gVirtualXRay::Image<float> getImage(const std::vector<std::vector<std::vector<float> > >& anImage)
+{
+    gVirtualXRay::Image<float> output(anImage[0][0].size(), anImage[0].size(), anImage.size());
+
+    for (unsigned int k = 0; k < anImage.size(); ++k)
+    {
+        for (unsigned int j = 0; j < anImage[0].size(); ++j)
+        {
+			for (unsigned int i = 0; i < anImage[0][0].size(); ++i)
+			{
+				output.setPixel(i, j, k, anImage[k][j][i]);
+			}
+		}
+    }
+
+    return output;
+}
+
+
 
 gVirtualXRay::MATRIX4 Vector2gvxrMatrix(
     const std::vector<std::vector<float> >& aSTLMatrix) {
@@ -4070,4 +4140,46 @@ double getShiftFilter() {
 
 double getScaleFilter() {
     return (g_scale_filter);
+}
+
+
+std::vector<std::vector<float> > loadImage2D(const std::string& aFileName)
+{
+    return getVectorImage2D(gVirtualXRay::Image<float>(aFileName));
+}
+
+
+std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName)
+{
+    return getVectorImage3D(gVirtualXRay::Image<float>(aFileName));
+}
+
+
+double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage)
+{
+    gVirtualXRay::Image<float> ref = getImage(aReferenceImage);
+    gVirtualXRay::Image<float> test = getImage(aTestImage);
+
+    return ref.computeNCC(test);
+}
+
+
+double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage)
+{
+    gVirtualXRay::Image<float> ref = getImage(aReferenceImage);
+    gVirtualXRay::Image<float> test = getImage(aTestImage);
+
+    return ref.computeRMSE(test);
+}
+
+
+float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage)
+{
+    return getImage(aImage).getMinValue();
+}
+
+
+float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage)
+{
+    return getImage(aImage).getMaxValue();
 }

@@ -4392,9 +4392,9 @@
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1767" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a296cfff31e4c95d04b7d8fdee1a43752" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
-        <definition>std::vector&lt;std::vector&lt;float&gt; &gt; computeSinogram</definition>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a3a52493fbad0ba16f886fb8f0fec612b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;std::vector&lt;float&gt; &gt; &gt; computeSinogram</definition>
         <argsstring>(double x, double y, double z, const std::string &amp;aUnitOfLength, unsigned int aNumberOfAngle, double anAngleOffset)</argsstring>
         <name>computeSinogram</name>
         <param>
@@ -4476,9 +4476,9 @@
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1802" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a590413247bad009229dcb7c537726073" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
-        <definition>std::vector&lt;std::vector&lt;float&gt; &gt; computeProjectionSet</definition>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ace5245156e6abbba7c1e45facd19b86f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;std::vector&lt;float&gt; &gt; &gt; computeProjectionSet</definition>
         <argsstring>(double x, double y, double z, const std::string &amp;aUnitOfLength, unsigned int aNumberOfAngle, double anAngleOffset)</argsstring>
         <name>computeProjectionSet</name>
         <param>
@@ -4588,9 +4588,9 @@
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1867" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a31cac5db95d54fc7013ef6da1d9ae0bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
-        <definition>std::vector&lt;std::vector&lt;float&gt; &gt; getLastSinogram</definition>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1ad8526de37a0350754af2f8868b50a83d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;std::vector&lt;float&gt; &gt; &gt; getLastSinogram</definition>
         <argsstring>()</argsstring>
         <name>getLastSinogram</name>
         <briefdescription>
@@ -4602,9 +4602,9 @@
         </inbodydescription>
         <location file="SimpleGVXR.h" line="1876" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a53f75f5283a99c9ebdc23e499ad5a4e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
-        <definition>std::vector&lt;std::vector&lt;float&gt; &gt; getLastProjectionSet</definition>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a190d0b62ad7b87b414b6ff25a3236802" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;std::vector&lt;float&gt; &gt; &gt; getLastProjectionSet</definition>
         <argsstring>()</argsstring>
         <name>getLastProjectionSet</name>
         <briefdescription>
@@ -5148,6 +5148,116 @@
         <inbodydescription>
         </inbodydescription>
         <location file="SimpleGVXR.h" line="2084" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a9c93e28cc1b360c09fa1b98fc3eab70b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; float &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;float&gt; &gt; loadImage2D</definition>
+        <argsstring>(const std::string &amp;aFileName)</argsstring>
+        <name>loadImage2D</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFileName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>void setShiftFilter(double aValue); void setScaleFilter(double aValue); double getShiftFilter(); double getScaleFilter(); </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="2095" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a5bccdd725f49630a3f0dd6a98042b0a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;std::vector&lt;float&gt; &gt; &gt; loadImage3D</definition>
+        <argsstring>(const std::string &amp;aFileName)</argsstring>
+        <name>loadImage3D</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFileName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="2097" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a8dac31be57c95fd955954336e08f368e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double computeZNCC</definition>
+        <argsstring>(const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;aReferenceImage, const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;aTestImage)</argsstring>
+        <name>computeZNCC</name>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;</type>
+          <declname>aReferenceImage</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;</type>
+          <declname>aTestImage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="2099" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a58ac54c235a2a0c4c5dd291846eaed68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double computeRMSE</definition>
+        <argsstring>(const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;aReferenceImage, const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;aTestImage)</argsstring>
+        <name>computeRMSE</name>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;</type>
+          <declname>aReferenceImage</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;</type>
+          <declname>aTestImage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="2102" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1aeddf9a558bc0bfbd27cf414284d4074e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float getMinValue</definition>
+        <argsstring>(const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;aImage)</argsstring>
+        <name>getMinValue</name>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;</type>
+          <declname>aImage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="2105" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="_simple_g_v_x_r_8h_1a5799a720264d882ca468f08124be656a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float getMaxValue</definition>
+        <argsstring>(const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;aImage)</argsstring>
+        <name>getMaxValue</name>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; std::vector&lt; float &gt; &gt; &gt; &amp;</type>
+          <declname>aImage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="SimpleGVXR.h" line="2106" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -6056,7 +6166,7 @@ License BSD 3-Clause License.</para><para>For details on use and redistribution 
 <codeline lineno="1770"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1782"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1801"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1802"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a296cfff31e4c95d04b7d8fdee1a43752" kindref="member">computeSinogram</ref>(</highlight></codeline>
+<codeline lineno="1802"><highlight class="normal">std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a3a52493fbad0ba16f886fb8f0fec612b" kindref="member">computeSinogram</ref>(</highlight></codeline>
 <codeline lineno="1803"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x,</highlight></codeline>
 <codeline lineno="1804"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>y,</highlight></codeline>
 <codeline lineno="1805"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>z,</highlight></codeline>
@@ -6068,7 +6178,7 @@ License BSD 3-Clause License.</para><para>For details on use and redistribution 
 <codeline lineno="1811"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1823"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1842"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1843"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a590413247bad009229dcb7c537726073" kindref="member">computeProjectionSet</ref>(</highlight></codeline>
+<codeline lineno="1843"><highlight class="normal">std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1ace5245156e6abbba7c1e45facd19b86f" kindref="member">computeProjectionSet</ref>(</highlight></codeline>
 <codeline lineno="1844"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x,</highlight></codeline>
 <codeline lineno="1845"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>y,</highlight></codeline>
 <codeline lineno="1846"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>z,</highlight></codeline>
@@ -6092,13 +6202,13 @@ License BSD 3-Clause License.</para><para>For details on use and redistribution 
 <codeline lineno="1870"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1872"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1875"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1876"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a31cac5db95d54fc7013ef6da1d9ae0bb" kindref="member">getLastSinogram</ref>();</highlight></codeline>
+<codeline lineno="1876"><highlight class="normal">std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1ad8526de37a0350754af2f8868b50a83d" kindref="member">getLastSinogram</ref>();</highlight></codeline>
 <codeline lineno="1877"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1878"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1879"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
 <codeline lineno="1881"><highlight class="comment"></highlight></codeline>
 <codeline lineno="1884"><highlight class="comment">//------------------------------------------------------------------------------</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1885"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a53f75f5283a99c9ebdc23e499ad5a4e2" kindref="member">getLastProjectionSet</ref>();</highlight></codeline>
+<codeline lineno="1885"><highlight class="normal">std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a190d0b62ad7b87b414b6ff25a3236802" kindref="member">getLastProjectionSet</ref>();</highlight></codeline>
 <codeline lineno="1886"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1887"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1888"><highlight class="normal"></highlight><highlight class="comment">//------------------------------------------------------------------------------</highlight></codeline>
@@ -6199,7 +6309,21 @@ License BSD 3-Clause License.</para><para>For details on use and redistribution 
 <codeline lineno="2084"><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="_simple_g_v_x_r_8h_1a3acb9c86309f58436b2c8c0213d705b0" kindref="member">getMuFromHU</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>HU,</highlight></codeline>
 <codeline lineno="2085"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>anEnergy,</highlight></codeline>
 <codeline lineno="2086"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aUnitOfEnergy);</highlight></codeline>
-<codeline lineno="2094"><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="2095"><highlight class="normal">std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/><ref refid="_simple_g_v_x_r_8h_1a9c93e28cc1b360c09fa1b98fc3eab70b" kindref="member">loadImage2D</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName);</highlight></codeline>
+<codeline lineno="2096"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2097"><highlight class="normal">std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;<sp/>loadImage3D(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>aFileName);</highlight></codeline>
+<codeline lineno="2098"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2099"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>computeZNCC(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;&amp;<sp/>aReferenceImage,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;&amp;<sp/>aTestImage);</highlight></codeline>
+<codeline lineno="2100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2102"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>computeRMSE(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;&amp;<sp/>aReferenceImage,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;&amp;<sp/>aTestImage);</highlight></codeline>
+<codeline lineno="2103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2105"><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>getMinValue(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;&amp;<sp/>aImage);</highlight></codeline>
+<codeline lineno="2106"><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>getMaxValue(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;std::vector&lt;float&gt;<sp/>&gt;<sp/>&gt;&amp;<sp/>aImage);</highlight></codeline>
+<codeline lineno="2107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2109"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
     </programlisting>
     <location file="SimpleGVXR.h"/>
   </compounddef>
