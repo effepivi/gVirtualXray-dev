@@ -2,6 +2,7 @@ var searchData=
 [
   ['savelastcumulatedlbuffer',['saveLastCumulatedLBuffer',['../_simple_g_v_x_r_8h.html#a58a2b9e1ede05451b09797cdb13531ba',1,'SimpleGVXR.h']]],
   ['savelastlbuffer',['saveLastLBuffer',['../_simple_g_v_x_r_8h.html#a30e9dcbbe24bc34add2f849655f6e5e4',1,'SimpleGVXR.h']]],
+  ['savelastprojectionset',['saveLastProjectionSet',['../_simple_g_v_x_r_8h.html#a0723e5c30c74ae2bd5189f7567b39504',1,'SimpleGVXR.h']]],
   ['savelastsinogram',['saveLastSinogram',['../_simple_g_v_x_r_8h.html#abc0ba9cbdc0fe49d7da46dc8d25afb3f',1,'SimpleGVXR.h']]],
   ['savelastxrayimage',['saveLastXRayImage',['../_simple_g_v_x_r_8h.html#a32e448289291a23d645c301b8c5c6482',1,'SimpleGVXR.h']]],
   ['savestlfile',['saveSTLfile',['../_simple_g_v_x_r_8h.html#abb44c8ba20d31d7bb33afe27b86933be',1,'SimpleGVXR.h']]],

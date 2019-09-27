@@ -437,6 +437,42 @@ the bounding box as: min_x, min_y, min_z, max_x, max_y, max_z
 Close and destroy all the windows and OpenGL contexts that have been created.  
 ";
 
+%feature("docstring") makeIsoSurface "
+
+Create an iso-surface from a 3D image and set its label in the scenegraph (i.e.
+identifier). Note that it is not added to the X-ray renderer.  
+
+Parameters
+----------
+* `aLabel` :  
+    the label in the scenegraph  
+* `anIsoValue` :  
+    the iso-value  
+* `aVoxelDataSet` :  
+    the voxel dataset  
+* `aWidth` :  
+    the number of voxel along the X-axis  
+* `aHeight` :  
+    the number of voxel along the Y-axis  
+* `aDepth` :  
+    the number of voxel along the Z-axis  
+* `aSpacingX` :  
+    the space between the centre of two successive voxels along the X-axis  
+* `aSpacingY` :  
+    the space between the centre of two successive voxels along the Y-axis  
+* `aSpacingZ` :  
+    the space between the centre of two successive voxels along the Z-axis  
+* `aUnitOfLength` :  
+    the unit of length corresponding to aSpacingX, aSpacingY and aSpacingZ.
+    Acceptable values are: \"um\", \"micrometre\", \"micrometer\", \"mm\",
+    \"millimetre\", \"millimeter\", \"cm\", \"centimetre\", \"centimeter\",
+    \"dm\", \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\", \"dam\",
+    \"decametre\", \"decameter\", \"hm\", \"hectometre\", \"hectometer\",
+    \"km\", \"kilometre\", \"kilometer\" (default value: \"cm\")  
+* `aParent` :  
+    the parent of the node in the scenegraph (default: \"root\")  
+";
+
 %feature("docstring") getDetectorPosition "
 
 Accessor on the position of the X-ray detector.  
@@ -603,6 +639,44 @@ Parameters
 * `zFar` :  
     Specifies the distance from the viewer to the far clipping plane (always
     positive).  
+";
+
+%feature("docstring") computeProjectionSet "
+
+Compute the projection set corresponding to the environment that has previously
+been set, i.e.  
+
+*   Detector position  
+*   Detector orientation  
+*   Detector size and resolution  
+*   Source position  
+*   Source shape  
+*   Beam spectrum  
+*   Scanned object geometries  
+*   Scanned object material properties Note that the rotation vector is the same
+    as the up-vector of the detector.  
+
+    Parameters:  
+    * `x` :  
+        the position of the rotation centre along the X-axis  
+    * `y` :  
+        the position of the rotation centre along the Y-axis  
+    * `z` :  
+        the position of the rotation centre along the Z-axis  
+    * `aUnitOfLength` :  
+        the unit of length corresponding to the x, y and z parameters.
+        Acceptable values are: \"um\", \"micrometre\", \"micrometer\", \"mm\",
+        \"millimetre\", \"millimeter\", \"cm\", \"centimetre\", \"centimeter\",
+        \"dm\", \"decimetre\", \"decimeter\", \"m\", \"metre\", \"meter\",
+        \"dam\", \"decametre\", \"decameter\", \"hm\", \"hectometre\",
+        \"hectometer\", \"km\", \"kilometre\", \"kilometer\"  
+    * `aNumberOfAngle` :  
+        the total number of projections in the projection set  
+    * `anAngleOffset` :  
+        the angle in degrees between two successive projections  
+
+    Returns:
+    the corresponding projection set  
 ";
 
 %feature("docstring") getMassAttenuationCoefficient "
@@ -1267,6 +1341,15 @@ Returns
 the up-vector  
 ";
 
+%feature("docstring") getLastProjectionSet "
+
+Accessor on the last projection set that has been computed.  
+
+Returns
+-------
+the last projection set  
+";
+
 %feature("docstring") setColour "
 
 Set the colour of a given polygon mesh.  
@@ -1477,6 +1560,19 @@ Parameters
 
 Replace the 3-D transformation matrix of the overall 3-D scene by an identity
 matrix.  
+";
+
+%feature("docstring") saveLastProjectionSet "
+
+Save the last projection set that has been computed.  
+
+Parameters
+----------
+* `aFileName` :  
+    the name of the output file (default: 0 means that the filename will be
+    automatically generated and the file saved in the current path)  
+* `useCompression` :  
+    use data compression is possible (default: true)  
 ";
 
 %feature("docstring") shearNode "

@@ -19,6 +19,7 @@ var searchData=
   ['getimagerow',['getImageRow',['../_simple_g_v_x_r_8h.html#a68e92985a191484817d8c0eb20ae2288',1,'SimpleGVXR.h']]],
   ['getimagewidth',['getImageWidth',['../_simple_g_v_x_r_8h.html#a2fd74a1173b58acd49329e6d8f9e4f0f',1,'SimpleGVXR.h']]],
   ['getlastlbuffer',['getLastLBuffer',['../_simple_g_v_x_r_8h.html#adefbb2fdefe4ddcd43da3a8cd1c94957',1,'SimpleGVXR.h']]],
+  ['getlastprojectionset',['getLastProjectionSet',['../_simple_g_v_x_r_8h.html#a53f75f5283a99c9ebdc23e499ad5a4e2',1,'SimpleGVXR.h']]],
   ['getlastsinogram',['getLastSinogram',['../_simple_g_v_x_r_8h.html#a31cac5db95d54fc7013ef6da1d9ae0bb',1,'SimpleGVXR.h']]],
   ['getlastxrayimage',['getLastXRayImage',['../_simple_g_v_x_r_8h.html#ab0814f041176d63ce590dc46e8721f5d',1,'SimpleGVXR.h']]],
   ['getlinearattenuationcoefficient',['getLinearAttenuationCoefficient',['../_simple_g_v_x_r_8h.html#a5f2a0cb6b7cbd23890f9376b8fd4c1ff',1,'SimpleGVXR.h']]],

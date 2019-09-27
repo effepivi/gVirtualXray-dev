@@ -168,6 +168,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="separator:a594ed6d5c8639db4c65c44bf1d149752"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a767e3795a7f184c5bcb41f6e10de842e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a767e3795a7f184c5bcb41f6e10de842e">makeCylinder</a> (const std::string &amp;aLabel, unsigned int aNumberOfSectors=10, double aHeight=1.0, double aRadius=0.5, const std::string &amp;aUnitOfLength=&quot;cm&quot;, const std::string &amp;aParent=&quot;root&quot;)</td></tr>
 <tr class="separator:a767e3795a7f184c5bcb41f6e10de842e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb734b32c97a74015748dfaf82bd8c7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#adb734b32c97a74015748dfaf82bd8c7e">makeIsoSurface</a> (const std::string &amp;aLabel, short anIsoValue, const std::vector&lt; short &gt; &amp;aVoxelDataSet, unsigned int aWidth, unsigned int aHeight, unsigned int aDepth, double aSpacingX, double aSpacingY, double aSpacingZ, const std::string &amp;aUnitOfLength=&quot;cm&quot;, const std::string &amp;aParent=&quot;root&quot;)</td></tr>
+<tr class="separator:adb734b32c97a74015748dfaf82bd8c7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7439a61c9cb4e6118810ec4fa5e40d01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a7439a61c9cb4e6118810ec4fa5e40d01">addMesh</a> (const std::string &amp;aDestination, const std::string &amp;aSource)</td></tr>
 <tr class="separator:a7439a61c9cb4e6118810ec4fa5e40d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2d38b8483e2ca9fe23259b383859314"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#aa2d38b8483e2ca9fe23259b383859314">subtractMesh</a> (const std::string &amp;aDestination, const std::string &amp;aSource)</td></tr>
@@ -388,6 +390,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="memitem:abc0ba9cbdc0fe49d7da46dc8d25afb3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#abc0ba9cbdc0fe49d7da46dc8d25afb3f">saveLastSinogram</a> (const std::string &amp;aFileName=std::string(), bool useCompression=true)</td></tr>
 <tr class="memdesc:abc0ba9cbdc0fe49d7da46dc8d25afb3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the last sinogram that has been computed.  <a href="#abc0ba9cbdc0fe49d7da46dc8d25afb3f">More...</a><br /></td></tr>
 <tr class="separator:abc0ba9cbdc0fe49d7da46dc8d25afb3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0723e5c30c74ae2bd5189f7567b39504"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a0723e5c30c74ae2bd5189f7567b39504">saveLastProjectionSet</a> (const std::string &amp;aFileName=std::string(), bool useCompression=true)</td></tr>
+<tr class="memdesc:a0723e5c30c74ae2bd5189f7567b39504"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the last projection set that has been computed.  <a href="#a0723e5c30c74ae2bd5189f7567b39504">More...</a><br /></td></tr>
+<tr class="separator:a0723e5c30c74ae2bd5189f7567b39504"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd097bdd4b2ab5f9b8fc8991b316e533"><td class="memItemLeft" align="right" valign="top"><a id="acd097bdd4b2ab5f9b8fc8991b316e533"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#acd097bdd4b2ab5f9b8fc8991b316e533">enableArtefactFilteringOnGPU</a> (void)</td></tr>
 <tr class="memdesc:acd097bdd4b2ab5f9b8fc8991b316e533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable artefact filtering on GPU (it is fast but can be inaccurate). <br /></td></tr>
@@ -420,6 +425,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="separator:a3fd962d97691068b4a0686570a06c147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a296cfff31e4c95d04b7d8fdee1a43752"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a296cfff31e4c95d04b7d8fdee1a43752">computeSinogram</a> (double x, double y, double z, const std::string &amp;aUnitOfLength, unsigned int aNumberOfAngle, double anAngleOffset)</td></tr>
 <tr class="separator:a296cfff31e4c95d04b7d8fdee1a43752"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a590413247bad009229dcb7c537726073"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a590413247bad009229dcb7c537726073">computeProjectionSet</a> (double x, double y, double z, const std::string &amp;aUnitOfLength, unsigned int aNumberOfAngle, double anAngleOffset)</td></tr>
+<tr class="separator:a590413247bad009229dcb7c537726073"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0814f041176d63ce590dc46e8721f5d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#ab0814f041176d63ce590dc46e8721f5d">getLastXRayImage</a> ()</td></tr>
 <tr class="memdesc:ab0814f041176d63ce590dc46e8721f5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor on the last X-ray image that has been computed.  <a href="#ab0814f041176d63ce590dc46e8721f5d">More...</a><br /></td></tr>
 <tr class="separator:ab0814f041176d63ce590dc46e8721f5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -429,6 +436,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <tr class="memitem:a31cac5db95d54fc7013ef6da1d9ae0bb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a31cac5db95d54fc7013ef6da1d9ae0bb">getLastSinogram</a> ()</td></tr>
 <tr class="memdesc:a31cac5db95d54fc7013ef6da1d9ae0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor on the last sinogram that has been computed.  <a href="#a31cac5db95d54fc7013ef6da1d9ae0bb">More...</a><br /></td></tr>
 <tr class="separator:a31cac5db95d54fc7013ef6da1d9ae0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53f75f5283a99c9ebdc23e499ad5a4e2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a53f75f5283a99c9ebdc23e499ad5a4e2">getLastProjectionSet</a> ()</td></tr>
+<tr class="memdesc:a53f75f5283a99c9ebdc23e499ad5a4e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor on the last projection set that has been computed.  <a href="#a53f75f5283a99c9ebdc23e499ad5a4e2">More...</a><br /></td></tr>
+<tr class="separator:a53f75f5283a99c9ebdc23e499ad5a4e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fd74a1173b58acd49329e6d8f9e4f0f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_simple_g_v_x_r_8h.html#a2fd74a1173b58acd49329e6d8f9e4f0f">getImageWidth</a> (const std::vector&lt; std::vector&lt; float &gt; &gt; &amp;anImage)</td></tr>
 <tr class="memdesc:a2fd74a1173b58acd49329e6d8f9e4f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor on the width of a given image.  <a href="#a2fd74a1173b58acd49329e6d8f9e4f0f">More...</a><br /></td></tr>
 <tr class="separator:a2fd74a1173b58acd49329e6d8f9e4f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -694,6 +704,81 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the corresponding L-buffer </dd></dl>
+</li>
+</ul>
+
+</div>
+</div>
+<a id="a590413247bad009229dcb7c537726073"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a590413247bad009229dcb7c537726073">&#9670;&nbsp;</a></span>computeProjectionSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::vector&lt;float&gt; &gt; computeProjectionSet </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>z</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aUnitOfLength</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>aNumberOfAngle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>anAngleOffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Compute the projection set corresponding to the environment that has previously been set, i.e.</p><ul>
+<li>Detector position</li>
+<li>Detector orientation</li>
+<li>Detector size and resolution</li>
+<li>Source position</li>
+<li>Source shape</li>
+<li>Beam spectrum</li>
+<li>Scanned object geometries</li>
+<li>Scanned object material properties Note that the rotation vector is the same as the up-vector of the detector. <br />
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the position of the rotation centre along the X-axis </td></tr>
+    <tr><td class="paramname">y</td><td>the position of the rotation centre along the Y-axis </td></tr>
+    <tr><td class="paramname">z</td><td>the position of the rotation centre along the Z-axis </td></tr>
+    <tr><td class="paramname">aUnitOfLength</td><td>the unit of length corresponding to the x, y and z parameters. Acceptable values are: "um", "micrometre", "micrometer", "mm", "millimetre", "millimeter", "cm", "centimetre", "centimeter", "dm", "decimetre", "decimeter", "m", "metre", "meter", "dam", "decametre", "decameter", "hm", "hectometre", "hectometer", "km", "kilometre", "kilometer" </td></tr>
+    <tr><td class="paramname">aNumberOfAngle</td><td>the total number of projections in the projection set </td></tr>
+    <tr><td class="paramname">anAngleOffset</td><td>the angle in degrees between two successive projections </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the corresponding projection set </dd></dl>
 </li>
 </ul>
 
@@ -1570,6 +1655,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 
 <p>Accessor on the last L-buffer that has been computed. </p>
 <dl class="section return"><dt>Returns</dt><dd>the last L-buffer </dd></dl>
+
+</div>
+</div>
+<a id="a53f75f5283a99c9ebdc23e499ad5a4e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53f75f5283a99c9ebdc23e499ad5a4e2">&#9670;&nbsp;</a></span>getLastProjectionSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::vector&lt;float&gt; &gt; getLastProjectionSet </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Accessor on the last projection set that has been computed. </p>
+<dl class="section return"><dt>Returns</dt><dd>the last projection set </dd></dl>
 
 </div>
 </div>
@@ -2863,6 +2968,105 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 
 </div>
 </div>
+<a id="adb734b32c97a74015748dfaf82bd8c7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb734b32c97a74015748dfaf82bd8c7e">&#9670;&nbsp;</a></span>makeIsoSurface()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void makeIsoSurface </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aLabel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>anIsoValue</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; short &gt; &amp;&#160;</td>
+          <td class="paramname"><em>aVoxelDataSet</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>aWidth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>aHeight</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>aDepth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>aSpacingX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>aSpacingY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>aSpacingZ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aUnitOfLength</em> = <code>&quot;cm&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aParent</em> = <code>&quot;root&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create an iso-surface from a 3D image and set its label in the scenegraph (i.e. identifier). Note that it is not added to the X-ray renderer. <br />
+</p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aLabel</td><td>the label in the scenegraph </td></tr>
+    <tr><td class="paramname">anIsoValue</td><td>the iso-value </td></tr>
+    <tr><td class="paramname">aVoxelDataSet</td><td>the voxel dataset </td></tr>
+    <tr><td class="paramname">aWidth</td><td>the number of voxel along the X-axis </td></tr>
+    <tr><td class="paramname">aHeight</td><td>the number of voxel along the Y-axis </td></tr>
+    <tr><td class="paramname">aDepth</td><td>the number of voxel along the Z-axis </td></tr>
+    <tr><td class="paramname">aSpacingX</td><td>the space between the centre of two successive voxels along the X-axis </td></tr>
+    <tr><td class="paramname">aSpacingY</td><td>the space between the centre of two successive voxels along the Y-axis </td></tr>
+    <tr><td class="paramname">aSpacingZ</td><td>the space between the centre of two successive voxels along the Z-axis </td></tr>
+    <tr><td class="paramname">aUnitOfLength</td><td>the unit of length corresponding to aSpacingX, aSpacingY and aSpacingZ. Acceptable values are: "um", "micrometre", "micrometer", "mm", "millimetre", "millimeter", "cm", "centimetre", "centimeter", "dm", "decimetre", "decimeter", "m", "metre", "meter", "dam", "decametre", "decameter", "hm", "hectometre", "hectometer", "km", "kilometre", "kilometer" (default value: "cm") </td></tr>
+    <tr><td class="paramname">aParent</td><td>the parent of the node in the scenegraph (default: "root") </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a1a677df8836861c2daebc55416f96f33"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a677df8836861c2daebc55416f96f33">&#9670;&nbsp;</a></span>moveToCenter()</h2>
 
@@ -3378,6 +3582,43 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_sim
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">aFileName</td><td>the name of the output file (default: means that the filename will be automatically generated and the file saved in the current path) </td></tr>
+    <tr><td class="paramname">useCompression</td><td>use data compression is possible (default: true) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0723e5c30c74ae2bd5189f7567b39504"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0723e5c30c74ae2bd5189f7567b39504">&#9670;&nbsp;</a></span>saveLastProjectionSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void saveLastProjectionSet </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aFileName</em> = <code>std::string()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>useCompression</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Save the last projection set that has been computed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aFileName</td><td>the name of the output file (default: 0 means that the filename will be automatically generated and the file saved in the current path) </td></tr>
     <tr><td class="paramname">useCompression</td><td>use data compression is possible (default: true) </td></tr>
   </table>
   </dd>

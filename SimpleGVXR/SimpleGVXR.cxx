@@ -700,6 +700,52 @@ void makeCylinder(const std::string& aLabel,
         }
 }
 
+
+//----------------------------------------------------------
+void makeIsoSurface(const std::string& aLabel,
+                    short anIsoValue,
+                    const std::vector<short>& aVoxelDataSet,
+                    unsigned int aWidth,
+                    unsigned int aHeight,
+                    unsigned int aDepth,
+                    double aSpacingX,
+                    double aSpacingY,
+                    double aSpacingZ,
+                    const std::string& aUnitOfLength,
+                    const std::string& aParent)
+                    //----------------------------------------------------------
+{
+    // Extract the isosurface
+    gVirtualXRay::Image<short> voxel_data_set(
+        &aVoxelDataSet[0],
+        aWidth, aHeight, aDepth,
+        gVirtualXRay::VEC3(aSpacingX, aSpacingY, aSpacingZ)
+    );
+
+    // The scenegraph does not exist
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(voxel_data_set.marchingCubes(anIsoValue));
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+            voxel_data_set.marchingCubes(anIsoValue),
+            gVirtualXRay::VEC3(),
+            aParent);
+        }
+}
+
+
 void addMesh(const std::string& aDestination, const std::string& aSource)
 {
     // The scenegraph does not exist
@@ -2769,13 +2815,32 @@ void saveLastSinogram(const std::string& aFileName,
     string file_name;
 
     if (aFileName.size())
-    file_name = aFileName;
+        file_name = aFileName;
     else
-    file_name = "sinogram-" + to_string(file_counter++) + ".mha";
+        file_name = "sinogram-" + to_string(file_counter++) + ".mha";
 
     g_xray_renderer.getSinogram().save(
         file_name, false, "Sinogram", useCompression);
 }
+
+
+//-----------------------------------------------------
+void saveLastProjectionSet(const std::string& aFileName,
+                           bool useCompression)
+//-----------------------------------------------------
+{
+    static int file_counter = 0;
+    string file_name;
+
+    if (aFileName.size())
+        file_name = aFileName;
+    else
+        file_name = "projection_set-" + to_string(file_counter++) + ".mha";
+
+    g_xray_renderer.getProjectionSet().save(
+        file_name, false, "ProjectionSet", useCompression);
+}
+
 
 //-------------------------------------
 void enableArtefactFilteringOnGPU(void)
@@ -2916,6 +2981,37 @@ std::vector<std::vector<float> > computeSinogram(double x, double y, double z,
     return (getVectorImage(g_xray_renderer.getSinogram()));
 }
 
+
+std::vector<std::vector<float> > computeProjectionSet(double x, double y, double z,
+    const std::string& aUnitOfLength, unsigned int aNumberOfAngle,
+    double anAngleOffset) {
+    // There is no OpenGL context
+    if (!g_has_own_gl_context
+    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+    // Create a window
+    createWindow();
+    }
+
+    // The renderer is ready
+    if (g_xray_renderer.isReady()) {
+    // Compute the X-ray image
+
+    double unit_of_length = getUnitOfLength(aUnitOfLength);
+    gVirtualXRay::VEC3 rotation_centre(x * unit_of_length,
+    y * unit_of_length, z * unit_of_length);
+
+    g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
+    rotation_centre, aNumberOfAngle, anAngleOffset);
+    }
+    // The renderer is not ready
+    else {
+    cerr << "gvxrWarning:\tX-ray renderer not ready." << endl;
+    }
+
+    return (getVectorImage(g_xray_renderer.getProjectionSet()));
+}
+
+
 std::vector<std::vector<float> > getLastXRayImage() {
     return (getVectorImage(g_xray_renderer.getEnergyFluence()));
 }
@@ -2927,6 +3023,12 @@ std::vector<std::vector<float> > getLastLBuffer() {
 std::vector<std::vector<float> > getLastSinogram() {
     return (getVectorImage(g_xray_renderer.getSinogram()));
 }
+
+
+std::vector<std::vector<float> > getLastProjectionSet() {
+    return (getVectorImage(g_xray_renderer.getProjectionSet()));
+}
+
 
 int getImageWidth(const std::vector<std::vector<float> >& anImage) {
     int image_width = 0;

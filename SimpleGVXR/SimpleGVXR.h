@@ -573,6 +573,46 @@ void makeCylinder(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
+/// Create an iso-surface from a 3D image and set its label in the scenegraph (i.e. identifier).
+/// Note that it is not added to the X-ray renderer.
+/**
+*  @param aLabel:  the label in the scenegraph
+*  @param anIsoValue: the iso-value
+*  @param aVoxelDataSet:  the voxel dataset
+*  @param aWidth:  the number of voxel along the X-axis
+*  @param aHeight:  the number of voxel along the Y-axis
+*  @param aDepth:  the number of voxel along the Z-axis
+*  @param aSpacingX: the space between the centre of two successive voxels along the X-axis
+*  @param aSpacingY: the space between the centre of two successive voxels along the Y-axis
+*  @param aSpacingZ: the space between the centre of two successive voxels along the Z-axis
+*  @param aUnitOfLength:   the unit of length corresponding to aSpacingX, aSpacingY and aSpacingZ.
+*                          Acceptable values are:
+*                          "um", "micrometre",  "micrometer",
+*                          "mm", "millimetre",  "millimeter",
+*                          "cm", "centimetre",  "centimeter",
+*                          "dm",  "decimetre",  "decimeter",
+*                          "m",   "metre",      "meter",
+*                          "dam", "decametre",  "decameter",
+*                          "hm",  "hectometre", "hectometer",
+*                          "km",  "kilometre",  "kilometer"
+*                          (default value: "cm")
+*  @param aParent: the parent of the node in the scenegraph (default: "root")
+*/
+//------------------------------------------------------------------------------
+void makeIsoSurface(const std::string& aLabel,
+    short anIsoValue,
+    const std::vector<short>& aVoxelDataSet,
+    unsigned int aWidth,
+    unsigned int aHeight,
+    unsigned int aDepth,
+    double aSpacingX,
+    double aSpacingY,
+    double aSpacingZ,
+    const std::string& aUnitOfLength = "cm",
+    const std::string& aParent = "root");
+
+
+//------------------------------------------------------------------------------
 /// Add a polygon mesh (aSource) to another one (aDestination).
 /// It corresponds to the operation as follows: aDestination += aSource.
 /// Both aSource and aDestination have to already exist in the scenegraph.
@@ -1594,8 +1634,22 @@ void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
     bool useCompression = true);
 
 
+    //------------------------------------------------------------------------------
+    /// Save the last sinogram that has been computed.
+    /**
+     *  @param aFileName:   the name of the output file
+     *                      (default: 0 means that the filename will be
+     *                      automatically generated and the file saved in
+     *                      the current path)
+     *  @param useCompression:  use data compression is possible (default: true)
+     */
+    //------------------------------------------------------------------------------
+    void saveLastSinogram(const std::string& aFileName = std::string(),
+        bool useCompression = true);
+
+
 //------------------------------------------------------------------------------
-/// Save the last sinogram that has been computed.
+/// Save the last projection set that has been computed.
 /**
  *  @param aFileName:   the name of the output file
  *                      (default: 0 means that the filename will be
@@ -1604,7 +1658,7 @@ void saveLastCumulatedLBuffer(const std::string& aFileName = std::string(),
  *  @param useCompression:  use data compression is possible (default: true)
  */
 //------------------------------------------------------------------------------
-void saveLastSinogram(const std::string& aFileName = std::string(),
+void saveLastProjectionSet(const std::string& aFileName = std::string(),
     bool useCompression = true);
 
 
@@ -1755,6 +1809,47 @@ std::vector<std::vector<float> > computeSinogram(
 
 
 //------------------------------------------------------------------------------
+/// Compute the projection set corresponding to the environment that
+/// has previously been set, i.e.
+/// - Detector position
+/// - Detector orientation
+/// - Detector size and resolution
+/// - Source position
+/// - Source shape
+/// - Beam spectrum
+/// - Scanned object geometries
+/// - Scanned object material properties
+/// Note that the rotation vector is the same as the up-vector of the detector.
+/**
+ *  @param x:   the position of the rotation centre along the X-axis
+ *  @param y:   the position of the rotation centre along the Y-axis
+ *  @param z:   the position of the rotation centre along the Z-axis
+ *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
+ *                          parameters. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @param aNumberOfAngle:  the total number of projections in the projection set
+ *  @param anAngleOffset:   the angle in degrees between
+ *                          two successive projections
+ *  @return the corresponding projection set
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > computeProjectionSet(
+    double x,
+    double y,
+    double z,
+    const std::string& aUnitOfLength,
+    unsigned int aNumberOfAngle,
+    double anAngleOffset);
+
+
+//------------------------------------------------------------------------------
 /// Accessor on the last X-ray image that has been computed.
 /**
  *  @return the last X-ray image
@@ -1779,6 +1874,15 @@ std::vector<std::vector<float> > getLastLBuffer();
  */
 //------------------------------------------------------------------------------
 std::vector<std::vector<float> > getLastSinogram();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the last projection set that has been computed.
+/**
+ *  @return the last projection set
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > getLastProjectionSet();
 
 
 //------------------------------------------------------------------------------
