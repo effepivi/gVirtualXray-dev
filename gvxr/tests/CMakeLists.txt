@@ -182,7 +182,7 @@ add_test (TestPointSource                 TestPointSource)
 add_test (TestCubeSource                  TestCubeSource)
 add_test (TestUncenteredSource            TestUncenteredSource)
 #add_test (TestPhantomMonoChromatic        TestPhantomMonoChromatic)
-add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
+#add_test (TestRadonTransformFromMesh      TestRadonTransformFromMesh)
 add_test (TestOrtho                       TestOrtho)
 
 #IF (FFTW3_LIBRARIES)
