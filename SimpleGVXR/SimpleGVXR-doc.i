@@ -225,6 +225,9 @@ Parameters
     the transformation matrix as a 4x4 array  
 ";
 
+%feature("docstring") getMinValue "
+";
+
 %feature("docstring") initShader "
 
 Initialise visualisation shader.  
@@ -238,6 +241,9 @@ Parameters
 ----------
 * `aLabel` :  
     the label of the polygon mesh  
+";
+
+%feature("docstring") getMaxValue "
 ";
 
 %feature("docstring") getPatchVersionOfCoreGVXR "
@@ -1489,6 +1495,9 @@ Parameters
     the component of the rotation vector along the Z-axis  
 ";
 
+%feature("docstring") loadImage3D "
+";
+
 %feature("docstring") enableArtefactFilteringOnGPU "
 
 Enable artefact filtering on GPU (it is fast but can be inaccurate).  
@@ -1609,6 +1618,9 @@ Parameters
 Returns
 -------
 the label of the material  
+";
+
+%feature("docstring") computeZNCC "
 ";
 
 %feature("docstring") usingArcBallRotation "
@@ -1748,6 +1760,9 @@ Returns
 the full version number  
 ";
 
+%feature("docstring") computeRMSE "
+";
+
 %feature("docstring") getImageWidth "
 
 Accessor on the width of a given image.  
@@ -1882,6 +1897,12 @@ Parameters
     the cursor x-axis position in the viewport coordinate system  
 * `y` :  
     the cursor y-axis position in the viewport coordinate system  
+";
+
+%feature("docstring") loadImage2D "
+
+void setShiftFilter(double aValue); void setScaleFilter(double aValue); double
+getShiftFilter(); double getScaleFilter();  
 ";
 
 %feature("docstring") renderLoop "
