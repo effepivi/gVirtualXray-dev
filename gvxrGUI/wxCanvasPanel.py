@@ -21,6 +21,9 @@ from matplotlib.colors import PowerNorm
 # gVirtualXRay's wrapper
 import gvxrPython3 as gvxr;
 
+# The main GUI application
+import wxApp;
+
 
 class wxCanvasPanel(wx.Panel):
     def __init__(self, parent, aParamContainer):
@@ -35,14 +38,15 @@ class wxCanvasPanel(wx.Panel):
         self.SetSizer(self.sizer)
         self.Fit()
         self.data_ready = False;
-        self.param_container = aParamContainer;
+        self.current_energy_unit = aParamContainer;
 
     def draw(self):
 
         if self.data_ready:
             x_ray_image = gvxr.computeXRayImage();
+            wxApp.g_need_refresh_xray_image = False;
 
-            print(self.param_container.current_energy_unit);
+            print(self.current_energy_unit);
 
             self.im1 = self.axes1.imshow(x_ray_image, cmap="gray");
             self.axes1.set_title("Using a linear colour scale");

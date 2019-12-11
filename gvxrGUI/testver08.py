@@ -60,7 +60,7 @@ class Interface(wx.Frame):
 
         save_item = wx.MenuItem(fileMenu, wx.ID_SAVE, text = "&Save as...\tCtrl+S",kind = wx.ITEM_NORMAL)
         save_item.SetBitmap(wx.Bitmap(dir_path + "/saveAs.png"))
-        fileMenu.AppendItem(save_item)
+        fileMenu.Append(save_item)
 
 
         # NEW,
@@ -125,7 +125,7 @@ class Interface(wx.Frame):
 
         quit_item = wx.MenuItem(fileMenu, wx.ID_EXIT, text = "&Quit\tCtrl+Q", kind = wx.ITEM_NORMAL)
         quit_item.SetBitmap(wx.Bitmap(dir_path + "/quit.png"))
-        fileMenu.AppendItem(quit_item)
+        fileMenu.Append(quit_item)
 
 
 

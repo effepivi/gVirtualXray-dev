@@ -8,6 +8,10 @@ import numpy as np
 import wx
 from wx import glcanvas
 
+# The main GUI application
+import wxApp;
+
+
 # TODO
 # Handle the object in user interaction
 # Save the L-buffer of node
@@ -48,17 +52,17 @@ input_3D_filename = dir_path + '/welsh-dragon-small.stl'
 
 
 class OpenGlCanvas(glcanvas.GLCanvas):
-    def __init__(self, parent, slider_container, plot_panel):
+    def __init__(self, parent): #, slider_container, plot_panel):
         print("OpenGlCanvas.__init__")
 
         self.GLinitialized = False
         self.no_load_data_error_detected = False;
-        self.slider_container = slider_container;
-        self.plot_panel = plot_panel;
+        #self.slider_container = slider_container;
+        #self.plot_panel = plot_panel;
         self.current_viewport = None;
         self.closest_object = 0; # Unknown
         self.object_scale = "unknown";
-                
+
         attribList = (glcanvas.WX_GL_RGBA, # RGBA
                       glcanvas.WX_GL_DOUBLEBUFFER, # Double Buffered
                       glcanvas.WX_GL_DEPTH_SIZE, 24, # 24 bit
@@ -93,13 +97,14 @@ class OpenGlCanvas(glcanvas.GLCanvas):
         print (ratio)
         gvxr.scaleScene(ratio, ratio, ratio);
         xray_image = gvxr.computeXRayImage();
-        self.plot_panel.updateImage(xray_image);
+        wxApp.g_need_refresh_xray_image = False;
+        wxApp.g_wxapp.image_viewer.updateImage(xray_image);
         self.Refresh(True)
         self.Update()
 
     def getObjectScale(self):
         return self.object_scale;
-    
+
     def resetViewports(self):
         if self.GLinitialized:
             self.border = 5;
@@ -274,7 +279,7 @@ class OpenGlCanvas(glcanvas.GLCanvas):
 
         if self.closest_object == 0: # Unknown
             return
-        
+
         elif self.closest_object == 1: # Detector
             if self.current_viewport.getType() == 0: # xy-plane
                 detector_position[0] = X;
@@ -287,6 +292,7 @@ class OpenGlCanvas(glcanvas.GLCanvas):
                 detector_position[2] = Z;
 
             gvxr.setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
+            wxApp.g_need_refresh_xray_image = True;
 
         elif self.closest_object == 2: # Source
 
@@ -300,7 +306,8 @@ class OpenGlCanvas(glcanvas.GLCanvas):
                 source_position[0] = X;
                 source_position[2] = Z;
 
-            gvxr.setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
+            gvxr.setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");            wxApp.g_need_refresh_xray_image = True;
+
         elif self.closest_object == 3: # Object
             return
 
@@ -310,17 +317,17 @@ class OpenGlCanvas(glcanvas.GLCanvas):
         look_at /= np.linalg.norm(look_at);
         cross1 = np.cross(up_vector, look_at);
         cross2 = np.cross(cross1, look_at);
-        
+
         # Try to preserve consistency
         main_up_vector_axis = 0;
-        
+
         if abs(up_vector[main_up_vector_axis]) < abs(up_vector[1]):
             main_up_vector_axis = 1;
         if abs(up_vector[main_up_vector_axis]) < abs(up_vector[2]):
             main_up_vector_axis = 2;
 
         main_cross2_axis = 0;
-        
+
         if abs(cross2[main_cross2_axis]) < abs(cross2[1]):
             main_cross2_axis = 1;
         if abs(cross2[main_cross2_axis]) < abs(cross2[2]):
@@ -338,28 +345,30 @@ class OpenGlCanvas(glcanvas.GLCanvas):
 
         # Redisplay
         xray_image = gvxr.computeXRayImage();
-        self.plot_panel.updateImage(xray_image);
+        wxApp.g_need_refresh_xray_image = False;
+
+        wxApp.g_wxapp.image_viewer.updateImage(xray_image);
         self.Refresh(True)
         self.Update()
 
     def detectClosestObject(self, X, Y, Z):
-        
+
         source_position    = gvxr.getSourcePosition("mm");
         detector_position  = gvxr.getDetectorPosition("mm");
 
         squared_cursor_to_object_distance   = float('Inf');
 
         squared_cursor_to_detector_distance = (X - detector_position[0]) * (X - detector_position[0]) + (Y - detector_position[1]) * (Y - detector_position[1]) + (Z - detector_position[2]) * (Z - detector_position[2]);
-        
+
         squared_cursor_to_source_distance   = (X - source_position[0]) * (X - source_position[0]) + (Y - source_position[1]) * (Y - source_position[1]) + (Z - source_position[2]) * (Z - source_position[2]);
-        
+
         self.closest_object = 0; # Unknown
-        
+
         #print (X, Y, Z)
         if squared_cursor_to_detector_distance < squared_cursor_to_source_distance:
             self.closest_object = 1; # Detector
             #print ("Detector closer", squared_cursor_to_detector_distance, squared_cursor_to_source_distance);
-        
+
             if squared_cursor_to_object_distance < squared_cursor_to_detector_distance:
                 self.closest_object = 3; # Object
 
@@ -415,7 +424,7 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             else:
                 X, Y, Z = self.current_viewport.screenCoords2worldCoords(x, y);
                 self.moveClosestObject(X, Y, Z);
-            
+
             # Redisplay
             self.Refresh(True)
             self.Update()
@@ -498,7 +507,8 @@ class OpenGlCanvas(glcanvas.GLCanvas):
 
             gvxr.loadSceneGraph(input_3D_filename, "mm");
             self.object_scale = "mm";
-            
+            wxApp.g_wxapp.setObjectScale("mm");
+
             node_label_set = [];
             node_label_set.append('root');
 
@@ -524,9 +534,9 @@ class OpenGlCanvas(glcanvas.GLCanvas):
                 for i in range(gvxr.getNumberOfChildren(last_node)):
                     node_label_set.append(gvxr.getChildLabel(last_node, i));
 
-            self.slider_container.loadTreeView();
-            self.slider_container.parent = self;
-            
+            #self.slider_container.loadTreeView();
+            #self.slider_container.parent = self;
+
             print("Move root to the centre");
             gvxr.moveToCentre('root');
 
@@ -534,8 +544,9 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             print("Compute an X-ray image");
             gvxr.enableArtefactFilteringOnGPU();
             xray_image = gvxr.computeXRayImage();
-            self.plot_panel.updateImage(xray_image);
             self.no_load_data_error_detected = True;
+            wxApp.g_need_refresh_xray_image = True;
+
             #gvxr.renderLoop();
 
             self.resetViewports();
@@ -543,6 +554,14 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             self.Show()
             self.Refresh(True)
             self.Update()
+
+            wxApp.g_wxapp.image_viewer.data_ready = True;
+            wxApp.g_wxapp.image_viewer.draw();
+            wxApp.g_wxapp.image_viewer.updateImage(xray_image);
+
+            wxApp.g_wxapp.image_viewer.Show();
+            wxApp.g_wxapp.image_viewer.Refresh(True);
+            wxApp.g_wxapp.image_viewer.Update();
 
 
     def __OnDraw__(self, event):
