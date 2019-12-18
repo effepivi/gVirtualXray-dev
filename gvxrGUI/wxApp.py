@@ -14,7 +14,8 @@ import gvxrPython3 as gvxr;
 from OpenGLCanvas import OpenGlCanvas;
 from ParamBox import ParamBox;
 from wxCanvasPanel import wxCanvasPanel;
-
+import MeasureCanvas;
+import HistogramCanvas;
 
 ################################################################################
 # Global variables
@@ -115,8 +116,15 @@ class wxApp(wx.Frame):
         #file_menu.AppendCheckItem(103,"Checkable")
         #editMenu.AppendMenu(wx.ID_ANY, "Scale", scale_menu)
 
+        analyse_menu = wx.Menu()
+        measure_menu = wx.MenuItem(analyse_menu, 601, text = "&Measure", kind = wx.ITEM_NORMAL)
+        histogram_menu = wx.MenuItem(analyse_menu, 602, text = "&Histogram", kind = wx.ITEM_NORMAL)
+        analyse_menu.Append(measure_menu)
+        analyse_menu.Append(histogram_menu)
+
         menu_bar.Append(file_menu, '&File')
         menu_bar.Append(self.scale_menu, 'Scale')
+        menu_bar.Append(analyse_menu, 'Analyse')
 
         quit_item = wx.MenuItem(file_menu, wx.ID_EXIT, text = "&Quit\tCtrl+Q", kind = wx.ITEM_NORMAL)
         quit_item.SetBitmap(wx.Bitmap(g_dir_path + "/quit.png"))
@@ -221,6 +229,14 @@ class wxApp(wx.Frame):
         elif id == 500:
             print ("Change scale to m");
             self.canvas.setObjectScale("m");
+        elif id == 601:
+            print ("Analyse->Measure");
+            canvas = MeasureCanvas.createMeasureWindow();
+
+        elif id == 602:
+            print ("Analyse->Histogram");
+            canvas = HistogramCanvas.createMeasureWindow();
+
         # Unknown ID
         else:
             print ("Event on widget ID (", id, "), not handled.")
