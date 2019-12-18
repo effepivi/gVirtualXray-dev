@@ -11,7 +11,7 @@ from wx import glcanvas
 # The main GUI application
 import wxApp;
 
-
+import ParamBox as PB
 # TODO
 # Handle the object in user interaction
 # Save the L-buffer of node
@@ -57,8 +57,6 @@ class OpenGlCanvas(glcanvas.GLCanvas):
 
         self.GLinitialized = False
         self.no_load_data_error_detected = False;
-        #self.slider_container = slider_container;
-        #self.plot_panel = plot_panel;
         self.current_viewport = None;
         self.closest_object = 0; # Unknown
         self.object_scale = "unknown";
@@ -97,10 +95,7 @@ class OpenGlCanvas(glcanvas.GLCanvas):
         print (ratio)
         gvxr.scaleScene(ratio, ratio, ratio);
         xray_image = gvxr.computeXRayImage();
-        wxApp.g_need_refresh_xray_image = False;
-        wxApp.g_wxapp.image_viewer.updateImage(xray_image);
-        self.Refresh(True)
-        self.Update()
+        wxApp.g_wxapp.updateXRayImage();
 
     def getObjectScale(self):
         return self.object_scale;
@@ -292,7 +287,6 @@ class OpenGlCanvas(glcanvas.GLCanvas):
                 detector_position[2] = Z;
 
             gvxr.setDetectorPosition(detector_position[0], detector_position[1], detector_position[2], "mm");
-            wxApp.g_need_refresh_xray_image = True;
 
         elif self.closest_object == 2: # Source
 
@@ -306,7 +300,7 @@ class OpenGlCanvas(glcanvas.GLCanvas):
                 source_position[0] = X;
                 source_position[2] = Z;
 
-            gvxr.setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");            wxApp.g_need_refresh_xray_image = True;
+            gvxr.setSourcePosition(source_position[0], source_position[1], source_position[2], "mm");
 
         elif self.closest_object == 3: # Object
             return
@@ -344,12 +338,7 @@ class OpenGlCanvas(glcanvas.GLCanvas):
         #print(cross2, up_vector);
 
         # Redisplay
-        xray_image = gvxr.computeXRayImage();
-        wxApp.g_need_refresh_xray_image = False;
-
-        wxApp.g_wxapp.image_viewer.updateImage(xray_image);
-        self.Refresh(True)
-        self.Update()
+        wxApp.g_wxapp.updateXRayImage();
 
     def detectClosestObject(self, X, Y, Z):
 
@@ -496,7 +485,9 @@ class OpenGlCanvas(glcanvas.GLCanvas):
 
             gvxr.usePointSource();
             #gvxr.useParallelBeam();
-            gvxr.setMonoChromatic(0.08, "MeV", 1);
+            gvxr.setMonoChromatic(80, "keV", 1);
+            PB.g_param_box.m_slider1.SetValue(80);
+            PB.g_param_box.m_choice1.SetSelection(1);
 
             # Load the data
             print("Load the data");
@@ -543,25 +534,15 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             # Compute an X-ray image
             print("Compute an X-ray image");
             gvxr.enableArtefactFilteringOnGPU();
-            xray_image = gvxr.computeXRayImage();
+
+
+            wxApp.g_wxapp.updateXRayImage();
             self.no_load_data_error_detected = True;
-            wxApp.g_need_refresh_xray_image = True;
 
             #gvxr.renderLoop();
 
             self.resetViewports();
 
-            self.Show()
-            self.Refresh(True)
-            self.Update()
-
-            wxApp.g_wxapp.image_viewer.data_ready = True;
-            wxApp.g_wxapp.image_viewer.draw();
-            wxApp.g_wxapp.image_viewer.updateImage(xray_image);
-
-            wxApp.g_wxapp.image_viewer.Show();
-            wxApp.g_wxapp.image_viewer.Refresh(True);
-            wxApp.g_wxapp.image_viewer.Update();
 
 
     def __OnDraw__(self, event):

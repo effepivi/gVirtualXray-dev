@@ -3,13 +3,21 @@ import wx.dataview as dv
 
 import gvxrPython3 as gvxr
 
-class slider_code( wx.Frame ):
+# The main GUI application
+import wxApp;
 
-	def __init__( self, parent, title = wx.EmptyString ):
+g_param_box = None;
 
-		super(slider_code, self).__init__(parent, id = wx.ID_ANY, title = title, pos = wx.DefaultPosition, size = wx.Size( 600,500 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+class ParamBox( wx.Frame ):
 
-		self.parent = parent;
+	def __init__( self, parent = None, title = "Control Panel" ):
+
+		super(ParamBox, self).__init__(parent, id = wx.ID_ANY, title = title, pos = wx.DefaultPosition, size = wx.Size( 600,500 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+
+		global g_param_box;
+
+		g_param_box = self;
+
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -185,22 +193,31 @@ class slider_code( wx.Frame ):
 		# Update the energy
 		gvxr.setMonoChromatic(val, self.current_energy_unit, 1);
 
+		wxApp.g_wxapp.updateXRayImage();
+		print(self.m_slider1.GetValue(), self.current_energy_unit)
+
 		# Redraw
-		self.parent.__OnDraw__(None);
-		self.parent.Show()
-		self.parent.Refresh(True);
-		self.parent.Update();
+		#self.parent.__OnDraw__(None);
+		#self.parent.Show()
+		#self.parent.Refresh(True);
+		#self.parent.Update();
 
 	def onUnitOfEnergy(self, e):
 
 		# Update the unit of energy
 		self.current_energy_unit = self.unit_of_energy_choices[self.m_choice1.GetSelection()];
 
+		print(self.m_slider1.GetValue(), self.current_energy_unit)
+		gvxr.setMonoChromatic(self.m_slider1.GetValue(), self.current_energy_unit, 1);
+
+		wxApp.g_wxapp.image_viewer.current_energy_unit = self.current_energy_unit;
+
+		wxApp.g_wxapp.updateXRayImage();
 		# Redraw
-		self.parent.__OnDraw__(None);
-		self.parent.Show()
-		self.parent.Refresh(True);
-		self.parent.Update();
+		#self.parent.__OnDraw__(None);
+		#self.parent.Show()
+		#self.parent.Refresh(True);
+		#self.parent.Update();
 
 
 	def OnSliderScroll2(self, e):

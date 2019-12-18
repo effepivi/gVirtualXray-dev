@@ -1,4 +1,6 @@
 
+import numpy as np
+
 
 # wxPython is used to create the GUI
 import wx
@@ -25,6 +27,8 @@ import gvxrPython3 as gvxr;
 import wxApp;
 
 
+NoneType = type(None);
+
 class wxCanvasPanel(wx.Panel):
     def __init__(self, parent, aParamContainer):
         wx.Panel.__init__(self, parent)
@@ -39,35 +43,49 @@ class wxCanvasPanel(wx.Panel):
         self.Fit()
         self.data_ready = False;
         self.current_energy_unit = aParamContainer;
+        self.colorbar1 = None;
+        self.colorbar2 = None;
+        self.colorbar3 = None;
 
     def draw(self):
 
         if self.data_ready:
-            x_ray_image = gvxr.computeXRayImage();
+            print("Display images")
+            if isinstance(self.colorbar1, NoneType) == False:
+                self.colorbar1.remove();
+            if isinstance(self.colorbar2, NoneType) == False:
+                self.colorbar2.remove();
+            if isinstance(self.colorbar3, NoneType) == False:
+                self.colorbar3.remove();
+
+            x_ray_image = np.divide(gvxr.computeXRayImage(), gvxr.getUnitOfEnergy(self.current_energy_unit));
+
+
             wxApp.g_need_refresh_xray_image = False;
 
             print(self.current_energy_unit);
+            print(np.max(x_ray_image));
 
             self.im1 = self.axes1.imshow(x_ray_image, cmap="gray");
             self.axes1.set_title("Using a linear colour scale");
 
             divider = make_axes_locatable(self.axes1)
             cax = divider.append_axes('bottom', size='25%', pad=0.5)
-            self.figure.colorbar(self.im1, cax=cax, orientation='horizontal');
+            self.colorbar1 = self.figure.colorbar(self.im1, cax=cax, orientation='horizontal');
 
             self.im2 = self.axes2.imshow(x_ray_image, norm=LogNorm(), cmap="gray");
             self.axes2.set_title("Using a log colour scale");
 
             divider = make_axes_locatable(self.axes2)
             cax = divider.append_axes('bottom', size='25%', pad=0.5)
-            self.figure.colorbar(self.im2, cax=cax, orientation='horizontal');
+            self.colorbar2 = self.figure.colorbar(self.im2, cax=cax, orientation='horizontal');
 
             self.im3 = self.axes3.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray");
             self.axes3.set_title("Using a Power-law colour scale");
 
             divider = make_axes_locatable(self.axes3)
             cax = divider.append_axes('bottom', size='25%', pad=0.5)
-            self.figure.colorbar(self.im3, cax=cax, orientation='horizontal');
+            self.colorbar3 = self.figure.colorbar(self.im3, cax=cax, orientation='horizontal');
 
     def updateImage(self, image):
         if self.data_ready:
