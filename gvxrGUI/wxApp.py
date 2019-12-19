@@ -279,7 +279,7 @@ class wxApp(wx.Frame):
 
         elif id == 602:
             print ("Analyse->Histogram");
-            canvas = HistogramCanvas.createMeasureWindow();
+            canvas = HistogramCanvas.createHistogramWindow();
 
         # Unknown ID
         else:
