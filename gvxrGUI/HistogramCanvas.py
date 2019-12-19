@@ -34,64 +34,6 @@ class HistogramFrame(wx.Frame):
         wx.Frame.__init__(self, parent)
 
         self.current_filename = None;
-        '''
-        # Create a wxGrid object
-        self.grid = wx.grid.Grid(self, -1)
-
-        self.column_titles = [];
-
-        self.column_titles.append("Width");
-        self.column_titles.append("Height");
-        self.column_titles.append("Area");
-        self.column_titles.append("Perimetre");
-
-        self.column_titles.append("Units of energy");
-        self.column_titles.append("Min");
-        self.column_titles.append("Max");
-        self.column_titles.append("Median");
-        self.column_titles.append("Mean");
-        self.column_titles.append("Std dev");
-
-        self.column_titles.append("Skewness");
-        self.column_titles.append("Kurtosis");
-        self.column_titles.append("Shannon entropy");
-
-        self.table = [];
-        self.table.append(self.column_titles);
-
-        # Then we call CreateGrid to set the dimensions of the grid
-        # (1 rows and 13 columns in this example)
-        self.grid.CreateGrid(1, len(self.column_titles))
-
-        # We can set the sizes of individual rows and columns
-        # in pixels
-        #self.grid.SetRowSize(0, 60)
-        #self.grid.SetColSize(0, 120)
-
-        # Add title in grid
-        for title, i in zip(self.column_titles, range(len(self.column_titles))):
-            self.grid.SetCellValue(0, i, title);
-            self.grid.SetReadOnly(0, i);
-            self.grid.SetCellBackgroundColour(0, i, wx.LIGHT_GREY);
-            self.grid.SetCellTextColour(0, i, wx.BLACK);
-
-            if i >= 5:
-                self.grid.SetColFormatFloat(i, 6, 3);
-
-
-
-        # Colours can be specified for grid cell contents
-        #self.grid.SetCellValue(3, 3, 'green on grey')
-        #self.grid.SetCellTextColour(3, 3, wx.GREEN)
-
-        # We can specify the some cells will store numeric
-        # values rather than strings. Here we set grid column 5
-        # to hold floating point values displayed with width of 6
-        # and precision of 2
-        #self.grid.SetColFormatFloat(5, 6, 2)
-        #self.grid.SetCellValue(0, 6, '3.1415')
-
-        self.addRow();'''
 
         # Create the file menu
         menu_bar = wx.MenuBar()
@@ -117,13 +59,71 @@ class HistogramFrame(wx.Frame):
 
         # Computethe X-ray image and its histogram
         xray_image = wxApp.g_wxapp.updateXRayImage();
+        bins = 256;
         self.hist, self.bins = np.histogram(xray_image, bins = 256)
+
 
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
+
+        hsizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.sizer.Add(hsizer, 0, wx.ALIGN_CENTER)
+        vsizer1 = wx.BoxSizer(wx.VERTICAL);
+        hsizer.Add(vsizer1, 0, wx.ALIGN_LEFT)
+
+        vsizer2 = wx.BoxSizer(wx.VERTICAL);
+        hsizer.Add(vsizer2, 0, wx.ALIGN_LEFT)
+
+        #
+        count = xray_image.shape[1] * xray_image.shape[0];
+        mean_value = np.mean(xray_image);
+        std = np.std(xray_image);
+        bins = 256;
+        min_value = np.min(xray_image);
+        max_value = np.max(xray_image);
+        self.bin_width = self.bins[1]-self.bins[0];
+
+        font = wx.Font(10, wx.ROMAN, wx.NORMAL, wx.NORMAL)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("Total count: " + str(count) + "    ")
+        vsizer1.Add(lbl, 0,wx.ALIGN_LEFT)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("Mean: " + str(mean_value) + "    ")
+        vsizer1.Add(lbl, 0,wx.ALIGN_LEFT)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("StdDev: " + str(std) + "    ")
+        vsizer1.Add(lbl, 0,wx.ALIGN_LEFT)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("Bins: " + str(bins) + "    ")
+        vsizer1.Add(lbl, 0,wx.ALIGN_LEFT)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("Min: " + str(min_value))
+        vsizer2.Add(lbl, 0,wx.ALIGN_LEFT)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("Max: " + str(max_value))
+        vsizer2.Add(lbl, 0,wx.ALIGN_LEFT)
+
+        lbl = wx.StaticText(self,-1,style = wx.ALIGN_LEFT)
+        lbl.SetFont(font)
+        lbl.SetLabel("Bin width: " + str(self.bin_width))
+        vsizer2.Add(lbl, 0,wx.ALIGN_LEFT)
+
         self.SetSizer(self.sizer)
         self.Fit()
 
@@ -143,9 +143,7 @@ class HistogramFrame(wx.Frame):
             ylim = max_value1;
         print(max_value1, max_value2, ylim);
 
-        width=self.bins[1]-self.bins[0];
-        print(width)
-        self.axes.bar(self.bins[:-1], self.hist, width=width)
+        self.axes.bar(self.bins[:-1], self.hist, width=self.bin_width)
         self.axes.set_ylim((np.min(self.hist), ylim))
         self.axes.set_xlabel("Bin value in " + wxApp.g_wxapp.current_energy_unit);
         self.axes.set_ylabel("Count");
