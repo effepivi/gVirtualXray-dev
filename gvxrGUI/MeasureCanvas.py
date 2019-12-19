@@ -120,7 +120,7 @@ class MeasureGridFrame(wx.Frame):
         i += 1;
 
         self.grid.SetReadOnly(number_of_rows - 1, i);
-        self.grid.SetCellValue(number_of_rows - 1, i, wxApp.g_wxapp.param_box.current_energy_unit);
+        self.grid.SetCellValue(number_of_rows - 1, i, wxApp.g_wxapp.current_energy_unit);
         i += 1;
 
         self.grid.SetReadOnly(number_of_rows - 1, i);

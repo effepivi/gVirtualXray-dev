@@ -36,6 +36,8 @@ class wxApp(wx.Frame):
 
         g_wxapp = self;
 
+        self.current_energy_unit = "keV";
+
         self.param_box = ParamBox(None)
 
         # Add the OpenGL viewer
@@ -97,19 +99,29 @@ class wxApp(wx.Frame):
 
         self.scale_menu = wx.Menu()
         self.scale_menu.AppendRadioItem(100, "um")
-        self.scale_menu.AppendRadioItem(200, "mm")
-        self.scale_menu.AppendRadioItem(300, "cm")
-        self.scale_menu.AppendRadioItem(400, "dm")
-        self.scale_menu.AppendRadioItem(500, "m")
+        self.scale_menu.AppendRadioItem(101, "mm")
+        self.scale_menu.AppendRadioItem(102, "cm")
+        self.scale_menu.AppendRadioItem(103, "dm")
+        self.scale_menu.AppendRadioItem(104, "m")
 
         self.scale_menu.Check(100, False);
-        self.scale_menu.Check(200, False);
-        self.scale_menu.Check(300, False);
-        self.scale_menu.Check(400, False);
-        self.scale_menu.Check(500, False);
+        self.scale_menu.Check(101, False);
+        self.scale_menu.Check(102, False);
+        self.scale_menu.Check(103, False);
+        self.scale_menu.Check(104, False);
 
         self.setObjectScale(self.canvas.getObjectScale());
 
+        self.unit_of_energy = wx.Menu()
+        self.unit_of_energy.AppendRadioItem(200, "eV")
+        self.unit_of_energy.AppendRadioItem(201, "keV")
+        self.unit_of_energy.AppendRadioItem(202, "MeV")
+
+        self.unit_of_energy.Check(200, False);
+        self.unit_of_energy.Check(201, False);
+        self.unit_of_energy.Check(202, False);
+
+        self.setImageUnitOfEnergy(self.current_energy_unit);
 
         #editMenu.AppendSeparator()
 
@@ -124,6 +136,7 @@ class wxApp(wx.Frame):
 
         menu_bar.Append(file_menu, '&File')
         menu_bar.Append(self.scale_menu, 'Scale')
+        menu_bar.Append(self.unit_of_energy, 'Units of Energy')
         menu_bar.Append(analyse_menu, 'Analyse')
 
         quit_item = wx.MenuItem(file_menu, wx.ID_EXIT, text = "&Quit\tCtrl+Q", kind = wx.ITEM_NORMAL)
@@ -136,25 +149,44 @@ class wxApp(wx.Frame):
         #self.text = wx.TextCtrl(self,-1, style = wx.EXPAND|wx.TE_MULTILINE)
         self.Bind(wx.EVT_MENU, self.menuhandler)
 
+
+    def setImageUnitOfEnergy(self, aUnitOfEnergy):
+        print("Update the unit of energy to: ", aUnitOfEnergy)
+
+        self.current_energy_unit = aUnitOfEnergy;
+
+        self.unit_of_energy.Check(200, False);
+        self.unit_of_energy.Check(201, False);
+        self.unit_of_energy.Check(202, False);
+
+        if aUnitOfEnergy == "eV":
+            self.unit_of_energy.Check(200, True);
+        elif aUnitOfEnergy == "keV":
+            self.unit_of_energy.Check(201, True);
+        elif aUnitOfEnergy == "MeV":
+            self.unit_of_energy.Check(202, True);
+        else:
+            print("Unknown scale")
+
     def setObjectScale(self, aScale):
         print("Update the scale to: ", aScale)
 
         self.scale_menu.Check(100, False);
-        self.scale_menu.Check(200, False);
-        self.scale_menu.Check(300, False);
-        self.scale_menu.Check(400, False);
-        self.scale_menu.Check(500, False);
+        self.scale_menu.Check(101, False);
+        self.scale_menu.Check(102, False);
+        self.scale_menu.Check(103, False);
+        self.scale_menu.Check(104, False);
 
         if aScale == "um":
             self.scale_menu.Check(100, True);
         elif aScale == "mm":
-            self.scale_menu.Check(200, True);
+            self.scale_menu.Check(101, True);
         elif aScale == "cm":
-            self.scale_menu.Check(300, True);
+            self.scale_menu.Check(102, True);
         elif aScale == "dm":
-            self.scale_menu.Check(400, True);
+            self.scale_menu.Check(103, True);
         elif aScale == "m":
-            self.scale_menu.Check(500, True);
+            self.scale_menu.Check(104, True);
         else:
             print("Unknown scale")
 
@@ -167,7 +199,7 @@ class wxApp(wx.Frame):
 
     def updateXRayImage(self):
 
-        xray_image = np.divide(gvxr.computeXRayImage(), gvxr.getUnitOfEnergy(self.param_box.current_energy_unit));
+        xray_image = np.divide(gvxr.computeXRayImage(), gvxr.getUnitOfEnergy(self.current_energy_unit));
 
         self.canvas.Show()
         self.canvas.Refresh(True)
@@ -217,18 +249,30 @@ class wxApp(wx.Frame):
         elif id == 100:
             print ("Change scale to um");
             self.canvas.setObjectScale("um");
-        elif id == 200:
+        elif id == 101:
             print ("Change scale to mm");
             self.canvas.setObjectScale("mm");
-        elif id == 300:
+        elif id == 102:
             print ("Change scale to cm");
             self.canvas.setObjectScale("cm");
-        elif id == 400:
+        elif id == 103:
             print ("Change scale to dm");
             self.canvas.setObjectScale("dm");
-        elif id == 500:
+        elif id == 104:
             print ("Change scale to m");
             self.canvas.setObjectScale("m");
+        elif id == 200:
+            print ("Change units of energy to eV");
+            self.current_energy_unit = "eV";
+            self.updateXRayImage();
+        elif id == 201:
+            print ("Change units of energy to keV");
+            self.current_energy_unit = "keV";
+            self.updateXRayImage();
+        elif id == 202:
+            print ("Change units of energy to eV");
+            self.current_energy_unit = "MeV";
+            self.updateXRayImage();
         elif id == 601:
             print ("Analyse->Measure");
             canvas = MeasureCanvas.createMeasureWindow();
