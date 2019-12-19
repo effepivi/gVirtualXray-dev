@@ -55,6 +55,9 @@ class HistogramFrame(wx.Frame):
 
         self.SetMenuBar(menu_bar)
 
+        self.status_bar = wx.StatusBar(self, -1)
+        self.SetStatusBar(self.status_bar)
+
         self.Bind(wx.EVT_MENU, self.menuhandler)
 
 
@@ -67,6 +70,12 @@ class HistogramFrame(wx.Frame):
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
+
+
+        self.canvas.Bind(wx.EVT_ENTER_WINDOW, self.onMouseOver)
+        self.canvas.Bind(wx.EVT_LEAVE_WINDOW, self.onMouseLeave)
+        self.canvas.mpl_connect('motion_notify_event', self.onMouseMotion)
+
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
 
@@ -137,6 +146,33 @@ class HistogramFrame(wx.Frame):
         self.draw();
         self.Show();
 
+    def onMouseMotion(self, event):
+        if event.inaxes:
+            x, y = event.xdata, event.ydata
+
+            value = self.bins[0];
+            count = self.hist[0];
+
+            for temp_value, temp_count in zip(self.bins[:-1], self.hist):
+
+                if value <= x and x <= temp_value:
+                    value = temp_value;
+                    count = temp_count;
+
+            if x >= self.bins[len(self.hist)-1]:
+                value = self.bins[len(self.hist)-1];
+                count = self.hist[-1];
+
+            self.status_bar.SetStatusText(("value= " + str(value) + "   count=" + str(count)))
+
+    def onMouseOver(self, event):
+        self.canvas.SetCursor(wx.Cursor(wx.CURSOR_BULLSEYE));
+        event.Skip();
+
+    def onMouseLeave(self, event):
+        self.canvas.SetCursor(wx.Cursor(wx.CURSOR_ARROW));
+        event.Skip();
+
     def onToggle(self, event):
         self.plot_log = event.GetEventObject().GetValue();
         self.draw();
@@ -194,6 +230,7 @@ class HistogramFrame(wx.Frame):
 
 
         self.figure.canvas.draw();
+        self.Refresh();
 
     def menuhandler(self, event):
         id = event.GetId()
@@ -258,7 +295,7 @@ class HistogramFrame(wx.Frame):
         table = [];
         table.append(["value", "count"]);
 
-        for value, count in zip(self.bins, self.hist):
+        for value, count in zip(self.bins[:-1], self.hist):
             table.append([value, count]);
 
         # first cleanout empty rows

@@ -93,3 +93,4 @@ class wxCanvasPanel(wx.Panel):
             self.im2.set_data(image);
             self.im3.set_data(image);
             self.figure.canvas.draw();
+            self.Refresh();
