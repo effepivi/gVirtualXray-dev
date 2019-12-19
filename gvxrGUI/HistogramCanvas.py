@@ -1,6 +1,7 @@
 # The main GUI application
 import wxApp;
 
+import math;
 
 import numpy as np
 
@@ -124,29 +125,73 @@ class HistogramFrame(wx.Frame):
         lbl.SetLabel("Bin width: " + str(self.bin_width))
         vsizer2.Add(lbl, 0,wx.ALIGN_LEFT)
 
+
+        log_button = wx.ToggleButton(self, -1, label="Log");
+        self.sizer.Add(log_button, 0,wx.ALIGN_CENTRE)
+        self.plot_log = False;
+        log_button.Bind(wx.EVT_TOGGLEBUTTON, self.onToggle)
+
         self.SetSizer(self.sizer)
         self.Fit()
 
         self.draw();
         self.Show();
 
+    def onToggle(self, event):
+        self.plot_log = event.GetEventObject().GetValue();
+        self.draw();
+
     def draw(self):
+        self.axes.clear();
         self.axes.set_title("Histogram");
+        self.axes.set_ylabel("Count");
+        self.axes.set_xlabel("Bin value in " + wxApp.g_wxapp.current_energy_unit);
 
         max_value1 = np.max(self.hist);
         max_value2 = np.max(self.hist[:-1]);
 
 
-        if max_value1 / max_value2 > 5:
+        if max_value1 / max_value2 > 1:
             ylim = max_value2 * 1.5;
         else:
             ylim = max_value1;
-        print(max_value1, max_value2, ylim);
 
-        self.axes.bar(self.bins[:-1], self.hist, width=self.bin_width)
-        self.axes.set_ylim((np.min(self.hist), ylim))
-        self.axes.set_xlabel("Bin value in " + wxApp.g_wxapp.current_energy_unit);
-        self.axes.set_ylabel("Count");
+        axes = None;
+
+
+        if self.plot_log:
+
+            Y = np.log(self.hist + 1);
+
+            max_value1 = np.max(Y);
+            max_value2 = np.max(Y[:-1]);
+
+
+            if max_value1 / max_value2 > 1:
+                ylim2 = max_value2 * 1.125;
+            else:
+                ylim2 = max_value1;
+
+            color = 'tab:red'
+            self.axes.bar(self.bins[:-1], Y, width=self.bin_width, color=color)
+            self.axes.set_ylim((np.min(Y), ylim2))
+            self.axes.tick_params(axis='y', labelcolor=color)
+            self.axes.axes.set_yticks([], [])
+            axes = self.axes.twinx();
+        else:
+            axes = self.axes;
+
+
+
+        color = 'tab:blue';
+        axes.bar(self.bins[:-1], self.hist, width=self.bin_width, color=color)
+        axes.set_ylim((np.min(self.hist), ylim))
+        axes.set_yticks([], [])
+
+
+
+        self.figure.tight_layout()
+
 
         self.figure.canvas.draw();
 
