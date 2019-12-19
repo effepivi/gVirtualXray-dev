@@ -38,7 +38,7 @@ class wxCanvasPanel(wx.Frame):
         menu_bar.Append(file_menu, '&File')
 
         self.im = None;
-
+        self.colorbar = None;
         '''
         save_item = wx.MenuItem(file_menu, wx.ID_SAVE, text = "&Save\tCtrl+S",kind = wx.ITEM_NORMAL)
         file_menu.Append(save_item)
@@ -71,6 +71,17 @@ class wxCanvasPanel(wx.Frame):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
 
+        self.rb1 = wx.RadioButton(self, 11, label = 'Linear colour scale')
+        self.rb2 = wx.RadioButton(self, 22, label = 'Log colour scale')
+        self.rb3 = wx.RadioButton(self, 33, label = 'Power-law colour scale')
+
+        self.sizer.Add(self.rb1, 0, wx.LEFT | wx.TOP | wx.GROW)
+        self.sizer.Add(self.rb2, 0, wx.LEFT | wx.TOP | wx.GROW)
+        self.sizer.Add(self.rb3, 0, wx.LEFT | wx.TOP | wx.GROW)
+
+        self.color_scale = 0;
+        self.Bind(wx.EVT_RADIOBUTTON, self.onRadiogroup);
+
         self.SetSizer(self.sizer)
         self.Fit()
 
@@ -79,6 +90,20 @@ class wxCanvasPanel(wx.Frame):
 
         #self.draw();
         #self.Show();
+    def onRadiogroup(self, event):
+        id = event.GetId()
+        if id == 11:
+            self.color_scale = 0;
+        elif id == 22:
+            self.color_scale = 1;
+        elif id == 33:
+            self.color_scale = 2;
+
+        self.draw();
+        self.figure.canvas.draw();
+        self.Refresh(True);
+        self.Update()
+        self.Show();
 
     def onMouseMotion(self, event):
         if event.inaxes:
@@ -113,6 +138,9 @@ class wxCanvasPanel(wx.Frame):
             print("DRAW")
             self.axes.clear();
 
+            if isinstance(self.colorbar, NoneType) == False:
+                self.colorbar.remove();
+
             self.x_ray_image = np.divide(gvxr.computeXRayImage(), gvxr.getUnitOfEnergy(self.current_energy_unit));
 
             wxApp.g_need_refresh_xray_image = False;
@@ -120,26 +148,25 @@ class wxCanvasPanel(wx.Frame):
             displayed_image = 255 * (self.x_ray_image - np.min(self.x_ray_image)) / (np.max(self.x_ray_image) - np.min(self.x_ray_image));
 
             print(displayed_image.shape, np.min(displayed_image), np.max(displayed_image))
-            self.im = self.axes.imshow(displayed_image, cmap="gray");
-            self.axes.set_title("Using a linear colour scale");
 
-            #divider = make_axes_locatable(self.axes)
-            #cax = divider.append_axes('bottom', size='25%', pad=0.5)
-            #self.colorbar = self.figure.colorbar(self.im, #cax=cax, orientation='horizontal');
+            cmap = "gray";
+            norm = None;
+            if self.color_scale == 0:
+                self.axes.set_title("Using a linear colour scale");
+            elif self.color_scale == 1:
+                self.axes.set_title("Using a log colour scale");
+                norm=LogNorm();
+            elif self.color_scale == 2:
+                self.axes.set_title("Using a Power-law colour scale");
+                norm=PowerNorm(gamma=1./2.);
 
-            '''self.im2 = self.axes2.imshow(x_ray_image, norm=LogNorm(), cmap="gray");
-            self.axes2.set_title("Using a log colour scale");
+            self.im = self.axes.imshow(displayed_image, cmap=cmap, norm=norm);
 
-            divider = make_axes_locatable(self.axes2)
+            divider = make_axes_locatable(self.axes)
             cax = divider.append_axes('bottom', size='25%', pad=0.5)
-            self.colorbar2 = self.figure.colorbar(self.im2, cax=cax, orientation='horizontal');
+            self.colorbar = self.figure.colorbar(self.im, cax=cax, orientation='horizontal');
 
-            self.im3 = self.axes3.imshow(x_ray_image, norm=PowerNorm(gamma=1./2.), cmap="gray");
-            self.axes3.set_title("Using a Power-law colour scale");
 
-            divider = make_axes_locatable(self.axes3)
-            cax = divider.append_axes('bottom', size='25%', pad=0.5)
-            self.colorbar3 = self.figure.colorbar(self.im3, cax=cax, orientation='horizontal');'''
             self.figure.canvas.draw();
             self.Refresh(True);
             self.Update()
