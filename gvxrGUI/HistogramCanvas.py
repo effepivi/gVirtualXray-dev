@@ -230,7 +230,7 @@ class HistogramFrame(wx.Frame):
 
 
         self.figure.canvas.draw();
-        self.Refresh();
+        self.Refresh(True);
 
     def menuhandler(self, event):
         id = event.GetId()

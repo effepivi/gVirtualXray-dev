@@ -51,17 +51,13 @@ class wxApp(wx.Frame):
         # Show the window on screen
         self.Show();
 
-        plot_frame = wx.Frame(None, title='X-ray projection');
-        self.image_viewer = wxCanvasPanel(plot_frame,  "MeV");
+        self.image_viewer = wxCanvasPanel(None,  "MeV");
 
 
         '''self.InitUI();
         self.Update();'''
         self.Bind(wx.EVT_CLOSE,     self.processCanvasCloseEvent);
         self.redisplay();
-        plot_frame.Show(True);
-        self.image_viewer.draw()
-        self.image_viewer.Show(True)
         self.param_box.Show(True)
 
     def addMenuBar(self):
@@ -206,7 +202,7 @@ class wxApp(wx.Frame):
         self.canvas.Update()
 
         self.image_viewer.data_ready = True;
-        self.image_viewer.draw();
+        #self.image_viewer.draw();
         self.image_viewer.updateImage(xray_image);
 
         self.image_viewer.Show();
