@@ -117,8 +117,8 @@ class wxApp(wx.Frame):
         #editMenu.AppendMenu(wx.ID_ANY, "Scale", scale_menu)
 
         analyse_menu = wx.Menu()
-        measure_menu = wx.MenuItem(analyse_menu, 601, text = "&Measure", kind = wx.ITEM_NORMAL)
-        histogram_menu = wx.MenuItem(analyse_menu, 602, text = "&Histogram", kind = wx.ITEM_NORMAL)
+        measure_menu = wx.MenuItem(analyse_menu, 601, text = "&Measure\tCtrl+M", kind = wx.ITEM_NORMAL)
+        histogram_menu = wx.MenuItem(analyse_menu, 602, text = "&Histogram\tCtrl+H", kind = wx.ITEM_NORMAL)
         analyse_menu.Append(measure_menu)
         analyse_menu.Append(histogram_menu)
 
