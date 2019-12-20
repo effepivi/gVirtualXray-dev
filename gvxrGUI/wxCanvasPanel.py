@@ -1,6 +1,8 @@
 
 import numpy as np
 
+# To get FLT_MAX
+import sys
 
 # wxPython is used to create the GUI
 import wx
@@ -39,6 +41,9 @@ class wxCanvasPanel(wx.Frame):
 
         self.im = None;
         self.colorbar = None;
+        self.x_ray_image = None;
+        self.min_value =  sys.float_info.max;
+        self.max_value = -sys.float_info.max;
         '''
         save_item = wx.MenuItem(file_menu, wx.ID_SAVE, text = "&Save\tCtrl+S",kind = wx.ITEM_NORMAL)
         file_menu.Append(save_item)
@@ -107,22 +112,34 @@ class wxCanvasPanel(wx.Frame):
 
     def onMouseMotion(self, event):
         if event.inaxes:
-            x, y = event.xdata, event.ydata
+            unit_of_length = "cm";
 
-            '''value = self.bins[0];
-            count = self.hist[0];
+            x_px, y_px = int(event.xdata), int(event.ydata);
 
-            for temp_value, temp_count in zip(self.bins[:-1], self.hist):
+            if not isinstance(self.x_ray_image, NoneType):
+                if x_px >= self.x_ray_image.shape[1]:
+                    x_px = self.x_ray_image.shape[1] - 1;
 
-                if value <= x and x <= temp_value:
-                    value = temp_value;
-                    count = temp_count;
+                if y_px >= self.x_ray_image.shape[0]:
+                    y_px = self.x_ray_image.shape[0] - 1;
 
-            if x >= self.bins[len(self.hist)-1]:
-                value = self.bins[len(self.hist)-1];
-                count = self.hist[-1];
+                x_unit_of_length = x_px * gvxr.getDetectorSize(unit_of_length)[0] / gvxr.getDetectorNumberOfPixels()[0];
+                y_unit_of_length = y_px * gvxr.getDetectorSize(unit_of_length)[1] / gvxr.getDetectorNumberOfPixels()[1];
 
-            self.status_bar.SetStatusText(("value= " + str(value) + "   count=" + str(count)))'''
+                x_unit_of_length = "{:.3f}".format(x_unit_of_length)
+                y_unit_of_length = "{:.3f}".format(y_unit_of_length)
+
+                self.status_bar.SetStatusText("x=" +
+                    x_unit_of_length + unit_of_length +
+                    " (" +
+                    str(x_px) +
+                    "px), y=" +
+                    y_unit_of_length + unit_of_length +
+                    " (" +
+                    str(y_px) +
+                    "px), value= " +
+                    str(self.x_ray_image[y_px, x_px]) +
+                    self.current_energy_unit);
 
     def onMouseOver(self, event):
         self.canvas.SetCursor(wx.Cursor(wx.CURSOR_BULLSEYE));
@@ -130,6 +147,7 @@ class wxCanvasPanel(wx.Frame):
 
     def onMouseLeave(self, event):
         self.canvas.SetCursor(wx.Cursor(wx.CURSOR_ARROW));
+        self.status_bar.SetStatusText("");
         event.Skip();
 
     def draw(self):
@@ -143,11 +161,11 @@ class wxCanvasPanel(wx.Frame):
 
             self.x_ray_image = np.divide(gvxr.computeXRayImage(), gvxr.getUnitOfEnergy(self.current_energy_unit));
 
+            if self.min_value == sys.float_info.max and self.max_value == -sys.float_info.max:
+                self.min_value = np.min(self.x_ray_image);
+                self.max_value = np.max(self.x_ray_image);
+
             wxApp.g_need_refresh_xray_image = False;
-
-            displayed_image = 255 * (self.x_ray_image - np.min(self.x_ray_image)) / (np.max(self.x_ray_image) - np.min(self.x_ray_image));
-
-            print(displayed_image.shape, np.min(displayed_image), np.max(displayed_image))
 
             cmap = "gray";
             norm = None;
@@ -160,7 +178,7 @@ class wxCanvasPanel(wx.Frame):
                 self.axes.set_title("Using a Power-law colour scale");
                 norm=PowerNorm(gamma=1./2.);
 
-            self.im = self.axes.imshow(displayed_image, cmap=cmap, norm=norm);
+            self.im = self.axes.imshow(self.x_ray_image, cmap=cmap, norm=norm, vmin=self.min_value, vmax=self.max_value);
 
             divider = make_axes_locatable(self.axes)
             cax = divider.append_axes('bottom', size='25%', pad=0.5)
