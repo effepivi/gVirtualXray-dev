@@ -27,6 +27,7 @@ import gvxrPython3 as gvxr;
 
 # The main GUI application
 import wxApp;
+import GlobalParameters as GP;
 
 
 NoneType = type(None);

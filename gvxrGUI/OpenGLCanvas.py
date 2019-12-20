@@ -11,7 +11,9 @@ from wx import glcanvas
 # The main GUI application
 import wxApp;
 
-import ParamBox as PB
+import GlobalParameters as GP;
+
+#import ParamBox as PB
 # TODO
 # Handle the object in user interaction
 # Save the L-buffer of node
@@ -59,7 +61,6 @@ class OpenGlCanvas(glcanvas.GLCanvas):
         self.no_load_data_error_detected = False;
         self.current_viewport = None;
         self.closest_object = 0; # Unknown
-        self.object_scale = "unknown";
 
         attribList = (glcanvas.WX_GL_RGBA, # RGBA
                       glcanvas.WX_GL_DOUBLEBUFFER, # Double Buffered
@@ -86,19 +87,17 @@ class OpenGlCanvas(glcanvas.GLCanvas):
         self.Bind(wx.EVT_CLOSE,      self.processCanvasCloseEvent)
 
     def setObjectScale(self, aScale):
-        print ("Set scale from ", self.object_scale, " to ", aScale);
-        original_scale = gvxr.getUnitOfLength(self.object_scale);
-        target_scale = gvxr.getUnitOfLength(aScale);
-        print ("from ", original_scale, " to ", target_scale);
-        self.object_scale = aScale;
-        ratio = target_scale / original_scale;
-        print (ratio)
-        gvxr.scaleScene(ratio, ratio, ratio);
-        xray_image = gvxr.computeXRayImage();
-        wxApp.g_wxapp.updateXRayImage();
-
-    def getObjectScale(self):
-        return self.object_scale;
+        if GP.mesh_unit_of_length != aScale:
+            print ("Set scale from ", GP.mesh_unit_of_length, " to ", aScale);
+            original_scale = gvxr.getUnitOfLength(GP.mesh_unit_of_length);
+            target_scale = gvxr.getUnitOfLength(aScale);
+            print ("from ", original_scale, " to ", target_scale);
+            GP.mesh_unit_of_length = aScale;
+            ratio = target_scale / original_scale;
+            print (ratio)
+            gvxr.scaleScene(ratio, ratio, ratio);
+            self.Refresh(True);
+            self.Update();
 
     def resetViewports(self):
         if self.GLinitialized:
@@ -477,17 +476,33 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             self.Bind(wx.EVT_PAINT, self.__OnDraw__)
 
             # Init X-rays
-            gvxr.setSourcePosition(   -15, 0, 0, "cm");
-            gvxr.setDetectorPosition (5, 0,  0, "cm");
-            gvxr.setDetectorUpVector (0, 0,   -1);
-            gvxr.setDetectorNumberOfPixels (512, 256);
-            gvxr.setDetectorPixelSize(0.8, 0.8, "mm");
+            gvxr.setSourcePosition(GP.source_position[0],
+                    GP.source_position[1],
+                    GP.source_position[2],
+                    GP.detector_unit_of_length);
+
+            gvxr.setDetectorPosition (GP.detector_position[0],
+                    GP.detector_position[1],
+                    GP.detector_position[2],
+                    GP.detector_unit_of_length);
+
+            gvxr.setDetectorUpVector (GP.detector_up_vector[0],
+                    GP.detector_up_vector[1],
+                    GP.detector_up_vector[2]);
+
+            gvxr.setDetectorNumberOfPixels (GP.detector_number_of_pixels[0],
+                    GP.detector_number_of_pixels[1]);
+
+            gvxr.setDetectorPixelSize(GP.detector_pixel_size[0],
+                    GP.detector_pixel_size[1],
+                    GP.detector_unit_of_length);
 
             gvxr.usePointSource();
             #gvxr.useParallelBeam();
-            gvxr.setMonoChromatic(80, "keV", 1);
-            PB.g_param_box.m_slider1.SetValue(80);
-            PB.g_param_box.m_choice1.SetSelection(1);
+            gvxr.setMonoChromatic(GP.beam_energy, GP.beam_energy_unit, 1);
+            #PB.g_param_box.m_slider1.SetValue(GP.beam_energy);
+            #PB.g_param_box.m_choice1.SetSelection(1);
+
 
             # Load the data
             print("Load the data");
@@ -496,9 +511,8 @@ class OpenGlCanvas(glcanvas.GLCanvas):
             if os.path.exists(input_3D_filename) == False:
                 raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), input_3D_filename);
 
-            gvxr.loadSceneGraph(input_3D_filename, "mm");
-            self.object_scale = "mm";
-            wxApp.g_wxapp.setObjectScale("mm");
+            gvxr.loadSceneGraph(input_3D_filename, GP.mesh_unit_of_length);
+            wxApp.g_wxapp.setObjectScale(GP.mesh_unit_of_length);
 
             node_label_set = [];
             node_label_set.append('root');

@@ -12,10 +12,12 @@ from wx import glcanvas
 import gvxrPython3 as gvxr;
 
 from OpenGLCanvas import OpenGlCanvas;
-from ParamBox import ParamBox;
+#from ParamBox import ParamBox;
 from wxCanvasPanel import wxCanvasPanel;
 import MeasureCanvas;
 import HistogramCanvas;
+import GlobalParameters as GP;
+
 
 ################################################################################
 # Global variables
@@ -38,7 +40,7 @@ class wxApp(wx.Frame):
 
         self.current_energy_unit = "keV";
 
-        self.param_box = ParamBox(None)
+        #self.param_box = ParamBox(None)
 
         # Add the OpenGL viewer
         self.canvas = OpenGlCanvas(self);#, slider_container, plot_panel);
@@ -58,7 +60,7 @@ class wxApp(wx.Frame):
         self.Update();'''
         self.Bind(wx.EVT_CLOSE,     self.processCanvasCloseEvent);
         self.redisplay();
-        self.param_box.Show(True)
+        #self.param_box.Show(True)
 
     def addMenuBar(self):
         menu_bar = wx.MenuBar()
@@ -106,7 +108,7 @@ class wxApp(wx.Frame):
         self.scale_menu.Check(103, False);
         self.scale_menu.Check(104, False);
 
-        self.setObjectScale(self.canvas.getObjectScale());
+        self.setObjectScale(GP.mesh_unit_of_length);
 
         self.unit_of_energy = wx.Menu()
         self.unit_of_energy.AppendRadioItem(200, "eV")
