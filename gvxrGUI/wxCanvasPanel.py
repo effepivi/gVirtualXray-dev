@@ -42,8 +42,10 @@ class wxCanvasPanel(wx.Frame):
         self.im = None;
         self.colorbar = None;
         self.x_ray_image = None;
-        self.min_value =  sys.float_info.max;
-        self.max_value = -sys.float_info.max;
+        self.shift = 0.0;
+        self.scale = 1.0;
+        self.last_x_px = 0;
+        self.last_y_px = 0;
         '''
         save_item = wx.MenuItem(file_menu, wx.ID_SAVE, text = "&Save\tCtrl+S",kind = wx.ITEM_NORMAL)
         file_menu.Append(save_item)
@@ -68,9 +70,14 @@ class wxCanvasPanel(wx.Frame):
         self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
 
-
+        self.left_button_down = False;
+        self.previous_cursor = wx.CURSOR_ARROW;
+        self.current_cursor = wx.CURSOR_ARROW;
         self.canvas.Bind(wx.EVT_ENTER_WINDOW, self.onMouseOver)
         self.canvas.Bind(wx.EVT_LEAVE_WINDOW, self.onMouseLeave)
+        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.onLeftButtonDown)
+        self.canvas.Bind(wx.EVT_LEFT_UP, self.onLeftButtonUp)
+
         self.canvas.mpl_connect('motion_notify_event', self.onMouseMotion)
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -116,37 +123,67 @@ class wxCanvasPanel(wx.Frame):
 
             x_px, y_px = int(event.xdata), int(event.ydata);
 
-            if not isinstance(self.x_ray_image, NoneType):
-                if x_px >= self.x_ray_image.shape[1]:
-                    x_px = self.x_ray_image.shape[1] - 1;
+            if self.left_button_down:
+                self.shift += 0.00000001 * (self.last_x_px - x_px);
+                self.scale += 0.000001 * (self.last_y_px - y_px);
 
-                if y_px >= self.x_ray_image.shape[0]:
-                    y_px = self.x_ray_image.shape[0] - 1;
+                self.updateImage(self.x_ray_image);
+                self.Refresh(True);
+                self.Update();
 
-                x_unit_of_length = x_px * gvxr.getDetectorSize(unit_of_length)[0] / gvxr.getDetectorNumberOfPixels()[0];
-                y_unit_of_length = y_px * gvxr.getDetectorSize(unit_of_length)[1] / gvxr.getDetectorNumberOfPixels()[1];
+            else:
+                if not isinstance(self.x_ray_image, NoneType):
+                    if x_px >= self.x_ray_image.shape[1]:
+                        x_px = self.x_ray_image.shape[1] - 1;
 
-                x_unit_of_length = "{:.3f}".format(x_unit_of_length)
-                y_unit_of_length = "{:.3f}".format(y_unit_of_length)
+                    if y_px >= self.x_ray_image.shape[0]:
+                        y_px = self.x_ray_image.shape[0] - 1;
 
-                self.status_bar.SetStatusText("x=" +
-                    x_unit_of_length + unit_of_length +
-                    " (" +
-                    str(x_px) +
-                    "px), y=" +
-                    y_unit_of_length + unit_of_length +
-                    " (" +
-                    str(y_px) +
-                    "px), value= " +
-                    str(self.x_ray_image[y_px, x_px]) +
-                    self.current_energy_unit);
+                    x_unit_of_length = x_px * gvxr.getDetectorSize(unit_of_length)[0] / gvxr.getDetectorNumberOfPixels()[0];
+                    y_unit_of_length = y_px * gvxr.getDetectorSize(unit_of_length)[1] / gvxr.getDetectorNumberOfPixels()[1];
+
+                    x_unit_of_length = "{:.3f}".format(x_unit_of_length)
+                    y_unit_of_length = "{:.3f}".format(y_unit_of_length)
+
+                    self.status_bar.SetStatusText("x=" +
+                        x_unit_of_length + unit_of_length +
+                        " (" +
+                        str(x_px) +
+                        "px), y=" +
+                        y_unit_of_length + unit_of_length +
+                        " (" +
+                        str(y_px) +
+                        "px), value= " +
+                        str(self.x_ray_image[y_px, x_px]) +
+                        self.current_energy_unit);
+
+            self.last_x_px = x_px;
+            self.last_y_px = y_px;
+
+    def onLeftButtonDown(self, event):
+        self.previous_cursor = self.current_cursor;
+        self.current_cursor  = wx.CURSOR_ARROW;
+        self.canvas.SetCursor(wx.Cursor(self.current_cursor));
+        self.left_button_down = True;
+        event.Skip();
+
+    def onLeftButtonUp(self, event):
+        self.current_cursor  = self.previous_cursor;
+        self.previous_cursor = self.current_cursor;
+        self.canvas.SetCursor(wx.Cursor(self.current_cursor));
+        self.left_button_down = False;
+        event.Skip();
 
     def onMouseOver(self, event):
-        self.canvas.SetCursor(wx.Cursor(wx.CURSOR_BULLSEYE));
+        self.previous_cursor = self.current_cursor;
+        self.current_cursor  = wx.CURSOR_BULLSEYE;
+        self.canvas.SetCursor(wx.Cursor(self.current_cursor));
         event.Skip();
 
     def onMouseLeave(self, event):
-        self.canvas.SetCursor(wx.Cursor(wx.CURSOR_ARROW));
+        self.previous_cursor = self.current_cursor;
+        self.current_cursor  = wx.CURSOR_ARROW;
+        self.canvas.SetCursor(wx.Cursor(self.current_cursor));
         self.status_bar.SetStatusText("");
         event.Skip();
 
@@ -161,9 +198,14 @@ class wxCanvasPanel(wx.Frame):
 
             self.x_ray_image = np.divide(gvxr.computeXRayImage(), gvxr.getUnitOfEnergy(self.current_energy_unit));
 
-            if self.min_value == sys.float_info.max and self.max_value == -sys.float_info.max:
-                self.min_value = np.min(self.x_ray_image);
-                self.max_value = np.max(self.x_ray_image);
+            min_value = np.min(self.x_ray_image);
+            max_value = np.max(self.x_ray_image);
+
+            min_value += self.shift;
+            min_value *= self.scale;
+
+            max_value += self.shift;
+            max_value *= self.scale;
 
             wxApp.g_need_refresh_xray_image = False;
 
@@ -178,7 +220,7 @@ class wxCanvasPanel(wx.Frame):
                 self.axes.set_title("Using a Power-law colour scale");
                 norm=PowerNorm(gamma=1./2.);
 
-            self.im = self.axes.imshow(self.x_ray_image, cmap=cmap, norm=norm, vmin=self.min_value, vmax=self.max_value);
+            self.im = self.axes.imshow(self.x_ray_image, cmap=cmap, norm=norm, vmin=min_value, vmax=max_value);
 
             divider = make_axes_locatable(self.axes)
             cax = divider.append_axes('bottom', size='25%', pad=0.5)
