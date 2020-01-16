@@ -18,23 +18,23 @@ Make sure you have:
 ```bash
 $ cd ~
 ```
-2. Download the code using either
+2. Download the latest release:
 ```bash
+$ mkdir gvirtualxray-code
+$ cd gvirtualxray-code
 $ wget https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.1-Source.zip/download
-$ unzip ???
+$ mv download gVirtualXRay-1.1.1-Source.zip
+$ unzip gVirtualXRay-1.1.1-Source.zip
 ```
-or
+3. Create a directory where the binaries will be created and go in this directory. Note that it CANNOT be a sub-directory of the source directory chosen in the previous step.
 ```bash
-$ svn checkout https://svn.code.sf.net/p/gvirtualxray/code/trunk gvirtualxray-code
+$ mkdir ../gvirtualxray-bin
+$ cd ../gvirtualxray-bin
 ```
-3. Create a directory where the binaries will be created and go in this directory:
+4. Choose where the binaries should be installed, ideally a directory where you can write. If you can't, make sure you use `sudo make` rather than `make` in Steps 5, and 6.
+In the example below, I install it in my home directory in `gvxr-install`.
 ```bash
-$ mkdir bin
-$ cd bin
-```
-4. Choose where the binaries should be installed, ideally a directory where you can write. If you can't, make sure you use `sudo make` rather than `make` in Steps 6 and 7.
-```bash
-export GVXR_INSTALL_DIR=$HOME/gvxr-install
+export GVXR_INSTALL_DIR=$HOME/gvirtualxray-install
 ```
 5. Configure the project using CMake. Use `cmake`, `ccmake` or `cmake-gui` depending on what you prefers.
   - `cmake`:
@@ -73,11 +73,8 @@ export GVXR_INSTALL_DIR=$HOME/gvxr-install
 ```bash
 $ make -j8
 ```
-I used a parallel build with 8 jobs as I got 8 cores in my CPU. Adjust `-j` depending on your computer.
-7. Install the binaries
-```bash
-$ make install
-```
+I used a parallel build with 8 jobs as I got 8 cores in my CPU. Adjust `-j` depending on your computer. Once the project is made, it is also installed.
+
 
 ## For Windows
 
@@ -116,7 +113,7 @@ At the end, you should see something like `========== Build: 4 succeeded, 0 fail
 
 ### Installation directory content in Windows
 
-On Windows, you Should see ??? or ??? directories in the installation directory depending on wrappers:
+On Windows, you Should see 4 or 5 directories in the installation directory depending on wrappers:
 - bin
 - third_party
   - include
@@ -144,11 +141,10 @@ On Windows, you Should see ??? or ??? directories in the installation directory 
 
 ### Installation directory content in GNU/Linux and Mac OS X
 
-On Unixes, you Should see ??? or ??? directories in the installation directory depending on wrappers:
-- bin
+On Unixes, you Should see 3 or 4 directories in the installation directory depending on wrappers:
 - third_party
   - include
-  - lib (Windows) or lib64 (GNU/Linux and Mac OS X???)
+  - lib (Windows and Mac OS X) or lib64 (GNU/Linux)
 - gVirtualXRay-1.1.1
   - Bin2C.cmake
   - CreateHeaderFiles.cmake
