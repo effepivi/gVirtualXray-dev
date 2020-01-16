@@ -3,6 +3,7 @@
 ## First steps
 
 Make sure you have:
+
 - CMake 3.12 or newer (see [http://www.cmake.org/](http://www.cmake.org/));
 - A C++ compiler; and
 - A GPU that supports OpenGL.
@@ -34,7 +35,7 @@ $ cd ../gvirtualxray-bin
 4. Choose where the binaries should be installed, ideally a directory where you can write. If you can't, make sure you use `sudo make` rather than `make` in Steps 5, and 6.
 In the example below, I install it in my home directory in `gvxr-install`.
 ```bash
-export GVXR_INSTALL_DIR=$HOME/gvirtualxray-install
+$ export GVXR_INSTALL_DIR=$HOME/gvirtualxray-install
 ```
 5. Configure the project using CMake. Use `cmake`, `ccmake` or `cmake-gui` depending on what you prefers.
   - `cmake`:
@@ -85,28 +86,52 @@ You may skip some of the initial steps depending on the current state of your sy
 3. Download and install Python3 from [https://www.python.org/downloads/](https://www.python.org/downloads/).
 4. Download and extract gVirtualXRay's code from [https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.1-Source.zip/download](https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.1-Source.zip/download).
 5. Open CMake's gui.
+
 ![Illustration](screenshots/cmake0.png)
+
 ![Illustration](screenshots/cmake1.png)
+
 6. Select where the source code is. This is the top directory of the repository that contains CMakeLists.txt.
+
 ![Illustration](screenshots/cmake2.png)
+
 7. Select where the binaries are going to be compiled. It CANNOT be a sub-directory of the source directory chosen in the previous step.
+
 ![Illustration](screenshots/cmake3.png)
+
 8. Press configure, then choose which compiler you want to use and which architecture. I used Visual Studio 15 2017's native compilers, and x64 (for 64 bits).
+
 ![Illustration](screenshots/cmake4.png)
+
 9. Click on `Configure`. There'll be an error, but don't worry about it.
+
 ![Illustration](screenshots/cmake5.png)
+
 10. Search for `install`.
+
 ![Illustration](screenshots/cmake6.png)
+
 11. Change the variable `CMAKE_INSTALL_PREFIX` into a path where you are allowed to write. Click on configure. If it does not work, change the path and make sure you have write privilege for that path.
+
 ![Illustration](screenshots/cmake7.png)
+
 12. If you want to build a wrapper, e.g. for Python 3, go to `BUILD` and tick the right option(s) (in my case `BUILD_PYTHON£_WRAPPER`). Now you can click on `Configure`, then `Generate`, then `Open Project`.
+
 ![Illustration](screenshots/cmake8.png)
+
 13. It will open Visual Studio. Change Debug into Release.
+
 ![Illustration](screenshots/vcpp1.png)
+
 14. Do a right click on `BUILD_ALL` or press the `F7` key to build the project.
+
 ![Illustration](screenshots/vcpp1.png)
+
 15. Go and make some coffee, it's gonna take a bit of time...
-At the end, you should see something like `========== Build: 4 succeeded, 0 failed, 2 up-to-date, 0 skipped ==========` in the output.
+At the end, in the output, you should see something like
+```
+========== Build: 4 succeeded, ...
+```
 
 
 ## After the compilation
@@ -114,6 +139,7 @@ At the end, you should see something like `========== Build: 4 succeeded, 0 fail
 ### Installation directory content in Windows
 
 On Windows, you Should see 4 or 5 directories in the installation directory depending on wrappers:
+
 - bin
 - third_party
   - include
@@ -142,6 +168,7 @@ On Windows, you Should see 4 or 5 directories in the installation directory depe
 ### Installation directory content in GNU/Linux and Mac OS X
 
 On Unixes, you Should see 3 or 4 directories in the installation directory depending on wrappers:
+
 - third_party
   - include
   - lib (Windows and Mac OS X) or lib64 (GNU/Linux)
@@ -170,20 +197,33 @@ On Unixes, you Should see 3 or 4 directories in the installation directory depen
 
 1.  Go to `gvxrWrapper-1.0.1/python3`,
 2. Execute the test script. You should see something like:
+
 ![Illustration](screenshots/test-python1.png)
 The X-ray image is displayed using linear, log and power law colour scales using Matplotlib.
+
 3. Press <Q> to close this window and the real-time viewer will open:
+
 ![Illustration](screenshots/test-python2.png)
+
 4. Use the mouse wheel to zoom-out:
+
 ![Illustration](screenshots/test-python3.png)
+
 5. Use the mouse left button and move the mouse around to adjust the view:
+
 ![Illustration](screenshots/test-python4.png)
+
 6. Press <B> to hide/show the X-ray beam:
+
 ![Illustration](screenshots/test-python5.png)
+
 7. Press <W> to view the 3-D object in solid/wireframe mode:
+
 ![Illustration](screenshots/test-python6.png)![Illustration](screenshots/test-python7.png)
+
 8. You can also press <N> to display the X-ray image in negative or positive and <H> to hide/show the X-ray detector.
 9. Press <Q> or <ESC> to exit. When the script ends, there'll be two new files:
+
 - `xray_image-0.mha`: contains the X-ray image. MHA fies can be viewed with the popular scientific image viewer tool [ImageJ/Fiji](https://imagej.net/Fiji/).
 - `lbuffer-0.mha`: contains the length of X-rays crossed in the 3-D object.
 10. If you want to create your own simulations, have a look at the script. You can find it at [https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py](https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py).
