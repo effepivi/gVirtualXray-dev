@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -32,7 +32,7 @@
 
 SET (SimpleGVXR_VERSION_MAJOR 1)
 SET (SimpleGVXR_VERSION_MINOR 0)
-SET (SimpleGVXR_VERSION_PATCH 0)
+SET (SimpleGVXR_VERSION_PATCH 1)
 SET (SimpleGVXR_VERSION_STRING "${SimpleGVXR_VERSION_MAJOR}.${SimpleGVXR_VERSION_MINOR}.${SimpleGVXR_VERSION_PATCH}")
 
 SET (SimpleGVXR_LICENSE )
