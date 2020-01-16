@@ -69,6 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cmath>
+#include <algorithm>
 #include "gtest/gtest.h"
 
 #ifndef __SimpleGVXR_h
