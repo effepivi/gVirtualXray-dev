@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -32,7 +32,7 @@
 
 SET (gvxrWrappers_VERSION_MAJOR 1)
 SET (gvxrWrappers_VERSION_MINOR 0)
-SET (gvxrWrappers_VERSION_PATCH 0)
+SET (gvxrWrappers_VERSION_PATCH 1)
 SET (gvxrWrappers_VERSION_STRING "${gvxrWrappers_VERSION_MAJOR}.${gvxrWrappers_VERSION_MINOR}.${gvxrWrappers_VERSION_PATCH}")
 
 SET (gvxrWrappers_LICENSE )

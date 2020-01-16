@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -31,5 +31,5 @@
 
 SET (gVirtualXRay_VERSION_MAJOR 1)
 SET (gVirtualXRay_VERSION_MINOR 1)
-SET (gVirtualXRay_VERSION_PATCH 0)
+SET (gVirtualXRay_VERSION_PATCH 1)
 SET (gVirtualXRay_VERSION_STRING "${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}.${gVirtualXRay_VERSION_PATCH}")
