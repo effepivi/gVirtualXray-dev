@@ -12,7 +12,7 @@ Make sure you have:
 - The latest release [gVirtualXRay-1.1.1-Source.zip](https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.1-Source.zip/download) is available at [https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.1-Source.zip/download](https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.1-Source.zip/download).
 - The latest version from SVN at [https://svn.code.sf.net/p/gvirtualxray/code/trunk](https://svn.code.sf.net/p/gvirtualxray/code/trunk).
 
-## For Linux:
+## For GNU/Linux and Mac OS X:
 
 1. Using the prompt, go to the directory where you want to compile the project, e.g. your home directory.
 ```bash
@@ -109,3 +109,85 @@ You may skip some of the initial steps depending on the current state of your sy
 14. Do a right click on `BUILD_ALL` or press the `F7` key to build the project.
 ![Illustration](screenshots/vcpp1.png)
 15. Go and make some coffee, it's gonna take a bit of time...
+At the end, you should see something like `========== Build: 4 succeeded, 0 failed, 2 up-to-date, 0 skipped ==========` in the output.
+
+
+## After the compilation
+
+### Installation directory content in Windows
+
+On Windows, you Should see ??? or ??? directories in the installation directory depending on wrappers:
+- bin
+- third_party
+  - include
+  - lib (Windows) or lib64 (GNU/Linux and Mac OS X???)
+- gVirtualXRay-1.1.1
+  - Bin2C.cmake
+  - CreateHeaderFiles.cmake
+  - gVirtualXRayConfig.cmake
+  - include
+  - lib
+  - LICENSE.txt
+  - test
+  - third_party
+  - UsegVirtualXRay.cmake
+- SimpleGVXR-1.0.1
+  - include
+  - lib
+  - SimpleGVXR-doc.i
+  - SimpleGVXRConfig.cmake
+  - test
+  - UseSimpleGVXR.cmake
+- gvxrWrapper-1.0.1
+  - data
+  - python3
+
+### Installation directory content in GNU/Linux and Mac OS X
+
+On Unixes, you Should see ??? or ??? directories in the installation directory depending on wrappers:
+- bin
+- third_party
+  - include
+  - lib (Windows) or lib64 (GNU/Linux and Mac OS X???)
+- gVirtualXRay-1.1.1
+  - Bin2C.cmake
+  - CreateHeaderFiles.cmake
+  - gVirtualXRayConfig.cmake
+  - include
+  - lib
+  - LICENSE.txt
+  - test
+  - third_party
+  - UsegVirtualXRay.cmake
+- SimpleGVXR-1.0.1
+  - include
+  - lib
+  - SimpleGVXR-doc.i
+  - SimpleGVXRConfig.cmake
+  - test
+  - UseSimpleGVXR.cmake
+- gvxrWrapper-1.0.1
+  - data
+  - python3
+
+### Test the Python wrapper
+
+1.  Go to `gvxrWrapper-1.0.1/python3`,
+2. Execute the test script. You should see something like:
+![Illustration](screenshots/test-python1.png)
+The X-ray image is displayed using linear, log and power law colour scales using Matplotlib.
+3. Press <Q> to close this window and the real-time viewer will open:
+![Illustration](screenshots/test-python2.png)
+4. Use the mouse wheel to zoom-out:
+![Illustration](screenshots/test-python3.png)
+5. Use the mouse left button and move the mouse around to adjust the view:
+![Illustration](screenshots/test-python4.png)
+6. Press <B> to hide/show the X-ray beam:
+![Illustration](screenshots/test-python5.png)
+7. Press <W> to view the 3-D object in solid/wireframe mode:
+![Illustration](screenshots/test-python6.png)![Illustration](screenshots/test-python7.png)
+8. You can also press <N> to display the X-ray image in negative or positive and <H> to hide/show the X-ray detector.
+9. Press <Q> or <ESC> to exit. When the script ends, there'll be two new files:
+- `xray_image-0.mha`: contains the X-ray image. MHA fies can be viewed with the popular scientific image viewer tool [ImageJ/Fiji](https://imagej.net/Fiji/).
+- `lbuffer-0.mha`: contains the length of X-rays crossed in the 3-D object.
+10. If you want to create your own simulations, have a look at the script. You can find it at [https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py](https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py).
