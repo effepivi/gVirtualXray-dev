@@ -55,7 +55,7 @@ ELSE (GIT_FOUND)
             -DBUILD_GMOCK=OFF
             -DBUILD_UTILS=OFF
             -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
-	    
+
         PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
         # Disable install step
 	#INSTALL_COMMAND ""
@@ -75,5 +75,6 @@ IF (UNIX)
     ELSE (APPLE)
         set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib64")
     ENDIF (APPLE)
+ELSE (UNIX)
+    set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib")
 ENDIF (UNIX)
-
