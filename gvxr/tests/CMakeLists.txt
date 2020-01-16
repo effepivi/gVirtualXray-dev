@@ -173,7 +173,7 @@ add_test (TestMassAttenuationCoefficients TestMassAttenuationCoefficients)
 
 add_test (TestCubeWithoutIndex            TestCubeWithoutIndex)
 add_test (TestCubeWithIndex               TestCubeWithIndex)
-add_test (TestLBuffer                     TestLBuffer)
+#add_test (TestLBuffer                     TestLBuffer)
 add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
 add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
 add_test (TestSinogramFromMesh            TestSinogramFromMesh)
