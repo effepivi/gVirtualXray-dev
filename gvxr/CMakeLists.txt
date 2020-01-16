@@ -164,7 +164,17 @@ IF (UNIX)
 	        )
 	    ENDIF ()
 	ELSE (APPLE)
-		SET (requiredLibs ${requiredLibs} dl)
+            FIND_PACKAGE( X11   REQUIRED )
+
+            IF (NOT X11_Xi_FOUND)
+                MESSAGE(FATAL_ERROR "X11_Xi not found, you need to install libXi-devel")
+            ENDIF ()
+
+            SET (requiredLibs ${requiredLibs}
+                dl
+                ${X11_Xi_L}
+            )
+
 	ENDIF (APPLE)
 ENDIF ()
 
@@ -368,7 +378,7 @@ ENDIF (NOT APPLE)
 #SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
 
 
-# OpenGL ######################################################################
+# OpenCL ######################################################################
 #FIND_PACKAGE(OpenCL REQUIRED)
 #IF (OPENCL_FOUND)
 #    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OpenCL_INCLUDE_DIRS}")
@@ -472,6 +482,17 @@ ENDIF (NOT USE_SYSTEM_GLFW)
 include(cmake/configureGlfw.cmake)
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED)
+IF (OPENGL_FOUND)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLU_INCLUDE_PATH}")
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
+ELSE(OPENGL_FOUND)
+    MESSAGE(FATAL_ERROR "OpenGL not found.")
+ENDIF (OPENGL_FOUND)
+
+
 # GLEW ########################################################################
 # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
 IF (USE_SYSTEM_GLEW)
@@ -490,17 +511,6 @@ IF (GLEW_FOUND)
     SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
     SET (requiredLibs "${requiredLibs}" "${GLEW_LIBRARY}")
 ENDIF (GLEW_FOUND)
-
-
-# OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED)
-IF (OPENGL_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLU_INCLUDE_PATH}")
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
-ELSE(OPENGL_FOUND)
-    MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF (OPENGL_FOUND)
 
 
 # ITK #########################################################################

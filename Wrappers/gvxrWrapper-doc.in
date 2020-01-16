@@ -13,6 +13,7 @@
 namespace std {
     %template(Vectors) std::vector<std::string>;
     %template(Vectori) std::vector<int>;
+    %template(Vectorss) vector<short>;
     %template(Vectorf) std::vector<float>;
     %template(Vectord) std::vector<double>;
     %template(Vectorff) std::vector<vector<float> >;

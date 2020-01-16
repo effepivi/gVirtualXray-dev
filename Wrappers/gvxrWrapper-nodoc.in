@@ -9,11 +9,13 @@
 %include "std_string.i"
 
 namespace std {
-    %template(Vectors) vector<std::string>;
-    %template(Vectorf) vector<float>;
-    %template(Vectord) vector<double>;
-    %template(Vectorff) vector<vector<float> >;
-    %template(Vectordd) vector<vector<double> >;
+    %template(Vectors) std::vector<std::string>;
+    %template(Vectori) std::vector<int>;
+    %template(Vectorss) vector<short>;
+    %template(Vectorf) std::vector<float>;
+    %template(Vectord) std::vector<double>;
+    %template(Vectorff) std::vector<vector<float> >;
+    %template(Vectordd) std::vector<vector<double> >;
 }; 
 
 

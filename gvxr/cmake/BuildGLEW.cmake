@@ -1,5 +1,11 @@
 macro(build_glew install_prefix staging_prefix)
 
+FIND_PACKAGE(OpenGL REQUIRED)
+
+IF (NOT OPENGL_GLU_FOUND)
+    MESSAGE (FATAL_ERROR "Glu not found, GLEW cannot be built.")
+ENDIF ()
+
 SET (GLEW_VERSION_STRING 2.1)
 SET (GLEW_VERSION_MAJOR  2.1)
 SET (GLEW_VERSION_MINOR  0)

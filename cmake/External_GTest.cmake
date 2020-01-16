@@ -68,5 +68,12 @@ set(GTEST_INCLUDE_DIRS ${GTEST_INSTALL_DIR}/include)
 
 # Specify MainTest's link libraries
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
-set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib")
+
+IF (UNIX)
+    IF (APPLE)
+        set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib")
+    ELSE (APPLE)
+        set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib64")
+    ENDIF (APPLE)
+ENDIF (UNIX)
 
