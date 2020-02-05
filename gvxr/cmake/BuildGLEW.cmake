@@ -3,19 +3,19 @@ macro(build_glew install_prefix staging_prefix)
 FIND_PACKAGE(OpenGL REQUIRED)
 
 IF (NOT OPENGL_GLU_FOUND)
-    MESSAGE (FATAL_ERROR "Glu not found, GLEW cannot be built.")
+	MESSAGE (FATAL_ERROR "Glu not found, GLEW cannot be built.")
 ENDIF ()
 
-SET (GLEW_VERSION_STRING 2.1)
-SET (GLEW_VERSION_MAJOR  2.1)
-SET (GLEW_VERSION_MINOR  0)
+#SET (GLEW_VERSION_STRING 2.1)
+#SET (GLEW_VERSION_MAJOR  2.1)
+#SET (GLEW_VERSION_MINOR  0)
 
 
 SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
-  URL  "https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.zip/download"
-  URL_MD5 "dff2939fd404d054c1036cc0409d19f1"
+  URL  "https://sourceforge.net/projects/glew/files/glew/snapshots/glew-20200115.tgz/download"
+  URL_MD5 "ffaca6d1536a9eb36b9c00f29c11065a"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
