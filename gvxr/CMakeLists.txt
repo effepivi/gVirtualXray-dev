@@ -82,7 +82,6 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # C++ version ##################################################################
-cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 11) # C++11
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
