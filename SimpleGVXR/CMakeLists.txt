@@ -128,8 +128,10 @@ FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake DESTINATION ${CMAKE_CURR
 SET (RESOURCES_SOURCES
 		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl2.vert"
 		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl2.frag"
-		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.vert"
+        "${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.vert"
 		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl3.frag"
+        "${CMAKE_CURRENT_SOURCE_DIR}/display_gl4.vert"
+		"${CMAKE_CURRENT_SOURCE_DIR}/display_gl4.frag"
 )
 
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
@@ -152,7 +154,7 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 
 
 # Create the library ###########################################################
-add_library(SimpleGVXR SimpleGVXR.cxx)
+add_library(SimpleGVXR SimpleGVXR.cxx Window.cxx)
 
 
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
