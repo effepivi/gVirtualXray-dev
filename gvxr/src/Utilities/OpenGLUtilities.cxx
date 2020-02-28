@@ -38,22 +38,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *	@file		OpenGLUtilities.cxx
 *
 *	@brief		Some utility functions about OpenGL.
+*               Now supports GLSL450 and OpenGL 4.5
 *
 *	@version	1.0
 *
-*	@date		14/12/2013
+*	@date		25/02/2020
 *
 *	@author		Dr Franck P. Vidal
 *
 *	@section	License
 *				BSD 3-Clause License.
 *
-*				For details on use and redistribution please refer 
+*				For details on use and redistribution please refer
 *				to http://opensource.org/licenses/BSD-3-Clause
 *
 *	@section	Copyright
-*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+*				http://www.fpvidal.net/, Feb 2020, 2020, version 1.0,
 *				BSD 3-Clause License
 *
 ********************************************************************************
@@ -102,6 +103,10 @@ std::vector<int> g_frame_buffer_object_stack;
 std::vector<std::pair<int, int> > g_texture_stack;
 std::vector<std::pair<int, bool> > g_enable_disable_state_stack;
 std::vector<int> g_shader_program_stack;
+
+bool g_has_been_initialised(false);
+bool g_use_gl_4_5(true);
+bool g_use_gl_3_2(true);
 
 
 //-------------------
@@ -482,16 +487,85 @@ void applyModelViewMatrix()
 }
 
 
-//------------------------
-bool useOpenGL3_2OrAbove()
-//------------------------
+//----------------
+bool useOpenGL45()
+//----------------
 {
-    // Set static variables
-    static bool has_been_initialised(false);
-    static bool use_gl_3_2(true);
-
     // This is the first time the method is called
-    if (!has_been_initialised)
+    if (!g_has_been_initialised)
+    {
+        try
+        {
+            // Compile a dummy shader for OpenGL 3.2
+            // Vertex shader
+            const GLchar* g_vertex_shader = "\
+            \n#version 450\n \
+            \n \
+            layout(location=0) in vec3 in_Vertex;\n \
+            \n \
+            layout(location=0) uniform mat4 g_projection_matrix;\n \
+            layout(location=1) uniform mat4 g_modelview_matrix;\n \
+            \n \
+            void main(void)\n \
+            {\n \
+                gl_Position = g_projection_matrix * g_modelview_matrix * vec4(in_Vertex, 1.0);\n \
+            }\n \
+            ";
+
+            // Fragment shader
+            const GLchar* g_fragment_shader = "\
+            \n#version 450\n \
+            precision highp float;\n \
+            \n \
+            layout(location=0) out vec4 fragColor;\n \
+            void main(void)\n \
+            {\n \
+                fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n \
+            }\n \
+            ";
+
+            Shader dummy_shader;
+
+            // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
+            dummy_shader.setLabels("g_vertex_shader", "g_fragment_shader");
+
+            // Load the source code of the shaders onto the GPU
+            dummy_shader.loadSource(g_vertex_shader, g_fragment_shader);
+
+            // An error occurred
+            if (!dummy_shader.isValid())
+            {
+                g_use_gl_4_5 = false;
+            }
+        }
+        // An error occured, OpenGL 3.2 is not supported
+        catch (const std::exception& e)
+        {
+            g_use_gl_4_5 = false;
+        }
+
+        if (g_use_gl_4_5)
+        {
+            std::cout << "Use OpenGL 4.5." << std::endl;
+        }
+        else
+        {
+            std::cout << "Cannot use OpenGL 4.5. You live in the past." << std::endl;
+        }
+
+        g_has_been_initialised = g_use_gl_4_5;
+    }
+
+    return (g_use_gl_4_5);
+}
+
+
+//----------------
+bool useOpenGL32()
+//----------------
+{
+    // This is the first time the method is called
+    if (!g_has_been_initialised)
     {
         try
         {
@@ -534,28 +608,28 @@ bool useOpenGL3_2OrAbove()
             // An error occurred
             if (!dummy_shader.isValid())
             {
-                use_gl_3_2 = false;
+                g_use_gl_3_2 = false;
             }
         }
         // An error occured, OpenGL 3.2 is not supported
         catch (const std::exception& e)
         {
-            use_gl_3_2 = false;
+            g_use_gl_3_2 = false;
         }
 
-        if (use_gl_3_2)
+        if (g_use_gl_3_2)
         {
-            std::cout << "Use OpenGL 3.2 or above." << std::endl;
+            std::cout << "Use OpenGL 3.2." << std::endl;
         }
         else
         {
-            std::cout << "Use OpenGL 2.0 or above." << std::endl;
+            std::cout << "Cannot use OpenGL 3.2. You really live in the past." << std::endl;
         }
     }
 
-    has_been_initialised = true;
+    g_has_been_initialised = true;
 
-    return (use_gl_3_2);
+    return (g_use_gl_3_2);
 }
 
 

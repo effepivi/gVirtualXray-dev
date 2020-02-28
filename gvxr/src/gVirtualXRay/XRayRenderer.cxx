@@ -38,10 +38,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *	@file		XRayRenderer.h
 *
 *	@brief		Class to compute and renderer X-ray images on GPU.
+*               Now supports GLSL450 and OpenGL 4.5
 *
 *	@version	1.0
 *
-*	@date		01/12/2013
+*	@date		25/02/2020
 *
 *	@author		Dr Franck P. Vidal
 *
@@ -53,7 +54,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *	@section	Copyright
 *				(c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*				http://www.fpvidal.net/, Dec 2014, 2014, version 1.0,
+*				http://www.fpvidal.net/, Feb 2020, 2020, version 1.0,
 *				BSD 3-Clause License
 *
 ********************************************************************************
@@ -67,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GL/glew.h"
 #endif
 
-#ifndef GVXR_CONFIG_H
+#ifndef __gVirtualXRayConfig_h
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
@@ -75,43 +76,43 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <cstring>
 
-#ifndef GVXR_XRAY_RENDERER_H
+#ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
-#ifndef GVXR_EXCEPTION_H
+#ifndef __Exception_h
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#ifndef __OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
 #endif
 
-#ifndef GVXR_OUT_OF_BOUNDS_EXCEPTION_H
+#ifndef __OutOfBoundsException_h
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
-#ifndef GVXR_XRAY_INVALID_INTERNAL_FORMAT_EXCEPTION_H
+#ifndef __InvalidInternalFormalException_h
 #include "gVirtualXRay/InvalidInternalFormalException.h"
 #endif
 
-#ifndef GVXR_XRAY_NO_DETECTOR_EXCEPTION_H
+#ifndef __NoDetectorException_h
 #include "gVirtualXRay/NoDetectorException.h"
 #endif
 
-#ifndef GVXR_XRAY_NO_BEAM_EXCEPTION_H
+#ifndef __NoBeamException_h
 #include "gVirtualXRay/NoBeamException.h"
 #endif
 
-#ifndef GVXR_XRAY_INVALID_IMAGE_SIZE_EXCEPTION_H
+#ifndef __InvalidImageSizeException_h
 #include "gVirtualXRay/InvalidImageSizeException.h"
 #endif
 
-#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef __FileDoesNotExistException_h
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
@@ -119,11 +120,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Utilities.h"
 #endif
 
-#ifndef GVXR_ATOMIC_ELEMENT_H
+#ifndef __AtomicElement_h
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
 #include "gVirtualXRay/framebufferObject.h"
+
 
 #include "MUx_Dx_gl2.frag.h"
 #include "MUx_Dx_gl2.vert.h"
@@ -131,11 +133,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MUx_Dx_gl3.frag.h"
 #include "MUx_Dx_gl3.vert.h"
 
+#include "MUx_Dx_gl4.frag.h"
+#include "MUx_Dx_gl4.vert.h"
+
+
 #include "cumulated_l_buffer_gl2.frag.h"
 #include "cumulated_l_buffer_gl2.vert.h"
 
 #include "cumulated_l_buffer_gl3.frag.h"
 #include "cumulated_l_buffer_gl3.vert.h"
+
+#include "cumulated_l_buffer_gl4.frag.h"
+#include "cumulated_l_buffer_gl4.vert.h"
+
 
 #include "l_buffer_gl2.frag.h"
 #include "l_buffer_gl2.vert.h"
@@ -143,11 +153,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "l_buffer_gl3.frag.h"
 #include "l_buffer_gl3.vert.h"
 
+#include "l_buffer_gl4.frag.h"
+#include "l_buffer_gl4.vert.h"
+
+
 #include "clean_l_buffer_gl2.frag.h"
 #include "clean_l_buffer_gl2.vert.h"
 
 #include "clean_l_buffer_gl3.frag.h"
 #include "clean_l_buffer_gl3.vert.h"
+
+#include "clean_l_buffer_gl4.frag.h"
+#include "clean_l_buffer_gl4.vert.h"
+
 
 #include "outer_surface_l_buffer_gl2.frag.h"
 #include "outer_surface_l_buffer_gl2.vert.h"
@@ -155,17 +173,28 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "outer_surface_l_buffer_gl3.frag.h"
 #include "outer_surface_l_buffer_gl3.vert.h"
 
+#include "outer_surface_l_buffer_gl4.frag.h"
+#include "outer_surface_l_buffer_gl4.vert.h"
+
+
 #include "xray_attenuation_gl2.frag.h"
 #include "xray_attenuation_gl2.vert.h"
 
 #include "xray_attenuation_gl3.frag.h"
 #include "xray_attenuation_gl3.vert.h"
 
+#include "xray_attenuation_gl4.frag.h"
+#include "xray_attenuation_gl4.vert.h"
+
+
 #include "xray_display_gl2.frag.h"
 #include "xray_display_gl2.vert.h"
 
 #include "xray_display_gl3.frag.h"
 #include "xray_display_gl3.vert.h"
+
+#include "xray_display_gl4.frag.h"
+#include "xray_display_gl4.vert.h"
 
 #include "mu_water.csv.h"
 
@@ -1014,7 +1043,12 @@ void XRayRenderer::initShaders()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
-	if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+	{
+	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl4_vert, sizeof(g_l_buffer_gl4_vert),   &p_vertex_shader);
+	    z_lib_return_code_fragment = inflate(g_l_buffer_gl4_frag, sizeof(g_l_buffer_gl4_frag), &p_fragment_shader);
+	}
+    else if (useOpenGL32())
 	{
 	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
 	    z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1038,7 +1072,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
-    if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+    {
+        z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl4_vert, sizeof(g_cumulated_l_buffer_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl4_frag, sizeof(g_cumulated_l_buffer_gl4_frag), &p_fragment_shader);
+    }
+    else if (useOpenGL32())
     {
         z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1062,7 +1101,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
     // Clean L-buffer
-    if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+    {
+        z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl4_vert, sizeof(g_clean_l_buffer_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl4_frag, sizeof(g_clean_l_buffer_gl4_frag), &p_fragment_shader);
+    }
+    else if (useOpenGL32())
     {
         z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl3_vert, sizeof(g_clean_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl3_frag, sizeof(g_clean_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1086,7 +1130,12 @@ void XRayRenderer::initShaders()
     m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
-    if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+    {
+        z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl4_vert, sizeof(g_outer_surface_l_buffer_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl4_frag, sizeof(g_outer_surface_l_buffer_gl4_frag), &p_fragment_shader);
+    }
+    else if (useOpenGL32())
     {
         z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl3_vert, sizeof(g_outer_surface_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl3_frag, sizeof(g_outer_surface_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1110,7 +1159,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
-    if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+    {
+        z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl4_vert, sizeof(g_MUx_Dx_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_MUx_Dx_gl4_frag, sizeof(g_MUx_Dx_gl4_frag), &p_fragment_shader);
+    }
+    else if (useOpenGL32())
     {
         z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl3_vert, sizeof(g_MUx_Dx_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_MUx_Dx_gl3_frag, sizeof(g_MUx_Dx_gl3_frag), &p_fragment_shader);
@@ -1134,7 +1188,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
-    if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+    {
+        z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl4_vert, sizeof(g_xray_attenuation_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_attenuation_gl4_frag, sizeof(g_xray_attenuation_gl4_frag), &p_fragment_shader);
+    }
+    else if (useOpenGL32())
     {
         z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl3_vert, sizeof(g_xray_attenuation_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_attenuation_gl3_frag, sizeof(g_xray_attenuation_gl3_frag), &p_fragment_shader);
@@ -1158,7 +1217,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
-    if (useOpenGL3_2OrAbove())
+    if (useOpenGL45())
+    {
+        z_lib_return_code_vertex   = inflate(g_xray_display_gl4_vert, sizeof(g_xray_display_gl4_vert),   &p_vertex_shader);
+        z_lib_return_code_fragment = inflate(g_xray_display_gl4_frag, sizeof(g_xray_display_gl4_frag), &p_fragment_shader);
+    }
+    else if (useOpenGL32())
     {
         z_lib_return_code_vertex   = inflate(g_xray_display_gl3_vert, sizeof(g_xray_display_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_display_gl3_frag, sizeof(g_xray_display_gl3_frag), &p_fragment_shader);
