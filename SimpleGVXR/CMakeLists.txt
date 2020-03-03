@@ -154,7 +154,11 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 
 
 # Create the library ###########################################################
-add_library(SimpleGVXR SimpleGVXR.cxx Window.cxx)
+add_library(SimpleGVXR
+    SimpleGVXR.cxx
+    Window.cxx
+    OpenGLWindow.cxx
+)
 
 
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
