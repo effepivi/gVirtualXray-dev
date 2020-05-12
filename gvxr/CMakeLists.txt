@@ -436,6 +436,18 @@ ELSE (OPENMP_FOUND)
 ENDIF (OPENMP_FOUND)
 
 
+# Vulkan ######################################################################
+FIND_PACKAGE(Vulkan)
+IF (Vulkan_FOUND)
+    SET (USE_VULKAN ON)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${Vulkan_INCLUDE_DIRS}")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_VULKAN")
+    SET (optionalLibs ${optionalLibs} ${Vulkan_LIBRARIES})
+ELSE (Vulkan_FOUND)
+    SET (USE_VULKAN OFF)
+ENDIF (Vulkan_FOUND)
+
+
 # GZIP ########################################################################
 FIND_PACKAGE(GZIP)
 
