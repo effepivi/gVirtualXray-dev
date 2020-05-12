@@ -289,6 +289,7 @@ void OpenGLWindow::createWindow(bool aVisibilityFlag)
     {
         // Make the window's context current
         glfwMakeContextCurrent(m_p_window);
+        glfwSetWindowUserPointer(m_p_window, this);
 
         // Initialise GLEW
         gVirtualXRay::initialiseGLEW();
