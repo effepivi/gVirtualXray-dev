@@ -80,6 +80,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 
 #define GLFW_INCLUDE_GLCOREARB 1
+
+#ifdef HAS_VULKAN
+#define GLFW_INCLUDE_VULKAN
+#endif
+
 #include <GLFW/glfw3.h>
 
 // To perform the computations of the X-ray simulation
@@ -139,6 +144,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OpenGLWindow.h"
 #endif
 
+#ifndef __VulkanWindow_h
+#include "VulkanWindow.h"
+#endif
+
 
 //******************************************************************************
 //  Namespace
@@ -150,9 +159,6 @@ using namespace std;
 //  Function declarations
 //******************************************************************************
 GLFWwindow* initGLFW(int aWindowID, int aVisibilityFlag);
-
-void createOpenGLContext(int aWindowID);
-
 
 
 void errorCallback(int error, const char* description);
@@ -2153,16 +2159,26 @@ std::string getMaterialLabel(const std::string& aLabel)
     return std::string();
 }
 
-//-------------------------------------
-void createOpenGLContext(int aWindowID)
-//-------------------------------------
+//-------------------------------------------------
+void createOpenGLContext(int aWindowID,
+		                 int aRendererMajorVersion,
+		                 int aRendererMinorVersion)
+//-------------------------------------------------
 {
-    createWindow(aWindowID, false);
+    createWindow(aWindowID,
+        false,
+        "OPENGL",
+        aRendererMajorVersion,
+        aRendererMinorVersion);
 }
 
-//---------------------------------------------------
-void createWindow(int aWindowID, int aVisibilityFlag)
-//---------------------------------------------------
+//---------------------------------------------
+void createWindow(int aWindowID,
+		          int aVisibilityFlag,
+				  const std::string& aRenderer,
+	              int aRendererMajorVersion,
+	              int aRendererMinorVersion)
+//---------------------------------------------
 {
     if (!g_p_window_set.size())
         {
@@ -2193,8 +2209,29 @@ void createWindow(int aWindowID, int aVisibilityFlag)
     // The window does not exist
     if (!g_p_window_set[aWindowID])
         {
-        // Create the window
-        Window* p_window = new OpenGLWindow(aVisibilityFlag, 3, 2);
+    	Window* p_window = 0;
+
+    	// Create the window
+    	std::string renderer = aRenderer;
+    	for (auto& c: renderer) c = std::toupper(c);
+
+    	if (aRenderer == "OPENGL")
+    	{
+    		p_window = new OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+    	}
+    	else if (aRenderer == "VULKAN")
+        {
+        	p_window = new VulkanWindow(aVisibilityFlag);
+        }
+        else
+    	{
+    		std::string error_message = "ERROR: Unknown renderer (";
+    		error_message += aRenderer;
+    		error_message += ")";
+
+    		throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
+    				error_message);
+    	}
 
         // The window has been created
         if (p_window)
