@@ -158,6 +158,7 @@ add_library(SimpleGVXR
     SimpleGVXR.cxx
     Window.cxx
     OpenGLWindow.cxx
+    VulkanWindow.cxx
 )
 
 
