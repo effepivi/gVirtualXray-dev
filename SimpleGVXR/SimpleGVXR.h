@@ -153,24 +153,6 @@ std::string getVersionOfSimpleGVXR();
 
 
 //------------------------------------------------------------------------------
-/// Initialise GLEW if it is supported.
-//------------------------------------------------------------------------------
-void initialiseGLEW();
-
-
-//------------------------------------------------------------------------------
-/// Initialise GLEW if it is supported.
-//------------------------------------------------------------------------------
-void initializeGLEW();
-
-
-//------------------------------------------------------------------------------
-/// Initialise visualisation shader.
-//------------------------------------------------------------------------------
-void initShader();
-
-
-//------------------------------------------------------------------------------
 /// Replace the projection matrix by a orthographic projection matrix.
 /// It behaves as the old glOrtho function.
 /**
@@ -1324,9 +1306,15 @@ std::string getMaterialLabel(const std::string& aLabel);
  *  @param aWindowID:   the numerical ID of the context to create
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
+ *  @param aRendererMajorVersion: Select the major version of the renderer.
+ *                    (default value: 3)
+ *  @param aRendererMajorVersion: Select the minor version of the renderer.
+ *                    (default value: 2)
  */
 //------------------------------------------------------------------------------
-void createOpenGLContext(int aWindowID = -1);
+void createOpenGLContext(int aWindowID = -1,
+		int aRendererMajorVersion = 3,
+		int aRendererMinorVersion = 2);
 
 
 //------------------------------------------------------------------------------
@@ -1335,11 +1323,21 @@ void createOpenGLContext(int aWindowID = -1);
  *  @param aWindowID:   the numerical ID of the context to create
  *                      (default value: -1, means that the ID will be
  *                      automatically generated)
+ *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
+ *                    (default value: OPENGL)
+ *  @param aRendererMajorVersion: Select the major version of the renderer.
+ *                    (default value: 3)
+ *  @param aRendererMajorVersion: Select the minor version of the renderer.
+ *                    (default value: 2)
  *  @param aVisibilityFlag: flag controling if the window should be visible (1)
  *                          or hidden (0). (default value: 0)
  */
 //------------------------------------------------------------------------------
-void createWindow(int aWindowID = -1, int aVisibilityFlag = 0);
+void createWindow(int aWindowID = -1,
+		int aVisibilityFlag = 0,
+		const std::string& aRenderer = "OPENGL",
+		int aRendererMajorVersion = 3,
+		int aRendererMinorVersion = 2);
 
 
 //------------------------------------------------------------------------------

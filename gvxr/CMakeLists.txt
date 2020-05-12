@@ -436,6 +436,18 @@ ELSE (OPENMP_FOUND)
 ENDIF (OPENMP_FOUND)
 
 
+# Vulkan ######################################################################
+FIND_PACKAGE(Vulkan)
+IF (Vulkan_FOUND)
+    SET (USE_VULKAN ON)
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${Vulkan_INCLUDE_DIRS}")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_VULKAN")
+    SET (optionalLibs ${optionalLibs} ${Vulkan_LIBRARIES})
+ELSE (Vulkan_FOUND)
+    SET (USE_VULKAN OFF)
+ENDIF (Vulkan_FOUND)
+
+
 # GZIP ########################################################################
 FIND_PACKAGE(GZIP)
 
@@ -826,58 +838,94 @@ SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/clean_l_buffer_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/cumulated_l_buffer_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/l_buffer_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/MUx_Dx_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/outer_surface_l_buffer_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/correlation_CT_number_and_tissue_material.csv
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/mu_water.csv
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/element.csv
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/text_display_gl4.vert
 
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/display_realistic_gl3.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/depth_map_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/depth_map_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/depth_map_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/depth_map_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/depth_map_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/depth_map_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/bump_map_generation_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/bump_map_generation_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/bump_map_generation_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/bump_map_generation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/bump_map_generation_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/bump_map_generation_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/3d_bump_map_generation_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/3d_bump_map_generation_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/3d_bump_map_generation_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/3d_bump_map_generation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/3d_bump_map_generation_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/3d_bump_map_generation_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl3.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/colour_texture_generation_gl4.vert
 
 )
 

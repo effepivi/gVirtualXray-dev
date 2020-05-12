@@ -27,6 +27,10 @@ $ wget https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.
 $ mv download gVirtualXRay-1.1.1-Source.zip
 $ unzip gVirtualXRay-1.1.1-Source.zip
 ```
+
+In OpenSUSE
+sudo zypper in libX11-devel libXi-devel glu-devel swig ruby-devel tcl-devel
+
 3. Create a directory where the binaries will be created and go in this directory. Note that it CANNOT be a sub-directory of the source directory chosen in the previous step.
 ```bash
 $ mkdir ../gvirtualxray-bin
