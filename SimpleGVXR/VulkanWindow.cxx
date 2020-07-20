@@ -217,6 +217,8 @@ const bool g_enable_validation_layers = true;
 #endif
 
 
+uint32_t g_physical_device_index = 0;
+
 #ifdef HAS_VULKAN
 /*
 In order to use Vulkan, you must create an instance.
@@ -229,7 +231,6 @@ The physical device is some device on the system that supports usage of Vulkan.
 Often, it is simply a graphics card that supports Vulkan.
 */
 std::vector<VkPhysicalDevice> g_device_set;
-uint32_t g_physical_device_index = 0;
 /*
 Then we have the logical device VkDevice, which basically allows
 us to interact with the physical device.
@@ -865,6 +866,7 @@ void VulkanWindow::registerCallbacks()
 }
 */
 
+#ifdef HAS_VULKAN
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(
     VkDebugReportFlagsEXT                       flags,
@@ -880,7 +882,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(
 
     return VK_FALSE;
  }
-
+#endif
 
 //-------------------------------------------
 const char* getVendorName(uint32_t aVendorID)
@@ -934,6 +936,8 @@ const char* getDeviceType(uint32_t aDeviceType)
 void VulkanWindow::printDeviceProperties()
 //----------------------------------------
 {
+#ifdef HAS_VULKAN
+
 	for (int i = 0; i < m_number_of_devices; ++i)
 	{
 		std::cout << "Physical Device #" << i << std::endl;
@@ -955,6 +959,7 @@ void VulkanWindow::printDeviceProperties()
 		std::cout << "Device Type:\t" <<    getDeviceType(device_properties.deviceType) << std::endl;
 		std::cout << "Device name:\t" <<    device_properties.deviceName << std::endl << std::endl;
 	}
+#endif
 }
 
 
@@ -965,6 +970,7 @@ std::vector<const char *> VulkanWindow::enableValidationLayers()
 	// Store here the extensions that are enabled
     std::vector<const char *> enabled_extension_set;
 
+#ifdef HAS_VULKAN
     // By enabling validation layers, Vulkan will emit warnings if the API
     // is used incorrectly. We shall enable the layer VK_LAYER_LUNARG_standard_validation,
     // which is basically a collection of several useful validation layers.
@@ -1032,6 +1038,7 @@ std::vector<const char *> VulkanWindow::enableValidationLayers()
         }
         enabled_extension_set.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     }
+#endif
 
     return enabled_extension_set;
 }
@@ -1041,6 +1048,7 @@ std::vector<const char *> VulkanWindow::enableValidationLayers()
 void VulkanWindow::createInstance(const std::vector<const char *>& anEnabledExtensionSet)
 //---------------------------------------------------------------------------------------
 {
+#ifdef HAS_VULKAN
 	// Create the application info.
     VkApplicationInfo applicationInfo = {};
     applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -1089,6 +1097,7 @@ void VulkanWindow::createInstance(const std::vector<const char *>& anEnabledExte
         // Create and register callback.
         VK_CHECK_RESULT(vkCreateDebugReportCallbackEXT(instance, &createInfo, NULL, &debugReportCallback));
     }
+#endif
 }
 
 
@@ -1096,6 +1105,7 @@ void VulkanWindow::createInstance(const std::vector<const char *>& anEnabledExte
 uint32_t VulkanWindow::findPhysicalDevice()
 //-----------------------------------------
 {
+#ifdef HAS_VULKAN
     // Find a physical device that can be used with Vulkan
 
 	// Get the number of physical devices on the system with vkEnumeratePhysicalDevices
@@ -1121,7 +1131,7 @@ uint32_t VulkanWindow::findPhysicalDevice()
             return i;
         }
     }
-
+#endif
 	// Throw an error
     throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
         "Could not find a Vulkan device with both compute and graphics queue support");
@@ -1132,6 +1142,7 @@ uint32_t VulkanWindow::findPhysicalDevice()
 bool VulkanWindow::supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue)
 //---------------------------------------------------------------------
 {
+#ifdef HAS_VULKAN
 	// Get the number of queue families
     uint32_t queue_family_count;
     vkGetPhysicalDeviceQueueFamilyProperties(g_device_set[aDeviceID], &queue_family_count, NULL);
@@ -1151,7 +1162,7 @@ bool VulkanWindow::supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue)
             return true;
         }
     }
-
+#endif
     // Did not find a suitable queue
     return false;
 }
@@ -1162,6 +1173,7 @@ bool VulkanWindow::supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue)
 uint32_t VulkanWindow::getComputeQueueFamilyIndex(u_int32_t aQueue)
 //-----------------------------------------------------------------
 {
+  #ifdef HAS_VULKAN
 	// Get the number of queue families
     uint32_t queue_family_count;
     vkGetPhysicalDeviceQueueFamilyProperties(g_device_set[g_physical_device_index],
@@ -1185,7 +1197,7 @@ uint32_t VulkanWindow::getComputeQueueFamilyIndex(u_int32_t aQueue)
             return i;
         }
     }
-
+#endif
     // This line should not be reached
 	throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__,
 		"Could not find a queue family that supports operations");
@@ -1196,6 +1208,7 @@ uint32_t VulkanWindow::getComputeQueueFamilyIndex(u_int32_t aQueue)
 void VulkanWindow::createDevice()
 //-------------------------------
 {
+#ifdef HAS_VULKAN
 	uint32_t compute_queue_index  = getComputeQueueFamilyIndex(VK_QUEUE_COMPUTE_BIT);
 	uint32_t graphics_queue_index = getComputeQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT);
 
@@ -1234,9 +1247,11 @@ void VulkanWindow::createDevice()
 
     // Get a handle to the only member of the queue family.
     vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
+#endif
 }
 
 
+#ifdef HAS_VULKAN
 // find memory type with desired properties.
 uint32_t findMemoryType(uint32_t memoryTypeBits, VkMemoryPropertyFlags properties) {
     VkPhysicalDeviceMemoryProperties memoryProperties;
@@ -1254,3 +1269,4 @@ uint32_t findMemoryType(uint32_t memoryTypeBits, VkMemoryPropertyFlags propertie
     }
     return -1;
 }
+#endif
