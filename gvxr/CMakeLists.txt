@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2017, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -39,63 +39,9 @@ if(POLICY CMP0048)
 else ()
     PROJECT(gVirtualXRay)
 endif()
+
 set(CMAKE_DIRECTORY_LABELS "gvxr-core")
 
-
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
-
-
-# Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
-
-
-# Support for the CTest dashboard testing system
-INCLUDE(CTest)
-
-
-# Tell CMake to be quiet
-cmake_policy (SET CMP0003 NEW)
-if(POLICY CMP0054)
-    cmake_policy (SET CMP0054 NEW)
-endif()
-
-# Set a default build type if none was specified
-IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-      message(STATUS "Setting build type to 'Release' as none was specified.")
-      SET (CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-
-      # Set the possible values of build type for cmake-gui
-      set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-ENDIF ()
-
-
-# Enable the unit tests
-if (BUILD_TESTING)
-    ENABLE_TESTING()
-endif()
-
-
-
-
-# Initialise some states by default ############################################
-SET (BUILD_SHARED_LIBS OFF)
-
-
-# C++ version ##################################################################
-set(CMAKE_CXX_STANDARD 11) # C++11
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
-set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
-set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
-
-# Flag required for shared libraries
-IF (UNIX)
-    IF (NOT APPLE)
-        IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
-            SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-            SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-        ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
-    ENDIF (NOT APPLE)
-ENDIF (UNIX)
 
 cmake_policy(SET CMP0072 NEW) # OpenGL
 cmake_policy(SET CMP0003 NEW)
@@ -108,14 +54,14 @@ IF (APPLE)
 ENDIF (APPLE)
 
 
-
-
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 
-# Make include files in paths like /usr/local/include have preference before
-# files in OSX frameworks.
-SET (CMAKE_FIND_FRAMEWORK "LAST")
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
+
+
+# C++ version ##################################################################
+set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
 
 
 # Enable all compiler warnings #################################################
@@ -128,16 +74,6 @@ SET (CMAKE_FIND_FRAMEWORK "LAST")
 IF (WIN32)
 	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DNOMINMAX")
 ENDIF (WIN32)
-
-
-# for superbuild
-SET (USE_SUPERBUILD ON)
-INCLUDE(ExternalProject)
-INCLUDE(ConfigureExternalProjects)
-
-
-# The options ##################################################################
-INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/options.cmake)
 
 
 # Libraries ####################################################################
@@ -377,6 +313,10 @@ ENDIF (NOT APPLE)
 #SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include")
 
 
+# Find dependencies
+INCLUDE (cmake/dependencies.cmake)
+
+
 # OpenCL ######################################################################
 #FIND_PACKAGE(OpenCL REQUIRED)
 #IF (OPENCL_FOUND)
@@ -387,27 +327,7 @@ ENDIF (NOT APPLE)
 #ENDIF (OPENCL_FOUND)
 
 
-# ASSIMP #######################################################################
-IF (USE_assimp)
-    IF (USE_SYSTEM_ASSIMP)
-        FIND_PACKAGE( assimp   REQUIRED )
-    ELSE(USE_SYSTEM_ASSIMP)
-        INCLUDE(BuildASSIMP)
 
-        build_assimp( assimp ${PROJECT_BINARY_DIR} )
-    ENDIF (USE_SYSTEM_ASSIMP)
-ENDIF(USE_assimp)
-
-IF (assimp_FOUND)
-MESSAGE(STATUS "Use ASSIMP.")
-
-	SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ASSIMP_INCLUDE_DIRS}")
-	SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ASSIMP")
-	SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ASSIMP_LIBRARY_DIRS})
-	SET (optionalLibs ${optionalLibs} ${ASSIMP_LIBRARIES})
-ELSE (assimp_FOUND)
-	MESSAGE (WARNING "ASSIMP not found, the use of ASSIMP will be disable.")
-ENDIF (assimp_FOUND)
 
 
 # OpenSceneGraph ###############################################################
@@ -424,324 +344,21 @@ IF (USE_OPENSCENEGRAPH)
 ENDIF (USE_OPENSCENEGRAPH)
 
 
-# OpenMP ######################################################################
-FIND_PACKAGE(OpenMP)
-IF (OPENMP_FOUND)
-    SET (USE_OPENMP ON)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_OPENMP")
-    SET (requiredLibs ${requiredLibs} ${OpenMP_EXE_LINKER_FLAGS})
-ELSE (OPENMP_FOUND)
-    SET (USE_OPENMP OFF)
-ENDIF (OPENMP_FOUND)
 
 
-# Vulkan ######################################################################
-FIND_PACKAGE(Vulkan)
-IF (Vulkan_FOUND)
-    SET (USE_VULKAN ON)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${Vulkan_INCLUDE_DIRS}")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_VULKAN")
-    SET (optionalLibs ${optionalLibs} ${Vulkan_LIBRARIES})
-ELSE (Vulkan_FOUND)
-    SET (USE_VULKAN OFF)
-ENDIF (Vulkan_FOUND)
 
 
-# GZIP ########################################################################
-FIND_PACKAGE(GZIP)
 
-IF (NOT GZIP_FOUND)
-    IF (WIN32)
 
-        file(DOWNLOAD http://gnuwin32.sourceforge.net/downlinks/gzip-bin-zip.php ${PROJECT_BINARY_DIR}/gzip/gzip-bin.zip)
-		execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_BINARY_DIR}/gzip/gzip-bin.zip WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/gzip)
-        SET (GZIP ${PROJECT_BINARY_DIR}/gzip/bin/gzip.exe)
-        SET (GZIP_TOOL ${GZIP} CACHE FILEPATH "Where gzip.exe is." FORCE)
 
-        FIND_PACKAGE(GZIP REQUIRED)
-        IF (NOT GZIP_FOUND)
-            MESSAGE(FATAL_ERROR "GZIP not found. You can find it on gzip's website at: http://www.gzip.org/")
-        ENDIF (NOT GZIP_FOUND)
 
-    ELSE (WIN32)
-        MESSAGE(FATAL_ERROR "GZIP not found.")
-    ENDIF (WIN32)
-ENDIF (NOT GZIP_FOUND)
 
-
-# FFTW3 #######################################################################
-FIND_LIBRARY(FFTW3_LIBRARIES NAMES fftw3 libfftw3 libfftw3_omp)
-IF (FFTW3_LIBRARIES)
-    SET (requiredLibs ${requiredLibs} ${FFTW3_LIBRARIES})
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FFTW")
-ELSE ()
-    MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
-ENDIF ()
-
-
-# GLFW ########################################################################
-IF (NOT USE_SYSTEM_GLFW)
-		SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-		INCLUDE(cmake/BuildGlfw)
-		build_glfw( glfw ${PROJECT_BINARY_DIR} )
-		ADD_DEPENDENCIES(gVirtualXRay glfw)
-
-ENDIF (NOT USE_SYSTEM_GLFW)
-
-
-include(cmake/configureGlfw.cmake)
-
-
-# OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED)
-IF (OPENGL_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLU_INCLUDE_PATH}")
-    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES} ${GLU_LIBRARY})
-ELSE(OPENGL_FOUND)
-    MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF (OPENGL_FOUND)
-
-
-# GLEW ########################################################################
-# Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
-IF (USE_SYSTEM_GLEW)
-  FIND_PACKAGE(GLEW REQUIRED)
-ELSE(USE_SYSTEM_GLEW)
-  INCLUDE(BuildGLEW)
-  build_glew( glew ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_GLEW)
-
-
-IF (GLEW_FOUND)
-    SET (HAS_GLEW ON)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_STATIC")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLEW")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GLEW_INCLUDE_DIR}")
-    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GLEW_LIBRARY_DIR})
-    SET (requiredLibs "${requiredLibs}" "${GLEW_LIBRARY}")
-ENDIF (GLEW_FOUND)
-
-
-# ITK #########################################################################
-IF (USE_ITK)
-    FIND_PACKAGE(ITK)
-
-    IF (ITK_FOUND)
-
-        include(${ITK_USE_FILE})
-
-        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_ITK")
-
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ITK_INCLUDE_DIRS}")
-        SET (requiredLibs ${requiredLibs} ${ITK_LIBRARIES})
-    ELSE(ITK_FOUND)
-        MESSAGE(WARNING "ITK not found, it will be disable.")
-        SET (USE_ITK OFF)
-    ENDIF (ITK_FOUND)
-ENDIF (USE_ITK)
-
-
-# ZLIB #########################################################################
-IF (USE_SYSTEM_ZLIB)
-    FIND_PACKAGE( ZLIB   REQUIRED )
-ELSE(USE_SYSTEM_ZLIB)
-    INCLUDE(BuildZLIB)
-    build_zlib( zlib ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_ZLIB)
-
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ZLIB_INCLUDE_DIR}")
-SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIR})
-SET (requiredLibs "${requiredLibs}" "${ZLIB_LIBRARY}")
-
-
-# VCG ##########################################################################
-#OPTION(USE_SYSTEM_VCG       "Use System VCG"       OFF)
-
-#IF (USE_SYSTEM_VCG)
-#    FIND_PACKAGE( VCG   REQUIRED )
-#ELSE(USE_SYSTEM_VCG)
-#    INCLUDE(BuildVCG)
-#    build_vcg( vcg ${PROJECT_BINARY_DIR} )
-#ENDIF (USE_SYSTEM_VCG)
-
-#SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${VCG_INCLUDE_DIR}")
-
-
-# FFTW3 ########################################################################
-IF (USE_FFTW3)
-
-    IF (USE_SYSTEM_FFTW3)
-
-        FIND_LIBRARY(FFTW3_LIBRARIES NAMES fftw3 libfftw3 libfftw3_omp)
-
-    ELSE(USE_SYSTEM_FFTW3)
-
-    IF (UNIX)
-            INCLUDE(BuildFFTW3)
-            build_fftw3( fftw3 ${PROJECT_BINARY_DIR} )
-        ELSE (UNIX)
-            MESSAGE (WARNING "Building FFTW3 on windows automatically is not supported. Either disable the Fast Fourier Transform, or build it by hand.")
-        ENDIF (UNIX)
-
-    ENDIF (USE_SYSTEM_FFTW3)
-
-    IF (FFTW3_LIBRARIES)
-        SET (requiredLibs ${requiredLibs} ${FFTW3_LIBRARIES})
-        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FFTW")
-
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FFTW3_INCLUDE_DIR}")
-        SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${FFTW3_LIBRARY_DIR})
-        SET (requiredLibs "${requiredLibs}" "${FFTW3_LIBRARY}")
-
-    ELSE ()
-        MESSAGE (WARNING "FFTW3 not found, the use of FFT will be disable.")
-    ENDIF ()
-
-ENDIF (USE_FFTW3)
-
-
-# FREETYPE ####################################################################
-IF (USE_FREETYPE)
-
-    IF (USE_SYSTEM_FREETYPE)
-        FIND_PACKAGE(Freetype)
-
-        IF (NOT FREETYPE_FOUND)
-            MESSAGE(WARNING "FreeType not found. Its use will be disable. You can find it on FreeType's website at: https://www.freetype.org/")
-        ENDIF (NOT FREETYPE_FOUND)
-
-    ELSE (USE_SYSTEM_FREETYPE)
-        INCLUDE(BuildFreeType)
-        build_freetype( freetype ${PROJECT_BINARY_DIR} )
-    ENDIF (USE_SYSTEM_FREETYPE)
-
-    IF (FREETYPE_FOUND)
-        SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${FREETYPE_INCLUDE_DIRS}")
-        SET (optionalLibs "${optionalLibs}" "${FREETYPE_LIBRARIES}")
-
-        FIND_PACKAGE(PNG)
-        IF (PNG_FOUND)
-            SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${PNG_INCLUDE_DIRS}")
-            SET(optionalLibs ${optionalLibs} ${PNG_LIBRARIES})
-        ENDIF (PNG_FOUND)
-
-        FIND_PACKAGE(BZip2)
-        IF (BZIP2_FOUND)
-            SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${BZIP2_INCLUDE_DIR}")
-            SET(optionalLibs ${optionalLibs} ${BZIP2_LIBRARIES})
-        ENDIF (BZIP2_FOUND)
-
-        #FIND_PACKAGE(HARFBUZZ)
-        #IF (HARFBUZZ_FOUND)
-        #    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${HARFBUZZ_INCLUDE_DIRS}")
-        #    SET(optionalLibs ${optionalLibs} ${HARFBUZZ_LIBRARIES})
-        #ENDIF (HARFBUZZ_FOUND)
-
-    ELSE (FREETYPE_FOUND)
-        MESSAGE (WARNING "FreeType not found, the use of FreeType will be disable.")
-    ENDIF (FREETYPE_FOUND)
-
-ENDIF (USE_FREETYPE)
-
-
-# GDCM #########################################################################
-IF (USE_GDCM)
-    IF (USE_SYSTEM_GDCM)
-        FIND_PACKAGE( GDCM   REQUIRED )
-    ELSE(USE_SYSTEM_GDCM)
-        INCLUDE(BuildGDCM)
-
-        build_gdcm( gdcm ${PROJECT_BINARY_DIR} )
-    ENDIF (USE_SYSTEM_GDCM)
-ENDIF(USE_GDCM)
-
-IF (GDCM_FOUND)
-    MESSAGE(STATUS "Use GDCM.")
-
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GDCM")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${GDCM_INCLUDE_DIRS}")
-    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${GDCM_LIBRARY_DIR})
-    SET (requiredLibs "${requiredLibs}" "${GDCM_LIBRARIES}")
-ENDIF (GDCM_FOUND)
-
-
-# TIFF #########################################################################
-IF (USE_LIBTIFF)
-	IF (USE_SYSTEM_LIBTIFF)
-		FIND_PACKAGE( TIFF   REQUIRED )
-	ELSE(USE_SYSTEM_LIBTIFF)
-		INCLUDE(BuildLibTIFF)
-		build_libtiff( LibTIFF ${PROJECT_BINARY_DIR} )
-	ENDIF (USE_SYSTEM_LIBTIFF)
-ENDIF (USE_LIBTIFF)
-
-IF (TIFF_FOUND)
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_LIBTIFF" "-DHAS_TIFF")
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${TIFF_INCLUDE_DIRS}")
-    SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} ${TIFF_LIBRARY_DIR})
-    SET (requiredLibs "${requiredLibs}" "${TIFF_LIBRARIES}")
-ENDIF (TIFF_FOUND)
-
-
-# getopt ######################################################################
-IF (WIN32 AND MSVC)
-
-    FIND_PACKAGE(Git)
-
-    IF (GIT_FOUND)
-        INCLUDE (ExternalProject)
-        ExternalProject_Add(getopt
-            PREFIX ${CMAKE_CURRENT_BINARY_DIR}/getopt
-            #DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/getopt
-            GIT_REPOSITORY "https://github.com/skandhurkat/Getopt-for-Visual-Studio.git"
-            CONFIGURE_COMMAND ""
-            UPDATE_COMMAND ""
-            BUILD_COMMAND ""
-            INSTALL_COMMAND ""
-        )
-
-        INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt)
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt")
-
-        # copy libraries into install tree
-        INSTALL (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/getopt/src/getopt
-            DESTINATION ${INSTALL_DIR}/third_party
-            COMPONENT Development)
-
-        SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${INSTALL_DIR}/third_party/getopt")
-
-        SET (USE_EXTERNAL_GETOPT ON)
-        SET (HAS_GETOPT ON)
-    ELSE (GIT_FOUND)
-        SET (HAS_GETOPT OFF)
-        MESSAGE (WARNING "Install Git to download Getopt (it is not available in MS Visual Studio). If you don't (which is fine) command line tools won't be built.")
-    ENDIF (GIT_FOUND)
-ELSE (WIN32 AND MSVC)
-    SET (HAS_GETOPT ON)
-ENDIF (WIN32 AND MSVC)
 
 
 # XCOM Database ################################################################
-
 # XCOM: Photon Cross Sections Database
-
 # http://www.nist.gov/pml/data/xcom/
-
 # http://physics.nist.gov/PhysRefData/Xcom/Text/download.html
-
-IF (USE_SYSTEM_XCOM)
-    find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
-    IF (NOT XCOM_PATH)
-        MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
-    ENDIF (NOT XCOM_PATH)
-
-ELSE(USE_SYSTEM_XCOM)
-    INCLUDE(BuildXCOM)
-    build_xcom( ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_XCOM)
 
 
 # configure a header file to pass some of the CMake settings

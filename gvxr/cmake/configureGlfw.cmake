@@ -44,37 +44,47 @@ ENDIF (WIN32)
 
 # GLFW ########################################################################
 
+# Use system library
 IF (USE_SYSTEM_GLFW)
-    FIND_PACKAGE(glfw3)
+    FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
+
+    IF (GLFW3_LIBRARY)
+        FIND_PACKAGE(glfw3)
+    ENDIF (GLFW3_LIBRARY)
 ENDIF (USE_SYSTEM_GLFW)
 
-IF(glfw3_FOUND)
+# The system library was not found
+# Build GLFW3 instead
+IF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
+    MESSAGE (STATUS "Build GLFW3")
+    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+    INCLUDE(cmake/BuildGlfw)
+    build_glfw( glfw ${PROJECT_BINARY_DIR} )
+    ADD_DEPENDENCIES(gVirtualXRay glfw)
+ENDIF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
+
+
+IF (glfw3_FOUND)
+    MESSAGE(STATUS "Use GLFW3")
 
     LINK_DIRECTORIES(${GLFW3_LIBRARY_DIR})
-#SET(optionalLibs ${optionalLibs} glfw3)
+    #SET(optionalLibs ${optionalLibs} glfw3)
 
-	IF (APPLE)
-  	FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-		FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
-  	FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
+    IF (APPLE)
+        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+        FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+        FIND_LIBRARY(QUARTZ_LIBRARY Quartz)
+        FIND_LIBRARY(CORE_VIDEO_LIBRARY CoreVideo)
 
-    SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
-	    ENDIF(APPLE)
+        SET(optionalLibs ${optionalLibs} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_LIBRARY} ${CORE_VIDEO_LIBRARY})
+    ENDIF(APPLE)
 
-  IF (UNIX)
-    FIND_PACKAGE (X11 REQUIRED)
-		iF (X11_FOUND)
-  		INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-    	SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
-  	ELSE (X11_FOUND)
-    	MESSAGE(FATAL_ERROR "X11 not found.")
-		ENDIF (X11_FOUND)
-  ENDIF(UNIX)
+    IF (UNIX)
+        FIND_PACKAGE (X11 REQUIRED)
+        INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
+        SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+    ENDIF(UNIX)
 
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
-SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
-
-ELSE(glfw3_FOUND)
-    MESSAGE(WARNING "GLFW3 not found.")
+    SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
 ENDIF(glfw3_FOUND)
