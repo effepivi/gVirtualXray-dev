@@ -28,8 +28,16 @@ $ mv download gVirtualXRay-1.1.1-Source.zip
 $ unzip gVirtualXRay-1.1.1-Source.zip
 ```
 
-In OpenSUSE
-sudo zypper in libX11-devel libXi-devel glu-devel swig ruby-devel tcl-devel
+In OpenSUSE 15.1 and 15.2, I use:
+```bash
+$ sudo zypper in libX11-devel \
+                 libXi-devel \
+                 libXcursor-devel \
+                 libXinerama-devel \
+                 libXrandr-devel \
+                 libXxf86vm-devel \
+                 glu-devel swig ruby-devel tcl-devel
+```
 
 3. Create a directory where the binaries will be created and go in this directory. Note that it CANNOT be a sub-directory of the source directory chosen in the previous step.
 ```bash
