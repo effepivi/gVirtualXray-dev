@@ -43,6 +43,9 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.13.0")
 endif()
 
 
+# GLFW ########################################################################
+# GLFW3 is required for testing
+include(${CMAKE_SOURCE_DIR}/gvxr/cmake/configureGlfw.cmake)
 
 
 # Enable unit testing
@@ -68,6 +71,11 @@ check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
 
+#IF (UNIX)
+#    set(THREADS_PREFER_PTHREAD_FLAG ON)
+#    find_package(Threads REQUIRED)
+#    target_link_libraries(my_app PRIVATE Threads::Threads)
+#ENDIF (UNIX)
 
 
 # Valiation_02
