@@ -154,6 +154,7 @@ public:
     typedef enum ComputingModeTag
     {
         OPENGL, ///< Computation using OpenGL
+        VULKAN, ///< Computation using Vulkan
         CUDA,   ///< Computation using CUDA
         OPENCL  ///< Computation using OpenCL
     } ComputingMode;
