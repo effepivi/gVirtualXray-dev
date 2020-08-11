@@ -81,8 +81,15 @@ IF (glfw3_FOUND)
 
     IF (UNIX)
         FIND_PACKAGE (X11 REQUIRED)
+
+        #set(THREADS_PREFER_PTHREAD_FLAG ON)
+        #find_package(Threads REQUIRED)
+
+        #SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
+
         INCLUDE_DIRECTORIES(${X11_INCLUDE_DIRS})
-        SET(optionalLibs dl pthread ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+        #SET(optionalLibs dl ${CMAKE_THREAD_LIBS_INIT} ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
+        SET(optionalLibs dl  ${optionalLibs} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${X11_Xinerama_LIB})
     ENDIF(UNIX)
 
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})

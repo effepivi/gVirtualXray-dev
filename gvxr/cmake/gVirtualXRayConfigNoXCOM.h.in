@@ -53,6 +53,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif
 
+#define GLEW_EGL
 //#include <GL/glew.h>
 
 //#else // HAS_GLEW

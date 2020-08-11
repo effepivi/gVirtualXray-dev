@@ -43,9 +43,6 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL  "3.13.0")
 endif()
 
 
-# GLFW ########################################################################
-# GLFW3 is required for testing
-include(${CMAKE_SOURCE_DIR}/gvxr/cmake/configureGlfw.cmake)
 
 
 # Enable unit testing
@@ -71,11 +68,21 @@ check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
 
-#IF (UNIX)
-#    set(THREADS_PREFER_PTHREAD_FLAG ON)
-#    find_package(Threads REQUIRED)
-#    target_link_libraries(my_app PRIVATE Threads::Threads)
-#ENDIF (UNIX)
+find_library(EGL_LIBRARY EGL)
+find_library(GLESv2_LIBRARY GLESv2)
+
+IF (NOT EGL_LIBRARY)
+    MESSAGE(FATAL_ERROR "EGL is not install, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
+ELSE ()
+    MESSAGE(WARNING "EGL is install in ${EGL_LIBRARY}")
+    ADD_DEFINITIONS(-DGLEW_EGL)
+ENDIF  ()
+
+IF (NOT GLESv2_LIBRARY)
+    MESSAGE(FATAL_ERROR "GLESv2 is not install, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
+ELSE ()
+    MESSAGE(WARNING "GLESv2 is install in ${GLESv2_LIBRARY}")
+ENDIF  ()
 
 
 # Valiation_02
@@ -84,74 +91,72 @@ add_executable(TestDensity                     TestDensity.cxx)
 # Validation_01
 add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 
-IF (glfw3_FOUND)
-    add_executable(TestCubeWithIndex    TestCubeWithIndex)
-    add_executable(TestCubeWithoutIndex TestCubeWithoutIndex)
+add_executable(TestCubeWithIndex    TestCubeWithIndex.cxx createGLContext.cxx)
+add_executable(TestCubeWithoutIndex TestCubeWithoutIndex.cxx createGLContext.cxx)
 
-    # Validation_??
-    add_executable(TestLBuffer TestLBuffer.cxx)
+# Validation_??
+add_executable(TestLBuffer TestLBuffer.cxx createGLContext.cxx)
 
-    # Validation_03
-    add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
+# Validation_03
+add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx createGLContext.cxx)
 
-    # Validation_05
-    add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
+# Validation_05
+add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx createGLContext.cxx)
 
-    # Validation_08
-    add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
+# Validation_08
+add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx createGLContext.cxx)
 
-    # Validation_??
-    #add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
+# Validation_??
+#add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx createGLContext.cxx)
 
-    # Validation_??
-    #add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
+# Validation_??
+#add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx createGLContext.cxx)
 
-    # Validation_06
-    add_executable(TestPointSource                 TestPointSource.cxx)
+# Validation_06
+add_executable(TestPointSource                 TestPointSource.cxx createGLContext.cxx)
 
-    # Validation_07
-    add_executable(TestCubeSource                  TestCubeSource.cxx)
+# Validation_07
+add_executable(TestCubeSource                  TestCubeSource.cxx createGLContext.cxx)
 
-    # Validation_09
-    add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
+# Validation_09
+add_executable(TestUncenteredSource            TestUncenteredSource.cxx createGLContext.cxx)
 
-    # Validation_??
-    #add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
+# Validation_??
+#add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx createGLContext.cxx)
 
-    # Validation_04
-    add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
+# Validation_04
+add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx createGLContext.cxx)
 
-    add_executable(TestOrtho                        TestOrtho.cxx)
+add_executable(TestOrtho                        TestOrtho.cxx createGLContext.cxx)
 
-    IF (FFTW3_LIBRARIES)
-	    # Validation_04
-        add_executable(TestFBP                     TestFBP.cxx)
-    ENDIF()
+IF (FFTW3_LIBRARIES)
+  # Validation_04
+    add_executable(TestFBP                     TestFBP.cxx createGLContext.cxx)
 ENDIF()
 
 
 list(APPEND GTEST_LIBRARIES gtest gtest_main)
 separate_arguments(GTEST_LIBRARIES)
 
-target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} "${GTEST_LIBRARIES}")
+target_link_libraries(TestDensity                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 target_link_libraries(TestMassAttenuationCoefficients ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
 
-target_link_libraries(TestCubeWithoutIndex            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestLBuffer                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-#target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-#target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
-target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
+target_link_libraries(TestCubeWithoutIndex            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestLBuffer                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+#target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestCubeSource                  ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestUncenteredSource            ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+#target_link_libraries(TestPhantomMonoChromatic        ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestRadonTransformFromMesh      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
+target_link_libraries(TestOrtho                      ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
 
 IF (FFTW3_LIBRARIES)
-    target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES})
+    target_link_libraries(TestFBP                     ${gVirtualXRay_LIBRARY} ${optionalLibs} ${requiredLibs} ${GTEST_LIBRARIES} ${EGL_LIBRARY} ${GLESv2_LIBRARY})
 ENDIF()
 
 # Add dependencies

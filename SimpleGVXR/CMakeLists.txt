@@ -62,6 +62,13 @@ set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
 
 
+# GLFW ########################################################################
+# GLFW3 is required for either testing, SimpleGVXR or Wrappers
+IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
+    include(cmake/configureGlfw.cmake)
+ENDIF ()
+
+
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -78,13 +85,9 @@ if (BUILD_TESTING)
 endif()
 
 
+
 # for superbuild ###############################################################
 SET (SimpleGVXR_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-IF (NOT USE_SYSTEM_gVirtualXRay)
-		SET (USE_SUPERBUILD ON)
-		INCLUDE(ExternalProject)
-ENDIF (NOT USE_SYSTEM_gVirtualXRay)
 
 
 ################################################################################
@@ -104,9 +107,15 @@ ENDIF(BUILD_DOCUMENTATION)
 
 
 # Find gVirtualXRay ############################################################
-FIND_PACKAGE(gVirtualXRay REQUIRED)
-INCLUDE(${gVirtualXRay_USE_FILE})
+IF (NOT USE_SUPERBUILD)
+    IF (NOT USE_SYSTEM_gVirtualXRay)
+    		SET (USE_SUPERBUILD ON)
+    		INCLUDE(ExternalProject)
+    ENDIF (NOT USE_SYSTEM_gVirtualXRay)
 
+    FIND_PACKAGE(gVirtualXRay REQUIRED)
+    INCLUDE(${gVirtualXRay_USE_FILE})
+ENDIF ()
 
 
 

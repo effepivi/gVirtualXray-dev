@@ -116,10 +116,21 @@ void initialiseGLEW()
 #ifdef HAS_GLEW
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
-	if (GLEW_OK != err)
+	if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)
 	{
 		std::stringstream error_message;
-		error_message << "ERROR: cannot initialise GLEW:\t" << glewGetErrorString(err);
+		error_message << "ERROR: cannot initialise GLEW:\t";
+
+		if (err == GLEW_ERROR_NO_GL_VERSION)
+			error_message << "Missing GL version";
+		else if (err == GLEW_ERROR_GL_VERSION_10_ONLY)
+			error_message << "Need at least OpenGL 1.1";
+		else if (err == GLEW_ERROR_GLX_VERSION_11_ONLY)
+			error_message << "Need at least GLX 1.2";
+		else if (err == GLEW_ERROR_NO_GLX_DISPLAY)
+			error_message << "Need GLX display for GLX support";
+		else
+			error_message << glewGetErrorString(err);
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}

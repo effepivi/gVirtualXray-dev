@@ -82,9 +82,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#define GLFW_INCLUDE_GLCOREARB 1
-#include <GLFW/glfw3.h>
-
 #ifndef __Types_h
 #include "gVirtualXRay/Types.h"
 #endif
@@ -137,6 +134,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
+#ifndef __createGLContext_h
+#include "createGLContext.h"
+#endif
+
 
 //******************************************************************************
 //  Name space
@@ -153,9 +154,8 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-GLsizei g_main_window_width(1280 / 2.0);
-GLsizei g_main_window_height(800 / 2.0);
-GLFWwindow* g_p_main_window_id(0);
+EGLContext g_context;
+EGLDisplay g_display;
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
@@ -205,37 +205,11 @@ TEST(TestCubeSource, TestCubeSource)
         g_number_of_pixels.setY(g_number_of_pixels.getY() + 1);
         }
 
-    // Set an error callback
-    glfwSetErrorCallback(errorCallback);
+    // Register the exit callback
+    atexit(quit);
 
-    // Initialize GLFW
-    ASSERT_EQ(glfwInit(), GLFW_TRUE) << "Cannot initialise GLFW.";
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, false);
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    g_p_main_window_id = glfwCreateWindow(g_main_window_width,
-        g_main_window_height,
-        "gVirtualXRay -- Unit testing: Cube source.",
-        0,
-        0);
-
-    // Window cannot be created
-    if (!g_p_main_window_id)
-        {
-        glfwTerminate();
-        }
-    ASSERT_TRUE(g_p_main_window_id) << "Cannot create a GLFW windowed mode window and its OpenGL context.";
-
-    // Make the window's context current
-    glfwMakeContextCurrent(g_p_main_window_id);
+    // Initialize EGL
+    createGLContext(g_context, g_display);
 
     // Initialise GLEW
     initialiseGLEW();
@@ -255,11 +229,6 @@ TEST(TestCubeSource, TestCubeSource)
     loadSTLFile();
     g_xray_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
-
-    // Set the projection matrix
-    GLint width(0);
-    GLint height(0);
-    glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 
     // Output the detector properties
     std::cout << "Detector size: " << g_number_of_pixels.getX() << "x" << g_number_of_pixels.getY() << " pixels" << std::endl;
@@ -289,10 +258,7 @@ TEST(TestCubeSource, TestCubeSource)
     // Save the projection set
     g_xray_renderer.printProjectionSet("TestCubeSource_single_projection.mha");
 
-    // Close the window
-    glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
-
-    // Close the window and shut GLFW
+    // Close the window and shut EGL
     quit();
 
     // Load reference image (computed using GEANT4/Gate)
@@ -309,24 +275,11 @@ TEST(TestCubeSource, TestCubeSource)
 }
 
 
-//----------------------------------------------------
-void errorCallback(int error, const char* description)
-//----------------------------------------------------
-{
-    std::cerr << "GLFW error: " << description << std::endl;
-}
-
-
 //---------
 void quit()
 //---------
 {
-    if (g_p_main_window_id)
-        {
-        glfwDestroyWindow(g_p_main_window_id);
-        g_p_main_window_id = 0;
-        //glfwTerminate();
-        }
+    destroyGLContext(g_context, g_display);
 }
 
 
