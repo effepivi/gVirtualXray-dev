@@ -115,6 +115,24 @@ IF (NOT USE_SUPERBUILD)
 
     FIND_PACKAGE(gVirtualXRay REQUIRED)
     INCLUDE(${gVirtualXRay_USE_FILE})
+ELSE ()
+
+    # C++ version
+    set (CMAKE_CXX_STANDARD "${gVirtualXRay_CMAKE_CXX_STANDARD}")
+
+    # C++ flags
+    SET(CMAKE_C_FLAGS   "${gVirtualXRay_CMAKE_C_FLAGS}")
+    SET(CMAKE_CXX_FLAGS "${gVirtualXRay_CMAKE_CXX_FLAGS}")
+
+    # Add include directories needed to use gVirtualXRay
+    include_directories(${gVirtualXRay_INCLUDE_DIR})
+    include_directories(${gVirtualXRay_INCLUDE_DIRS})
+
+    # Add link directories needed to use gVirtualXRay
+    link_directories(${gVirtualXRay_LIBRARY_DIRS})
+
+    ADD_DEFINITIONS(${gVirtualXRay_ADD_DEFINITIONS})
+
 ENDIF ()
 
 
@@ -180,6 +198,19 @@ ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
 SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
 
 
+# OpenMP ######################################################################
+FIND_PACKAGE(OpenMP)
+
+IF (OPENMP_FOUND)
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+
+    SET (optionalLibs ${optionalLibs} OpenMP::OpenMP_CXX)
+ENDIF (OPENMP_FOUND)
+
+
 IF (UNIX)
 	IF (APPLE)
 
@@ -201,7 +232,12 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
                               debug     ${PROJECT_BINARY_DIR}/Debug/SimpleGVXR.lib
     )
 ENDIF ()
-SET (SimpleGVXR_LIBRARIES ${optionalLibs} ${SimpleGVXR_LIBRARY} ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
+SET (SimpleGVXR_LIBRARIES
+    ${optionalLibs}
+    ${SimpleGVXR_LIBRARY}
+    ${gVirtualXRay_LIBRARY}
+    ${gVirtualXRay_LIBRARIES}
+    )
 
 
 # Set up public headers for SimpleGVXR #########################################

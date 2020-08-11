@@ -61,7 +61,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
 
 
 # C++ version ##################################################################
-set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
+set (gVirtualXRay_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD} PARENT_SCOPE)
 
 
 # Enable all compiler warnings #################################################
@@ -605,25 +605,33 @@ ENDIF (USE_GDCM)
 
 # Installation variables #######################################################
 if(NOT gVirtualXRay_INSTALL_RUNTIME_DIR)
-  set(gVirtualXRay_INSTALL_RUNTIME_DIR bin)
+  set(gVirtualXRay_INSTALL_RUNTIME_DIR bin PARENT_SCOPE)
 endif()
 if(NOT gVirtualXRay_INSTALL_LIBRARY_DIR)
-    set(gVirtualXRay_INSTALL_LIBRARY_DIR lib)
+    set(gVirtualXRay_INSTALL_LIBRARY_DIR lib PARENT_SCOPE)
 endif()
 if(NOT gVirtualXRay_INSTALL_ARCHIVE_DIR)
-    set(gVirtualXRay_INSTALL_ARCHIVE_DIR lib)
+    set(gVirtualXRay_INSTALL_ARCHIVE_DIR lib PARENT_SCOPE)
 endif()
 if(NOT gVirtualXRay_INSTALL_INCLUDE_DIR)
-    set(gVirtualXRay_INSTALL_INCLUDE_DIR include/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
+    set(gVirtualXRay_INSTALL_INCLUDE_DIR
+        include/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}
+        PARENT_SCOPE)
 endif()
 if(NOT gVirtualXRay_INSTALL_DATA_DIR)
-    set(gVirtualXRay_INSTALL_DATA_DIR share/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
+    set(gVirtualXRay_INSTALL_DATA_DIR
+        share/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}
+        PARENT_SCOPE)
 endif()
 if(NOT gVirtualXRay_INSTALL_DOC_DIR)
-    set(gVirtualXRay_INSTALL_DOC_DIR share/doc/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
+    set(gVirtualXRay_INSTALL_DOC_DIR
+        share/doc/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}
+        PARENT_SCOPE)
 endif()
 if(NOT gVirtualXRay_INSTALL_PACKAGE_DIR)
-    set(gVirtualXRay_INSTALL_PACKAGE_DIR "lib/cmake/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
+    set(gVirtualXRay_INSTALL_PACKAGE_DIR
+        "lib/cmake/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}"
+        PARENT_SCOPE)
 endif()
 
 
@@ -634,7 +642,9 @@ INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTA
 
 
 # Generate gVirtualXRayConfig.cmake ############################################
-set(gVirtualXRay_USE_FILE "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/UsegVirtualXRay.cmake")
+set(gVirtualXRay_USE_FILE
+    "${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/UsegVirtualXRay.cmake"
+    PARENT_SCOPE)
 configure_file(cmake/gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
 install(FILES
@@ -780,10 +790,12 @@ IF (NOT CPack_CMake_INCLUDED)
     INCLUDE(CPack)
 ENDIF (NOT CPack_CMake_INCLUDED)
 
-SET (gVirtualXRay_LIBRARY ${gVirtualXRay_LIBRARY})
+SET (gVirtualXRay_LIBRARY ${gVirtualXRay_LIBRARY} PARENT_SCOPE)
 
-SET (gVirtualXRay_LIBRARIES ${gVirtualXRay_LIBRARIES})
+SET (gVirtualXRay_LIBRARIES ${gVirtualXRay_LIBRARIES} PARENT_SCOPE)
 
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS})
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} PARENT_SCOPE)
 
-SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS})
+SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_LIBRARY_DIRS} PARENT_SCOPE)
+
+SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)
