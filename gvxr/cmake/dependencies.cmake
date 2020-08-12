@@ -293,7 +293,7 @@ IF (USE_FREETYPE)
     ENDIF (NOT USE_SYSTEM_FREETYPE OR NOT FREETYPE_FOUND)
 ENDIF (USE_FREETYPE)
 
-IF (FREETYPE_FOUND)
+IF (USE_FREETYPE AND FREETYPE_FOUND)
     MESSAGE (STATUS "Use Freetype")
 
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_FREETYPE")
@@ -318,9 +318,9 @@ IF (FREETYPE_FOUND)
     #    SET(optionalLibs ${optionalLibs} ${HARFBUZZ_LIBRARIES})
     #ENDIF (HARFBUZZ_FOUND)
 
-ELSE (FREETYPE_FOUND)
+ELSE (USE_FREETYPE AND FREETYPE_FOUND)
     MESSAGE (STATUS "Freetype not found, the use of Freetype will be disable.")
-ENDIF (FREETYPE_FOUND)
+ENDIF (USE_FREETYPE AND FREETYPE_FOUND)
 
 
 # getopt ######################################################################
