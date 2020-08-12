@@ -1506,7 +1506,11 @@ template<typename T> void Image<T>::loadUsingITK(const char* aFileName)
     m_spacing[2] = spacing[2];
 
     // Release the memory if needed
-    if (m_p_image) delete [] m_p_image;
+    if (m_p_image)
+    {
+    	delete [] m_p_image;
+    	m_p_image = 0;
+	}
 
     // Allocate the memory
     int number_of_pixels(m_width * m_height * m_number_of_slices);
@@ -1578,7 +1582,11 @@ template<typename T> void Image<T>::loadSeries(const char* aPattern,
     m_spacing[2] = spacing[2];
 
     // Release the memory if needed
-    if (m_p_image) delete [] m_p_image;
+    if (m_p_image)
+    {
+    	delete [] m_p_image;
+    	m_p_image = 0;
+	}
 
     // Allocate the memory
     int number_of_pixels(m_width * m_height * m_number_of_slices);
@@ -1645,7 +1653,11 @@ template<typename T> void Image<T>::loadDicomSeries(const char* aDirectory)
     m_spacing[2] = spacing[2];
 
     // Release the memory if needed
-    if (m_p_image) delete [] m_p_image;
+    if (m_p_image)
+    {
+    	delete [] m_p_image;
+    	m_p_image = 0;
+	}
 
     // Allocate the memory
     int number_of_pixels(m_width * m_height * m_number_of_slices);
@@ -2273,6 +2285,7 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
         if( !writer.Write() )
             {
             delete [] p_temp;
+            p_temp = 0;
 
             std::string error_message("Could not write the DICOM file (");
             error_message += aFileName;
@@ -2280,6 +2293,7 @@ template<typename T> void Image<T>::saveDCM(const char* aFileName,
             throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message);
             }
         delete [] p_temp;
+        p_temp = 0;
     }
 
 #else
@@ -4719,7 +4733,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     {
         // release the memory
         delete [] p_temp_buffer;
-
+		
         std::string error_message("The file size of \"");
         error_message += aFileName;
         error_message += "\" is too small to contained the specified raw data.";
@@ -4784,7 +4798,8 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
 
         // Release the compressed data
         delete [] p_temp_buffer;
-
+		p_temp_buffer = 0;
+		
         // Keep the decompressed data
         p_temp_buffer = p_dest;
     }*/
