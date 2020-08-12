@@ -128,9 +128,9 @@ void getDisplay(eglData& aWholeContextData)
 		}
 
 #ifdef EGL_MESA_platform_gbm
-		aWholeContextData.egl_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA, aWholeContextData.p_device, NULL);
+		aWholeContextData.egl_display = eglGetPlatformDisplay(EGL_PLATFORM_GBM_MESA, aWholeContextData.p_device, NULL);
 		error_code = eglGetError();
-		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetPlatformDisplayEXT.";
+		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetPlatformDisplay.";
 #else // EGL_MESA_platform_gbm
 		aWholeContextData.egl_display = eglGetDisplay(aWholeContextData.p_device);
 		error_code = eglGetError();
@@ -160,16 +160,16 @@ void getConfig(eglData& aWholeContextData)
     EGLint error_code;
     EGLint num_configs;
 
-#ifdef HAS_GBM
     EGLint egl_config_attribs[] = {
         EGL_BUFFER_SIZE,        32,
         EGL_DEPTH_SIZE,         EGL_DONT_CARE,
         EGL_STENCIL_SIZE,       EGL_DONT_CARE,
-        EGL_RENDERABLE_TYPE,    EGL_OPENGL_ES2_BIT,
-        EGL_SURFACE_TYPE,       EGL_WINDOW_BIT,
+        EGL_RENDERABLE_TYPE,    EGL_OPENGL_BIT,
+        EGL_SURFACE_TYPE,       EGL_PIXMAP_BIT,
         EGL_NONE,
     };
 
+#ifdef HAS_GBM
     eglGetConfigs(aWholeContextData.egl_display, NULL, 0, &num_configs);
     error_code = eglGetError();
     //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigs.";
@@ -221,7 +221,7 @@ void getSurface(eglData& aWholeContextData)
 		}
 
 #ifdef EGL_MESA_platform_gbm
-		aWholeContextData.egl_surface = eglCreatePlatformWindowSurfaceEXT(aWholeContextData.egl_display,
+		aWholeContextData.egl_surface = eglCreatePlatformWindowSurface(aWholeContextData.egl_display,
 													   aWholeContextData.egl_config,
 													   aWholeContextData.p_surface,
 													   NULL);
@@ -266,16 +266,11 @@ void createGLContext(eglData& aWholeContextData)
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglBindAPI.";
 
     EGLint ctxattr[] = {
-    EGL_CONTEXT_MAJOR_VERSION, 2,
-    EGL_CONTEXT_MINOR_VERSION, 1,
-    //EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR,
-    //EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
-    EGL_NONE,
-    EGL_NONE,
-    EGL_NONE,
+    		EGL_CONTEXT_MAJOR_VERSION, 2,
+            EGL_CONTEXT_MINOR_VERSION, 0
     };
 
-    aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, ctxattr);
+    aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, 0);
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglCreateContext.";
 
