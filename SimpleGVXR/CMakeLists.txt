@@ -152,7 +152,7 @@ CreateHeaderFiles("cmake" "BinaryWrapper" "${RESOURCES_SOURCES}")
 
 # Headers of the project #######################################################
 SET (SimpleGVXR_BASE_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
-SET (SimpleGVXR_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR})
+SET (SimpleGVXR_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 SET (SimpleGVXR_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
