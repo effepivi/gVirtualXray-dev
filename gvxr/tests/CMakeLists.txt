@@ -86,7 +86,7 @@ ELSE ()
 ENDIF  ()
 
 IF (NOT GBM_LIBRARY)
-    MESSAGE(FATAL_ERROR "GBM is not install, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
+    MESSAGE(WARNING "GBM is not install, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
 ELSE ()
     ADD_DEFINITIONS(-DHAS_GBM)
     MESSAGE(WARNING "GBM is install in ${GBM_LIBRARY}")
