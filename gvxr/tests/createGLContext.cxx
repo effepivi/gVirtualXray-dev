@@ -71,7 +71,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <stdlib.h> // For malloc/free
 
+#ifdef HAS_GBM
 #include <gbm.h>
+#endif
 
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
@@ -92,6 +94,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void checkExtensions(void)
 {
+#ifdef HAS_GBM
 #ifdef EGL_MESA_platform_gbm
     const char* client_extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
 
@@ -102,6 +105,7 @@ void checkExtensions(void)
     if (!strstr(client_extensions, "EGL_MESA_platform_gbm")) {
         abort();
     }
+#endif
 #endif
 }
 
@@ -114,13 +118,15 @@ void getDisplay(eglData& aWholeContextData)
 
     // Open the device
     int fd = open("/dev/dri/card0", O_RDWR | FD_CLOEXEC);
-    if (fd >= 0) {
+    if (fd >= 0)
+    {
 		aWholeContextData.p_device = gbm_create_device(fd);
-		if (!aWholeContextData.p_device) {
+		if (!aWholeContextData.p_device)
+        {
 			abort();
 		}
 
-
+#ifdef HAS_GBM
 #ifdef EGL_MESA_platform_gbm
 		aWholeContextData.egl_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA, aWholeContextData.p_device, NULL);
 		error_code = eglGetError();
@@ -132,6 +138,7 @@ void getDisplay(eglData& aWholeContextData)
 #endif
     }
     else
+#endif
     {
 		aWholeContextData.egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 		error_code = eglGetError();
@@ -152,6 +159,7 @@ void getConfig(eglData& aWholeContextData)
 {
     EGLint error_code;
 
+#ifdef HAS_GBM
     EGLint egl_config_attribs[] = {
         EGL_BUFFER_SIZE,        32,
         EGL_DEPTH_SIZE,         EGL_DONT_CARE,
@@ -191,6 +199,7 @@ void getConfig(eglData& aWholeContextData)
             return;
         }
     }
+#endif
 
     // Failed to find a config with matching GBM format.
     eglChooseConfig(aWholeContextData.egl_display, nullptr, &aWholeContextData.egl_config, 1, &num_configs);
@@ -200,6 +209,7 @@ void getConfig(eglData& aWholeContextData)
 
 void getSurface(eglData& aWholeContextData)
 {
+#ifdef HAS_GBM
     if (aWholeContextData.p_device)
     {
 		aWholeContextData.p_surface = gbm_surface_create(aWholeContextData.p_device,
@@ -215,14 +225,15 @@ void getSurface(eglData& aWholeContextData)
 													   aWholeContextData.egl_config,
 													   aWholeContextData.p_surface,
 													   NULL);
-#else
+#else // EGL_MESA_platform_gbm
 		aWholeContextData.egl_surface = eglCreateWindowSurface(aWholeContextData.egl_display,
 											aWholeContextData.egl_config,
 											aWholeContextData.p_surface,
 											NULL);
-#endif
+#endif // EGL_MESA_platform_gbm
     }
     else
+#endif // HAS_GBM
     {
     	aWholeContextData.egl_surface = eglCreatePbufferSurface(aWholeContextData.egl_display, aWholeContextData.egl_config, nullptr);
         //assertEGLError("eglCreatePbufferSurface");
@@ -287,7 +298,7 @@ void destroyGLContext(eglData& aWholeContextData)
 		{
 			std::cerr << "Error running eglTerminate" << std::endl;
 		}
-	
+
 		error_code = eglGetError();
 		if (error_code == EGL_BAD_DISPLAY)
 		{
@@ -296,6 +307,6 @@ void destroyGLContext(eglData& aWholeContextData)
 
 	    aWholeContextData.ready = false;
     }
-    
+
     //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglTerminate.";
 }

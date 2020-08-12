@@ -69,14 +69,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <EGL/egl.h>
-#include <gbm.h>
+
+#ifdef HAS_GBM
+class gbm_device;
+class gbm_surface;
+#endif
 
 
 struct eglData {
     bool ready;
-    
+
+#ifdef HAS_GBM
     gbm_device* p_device;
     gbm_surface* p_surface;
+#endif
 
     EGLDisplay egl_display;
     EGLConfig egl_config;
