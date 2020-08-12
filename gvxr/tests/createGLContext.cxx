@@ -158,6 +158,7 @@ void getDisplay(eglData& aWholeContextData)
 void getConfig(eglData& aWholeContextData)
 {
     EGLint error_code;
+    EGLint num_configs;
 
 #ifdef HAS_GBM
     EGLint egl_config_attribs[] = {
@@ -169,7 +170,6 @@ void getConfig(eglData& aWholeContextData)
         EGL_NONE,
     };
 
-    EGLint num_configs;
     eglGetConfigs(aWholeContextData.egl_display, NULL, 0, &num_configs);
     error_code = eglGetError();
     //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigs.";
