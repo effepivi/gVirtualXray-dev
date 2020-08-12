@@ -74,7 +74,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gtest/gtest.h"
 
 #ifdef HAS_GLEW
-#define GLEW_EGL
 #include <GL/glew.h>
 #endif
 
