@@ -14,8 +14,8 @@ ENDIF ()
 SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
-  URL  "https://sourceforge.net/projects/glew/files/glew/snapshots/glew-20200115.tgz/download"
-  URL_MD5 "ffaca6d1536a9eb36b9c00f29c11065a"
+  URL  "https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.tgz/download"
+  URL_MD5 "b2ab12331033ddfaa50dc39345343980"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
