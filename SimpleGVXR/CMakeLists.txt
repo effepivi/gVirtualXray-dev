@@ -132,22 +132,7 @@ ELSE ()
     link_directories(${gVirtualXRay_LIBRARY_DIRS})
 
     ADD_DEFINITIONS(${gVirtualXRay_ADD_DEFINITIONS})
-
 ENDIF ()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Create the RESOURCES #########################################################
@@ -192,6 +177,11 @@ add_library(SimpleGVXR
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
 
 ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
+
+IF (USE_SUPERBUILD)
+    ADD_DEPENDENCIES(SimpleGVXR   gVirtualXRay)
+ENDIF ()
+
 
 
 
