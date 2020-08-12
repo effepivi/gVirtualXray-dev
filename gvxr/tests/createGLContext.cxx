@@ -265,14 +265,42 @@ void createGLContext(eglData& aWholeContextData)
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglBindAPI.";
 
-    EGLint ctxattr[] = {
-    		EGL_CONTEXT_MAJOR_VERSION, 2,
-            EGL_CONTEXT_MINOR_VERSION, 0
+    EGLint opengl_major_version [] = {
+        4, 3, 0, 2, 2
     };
 
-    aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, 0);
-    error_code = eglGetError();
-    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglCreateContext.";
+    EGLint opengl_minor_version [] = {
+        5, 1, 0, 2, 1
+    };
+
+    bool context_created = false;
+    for (int i = 0; i < sizeof(opengl_major_version) / sizeof(EGLint); ++i)
+    {
+        if (!context_created)
+        {
+            EGLint ctxattr[] = {
+                EGL_CONTEXT_MAJOR_VERSION, opengl_major_version[i],
+                EGL_CONTEXT_MINOR_VERSION, opengl_minor_version[i],
+                EGL_NONE
+            };
+
+            aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, ctxattr);
+            error_code = eglGetError();
+
+            if (error_code == EGL_SUCCESS)
+            {
+                std::cout << "Create OpenGL " << opengl_major_version[i] << "." << opengl_minor_version[i] << " context" << std::endl;
+                context_created = true;
+            }
+        }
+    }
+
+    if (!context_created)
+    {
+        aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, nullptr);
+        error_code = eglGetError();
+        ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglCreateContext.";
+    }
 
     //surface = eglCreatePbufferSurface(display, config, nullptr);
     //assertEGLError("eglCreatePbufferSurface");
