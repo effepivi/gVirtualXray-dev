@@ -22,6 +22,10 @@ set_property(
 
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PERL_LIBRARY})
 
+IF (USE_SUPERBUILD)
+    ADD_DEPENDENCIES(${module} SimpleGVXR)
+ENDIF ()
+
 configure_file(test.pl.in ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.pl)
 FILE(COPY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/test.pl
 		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}

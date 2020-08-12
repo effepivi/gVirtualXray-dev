@@ -24,6 +24,10 @@ set_property(
 
 swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${JNI_LIBRARIES})
 
+IF (USE_SUPERBUILD)
+    ADD_DEPENDENCIES(${module} SimpleGVXR)
+ENDIF ()
+
 configure_file(test.java.in ${CMAKE_CURRENT_BINARY_DIR}/test.java)
 FILE(COPY ../welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY runJavaTest.sh
