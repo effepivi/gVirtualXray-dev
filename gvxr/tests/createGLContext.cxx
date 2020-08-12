@@ -116,6 +116,7 @@ void getDisplay(eglData& aWholeContextData)
 {
     EGLint error_code;
 
+#ifdef HAS_GBM
     // Open the device
     int fd = open("/dev/dri/card0", O_RDWR | FD_CLOEXEC);
     if (fd >= 0)
@@ -126,19 +127,18 @@ void getDisplay(eglData& aWholeContextData)
 			abort();
 		}
 
-#ifdef HAS_GBM
 #ifdef EGL_MESA_platform_gbm
 		aWholeContextData.egl_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA, aWholeContextData.p_device, NULL);
 		error_code = eglGetError();
 		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetPlatformDisplayEXT.";
-#else
+#else // EGL_MESA_platform_gbm
 		aWholeContextData.egl_display = eglGetDisplay(aWholeContextData.p_device);
 		error_code = eglGetError();
 		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetDisplay.";
-#endif
+#endif // EGL_MESA_platform_gbm
     }
     else
-#endif
+#endif // HAS_GBM
     {
 		aWholeContextData.egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 		error_code = eglGetError();
@@ -265,7 +265,17 @@ void createGLContext(eglData& aWholeContextData)
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglBindAPI.";
 
-    aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, NULL);
+    EGLint ctxattr[] = {
+    EGL_CONTEXT_MAJOR_VERSION, 2,
+    EGL_CONTEXT_MINOR_VERSION, 1,
+    //EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR,
+    //EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
+    EGL_NONE,
+    EGL_NONE,
+    EGL_NONE,
+    };
+
+    aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, ctxattr);
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglCreateContext.";
 
