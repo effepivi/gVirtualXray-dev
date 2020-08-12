@@ -154,8 +154,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-EGLContext g_context;
-EGLDisplay g_display;
+eglData g_egl_context;
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
@@ -208,7 +207,7 @@ TEST(TestUncenteredSource, TestUncenteredSource)
     atexit(quit);
 
     // Initialize EGL
-    createGLContext(g_context, g_display);
+    createGLContext(g_egl_context);
 
 
     // Initialise GLEW
@@ -279,7 +278,7 @@ TEST(TestUncenteredSource, TestUncenteredSource)
 void quit()
 //---------
 {
-    destroyGLContext(g_context, g_display);
+    destroyGLContext(g_egl_context);
 }
 
 

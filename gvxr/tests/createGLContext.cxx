@@ -63,6 +63,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+
+#include <iostream>
+
+
+#include <fcntl.h> // For O_RDWR
+#include <unistd.h>
+#include <stdlib.h> // For malloc/free
+
+#include <gbm.h>
+
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
 #include <GL/glext.h>
@@ -78,92 +88,214 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+
+
+void checkExtensions(void)
+{
+#ifdef EGL_MESA_platform_gbm
+    const char* client_extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
+
+    if (!client_extensions) {
+        // EGL_EXT_client_extensions is unsupported.
+        abort();
+    }
+    if (!strstr(client_extensions, "EGL_MESA_platform_gbm")) {
+        abort();
+    }
+#endif
+}
+
+
+//-----------------------------------------
+void getDisplay(eglData& aWholeContextData)
+//-----------------------------------------
+{
+    EGLint error_code;
+
+    // Open the device
+    int fd = open("/dev/dri/card0", O_RDWR | FD_CLOEXEC);
+    if (fd >= 0) {
+		aWholeContextData.p_device = gbm_create_device(fd);
+		if (!aWholeContextData.p_device) {
+			abort();
+		}
+
+
+#ifdef EGL_MESA_platform_gbm
+		aWholeContextData.egl_display = eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA, aWholeContextData.p_device, NULL);
+		error_code = eglGetError();
+		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetPlatformDisplayEXT.";
+#else
+		aWholeContextData.egl_display = eglGetDisplay(aWholeContextData.p_device);
+		error_code = eglGetError();
+		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetDisplay.";
+#endif
+    }
+    else
+    {
+		aWholeContextData.egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+		error_code = eglGetError();
+		ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetDisplay.";
+    }
+
+    if (aWholeContextData.egl_display == EGL_NO_DISPLAY) {
+        abort();
+    }
+
+    EGLint major, minor;
+    eglInitialize(aWholeContextData.egl_display, &major, &minor);
+    error_code = eglGetError();
+    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglInitialize.";
+}
+
+void getConfig(eglData& aWholeContextData)
+{
+    EGLint error_code;
+
+    EGLint egl_config_attribs[] = {
+        EGL_BUFFER_SIZE,        32,
+        EGL_DEPTH_SIZE,         EGL_DONT_CARE,
+        EGL_STENCIL_SIZE,       EGL_DONT_CARE,
+        EGL_RENDERABLE_TYPE,    EGL_OPENGL_ES2_BIT,
+        EGL_SURFACE_TYPE,       EGL_WINDOW_BIT,
+        EGL_NONE,
+    };
+
+    EGLint num_configs;
+    eglGetConfigs(aWholeContextData.egl_display, NULL, 0, &num_configs);
+    error_code = eglGetError();
+    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigs.";
+
+    EGLConfig *configs = (EGLConfig *) malloc(num_configs * sizeof(EGLConfig));
+    eglChooseConfig(aWholeContextData.egl_display, egl_config_attribs,
+                         configs, num_configs, &num_configs);
+    error_code = eglGetError();
+    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
+
+    if (num_configs == 0) {
+        abort();
+    }
+
+    // Find a config whose native visual ID is the desired GBM format.
+    for (int i = 0; i < num_configs; ++i) {
+        EGLint gbm_format;
+
+        eglGetConfigAttrib(aWholeContextData.egl_display, configs[i],
+                                EGL_NATIVE_VISUAL_ID, &gbm_format);
+        error_code = eglGetError();
+        //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigAttrib.";
+
+        if (gbm_format == GBM_FORMAT_XRGB8888) {
+            aWholeContextData.egl_config = configs[i];
+            free(configs);
+            return;
+        }
+    }
+
+    // Failed to find a config with matching GBM format.
+    eglChooseConfig(aWholeContextData.egl_display, nullptr, &aWholeContextData.egl_config, 1, &num_configs);
+    error_code = eglGetError();
+    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
+}
+
+void getSurface(eglData& aWholeContextData)
+{
+    if (aWholeContextData.p_device)
+    {
+		aWholeContextData.p_surface = gbm_surface_create(aWholeContextData.p_device,
+										256, 256,
+										GBM_FORMAT_XRGB8888,
+										GBM_BO_USE_RENDERING);
+		if (!aWholeContextData.p_surface) {
+			abort();
+		}
+
+#ifdef EGL_MESA_platform_gbm
+		aWholeContextData.egl_surface = eglCreatePlatformWindowSurfaceEXT(aWholeContextData.egl_display,
+													   aWholeContextData.egl_config,
+													   aWholeContextData.p_surface,
+													   NULL);
+#else
+		aWholeContextData.egl_surface = eglCreateWindowSurface(aWholeContextData.egl_display,
+											aWholeContextData.egl_config,
+											aWholeContextData.p_surface,
+											NULL);
+#endif
+    }
+    else
+    {
+    	aWholeContextData.egl_surface = eglCreatePbufferSurface(aWholeContextData.egl_display, aWholeContextData.egl_config, nullptr);
+        //assertEGLError("eglCreatePbufferSurface");
+    }
+
+    if (aWholeContextData.egl_surface == EGL_NO_SURFACE) {
+        abort();
+    }
+}
+
+
+
 //--------------------------------------------------------------
-void createGLContext(EGLContext& aContext, EGLDisplay& aDisplay)
+void createGLContext(eglData& aWholeContextData)
 //--------------------------------------------------------------
 {
-    EGLConfig config;
-    EGLSurface surface;
+    aWholeContextData.ready = false;
+    checkExtensions();
+
     EGLint num_config;
 
     EGLint error_code;
 
-    aDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    error_code = eglGetError();
-    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetDisplay.";
-
-    eglInitialize(aDisplay, nullptr, nullptr);
-    error_code = eglGetError();
-    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglInitialize.";
-
-    eglChooseConfig(aDisplay, nullptr, &config, 1, &num_config);
-    error_code = eglGetError();
-    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
+    getDisplay(aWholeContextData);
+    getConfig(aWholeContextData);
+    getSurface(aWholeContextData);
 
     eglBindAPI(EGL_OPENGL_API);
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglBindAPI.";
 
-    aContext = eglCreateContext(aDisplay, config, EGL_NO_CONTEXT, NULL);
+    aWholeContextData.egl_context = eglCreateContext(aWholeContextData.egl_display, aWholeContextData.egl_config, EGL_NO_CONTEXT, NULL);
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglCreateContext.";
 
     //surface = eglCreatePbufferSurface(display, config, nullptr);
     //assertEGLError("eglCreatePbufferSurface");
 
-    eglMakeCurrent(aDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, aContext);
+    eglMakeCurrent(aWholeContextData.egl_display, aWholeContextData.egl_surface, aWholeContextData.egl_surface, aWholeContextData.egl_context);
     error_code = eglGetError();
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglMakeCurrent.";
 
-
-    GLuint frameBuffer;
-  	glGenFramebuffers(1, &frameBuffer);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glGenFramebuffers.";
-
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glBindFramebuffer.";
-
-	GLuint t;
-	glGenTextures(1, &t);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glGenTextures.";
-
-	glBindTexture(GL_TEXTURE_2D, t);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glBindTexture.";
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glTexImage2D.";
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glTexParameteri.";
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, t, 0);
-    error_code = glGetError();
-    ASSERT_EQ(error_code, GL_NO_ERROR) << "Cannot run glFramebufferTexture2D.";
-
-  	printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
+    printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
+    aWholeContextData.ready = true;
 }
 
 
-//---------------------------------------------------------------
-void destroyGLContext(EGLContext& aContext, EGLDisplay& aDisplay)
-//---------------------------------------------------------------
+//-----------------------------------------------
+void destroyGLContext(eglData& aWholeContextData)
+//-----------------------------------------------
 {
     EGLint error_code;
 
-    eglDestroyContext(aDisplay, aContext);
-    error_code = eglGetError();
-    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglDestroyContext.";
+    //eglDestroyContext(aWholeContextData.egl_display, aWholeContextData.egl_context);
+    //error_code = eglGetError();
+    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglDestroyContext.";
 
-    eglTerminate(aDisplay);
-    error_code = eglGetError();
-    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglTerminate.";
+    if (aWholeContextData.ready)
+    {
+		error_code = eglTerminate(aWholeContextData.egl_display);
+		if (error_code == EGL_FALSE)
+		{
+			std::cerr << "Error running eglTerminate" << std::endl;
+		}
+	
+		error_code = eglGetError();
+		if (error_code == EGL_BAD_DISPLAY)
+		{
+			std::cerr << " display is not an EGL display connection" << std::endl;
+		}
+
+	    aWholeContextData.ready = false;
+    }
+    
+    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglTerminate.";
 }

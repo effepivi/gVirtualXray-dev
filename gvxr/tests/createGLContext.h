@@ -64,7 +64,25 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifndef EGL_NO_X11
+#define EGL_NO_X11
+#endif
+
 #include <EGL/egl.h>
+#include <gbm.h>
+
+
+struct eglData {
+    bool ready;
+    
+    gbm_device* p_device;
+    gbm_surface* p_surface;
+
+    EGLDisplay egl_display;
+    EGLConfig egl_config;
+    EGLContext egl_context;
+    EGLSurface egl_surface;
+};
 
 
 //------------------------------------------------------------------------------
@@ -74,7 +92,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   @param aDisplay:   the display
 */
 //------------------------------------------------------------------------------
-void createGLContext(EGLContext& aContext, EGLDisplay& aDisplay);
+void createGLContext(eglData& aWholeContextData);
 
 
 //------------------------------------------------------------------------------
@@ -84,4 +102,4 @@ void createGLContext(EGLContext& aContext, EGLDisplay& aDisplay);
 *   @param aDisplay:   the display
 */
 //------------------------------------------------------------------------------
-void destroyGLContext(EGLContext& aContext, EGLDisplay& aDisplay);
+void destroyGLContext(eglData& aWholeContextData);

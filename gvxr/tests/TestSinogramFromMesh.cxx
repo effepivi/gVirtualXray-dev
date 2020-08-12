@@ -156,8 +156,7 @@ const RATIONAL_NUMBER g_angle_step(0.5);
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-EGLContext g_context;
-EGLDisplay g_display;
+eglData g_egl_context;
 
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 
@@ -209,7 +208,7 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
     atexit(quit);
 
     // Initialize EGL
-    createGLContext(g_context, g_display);
+    createGLContext(g_egl_context);
 
     // Initialise GLEW
     initialiseGLEW();
@@ -337,7 +336,7 @@ void createPhantom()
 void quit()
 //---------
 {
-    destroyGLContext(g_context, g_display);
+    destroyGLContext(g_egl_context);
 }
 
 
