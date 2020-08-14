@@ -157,10 +157,10 @@ IF (NOT SWIG_FOUND)
     ENDIF (WIN32)
 ELSE (NOT SWIG_FOUND)
 
-    string(COMPARE LESS "${SWIG_VERSION}" "4.0.0" SWIG_VERSION_ERROR)
+    string(COMPARE LESS "${SWIG_VERSION}" "3.0.0" SWIG_VERSION_ERROR)
 
     if(SWIG_VERSION_ERROR)
-	MESSAGE(FATAL_ERROR "Swig version must be 4.0.0 or greater! (You have ${SWIG_VERSION})")
+	MESSAGE(FATAL_ERROR "Swig version must be 3.0.0 or greater! (You have ${SWIG_VERSION})")
     ENDIF ()
 ENDIF (NOT SWIG_FOUND)
 

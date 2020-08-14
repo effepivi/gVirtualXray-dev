@@ -116,7 +116,7 @@ void initialiseGLEW()
 #ifdef HAS_GLEW
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
-	if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)
+	/*if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)
 	{
 		std::stringstream error_message;
 		error_message << "ERROR: cannot initialise GLEW:\t";
@@ -133,7 +133,7 @@ void initialiseGLEW()
 			error_message << glewGetErrorString(err);
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
+	}*/
 
 	glGetError(); // Remove an error that occurs in Windows
 #endif

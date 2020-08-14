@@ -1,4 +1,9 @@
-find_package(R REQUIRED)
+find_package(R)
+
+IF (NOT R_LIBRARIES OR NOT R_INCLUDE_DIR)
+  MESSAGE(FATAL_ERROR "R was not found, you need to install it, on openSUSE, I use sudo zypper install R-core R-base  R-core-devel R-base-devel")
+ENDIF ()
+
 
 INCLUDE_DIRECTORIES(${R_INCLUDE_DIR})
 

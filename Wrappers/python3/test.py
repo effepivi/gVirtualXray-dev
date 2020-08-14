@@ -31,7 +31,7 @@ if use_matplotlib:
 
 # Create an OpenGL context
 print("Create a Vulkan context")
-gvxr.createWindow(0, 1, "VULKAN");
+gvxr.createWindow(0, 1, "OPENGL");
 gvxr.setWindowSize(512, 512);
 
 

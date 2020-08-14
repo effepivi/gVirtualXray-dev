@@ -30,6 +30,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+
+
+
 # Project name and version #####################################################
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
 
@@ -605,33 +608,29 @@ ENDIF (USE_GDCM)
 
 # Installation variables #######################################################
 if(NOT gVirtualXRay_INSTALL_RUNTIME_DIR)
-  set(gVirtualXRay_INSTALL_RUNTIME_DIR bin PARENT_SCOPE)
+  set(gVirtualXRay_INSTALL_RUNTIME_DIR bin)
 endif()
 if(NOT gVirtualXRay_INSTALL_LIBRARY_DIR)
-    set(gVirtualXRay_INSTALL_LIBRARY_DIR lib PARENT_SCOPE)
+    set(gVirtualXRay_INSTALL_LIBRARY_DIR lib)
 endif()
 if(NOT gVirtualXRay_INSTALL_ARCHIVE_DIR)
-    set(gVirtualXRay_INSTALL_ARCHIVE_DIR lib PARENT_SCOPE)
+    set(gVirtualXRay_INSTALL_ARCHIVE_DIR lib)
 endif()
 if(NOT gVirtualXRay_INSTALL_INCLUDE_DIR)
     set(gVirtualXRay_INSTALL_INCLUDE_DIR
-        include/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}
-        PARENT_SCOPE)
+        include/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
 endif()
 if(NOT gVirtualXRay_INSTALL_DATA_DIR)
     set(gVirtualXRay_INSTALL_DATA_DIR
-        share/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}
-        PARENT_SCOPE)
+        share/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
 endif()
 if(NOT gVirtualXRay_INSTALL_DOC_DIR)
     set(gVirtualXRay_INSTALL_DOC_DIR
-        share/doc/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}
-        PARENT_SCOPE)
+        share/doc/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR})
 endif()
 if(NOT gVirtualXRay_INSTALL_PACKAGE_DIR)
     set(gVirtualXRay_INSTALL_PACKAGE_DIR
-        "lib/cmake/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}"
-        PARENT_SCOPE)
+        "lib/cmake/gVirtualXRay-${gVirtualXRay_VERSION_MAJOR}.${gVirtualXRay_VERSION_MINOR}")
 endif()
 
 

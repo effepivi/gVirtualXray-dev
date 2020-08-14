@@ -120,10 +120,6 @@ ELSE ()
     # C++ version
     set (CMAKE_CXX_STANDARD "${gVirtualXRay_CMAKE_CXX_STANDARD}")
 
-    # C++ flags
-    SET(CMAKE_C_FLAGS   "${gVirtualXRay_CMAKE_C_FLAGS}")
-    SET(CMAKE_CXX_FLAGS "${gVirtualXRay_CMAKE_CXX_FLAGS}")
-
     # Add include directories needed to use gVirtualXRay
     include_directories(${gVirtualXRay_INCLUDE_DIR})
     include_directories(${gVirtualXRay_INCLUDE_DIRS})
@@ -152,7 +148,7 @@ CreateHeaderFiles("cmake" "BinaryWrapper" "${RESOURCES_SOURCES}")
 
 # Headers of the project #######################################################
 SET (SimpleGVXR_BASE_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
-SET (SimpleGVXR_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+SET (SimpleGVXR_INCLUDE_DIR    ${CMAKE_CURRENT_SOURCE_DIR})
 SET (SimpleGVXR_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -222,8 +218,10 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
                               debug     ${PROJECT_BINARY_DIR}/Debug/SimpleGVXR.lib
     )
 ENDIF ()
+
 SET (SimpleGVXR_LIBRARIES
     ${optionalLibs}
+    ${requiredLibs}
     ${SimpleGVXR_LIBRARY}
     ${gVirtualXRay_LIBRARY}
     ${gVirtualXRay_LIBRARIES}
@@ -245,6 +243,13 @@ install(FILES
 		${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/SimpleGVXRConfig.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}
     COMPONENT Development)
+
+
+
+
+SET (SimpleGVXR_LIBRARY ${SimpleGVXR_LIBRARY} PARENT_SCOPE)
+SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
+SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
 
 
 # Unit tests ###################################################################

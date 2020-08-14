@@ -1,9 +1,16 @@
-find_package(Java COMPONENTS Development REQUIRED)
+find_package(Java COMPONENTS Development)
+find_package(JNI)
+
+IF (NOT Java_FOUND)
+  MESSAGE(FATAL_ERROR "Java was not found, you need to install it, on openSUSE, I use sudo zypper install java-11-openjdk")
+ENDIF ()
+
+IF (NOT JNI_FOUND)
+  MESSAGE(FATAL_ERROR "JNI was not found, you need to install it, on openSUSE, I use sudo zypper install java-11-openjdk")
+ENDIF ()
+
 include(UseJava)
-
-find_package(JNI REQUIRED)
 INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
-
 
 SET (module gvxrJava)
 

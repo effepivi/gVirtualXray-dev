@@ -1,6 +1,11 @@
 #find_package(Perl REQUIRED)
 find_package(PerlLibs REQUIRED)
 
+IF (NOT PERLLIBS_FOUND)
+  MESSAGE(FATAL_ERROR "PerlLibs was not found, you need to install it, on openSUSE, I use sudo zypper install R-core R-base  R-core-devel R-base-devel")
+ENDIF ()
+
+
 INCLUDE_DIRECTORIES(${PERL_INCLUDE_PATH})
 
 SET (module gvxrPerl)

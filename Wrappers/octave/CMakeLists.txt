@@ -1,4 +1,8 @@
-find_package(Octave REQUIRED)
+find_package(Octave)
+
+IF (NOT Octave_FOUND)
+  MESSAGE(FATAL_ERROR "GNU Octave was not found, you need to install it, on openSUSE, I use sudo zypper install octave-devel")
+ENDIF ()
 
 INCLUDE_DIRECTORIES(${OCTAVE_INCLUDE_DIRS})
 

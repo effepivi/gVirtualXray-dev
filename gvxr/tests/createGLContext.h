@@ -71,7 +71,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-//#undef HAS_GBM
+#undef HAS_GBM
 
 #ifdef HAS_GBM
 class gbm_device;
