@@ -5,6 +5,11 @@ DOCS=1-gVirtualRay-content-IBSim-4i_2020.html \
 	2-gVirtualRay-overview-IBSim-4i_2020.pptx \
 	2-gVirtualRay-overview-IBSim-4i_2020.pdf
 
+DOCS=1-gVirtualRay-content-IBSim-4i_2020.html \
+	1-gVirtualRay-content-IBSim-4i_2020.pptx \
+	2-gVirtualRay-overview-IBSim-4i_2020.html \
+	2-gVirtualRay-overview-IBSim-4i_2020.pptx \
+
 all: ${DOCS}
 
 %.pptx: %.md
