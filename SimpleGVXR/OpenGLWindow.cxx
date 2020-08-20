@@ -263,6 +263,9 @@ void OpenGLWindow::createWindow(bool aVisibilityFlag)
     string window_title = "gVirtualXRay -- Window ";
 
     // Set the version of OpenGL that is required
+    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_opengl_majour_version);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_opengl_minor_version);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);

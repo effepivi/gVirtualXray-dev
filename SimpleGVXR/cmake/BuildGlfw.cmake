@@ -47,6 +47,7 @@ macro(build_glfw install_prefix staging_prefix)
             -DGLFW_BUILD_DOCS:BOOL=OFF
             -DGLFW_BUILD_EXAMPLES:BOOL=OFF
             -DGLFW_BUILD_TESTS:BOOL=OFF
+            -DDGLFW_USE_EGL:BOOL=ON
     )
 
     SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include CACHE PATH "Where to find GLFW3 header files" FORCE)
