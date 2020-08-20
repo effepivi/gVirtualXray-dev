@@ -1,5 +1,5 @@
 ---
-title: Overview of gVirtualXRay
+title: Topic 2 -- Overview of gVirtualXRay
 author: Dr Franck P. Vidal
 subtitle: IBSim-4i 2020
 date: 13th Aug 2020
@@ -16,9 +16,9 @@ date: 13th Aug 2020
 - Ray-tracing is an alternative, but
     - Still relatively slow on CPU;
     - Does not easily take into account scattering;
+        - Scattering does not necessarily matter in X-ray transmission imaging;
     - Does not include Poisson counting noise;
-- Scattering does not necessarily matter in X-ray transmission imaging;
-- Poisson noise can be added as a post-process.
+        - Poisson noise can be added as a post-process.
 
 
 # Medical Training using VR
@@ -35,7 +35,7 @@ date: 13th Aug 2020
 
 # Need for a Simulation Library that is
 
-- open-source (with a flexible license)
+- Open-source (with a flexible license)
     - Can be used in open-source projects
     - Can be used in closed source commercial applications too
 - Fast
@@ -45,31 +45,68 @@ date: 13th Aug 2020
 - Cross platform
     - Run on GNU/Linux, Mac OS X and Windows
 - Validated
-    - Compared simulations from a state-of-the-art Monte Carlo code, e.g. [![Geant4](img/g4logo-web.png)](https://geant4.web.cern.ch/)
 
 
-<!--
-# Timeline
+# In a nutshell, gVirtualXray is
 
-- (\scriptsize\fullcite(Freud2003PhD))
-- (\scriptsize\fullcite(Vidal2003IS))
-- (\scriptsize\Gls(GLSL) included into the OpenGL 2.0 core (2004).)
-- (\scriptsize\fullcite(Vidal2008PhD))
-- (\scriptsize\fullcite(Vidal2009TPCG))
-- (\scriptsize\fullcite(Vidal2010EGPoster))
-- (\scriptsize Restart as an open-source project, Dec 2013.)
-- (\scriptsize\fullcite(Vidal2016ComputMedImagingGraph))
--->
-
+- a C++ X-Ray simulation library
+- Open source;
+- Realtime;
+- Portable;
+- Validated;
+- Available for many programming languages.
 
 # Fact sheet
 
-- Open-source (created on 01 Dec 2013)
 - SVN repository hosted by [![Sourceforge](img/sourceforge-logo.png)](https://sourceforge.net/)
 - Implemented in ![C++](img/cpp-logo.png) using ![OpenGL](img/OpenGL-logo.png)
-- Can also be deployed in ![Python](img/python-logo.png) applications;
-- Provides real-time performance;
+<!-- - Can also be deployed in ![Python](img/python-logo.png) applications; -->
+- Cross-platform, the library works on
+    - Windows, GNU/Linux, and Mac OS X,
+    - Nvidia and AMD graphics cards,
+    - Integrated GPUs,
+    - Desktop PCs and Laptops.
+<!-- - Provides real-time performance; -->
 - Is accurate (quantitative validation);
-- Reproducibility;
+- Enable reproducible research;
 - Supports [![XCOM](img/XCOM-logo.jpg): Photon Cross Sections Database](https://physics.nist.gov/PhysRefData/Xcom/html/xcom1.html) from [![NIST](img/nist-logo.png)](https://www.nist.gov/);
-- Uses polygon meshes to model 3-D geometries ![Example of wireframe model](img/wireframe_model.png) from popular file formats (eg. STL, PLY, 3DS, OBJ, DXF, X3D, DAE)
+- Uses polygon meshes to model 3-D geometries from popular file formats (eg. STL, PLY, 3DS, OBJ, DXF, X3D, DAE)
+![Example of wireframe model](img/wireframe_model2.png)
+
+
+# Simulation supports:
+
+- Various source shapes
+    - Point source;
+    - Cube source;
+    - Parallel beam.
+- Incident beams:        
+    - Monochromatic;
+    - Polychromatic.
+- Geometries:
+    - Surface meshes (triangles);
+    - Volume meshes (tetrahedrons). **NEW**
+- Material properties:
+    - Chemical elements (e.g. W for tungsten);
+    - Compounds (e.g. H2O for water); **NEW**
+    - Mixture (e.g. Ti90/Al6/V4); **NEW**
+    - Hounsfield units (for medical applications).
+
+# More recently
+
+- Improved installation from source code.
+- Converter from Abaqus files 2 STL files: **NEW**
+    - The simulation works with volumetric meshes (tetrahedrons),
+    - With surface meshes (triangles)
+- Always working on improvements (when time allows)
+    - Currently working on the deployment on SuperComputing Wales. **work-in-progress**
+    - Port to Vulkan? **work-in-progress**
+    - Maybe one day, a Matlab wrapper?
+
+# Applications of gVirtualXRay
+
+- Teaching radiography in medicine;
+- Teaching particle physics to undergraduates;
+- Virtual Reality Simulation;
+- Virtual Testing Lab;
+- Design new clinical imaging modality to reduce dose exposure.

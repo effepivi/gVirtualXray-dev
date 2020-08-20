@@ -1,5 +1,5 @@
 ---
-title: Brief introduction to this session on gVirtualXRay
+title: Topic 1 -- Brief introduction to this session on gVirtualXRay
 author: Dr Franck P. Vidal
 subtitle: IBSim-4i 2020
 date: 13th Aug 2020
@@ -9,13 +9,14 @@ date: 13th Aug 2020
 
 1. Overview of gVirtualXRay
 2. Theory of X-ray simulation
-3. How it is implemented on GPU using OpenGL
-4. Live installation on GNU/Linux (recording)
+3. How is it implemented on GPU using OpenGL?
+4. Validation: How accurate gVirtualRay is?
+5. Live installation on GNU/Linux (recording)
     - ![openSuse](img/openSUSE-logo.png) [Leap 15.2](https://software.opensuse.org/distributions/leap/15_2) on a desktop PC
-    - [![Red Hat Enterprise Linux](img/redhat-logo.png)](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux) on [SuperComputing Wales](https://portal.supercomputing.wales/)
+    <!-- - [![Red Hat Enterprise Linux](img/redhat-logo.png)](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux) on [SuperComputing Wales](https://portal.supercomputing.wales/) -->
     - Using Windows 10
-5. Live coding using Python 3 (recording)
+6. Live coding using Python 3 (recording)
     - Create an X-ray projection
     - Simulate an X-ray CT scan acquisition
     - Reconstruction of the sinogram
-    - Use in an optimisation framework
+    <!-- - Use in an optimisation framework -->
