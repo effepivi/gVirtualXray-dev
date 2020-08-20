@@ -735,6 +735,88 @@ void makeIsoSurface(const std::string& aLabel,
 }
 
 
+//-----------------------------------------------------------
+void makeTriangularMesh(const std::string& aLabel,
+		                const std::vector<float>& aVertexSet,
+						const std::string& aUnitOfLength,
+						const std::string& aParent)
+//-----------------------------------------------------------
+{
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(gVirtualXRay::PolygonMesh());
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+			gVirtualXRay::PolygonMesh(),
+            gVirtualXRay::VEC3(),
+            aParent);
+
+        p_node = g_p_scene_graph->getNode(aLabel);
+        }
+
+    p_node->getPolygonMesh().setInternalData(GL_TRIANGLES,
+    		&aVertexSet,
+             false,
+			 GL_STATIC_DRAW);
+
+    // Change scale and compute bounding box
+    p_node->getPolygonMesh().applyScale(getUnitOfLength(aUnitOfLength));
+}
+
+
+//-------------------------------------------------------------------------
+void makeTriangularMesh(const std::string& aLabel,
+						const std::vector<float>& aVertexSet,
+						const std::vector<unsigned int>& aTriangleIndexSet,
+						const std::string& aUnitOfLength,
+						const std::string& aParent)
+//-------------------------------------------------------------------------
+{
+    if (!g_p_scene_graph.get())
+        {
+        // Create a scenegraph
+        g_p_scene_graph.reset(new gVirtualXRay::SceneGraphBinder());
+        }
+
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+    if (p_node)
+        {
+        p_node->setGeometry(gVirtualXRay::PolygonMesh());
+        }
+    else
+        {
+        g_p_scene_graph->addPolygonMesh(
+            aLabel,
+			gVirtualXRay::PolygonMesh(),
+            gVirtualXRay::VEC3(),
+            aParent);
+
+        p_node = g_p_scene_graph->getNode(aLabel);
+        }
+
+    p_node->getPolygonMesh().setInternalData(GL_TRIANGLES,
+			&aVertexSet,
+			&aTriangleIndexSet,
+			false,
+			GL_STATIC_DRAW);
+
+    // Change scale and compute bounding box
+    p_node->getPolygonMesh().applyScale(getUnitOfLength(aUnitOfLength));
+}
+
+
 void addMesh(const std::string& aDestination, const std::string& aSource)
 {
     // The scenegraph does not exist

@@ -594,6 +594,19 @@ void makeIsoSurface(const std::string& aLabel,
     const std::string& aParent = "root");
 
 
+void makeTriangularMesh(const std::string& aLabel,
+		const std::vector<float>& aVertexSet,
+	    const std::string& aUnitOfLength = "cm",
+		const std::string& aParent = "root");
+
+
+void makeTriangularMesh(const std::string& aLabel,
+		const std::vector<float>& aVertexSet,
+		const std::vector<unsigned int>& aTriangleIndexSet,
+	    const std::string& aUnitOfLength = "cm",
+		const std::string& aParent = "root");
+
+
 //------------------------------------------------------------------------------
 /// Add a polygon mesh (aSource) to another one (aDestination).
 /// It corresponds to the operation as follows: aDestination += aSource.
