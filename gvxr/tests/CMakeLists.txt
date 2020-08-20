@@ -71,11 +71,16 @@ check_function_exists(cbrt HAVE_CBRT)
 find_library(EGL_LIBRARY EGL)
 find_library(GLESv2_LIBRARY GLESv2)
 
-IF (NOT EGL_LIBRARY)
+find_path(EGL_INCLUDE_DIR
+  NAMES EGL/egl.h
+)
+
+IF (NOT EGL_LIBRARY OR NOT EGL_INCLUDE_DIR)
     MESSAGE(FATAL_ERROR "EGL is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
 ELSE ()
-    ADD_DEFINITIONS(-DGLEW_EGL)
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_EGL")
     SET (optionalLibs ${optionalLibs} ${EGL_LIBRARY})
+    ADD_DEFINITIONS(-DGLEW_EGL)
 ENDIF  ()
 
 IF (NOT GLESv2_LIBRARY)
@@ -85,36 +90,19 @@ ELSE ()
 ENDIF  ()
 
 
-find_path(EGL_INCLUDE_DIR
-  NAMES EGL/egl.h
-)
-
-IF (NOT EGL_INCLUDE_DIR)
-    MESSAGE(FATAL_ERROR "EGL headers are not installed, please install them, e.g. using sudo zypper install Mesa-libEGL-devel")
-ELSE ()
-    include_directories(${})
-ENDIF  ()
-
-
 # GBM
 find_library(GBM_LIBRARY gbm)
 
-IF (NOT GBM_LIBRARY)
-    MESSAGE(WARNING "GBM is not installed, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
-ELSE ()
-    ADD_DEFINITIONS(-DHAS_GBM)
-    SET (optionalLibs ${optionalLibs} ${GBM_LIBRARY})
-ENDIF  ()
-
-
 find_path(GBM_INCLUDE_DIR
-  NAMES gbm.h
+NAMES gbm.h
 )
 
-IF (NOT GBM_INCLUDE_DIR)
-    MESSAGE(FATAL_ERROR "GBM headers are not installed, please install them, e.g. using sudo zypper install libgbm-devel")
+IF (NOT GBM_LIBRARY OR NOT GBM_INCLUDE_DIR)
+    MESSAGE(WARNING "GBM is not installed, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
 ELSE ()
-    include_directories(${})
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GBM")
+    SET (optionalLibs ${optionalLibs} ${GBM_LIBRARY})
+    ADD_DEFINITIONS(-DHAS_GBM)
 ENDIF  ()
 
 
@@ -314,3 +302,5 @@ install (TARGETS TestOrtho             DESTINATION ${INSTALL_DIR}/test)
 IF (FFTW3_LIBRARIES)
     install (TARGETS TestFBP             DESTINATION ${INSTALL_DIR}/test)
 ENDIF()
+
+SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} PARENT_SCOPE)
