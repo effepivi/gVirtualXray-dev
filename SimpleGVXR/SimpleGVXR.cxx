@@ -508,7 +508,7 @@ void loadMeshFile(const std::string& aLabel,
 //-------------------------------------------------
 {
     // Initialise the X-ray renderer if needed and if possible
-    initialiseXRayRenderer();
+    //initialiseXRayRenderer();
 
     gVirtualXRay::SceneGraphBinder* p_temp = g_p_scene_graph.get();
     if (!p_temp)
