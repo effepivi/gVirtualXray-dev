@@ -172,13 +172,13 @@ void getConfig(eglData& aWholeContextData)
 #ifdef HAS_GBM
     eglGetConfigs(aWholeContextData.egl_display, NULL, 0, &num_configs);
     error_code = eglGetError();
-    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigs.";
+    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigs.";
 
     EGLConfig *configs = (EGLConfig *) malloc(num_configs * sizeof(EGLConfig));
     eglChooseConfig(aWholeContextData.egl_display, egl_config_attribs,
                          configs, num_configs, &num_configs);
     error_code = eglGetError();
-    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
+    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
 
     if (num_configs == 0) {
         abort();
@@ -191,7 +191,7 @@ void getConfig(eglData& aWholeContextData)
         eglGetConfigAttrib(aWholeContextData.egl_display, configs[i],
                                 EGL_NATIVE_VISUAL_ID, &gbm_format);
         error_code = eglGetError();
-        //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigAttrib.";
+        ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglGetConfigAttrib.";
 
         if (gbm_format == GBM_FORMAT_XRGB8888) {
             aWholeContextData.egl_config = configs[i];
@@ -204,7 +204,7 @@ void getConfig(eglData& aWholeContextData)
     // Failed to find a config with matching GBM format.
     eglChooseConfig(aWholeContextData.egl_display, nullptr, &aWholeContextData.egl_config, 1, &num_configs);
     error_code = eglGetError();
-    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
+    ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
 }
 
 void getSurface(eglData& aWholeContextData)
