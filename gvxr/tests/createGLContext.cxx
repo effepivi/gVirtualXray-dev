@@ -72,7 +72,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h> // For malloc/free
 
 #ifdef HAS_GBM
-#include <gbm/gbm.h>
+#include <gbm.h>
 #endif
 
 #define GL_GLEXT_PROTOTYPES 1

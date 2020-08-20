@@ -67,29 +67,54 @@ check_function_exists(sqrt HAVE_SQRT)
 check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
-
+# EGL
 find_library(EGL_LIBRARY EGL)
-find_library(GBM_LIBRARY gbm)
 find_library(GLESv2_LIBRARY GLESv2)
 
 IF (NOT EGL_LIBRARY)
-    MESSAGE(FATAL_ERROR "EGL is not install, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
+    MESSAGE(FATAL_ERROR "EGL is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
 ELSE ()
     ADD_DEFINITIONS(-DGLEW_EGL)
     SET (optionalLibs ${optionalLibs} ${EGL_LIBRARY})
 ENDIF  ()
 
 IF (NOT GLESv2_LIBRARY)
-    MESSAGE(FATAL_ERROR "GLESv2 is not install, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
+    MESSAGE(FATAL_ERROR "GLESv2 is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
 ELSE ()
     SET (optionalLibs ${optionalLibs} ${GLESv2_LIBRARY})
 ENDIF  ()
 
+
+find_path(EGL_INCLUDE_DIR
+  NAMES EGL/egl.h
+)
+
+IF (NOT EGL_INCLUDE_DIR)
+    MESSAGE(FATAL_ERROR "EGL headers are not installed, please install them, e.g. using sudo zypper install Mesa-libEGL-devel")
+ELSE ()
+    include_directories(${})
+ENDIF  ()
+
+
+# GBM
+find_library(GBM_LIBRARY gbm)
+
 IF (NOT GBM_LIBRARY)
-    MESSAGE(WARNING "GBM is not install, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
+    MESSAGE(WARNING "GBM is not installed, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
 ELSE ()
     ADD_DEFINITIONS(-DHAS_GBM)
     SET (optionalLibs ${optionalLibs} ${GBM_LIBRARY})
+ENDIF  ()
+
+
+find_path(GBM_INCLUDE_DIR
+  NAMES gbm.h
+)
+
+IF (NOT GBM_INCLUDE_DIR)
+    MESSAGE(FATAL_ERROR "GBM headers are not installed, please install them, e.g. using sudo zypper install libgbm-devel")
+ELSE ()
+    include_directories(${})
 ENDIF  ()
 
 
