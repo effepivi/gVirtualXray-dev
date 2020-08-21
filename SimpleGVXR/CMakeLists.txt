@@ -62,13 +62,6 @@ set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
 
 
-# GLFW ########################################################################
-# GLFW3 is required for either testing, SimpleGVXR or Wrappers
-IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
-    include(cmake/configureGlfw.cmake)
-ENDIF ()
-
-
 # Set a default build type if none was specified
 IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       message(STATUS "Setting build type to 'Release' as none was specified.")

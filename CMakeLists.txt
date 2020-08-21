@@ -116,7 +116,38 @@ IF (BUILD_TESTING)
 ENDIF (BUILD_TESTING)
 
 
+# GLFW ########################################################################
+# GLFW3 is required for either testing, SimpleGVXR or Wrappers
+IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
+    # Use system library
+    IF (USE_SYSTEM_GLFW)
+        FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
+
+        IF (GLFW3_LIBRARY)
+            FIND_PACKAGE(glfw3)
+        ENDIF (GLFW3_LIBRARY)
+    ENDIF (USE_SYSTEM_GLFW)
+
+    # The system library was not found
+    # Build GLFW3 instead
+    IF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
+        MESSAGE (STATUS "Build GLFW3")
+        #SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
+        INCLUDE(cmake/BuildGlfw.cmake)
+        build_glfw( glfw ${PROJECT_BINARY_DIR} )
+
+        SET (BUILD_GLFW ON)
+    ENDIF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
+
+    include(cmake/configureGlfw.cmake)
+ENDIF ()
+
+
 ADD_SUBDIRECTORY (gvxr)
+
+IF (BUILD_GLFW)
+    ADD_DEPENDENCIES(gVirtualXRay glfw)
+ENDIF ()
 
 # Build SimpleGVXR
 IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)

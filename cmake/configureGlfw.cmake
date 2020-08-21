@@ -44,24 +44,6 @@ ENDIF (WIN32)
 
 # GLFW ########################################################################
 
-# Use system library
-IF (USE_SYSTEM_GLFW)
-    FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
-
-    IF (GLFW3_LIBRARY)
-        FIND_PACKAGE(glfw3)
-    ENDIF (GLFW3_LIBRARY)
-ENDIF (USE_SYSTEM_GLFW)
-
-# The system library was not found
-# Build GLFW3 instead
-IF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
-    MESSAGE (STATUS "Build GLFW3")
-    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
-    INCLUDE(${CMAKE_CURRENT_LIST_DIR}/BuildGlfw.cmake)
-    build_glfw( glfw ${PROJECT_BINARY_DIR} )
-    ADD_DEPENDENCIES(gVirtualXRay glfw)
-ENDIF (NOT glfw3_FOUND OR NOT USE_SYSTEM_GLFW)
 
 
 IF (glfw3_FOUND)
@@ -95,3 +77,6 @@ IF (glfw3_FOUND)
     INCLUDE_DIRECTORIES(${GLFW3_INCLUDE_DIR})
     SET(optionalLibs ${optionalLibs} ${GLFW3_LIBRARY})
 ENDIF(glfw3_FOUND)
+
+
+SET(optionalLibs ${optionalLibs} PARENT_SCOPE)

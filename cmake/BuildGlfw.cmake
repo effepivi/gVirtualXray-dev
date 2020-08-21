@@ -62,12 +62,12 @@ macro(build_glfw install_prefix staging_prefix)
         ENDIF ()
     ENDIF (WIN32)
 
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib64/   DESTINATION ${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/bin/     DESTINATION ${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/share/   DESTINATION ${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
-    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/man/     DESTINATION ${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/third_party/include COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib/     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/third_party/lib     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/lib64/   DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/third_party/lib64   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/bin/     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/third_party/bin     COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/share/   DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/third_party/share   COMPONENT Development FILES_MATCHING PATTERN "*.*")
+    install(DIRECTORY ${staging_prefix}/${install_prefix}-install/man/     DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/third_party/man     COMPONENT Development FILES_MATCHING PATTERN "*.*")
 
 
     SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${staging_prefix}/${install_prefix}-install/lib/cmake/glfw3 ${staging_prefix}/${install_prefix}-install/lib/cmake  ${staging_prefix}/${install_prefix}-install/lib)

@@ -156,7 +156,7 @@ const RATIONAL_NUMBER g_angle_step(0.5);
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-eglData g_egl_context;
+contextData g_egl_context;
 
 Matrix4x4<GLfloat> g_sample_rotation_matrix;
 

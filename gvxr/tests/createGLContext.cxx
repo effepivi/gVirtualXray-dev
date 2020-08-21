@@ -71,6 +71,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <stdlib.h> // For malloc/free
 
+#define GLFW_INCLUDE_GLCOREARB 1
+#include <GLFW/glfw3.h>
+
+
+/*
 #ifdef HAS_GBM
 #include <gbm.h>
 #endif
@@ -78,7 +83,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
 #include <GL/glext.h>
-
+*/
 #include "gtest/gtest.h"
 
 #ifndef __OpenGLUtilities_h
@@ -91,7 +96,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-
+/*
 void checkExtensions(void)
 {
 #ifdef HAS_GBM
@@ -110,9 +115,9 @@ void checkExtensions(void)
 }
 
 
-//-----------------------------------------
-void getDisplay(eglData& aWholeContextData)
-//-----------------------------------------
+//---------------------------------------------
+void getDisplay(contextData& aWholeContextData)
+//---------------------------------------------
 {
     EGLint error_code;
 
@@ -155,7 +160,7 @@ void getDisplay(eglData& aWholeContextData)
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglInitialize.";
 }
 
-void getConfig(eglData& aWholeContextData)
+void getConfig(contextData& aWholeContextData)
 {
     EGLint error_code;
     EGLint num_configs;
@@ -207,7 +212,7 @@ void getConfig(eglData& aWholeContextData)
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglChooseConfig.";
 }
 
-void getSurface(eglData& aWholeContextData)
+void getSurface(contextData& aWholeContextData)
 {
 #ifdef HAS_GBM
     if (aWholeContextData.p_device)
@@ -243,14 +248,41 @@ void getSurface(eglData& aWholeContextData)
         abort();
     }
 }
-
+*/
 
 
 //--------------------------------------------------------------
-void createGLContext(eglData& aWholeContextData)
+void createGLContext(contextData& aWholeContextData)
 //--------------------------------------------------------------
 {
     aWholeContextData.ready = false;
+
+    // Initialize GLFW
+    ASSERT_EQ(glfwInit(), true) << "Cannot initialise GLFW.";
+
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+    // Enable anti-aliasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+    // Create a windowed mode window and its OpenGL context
+    aWholeContextData.m_p_window = glfwCreateWindow(1, 1, "Unit test", 0, 0);
+    ASSERT_EQ(aWholeContextData.m_p_window != nullptr, true) << "Cannot create a window.";
+
+    // Make the window's context current
+    glfwMakeContextCurrent(aWholeContextData.m_p_window);
+
+    // Initialise GLEW
+    gVirtualXRay::initialiseGLEW();
+
+/*    aWholeContextData.ready = false;
     checkExtensions();
 
     EGLint num_config;
@@ -310,14 +342,14 @@ void createGLContext(eglData& aWholeContextData)
     ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglMakeCurrent.";
 
     printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
-    aWholeContextData.ready = true;
+    aWholeContextData.ready = true;*/
 }
 
 
 //-----------------------------------------------
-void destroyGLContext(eglData& aWholeContextData)
+void destroyGLContext(contextData& aWholeContextData)
 //-----------------------------------------------
-{
+{/*
     EGLint error_code;
 
     //eglDestroyContext(aWholeContextData.egl_display, aWholeContextData.egl_context);
@@ -341,5 +373,6 @@ void destroyGLContext(eglData& aWholeContextData)
 	    aWholeContextData.ready = false;
     }
 
-    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglTerminate.";
+    //ASSERT_EQ(error_code, EGL_SUCCESS) << "Cannot run eglTerminate.";*/
+
 }
