@@ -6,3 +6,8 @@
   - ORGANIZATION
   - README.md
   - VERSION.txt
+- Added EGL support for when the computer has no screen
+- Can read ASCII STL files
+- Can load meshes from arrays
+- Ease the installation from source
+- Added a GUI
