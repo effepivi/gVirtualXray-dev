@@ -15,4 +15,6 @@ do
     OUTPUT="`basename $file .md`.pdf"
     $PANDOC -s $file $PANDOC_PDF_OPTIONS -o $OUTPUT
 
+    OUTPUT="`basename $file .md`.html"
+    $PANDOC -s $file -o $OUTPUT
 done

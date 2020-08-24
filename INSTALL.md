@@ -25,7 +25,7 @@ The examples below are for openSUSE Leap but you can adapt them for your own dis
                      libXinerama-devel \
                      libXrandr-devel \
                      libXxf86vm-devel \
-                     glu-devel 
+                     glu-devel
 ```
 3. For unit testing, SimpleGVXR and wrappers (optional):
 ```bash
@@ -47,7 +47,7 @@ The examples below are for openSUSE Leap but you can adapt them for your own dis
 1. Install XCode from the Mac App Store.
 2. Install the Command Line Tools package via the Terminal application using
 ```bash
-    $ xcode-select --install command. 
+    $ xcode-select --install command.
 ```
 3. Install CMake from [https://cmake.org/download/](https://cmake.org/download/)
 4. For Wrappers, you may want to install SWIG and Python 3. I use homebrew for that purpose, see [https://brew.sh/](https://brew.sh/)
@@ -146,7 +146,7 @@ or at your own risk as `root` using:
 ```
 If you built the python wrapper, add its path to `PYTHONPATH`:
 ```bash
-    $ PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:PYTHONPATH
+    $ PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:$PYTHONPATH
 ```
 And to make it permanent:
 ```bash
@@ -325,7 +325,7 @@ On Unixes, you Should see 3 or 4 directories in the installation directory depen
 ![Illustration](screenshots/test-python1.png)
 The X-ray image is displayed using linear, log and power law colour scales using Matplotlib.
 
-3. Press <Q> to close this window and the real-time viewer will open:
+3. Press `<Q>` to close this window and the real-time viewer will open:
 
 ![Illustration](screenshots/test-python2.png)
 
@@ -337,16 +337,16 @@ The X-ray image is displayed using linear, log and power law colour scales using
 
 ![Illustration](screenshots/test-python4.png)
 
-6. Press <B> to hide/show the X-ray beam:
+6. Press `<B>` to hide/show the X-ray beam:
 
 ![Illustration](screenshots/test-python5.png)
 
-7. Press <W> to view the 3-D object in solid/wireframe mode:
+7. Press `<W>` to view the 3-D object in solid/wireframe mode:
 
 ![Illustration](screenshots/test-python6.png)![Illustration](screenshots/test-python7.png)
 
-8. You can also press <N> to display the X-ray image in negative or positive and <H> to hide/show the X-ray detector.
-9. Press <Q> or <ESC> to exit. When the script ends, there'll be two new files:
+8. You can also press `<N>` to display the X-ray image in negative or positive and `<H>` to hide/show the X-ray detector.
+9. Press `<Q>` or `<ESC>` to exit. When the script ends, there'll be two new files:
 
 - `xray_image-0.mha`: contains the X-ray image. MHA fies can be viewed with the popular scientific image viewer tool [ImageJ/Fiji](https://imagej.net/Fiji/).
 - `lbuffer-0.mha`: contains the length of X-rays crossed in the 3-D object.
