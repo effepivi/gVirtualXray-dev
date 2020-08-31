@@ -76,7 +76,7 @@ find_path(EGL_INCLUDE_DIR
 )
 
 IF (NOT EGL_LIBRARY OR NOT EGL_INCLUDE_DIR)
-    MESSAGE(FATAL_ERROR "EGL is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
+    MESSAGE(WARNING "EGL is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
 ELSE ()
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_EGL")
     SET (optionalLibs ${optionalLibs} ${EGL_LIBRARY})
@@ -84,7 +84,7 @@ ELSE ()
 ENDIF  ()
 
 IF (NOT GLESv2_LIBRARY)
-    MESSAGE(FATAL_ERROR "GLESv2 is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
+    MESSAGE(WARNING "GLESv2 is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
 ELSE ()
     SET (optionalLibs ${optionalLibs} ${GLESv2_LIBRARY})
 ENDIF  ()

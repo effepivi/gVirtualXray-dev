@@ -68,7 +68,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include <fcntl.h> // For O_RDWR
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdlib.h> // For malloc/free
 
 #define GLFW_INCLUDE_GLCOREARB 1
@@ -260,7 +260,9 @@ void createGLContext(contextData& aWholeContextData)
     // Initialize GLFW
     ASSERT_EQ(glfwInit(), true) << "Cannot initialise GLFW.";
 
+#ifndef WIN32
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+#endif
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
