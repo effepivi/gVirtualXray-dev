@@ -1,10 +1,9 @@
 ---
-title: Topic 2 -- Overview of gVirtualXRay
+title: Topic 1 -- Overview of gVirtualXRay
 author: Dr Franck P. Vidal
 subtitle: IBSim-4i 2020
 date: 13th Aug 2020
 ---
-
 
 # Rational for this Research
 
@@ -71,6 +70,7 @@ date: 13th Aug 2020
 - Enable reproducible research;
 - Supports [![XCOM](img/XCOM-logo.jpg): Photon Cross Sections Database](https://physics.nist.gov/PhysRefData/Xcom/html/xcom1.html) from [![NIST](img/nist-logo.png)](https://www.nist.gov/);
 - Uses polygon meshes to model 3-D geometries from popular file formats (eg. STL, PLY, 3DS, OBJ, DXF, X3D, DAE)
+
 ![Example of wireframe model](img/wireframe_model2.png)
 
 
@@ -105,8 +105,14 @@ date: 13th Aug 2020
 
 # Applications of gVirtualXRay
 
-- Teaching radiography in medicine;
-- Teaching particle physics to undergraduates;
+- [Teaching particle physics to undergraduates](https://doi.org/10.1088/1361-6404/ab5011);
 - Virtual Reality Simulation;
-- Virtual Testing Lab;
-- Design new clinical imaging modality to reduce dose exposure.
+- [Virtual Testing Lab](https://doi.org/10.5281/zenodo.1452506)
+- [Design new clinical imaging modality to reduce dose exposure](https://doi.org/10.1109/ACCESS.2019.2895925)
+- [Teaching radiography in medicine](https://doi.org/10.2312/cgvc.20191267)
+
+![GUI of radiography tool](img/suiteacher.png)
+
+# Back to main menu
+
+[Click here](../0-gVirtualRay-content-IBSim-4i_2020.html#(2))

@@ -1,14 +1,11 @@
-DOCS=1-gVirtualRay-content-IBSim-4i_2020.html \
-	1-gVirtualRay-content-IBSim-4i_2020.pptx \
-	1-gVirtualRay-content-IBSim-4i_2020.pdf \
-	2-gVirtualRay-overview-IBSim-4i_2020.html \
-	2-gVirtualRay-overview-IBSim-4i_2020.pptx \
-	2-gVirtualRay-overview-IBSim-4i_2020.pdf
+DOCS=0-gVirtualRay-content-IBSim-4i_2020.html \
+	0-gVirtualRay-content-IBSim-4i_2020.pdf \
+	1-gVirtualRay-overview-IBSim-4i_2020.html \
+	1-gVirtualRay-overview-IBSim-4i_2020.pdf \
+	4-gVirtualRay-validation-IBSim-4i_2020.html \
+	5-gVirtualRay-install-IBSim-4i_2020.html \
+	5-gVirtualRay-install-IBSim-4i_2020.pdf
 
-DOCS=1-gVirtualRay-content-IBSim-4i_2020.html \
-	1-gVirtualRay-content-IBSim-4i_2020.pptx \
-	2-gVirtualRay-overview-IBSim-4i_2020.html \
-	2-gVirtualRay-overview-IBSim-4i_2020.pptx \
 
 all: ${DOCS}
 
