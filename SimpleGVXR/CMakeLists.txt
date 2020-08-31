@@ -244,6 +244,8 @@ SET (SimpleGVXR_LIBRARY ${SimpleGVXR_LIBRARY} PARENT_SCOPE)
 SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
 SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
 
+SET (SimpleGVXR_DOC_I_FILE 		${CMAKE_CURRENT_SOURCE_DIR}/SimpleGVXR-doc.i PARENT_SCOPE)
+
 
 # Unit tests ###################################################################
 IF(BUILD_TESTING)
