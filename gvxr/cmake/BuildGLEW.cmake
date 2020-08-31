@@ -15,7 +15,7 @@ SET (GLEW_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
 ExternalProject_Add(getGLEW
   URL  "https://sourceforge.net/projects/glew/files/glew/2.2.0/glew-2.2.0.tgz/download"
-  #URL_MD5 "b2ab12331033ddfaa50dc39345343980"
+  URL_MD5 "3579164bccaef09e36c0af7f4fd5c7c7"
   UPDATE_COMMAND ""
   SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
   #BINARY_DIR  ${staging_prefix}/${install_prefix}-build
