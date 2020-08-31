@@ -79,4 +79,4 @@ IF (glfw3_FOUND)
 ENDIF(glfw3_FOUND)
 
 
-SET(optionalLibs ${optionalLibs} PARENT_SCOPE)
+#SET(optionalLibs ${optionalLibs} PARENT_SCOPE)
