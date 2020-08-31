@@ -67,12 +67,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <cstdint>
+
 /*#ifdef HAS_VULKAN
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #endif
 */
 #include "Window.h"
+
+#ifdef WIN32
+typedef __int32 int32_t;
+typedef unsigned __int32 u_int32_t; 
+#endif
 
 
 class VulkanWindow: public Window
