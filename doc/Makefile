@@ -1,11 +1,14 @@
-DOCS=0-gVirtualRay-content-IBSim-4i_2020.html \
-	0-gVirtualRay-content-IBSim-4i_2020.pdf \
-	1-gVirtualRay-overview-IBSim-4i_2020.html \
-	1-gVirtualRay-overview-IBSim-4i_2020.pdf \
-	4-gVirtualRay-validation-IBSim-4i_2020.html \
-	5-gVirtualRay-install-IBSim-4i_2020.html \
-	5-gVirtualRay-install-IBSim-4i_2020.pdf
+DOCS=README.html \
+	README.pdf \
+	1-overview/1-gVirtualRay-overview-IBSim-4i_2020.html \
+	1-overview/1-gVirtualRay-overview-IBSim-4i_2020.pdf \
+	2-theory/2-gVirtualRay-theory-IBSim-4i_2020.html \
+	2-theory/2-gVirtualRay-theory-IBSim-4i_2020.pdf \
+	4-validation/4-gVirtualRay-validation-IBSim-4i_2020.html \
+	5-install/5-gVirtualRay-install-IBSim-4i_2020.html \
+	5-install/5-gVirtualRay-install-IBSim-4i_2020.pdf
 
+FILES = $(wildcard */.md)
 
 all: ${DOCS}
 
