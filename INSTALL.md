@@ -1,3 +1,10 @@
+---
+title: How to compile and install gVirtualXRay Suite
+author: Dr Franck P. Vidal
+date: 2nd Sept 2020
+---
+
+
 # How to compile and install gVirtualXRay Suite
 
 ## Requirements
@@ -153,7 +160,7 @@ And to make it permanent:
     $ echo "" >> $HOME/.bashrc
     $ echo "################################################################################" >> $HOME/.bashrc
     $ echo "# Install gvxrPython3 in PYTHONPATH" >> $HOME/.bashrc
-    $ echo export PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:$PYTHONPATH >> $HOME/.bashrc
+    $ echo export PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:\$PYTHONPATH >> $HOME/.bashrc
     $ echo "################################################################################" >> $HOME/.bashrc
 ```
 
@@ -196,8 +203,8 @@ export PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:PYTHONPATH
 
 echo "" >> $HOME/.bashrc
 echo "################################################################################" >> $HOME/.bashrc
-echo "Install gvxrPython3 in PYTHONPATH" >> $HOME/.bashrc
-echo PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:$PYTHONPATH >> $HOME/.bashrc
+echo "# Install gvxrPython3 in PYTHONPATH" >> $HOME/.bashrc
+echo PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.1/python3:\$PYTHONPATH >> $HOME/.bashrc
 echo "################################################################################" >> $HOME/.bashrc
 
 ```

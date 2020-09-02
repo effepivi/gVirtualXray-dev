@@ -1,5 +1,5 @@
 ---
-title: gVirtualXRay: Virtual X-Ray Imaging Library on GPU
+title: "gVirtualXRay: Virtual X-Ray Imaging Library on GPU"
 author: Dr Franck P. Vidal (Bangor University)
 date: 17th Jan 2020
 ---
