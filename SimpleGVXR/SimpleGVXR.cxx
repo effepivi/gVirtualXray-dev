@@ -778,7 +778,7 @@ void makeTriangularMesh(const std::string& aLabel,
 //-------------------------------------------------------------------------
 void makeTriangularMesh(const std::string& aLabel,
 						const std::vector<float>& aVertexSet,
-						const std::vector<unsigned int>& aTriangleIndexSet,
+						const std::vector<int>& aTriangleIndexSet,
 						const std::string& aUnitOfLength,
 						const std::string& aParent)
 //-------------------------------------------------------------------------
@@ -806,9 +806,27 @@ void makeTriangularMesh(const std::string& aLabel,
         p_node = g_p_scene_graph->getNode(aLabel);
         }
 
+    std::vector<unsigned int> p_temp;
+
+    for (std::vector<int>::const_iterator ite(aTriangleIndexSet.begin());
+    		ite != aTriangleIndexSet.end();
+    		++ite)
+    {
+    	if (*ite < 0)
+    	{
+            throw gVirtualXRay::Exception(__FILE__,
+                                          __FUNCTION__,
+                                          __LINE__,
+                                          "The index is negative.");
+
+    	}
+
+    	p_temp.push_back(*ite);
+    }
+
     p_node->getPolygonMesh().setInternalData(GL_TRIANGLES,
 			&aVertexSet,
-			&aTriangleIndexSet,
+			&p_temp,
 			false,
 			GL_STATIC_DRAW);
 

@@ -602,7 +602,7 @@ void makeTriangularMesh(const std::string& aLabel,
 
 void makeTriangularMesh(const std::string& aLabel,
 		const std::vector<float>& aVertexSet,
-		const std::vector<unsigned int>& aTriangleIndexSet,
+		const std::vector<int>& aTriangleIndexSet,
 	    const std::string& aUnitOfLength = "cm",
 		const std::string& aParent = "root");
 
