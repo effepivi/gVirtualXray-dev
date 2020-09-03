@@ -11,3 +11,7 @@
 - Can load meshes from arrays
 - Ease the installation from source
 - Added a GUI
+1.1.2 to 1.1.3
+- Bug fixes
+- Can load meshes from RAM
+- Improve Numpy support
