@@ -22,6 +22,8 @@ date: 13th Aug 2020
     - Reconstruction of the sinogram
     <!-- - Use in an optimisation framework -->
 
+For more info on gVirtualRay, please visit [https://sourceforge.net/projects/gvirtualxray/](https://sourceforge.net/projects/gvirtualxray/), [http://gvirtualxray.sourceforge.net/](http://gvirtualxray.sourceforge.net/), or contact Franck.
+
 ## Recording of the talk
 
 [![Watch the video](https://img.youtube.com/vi/qj7K6-M4lCI/0.jpg)](https://youtu.be/qj7K6-M4lCI "Brief introduction to this session on gVirtualXRay")
