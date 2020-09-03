@@ -15,9 +15,12 @@ date: 13th Aug 2020
 
 [![Watch the video](https://img.youtube.com/vi/4Rn0HwvhViU/0.jpg)](https://youtu.be/4Rn0HwvhViU "Compilation and installation of gVirtualXRay (GNU/Linux)")
 
-- [Click here for a recording (MS Windows)](https://youtu.be/vRYi1dFCqcU)
+- *Click here for a recording (MS Windows)* -- **to appear**
 
-[![Watch the video](https://img.youtube.com/vi/vRYi1dFCqcU/0.jpg)](https://youtu.be/vRYi1dFCqcU "Compilation and installation of gVirtualXRay (MS Windows)")
+
+<!-- - [Click here for a recording (MS Windows)](https://youtu.be/vRYi1dFCqcU)
+
+[![Watch the video](https://img.youtube.com/vi/vRYi1dFCqcU/0.jpg)](https://youtu.be/vRYi1dFCqcU "Compilation and installation of gVirtualXRay (MS Windows)") -->
 
 # Back to main menu
 

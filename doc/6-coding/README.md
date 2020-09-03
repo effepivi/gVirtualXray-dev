@@ -11,6 +11,8 @@ date: 13th Aug 2020
 - [Click here for the slides (PDF)](6-gVirtualRay-coding-IBSim-4i_2020.pdf)
 
 
+## Recordings
+
 - [Click here for a recording of `Simulating an X-ray projection from a STL file`](https://youtu.be/Y5q2kcuAZmY)
 
 [![Watch the video](https://img.youtube.com/vi/Y5q2kcuAZmY/0.jpg)](https://youtu.be/Y5q2kcuAZmY "Simulating an X-ray projection from a STL file")
@@ -32,7 +34,7 @@ date: 13th Aug 2020
 [![Watch the video](https://img.youtube.com/vi/hb6Z3Y-2-YA/0.jpg)](https://youtu.be/hb6Z3Y-2-YA "Reconstructing a CT volume using skimage")
 
 
-# Python scripts and STL file
+## Python scripts and STL file
 
 - [Click here for the STL file of the Welsh dragon](welsh-dragon-small.stl)
 - [Click here for the source code (X-ray projection from a STL file)](xray_proj_from_STL.py)
