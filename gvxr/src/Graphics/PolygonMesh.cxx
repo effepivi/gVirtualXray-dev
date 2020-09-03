@@ -535,7 +535,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
     while(getline(input_stream, line))
         {
         if (line.find("solid", 0) != std::string::npos) ++occurence_of_solid;
-        if (line.find("vertex", 0) != std::string::npos) ++occurence_of_solid;
+        if (line.find("vertex", 0) != std::string::npos) ++occurence_of_vertex;
         }
 
     // This is an ASCII file
@@ -596,7 +596,7 @@ void PolygonMesh::loadASCIISTLFile(bool aMoveToCentreFlag,
     std::string line;
     while(getline(input_stream, line))
         {       
-        if (line.find("tvertex", 0) != std::string::npos)
+        if (line.find("vertex", 0) != std::string::npos)
             {
             std::stringstream temp_line;
             std::string temp_string;
