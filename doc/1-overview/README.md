@@ -9,4 +9,10 @@ date: 13th Aug 2020
 
 - [Click here for the slides (HTML)](1-gVirtualRay-overview-IBSim-4i_2020.html)
 - [Click here for the slides (PDF)](1-gVirtualRay-overview-IBSim-4i_2020.pdf)
-- [Click here for a recording](1-gVirtualRay-overview-IBSim-4i_2020.mp4)
+- [Click here for a recording](https://youtu.be/xpEfLj9so8o)
+
+[![Watch the video](https://img.youtube.com/vi/xpEfLj9so8o/0.jpg)](https://youtu.be/xpEfLj9so8o  "Overview of gVirtualXRay")
+
+# Back to main menu
+
+[Click here](../README.html#(2))

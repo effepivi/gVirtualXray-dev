@@ -5,6 +5,7 @@ subtitle: IBSim-4i 2020
 date: 13th Aug 2020
 ---
 
+
 # Content of this session
 
 1. [Overview of gVirtualXRay](1-overview/README.html#(2))
@@ -20,3 +21,7 @@ date: 13th Aug 2020
     - Simulate an X-ray CT scan acquisition
     - Reconstruction of the sinogram
     <!-- - Use in an optimisation framework -->
+
+## Recording of the talk
+
+[![Watch the video](https://img.youtube.com/vi/qj7K6-M4lCI/0.jpg)](https://youtu.be/qj7K6-M4lCI "Brief introduction to this session on gVirtualXRay")
