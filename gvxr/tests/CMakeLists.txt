@@ -67,45 +67,10 @@ check_function_exists(sqrt HAVE_SQRT)
 check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
-# EGL
-find_library(EGL_LIBRARY EGL)
-find_library(GLESv2_LIBRARY GLESv2)
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+SET (requiredLibs ${requiredLibs} OpenGL::OpenGL OpenGL::EGL)
 
-find_path(EGL_INCLUDE_DIR
-  NAMES EGL/egl.h
-)
-
-IF (NOT EGL_LIBRARY OR NOT EGL_INCLUDE_DIR)
-    MESSAGE(WARNING "EGL is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
-ELSE ()
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLEW_EGL")
-    SET (optionalLibs ${optionalLibs} ${EGL_LIBRARY})
-    ADD_DEFINITIONS(-DGLEW_EGL)
-ENDIF  ()
-
-IF (NOT GLESv2_LIBRARY)
-    MESSAGE(WARNING "GLESv2 is not installed, please install it, e.g. using sudo zypper install Mesa-libEGL1 Mesa-libEGL-devel")
-ELSE ()
-    SET (optionalLibs ${optionalLibs} ${GLESv2_LIBRARY})
-ENDIF  ()
-
-
-# GBM
-find_library(GBM_LIBRARY gbm)
-
-find_path(GBM_INCLUDE_DIR
-NAMES gbm.h
-)
-
-IF (NOT GBM_LIBRARY OR NOT GBM_INCLUDE_DIR)
-    MESSAGE(WARNING "GBM is not installed, please install it, e.g. using sudo zypper install libgbm1 libgbm-devel")
-ELSE ()
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GBM")
-    SET (optionalLibs ${optionalLibs} ${GBM_LIBRARY})
-    ADD_DEFINITIONS(-DHAS_GBM)
-ENDIF  ()
-
-include(configureGlfw)
 
 # Valiation_02
 add_executable(TestDensity                     TestDensity.cxx)

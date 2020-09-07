@@ -64,40 +64,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-/*#ifndef EGL_NO_X11
+#ifndef EGL_NO_X11
 #define EGL_NO_X11
 #endif
+
+//#ifndef MESA_EGL_NO_X11_HEADERS
+//#define MESA_EGL_NO_X11_HEADERS
+//#endif
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#undef HAS_GBM
-
-#ifdef HAS_GBM
-class gbm_device;
-class gbm_surface;
-#endif
-*/
-
-
-class GLFWwindow;
 
 
 struct contextData {
     bool ready;
-/*
-#ifdef HAS_GBM
-    gbm_device* p_device;
-    gbm_surface* p_surface;
-#endif
 
     EGLDisplay egl_display;
     EGLConfig egl_config;
     EGLContext egl_context;
     EGLSurface egl_surface;
-*/
-    GLFWwindow* m_p_window;
-
 };
 
 
@@ -108,7 +94,10 @@ struct contextData {
 *   @param aDisplay:   the display
 */
 //------------------------------------------------------------------------------
-void createGLContext(contextData& aWholeContextData);
+void createGLContext(contextData& aWholeContextData,
+
+        int gl_req_major_ver=2,
+        int gl_req_minor_ver=1);
 
 
 //------------------------------------------------------------------------------

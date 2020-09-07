@@ -177,6 +177,11 @@ ENDIF ()
 SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL GLX EGL)
+SET (requiredLibs ${requiredLibs} OpenGL::OpenGL OpenGL::GLX OpenGL::EGL)
+
+
 # OpenMP ######################################################################
 FIND_PACKAGE(OpenMP)
 
