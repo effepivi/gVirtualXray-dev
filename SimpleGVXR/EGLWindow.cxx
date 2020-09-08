@@ -146,7 +146,7 @@ void EGLWindow::createWindow(bool aVisibilityFlag)
 #ifdef HAS_EGL
 	if (!m_ready)
 		{
-		// Cotext attributes
+		// Context attributes
 		constexpr EGLint attrib_list[] =
 			{
 			EGL_RED_SIZE, 8,
@@ -256,8 +256,6 @@ void EGLWindow::createWindow(bool aVisibilityFlag)
 			return;
 		}
 
-		cout << "OpenGL version supported by this platform " << glGetString(GL_VERSION) << endl;
-
 		// Create the surface
 		m_surface = eglCreatePbufferSurface(m_display, m_config, nullptr);
 		if (!m_surface)
@@ -274,8 +272,6 @@ void EGLWindow::createWindow(bool aVisibilityFlag)
 			return;
 			}
 
-		cout << "OpenGL version supported by this platform " << glGetString(GL_VERSION) << endl;
-
 		// Initialise GLEW
 		gVirtualXRay::initialiseGLEW();
 
@@ -285,6 +281,8 @@ void EGLWindow::createWindow(bool aVisibilityFlag)
 			m_ready = false;
 			return;
 			}
+
+		cout << "OpenGL version supported by this platform " << glGetString(GL_VERSION) << endl;
 
 		m_ready = true;
 		}

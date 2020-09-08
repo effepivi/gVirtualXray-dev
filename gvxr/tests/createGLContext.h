@@ -77,13 +77,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-struct contextData {
-    bool ready;
+class contextData {
+public:
+	contextData();
+	~contextData();
 
-    EGLDisplay egl_display;
-    EGLConfig egl_config;
-    EGLContext egl_context;
-    EGLSurface egl_surface;
+    bool m_ready;
+
+    EGLDisplay m_display;
+    EGLConfig m_config;
+    EGLContext m_context;
+    EGLSurface m_surface;
 };
 
 
