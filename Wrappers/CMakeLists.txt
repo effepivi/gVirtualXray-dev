@@ -171,6 +171,11 @@ file(WRITE
 )
 
 
+# OpenGL ######################################################################
+FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+FIND_PACKAGE(OpenGL COMPONENTS GLX EGL)
+
+
 # SWIG has been found
 IF (SWIG_FOUND)
 
