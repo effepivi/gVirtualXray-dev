@@ -201,7 +201,7 @@ OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     if (!m_p_window)
     {
         // Display a warning
-        cerr << "gvxrWarning:\tWindow " <<
+        cerr << "gvxrWarning:\tOpenGLWindow " <<
             " cannot be created." <<
             endl;
     }

@@ -158,6 +158,7 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 add_library(SimpleGVXR
     SimpleGVXR.cxx
     Window.cxx
+    EGLWindow.cxx
     OpenGLWindow.cxx
     VulkanWindow.cxx
 )
@@ -178,9 +179,18 @@ SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
 
 
 # OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL GLX EGL)
-SET (requiredLibs ${requiredLibs} OpenGL::OpenGL OpenGL::GLX OpenGL::EGL)
+FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
+FIND_PACKAGE(OpenGL COMPONENTS GLX EGL)
+IF (OpenGL_GLX_FOUND)
+	SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+ENDIF (OpenGL_GLX_FOUND)
+
+IF (OpenGL_EGL_FOUND)
+	SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+    ADD_DEFINITIONS(-DHAS_EGL)
+ENDIF (OpenGL_EGL_FOUND)
 
 # OpenMP ######################################################################
 FIND_PACKAGE(OpenMP)

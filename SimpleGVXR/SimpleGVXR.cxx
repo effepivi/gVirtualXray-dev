@@ -148,6 +148,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "VulkanWindow.h"
 #endif
 
+#ifndef __EGLWindow_h
+#include "EGLWindow.h"
+#endif
+
 
 //******************************************************************************
 //  Namespace
@@ -2285,18 +2289,21 @@ void createWindow(int aWindowID,
         // Make sure all the windows are destroyed
         atexit(quit);
 
-        // Set an error callback
-        glfwSetErrorCallback(errorCallback);
+        if (aRenderer != "EGL")
+        	{
+			// Set an error callback
+			glfwSetErrorCallback(errorCallback);
 
-        // Initialize GLFW
-        if (!glfwInit())
-            {
-            throw gVirtualXRay::Exception(
-                __FILE__,
-                __FUNCTION__,
-                __LINE__,
-                "ERROR: cannot initialise GLFW.");
-            }
+			// Initialize GLFW
+			if (!glfwInit())
+				{
+				throw gVirtualXRay::Exception(
+					__FILE__,
+					__FUNCTION__,
+					__LINE__,
+					"ERROR: cannot initialise GLFW.");
+				}
+			}
         }
 
     if (aWindowID == -1)
@@ -2323,6 +2330,12 @@ void createWindow(int aWindowID,
         {
         	p_window = new VulkanWindow(aVisibilityFlag);
         }
+#ifdef HAS_EGL
+    	else if (aRenderer == "EGL")
+        {
+        	p_window = new EGLWindow();
+        }
+#endif // HAS_EGL
         else
     	{
     		std::string error_message = "ERROR: Unknown renderer (";

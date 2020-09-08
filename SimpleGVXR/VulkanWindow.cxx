@@ -319,7 +319,7 @@ VulkanWindow::VulkanWindow(int aVisibilityFlag):
     if (!m_p_window)
     {
         // Display a warning
-        cerr << "gvxrWarning:\tWindow " <<
+        cerr << "gvxrWarning:\tVulkanWindow " <<
             " cannot be created." <<
             endl;
     }

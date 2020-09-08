@@ -210,7 +210,10 @@ void Window::setWindowSize(int aWidth, int aHeight)
         m_width  = aWidth;
         m_height = aHeight;
 
-        glfwSetWindowSize(m_p_window, aWidth, aHeight);
+        if (m_p_window)
+        	{
+        	glfwSetWindowSize(m_p_window, aWidth, aHeight);
+        	}
     }
 }
 
@@ -222,15 +225,18 @@ void Window::renderLoop()
     g_run_loop = true;
 
     // Launch the event loop
-    while (!glfwWindowShouldClose(m_p_window) &&
-            g_run_loop)
-        {
-        // Process the event
-    	glfwPollEvents();
+    if (m_p_window)
+		{
+		while (!glfwWindowShouldClose(m_p_window) &&
+				g_run_loop)
+			{
+			// Process the event
+			glfwPollEvents();
 
-        // Render here
-        displayScene(true);
-        }
+			// Render here
+			displayScene(true);
+			}
+		}
 }
 
 
@@ -238,7 +244,10 @@ void Window::renderLoop()
 void Window::showWindow()
 //-----------------------
 {
-    glfwShowWindow(m_p_window);
+	if (m_p_window)
+		{
+		glfwShowWindow(m_p_window);
+		}
 }
 
 
@@ -246,7 +255,10 @@ void Window::showWindow()
 void Window::hideWindow()
 //-----------------------
 {
-    glfwHideWindow(m_p_window);
+	if (m_p_window)
+		{
+		glfwHideWindow(m_p_window);
+		}
 }
 
 
@@ -254,7 +266,10 @@ void Window::hideWindow()
 void Window::destroyWindow()
 //--------------------------
 {
-    glfwDestroyWindow(m_p_window);
+	if (m_p_window)
+		{
+		glfwDestroyWindow(m_p_window);
+		}
 }
 
 
