@@ -116,7 +116,7 @@ In the example below, I install it in my home directory in `gvxr-install`.
             -DBUILD_WRAPPER_R:BOOL=ON \
             -DBUILD_WRAPPER_RUBY:BOOL=ON \
             -DBUILD_WRAPPER_TCL:BOOL=ON \
-            -S .. \
+            -S ../gVirtualXRay-1.1.3 \
             -B $PWD
 ```
     - `ccmake`:
@@ -191,7 +191,7 @@ cmake \
     -DBUILD_WRAPPER_R:BOOL=OFF \
     -DBUILD_WRAPPER_RUBY:BOOL=OFF \
     -DBUILD_WRAPPER_TCL:BOOL=OFF \
-    -S .. \
+    -S ../gVirtualXRay-1.1.3 \
     -B $PWD
 
 make -j16
@@ -359,6 +359,186 @@ The X-ray image is displayed using linear, log and power law colour scales using
 - `xray_image-0.mha`: contains the X-ray image. MHA fies can be viewed with the popular scientific image viewer tool [ImageJ/Fiji](https://imagej.net/Fiji/).
 - `lbuffer-0.mha`: contains the length of X-rays crossed in the 3-D object.
 10. If you want to create your own simulations, have a look at the script. You can find it at [https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py](https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py).
+
+
+
+
+### For SuperComputing Wales
+
+
+
+
+
+1. Open a terminal, log on SCW using SSH, and choose where the binaries should be installed. **It must be a directory where you can write.**.
+In the example below, I install it in my home directory in `gvxr-install`.
+```bash
+    $ export GVXR_INSTALL_DIR=$HOME/gvirtualxray-install
+```
+2. Load the SCW modules
+```bash
+    $ module load cmake compiler/gnu/8/1.0 python/3.7.0
+```
+3. Download, compile and install SWIG
+```bash
+    $ wget https://sourceforge.net/projects/swig/files/swig/swig-4.0.2/swig-4.0.2.tar.gz/download
+    $ tar zxfp download
+    $ rm download
+    $ cd swig-4.0.2/
+    $ ./configure --prefix=$HOME/install
+    $ make -j8
+    $ make install
+    $ export SWIG_DIR=$HOME/install/share/swig/4.0.2/
+    $ cd ..
+```
+4. go in the directory where you want to build the gVirtualXRay, e.g.
+```bash
+
+    $ mkdir ~gvxr
+    $ cd ~gvxr
+```
+5. Download the latest release:
+```bash
+    $ wget https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.4-Source.zip/download
+    $ mv download gVirtualXRay-1.1.4-Source.zip
+    $ unzip gVirtualXRay-1.1.4-Source.zip
+```
+4. Create a directory where the binaries will be created and go in this directory.
+```bash
+    $ mkdir gvxr-bin
+    $ cd gvxr-bin
+```
+5. Configure the project using CMake:
+```bash
+    $ cmake \
+        -DCMAKE_BUILD_TYPE:STRING=Release \
+        -DCMAKE_INSTALL_PREFIX:STRING=$GVXR_INSTALL_DIR \
+        -DBUILD_TESTING:BOOL=ON \
+        -DSWIG_DIR=$SWIG_DIR \
+        -DSWIG_EXECUTABLE=$HOME/install/bin/swig \
+        -DBUILD_WRAPPER_PYTHON3:BOOL=ON \
+        -DPYTHON_LIBRARY=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
+        -DPYTHON_LIBRARY_DEBUG=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
+        -DPYTHON_LIBRARY_RELEASE=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
+        -S ../gVirtualXRay-1.1.4 \
+        -B $PWD
+```
+6. Compile the project.
+```bash
+    $ make -j4
+```
+7. Run the unit tests (optional)
+You cannot run the unit test on the supercomputer's login node. You need to use a compute node with a GPU. Write the following script (`unit_test_job.sh`) and submit it with `sbatch`.
+
+    - Content of `unit_test_job.sh`:
+```bash
+#!/usr/bin/env bash
+#
+# Project/Account (use your own)
+#SBATCH -A YOURACCOUNT
+#SBATCH --job-name=unit_test     # Job name
+#SBATCH --output unit_test-%j.out     # Job name
+#SBATCH --error unit_test-%j.err     # Job name
+#
+# We ask for 1 tasks with 1 core only.
+# We ask for a GPU
+#SBATCH --gres=gpu:2
+#SBATCH -p gpu_v100
+#
+# Number of tasks per node
+#SBATCH --ntasks-per-node=1
+#
+# Number of cores per task
+#SBATCH --cpus-per-task=1
+#
+# Use one node
+#SBATCH --nodes=1
+#
+# Runtime of this jobs is less then 5 minute.
+#SBATCH --time=00:00:05
+module purge > /dev/null 2>&1
+module load cmake compiler/gnu/8/1.0 python/3.7.0
+
+export EGL_PLATFORM=
+make test
+```
+    - Submit the job:
+```bash
+    sbatch unit_test_job.sh
+```
+8. Install
+```bash
+    $ make install
+```
+If you built the python wrapper, add its path to `PYTHONPATH`:
+```bash
+    $ PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.2/python3:$PYTHONPATH
+```
+And to make it permanent:
+```bash
+    $ echo "" >> $HOME/.myenv
+    $ echo "################################################################################" >> $HOME/.myenv
+    $ echo "# Install gvxrPython3 in PYTHONPATH" >> $HOME/.myenv
+    $ echo export PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.2/python3:\$PYTHONPATH >> $HOME/.myenv
+    $ echo "################################################################################" >> $HOME/.myenv
+```
+
+### Summary of all the commands:
+```bash
+export GVXR_INSTALL_DIR=$HOME/gvirtualxray-install
+module load cmake compiler/gnu/8/1.0 python/3.7.0
+
+# Download, compile and install SWIG
+wget https://sourceforge.net/projects/swig/files/swig/swig-4.0.2/swig-4.0.2.tar.gz/download
+tar zxfp download
+rm download
+./configure --prefix=$HOME/install
+make -j8
+make install
+cd ..
+
+# Download the latest release:
+mkdir ~/gvxr
+cd ~/gvxr
+wget https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.4-Source.zip/download
+mv download gVirtualXRay-1.1.4-Source.zip
+unzip gVirtualXRay-1.1.4-Source.zip
+
+# Configure the project using CMake
+mkdir gvxr-bin
+cd gvxr-bin
+
+cmake \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -DCMAKE_INSTALL_PREFIX:STRING=$GVXR_INSTALL_DIR \
+    -DBUILD_TESTING:BOOL=ON \
+    -DSWIG_DIR=$SWIG_DIR \
+    -DSWIG_EXECUTABLE=$HOME/install/bin/swig \
+    -DBUILD_WRAPPER_PYTHON3:BOOL=ON \
+    -DPYTHON_LIBRARY=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
+    -DPYTHON_LIBRARY_DEBUG=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
+    -DPYTHON_LIBRARY_RELEASE=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
+    -S ../gVirtualXRay-1.1.4 \
+    -B $PWD
+
+# Run the unit tests
+vi unit_test_job.sh
+sbatch unit_test_job.sh
+
+# Install
+make install
+
+export PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.2/python3:$PYTHONPATH
+
+echo "" >> $HOME/.myenv
+echo "################################################################################" >> $HOME/.myenv
+echo "# Install gvxrPython3 in PYTHONPATH" >> $HOME/.myenv
+echo export PYTHONPATH=$GVXR_INSTALL_DIR/gvxrWrapper-1.0.2/python3:\$PYTHONPATH >> $HOME/.myenv
+echo "################################################################################" >> $HOME/.myenv
+```
+
+
+
+
 
 # Back to main menu
 
