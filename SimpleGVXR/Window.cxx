@@ -173,16 +173,6 @@ Window::Window(int aVisibilityFlag):
 	m_callback_registered(false)
 //----------------------------------
 {
-    // Initialize GLFW
-    if (!glfwInit())
-        {
-        throw gVirtualXRay::Exception(
-            __FILE__,
-            __FUNCTION__,
-            __LINE__,
-            "ERROR: cannot initialise GLFW.");
-        }
-
     cout << "gvxrStatus:\tCreate window " << endl;
 
 	m_p_window_set.push_back(this);

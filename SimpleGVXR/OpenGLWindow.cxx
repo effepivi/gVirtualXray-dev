@@ -194,6 +194,16 @@ OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
     m_opengl_minor_version(anOpenGLMinorVersion)
 //---------------------------------------------------
 {
+    // Initialize GLFW
+    if (!glfwInit())
+        {
+        throw gVirtualXRay::Exception(
+            __FILE__,
+            __FUNCTION__,
+            __LINE__,
+            "ERROR: cannot initialise GLFW.");
+        }
+
     // Create the window
     createWindow(aVisibilityFlag);
 
