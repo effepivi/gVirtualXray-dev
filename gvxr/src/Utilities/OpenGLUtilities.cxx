@@ -116,8 +116,13 @@ void initialiseGLEW()
 #ifdef HAS_GLEW
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
-/*	if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)
-	{
+
+#ifdef HAS_EGL
+	if (err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY)
+#else
+	if (err != GLEW_OK)
+#endif
+		{
 		std::stringstream error_message;
 		error_message << "ERROR: cannot initialise GLEW:\t";
 
@@ -133,8 +138,8 @@ void initialiseGLEW()
 			error_message << glewGetErrorString(err);
 
         throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
-	}
-*/
+		}
+
 	glGetError(); // Remove an error that occurs in Windows
 #endif
 }
@@ -162,7 +167,11 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	// There was an error
 	if (error_code != GL_NO_ERROR)
 	{
+#ifdef HAS_GLU
 	    std::cerr << "OpenGL error:" << gluErrorString(error_code) << std::endl;
+#else
+	    std::cerr << "OpenGL error:" << error_code << std::endl;
+#endif
 	    std::cerr << "\t- in File: " << aFileName << std::endl;
 	    std::cerr << "\t- in Function: " << aFunctionName << std::endl;
 	    std::cerr << "\t- at Line: " << aLineNumber << std::endl;
