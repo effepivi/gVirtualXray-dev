@@ -134,8 +134,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Exception.h"
 #endif
 
-#ifndef __createGLContext_h
-#include "createGLContext.h"
+#ifndef __Context_h
+#include "gVirtualXRay/Context.h"
 #endif
 
 
@@ -154,7 +154,7 @@ using namespace gVirtualXRay;
 //******************************************************************************
 //  Global variables
 //******************************************************************************
-contextData g_egl_context;
+Context g_GL_context;
 
 Matrix4x4<GLfloat> g_scene_rotation_matrix;
 Matrix4x4<GLfloat> g_detector_rotation_matrix;
@@ -206,8 +206,12 @@ TEST(TestPointSource, TestPointSource)
     // Register the exit callback
     atexit(quit);
 
-    // Initialize EGL
-    createGLContext(g_egl_context);
+    // Create an OpenGL context
+#ifdef HAS_EGL
+    g_GL_context.create("EGL", 3, 2);
+#else
+    g_GL_context.create("OpenGL", 3, 2);
+#endif
 
     // Initialise GLEW
     initialiseGLEW();
@@ -293,7 +297,7 @@ TEST(TestPointSource, TestPointSource)
 void quit()
 //---------
 {
-    destroyGLContext(g_egl_context);
+	g_GL_context.release();
 }
 
 

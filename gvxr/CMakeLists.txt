@@ -164,6 +164,7 @@ SET (CXX_SOURCES
 
     # Utilities
     ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/AtomicElement.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Context.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
@@ -256,6 +257,7 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AtomicElement.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/AtomicElement.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ConstantValues.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ElementSet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ElementSet.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Exception.h

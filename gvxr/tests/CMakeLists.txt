@@ -78,47 +78,47 @@ add_executable(TestDensity                     TestDensity.cxx)
 # Validation_01
 add_executable(TestMassAttenuationCoefficients TestMassAttenuationCoefficients.cxx)
 
-add_executable(TestCubeWithIndex    TestCubeWithIndex.cxx createGLContext.cxx)
-add_executable(TestCubeWithoutIndex TestCubeWithoutIndex.cxx createGLContext.cxx)
+add_executable(TestCubeWithIndex    TestCubeWithIndex.cxx)
+add_executable(TestCubeWithoutIndex TestCubeWithoutIndex.cxx)
 
 # Validation_??
-add_executable(TestLBuffer TestLBuffer.cxx createGLContext.cxx)
+add_executable(TestLBuffer TestLBuffer.cxx)
 
 # Validation_03
-add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx createGLContext.cxx)
+add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.cxx)
 
 # Validation_05
-add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx createGLContext.cxx)
+add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
 
 # Validation_08
-add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx createGLContext.cxx)
+add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
 
 # Validation_??
-#add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx createGLContext.cxx)
+#add_executable(TestRadonTransformFromVoxels   TestRadonTransformFromVoxels.cxx)
 
 # Validation_??
-#add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx createGLContext.cxx)
+#add_executable(TestSinogramFromVoxels          TestSinogramFromVoxels.cxx)
 
 # Validation_06
-add_executable(TestPointSource                 TestPointSource.cxx createGLContext.cxx)
+add_executable(TestPointSource                 TestPointSource.cxx)
 
 # Validation_07
-add_executable(TestCubeSource                  TestCubeSource.cxx createGLContext.cxx)
+add_executable(TestCubeSource                  TestCubeSource.cxx)
 
 # Validation_09
-add_executable(TestUncenteredSource            TestUncenteredSource.cxx createGLContext.cxx)
+add_executable(TestUncenteredSource            TestUncenteredSource.cxx)
 
 # Validation_??
-#add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx createGLContext.cxx)
+#add_executable(TestPhantomMonoChromatic        TestPhantomMonoChromatic.cxx)
 
 # Validation_04
-add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx createGLContext.cxx)
+add_executable(TestRadonTransformFromMesh       TestRadonTransformFromMesh.cxx)
 
-add_executable(TestOrtho                        TestOrtho.cxx createGLContext.cxx)
+add_executable(TestOrtho                        TestOrtho.cxx)
 
 IF (FFTW3_LIBRARIES)
   # Validation_04
-    add_executable(TestFBP                     TestFBP.cxx createGLContext.cxx)
+    add_executable(TestFBP                     TestFBP.cxx)
 ENDIF()
 
 
