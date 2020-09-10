@@ -177,6 +177,14 @@ void Context::destroy()
 }
 
 
+//---------------------------
+bool Context::isReady() const
+//---------------------------
+{
+	return m_ready;
+}
+
+
 //-----------------------------
 void Context::createGLWithEGL()
 //-----------------------------

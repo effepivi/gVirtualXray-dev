@@ -81,11 +81,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
-#ifdef HAS_EGL
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#endif // HAS_EGL
-
 #include "Window.h"
 
 
@@ -104,7 +99,6 @@ public:
     EGLWindow(int anOpenGLMajorVersion = 4,
         int anOpenGLMinorVersion = 5);
 
-    ~EGLWindow();
 
     virtual void setWindowSize(int aWidth, int aHeight);
     virtual void displayScene(bool aSceneRotationFlag);
@@ -114,19 +108,6 @@ protected:
     virtual void createWindow(bool aVisibilityFlag);
     virtual void initShader();
     virtual void render(bool aSceneRotationFlag);
-
-
-    int m_opengl_majour_version;
-    int m_opengl_minor_version;
-
-#ifdef HAS_EGL
-    EGLDisplay m_display;
-    EGLConfig m_config;
-    EGLContext m_context;
-    EGLSurface m_surface;
-#endif
-
-    bool m_ready;
 };
 
 

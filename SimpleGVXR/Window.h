@@ -70,8 +70,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <list>
 
-#define GLFW_INCLUDE_GLCOREARB 1
-#include <GLFW/glfw3.h>
+// To create the OpenGL or Vulkan context
+#ifndef __Context_h
+#include "gVirtualXRay/Context.h"
+#endif
 
 
 //******************************************************************************
@@ -141,6 +143,8 @@ protected:
 
 
     static std::list<Window*> m_p_window_set;
+
+    gVirtualXRay::Context m_context;
 
     std::string m_title;
     bool m_visible;
