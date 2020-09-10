@@ -142,6 +142,7 @@ using namespace std;
 
 
 // Used for validating return values of Vulkan API calls.
+#ifdef HAS_VULKAN
 #define VK_CHECK_RESULT(f) 												\
 {																		\
     VkResult result = (f);												\
@@ -153,7 +154,7 @@ using namespace std;
             error_message.str());                                       \
     }																	\
 }
-
+#endif
 
 
 //******************************************************************************

@@ -44,14 +44,15 @@ ENDIF (OPENMP_FOUND)
 
 
 # Vulkan ######################################################################
-FIND_PACKAGE(Vulkan)
+#FIND_PACKAGE(Vulkan)
 
 IF (Vulkan_FOUND)
     MESSAGE (STATUS "Use VULKAN")
 
     SET (USE_VULKAN ON)
     SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${Vulkan_INCLUDE_DIRS}")
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_VULKAN")
+    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_VULKAN" "-DGLFW_INCLUDE_VULKAN")
+
     SET (optionalLibs ${optionalLibs} ${Vulkan_LIBRARIES})
 ELSE (Vulkan_FOUND)
     MESSAGE (WARNING "Vulkan not found, the use of Vulkan will be disable.")
@@ -116,6 +117,7 @@ ELSE (WIN32 OR APPLE)
 ENDIF (WIN32 OR APPLE)
 
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
+SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DGLFW_INCLUDE_GLCOREARB")
 
 IF (OpenGL_EGL_FOUND)
     MESSAGE (STATUS "EGL found.")

@@ -411,5 +411,9 @@ void Context::createVulkanWithGLFW()
 	// Release the previous context if applicable
 	release();
 
-
+    throw gVirtualXRay::Exception(
+        __FILE__,
+        __FUNCTION__,
+        __LINE__,
+        "ERROR: not implemented, contact Franck if you need this functionality.");
 }
