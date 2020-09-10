@@ -179,18 +179,23 @@ SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
 
 
 # OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
-SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+IF (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED)
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+ELSE (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+    FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
+    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
-FIND_PACKAGE(OpenGL COMPONENTS GLX EGL)
-IF (OpenGL_GLX_FOUND)
-	SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-ENDIF (OpenGL_GLX_FOUND)
+    IF (OpenGL_GLX_FOUND)
+    	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+    ENDIF (OpenGL_GLX_FOUND)
 
-IF (OpenGL_EGL_FOUND)
-	SET (optionalLibs ${optionalLibs} OpenGL::EGL)
-    ADD_DEFINITIONS(-DHAS_EGL)
-ENDIF (OpenGL_EGL_FOUND)
+    IF (OpenGL_EGL_FOUND)
+        SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+    ENDIF (OpenGL_EGL_FOUND)
+ENDIF ()
+
 
 # OpenMP ######################################################################
 FIND_PACKAGE(OpenMP)
