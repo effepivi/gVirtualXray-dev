@@ -67,8 +67,8 @@ check_function_exists(sqrt HAVE_SQRT)
 check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
-# OpenGL ######################################################################
 
+# OpenGL ######################################################################
 IF (WIN32 OR APPLE)
     FIND_PACKAGE(OpenGL REQUIRED)
     SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
@@ -85,6 +85,7 @@ ELSE (WIN32 OR APPLE)
         SET (optionalLibs ${optionalLibs} OpenGL::EGL)
     ENDIF (OpenGL_EGL_FOUND)
 ENDIF ()
+
 
 # Valiation_02
 add_executable(TestDensity                     TestDensity.cxx)

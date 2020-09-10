@@ -62,6 +62,24 @@ check_function_exists(abs HAVE_ABS)
 check_function_exists(cbrt HAVE_CBRT)
 
 
+# OpenGL ######################################################################
+IF (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED)
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+ELSE (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+    FIND_PACKAGE(OpenGL COMPONENTS EGL GLX)
+    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+
+    IF (OpenGL_GLX_FOUND)
+    	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+    ENDIF (OpenGL_GLX_FOUND)
+
+    IF (OpenGL_EGL_FOUND)
+        SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+    ENDIF (OpenGL_EGL_FOUND)
+ENDIF ()
+
 
 # Valiation_02
 add_executable(SGVXR_TestDensity                     TestDensity.cxx)
