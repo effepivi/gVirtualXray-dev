@@ -83,18 +83,6 @@ ENDIF (NOT GZIP_FOUND)
 
 
 # OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL GLX)
-
-IF (OPENGL_FOUND)
-    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
-    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL  OpenGL::GLX)
-ELSE(OPENGL_FOUND)
-    MESSAGE(FATAL_ERROR "OpenGL not found.")
-ENDIF (OPENGL_FOUND)
-
-
-
-# OpenGL ######################################################################
 
 IF (WIN32 OR APPLE)
 ELSE (WIN32 OR APPLE)
