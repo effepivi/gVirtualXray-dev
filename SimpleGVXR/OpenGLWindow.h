@@ -114,10 +114,6 @@ protected:
 
 
     virtual void registerCallbacks();
-
-
-    int m_opengl_majour_version;
-    int m_opengl_minor_version;
 };
 
 

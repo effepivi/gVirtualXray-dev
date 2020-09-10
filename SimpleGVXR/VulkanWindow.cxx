@@ -326,7 +326,7 @@ VulkanWindow::VulkanWindow(int aVisibilityFlag):
     createWindow(aVisibilityFlag);
 
     // Window has not been created
-    if (!m_p_window)
+    if (!m_context.isReady())
     {
         // Display a warning
         cerr << "gvxrWarning:\tVulkanWindow " <<
@@ -341,7 +341,9 @@ void VulkanWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
     Window::setWindowSize(aWidth, aHeight);
-    framebufferSizeCallback(m_p_window, aWidth, aHeight);
+
+    if (m_context.getWindowHandle())
+    	framebufferSizeCallback(m_context.getWindowHandle(), aWidth, aHeight);
 }
 
 
@@ -388,6 +390,7 @@ void VulkanWindow::displayScene(bool aSceneRotationFlag)
 void VulkanWindow::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
 {
+	/*
     string window_title = "gVirtualXRay -- Window ";
 
     // Set the version of Vulkan that is required
@@ -437,14 +440,14 @@ void VulkanWindow::createWindow(bool aVisibilityFlag)
 
 
         // Initialise Vulkan
-        /*initVulkan();
-    	createInstance();
-    	checkDevices();
-    	printDeviceProperties();
-    	initDevice();
-    	std::cout << "VULKN DONE" << std::endl;*/
+        //initVulkan();
+    	//createInstance();
+    	//checkDevices();
+    	//printDeviceProperties();
+    	//initDevice();
+    	//std::cout << "VULKN DONE" << std::endl;
     	exit(0);
-    }
+    }*/
 }
 
 
@@ -836,12 +839,12 @@ void VulkanWindow::render(bool aSceneRotationFlag)
 void VulkanWindow::registerCallbacks()
 //------------------------------------
 {
-	if (m_p_window && !m_callback_registered)
+	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		Window::registerCallbacks();
 
         // Initialize GLFW callbacks
-        glfwSetFramebufferSizeCallback(m_p_window, framebufferSizeCallback);
+        glfwSetFramebufferSizeCallback(m_context.getWindowHandle(), framebufferSizeCallback);
 	}
 }
 

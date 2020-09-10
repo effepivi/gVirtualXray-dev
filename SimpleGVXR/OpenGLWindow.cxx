@@ -189,9 +189,7 @@ OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
                            int anOpenGLMajorVersion,
                            int anOpenGLMinorVersion):
 //---------------------------------------------------
-    Window(aVisibilityFlag),
-    m_opengl_majour_version(anOpenGLMajorVersion),
-    m_opengl_minor_version(anOpenGLMinorVersion)
+    Window(aVisibilityFlag)
 //---------------------------------------------------
 {
     // Initialize GLFW
@@ -204,11 +202,35 @@ OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
             "ERROR: cannot initialise GLFW.");
         }
 
+    // Set the visibility
+    if (aVisibilityFlag)
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+    }
+    else
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    }
+
     // Create the window
-    createWindow(aVisibilityFlag);
+    m_context.create("OpenGL", anOpenGLMajorVersion, anOpenGLMinorVersion);
+
+    // Set the window size
+    if (m_context.getWindowHandle())
+    {
+        glfwSetWindowSize(m_context.getWindowHandle(), m_width, m_height);
+
+        framebufferSizeCallback(m_context.getWindowHandle(), m_width, m_height);
+
+        // Initialize GLFW callbacks
+        registerCallbacks();
+
+        // Initialise OpenGL
+        initShader();
+    }
 
     // Window has not been created
-    if (!m_p_window)
+    if (!m_context.isReady())
     {
         // Display a warning
         cerr << "gvxrWarning:\tOpenGLWindow " <<
@@ -223,7 +245,9 @@ void OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
     Window::setWindowSize(aWidth, aHeight);
-    framebufferSizeCallback(m_p_window, aWidth, aHeight);
+
+    if (m_context.getWindowHandle())
+    	framebufferSizeCallback(m_context.getWindowHandle(), aWidth, aHeight);
 }
 
 
@@ -235,16 +259,16 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
 	initViewer();
 
     // Show the window if needed
-    if (!g_has_own_gl_context)
+    if (!g_has_own_gl_context && m_context.getWindowHandle())
         {
-        if (!glfwGetWindowAttrib(m_p_window,
+        if (!glfwGetWindowAttrib(m_context.getWindowHandle(),
                 GLFW_VISIBLE))
             {
-            glfwShowWindow(m_p_window);
+            glfwShowWindow(m_context.getWindowHandle());
             }
 
         // Make the window's context current
-        glfwMakeContextCurrent(m_p_window);
+        glfwMakeContextCurrent(m_context.getWindowHandle());
 
         // Clear the buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -259,9 +283,9 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
     glFinish();
 
     // Swap front and back buffers
-    if (!g_has_own_gl_context)
+    if (!g_has_own_gl_context && m_context.getWindowHandle())
         {
-        glfwSwapBuffers(m_p_window);
+        glfwSwapBuffers(m_context.getWindowHandle());
         }
 }
 
@@ -270,51 +294,7 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
 void OpenGLWindow::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
 {
-    string window_title = "gVirtualXRay -- Window ";
-
-    // Set the version of OpenGL that is required
-    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
-    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_opengl_majour_version);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_opengl_minor_version);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    if (aVisibilityFlag)
-    {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-    }
-    else
-    {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    }
-
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create a windowed mode window and its OpenGL context
-    m_p_window = glfwCreateWindow(m_width, m_height, window_title.data(), 0, 0);
-
-    // Window has be created
-    if (m_p_window)
-    {
-        // Make the window's context current
-        glfwMakeContextCurrent(m_p_window);
-        glfwSetWindowUserPointer(m_p_window, this);
-
-        // Initialise GLEW
-        gVirtualXRay::initialiseGLEW();
-
-        framebufferSizeCallback(m_p_window, m_width, m_height);
-
-        // Initialize GLFW callbacks
-        registerCallbacks();
-
-        // Initialise OpenGL
-        initShader();
-    }
+	// Do nothing
 }
 
 
@@ -704,12 +684,12 @@ void OpenGLWindow::render(bool aSceneRotationFlag)
 void OpenGLWindow::registerCallbacks()
 //------------------------------------
 {
-	if (m_p_window && !m_callback_registered)
+	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		Window::registerCallbacks();
 
         // Initialize GLFW callbacks
-        glfwSetFramebufferSizeCallback(m_p_window, framebufferSizeCallback);
+        glfwSetFramebufferSizeCallback(m_context.getWindowHandle(), framebufferSizeCallback);
 	}
 }
 

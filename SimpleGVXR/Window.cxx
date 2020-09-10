@@ -168,7 +168,6 @@ Window::Window(int aVisibilityFlag):
     m_visible(aVisibilityFlag),
     m_width(500),
     m_height(500),
-    m_p_window(0),
     m_viewer_initialised(false),
 	m_callback_registered(false)
 //----------------------------------
@@ -200,9 +199,9 @@ void Window::setWindowSize(int aWidth, int aHeight)
         m_width  = aWidth;
         m_height = aHeight;
 
-        if (m_p_window)
+        if (m_context.getWindowHandle())
         	{
-        	glfwSetWindowSize(m_p_window, aWidth, aHeight);
+        	glfwSetWindowSize(m_context.getWindowHandle(), aWidth, aHeight);
         	}
     }
 }
@@ -215,9 +214,9 @@ void Window::renderLoop()
     g_run_loop = true;
 
     // Launch the event loop
-    if (m_p_window)
+    if (m_context.getWindowHandle())
 		{
-		while (!glfwWindowShouldClose(m_p_window) &&
+		while (!glfwWindowShouldClose(m_context.getWindowHandle()) &&
 				g_run_loop)
 			{
 			// Process the event
@@ -234,9 +233,9 @@ void Window::renderLoop()
 void Window::showWindow()
 //-----------------------
 {
-	if (m_p_window)
+	if (m_context.getWindowHandle())
 		{
-		glfwShowWindow(m_p_window);
+		glfwShowWindow(m_context.getWindowHandle());
 		}
 }
 
@@ -245,9 +244,9 @@ void Window::showWindow()
 void Window::hideWindow()
 //-----------------------
 {
-	if (m_p_window)
+	if (m_context.getWindowHandle())
 		{
-		glfwHideWindow(m_p_window);
+		glfwHideWindow(m_context.getWindowHandle());
 		}
 }
 
@@ -256,10 +255,7 @@ void Window::hideWindow()
 void Window::destroyWindow()
 //--------------------------
 {
-	if (m_p_window)
-		{
-		glfwDestroyWindow(m_p_window);
-		}
+	m_context.release();
 }
 
 
@@ -299,7 +295,7 @@ Window* Window::getWindow(GLFWwindow* apGLFWwindow)
 {
 	for (auto& ite: m_p_window_set)
 	{
-		if (ite->m_p_window == apGLFWwindow)
+		if (ite->m_context.getWindowHandle() == apGLFWwindow)
 			return ite;
 	}
 
@@ -356,13 +352,13 @@ void keyCallback(GLFWwindow* window,
 void Window::registerCallbacks()
 //------------------------------
 {
-	if (m_p_window && !m_callback_registered)
+	if (m_context.getWindowHandle() && !m_callback_registered)
 	{
 		m_callback_registered = true;
 
-        glfwSetKeyCallback(m_p_window, keyCallback);
-        glfwSetMouseButtonCallback(m_p_window, mouseButtonCallback);
-        glfwSetCursorPosCallback(m_p_window, cursorPosCallback);
-        glfwSetScrollCallback(m_p_window, scrollCallback);
+        glfwSetKeyCallback(m_context.getWindowHandle(), keyCallback);
+        glfwSetMouseButtonCallback(m_context.getWindowHandle(), mouseButtonCallback);
+        glfwSetCursorPosCallback(m_context.getWindowHandle(), cursorPosCallback);
+        glfwSetScrollCallback(m_context.getWindowHandle(), scrollCallback);
 	}
 }

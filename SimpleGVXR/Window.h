@@ -150,7 +150,7 @@ protected:
     bool m_visible;
     int m_width;
     int m_height;
-    GLFWwindow* m_p_window;
+
     bool m_viewer_initialised;
     bool m_callback_registered;
 };

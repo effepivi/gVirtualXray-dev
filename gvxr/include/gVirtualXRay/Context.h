@@ -85,6 +85,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <EGL/eglext.h>
 #endif
 
+#define GLFW_INCLUDE_GLCOREARB 1
+#include <GLFW/glfw3.h>
+
 
 //******************************************************************************
 //  namespace
@@ -154,6 +157,8 @@ public:
 	bool isReady() const;
 
 
+	GLFWwindow* getWindowHandle();
+	const GLFWwindow* getWindowHandle() const;
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -177,6 +182,8 @@ protected:
 	std::string m_renderer;
 	int m_major_version;
 	int m_minor_version;
+
+    GLFWwindow* m_p_window;
 
 #ifdef HAS_EGL
 	EGLDisplay m_display;
