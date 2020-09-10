@@ -94,30 +94,45 @@ ENDIF (OPENGL_FOUND)
 
 
 # OpenGL ######################################################################
-FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
-SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
 
-FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
-IF (OpenGL_GLX_FOUND)
-	SET (optionalLibs ${optionalLibs} OpenGL::GLX)
-ENDIF (OpenGL_GLX_FOUND)
+IF (WIN32 OR APPLE)
+ELSE (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
+    SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
+
+    FIND_PACKAGE(OpenGL COMPONENTS GLX EGL GLU)
+    IF (OpenGL_GLX_FOUND)
+    	 SET (optionalLibs ${optionalLibs} OpenGL::GLX)
+    ENDIF (OpenGL_GLX_FOUND)
+
+    IF (OpenGL_EGL_FOUND)
+        SET (optionalLibs ${optionalLibs} OpenGL::EGL)
+    ENDIF (OpenGL_EGL_FOUND)
+
+
+    IF (OpenGL_GLU_FOUND)
+        SET (optionalLibs ${optionalLibs} OpenGL::GLU)
+    ENDIF (OpenGL_GLU_FOUND)
+ENDIF (WIN32 OR APPLE)
+
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
 
 IF (OpenGL_EGL_FOUND)
     MESSAGE (STATUS "EGL found.")
-	SET (optionalLibs ${optionalLibs} OpenGL::EGL)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_EGL")
 ENDIF (OpenGL_EGL_FOUND)
 
-
 IF (OpenGL_GLU_FOUND)
     MESSAGE (STATUS "GLU found.")
-	SET (optionalLibs ${optionalLibs} OpenGL::GLU)
     SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_GLU")
 ENDIF (OpenGL_GLU_FOUND)
 
 
-# GLEW ########################################################################
+# GLFW3 ########################################################################
+INCLUDE (configureGlfw)
+
+
+# GLEW #########################################################################
 # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
 IF (USE_SYSTEM_GLEW)
     # Use system library
