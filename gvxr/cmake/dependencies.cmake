@@ -85,6 +85,9 @@ ENDIF (NOT GZIP_FOUND)
 # OpenGL ######################################################################
 
 IF (WIN32 OR APPLE)
+    FIND_PACKAGE(OpenGL REQUIRED)
+    SET (requiredLibs ${requiredLibs} ${OPENGL_LIBRARIES})
+
 ELSE (WIN32 OR APPLE)
     FIND_PACKAGE(OpenGL REQUIRED COMPONENTS OpenGL)
     SET (requiredLibs ${requiredLibs} OpenGL::OpenGL)
@@ -97,7 +100,6 @@ ELSE (WIN32 OR APPLE)
     IF (OpenGL_EGL_FOUND)
         SET (optionalLibs ${optionalLibs} OpenGL::EGL)
     ENDIF (OpenGL_EGL_FOUND)
-
 
     IF (OpenGL_GLU_FOUND)
         SET (optionalLibs ${optionalLibs} OpenGL::GLU)
