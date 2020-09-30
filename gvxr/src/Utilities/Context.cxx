@@ -64,11 +64,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 
 #include <iostream>
-/*
-#include <fcntl.h> // For O_RDWR
-//#include <unistd.h>
-#include <stdlib.h> // For malloc/free
-*/
+
+#include <algorithm> // For capitalising a string
+
 #ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
@@ -141,9 +139,12 @@ void Context::create(const std::string& aRenderer,
 		m_minor_version = aRendererMinorVersion;
 
 		// Create the context if possible
-		if (m_renderer == "OpenGL") createGLWithGLFW();
-		else if (m_renderer == "Vulkan") createVulkanWithGLFW();
-		else if (m_renderer == "EGL") createGLWithEGL();
+		std::string renderer = m_renderer;
+		std::transform(renderer.begin(), renderer.end(), renderer.begin(), ::toupper);
+
+		if (renderer == "OPENGL") createGLWithGLFW();
+		else if (renderer == "VULKAN") createVulkanWithGLFW();
+		else if (renderer == "EGL") createGLWithEGL();
 		else std::cerr << "WARNING: Invalaid context: " << aRenderer <<
 				" (" << aRendererMajorVersion << "." << aRendererMinorVersion << ")" <<
 				std::endl;
@@ -155,6 +156,7 @@ void Context::create(const std::string& aRenderer,
 void Context::release()
 //---------------------
 {
+#ifdef HAS_EGL
 	if (m_display && m_context)
 		{
 		eglDestroyContext(m_display, m_context);
@@ -166,10 +168,12 @@ void Context::release()
 		eglTerminate(m_display);
 		m_display = 0;
 		}
+#endif // HAS_EGL
 
 	if (m_p_window)
 		{
 		glfwDestroyWindow(m_p_window);
+		m_p_window = 0;
 		}
 
 	m_ready = false;
@@ -215,6 +219,7 @@ void Context::createGLWithEGL()
 	// Release the previous context if applicable
 	release();
 
+#ifdef HAS_EGL
 	// Context attributes
 	constexpr EGLint attrib_list[] =
 		{
@@ -362,6 +367,7 @@ void Context::createGLWithEGL()
 	std::cout << "OpenGL version supported by this platform " << glGetString(GL_VERSION) << std::endl;
 
 	m_ready = true;
+#endif // HAS_EGL
 }
 
 
@@ -375,6 +381,7 @@ void Context::createGLWithGLFW()
     std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
 
     // Set the version of OpenGL that is required
+	glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
