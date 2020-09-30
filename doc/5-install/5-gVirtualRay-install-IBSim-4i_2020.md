@@ -8,7 +8,21 @@ date: 13th Aug 2020
 
 # How to compile and install gVirtualXRay Suite
 
-## Requirements
+
+# Contents
+
+1. [Requirements](#requirements)
+  - [For GNU/Linux](#for-gnulinux)
+  - [For Mac OS X](#for-mac-os-x)
+  - [For Microsoft Windows](#for-microsoft-windows)
+  - [Download the latest version of the source code](#download-the-latest-version-of-the-source-code)
+2. [Installation from the source code](#installation-from-the-source-code)
+  - [GNU/Linux and Mac OS X](#gnulinux-and-mac-os-x)
+  - [For Windows](#for-windows)
+  - [Test the Python wrapper](#test-the-python-wrapper)
+  - [For SuperComputing Wales](#for-supercomputing-wales)
+
+# 1. Requirements
 
 Make sure you have:
 
@@ -16,7 +30,7 @@ Make sure you have:
 - A C++ compiler; and
 - A GPU that supports OpenGL (integrated GPUs are fine).
 
-### For GNU/Linux
+# For GNU/Linux
 
 The examples below are for openSUSE Leap but you can adapt them for your own distro.
 
@@ -50,7 +64,7 @@ The examples below are for openSUSE Leap but you can adapt them for your own dis
         R-core R-base  R-core-devel R-base-devel
 ```         
 
-### Mac OS X:
+# For Mac OS X:
 
 1. Install XCode from the Mac App Store.
 2. Install the Command Line Tools package via the Terminal application using
@@ -60,7 +74,7 @@ The examples below are for openSUSE Leap but you can adapt them for your own dis
 3. Install CMake from [https://cmake.org/download/](https://cmake.org/download/)
 4. For Wrappers, you may want to install SWIG and Python 3. I use homebrew for that purpose, see [https://brew.sh/](https://brew.sh/)
 
-### Microsoft Windows
+# For Microsoft Windows
 
 1. Install Visual Studio from [https://visualstudio.microsoft.com/vs/](https://visualstudio.microsoft.com/vs/)
     - **Make sure to select the C++ language**
@@ -69,14 +83,14 @@ The examples below are for openSUSE Leap but you can adapt them for your own dis
 4. You may want to install a SVN client, e.g. TortoiseSVN from [https://tortoisesvn.net/downloads.html](https://tortoisesvn.net/downloads.html)
 5. For Wrappers, you may want to install Python 3 from [https://www.python.org/downloads/](https://www.python.org/downloads/) Make sure to install the development libraries.
 
-## Download the latest version of the source code
+# Download the latest version of the source code
 
 - The latest release [(gVirtualXRay-1.1.5-Source.zip)](https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.5-Source.zip/download) available at [https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.5-Source.zip/download](https://sourceforge.net/projects/gvirtualxray/files/1.1/gVirtualXRay-1.1.5-Source.zip/download) or
 - The latest version from SVN at [https://svn.code.sf.net/p/gvirtualxray/code/trunk](https://svn.code.sf.net/p/gvirtualxray/code/trunk)
 
-## Installation from the source code
+# 2. Installation from the source code
 
-### GNU/Linux and Mac OS X
+# GNU/Linux and Mac OS X
 
 Assuming the system is ready.
 
@@ -214,7 +228,7 @@ echo "##########################################################################
 
 
 
-### For Windows
+# For Windows
 
 I recommand to use **64 bits** for all the components, including for **Python 3**.
 
@@ -268,7 +282,7 @@ At the end, in the output, you should see something like
 ```
 
 
-#### Installation directory content in Windows
+# Installation directory content in Windows
 
 On Windows, you Should see 4 or 5 directories in the installation directory depending on wrappers:
 
@@ -297,7 +311,7 @@ On Windows, you Should see 4 or 5 directories in the installation directory depe
   - data
   - python3
 
-### Installation directory content in GNU/Linux and Mac OS X
+# Installation directory content in GNU/Linux and Mac OS X
 
 On Unixes, you Should see 3 or 4 directories in the installation directory depending on wrappers:
 
@@ -325,7 +339,7 @@ On Unixes, you Should see 3 or 4 directories in the installation directory depen
   - data
   - python3
 
-## Test the Python wrapper
+# Test the Python wrapper
 
 1.  Go to `gvxrWrapper-1.0.4/python3`,
 2. Execute the test script. You should see something like:
@@ -360,14 +374,7 @@ The X-ray image is displayed using linear, log and power law colour scales using
 - `lbuffer-0.mha`: contains the length of X-rays crossed in the 3-D object.
 10. If you want to create your own simulations, have a look at the script. You can find it at [https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py](https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/Wrappers/python3/test.py).
 
-
-
-
-### For SuperComputing Wales
-
-
-
-
+# For SuperComputing Wales
 
 1. Open a terminal, log on SCW using SSH, and choose where the binaries should be installed. **It must be a directory where you can write.**.
 In the example below, I install it in my home directory in `gvxr-install`.
@@ -393,8 +400,8 @@ In the example below, I install it in my home directory in `gvxr-install`.
 4. go in the directory where you want to build the gVirtualXRay, e.g.
 ```bash
 
-    $ mkdir ~gvxr
-    $ cd ~gvxr
+    $ mkdir ~/gvxr
+    $ cd ~/gvxr
 ```
 5. Download the latest release:
 ```bash
@@ -429,7 +436,8 @@ In the example below, I install it in my home directory in `gvxr-install`.
 7. Run the unit tests (optional)
 You cannot run the unit test on the supercomputer's login node. You need to use a compute node with a GPU. Write the following script (`unit_test_job.sh`) and submit it with `sbatch`.
 
-    - Content of `unit_test_job.sh`:
+  - Content of `unit_test_job.sh`:
+
 ```bash
 #!/usr/bin/env bash
 #
@@ -461,10 +469,13 @@ module load cmake compiler/gnu/8/1.0 python/3.7.0
 export EGL_PLATFORM=
 make test
 ```
-    - Submit the job:
+
+  - Submit the job:
+
 ```bash
     sbatch unit_test_job.sh
 ```
+
 8. Install
 ```bash
     $ make install
@@ -482,7 +493,7 @@ And to make it permanent:
     $ echo "################################################################################" >> $HOME/.myenv
 ```
 
-### Summary of all the commands:
+# Summary of all the commands:
 ```bash
 export GVXR_INSTALL_DIR=$HOME/gvirtualxray-install
 module load cmake compiler/gnu/8/1.0 python/3.7.0
