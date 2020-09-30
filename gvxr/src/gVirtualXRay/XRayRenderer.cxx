@@ -1043,6 +1043,11 @@ void XRayRenderer::initShaders()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
+	if (!glCreateProgram)
+	{
+		throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenGL's functions are not properly initialised, did you forget to call \"initialiseGLEW()\"?");
+	}
+
     if (useOpenGL45())
 	{
 	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl4_vert, sizeof(g_l_buffer_gl4_vert),   &p_vertex_shader);
