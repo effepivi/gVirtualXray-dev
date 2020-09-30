@@ -66,9 +66,6 @@ ENDIF (GIT_FOUND)
 ExternalProject_Get_Property(googletest source_dir)
 set(GTEST_INCLUDE_DIRS ${GTEST_INSTALL_DIR}/include)
 
-# Specify MainTest's link libraries
-list(APPEND GTEST_LIBRARIES gtest gtest_main)
-
 IF (UNIX)
     IF (APPLE)
         set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib")
@@ -77,4 +74,17 @@ IF (UNIX)
     ENDIF (APPLE)
 ELSE (UNIX)
     set (GTEST_LIBS_DIR "${GTEST_INSTALL_DIR}/lib")
+ENDIF (UNIX)
+
+
+# Specify MainTest's link libraries
+IF (UNIX)
+    list(APPEND GTEST_LIBRARIES gtest gtest_main)
+ELSE (UNIX)
+    SET (GTEST_LIBRARIES
+      debug gtestd
+      optimized gtest
+      debug gtest_maind
+      optimized gtest_main
+    )
 ENDIF (UNIX)
