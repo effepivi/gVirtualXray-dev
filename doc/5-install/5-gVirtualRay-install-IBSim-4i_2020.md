@@ -505,6 +505,7 @@ rm download
 ./configure --prefix=$HOME/install
 make -j8
 make install
+$ export SWIG_DIR=$HOME/install/share/swig/4.0.2/
 cd ..
 
 # Download the latest release:
@@ -530,6 +531,9 @@ cmake \
     -DPYTHON_LIBRARY_RELEASE=/apps/languages/python/3.7.0/el7/AVX512/gnu-8.1/lib/libpython3.so \
     -S ../gVirtualXRay-1.1.4 \
     -B $PWD
+
+# Build everything
+make -j4
 
 # Run the unit tests
 vi unit_test_job.sh
