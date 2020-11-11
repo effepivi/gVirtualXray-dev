@@ -4,12 +4,12 @@ SET (GTEST_URL_REPOSITORY "https://github.com/google/googletest/archive/master.z
 SET (GTEST_GIT_REPOSITORY "https://github.com/google/googletest.git" CACHE  STRING "Google Test repository")
 SET (GTEST_GIT_TAG "0fe96607d85cf3a25ac40da369db62bbee2939a5" CACHE STRING "Tag or hash for GTtest git repo")
 
-if(POLICY CMP0048)
-    cmake_policy (SET CMP0048 NEW)
-    PROJECT(googletest-dow VERSION 1.0.0)
-else ()
-    PROJECT(googletest-dow)
-endif()
+#if(POLICY CMP0048)
+#    cmake_policy (SET CMP0048 NEW)
+#    PROJECT(googletest-dow VERSION 1.0.0)
+#else ()
+#    PROJECT(googletest-dow)
+#endif()
 
 
 find_package(Threads REQUIRED)
