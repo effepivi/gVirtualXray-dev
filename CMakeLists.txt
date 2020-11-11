@@ -32,7 +32,12 @@
 
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
-PROJECT(gVirtualXRay-Superbuild)
+project(gVirtualXRay-Superbuild
+        VERSION 1.1.5
+        DESCRIPTION "gVirtualXRay is focused on developing new software technologies for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. It supports ‘old’ OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). No deprecated function in OpenGL has been used. The library takes care of matrix transformations, matrix stacks, etc."
+        HOMEPAGE_URL https://sourceforge.net/projects/gvirtualxray/
+        LANGUAGES CXX)
+
 
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -158,3 +163,23 @@ ENDIF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
 IF (BUILD_WRAPPERS)
     ADD_SUBDIRECTORY (Wrappers)
 ENDIF (BUILD_WRAPPERS)
+
+# Packaging support
+set(CPACK_PACKAGE_VENDOR "Dr Franck P. Vidal @ Bangor University")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENCE.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+set(CPACK_SOURCE_IGNORE_FILES
+    /.git
+    /.svn
+    /dist
+    /.*build.*
+    /\\\\.DS_Store
+    .swp$
+    .*~
+)
