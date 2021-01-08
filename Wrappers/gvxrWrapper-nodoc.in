@@ -19,6 +19,8 @@ namespace std {
     %template(Vectord) std::vector<double>;
     %template(Vectorff) std::vector<vector<float> >;
     %template(Vectordd) std::vector<vector<double> >;
+    %template(Vectorfff) std::vector<std::vector<vector<float> > >;
+    %template(Vectorddd) std::vector<std::vector<vector<double> > >;
 }; 
 
 
