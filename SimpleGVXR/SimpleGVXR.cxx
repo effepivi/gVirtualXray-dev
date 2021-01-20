@@ -1552,8 +1552,7 @@ void moveToCenter(const std::string& aLabel)
 void scaleNode(const std::string& aLabel,
                double x,
                double y,
-               double z,
-               const std::string& aUnitOfLength)
+               double z)
 {
     if (g_p_scene_graph.get())
         {
@@ -1563,10 +1562,8 @@ void scaleNode(const std::string& aLabel,
         // It has been found
         if (p_node)
             {
-            double unit_of_length = getUnitOfLength(aUnitOfLength);
             gVirtualXRay::MATRIX4 scaling_matrix =
-            gVirtualXRay::MATRIX4::buildScaleMatrix(x * unit_of_length,
-            y * unit_of_length, z * unit_of_length);
+            gVirtualXRay::MATRIX4::buildScaleMatrix(x, y, z);
 
             // Root node
             if (p_node->getLabel() == "root")

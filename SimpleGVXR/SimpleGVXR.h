@@ -499,7 +499,7 @@ void emptyMesh(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
-/// Create a cube and set its label in the scenegraph (i.e. identifier).
+/// Create a cube, centred on (0, 0, 0) and set its label in the scenegraph (i.e. identifier).
 /// Note that it is not added to the X-ray renderer.
 /**
  *  @param aLabel:  the label in the scenegraph
@@ -884,23 +884,12 @@ void moveToCentre(const std::string& aLabel);
  *  @param x:   the scaling factor along the X-axis
  *  @param y:   the scaling factor along the Y-axis
  *  @param z:   the scaling factor along the Z-axis
- *  @param aUnitOfLength:   the unit of length corresponding to the x, y and z
- *                          parameters. Acceptable values are:
- *                          "um", "micrometre",  "micrometer",
- *                          "mm", "millimetre",  "millimeter",
- *                          "cm", "centimetre",  "centimeter",
- *                          "dm",  "decimetre",  "decimeter",
- *                          "m",   "metre",      "meter",
- *                          "dam", "decametre",  "decameter",
- *                          "hm",  "hectometre", "hectometer",
- *                          "km",  "kilometre",  "kilometer"
  */
 //------------------------------------------------------------------------------
 void scaleNode(const std::string& aLabel,
     double x,
     double y,
-    double z,
-    const std::string& aUnitOfLength);
+    double z);
 
 
 //------------------------------------------------------------------------------
