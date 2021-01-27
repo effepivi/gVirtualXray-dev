@@ -78,6 +78,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <cctype> // Needed for std::toupper
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
