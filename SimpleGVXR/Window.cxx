@@ -174,6 +174,10 @@ Window::Window(int aVisibilityFlag):
 {
     cout << "gvxrStatus:\tCreate window " << endl;
 
+    m_background_colour[0] = 0.5;
+    m_background_colour[1] = 0.5;
+    m_background_colour[2] = 0.5;
+    
 	m_p_window_set.push_back(this);
 }
 
@@ -248,6 +252,24 @@ void Window::hideWindow()
 		{
 		glfwHideWindow(m_context.getWindowHandle());
 		}
+}
+
+
+//---------------------------------------------------------------
+void Window::setWindowBackGroundColour(float R, float G, float B)
+//---------------------------------------------------------------
+{
+    m_background_colour[0] = R;
+    m_background_colour[1] = G;
+    m_background_colour[2] = B;
+}
+
+
+//--------------------------------------------------------------
+void Window::setWindowBackGroundColor(float R, float G, float B)
+//--------------------------------------------------------------
+{
+    setWindowBackGroundColour(R, G, B);
 }
 
 

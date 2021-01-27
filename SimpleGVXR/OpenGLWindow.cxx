@@ -290,6 +290,23 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
 }
 
 
+//---------------------------------------------------------------------
+void OpenGLWindow::setWindowBackGroundColour(float R, float G, float B)
+//---------------------------------------------------------------------
+{
+    Window::setWindowBackGroundColour(R, G, B);
+    glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
+}
+
+
+//--------------------------------------------------------------------
+void OpenGLWindow::setWindowBackGroundColor(float R, float G, float B)
+//--------------------------------------------------------------------
+{
+    setWindowBackGroundColour(R, G, B);
+}
+
+
 //---------------------------------------------------
 void OpenGLWindow::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
@@ -313,7 +330,7 @@ void OpenGLWindow::initShader()
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     // Set the background colour
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    setWindowBackGroundColour(m_background_colour[0], m_background_colour[1], m_background_colour[2]);
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
     glEnable (GL_MULTISAMPLE);

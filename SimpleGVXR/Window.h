@@ -122,6 +122,28 @@ public:
 
 
     void hideWindow();
+    
+    
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------    
+    virtual void setWindowBackGroundColour(float R, float G, float B);
+
+
+    //--------------------------------------------------------------------------
+    /// Set window background colour.
+    /**
+     *  @param R: the red colour [0, 1]
+     *  @param G: the green colour [0, 1]
+     *  @param B: the blue colour [0, 1]
+     */
+    //--------------------------------------------------------------------------    
+    virtual void setWindowBackGroundColor(float R, float G, float B);
 
 
     void destroyWindow();
@@ -153,6 +175,8 @@ protected:
 
     bool m_viewer_initialised;
     bool m_callback_registered;
+    
+    float m_background_colour[3];
 };
 
 
