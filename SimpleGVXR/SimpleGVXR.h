@@ -1165,6 +1165,18 @@ void setMixture(const std::string& aLabel, const std::string& aMixture);
 
 
 //------------------------------------------------------------------------------
+/// Set the mixture corresponding to the material properties of a polygon mesh.
+/// Don't forget to set the density of the material.
+/**
+ *  @param aLabel:      the label of the polygon mesh
+ */
+//------------------------------------------------------------------------------
+void setMixture(const std::string& aLabel,
+                const std::vector<int>& aZNumberSet,
+                const std::vector<double>& aWeightSet);
+
+
+//------------------------------------------------------------------------------
 /// Set the compound corresponding to the material properties of a polygon mesh.
 /// Don't forget to set the density of the material.
 /**
@@ -2132,6 +2144,8 @@ double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aRefere
 
 float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
 float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage);
+
+void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset = 0);
 
 
 #endif

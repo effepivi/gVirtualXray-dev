@@ -88,6 +88,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <GLFW/glfw3.h>
 
+#ifdef HAS_CUDA
+#include <cuda_gl_interop.h>
+#include <thrust/device_vector.h>
+#endif
+
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
 #include "gVirtualXRay/XRayRenderer.h"
@@ -823,7 +828,6 @@ void makeTriangularMesh(const std::string& aLabel,
                                           __FUNCTION__,
                                           __LINE__,
                                           "The index is negative.");
-
     	}
 
     	p_temp.push_back(*ite);
@@ -1991,6 +1995,49 @@ void setMixture(const std::string& aLabel, const std::string& aName)
         {
         // Set its properties
         p_node->getPolygonMesh().setMixture(aName);
+        g_xray_renderer.needUpdateSurfacePerMaterial();
+        }
+    // It has not been found
+    else
+        {
+        cerr << "gvxrWarning:\tPolygonMesh " <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+        }
+}
+
+
+//----------------------------------------------------
+void setMixture(const std::string& aLabel,
+                const std::vector<int>& aZNumberSet,
+                const std::vector<double>& aWeightSet)
+//----------------------------------------------------
+{
+    // Find the mesh
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);    
+
+    // It has been found
+    if (p_node)
+        {
+        // Set its properties
+        std::map<int, double> mixture;
+        
+        if (aZNumberSet.size() != aWeightSet.size())
+            {
+            throw gVirtualXRay::Exception(
+                __FILE__,
+                __FUNCTION__,
+                __LINE__,
+                "ERROR: The Z number set and weight set don't have the same size.");
+            }
+            
+        for (unsigned int i = 0; i != aZNumberSet.size(); ++i)
+            {
+            mixture[aZNumberSet[i]] = aWeightSet[i];
+            }
+        
+        p_node->getPolygonMesh().setMixture(mixture);
         g_xray_renderer.needUpdateSurfacePerMaterial();
         }
     // It has not been found
@@ -3821,4 +3868,22 @@ float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage)
 float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage)
 {
     return getImage(aImage).getMaxValue();
+}
+
+
+void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset)
+{
+#ifndef HAS_CUDA
+    throw gVirtualXRay::Exception(__FILE__,
+                                  __FUNCTION__,
+                                  __LINE__,
+                                  "CUDA is not supported.");
+#else
+    cudaGLSetGLDevice(0);
+    struct cudaGraphicsResource *fbo_cuda;
+    cudaGraphicsGLRegisterBuffer(&fbo_cuda, g_xray_renderer.getFboId(aFBO), cudaGraphicsMapFlagsReadOnly);
+
+
+    thrust::device_ptr<float4>* p_device_data = static_cast<thrust::device_ptr<float4>*>(aThrustVector);
+#endif
 }
