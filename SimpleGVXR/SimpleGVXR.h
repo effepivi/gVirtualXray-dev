@@ -1169,6 +1169,8 @@ void setMixture(const std::string& aLabel, const std::string& aMixture);
 /// Don't forget to set the density of the material.
 /**
  *  @param aLabel:      the label of the polygon mesh
+ *  @param aZNumberSet:      the array of Z numbers
+ *  @param aWeightSet:      the corresponding weights
  */
 //------------------------------------------------------------------------------
 void setMixture(const std::string& aLabel,
