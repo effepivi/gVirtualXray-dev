@@ -291,10 +291,13 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
 }
 
 
-//---------------------------------------
-void OpenGLWindow::takeScreenshot() const
-//---------------------------------------
+//---------------------------------
+void OpenGLWindow::takeScreenshot()
+//---------------------------------
 {
+    // Update the window size, just in case
+    glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
+
     GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
     glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
 

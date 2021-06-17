@@ -115,7 +115,7 @@ public:
     virtual void displayScene(bool aSceneRotationFlag) = 0;
 
 
-    virtual void takeScreenshot() const = 0;
+    virtual void takeScreenshot() = 0;
     
 
     void renderLoop();

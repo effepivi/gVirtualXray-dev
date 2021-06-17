@@ -109,7 +109,7 @@ public:
 
     virtual void displayScene(bool aSceneRotationFlag);
     
-    virtual void takeScreenshot() const;
+    virtual void takeScreenshot();
 
 
 protected:

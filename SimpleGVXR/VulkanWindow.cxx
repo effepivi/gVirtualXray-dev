@@ -387,11 +387,14 @@ void VulkanWindow::displayScene(bool aSceneRotationFlag)
 }
 
 
-//---------------------------------------
-void VulkanWindow::takeScreenshot() const
-//---------------------------------------
+//---------------------------------
+void VulkanWindow::takeScreenshot()
+//---------------------------------
 {
-/*        GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
+/*    // Update the window size, just in case
+    glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
+    
+    GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
     glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
 
 

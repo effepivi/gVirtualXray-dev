@@ -365,7 +365,7 @@ void keyCallback(GLFWwindow* window,
 			break;
 			
 		case GLFW_KEY_T:
-		    const Window* p_window = Window::getWindow(window);
+		    Window* p_window = Window::getWindow(window);
 		    p_window->takeScreenshot();
 		    break;
 		}
