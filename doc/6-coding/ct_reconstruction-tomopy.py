@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, copy
+import os, copy, time
 import numpy as np
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -111,6 +111,7 @@ theta = [];
 number_of_angles = 360;
 rotation_angle = 180 / number_of_angles;
 
+start_time = time.time()
 for i in range(number_of_angles):
     # Compute an X-ray image and add it to the list of projections
     projections.append(gvxr.computeXRayImage());
@@ -123,6 +124,10 @@ for i in range(number_of_angles):
 
     theta.append(i * rotation_angle * math.pi / 180);
 
+elapsed_time = time.time() - start_time
+
+print("elapsed_time:", elapsed_time)
+exit()
 # Convert the projections as a Numpy array
 projections = np.array(projections);
 
