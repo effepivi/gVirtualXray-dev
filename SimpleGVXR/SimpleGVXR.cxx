@@ -268,6 +268,9 @@ double g_scale_filter = 1;
 bool g_has_own_gl_context = false;
 
 
+std::vector<std::vector<std::vector< float> > > lastest_screenshot;
+
+
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
@@ -2705,6 +2708,59 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID)
     setWindowBackGroundColour(R, G, B, aWindowID);
 }
 
+
+//----------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindowID)
+//----------------------------------------------------------------------------------
+{
+    // Retrieve the window
+    if (aWindowID == -1)
+        {
+        // Nothing to do
+        if (g_p_window_id_stack.empty() || g_p_window_set.empty())
+            {
+            cerr << "gvxrWarning:\tNo active window to hide." << endl;
+            }
+        // Change the colour of the last window that has been created
+        else
+            {
+            // Set the target window
+            aWindowID = g_p_window_id_stack.back();
+            }
+        }
+
+    // There is a window to capture
+    if (aWindowID != -1)
+        {
+        // Find the window
+        auto search = g_p_window_set.find(aWindowID);
+
+        // It has been found
+        if (search != g_p_window_set.end())
+            {
+            if (search->second)
+                {
+                search->second->takeScreenshot();
+                }
+            }
+        else
+            {
+            cerr << "gvxrWarning:\tWindow " << aWindowID <<
+                " not found." << endl;
+            }
+        }
+        
+    // Return the image
+    return lastest_screenshot;
+}
+
+
+//--------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot()
+//--------------------------------------------------------------------------
+{
+    return lastest_screenshot;
+}
 
 //-------------------------------
 void destroyWindow(int aWindowID)

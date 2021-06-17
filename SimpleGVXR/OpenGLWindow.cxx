@@ -177,6 +177,7 @@ extern gVirtualXRay::Matrix4x4<GLfloat> g_sample_rotation_matrix;
 extern double g_shift_filter;
 extern double g_scale_filter;
 
+extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 
 //******************************************************************************
@@ -287,6 +288,33 @@ void OpenGLWindow::displayScene(bool aSceneRotationFlag)
         {
         glfwSwapBuffers(m_context.getWindowHandle());
         }
+}
+
+
+//---------------------------------------
+void OpenGLWindow::takeScreenshot() const
+//---------------------------------------
+{
+    GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
+    glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
+
+    lastest_screenshot.clear();
+    
+    for (unsigned int j = 0; j < m_height; ++j)
+    {
+        lastest_screenshot.push_back(std::vector<std::vector< float> >() );
+        
+        for (unsigned int i = 0; i < m_width; ++i)
+        {
+            lastest_screenshot.back().push_back(std::vector< float>());
+            
+            lastest_screenshot.back().back().push_back(p_pixel_set[j * m_width * 3 + i * 3 + 0]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[j * m_width * 3 + i * 3 + 1]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[j * m_width * 3 + i * 3 + 2]);
+        }
+    }
+
+    delete [] p_pixel_set;
 }
 
 

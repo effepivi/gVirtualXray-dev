@@ -1508,6 +1508,27 @@ void setWindowBackGroundColor(float R, float G, float B, int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
+/// Take screenshot.
+/**
+ *  @param aWindowID:   the numerical ID of the corresponding context
+ *                      (default value: -1, means that the active context
+ *                      will be used)
+ *  @return:            the 2D image in RGB
+ */
+//------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
+/// Get the latest screenshot.
+/**
+ *  @return:            the 2D image in RGB
+ */
+//------------------------------------------------------------------------------
+const std::vector<std::vector<std::vector< float> > >& getLatestScreenshot();
+
+
+//------------------------------------------------------------------------------
 /// Close and destroy a given window or OpenGL context.
 //------------------------------------------------------------------------------
 void destroyWindow(int aWindowID = -1);

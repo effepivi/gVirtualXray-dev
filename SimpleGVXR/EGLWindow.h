@@ -102,7 +102,7 @@ public:
 
     virtual void setWindowSize(int aWidth, int aHeight);
     virtual void displayScene(bool aSceneRotationFlag);
-
+    virtual void takeScreenshot() const;
 
 protected:
     virtual void createWindow(bool aVisibilityFlag);

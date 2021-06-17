@@ -154,8 +154,6 @@ extern gVirtualXRay::Shader g_display_shader;
 extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 
-
-
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
@@ -329,7 +327,7 @@ void keyCallback(GLFWwindow* window,
                  int key,
                  int scancode,
                  int action,
-             int mods)
+                 int mods)
 //----------------------------------
 {
     if (action == GLFW_PRESS)
@@ -365,6 +363,11 @@ void keyCallback(GLFWwindow* window,
 		case GLFW_KEY_V:
 			g_display_normal_vectors = !g_display_normal_vectors;
 			break;
+			
+		case GLFW_KEY_T:
+		    const Window* p_window = Window::getWindow(window);
+		    p_window->takeScreenshot();
+		    break;
 		}
     }
 }
