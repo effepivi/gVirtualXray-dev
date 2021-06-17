@@ -54,7 +54,7 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 11) # C++11
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
@@ -147,6 +147,11 @@ SET (SimpleGVXR_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
+#find_package(CUDA)
+#IF (CUDA_FOUND)
+#    ADD_DEFINITIONS(-DHAS_CUDA)
+#    include_directories(${CUDA_INCLUDE_DIRS})
+#ENDIF()
 
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MAJOR=${SimpleGVXR_VERSION_MAJOR}")
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MINOR=${SimpleGVXR_VERSION_MINOR}")
@@ -166,6 +171,12 @@ add_library(SimpleGVXR
 
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
 
+#IF (CUDA_FOUND)
+#    target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${CUDA_LIBRARIES})
+#    MESSAGE(FATAL_ERROR ${CUDA_LIBRARIES})
+#ELSE (CUDA_FOUND)
+    target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
+#ENDIF (CUDA_FOUND)
 ADD_DEPENDENCIES(SimpleGVXR BinaryWrapper)
 
 IF (USE_SUPERBUILD)
