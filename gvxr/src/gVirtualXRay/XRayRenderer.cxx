@@ -1886,6 +1886,20 @@ RATIONAL_NUMBER* XRayRenderer::getFBO(unsigned int aFBOID)
 }
 
 
+//------------------------------------------------
+GLuint XRayRenderer::getFboId(unsigned int aFBOID)
+//------------------------------------------------
+{
+		// The FBO does not exist
+		if (aFBOID >= m_p_fbo_set.size())
+		{
+			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		return m_p_fbo_set[aFBOID]->getID();
+}
+
+
 //------------------------------------------------------------------
 RATIONAL_NUMBER* XRayRenderer::get2DTexture(unsigned int aTextureID)
 //------------------------------------------------------------------
