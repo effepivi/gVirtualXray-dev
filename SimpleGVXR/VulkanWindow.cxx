@@ -408,9 +408,9 @@ void VulkanWindow::takeScreenshot()
         {
             lastest_screenshot.back().push_back(std::vector< float>());
             
-            lastest_screenshot.back().back().push_back(p_pixel_set[j * m_width * 3 + i * 3 + 0]);
-            lastest_screenshot.back().back().push_back(p_pixel_set[j * m_width * 3 + i * 3 + 1]);
-            lastest_screenshot.back().back().push_back(p_pixel_set[j * m_width * 3 + i * 3 + 2]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
+            lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
         }
     }
 
