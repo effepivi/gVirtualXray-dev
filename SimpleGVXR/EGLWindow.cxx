@@ -116,6 +116,8 @@ void EGLWindow::setWindowSize(int aWidth, int aHeight)
 //-----------------------------------------------------
 {
 	// Do nothing
+  m_width = aWidth;
+  m_height = aHeight;
 }
 
 //----------------------------------------------------
@@ -132,20 +134,20 @@ void EGLWindow::takeScreenshot()
 {
     // Update the window size, just in case
     glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
-    
+
     GLfloat* p_pixel_set = new GLfloat[3 * m_width * m_height];
     glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
 
     lastest_screenshot.clear();
-    
+
     for (unsigned int j = 0; j < m_height; ++j)
     {
         lastest_screenshot.push_back(std::vector<std::vector< float> >() );
-        
+
         for (unsigned int i = 0; i < m_width; ++i)
         {
             lastest_screenshot.back().push_back(std::vector< float>());
-            
+
             lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
             lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
             lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);

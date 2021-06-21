@@ -152,6 +152,14 @@ int getPatchVersionOfSimpleGVXR();
 std::string getVersionOfSimpleGVXR();
 
 
+void displayBeam(bool aState = true);
+void displayDetector(bool aState = true);
+void displayNormalVectors(bool aState = true);
+void useWireframe(bool aState = true);
+void useLighing(bool aState = true);
+void useNegative(bool aState = true);
+
+
 //------------------------------------------------------------------------------
 /// Replace the projection matrix by a orthographic projection matrix.
 /// It behaves as the old glOrtho function.
@@ -1455,6 +1463,18 @@ void cursorPositionCallback(double x,
  */
 //------------------------------------------------------------------------------
 void scrollCallback(double xoffset, double yoffset);
+
+
+void setZoom(float aZoomValue);
+
+
+float getZoom();
+
+
+void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix);
+
+
+std::vector<double> getSceneRotationMatrix();
 
 
 //------------------------------------------------------------------------------

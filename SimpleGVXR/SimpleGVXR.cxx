@@ -331,6 +331,43 @@ std::string getVersionOfSimpleGVXR()
     return (std::string(SimpleGVXR_VERSION_STRING));
 }
 
+
+void displayBeam(bool aState)
+{
+    g_display_beam = aState;
+}
+
+
+void displayDetector(bool aState)
+{
+    g_display_detector = aState;
+}
+
+
+void displayNormalVectors(bool aState)
+{
+    g_display_normal_vectors = aState;
+}
+
+
+void useWireframe(bool aState)
+{
+    g_display_wireframe = aState;
+}
+
+
+void useLighing(bool aState)
+{
+    g_use_lighing = aState;
+}
+
+
+void useNegative(bool aState)
+{
+    g_xray_renderer.useNegativeFilteringFlag(aState);
+}
+
+
 //--------------------------------------
 void autoCreateOpenGLContext(bool aFlag)
 //--------------------------------------
@@ -2018,14 +2055,14 @@ void setMixture(const std::string& aLabel,
 //----------------------------------------------------
 {
     // Find the mesh
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);    
+    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
 
     // It has been found
     if (p_node)
         {
         // Set its properties
         std::map<int, double> mixture;
-        
+
         if (aZNumberSet.size() != aWeightSet.size())
             {
             throw gVirtualXRay::Exception(
@@ -2034,12 +2071,12 @@ void setMixture(const std::string& aLabel,
                 __LINE__,
                 "ERROR: The Z number set and weight set don't have the same size.");
             }
-            
+
         for (unsigned int i = 0; i != aZNumberSet.size(); ++i)
             {
             mixture[aZNumberSet[i]] = aWeightSet[i];
             }
-        
+
         p_node->getPolygonMesh().setMixture(mixture);
         g_xray_renderer.needUpdateSurfacePerMaterial();
         }
@@ -2749,7 +2786,7 @@ const std::vector<std::vector<std::vector< float> > >& takeScreenshot(int aWindo
                 " not found." << endl;
             }
         }
-        
+
     // Return the image
     return lastest_screenshot;
 }
@@ -3330,9 +3367,37 @@ void scrollCallback(double xoffset, double yoffset) {
     g_use_arc_ball = false;
     g_zoom += yoffset * gVirtualXRay::cm;
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0);
+    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                            0.0, 0.0, 0.0,
+                                            0.0, 1.0, 0.0);
     }
+}
+
+
+void setZoom(float aZoomValue)
+{
+    g_zoom = aZoomValue;
+
+    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+                                            0.0, 0.0, 0.0,
+                                            0.0, 1.0, 0.0);
+}
+
+
+float getZoom()
+{
+    return g_zoom;
+}
+
+
+void setSceneRotationMatrix(const std::vector<double>& aRotationMatrix)
+{
+    g_scene_rotation_matrix = gVirtualXRay::Matrix4x4<GLfloat>(aRotationMatrix);
+}
+
+std::vector<double> getSceneRotationMatrix()
+{
+    return g_scene_rotation_matrix.getAsVector();
 }
 
 //--------------------------------------------
