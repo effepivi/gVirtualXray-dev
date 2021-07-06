@@ -1,7 +1,7 @@
 ---
 title: "gVirtualXRay: Virtual X-Ray Imaging Library on GPU"
 author: Dr Franck P. Vidal (Bangor University)
-date: 17th Jan 2020
+date: 6th Jul 2021
 ---
 
 # gVirtualXRay: Virtual X-Ray Imaging Library on GPU
@@ -30,6 +30,77 @@ X-ray simulations created with gVirtualXRay have been used in various applicatio
 
 Please check gVirtualXRay's website at [http://gvirtualxray.sourceforge.net/](http://gvirtualxray.sourceforge.net/) for more
 information.
+
+## How to cite
+
+If you use gVirtualXRay, cite both these papers:
+
+1.  Vidal, F. P., Garnier, M., Freud, N., Létang, J. M., & John, N. W. Simulation of X-ray attenuation on the GPU. In *Proceedings of Theory and Practice of Computer Graphics 2009*, pages 25-32, Cardiff, UK, June 2009. Eurographics Association. [DOI: 10.2312/LocalChapterEvents/TPCG/TPCG09/025-032](http://dx.doi.org/10.2312/LocalChapterEvents/TPCG/TPCG09/025-032)
+```
+@article{Vidal2016ComputMedImagingGraph,
+  author = "Franck P. Vidal and Pierre-Frédéric Villard",
+  title = "Development and validation of real-time simulation of X-ray imaging
+    with respiratory motion ",
+  journal = "Computerized Medical Imaging and Graphics ",
+  year = "2016",
+  volume = "49",
+  pages = "1-15",
+  month = apr,
+  abstract = "Abstract We present a framework that combines evolutionary
+    optimisation, soft tissue modelling and ray tracing on \{GPU\} to
+    simultaneously compute the respiratory motion and X-ray imaging in
+    real-time. Our aim is to provide validated building blocks with high
+    fidelity to closely match both the human physiology and the physics of
+    X-rays. A CPU-based set of algorithms is presented to model organ
+    behaviours during respiration. Soft tissue deformation is computed with an
+    extension of the Chain Mail method. Rigid elements move according to
+    kinematic laws. A GPU-based surface rendering method is proposed to
+    compute the X-ray image using the Beer–Lambert law. It is provided as an
+    open-source library. A quantitative validation study is provided to
+    objectively assess the accuracy of both components: (i) the respiration
+    against anatomical data, and (ii) the X-ray against the Beer–Lambert law and
+    the results of Monte Carlo simulations. Our implementation can be used in
+    various applications, such as interactive medical virtual environment to
+    train percutaneous transhepatic cholangiography in interventional radiology,
+     2D/3D registration, computation of digitally reconstructed radiograph,
+     simulation of 4D sinograms to test tomography reconstruction tools.",
+  doi = "10.1016/j.compmedimag.2015.12.002",
+  pmid = {26773644},
+  issn = "0895-6111",
+  keywords = "X-ray simulation, Deterministic simulation (ray-tracing),
+    Digitally reconstructed radiograph, Respiration simulation,
+    Medical virtual environment, Imaging guidance,
+    Interventional radiology training",
+  publisher = {Elsevier},
+  }
+```
+2. Vidal, F. P., & Villard, P.-F. (2016). Development and validation of real-time simulation of X-ray imaging with respiratory motion. *Computerized Medical Imaging and Graphics*. [DOI: 10.1016/j.compmedimag.2015.12.002](http://dx.doi.org/10.1016/j.compmedimag.2015.12.002)
+```
+@inproceedings{Vidal2009TPCG,
+  author = {F. P. Vidal and M. Garnier and N. Freud and J. M. L\'etang and N. W. John},
+  title = {Simulation of {X-ray} Attenuation on the {GPU}},
+  booktitle = {Proceedings of Theory and Practice of Computer Graphics 2009},
+  year = 2009,
+  pages = {25-32},
+  month = jun,
+  address = {Cardiff, UK},
+  annotation = {Jun~17--19, 2009},
+  note = {Winner of Ken Brodlie Prize for Best Paper},
+  doi = {10.2312/LocalChapterEvents/TPCG/TPCG09/025-032},
+  abstract = {In this paper, we propose to take advantage of computer graphics hardware
+	to achieve an accelerated simulation of X-ray transmission imaging,
+	and we compare results with a fast and robust software-only implementation.
+	The running times of the GPU and CPU implementations are compared
+	in different test cases. The results show that the GPU implementation
+	with full floating point precision is faster by a factor of about
+	60 to 65 than the CPU implementation, without any significant loss
+	of accuracy. The increase in performance achieved with GPU calculations
+	opens up new perspectives. Notably, it paves the way for physically-realistic
+	simulation of X-ray imaging in interactive time.},
+  keywords = {Physically based modeling, Raytracing, Physics},
+  publisher = {Eurographics Association},
+}
+```
 
 ## Scientific and Industrial Collaboration
 
