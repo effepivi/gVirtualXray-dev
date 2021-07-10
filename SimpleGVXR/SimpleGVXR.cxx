@@ -79,6 +79,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <algorithm>
 #include <cctype> // Needed for std::toupper
+#include <cmath> // Header file for abs
 
 #define GLFW_INCLUDE_GLCOREARB 1
 
@@ -3977,6 +3978,141 @@ double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aRefere
     gVirtualXRay::Image<float> test = getImage(aTestImage);
 
     return ref.computeRMSE(test);
+}
+
+
+double getMean(const std::vector<float>& anImage)
+{
+    double avg = 0.0;
+
+#pragma omp parallel for reduction( + : avg )
+    for (int i = 0; i < anImage.size(); ++i)
+    {
+        avg += anImage[i];
+    }
+
+    return avg / anImage.size();
+}
+
+double getStddev(const std::vector<float>& anImage)
+{
+    double avg = getMean(anImage);
+    double stddev = 0.0;
+
+#pragma omp parallel for reduction( + : stddev )
+    for (unsigned int i = 0; i < anImage.size(); ++i)
+    {
+        stddev += std::pow(anImage[i] - avg, 2);
+    }
+
+    return sqrt(stddev / anImage.size());
+}
+
+
+double getStddev(const std::vector<float>& anImage, double avg)
+{
+    double stddev = 0.0;
+
+#pragma omp parallel for reduction( + : stddev )
+    for (unsigned int i = 0; i < anImage.size(); ++i)
+    {
+        stddev += std::pow(anImage[i] - avg, 2);
+    }
+
+    return sqrt(stddev / anImage.size());
+}
+
+double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage)
+{
+    double avg_ref = getMean(aReferenceImage);
+    double avg_test = getMean(aTestImage);
+
+    double stddev_ref = getStddev(aReferenceImage, avg_ref);
+    double stddev_test = getStddev(aTestImage, avg_test);
+
+    double zncc = 0.0;
+#pragma omp parallel for reduction( + : zncc )
+    for (int i = 0; i < aReferenceImage.size(); ++i)
+    {
+        zncc += (aReferenceImage[i] - avg_ref) * (aTestImage[i] - avg_test);
+    }
+
+    return (zncc / (stddev_ref * stddev_test)) / aReferenceImage.size();
+}
+
+
+double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage, bool normalise)
+{
+    double sse = 0.0;
+
+    if (normalise)
+    {
+        double avg_ref = getMean(aReferenceImage);
+        double avg_test = getMean(aTestImage);
+
+        double stddev_ref = getStddev(aReferenceImage, avg_ref);
+        double stddev_test = getStddev(aTestImage, avg_test);
+
+#pragma omp parallel for reduction( + : sse )
+        for (int i = 0; i < aReferenceImage.size(); ++i)
+        {
+            sse += std::pow(((aReferenceImage[i] - avg_ref) / stddev_ref) -
+                ((aTestImage[i] - avg_test) / stddev_test), 2);
+        }
+    }
+    else
+    {
+#pragma omp parallel for reduction( + : sse )
+        for (int i = 0; i < aReferenceImage.size(); ++i)
+        {
+            sse += std::pow(aReferenceImage[i] - aTestImage[i], 2);
+        }
+    }
+
+    return sqrt(sse / aReferenceImage.size());
+}
+
+
+std::vector<float> g_p_ref_image;
+std::vector<float> g_p_test_image;
+
+double computeRMSE(bool normalise)
+{
+    return computeRMSE(g_p_ref_image, g_p_test_image, normalise);
+}
+
+
+double computeZNCC()
+{
+    return computeZNCC(g_p_ref_image, g_p_test_image);
+}
+
+
+void loadReference(const std::vector<float>& aReferenceImage)
+{
+    g_p_ref_image = aReferenceImage;
+}
+
+
+void loadTest(const std::vector<float>& aTestImage)
+{
+    g_p_test_image = aTestImage;
+}
+
+
+void lineariseTest(float aThreshold, float aScalingFactor)
+{
+#pragma omp parallel for
+    for (int i = 0; i < g_p_test_image.size(); ++i)
+    {
+        if (g_p_test_image[i] < aThreshold)
+        {
+            g_p_test_image[i] = aThreshold;
+        }
+
+        g_p_test_image[i] = -log(g_p_test_image[i]);
+        g_p_test_image[i] *= aScalingFactor;
+    }
 }
 
 

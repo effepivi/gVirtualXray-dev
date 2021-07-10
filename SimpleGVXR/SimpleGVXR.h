@@ -2180,10 +2180,19 @@ std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);
 std::vector<std::vector<std::vector<float> > > loadImage3D(const std::string& aFileName);
 
 double computeZNCC(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
-
-
 double computeRMSE(const std::vector<std::vector<std::vector<float> > >& aReferenceImage, const std::vector<std::vector<std::vector<float> > >& aTestImage);
 
+double getMean(const std::vector<float>& anImage);
+double getStddev(const std::vector<float>& anImage);
+
+double computeZNCC(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage);
+double computeRMSE(const std::vector<float>& aReferenceImage, const std::vector<float>& aTestImage, bool normalise = false);
+
+double computeRMSE(bool normalise = false);
+double computeZNCC();
+void loadReference(const std::vector<float>& aReferenceImage);
+void loadTest(const std::vector<float>& aTestImage);
+void lineariseTest(float aThreshold, float aScalingFactor);
 
 float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
 float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage);
