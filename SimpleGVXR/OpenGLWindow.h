@@ -69,7 +69,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 #include "Window.h"
 
-
+namespace SimpleGVXR {
 class OpenGLWindow: public Window
 {
 public:
@@ -140,6 +140,6 @@ protected:
 
     virtual void registerCallbacks();
 };
-
+};
 
 #endif

@@ -82,6 +82,7 @@ typedef unsigned __int32 u_int32_t;
 #endif
 
 
+namespace SimpleGVXR {
 class VulkanWindow: public Window
 {
 public:
@@ -167,6 +168,7 @@ protected:
     static VkInstance m_instance;
 
 #endif*/
+};
 };
 
 

@@ -89,7 +89,7 @@ extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 
 //---------------------------------------------
-EGLWindow::EGLWindow(int anOpenGLMajorVersion,
+SimpleGVXR::EGLWindow::EGLWindow(int anOpenGLMajorVersion,
                      int anOpenGLMinorVersion):
 //---------------------------------------------
     Window(false)
@@ -112,7 +112,7 @@ EGLWindow::EGLWindow(int anOpenGLMajorVersion,
 
 
 //-----------------------------------------------------
-void EGLWindow::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::EGLWindow::setWindowSize(int aWidth, int aHeight)
 //-----------------------------------------------------
 {
 	// Do nothing
@@ -121,7 +121,7 @@ void EGLWindow::setWindowSize(int aWidth, int aHeight)
 }
 
 //----------------------------------------------------
-void EGLWindow::displayScene(bool aSceneRotationFlag)
+void SimpleGVXR::EGLWindow::displayScene(bool aSceneRotationFlag)
 //----------------------------------------------------
 {
 	// Do nothing
@@ -159,7 +159,7 @@ void EGLWindow::takeScreenshot()
 
 
 //---------------------------------------------------
-void EGLWindow::createWindow(bool aVisibilityFlag)
+void SimpleGVXR::EGLWindow::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
 {
 	// Do nothing
@@ -167,7 +167,7 @@ void EGLWindow::createWindow(bool aVisibilityFlag)
 
 
 //---------------------------
-void EGLWindow::initShader()
+void SimpleGVXR::EGLWindow::initShader()
 //---------------------------
 {
 	// Do nothing
@@ -175,7 +175,7 @@ void EGLWindow::initShader()
 
 
 //----------------------------------------------
-void EGLWindow::render(bool aSceneRotationFlag)
+void SimpleGVXR::EGLWindow::render(bool aSceneRotationFlag)
 //----------------------------------------------
 {
 	// Do nothing

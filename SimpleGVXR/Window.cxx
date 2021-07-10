@@ -127,7 +127,7 @@ void scrollCallback(GLFWwindow* apWindow, double xoffset, double yoffset);
 //******************************************************************************
 //  Static class members
 //******************************************************************************
-std::list<Window*> Window::m_p_window_set;
+std::list<SimpleGVXR::Window*> SimpleGVXR::Window::m_p_window_set;
 
 
 //******************************************************************************
@@ -160,7 +160,7 @@ extern std::shared_ptr<gVirtualXRay::SceneGraphBinder> g_p_scene_graph;
 
 
 //----------------------------------
-Window::Window(int aVisibilityFlag):
+SimpleGVXR::Window::Window(int aVisibilityFlag):
 //----------------------------------
     m_title("gVirtualXRay -- Window"),
     m_visible(aVisibilityFlag),
@@ -180,9 +180,9 @@ Window::Window(int aVisibilityFlag):
 }
 
 
-Window::~Window()
+SimpleGVXR::Window::~Window()
 {
-	std::list<Window*>::iterator ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
+	std::list<SimpleGVXR::Window*>::iterator ite = std::find(m_p_window_set.begin(), m_p_window_set.end(), this);
 
 	if (ite != m_p_window_set.end())
 	{
@@ -192,7 +192,7 @@ Window::~Window()
 
 
 //-------------------------------------------------
-void Window::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::Window::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------
 {
     // The size has changed
@@ -210,7 +210,7 @@ void Window::setWindowSize(int aWidth, int aHeight)
 
 
 //-----------------------
-void Window::renderLoop()
+void SimpleGVXR::Window::renderLoop()
 //-----------------------
 {
     g_run_loop = true;
@@ -232,7 +232,7 @@ void Window::renderLoop()
 
 
 //-----------------------
-void Window::showWindow()
+void SimpleGVXR::Window::showWindow()
 //-----------------------
 {
 	if (m_context.getWindowHandle())
@@ -243,7 +243,7 @@ void Window::showWindow()
 
 
 //-----------------------
-void Window::hideWindow()
+void SimpleGVXR::Window::hideWindow()
 //-----------------------
 {
 	if (m_context.getWindowHandle())
@@ -272,7 +272,7 @@ void Window::setWindowBackGroundColor(float R, float G, float B)
 
 
 //--------------------------
-void Window::destroyWindow()
+void SimpleGVXR::Window::destroyWindow()
 //--------------------------
 {
 	m_context.release();
@@ -280,7 +280,7 @@ void Window::destroyWindow()
 
 
 //-----------------------
-void Window::initViewer()
+void SimpleGVXR::Window::initViewer()
 //-----------------------
 {
     if (!m_viewer_initialised && g_xray_detector.getSourcePositionSet().size())
@@ -311,7 +311,7 @@ void Window::initViewer()
 }
 
 
-Window* Window::getWindow(GLFWwindow* apGLFWwindow)
+SimpleGVXR::Window* SimpleGVXR::Window::getWindow(GLFWwindow* apGLFWwindow)
 {
 	for (auto& ite: m_p_window_set)
 	{
@@ -374,7 +374,7 @@ void keyCallback(GLFWwindow* window,
 
 
 //------------------------------
-void Window::registerCallbacks()
+void SimpleGVXR::Window::registerCallbacks()
 //------------------------------
 {
 	if (m_context.getWindowHandle() && !m_callback_registered)

@@ -186,7 +186,7 @@ extern std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 
 //---------------------------------------------------
-OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
+SimpleGVXR::OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
                            int anOpenGLMajorVersion,
                            int anOpenGLMinorVersion):
 //---------------------------------------------------
@@ -242,7 +242,7 @@ OpenGLWindow::OpenGLWindow(int aVisibilityFlag,
 
 
 //-------------------------------------------------------
-void OpenGLWindow::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
     Window::setWindowSize(aWidth, aHeight);
@@ -253,7 +253,7 @@ void OpenGLWindow::setWindowSize(int aWidth, int aHeight)
 
 
 //------------------------------------------------------
-void OpenGLWindow::displayScene(bool aSceneRotationFlag)
+void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------
 {
 	// Initialise the viewer if needed
@@ -339,7 +339,7 @@ void OpenGLWindow::setWindowBackGroundColor(float R, float G, float B)
 
 
 //---------------------------------------------------
-void OpenGLWindow::createWindow(bool aVisibilityFlag)
+void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
 {
 	// Do nothing
@@ -347,7 +347,7 @@ void OpenGLWindow::createWindow(bool aVisibilityFlag)
 
 
 //-----------------------------
-void OpenGLWindow::initShader()
+void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------
 {
     std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER) << std::endl;
@@ -449,7 +449,7 @@ void OpenGLWindow::initShader()
 
 
 //------------------------------------------------
-void OpenGLWindow::render(bool aSceneRotationFlag)
+void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
 //------------------------------------------------
 {
     try
@@ -729,7 +729,7 @@ void OpenGLWindow::render(bool aSceneRotationFlag)
 
 
 //------------------------------------
-void OpenGLWindow::registerCallbacks()
+void SimpleGVXR::OpenGLWindow::registerCallbacks()
 //------------------------------------
 {
 	if (m_context.getWindowHandle() && !m_callback_registered)
@@ -756,7 +756,7 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
     double screen_aspect_ratio(double(width) / double(height));
     glViewport(x, y, w, h);
 
-    Window* p_window = Window::getWindow(apWindow);
+    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);
     if (p_window)
 	{
     	p_window->initViewer();

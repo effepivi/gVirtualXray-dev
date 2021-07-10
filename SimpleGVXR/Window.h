@@ -80,7 +80,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //  Function declarations
 //******************************************************************************
 
-
+namespace SimpleGVXR {
 class Window
 {
 public:
@@ -181,6 +181,6 @@ protected:
     
     float m_background_colour[3];
 };
-
+};
 
 #endif

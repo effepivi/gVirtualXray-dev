@@ -166,14 +166,14 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int aWidth, int aHeight);
 //******************************************************************************
 //  Static class members
 //******************************************************************************
-/*bool VulkanWindow::m_is_instance_ready = false;
-bool VulkanWindow::m_is_device_ready = false;*/
-uint32_t VulkanWindow::m_number_of_devices = 0;
-//uint32_t VulkanWindow::m_queue_family_property_count = 0;
+/*bool SimpleGVXR::VulkanWindow::m_is_instance_ready = false;
+bool SimpleGVXR::VulkanWindow::m_is_device_ready = false;*/
+uint32_t SimpleGVXR::VulkanWindow::m_number_of_devices = 0;
+//uint32_t SimpleGVXR::VulkanWindow::m_queue_family_property_count = 0;
 
 /*
 #ifdef HAS_VULKAN
-VkInstance VulkanWindow::m_instance;
+VkInstance SimpleGVXR::VulkanWindow::m_instance;
 #endif
 */
 
@@ -308,7 +308,7 @@ uint32_t queueFamilyIndex;
 
 
 //----------------------------------------------
-VulkanWindow::VulkanWindow(int aVisibilityFlag):
+SimpleGVXR::VulkanWindow::VulkanWindow(int aVisibilityFlag):
 //----------------------------------------------
     Window(aVisibilityFlag)
 //----------------------------------------------
@@ -338,7 +338,7 @@ VulkanWindow::VulkanWindow(int aVisibilityFlag):
 
 
 //-------------------------------------------------------
-void VulkanWindow::setWindowSize(int aWidth, int aHeight)
+void SimpleGVXR::VulkanWindow::setWindowSize(int aWidth, int aHeight)
 //-------------------------------------------------------
 {
     Window::setWindowSize(aWidth, aHeight);
@@ -349,7 +349,7 @@ void VulkanWindow::setWindowSize(int aWidth, int aHeight)
 
 
 //------------------------------------------------------
-void VulkanWindow::displayScene(bool aSceneRotationFlag)
+void SimpleGVXR::VulkanWindow::displayScene(bool aSceneRotationFlag)
 //------------------------------------------------------
 {
 	// Initialise the viewer if needed
@@ -419,7 +419,7 @@ void VulkanWindow::takeScreenshot()
 
 
 //---------------------------------------------------
-void VulkanWindow::createWindow(bool aVisibilityFlag)
+void SimpleGVXR::VulkanWindow::createWindow(bool aVisibilityFlag)
 //---------------------------------------------------
 {
 	/*
@@ -484,7 +484,7 @@ void VulkanWindow::createWindow(bool aVisibilityFlag)
 
 
 //-----------------------------
-void VulkanWindow::initShader()
+void SimpleGVXR::VulkanWindow::initShader()
 //-----------------------------
 {
  /*   std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER) << std::endl;
@@ -587,7 +587,7 @@ void VulkanWindow::initShader()
 
 
 //------------------------------------------------
-void VulkanWindow::render(bool aSceneRotationFlag)
+void SimpleGVXR::VulkanWindow::render(bool aSceneRotationFlag)
 //------------------------------------------------
 {
 /*
@@ -868,7 +868,7 @@ void VulkanWindow::render(bool aSceneRotationFlag)
 
 
 //------------------------------------
-void VulkanWindow::registerCallbacks()
+void SimpleGVXR::VulkanWindow::registerCallbacks()
 //------------------------------------
 {
 	if (m_context.getWindowHandle() && !m_callback_registered)
@@ -882,7 +882,7 @@ void VulkanWindow::registerCallbacks()
 
 
 //--------------------------------------------------------------
-//void VulkanWindow::framebufferSizeCallback(GLFWwindow* apWindow,
+//void SimpleGVXR::VulkanWindow::framebufferSizeCallback(GLFWwindow* apWindow,
 //                                           int width,
 //										   int height)
 //--------------------------------------------------------------
@@ -978,7 +978,7 @@ const char* getDeviceType(uint32_t aDeviceType)
 
 
 //----------------------------------------
-void VulkanWindow::printDeviceProperties()
+void SimpleGVXR::VulkanWindow::printDeviceProperties()
 //----------------------------------------
 {
 #ifdef HAS_VULKAN
@@ -1009,7 +1009,7 @@ void VulkanWindow::printDeviceProperties()
 
 
 //--------------------------------------------------------------
-std::vector<const char *> VulkanWindow::enableValidationLayers()
+std::vector<const char *> SimpleGVXR::VulkanWindow::enableValidationLayers()
 //--------------------------------------------------------------
 {
 	// Store here the extensions that are enabled
@@ -1090,7 +1090,7 @@ std::vector<const char *> VulkanWindow::enableValidationLayers()
 
 
 //---------------------------------------------------------------------------------------
-void VulkanWindow::createInstance(const std::vector<const char *>& anEnabledExtensionSet)
+void SimpleGVXR::VulkanWindow::createInstance(const std::vector<const char *>& anEnabledExtensionSet)
 //---------------------------------------------------------------------------------------
 {
 #ifdef HAS_VULKAN
@@ -1147,7 +1147,7 @@ void VulkanWindow::createInstance(const std::vector<const char *>& anEnabledExte
 
 
 //-----------------------------------------
-uint32_t VulkanWindow::findPhysicalDevice()
+uint32_t SimpleGVXR::VulkanWindow::findPhysicalDevice()
 //-----------------------------------------
 {
 #ifdef HAS_VULKAN
@@ -1184,7 +1184,7 @@ uint32_t VulkanWindow::findPhysicalDevice()
 
 
 //---------------------------------------------------------------------
-bool VulkanWindow::supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue)
+bool SimpleGVXR::VulkanWindow::supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue)
 //---------------------------------------------------------------------
 {
 #ifdef HAS_VULKAN
@@ -1215,7 +1215,7 @@ bool VulkanWindow::supportsQueue(u_int32_t aDeviceID, u_int32_t aQueue)
 
 
 //-----------------------------------------------------------------
-uint32_t VulkanWindow::getComputeQueueFamilyIndex(u_int32_t aQueue)
+uint32_t SimpleGVXR::VulkanWindow::getComputeQueueFamilyIndex(u_int32_t aQueue)
 //-----------------------------------------------------------------
 {
   #ifdef HAS_VULKAN
@@ -1250,7 +1250,7 @@ uint32_t VulkanWindow::getComputeQueueFamilyIndex(u_int32_t aQueue)
 
 
 //-------------------------------
-void VulkanWindow::createDevice()
+void SimpleGVXR::VulkanWindow::createDevice()
 //-------------------------------
 {
 #ifdef HAS_VULKAN

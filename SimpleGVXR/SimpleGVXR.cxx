@@ -213,7 +213,7 @@ std::vector<std::vector<float> > gvxrMatrix2Vector(
 //******************************************************************************
 const GLfloat ROTATION_SPEED(2.0);
 
-std::map<int, Window*> g_p_window_set;      // The set of windows
+std::map<int, SimpleGVXR::Window*> g_p_window_set;      // The set of windows
 std::vector<int> g_p_window_id_stack;           // The stack of window IDs
 
 double g_initial_fovy(45);                // Field of view along
@@ -2402,7 +2402,7 @@ void createWindow(int aWindowID,
     // The window does not exist
     if (!g_p_window_set[aWindowID])
         {
-    	Window* p_window = 0;
+    	SimpleGVXR::Window* p_window = 0;
 
     	// Create the window
     	std::string renderer = aRenderer;
@@ -2410,16 +2410,16 @@ void createWindow(int aWindowID,
 
     	if (aRenderer == "OPENGL")
     	{
-    		p_window = new OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
+    		p_window = new SimpleGVXR::OpenGLWindow(aVisibilityFlag, aRendererMajorVersion, aRendererMinorVersion);
     	}
     	else if (aRenderer == "VULKAN")
         {
-        	p_window = new VulkanWindow(aVisibilityFlag);
+        	p_window = new SimpleGVXR::VulkanWindow(aVisibilityFlag);
         }
 #ifdef HAS_EGL
     	else if (aRenderer == "EGL")
         {
-        	p_window = new EGLWindow();
+        	p_window = new SimpleGVXR::EGLWindow();
         }
 #endif // HAS_EGL
         else
@@ -2455,7 +2455,7 @@ void createWindow(int aWindowID,
 
             // Delete the empty record that may have been created
             // in g_p_window_set
-            std::map<int, Window*>::iterator it;
+            std::map<int, SimpleGVXR::Window*>::iterator it;
             it = g_p_window_set.find(aWindowID);
             if (it != g_p_window_set.end())
                 {

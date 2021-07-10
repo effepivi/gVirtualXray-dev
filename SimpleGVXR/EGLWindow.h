@@ -84,6 +84,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Window.h"
 
 
+namespace SimpleGVXR {
 class EGLWindow: public Window
 {
 public:
@@ -108,6 +109,7 @@ protected:
     virtual void createWindow(bool aVisibilityFlag);
     virtual void initShader();
     virtual void render(bool aSceneRotationFlag);
+};
 };
 
 
