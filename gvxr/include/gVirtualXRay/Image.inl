@@ -2851,7 +2851,7 @@ template<typename T> double Image<T>::getVariance() const
     double average(getAverage());
 
 #ifdef NDEBUG
-    #pragma omp parallel reduction( + : variance )
+    #pragma omp parallel for reduction( + : variance )
 #endif
     for (unsigned int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
         {
@@ -2882,9 +2882,9 @@ template<typename T> double Image<T>::computeSAE(const Image<T>& anImage) const
     double sae(0.0);
 
 #ifdef NDEBUG
-    #pragma omp parallel reduction( + : sae )
+    #pragma omp parallel for reduction( + : sae )
 #endif
-    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
     {
         sae += std::abs(m_p_image[i] - anImage.m_p_image[i]);
     }
@@ -2914,9 +2914,9 @@ template<typename T> double Image<T>::computeSSE(const Image<T>& anImage) const
     double temp;
 
 #ifdef NDEBUG
-    #pragma omp parallel reduction( + : sse ) private(temp)
+    #pragma omp parallel for reduction( + : sse ) private(temp)
 #endif
-    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
     {
         temp = m_p_image[i] - anImage.m_p_image[i];
         temp *= temp;
@@ -2960,9 +2960,9 @@ template<typename T> double Image<T>::computeNCC(const Image<T>& anImage) const
     double ncc(0.0);
 
 #ifdef NDEBUG
-    #pragma omp parallel reduction( + : ncc )
+    #pragma omp parallel for reduction( + : ncc )
 #endif
-    for (unsigned int i(0); i < m_width * m_height * m_number_of_slices; ++i)
+    for (int i = 0; i < m_width * m_height * m_number_of_slices; ++i)
     {
         ncc += (m_p_image[i] - average1) * (anImage.m_p_image[i] - average2);
     }
@@ -4202,7 +4202,7 @@ template<typename T> PolygonMesh Image<T>::marchingCubes(const T& aFirstTheshold
                 std::vector<float> p_combined_vertex_set;
                 std::vector<float> p_combined_normal_vector_set;
 
-                for (unsigned int i(0); i < max_thread; ++i)
+                for (int i = 0; i < max_thread; ++i)
                 {
                     p_combined_vertex_set.insert(p_combined_vertex_set.end(), p_vertex_set[i].begin(), p_vertex_set[i].end());
                     p_combined_normal_vector_set.insert(p_combined_normal_vector_set.end(), p_normal_vector_set[i].begin(), p_normal_vector_set[i].end());
@@ -4733,7 +4733,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
     {
         // release the memory
         delete [] p_temp_buffer;
-		
+
         std::string error_message("The file size of \"");
         error_message += aFileName;
         error_message += "\" is too small to contained the specified raw data.";
@@ -4799,7 +4799,7 @@ template<typename T> void Image<T>::loadRAW(std::ifstream& anInputStream,
         // Release the compressed data
         delete [] p_temp_buffer;
 		p_temp_buffer = 0;
-		
+
         // Keep the decompressed data
         p_temp_buffer = p_dest;
     }*/
