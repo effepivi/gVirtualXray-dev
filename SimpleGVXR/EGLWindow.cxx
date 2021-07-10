@@ -128,9 +128,9 @@ void SimpleGVXR::EGLWindow::displayScene(bool aSceneRotationFlag)
 }
 
 
-//------------------------------
-void EGLWindow::takeScreenshot()
-//------------------------------
+//------------------------------------------
+void SimpleGVXR::EGLWindow::takeScreenshot()
+//------------------------------------------
 {
     // Update the window size, just in case
     glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);

@@ -291,9 +291,9 @@ void SimpleGVXR::OpenGLWindow::displayScene(bool aSceneRotationFlag)
 }
 
 
-//---------------------------------
-void OpenGLWindow::takeScreenshot()
-//---------------------------------
+//---------------------------------------------
+void SimpleGVXR::OpenGLWindow::takeScreenshot()
+//---------------------------------------------
 {
     // Update the window size, just in case
     glfwGetWindowSize(m_context.getWindowHandle(), &m_width, &m_height);
@@ -302,15 +302,15 @@ void OpenGLWindow::takeScreenshot()
     glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_FLOAT, p_pixel_set);
 
     lastest_screenshot.clear();
-    
+
     for (unsigned int j = 0; j < m_height; ++j)
     {
         lastest_screenshot.push_back(std::vector<std::vector< float> >() );
-        
+
         for (unsigned int i = 0; i < m_width; ++i)
         {
             lastest_screenshot.back().push_back(std::vector< float>());
-            
+
             lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 0]);
             lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 1]);
             lastest_screenshot.back().back().push_back(p_pixel_set[(m_height - 1 - j) * m_width * 3 + i * 3 + 2]);
@@ -321,18 +321,18 @@ void OpenGLWindow::takeScreenshot()
 }
 
 
-//---------------------------------------------------------------------
-void OpenGLWindow::setWindowBackGroundColour(float R, float G, float B)
-//---------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+void SimpleGVXR::OpenGLWindow::setWindowBackGroundColour(float R, float G, float B)
+//---------------------------------------------------------------------------------
 {
     Window::setWindowBackGroundColour(R, G, B);
     glClearColor(m_background_colour[0], m_background_colour[1], m_background_colour[2], 1.0);
 }
 
 
-//--------------------------------------------------------------------
-void OpenGLWindow::setWindowBackGroundColor(float R, float G, float B)
-//--------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+void SimpleGVXR::OpenGLWindow::setWindowBackGroundColor(float R, float G, float B)
+//--------------------------------------------------------------------------------
 {
     setWindowBackGroundColour(R, G, B);
 }

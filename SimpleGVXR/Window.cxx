@@ -175,7 +175,7 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
     m_background_colour[0] = 0.5;
     m_background_colour[1] = 0.5;
     m_background_colour[2] = 0.5;
-    
+
 	m_p_window_set.push_back(this);
 }
 
@@ -253,9 +253,9 @@ void SimpleGVXR::Window::hideWindow()
 }
 
 
-//---------------------------------------------------------------
-void Window::setWindowBackGroundColour(float R, float G, float B)
-//---------------------------------------------------------------
+//---------------------------------------------------------------------------
+void SimpleGVXR::Window::setWindowBackGroundColour(float R, float G, float B)
+//---------------------------------------------------------------------------
 {
     m_background_colour[0] = R;
     m_background_colour[1] = G;
@@ -263,9 +263,9 @@ void Window::setWindowBackGroundColour(float R, float G, float B)
 }
 
 
-//--------------------------------------------------------------
-void Window::setWindowBackGroundColor(float R, float G, float B)
-//--------------------------------------------------------------
+//--------------------------------------------------------------------------
+void SimpleGVXR::Window::setWindowBackGroundColor(float R, float G, float B)
+//--------------------------------------------------------------------------
 {
     setWindowBackGroundColour(R, G, B);
 }
@@ -363,9 +363,9 @@ void keyCallback(GLFWwindow* window,
 		case GLFW_KEY_V:
 			g_display_normal_vectors = !g_display_normal_vectors;
 			break;
-			
+
 		case GLFW_KEY_T:
-		    Window* p_window = Window::getWindow(window);
+		    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
 		    p_window->takeScreenshot();
 		    break;
 		}
