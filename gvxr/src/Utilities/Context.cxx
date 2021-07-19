@@ -72,8 +72,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define GL_GLEXT_PROTOTYPES 1
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
 
 #ifndef __Context_h
 #include "gVirtualXRay/Context.h"
