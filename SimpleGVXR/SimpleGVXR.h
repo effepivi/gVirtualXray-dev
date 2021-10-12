@@ -451,6 +451,24 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength);
 
 
 //------------------------------------------------------------------------------
+/// Clear the energy response of the detector.
+//------------------------------------------------------------------------------
+void clearDetectorEnergyResponse();
+
+
+//------------------------------------------------------------------------------
+/// Load the energy response of the detector from a TSV file.
+/**
+ *  @param aFileName: name of the file. Each line of the file is formatted as follows:
+ *                    input_energy  output_energy
+ *  @param aUnitOfEnergy: the unit of energy corresponding to the data in the file
+ */
+//------------------------------------------------------------------------------
+void loadDetectorEnergyResponse(const std::string& aFileName,
+    const std::string& aUnitOfEnergy);
+
+
+//------------------------------------------------------------------------------
 /// Load a polygon mesh from a file, set its label in the scenegraph
 /// (i.e. identifier) and add it to the X-ray renderer.
 /**
@@ -1578,6 +1596,27 @@ void useParallelBeam();
 /// the scanned object and detector).
 //------------------------------------------------------------------------------
 void useParallelSource();
+
+
+//------------------------------------------------------------------------------
+/// Set the size of the focal spot of the X-ray generator
+/**
+ *  @param x:   size along the x-axis
+ *  @param y:   size along the y-axis
+ *  @param z:   size along the z-axis
+ *  @param aUnitOfLength:   the unit of length. Acceptable values are:
+ *                          "um", "micrometre",  "micrometer",
+ *                          "mm", "millimetre",  "millimeter",
+ *                          "cm", "centimetre",  "centimeter",
+ *                          "dm",  "decimetre",  "decimeter",
+ *                          "m",   "metre",      "meter",
+ *                          "dam", "decametre",  "decameter",
+ *                          "hm",  "hectometre", "hectometer",
+ *                          "km",  "kilometre",  "kilometer"
+ *  @return the corresponding numerical value
+ */
+//------------------------------------------------------------------------------
+//void setFocalSpot(x, y, z, aUnitOfLength);
 
 
 //------------------------------------------------------------------------------

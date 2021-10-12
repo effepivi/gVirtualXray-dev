@@ -552,6 +552,24 @@ std::vector<double> getDetectorSize(const std::string& aUnitOfLength)
     return (detector_size);
 }
 
+
+//--------------------------------
+void clearDetectorEnergyResponse()
+//--------------------------------
+{
+    g_xray_detector.clearEnergyResponse();
+}
+
+
+//---------------------------------------------------------------
+void loadDetectorEnergyResponse(const std::string& aFileName,
+                                const std::string& aUnitOfEnergy)
+//---------------------------------------------------------------
+{
+    g_xray_detector.loadEnergyResponse(aFileName, getUnitOfEnergy(aUnitOfEnergy));
+}
+
+
 //-------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
