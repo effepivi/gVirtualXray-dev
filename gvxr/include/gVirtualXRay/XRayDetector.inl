@@ -68,8 +68,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 
-#ifndef GVXR_OPENGL_UTILITIES_H
+#ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
+#endif
+
+#ifndef __FileDoesNotExistException_h
+#include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
 
@@ -509,6 +513,45 @@ inline const RATIONAL_NUMBER& XRayDetector::getFOVY() const
 //---------------------------------------------------------
 {
     return (m_fovy);
+}
+
+
+//---------------------------------------------
+inline void XRayDetector::clearEnergyResponse()
+//---------------------------------------------
+{
+		m_energy_response.clear();
+}
+
+
+//--------------------------------------------------------------------------------
+inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
+  		        															 const RATIONAL_NUMBER& aUnitOfEnergy)
+//--------------------------------------------------------------------------------
+{
+		// Empty the current beam spectrum
+		m_energy_response.clear();
+
+		// Open the file
+		std::ifstream energy_response_input_stream(aFileName);
+
+		// The file is not open
+		if (!energy_response_input_stream.is_open())
+		{
+				throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aFileName);
+		}
+
+		// Load the file
+		double input_energy;
+		double output_energy;
+		while (energy_response_input_stream >> input_energy >> output_energy)
+		{
+				// The record is valid
+				if (!energy_response_input_stream.eof())
+				{
+						m_energy_response[input_energy] = output_energy;
+				}
+		}
 }
 
 

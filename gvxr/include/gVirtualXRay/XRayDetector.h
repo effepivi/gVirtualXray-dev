@@ -75,6 +75,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <memory>
+#include <map>
 
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -452,6 +453,24 @@ public:
     const VEC2& getPixelSizeInUnitOfLength() const;
 
 
+    //--------------------------------------------------------------------------
+    /// Clear the energy response of the detector.
+    //--------------------------------------------------------------------------
+    void clearEnergyResponse();
+
+
+    //--------------------------------------------------------------------------
+    /// Load the energy response of the detector from a TSV file.
+    /**
+     *  @param aFileName: name of the file. Each line of the file is formatted as follows:
+     *                    input_energy  output_energy
+     *  @param aUnitOfEnergy: the unit of energy corresponding to the data in the file
+     */
+    //--------------------------------------------------------------------------
+    void loadEnergyResponse(const std::string& aFileName,
+        const RATIONAL_NUMBER& aUnitOfEnergy);
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -599,6 +618,10 @@ protected:
 
     /// Field of view along the Y-axis
     RATIONAL_NUMBER m_fovy;
+
+
+    /// Energy response. The keys of the map are the input energies
+    std::map<RATIONAL_NUMBER, RATIONAL_NUMBER> m_energy_response;
 };
 
 
