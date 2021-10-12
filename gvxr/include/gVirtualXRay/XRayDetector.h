@@ -75,7 +75,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <memory>
-#include <map>
+#include <vector> // To store the energy response
+#include <utility> // To create STL pairs
 
 #ifndef TYPES_H
 #include "gVirtualXRay/Types.h"
@@ -471,6 +472,16 @@ public:
         const RATIONAL_NUMBER& aUnitOfEnergy);
 
 
+    //--------------------------------------------------------------------------
+    /// Apply the energy response if any.
+    /**
+    *  @param aUnitOfEnergy: the input energy
+    *  @return the output energy
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER applyEnergyResponse(const RATIONAL_NUMBER& anEnergy) const;
+
+
 //******************************************************************************
 protected:
     //--------------------------------------------------------------------------
@@ -621,7 +632,7 @@ protected:
 
 
     /// Energy response. The keys of the map are the input energies
-    std::map<RATIONAL_NUMBER, RATIONAL_NUMBER> m_energy_response;
+    std::vector<std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER> > m_energy_response;
 };
 
 

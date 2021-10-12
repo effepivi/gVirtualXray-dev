@@ -66,7 +66,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <fstream>
 #include <iostream>
-
+#include <algorithm> // To sort the energy response
 
 #ifndef __OpenGLUtilities_h
 #include "gVirtualXRay/OpenGLUtilities.h"
@@ -549,10 +549,42 @@ inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
 				// The record is valid
 				if (!energy_response_input_stream.eof())
 				{
-						m_energy_response[input_energy] = output_energy;
+						m_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(input_energy, output_energy));
 				}
 		}
+
+		// Sort the energy response on input energy
+		std::sort(m_energy_response.begin(), m_energy_response.end());
 }
+
+
+//---------------------------------------------------------------------------------------------
+inline RATIONAL_NUMBER XRayDetector::applyEnergyResponse(const RATIONAL_NUMBER& anEnergy) const
+//---------------------------------------------------------------------------------------------
+{
+		// There is no energy response, consider the perfect case
+		if (!m_energy_response.size())
+		{
+				return anEnergy;
+		}
+
+
+
+    // return findNearestEnergy(anEnergy);
+}
+
+
+
+// def find_nearest(a, a0, b):
+//     "Element in nd array `a` closest to the scalar value `a0`"
+//     idx = np.abs(a - a0).argmin()
+//
+//     # a[idx] <= a0 <= a[idx+1]
+//     if a[idx] < a0:
+//         return interpolate(a[idx], a[idx + 1], a0, b[idx], b[idx + 1])
+//     # a[idx - 1] <= a0 <= a[idx]
+//     else:
+//         return interpolate(a[idx - 1], a[idx], a0, b[idx - 1], b[idx])
 
 
 //--------------------------------------------------
