@@ -2696,10 +2696,22 @@ void XRayRenderer::computeIntegratedEnergy()
 					checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 				}
 
-				handle = glGetUniformLocation(program_handle, "g_n_input_energy");
+				// Get the incident energy
+				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+
+				// Apply the energy response
+				photon_energy = m_p_detector->applyEnergyResponse(photon_energy);
+
+				// Convert in MeV
+				photon_energy /= MeV;
+
+				// Get the number of photons
 				RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
-				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy() / MeV);
+
+				// Compute the energy
 				RATIONAL_NUMBER input_energy(photon_number * photon_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
+
+				handle = glGetUniformLocation(program_handle, "g_n_input_energy");
 				glUniform1f(handle, input_energy);
 
 				// Transform the texture coordinates

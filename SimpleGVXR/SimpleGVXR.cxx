@@ -3051,6 +3051,15 @@ std::vector<double> getPhotonCountEnergyBins()
     return (p_temp);
 }
 
+
+//-----------------------------------------
+double getTotalEnergyWithDetectorResponse()
+//-----------------------------------------
+{
+    return g_xray_renderer.getTotalEnergyWithDetectorResponse();
+}
+
+
 //--------------------------------------------------
 void saveLastXRayImage(const std::string& aFileName,
                        bool useCompression)

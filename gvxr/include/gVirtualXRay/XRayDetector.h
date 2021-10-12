@@ -526,6 +526,15 @@ protected:
     void updateFOVY();
 
 
+    //--------------------------------------------------------------------------
+    /// Find the index of the closest input energy in the energy response.
+    /**
+    *  @return the index of the closest input energy
+    */
+    //--------------------------------------------------------------------------
+    int findNearestEnergyIdx(const RATIONAL_NUMBER& anEnergy) const;
+
+
      /// The position of the detector centre
     VEC3            m_detector_position;
 

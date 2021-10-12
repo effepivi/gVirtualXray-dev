@@ -1700,6 +1700,15 @@ std::vector<double> getEnergyBins(const std::string& aUnitOfEnergy);
 std::vector<double> getPhotonCountEnergyBins();
 
 
+//--------------------------------------------------------------------------
+/// Accessor on a total energy of the beam when the detector response is applied.
+/**
+ *  @return the total energy
+ */
+//--------------------------------------------------------------------------
+double getTotalEnergyWithDetectorResponse();
+
+
 //------------------------------------------------------------------------------
 /// Save the polygon mesh of a given node.
 /**

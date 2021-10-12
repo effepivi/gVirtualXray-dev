@@ -549,6 +549,9 @@ inline void XRayDetector::loadEnergyResponse(const std::string& aFileName,
 				// The record is valid
 				if (!energy_response_input_stream.eof())
 				{
+						input_energy *= aUnitOfEnergy;
+						output_energy *= aUnitOfEnergy;
+
 						m_energy_response.push_back(std::pair<RATIONAL_NUMBER, RATIONAL_NUMBER>(input_energy, output_energy));
 				}
 		}
@@ -568,23 +571,22 @@ inline RATIONAL_NUMBER XRayDetector::applyEnergyResponse(const RATIONAL_NUMBER& 
 				return anEnergy;
 		}
 
+		// Deal with extreme cases
+		if (m_energy_response.front().first >= anEnergy) return m_energy_response.front().second;
+		if (m_energy_response.back().first <= anEnergy) return m_energy_response.back().second;
 
+		// Find the closest energy in the energy response
+    int nearest_energy_idx = findNearestEnergyIdx(anEnergy);
 
-    // return findNearestEnergy(anEnergy);
+		// Interpolate the values
+		RATIONAL_NUMBER corrected_energy = interpolate(m_energy_response[nearest_energy_idx].first,
+				m_energy_response[nearest_energy_idx + 1].first,
+				anEnergy,
+				m_energy_response[nearest_energy_idx].second,
+				m_energy_response[nearest_energy_idx + 1].second);
+
+		return corrected_energy;
 }
-
-
-
-// def find_nearest(a, a0, b):
-//     "Element in nd array `a` closest to the scalar value `a0`"
-//     idx = np.abs(a - a0).argmin()
-//
-//     # a[idx] <= a0 <= a[idx+1]
-//     if a[idx] < a0:
-//         return interpolate(a[idx], a[idx + 1], a0, b[idx], b[idx + 1])
-//     # a[idx - 1] <= a0 <= a[idx]
-//     else:
-//         return interpolate(a[idx - 1], a[idx], a0, b[idx - 1], b[idx])
 
 
 //--------------------------------------------------
@@ -645,6 +647,28 @@ inline void XRayDetector::updateFOVY()
 //------------------------------------
 {
     m_fovy = 2.0 * (180.0  / PI) * atan2(RATIONAL_NUMBER(m_size_in_unit_of_length.getY() / 2.0), m_distance_source_detector);
+}
+
+
+//----------------------------------------------------------------------------------
+inline int XRayDetector::findNearestEnergyIdx(const RATIONAL_NUMBER& anEnergy) const
+//----------------------------------------------------------------------------------
+{
+		// The energy response is empty
+		if (!m_energy_response.size())
+		{
+				throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		if (m_energy_response.front().first >= anEnergy) return 0;
+		if (m_energy_response.back().first <= anEnergy) return (m_energy_response.size() - 1);
+
+		for (int i = 0; i < m_energy_response.size() - 1; ++i)
+		{
+				if (m_energy_response[i].first <= anEnergy && anEnergy <= m_energy_response[i + 1].first) return i;
+		}
+
+		return (m_energy_response.size() - 1);
 }
 
 

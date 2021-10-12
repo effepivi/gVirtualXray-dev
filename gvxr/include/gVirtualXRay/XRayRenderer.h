@@ -207,6 +207,15 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on a total energy of the beam when the detector response is applied.
+    /**
+     *  @return the total energy
+     */
+    //--------------------------------------------------------------------------
+    RATIONAL_NUMBER getTotalEnergyWithDetectorResponse() const;
+
+
+    //--------------------------------------------------------------------------
     /// Add a 3D object to be rendered. It will be used as an internal surface.
     /**
      *  @param apSurface:   the 3D object
