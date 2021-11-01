@@ -1086,7 +1086,18 @@ std::vector<std::vector<float> > getRootTransformationMatrix();
  *  @return the scengraph's root node transformation matrix as a 4x4 array
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > getNodeTransformationMatrix(
+std::vector<std::vector<float> > getNodeLocalTransformationMatrix(
+    const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the transformation matrix of a given node.
+/**
+ *  @param aLabel:  the label of the polygon mesh
+ *  @return the scengraph's root node transformation matrix as a 4x4 array
+ */
+//------------------------------------------------------------------------------
+std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
     const std::string& aLabel);
 
 
@@ -2221,6 +2232,10 @@ void setScaleFilter(double aValue);
 double getShiftFilter();
 double getScaleFilter();
 */
+
+std::vector<float> rayIntersect(const std::string& aLabel,
+    double aRayOriginX, double aRayOriginY, double aRayOriginZ,
+    double aRayDirectionX, double aRayDirectionY, double aRayDirectionZ);
 
 
 std::vector<std::vector<float> > loadImage2D(const std::string& aFileName);

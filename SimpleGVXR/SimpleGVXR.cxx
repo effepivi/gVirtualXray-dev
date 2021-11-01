@@ -3961,6 +3961,66 @@ double getMuFromHU(double HU,
 
 
 
+std::vector<float> rayIntersect(const std::string& aLabel,
+    double aRayOriginX, double aRayOriginY, double aRayOriginZ,
+    double aRayDirectionX, double aRayDirectionY, double aRayDirectionZ)
+{
+    std::vector<float> p_intersection_set;
+    gVirtualXRay::SceneGraphNode* p_source_node = 0;
+    
+    // The scenegraph does not exist
+    if (g_p_scene_graph.get())
+    {
+        // Find the node. It must exist
+        gVirtualXRay::SceneGraphNode* p_source_node =
+            g_p_scene_graph->getNode(aLabel);
+
+        // The node exists
+        if (p_source_node)
+        {
+            // Ray tracing
+            std::map<float, gVirtualXRay::VEC3> p_intersection_full_set = p_source_node->rayIntersect(
+            		gVirtualXRay::VEC3(aRayOriginX, aRayOriginY, aRayOriginZ),
+			        gVirtualXRay::VEC3(aRayDirectionX, aRayDirectionY, aRayDirectionZ),
+			        gVirtualXRay::MATRIX4());
+			        
+			// Iterate through the map
+			for (std::map<float, gVirtualXRay::VEC3>::const_iterator ite = p_intersection_full_set.begin();
+			         ite != p_intersection_full_set.end();
+			         ++ite)
+			{
+    			p_intersection_set.push_back(ite->first);
+			}
+        }
+    }
+
+    // The source does not exist
+    if (!p_source_node)
+    {
+        cerr <<
+            "gvxrWarning:\tPolygonMesh " <<
+            aLabel <<
+            " not found in g_p_polygon_mesh_set." <<
+            endl;
+    }
+
+    return p_intersection_set;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void setShiftFilter(double aValue) {
     g_shift_filter = aValue;
 }
