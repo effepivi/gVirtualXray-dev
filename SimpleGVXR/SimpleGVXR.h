@@ -484,11 +484,13 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
  *                          "dam", "decametre",  "decameter",
  *                          "hm",  "hectometre", "hectometer",
  *                          "km",  "kilometre",  "kilometer"
+ *  @addToRendererAsInnerSurface: a flag to add the mesh to the X-ray renderer (as an inner surface) (default value: true)
  */
 //------------------------------------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
-                  const std::string& aUnitOfLength);
+                  const std::string& aUnitOfLength,
+				  bool addToRendererAsInnerSurface = true);
 
 
 //------------------------------------------------------------------------------

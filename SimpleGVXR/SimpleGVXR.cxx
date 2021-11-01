@@ -573,7 +573,8 @@ void loadDetectorEnergyResponse(const std::string& aFileName,
 //-------------------------------------------------
 void loadMeshFile(const std::string& aLabel,
                   const std::string& aFileName,
-                  const std::string& aUnitOfLength)
+                  const std::string& aUnitOfLength,
+				  bool addToRendererAsInnerSurface)
 //-------------------------------------------------
 {
     // Initialise the X-ray renderer if needed and if possible
@@ -596,7 +597,8 @@ void loadMeshFile(const std::string& aLabel,
     true, true, getUnitOfLength(aUnitOfLength), GL_STATIC_DRAW);
 
     // Add the geometry to the X-ray renderer
-    g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
+    if (addToRendererAsInnerSurface)
+    	g_xray_renderer.addInnerSurface(g_p_scene_graph->getNode(aLabel));
 }
 
 
@@ -1495,6 +1497,8 @@ float getShininess(const std::string& aLabel)
 void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 //----------------------------------------------------------
 {
+	std::cout << "Add " << aLabel << std::endl;
+
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
         {
@@ -1524,6 +1528,7 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 void addPolygonMeshAsOuterSurface(const std::string& aLabel)
 //---------------------------------------------
 {
+	std::cout << "Add " << aLabel << std::endl;
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
         {
