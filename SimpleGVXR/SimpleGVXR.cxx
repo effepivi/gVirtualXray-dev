@@ -1875,7 +1875,7 @@ std::vector<std::vector<float> > getRootTransformationMatrix()
 }
 
 
-std::vector<std::vector<float> > getNodeTransformationMatrix(
+std::vector<std::vector<float> > getNodeLocalTransformationMatrix(
         const std::string& aLabel)
 {
     gVirtualXRay::MATRIX4 transformation;
@@ -1889,6 +1889,39 @@ std::vector<std::vector<float> > getNodeTransformationMatrix(
         if (p_node)
             {
             transformation = p_node->getLocalTransformationMatrix();
+            }
+        // It has not been found
+        else
+            {
+            cerr << "gvxrWarning:\tPolygonMesh " <<
+                aLabel <<
+                " not found in g_p_polygon_mesh_set." <<
+                endl;
+            }
+        }
+    else
+        {
+        cerr << "gvxrWarning:\tThe scenegraph is empty." << endl;
+        }
+
+    return (gvxrMatrix2Vector(transformation));
+}
+
+
+std::vector<std::vector<float> > getNodeWorldTransformationMatrix(
+        const std::string& aLabel)
+{
+    gVirtualXRay::MATRIX4 transformation;
+
+    if (g_p_scene_graph.get())
+        {
+        // Find the mesh
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+        // It has been found
+        if (p_node)
+            {
+            transformation = p_node->getWorldTransformationMatrix();
             }
         // It has not been found
         else
