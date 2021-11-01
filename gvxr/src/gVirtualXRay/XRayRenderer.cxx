@@ -2455,7 +2455,7 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 	    	internal_format = GL_RGB16F;
 
 	    init3DData(internal_format);
-		init3DFBOs();
+			init3DFBOs();
 	}
 
 	// Save the current FBO
@@ -2527,21 +2527,21 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 			}
 			else
 			{
-                glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
+          glBindTexture(GL_TEXTURE_2D, m_p_texture_name_set[XRAY_DETECTOR_UNCLEANED_LBUFFER_TEXTURE_NAME_ID]);
 			}
 			checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
 			// This is not the first object, enable blending
 			if (anObjectID > 0)
 			{
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_ONE, GL_ONE);
+					glEnable(GL_BLEND);
+					glBlendFunc(GL_ONE, GL_ONE);
 			}
 			// This is the first object, disable blending if needed
 			else
 			{
-				// Blending is enable, disable it
-				glDisable(GL_BLEND);
+					// Blending is enable, disable it
+					glDisable(GL_BLEND);
 			}
 
 			// Proceed each energy channel
@@ -2549,36 +2549,37 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 					current_slice < m_p_xray_beam->getEnergyChannelNumber();
 					++current_slice)
 			{
-				// Get the energy and the corresponding attenuation coefficient
-                RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
-				RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
+					// Get the energy and the corresponding attenuation coefficient
+	        RATIONAL_NUMBER energy = m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy();
+					RATIONAL_NUMBER mu = aPhotonCrossSection.getLinearAttenuationCoefficient(energy);
 
-                // Set the attenuation coefficient
-                // Convert mu in cm-1
-                mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
+	        // Set the attenuation coefficient
+	        // Convert mu in cm-1
+	        mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
-                // Bind the corresponding slice of the 3D texture
-                if (m_p_xray_beam->getEnergyChannelNumber() > 1)
-                {
-                    // Bind default frame buffer
-                    FramebufferObject::Disable();
+					//std::cout << anObjectID << " " << energy / keV << " " << mu << std::endl;
+	        // Bind the corresponding slice of the 3D texture
+	        if (m_p_xray_beam->getEnergyChannelNumber() > 1)
+	        {
+	            // Bind default frame buffer
+	            FramebufferObject::Disable();
 
-                    // Attach the texture
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
+	            // Attach the texture
+	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->UnattachAll();
+	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->AttachTexture(GL_TEXTURE_3D, m_p_texture_name_set[XRAY_DETECTOR_SUM_MUx_Dx_TEXTURE_NAME_ID], GL_COLOR_ATTACHMENT0, 0, current_slice);
 
-                    // Bind the FBO
-                    m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
-                    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
-                }
+	            // Bind the FBO
+	            m_p_fbo_set[XRAY_DETECTOR_SUM_MUx_Dx_FBO_ID]->Bind();
+	            checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	        }
 
-                handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
-                glUniform1f(handle, mu);
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	        handle = glGetUniformLocation(program_handle, "g_attenuation_coefficient");
+	        glUniform1f(handle, mu);
+	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
-                // Display the textured square
-                m_detector_temporary_geometry->display();
-                checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	        // Display the textured square
+	        m_detector_temporary_geometry->display();
+	        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 			}
 
 			// Restore the transformation matrices
@@ -2697,22 +2698,24 @@ void XRayRenderer::computeIntegratedEnergy()
 				}
 
 				// Get the incident energy
-				RATIONAL_NUMBER photon_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
+				RATIONAL_NUMBER incident_energy(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonEnergy());
 
 				// Apply the energy response
-				photon_energy = m_p_detector->applyEnergyResponse(photon_energy);
+				RATIONAL_NUMBER corrected_energy = m_p_detector->applyEnergyResponse(incident_energy);
 
 				// Convert in MeV
-				photon_energy /= MeV;
+				corrected_energy /= MeV;
+
+				//std::cout << incident_energy / MeV << "\t" << corrected_energy << std::endl;
 
 				// Get the number of photons
 				RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
 
 				// Compute the energy
-				RATIONAL_NUMBER input_energy(photon_number * photon_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
+				RATIONAL_NUMBER total_energy(photon_number * corrected_energy / RATIONAL_NUMBER(m_p_detector->getNumberOfSourceSamples()));
 
 				handle = glGetUniformLocation(program_handle, "g_n_input_energy");
-				glUniform1f(handle, input_energy);
+				glUniform1f(handle, total_energy);
 
 				// Transform the texture coordinates
 				GLdouble z((0.5 + current_slice) / GLdouble(m_p_xray_beam->getEnergyChannelNumber()));
