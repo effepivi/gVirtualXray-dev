@@ -1497,8 +1497,6 @@ float getShininess(const std::string& aLabel)
 void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 //----------------------------------------------------------
 {
-	std::cout << "Add " << aLabel << std::endl;
-
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
         {
@@ -1528,7 +1526,6 @@ void addPolygonMeshAsInnerSurface(const std::string& aLabel)
 void addPolygonMeshAsOuterSurface(const std::string& aLabel)
 //---------------------------------------------
 {
-	std::cout << "Add " << aLabel << std::endl;
     // The scenegraph does not exist
     if (!g_p_scene_graph.get())
         {
@@ -3230,9 +3227,9 @@ void disableArtifactFiltering(void)
     disableArtefactFiltering();
 }
 
-//----------------------------
-std::vector<std::vector<float> > computeXRayImage()
-//----------------------------
+//---------------------------------------------------------------------------
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
+//---------------------------------------------------------------------------
 {
     // There is no OpenGL context
     if (!g_has_own_gl_context
@@ -3244,7 +3241,7 @@ std::vector<std::vector<float> > computeXRayImage()
     // The renderer is ready
     if (g_xray_renderer.isReady()) {
     // Compute the X-ray image
-    g_xray_renderer.computeImage(g_sample_rotation_matrix);
+    g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
     }
     // The renderer is not ready
     else {
@@ -3253,6 +3250,7 @@ std::vector<std::vector<float> > computeXRayImage()
 
     return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
 }
+
 
 //--------------------------------------------
 std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
@@ -4005,7 +4003,7 @@ std::vector<float> rayIntersect(const std::string& aLabel,
 {
     std::vector<float> p_intersection_set;
     gVirtualXRay::SceneGraphNode* p_source_node = 0;
-    
+
     // The scenegraph does not exist
     if (g_p_scene_graph.get())
     {
@@ -4021,7 +4019,7 @@ std::vector<float> rayIntersect(const std::string& aLabel,
             		gVirtualXRay::VEC3(aRayOriginX, aRayOriginY, aRayOriginZ),
 			        gVirtualXRay::VEC3(aRayDirectionX, aRayDirectionY, aRayDirectionZ),
 			        gVirtualXRay::MATRIX4());
-			        
+
 			// Iterate through the map
 			for (std::map<float, gVirtualXRay::VEC3>::const_iterator ite = p_intersection_full_set.begin();
 			         ite != p_intersection_full_set.end();

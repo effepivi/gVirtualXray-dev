@@ -1888,10 +1888,13 @@ double getUnitOfLength(const std::string& aUnitOfLength);
 /// - Scanned object geometries
 /// - Scanned object material properties
 /**
+ *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+ *                                otherwise the number of photons is returned
+ *                                (default value: true)
  *  @return the corresponding X-ray image
  */
 //------------------------------------------------------------------------------
-std::vector<std::vector<float> > computeXRayImage();
+std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag = true);
 
 
 //------------------------------------------------------------------------------

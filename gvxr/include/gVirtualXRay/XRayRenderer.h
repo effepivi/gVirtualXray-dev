@@ -303,9 +303,13 @@ public:
      *  @param aModellingTransformationMatrix:  a modelling transformation
      *                                          matrix that will be used on all
      *                                          the 3D objects
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     *                                (default value: true)
      */
     //--------------------------------------------------------------------------
-    void computeImage(const MATRIX4& aModellingTransformationMatrix);
+    void computeImage(const MATRIX4& aModellingTransformationMatrix,
+        bool anIntegrateEnergyFlag = true);
 
 
     //--------------------------------------------------------------------------
@@ -1014,8 +1018,12 @@ protected:
 
     //--------------------------------------------------------------------------
     /// Compute the energy fluence.
+    /**
+     *  @param anIntegrateEnergyFlag: if true the energy fluence is returned,
+     *                                otherwise the number of photons is returned
+     */
     //--------------------------------------------------------------------------
-    void computeIntegratedEnergy();
+    void computeIntegratedEnergy(bool anIntegrateEnergyFlag);
 
 
     //--------------------------------------------------------------------------

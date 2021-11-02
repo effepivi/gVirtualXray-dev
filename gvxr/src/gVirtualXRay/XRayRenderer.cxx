@@ -469,7 +469,7 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
         transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
         // Compute the X-ray image
-        computeImage(transformation_matrix);
+        computeImage(transformation_matrix, true);
 
         // Load the FBO in the main memory
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
@@ -600,7 +600,7 @@ void XRayRenderer::computeProjectionSet(MATRIX4& aModellingTransformationMatrix,
         transformation_matrix = transformation_matrix * aModellingTransformationMatrix;
 
         // Compute the X-ray image
-        computeImage(transformation_matrix);
+        computeImage(transformation_matrix, true);
 
         // Load the FBO in the main memory
         getFBO(XRAY_DETECTOR_ENERGY_FLUENCE_FBO_ID);
@@ -886,7 +886,8 @@ void XRayRenderer::checkGPUCapabilities()
 
 
 //----------------------------------------------------------------------------
-void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
+void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix,
+                                bool anIntegrateEnergyFlag)
 //----------------------------------------------------------------------------
 {
 	// The renderer is ready
@@ -1001,7 +1002,7 @@ void XRayRenderer::computeImage(const MATRIX4& aModellingTransformationMatrix)
 					computeSumMUxDx(m_p_inner_surface_set.size(), m_p_outer_surface->getPhotonCrossSection());
 				}
 
-				computeIntegratedEnergy();
+				computeIntegratedEnergy(anIntegrateEnergyFlag);
 			}
 		}
 
@@ -2619,9 +2620,9 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 }
 
 
-//------------------------------------------
-void XRayRenderer::computeIntegratedEnergy()
-//------------------------------------------
+//--------------------------------------------------------------------
+void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
+//--------------------------------------------------------------------
 {
 	// Save the current FBO
 	pushFBO();
@@ -2705,6 +2706,12 @@ void XRayRenderer::computeIntegratedEnergy()
 
 				// Convert in MeV
 				corrected_energy /= MeV;
+
+				// Compute the number of photons, not the energy fluence
+				if (!anIntegrateEnergyFlag)
+				{
+						corrected_energy = 1.0;
+				}
 
 				//std::cout << incident_energy / MeV << "\t" << corrected_energy << std::endl;
 
