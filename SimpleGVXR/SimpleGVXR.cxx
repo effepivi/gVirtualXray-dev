@@ -668,6 +668,29 @@ void loadSceneGraph(const std::string& aFileName,
 }
 
 
+unsigned int getNumberOfPrimitives(const std::string& aLabel)
+{
+  // The scenegraph does not exist
+  if (!g_p_scene_graph.get())
+      {
+      return 0;
+      }
+
+  // Get the node
+  gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+  // The node exists
+  if (p_node)
+      {
+      p_node->getPolygonMesh().getTriangleNumber();
+      }
+  // The node does not exist
+  else
+      {
+      return 0;
+      }
+}
+
 void emptyMesh(const std::string& aLabel, const std::string& aParent)
 {
     // The scenegraph does not exist

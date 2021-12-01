@@ -515,6 +515,16 @@ void loadSceneGraph(const std::string& aFileName,
 
 
 //------------------------------------------------------------------------------
+/// Accessor on the number of primitives of a given node.
+/**
+ *  @param aLabel:  the label in the scenegraph
+ *  @return the number of primitives
+ */
+//------------------------------------------------------------------------------
+unsigned int getNumberOfPrimitives(const std::string& aLabel);
+
+
+//------------------------------------------------------------------------------
 /// Create an empty polygon mesh and set its label in the scenegraph
 /// (i.e. identifier). Note that it is not added to the X-ray renderer.
 /**
