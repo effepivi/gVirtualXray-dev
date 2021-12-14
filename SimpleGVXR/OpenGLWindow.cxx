@@ -568,6 +568,19 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
                                                      __FUNCTION__,
                                                      __LINE__);
 
+                // Use transparency
+                gVirtualXRay::pushEnableDisableState(GL_BLEND);
+                GLint blend_src_alpha;
+                GLint blend_dst_alpha;
+                glGetIntegerv(GL_BLEND_SRC_ALPHA, &blend_src_alpha);
+                glGetIntegerv(GL_BLEND_DST_ALPHA, &blend_dst_alpha);
+
+                if (mesh.getMaterial().getAmbientColour()[3] < 0.99)
+                {
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                }
+
                 // Display the sample
                 if (g_display_wireframe)
                 {
@@ -576,6 +589,14 @@ void SimpleGVXR::OpenGLWindow::render(bool aSceneRotationFlag)
                 else
                 {
                     mesh.display();
+                }
+
+                // Restore states
+                gVirtualXRay::popEnableDisableState();
+
+                if (mesh.getMaterial().getAmbientColour()[3] < 0.99)
+                {
+                    glBlendFunc(blend_src_alpha, blend_dst_alpha);
                 }
 
                 if (g_display_normal_vectors)
