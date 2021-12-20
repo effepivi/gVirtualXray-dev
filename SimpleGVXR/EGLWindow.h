@@ -81,7 +81,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include "gVirtualXRay/framebufferObject.h"
+
 #include "Window.h"
+
+
 
 
 namespace SimpleGVXR {
@@ -100,15 +104,26 @@ public:
     EGLWindow(int anOpenGLMajorVersion = 4,
         int anOpenGLMinorVersion = 5);
 
+    ~EGLWindow();
+
+    virtual void setWindowBackGroundColour(float R, float G, float B);
 
     virtual void setWindowSize(int aWidth, int aHeight);
     virtual void displayScene(bool aSceneRotationFlag);
     virtual void takeScreenshot();
 
 protected:
+    // Initialise GLEW
     virtual void createWindow(bool aVisibilityFlag);
+
+    // Initialise OpenGL
     virtual void initShader();
+
     virtual void render(bool aSceneRotationFlag);
+
+    unsigned int m_texture_name_set[2];
+    FramebufferObject* m_p_offscreen_fbo;
+    bool m_first_initialisation;
 };
 };
 

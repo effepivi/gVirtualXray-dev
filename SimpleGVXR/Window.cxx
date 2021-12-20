@@ -167,7 +167,7 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
     m_width(500),
     m_height(500),
     m_viewer_initialised(false),
-	m_callback_registered(false)
+	  m_callback_registered(false)
 //----------------------------------
 {
     cout << "gvxrStatus:\tCreate window " << endl;

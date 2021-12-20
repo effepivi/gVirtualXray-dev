@@ -225,6 +225,7 @@ void Context::createGLWithEGL()
 	release();
 
 #ifdef HAS_EGL
+
 	// Context attributes
 	constexpr EGLint attrib_list[] =
 		{
@@ -370,6 +371,9 @@ void Context::createGLWithEGL()
 		}
 
 	std::cout << "OpenGL version supported by this platform " << glGetString(GL_VERSION) << std::endl;
+
+	// Get rid of any OpenGL error at this stage
+	glGetError();
 
 	m_ready = true;
 #endif // HAS_EGL
