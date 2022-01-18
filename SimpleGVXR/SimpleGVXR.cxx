@@ -2248,10 +2248,20 @@ void setLinearAttenuationCoefficient(const std::string& aLabel,
     // It has been found
     if (p_node)
         {
-        // Set its properties
-        p_node->getPolygonMesh().setLinearAttenuationCoefficient(
-        aCoefficient / gVirtualXRay::cm);
-        g_xray_renderer.needUpdateSurfacePerMaterial();
+          if (aUnit.substr(aUnit.length() - 2) != "-1")
+          {
+              throw gVirtualXRay::Exception(
+                  __FILE__,
+                  __FUNCTION__,
+                  __LINE__,
+                  "ERROR: Unknown unit of linear attenuation coefficient.");
+          }
+
+          // Set its properties
+          double unit_of_length = getUnitOfLength(aUnit.substr(0, aUnit.length() - 2));
+          p_node->getPolygonMesh().setLinearAttenuationCoefficient(
+            aCoefficient / unit_of_length);
+          g_xray_renderer.needUpdateSurfacePerMaterial();
         }
     // It has not been found
     else
@@ -2284,7 +2294,7 @@ void setDensity(const std::string& aLabel,
             __FILE__,
             __FUNCTION__,
             __LINE__,
-            "ERROR: Unknown unit of linear attenuation coefficient.");
+            "ERROR: Unknown unit of density.");
     }
 
     // Find the mesh
