@@ -254,37 +254,37 @@ double PhotonCrossSection::getMolarMass() const
         throw Exception(__FILE__, __FUNCTION__, __LINE__, "No properties set");
     }
 }
-
+#include <iostream>
 
 //----------------------------------------------------------------------------
 bool PhotonCrossSection::operator==(const PhotonCrossSection& aTestData) const
 //----------------------------------------------------------------------------
 {
-	if (m_density != aTestData.m_density)
-	{
-		return (false);
-	}
+  	if (m_density != aTestData.m_density)
+  	{
+    		return (false);
+  	}
 
-	if (m_use_HU == aTestData.m_use_HU)
-	{
-		return (m_HU == aTestData.m_HU);
-	}
-	else if (m_use_element == aTestData.m_use_element)
-	{
-		return (m_Z_number == aTestData.m_Z_number);
-	}
-	else if (m_use_mixture == aTestData.m_use_mixture)
-	{
-		return (m_mixture == aTestData.m_mixture);
-	}
-	else if (m_use_mass_attenuation_coefficient == aTestData.m_use_mass_attenuation_coefficient)
-	{
-		return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
-	}
-	else if (m_use_linear_attenuation_coefficient == aTestData.m_use_linear_attenuation_coefficient)
-	{
-		return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
-	}
+  	if (m_use_HU && aTestData.m_use_HU)
+  	{
+    		return (m_HU == aTestData.m_HU);
+  	}
+  	else if (m_use_element && aTestData.m_use_element)
+  	{
+    		return (m_Z_number == aTestData.m_Z_number);
+  	}
+  	else if (m_use_mixture && aTestData.m_use_mixture)
+  	{
+    		return (m_mixture == aTestData.m_mixture);
+  	}
+  	else if (m_use_mass_attenuation_coefficient && aTestData.m_use_mass_attenuation_coefficient)
+  	{
+    		return (m_mass_attenuation_coefficient == aTestData.m_mass_attenuation_coefficient);
+  	}
+  	else if (m_use_linear_attenuation_coefficient && aTestData.m_use_linear_attenuation_coefficient)
+  	{
+    		return (m_linear_attenuation_coefficient == aTestData.m_linear_attenuation_coefficient);
+  	}
 
     return (false);
 }
@@ -410,4 +410,3 @@ void PhotonCrossSection::processElement(std::string& aSymbol,
 	aSymbol.clear();
 	aWeight.clear();
 }
-
