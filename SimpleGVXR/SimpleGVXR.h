@@ -2241,6 +2241,11 @@ double getMassAttenuationFromCompound(const std::string& aCompound,
 double getMuFromHU(double HU,
 		double anEnergy,
 		const std::string& aUnitOfEnergy);
+
+std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<std::vector<std::vector< float> > >& anImage,
+    double anEnergy,
+    const std::string& aUnitOfEnergy);
+
 /**
 void setShiftFilter(double aValue);
 void setScaleFilter(double aValue);

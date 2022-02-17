@@ -4030,6 +4030,54 @@ double getMuFromHU(double HU,
 
 
 
+std::vector<std::vector<std::vector< float> > > convertHU2mu(const std::vector<std::vector<std::vector< float> > >& anImage,
+    double anEnergy,
+    const std::string& aUnitOfEnergy)
+{
+    std::vector<std::vector<std::vector< float> > > output_image;
+
+    int image_depth = anImage.size();
+
+    if (image_depth > 0)
+    {
+        int image_height = anImage[0].size();
+
+        if (image_height > 0)
+        {
+            int image_width = anImage[0][0].size();
+
+            if (image_width > 0)
+            {
+                output_image = anImage;
+
+#ifdef NDEBUG
+#ifdef WIN32
+#pragma omp parallel for
+#else
+#pragma omp parallel for collapse(3)
+#endif
+#endif
+                for (int z = 0; z < image_depth; ++z)
+                {
+                    for (int y = 0; y < image_height; ++y)
+                    {
+                        for (int x = 0; x < image_width; ++x)
+                        {
+                            output_image[z][y][x] = getMuFromHU(output_image[z][y][x],
+                                                                anEnergy,
+                                                                aUnitOfEnergy);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return output_image;
+}
+
+
+
 std::vector<float> rayIntersect(const std::string& aLabel,
     double aRayOriginX, double aRayOriginY, double aRayOriginZ,
     double aRayDirectionX, double aRayDirectionY, double aRayDirectionZ)
