@@ -70,7 +70,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef GL_INVALID_INDEX
-#define GL_INVALID_INDEX 0xFFFFFFFFu 
+#define GL_INVALID_INDEX 0xFFFFFFFFu
 #endif
 
 #ifndef __gVirtualXRayConfig_h
@@ -98,6 +98,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
+#endif
+
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
 #endif
 
 
@@ -530,7 +534,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
         throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__,
                 m_filename);
         }
-    
+
     // Read the file
     while(getline(input_stream, line))
         {
@@ -539,7 +543,7 @@ void PolygonMesh::loadSTLFile(bool aMoveToCentreFlag,
         }
 
     // This is an ASCII file
-    if (occurence_of_vertex * occurence_of_solid) 
+    if (occurence_of_vertex * occurence_of_solid)
         loadASCIISTLFile(aMoveToCentreFlag,
                          anAutoComputeNormalFlag,
                          aPrintDebugInfoFlag,
@@ -595,7 +599,7 @@ void PolygonMesh::loadASCIISTLFile(bool aMoveToCentreFlag,
     // Read the file
     std::string line;
     while(getline(input_stream, line))
-        {       
+        {
         if (line.find("vertex", 0) != std::string::npos)
             {
             std::stringstream temp_line;
@@ -605,7 +609,7 @@ void PolygonMesh::loadASCIISTLFile(bool aMoveToCentreFlag,
             double temp_coord_z;
             temp_line << line;
             temp_line >> temp_string >> temp_coord_x >> temp_coord_y >> temp_coord_z;
-            
+
             p_vertices.push_back(temp_coord_x);
             p_vertices.push_back(temp_coord_y);
             p_vertices.push_back(temp_coord_z);
@@ -631,7 +635,7 @@ void PolygonMesh::loadASCIISTLFile(bool aMoveToCentreFlag,
     // Display extra debug info
     if (aPrintDebugInfoFlag)
         {
-        std::cout << "file_name:\t" << m_filename <<
+        LOGGER.logNow("file_name:\t") << m_filename <<
                 "\tnb_faces:\t" << getFaceNumber() <<
                 "\tnb_vertices:\t" << m_number_of_vertices <<
                 "\tbounding_box (in cm):\t(" <<
@@ -802,7 +806,7 @@ void PolygonMesh::loadSTLDataFromBinaryStream(const char* apInputData,
     // Display extra debug info
     if (aPrintDebugInfoFlag)
         {
-        std::cout << "file_name:\t" << m_filename <<
+        LOGGER.logNow("file_name:\t") << m_filename <<
                 "\tnb_faces:\t" << getFaceNumber() <<
                 "\tnb_vertices:\t" << m_number_of_vertices <<
                 "\tbounding_box (in cm):\t(" <<
@@ -1166,7 +1170,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 
             }
         }
-    
+
     if (m_number_of_vertices)
         {
         if (m_vertex_data_type != aPolygonMesh.m_vertex_data_type)
@@ -1176,7 +1180,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
                     "their vertex data types are different.");
 
             }
-        
+
         // Check the polygon types
         if (m_polygon_type != aPolygonMesh.m_polygon_type)
             {
@@ -1186,7 +1190,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
 
             }
         }
-    
+
     // Create the new instance
     PolygonMesh new_polygon_mesh;
     new_polygon_mesh.m_index_data_type  = aPolygonMesh.m_index_data_type;
@@ -1280,7 +1284,7 @@ PolygonMesh PolygonMesh::operator+(const PolygonMesh& aPolygonMesh) const
         case GL_FLOAT:
             {
             GLfloat* p_temp(static_cast<GLfloat*>(new_polygon_mesh.m_p_vertex_set));
-   
+
             std::memcpy(p_temp,
                     m_p_vertex_set,
                     m_number_of_vertices * sizeof(GLfloat) * 3);
@@ -1687,7 +1691,7 @@ PolygonMesh& PolygonMesh::operator+=(const PolygonMesh& aPolygonMesh)
 {
     PolygonMesh new_polygon(*this + aPolygonMesh);
     *this = new_polygon;
-    
+
     return (*this);
 }
 
@@ -1698,7 +1702,7 @@ PolygonMesh& PolygonMesh::operator-=(const PolygonMesh& aPolygonMesh)
 {
     PolygonMesh new_polygon(*this - aPolygonMesh);
     *this = new_polygon;
-    
+
     return (*this);
 }
 
@@ -2179,7 +2183,7 @@ void PolygonMesh::mergeVertices(bool aPrintDebugInfoFlag)
                 // Display extra debug info
                 if (aPrintDebugInfoFlag)
                     {
-                    std::cout << "file_name:\t" << m_filename <<
+                    LOGGER.logNow("file_name:\t") << m_filename <<
                             "\tnb_faces:\t" << getFaceNumber() <<
                             "\tnb_vertices:\t" << m_number_of_vertices <<
                             "\tbounding_box (in cm):\t(" <<
@@ -2398,7 +2402,7 @@ void PolygonMesh::splitFaces(bool aPrintDebugInfoFlag)
             // Display extra debug info
             if (aPrintDebugInfoFlag)
                 {
-                std::cout << "file_name:\t" << m_filename <<
+                LOGGER.logNow("file_name:\t") << m_filename <<
                         "\tnb_faces:\t" << getFaceNumber() <<
                         "\tnb_vertices:\t" << m_number_of_vertices <<
                         "\tbounding_box (in cm):\t(" <<
@@ -2902,9 +2906,9 @@ void PolygonMesh::setVBOData(
 	else
 	{
 		m_p_vertex_normal_set = std::vector< RATIONAL_NUMBER>((float*)aNormalArray, (float*)aNormalArray + (aNumberOfVertices*3));
-		
+
 	}
-		
+
 
 
 	// There are index data
@@ -2924,7 +2928,7 @@ void PolygonMesh::setVBOData(
 	// Compute the bounding box
 	computeBoundingBox();
 
-	
+
 
 	// Update the VBO
 
@@ -3535,11 +3539,11 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                     GL_UNSIGNED_BYTE,
                     aCreateVBOFlag,
                     aTypeOfVBO);
-    
-    
+
+
     m_p_vertex_normal_set.clear();
     //m_p_face_normal_set.clear();
-    
+
     if (aNormalArray)
     {
         if (aNormalArray->size() == aVertexArray->size())
@@ -3565,7 +3569,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
         }
     }
-    
+
     // Update the VBO
     if (aCreateVBOFlag)
     {
@@ -3592,11 +3596,11 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                     GL_UNSIGNED_SHORT,
                     aCreateVBOFlag,
                     aTypeOfVBO);
-    
-    
+
+
     m_p_vertex_normal_set.clear();
     //m_p_face_normal_set.clear();
-    
+
     if (aNormalArray)
     {
         if (aNormalArray->size() == aVertexArray->size())
@@ -3622,7 +3626,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
         }
     }
-    
+
     // Update the VBO
     if (aCreateVBOFlag)
     {
@@ -3649,10 +3653,10 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
                     GL_UNSIGNED_INT,
                     aCreateVBOFlag,
                     aTypeOfVBO);
-    
+
     m_p_vertex_normal_set.clear();
     //m_p_face_normal_set.clear();
-    
+
     if (aNormalArray)
     {
         if (aNormalArray->size() == aVertexArray->size())
@@ -3678,7 +3682,7 @@ void PolygonMesh::setInternalData(int aTypeOfPrimitive,
             throw Exception(__FILE__, __FUNCTION__, __LINE__, "Invalid number of normal vectors.");
         }
     }
-    
+
     // Update the VBO
     if (aCreateVBOFlag)
     {
@@ -3882,7 +3886,7 @@ void PolygonMesh::removeIndex(bool aPrintDebugInfoFlag)
                 // Display extra debug info
                 if (aPrintDebugInfoFlag)
                     {
-                    std::cout << "file_name:\t" << m_filename <<
+                    LOGGER.logNow("file_name:\t") << m_filename <<
                             "\tnb_faces:\t" << getFaceNumber() <<
                             "\tnb_vertices:\t" << m_number_of_vertices <<
                             "\tbounding_box (in cm):\t(" <<

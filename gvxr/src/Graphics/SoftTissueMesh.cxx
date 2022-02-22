@@ -247,7 +247,6 @@ void SoftTissueMesh::initialize()
 		if(m_number_of_indices)
 		{
 			deleteIndices();
-			std::cout<<"The indices has been deleted" << std::endl;
 
 			shareNormalVectors();
 

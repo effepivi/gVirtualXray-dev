@@ -86,6 +86,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OutOfBoundsException.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #include "gVirtualXRay/Shader.h"
 
 
@@ -167,16 +171,17 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	// There was an error
 	if (error_code != GL_NO_ERROR)
 	{
+            std::ostream error_stream = LOGGER.logError("OpenGL error: ") ;
 #ifdef HAS_GLU
-	    std::cerr << "OpenGL error:" << gluErrorString(error_code) << std::endl;
+	    error_stream << gluErrorString(error_code) << std::endl;
 #else
-	    std::cerr << "OpenGL error:" << error_code << std::endl;
+	    error_stream << error_code << std::endl;
 #endif
-	    std::cerr << "\t- in File: " << aFileName << std::endl;
-	    std::cerr << "\t- in Function: " << aFunctionName << std::endl;
-	    std::cerr << "\t- at Line: " << aLineNumber << std::endl;
+	    error_stream << "\t- in File: " << aFileName << std::endl;
+	    error_stream << "\t- in Function: " << aFunctionName << std::endl;
+	    error_stream << "\t- at Line: " << aLineNumber << std::endl;
 
-		throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
+	    throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
 #endif
 }
@@ -566,11 +571,11 @@ bool useOpenGL45()
 
         if (g_use_gl_4_5)
         {
-            std::cout << "Use OpenGL 4.5." << std::endl;
+            LOGGER.logNow("Use OpenGL 4.5.") << std::endl;
         }
         else
         {
-            std::cout << "Cannot use OpenGL 4.5. You live in the past." << std::endl;
+            LOGGER.logNow("Cannot use OpenGL 4.5. You live in the past.") << std::endl;
         }
 
         g_has_been_initialised = g_use_gl_4_5;
@@ -639,11 +644,11 @@ bool useOpenGL32()
 
         if (g_use_gl_3_2)
         {
-            std::cout << "Use OpenGL 3.2." << std::endl;
+            LOGGER.logNow("Use OpenGL 3.2.") << std::endl;
         }
         else
         {
-            std::cout << "Cannot use OpenGL 3.2. You really live in the past." << std::endl;
+            LOGGER.logNow("Cannot use OpenGL 3.2. You really live in the past.") << std::endl;
         }
     }
 

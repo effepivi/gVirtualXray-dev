@@ -266,6 +266,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FBOException.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/FileDoesNotExistException.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Logger.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Logger.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/MaterialSet.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/Mixture.h

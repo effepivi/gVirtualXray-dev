@@ -3,11 +3,21 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <chrono>
 #include <ctime>
+#include <sstream>
+// #include<stdio.h>
+#include<cstring>
 
 #ifndef __Logger_h
 #include <gVirtualXRay/Logger.h>
 #endif
+
+
+//******************************************************************************
+//  Global variable
+//******************************************************************************
+gVirtualXRay::Logger gVirtualXRay::LOGGER("");
 
 
 //******************************************************************************
@@ -48,7 +58,6 @@ bool Logger::is_open() const
 }
 
 
-
 //---------------------------------------------
 void Logger::open(const std::string& aFileName)
 //---------------------------------------------
@@ -75,11 +84,11 @@ void Logger::open(const std::string& aFileName)
         // It is open
         else
         {
-
             m_output << std::endl;
             m_output << std::endl;
-            logNow();
-            m_output << "Open log file " << m_filename << std::endl;
+            m_output << "--------------------------------------------------------------------------------" << std::endl;
+            logNow("Open log file") << "\t" << m_filename << std::endl;
+            m_output << "--------------------------------------------------------------------------------" << std::endl;
         }
     }
 }
@@ -91,8 +100,92 @@ void Logger::close()
 {
     if (is_open())
     {
+        m_output << "--------------------------------------------------------------------------------" << std::endl;
+        logNow("Close log file") << "\t" << m_filename << std::endl;
+        m_output << "--------------------------------------------------------------------------------" << std::endl;
         m_output.close();
+        m_filename.clear();
     }
+}
+
+
+//--------------------------------------------
+const std::string& Logger::getFilename() const
+//--------------------------------------------
+{
+    return m_filename;
+}
+
+
+//-----------------------------------------
+const std::string& Logger::getFname() const
+//-----------------------------------------
+{
+    return m_filename;
+}
+
+
+//----------------------------------------------
+std::ostream& Logger::logNow(const std::string& aMessage)
+//----------------------------------------------
+{
+    if (is_open())
+    {
+        m_output << getNow() << " ---- " << aMessage;
+        return m_output;
+    }
+    else
+    {
+        std::cout << getNow() << " ---- " << aMessage;
+        return std::clog;
+    }
+}
+
+
+//------------------------------------------------
+std::ostream& Logger::logError(const std::string& aMessage)
+//------------------------------------------------
+{
+    if (is_open())
+    {
+        m_output << getNow() << " (EE) " << aMessage;
+        return m_output;
+    }
+    else
+    {
+        std::cerr << getNow() << " (EE) " << aMessage;
+        return std::cerr;
+    }
+}
+
+
+//--------------------------------------------------
+std::ostream& Logger::logWarning(const std::string& aMessage)
+//--------------------------------------------------
+{
+    if (is_open())
+    {
+        m_output << getNow() << " (WW) " << aMessage;
+        return m_output;
+    }
+    else
+    {
+        std::cerr << getNow() << " (WW) " << aMessage;
+        return std::cerr;
+    }
+}
+
+
+//--------------------------------
+std::string Logger::getNow() const
+//--------------------------------
+{
+    auto now = std::chrono::system_clock::now();
+    std::time_t current_time = std::chrono::system_clock::to_time_t(now);
+
+    std::string message = std::ctime(&current_time);
+    message.pop_back(); // Drop ENDL
+    return message;
 }
 
 
@@ -110,18 +203,4 @@ Logger::Logger(const Logger& aLogger)
 //-----------------------------------
 {
     // Do nothing
-}
-
-
-//-------------------
-void Logger::logNow()
-//-------------------
-{
-    if (is_open())
-    {
-        auto now = std::chrono::system_clock::now();
-        std::time_t current_time = std::chrono::system_clock::to_time_t(now);
-
-        m_output << std::ctime(&current_time) << " --- ";
-    }
 }

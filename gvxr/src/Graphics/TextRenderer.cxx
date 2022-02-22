@@ -88,6 +88,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef HAS_FREETYPE
 #include "FreeSans.ttf.h"
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #include "text_display_gl2.frag.h"
 #include "text_display_gl2.vert.h"
 
@@ -217,7 +221,7 @@ void TextRenderer::renderText(const std::string& aText,
 
             if (FT_Load_Char(m_face, aText[i], FT_LOAD_RENDER))
             {
-                std::cerr << "Could not load character " << aText[i] << std::endl;
+                LOGGER.logWarning("Could not load character ") << aText[i] << std::endl;
             }
             else
             {

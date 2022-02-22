@@ -84,6 +84,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/MaterialSet.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 
 //******************************************************************************
 //  define
@@ -379,7 +383,7 @@ namespace gVirtualXRay {
             }
             catch (std::exception& e)
             {
-                std::cerr << e.what() << std::endl;
+                LOGGER.logError(e.what()) << std::endl;
             }
 
             // Make sure the value is reset

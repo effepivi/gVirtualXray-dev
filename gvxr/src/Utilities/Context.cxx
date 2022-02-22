@@ -84,6 +84,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/Context.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 
 //******************************************************************************
 //	namespace
@@ -150,7 +154,7 @@ void Context::create(const std::string& aRenderer,
 		if (renderer == "OPENGL") createGLWithGLFW();
 		else if (renderer == "VULKAN") createVulkanWithGLFW();
 		else if (renderer == "EGL") createGLWithEGL();
-		else std::cerr << "WARNING: Invalaid context: " << aRenderer <<
+		else LOGGER.logWarning("Invalaid context: ") << aRenderer <<
 				" (" << aRendererMajorVersion << "." << aRendererMinorVersion << ")" <<
 				std::endl;
 	}
@@ -243,7 +247,7 @@ void Context::createGLWithEGL()
 	m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 	if(m_display == EGL_NO_DISPLAY)
 		{
-		std::cerr << "WARNING: Failed to eglGetDisplay(EGL_DEFAULT_DISPLAY)" << std::endl;
+		LOGGER.logWarning("Failed to eglGetDisplay(EGL_DEFAULT_DISPLAY)") << std::endl;
 		m_ready = false;
 		return;
 		}
@@ -253,15 +257,15 @@ void Context::createGLWithEGL()
 	EGLint egl_minor_ver;
 	if(eglInitialize(m_display, &egl_major_ver, &egl_minor_ver) == EGL_FALSE)
 		{
-		std::cerr << "WARNING: Failed to eglInitialize" << std::endl;
+		LOGGER.logWarning("Failed to eglInitialize") << std::endl;
 		EGLint error =  eglGetError();
 		switch(error)
 			{
 			case EGL_BAD_DISPLAY:
-				std::cerr << "WARNING: display is not an EGL display connection" << std::endl;
+				LOGGER.logWarning("display is not an EGL display connection") << std::endl;
 				break;
 			case EGL_NOT_INITIALIZED:
-				std::cerr << "WARNING: display cannot be initialized" << std::endl;
+				LOGGER.logWarning("display cannot be initialized") << std::endl;
 				break;
 			default:
 				break;
@@ -269,20 +273,20 @@ void Context::createGLWithEGL()
 		m_ready = false;
 		return;
 		}
-	std::cout << "EGL version: " << egl_major_ver << "." << egl_minor_ver << std::endl;
+	LOGGER.logNow("EGL version: ") << egl_major_ver << "." << egl_minor_ver << std::endl;
 
 	// Choose the config supporting the attributes set above
 	EGLint    num_config;
 	if(eglChooseConfig(m_display, attrib_list, &m_config, 1, &num_config) == EGL_FALSE)
 		{
-		std::cerr << "WARNING: Failed to eglChooseConfig" << std::endl;
+		LOGGER.logWarning("Failed to eglChooseConfig") << std::endl;
 		m_ready = false;
 		return;
 		}
 
 	if(num_config < 1)
 		{
-		std::cerr << "WARNING: No matching EGL frame buffer configuration" << std::endl;
+		LOGGER.logWarning("No matching EGL frame buffer configuration") << std::endl;
 		m_ready = false;
 		return;
 		}
@@ -290,7 +294,7 @@ void Context::createGLWithEGL()
 	// Bind the OpenGL API to the context
 	if(eglBindAPI(EGL_OPENGL_API) == EGL_FALSE)
 		{
-		std::cerr << "WARNING: Failed to eglBindAPI(EGL_OPENGL_API)" << std::endl;
+		LOGGER.logWarning("Failed to eglBindAPI(EGL_OPENGL_API)") << std::endl;
 		m_ready = false;
 		return;
 		}
@@ -319,18 +323,18 @@ void Context::createGLWithEGL()
 	// The context was not created
 	if(m_context == EGL_NO_CONTEXT)
 		{
-		std::cerr << "WARNING: Failed to eglCreateContext" << std::endl;
+		LOGGER.logWarning("Failed to eglCreateContext") << std::endl;
 		EGLint error =  eglGetError();
 		switch(error)
 			{
 			case EGL_BAD_CONFIG:
-				std::cerr << "WARNING: config is not an EGL frame buffer configuration, or does not support the current rendering API" << std::endl;
+				LOGGER.logWarning("config is not an EGL frame buffer configuration, or does not support the current rendering API") << std::endl;
 				break;
 			case EGL_BAD_ATTRIBUTE:
-				std::cerr << "WARNING: attrib_list contains an invalid context attribute or if an attribute is not recognized or out of range" << std::endl;
+				LOGGER.logWarning("attrib_list contains an invalid context attribute or if an attribute is not recognized or out of range") << std::endl;
 				break;
 			default:
-				std::cerr << "WARNING: Unknown error" << std::endl;
+				LOGGER.logWarning("Unknown error") << std::endl;
 				break;
 			}
 		m_ready = false;
@@ -345,7 +349,7 @@ void Context::createGLWithEGL()
 	// The surface was not created
 	if (!m_surface)
 		{
-		std::cerr << "WARNING: Error: eglCreatePbufferSurface failed Error" << std::endl;
+		LOGGER.logWarning("Error: eglCreatePbufferSurface failed Error") << std::endl;
 		return;
 		}
 
@@ -355,7 +359,7 @@ void Context::createGLWithEGL()
 			m_surface,
 			m_context) == EGL_FALSE)
 		{
-		std::cerr << "WARNING: Failed to eglMakeCurrent" << std::endl;
+		LOGGER.logWarning("Failed to eglMakeCurrent") << std::endl;
 		m_ready = false;
 		return;
 		}
@@ -370,7 +374,7 @@ void Context::createGLWithEGL()
 		return;
 		}
 
-	std::cout << "OpenGL version supported by this platform " << glGetString(GL_VERSION) << std::endl;
+	LOGGER.logNow("OpenGL version supported by this platform ") << glGetString(GL_VERSION) << std::endl;
 
 	// Get rid of any OpenGL error at this stage
 	glGetError();

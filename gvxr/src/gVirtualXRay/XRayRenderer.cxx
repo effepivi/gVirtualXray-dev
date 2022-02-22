@@ -124,6 +124,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/AtomicElement.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #include "gVirtualXRay/framebufferObject.h"
 
 
@@ -314,11 +318,11 @@ void XRayRenderer::initialise(ComputingMode aComputingMode,
 	{
 		if (InitialiseCUDA())
 		{
-			std::cout << "CUDA: initialised." << std::endl;
+			LOGGER.logNow("CUDA: initialised.") << std::endl;
 		}
 		else
 		{
-			std::cout << "CUDA ERROR: cannot initialise CUDA, set GPU computing using OpenGL." << std::endl;
+			LOGGER.logNow("CUDA ERROR: cannot initialise CUDA, set GPU computing using OpenGL.") << std::endl;
 			m_computing_mode = OPENGL;
 		}
 	}
@@ -491,8 +495,6 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
             	RATIONAL_NUMBER voxel_value(*p_input_data);
                 /*if (fabs(*p_input_data) <= 0.00001)
                 {
-                    std::cout << "WARNING, was: " << voxel_value;
-
                     voxel_value = 0;
                     unsigned int count(0);
                     for (unsigned temp_j(j - 1); temp_j <= j + 1; ++temp_j)
@@ -512,19 +514,10 @@ void XRayRenderer::computeSinogram(MATRIX4& aModellingTransformationMatrix,
                     if (count)
                     {
                         voxel_value /= count;
-                        std::cout << ", now: " << voxel_value << std::endl;
                     }
                 }*/
                 *p_input_data = scaling_factor * std::log(total_input_energy / voxel_value);
 
-                /*if (isnan(*p_input_data))
-                {
-                    std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * std::log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
-                }
-                if (isinf(*p_input_data))
-                {
-                	std::cout << "angle: " << angle << *p_input_data << " = " << scaling_factor << " * std::log(" << total_input_energy << " / " << voxel_value << ")" << std::endl;
-                }*/
             }
         }
 
@@ -682,7 +675,7 @@ void XRayRenderer::release()
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << e.what() << std::endl;
+			LOGGER.logError(e.what()) << std::endl;
 		}
 
 		// Make sure the value is reset
@@ -696,7 +689,7 @@ void XRayRenderer::release()
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << std::endl;
+		LOGGER.logError(e.what()) << std::endl;
 	}
 
 	// Delete the textures
@@ -714,7 +707,7 @@ void XRayRenderer::release()
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << e.what() << std::endl;
+			LOGGER.logError(e.what()) << std::endl;
 		}
 	}
 
@@ -733,7 +726,7 @@ void XRayRenderer::release()
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << e.what() << std::endl;
+			LOGGER.logError(e.what()) << std::endl;
 		}
 	}
 /*
@@ -762,20 +755,20 @@ bool XRayRenderer::isReady() const
 		// Check the distance source/detector
 		if ((m_p_detector->getXraySourceCentre() - m_p_detector->getDetectorPosition()).length() < std::numeric_limits<RATIONAL_NUMBER>::epsilon())
 		{
-			std::cerr << "WARNING: the distance from the source to the far clipping plane is null." << std::endl;
+			LOGGER.logWarning("the distance from the source to the far clipping plane is null.") << std::endl;
 			error = true;
 		}
 
 	    // Check the detector size
 	    if (!m_p_detector->getNumberOfPixels().getX() * m_p_detector->getNumberOfPixels().getY())
 		{
-			std::cerr << "WARNING: the detector size is invalid." << std::endl;
+			LOGGER.logWarning("the detector size is invalid.") << std::endl;
 			error = true;
 		}
 	}
 	else
 	{
-		std::cerr << "WARNING: the X-ray detector has not been registered." << std::endl;
+		LOGGER.logWarning("the X-ray detector has not been registered.") << std::endl;
 		error = true;
 	}
 
@@ -787,7 +780,7 @@ bool XRayRenderer::isReady() const
 		// The shader is not valid
 		if (!ite->isValid())
 		{
-			std::cerr << "WARNING: at least one of the shader programs is not valid." << std::endl;
+			LOGGER.logWarning("at least one of the shader programs is not valid.") << std::endl;
 			error = true;
 		}
 	}
@@ -801,7 +794,7 @@ bool XRayRenderer::isReady() const
 		FramebufferObject* p_fbo(const_cast<FramebufferObject*>(*ite));
 		if (!p_fbo->IsValid())
 		{
-			std::cerr << "WARNING: at least one of the FBOs is not valid." << std::endl;
+			LOGGER.logWarning("at least one of the FBOs is not valid.") << std::endl;
 			error = true;
 		}
 	}
@@ -809,7 +802,7 @@ bool XRayRenderer::isReady() const
 	// Check the geometries
 	if (!m_p_outer_surface && !m_p_inner_surface_set.size())
 	{
-		std::cerr << "WARNING: there is no 3D object to render." << std::endl;
+		LOGGER.logWarning("there is no 3D object to render.") << std::endl;
 		error = true;
 	}
 
@@ -1335,7 +1328,7 @@ void XRayRenderer::createPBO(GLuint& aPBO)
 	cudaGLRegisterBufferObject(aPBO);
 	if (CheckCudaError())
 	{
-		std::cerr << "FATAL ERROR: cannot bind a PBO to CUDA." << std::endl;
+		LOGGER.logError("Cannot bind a PBO to CUDA.") << std::endl;
 		return (false);
 	}
 #endif // HAS_CUDA
@@ -2558,7 +2551,6 @@ void XRayRenderer::computeSumMUxDx(int anObjectID,
 	        // Convert mu in cm-1
 	        mu /= 1.0 / cm; // 1/cm because the unit of mu is cm-1
 
-					//std::cout << anObjectID << " " << energy / keV << " " << mu << std::endl;
 	        // Bind the corresponding slice of the 3D texture
 	        if (m_p_xray_beam->getEnergyChannelNumber() > 1)
 	        {
@@ -2712,8 +2704,6 @@ void XRayRenderer::computeIntegratedEnergy(bool anIntegrateEnergyFlag)
 				{
 						corrected_energy = 1.0;
 				}
-
-				//std::cout << incident_energy / MeV << "\t" << corrected_energy << std::endl;
 
 				// Get the number of photons
 				RATIONAL_NUMBER photon_number(m_p_xray_beam->getEnergyChannel(current_slice).getPhotonNumber());
@@ -2890,9 +2880,6 @@ void XRayRenderer::display(bool useNormalisation,
             scale_filter = 1.0 / (std::pow(m_max_value_in_simulated_xray_image, gamma) - std::pow(m_min_value_in_simulated_xray_image, gamma));
         }
     }
-
-    //std::cout << shift << "  " << scale << std::endl;
-    //std::cout << shift_filter << "  " << scale_filter << std::endl;
 
     // Pass the incident energy to the shader
     handle = glGetUniformLocation(program_handle, "g_incident_energy");

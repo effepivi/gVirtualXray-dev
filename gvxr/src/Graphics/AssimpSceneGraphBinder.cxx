@@ -202,7 +202,6 @@ void AssimpSceneGraphBinder::loadSceneGraph(const char* aFileName,
 void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGraphNode* apParent, aiMatrix4x4 tStack)
 {
 	std::string node_label = nd->mName.C_Str();
-	std::cout << nd->mName.C_Str() << "\t" << nd->mNumChildren << "\t" << nd->mNumMeshes << std::endl;
 
 	// Keep track of the transformation matrices of parents without geometry
 	aiMatrix4x4 m =  nd->mTransformation ;

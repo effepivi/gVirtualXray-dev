@@ -15,6 +15,11 @@
 //******************************************************************************
 namespace gVirtualXRay {
 
+
+class Logger;
+
+extern Logger LOGGER;
+
 class Logger
 {
 public:
@@ -26,13 +31,20 @@ public:
     void open(const std::string& aFileName);
     void close();
 
-private:
+    const std::string& getFilename() const;
+    const std::string& getFname() const;
+
+    std::ostream& logNow(const std::string& aMessage);
+    std::ostream& logError(const std::string& aMessage);
+    std::ostream& logWarning(const std::string& aMessage);
+
+protected:
+    std::string getNow() const;
 
     Logger& operator=(const Logger& aLogger);
     Logger(const Logger& aLogger);
 
-    void logNow();
-    
+
     std::ofstream m_output;
     std::string m_filename;
 };

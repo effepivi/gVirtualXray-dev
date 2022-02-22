@@ -479,8 +479,6 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 
 	if(m_optimize_texture_coordinates)
 	{
-		std::cout<<"Optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
-
 		m_texture_coordinates_2d.resize(m_number_of_vertices);
 		m_margin_direction.resize(m_number_of_vertices);
 		std::vector<bool> has_texture_coordinates(m_number_of_vertices/3,false);
@@ -776,8 +774,6 @@ void InternalOrganMesh::initialize2DTextureCoordinates()
 	}
 	else
 	{
-		std::cout<<"Don't optimize texture coordinates (" << m_number_of_vertices << " vertices)"<<std::endl;
-
 		m_texture_coordinates_2d.reserve(m_number_of_vertices);
 		m_margin_direction.reserve(m_number_of_vertices);
 
