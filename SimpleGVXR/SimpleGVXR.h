@@ -152,6 +152,8 @@ int getPatchVersionOfSimpleGVXR();
 std::string getVersionOfSimpleGVXR();
 
 
+void useLogFile(const char* aFileName = "gvxr.log");
+
 void displayBeam(bool aState = true);
 void displayDetector(bool aState = true);
 void displayNormalVectors(bool aState = true);

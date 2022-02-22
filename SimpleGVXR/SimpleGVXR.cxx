@@ -139,6 +139,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/PhotonCrossSection.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 #ifndef __SimpleGVXR_h
 #include "SimpleGVXR.h"
 #endif
@@ -271,6 +275,8 @@ bool g_has_own_gl_context = false;
 
 std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
+//gVirtualXRay::Logger g_logger("");
+
 
 //******************************************************************************
 //  Function definitions
@@ -330,6 +336,14 @@ std::string getVersionOfSimpleGVXR()
 //----------------------------------
 {
     return (std::string(SimpleGVXR_VERSION_STRING));
+}
+
+
+//------------------------------------
+void useLogFile(const char* aFileName)
+//------------------------------------
+{
+    //g_logger.open(aFileName);
 }
 
 

@@ -1,6 +1,6 @@
 #
 #
-# Copyright (c) 2020, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# Copyright (c) 2022, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 # http://www.fpvidal.net/
 # All rights reserved.
 #
@@ -167,6 +167,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Context.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Logger.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/MaterialSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Mixture.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/PhotonCrossSection.cxx
