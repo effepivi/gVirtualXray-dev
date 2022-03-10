@@ -159,8 +159,8 @@ void initializeGLEW()
 
 //----------------------------------------------------
 void checkOpenGLErrorStatus(const char* aFileName,
-							const char* aFunctionName,
-							int aLineNumber)
+                            const char* aFunctionName,
+                            int aLineNumber)
 //----------------------------------------------------
 {
     // No OpenGL error checking in Release modes
@@ -171,16 +171,11 @@ void checkOpenGLErrorStatus(const char* aFileName,
 	// There was an error
 	if (error_code != GL_NO_ERROR)
 	{
-            std::ostream error_stream = LOGGER.logError("OpenGL error: ") ;
 #ifdef HAS_GLU
-	    error_stream << gluErrorString(error_code) << std::endl;
+            LOGGER.logError(std::string("OpenGL error: ") + gluErrorString(error_code) + "\n");
 #else
-	    error_stream << error_code << std::endl;
+            LOGGER.logError("OpenGL error") ;
 #endif
-	    error_stream << "\t- in File: " << aFileName << std::endl;
-	    error_stream << "\t- in Function: " << aFunctionName << std::endl;
-	    error_stream << "\t- at Line: " << aLineNumber << std::endl;
-
 	    throw OpenGLException(aFileName, aFunctionName, aLineNumber, error_code);
 	}
 #endif
