@@ -12,6 +12,10 @@ SET (module gvxrPython3)
 configure_file(../gvxrWrapper-doc.in ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
 SET_PROPERTY(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i PROPERTY CPLUSPLUS ON)
 
+IF (WIN32)
+  ADD_DEFINITIONS(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
+ENDIF()
+
 # Add swig module
 IF(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     SWIG_ADD_MODULE(${module} python ${CMAKE_CURRENT_BINARY_DIR}/${module}.i)
