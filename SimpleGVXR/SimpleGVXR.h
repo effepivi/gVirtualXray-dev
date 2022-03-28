@@ -152,6 +152,33 @@ int getPatchVersionOfSimpleGVXR();
 std::string getVersionOfSimpleGVXR();
 
 
+//------------------------------------------------------------------------------
+/// Accessor on the OpenGL renderer.
+/**
+ *  @return a string displaying the OpenGL renderer
+ */
+//------------------------------------------------------------------------------
+std::string getOpenGlRenderer();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the OpenGL version.
+/**
+ *  @return a string displaying the OpenGL version
+ */
+//------------------------------------------------------------------------------
+std::string getOpenGlVersion();
+
+
+//------------------------------------------------------------------------------
+/// Accessor on the OpenGL vendor.
+/**
+ *  @return a string displaying the OpenGL vendor
+ */
+//------------------------------------------------------------------------------
+std::string getOpenGlVenror();
+
+
 void useLogFile(const char* aFileName = "gvxr.log");
 
 void displayBeam(bool aState = true);
@@ -409,6 +436,24 @@ void setDetectorNumberOfPixels(int aWidth, int aHeight);
  */
 //------------------------------------------------------------------------------
 std::vector<int> getDetectorNumberOfPixels();
+
+
+//--------------------------------------------------------------------------
+/// Set the multiplicative factor to oversample the L-buffers.
+/**
+ *  @param aFactor:  the multiplicative factor (default value: 1, for no oversampling)
+ */
+//--------------------------------------------------------------------------
+void setOversamplingFactor(int aFactor = 1);
+
+
+//--------------------------------------------------------------------------
+/// Accessor on the multiplicative factor to oversample the L-buffers.
+/**
+ *  @return the multiplicative factor
+ */
+//--------------------------------------------------------------------------
+int getOversamplingFactor();
 
 
 //------------------------------------------------------------------------------
@@ -2282,7 +2327,7 @@ void lineariseTest(float aThreshold, float aScalingFactor);
 float getMinValue(const std::vector<std::vector<std::vector<float> > >& aImage);
 float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage);
 
-void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset = 0);
+//void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset = 0);
 
 
 #endif

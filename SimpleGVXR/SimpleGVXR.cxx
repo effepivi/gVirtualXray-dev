@@ -89,10 +89,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <GLFW/glfw3.h>
 
-#ifdef HAS_CUDA
-#include <cuda_gl_interop.h>
-#include <thrust/device_vector.h>
-#endif
 
 // To perform the computations of the X-ray simulation
 #ifndef __XRayRenderer_h
@@ -212,6 +208,13 @@ std::vector<std::vector<float> > gvxrMatrix2Vector(
     const gVirtualXRay::MATRIX4& aMatrix4);
 
 
+#ifdef HAS_CUDA
+void resampleUsingCUDA();
+extern int g_samples_per_pixels;
+extern gVirtualXRay::Image<float> g_cpu_memory;
+#endif
+
+
 //******************************************************************************
 //  Global variables
 //******************************************************************************
@@ -276,6 +279,7 @@ bool g_has_own_gl_context = false;
 std::vector<std::vector<std::vector< float> > > lastest_screenshot;
 
 
+
 //******************************************************************************
 //  Function definitions
 //******************************************************************************
@@ -334,6 +338,30 @@ std::string getVersionOfSimpleGVXR()
 //----------------------------------
 {
     return (std::string(SimpleGVXR_VERSION_STRING));
+}
+
+
+//-----------------------------
+std::string getOpenGlRenderer()
+//-----------------------------
+{
+    return std::string(reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+}
+
+
+//----------------------------
+std::string getOpenGlVersion()
+//----------------------------
+{
+    return std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+}
+
+
+//---------------------------
+std::string getOpenGlVenror()
+//---------------------------
+{
+    return std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
 }
 
 
@@ -538,6 +566,21 @@ std::vector<int> getDetectorNumberOfPixels()
     number_of_pixels[1] = g_xray_detector.getNumberOfPixels()[1];
 
     return (number_of_pixels);
+}
+
+
+//-------------------------------------
+void setOversamplingFactor(int aFactor)
+//-------------------------------------
+{
+	g_samples_per_pixels = std::max(1, aFactor);
+}
+
+//-------------------------
+int getOversamplingFactor()
+//-------------------------
+{
+	return g_samples_per_pixels;
 }
 
 //---------------------------------------------------------
@@ -3279,28 +3322,42 @@ void disableArtifactFiltering(void)
     disableArtefactFiltering();
 }
 
+
 //---------------------------------------------------------------------------
 std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
 //---------------------------------------------------------------------------
 {
     // There is no OpenGL context
-    if (!g_has_own_gl_context
-    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
-    // Create a window
-    createWindow();
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
+		// Create a window
+		createWindow();
     }
 
     // The renderer is ready
     if (g_xray_renderer.isReady()) {
-    // Compute the X-ray image
-    g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+		// Compute the X-ray image
+		g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
     }
     // The renderer is not ready
     else {
-    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+    	gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
     }
 
-    return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+#ifdef HAS_CUDA
+    if (g_samples_per_pixels == 1)
+    {
+		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    }
+    else
+    {
+		resampleUsingCUDA();
+    	gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
+    	gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+		return (getVectorImage2D(g_cpu_memory));
+    }
+#else
+	return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+#endif
 }
 
 
@@ -4349,7 +4406,7 @@ float getMaxValue(const std::vector<std::vector<std::vector<float> > >& aImage)
     return getImage(aImage).getMaxValue();
 }
 
-
+/*
 void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset)
 {
 #ifndef HAS_CUDA
@@ -4365,4 +4422,4 @@ void FBO2Thrust(unsigned int aFBO, void* aThrustVector, int anOffset)
 
     thrust::device_ptr<float4>* p_device_data = static_cast<thrust::device_ptr<float4>*>(aThrustVector);
 #endif
-}
+}*/
