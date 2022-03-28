@@ -212,6 +212,8 @@ std::vector<std::vector<float> > gvxrMatrix2Vector(
 void resampleUsingCUDA();
 extern int g_samples_per_pixels;
 extern gVirtualXRay::Image<float> g_cpu_memory;
+#else
+int g_samples_per_pixels = 1;
 #endif
 
 
