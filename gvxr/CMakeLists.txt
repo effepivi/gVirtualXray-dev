@@ -163,7 +163,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DepthMap.cxx
 
     # Utilities
-    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/AtomicElement.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/Context.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/ElementSet.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/FBOException.cxx
@@ -454,8 +454,6 @@ IF (XCOM_PATH)
     CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")
     ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
 ENDIF (XCOM_PATH)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities/AtomicElement.cxx.in
-    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/AtomicElement.cxx @ONLY)
 
 
 SET (RESOURCES_SOURCES

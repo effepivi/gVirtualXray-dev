@@ -1,3 +1,8 @@
+# XRayLib ######################################################################
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include/xraylib")
+SET (optionalLibs ${optionalLibs} /usr/local/lib64/libxrl.so)
+
+
 # ASSIMP #######################################################################
 IF (USE_assimp)
     # Use system library

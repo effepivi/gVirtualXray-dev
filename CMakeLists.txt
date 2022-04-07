@@ -36,7 +36,8 @@ project(gVirtualXRay-Superbuild
         VERSION 1.1.6
         DESCRIPTION "gVirtualXRay is focused on developing new software technologies for simulating X-ray images on the graphics processor unit (GPU) using OpenGL. It supports ‘old’ OpenGL implementation as well as modern OpenGL core profile (OpenGL 3.2+). No deprecated function in OpenGL has been used. The library takes care of matrix transformations, matrix stacks, etc."
         HOMEPAGE_URL https://sourceforge.net/projects/gvirtualxray/
-        LANGUAGES CXX)
+        LANGUAGES CXX
+)
 
 
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
