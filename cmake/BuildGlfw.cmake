@@ -20,8 +20,8 @@ macro(build_glfw install_prefix staging_prefix)
 
 
     ExternalProject_Add(glfw
-        URL  "https://github.com/GLFW/GLFW/releases/download/3.2/GLFW-3.2.zip"
-        URL_MD5 "d51fa09602abce26a65096ce97b4831c"
+        URL  "https://github.com/glfw/glfw/releases/download/3.3.6/glfw-3.3.6.zip"
+        URL_MD5 "ac9c16031b85c4f7f6d33b96082fb5ae"
         UPDATE_COMMAND ""
         SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
         BINARY_DIR  ${staging_prefix}/${install_prefix}-build
