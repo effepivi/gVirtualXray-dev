@@ -35,12 +35,16 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
-    PROJECT(SimpleGVXR VERSION ${SimpleGVXR_VERSION_STRING})
+    PROJECT(SimpleGVXR
+        VERSION ${SimpleGVXR_VERSION_STRING}
+        LANGUAGES CXX CUDA
+    )
 else ()
-    PROJECT(SimpleGVXR)
+    PROJECT(SimpleGVXR
+        LANGUAGES CXX CUDA
+    )
 endif()
 set(CMAKE_DIRECTORY_LABELS "SimpleGVXR")
-
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/advanced_version.cmake)
 
@@ -54,8 +58,8 @@ SET (BUILD_SHARED_LIBS OFF)
 
 
 # Minimum CMake version ########################################################
-cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 11) # C++11
+cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
+set(CMAKE_CXX_STANDARD 14) # C++14
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
@@ -77,6 +81,16 @@ if (BUILD_TESTING)
     ENABLE_TESTING()
 endif()
 
+
+find_package(CUDAToolkit)
+IF (CUDAToolkit_FOUND)
+    add_compile_definitions(HAS_CUDA)
+    include_directories(${CUDAToolkit_INCLUDE_DIRS})
+    MESSAGE (STATUS "CUDAToolkit found, oversampling is going to be supported")
+    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+ELSE (CUDAToolkit_FOUND)
+    MESSAGE (WARNING "CUDAToolkit not found, oversampling is NOT going to be supported")
+ENDIF (CUDAToolkit_FOUND)
 
 
 # for superbuild ###############################################################
@@ -147,11 +161,6 @@ SET (SimpleGVXR_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
-#find_package(CUDA)
-#IF (CUDA_FOUND)
-#    ADD_DEFINITIONS(-DHAS_CUDA)
-#    include_directories(${CUDA_INCLUDE_DIRS})
-#ENDIF()
 
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MAJOR=${SimpleGVXR_VERSION_MAJOR}")
 ADD_DEFINITIONS("-DSimpleGVXR_VERSION_MINOR=${SimpleGVXR_VERSION_MINOR}")
@@ -160,13 +169,24 @@ ADD_DEFINITIONS("-DSimpleGVXR_VERSION_STRING=\"${SimpleGVXR_LONG_VERSION}\"")
 
 
 # Create the library ###########################################################
-add_library(SimpleGVXR
-    SimpleGVXR.cxx
-    Window.cxx
-    EGLWindow.cxx
-    OpenGLWindow.cxx
-    VulkanWindow.cxx
-)
+IF (CUDAToolkit_FOUND)
+    add_library(SimpleGVXR
+        SimpleGVXR.cxx
+        SimpleGVXR.cu
+        Window.cxx
+        EGLWindow.cxx
+        OpenGLWindow.cxx
+        VulkanWindow.cxx
+    )
+ELSE (CUDAToolkit_FOUND)
+    add_library(SimpleGVXR
+        SimpleGVXR.cxx
+        Window.cxx
+        EGLWindow.cxx
+        OpenGLWindow.cxx
+        VulkanWindow.cxx
+    )
+ENDIF (CUDAToolkit_FOUND)
 
 
 target_link_libraries(SimpleGVXR ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES})
