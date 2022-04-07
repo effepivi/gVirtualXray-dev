@@ -53,10 +53,10 @@ macro(build_glfw install_prefix staging_prefix)
     )
 
     SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include CACHE PATH "Where to find GLFW3 header files" FORCE)
-    SET (glfw3_DIR         ${staging_prefix}/${install_prefix}-install/lib/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
+    SET (glfw3_DIR         ${staging_prefix}/${install_prefix}-install/lib64/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
     SET (glfw3_FOUND ON FORCE)
-    SET (GLFW3_LIBRARY_DIR "${staging_prefix}/${install_prefix}-install/lib")
-    SET (GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
+    SET (GLFW3_LIBRARY_DIR "${staging_prefix}/${install_prefix}-install/lib64")
+    SET (GLFW3_LIBRARY     ${staging_prefix}/${install_prefix}-install/lib64/libglfw3.a CACHE FILEPATH "Path to the GLFW3 library" FORCE)
 
     IF (WIN32)
         IF (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
