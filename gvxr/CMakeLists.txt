@@ -501,6 +501,13 @@ SET (RESOURCES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl4.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_attenuation_gl4.vert
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_resample_gl2.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_resample_gl2.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_resample_gl3.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_resample_gl3.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_resample_gl4.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_resample_gl4.vert
+
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.frag
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl2.vert
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/xray_display_gl3.frag
