@@ -3720,8 +3720,7 @@ void initialiseXRayRenderer()
                 &g_xray_detector,
                 &g_xray_beam);
 
-            g_xray_renderer.disableArtifactFilteringOnCPU();
-            g_xray_renderer.enableArtifactFilteringOnGPU();
+            disableArtefactFiltering();
             g_xray_renderer.useNegativeFilteringFlag(false);
             g_renderer_initialised = true;
         }
