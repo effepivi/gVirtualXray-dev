@@ -249,7 +249,7 @@ XRayRenderer::XRayRenderer():
 		m_min_value_in_simulated_xray_image(0),
 		m_max_value_in_simulated_xray_image(1),
 		m_negative_display_flag(1),
-		m_use_l_buffer_artefact_filtering_on_gpu(true),
+		m_use_l_buffer_artefact_filtering_on_gpu(false),
 		m_use_l_buffer_artefact_filtering_on_cpu(false),
 		m_l_buffer_empty(false),
 		m_energy_fluence_empty(false),
@@ -1891,6 +1891,20 @@ GLuint XRayRenderer::getFboId(unsigned int aFBOID)
 		}
 
 		return m_p_fbo_set[aFBOID]->getID();
+}
+
+
+//--------------------------------------------------------
+GLuint XRayRenderer::getTextureId(unsigned int aTextureID)
+//--------------------------------------------------------
+{
+		// The FBO does not exist
+		if (aTextureID >= m_p_texture_name_set.size())
+		{
+			throw OutOfBoundsException(__FILE__, __FUNCTION__, __LINE__);
+		}
+
+		return m_p_texture_name_set[aTextureID];
 }
 
 
