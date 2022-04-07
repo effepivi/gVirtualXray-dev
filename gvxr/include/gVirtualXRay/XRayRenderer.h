@@ -464,6 +464,16 @@ public:
 
 
     //--------------------------------------------------------------------------
+    /// Accessor on the OpenGL ID of the texture.
+    /**
+     *  @param aFBOID:  the ID of the texture
+     *  @return the OpenGL ID of the texture
+     */
+    //--------------------------------------------------------------------------
+    GLuint getTextureId(unsigned int aTextureID);
+
+
+    //--------------------------------------------------------------------------
     /// Accessor on the raw data from a texture.
     /**
      *  @param aTextureID:  the ID of the texture
