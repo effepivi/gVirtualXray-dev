@@ -363,31 +363,10 @@ ENDIF (USE_OPENSCENEGRAPH)
 
 
 
-# XCOM Database ################################################################
-# XCOM: Photon Cross Sections Database
-# http://www.nist.gov/pml/data/xcom/
-# http://physics.nist.gov/PhysRefData/Xcom/Text/download.html
-
-
-# configure a header file to pass some of the CMake settings
-# to the source code
-IF (XCOM_PATH)
-    SET (HAS_XCOM ON)
-
-    SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_XCOM")
-
-    configure_file (
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gVirtualXRayConfigXCOM.h.in"
-        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-    )
-ELSE (XCOM_PATH)
-    SET (HAS_XCOM OFF)
-
-    configure_file (
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gVirtualXRayConfigNoXCOM.h.in"
-        "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
-    )
-ENDIF (XCOM_PATH)
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gVirtualXRayConfigNoXCOM.h.in"
+    "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
+)
 
 
 # Add preprocessor definitions
@@ -408,52 +387,6 @@ TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
-
-
-FILE (REMOVE "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h")
-SET (PROCESS_XCOM_CASE "")
-IF (XCOM_PATH)
-    FILE (TOUCH "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h")
-
-    foreach(xcom_file RANGE 1 100)
-
-        if (${xcom_file} LESS 10)
-            FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.00${xcom_file}.h\"\n")
-            SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.00${xcom_file})
-
-
-            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
-            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_00${xcom_file};")
-            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_00${xcom_file});")
-            SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
-
-        else ()
-            if (${xcom_file} LESS 100)
-                FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.0${xcom_file}.h\"\n")
-                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.0${xcom_file})
-
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_0${xcom_file};")
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_0${xcom_file});")
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
-
-            else ()
-                FILE (APPEND "${CMAKE_CURRENT_BINARY_DIR}/gVirtualXRay/XCOM.h" "#include \"MDATX3.${xcom_file}.h\"\n")
-                SET (XCOM_SOURCES ${XCOM_SOURCES} ${XCOM_PATH}/MDATX3.${xcom_file})
-
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                    case ${xcom_file}:")
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_data = g_MDATX3_${xcom_file};")
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        p_compressed_size = sizeof(g_MDATX3_${xcom_file});")
-                SET (PROCESS_XCOM_CASE "${PROCESS_XCOM_CASE}\n                        break;\n")
-
-            endif ()
-        endif ()
-
-    endforeach(xcom_file)
-
-    CreateHeaderFiles("cmake" "XCOMLibFiles" "${XCOM_SOURCES}")
-    ADD_DEPENDENCIES(gVirtualXRay   XCOMLibFiles)
-ENDIF (XCOM_PATH)
 
 
 SET (RESOURCES_SOURCES
@@ -571,10 +504,6 @@ CreateHeaderFiles("cmake" "BinaryLibFiles" "${RESOURCES_SOURCES}")
 # Make sure the source is generated before the executable builds.
 ADD_DEPENDENCIES(gVirtualXRay BinaryLibFiles)
 
-IF (XCOM_PATH)
-    ADD_DEPENDENCIES(gVirtualXRay XCOMLibFiles)
-ENDIF (XCOM_PATH)
-
 IF (NOT USE_SYSTEM_ZLIB)
     ADD_DEPENDENCIES(gVirtualXRay zlib)
 ENDIF (NOT USE_SYSTEM_ZLIB)
@@ -582,10 +511,6 @@ ENDIF (NOT USE_SYSTEM_ZLIB)
 #IF (NOT USE_SYSTEM_VCG)
 #    ADD_DEPENDENCIES(gVirtualXRay vcg)
 #ENDIF (NOT USE_SYSTEM_VCG)
-
-IF (NOT USE_SYSTEM_XCOM)
-    ADD_DEPENDENCIES(XCOMLibFiles xcom)
-ENDIF (NOT USE_SYSTEM_XCOM)
 
 IF (NOT USE_SYSTEM_GLEW)
     ADD_DEPENDENCIES(gVirtualXRay glew)

@@ -395,20 +395,3 @@ IF (WIN32 AND MSVC)
 ELSE (WIN32 AND MSVC)
     SET (HAS_GETOPT ON)
 ENDIF (WIN32 AND MSVC)
-
-
-# XCOM Database ################################################################
-# XCOM: Photon Cross Sections Database
-# http://www.nist.gov/pml/data/xcom/
-# http://physics.nist.gov/PhysRefData/Xcom/Text/download.html
-
-IF (USE_SYSTEM_XCOM)
-    find_path (XCOM_PATH MDATX3.001 MDATX3.100 NO_DEFAULT_PATH)
-    IF (NOT XCOM_PATH)
-        MESSAGE(WARNING "XCOM, Photon Cross Sections Database, not found. Its use will be disable. You can find it on the NIST's website at: http://physics.nist.gov/PhysRefData/Xcom/Text/download.html")
-    ENDIF (NOT XCOM_PATH)
-
-ELSE(USE_SYSTEM_XCOM)
-    INCLUDE(BuildXCOM)
-    build_xcom( ${PROJECT_BINARY_DIR} )
-ENDIF (USE_SYSTEM_XCOM)
