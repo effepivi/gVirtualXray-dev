@@ -37,11 +37,11 @@ if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
     PROJECT(SimpleGVXR
         VERSION ${SimpleGVXR_VERSION_STRING}
-        LANGUAGES CXX CUDA
+        #LANGUAGES CXX #CUDA
     )
 else ()
     PROJECT(SimpleGVXR
-        LANGUAGES CXX CUDA
+        #LANGUAGES CXX #CUDA
     )
 endif()
 set(CMAKE_DIRECTORY_LABELS "SimpleGVXR")
@@ -82,15 +82,15 @@ if (BUILD_TESTING)
 endif()
 
 
-find_package(CUDAToolkit)
-IF (CUDAToolkit_FOUND)
-    add_compile_definitions(HAS_CUDA)
-    include_directories(${CUDAToolkit_INCLUDE_DIRS})
-    MESSAGE (STATUS "CUDAToolkit found, oversampling is going to be supported")
-    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
-ELSE (CUDAToolkit_FOUND)
-    MESSAGE (WARNING "CUDAToolkit not found, oversampling is NOT going to be supported")
-ENDIF (CUDAToolkit_FOUND)
+# find_package(CUDAToolkit)
+#IF (CUDAToolkit_FOUND)
+#    add_compile_definitions(HAS_CUDA)
+#    include_directories(${CUDAToolkit_INCLUDE_DIRS})
+#    MESSAGE (STATUS "CUDAToolkit found, oversampling is going to be supported")
+#    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+#ELSE (CUDAToolkit_FOUND)
+#    MESSAGE (WARNING "CUDAToolkit not found, oversampling is NOT going to be supported")
+#ENDIF (CUDAToolkit_FOUND)
 
 
 # for superbuild ###############################################################

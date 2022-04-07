@@ -37,11 +37,12 @@ if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
     PROJECT(gvxrWrappers VERSION
         ${gvxrWrappers_VERSION_STRING}
-        LANGUAGES CXX CUDA
+        #LANGUAGES CXX CUDA
     )
 else ()
     PROJECT(gvxrWrappers
-        LANGUAGES CXX CUDA)
+      #  LANGUAGES CXX CUDA
+    )
 endif()
 set(CMAKE_DIRECTORY_LABELS "gvxrWrappers")
 
