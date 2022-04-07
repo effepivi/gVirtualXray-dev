@@ -35,9 +35,13 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake)
 
 if(POLICY CMP0048)
     cmake_policy (SET CMP0048 NEW)
-    PROJECT(gvxrWrappers VERSION ${gvxrWrappers_VERSION_STRING})
+    PROJECT(gvxrWrappers VERSION
+        ${gvxrWrappers_VERSION_STRING}
+        LANGUAGES CXX CUDA
+    )
 else ()
-    PROJECT(gvxrWrappers)
+    PROJECT(gvxrWrappers
+        LANGUAGES CXX CUDA)
 endif()
 set(CMAKE_DIRECTORY_LABELS "gvxrWrappers")
 
@@ -51,7 +55,7 @@ SET (BUILD_SHARED_LIBS OFF)
 
 # Minimum CMake version ########################################################
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 11) # C++11
+set(CMAKE_CXX_STANDARD 11) # C++14
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++11 is required (I.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
@@ -116,6 +120,12 @@ ELSE ()
     # Add link directories needed to use SimpleGVXR
     link_directories(${gVirtualXRay_LIBRARY_DIRS})
 ENDIF ()
+
+
+find_package(CUDAToolkit)
+IF (CUDAToolkit_FOUND)
+    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+ENDIF (CUDAToolkit_FOUND)
 
 
 # OpenMP ######################################################################
