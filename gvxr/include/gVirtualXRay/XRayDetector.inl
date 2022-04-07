@@ -88,7 +88,6 @@ inline XRayDetector::XRayDetector():
 //----------------------------------------------
 	m_resolution_in_unit_of_length_per_pixel(0),
 	m_distance_source_detector(0),
-	m_L_buffer_oversampling_factor(1.0),
 	m_vbo_need_update(true),
 	//m_source_mesh(10, 10, 0.5 * cm),
 	m_source_mesh(2, 0.5 * cm),
@@ -218,14 +217,6 @@ inline void XRayDetector::setNumberOfPixels(const Vec2ui& aSizeInPixels)
 
 	// The VBOs need to be updated
 	m_vbo_need_update = true;
-}
-
-
-//--------------------------------------------------------------------
-inline void XRayDetector::setLBufferOversamplingFactor(double aFactor)
-//--------------------------------------------------------------------
-{
-	m_L_buffer_oversampling_factor = std::max(1.0, aFactor);
 }
 
 
@@ -427,14 +418,6 @@ inline const VEC3& XRayDetector::getDetectorPosition() const
 //----------------------------------------------------------
 {
 	return (m_detector_position);
-}
-
-
-//--------------------------------------------------------------
-inline double XRayDetector::getLBufferOversamplingFactor() const
-//--------------------------------------------------------------
-{
-	return m_L_buffer_oversampling_factor;
 }
 
 

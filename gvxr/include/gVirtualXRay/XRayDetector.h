@@ -202,15 +202,6 @@ public:
 
 
     //--------------------------------------------------------------------------
-    /// Set the multiplicative factor to oversample the L-buffers.
-    /**
-     *  @param aFactor:  the multiplicative factor (default value: 1.0, for no oversampling)
-     */
-    //--------------------------------------------------------------------------
-    void setLBufferOversamplingFactor(double aFactor = 1.0);
-
-
-    //--------------------------------------------------------------------------
     /// Set the position of the X-ray detector.
     /**
      *  @param aDetectorPosition:   the position of the X-ray detector
@@ -360,16 +351,6 @@ public:
      */
     //--------------------------------------------------------------------------
     const VEC3& getDetectorPosition() const;
-
-
-
-    //--------------------------------------------------------------------------
-    /// Accessor on the multiplicative factor used to oversample the L-buffers.
-    /**
-     *  @return the multiplicative factor
-     */
-    //--------------------------------------------------------------------------
-    double getLBufferOversamplingFactor() const;
 
 
     //--------------------------------------------------------------------------
@@ -588,10 +569,6 @@ protected:
 
     /// Size of the detector (in number of pixels)
     Vec2ui          m_size_in_number_of_pixels;
-
-
-    /// The multiplicative factor used to oversample the L-buffers
-    double m_L_buffer_oversampling_factor;
 
 
     /// A flag set to true when the VBOs need to be updated
