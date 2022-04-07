@@ -27,7 +27,12 @@ set_property(
     SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${module}.i
     PROPERTY SWIG_MODULE_NAME ${module})
 
-swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PYTHON_LIBRARIES})
+find_package(CUDAToolkit)
+IF (CUDAToolkit_FOUND)
+    SET (optionalLibs CUDA::cudart_static CUDA::cudart ${optionalLibs})
+ENDIF (CUDAToolkit_FOUND)
+
+swig_link_libraries(${module} ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${PYTHON_LIBRARIES} ${optionalLibs})
 
 IF (USE_SUPERBUILD)
     ADD_DEPENDENCIES(${module} SimpleGVXR)
