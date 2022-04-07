@@ -228,7 +228,7 @@ void AssimpSceneGraphBinder::recursivePolygonMeshBuild(const aiNode* nd, SceneGr
 
 		if (mesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE)
 		{
-			index_offset += p_vertex_set.size() / 3;
+			index_offset = p_vertex_set.size() / 3;
 
 			for (int t = 0; t < mesh->mNumFaces; ++t)
 			{
