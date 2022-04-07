@@ -351,20 +351,9 @@ IF (USE_OPENSCENEGRAPH)
     ENDIF (OPENSCENEGRAPH_FOUND)
 ENDIF (USE_OPENSCENEGRAPH)
 
-
-
-
-
-
-
-
-
-
-
-
-
+# Create the file
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gVirtualXRayConfigNoXCOM.h.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gVirtualXRayConfig.h.in"
     "${PROJECT_BINARY_DIR}/gVirtualXRay/gVirtualXRayConfig.h"
 )
 
