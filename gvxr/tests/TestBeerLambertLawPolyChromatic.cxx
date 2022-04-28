@@ -236,6 +236,10 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     g_xray_full_precision_renderer.addInnerSurface(&g_scene_graph.getChild("inside"));
     g_xray_full_precision_renderer.addOuterSurface(&g_scene_graph.getChild("outside"));
 
+    // Enable artefact filtering on GPU
+    g_xray_half_precision_renderer.enableArtifactFilteringOnGPU();
+    g_xray_full_precision_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeImage(g_sample_rotation_matrix);
     g_xray_full_precision_renderer.computeImage(g_sample_rotation_matrix);
@@ -283,7 +287,10 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
 void quit()
 //---------
 {
-	g_GL_context.release();
+    g_xray_full_precision_renderer.release();
+    g_xray_half_precision_renderer.release();
+    g_scene_graph.clear();
+    g_GL_context.release();
 }
 
 

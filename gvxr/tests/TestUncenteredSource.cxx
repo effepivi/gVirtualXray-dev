@@ -249,9 +249,8 @@ TEST(TestUncenteredSource, TestUncenteredSource)
         angle_in_degrees <<
         " degrees" << std::endl;
 
-    // Compute the projection set
-    g_xray_renderer.disableArtifactFilteringOnCPU();
-    g_xray_renderer.disableArtifactFilteringOnGPU();
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
 
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
@@ -262,7 +261,9 @@ TEST(TestUncenteredSource, TestUncenteredSource)
     g_xray_renderer.printProjectionSet("TestUncenteredSource_single_projection.mha");
 
     // Close the window and shut EGL
+    std::cout << "Shutdown the simulator" << std::endl;
     quit();
+    std::cout << "Simulator is down" << std::endl;
 
     // Load reference image (computed using GEANT4/Gate)
     Image<XRayRenderer::PixelType> reference_projection_set("data/uncentered_source/gate_simulation.mhd");
@@ -281,7 +282,9 @@ TEST(TestUncenteredSource, TestUncenteredSource)
 void quit()
 //---------
 {
-	g_GL_context.release();
+  	g_xray_renderer.release();
+  	g_scene_graph.clear();
+  	g_GL_context.release();
 }
 
 

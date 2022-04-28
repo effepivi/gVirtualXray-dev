@@ -251,6 +251,9 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     // Set the energy
     g_xray_beam.initialise(g_incident_energy_33);
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the projection set
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
@@ -316,7 +319,10 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
 void quit()
 //---------
 {
-	g_GL_context.release();
+    g_xray_full_precision_renderer.release();
+    g_xray_half_precision_renderer.release();
+    g_scene_graph.clear();
+    g_GL_context.release();
 }
 
 

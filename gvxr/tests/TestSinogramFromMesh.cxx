@@ -249,8 +249,10 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the sinogram
-    g_xray_renderer.useArtefactFilteringOnGPU(true);
     g_xray_renderer.computeSinogram(g_sample_rotation_matrix,
         VEC3(),
         g_angle_number,
@@ -340,7 +342,12 @@ void createPhantom()
 void quit()
 //---------
 {
-	g_GL_context.release();
+    g_xray_renderer.release();
+    g_polygon_mesh.clear();
+    g_xray_beam.clear();
+    g_xray_detector.release();
+    g_display_shader.release();
+    g_GL_context.release();
 }
 
 

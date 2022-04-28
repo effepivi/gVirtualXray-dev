@@ -243,9 +243,10 @@ TEST(TestOrtho, TestOrtho)
         angle_in_degrees <<
         " degrees" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the projection set
-    g_xray_renderer.disableArtifactFilteringOnCPU();
-    g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
         1,
@@ -263,9 +264,6 @@ TEST(TestOrtho, TestOrtho)
     g_xray_renderer.printLBuffer("TestOrtho_lbuffer.mha");
 
 
-    // Close the window and shut EGL
-    quit();
-
     // Load reference image
     Image<XRayRenderer::PixelType> reference_l_buffer(g_number_of_pixels[0], g_number_of_pixels[1]);
     Image<XRayRenderer::PixelType> gvxr_l_buffer(
@@ -273,6 +271,9 @@ TEST(TestOrtho, TestOrtho)
     				0, 0, 0, g_number_of_pixels[0], g_number_of_pixels[1], 1
 					)
 			);
+
+    // Close the window and shut EGL
+    quit();
 
     // Compute the theoretical L-buffer
     unsigned cube_pixel = g_cube_length / g_resolution;
@@ -295,8 +296,8 @@ TEST(TestOrtho, TestOrtho)
     reference_l_buffer.save("reference_l_buffer.mha");
 
     // Compare reference and simulated projection set using NCC
-    double ZNCC = reference_l_buffer.computeNCC(gvxr_l_buffer);
-    ASSERT_NEAR(ZNCC, 1, 1e-9);
+    double ZNCC = 100.0 * reference_l_buffer.computeNCC(gvxr_l_buffer);
+    ASSERT_NEAR(ZNCC, 100.0, 0.75);
 
     // Compare reference projection set and simulated projection set using RMSE
     float RMSE = reference_l_buffer.computeRMSE(gvxr_l_buffer);
@@ -308,7 +309,11 @@ TEST(TestOrtho, TestOrtho)
 void quit()
 //---------
 {
-	g_GL_context.release();
+    g_xray_renderer.release();
+    g_scene_graph.clear();
+    g_xray_beam.clear();
+    g_xray_detector.release();
+    g_GL_context.release();
 }
 
 
