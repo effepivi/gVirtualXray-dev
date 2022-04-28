@@ -423,7 +423,7 @@ void runTestHU(const char* aFileName,
     }
     else
     {
-        temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
         buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
         gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
@@ -550,11 +550,11 @@ void runTestElement(const char* aFileName,
     }
     else if (temp_stream.is_open())
     {
-        temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
         buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-            "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'xraylib\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     std::vector<double> reference_vector;
@@ -654,11 +654,11 @@ void runTestMixture(const char* aFileName,
     }
     else
     {
-        temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
         buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-            "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'xraylib\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     std::vector<double> reference_vector;
@@ -677,36 +677,15 @@ void runTestMixture(const char* aFileName,
     {
         reference_data_stream >> current_energy_in_MeV >> mass_attenuation_coefficient;
 
-        if (current_energy_in_MeV < 1.0)
-        {
-            reference_vector.push_back(mass_attenuation_coefficient);
+        reference_vector.push_back(mass_attenuation_coefficient);
 
-            if (100.0 * abs(current_energy_in_MeV - last_energy_in_MeV) / current_energy_in_MeV < 0.05)
-            {
-                double temp_energy_1 = current_energy_in_MeV - 5.0 * getUnitOfEnergy("eV");
-                double temp_energy_2 = current_energy_in_MeV + 5.0 * getUnitOfEnergy("eV");
+        test_vector.push_back(getMassAttenuationFromMixture(aMixture,
+                    current_energy_in_MeV,
+                    "MeV"));
 
-                test_vector.back() = getMassAttenuationFromMixture(aMixture,
-                        temp_energy_1,
-                        "MeV");
+        energy_set.push_back(current_energy_in_MeV);
 
-                test_vector.push_back(getMassAttenuationFromMixture(aMixture,
-                            temp_energy_2,
-                            "MeV"));
-
-                energy_set.back() = temp_energy_1;
-                energy_set.push_back(temp_energy_2);
-            }
-            else
-            {
-                test_vector.push_back(getMassAttenuationFromMixture(aMixture,
-                            current_energy_in_MeV,
-                            "MeV"));
-                energy_set.push_back(current_energy_in_MeV);
-            }
-
-            last_energy_in_MeV = current_energy_in_MeV;
-        }
+        last_energy_in_MeV = current_energy_in_MeV;
     }
 
     if (temp_stream.is_open())
@@ -720,8 +699,8 @@ void runTestMixture(const char* aFileName,
     // Tolerence 0.25%
     ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
 
-    // Tolerence 1.0%
-    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 1.0);
+    // Tolerence 0.5%
+    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 0.5);
 }
 
 
@@ -780,11 +759,11 @@ void runTestCompound(const char* aFileName,
     }
     else
     {
-        temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
         buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-            "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'xraylib\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     std::vector<double> reference_vector;
@@ -808,6 +787,7 @@ void runTestCompound(const char* aFileName,
         test_vector.push_back(getMassAttenuationFromCompound(aCompound,
                     current_energy_in_MeV,
                     "MeV"));
+
         energy_set.push_back(current_energy_in_MeV);
 
         last_energy_in_MeV = current_energy_in_MeV;
@@ -936,7 +916,7 @@ double meanRelativeError(const std::vector<double>& aVector1,
 
     while (ite1 != aVector1.end())
     {
-        mean_relative_error += std::abs(std::log(*ite1) - std::log(*ite2)) / std::abs(std::log(*ite1));
+        mean_relative_error += std::abs(*ite1 - *ite2) / *ite1;
 
         ++ite1;
         ++ite2;
