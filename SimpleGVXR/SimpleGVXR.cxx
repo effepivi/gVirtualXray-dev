@@ -3020,6 +3020,12 @@ void destroyAllWindows()
 {
     gVirtualXRay::LOGGER.logNow("Destroy all the windows") << endl;
 
+    g_xray_beam.clear();
+    g_xray_detector.release();
+    g_xray_renderer.release();
+    g_display_shader.release();
+    g_p_scene_graph = 0;
+
     // Process all the windows
     while (g_p_window_set.size())
         {
