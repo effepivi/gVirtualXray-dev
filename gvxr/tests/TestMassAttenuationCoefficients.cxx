@@ -683,8 +683,8 @@ void runTestMixture(const char* aFileName,
         temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
         buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 8, " <<
-            "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3" << std::endl;
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'xraylib\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     // Initialise the photon cross-section
@@ -708,28 +708,10 @@ void runTestMixture(const char* aFileName,
         reference_data_stream >> current_energy >> mass_attenuation_coefficient;
         current_energy *= MeV;
 
-        if (current_energy < 1.0)
-        {
-            if (100.0 * abs(current_energy - last_energy) / current_energy < 0.05)
-            {
-                double temp_energy_1 = current_energy - current_energy * 0.0025;
-                double temp_energy_2 = current_energy + current_energy * 0.0025;
-
-                reference_vector.push_back(mass_attenuation_coefficient);
-                test_vector.back() = photon_cross_section.getMassAttenuationCoefficient(temp_energy_1)  / (cm2 / g);
-                test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(temp_energy_2)  / (cm2 / g));
-                energy_set.back() = temp_energy_1;
-                energy_set.push_back(current_energy);
-            }
-            else
-            {
-                reference_vector.push_back(mass_attenuation_coefficient);
-                test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
-                energy_set.push_back(current_energy);
-            }
-
-            last_energy = current_energy;
-        }
+        reference_vector.push_back(mass_attenuation_coefficient);
+        test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+        energy_set.push_back(current_energy);
+        last_energy = current_energy;
     }
 
     if (temp_stream.is_open())
@@ -743,8 +725,8 @@ void runTestMixture(const char* aFileName,
     // Tolerence 0.25%
     ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
 
-    // Tolerence 1.0%
-    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 1.0);
+    // Tolerence 0.5%
+    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 0.5);
 }
 
 
