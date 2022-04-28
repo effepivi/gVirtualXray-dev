@@ -29,43 +29,45 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-*/
+ */
 
 
 /**
-********************************************************************************
-*
-*   @file       TestMassAttenuationCoefficients.cxx
-*
-*   @brief      Unit testing: mass attenuation coefficients,
-*   			the unit test corresponds to validation_01,
-*   			last date of check: Passed test on 01 Apr 2019.
-*
-*
-*   @version    1.0
-*
-*   @date       27/04/2022
-*   @author     Dr Franck P. Vidal
-*
-*   @section    License
-*               BSD 3-Clause License.
-*
-*               For details on use and redistribution please refer
-*               to http://opensource.org/licenses/BSD-3-Clause
-*
-*   @section    Copyright
-*               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
-*               http://www.fpvidal.net/, Apr 2022, 2022, version 1.0,
-*               BSD 3-Clause License
-*
-********************************************************************************
-*/
+ ********************************************************************************
+ *
+ *   @file       TestMassAttenuationCoefficients.cxx
+ *
+ *   @brief      Unit testing: mass attenuation coefficients,
+ *               the unit test corresponds to validation_01,
+ *               last date of check: Passed test on 01 Apr 2019.
+ *
+ *
+ *   @version    1.0
+ *
+ *   @date       27/04/2022
+ *   @author     Dr Franck P. Vidal
+ *
+ *   @section    License
+ *               BSD 3-Clause License.
+ *
+ *               For details on use and redistribution please refer
+ *               to http://opensource.org/licenses/BSD-3-Clause
+ *
+ *   @section    Copyright
+ *               (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+ *               http://www.fpvidal.net/, Apr 2022, 2022, version 1.0,
+ *               BSD 3-Clause License
+ *
+ ********************************************************************************
+ */
 
 
 //******************************************************************************
 //  Include
 //******************************************************************************
 #include <iostream>
+#include <iomanip>
+
 #include <fstream>
 #include <vector>
 #include <cmath>
@@ -125,6 +127,7 @@ double getAverage(const std::vector<double>& aVector);
 double getVariance(const std::vector<double>& aVector);
 double getStdDev(const std::vector<double>& aVector);
 double getNCC(const std::vector<double>& aVector1, const std::vector<double>& aVector2);
+double maxRelativeError(const std::vector<double>& aVector1, const std::vector<double>& aVector2);
 double meanRelativeError(const std::vector<double>& aVector1, const std::vector<double>& aVector2);
 void buildGnuplotHeader(std::ofstream& anOutputStream, const char* aTest);
 
@@ -354,23 +357,23 @@ TEST(TestMassAttenuationCoefficients, TestBrainMassAttenuationCoefficients)
 TEST(TestMassAttenuationCoefficients, TestGasMassAttenuationCoefficients)
 //-----------------------------------------------------------------------
 {
-    runTestHU("data/gas.tsv", HU_gas, "gas");
+runTestHU("data/gas.tsv", HU_gas, "gas");
 }
-*/
-
+ */
+/*
 //--------------------------------------------------------------------------
 TEST(TestMassAttenuationCoefficients, TestTissueMassAttenuationCoefficients)
 //--------------------------------------------------------------------------
 {
-    runTestHU("data/tissue.tsv", HU_soft_tissue, "soft_tissue");
+runTestHU("data/tissue.tsv", HU_soft_tissue, "soft_tissue");
 }
-
+ */
 /*
 //-------------------------------------------------------------------------
 TEST(TestMassAttenuationCoefficients, TestWaterMassAttenuationCoefficients)
 //-------------------------------------------------------------------------
 {
-    runTestHU("data/water.tsv", HU_water, "water");
+runTestHU("data/water.tsv", HU_water, "water");
 }*/
 
 /*
@@ -378,7 +381,7 @@ TEST(TestMassAttenuationCoefficients, TestWaterMassAttenuationCoefficients)
 TEST(TestMassAttenuationCoefficients, TestH2OMassAttenuationCoefficients)
 //-----------------------------------------------------------------------
 {
-    runTest("data/water.tsv", "H2O");
+runTest("data/water.tsv", "H2O");
 }*/
 
 
@@ -401,7 +404,7 @@ TEST(TestMassAttenuationCoefficients, TestSiCMassAttenuationCoefficients)
 //------------------------------------------------
 void runTestHU(const char* aFileName,
                short anHounsfieldValue,
-			   const char* aGnuplotScriptFileName)
+               const char* aGnuplotScriptFileName)
 //------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
@@ -417,10 +420,10 @@ void runTestHU(const char* aFileName,
     if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + "_tmp.tsv";
 
     if (aGnuplotScriptFileName)
-  	{
-      	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
-      	temp_stream.open(temp_file_name.data());
-  	}
+    {
+        gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+        temp_stream.open(temp_file_name.data());
+    }
 
     // The file is not open
     if (!reference_data_stream.is_open())
@@ -453,11 +456,11 @@ void runTestHU(const char* aFileName,
     }
     else
     {
-    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
-    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-    			               "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     // Initialise the photon cross-section
@@ -501,26 +504,26 @@ void runTestHU(const char* aFileName,
         }
     }
 
-  	if (temp_stream.is_open())
-  	{
-    		for (unsigned int i = 0; i < test_vector.size(); ++i)
-    		{
-      			temp_stream << energy_set[i] << "\t" << test_vector[i] << std::endl;
-    		}
-  	}
+    if (temp_stream.is_open())
+    {
+        for (unsigned int i = 0; i < test_vector.size(); ++i)
+        {
+            temp_stream << energy_set[i] << "\t" << test_vector[i] << std::endl;
+        }
+    }
 
     // Tolerence 0.25%
-  	ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
+    ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
 
-    // Tolerence 2.0%
-    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 2.0);
+    // Tolerence 3.0%
+    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 3.0);
 }
 
 
 //-----------------------------------------------------
 void runTestElement(const char* aFileName,
-		            const char* anElementSymbol,
-		            const char* aGnuplotScriptFileName)
+                    const char* anElementSymbol,
+                    const char* aGnuplotScriptFileName)
 //-----------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
@@ -536,10 +539,10 @@ void runTestElement(const char* aFileName,
     if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + "_tmp.tsv";
 
     if (aGnuplotScriptFileName)
-  	{
-      	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
-      	temp_stream.open(temp_file_name.data());
-  	}
+    {
+        gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+        temp_stream.open(temp_file_name.data());
+    }
 
     // The file is not open
     if (!reference_data_stream.is_open())
@@ -572,11 +575,11 @@ void runTestElement(const char* aFileName,
     }
     else if (temp_stream.is_open())
     {
-    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
-    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-    			               "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'xraylib\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     // Initialise the photon cross-section
@@ -600,49 +603,32 @@ void runTestElement(const char* aFileName,
         reference_data_stream >> current_energy >> mass_attenuation_coefficient;
         current_energy *= MeV;
 
-        if (current_energy < 1.0)
-        {
-            if (100.0 * abs(current_energy - last_energy) / current_energy < 0.05)
-            {
-                double temp_energy_1 = current_energy - current_energy * 0.0025;
-                double temp_energy_2 = current_energy + current_energy * 0.0025;
-
-                reference_vector.push_back(mass_attenuation_coefficient);
-                test_vector.back() = photon_cross_section.getMassAttenuationCoefficient(temp_energy_1)  / (cm2 / g);
-          			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(temp_energy_2)  / (cm2 / g));
-                energy_set.back() = temp_energy_1;
-          			energy_set.push_back(current_energy);
-            }
-            else
-            {
-          			reference_vector.push_back(mass_attenuation_coefficient);
-          			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
-          			energy_set.push_back(current_energy);
-            }
-            last_energy = current_energy;
-        }
+        reference_vector.push_back(mass_attenuation_coefficient);
+        test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+        energy_set.push_back(current_energy);
+        last_energy = current_energy;
     }
 
     if (temp_stream.is_open())
     {
-    		for (unsigned int i = 0; i < test_vector.size(); ++i)
-    		{
-    			   temp_stream << energy_set[i] << "\t" << test_vector[i] << std::endl;
-    		}
+        for (unsigned int i = 0; i < test_vector.size(); ++i)
+        {
+            temp_stream << std::setprecision(5) << std::fixed << energy_set[i] << "\t" << test_vector[i] << std::endl;
+        }
     }
 
     // Tolerence 0.25%
-  	ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
+    ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
 
     // Tolerence 0.25%
-    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 0.25);
+    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 0.25);
 }
 
 
 //-----------------------------------------------------
 void runTestMixture(const char* aFileName,
-		            const char* aMixture,
-					const char* aGnuplotScriptFileName)
+                    const char* aMixture,
+                    const char* aGnuplotScriptFileName)
 //-----------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
@@ -658,10 +644,10 @@ void runTestMixture(const char* aFileName,
     if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + "_tmp.tsv";
 
     if (aGnuplotScriptFileName)
-	{
-    	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
-    	temp_stream.open(temp_file_name.data());
-	}
+    {
+        gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+        temp_stream.open(temp_file_name.data());
+    }
 
     // The file is not open
     if (!reference_data_stream.is_open())
@@ -694,11 +680,11 @@ void runTestMixture(const char* aFileName,
     }
     else
     {
-    	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
-    	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-    	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-    			               "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3" << std::endl;
     }
 
     // Initialise the photon cross-section
@@ -737,9 +723,9 @@ void runTestMixture(const char* aFileName,
             }
             else
             {
-          			reference_vector.push_back(mass_attenuation_coefficient);
-          			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
-          			energy_set.push_back(current_energy);
+                reference_vector.push_back(mass_attenuation_coefficient);
+                test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+                energy_set.push_back(current_energy);
             }
 
             last_energy = current_energy;
@@ -755,17 +741,17 @@ void runTestMixture(const char* aFileName,
     }
 
     // Tolerence 0.25%
-  	ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
+    ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
 
-    // Tolerence 0.25%
-    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 0.25);
+    // Tolerence 1.0%
+    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 1.0);
 }
 
 
 //------------------------------------------------------
 void runTestCompound(const char* aFileName,
-		             const char* aCompound,
-					 const char* aGnuplotScriptFileName)
+                     const char* aCompound,
+                     const char* aGnuplotScriptFileName)
 //------------------------------------------------------
 {
     std::cout << "***********************" << std::endl;
@@ -781,10 +767,10 @@ void runTestCompound(const char* aFileName,
     if (aGnuplotScriptFileName) temp_file_name = std::string(aGnuplotScriptFileName) + "_tmp.tsv";
 
     if (aGnuplotScriptFileName)
-  	{
-      	gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
-      	temp_stream.open(temp_file_name.data());
-  	}
+    {
+        gnuplot_stream.open((std::string(aGnuplotScriptFileName) + ".plt").data());
+        temp_stream.open(temp_file_name.data());
+    }
 
     // The file is not open
     if (!reference_data_stream.is_open())
@@ -817,11 +803,11 @@ void runTestCompound(const char* aFileName,
     }
     else
     {
-      	temp_stream << "Photon Energy\tTot. w/ Coherent" << std::endl;
+        temp_stream << "Photon Energy (in MeV)\tTot. w/ Coherent (in cm2 / g)" << std::endl;
 
-      	buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
-      	gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'XCOM\' lw 6, " <<
-      			               "\'" << temp_file_name  << "\' using 1:2 w p title \'gVirtualXRay\' ps 3 pt 7" << std::endl;
+        buildGnuplotHeader(gnuplot_stream, aGnuplotScriptFileName);
+        gnuplot_stream << "plot \'" << aFileName       << "\' using 1:2 w l title \'xraylib\' lw 8, " <<
+            "\'" << temp_file_name  << "\' using 1:2 w l title \'gVirtualXRay\' lw 2" << std::endl;
     }
 
     // Initialise the photon cross-section
@@ -845,44 +831,26 @@ void runTestCompound(const char* aFileName,
         reference_data_stream >> current_energy >> mass_attenuation_coefficient;
         current_energy *= MeV;
 
-        if (current_energy < 1.0)
-        {
-            if (100.0 * abs(current_energy - last_energy) / current_energy < 0.05)
-            {
-                double temp_energy_1 = current_energy - current_energy * 0.0025;
-                double temp_energy_2 = current_energy + current_energy * 0.0025;
+        last_energy = current_energy;
 
-                reference_vector.push_back(mass_attenuation_coefficient);
-                test_vector.back() = photon_cross_section.getMassAttenuationCoefficient(temp_energy_1)  / (cm2 / g);
-                test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(temp_energy_2)  / (cm2 / g));
-                energy_set.back() = temp_energy_1;
-                energy_set.push_back(temp_energy_2);
-            }
-
-            if (current_energy != last_energy)
-            {
-              	last_energy = current_energy;
-
-          			reference_vector.push_back(mass_attenuation_coefficient);
-          			test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
-          			energy_set.push_back(current_energy);
-            }
-        }
+        reference_vector.push_back(mass_attenuation_coefficient);
+        test_vector.push_back(photon_cross_section.getMassAttenuationCoefficient(current_energy)  / (cm2 / g));
+        energy_set.push_back(current_energy);
     }
 
     if (temp_stream.is_open())
-	  {
-    		for (unsigned int i = 0; i < test_vector.size(); ++i)
-    		{
-      			temp_stream << energy_set[i] << "\t" << test_vector[i] << std::endl;
-    		}
+    {
+        for (unsigned int i = 0; i < test_vector.size(); ++i)
+        {
+            temp_stream << energy_set[i] << "\t" << test_vector[i] << std::endl;
+        }
     }
 
     // Tolerence 0.25%
-  	ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
+    ASSERT_NEAR(100.0 * getNCC(reference_vector, test_vector), 100.0, 0.25);
 
     // Tolerence 0.25%
-    ASSERT_NEAR(100.0 * meanRelativeError(reference_vector, test_vector), 0.0, 0.25);
+    ASSERT_NEAR(100.0 * maxRelativeError(reference_vector, test_vector), 0.0, 0.25);
 }
 
 
@@ -957,6 +925,30 @@ double getNCC(const std::vector<double>& aVector1,
 }
 
 
+//----------------------------------------------------------
+double maxRelativeError(const std::vector<double>& aVector1,
+                        const std::vector<double>& aVector2)
+//----------------------------------------------------------
+{
+    double max_relative_error(0.0);
+    double relative_error(0.0);
+
+    std::vector<double>::const_iterator ite1(aVector1.begin());
+    std::vector<double>::const_iterator ite2(aVector2.begin());
+
+    while (ite1 != aVector1.end())
+    {
+        relative_error = std::abs(*ite1 - *ite2) / *ite1;
+        max_relative_error = std::max(relative_error, max_relative_error);
+
+        ++ite1;
+        ++ite2;
+    }
+
+    return (max_relative_error);
+}
+
+
 //-----------------------------------------------------------
 double meanRelativeError(const std::vector<double>& aVector1,
                          const std::vector<double>& aVector2)
@@ -969,7 +961,7 @@ double meanRelativeError(const std::vector<double>& aVector1,
 
     while (ite1 != aVector1.end())
     {
-      	mean_relative_error += std::abs(std::log(*ite1) - std::log(*ite2)) / std::abs(std::log(*ite1));
+        mean_relative_error += std::abs(*ite1 - *ite2) / *ite1;
 
         ++ite1;
         ++ite2;
@@ -983,22 +975,22 @@ double meanRelativeError(const std::vector<double>& aVector1,
 void buildGnuplotHeader(std::ofstream& anOutputStream, const char* aTest)
 //-----------------------------------------------------------------------
 {
-	anOutputStream << "#!/usr/bin/env gnuplot" << std::endl;
-	anOutputStream << std::endl;
-	anOutputStream << "set term post eps enhanced color 'Helvetica' 32 size 9in,7in" << std::endl;
-	anOutputStream << "set output '" << aTest << ".eps'" << std::endl;
-	anOutputStream << std::endl;
-	anOutputStream << "set grid" << std::endl;
-	anOutputStream << std::endl;
-	anOutputStream << "#set key bottom" << std::endl;
-	anOutputStream << std::endl;
-	anOutputStream << "set log xy" << std::endl;
-	anOutputStream << "set format xy '10^{%T}'" << std::endl;
-	anOutputStream << std::endl;
-	anOutputStream << "set title '" << aTest << "'" << std::endl;
-	anOutputStream << "set ylabel 'Mass attenuation coefficient ({/Symbol m}/{/Symbol r}) in cm^2/g'" << std::endl;
-	anOutputStream << "set xlabel 'Photon energy in MeV'" << std::endl;
-  anOutputStream << "set xrange[0.001:1.0]" << std::endl;
-	anOutputStream << std::endl;
-	anOutputStream << "set key autotitle columnhead" << std::endl;
+    anOutputStream << "#!/usr/bin/env gnuplot" << std::endl;
+    anOutputStream << std::endl;
+    anOutputStream << "set term post eps enhanced color 'Helvetica' 32 size 9in,7in" << std::endl;
+    anOutputStream << "set output '" << aTest << ".eps'" << std::endl;
+    anOutputStream << std::endl;
+    anOutputStream << "set grid" << std::endl;
+    anOutputStream << std::endl;
+    anOutputStream << "#set key bottom" << std::endl;
+    anOutputStream << std::endl;
+    anOutputStream << "set log xy" << std::endl;
+    anOutputStream << "set format xy '10^{%T}'" << std::endl;
+    anOutputStream << std::endl;
+    anOutputStream << "set title '" << aTest << "'" << std::endl;
+    anOutputStream << "set ylabel 'Mass attenuation coefficient ({/Symbol m}/{/Symbol r}) in cm^2/g'" << std::endl;
+    anOutputStream << "set xlabel 'Photon energy in MeV'" << std::endl;
+    anOutputStream << "set xrange[0.001:1.0]" << std::endl;
+    anOutputStream << std::endl;
+    anOutputStream << "set key autotitle columnhead" << std::endl;
 }
