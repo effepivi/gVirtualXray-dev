@@ -279,6 +279,9 @@ TEST(TestPhantomMonoChromatic, TestPhantomMonoChromatic)
     std::cout << "Detector position: " << g_detector_position / cm << " (in cm)" << std::endl;
     std::cout << "Source position: "   << g_source_position   / cm << " (in cm)" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Set the energy
     g_xray_beam.initialise(g_incident_energy_33);
 

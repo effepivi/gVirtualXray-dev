@@ -135,6 +135,9 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     addPolygonMeshAsInnerSurface("inside");
     addPolygonMeshAsOuterSurface("outside");
 
+    // Enable artefact filtering on GPU
+    enableArtefactFilteringOnGPU();
+
     // Compute the X-ray image
     std::vector<std::vector<float> > x_ray_image = computeXRayImage();
 
@@ -146,7 +149,7 @@ TEST(TestBeerLambertLawMonoChromatic, TestBeerLambertLawPolyChromatic)
     std::cout << "On GPU, with full precision, the energy (in keV) transmitted "
         "orthogonally throw the middle of cube and "
         "cylinder actually is:" << std::endl;
-        
+
     std::cout << "\t\t           = " << simulated_result_in_keV << " keV" <<
         std::endl << std::endl;
 
@@ -290,16 +293,16 @@ void loadSTLFile()
     g_expected_result_in_keV = g_incident_energy_in_keV *
         exp(-(getMuFromHU(HU_bone, g_incident_energy_in_keV, "keV") * 2 +
             getMuFromHU(HU_soft_tissue, g_incident_energy_in_keV, "keV") * 1));
-        
+
     std::cout << "The energy (in keV) transmitted orthogonally throw "
         "the middle of cube and cylinder should be:" << std::endl;
 
     std::cout << "\t\tI_expected = I_0 * exp(-Sum(mu * x))" << std::endl;
-    
+
     std::cout << "\t\t           = " << std::fixed <<
         g_incident_energy_in_keV <<
         " * exp(-(mu_bone * 2 + mu_soft_tissue * 1))" << std::endl;
-    
+
     std::cout << "\t\t           = " << std::fixed <<
         g_incident_energy_in_keV <<
         " * exp(-(" << std::scientific <<
@@ -321,6 +324,17 @@ void loadSTLFile()
     std::cout << "                     : " << std::fixed <<
         std::abs(g_expected_result_in_keV - g_literature_result_in_keV) <<
         " keV" << std::endl << std::endl;
+
+    std::cout << "The relative error is: 100 * |I_expected - I_reference| / I_reference %" <<
+        std::endl;
+
+    std::cout << "                     : 100 * |" <<
+        g_expected_result_in_keV << " - " << g_literature_result_in_keV <<
+        "| / " << g_literature_result_in_keV << " %"<< std::endl;
+
+    std::cout << "                     : " << std::fixed <<
+        100.0 * std::abs(g_expected_result_in_keV - g_literature_result_in_keV) / g_literature_result_in_keV <<
+        " %" << std::endl << std::endl;
 }
 
 
@@ -329,15 +343,15 @@ void loadDetector()
 //-----------------
 {
     setDetectorPixelSize(g_resolution_in_mm, g_resolution_in_mm , "mm");
-    
+
     setDetectorNumberOfPixels(g_number_of_pixels[0], g_number_of_pixels[1]);
-    
+
     setDetectorPosition(
         g_detector_position_in_cm[0],
         g_detector_position_in_cm[1],
         g_detector_position_in_cm[2],
         "cm");
-    
+
     setDetectorUpVector(
         g_detector_up_vector[0],
         g_detector_up_vector[1],

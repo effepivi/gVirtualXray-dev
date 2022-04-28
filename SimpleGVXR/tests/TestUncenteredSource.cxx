@@ -277,10 +277,10 @@ TEST(TestUncenteredSource, TestUncenteredSource)
         angle_in_degrees <<
         " degrees" << std::endl;
 
-    // Compute the projection set
-    g_xray_renderer.disableArtifactFilteringOnCPU();
-    g_xray_renderer.disableArtifactFilteringOnGPU();
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
 
+    // Compute the projection set
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
         1,

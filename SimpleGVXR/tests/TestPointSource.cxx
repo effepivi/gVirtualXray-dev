@@ -280,9 +280,10 @@ TEST(TestPointSource, TestPointSource)
         angle_in_degrees <<
         " degrees" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the projection set
-    g_xray_renderer.disableArtifactFilteringOnCPU();
-    g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
         1,
@@ -291,22 +292,22 @@ TEST(TestPointSource, TestPointSource)
     // Save the projection set
     g_xray_renderer.printProjectionSet("TestPointSource_single_projection.mha");
 
-    
+
     g_xray_renderer.computeLBuffer(g_scene_graph.getChild("inside"),
                                    VEC3(),
                                    g_sample_rotation_matrix,
                                    true);
-    
+
     g_xray_renderer.printLBuffer("TestPointSource_cylinder_lbuffer.mha");
-    
+
     g_xray_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                    VEC3(),
                                    g_sample_rotation_matrix,
                                    true);
-    
+
     g_xray_renderer.printLBuffer("TestPointSource_cube_lbuffer.mha");
 
-    
+
     // Close the window
     glfwSetWindowShouldClose(g_p_main_window_id, GL_TRUE);
 

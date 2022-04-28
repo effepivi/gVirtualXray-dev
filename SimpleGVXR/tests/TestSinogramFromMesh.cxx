@@ -157,8 +157,10 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
         g_angle_step * (g_angle_number - 1) <<
         "] degrees" << std::endl;
 
-    // Compute the sinogram
+    // Enable artefact filtering on GPU
     enableArtefactFilteringOnGPU();
+    
+    // Compute the sinogram
     std::vector<std::vector<std::vector<float> > > sinogram = computeSinogram(0, 0, 0,
         "cm",
         g_angle_number,

@@ -278,9 +278,10 @@ TEST(TestCubeSource, TestCubeSource)
         angle_in_degrees <<
         " degrees" << std::endl;
 
+    // Enable artefact filtering on GPU
+    g_xray_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the projection set
-    g_xray_renderer.disableArtifactFilteringOnCPU();
-    g_xray_renderer.disableArtifactFilteringOnGPU();
     g_xray_renderer.computeProjectionSet(g_sample_rotation_matrix,
         VEC3(),
         1,

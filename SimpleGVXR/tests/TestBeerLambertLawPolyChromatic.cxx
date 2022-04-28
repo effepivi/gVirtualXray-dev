@@ -137,6 +137,9 @@ TEST (TestBeerLambertLawPolyChromatic, TestBeerLambertLawPolyChromatic)
     addPolygonMeshAsInnerSurface("inside");
     addPolygonMeshAsOuterSurface("outside");
 
+    // Enable artefact filtering on GPU
+    enableArtefactFilteringOnGPU();
+
     // Compute the X-ray image
     std::vector<std::vector<float> > x_ray_image = computeXRayImage();
 

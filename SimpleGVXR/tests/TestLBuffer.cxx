@@ -259,6 +259,10 @@ TEST (TestLBuffer, TestLBuffer1)
     GLint height(0);
     glfwGetFramebufferSize(g_p_main_window_id, &width, &height);
 
+    // Enable artefact filtering on GPU
+    g_xray_half_precision_renderer.enableArtifactFilteringOnGPU();
+    g_xray_full_precision_renderer.enableArtifactFilteringOnGPU();
+
     // Compute the X-ray image
     g_xray_half_precision_renderer.computeLBuffer(g_scene_graph.getChild("outside"),
                                                   VEC3(),
