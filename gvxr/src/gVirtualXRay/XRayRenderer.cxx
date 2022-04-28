@@ -729,6 +729,8 @@ void XRayRenderer::release()
 			LOGGER.logError(e.what()) << std::endl;
 		}
 	}
+
+	m_detector_temporary_geometry.reset(0);
 /*
 	// Reset values
 	m_p_detector = 0;

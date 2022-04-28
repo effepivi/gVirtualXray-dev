@@ -183,7 +183,7 @@ void PolygonMesh::reset()
     // Reset class members to their default values
     if (m_p_vbo.get())
         {
-        m_p_vbo->reset();
+        m_p_vbo->destroy();
         }
 
     if (m_p_vertex_normal_vbo.get())

@@ -101,6 +101,7 @@ inline XRayDetector::XRayDetector():
 inline XRayDetector::~XRayDetector()
 //----------------------------------
 {
+	release();
 }
 
 
