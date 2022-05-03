@@ -1,6 +1,36 @@
 # XRayLib ######################################################################
-SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "/usr/local/include/xraylib")
-SET (optionalLibs ${optionalLibs} /usr/local/lib64/libxrl.so)
+IF (NOT USE_SYSTEM_XRAYLIB)
+
+    SET (XRAYLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/include/xraylib)
+
+    INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/include/
+        DESTINATION ${INSTALL_DIR}/third_party/include
+        COMPONENT Development
+        FILES_MATCHING PATTERN "*.*"
+    )
+
+    # Assume GNU/Linux
+    IF (NOT WIN32 AND NOT APPLE)
+        INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
+            DESTINATION ${INSTALL_DIR}/third_party/lib64
+            COMPONENT Development
+            FILES_MATCHING PATTERN "*.*"
+        )
+
+        SET (XRAYLIB_LIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux/libxrl.so)
+
+    ENDIF (NOT WIN32 AND NOT APPLE)
+
+    # IF (WIN32)
+    #ENDIF (WIN32)
+
+    #IF (APPLE)
+    #ENDIF (APPLE)
+
+ENDIF (NOT USE_SYSTEM_XRAYLIB)
+
+SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${XRAYLIB_INCLUDE_DIRS} ${XRAYLIB_INCLUDE_DIR})
+SET (requiredLibs ${requiredLibs} ${XRAYLIB_LIB})
 
 
 # ASSIMP #######################################################################
