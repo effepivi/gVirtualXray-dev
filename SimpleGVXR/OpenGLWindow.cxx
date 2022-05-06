@@ -114,6 +114,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/XRayRenderer.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
 
 #ifndef __OpenGLWindow_h
 #include "OpenGLWindow.h"
@@ -350,9 +353,9 @@ void SimpleGVXR::OpenGLWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::OpenGLWindow::initShader()
 //-----------------------------
 {
-    std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "OpenGL version:    " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << endl;
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
@@ -768,24 +771,24 @@ void framebufferSizeCallback(GLFWwindow* apWindow, int width, int height)
 //-----------------------------------------------------------------------
 {
     if (height == 0) {
-    // Prevent divide by 0
-    height = 1;
+      // Prevent divide by 0
+      height = 1;
     }
 
     int x(0), y(0), w(width), h(height);
-    std::cout << x << " " << y << " " << w << " " << h << std::endl;
     double screen_aspect_ratio(double(width) / double(height));
     glViewport(x, y, w, h);
 
     SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(apWindow);
     if (p_window)
-	{
+    {
     	p_window->initViewer();
-	}
+    }
 
     gVirtualXRay::loadPerspectiveProjectionMatrix(g_initial_fovy,
     screen_aspect_ratio, g_initial_near, g_initial_far);
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0);
+    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0);
 }
