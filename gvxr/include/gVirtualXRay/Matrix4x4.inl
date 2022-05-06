@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -158,17 +158,17 @@ template<typename T> void Matrix4x4<T>::loadIdentity()
 	m_p_4x4_data[5]  = 1.0;
 	m_p_4x4_data[6]  = 0.0;
 	m_p_4x4_data[7]  = 0.0;
-	
+
 	m_p_4x4_data[8]  = 0.0;
 	m_p_4x4_data[9]  = 0.0;
 	m_p_4x4_data[10] = 1.0;
 	m_p_4x4_data[11] = 0.0;
-	
+
 	m_p_4x4_data[12] = 0.0;
 	m_p_4x4_data[13] = 0.0;
 	m_p_4x4_data[14] = 0.0;
 	m_p_4x4_data[15] = 1.0;
-	
+
 	m_small_matrix_up_to_date = false;
 }
 
@@ -194,6 +194,18 @@ template<typename T> void Matrix4x4<T>::rotate(const double anAngle, const Vec3<
 //------------------------------------------------------------------------------------------
 {
 	*this *= buildRotationMatrix(anAngle, aVector);
+
+	m_small_matrix_up_to_date = false;
+}
+
+
+//----------------------------------------------------------------------
+template<typename T> void Matrix4x4<T>::yawPitchRollRotate(double yaw,
+	                                                         double pitch,
+																													 double roll)
+//----------------------------------------------------------------------
+{
+	*this *= buildYawPitchRollRotationMatrix(yaw, pitch, roll);
 
 	m_small_matrix_up_to_date = false;
 }
@@ -319,6 +331,49 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::buildRotationMatrix(T anAngle,
 }
 
 
+//-----------------------------------------------------------------------------------------------------
+template<typename T> Matrix4x4<T> Matrix4x4<T>::buildYawPitchRollRotationMatrix(T yaw, T pitch, T roll)
+//-----------------------------------------------------------------------------------------------------
+{
+	T alpha = gVirtualXRay::PI * yaw / 180.0;
+	T cos_alpha = cos(alpha);
+	T sin_alpha = sin(alpha);
+
+	T beta = gVirtualXRay::PI * pitch / 180.0;
+	T cos_beta = cos(beta);
+	T sin_beta = sin(beta);
+
+	T gamma = gVirtualXRay::PI * roll / 180.0;
+	T cos_gamma = cos(gamma);
+	T sin_gamma = sin(gamma);
+
+
+	Matrix4x4<T> rotation_matrix(
+		cos_alpha * cos_beta,
+		sin_alpha * cos_beta,
+		-sin_beta,
+		0.0,
+
+		cos_alpha * sin_beta * sin_gamma - sin_alpha * cos_gamma,
+		sin_alpha * sin_beta * sin_gamma + cos_alpha * cos_gamma,
+		cos_beta * sin_gamma,
+		0.0,
+
+		cos_alpha * sin_beta * cos_gamma + sin_alpha * sin_gamma,
+		sin_alpha * sin_beta * cos_gamma - cos_alpha * sin_gamma,
+		cos_beta * cos_gamma,
+		0.0,
+
+		0.0,
+		0.0,
+		0.0,
+		1.0);
+
+	return (rotation_matrix);
+}
+
+
+
 //----------------------------------------------------------
 template<typename T> void Matrix4x4<T>::scale(T x, T y, T z)
 //----------------------------------------------------------
@@ -367,7 +422,7 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::getInverse() const
 {
 	T m0(0), m1(0), m2(0), m3(0), m4(0), m5(0), m6(0), m7(0), m8(0), m9(0), m10(0), m11(0), m12(0), m13(0), m14(0), m15(0);
 	T matrix_determinant(determinant());
-	
+
 	if (fabs(matrix_determinant) > 0.000001)
 	{
 		m0  = (m_p_4x4_data[6]*m_p_4x4_data[11]*m_p_4x4_data[13] - m_p_4x4_data[7]*m_p_4x4_data[10]*m_p_4x4_data[13] + m_p_4x4_data[7]*m_p_4x4_data[9]*m_p_4x4_data[14] - m_p_4x4_data[5]*m_p_4x4_data[11]*m_p_4x4_data[14] - m_p_4x4_data[6]*m_p_4x4_data[9]*m_p_4x4_data[15] + m_p_4x4_data[5]*m_p_4x4_data[10]*m_p_4x4_data[15]) / matrix_determinant;
@@ -435,7 +490,7 @@ template<typename T> Matrix4x4<T> Matrix4x4<T>::operator*(const Matrix4x4<T>& aM
 		for (int j(0); j < 4; j++, p_matrix0++, p_result++)
 		{
 			T* p_temp(p_matrix1);
-			
+
 			*p_result  = p_matrix0[0]  * *p_temp++;
 			*p_result += p_matrix0[4]  * *p_temp++;
 			*p_result += p_matrix0[8]  * *p_temp++;
@@ -452,7 +507,7 @@ template<typename T> Matrix4x4<T>& Matrix4x4<T>::operator*=(const Matrix4x4<T>& 
 //--------------------------------------------------------------------------------------
 {
 	*this = *this * aMatrix;
-	
+
 	m_small_matrix_up_to_date = false;
 
 	return (*this);
@@ -485,15 +540,15 @@ template<typename T> const T* Matrix4x4<T>::get3x3()
 		m_p_3x3_data[0] = m_p_4x4_data[ 0];
 		m_p_3x3_data[1] = m_p_4x4_data[ 1];
 		m_p_3x3_data[2] = m_p_4x4_data[ 2];
-	
+
 		m_p_3x3_data[3] = m_p_4x4_data[ 4];
 		m_p_3x3_data[4] = m_p_4x4_data[ 5];
 		m_p_3x3_data[5] = m_p_4x4_data[ 6];
-		
+
 		m_p_3x3_data[6] = m_p_4x4_data[ 8];
 		m_p_3x3_data[7] = m_p_4x4_data[ 9];
 		m_p_3x3_data[8] = m_p_4x4_data[10];
-		
+
 		m_small_matrix_up_to_date = true;
 	}
 
@@ -521,7 +576,7 @@ template<typename T> void Matrix4x4<T>::print() const
 //---------------------------------------------------
 {
 	print(std::cout);
-}	
+}
 
 
 //-------------------------------------------------------------------------------
@@ -532,7 +587,7 @@ template<typename T> void Matrix4x4<T>::print(std::ostream& anOutputStream) cons
 	anOutputStream << m_p_4x4_data[1] << "  " << m_p_4x4_data[5] << "  " << m_p_4x4_data[ 9] << "  " << m_p_4x4_data[13] << std::endl;
 	anOutputStream << m_p_4x4_data[2] << "  " << m_p_4x4_data[6] << "  " << m_p_4x4_data[10] << "  " << m_p_4x4_data[14] << std::endl;
 	anOutputStream << m_p_4x4_data[3] << "  " << m_p_4x4_data[7] << "  " << m_p_4x4_data[11] << "  " << m_p_4x4_data[15] << std::endl;
-}	
+}
 
 
 //--------------------------------------------------------------------------
@@ -543,6 +598,6 @@ template <typename T> std::ostream& operator<<(std::ostream& anOutputStream,
 	aMatrix.print(anOutputStream);
 	return (anOutputStream);
 }
- 
+
 
 } // namespace gVirtualXRay
