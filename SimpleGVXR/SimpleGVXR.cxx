@@ -360,7 +360,7 @@ std::string getOpenGlVersion()
 
 
 //---------------------------
-std::string getOpenGlVenror()
+std::string getOpenGlVendor()
 //---------------------------
 {
     return std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
@@ -453,10 +453,47 @@ void setSourcePosition(double x,
 {
     double unit_of_length = getUnitOfLength(aUnitOfLength);
 
+    gVirtualXRay::XRayDetector::SourceShape source_shape_backup = g_xray_detector.getSourceShape();
+
     g_xray_detector.setXrayPointSource(
             gVirtualXRay::VEC3(x * unit_of_length, y * unit_of_length,
                     z * unit_of_length));
     g_source_position_initialised = true;
+
+    switch (source_shape_backup)
+    {
+      case gVirtualXRay::XRayDetector::POINT:
+        g_xray_detector.setXrayPointSource();
+        break;
+
+      case gVirtualXRay::XRayDetector::PARALLEL:
+        g_xray_detector.setParallelBeam();
+        break;
+
+      case gVirtualXRay::XRayDetector::SQUARE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a square source.");
+
+      case gVirtualXRay::XRayDetector::CUBE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a cube source.");
+
+      case gVirtualXRay::XRayDetector::LINE:
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used with a line source.");
+
+      default: // This case should never occur
+        throw gVirtualXRay::Exception(__FILE__,
+                                      __FUNCTION__,
+                                      __LINE__,
+                                      "This method should not be used when the shape of the source is unknown.");
+    }
 
     // Initialise the X-ray renderer if needed and if possible
     initialiseXRayRenderer();
@@ -1793,6 +1830,51 @@ void rotateNode(const std::string& aLabel,
 }
 
 
+void rotateNode(const std::string& aLabel,
+                double yaw,
+                double pitch,
+                double roll)
+{
+    if (g_p_scene_graph.get())
+        {
+        // Find the mesh
+        gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(aLabel);
+
+        // It has been found
+        if (p_node)
+            {
+            gVirtualXRay::MATRIX4 rotation_matrix =
+            gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(yaw, pitch, roll);
+
+            // Root node
+            if (p_node->getLabel() == "root")
+                {
+                p_node->setLocalTransformation(
+                rotation_matrix
+                * p_node->getLocalTransformationMatrix());
+                }
+            else
+                {
+                p_node->setLocalTransformation(
+                    p_node->getLocalTransformationMatrix() * rotation_matrix);
+                }
+            }
+        // It has not been found
+        else
+            {
+            gVirtualXRay::LOGGER.logWarning("PolygonMesh ") <<
+                aLabel <<
+                " not found in g_p_polygon_mesh_set." <<
+                endl;
+            }
+        }
+    else
+        {
+        gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+        }
+}
+
+
 void translateNode(const std::string& aLabel,
                    double x,
                    double y,
@@ -1927,6 +2009,14 @@ void rotateScene(double angle, double x, double y, double z)
     // Move the scenegraph
     g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildRotationMatrix(
         angle, x, y, z);
+}
+
+
+void rotateScene(double yaw, double pitch, double roll)
+{
+    // Move the scenegraph
+    g_sample_rotation_matrix *= gVirtualXRay::MATRIX4::buildYawPitchRollRotationMatrix(
+        yaw, pitch, roll);
 }
 
 
@@ -2515,10 +2605,10 @@ void createOpenGLContext(int aWindowID,
 
 //---------------------------------------------
 void createWindow(int aWindowID,
-		          int aVisibilityFlag,
-				  const std::string& aRenderer,
-	              int aRendererMajorVersion,
-	              int aRendererMinorVersion)
+                  int aVisibilityFlag,
+                  const std::string& aRenderer,
+                  int aRendererMajorVersion,
+                  int aRendererMinorVersion)
 //---------------------------------------------
 {
     if (!g_p_window_set.size())
@@ -2624,6 +2714,23 @@ void createWindow(int aWindowID,
             endl;
         }
 }
+
+
+//-------------------------------------------------
+void createNewContext(const std::string& aRenderer,
+                      int aWindowID,
+                		  int aVisibilityFlag,
+                		  int aRendererMajorVersion,
+                		  int aRendererMinorVersion)
+//-------------------------------------------------
+{
+    createWindow(aWindowID,
+        aVisibilityFlag,
+        aRenderer,
+        aRendererMajorVersion,
+        aRendererMinorVersion);
+}
+
 
 //--------------------------------------------------------
 void setWindowSize(int aWidth, int aHeight, int aWindowID)

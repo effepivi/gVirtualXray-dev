@@ -176,7 +176,7 @@ std::string getOpenGlVersion();
  *  @return a string displaying the OpenGL vendor
  */
 //------------------------------------------------------------------------------
-std::string getOpenGlVenror();
+std::string getOpenGlVendor();
 
 
 void useLogFile(const char* aFileName = "gvxr.log");
@@ -995,6 +995,19 @@ void rotateNode(const std::string& aLabel,
 
 
 //------------------------------------------------------------------------------
+/// Rotate a polygon mesh using the yaw, pitch, roll method
+/**
+ *  @param aLabel:  the label of the polygon mesh to transform
+ *  @param yaw: a counterclockwise rotation of yaw degrees about the z-axis
+ *  @param pitch: a counterclockwise rotation of yaw degrees about the y-axis
+ *  @param roll: a counterclockwise rotation of yaw degrees about the x-axis
+ */
+//------------------------------------------------------------------------------
+void rotateNode(const std::string& aLabel,
+    double yaw, double pitch, double roll);
+
+
+//------------------------------------------------------------------------------
 /// Translate a polygon mesh.
 /**
  *  @param aLabel:  the label of the polygon mesh to transform
@@ -1093,6 +1106,18 @@ void scaleScene(double x, double y, double z, const std::string& aUnitOfLength);
  */
 //------------------------------------------------------------------------------
 void rotateScene(double anAngle, double x, double y, double z);
+
+
+//------------------------------------------------------------------------------
+/// Rotate the 3-D scene using the yaw, pitch, roll method
+/// (all the polygon meshes will be affected but not modified).
+/**
+ *  @param yaw: a counterclockwise rotation of yaw degrees about the z-axis
+ *  @param pitch: a counterclockwise rotation of yaw degrees about the y-axis
+ *  @param roll: a counterclockwise rotation of yaw degrees about the x-axis
+ */
+//------------------------------------------------------------------------------
+void rotateScene(double yaw, double pitch, double roll);
 
 
 //------------------------------------------------------------------------------
@@ -1448,6 +1473,29 @@ void createOpenGLContext(int aWindowID = -1,
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
+		int aRendererMajorVersion = 3,
+		int aRendererMinorVersion = 2);
+
+
+//------------------------------------------------------------------------------
+/// Create an OpenGL context
+/**
+ *  @param aRenderer: Select the renderer to use, e.g. OpenGL or Vulkan.
+ *                    (default value: OPENGL)
+ *  @param aWindowID:   the numerical ID of the context to create
+ *                      (default value: -1, means that the ID will be
+ *                      automatically generated)
+ *  @param aRendererMajorVersion: Select the major version of the renderer.
+ *                    (default value: 3)
+ *  @param aRendererMajorVersion: Select the minor version of the renderer.
+ *                    (default value: 2)
+ *  @param aVisibilityFlag: flag controling if the window should be visible (1)
+ *                          or hidden (0). (default value: 0)
+ */
+//------------------------------------------------------------------------------
+void createNewContext(const std::string& aRenderer = "OPENGL",
+    int aWindowID = -1,
+		int aVisibilityFlag = 0,
 		int aRendererMajorVersion = 3,
 		int aRendererMinorVersion = 2);
 
