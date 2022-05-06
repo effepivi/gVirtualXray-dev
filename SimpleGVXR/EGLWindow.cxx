@@ -109,6 +109,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenSceneGraphBinder.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
 
 #ifndef __EGLWindow_h
 #include "EGLWindow.h"
@@ -342,13 +345,13 @@ void SimpleGVXR::EGLWindow::setWindowSize(int aWidth, int aHeight)
 			throw gVirtualXRay::Exception(__FILE__, __FUNCTION__, __LINE__, "The FBO has not been successfully created.");
 		}
 
+    int x(0), y(0), w(m_width), h(m_height);
+
     if (m_height == 0) {
         // Prevent divide by 0
         m_height = 1;
     }
 
-    int x(0), y(0), w(m_width), h(m_height);
-    std::cout << x << " " << y << " " << w << " " << h << std::endl;
     double screen_aspect_ratio(double(m_width) / double(m_height));
     glViewport(x, y, w, h);
 
@@ -357,12 +360,14 @@ void SimpleGVXR::EGLWindow::setWindowSize(int aWidth, int aHeight)
     gVirtualXRay::loadPerspectiveProjectionMatrix(g_initial_fovy,
     screen_aspect_ratio, g_initial_near, g_initial_far);
 
-    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0);
+    gVirtualXRay::loadLookAtModelViewMatrix(0.0, 0.0, g_zoom,
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0);
 
 		gVirtualXRay::popFBO();
 	}
 }
+
 
 //----------------------------------------------------
 void SimpleGVXR::EGLWindow::displayScene(bool aSceneRotationFlag)
@@ -447,9 +452,9 @@ void SimpleGVXR::EGLWindow::createWindow(bool aVisibilityFlag)
 void SimpleGVXR::EGLWindow::initShader()
 //--------------------------------------
 {
-    std::cout << "OpenGL renderer:   " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "OpenGL version:    " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "OpenGL vender:     " << glGetString(GL_VENDOR) << std::endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL vendor:") << glGetString(GL_VENDOR) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL renderer:") << glGetString(GL_RENDERER) << endl;
+    gVirtualXRay::LOGGER.logNow("OpenGL version:") << glGetString(GL_VERSION) << endl;
 
     gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
 
