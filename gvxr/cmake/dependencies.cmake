@@ -17,7 +17,21 @@ IF (NOT USE_SYSTEM_XRAYLIB)
             FILES_MATCHING PATTERN "*.*"
         )
 
-        SET (XRAYLIB_LIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux/libxrl.so)
+
+        SET (XRAYLIB_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
+        )
+
+        SET (XRAYLIB_LIBS
+            ${XRAYLIB_PATH}/libxrl.so.11.1.1
+            ${XRAYLIB_PATH}/libxrlf03.so.11.1.1
+
+            ${XRAYLIB_PATH}/libxrl.so.11
+            ${XRAYLIB_PATH}/libxrlf03.so.11
+
+            ${XRAYLIB_PATH}/libxrl.so
+            ${XRAYLIB_PATH}/libxrlf03.so
+        )
 
     ENDIF (NOT WIN32 AND NOT APPLE)
 
@@ -30,8 +44,10 @@ IF (NOT USE_SYSTEM_XRAYLIB)
 ENDIF (NOT USE_SYSTEM_XRAYLIB)
 
 SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} ${XRAYLIB_INCLUDE_DIRS} ${XRAYLIB_INCLUDE_DIR})
-SET (requiredLibs ${requiredLibs} ${XRAYLIB_LIB})
-
+SET (requiredLibs ${requiredLibs} ${XRAYLIB_LIBS})
+SET (gVirtualXRay_XRAYLIB_LIBS ${XRAYLIB_LIBS})
+SET (gVirtualXRay_XRAYLIB_PATH ${XRAYLIB_PATH})
+SET (gVirtualXRay_LIBRARY_DIRS ${gVirtualXRay_XRAYLIB_PATH} ${gVirtualXRay_LIBRARY_DIRS})
 
 # ASSIMP #######################################################################
 IF (USE_assimp)
