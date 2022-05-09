@@ -37,7 +37,7 @@ FIND_PACKAGE(Doxygen)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/doxygen.config.in
                  ${PROJECT_BINARY_DIR}/doc/doxygen.config)
 
-ADD_CUSTOM_TARGET(SimpleGVXR_Documentation 
+ADD_CUSTOM_TARGET(SGVXR_Documentation 
     COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/doc/doxygen.config
     MAIN_DEPENDENCY ${PROJECT_BINARY_DIR}/doc/doxygen.config
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc
