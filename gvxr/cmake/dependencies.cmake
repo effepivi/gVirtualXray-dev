@@ -17,7 +17,6 @@ IF (NOT USE_SYSTEM_XRAYLIB)
             FILES_MATCHING PATTERN "*.*"
         )
 
-
         SET (XRAYLIB_PATH
             ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux
         )
@@ -32,14 +31,30 @@ IF (NOT USE_SYSTEM_XRAYLIB)
             ${XRAYLIB_PATH}/libxrl.so
             ${XRAYLIB_PATH}/libxrlf03.so
         )
-
     ENDIF (NOT WIN32 AND NOT APPLE)
 
     # IF (WIN32)
     #ENDIF (WIN32)
 
-    #IF (APPLE)
-    #ENDIF (APPLE)
+    IF (APPLE)
+        INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
+            DESTINATION ${INSTALL_DIR}/third_party/lib64
+            COMPONENT Development
+            FILES_MATCHING PATTERN "*.*"
+        )
+
+        SET (XRAYLIB_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
+        )
+
+        SET (XRAYLIB_LIBS
+            ${XRAYLIB_PATH}/libxrl.11.dylib
+            ${XRAYLIB_PATH}/libxrlf03.11.dylib
+
+            ${XRAYLIB_PATH}/libxrl.dylib
+            ${XRAYLIB_PATH}/libxrlf03.dylib
+        )
+    ENDIF (APPLE)
 
 ENDIF (NOT USE_SYSTEM_XRAYLIB)
 
