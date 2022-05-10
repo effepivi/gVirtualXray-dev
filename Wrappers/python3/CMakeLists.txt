@@ -78,6 +78,15 @@ add_custom_target(install-${module}
         DEPENDS ${module}
         COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY_OUT} install --skip-build --root ${CMAKE_CURRENT_BINARY_DIR})
 
+#install(FILES ${gVirtualXRay_XRAYLIB_LIBS}
+#    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/python3/
+#    COMPONENT Python3)
+
+
+INSTALL (FILES ${gVirtualXRay_XRAYLIB_LIBS}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_DIR}/python3
+    COMPONENT 
+)
 
 
 install(FILES
