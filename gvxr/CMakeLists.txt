@@ -143,6 +143,7 @@ SET (CXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/StereoHelper.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/VBO.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ResourceManager.cxx
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SceneGraphNode.cxx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SceneGraphBinder.cxx
@@ -228,6 +229,8 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/VBO.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.inl
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ResourceManager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ResourceManager.inl
 
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphNode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphBinder.h

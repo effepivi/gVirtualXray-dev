@@ -100,6 +100,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 namespace gVirtualXRay {
 
+class OpenGL2VBO;
+class OpenGL3VBO;
+
 
 //------------------------------------------------------------------------------
 /// Initialise GLEW.

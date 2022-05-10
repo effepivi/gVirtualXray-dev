@@ -52,7 +52,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *   to http://opensource.org/licenses/BSD-3-Clause
 *
 *   Copyright
-*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net), 
+*   (c) by Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
 *   http://www.fpvidal.net/, Dec 2014, 2014, version 1.0, BSD 3-Clause License
 *
 ********************************************************************************
@@ -63,33 +63,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	namespace
 //******************************************************************************
 namespace gVirtualXRay {
-
-
-//---------------------------------------
-inline Shader::Shader():
-//---------------------------------------
-	m_vertex_source(0),
-	m_vertex_source_number_of_lines(0),
-	
-	m_fragment_source(0),
-	m_fragment_source_number_of_lines(0),
-
-	m_valid(false),
-
-	m_shader_program_id(0),
-	m_vertex_shader_id(0),
-	m_fragment_shader_id(0)
-//---------------------------------------
-{
-}
-
-
-//----------------------
-inline Shader::~Shader()
-//----------------------
-{
-	release();
-}
 
 
 //--------------------------------------------------------------------

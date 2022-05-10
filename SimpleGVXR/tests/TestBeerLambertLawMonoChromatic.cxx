@@ -367,6 +367,7 @@ void loadSource()
     setMonoChromatic(g_incident_energy_in_keV, "keV", 1);
 
     // Set the source position
+    usePointSource();
     setSourcePosition(g_source_position_in_cm[0],
         g_source_position_in_cm[1],
         g_source_position_in_cm[2],

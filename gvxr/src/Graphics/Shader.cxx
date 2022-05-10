@@ -76,16 +76,20 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <cstring>
 
-#ifndef GVXR_SHADER_H
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
 #endif
 
-#ifndef GVXR_FILE_DOES_NOT_EXIST_EXCEPTION_H
+#ifndef __FileDoesNotExistException_h
 #include "gVirtualXRay/FileDoesNotExistException.h"
 #endif
 
-#ifndef GVXR_OUT_OF_MEMORY_EXCEPTION_H
+#ifndef __OutOfMemoryException_h
 #include "gVirtualXRay/OutOfMemoryException.h"
+#endif
+
+#ifndef __ResourceManager_h
+#include <gVirtualXRay/ResourceManager.h>
 #endif
 
 
@@ -101,16 +105,50 @@ using namespace gVirtualXRay;
 bool Shader::m_shader_capable = false;
 
 
+//---------------------------------------
+Shader::Shader():
+//---------------------------------------
+	m_vertex_source(0),
+	m_vertex_source_number_of_lines(0),
+
+	m_fragment_source(0),
+	m_fragment_source_number_of_lines(0),
+
+	m_valid(false),
+
+	m_shader_program_id(0),
+	m_vertex_shader_id(0),
+	m_fragment_shader_id(0)
+//---------------------------------------
+{
+    ResourceManager::getInstance().addShader(this);
+}
+
+
+//---------------
+Shader::~Shader()
+//---------------
+{
+	release();
+    ResourceManager::getInstance().destroyAndRemoveShader(this);
+}
+
+
 //--------------------
 void Shader::release()
 //--------------------
 {
+    Context* p_context = ResourceManager::getInstance().getGraphicsContext();
+
 	// Get the current program
 	GLint current_shader(0);
 
-	if (m_shader_program_id)
+	if (m_shader_program_id && p_context)
 	{
-		glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+        if (p_context->isReady())
+        {
+		    glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+        }
 	}
 
 	// Check the value
@@ -127,25 +165,34 @@ void Shader::release()
 	}
 
 	// Delete the fragment shader
-	if (m_fragment_shader_id)
+	if (m_fragment_shader_id && p_context)
 	{
-		glDeleteShader(m_fragment_shader_id);
-		m_fragment_shader_id = 0;
+        if (p_context->isReady())
+        {
+            glDeleteShader(m_fragment_shader_id);
+        }
 	}
+    m_fragment_shader_id = 0;
 
 	// Delete the vertex shader
-	if (m_vertex_shader_id)
+	if (m_vertex_shader_id && p_context)
 	{
-		glDeleteShader(m_vertex_shader_id);
-		m_vertex_shader_id = 0;
+        if (p_context->isReady())
+        {
+            glDeleteShader(m_vertex_shader_id);
+        }
 	}
+    m_vertex_shader_id = 0;
 
 	// Delete the shader program
-	if (m_shader_program_id)
+	if (m_shader_program_id && p_context)
 	{
-		glDeleteProgram(m_shader_program_id);
-		m_shader_program_id = 0;
+        if (p_context->isReady())
+        {
+            glDeleteProgram(m_shader_program_id);
+        }
 	}
+    m_shader_program_id = 0;
 
 	// Release memory
 	releaseVertexSourceMemory();
@@ -261,7 +308,7 @@ void Shader::loadSource(const std::string& aVertexShaderSourceCode,
 	loadVertexShaderSource(aVertexShaderSourceCode);
 	loadFragmentShaderSource(aFragmentShaderSourceCode);
 	linkProgram();
-	
+
 	m_valid = true;
 
 	m_shader_capable = true;
@@ -377,7 +424,7 @@ int Shader::loadFile(const std::string& aShaderFilename,
 	{
 		throw FileDoesNotExistException(__FILE__, __FUNCTION__, __LINE__, aShaderFilename);
 	}
-	
+
 	// Count the number of new line characters ('\n')
 	line_number = count(std::istreambuf_iterator<char>(input_stream), std::istreambuf_iterator<char>(), '\n');
 
@@ -537,7 +584,7 @@ unsigned int Shader::compileShader(int aShaderType,
 	{
 		glAttachShader(m_shader_program_id, shader_handle);
 	}
-	
+
 	return (shader_handle);
 }
 
@@ -593,7 +640,7 @@ void Shader::linkProgram()
 
 		// Release the memory used to store the log message
 		delete [] p_log_message;
-		
+
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, error_message.str());
 	}
 }

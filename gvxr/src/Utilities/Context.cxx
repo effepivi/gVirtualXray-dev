@@ -62,6 +62,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //******************************************************************************
 //  Include
 //******************************************************************************
+#ifdef HAS_GLEW
+#include "GL/glew.h"
+#endif
 
 #include <iostream>
 
@@ -88,11 +91,38 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Logger.h>
 #endif
 
+#ifndef __ResourceManager_h
+#include "gVirtualXRay/ResourceManager.h"
+#endif
+
 
 //******************************************************************************
 //	namespace
 //******************************************************************************
 using namespace gVirtualXRay;
+
+
+//-----------------
+Context::Context():
+//-----------------
+		m_renderer(""),
+		m_major_version(0),
+		m_minor_version(0),
+
+		m_p_window(0),
+
+#ifdef HAS_EGL
+		m_display(0),
+		m_config(0),
+		m_context(0),
+		m_surface(0),
+#endif
+
+		m_ready(false)
+//--------------------------------------------
+{
+	ResourceManager::getInstance().setGraphicsContext(this);
+}
 
 
 //--------------------------------------------
@@ -116,6 +146,7 @@ Context::Context(const std::string& aRenderer,
 		m_ready(false)
 //--------------------------------------------
 {
+	ResourceManager::getInstance().setGraphicsContext(this);
 	create(aRenderer, aRendererMajorVersion, aRendererMinorVersion);
 }
 
@@ -124,6 +155,7 @@ Context::Context(const std::string& aRenderer,
 Context::~Context()
 //-----------------
 {
+	ResourceManager::getInstance().destroyAndRemoveContext();
 	release();
 }
 
@@ -165,6 +197,8 @@ void Context::create(const std::string& aRenderer,
 void Context::release()
 //---------------------
 {
+	ResourceManager::getInstance().releaseResources();
+
 #ifdef HAS_EGL
 	if (m_display && m_context)
 		{

@@ -77,6 +77,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
+#ifndef __ResourceManager_h
+#include <gVirtualXRay/ResourceManager.h>
+#endif
+
 #ifndef OPENGL2_VBO_H
 #include "gVirtualXRay/OpenGL2VBO.h"
 #endif
@@ -94,6 +98,16 @@ OpenGL2VBO::OpenGL2VBO():
         VBO()
 //-----------------------
 {
+    ResourceManager::getInstance().addVBO(this);
+}
+
+
+//-----------------------
+OpenGL2VBO::~OpenGL2VBO()
+//-----------------------
+{
+	destroy();
+    ResourceManager::getInstance().destroyAndRemoveVBO(this);
 }
 
 

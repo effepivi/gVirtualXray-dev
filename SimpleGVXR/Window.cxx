@@ -98,6 +98,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Window.h"
 #endif
 
+#ifndef __Logger_h
+#include <gVirtualXRay/Logger.h>
+#endif
+
 
 //******************************************************************************
 //  Namespaces
@@ -170,7 +174,7 @@ SimpleGVXR::Window::Window(int aVisibilityFlag):
 	  m_callback_registered(false)
 //----------------------------------
 {
-    cout << "gvxrStatus:\tCreate window " << endl;
+	gVirtualXRay::LOGGER.logNow("Create window") << std::endl;
 
     m_background_colour[0] = 0.5;
     m_background_colour[1] = 0.5;

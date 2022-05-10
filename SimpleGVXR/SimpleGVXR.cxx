@@ -159,6 +159,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "EGLWindow.h"
 #endif
 
+#ifndef __ResourceManager_h
+#include "gVirtualXRay/ResourceManager.h"
+#endif
+
 
 //******************************************************************************
 //  Namespace
@@ -488,11 +492,8 @@ void setSourcePosition(double x,
                                       __LINE__,
                                       "This method should not be used with a line source.");
 
-      default: // This case should never occur
-        throw gVirtualXRay::Exception(__FILE__,
-                                      __FUNCTION__,
-                                      __LINE__,
-                                      "This method should not be used when the shape of the source is unknown.");
+      default: // This case should never occur, but just in case
+          g_xray_detector.setXrayPointSource();
     }
 
     // Initialise the X-ray renderer if needed and if possible
@@ -3127,11 +3128,13 @@ void destroyAllWindows()
 {
     gVirtualXRay::LOGGER.logNow("Destroy all the windows") << endl;
 
+    ResourceManager::getInstance().releaseResources();
     g_xray_beam.clear();
     g_xray_detector.release();
     g_xray_renderer.release();
     g_display_shader.release();
     g_p_scene_graph = 0;
+
 
     // Process all the windows
     while (g_p_window_set.size())

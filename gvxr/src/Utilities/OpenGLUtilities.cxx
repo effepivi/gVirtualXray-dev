@@ -90,7 +90,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gVirtualXRay/Logger.h>
 #endif
 
+#ifndef __Shader_h
 #include "gVirtualXRay/Shader.h"
+#endif
+
+#ifndef __ResourceManager_h
+#include "gVirtualXRay/ResourceManager.h"
+#endif
 
 
 //******************************************************************************
@@ -511,6 +517,8 @@ void applyModelViewMatrix()
 bool useOpenGL45()
 //----------------
 {
+    Shader dummy_shader;
+
     // This is the first time the method is called
     if (!g_has_been_initialised)
     {
@@ -544,8 +552,6 @@ bool useOpenGL45()
             }\n \
             ";
 
-            Shader dummy_shader;
-
             // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
             dummy_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
@@ -576,6 +582,9 @@ bool useOpenGL45()
         g_has_been_initialised = g_use_gl_4_5;
     }
 
+
+    ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
+
     return (g_use_gl_4_5);
 }
 
@@ -584,6 +593,8 @@ bool useOpenGL45()
 bool useOpenGL32()
 //----------------
 {
+    Shader dummy_shader;
+
     // This is the first time the method is called
     if (!g_has_been_initialised)
     {
@@ -617,8 +628,6 @@ bool useOpenGL32()
             }\n \
             ";
 
-            Shader dummy_shader;
-
             // Give a text ID to the vertex and fragment shaders, it can be useful when debuging shaders
             dummy_shader.setLabels("g_vertex_shader", "g_fragment_shader");
 
@@ -649,7 +658,44 @@ bool useOpenGL32()
 
     g_has_been_initialised = true;
 
+    ResourceManager::getInstance().destroyAndRemoveShader(&dummy_shader);
+
     return (g_use_gl_3_2);
+}
+
+
+//--------------
+VBO* createVBO()
+//--------------
+{
+    if (useOpenGL45())
+    {
+        return (createOpenGL3VBO());
+    }
+    else if (useOpenGL32())
+    {
+        return (createOpenGL3VBO());
+    }
+    else
+    {
+        return (createOpenGL2VBO());
+    }
+}
+
+
+//----------------------------
+OpenGL2VBO* createOpenGL2VBO()
+//----------------------------
+{
+    return (new OpenGL2VBO);
+}
+
+
+//----------------------------
+OpenGL3VBO* createOpenGL3VBO()
+//----------------------------
+{
+    return (new OpenGL3VBO);
 }
 
 

@@ -1039,17 +1039,25 @@ void XRayRenderer::initShaders()
 	std::string vertex_shader;
 	std::string fragment_shader;
 
+	bool use_opengl45 = useOpenGL45();
+	bool use_opengl32 = false;
+
+	if (!use_opengl45)
+	{
+		use_opengl32 = useOpenGL32();
+	}
+
 	if (!glCreateProgram)
 	{
 		throw Exception(__FILE__, __FUNCTION__, __LINE__, "OpenGL's functions are not properly initialised, did you forget to call \"initialiseGLEW()\"?");
 	}
 
-    if (useOpenGL45())
+    if (use_opengl45)
 	{
 	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl4_vert, sizeof(g_l_buffer_gl4_vert),   &p_vertex_shader);
 	    z_lib_return_code_fragment = inflate(g_l_buffer_gl4_frag, sizeof(g_l_buffer_gl4_frag), &p_fragment_shader);
 	}
-    else if (useOpenGL32())
+    else if (use_opengl32)
 	{
 	    z_lib_return_code_vertex   = inflate(g_l_buffer_gl3_vert, sizeof(g_l_buffer_gl3_vert),   &p_vertex_shader);
 	    z_lib_return_code_fragment = inflate(g_l_buffer_gl3_frag, sizeof(g_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1073,12 +1081,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Cumulated L-buffer
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl4_vert, sizeof(g_cumulated_l_buffer_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl4_frag, sizeof(g_cumulated_l_buffer_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_cumulated_l_buffer_gl3_vert, sizeof(g_cumulated_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_cumulated_l_buffer_gl3_frag, sizeof(g_cumulated_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1102,12 +1110,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_CUMULATED_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
     // Clean L-buffer
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl4_vert, sizeof(g_clean_l_buffer_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl4_frag, sizeof(g_clean_l_buffer_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_clean_l_buffer_gl3_vert, sizeof(g_clean_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_clean_l_buffer_gl3_frag, sizeof(g_clean_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1131,12 +1139,12 @@ void XRayRenderer::initShaders()
     m_shader_set[XRAY_DETECTOR_CLEAN_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Outer L-buffer
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl4_vert, sizeof(g_outer_surface_l_buffer_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl4_frag, sizeof(g_outer_surface_l_buffer_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_outer_surface_l_buffer_gl3_vert, sizeof(g_outer_surface_l_buffer_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_outer_surface_l_buffer_gl3_frag, sizeof(g_outer_surface_l_buffer_gl3_frag), &p_fragment_shader);
@@ -1160,12 +1168,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_OUTER_SURFACE_LBUFFER_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Mu X Dx
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl4_vert, sizeof(g_MUx_Dx_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_MUx_Dx_gl4_frag, sizeof(g_MUx_Dx_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_MUx_Dx_gl3_vert, sizeof(g_MUx_Dx_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_MUx_Dx_gl3_frag, sizeof(g_MUx_Dx_gl3_frag), &p_fragment_shader);
@@ -1189,12 +1197,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_SUM_MUx_Dx_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Energy fluence
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl4_vert, sizeof(g_xray_attenuation_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_attenuation_gl4_frag, sizeof(g_xray_attenuation_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_xray_attenuation_gl3_vert, sizeof(g_xray_attenuation_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_attenuation_gl3_frag, sizeof(g_xray_attenuation_gl3_frag), &p_fragment_shader);
@@ -1218,12 +1226,12 @@ void XRayRenderer::initShaders()
 	m_shader_set[XRAY_DETECTOR_ENERGY_FLUENCE_SHADER_ID].loadSource(vertex_shader, fragment_shader);
 
 	// Display
-    if (useOpenGL45())
+    if (use_opengl45)
     {
         z_lib_return_code_vertex   = inflate(g_xray_display_gl4_vert, sizeof(g_xray_display_gl4_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_display_gl4_frag, sizeof(g_xray_display_gl4_frag), &p_fragment_shader);
     }
-    else if (useOpenGL32())
+    else if (use_opengl32)
     {
         z_lib_return_code_vertex   = inflate(g_xray_display_gl3_vert, sizeof(g_xray_display_gl3_vert),   &p_vertex_shader);
         z_lib_return_code_fragment = inflate(g_xray_display_gl3_frag, sizeof(g_xray_display_gl3_frag), &p_fragment_shader);

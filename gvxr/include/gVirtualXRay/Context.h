@@ -108,6 +108,12 @@ class Context
 public:
     //--------------------------------------------------------------------------
     /// Default Constructor
+    //--------------------------------------------------------------------------
+	Context();
+
+
+    //--------------------------------------------------------------------------
+    /// Default Constructor
     /*
 	*  @param aRenderer:   the type of context. Accepted values are "OpenGL", "Vulkan", and "EGL" (default: "OpenGL")
 	*  @param aRendererMajorVersion: Select the major version of the renderer.
@@ -116,9 +122,9 @@ public:
 	*                    (default value: 2)
 	*/
     //--------------------------------------------------------------------------
-	Context(const std::string& aRenderer = "OpenGL",
-			int aRendererMajorVersion = 3,
-			int aRendererMinorVersion = 2);
+	Context(const std::string& aRenderer,
+			int aRendererMajorVersion,
+			int aRendererMinorVersion);
 
 
     //--------------------------------------------------------------------------
