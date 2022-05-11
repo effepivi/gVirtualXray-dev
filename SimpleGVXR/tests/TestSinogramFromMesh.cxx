@@ -129,15 +129,8 @@ TEST(TestSinogramFromMesh, TestSinogramFromMesh)
 #endif
     setWindowSize(g_main_window_width, g_main_window_height);
 
-    // Load the data
-    loadDetector();
-    loadSource();
-
     // Create the phantom
     createPhantom();
-
-    // Add the geometry to the X-ray renderer
-    loadSTLFile();
 
     // Display the mu coefficients
     std::cout << "Linear attenuation coefficient at:\t" << g_incident_energy_in_MeV << " MeV" << std::endl;
