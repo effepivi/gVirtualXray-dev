@@ -422,39 +422,42 @@ void Context::createGLWithEGL()
 void Context::createGLWithGLFW()
 //------------------------------
 {
-	// Release the previous context if applicable
-	release();
+		// Release the previous context if applicable
+		release();
 
-    std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
+		std::string window_title = "gVirtualXRay -- OpenGL Window (GLFW)";
 
-    // Set the version of OpenGL that is required
-	glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		// Set the version of OpenGL that is required
+		glfwInit();
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_major_version);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_minor_version);
+		glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
+		if (m_major_version == 3 && m_minor_version >= 2 || m_major_version >= 4)
+		{
+				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		}
 
-    // Enable anti-aliasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
+		// Enable anti-aliasing
+		glfwWindowHint(GLFW_SAMPLES, 4);
 
-    // Create a windowed mode window and its OpenGL context
-    m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
+		// Create a windowed mode window and its OpenGL context
+		m_p_window = glfwCreateWindow(1, 1, window_title.data(), 0, 0);
 
-    // Window has be created
-    if (m_p_window)
-    {
-        // Make the window's context current
-        glfwMakeContextCurrent(m_p_window);
-        glfwSetWindowUserPointer(m_p_window, this);
+		// Window has be created
+		if (m_p_window)
+		{
+				// Make the window's context current
+				glfwMakeContextCurrent(m_p_window);
+				glfwSetWindowUserPointer(m_p_window, this);
 
-        // Initialise GLEW
-        gVirtualXRay::initialiseGLEW();
+				// Initialise GLEW
+				gVirtualXRay::initialiseGLEW();
 
-        m_ready = true;
-    }
+				m_ready = true;
+		}
 }
 
 
