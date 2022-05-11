@@ -1470,11 +1470,19 @@ void createOpenGLContext(int aWindowID = -1,
  *                          or hidden (0). (default value: 0)
  */
 //------------------------------------------------------------------------------
+#ifndef __APPLE__
 void createWindow(int aWindowID = -1,
 		int aVisibilityFlag = 0,
 		const std::string& aRenderer = "OPENGL",
 		int aRendererMajorVersion = 3,
 		int aRendererMinorVersion = 2);
+#else // __APPLE__
+void createWindow(int aWindowID = -1,
+		int aVisibilityFlag = 0,
+		const std::string& aRenderer = "OPENGL",
+		int aRendererMajorVersion = 2,
+		int aRendererMinorVersion = 1);
+#endif // __APPLE__
 
 
 //------------------------------------------------------------------------------
