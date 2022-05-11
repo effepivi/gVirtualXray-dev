@@ -230,7 +230,6 @@ SET (HXX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/TextRenderer.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ResourceManager.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/ResourceManager.inl
 
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphNode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/gVirtualXRay/SceneGraphBinder.h
