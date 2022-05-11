@@ -63,6 +63,8 @@ FramebufferObject::~FramebufferObject()
 {
     Context* p_context = ResourceManager::getInstance().getGraphicsContext();
 
+    ResourceManager::getInstance().destroyAndRemoveFBO(this);
+
     if (m_fboId && p_context)
     {
         if (p_context->isReady())
@@ -70,8 +72,6 @@ FramebufferObject::~FramebufferObject()
             glDeleteFramebuffers(1, &m_fboId);
         }
     }
-
-    ResourceManager::getInstance().destroyAndRemoveFBO(this);
 }
 
 void FramebufferObject::Bind()
