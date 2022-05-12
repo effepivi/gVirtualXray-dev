@@ -11,7 +11,7 @@ dlname='libxrl.so.11'
 library_names='libxrl.so.11.1.1 libxrl.so.11 libxrl.so'
 
 # The name of the static archive.
-old_library=''
+old_library='libxrl.a'
 
 # Linker flags that cannot go in dependency_libs.
 inherited_linker_flags=''
