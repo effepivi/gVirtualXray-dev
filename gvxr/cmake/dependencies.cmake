@@ -22,14 +22,7 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         )
 
         SET (XRAYLIB_LIBS
-            ${XRAYLIB_PATH}/libxrl.so.11.1.1
-            ${XRAYLIB_PATH}/libxrlf03.so.11.1.1
-
-            ${XRAYLIB_PATH}/libxrl.so.11
-            ${XRAYLIB_PATH}/libxrlf03.so.11
-
-            ${XRAYLIB_PATH}/libxrl.so
-            ${XRAYLIB_PATH}/libxrlf03.so
+            ${XRAYLIB_PATH}/libxrl.a
         )
     ENDIF (NOT WIN32 AND NOT APPLE)
 
