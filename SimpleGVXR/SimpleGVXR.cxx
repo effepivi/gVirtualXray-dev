@@ -3455,27 +3455,48 @@ std::vector<std::vector<float> > computeXRayImage(bool anIntegrateEnergyFlag)
     if (g_xray_renderer.isReady()) {
 		// Compute the X-ray image
 		g_xray_renderer.computeImage(g_sample_rotation_matrix, anIntegrateEnergyFlag);
+
+#ifdef HAS_CUDA
+		if (g_samples_per_pixels == 1)
+		{
+			return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+		}
+		else
+		{
+			resampleUsingCUDA();
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
+			gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
+			return (getVectorImage2D(g_cpu_memory));
+		}
+#else
+		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+#endif
+
     }
     // The renderer is not ready
     else {
-    	gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
-    }
+        gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
 
-#ifdef HAS_CUDA
-    if (g_samples_per_pixels == 1)
-    {
-		return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+
+    	return std::vector<std::vector<float> >();
     }
-    else
-    {
-		resampleUsingCUDA();
-    	gVirtualXRay::LOGGER.logWarning("Image size: ") << g_xray_renderer.getEnergyFluence().getWidth() << "x" << g_xray_renderer.getEnergyFluence().getHeight() << "x" << g_xray_renderer.getEnergyFluence().getDepth() << endl;
-    	gVirtualXRay::LOGGER.logWarning("Image size: ") << g_cpu_memory.getWidth() << "x" << g_cpu_memory.getHeight() << "x" << g_cpu_memory.getDepth() << endl;
-		return (getVectorImage2D(g_cpu_memory));
-    }
-#else
-	return (getVectorImage2D(g_xray_renderer.getEnergyFluence()));
-#endif
 }
 
 
@@ -3484,41 +3505,66 @@ std::vector<std::vector<float> > computeLBuffer(const std::string& aLabel)
 //--------------------------------------------
 {
     // There is no OpenGL context
-    if (!g_has_own_gl_context
-    && (g_p_window_id_stack.empty() || g_p_window_set.empty())) {
-    // Create a window
-    createWindow();
+    if (!g_has_own_gl_context && (g_p_window_id_stack.empty() || g_p_window_set.empty()))
+    {
+		// Create a window
+		createWindow();
     }
 
     // The renderer is ready
-    if (g_xray_renderer.isReady()) {
-    if (g_p_scene_graph.get()) {
-    // Find the mesh
-    gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
-    aLabel);
+    if (g_xray_renderer.isReady())
+    {
+    	if (g_p_scene_graph.get())
+    	{
+			// Find the mesh
+			gVirtualXRay::SceneGraphNode* p_node = g_p_scene_graph->getNode(
+			aLabel);
 
-    // It has been found
-    if (p_node) {
-    // Compute the L-buffer
-    g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(),
-    g_sample_rotation_matrix, true);
-    }
-    // It has not been found
-    else {
-    gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel
-    << " not found in g_p_polygon_mesh_set." << endl;
-    }
-    } else {
-    gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
-    }
-    }
-    // The renderer is not ready
-    else {
-    gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
-    }
+			// It has been found
+			if (p_node)
+			{
+				// Compute the L-buffer
+				g_xray_renderer.computeLBuffer(*p_node, gVirtualXRay::VEC3(), g_sample_rotation_matrix, true);
 
-    // Compute its L-buffer
-    return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+				// Compute its L-buffer
+				return (getVectorImage2D(g_xray_renderer.getLBuffer()));
+			}
+			// It has not been found
+			else
+			{
+				gVirtualXRay::LOGGER.logWarning("PolygonMesh ") << aLabel << " not found in g_p_polygon_mesh_set." << endl;
+			}
+		}
+    	else
+    	{
+			gVirtualXRay::LOGGER.logWarning("The scenegraph is empty.") << endl;
+		}
+	}
+	// The renderer is not ready
+	else
+	{
+		gVirtualXRay::LOGGER.logWarning("X-ray renderer not ready.") << endl;
+
+    	if (!g_beam_energy_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The energy spectrum has not been set.") << endl;
+
+    	if (!g_beam_shape_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The beam shape has not been set.") << endl;
+
+    	if (!g_source_position_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The source's position has not been set.") << endl;
+
+    	if (!g_detector_up_vector_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's orientation has not been set.") << endl;
+
+    	if (!g_detector_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel resolution has not been set.") << endl;
+
+    	if (!g_detector_pixel_size_initialised)
+    		gVirtualXRay::LOGGER.logWarning("The detector's pixel spacing has not been set.") << endl;
+	}
+
+    return std::vector<std::vector<float> >();
 }
 
 
