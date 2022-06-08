@@ -24,42 +24,81 @@ SET (GTEST_INSTALL_DIR ${GTEST_INSTALL_DIR}/third_party)
 
 FIND_PACKAGE(Git)
 IF (GIT_FOUND)
-
-    ExternalProject_Add(googletest
-        GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
-        GIT_TAG ${GTEST_GIT_TAG}
-	INSTALL_DIR ${GTEST_INSTALL_DIR}
-        CMAKE_ARGS
-            ${LOCAL_CMAKE_BUILD_OPTIONS}
-            -DBUILD_UTILS:BOOL=OFF
-            -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
-            -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
-            -DBUILD_GTEST=ON
-            -DBUILD_GMOCK=OFF
-            -DBUILD_UTILS=OFF
-            -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
-        PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-        # Disable install step
-	#INSTALL_COMMAND ""
-    )
+    IF (UNIX AND NOT APPLE)
+        ExternalProject_Add(googletest
+            GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
+            GIT_TAG ${GTEST_GIT_TAG}
+            INSTALL_DIR ${GTEST_INSTALL_DIR}
+            CMAKE_ARGS
+                ${LOCAL_CMAKE_BUILD_OPTIONS}
+                -DBUILD_UTILS:BOOL=OFF
+                -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
+                -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
+                -DBUILD_GTEST=ON
+                -DBUILD_GMOCK=OFF
+                -DBUILD_UTILS=OFF
+                -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+                -DCMAKE_INSTALL_LIBDIR=lib64
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            # Disable install step
+    	#INSTALL_COMMAND ""
+        )
+    ELSE ()
+        ExternalProject_Add(googletest
+            GIT_REPOSITORY ${GTEST_GIT_REPOSITORY}
+            GIT_TAG ${GTEST_GIT_TAG}
+            INSTALL_DIR ${GTEST_INSTALL_DIR}
+            CMAKE_ARGS
+                ${LOCAL_CMAKE_BUILD_OPTIONS}
+                -DBUILD_UTILS:BOOL=OFF
+                -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
+                -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
+                -DBUILD_GTEST=ON
+                -DBUILD_GMOCK=OFF
+                -DBUILD_UTILS=OFF
+                -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            # Disable install step
+        #INSTALL_COMMAND ""
+        )
+    ENDIF ()
 ELSE (GIT_FOUND)
-    ExternalProject_Add(googletest
-        URL ${GTEST_URL_REPOSITORY}
-	INSTALL_DIR ${GTEST_INSTALL_DIR}
-        CMAKE_ARGS
-            ${LOCAL_CMAKE_BUILD_OPTIONS}
-            -DBUILD_UTILS:BOOL=OFF
-            -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
-            -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
-            -DBUILD_GTEST=ON
-            -DBUILD_GMOCK=OFF
-            -DBUILD_UTILS=OFF
-            -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
-
-        PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-        # Disable install step
-	#INSTALL_COMMAND ""
-    )
+    IF (UNIX AND NOT APPLE)
+        ExternalProject_Add(googletest
+            URL ${GTEST_URL_REPOSITORY}
+            INSTALL_DIR ${GTEST_INSTALL_DIR}
+            CMAKE_ARGS
+                ${LOCAL_CMAKE_BUILD_OPTIONS}
+                -DBUILD_UTILS:BOOL=OFF
+                -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
+                -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
+                -DBUILD_GTEST=ON
+                -DBUILD_GMOCK=OFF
+                -DBUILD_UTILS=OFF
+                -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+                -DCMAKE_INSTALL_LIBDIR=lib64
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            # Disable install step
+        #INSTALL_COMMAND ""
+        )
+    ELSE ()
+        ExternalProject_Add(googletest
+            URL ${GTEST_URL_REPOSITORY}
+            INSTALL_DIR ${GTEST_INSTALL_DIR}
+            CMAKE_ARGS
+                ${LOCAL_CMAKE_BUILD_OPTIONS}
+                -DBUILD_UTILS:BOOL=OFF
+                -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
+                -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
+                -DBUILD_GTEST=ON
+                -DBUILD_GMOCK=OFF
+                -DBUILD_UTILS=OFF
+                -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
+            PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+            # Disable install step
+        #INSTALL_COMMAND ""
+        )
+    ENDIF ()
 ENDIF (GIT_FOUND)
 
 # Specify include dir
