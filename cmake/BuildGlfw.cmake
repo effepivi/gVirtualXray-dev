@@ -18,7 +18,37 @@ macro(build_glfw install_prefix staging_prefix)
         )
     endif()
 
-
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(glfw
+        URL  "https://github.com/glfw/glfw/releases/download/3.3.6/glfw-3.3.6.zip"
+        URL_MD5 "ac9c16031b85c4f7f6d33b96082fb5ae"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${staging_prefix}/${install_prefix}-install
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${staging_prefix}/${install_prefix}-install
+            -DGLFW_BUILD_DOCS:BOOL=OFF
+            -DGLFW_BUILD_EXAMPLES:BOOL=OFF
+            -DGLFW_BUILD_TESTS:BOOL=OFF
+            -DDGLFW_USE_EGL:BOOL=ON
+            -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
+            -DGLFW_USE_HYBRID_HPG:BOOL=ON
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE ()
     ExternalProject_Add(glfw
         URL  "https://github.com/glfw/glfw/releases/download/3.3.6/glfw-3.3.6.zip"
         URL_MD5 "ac9c16031b85c4f7f6d33b96082fb5ae"
@@ -51,6 +81,7 @@ macro(build_glfw install_prefix staging_prefix)
             -DUSE_MSVC_RUNTIME_LIBRARY_DLL:BOOL=OFF
             -DGLFW_USE_HYBRID_HPG:BOOL=ON
     )
+ENDIF ()
 
     SET (GLFW3_INCLUDE_DIR ${staging_prefix}/${install_prefix}-install/include CACHE PATH "Where to find GLFW3 header files" FORCE)
     SET (glfw3_DIR         ${staging_prefix}/${install_prefix}-install/lib64/cmake/glfw3 CACHE PATH "Where to find Cmake files on GLFW3" FORCE)
