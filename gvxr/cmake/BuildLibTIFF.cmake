@@ -19,32 +19,58 @@ endif()
 
 SET (TIFF_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
-ExternalProject_Add(libtiff
-  URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
-  URL_MD5 "f5b485d750b2001255ed64224b98b857"
-  UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${TIFF_INSTALL_DIR}
-  LIST_SEPARATOR :::
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=Release
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
-      -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
-      -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
-      -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
-      -DMACOSX_RPATH:BOOL=ON
-      -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-      -DCMAKE_INSTALL_PREFIX:PATH=${TIFF_INSTALL_DIR}
-      -Djpeg:BOOL=OFF
-      -Dlzma:BOOL=OFF
-)
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(libtiff
+        URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
+        URL_MD5 "f5b485d750b2001255ed64224b98b857"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${TIFF_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${TIFF_INSTALL_DIR}
+            -Djpeg:BOOL=OFF
+            -Dlzma:BOOL=OFF
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE ()
+    ExternalProject_Add(libtiff
+        URL  "http://download.osgeo.org/libtiff/tiff-4.0.6.zip"
+        URL_MD5 "f5b485d750b2001255ed64224b98b857"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${TIFF_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_EXE_LINKER_FLAGS:STRING=${LINKER_FLAGS}
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}
+            -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+            -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+            -DMACOSX_RPATH:BOOL=ON
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+            -DCMAKE_INSTALL_PREFIX:PATH=${TIFF_INSTALL_DIR}
+            -Djpeg:BOOL=OFF
+            -Dlzma:BOOL=OFF
+    )
+ENDIF ()
 
 SET(TIFF_INCLUDE_DIR  ${TIFF_INSTALL_DIR}/include)
 SET(TIFF_INCLUDE_DIRS ${TIFF_INSTALL_DIR}/include)

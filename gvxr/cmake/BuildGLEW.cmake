@@ -27,22 +27,42 @@ ExternalProject_Add(getGLEW
   INSTALL_COMMAND ""
 )
 
-ExternalProject_Add(glew
-  DOWNLOAD_COMMAND ""
-  UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source/build/cmake
-  BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${GLEW_INSTALL_DIR}
-  LIST_SEPARATOR :::
-  #BUILD_IN_SOURCE 1
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-        ${LOCAL_CMAKE_BUILD_OPTIONS}
-				-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-				-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-				-DCMAKE_BUILD_TYPE:STRING=Release
-      -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
-)
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(glew
+        DOWNLOAD_COMMAND ""
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source/build/cmake
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${GLEW_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        #BUILD_IN_SOURCE 1
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE ()
+    ExternalProject_Add(glew
+        DOWNLOAD_COMMAND ""
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source/build/cmake
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${GLEW_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        #BUILD_IN_SOURCE 1
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_BUILD_TYPE:STRING=Release
+            -DCMAKE_INSTALL_PREFIX:PATH=${GLEW_INSTALL_DIR}
+    )
+ENDIF ()
 
 ADD_DEPENDENCIES(glew getGLEW)
 

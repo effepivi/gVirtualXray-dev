@@ -19,25 +19,48 @@ endif()
 
 SET (ASSIMP_INSTALL_DIR ${staging_prefix}/${install_prefix}-install)
 
-ExternalProject_Add(assimp
-  URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
-  URL_MD5 "e98a03f9496ff761e67f29b645e04316"
-  UPDATE_COMMAND ""
-  SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
-  BINARY_DIR  ${staging_prefix}/${install_prefix}-build
-  INSTALL_DIR ${ASSIMP_INSTALL_DIR}
-  LIST_SEPARATOR :::
-  CMAKE_GENERATOR ${CMAKE_GEN}
-  CMAKE_ARGS
-      ${LOCAL_CMAKE_BUILD_OPTIONS}
+IF (UNIX AND NOT APPLE)
+    ExternalProject_Add(assimp
+        URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
+        URL_MD5 "e98a03f9496ff761e67f29b645e04316"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${ASSIMP_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
 
-      -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
-      -DASSIMP_BUILD_TESTS:BOOL=OFF
-      -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
-      -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
-)
+            -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
+            -DASSIMP_BUILD_TESTS:BOOL=OFF
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DBUILD_TESTING:BOOL=OFF
+            -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
+            -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
+            -DCMAKE_INSTALL_LIBDIR=lib64
+    )
+ELSE (UNIX AND NOT APPLE)
+    ExternalProject_Add(assimp
+        URL  "https://github.com/assimp/assimp/archive/v4.1.0.zip"
+        URL_MD5 "e98a03f9496ff761e67f29b645e04316"
+        UPDATE_COMMAND ""
+        SOURCE_DIR  ${staging_prefix}/${install_prefix}-source
+        BINARY_DIR  ${staging_prefix}/${install_prefix}-build
+        INSTALL_DIR ${ASSIMP_INSTALL_DIR}
+        LIST_SEPARATOR :::
+        CMAKE_GENERATOR ${CMAKE_GEN}
+        CMAKE_ARGS
+            ${LOCAL_CMAKE_BUILD_OPTIONS}
+
+            -DCMAKE_INSTALL_PREFIX:PATH=${ASSIMP_INSTALL_DIR}
+            -DASSIMP_BUILD_TESTS:BOOL=OFF
+            -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DBUILD_TESTING:BOOL=OFF
+            -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
+            -DASSIMP_BUILD_DOCBOOK_MANPAGES:BOOL=OFF
+    )
+ENDIF (UNIX AND NOT APPLE)
 
 SET(ASSIMP_ROOT_DIR      ${ASSIMP_INSTALL_DIR}          CACHE PATH "Where ASSIMP is."   FORCE)
 SET(ASSIMP_INCLUDE_DIRS  ${ASSIMP_INSTALL_DIR}/include/ CACHE PATH "Where ASSIMP's headers are."   FORCE)
